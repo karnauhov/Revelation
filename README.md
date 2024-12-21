@@ -5,4 +5,4 @@ Revelation Study app
 
 [Changelog](./CHANGELOG.md)
 
-[End-User License Agreement](./LICENSE.md)
+[End-User License Agreement](./LICENSE)
