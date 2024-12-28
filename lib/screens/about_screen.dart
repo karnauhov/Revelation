@@ -66,7 +66,6 @@ class _AboutScreenState extends State<AboutScreen> {
                   // Changelog
                   _buildChangelog(context, viewModel),
                   if (!viewModel.isChangelogExpanded) const Divider(height: 1),
-                  const Divider(),
                   // Copyright
                   Center(
                     child: Text(
