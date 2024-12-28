@@ -69,11 +69,12 @@ class _DrawerContentState extends State<DrawerContent> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: [
                     DrawerItem(
-                      assetPath: 'assets/images/UI/settings.svg',
-                      text: AppLocalizations.of(context)!.settings_screen,
+                      assetPath: 'assets/images/UI/papyrus.svg',
+                      text:
+                          AppLocalizations.of(context)!.primary_sources_screen,
                       onClick: () {
                         Navigator.pop(context);
-                        context.push('/settings');
+                        context.push('/primary_sources');
                       },
                     ),
                     const Divider(),

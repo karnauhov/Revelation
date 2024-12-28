@@ -11,7 +11,7 @@
   "menu": "Меню",
   "close_app": "Закрыть приложение",
   "todo": "СДЕЛАТЬ",
-  "settings_screen": "Настройки",
+  "primary_sources_screen": "Первоисточники",
   "about_screen": "О программе",
   "error_loading_libraries": "Ошибка загрузки библиотек",
   "changelog": "Журнал изменений (en)",

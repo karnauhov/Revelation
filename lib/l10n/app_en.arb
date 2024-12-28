@@ -11,7 +11,7 @@
   "menu": "Menu",
   "close_app": "Close app",
   "todo": "TODO",
-  "settings_screen": "Settings",
+  "primary_sources_screen": "Primary Sources",
   "about_screen": "About",
   "error_loading_libraries": "Error loading libraries",
   "changelog": "Changelog",
