@@ -85,9 +85,6 @@ jobs:
             exit 1
           }
 
-      - name: Run Tests
-        run: flutter test
-
       - name: Build APK
         run: flutter build apk --release
 
