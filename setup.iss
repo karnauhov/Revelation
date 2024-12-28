@@ -2,7 +2,7 @@
 #define MyAppCompany "Oleh Karnaukhov"
 #define MyAppFileName "revelation.exe"
 #define MyAppVersion "1.0.0"
-#define MyAppBuild "4"
+#define MyAppBuild "5"
 #define CurrentYear GetDateTimeString('yyyy', '', '')
 
 [Languages]
@@ -14,6 +14,7 @@ Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher="Oleh Karnaukhov"
+AppPublisherURL="https://g.dev/karnaukhov"
 AppCopyright="Copyright © {#CurrentYear} {#MyAppCompany}. All rights reserved"
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
