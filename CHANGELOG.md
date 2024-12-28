@@ -7,7 +7,7 @@ All notable changes to this application will be documented here.
 ### Added
 
 - Support languages: English, Ukrainian, Russian;
-- Support platforms: Android, iOS, Windows, macOS;
+- Support platforms: Android, iOS, Windows, macOS, linux, web;
 - Main menu (left side);
 - About screen (Common info, Contact link, Acknowledgments and 3rd party licenses, Changelog);
 
