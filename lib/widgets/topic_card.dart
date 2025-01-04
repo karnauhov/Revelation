@@ -20,7 +20,11 @@ class TopicCard extends StatelessWidget {
       child: ListTile(
         visualDensity: VisualDensity.compact,
         minTileHeight: 0,
-        onTap: () => context.push('/topic', extra: topic.route),
+        onTap: () => context.push('/topic', extra: {
+          'name': topic.name,
+          'description': topic.description,
+          'file': topic.route
+        }),
         leading: SizedBox(
           width: iconWidth,
           height: iconHeight,

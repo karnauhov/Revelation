@@ -37,4 +37,5 @@ flutter:
   assets:
     - CHANGELOG.md
     - assets/data/
+    - assets/data/topics/
     - assets/images/UI/

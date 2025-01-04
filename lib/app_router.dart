@@ -33,7 +33,12 @@ class AppRouter {
         path: '/topic',
         name: 'topic',
         builder: (BuildContext context, GoRouterState state) {
-          return const TopicScreen();
+          final extra = state.extra as Map<String, dynamic>?;
+          return TopicScreen(
+            name: extra?['name'],
+            description: extra?['description'],
+            file: extra?['file'],
+          );
         },
       ),
       GoRoute(
