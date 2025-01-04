@@ -5,7 +5,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:get_it/get_it.dart';
+import 'repositories/settings_repository.dart';
 import 'viewmodels/main_view_model.dart';
+import 'viewmodels/settings_view_model.dart';
 import 'utils/common.dart';
 import 'app_router.dart';
 
@@ -16,8 +18,8 @@ void main() async {
     log.d("Started on ${getPlatform()}");
   }
 
+  WidgetsFlutterBinding.ensureInitialized();
   if (isDesktop()) {
-    WidgetsFlutterBinding.ensureInitialized();
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
         size: Size(800, 600), minimumSize: Size(800, 600), center: true);
@@ -29,12 +31,17 @@ void main() async {
 
   final getIt = GetIt.instance;
   getIt.registerLazySingleton<BaseCacheManager>(() => DefaultCacheManager());
+  final settingsViewModel = SettingsViewModel(SettingsRepository());
+  await settingsViewModel.loadSettings();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => MainViewModel()..initializeData(),
+        ChangeNotifierProvider<MainViewModel>(
+          create: (_) => MainViewModel(),
+        ),
+        ChangeNotifierProvider<SettingsViewModel>(
+          create: (_) => settingsViewModel,
         ),
       ],
       child: const RevelationApp(),
@@ -47,13 +54,16 @@ class RevelationApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settingsViewModel = context.watch<SettingsViewModel>();
+    final currentLocale = Locale(settingsViewModel.settings.selectedLanguage);
     final appRouter = AppRouter();
-    return MaterialApp.router(
+    final materialApp = MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerDelegate: appRouter.router.routerDelegate,
       routeInformationParser: appRouter.router.routeInformationParser,
       routeInformationProvider: appRouter.router.routeInformationProvider,
       title: "Revelation",
+      locale: currentLocale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -71,6 +81,7 @@ class RevelationApp extends StatelessWidget {
         useMaterial3: true,
       ),
     );
+    return materialApp;
   }
 
   String onGenerateTitle(BuildContext context) {

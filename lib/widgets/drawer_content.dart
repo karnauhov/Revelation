@@ -79,6 +79,14 @@ class _DrawerContentState extends State<DrawerContent> {
                     ),
                     const Divider(),
                     DrawerItem(
+                      assetPath: 'assets/images/UI/settings.svg',
+                      text: AppLocalizations.of(context)!.settings_screen,
+                      onClick: () {
+                        Navigator.pop(context);
+                        context.push('/settings');
+                      },
+                    ),
+                    DrawerItem(
                       assetPath: 'assets/images/UI/smartphone.svg',
                       text: AppLocalizations.of(context)!.about_screen,
                       onClick: () {

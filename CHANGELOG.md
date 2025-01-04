@@ -10,6 +10,7 @@ All notable changes to this application will be documented here.
 - Support platforms: Android, iOS, Windows, macOS, linux, web;
 - Main menu (left side);
 - About screen (Common info, Contact link, Acknowledgments and 3rd party licenses, Changelog);
+- Settings screen (Change language)
 
 ### Changed
 

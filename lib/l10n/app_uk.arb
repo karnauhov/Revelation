@@ -12,6 +12,7 @@
   "close_app": "Закрити програму",
   "todo": "ЗРОБИТИ",
   "primary_sources_screen": "Першоджерела",
+  "settings_screen": "Налаштування",
   "about_screen": "Про програму",
   "error_loading_libraries": "Помилка завантаження бібліотек",
   "changelog": "Журнал змін (en)",
@@ -20,5 +21,6 @@
   "attention": "Увага",
   "info": "Інформація",
   "more_information": "Більше інформації",
-  "unable_to_follow_the_link": "Неможливо перейти за посиланням"
+  "unable_to_follow_the_link": "Неможливо перейти за посиланням",
+  "language": "Мова"
 }

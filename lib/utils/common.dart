@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:revelation/app_router.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xml/xml.dart';
+import 'dependent.dart';
 import '../models/library_info.dart';
 
 final log = Logger();
@@ -24,6 +26,28 @@ bool isWeb() {
 
 TargetPlatform getPlatform() {
   return defaultTargetPlatform;
+}
+
+String getSystemLanguage() {
+  String language = 'en';
+  try {
+    if (isWeb()) {
+      language = getPlatformLanguage();
+    } else {
+      final localeName = Platform.localeName;
+      final parts = localeName.split('_');
+      if (parts.length == 1) {
+        language = Locale(parts[0]).languageCode;
+      } else if (parts.length >= 2) {
+        language = Locale(parts[0], parts[1]).languageCode;
+      } else {
+        language = 'en';
+      }
+    }
+  } catch (e) {
+    log.d(e);
+  }
+  return language;
 }
 
 Future<List<LibraryInfo>> parseLibraries(

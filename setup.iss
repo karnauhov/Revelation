@@ -2,13 +2,13 @@
 #define MyAppCompany "Oleh Karnaukhov"
 #define MyAppFileName "revelation.exe"
 #define MyAppVersion "1.0.0"
-#define MyAppBuild "8"
+#define MyAppBuild "9"
 #define CurrentYear GetDateTimeString('yyyy', '', '')
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Setup]
 AppName={#MyAppName}

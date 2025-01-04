@@ -1,0 +1,3 @@
+String getPlatformLanguage() {
+  return 'en';
+}

@@ -12,6 +12,7 @@
   "close_app": "Close app",
   "todo": "TODO",
   "primary_sources_screen": "Primary Sources",
+  "settings_screen": "Settings",
   "about_screen": "About",
   "error_loading_libraries": "Error loading libraries",
   "changelog": "Changelog",
@@ -20,5 +21,6 @@
   "attention": "Attention",
   "info": "Information",
   "more_information": "More information",
-  "unable_to_follow_the_link": "Unable to follow the link"
+  "unable_to_follow_the_link": "Unable to follow the link",
+  "language": "Language"
 }

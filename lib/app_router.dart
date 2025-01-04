@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:revelation/screens/about_screen.dart';
 import 'package:revelation/screens/primary_sources_screen.dart';
+import 'package:revelation/screens/settings_screen.dart';
+import 'package:revelation/screens/about_screen.dart';
 import 'screens/main_screen.dart';
 
 class AppRouter {
@@ -34,6 +35,15 @@ class AppRouter {
           context: context,
           state: state,
           child: PrimarySourcesScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
+          context: context,
+          state: state,
+          child: SettingsScreen(),
         ),
       ),
       GoRoute(

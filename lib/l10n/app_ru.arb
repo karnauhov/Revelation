@@ -12,6 +12,7 @@
   "close_app": "Закрыть приложение",
   "todo": "СДЕЛАТЬ",
   "primary_sources_screen": "Первоисточники",
+  "settings_screen": "Настройки",
   "about_screen": "О программе",
   "error_loading_libraries": "Ошибка загрузки библиотек",
   "changelog": "Журнал изменений (en)",
@@ -20,5 +21,6 @@
   "attention": "Внимание",
   "info": "Информация",
   "more_information": "Больше информации",
-  "unable_to_follow_the_link": "Невозможно перейти по ссылке"
+  "unable_to_follow_the_link": "Невозможно перейти по ссылке",
+  "language": "Язык"
 }
