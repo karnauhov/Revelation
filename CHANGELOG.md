@@ -10,6 +10,7 @@ All notable changes to this application will be documented here.
 - Support platforms: Android, iOS, Windows, macOS, linux, web;
 - Main menu (left side);
 - Main screen (List of topics);
+- Topic screen (Markdown content)
 - Settings screen (Change language)
 - About screen (Common info, Contact link, Acknowledgments and 3rd party licenses, Changelog);
 
