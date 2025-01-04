@@ -4,6 +4,7 @@ import 'package:revelation/screens/primary_sources_screen.dart';
 import 'package:revelation/screens/settings_screen.dart';
 import 'package:revelation/screens/about_screen.dart';
 import 'screens/main_screen.dart';
+import 'screens/topic_screen.dart';
 
 class AppRouter {
   static final AppRouter _instance = AppRouter._internal();
@@ -27,6 +28,13 @@ class AppRouter {
           state: state,
           child: MainScreen(),
         ),
+      ),
+      GoRoute(
+        path: '/topic',
+        name: 'topic',
+        builder: (BuildContext context, GoRouterState state) {
+          return const TopicScreen();
+        },
       ),
       GoRoute(
         path: '/primary_sources',

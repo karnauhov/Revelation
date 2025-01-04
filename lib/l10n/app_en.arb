@@ -15,6 +15,7 @@
   "settings_screen": "Settings",
   "about_screen": "About",
   "error_loading_libraries": "Error loading libraries",
+  "error_loading_topics": "Error loading topics",
   "changelog": "Changelog",
   "close": "Close",
   "error": "Error",
@@ -22,5 +23,8 @@
   "info": "Information",
   "more_information": "More information",
   "unable_to_follow_the_link": "Unable to follow the link",
-  "language": "Language"
+  "language": "Language",
+  "topic": "Topic",
+  "topic_1_name": "Introduction",
+  "topic_1_description": "Study of the verses Revelation 1:1-3"
 }

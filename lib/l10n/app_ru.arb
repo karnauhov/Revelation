@@ -15,6 +15,7 @@
   "settings_screen": "Настройки",
   "about_screen": "О программе",
   "error_loading_libraries": "Ошибка загрузки библиотек",
+  "error_loading_topics": "Ошибка загрузки тем",
   "changelog": "Журнал изменений (en)",
   "close": "Закрыть",
   "error": "Ошибка",
@@ -22,5 +23,8 @@
   "info": "Информация",
   "more_information": "Больше информации",
   "unable_to_follow_the_link": "Невозможно перейти по ссылке",
-  "language": "Язык"
+  "language": "Язык",
+  "topic": "Тема",
+  "topic_1_name": "Введение",
+  "topic_1_description": "Изучение стихов Откровение 1:1-3"
 }

@@ -1,5 +1,4 @@
-- MainScreen (ListView + parralax). Темы (части книги Откровение по порядку)
-- TopicScreen? md files from assets (language sufix). Select md files depend from language
+- TopicScreen: md files from assets (language sufix). Select md files depend from language
 - Продумать дизайн экрана "Первоисточники" (см. [ChatGPT](https://chatgpt.com/g/g-p-67627b47a53881919d83697863db23d5-revelation/c/676fd5ea-bb38-8008-b9c7-ce0f7dee03a1))
 
 

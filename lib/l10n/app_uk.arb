@@ -15,6 +15,7 @@
   "settings_screen": "Налаштування",
   "about_screen": "Про програму",
   "error_loading_libraries": "Помилка завантаження бібліотек",
+  "error_loading_topics": "Помилка завантаження тем",
   "changelog": "Журнал змін (en)",
   "close": "Закрити",
   "error": "Помилка",
@@ -22,5 +23,8 @@
   "info": "Інформація",
   "more_information": "Більше інформації",
   "unable_to_follow_the_link": "Неможливо перейти за посиланням",
-  "language": "Мова"
+  "language": "Мова",
+  "topic": "Тема",
+  "topic_1_name": "Вступ",
+  "topic_1_description": "Вивчення віршів Об'явлення 1:1-3"
 }
