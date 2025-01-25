@@ -5,7 +5,8 @@ class PrimarySource {
   final String features;
   final String linkTitle;
   final String linkUrl;
-  final String imagePath;
+  final String preview;
+  final List<String> images;
 
   PrimarySource({
     required this.title,
@@ -14,6 +15,7 @@ class PrimarySource {
     required this.features,
     required this.linkTitle,
     required this.linkUrl,
-    required this.imagePath,
+    required this.preview,
+    required this.images,
   });
 }

@@ -26,14 +26,38 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
   Widget build(BuildContext context) {
     final sources = [
       PrimarySource(
-        title: AppLocalizations.of(context)!.papyrus_18_title,
-        date: AppLocalizations.of(context)!.papyrus_18_date,
-        content: AppLocalizations.of(context)!.papyrus_18_content,
-        features: AppLocalizations.of(context)!.papyrus_18_features,
-        linkTitle: AppLocalizations.of(context)!.wikipedia,
-        linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_18',
-        imagePath: 'assets/images/Resources/10018/preview.png',
-      ),
+          title: AppLocalizations.of(context)!.papyrus_18_title,
+          date: AppLocalizations.of(context)!.papyrus_18_date,
+          content: AppLocalizations.of(context)!.papyrus_18_content,
+          features: AppLocalizations.of(context)!.papyrus_18_features,
+          linkTitle: AppLocalizations.of(context)!.wikipedia,
+          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_18',
+          preview: 'assets/images/Resources/10018/preview.png',
+          images: ['assets/images/Resources/10018/P18.jpg']),
+      PrimarySource(
+          title: AppLocalizations.of(context)!.papyrus_24_title,
+          date: AppLocalizations.of(context)!.papyrus_24_date,
+          content: AppLocalizations.of(context)!.papyrus_24_content,
+          features: AppLocalizations.of(context)!.papyrus_24_features,
+          linkTitle: AppLocalizations.of(context)!.wikipedia,
+          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_24',
+          preview: 'assets/images/Resources/10024/preview.png',
+          images: [
+            'assets/images/Resources/10024/P24_A.jpg',
+            'assets/images/Resources/10024/P24_B.jpg'
+          ]),
+      PrimarySource(
+          title: AppLocalizations.of(context)!.papyrus_43_title,
+          date: AppLocalizations.of(context)!.papyrus_43_date,
+          content: AppLocalizations.of(context)!.papyrus_43_content,
+          features: AppLocalizations.of(context)!.papyrus_43_features,
+          linkTitle: AppLocalizations.of(context)!.wikipedia,
+          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_43',
+          preview: 'assets/images/Resources/10043/preview.png',
+          images: [
+            'assets/images/Resources/10043/P43_A.jpg',
+            'assets/images/Resources/10043/P43_B.jpg'
+          ]),
     ];
 
     Widget content = CustomScrollView(
@@ -118,7 +142,7 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
-                    source.imagePath,
+                    source.preview,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -144,7 +168,9 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
                       const SizedBox(height: 8),
                       Text(
                         source.content,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontStyle: FontStyle.italic,
+                            ),
                       ),
                       const SizedBox(height: 8),
                       Text(
