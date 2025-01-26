@@ -127,7 +127,7 @@ jobs:
           & "$innoSetupPath" "/DMyAppVersion=$version" "/DMyAppBuild=$build" $innoSetupScript
 
       - name: Upload windows Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: |
@@ -228,7 +228,7 @@ jobs:
           mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Revelation-ios-$version-$build.app
 
       - name: Upload macOS Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos-build-artifacts
           path: |
