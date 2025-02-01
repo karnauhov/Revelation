@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.0+14
+version: 1.0.0+15
 
 environment:
   sdk: ^3.6.0
@@ -24,6 +24,8 @@ dependencies:
   xml: ^6.5.0
   url_launcher: ^6.3.1
   shared_preferences: ^2.3.5
+  float_column: ^2.1.8
+  styled_text: ^8.1.0
 
 dev_dependencies:
   flutter_test:
@@ -43,3 +45,7 @@ flutter:
     - assets/images/Resources/10018/
     - assets/images/Resources/10024/
     - assets/images/Resources/10043/
+    - assets/images/Resources/10047/
+    - assets/images/Resources/10085/
+    - assets/images/Resources/10098/
+    - assets/images/Resources/10115/

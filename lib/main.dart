@@ -3,10 +3,12 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/repositories/primary_sources_repository.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:get_it/get_it.dart';
 import 'repositories/settings_repository.dart';
 import 'viewmodels/main_view_model.dart';
+import 'viewmodels/primary_sources_view_model.dart';
 import 'viewmodels/settings_view_model.dart';
 import 'utils/common.dart';
 import 'app_router.dart';
@@ -42,6 +44,9 @@ void main() async {
         ),
         ChangeNotifierProvider<SettingsViewModel>(
           create: (_) => settingsViewModel,
+        ),
+        ChangeNotifierProvider<PrimarySourcesViewModel>(
+          create: (_) => PrimarySourcesViewModel(PrimarySourcesRepository()),
         ),
       ],
       child: const RevelationApp(),

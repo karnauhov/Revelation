@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:float_column/float_column.dart';
+import 'package:provider/provider.dart';
+import 'package:revelation/viewmodels/primary_sources_view_model.dart';
 import '../utils/common.dart';
 import '../models/primary_source.dart';
 
@@ -17,6 +20,16 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
   Offset _lastOffset = Offset.zero;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel =
+          Provider.of<PrimarySourcesViewModel>(context, listen: false);
+      viewModel.loadPrimarySources(context);
+    });
+  }
+
+  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
@@ -24,41 +37,9 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final sources = [
-      PrimarySource(
-          title: AppLocalizations.of(context)!.papyrus_18_title,
-          date: AppLocalizations.of(context)!.papyrus_18_date,
-          content: AppLocalizations.of(context)!.papyrus_18_content,
-          features: AppLocalizations.of(context)!.papyrus_18_features,
-          linkTitle: AppLocalizations.of(context)!.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_18',
-          preview: 'assets/images/Resources/10018/preview.png',
-          images: ['assets/images/Resources/10018/P18.jpg']),
-      PrimarySource(
-          title: AppLocalizations.of(context)!.papyrus_24_title,
-          date: AppLocalizations.of(context)!.papyrus_24_date,
-          content: AppLocalizations.of(context)!.papyrus_24_content,
-          features: AppLocalizations.of(context)!.papyrus_24_features,
-          linkTitle: AppLocalizations.of(context)!.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_24',
-          preview: 'assets/images/Resources/10024/preview.png',
-          images: [
-            'assets/images/Resources/10024/P24_A.jpg',
-            'assets/images/Resources/10024/P24_B.jpg'
-          ]),
-      PrimarySource(
-          title: AppLocalizations.of(context)!.papyrus_43_title,
-          date: AppLocalizations.of(context)!.papyrus_43_date,
-          content: AppLocalizations.of(context)!.papyrus_43_content,
-          features: AppLocalizations.of(context)!.papyrus_43_features,
-          linkTitle: AppLocalizations.of(context)!.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_43',
-          preview: 'assets/images/Resources/10043/preview.png',
-          images: [
-            'assets/images/Resources/10043/P43_A.jpg',
-            'assets/images/Resources/10043/P43_B.jpg'
-          ]),
-    ];
+    final primarySourcesViewModel =
+        Provider.of<PrimarySourcesViewModel>(context);
+    List<PrimarySource> sources = primarySourcesViewModel.primarySources;
 
     Widget content = CustomScrollView(
       controller: _scrollController,
@@ -126,6 +107,7 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
   }
 
   Widget _buildSourceItem(BuildContext context, PrimarySource source) {
+    TextTheme theme = Theme.of(context).textTheme;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -136,59 +118,48 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Padding(
             padding: const EdgeInsets.all(12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: FloatColumn(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                Floatable(
+                  float: FCFloat.start,
+                  padding: EdgeInsets.only(right: 8),
                   child: Image.asset(
                     source.preview,
                     fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                getStyledText(
+                  source.title,
+                  theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text: source.date,
+                    style: theme.bodySmall?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text: source.content,
+                    style: theme.bodyMedium?.copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text: source.features,
+                    style: theme.bodyMedium,
                     children: [
-                      Text(
-                        source.title,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        source.date,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.grey[600],
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        source.content,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontStyle: FontStyle.italic,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        source.features,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      InkWell(
-                        onTap: () {
-                          launchLink(source.linkUrl);
-                        },
-                        child: Text(
-                          source.linkTitle,
-                          style: const TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
+                      TextSpan(
+                        text: ' [${source.linkTitle}]',
+                        style: TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            launchLink(source.linkUrl);
+                          },
                       ),
                     ],
                   ),

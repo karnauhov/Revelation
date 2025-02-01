@@ -6,6 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:logger/logger.dart';
+import 'package:styled_text/tags/styled_text_tag_widget_builder.dart';
+import 'package:styled_text/widgets/styled_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xml/xml.dart';
 import '../app_router.dart';
@@ -58,6 +60,24 @@ String getSystemLanguage() {
     log.d(e);
   }
   return language;
+}
+
+StyledText getStyledText(String text, TextStyle? style) {
+  style ??= TextStyle();
+  return StyledText(
+    text: text,
+    style: style,
+    tags: {
+      'sup': StyledTextWidgetBuilderTag((_, attributes, textContent) {
+        return Transform.translate(
+          offset: const Offset(0.5, -4),
+          child: Text(
+              style: style?.copyWith(fontSize: (style.fontSize ?? 18) - 6),
+              textContent ?? ""),
+        );
+      })
+    },
+  );
 }
 
 Future<List<LibraryInfo>> parseLibraries(
