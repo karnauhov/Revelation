@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.0+15
+version: 1.0.0+16
 
 environment:
   sdk: ^3.6.0
@@ -49,3 +49,15 @@ flutter:
     - assets/images/Resources/10085/
     - assets/images/Resources/10098/
     - assets/images/Resources/10115/
+    - assets/images/Resources/20001/
+    - assets/images/Resources/20002/
+    - assets/images/Resources/20004/
+    - assets/images/Resources/20025/
+    - assets/images/Resources/20046/
+    - assets/images/Resources/20051/
+    - assets/images/Resources/20052/
+    - assets/images/Resources/20163/
+    - assets/images/Resources/20169/
+    - assets/images/Resources/20207/
+    - assets/images/Resources/20229/
+    - assets/images/Resources/20308/
