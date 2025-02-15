@@ -1,6 +1,6 @@
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'package:intl/intl.dart';
+import 'package:web/web.dart';
 
 String getPlatformLanguage() {
-  return html.window.navigator.language;
+  return Intl.shortLocale(document.defaultView!.navigator.language);
 }

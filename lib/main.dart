@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/repositories/primary_sources_repository.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:get_it/get_it.dart';

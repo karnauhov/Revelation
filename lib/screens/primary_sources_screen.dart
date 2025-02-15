@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:float_column/float_column.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/viewmodels/primary_sources_view_model.dart';
 import '../utils/common.dart';
 import '../models/primary_source.dart';

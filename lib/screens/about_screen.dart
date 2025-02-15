@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:revelation/l10n/app_localizations.dart';
 import '../viewmodels/about_view_model.dart';
 import '../widgets/about_link_item.dart';
 import '../widgets/library_list.dart';
