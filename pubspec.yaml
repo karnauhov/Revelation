@@ -1,10 +1,10 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.0+18
+version: 1.0.0+19
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.5.3
 
 dependencies:
   flutter:
