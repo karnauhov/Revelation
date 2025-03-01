@@ -466,7 +466,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_01_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Sinaiticus is a 4th-century Greek manuscript of the Bible, written in uncial script on parchment. It contains most of the Old Testament (Septuagint) and the oldest complete copy of the New Testament, along with the Epistle of Barnabas and parts of The Shepherd of Hermas. The codex is considered one of the most important textual witnesses of the Bible. Today, its fragments are preserved in four institutions, with the largest part housed in the British Library, London.'**
   String get uncial_01_features;
 
   /// No description provided for @uncial_02_title.
@@ -490,7 +490,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_02_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The Codex Alexandrinus is a 5th-century Greek manuscript of the Bible, written on parchment. It contains most of the Greek Old Testament (Septuagint) and the entire Greek New Testament, except for some missing pages. It is one of the four great uncial codices, along with Codex Sinaiticus and Codex Vaticanus. Today, it is preserved in the British Library. The text is written in two columns per page, using an elegant uncial script with occasional errors. The Gospels exhibit a Byzantine text-type, while the rest of the New Testament aligns with the Alexandrian tradition.'**
   String get uncial_02_features;
 
   /// No description provided for @uncial_04_title.
@@ -514,7 +514,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_04_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Ephraemi Rescriptus is a Greek manuscript of the Bible on parchment, one of the four great uncials. It contains most of the New Testament and a few Old Testament books, though significant portions are missing. The codex is a palimpsest: its original text was washed off and overwritten in the 12th century with treatises of Ephrem the Syrian. The original text was deciphered by Constantin von Tischendorf between 1840 and 1843. The manuscript belongs to the Alexandrian text-type, though its textual character varies across different books. It is currently housed in the National Library of France (Paris).'**
   String get uncial_04_features;
 
   /// No description provided for @uncial_25_title.
@@ -538,7 +538,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_25_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Porphyrianus is a Greek uncial manuscript of the 9th century, containing the Acts of the Apostles, Pauline Epistles, and General Epistles, with some lacunae. It is one of the few uncials that include the Book of Revelation. The codex is a palimpsest; its upper text was written in 1301. It was discovered and edited by Constantin von Tischendorf. The manuscript is currently housed in the National Library of Russia (Saint Petersburg).'**
   String get uncial_25_features;
 
   /// No description provided for @uncial_46_title.
@@ -562,7 +562,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_46_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Vaticanus is a Greek uncial manuscript of the 10th century (possibly earlier), containing the complete text of the Book of Revelation on 20 parchment leaves. It is written in a unique style of uncial script and belongs to the Byzantine text-type. The codex also includes homilies by Basil the Great, Gregory of Nyssa, and others. It was once owned by Philippo Vitali and later examined by Tischendorf and Tregelles. The manuscript is currently housed in the Vatican Library (Rome).'**
   String get uncial_46_features;
 
   /// No description provided for @uncial_51_title.
@@ -586,7 +586,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_51_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Athous Pantokratoros is a 10th-century Greek uncial manuscript of the Book of Revelation, containing an incomplete text with a commentary by Andreas. It consists of 92 parchment leaves, written in a single column per page with 22 lines per column. The main text is in uncial script leaning slightly to the right, while the commentary is in cursive. The Greek text is classified in Category III. The manuscript was studied by Gregory and Hoskier. It is currently housed in the Pantokrator Monastery on Mount Athos.'**
   String get uncial_51_features;
 
   /// No description provided for @uncial_52_title.
@@ -610,7 +610,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_52_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Athous Panteleimon is a 10th-century Greek uncial manuscript of the Book of Revelation. It contains an incomplete text with a commentary by Andreas on 4 parchment leaves. It belongs to the Byzantine text-type and is classified in Category V. The manuscript was studied and edited by Hoskier. It is currently housed in the Monastery of St. Panteleimon on Mount Athos.'**
   String get uncial_52_features;
 
   /// No description provided for @uncial_163_title.
@@ -634,7 +634,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_163_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Uncial 0163 is a Greek uncial manuscript of the New Testament from the 5th century. It contains a small fragment of the Book of Revelation on one parchment leaf. The text is written in one column per page, 17 lines per column, in small uncial letters. It represents the Alexandrian text-type and is classified in Category III. The fragment agrees with Codex Alexandrinus. The manuscript was discovered in Al-Bashnasa and published in 1908 by Grenfell and Hunt. It is currently housed at the University of Chicago Oriental Institute.'**
   String get uncial_163_features;
 
   /// No description provided for @uncial_169_title.
@@ -658,7 +658,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_169_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Uncial 0169 (Princeton Fragment) is a Greek uncial manuscript of the New Testament from the 4th century. It contains a small portion of the Book of Revelation on an almost complete parchment leaf. It represents the Alexandrian text-type and is classified in Category III. The script is upright and fairly regular. The text is closely related to Codex Sinaiticus but seems to be inaccurately copied. The manuscript was edited in 1911 by Grenfell and Hunt and is now housed at the Princeton Theological Seminary.'**
   String get uncial_169_features;
 
   /// No description provided for @uncial_207_title.
@@ -682,7 +682,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_207_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Uncial 0207 is a Greek uncial manuscript of the New Testament from the 4th century. It contains a small portion of the Book of Revelation on a single parchment leaf. The codex belongs to the Alexandrian text-type but contains numerous variant readings. Aland placed it in Category III. It is currently housed at the Laurentian Library in Florence.'**
   String get uncial_207_features;
 
   /// No description provided for @uncial_229_title.
@@ -706,7 +706,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_229_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Uncial 0229 is a Greek uncial manuscript of the New Testament from the 8th century. It contains a small fragment of the Book of Revelation on two parchment leaves. The manuscript is a palimpsest, with the lower text in Coptic. It also contains a calendar text listing Egyptian months. The Greek text is mixed, and Aland placed it in Category III. Previously housed in the Laurentian Library in Florence, it has since been destroyed.'**
   String get uncial_229_features;
 
   /// No description provided for @uncial_308_title.
@@ -730,7 +730,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_308_features.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Uncial 0308 is a Greek uncial manuscript of the New Testament from the 4th century. It is a fragment of a single parchment leaf, containing portions of Revelation in one column per page. The text is in poor condition but shows similarities with Codex Sinaiticus and Papyrus 47, with minor variations. The letterforms resemble those of Codex Washingtonianus and show Coptic influences. The manuscript is housed in the Sackler Library, Oxford.'**
   String get uncial_308_features;
 }
 
