@@ -460,7 +460,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_01_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The entire book of Revelation.'**
   String get uncial_01_content;
 
   /// No description provided for @uncial_01_features.
@@ -478,13 +478,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_02_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'5th century AD'**
   String get uncial_02_date;
 
   /// No description provided for @uncial_02_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The entire book of Revelation.'**
   String get uncial_02_content;
 
   /// No description provided for @uncial_02_features.
@@ -502,13 +502,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_04_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'5th century AD'**
   String get uncial_04_date;
 
   /// No description provided for @uncial_04_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Fragments of Revelation (1:2-20); (2:1-29); (3:1-19); (5:14); (6:1-17); (7:1-14,17); (8:1-4); (9:17-21); (10:1-10); (11:3-19); (12:1-18); (13:1-18); (14:1-20); (15:1-8); (16:1-13); (18:2-24); (19:1-5).'**
   String get uncial_04_content;
 
   /// No description provided for @uncial_04_features.
@@ -526,13 +526,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_25_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'9th century AD'**
   String get uncial_25_date;
 
   /// No description provided for @uncial_25_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The entire book of Revelation except fragments (16:13-21); (20:1-8); (22:7-21).'**
   String get uncial_25_content;
 
   /// No description provided for @uncial_25_features.
@@ -550,13 +550,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_46_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'10th century AD'**
   String get uncial_46_date;
 
   /// No description provided for @uncial_46_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The entire book of Revelation.'**
   String get uncial_46_content;
 
   /// No description provided for @uncial_46_features.
@@ -574,13 +574,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_51_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'10th century AD'**
   String get uncial_51_date;
 
   /// No description provided for @uncial_51_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Fragments of Revelation (11:15-19); (12:1-18); (13:1,3-18); (14:1-20); (15:1-8); (16:1-21); (17:1-18); (18:1-24); (19:1-21); (20:1-15); (21:1-27); (22:1-7,15-21).'**
   String get uncial_51_content;
 
   /// No description provided for @uncial_51_features.
@@ -598,13 +598,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_52_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'10th century AD'**
   String get uncial_52_date;
 
   /// No description provided for @uncial_52_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Fragments of Revelation (7:16-17); (8:1-12).'**
   String get uncial_52_content;
 
   /// No description provided for @uncial_52_features.
@@ -622,13 +622,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_163_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'5th century AD'**
   String get uncial_163_date;
 
   /// No description provided for @uncial_163_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Fragment of Revelation (16:17-20).'**
   String get uncial_163_content;
 
   /// No description provided for @uncial_163_features.
@@ -646,13 +646,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_169_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'4th century AD'**
   String get uncial_169_date;
 
   /// No description provided for @uncial_169_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Fragment of Revelation (3:19-4:3).'**
   String get uncial_169_content;
 
   /// No description provided for @uncial_169_features.
@@ -670,13 +670,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_207_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'4th century AD'**
   String get uncial_207_date;
 
   /// No description provided for @uncial_207_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Fragment of Revelation (9:2-15).'**
   String get uncial_207_content;
 
   /// No description provided for @uncial_207_features.
@@ -694,13 +694,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_229_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'8th century AD'**
   String get uncial_229_date;
 
   /// No description provided for @uncial_229_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Fragments of Revelation (18:16-17); (19:4-6).'**
   String get uncial_229_content;
 
   /// No description provided for @uncial_229_features.
@@ -718,13 +718,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_308_date.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'4th century AD'**
   String get uncial_308_date;
 
   /// No description provided for @uncial_308_content.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Fragment of Revelation (11:15-18).'**
   String get uncial_308_content;
 
   /// No description provided for @uncial_308_features.

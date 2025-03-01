@@ -189,7 +189,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_01_date => '4th century AD';
 
   @override
-  String get uncial_01_content => '';
+  String get uncial_01_content => 'The entire book of Revelation.';
 
   @override
   String get uncial_01_features => '';
@@ -198,10 +198,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_02_title => 'Codex Alexandrinus (A 02)';
 
   @override
-  String get uncial_02_date => '';
+  String get uncial_02_date => '5th century AD';
 
   @override
-  String get uncial_02_content => '';
+  String get uncial_02_content => 'The entire book of Revelation.';
 
   @override
   String get uncial_02_features => '';
@@ -210,10 +210,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_04_title => 'Codex Ephraemi Rescriptus (C 04)';
 
   @override
-  String get uncial_04_date => '';
+  String get uncial_04_date => '5th century AD';
 
   @override
-  String get uncial_04_content => '';
+  String get uncial_04_content => 'Fragments of Revelation (1:2-20); (2:1-29); (3:1-19); (5:14); (6:1-17); (7:1-14,17); (8:1-4); (9:17-21); (10:1-10); (11:3-19); (12:1-18); (13:1-18); (14:1-20); (15:1-8); (16:1-13); (18:2-24); (19:1-5).';
 
   @override
   String get uncial_04_features => '';
@@ -222,10 +222,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_25_title => 'Codex Porphyrianus (P<sup>apr</sup> 025)';
 
   @override
-  String get uncial_25_date => '';
+  String get uncial_25_date => '9th century AD';
 
   @override
-  String get uncial_25_content => '';
+  String get uncial_25_content => 'The entire book of Revelation except fragments (16:13-21); (20:1-8); (22:7-21).';
 
   @override
   String get uncial_25_features => '';
@@ -234,10 +234,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_46_title => 'Codex Vaticanus 2066 (Uncial 046)';
 
   @override
-  String get uncial_46_date => '';
+  String get uncial_46_date => '10th century AD';
 
   @override
-  String get uncial_46_content => '';
+  String get uncial_46_content => 'The entire book of Revelation.';
 
   @override
   String get uncial_46_features => '';
@@ -246,10 +246,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_51_title => 'Codex Athous Pantokratoros (Uncial 051)';
 
   @override
-  String get uncial_51_date => '';
+  String get uncial_51_date => '10th century AD';
 
   @override
-  String get uncial_51_content => '';
+  String get uncial_51_content => 'Fragments of Revelation (11:15-19); (12:1-18); (13:1,3-18); (14:1-20); (15:1-8); (16:1-21); (17:1-18); (18:1-24); (19:1-21); (20:1-15); (21:1-27); (22:1-7,15-21).';
 
   @override
   String get uncial_51_features => '';
@@ -258,10 +258,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_52_title => 'Codex Athous Panteleimon (Uncial 052)';
 
   @override
-  String get uncial_52_date => '';
+  String get uncial_52_date => '10th century AD';
 
   @override
-  String get uncial_52_content => '';
+  String get uncial_52_content => 'Fragments of Revelation (7:16-17); (8:1-12).';
 
   @override
   String get uncial_52_features => '';
@@ -270,10 +270,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_163_title => 'Uncial 0163';
 
   @override
-  String get uncial_163_date => '';
+  String get uncial_163_date => '5th century AD';
 
   @override
-  String get uncial_163_content => '';
+  String get uncial_163_content => 'Fragment of Revelation (16:17-20).';
 
   @override
   String get uncial_163_features => '';
@@ -282,10 +282,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_169_title => 'Uncial 0169';
 
   @override
-  String get uncial_169_date => '';
+  String get uncial_169_date => '4th century AD';
 
   @override
-  String get uncial_169_content => '';
+  String get uncial_169_content => 'Fragment of Revelation (3:19-4:3).';
 
   @override
   String get uncial_169_features => '';
@@ -294,10 +294,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_207_title => 'Uncial 0207';
 
   @override
-  String get uncial_207_date => '';
+  String get uncial_207_date => '4th century AD';
 
   @override
-  String get uncial_207_content => '';
+  String get uncial_207_content => 'Fragment of Revelation (9:2-15).';
 
   @override
   String get uncial_207_features => '';
@@ -306,10 +306,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_229_title => 'Uncial 0229';
 
   @override
-  String get uncial_229_date => '';
+  String get uncial_229_date => '8th century AD';
 
   @override
-  String get uncial_229_content => '';
+  String get uncial_229_content => 'Fragments of Revelation (18:16-17); (19:4-6).';
 
   @override
   String get uncial_229_features => '';
@@ -318,10 +318,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_308_title => 'Uncial 0308';
 
   @override
-  String get uncial_308_date => '';
+  String get uncial_308_date => '4th century AD';
 
   @override
-  String get uncial_308_content => '';
+  String get uncial_308_content => 'Fragment of Revelation (11:15-18).';
 
   @override
   String get uncial_308_features => '';
