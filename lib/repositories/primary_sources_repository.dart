@@ -95,7 +95,7 @@ class PrimarySourcesRepository {
           features: loc.uncial_25_features,
           linkTitle: loc.wikipedia,
           linkUrl: 'https://en.wikipedia.org/wiki/Codex_Porphyrianus',
-          preview: 'assets/images/UI/unavailable.png',
+          preview: 'assets/images/Resources/20025/preview.png',
           images: []),
       PrimarySource(
           title: loc.uncial_46_title,
