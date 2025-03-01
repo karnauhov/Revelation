@@ -157,10 +157,10 @@ packages:
     dependency: "direct main"
     description:
       name: float_column
-      sha256: bd92d0b29b6f6e39435a848e0b53268093abe548af9f91fb1eafd85bf1aa104b
+      sha256: "4da6247177d39c77cabaae536babf25c15e9fc574530aaba94a73ad9017341e0"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "2.1.8"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -996,4 +996,4 @@ packages:
     version: "2.0.3"
 sdks:
   dart: ">=3.7.0 <4.0.0"
-  flutter: ">=3.29.0"
+  flutter: ">=3.27.0"
