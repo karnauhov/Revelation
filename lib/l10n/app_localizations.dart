@@ -253,6 +253,18 @@ abstract class AppLocalizations {
   /// **'Topic'**
   String get topic;
 
+  /// No description provided for @topic_0_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Preface'**
+  String get topic_0_name;
+
+  /// No description provided for @topic_0_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary sources, principles, stages'**
+  String get topic_0_description;
+
   /// No description provided for @topic_1_name.
   ///
   /// In en, this message translates to:

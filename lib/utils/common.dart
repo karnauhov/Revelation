@@ -34,7 +34,9 @@ TargetPlatform getPlatform() {
 String locLinks(BuildContext context, String key) {
   final localizations = AppLocalizations.of(context);
   final Map<String, String> translations = {
-    "topic_1_name": localizations!.topic_1_name,
+    "topic_0_name": localizations!.topic_0_name,
+    "topic_0_description": localizations.topic_0_description,
+    "topic_1_name": localizations.topic_1_name,
     "topic_1_description": localizations.topic_1_description,
   };
   return translations[key] ?? key;

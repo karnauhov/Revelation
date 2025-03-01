@@ -117,9 +117,25 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
         child: Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
             child: FloatColumn(
               children: [
+                Text.rich(
+                  textAlign: TextAlign.center,
+                  TextSpan(children: [
+                    WidgetSpan(
+                      child: Floatable(
+                        float: FCFloat.none,
+                        padding: EdgeInsets.only(right: 0),
+                        child: getStyledText(
+                          source.title,
+                          theme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
                 Floatable(
                   float: FCFloat.start,
                   padding: EdgeInsets.only(right: 8),
@@ -127,10 +143,6 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
                     source.preview,
                     fit: BoxFit.cover,
                   ),
-                ),
-                getStyledText(
-                  source.title,
-                  theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 WrappableText(
                   text: TextSpan(

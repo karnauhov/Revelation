@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <topics>
     <topic>
+        <name>topic_0_name</name>
+        <idIcon>info</idIcon>
+        <description>topic_0_description</description>
+        <route>topic_0</route>
+    </topic>
+    <topic>
         <name>topic_1_name</name>
         <idIcon>introduction</idIcon>
         <description>topic_1_description</description>

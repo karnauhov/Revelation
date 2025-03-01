@@ -87,6 +87,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get topic => 'Тема';
 
   @override
+  String get topic_0_name => 'Предисловие';
+
+  @override
+  String get topic_0_description => 'Первоисточники, принципы, этапы';
+
+  @override
   String get topic_1_name => 'Введение';
 
   @override
@@ -237,7 +243,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get uncial_46_features => '';
 
   @override
-  String get uncial_51_title => 'Афонский Пантократорский кодекс (Унциал 051)';
+  String get uncial_51_title => 'Пантократорский кодекс (Унциал 051)';
 
   @override
   String get uncial_51_date => '';
@@ -249,7 +255,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get uncial_51_features => '';
 
   @override
-  String get uncial_52_title => 'Афонский Пантелеимонов кодекс (Унциал 052)';
+  String get uncial_52_title => 'Пантелеимонов кодекс (Унциал 052)';
 
   @override
   String get uncial_52_date => '';
