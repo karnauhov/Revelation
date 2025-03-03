@@ -3,7 +3,7 @@ import 'package:revelation/l10n/app_localizations.dart';
 import '../models/primary_source.dart';
 
 class PrimarySourcesRepository {
-  List<PrimarySource> getPrimarySources(BuildContext context) {
+  List<PrimarySource> getFullPrimarySources(BuildContext context) {
     AppLocalizations loc = AppLocalizations.of(context)!;
     final sources = [
       PrimarySource(
@@ -63,6 +63,86 @@ class PrimarySourcesRepository {
             'assets/images/Resources/20002/GA_02_0136b.jpg',
           ]),
       PrimarySource(
+          title: loc.uncial_46_title,
+          date: loc.uncial_46_date,
+          content: loc.uncial_46_content,
+          features: loc.uncial_46_features,
+          linkTitle: loc.wikipedia,
+          linkUrl: 'https://en.wikipedia.org/wiki/Codex_Vaticanus_2066',
+          preview: 'assets/images/Resources/20046/preview.png',
+          images: [
+            'assets/images/Resources/20046/Vat.gr.2066_0519_fa_0259r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0520_fa_0259v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0521_fa_0260r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0522_fa_0260v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0523_fa_0261r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0524_fa_0261v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0525_fa_0262r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0526_fa_0262v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0527_fa_0263r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0528_fa_0263v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0529_fa_0263r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0530_fa_0263v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0531_fa_0264r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0532_fa_0264v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0533_fa_0265r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0534_fa_0265v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0535_fa_0266r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0536_fa_0266v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0537_fa_0267r_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0538_fa_0267v_m.jpg',
+            'assets/images/Resources/20046/Vat.gr.2066_0539_fa_0268r_m.jpg',
+          ])
+    ];
+    return sources;
+  }
+
+  List<PrimarySource> getSignificantPrimarySources(BuildContext context) {
+    AppLocalizations loc = AppLocalizations.of(context)!;
+    final sources = [
+      PrimarySource(
+          title: loc.papyrus_47_title,
+          date: loc.papyrus_47_date,
+          content: loc.papyrus_47_content,
+          features: loc.papyrus_47_features,
+          linkTitle: loc.wikipedia,
+          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_47',
+          preview: 'assets/images/Resources/10047/preview.png',
+          images: [
+            'assets/images/Resources/10047/T0004403.jpg',
+            'assets/images/Resources/10047/T0004404a.jpg',
+            'assets/images/Resources/10047/T0004405b_a.jpg',
+            'assets/images/Resources/10047/T0005405.jpg',
+            'assets/images/Resources/10047/T0005406.jpg',
+            'assets/images/Resources/10047/T0005407.jpg',
+            'assets/images/Resources/10047/T0005408.jpg',
+            'assets/images/Resources/10047/T0005409.jpg',
+            'assets/images/Resources/10047/T0005410.jpg',
+            'assets/images/Resources/10047/T0005411.jpg',
+            'assets/images/Resources/10047/T0005412.jpg',
+            'assets/images/Resources/10047/T0005413.jpg',
+            'assets/images/Resources/10047/T0005416.jpg',
+            'assets/images/Resources/10047/T0005417.jpg',
+            'assets/images/Resources/10047/T0005418.jpg',
+            'assets/images/Resources/10047/T0005419.jpg',
+            'assets/images/Resources/10047/T0005420.jpg',
+            'assets/images/Resources/10047/T0005421.jpg',
+            'assets/images/Resources/10047/T0005494.jpg',
+            'assets/images/Resources/10047/T0005495.jpg',
+          ]),
+      PrimarySource(
+          title: loc.papyrus_115_title,
+          date: loc.papyrus_115_date,
+          content: loc.papyrus_115_content,
+          features: loc.papyrus_115_features,
+          linkTitle: loc.wikipedia,
+          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_115',
+          preview: 'assets/images/Resources/10115/preview.png',
+          images: [
+            'assets/images/Resources/10115/10115x00020XX_INTF.jpg',
+            'assets/images/Resources/10115/10115x00040XX_INTF.jpg',
+          ]),
+      PrimarySource(
           title: loc.uncial_04_title,
           date: loc.uncial_04_date,
           content: loc.uncial_04_content,
@@ -98,37 +178,6 @@ class PrimarySourcesRepository {
           preview: 'assets/images/Resources/20025/preview.png',
           images: []),
       PrimarySource(
-          title: loc.uncial_46_title,
-          date: loc.uncial_46_date,
-          content: loc.uncial_46_content,
-          features: loc.uncial_46_features,
-          linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Codex_Vaticanus_2066',
-          preview: 'assets/images/Resources/20046/preview.png',
-          images: [
-            'assets/images/Resources/20046/Vat.gr.2066_0519_fa_0259r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0520_fa_0259v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0521_fa_0260r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0522_fa_0260v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0523_fa_0261r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0524_fa_0261v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0525_fa_0262r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0526_fa_0262v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0527_fa_0263r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0528_fa_0263v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0529_fa_0263r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0530_fa_0263v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0531_fa_0264r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0532_fa_0264v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0533_fa_0265r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0534_fa_0265v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0535_fa_0266r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0536_fa_0266v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0537_fa_0267r_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0538_fa_0267v_m.jpg',
-            'assets/images/Resources/20046/Vat.gr.2066_0539_fa_0268r_m.jpg',
-          ]),
-      PrimarySource(
           title: loc.uncial_51_title,
           date: loc.uncial_51_date,
           content: loc.uncial_51_content,
@@ -138,29 +187,45 @@ class PrimarySourcesRepository {
           preview: 'assets/images/Resources/20051/preview.png',
           images: [
             'assets/images/Resources/20051/preview.jpg',
+          ])
+    ];
+    return sources;
+  }
+
+  List<PrimarySource> getFragmentsPrimarySources(BuildContext context) {
+    AppLocalizations loc = AppLocalizations.of(context)!;
+    final sources = [
+      PrimarySource(
+          title: loc.papyrus_98_title,
+          date: loc.papyrus_98_date,
+          content: loc.papyrus_98_content,
+          features: loc.papyrus_98_features,
+          linkTitle: loc.wikipedia,
+          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_98',
+          preview: 'assets/images/Resources/10098/preview.png',
+          images: [
+            'assets/images/Resources/10098/P98.jpg',
           ]),
       PrimarySource(
-          title: loc.uncial_52_title,
-          date: loc.uncial_52_date,
-          content: loc.uncial_52_content,
-          features: loc.uncial_52_features,
+          title: loc.papyrus_18_title,
+          date: loc.papyrus_18_date,
+          content: loc.papyrus_18_content,
+          features: loc.papyrus_18_features,
           linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Uncial_052',
-          preview: 'assets/images/Resources/20052/preview.png',
-          images: [
-            'assets/images/Resources/20052/20052x00090XX_INTF.jpg',
-          ]),
+          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_18',
+          preview: 'assets/images/Resources/10018/preview.png',
+          images: ['assets/images/Resources/10018/P18.jpg']),
       PrimarySource(
-          title: loc.uncial_163_title,
-          date: loc.uncial_163_date,
-          content: loc.uncial_163_content,
-          features: loc.uncial_163_features,
+          title: loc.papyrus_24_title,
+          date: loc.papyrus_24_date,
+          content: loc.papyrus_24_content,
+          features: loc.papyrus_24_features,
           linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Uncial_0163',
-          preview: 'assets/images/Resources/20163/preview.png',
+          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_24',
+          preview: 'assets/images/Resources/10024/preview.png',
           images: [
-            'assets/images/Resources/20163/20163_A.jpg',
-            'assets/images/Resources/20163/20163_B.jpg',
+            'assets/images/Resources/10024/P24_A.jpg',
+            'assets/images/Resources/10024/P24_B.jpg'
           ]),
       PrimarySource(
           title: loc.uncial_169_title,
@@ -187,20 +252,6 @@ class PrimarySourcesRepository {
             'assets/images/Resources/20207/20207x00020Xa.jpg',
           ]),
       PrimarySource(
-          title: loc.uncial_229_title,
-          date: loc.uncial_229_date,
-          content: loc.uncial_229_content,
-          features: loc.uncial_229_features,
-          linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Uncial_0229',
-          preview: 'assets/images/Resources/20229/preview.png',
-          images: [
-            'assets/images/Resources/20229/PSI_XIII_1296_a_r.jpg',
-            'assets/images/Resources/20229/PSI_XIII_1296_a_v.jpg',
-            'assets/images/Resources/20229/PSI_XIII_1296_b_r.jpg',
-            'assets/images/Resources/20229/PSI_XIII_1296_b_v.jpg',
-          ]),
-      PrimarySource(
           title: loc.uncial_308_title,
           date: loc.uncial_308_date,
           content: loc.uncial_308_content,
@@ -211,69 +262,6 @@ class PrimarySourcesRepository {
           images: [
             'assets/images/Resources/20308/Uncial_0308_POxy_4500_recto.jpg',
             'assets/images/Resources/20308/Uncial_0308_hair_side.jpg',
-          ]),
-      PrimarySource(
-          title: loc.papyrus_18_title,
-          date: loc.papyrus_18_date,
-          content: loc.papyrus_18_content,
-          features: loc.papyrus_18_features,
-          linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_18',
-          preview: 'assets/images/Resources/10018/preview.png',
-          images: ['assets/images/Resources/10018/P18.jpg']),
-      PrimarySource(
-          title: loc.papyrus_24_title,
-          date: loc.papyrus_24_date,
-          content: loc.papyrus_24_content,
-          features: loc.papyrus_24_features,
-          linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_24',
-          preview: 'assets/images/Resources/10024/preview.png',
-          images: [
-            'assets/images/Resources/10024/P24_A.jpg',
-            'assets/images/Resources/10024/P24_B.jpg'
-          ]),
-      PrimarySource(
-          title: loc.papyrus_43_title,
-          date: loc.papyrus_43_date,
-          content: loc.papyrus_43_content,
-          features: loc.papyrus_43_features,
-          linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_43',
-          preview: 'assets/images/Resources/10043/preview.png',
-          images: [
-            'assets/images/Resources/10043/P43_A.jpg',
-            'assets/images/Resources/10043/P43_B.jpg'
-          ]),
-      PrimarySource(
-          title: loc.papyrus_47_title,
-          date: loc.papyrus_47_date,
-          content: loc.papyrus_47_content,
-          features: loc.papyrus_47_features,
-          linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_47',
-          preview: 'assets/images/Resources/10047/preview.png',
-          images: [
-            'assets/images/Resources/10047/T0004403.jpg',
-            'assets/images/Resources/10047/T0004404a.jpg',
-            'assets/images/Resources/10047/T0004405b_a.jpg',
-            'assets/images/Resources/10047/T0005405.jpg',
-            'assets/images/Resources/10047/T0005406.jpg',
-            'assets/images/Resources/10047/T0005407.jpg',
-            'assets/images/Resources/10047/T0005408.jpg',
-            'assets/images/Resources/10047/T0005409.jpg',
-            'assets/images/Resources/10047/T0005410.jpg',
-            'assets/images/Resources/10047/T0005411.jpg',
-            'assets/images/Resources/10047/T0005412.jpg',
-            'assets/images/Resources/10047/T0005413.jpg',
-            'assets/images/Resources/10047/T0005416.jpg',
-            'assets/images/Resources/10047/T0005417.jpg',
-            'assets/images/Resources/10047/T0005418.jpg',
-            'assets/images/Resources/10047/T0005419.jpg',
-            'assets/images/Resources/10047/T0005420.jpg',
-            'assets/images/Resources/10047/T0005421.jpg',
-            'assets/images/Resources/10047/T0005494.jpg',
-            'assets/images/Resources/10047/T0005495.jpg',
           ]),
       PrimarySource(
           title: loc.papyrus_85_title,
@@ -288,28 +276,54 @@ class PrimarySourcesRepository {
             'assets/images/Resources/10085/10085x00020Xa_INTF.jpg'
           ]),
       PrimarySource(
-          title: loc.papyrus_98_title,
-          date: loc.papyrus_98_date,
-          content: loc.papyrus_98_content,
-          features: loc.papyrus_98_features,
+          title: loc.uncial_163_title,
+          date: loc.uncial_163_date,
+          content: loc.uncial_163_content,
+          features: loc.uncial_163_features,
           linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_98',
-          preview: 'assets/images/Resources/10098/preview.png',
+          linkUrl: 'https://en.wikipedia.org/wiki/Uncial_0163',
+          preview: 'assets/images/Resources/20163/preview.png',
           images: [
-            'assets/images/Resources/10098/P98.jpg',
+            'assets/images/Resources/20163/20163_A.jpg',
+            'assets/images/Resources/20163/20163_B.jpg',
           ]),
       PrimarySource(
-          title: loc.papyrus_115_title,
-          date: loc.papyrus_115_date,
-          content: loc.papyrus_115_content,
-          features: loc.papyrus_115_features,
+          title: loc.papyrus_43_title,
+          date: loc.papyrus_43_date,
+          content: loc.papyrus_43_content,
+          features: loc.papyrus_43_features,
           linkTitle: loc.wikipedia,
-          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_115',
-          preview: 'assets/images/Resources/10115/preview.png',
+          linkUrl: 'https://en.wikipedia.org/wiki/Papyrus_43',
+          preview: 'assets/images/Resources/10043/preview.png',
           images: [
-            'assets/images/Resources/10115/10115x00020XX_INTF.jpg',
-            'assets/images/Resources/10115/10115x00040XX_INTF.jpg',
+            'assets/images/Resources/10043/P43_A.jpg',
+            'assets/images/Resources/10043/P43_B.jpg'
           ]),
+      PrimarySource(
+          title: loc.uncial_229_title,
+          date: loc.uncial_229_date,
+          content: loc.uncial_229_content,
+          features: loc.uncial_229_features,
+          linkTitle: loc.wikipedia,
+          linkUrl: 'https://en.wikipedia.org/wiki/Uncial_0229',
+          preview: 'assets/images/Resources/20229/preview.png',
+          images: [
+            'assets/images/Resources/20229/PSI_XIII_1296_a_r.jpg',
+            'assets/images/Resources/20229/PSI_XIII_1296_a_v.jpg',
+            'assets/images/Resources/20229/PSI_XIII_1296_b_r.jpg',
+            'assets/images/Resources/20229/PSI_XIII_1296_b_v.jpg',
+          ]),
+      PrimarySource(
+          title: loc.uncial_52_title,
+          date: loc.uncial_52_date,
+          content: loc.uncial_52_content,
+          features: loc.uncial_52_features,
+          linkTitle: loc.wikipedia,
+          linkUrl: 'https://en.wikipedia.org/wiki/Uncial_052',
+          preview: 'assets/images/Resources/20052/preview.png',
+          images: [
+            'assets/images/Resources/20052/20052x00090XX_INTF.jpg',
+          ])
     ];
 
     return sources;

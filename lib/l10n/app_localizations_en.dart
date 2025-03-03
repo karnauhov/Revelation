@@ -99,6 +99,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topic_1_description => 'Revelation 1:1-3';
 
   @override
+  String get full_primary_sources => 'The whole book';
+
+  @override
+  String get significant_primary_sources => 'Significant part';
+
+  @override
+  String get fragments_primary_sources => 'Small fragments';
+
+  @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';
 
   @override

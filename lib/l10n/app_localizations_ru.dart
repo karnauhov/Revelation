@@ -99,6 +99,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get topic_1_description => 'Откровение 1:1-3';
 
   @override
+  String get full_primary_sources => 'Вся книга';
+
+  @override
+  String get significant_primary_sources => 'Значительная часть';
+
+  @override
+  String get fragments_primary_sources => 'Небольшие фрагменты';
+
+  @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';
 
   @override

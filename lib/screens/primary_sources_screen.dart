@@ -39,7 +39,12 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
   Widget build(BuildContext context) {
     final primarySourcesViewModel =
         Provider.of<PrimarySourcesViewModel>(context);
-    List<PrimarySource> sources = primarySourcesViewModel.primarySources;
+    List<PrimarySource> fullSources =
+        primarySourcesViewModel.fullPrimarySources;
+    List<PrimarySource> significantSources =
+        primarySourcesViewModel.significantPrimarySources;
+    List<PrimarySource> fragmentsSources =
+        primarySourcesViewModel.fragmentsPrimarySources;
 
     Widget content = CustomScrollView(
       controller: _scrollController,
@@ -52,10 +57,37 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
-              final source = sources[index];
-              return _buildSourceItem(context, source);
+              if (index == 0) {
+                final fullHeader =
+                    "${AppLocalizations.of(context)!.full_primary_sources} (${fullSources.length})";
+                return _buildSourceHeader(context, fullHeader);
+              } else if (index - 1 < fullSources.length) {
+                final fullSource = fullSources[index - 1];
+                return _buildSourceItem(context, fullSource);
+              } else if (index == fullSources.length + 1) {
+                final significantHeader =
+                    "${AppLocalizations.of(context)!.significant_primary_sources} (${significantSources.length})";
+                return _buildSourceHeader(context, significantHeader);
+              } else if (index - 2 <
+                  fullSources.length + significantSources.length) {
+                final significantSource =
+                    significantSources[index - 2 - fullSources.length];
+                return _buildSourceItem(context, significantSource);
+              } else if (index ==
+                  fullSources.length + significantSources.length + 2) {
+                final fragmentsHeader =
+                    "${AppLocalizations.of(context)!.fragments_primary_sources} (${fragmentsSources.length})";
+                return _buildSourceHeader(context, fragmentsHeader);
+              } else {
+                final fragmentsSource = fragmentsSources[
+                    index - 3 - fullSources.length - significantSources.length];
+                return _buildSourceItem(context, fragmentsSource);
+              }
             },
-            childCount: sources.length,
+            childCount: 3 +
+                fullSources.length +
+                significantSources.length +
+                fragmentsSources.length,
           ),
         ),
       ],
@@ -104,6 +136,13 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
         child: content,
       ),
     );
+  }
+
+  Widget _buildSourceHeader(BuildContext context, String header) {
+    TextTheme theme = Theme.of(context).textTheme;
+    return Text(header,
+        style: theme.titleSmall?.copyWith(color: Colors.grey),
+        textAlign: TextAlign.center);
   }
 
   Widget _buildSourceItem(BuildContext context, PrimarySource source) {

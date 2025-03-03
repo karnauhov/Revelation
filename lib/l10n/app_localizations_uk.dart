@@ -99,6 +99,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get topic_1_description => 'Об\'явлення 1:1-3';
 
   @override
+  String get full_primary_sources => 'Вся книга';
+
+  @override
+  String get significant_primary_sources => 'Значна частина';
+
+  @override
+  String get fragments_primary_sources => 'Невеликі фрагменти';
+
+  @override
   String get papyrus_18_title => 'Папірус 18 (P<sup>18</sup>)';
 
   @override

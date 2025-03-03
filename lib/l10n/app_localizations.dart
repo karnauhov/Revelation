@@ -277,6 +277,24 @@ abstract class AppLocalizations {
   /// **'Revelation 1:1-3'**
   String get topic_1_description;
 
+  /// No description provided for @full_primary_sources.
+  ///
+  /// In en, this message translates to:
+  /// **'The whole book'**
+  String get full_primary_sources;
+
+  /// No description provided for @significant_primary_sources.
+  ///
+  /// In en, this message translates to:
+  /// **'Significant part'**
+  String get significant_primary_sources;
+
+  /// No description provided for @fragments_primary_sources.
+  ///
+  /// In en, this message translates to:
+  /// **'Small fragments'**
+  String get fragments_primary_sources;
+
   /// No description provided for @papyrus_18_title.
   ///
   /// In en, this message translates to:
