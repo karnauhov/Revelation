@@ -288,19 +288,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_01_content => 'The entire book of Revelation.';
 
   @override
-  String get uncial_01_material => 'Codex Sinaiticus is written on vellum parchment, primarily made from calfskin (with some sheep skin). Originally, it was produced on double sheets likely measuring about 40 × 70 cm; the British Library portion consists of 346½ folios (694 pages) measuring approximately 38.1 × 34.5 cm.';
+  String get uncial_01_material => 'Codex Sinaiticus is written on vellum parchment, primarily made from calfskin, with some portions made from sheepskin. Originally, it was produced on double sheets, likely measuring approximately 40 × 70 cm. The portion held in the British Library consists of 346½ folios (694 pages), each measuring about 38.1 × 34.5 cm.';
 
   @override
-  String get uncial_01_textStyle => 'The manuscript is written in a formal uncial script (biblical majuscule) in Greek, featuring scriptio continua (without word separation). The text is arranged in columns (four per page in the New Testament and two for poetic texts), with carefully regulated line breaks, nomina sacra, and specific punctuation.';
+  String get uncial_01_textStyle => 'The manuscript is written in a formal uncial script (biblical majuscule) in Greek, featuring scriptio continua (continuous script without spaces between words). The text is arranged in columns: four per page in the New Testament and two per page for poetic texts. It also includes carefully regulated line breaks, nomina sacra, and distinctive punctuation.';
 
   @override
-  String get uncial_01_found => 'It was discovered in 1844 at Saint Catherine’s Monastery in the Sinai Peninsula by Constantin von Tischendorf.';
+  String get uncial_01_found => 'Codex Sinaiticus was discovered in 1844 at Saint Catherine’s Monastery on the Sinai Peninsula by Constantin von Tischendorf.';
 
   @override
-  String get uncial_01_classification => 'Textologically, Codex Sinaiticus is classified as belonging to the Alexandrian text-type and is considered Category I among New Testament manuscripts.';
+  String get uncial_01_classification => 'From a textological perspective, Codex Sinaiticus belongs to the Alexandrian text-type and is classified as Category I among New Testament manuscripts.';
 
   @override
-  String get uncial_01_currentLocation => 'Today, parts of the codex are held in several institutions: primarily in the British Library (London), as well as in the Leipzig University Library, Saint Catherine’s Monastery (Sinai), and the National Library of Russia (St. Petersburg).';
+  String get uncial_01_currentLocation => 'Today, parts of the codex are preserved in several institutions: primarily in the British Library (London), as well as in the Leipzig University Library, Saint Catherine’s Monastery (Sinai), and the National Library of Russia (Saint Petersburg).';
 
   @override
   String get uncial_02_title => 'Codex Alexandrinus (A 02)';

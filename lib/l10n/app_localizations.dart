@@ -658,31 +658,31 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_01_material.
   ///
   /// In en, this message translates to:
-  /// **'Codex Sinaiticus is written on vellum parchment, primarily made from calfskin (with some sheep skin). Originally, it was produced on double sheets likely measuring about 40 × 70 cm; the British Library portion consists of 346½ folios (694 pages) measuring approximately 38.1 × 34.5 cm.'**
+  /// **'Codex Sinaiticus is written on vellum parchment, primarily made from calfskin, with some portions made from sheepskin. Originally, it was produced on double sheets, likely measuring approximately 40 × 70 cm. The portion held in the British Library consists of 346½ folios (694 pages), each measuring about 38.1 × 34.5 cm.'**
   String get uncial_01_material;
 
   /// No description provided for @uncial_01_textStyle.
   ///
   /// In en, this message translates to:
-  /// **'The manuscript is written in a formal uncial script (biblical majuscule) in Greek, featuring scriptio continua (without word separation). The text is arranged in columns (four per page in the New Testament and two for poetic texts), with carefully regulated line breaks, nomina sacra, and specific punctuation.'**
+  /// **'The manuscript is written in a formal uncial script (biblical majuscule) in Greek, featuring scriptio continua (continuous script without spaces between words). The text is arranged in columns: four per page in the New Testament and two per page for poetic texts. It also includes carefully regulated line breaks, nomina sacra, and distinctive punctuation.'**
   String get uncial_01_textStyle;
 
   /// No description provided for @uncial_01_found.
   ///
   /// In en, this message translates to:
-  /// **'It was discovered in 1844 at Saint Catherine’s Monastery in the Sinai Peninsula by Constantin von Tischendorf.'**
+  /// **'Codex Sinaiticus was discovered in 1844 at Saint Catherine’s Monastery on the Sinai Peninsula by Constantin von Tischendorf.'**
   String get uncial_01_found;
 
   /// No description provided for @uncial_01_classification.
   ///
   /// In en, this message translates to:
-  /// **'Textologically, Codex Sinaiticus is classified as belonging to the Alexandrian text-type and is considered Category I among New Testament manuscripts.'**
+  /// **'From a textological perspective, Codex Sinaiticus belongs to the Alexandrian text-type and is classified as Category I among New Testament manuscripts.'**
   String get uncial_01_classification;
 
   /// No description provided for @uncial_01_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **'Today, parts of the codex are held in several institutions: primarily in the British Library (London), as well as in the Leipzig University Library, Saint Catherine’s Monastery (Sinai), and the National Library of Russia (St. Petersburg).'**
+  /// **'Today, parts of the codex are preserved in several institutions: primarily in the British Library (London), as well as in the Leipzig University Library, Saint Catherine’s Monastery (Sinai), and the National Library of Russia (Saint Petersburg).'**
   String get uncial_01_currentLocation;
 
   /// No description provided for @uncial_02_title.
