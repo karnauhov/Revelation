@@ -2,7 +2,12 @@ class PrimarySource {
   final String title;
   final String date;
   final String content;
-  final String features;
+  final int quantity;
+  final String material;
+  final String textStyle;
+  final String found;
+  final String classification;
+  final String currentLocation;
   final String linkTitle;
   final String linkUrl;
   final String preview;
@@ -12,7 +17,12 @@ class PrimarySource {
     required this.title,
     required this.date,
     required this.content,
-    required this.features,
+    required this.quantity,
+    required this.material,
+    required this.textStyle,
+    required this.found,
+    required this.classification,
+    required this.currentLocation,
     required this.linkTitle,
     required this.linkUrl,
     required this.preview,

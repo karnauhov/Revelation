@@ -108,6 +108,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get fragments_primary_sources => 'Невеликі фрагменти';
 
   @override
+  String get verses => 'Кількість віршів';
+
+  @override
   String get papyrus_18_title => 'Папірус 18 (P<sup>18</sup>)';
 
   @override
@@ -117,7 +120,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get papyrus_18_content => 'Фрагмент Об\'явлення (1:4-7).';
 
   @override
-  String get papyrus_18_features => 'З одного боку папірусу записаний текст з Об\'явлення, з іншого боку — закінчення книги Вихід. Тексти написані різними переписувачами, що може свідчити про повторне використання матеріалу. Папірус зберігається в Британській бібліотеці, Лондон.';
+  String get papyrus_18_material => '';
+
+  @override
+  String get papyrus_18_textStyle => '';
+
+  @override
+  String get papyrus_18_found => '';
+
+  @override
+  String get papyrus_18_classification => '';
+
+  @override
+  String get papyrus_18_currentLocation => '';
 
   @override
   String get papyrus_24_title => 'Папірус 24 (P<sup>24</sup>)';
@@ -129,7 +144,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get papyrus_24_content => 'Фрагменти Об\'явлення (5:5-8) та (6:5-8).';
 
   @override
-  String get papyrus_24_features => 'Папірус написаний на великому аркуші розміром приблизно 19 x 28 см. Текст є олександрійським типом (або протоолександрійським) і збігається з Папірусом 18, Папірусом 47 і Синайським Кодексом. В даний час папірус знаходиться у бібліотеці богословської школи Єльського університету.';
+  String get papyrus_24_material => '';
+
+  @override
+  String get papyrus_24_textStyle => '';
+
+  @override
+  String get papyrus_24_found => '';
+
+  @override
+  String get papyrus_24_classification => '';
+
+  @override
+  String get papyrus_24_currentLocation => '';
 
   @override
   String get papyrus_43_title => 'Папірус 43 (P<sup>43</sup>)';
@@ -141,7 +168,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get papyrus_43_content => 'Фрагменти Об\'явлення (2:12-13) та (15:8-16:2).';
 
   @override
-  String get papyrus_43_features => 'Папірус написаний двома різними, недбалими почерками, що може вказувати на його використання для вибіркових уривків, а не для суцільного тексту. Текст на зворотному боці розташований у протилежному напрямку щодо лицьової сторони, що підтверджує припущення про незв\'язний зміст. Текст відноситься до олександрійського типу та класифікується як II категорія за системою Курта Аланда. В даний час папірус зберігається у Британській бібліотеці у Лондоні.';
+  String get papyrus_43_material => '';
+
+  @override
+  String get papyrus_43_textStyle => '';
+
+  @override
+  String get papyrus_43_found => '';
+
+  @override
+  String get papyrus_43_classification => '';
+
+  @override
+  String get papyrus_43_currentLocation => '';
 
   @override
   String get papyrus_47_title => 'Папірус 47 (P<sup>47</sup>)';
@@ -153,7 +192,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get papyrus_47_content => 'Фрагменти Об\'явлення (9:10-11:3); (11:5-16:15) та (16:17-17:2).';
 
   @override
-  String get papyrus_47_features => 'Текст написаний на папірусі чорним чорнилом і є кодексом. Рукопис фрагментований, але вважається представником олександрійського типу тексту. Текст папірусу найбільш близький до Синайського Кодексу, і разом вони свідчать про один із ранніх текстуальних типів книги Об\'явлення. В даний час папірус зберігається в бібліотеці Честера Бітті в Дубліні.';
+  String get papyrus_47_material => '';
+
+  @override
+  String get papyrus_47_textStyle => '';
+
+  @override
+  String get papyrus_47_found => '';
+
+  @override
+  String get papyrus_47_classification => '';
+
+  @override
+  String get papyrus_47_currentLocation => '';
 
   @override
   String get papyrus_85_title => 'Папірус 85 (P<sup>85</sup>)';
@@ -165,7 +216,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get papyrus_85_content => 'Фрагменти Об\'явлення (9:19-10:2) та (10:5-9).';
 
   @override
-  String get papyrus_85_features => 'Текст відноситься до олександрійського типу та класифікується як II категорія за системою Курта Аланда. В даний час папірус зберігається в Національній та університетській бібліотеці Страсбурга.';
+  String get papyrus_85_material => '';
+
+  @override
+  String get papyrus_85_textStyle => '';
+
+  @override
+  String get papyrus_85_found => '';
+
+  @override
+  String get papyrus_85_classification => '';
+
+  @override
+  String get papyrus_85_currentLocation => '';
 
   @override
   String get papyrus_98_title => 'Папірус 98 (P<sup>98</sup>)';
@@ -177,7 +240,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get papyrus_98_content => 'Фрагмент Об\'явлення (1:13-2:1).';
 
   @override
-  String get papyrus_98_features => 'Текст написаний великим і акуратним почерком на папірусному свитку. Біблійний текст розташований на звороті, а на лицьовій стороні знаходиться інший документ, датований кінцем I або початком II століття н.е. В даний час папірус зберігається у Французькому інституті східної археології в Каїрі.';
+  String get papyrus_98_material => '';
+
+  @override
+  String get papyrus_98_textStyle => '';
+
+  @override
+  String get papyrus_98_found => '';
+
+  @override
+  String get papyrus_98_classification => '';
+
+  @override
+  String get papyrus_98_currentLocation => '';
 
   @override
   String get papyrus_115_title => 'Папірус 115 (P<sup>115</sup>)';
@@ -189,7 +264,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get papyrus_115_content => 'Фрагменти Об\'явлення (2:1-3, 13-15, 27-29); (3:10-12); (5:8-9); (6:4-6); (8:3-8, 11-13); (9:1-5, 7-16, 18-21); (10:1-4, 8-11); (11:1-5, 8-15, 18-19); (12:1-5, 8-10, 12-17); (13:1-3, 6-16, 18); (14:1-3, 5-7, 10-11, 14-15, 18-20); (15:1, 4-7).';
 
   @override
-  String get papyrus_115_features => 'Містить 26 фрагментів кодексу розміром 15,5 x 23,5 см з 33-36 рядками на сторінку. Текст відноситься до олександрійського типу і близький до Олександрійського Кодексу та Єфремового кодексу. Виявлений в Оксирінху, Єгипет, і в даний час зберігається в Ешмолівському музеї в Оксфорді.';
+  String get papyrus_115_material => '';
+
+  @override
+  String get papyrus_115_textStyle => '';
+
+  @override
+  String get papyrus_115_found => '';
+
+  @override
+  String get papyrus_115_classification => '';
+
+  @override
+  String get papyrus_115_currentLocation => '';
 
   @override
   String get uncial_01_title => 'Синайський кодекс (ℵ 01)';
@@ -201,7 +288,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_01_content => 'Вся книга Об\'явлення.';
 
   @override
-  String get uncial_01_features => 'Синайський кодекс — грецький рукопис Біблії IV століття, написаний унціальним письмом на пергаменті. Він містить більшу частину Старого Завіту (Септуагінти) та найдавніший повний текст Нового Завіту, а також Послання Варнави і частину «Пастиря Герми». Кодекс вважається одним із найважливіших текстологічних свідчень Біблії. Нині його фрагменти зберігаються у чотирьох установах, найбільша частина — у Британській бібліотеці в Лондоні.';
+  String get uncial_01_material => 'Синайський кодекс написаний на пергаменті (vellum), переважно з телячої шкіри (з використанням овечої в меншій мірі). Первинно він створювався з подвійних листів, ймовірно розміром близько 40 × 70 см; частина, що зберігається в Британській бібліотеці, складається з 346½ фоліо (694 сторінок) розміром приблизно 38,1 × 34,5 см.';
+
+  @override
+  String get uncial_01_textStyle => 'Рукопис виконаний у формальному унціальному почерку (біблійний маюскул) грецькою мовою, із застосуванням scriptio continua (без пробілів між словами). Текст розташований у стовпчиках (чотири стовпчики на сторінку для Нового Заповіту та два для поетичних текстів), з ретельно продуманими розривами рядків, nomina sacra та специфічною пунктуацією.';
+
+  @override
+  String get uncial_01_found => 'Кодекс було виявлено у 1844 році в монастирі Святої Катерини на Синайському півострові Константином фон Тішендорфом.';
+
+  @override
+  String get uncial_01_classification => 'З точки зору текстології, Синайський кодекс відноситься до александрійського типу тексту і класифікується як Категорія I для рукописів Нового Заповіту.';
+
+  @override
+  String get uncial_01_currentLocation => 'Наразі частини кодексу зберігаються у декількох установах: переважно в Британській бібліотеці (Лондон), а також у бібліотеці Лейпцизького університету, монастирі Святої Катерини (Синай) та Російській національній бібліотеці (Санкт-Петербург).';
 
   @override
   String get uncial_02_title => 'Александрійський кодекс (A 02)';
@@ -213,7 +312,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_02_content => 'Вся книга Об\'явлення.';
 
   @override
-  String get uncial_02_features => 'Александрійський кодекс — грецький манускрипт Біблії V століття, написаний на пергаменті. Він містить більшу частину грецького Старого Завіту (Септуагінти) та повний текст Нового Завіту, за винятком кількох втрачених сторінок. Це один із чотирьох великих унціальних кодексів поряд із Синайським і Ватиканським. Нині рукопис знаходиться у Британській бібліотеці. Текст написаний у дві колонки на сторінці, елегантним унціальним письмом із певними помилками. В Євангеліях переважає візантійський текстовий тип, тоді як решта Нового Завіту відповідає александрійській традиції.';
+  String get uncial_02_material => '';
+
+  @override
+  String get uncial_02_textStyle => '';
+
+  @override
+  String get uncial_02_found => '';
+
+  @override
+  String get uncial_02_classification => '';
+
+  @override
+  String get uncial_02_currentLocation => '';
 
   @override
   String get uncial_04_title => 'Кодекс Єфрема (C 04)';
@@ -225,7 +336,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_04_content => 'Фрагменти Об\'явлення (1:2-20); (2:1-29); (3:1-19); (5:14); (6:1-17); (7:1-14,17); (8:1-4); (9:17-21); (10:1-10); (11:3-19); (12:1-18); (13:1-18); (14:1-20); (15:1-8); (16:1-13); (18:2-24); (19:1-5).';
 
   @override
-  String get uncial_04_features => 'Кодекс Єфрема — грецький манускрипт Біблії на пергаменті, один із чотирьох великих унціалів. Містить більшу частину Нового Завіту та кілька книг Старого Завіту, проте значні фрагменти втрачені. Кодекс є палімпсестом: його оригінальний текст був змитий і переписаний у XII столітті трактатами Єфрема Сиріна. Початковий текст розшифрував Костянтин фон Тішендорф у 1840–1843 роках. Манускрипт належить до Александрійської текстової традиції, хоча його текстуальний характер варіюється в різних книгах. Нині зберігається в Національній бібліотеці Франції (Париж).';
+  String get uncial_04_material => '';
+
+  @override
+  String get uncial_04_textStyle => '';
+
+  @override
+  String get uncial_04_found => '';
+
+  @override
+  String get uncial_04_classification => '';
+
+  @override
+  String get uncial_04_currentLocation => '';
 
   @override
   String get uncial_25_title => 'Порфиріанський кодекс (P<sup>apr</sup> 025)';
@@ -237,7 +360,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_25_content => 'Вся книга Об\'явлення окрім фрагментів (16:13-21); (20:1-8); (22:7-21).';
 
   @override
-  String get uncial_25_features => 'Порфіріанський кодекс — грецький унціальний манускрипт IX століття, що містить Дії Апостолів, Послання Павла та Соборні Послання, із деякими втратами. Це один із небагатьох унціалів, що включають Книгу Об’явлення. Кодекс є палімпсестом; його верхній текст був написаний у 1301 році. Відкритий і виданий Костянтином фон Тішендорфом. Нині зберігається в Російській національній бібліотеці (Санкт-Петербург).';
+  String get uncial_25_material => '';
+
+  @override
+  String get uncial_25_textStyle => '';
+
+  @override
+  String get uncial_25_found => '';
+
+  @override
+  String get uncial_25_classification => '';
+
+  @override
+  String get uncial_25_currentLocation => '';
 
   @override
   String get uncial_46_title => 'Ватиканський кодекс 2066 (Унціал 046)';
@@ -249,7 +384,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_46_content => 'Вся книга Об\'явлення.';
 
   @override
-  String get uncial_46_features => 'Ватиканський кодекс 2066 — грецький унціальний манускрипт X століття (можливо, більш ранній), що містить повний текст книги Об’явлення на 20 пергаментних аркушах. Написаний унікальним стилем унціального письма і належить до візантійського текстового типу. Кодекс також містить проповіді Василія Великого, Григорія Ниського та інших. Колись належав Філіппо Віталі, а згодом вивчався Тішендорфом і Трегеллесом. Нині зберігається у Ватиканській бібліотеці (Рим).';
+  String get uncial_46_material => '';
+
+  @override
+  String get uncial_46_textStyle => '';
+
+  @override
+  String get uncial_46_found => '';
+
+  @override
+  String get uncial_46_classification => '';
+
+  @override
+  String get uncial_46_currentLocation => '';
 
   @override
   String get uncial_51_title => 'Пантократорський кодекс (Унціал 051)';
@@ -261,7 +408,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_51_content => 'Фрагменти Об\'явлення (11:15-19); (12:1-18); (13:1,3-18); (14:1-20); (15:1-8); (16:1-21); (17:1-18); (18:1-24); (19:1-21); (20:1-15); (21:1-27); (22:1-7,15-21).';
 
   @override
-  String get uncial_51_features => 'Пантократорський кодекс — грецький унціальний манускрипт X століття, що містить фрагменти книги Об’явлення з коментарем Андрія. Складається з 92 пергаментних аркушів, текст написаний в одну колонку на сторінку, по 22 рядки в колонці. Основний текст виконаний унціальним письмом із невеликим нахилом праворуч, коментарі – курсивом. Грецький текст віднесено до Категорії III. Рукопис вивчався Грегорі та Хоскером. Нині зберігається в монастирі Пантократор на Афоні.';
+  String get uncial_51_material => '';
+
+  @override
+  String get uncial_51_textStyle => '';
+
+  @override
+  String get uncial_51_found => '';
+
+  @override
+  String get uncial_51_classification => '';
+
+  @override
+  String get uncial_51_currentLocation => '';
 
   @override
   String get uncial_52_title => 'Пантелеймонів кодекс (Унціал 052)';
@@ -273,7 +432,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_52_content => 'Фрагменти Об\'явлення (7:16-17); (8:1-12).';
 
   @override
-  String get uncial_52_features => 'Пантелеймонів кодекс — грецький унціальний манускрипт X століття, що містить фрагменти книги Об’явлення з коментарем Андрія. Він складається з 4 пергаментних аркушів. Текст належить до візантійського типу й віднесений до Категорії V. Рукопис досліджений та відредагований Госкером. Нині зберігається в монастирі Святого Пантелеймона на Афоні.';
+  String get uncial_52_material => '';
+
+  @override
+  String get uncial_52_textStyle => '';
+
+  @override
+  String get uncial_52_found => '';
+
+  @override
+  String get uncial_52_classification => '';
+
+  @override
+  String get uncial_52_currentLocation => '';
 
   @override
   String get uncial_163_title => 'Унціал 0163';
@@ -285,7 +456,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_163_content => 'Фрагмент Об\'явлення (16:17-20).';
 
   @override
-  String get uncial_163_features => 'Унціал 0163 — грецький унціальний манускрипт Нового Заповіту V століття. Містить невеликий фрагмент книги Об’явлення на одному пергаментному аркуші. Текст написаний в одну колонку на сторінку, 17 рядків у колонці дрібними унціальними літерами. Належить до александрійського текстового типу та віднесений до Категорії III. Фрагмент узгоджується з Олександрійським кодексом. Рукопис було знайдено в Аль-Башнасі й опубліковано у 1908 році Гренфеллом і Хантом. Нині зберігається в Інституті Сходу Чиказького університету.';
+  String get uncial_163_material => '';
+
+  @override
+  String get uncial_163_textStyle => '';
+
+  @override
+  String get uncial_163_found => '';
+
+  @override
+  String get uncial_163_classification => '';
+
+  @override
+  String get uncial_163_currentLocation => '';
 
   @override
   String get uncial_169_title => 'Унціал 0169';
@@ -297,7 +480,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_169_content => 'Фрагмент Об\'явлення (3:19-4:3).';
 
   @override
-  String get uncial_169_features => 'Унціал 0169 (Принстонський фрагмент) — грецький унціальний манускрипт Нового Завіту IV століття. Містить невеликий уривок Об’явлення на майже повністю збереженому пергаментному аркуші. Належить до александрійського текстового типу та віднесений до Категорії III. Почерк рівний, вертикальний. Текст тісно пов’язаний із Синайським кодексом, проте містить неточності переписування. Рукопис було відредаговано у 1911 році Гренфеллом і Хантом і нині зберігається в Принстонській богословській семінарії.';
+  String get uncial_169_material => '';
+
+  @override
+  String get uncial_169_textStyle => '';
+
+  @override
+  String get uncial_169_found => '';
+
+  @override
+  String get uncial_169_classification => '';
+
+  @override
+  String get uncial_169_currentLocation => '';
 
   @override
   String get uncial_207_title => 'Унціал 0207';
@@ -309,7 +504,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_207_content => 'Фрагмент Об\'явлення (9:2-15).';
 
   @override
-  String get uncial_207_features => 'Унціал 0207 — грецький унціальний манускрипт Нового Завіту IV століття. Містить невеликий уривок Об’явлення на одному пергаментному аркуші. Належить до александрійського текстового типу, але містить багато варіантних читань. Аланд відніс його до Категорії III. Нині зберігається в Лаврентіанській бібліотеці у Флоренції.';
+  String get uncial_207_material => '';
+
+  @override
+  String get uncial_207_textStyle => '';
+
+  @override
+  String get uncial_207_found => '';
+
+  @override
+  String get uncial_207_classification => '';
+
+  @override
+  String get uncial_207_currentLocation => '';
 
   @override
   String get uncial_229_title => 'Унціал 0229';
@@ -321,7 +528,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_229_content => 'Фрагменти Об\'явлення (18:16-17); (19:4-6).';
 
   @override
-  String get uncial_229_features => 'Унціал 0229 — грецький унціальний манускрипт Нового Завіту VIII століття. Містить невеликий уривок Об’явлення на двох пергаментних аркушах. Манускрипт є палимпсестом, де нижній текст коптською мовою. Також містить календарний текст зі списком єгипетських місяців. Грецький текст має змішаний характер, і Аланд відніс його до Категорії III. Раніше зберігався в Лаврентіанській бібліотеці у Флоренції, але згодом був знищений.';
+  String get uncial_229_material => '';
+
+  @override
+  String get uncial_229_textStyle => '';
+
+  @override
+  String get uncial_229_found => '';
+
+  @override
+  String get uncial_229_classification => '';
+
+  @override
+  String get uncial_229_currentLocation => '';
 
   @override
   String get uncial_308_title => 'Унціал 0308';
@@ -333,5 +552,17 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_308_content => 'Фрагмент Об\'явлення (11:15-18).';
 
   @override
-  String get uncial_308_features => 'Унціал 0308 — грецький унціальний манускрипт Нового Завіту IV століття. Це фрагмент одного пергаментного аркуша, що містить уривки Об’явлення, написані в одну колонку на сторінку. Текст сильно пошкоджений, але має подібності з Синайським Кодексом і Папірусом 47, з незначними відмінностями. Форми літер схожі на Кодекс Вашингтонський і мають коптський вплив. Зберігається у Бібліотеці Саклера, Оксфорд.';
+  String get uncial_308_material => '';
+
+  @override
+  String get uncial_308_textStyle => '';
+
+  @override
+  String get uncial_308_found => '';
+
+  @override
+  String get uncial_308_classification => '';
+
+  @override
+  String get uncial_308_currentLocation => '';
 }

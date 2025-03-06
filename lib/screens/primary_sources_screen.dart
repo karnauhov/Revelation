@@ -185,34 +185,55 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
                 ),
                 WrappableText(
                   text: TextSpan(
-                    text: source.date,
-                    style: theme.bodySmall?.copyWith(
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ),
-                WrappableText(
-                  text: TextSpan(
-                    text: source.content,
-                    style: theme.bodyMedium?.copyWith(
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-                WrappableText(
-                  text: TextSpan(
-                    text: source.features,
+                    text: "✒ ${source.date}",
                     style: theme.bodyMedium,
-                    children: [
-                      TextSpan(
-                        text: ' [${source.linkTitle}]',
-                        style: TextStyle(color: Colors.blue),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            launchLink(source.linkUrl);
-                          },
-                      ),
-                    ],
+                  ),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text:
+                        "📖 ${source.content} [${AppLocalizations.of(context)!.verses}: ${source.quantity}]",
+                    style: theme.bodyMedium,
+                  ),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text: "📜 ${source.material}",
+                    style: theme.bodyMedium,
+                  ),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text: "🔎 ${source.textStyle}",
+                    style: theme.bodyMedium,
+                  ),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text: "🔓 ${source.found}",
+                    style: theme.bodyMedium,
+                  ),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text: "🗂 ${source.classification}",
+                    style: theme.bodyMedium,
+                  ),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text: "🌍 ${source.currentLocation}",
+                    style: theme.bodyMedium,
+                  ),
+                ),
+                WrappableText(
+                  text: TextSpan(
+                    text: "🛈 [${source.linkTitle}]",
+                    style: TextStyle(color: Colors.blue),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        launchLink(source.linkUrl);
+                      },
                   ),
                 ),
               ],
