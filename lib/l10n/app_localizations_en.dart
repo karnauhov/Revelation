@@ -312,19 +312,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_02_content => 'The entire book of Revelation.';
 
   @override
-  String get uncial_02_material => '';
+  String get uncial_02_material => 'Codex Alexandrinus is written on parchment (vellum) made from thin, high-quality material. It consists of 773 folios, each measuring approximately 32 × 26 cm, originally gathered into quires (typically eight leaves per quire). The manuscript comprises four volumes: three containing the Septuagint (Old Testament) and one containing the New Testament.';
 
   @override
-  String get uncial_02_textStyle => '';
+  String get uncial_02_textStyle => 'The text is written in an elegant uncial script in Greek, arranged in two columns per page, with 49–51 lines per column and approximately 20–25 letters per line. It follows scriptio continua (without spaces), with red ink used for the initial lines of each book and decorative tailpieces at the end of each book. Occasional punctuation marks and annotations (e.g., enlarged initials indicating new sections) are present.';
 
   @override
-  String get uncial_02_found => '';
+  String get uncial_02_found => 'Codex Alexandrinus takes its name from Alexandria, Egypt, where it was kept for some time. In the 17th century, Patriarch Cyril Lucaris brought it from Alexandria to Constantinople and later presented it to Charles I of England.';
 
   @override
-  String get uncial_02_classification => '';
+  String get uncial_02_classification => 'Textually, the codex exhibits a mixed character: the Gospels reflect the Byzantine text-type (Category III), while the rest of the New Testament belongs to the Alexandrian text-type (Category I).';
 
   @override
-  String get uncial_02_currentLocation => '';
+  String get uncial_02_currentLocation => 'Today, Codex Alexandrinus is housed in the British Library in London, displayed alongside Codex Sinaiticus in the John Ritblat Gallery.';
 
   @override
   String get uncial_04_title => 'Codex Ephraemi Rescriptus (C 04)';
