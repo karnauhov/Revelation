@@ -222,13 +222,13 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
                 ),
                 WrappableText(
                   text: TextSpan(
-                    text: "🌍 ${source.currentLocation}",
+                    text: "📌 ${source.currentLocation}",
                     style: theme.bodyMedium,
                   ),
                 ),
                 WrappableText(
                   text: TextSpan(
-                    text: "🛈 [${source.linkTitle}]",
+                    text: "🌐 [${source.linkTitle}]",
                     style: TextStyle(color: Colors.blue),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
