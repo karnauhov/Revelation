@@ -195,19 +195,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get papyrus_47_content => 'Фрагменты Откровение (9:10-11:3); (11:5-16:15) и (16:17-17:2).';
 
   @override
-  String get papyrus_47_material => '';
+  String get papyrus_47_material => 'Первоисточник написан на папирусе, материале, характерном для ранних рукописей. Он состоит из 10 листов, размером примероно 24 на 13 см. Рукопись является одним из древнейших сохранившихся фрагментов Нового Завета.';
 
   @override
-  String get papyrus_47_textStyle => '';
+  String get papyrus_47_textStyle => 'Текст выполнен плотным греческим унциалом чёрными чернилами, расположен в одну колонку на странице с приблизительно 25–30 строками на листе. Используется сплошное написание (scriptio continua) без разделения слов.';
 
   @override
-  String get papyrus_47_found => '';
+  String get papyrus_47_found => 'Папирус 47 был приобретен в 1930-х годах Альфредом Честером Битти у торговца антиквариатом в Египте, а наиболее вероятным местом его находки является регион Файюм в Египте.';
 
   @override
-  String get papyrus_47_classification => '';
+  String get papyrus_47_classification => 'С текстологической точки зрения, он принадлежит к александрийскому текстовому типу и классифицируется как Категория I среди рукописей Нового Завета.';
 
   @override
-  String get papyrus_47_currentLocation => '';
+  String get papyrus_47_currentLocation => 'В настоящее время Папирус 47 хранится в Библиотеке Честера Битти в Дублине, Ирландия, как часть коллекции папирусов Честера Битти.';
 
   @override
   String get papyrus_85_title => 'Папирус 85 (P<sup>85</sup>)';

@@ -472,31 +472,31 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_47_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The original source is written on papyrus, a material characteristic of early manuscripts. It consists of 10 sheets, approximately 24 by 13 cm in size. The manuscript is one of the oldest surviving fragments of the New Testament.'**
   String get papyrus_47_material;
 
   /// No description provided for @papyrus_47_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is written in a compact Greek uncial script using black ink, arranged in a single column per page with approximately 25–30 lines per folio. It employs scriptio continua (continuous writing without word separation).'**
   String get papyrus_47_textStyle;
 
   /// No description provided for @papyrus_47_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 47 was acquired in the 1930s by Alfred Chester Beatty from an antiquities dealer in Egypt, with the most likely place of discovery being the Faiyum region in Egypt.'**
   String get papyrus_47_found;
 
   /// No description provided for @papyrus_47_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, it belongs to the Alexandrian text-type and is classified as Category I among New Testament manuscripts.'**
   String get papyrus_47_classification;
 
   /// No description provided for @papyrus_47_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Today, Papyrus 47 is housed at the Chester Beatty Library in Dublin, Ireland, as part of the Chester Beatty Papyri collection.'**
   String get papyrus_47_currentLocation;
 
   /// No description provided for @papyrus_85_title.

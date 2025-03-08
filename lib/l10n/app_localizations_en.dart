@@ -195,19 +195,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get papyrus_47_content => 'Fragments of Revelation (9:10-11:3); (11:5-16:15) and (16:17-17:2).';
 
   @override
-  String get papyrus_47_material => '';
+  String get papyrus_47_material => 'The original source is written on papyrus, a material characteristic of early manuscripts. It consists of 10 sheets, approximately 24 by 13 cm in size. The manuscript is one of the oldest surviving fragments of the New Testament.';
 
   @override
-  String get papyrus_47_textStyle => '';
+  String get papyrus_47_textStyle => 'The text is written in a compact Greek uncial script using black ink, arranged in a single column per page with approximately 25–30 lines per folio. It employs scriptio continua (continuous writing without word separation).';
 
   @override
-  String get papyrus_47_found => '';
+  String get papyrus_47_found => 'Papyrus 47 was acquired in the 1930s by Alfred Chester Beatty from an antiquities dealer in Egypt, with the most likely place of discovery being the Faiyum region in Egypt.';
 
   @override
-  String get papyrus_47_classification => '';
+  String get papyrus_47_classification => 'From a textological perspective, it belongs to the Alexandrian text-type and is classified as Category I among New Testament manuscripts.';
 
   @override
-  String get papyrus_47_currentLocation => '';
+  String get papyrus_47_currentLocation => 'Today, Papyrus 47 is housed at the Chester Beatty Library in Dublin, Ireland, as part of the Chester Beatty Papyri collection.';
 
   @override
   String get papyrus_85_title => 'Papyrus 85 (P<sup>85</sup>)';
