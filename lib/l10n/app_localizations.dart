@@ -850,31 +850,31 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_46_material.
   ///
   /// In en, this message translates to:
-  /// **'Codex Vaticanus 2066 is written on parchment (vellum), typical for uncial manuscripts.'**
+  /// **'Codex Vaticanus 2066 is written on parchment (vellum), typical of uncial manuscripts. The codex contains the complete text of the Book of Revelation on 20 parchment leaves, each measuring approximately 27.5 cm by 19 cm.'**
   String get uncial_46_material;
 
   /// No description provided for @uncial_46_textStyle.
   ///
   /// In en, this message translates to:
-  /// **'The text is rendered in a formal uncial script using scriptio continua and arranged in columns without word separation, reflecting the standard style of its period.'**
+  /// **'The text is written in one column per page, with 35 lines per page and approximately 36 letters per line. It is rendered in a formal uncial script using scriptio continua. The uncial letters are executed in a distinctive style—slightly inclined to the right—and occupy an intermediate form between square and oblong characters. The breathings and accents rendered with considerable accuracy.'**
   String get uncial_46_textStyle;
 
   /// No description provided for @uncial_46_found.
   ///
   /// In en, this message translates to:
-  /// **'The manuscript has been part of the Vatican Library’s collection for centuries. Although its precise discovery history is not detailed, it is recognized as an important witness among Greek biblical texts.'**
+  /// **'The manuscript once belonged to Philippo Vitali (1590–1653). The text of the codex was published by Cardinal Angelo Mai in 1859 in Rome.'**
   String get uncial_46_found;
 
   /// No description provided for @uncial_46_classification.
   ///
   /// In en, this message translates to:
-  /// **'Textually, it is classified as a representative of the Byzantine text-type, which is common among later uncial manuscripts.'**
+  /// **'The Greek text of this codex represents the Byzantine text-type and is closely related to minuscules 61 and 69. Aland classified it as Category V. Uncial 046 is the earliest manuscript representing the main Byzantine group (\'a\').'**
   String get uncial_46_classification;
 
   /// No description provided for @uncial_46_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **'It is currently housed in the Vatican Library in Rome.'**
+  /// **'Codex is currently housed in the Vatican Library in Rome.'**
   String get uncial_46_currentLocation;
 
   /// No description provided for @uncial_51_title.
