@@ -84,6 +84,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wikipedia => 'Wikipedia';
 
   @override
+  String get intf => 'INTF';
+
+  @override
   String get topic => 'Topic';
 
   @override

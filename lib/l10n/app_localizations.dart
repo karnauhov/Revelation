@@ -247,6 +247,12 @@ abstract class AppLocalizations {
   /// **'Wikipedia'**
   String get wikipedia;
 
+  /// No description provided for @intf.
+  ///
+  /// In en, this message translates to:
+  /// **'INTF'**
+  String get intf;
+
   /// No description provided for @topic.
   ///
   /// In en, this message translates to:

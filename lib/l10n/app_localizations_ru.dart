@@ -84,6 +84,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get wikipedia => 'Википедия';
 
   @override
+  String get intf => 'INTF';
+
+  @override
   String get topic => 'Тема';
 
   @override

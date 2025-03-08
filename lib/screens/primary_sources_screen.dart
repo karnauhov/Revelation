@@ -226,16 +226,24 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
                     style: theme.bodyMedium,
                   ),
                 ),
-                WrappableText(
-                  text: TextSpan(
-                    text: "🌐 [${source.linkTitle}]",
+                TextSpan(text: "🌐 ", style: theme.bodyMedium, children: [
+                  TextSpan(
+                    text: "[${source.link1Title}], ",
                     style: TextStyle(color: Colors.blue),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        launchLink(source.linkUrl);
+                        launchLink(source.link1Url);
                       },
                   ),
-                ),
+                  TextSpan(
+                    text: "[${source.link2Title}]",
+                    style: TextStyle(color: Colors.blue),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        launchLink(source.link2Url);
+                      },
+                  )
+                ])
               ],
             ),
           ),

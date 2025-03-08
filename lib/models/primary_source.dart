@@ -8,8 +8,10 @@ class PrimarySource {
   final String found;
   final String classification;
   final String currentLocation;
-  final String linkTitle;
-  final String linkUrl;
+  final String link1Title;
+  final String link1Url;
+  final String link2Title;
+  final String link2Url;
   final String preview;
   final List<String> images;
 
@@ -23,8 +25,10 @@ class PrimarySource {
     required this.found,
     required this.classification,
     required this.currentLocation,
-    required this.linkTitle,
-    required this.linkUrl,
+    required this.link1Title,
+    required this.link1Url,
+    required this.link2Title,
+    required this.link2Url,
     required this.preview,
     required this.images,
   });
