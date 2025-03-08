@@ -267,19 +267,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get papyrus_115_content => 'Fragments of Revelation (2:1-3, 13-15, 27-29); (3:10-12); (5:8-9); (6:4-6); (8:3-8, 11-13); (9:1-5, 7-16, 18-21); (10:1-4, 8-11); (11:1-5, 8-15, 18-19); (12:1-5, 8-10, 12-17); (13:1-3, 6-16, 18); (14:1-3, 5-7, 10-11, 14-15, 18-20); (15:1, 4-7).';
 
   @override
-  String get papyrus_115_material => '';
+  String get papyrus_115_material => 'Papyrus 115 is a fragmented Greek manuscript of the New Testament, written on papyrus. It comprises 26 fragments of a codex containing portions of the Book of Revelation. The original pages measured approximately 15.5 × 23.5 cm.';
 
   @override
-  String get papyrus_115_textStyle => '';
+  String get papyrus_115_textStyle => 'The text is written in Greek uncial script, arranged in a single column per page with 33-36 lines per column. It follows scriptio continua style without word separation, and features occasional use of punctuation marks and abbreviations typical for biblical manuscripts of its period.';
 
   @override
-  String get papyrus_115_found => '';
+  String get papyrus_115_found => 'Papyrus 115 was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century, although it was not deciphered and published until the end of the 20th century.';
 
   @override
-  String get papyrus_115_classification => '';
+  String get papyrus_115_classification => 'From a textological perspective, this primary source aligns with the Alexandrian text-type. It is classified as Category I among New Testament manuscripts.';
 
   @override
-  String get papyrus_115_currentLocation => '';
+  String get papyrus_115_currentLocation => 'Papyrus 115 is currently housed at the Ashmolean Museum in Oxford, United Kingdom.';
 
   @override
   String get uncial_01_title => 'Codex Sinaiticus (ℵ 01)';

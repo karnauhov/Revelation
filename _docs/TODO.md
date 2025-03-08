@@ -1,5 +1,5 @@
 Для версии 1.0.0:
-- Сгенерировать текст и выбрать наилучший вариант (chatGPT, grok, deepseek, perplexity, gemini):
+- Сгенерировать текст и выбрать наилучший вариант (chatGPT, grok, perplexity):
   - На основании материала из ниже перечисленных веб страниц подготовь мне информацию размером в 1-2 предложения про материал указанного первоисточника, количество и размеры листов/фрагментов. Как пример стиля и содержания используй следующий пример: "Codex Alexandrinus is written on parchment (vellum) made from thin, high-quality material. It consists of 773 folios, each measuring approximately 32 × 26 cm, originally gathered into quires (typically eight leaves per quire). The manuscript comprises four volumes: three containing the Septuagint (Old Testament) and one containing the New Testament." 
   Информацию предоставь на 3 языках: английском, русском и украинском. Текст должен удовлетворять следующим условиям: факты и данные должны быть корректны, иметь общую ясность и связность, быть целостным и соответствовать предложенному стилю, не иметь ошибок в грамматике, пунктуации, орфографии, слова должны быть согласованы и правильно употребляться, не иметь двухсмысленности, корректно использовать терминологию, избегать излишней посторяемости слов.
   Веб страницы:

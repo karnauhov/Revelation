@@ -616,31 +616,31 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_115_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 115 is a fragmented Greek manuscript of the New Testament, written on papyrus. It comprises 26 fragments of a codex containing portions of the Book of Revelation. The original pages measured approximately 15.5 × 23.5 cm.'**
   String get papyrus_115_material;
 
   /// No description provided for @papyrus_115_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is written in Greek uncial script, arranged in a single column per page with 33-36 lines per column. It follows scriptio continua style without word separation, and features occasional use of punctuation marks and abbreviations typical for biblical manuscripts of its period.'**
   String get papyrus_115_textStyle;
 
   /// No description provided for @papyrus_115_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 115 was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century, although it was not deciphered and published until the end of the 20th century.'**
   String get papyrus_115_found;
 
   /// No description provided for @papyrus_115_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, this primary source aligns with the Alexandrian text-type. It is classified as Category I among New Testament manuscripts.'**
   String get papyrus_115_classification;
 
   /// No description provided for @papyrus_115_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 115 is currently housed at the Ashmolean Museum in Oxford, United Kingdom.'**
   String get papyrus_115_currentLocation;
 
   /// No description provided for @uncial_01_title.
