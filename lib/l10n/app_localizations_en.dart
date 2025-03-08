@@ -384,19 +384,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_46_content => 'The entire book of Revelation.';
 
   @override
-  String get uncial_46_material => '';
+  String get uncial_46_material => 'Codex Vaticanus 2066 is written on parchment (vellum), typical for uncial manuscripts.';
 
   @override
-  String get uncial_46_textStyle => '';
+  String get uncial_46_textStyle => 'The text is rendered in a formal uncial script using scriptio continua and arranged in columns without word separation, reflecting the standard style of its period.';
 
   @override
-  String get uncial_46_found => '';
+  String get uncial_46_found => 'The manuscript has been part of the Vatican Library’s collection for centuries. Although its precise discovery history is not detailed, it is recognized as an important witness among Greek biblical texts.';
 
   @override
-  String get uncial_46_classification => '';
+  String get uncial_46_classification => 'Textually, it is classified as a representative of the Byzantine text-type, which is common among later uncial manuscripts.';
 
   @override
-  String get uncial_46_currentLocation => '';
+  String get uncial_46_currentLocation => 'It is currently housed in the Vatican Library in Rome.';
 
   @override
   String get uncial_51_title => 'Codex Athous Pantokratoros (Uncial 051)';

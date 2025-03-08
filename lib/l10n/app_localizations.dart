@@ -850,31 +850,31 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_46_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Vaticanus 2066 is written on parchment (vellum), typical for uncial manuscripts.'**
   String get uncial_46_material;
 
   /// No description provided for @uncial_46_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is rendered in a formal uncial script using scriptio continua and arranged in columns without word separation, reflecting the standard style of its period.'**
   String get uncial_46_textStyle;
 
   /// No description provided for @uncial_46_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript has been part of the Vatican Library’s collection for centuries. Although its precise discovery history is not detailed, it is recognized as an important witness among Greek biblical texts.'**
   String get uncial_46_found;
 
   /// No description provided for @uncial_46_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Textually, it is classified as a representative of the Byzantine text-type, which is common among later uncial manuscripts.'**
   String get uncial_46_classification;
 
   /// No description provided for @uncial_46_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'It is currently housed in the Vatican Library in Rome.'**
   String get uncial_46_currentLocation;
 
   /// No description provided for @uncial_51_title.

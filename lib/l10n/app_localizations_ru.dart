@@ -384,19 +384,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get uncial_46_content => 'Вся книга Откровение.';
 
   @override
-  String get uncial_46_material => '';
+  String get uncial_46_material => 'Ватиканский кодекс 2066 написан на пергаменте (vellum), что характерно для унциальных рукописей.';
 
   @override
-  String get uncial_46_textStyle => '';
+  String get uncial_46_textStyle => 'Текст выполнен формальным унциальным почерком с использованием scriptio continua и размещён в колонках без разделения слов, что соответствует стандартному стилю того периода.';
 
   @override
-  String get uncial_46_found => '';
+  String get uncial_46_found => 'Рукопись состоит в коллекции Ватиканской библиотеки на протяжении веков. Хотя её точная история обнаружения не описана подробно, она признана важным свидетелем греческого библейского текста.';
 
   @override
-  String get uncial_46_classification => '';
+  String get uncial_46_classification => 'С точки зрения текстологии, кодекс классифицируется как представитель византийского типа текста, что характерно для многих поздних унциальных рукописей.';
 
   @override
-  String get uncial_46_currentLocation => '';
+  String get uncial_46_currentLocation => 'В настоящее время он хранится в Ватиканской библиотеке в Риме.';
 
   @override
   String get uncial_51_title => 'Пантократорский кодекс (Унциал 051)';
