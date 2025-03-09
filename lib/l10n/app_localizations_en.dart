@@ -93,7 +93,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topic_0_name => 'Preface';
 
   @override
-  String get topic_0_description => 'Primary sources, principles, stages';
+  String get topic_0_description => 'Why? Primary sources. Principles.';
 
   @override
   String get topic_1_name => 'Introduction';
@@ -102,13 +102,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topic_1_description => 'Revelation 1:1-3';
 
   @override
-  String get full_primary_sources => 'The whole book';
+  String get full_primary_sources => 'Contain the entire Revelation in full';
 
   @override
-  String get significant_primary_sources => 'Significant part';
+  String get significant_primary_sources => 'Contain a significant part of the Revelation';
 
   @override
-  String get fragments_primary_sources => 'Small fragments';
+  String get fragments_primary_sources => 'Contain small fragments of the Revelation';
 
   @override
   String get verses => 'Quantity of verses';
@@ -201,7 +201,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get papyrus_47_textStyle => 'The text is written in a compact Greek uncial script using black ink, arranged in a single column per page with approximately 25–30 lines per folio. It employs scriptio continua (continuous writing without word separation).';
 
   @override
-  String get papyrus_47_found => 'Papyrus 47 was acquired in the 1930s by Alfred Chester Beatty from an antiquities dealer in Egypt, with the most likely place of discovery being the Faiyum region in Egypt.';
+  String get papyrus_47_found => 'The manuscript was acquired in the 1930s by Alfred Chester Beatty from an antiquities dealer in Egypt, with the most likely place of discovery being the Faiyum region in Egypt.';
 
   @override
   String get papyrus_47_classification => 'From a textological perspective, it belongs to the Alexandrian text-type and is classified as Category I among New Testament manuscripts.';
@@ -270,10 +270,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get papyrus_115_material => 'Papyrus 115 is a fragmented Greek manuscript of the New Testament, written on papyrus. It comprises 26 fragments of a codex containing portions of the Book of Revelation. The original pages measured approximately 15.5 × 23.5 cm.';
 
   @override
-  String get papyrus_115_textStyle => 'The text is written in Greek uncial script, arranged in a single column per page with 33-36 lines per column. It follows scriptio continua style without word separation, and features occasional use of punctuation marks and abbreviations typical for biblical manuscripts of its period.';
+  String get papyrus_115_textStyle => 'The text is written in Greek uncial script, arranged in a single column per page with 33-36 lines. It follows scriptio continua style without word separation, and features occasional use of punctuation marks and abbreviations typical for biblical manuscripts of its period.';
 
   @override
-  String get papyrus_115_found => 'Papyrus 115 was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century, although it was not deciphered and published until the end of the 20th century.';
+  String get papyrus_115_found => 'The manuscript was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century, although it was not deciphered and published until the end of the 20th century.';
 
   @override
   String get papyrus_115_classification => 'From a textological perspective, this primary source aligns with the Alexandrian text-type. It is classified as Category I among New Testament manuscripts.';

@@ -268,7 +268,7 @@ abstract class AppLocalizations {
   /// No description provided for @topic_0_description.
   ///
   /// In en, this message translates to:
-  /// **'Primary sources, principles, stages'**
+  /// **'Why? Primary sources. Principles.'**
   String get topic_0_description;
 
   /// No description provided for @topic_1_name.
@@ -286,19 +286,19 @@ abstract class AppLocalizations {
   /// No description provided for @full_primary_sources.
   ///
   /// In en, this message translates to:
-  /// **'The whole book'**
+  /// **'Contain the entire Revelation in full'**
   String get full_primary_sources;
 
   /// No description provided for @significant_primary_sources.
   ///
   /// In en, this message translates to:
-  /// **'Significant part'**
+  /// **'Contain a significant part of the Revelation'**
   String get significant_primary_sources;
 
   /// No description provided for @fragments_primary_sources.
   ///
   /// In en, this message translates to:
-  /// **'Small fragments'**
+  /// **'Contain small fragments of the Revelation'**
   String get fragments_primary_sources;
 
   /// No description provided for @verses.
@@ -484,7 +484,7 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_47_found.
   ///
   /// In en, this message translates to:
-  /// **'Papyrus 47 was acquired in the 1930s by Alfred Chester Beatty from an antiquities dealer in Egypt, with the most likely place of discovery being the Faiyum region in Egypt.'**
+  /// **'The manuscript was acquired in the 1930s by Alfred Chester Beatty from an antiquities dealer in Egypt, with the most likely place of discovery being the Faiyum region in Egypt.'**
   String get papyrus_47_found;
 
   /// No description provided for @papyrus_47_classification.
@@ -622,13 +622,13 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_115_textStyle.
   ///
   /// In en, this message translates to:
-  /// **'The text is written in Greek uncial script, arranged in a single column per page with 33-36 lines per column. It follows scriptio continua style without word separation, and features occasional use of punctuation marks and abbreviations typical for biblical manuscripts of its period.'**
+  /// **'The text is written in Greek uncial script, arranged in a single column per page with 33-36 lines. It follows scriptio continua style without word separation, and features occasional use of punctuation marks and abbreviations typical for biblical manuscripts of its period.'**
   String get papyrus_115_textStyle;
 
   /// No description provided for @papyrus_115_found.
   ///
   /// In en, this message translates to:
-  /// **'Papyrus 115 was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century, although it was not deciphered and published until the end of the 20th century.'**
+  /// **'The manuscript was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century, although it was not deciphered and published until the end of the 20th century.'**
   String get papyrus_115_found;
 
   /// No description provided for @papyrus_115_classification.
