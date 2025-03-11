@@ -93,7 +93,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get topic_0_name => 'Передмова';
 
   @override
-  String get topic_0_description => 'Чому? Першоджерела. Принципи.';
+  String get topic_0_description => 'Першоджерела та принципи.';
 
   @override
   String get topic_1_name => 'Вступ';

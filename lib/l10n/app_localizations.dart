@@ -268,7 +268,7 @@ abstract class AppLocalizations {
   /// No description provided for @topic_0_description.
   ///
   /// In en, this message translates to:
-  /// **'Why? Primary sources. Principles.'**
+  /// **'Primary sources and principles.'**
   String get topic_0_description;
 
   /// No description provided for @topic_1_name.
