@@ -472,7 +472,7 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_47_material.
   ///
   /// In en, this message translates to:
-  /// **'The original source is written on papyrus, a material characteristic of early manuscripts. It consists of 10 sheets, approximately 24 by 13 cm in size. The manuscript is one of the oldest surviving fragments of the New Testament.'**
+  /// **'The original source is written on papyrus, a material characteristic of early manuscripts. It consists of 10 sheets, approximately 24 × 13 cm in size. The manuscript is one of the oldest surviving fragments of the New Testament.'**
   String get papyrus_47_material;
 
   /// No description provided for @papyrus_47_textStyle.
@@ -670,7 +670,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_01_textStyle.
   ///
   /// In en, this message translates to:
-  /// **'The manuscript is written in a formal uncial script (biblical majuscule) in Greek, featuring scriptio continua (continuous script without spaces between words). The text is arranged in columns: four per page in the New Testament and two per page for poetic texts. It also includes carefully regulated line breaks, nomina sacra, and distinctive punctuation.'**
+  /// **'The manuscript is written in a formal uncial script (biblical majuscule) in Greek, featuring scriptio continua (continuous script without spaces between words). The text is arranged in columns: four columns per page in the New Testament and two per page for poetic texts. It also includes carefully regulated line breaks, nomina sacra, and distinctive punctuation.'**
   String get uncial_01_textStyle;
 
   /// No description provided for @uncial_01_found.
@@ -856,7 +856,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_46_material.
   ///
   /// In en, this message translates to:
-  /// **'Codex Vaticanus 2066 is written on parchment (vellum), typical of uncial manuscripts. The codex contains the complete text of the Book of Revelation on 20 parchment leaves, each measuring approximately 27.5 cm by 19 cm.'**
+  /// **'Codex Vaticanus 2066 is written on parchment (vellum), typical of uncial manuscripts. The codex contains the complete text of the Book of Revelation on 20 parchment leaves, each measuring approximately 27.5 × 19 cm.'**
   String get uncial_46_material;
 
   /// No description provided for @uncial_46_textStyle.

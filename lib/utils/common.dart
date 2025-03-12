@@ -77,7 +77,12 @@ StyledText getStyledText(String text, TextStyle? style) {
               style: style?.copyWith(fontSize: (style.fontSize ?? 18) - 6),
               textContent ?? ""),
         );
-      })
+      }),
+      'b': StyledTextWidgetBuilderTag((_, attributes, textContent) {
+        return Text(
+            style: style?.copyWith(fontWeight: FontWeight.w700),
+            textContent ?? "");
+      }),
     },
   );
 }

@@ -195,7 +195,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get papyrus_47_content => 'Fragments of Revelation (9:10-11:3); (11:5-16:15) and (16:17-17:2).';
 
   @override
-  String get papyrus_47_material => 'The original source is written on papyrus, a material characteristic of early manuscripts. It consists of 10 sheets, approximately 24 by 13 cm in size. The manuscript is one of the oldest surviving fragments of the New Testament.';
+  String get papyrus_47_material => 'The original source is written on papyrus, a material characteristic of early manuscripts. It consists of 10 sheets, approximately 24 × 13 cm in size. The manuscript is one of the oldest surviving fragments of the New Testament.';
 
   @override
   String get papyrus_47_textStyle => 'The text is written in a compact Greek uncial script using black ink, arranged in a single column per page with approximately 25–30 lines per folio. It employs scriptio continua (continuous writing without word separation).';
@@ -294,7 +294,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_01_material => 'Codex Sinaiticus is written on vellum parchment, primarily made from calfskin, with some portions made from sheepskin. Originally, it was produced on double sheets, likely measuring approximately 40 × 70 cm. The portion held in the British Library consists of 346½ folios (694 pages), each measuring about 38.1 × 34.5 cm.';
 
   @override
-  String get uncial_01_textStyle => 'The manuscript is written in a formal uncial script (biblical majuscule) in Greek, featuring scriptio continua (continuous script without spaces between words). The text is arranged in columns: four per page in the New Testament and two per page for poetic texts. It also includes carefully regulated line breaks, nomina sacra, and distinctive punctuation.';
+  String get uncial_01_textStyle => 'The manuscript is written in a formal uncial script (biblical majuscule) in Greek, featuring scriptio continua (continuous script without spaces between words). The text is arranged in columns: four columns per page in the New Testament and two per page for poetic texts. It also includes carefully regulated line breaks, nomina sacra, and distinctive punctuation.';
 
   @override
   String get uncial_01_found => 'Codex Sinaiticus was discovered in 1844 at Saint Catherine’s Monastery on the Sinai Peninsula by Constantin von Tischendorf.';
@@ -387,7 +387,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_46_content => 'The entire book of Revelation.';
 
   @override
-  String get uncial_46_material => 'Codex Vaticanus 2066 is written on parchment (vellum), typical of uncial manuscripts. The codex contains the complete text of the Book of Revelation on 20 parchment leaves, each measuring approximately 27.5 cm by 19 cm.';
+  String get uncial_46_material => 'Codex Vaticanus 2066 is written on parchment (vellum), typical of uncial manuscripts. The codex contains the complete text of the Book of Revelation on 20 parchment leaves, each measuring approximately 27.5 × 19 cm.';
 
   @override
   String get uncial_46_textStyle => 'The text is written in one column per page, with 35 lines per page and approximately 36 letters per line. It is rendered in a formal uncial script using scriptio continua. The uncial letters are executed in a distinctive style—slightly inclined to the right—and occupy an intermediate form between square and oblong characters. The breathings and accents rendered with considerable accuracy.';
