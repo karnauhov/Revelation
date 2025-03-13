@@ -22,11 +22,6 @@
 
 - Проверить вручную факты и названия, отредактировать, убрать лишнее.
 
-- Библии
-https://on-bible.com/bible/?bibleId=rst&bookId=Rev&chapterId=1
-https://www.biblegateway.com/passage/?search=Revelation%201&version=KJV
-https://only.bible/bible/ubio/rev/
-
 Для версии 1.0.1:
 - Вынести supabaseUrl и supabaseKey в переменные среды (добавить изменения в GitHub autobuild)
 - Пример для загрузки изображения с сервера Supabase
