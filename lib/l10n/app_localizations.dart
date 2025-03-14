@@ -478,7 +478,7 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_47_textStyle.
   ///
   /// In en, this message translates to:
-  /// **'The text is written in a compact Greek uncial script using black ink, arranged in a single column per page with approximately 25–30 lines per folio. It employs scriptio continua (continuous writing without word separation).'**
+  /// **'The text is written in a compact Greek uncial script using black ink, arranged in a single column per page with approximately 25-30 lines per folio. It employs scriptio continua (continuous writing without word separation).'**
   String get papyrus_47_textStyle;
 
   /// No description provided for @papyrus_47_found.
@@ -718,7 +718,7 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_02_textStyle.
   ///
   /// In en, this message translates to:
-  /// **'The text is written in an elegant uncial script in Greek, arranged in two columns per page, with 49–51 lines per column and approximately 20–25 letters per line. It follows scriptio continua (without spaces), with red ink used for the initial lines of each book and decorative tailpieces at the end of each book. Occasional punctuation marks and annotations (e.g., enlarged initials indicating new sections) are present.'**
+  /// **'The text is written in an elegant uncial script in Greek, arranged in two columns per page, with 49-51 lines per column and approximately 20-25 letters per line. It follows scriptio continua (without spaces), with red ink used for the initial lines of each book and decorative tailpieces at the end of each book. Occasional punctuation marks and annotations (e.g., enlarged initials indicating new sections) are present.'**
   String get uncial_02_textStyle;
 
   /// No description provided for @uncial_02_found.
@@ -760,31 +760,31 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_04_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The Codex Ephraemi Rescriptus is a palimpsest manuscript of the Greek Bible, written on parchment. It consists of 209 leaves, measuring approximately 33 x 27 cm, with 145 leaves belonging to the New Testament and 64 to the Old Testament.'**
   String get uncial_04_material;
 
   /// No description provided for @uncial_04_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is written in medium-sized uncial script in Greek, arranged in a single column per page with 40-46 lines per column. The codex follows scriptio continua without word separation, using only a single point for punctuation, and features enlarged letters at the beginning of sections protruding into the margin. The manuscript includes nomina sacra contracted into three-letter forms.'**
   String get uncial_04_textStyle;
 
   /// No description provided for @uncial_04_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript was brought to Florence by an émigré scholar after the fall of Constantinople in 1453, and then transported to France in the 16th century by Catherine de\' Medici. The oldest biblical text was first noticed by Pierre Allix, a Protestant pastor, in the early 18th century. Various scholars occasionally made excerpts from the manuscript, but Tischendorf was the first to read it in its entirety in 1845.'**
   String get uncial_04_found;
 
   /// No description provided for @uncial_04_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, the codex primarily represents the Alexandrian text-type, although its affiliation varies across different books of the New Testament. Kurt Aland classified it as a Category II manuscript in his New Testament manuscript text classification system.'**
   String get uncial_04_classification;
 
   /// No description provided for @uncial_04_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The Codex Ephraemi Rescriptus is currently housed in the National Library of France in Paris.'**
   String get uncial_04_currentLocation;
 
   /// No description provided for @uncial_25_title.
@@ -862,13 +862,13 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_46_textStyle.
   ///
   /// In en, this message translates to:
-  /// **'The text is written in one column per page, with 35 lines per page and approximately 36 letters per line. It is rendered in a formal uncial script using scriptio continua. The uncial letters are executed in a distinctive style—slightly inclined to the right—and occupy an intermediate form between square and oblong characters. The breathings and accents rendered with considerable accuracy.'**
+  /// **'The text is written in one column per page, with 35 lines per page and approximately 36 letters per line. It is rendered in a formal uncial script using scriptio continua. The uncial letters are executed in a distinctive style – slightly inclined to the right – and occupy an intermediate form between square and oblong characters. The breathings and accents rendered with considerable accuracy.'**
   String get uncial_46_textStyle;
 
   /// No description provided for @uncial_46_found.
   ///
   /// In en, this message translates to:
-  /// **'The manuscript once belonged to Philippo Vitali (1590–1653). The text of the codex was published by Cardinal Angelo Mai in 1859 in Rome.'**
+  /// **'The manuscript once belonged to Philippo Vitali (1590-1653). The text of the codex was published by Cardinal Angelo Mai in 1859 in Rome.'**
   String get uncial_46_found;
 
   /// No description provided for @uncial_46_classification.
