@@ -904,31 +904,31 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_51_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Uncial is written on parchment (vellum). It consists of 92 folios, each measuring approximately 23 × 18 cm. The manuscript contains an incomplete text of the Book of Revelation along with a commentary by Andreas of Caesarea.'**
   String get uncial_51_material;
 
   /// No description provided for @uncial_51_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is inscribed in uncial letters, arranged in a single column per page with 22 lines (the text block measuring 16.6 × 10.5 cm). The uncial letters are slightly inclined to the right, and a commentary is rendered in cursive script. The manuscript features breathings and accents.'**
   String get uncial_51_textStyle;
 
   /// No description provided for @uncial_51_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript was brought to scholarly attention in 1899 when it was photographed by Kirsopp Lake at the Monastery of Pantokratoros on Mount Athos.'**
   String get uncial_51_found;
 
   /// No description provided for @uncial_51_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, uncial exhibits a mixed text-type and is classified as Category III among New Testament manuscripts.'**
   String get uncial_51_classification;
 
   /// No description provided for @uncial_51_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Today, Uncial 051 continues to be preserved at the Pantokratoros Monastery on Mount Athos, Greece.'**
   String get uncial_51_currentLocation;
 
   /// No description provided for @uncial_52_title.

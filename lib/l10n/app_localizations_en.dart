@@ -411,19 +411,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_51_content => 'Fragments of Revelation (11:15-19); (12:1-18); (13:1,3-18); (14:1-20); (15:1-8); (16:1-21); (17:1-18); (18:1-24); (19:1-21); (20:1-15); (21:1-27); (22:1-7,15-21).';
 
   @override
-  String get uncial_51_material => '';
+  String get uncial_51_material => 'Uncial is written on parchment (vellum). It consists of 92 folios, each measuring approximately 23 × 18 cm. The manuscript contains an incomplete text of the Book of Revelation along with a commentary by Andreas of Caesarea.';
 
   @override
-  String get uncial_51_textStyle => '';
+  String get uncial_51_textStyle => 'The text is inscribed in uncial letters, arranged in a single column per page with 22 lines (the text block measuring 16.6 × 10.5 cm). The uncial letters are slightly inclined to the right, and a commentary is rendered in cursive script. The manuscript features breathings and accents.';
 
   @override
-  String get uncial_51_found => '';
+  String get uncial_51_found => 'The manuscript was brought to scholarly attention in 1899 when it was photographed by Kirsopp Lake at the Monastery of Pantokratoros on Mount Athos.';
 
   @override
-  String get uncial_51_classification => '';
+  String get uncial_51_classification => 'From a textological perspective, uncial exhibits a mixed text-type and is classified as Category III among New Testament manuscripts.';
 
   @override
-  String get uncial_51_currentLocation => '';
+  String get uncial_51_currentLocation => 'Today, Uncial 051 continues to be preserved at the Pantokratoros Monastery on Mount Athos, Greece.';
 
   @override
   String get uncial_52_title => 'Codex Athous Panteleimon (Uncial 052)';
