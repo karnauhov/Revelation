@@ -568,31 +568,31 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_98_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The primary source is written on papyrus and comprises a single fragment measuring approximately 15 × 16 cm, originally forming part of a scroll containing Revelation.'**
   String get papyrus_98_material;
 
   /// No description provided for @papyrus_98_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The surviving text of Revelation is in a fragmentary state. The script is large and well-formed, written in uncial style. The fragment was part of a scroll. The biblical text is located on the verso side, while the recto contains another documentary text, dated to the late 1st or early 2nd century.'**
   String get papyrus_98_textStyle;
 
   /// No description provided for @papyrus_98_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The papyrus was discovered in Egypt and first published by Wagner in 1971, although he did not initially recognize it as a biblical text. It wasn\'t until 1992 that Dieter Hagedorn identified it as a fragment of the Book of Revelation.'**
   String get papyrus_98_found;
 
   /// No description provided for @papyrus_98_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, the manuscript has not been assigned to any of Aland\'s established categories of New Testament manuscripts.'**
   String get papyrus_98_classification;
 
   /// No description provided for @papyrus_98_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 98 is currently housed at the French Institute for Oriental Archaeology in Cairo, Egypt.'**
   String get papyrus_98_currentLocation;
 
   /// No description provided for @papyrus_115_title.
