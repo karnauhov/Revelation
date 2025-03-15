@@ -363,19 +363,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_25_content => 'The entire book of Revelation except fragments (16:13-21); (20:1-8); (22:7-21).';
 
   @override
-  String get uncial_25_material => '';
+  String get uncial_25_material => 'The Codex Porphyrianus is written on parchment and consists of 327 folios measuring approximately 16 × 13 cm. It is a palimpsest containing Euthalius\' commentary on Acts and Paul’s epistles alongside the biblical text.';
 
   @override
-  String get uncial_25_textStyle => '';
+  String get uncial_25_textStyle => 'The text is written in a Greek uncial script, arranged in a single column per page with 24 lines each, and incorporates breathings, accents, and apostrophes.';
 
   @override
-  String get uncial_25_found => '';
+  String get uncial_25_found => 'The manuscript was discovered by Constantin von Tischendorf in 1862 in Saint Petersburg, Russia, in the possession of Archimandrite Porphyrius Uspensky. Tischendorf was allowed to take the manuscript to Leipzig to decipher its lower script.';
 
   @override
-  String get uncial_25_classification => '';
+  String get uncial_25_classification => 'From a textological perspective, the codex is a mixed manuscript; its text of the Pauline and General Epistles exhibits the characteristics of the Alexandrian text-type and is classified as Category III, while the text of Acts and Revelation follows the Byzantine tradition, placing it in Category V.';
 
   @override
-  String get uncial_25_currentLocation => '';
+  String get uncial_25_currentLocation => 'Codex Porphyrianus is currently housed at the National Library of Russia in Saint Petersburg.';
 
   @override
   String get uncial_46_title => 'Codex Vaticanus 2066 (Uncial 046)';

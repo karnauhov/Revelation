@@ -808,31 +808,31 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_25_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The Codex Porphyrianus is written on parchment and consists of 327 folios measuring approximately 16 × 13 cm. It is a palimpsest containing Euthalius\' commentary on Acts and Paul’s epistles alongside the biblical text.'**
   String get uncial_25_material;
 
   /// No description provided for @uncial_25_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is written in a Greek uncial script, arranged in a single column per page with 24 lines each, and incorporates breathings, accents, and apostrophes.'**
   String get uncial_25_textStyle;
 
   /// No description provided for @uncial_25_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript was discovered by Constantin von Tischendorf in 1862 in Saint Petersburg, Russia, in the possession of Archimandrite Porphyrius Uspensky. Tischendorf was allowed to take the manuscript to Leipzig to decipher its lower script.'**
   String get uncial_25_found;
 
   /// No description provided for @uncial_25_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, the codex is a mixed manuscript; its text of the Pauline and General Epistles exhibits the characteristics of the Alexandrian text-type and is classified as Category III, while the text of Acts and Revelation follows the Byzantine tradition, placing it in Category V.'**
   String get uncial_25_classification;
 
   /// No description provided for @uncial_25_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Porphyrianus is currently housed at the National Library of Russia in Saint Petersburg.'**
   String get uncial_25_currentLocation;
 
   /// No description provided for @uncial_46_title.

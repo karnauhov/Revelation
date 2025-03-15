@@ -210,13 +210,13 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
                 ),
                 WrappableText(
                   text: TextSpan(
-                    text: "🔓 ${source.found}",
+                    text: "🗂 ${source.classification}",
                     style: theme.bodyMedium,
                   ),
                 ),
                 WrappableText(
                   text: TextSpan(
-                    text: "🗂 ${source.classification}",
+                    text: "🔓 ${source.found}",
                     style: theme.bodyMedium,
                   ),
                 ),
