@@ -328,31 +328,31 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_18_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 18 is an early Greek New Testament manuscript containing a fragment of the Book of Revelation, also known as Oxyrhynchus Papyrus #1079. It consists of a single papyrus leaf measuring approximately 15 × 10 cm, with text written on both sides. The recto contains the end of Exodus, while the verso features the beginning of Revelation, suggesting it may have been part of a codex with miscellaneous contents or a reused scroll.'**
   String get papyrus_18_material;
 
   /// No description provided for @papyrus_18_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is written in a clear, medium-sized cursive script. It follows scriptio continua (continuous writing without spaces) and employs nomina sacra (sacred names) in abbreviated forms.'**
   String get papyrus_18_textStyle;
 
   /// No description provided for @papyrus_18_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century. The fragment subsequently published in 1911.'**
   String get papyrus_18_found;
 
   /// No description provided for @papyrus_18_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, the manuscript is classified as a representative of the Alexandrian text-type and is placed in Category I among New Testament manuscripts according to the Aland classification.'**
   String get papyrus_18_classification;
 
   /// No description provided for @papyrus_18_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Currently, Papyrus 18 is housed in the British Library in London.'**
   String get papyrus_18_currentLocation;
 
   /// No description provided for @papyrus_24_title.
@@ -616,7 +616,7 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_115_material.
   ///
   /// In en, this message translates to:
-  /// **'Papyrus 115 is a fragmented Greek manuscript of the New Testament, written on papyrus. It comprises 26 fragments of a codex containing portions of the Book of Revelation. The original pages measured approximately 15.5 × 23.5 cm.'**
+  /// **'Papyrus 115 is a fragmented Greek manuscript of the New Testament, written on papyrus, also known as Oxyrhynchus Papyrus #4499. It comprises 26 fragments of a codex containing portions of the Book of Revelation. The original pages measured approximately 15.5 × 23.5 cm.'**
   String get papyrus_115_material;
 
   /// No description provided for @papyrus_115_textStyle.
