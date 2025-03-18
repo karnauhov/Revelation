@@ -376,31 +376,31 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_24_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 24 is an early Greek New Testament manuscript, also known as Oxyrhynchus Papyrus #1230. It consists of a papyrus fragment measuring approximately 4 × 7 cm, with text from the Book of Revelation preserved on both sides. It is believed that initially the text was written on a larger sheet measuring approximately 19 × 28 cm.'**
   String get papyrus_24_material;
 
   /// No description provided for @papyrus_24_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Fragment of a leaf written in a medium-sized sloping informal hand. The lines appear to have been fairly long, containing about 30-32 letters. The text follows scriptio continua (continuous writing without spaces between words).'**
   String get papyrus_24_textStyle;
 
   /// No description provided for @papyrus_24_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century. The fragment subsequently published in 1914.'**
   String get papyrus_24_found;
 
   /// No description provided for @papyrus_24_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript is a representative of the Alexandrian text-type (rather proto-Alexandrian). Aland classified it as Category I. It shows textual agreement with Papyrus 18, Papyrus 47, and Codex Sinaiticus, but the surviving fragment is too small to determine its overall textual character with certainty.'**
   String get papyrus_24_classification;
 
   /// No description provided for @papyrus_24_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 24 is currently housed at the Yale Divinity Library in New Haven, Connecticut, as part of the Andover Newton Oxyrhynchus Papyri collection.'**
   String get papyrus_24_currentLocation;
 
   /// No description provided for @papyrus_43_title.
