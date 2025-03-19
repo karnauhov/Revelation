@@ -243,7 +243,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get papyrus_98_content => 'Fragment of Revelation (1:13-2:1).';
 
   @override
-  String get papyrus_98_material => 'The primary source is written on papyrus and comprises a single fragment measuring approximately 15 × 16 cm, originally forming part of a scroll containing Revelation.';
+  String get papyrus_98_material => 'The primary source is written on papyrus and comprises a single fragment measuring approximately 7 × 13 cm, originally forming part of a scroll containing Revelation.';
 
   @override
   String get papyrus_98_textStyle => 'The surviving text of Revelation is in a fragmentary state. The script is large and well-formed, written in uncial style. The fragment was part of a scroll. The biblical text is located on the verso side, while the recto contains another documentary text, dated to the late 1st or early 2nd century.';
@@ -483,19 +483,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_169_content => 'Fragment of Revelation (3:19-4:3).';
 
   @override
-  String get uncial_169_material => '';
+  String get uncial_169_material => 'Uncial 0169, also known as the Princeton fragment or Oxyrhynchus Manuscript #1080, is a Greek uncial manuscript written on parchment (vellum). It consists of a single, nearly complete leaf measuring 9.3 × 7.7 cm, containing two pages numbered 33 and 34, with small portions of the Book of Revelation.';
 
   @override
-  String get uncial_169_textStyle => '';
+  String get uncial_169_textStyle => 'The text is written in a fair-sized upright uncial script, fairly regular with some ornamental finish, arranged in one column with 14 lines per page, and follows scriptio continua (continuous writing without spaces).';
 
   @override
-  String get uncial_169_found => '';
+  String get uncial_169_found => 'The manuscript was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century. The fragment subsequently published in 1911.';
 
   @override
-  String get uncial_169_classification => '';
+  String get uncial_169_classification => 'From a textological perspective, the uncial belongs to the Alexandrian text-type and is classified as Category III among New Testament manuscripts.';
 
   @override
-  String get uncial_169_currentLocation => '';
+  String get uncial_169_currentLocation => 'Today, Uncial 0169 is housed in the library of Princeton Theological Seminary in Princeton, USA.';
 
   @override
   String get uncial_207_title => 'Uncial 0207';

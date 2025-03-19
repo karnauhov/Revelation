@@ -11,7 +11,7 @@ All notable changes to this application will be documented here.
 - Main menu (left side);
 - Main screen (List of topics);
 - Topic screen (Markdown content, Preface);
-- Primary Sources screen (7 papyruses and 12 uncials);
+- Primary Sources screen (7 papyri and 12 uncials);
 - Settings screen (Change language);
 - About screen (Common info, Contact link, Acknowledgments and 3rd party licenses, Changelog);
 
