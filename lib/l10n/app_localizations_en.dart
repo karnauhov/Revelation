@@ -102,6 +102,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topic_1_description => 'Revelation 1:1-3';
 
   @override
+  String get show_more => 'show more information';
+
+  @override
+  String get hide => 'hide';
+
+  @override
   String get full_primary_sources => 'Contain the entire Revelation in full';
 
   @override

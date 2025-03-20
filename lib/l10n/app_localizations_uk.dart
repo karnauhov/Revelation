@@ -102,6 +102,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get topic_1_description => 'Об\'явлення 1:1-3';
 
   @override
+  String get show_more => 'показати більше інформації';
+
+  @override
+  String get hide => 'приховати';
+
+  @override
   String get full_primary_sources => 'Містять все Об\'явлення повністю';
 
   @override

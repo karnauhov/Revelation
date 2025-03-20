@@ -14,6 +14,7 @@ class PrimarySource {
   final String link2Url;
   final String preview;
   final List<String> images;
+  bool showMore = false;
 
   PrimarySource({
     required this.title,

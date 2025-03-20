@@ -102,6 +102,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get topic_1_description => 'Откровение 1:1-3';
 
   @override
+  String get show_more => 'показать больше информации';
+
+  @override
+  String get hide => 'скрыть';
+
+  @override
   String get full_primary_sources => 'Содержат все Откровение целиком';
 
   @override

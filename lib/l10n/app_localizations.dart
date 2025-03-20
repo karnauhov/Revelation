@@ -283,6 +283,18 @@ abstract class AppLocalizations {
   /// **'Revelation 1:1-3'**
   String get topic_1_description;
 
+  /// No description provided for @show_more.
+  ///
+  /// In en, this message translates to:
+  /// **'show more information'**
+  String get show_more;
+
+  /// No description provided for @hide.
+  ///
+  /// In en, this message translates to:
+  /// **'hide'**
+  String get hide;
+
   /// No description provided for @full_primary_sources.
   ///
   /// In en, this message translates to:
