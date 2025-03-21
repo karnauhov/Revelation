@@ -260,25 +260,6 @@ class PrimarySourcesRepository {
     AppLocalizations loc = AppLocalizations.of(context)!;
     final sources = [
       PrimarySource(
-          title: loc.papyrus_98_title,
-          date: loc.papyrus_98_date,
-          content: loc.papyrus_98_content,
-          quantity: 9,
-          material: loc.papyrus_98_material,
-          textStyle: loc.papyrus_98_textStyle,
-          found: loc.papyrus_98_found,
-          classification: loc.papyrus_98_classification,
-          currentLocation: loc.papyrus_98_currentLocation,
-          link1Title: loc.wikipedia,
-          link1Url: 'https://en.wikipedia.org/wiki/Papyrus_98',
-          link2Title: loc.intf,
-          link2Url:
-              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10098',
-          preview: 'assets/images/Resources/10098/preview.png',
-          images: [
-            'primary_sources/10098/P98.jpg',
-          ]),
-      PrimarySource(
           title: loc.papyrus_18_title,
           date: loc.papyrus_18_date,
           content: loc.papyrus_18_content,
@@ -314,6 +295,104 @@ class PrimarySourcesRepository {
           images: [
             'primary_sources/10024/P24_A.jpg',
             'primary_sources/10024/P24_B.jpg'
+          ]),
+      PrimarySource(
+          title: loc.papyrus_43_title,
+          date: loc.papyrus_43_date,
+          content: loc.papyrus_43_content,
+          quantity: 5,
+          material: loc.papyrus_43_material,
+          textStyle: loc.papyrus_43_textStyle,
+          found: loc.papyrus_43_found,
+          classification: loc.papyrus_43_classification,
+          currentLocation: loc.papyrus_43_currentLocation,
+          link1Title: loc.wikipedia,
+          link1Url: 'https://en.wikipedia.org/wiki/Papyrus_43',
+          link2Title: loc.intf,
+          link2Url:
+              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10043',
+          preview: 'assets/images/Resources/10043/preview.png',
+          images: [
+            'primary_sources/10043/P43_A.jpg',
+            'primary_sources/10043/P43_B.jpg'
+          ]),
+      PrimarySource(
+          title: loc.papyrus_85_title,
+          date: loc.papyrus_85_date,
+          content: loc.papyrus_85_content,
+          quantity: 10,
+          material: loc.papyrus_85_material,
+          textStyle: loc.papyrus_85_textStyle,
+          found: loc.papyrus_85_found,
+          classification: loc.papyrus_85_classification,
+          currentLocation: loc.papyrus_85_currentLocation,
+          link1Title: loc.wikipedia,
+          link1Url: 'https://en.wikipedia.org/wiki/Papyrus_85',
+          link2Title: loc.intf,
+          link2Url:
+              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10085',
+          preview: 'assets/images/Resources/10085/preview.png',
+          images: [
+            'primary_sources/10085/10085x00010Xa_INTF.jpg',
+            'primary_sources/10085/10085x00020Xa_INTF.jpg'
+          ]),
+      PrimarySource(
+          title: loc.papyrus_98_title,
+          date: loc.papyrus_98_date,
+          content: loc.papyrus_98_content,
+          quantity: 9,
+          material: loc.papyrus_98_material,
+          textStyle: loc.papyrus_98_textStyle,
+          found: loc.papyrus_98_found,
+          classification: loc.papyrus_98_classification,
+          currentLocation: loc.papyrus_98_currentLocation,
+          link1Title: loc.wikipedia,
+          link1Url: 'https://en.wikipedia.org/wiki/Papyrus_98',
+          link2Title: loc.intf,
+          link2Url:
+              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10098',
+          preview: 'assets/images/Resources/10098/preview.png',
+          images: [
+            'primary_sources/10098/P98.jpg',
+          ]),
+      PrimarySource(
+          title: loc.uncial_52_title,
+          date: loc.uncial_52_date,
+          content: loc.uncial_52_content,
+          quantity: 14,
+          material: loc.uncial_52_material,
+          textStyle: loc.uncial_52_textStyle,
+          found: loc.uncial_52_found,
+          classification: loc.uncial_52_classification,
+          currentLocation: loc.uncial_52_currentLocation,
+          link1Title: loc.wikipedia,
+          link1Url: 'https://en.wikipedia.org/wiki/Uncial_052',
+          link2Title: loc.intf,
+          link2Url:
+              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20052',
+          preview: 'assets/images/Resources/20052/preview.png',
+          images: [
+            'primary_sources/20052/20052x00090XX_INTF.jpg',
+          ]),
+      PrimarySource(
+          title: loc.uncial_163_title,
+          date: loc.uncial_163_date,
+          content: loc.uncial_163_content,
+          quantity: 4,
+          material: loc.uncial_163_material,
+          textStyle: loc.uncial_163_textStyle,
+          found: loc.uncial_163_found,
+          classification: loc.uncial_163_classification,
+          currentLocation: loc.uncial_163_currentLocation,
+          link1Title: loc.wikipedia,
+          link1Url: 'https://en.wikipedia.org/wiki/Uncial_0163',
+          link2Title: loc.intf,
+          link2Url:
+              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20163',
+          preview: 'assets/images/Resources/20163/preview.png',
+          images: [
+            'primary_sources/20163/20163_A.jpg',
+            'primary_sources/20163/20163_B.jpg',
           ]),
       PrimarySource(
           title: loc.uncial_169_title,
@@ -356,86 +435,6 @@ class PrimarySourcesRepository {
             'primary_sources/20207/20207x00020Xa.jpg',
           ]),
       PrimarySource(
-          title: loc.uncial_308_title,
-          date: loc.uncial_308_date,
-          content: loc.uncial_308_content,
-          quantity: 4,
-          material: loc.uncial_308_material,
-          textStyle: loc.uncial_308_textStyle,
-          found: loc.uncial_308_found,
-          classification: loc.uncial_308_classification,
-          currentLocation: loc.uncial_308_currentLocation,
-          link1Title: loc.wikipedia,
-          link1Url: 'https://en.wikipedia.org/wiki/Uncial_0308',
-          link2Title: loc.intf,
-          link2Url:
-              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20308',
-          preview: 'assets/images/Resources/20308/preview.png',
-          images: [
-            'primary_sources/20308/Uncial_0308_POxy_4500_recto.jpg',
-            'primary_sources/20308/Uncial_0308_hair_side.jpg',
-          ]),
-      PrimarySource(
-          title: loc.papyrus_85_title,
-          date: loc.papyrus_85_date,
-          content: loc.papyrus_85_content,
-          quantity: 10,
-          material: loc.papyrus_85_material,
-          textStyle: loc.papyrus_85_textStyle,
-          found: loc.papyrus_85_found,
-          classification: loc.papyrus_85_classification,
-          currentLocation: loc.papyrus_85_currentLocation,
-          link1Title: loc.wikipedia,
-          link1Url: 'https://en.wikipedia.org/wiki/Papyrus_85',
-          link2Title: loc.intf,
-          link2Url:
-              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10085',
-          preview: 'assets/images/Resources/10085/preview.png',
-          images: [
-            'primary_sources/10085/10085x00010Xa_INTF.jpg',
-            'primary_sources/10085/10085x00020Xa_INTF.jpg'
-          ]),
-      PrimarySource(
-          title: loc.uncial_163_title,
-          date: loc.uncial_163_date,
-          content: loc.uncial_163_content,
-          quantity: 4,
-          material: loc.uncial_163_material,
-          textStyle: loc.uncial_163_textStyle,
-          found: loc.uncial_163_found,
-          classification: loc.uncial_163_classification,
-          currentLocation: loc.uncial_163_currentLocation,
-          link1Title: loc.wikipedia,
-          link1Url: 'https://en.wikipedia.org/wiki/Uncial_0163',
-          link2Title: loc.intf,
-          link2Url:
-              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20163',
-          preview: 'assets/images/Resources/20163/preview.png',
-          images: [
-            'primary_sources/20163/20163_A.jpg',
-            'primary_sources/20163/20163_B.jpg',
-          ]),
-      PrimarySource(
-          title: loc.papyrus_43_title,
-          date: loc.papyrus_43_date,
-          content: loc.papyrus_43_content,
-          quantity: 5,
-          material: loc.papyrus_43_material,
-          textStyle: loc.papyrus_43_textStyle,
-          found: loc.papyrus_43_found,
-          classification: loc.papyrus_43_classification,
-          currentLocation: loc.papyrus_43_currentLocation,
-          link1Title: loc.wikipedia,
-          link1Url: 'https://en.wikipedia.org/wiki/Papyrus_43',
-          link2Title: loc.intf,
-          link2Url:
-              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10043',
-          preview: 'assets/images/Resources/10043/preview.png',
-          images: [
-            'primary_sources/10043/P43_A.jpg',
-            'primary_sources/10043/P43_B.jpg'
-          ]),
-      PrimarySource(
           title: loc.uncial_229_title,
           date: loc.uncial_229_date,
           content: loc.uncial_229_content,
@@ -458,24 +457,25 @@ class PrimarySourcesRepository {
             'primary_sources/20229/PSI_XIII_1296_b_v.jpg',
           ]),
       PrimarySource(
-          title: loc.uncial_52_title,
-          date: loc.uncial_52_date,
-          content: loc.uncial_52_content,
-          quantity: 14,
-          material: loc.uncial_52_material,
-          textStyle: loc.uncial_52_textStyle,
-          found: loc.uncial_52_found,
-          classification: loc.uncial_52_classification,
-          currentLocation: loc.uncial_52_currentLocation,
+          title: loc.uncial_308_title,
+          date: loc.uncial_308_date,
+          content: loc.uncial_308_content,
+          quantity: 4,
+          material: loc.uncial_308_material,
+          textStyle: loc.uncial_308_textStyle,
+          found: loc.uncial_308_found,
+          classification: loc.uncial_308_classification,
+          currentLocation: loc.uncial_308_currentLocation,
           link1Title: loc.wikipedia,
-          link1Url: 'https://en.wikipedia.org/wiki/Uncial_052',
+          link1Url: 'https://en.wikipedia.org/wiki/Uncial_0308',
           link2Title: loc.intf,
           link2Url:
-              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20052',
-          preview: 'assets/images/Resources/20052/preview.png',
+              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20308',
+          preview: 'assets/images/Resources/20308/preview.png',
           images: [
-            'primary_sources/20052/20052x00090XX_INTF.jpg',
-          ])
+            'primary_sources/20308/Uncial_0308_POxy_4500_recto.jpg',
+            'primary_sources/20308/Uncial_0308_hair_side.jpg',
+          ]),
     ];
 
     return sources;

@@ -1108,31 +1108,31 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_207_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Uncial 0207 is a Greek uncial manuscript of the New Testament. It consists of a single parchment leaf measuring 19 × 15 cm, containing a small portion of the Book of Revelation.'**
   String get uncial_207_material;
 
   /// No description provided for @uncial_207_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is written in small uncial Greek letters, arranged in two columns per page with 29 lines per column. It follows the scriptio continua style (without spaces between words). The leaf is paginated with the number 478, indicating it was part of a larger codex.'**
   String get uncial_207_textStyle;
 
   /// No description provided for @uncial_207_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript was discovered in Egypt and was added to the list of New Testament manuscripts by Ernst von Dobschütz in 1933.'**
   String get uncial_207_found;
 
   /// No description provided for @uncial_207_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, the uncial belongs to the Alexandrian text-type and is classified as Category III among New Testament manuscripts.'**
   String get uncial_207_classification;
 
   /// No description provided for @uncial_207_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Uncial 0207 is currently housed at the Laurentian Library in Florence, Italy.'**
   String get uncial_207_currentLocation;
 
   /// No description provided for @uncial_229_title.

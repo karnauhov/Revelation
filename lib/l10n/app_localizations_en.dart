@@ -513,19 +513,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_207_content => 'Fragment of Revelation (9:2-15).';
 
   @override
-  String get uncial_207_material => '';
+  String get uncial_207_material => 'Uncial 0207 is a Greek uncial manuscript of the New Testament. It consists of a single parchment leaf measuring 19 × 15 cm, containing a small portion of the Book of Revelation.';
 
   @override
-  String get uncial_207_textStyle => '';
+  String get uncial_207_textStyle => 'The text is written in small uncial Greek letters, arranged in two columns per page with 29 lines per column. It follows the scriptio continua style (without spaces between words). The leaf is paginated with the number 478, indicating it was part of a larger codex.';
 
   @override
-  String get uncial_207_found => '';
+  String get uncial_207_found => 'The manuscript was discovered in Egypt and was added to the list of New Testament manuscripts by Ernst von Dobschütz in 1933.';
 
   @override
-  String get uncial_207_classification => '';
+  String get uncial_207_classification => 'From a textological perspective, the uncial belongs to the Alexandrian text-type and is classified as Category III among New Testament manuscripts.';
 
   @override
-  String get uncial_207_currentLocation => '';
+  String get uncial_207_currentLocation => 'Uncial 0207 is currently housed at the Laurentian Library in Florence, Italy.';
 
   @override
   String get uncial_229_title => 'Uncial 0229';
