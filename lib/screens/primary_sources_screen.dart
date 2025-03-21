@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:float_column/float_column.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/viewmodels/primary_sources_view_model.dart';
+import 'package:revelation/widgets/source_item.dart';
 import '../utils/common.dart';
 import '../models/primary_source.dart';
 
@@ -146,126 +146,6 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
   }
 
   Widget _buildSourceItem(BuildContext context, PrimarySource source) {
-    TextTheme theme = Theme.of(context).textTheme;
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-        child: FloatColumn(
-          children: [
-            Text.rich(
-              textAlign: TextAlign.center,
-              TextSpan(children: [
-                WidgetSpan(
-                  child: Floatable(
-                    float: FCFloat.none,
-                    padding: EdgeInsets.only(right: 0),
-                    child: getStyledText(
-                      source.title,
-                      theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-            Floatable(
-              float: FCFloat.start,
-              padding: EdgeInsets.only(right: 8),
-              child: GestureDetector(
-                onTap: () {
-                  //context.push('/primary');
-                },
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: Image.asset(
-                    source.preview,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            WrappableText(
-              text: TextSpan(
-                text: "✒ ${source.date}",
-                style: theme.bodyMedium,
-              ),
-            ),
-            WrappableText(
-              text: TextSpan(
-                text:
-                    "📖 ${source.content} [${AppLocalizations.of(context)!.verses}: ${source.quantity}]",
-                style: theme.bodyMedium,
-              ),
-            ),
-            WrappableText(
-              text: TextSpan(
-                text: !source.showMore
-                    ? "(${AppLocalizations.of(context)!.show_more})"
-                    : "(${AppLocalizations.of(context)!.hide})",
-                style: TextStyle(color: Colors.blue),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    source.showMore = !source.showMore;
-                  },
-              ),
-            ),
-            if (source.showMore)
-              WrappableText(
-                text: TextSpan(
-                  text: "📜 ${source.material}",
-                  style: theme.bodyMedium,
-                ),
-              ),
-            if (source.showMore)
-              WrappableText(
-                text: TextSpan(
-                  text: "🔎 ${source.textStyle}",
-                  style: theme.bodyMedium,
-                ),
-              ),
-            if (source.showMore)
-              WrappableText(
-                text: TextSpan(
-                  text: "🗂 ${source.classification}",
-                  style: theme.bodyMedium,
-                ),
-              ),
-            if (source.showMore)
-              WrappableText(
-                text: TextSpan(
-                  text: "🔓 ${source.found}",
-                  style: theme.bodyMedium,
-                ),
-              ),
-            if (source.showMore)
-              WrappableText(
-                text: TextSpan(
-                  text: "📌 ${source.currentLocation}",
-                  style: theme.bodyMedium,
-                ),
-              ),
-            if (source.showMore)
-              TextSpan(text: "🌐 ", style: theme.bodyMedium, children: [
-                TextSpan(
-                  text: "[${source.link1Title}], ",
-                  style: TextStyle(color: Colors.blue),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      launchLink(source.link1Url);
-                    },
-                ),
-                TextSpan(
-                  text: "[${source.link2Title}]",
-                  style: TextStyle(color: Colors.blue),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      launchLink(source.link2Url);
-                    },
-                )
-              ])
-          ],
-        ),
-      ),
-    );
+    return SourceItemWidget(source: source);
   }
 }
