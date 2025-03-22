@@ -153,7 +153,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get papyrus_24_content => 'Fragments of Revelation (5:5-8) and (6:5-8).';
 
   @override
-  String get papyrus_24_material => 'Papyrus 24 is an early Greek New Testament manuscript, also known as Oxyrhynchus Papyrus #1230. It consists of a papyrus fragment measuring approximately 4 × 7 cm, with text from the Book of Revelation preserved on both sides. It is believed that initially the text was written on a larger sheet measuring approximately 19 × 28 cm.';
+  String get papyrus_24_material => 'Papyrus 24 is an early Greek New Testament manuscript, also known as Oxyrhynchus Papyrus #1230. It consists of light-colored papyrus fragment measuring approximately 4 × 7 cm, with text from the Book of Revelation preserved on both sides. It is believed that initially the text was written on a larger sheet measuring approximately 19 × 28 cm.';
 
   @override
   String get papyrus_24_textStyle => 'Fragment of a leaf written in a medium-sized sloping informal hand. The lines appear to have been fairly long, containing about 30-32 letters. The text follows scriptio continua (continuous writing without spaces between words).';
@@ -177,19 +177,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get papyrus_43_content => 'Fragments of Revelation (2:12-13) and (15:8-16:2).';
 
   @override
-  String get papyrus_43_material => '';
+  String get papyrus_43_material => 'Papyrus 43 is New Testament manuscript. It consists of light-colored papyrus fragment measuring approximately 4 × 7 cm, with text from the Book of Revelation preserved on both sides.';
 
   @override
-  String get papyrus_43_textStyle => '';
+  String get papyrus_43_textStyle => 'The text is written in Greek using two inelegant sloping hands and follows scriptio continua (continuous writing without spaces). The writing on the verso is oriented in the opposite direction to that on the recto.';
 
   @override
-  String get papyrus_43_found => '';
+  String get papyrus_43_found => 'The primary source was discovered during the excavations at Wadi Sarga in Egypt during the winter of 1913-1914, led by Mr. R. Campbell Thompson.';
 
   @override
-  String get papyrus_43_classification => '';
+  String get papyrus_43_classification => 'From a textological perspective, the manuscript is considered a representative of the Alexandrian text-type and is classified as Category II in Kurt Aland\'s New Testament manuscripts classification system.';
 
   @override
-  String get papyrus_43_currentLocation => '';
+  String get papyrus_43_currentLocation => 'Currently, Papyrus 43 is housed in the British Library in London.';
 
   @override
   String get papyrus_47_title => 'Papyrus 47 (P<sup>47</sup>)';

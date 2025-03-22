@@ -388,7 +388,7 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_24_material.
   ///
   /// In en, this message translates to:
-  /// **'Papyrus 24 is an early Greek New Testament manuscript, also known as Oxyrhynchus Papyrus #1230. It consists of a papyrus fragment measuring approximately 4 × 7 cm, with text from the Book of Revelation preserved on both sides. It is believed that initially the text was written on a larger sheet measuring approximately 19 × 28 cm.'**
+  /// **'Papyrus 24 is an early Greek New Testament manuscript, also known as Oxyrhynchus Papyrus #1230. It consists of light-colored papyrus fragment measuring approximately 4 × 7 cm, with text from the Book of Revelation preserved on both sides. It is believed that initially the text was written on a larger sheet measuring approximately 19 × 28 cm.'**
   String get papyrus_24_material;
 
   /// No description provided for @papyrus_24_textStyle.
@@ -436,31 +436,31 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_43_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 43 is New Testament manuscript. It consists of light-colored papyrus fragment measuring approximately 4 × 7 cm, with text from the Book of Revelation preserved on both sides.'**
   String get papyrus_43_material;
 
   /// No description provided for @papyrus_43_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is written in Greek using two inelegant sloping hands and follows scriptio continua (continuous writing without spaces). The writing on the verso is oriented in the opposite direction to that on the recto.'**
   String get papyrus_43_textStyle;
 
   /// No description provided for @papyrus_43_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The primary source was discovered during the excavations at Wadi Sarga in Egypt during the winter of 1913-1914, led by Mr. R. Campbell Thompson.'**
   String get papyrus_43_found;
 
   /// No description provided for @papyrus_43_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, the manuscript is considered a representative of the Alexandrian text-type and is classified as Category II in Kurt Aland\'s New Testament manuscripts classification system.'**
   String get papyrus_43_classification;
 
   /// No description provided for @papyrus_43_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Currently, Papyrus 43 is housed in the British Library in London.'**
   String get papyrus_43_currentLocation;
 
   /// No description provided for @papyrus_47_title.
