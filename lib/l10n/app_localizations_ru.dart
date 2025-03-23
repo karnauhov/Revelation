@@ -225,19 +225,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get papyrus_85_content => 'Фрагменты Откровение (9:19-10:2) и (10:5-9).';
 
   @override
-  String get papyrus_85_material => '';
+  String get papyrus_85_material => 'Папирус 85 состоит из трех фрагментов папирусного листа, причем самый большой фрагмент имеет размер примерно 4 × 7 см. Фрагменты содержат текст из книги Откровения, написанный с обеих сторон.';
 
   @override
-  String get papyrus_85_textStyle => '';
+  String get papyrus_85_textStyle => 'Текст написан греческим унциальным письмом, расположен в одну колонку на странице с 37 строками. Он следует стилю scriptio continua без разделения слов.';
 
   @override
-  String get papyrus_85_found => '';
+  String get papyrus_85_found => 'Рукопись вероятно была обнаружена в Египте. Позднее она была идентифицирована Жаком Шварцем, который опубликовал свои выводы в 1969 году.';
 
   @override
-  String get papyrus_85_classification => '';
+  String get papyrus_85_classification => 'С текстологической точки зрения, манускрипт считается представителем александрийского типа текста и классифицируется как Категория II в системе классификации рукописей Нового Завета Курта Аланда.';
 
   @override
-  String get papyrus_85_currentLocation => '';
+  String get papyrus_85_currentLocation => 'В настоящее время Папирус 85 хранится в Национальной академической библиотеке в Страсбурге, Франция.';
 
   @override
   String get papyrus_98_title => 'Папирус 98 (P<sup>98</sup>)';

@@ -532,31 +532,31 @@ abstract class AppLocalizations {
   /// No description provided for @papyrus_85_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 85 consists of three fragments of a papyrus leaf, with the largest measuring approximately 4 × 7 cm. The fragments contain text from the Book of Revelation written on both sides.'**
   String get papyrus_85_material;
 
   /// No description provided for @papyrus_85_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is written in Greek uncial script, arranged in a single column per page with 37 lines. It follows scriptio continua style without word separation.'**
   String get papyrus_85_textStyle;
 
   /// No description provided for @papyrus_85_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript was probably discovered in Egypt. Later, it was identified by Jacques Schwartz, who published his findings in 1969.'**
   String get papyrus_85_found;
 
   /// No description provided for @papyrus_85_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, the manuscript is considered a representative of the Alexandrian text-type and is classified as Category II in Kurt Aland\'s New Testament manuscripts classification system.'**
   String get papyrus_85_classification;
 
   /// No description provided for @papyrus_85_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Papyrus 85 is currently housed at the National Academic Library in Strasbourg, France.'**
   String get papyrus_85_currentLocation;
 
   /// No description provided for @papyrus_98_title.

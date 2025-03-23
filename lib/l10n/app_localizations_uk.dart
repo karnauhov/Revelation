@@ -225,19 +225,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get papyrus_85_content => 'Фрагменти Об\'явлення (9:19-10:2) та (10:5-9).';
 
   @override
-  String get papyrus_85_material => '';
+  String get papyrus_85_material => 'Папірус 85 складається з трьох фрагментів папірусного аркуша, причому найбільший фрагмент має розмір приблизно 4 × 7 см. Фрагменти містять текст з книги Об\'явлення, написаний з обох сторін.';
 
   @override
-  String get papyrus_85_textStyle => '';
+  String get papyrus_85_textStyle => 'Текст написаний грецьким унціальним письмом, розташований в одну колонку на сторінці з 37 рядками. Він слідує стилю scriptio continua без розділення слів.';
 
   @override
-  String get papyrus_85_found => '';
+  String get papyrus_85_found => 'Рукопис, ймовірно, був виявлений у Єгипті. Пізніше його ідентифікував Жак Шварц, який опублікував свої висновки у 1969 році.';
 
   @override
-  String get papyrus_85_classification => '';
+  String get papyrus_85_classification => 'З текстологічної точки зору, рукопис вважається представником александрійського типу тексту і класифікується як Категорія II в системі класифікації рукописів Нового Заповіту Курта Аланда.';
 
   @override
-  String get papyrus_85_currentLocation => '';
+  String get papyrus_85_currentLocation => 'В даний час Папірус 85 знаходиться в Національній академічній бібліотеці в Страсбурзі, Франція.';
 
   @override
   String get papyrus_98_title => 'Папірус 98 (P<sup>98</sup>)';
