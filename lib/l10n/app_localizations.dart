@@ -964,31 +964,31 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_52_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Athous Panteleimon, also known as Uncial 052, is a Greek uncial manuscript of the New Testament. It contains a fragment of the Revelation with a commentary by Andreas of Caesarea, written on 4 parchment leaves, each measuring 29.5 × 23 cm.'**
   String get uncial_52_material;
 
   /// No description provided for @uncial_52_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text arranged in two columns per page with 27 lines per column. It features chapter divisions with numbers in the margins and titles at the top of the pages.'**
   String get uncial_52_textStyle;
 
   /// No description provided for @uncial_52_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript was discovered in the Panteleimon Monastery on Mount Athos in Greece and became known to scholars at least since the beginning of the 20th century.'**
   String get uncial_52_found;
 
   /// No description provided for @uncial_52_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, the codex belongs to the Byzantine text-type. Aland classified it as Category V.'**
   String get uncial_52_classification;
 
   /// No description provided for @uncial_52_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Codex Athous Panteleimon (Uncial 052) continues to be preserved in the library of the Monastery of St. Panteleimon on Mount Athos, Greece.'**
   String get uncial_52_currentLocation;
 
   /// No description provided for @uncial_163_title.

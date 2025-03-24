@@ -441,19 +441,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get uncial_52_content => 'Фрагменты Откровение (7:16-17); (8:1-12).';
 
   @override
-  String get uncial_52_material => '';
+  String get uncial_52_material => 'Пантелеимонов кодекс, также известный как Унциал 052, представляет собой греческую унциальную рукопись Нового Завета. Он содержит фрагмент текста Откровения с комментарием Андрея Кесарийского, написанный на 4 пергаментных листах размером 29,5 x 23 см.';
 
   @override
-  String get uncial_52_textStyle => '';
+  String get uncial_52_textStyle => 'Текст расположен в два столбца на странице, по 27 строк в каждом столбце. В нем присутствуют деления на главы с номерами на полях и заголовками вверху страниц.';
 
   @override
-  String get uncial_52_found => '';
+  String get uncial_52_found => 'Рукопись была обнаружена в монастыре Пантелеймона на горе Афон в Греции и стала известна ученым по крайней мере с начала XX века.';
 
   @override
-  String get uncial_52_classification => '';
+  String get uncial_52_classification => 'С точки зрения текстологии, кодекс относится к византийскому типу текста. Аланд отнес его к категории V.';
 
   @override
-  String get uncial_52_currentLocation => '';
+  String get uncial_52_currentLocation => 'Пантелеимонов кодекс (Унциал 052) в настоящее время продолжает хранится в библиотеке монастыря Святого Пантелеймона на горе Афон, Греция.';
 
   @override
   String get uncial_163_title => 'Унциал 0163';
