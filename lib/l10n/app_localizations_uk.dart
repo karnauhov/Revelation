@@ -465,19 +465,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_163_content => 'Фрагмент Об\'явлення (16:17-20).';
 
   @override
-  String get uncial_163_material => '';
+  String get uncial_163_material => 'Унціал 0163, також відомий як Оксиринхський рукопис #848, є фрагментом пергаментового аркуша розміром приблизно 3 × 9 см, на якому з обох сторін написаний текст з книги Об\'явлення. Вважається, що початкові розміри аркуша становили всього 10 × 9 см.';
 
   @override
-  String get uncial_163_textStyle => '';
+  String get uncial_163_textStyle => 'Текст написаний жирними, прямими грецькими унціалами, розташованими в один стовпець із 17 рядками на сторінці. Каліграфічний стиль тексту нагадує стиль Александрійського кодекса.';
 
   @override
-  String get uncial_163_found => '';
+  String get uncial_163_found => 'Рукопис був знайдений в Оксиринху, Єгипет, вченими Бернардом Пайном Гренфеллом і Артуром Хантом наприкінці XIX або на початку XX століття. Цей фрагмент був опублікован у 1908 році.';
 
   @override
-  String get uncial_163_classification => '';
+  String get uncial_163_classification => 'З текстологічної точки зору, унціал належить до александрійського типу тексту і класифікується як рукопис Категорії III серед манускриптів Нового Заповіту.';
 
   @override
-  String get uncial_163_currentLocation => '';
+  String get uncial_163_currentLocation => 'Унціал 0169 наразі зберігається в Інституті дослідження античних культур в Чикаго, США.';
 
   @override
   String get uncial_169_title => 'Унціал 0169';

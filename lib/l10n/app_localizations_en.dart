@@ -465,19 +465,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_163_content => 'Fragment of Revelation (16:17-20).';
 
   @override
-  String get uncial_163_material => '';
+  String get uncial_163_material => 'Uncial 0163, also known as Oxyrhynchus Manuscript #848, is a fragment of a parchment leaf measuring approximately 3 × 9 cm, on which text from the Book of Revelation is written on both sides. It is believed that the original dimensions of the leaf were only 10 × 9 cm.';
 
   @override
-  String get uncial_163_textStyle => '';
+  String get uncial_163_textStyle => 'The text is written in bold, upright Greek uncial letters arranged in a single column with 17 lines per page. Its calligraphic style is reminiscent of the Codex Alexandrinus.';
 
   @override
-  String get uncial_163_found => '';
+  String get uncial_163_found => 'The manuscript was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century. The fragment subsequently published in 1908.';
 
   @override
-  String get uncial_163_classification => '';
+  String get uncial_163_classification => 'From a textological perspective, the uncial belongs to the Alexandrian text-type and is classified as Category III among New Testament manuscripts.';
 
   @override
-  String get uncial_163_currentLocation => '';
+  String get uncial_163_currentLocation => 'Uncial 0169 currently is housed at the Institute for the Study of Ancient Cultures in Chicago, USA.';
 
   @override
   String get uncial_169_title => 'Uncial 0169';
