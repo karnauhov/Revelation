@@ -1156,31 +1156,31 @@ abstract class AppLocalizations {
   /// No description provided for @uncial_229_material.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Uncial 0229 is a Greek uncial manuscript of the New Testament, containing a small portion of the Book of Revelation. It is a palimpsest, with the lower text written in Coptic, featuring a calendrical text listing the Egyptian months. The manuscript consists of two parchment leaves, each measuring approximately 11 × 23 см.'**
   String get uncial_229_material;
 
   /// No description provided for @uncial_229_textStyle.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The text is written in small uncial Greek letters, arranged in a single column per page with 16 lines per column. It follows the scriptio continua style (without spaces between words).'**
   String get uncial_229_textStyle;
 
   /// No description provided for @uncial_229_found.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'The manuscript was discovered in Antinoopolis (El-Sheikh Ibada) in Egypt during excavations conducted by Evaristo Breccia in 1937.'**
   String get uncial_229_found;
 
   /// No description provided for @uncial_229_classification.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'From a textological perspective, the primary source is classified as a mixed text-type manuscript and is categorized as Category III among New Testament manuscripts.'**
   String get uncial_229_classification;
 
   /// No description provided for @uncial_229_currentLocation.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Today, Uncial 0229 is housed at the Girolamo Vitelli Papyrological Institute in Florence, Italy.'**
   String get uncial_229_currentLocation;
 
   /// No description provided for @uncial_308_title.

@@ -537,19 +537,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uncial_229_content => 'Фрагменти Об\'явлення (18:16-17); (19:4-6).';
 
   @override
-  String get uncial_229_material => '';
+  String get uncial_229_material => 'Унціал 0229 – це грецький унціальний рукопис Нового Завіту, що містить невеликий фрагмент книги Об\'явлення. Це палімпсест, нижній текст якого написаний коптською мовою і містить календарний текст зі списком єгипетських місяців. Рукопис складається з двох пергаментних аркушів розміром приблизно 11 × 23 см.';
 
   @override
-  String get uncial_229_textStyle => '';
+  String get uncial_229_textStyle => 'Текст написаний грецькими унціальними літерами, розташований в одну колонку на сторінці з 16 рядками у колонці. Він слідує стилю scriptio continua (без пробілів між словами).';
 
   @override
-  String get uncial_229_found => '';
+  String get uncial_229_found => 'Рукопис було виявлено в Антиноополі (Ель-Шейх Ібада) в Єгипті під час розкопок, проведених Еварісто Бречча у 1937 році.';
 
   @override
-  String get uncial_229_classification => '';
+  String get uncial_229_classification => 'З текстологічної точки зору, першоджерело класифікується як рукопис змішаного текстового типу і відноситься до Категорії III серед манускриптів Нового Заповіту.';
 
   @override
-  String get uncial_229_currentLocation => '';
+  String get uncial_229_currentLocation => 'Наразі Унціал 0229 зберігається в Папірологічному інституті Джіроламо Вітеллі у Флоренції, Італія.';
 
   @override
   String get uncial_308_title => 'Унціал 0308';
