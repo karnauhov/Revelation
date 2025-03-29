@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "AI11" "\0"
             VALUE "FileDescription", "revelation" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "revelation" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 Oleh Karnaukhov. All rights reserved." "\0"
             VALUE "OriginalFilename", "revelation.exe" "\0"
             VALUE "ProductName", "revelation" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

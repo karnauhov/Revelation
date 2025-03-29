@@ -7,4 +7,6 @@ Revelation Study app
 
 [End-User License Agreement](./LICENSE)
 
+[Privacy Policy](./PrivacyPolicy.md)
+
 [TODO](./_docs/TODO.md)
