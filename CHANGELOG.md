@@ -2,7 +2,7 @@
 
 All notable changes to this application will be documented here.
 
-## [1.0.0] - In process
+## [1.0.0] - 29.03.25
 
 ### Added
 

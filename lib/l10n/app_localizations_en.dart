@@ -561,17 +561,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncial_308_content => 'Fragment of Revelation (11:15-18).';
 
   @override
-  String get uncial_308_material => '';
+  String get uncial_308_material => 'Uncial 0308, also known as Oxyrhynchus Manuscript #4500, is a fragment of a parchment leaf measuring approximately 5 × 6 cm, on which text from the Book of Revelation is written on both sides. It is believed that the original dimensions of the leaf were only 8 × 8 cm.';
 
   @override
-  String get uncial_308_textStyle => '';
+  String get uncial_308_textStyle => 'The text is written in a mannered, clear, seriffed, round uncial script in Greek, arranged in one column with 14 lines per page. The scribe used carbon ink, wrote with bilinear letters without rulings or prickings, employing nomina sacra and a cipher for numbers.';
 
   @override
-  String get uncial_308_found => '';
+  String get uncial_308_found => 'The manuscript was discovered in Oxyrhynchus, Egypt, by scholars Bernard Pyne Grenfell and Arthur Hunt in the late 19th or early 20th century, although it was not deciphered and published until the end of the 20th century.';
 
   @override
-  String get uncial_308_classification => '';
+  String get uncial_308_classification => 'From a textological perspective, uncial exhibits strong affinities with the Alexandrian text-type – showing notable agreement with Codex Sinaiticus and Papyrus 47 – although its fragmentary nature prevents a definitive classification.';
 
   @override
-  String get uncial_308_currentLocation => '';
+  String get uncial_308_currentLocation => 'Uncial 0308 is currently housed in the Sackler Library at Oxford University, United Kingdom.';
 }
