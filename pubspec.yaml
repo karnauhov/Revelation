@@ -3,7 +3,7 @@ description: "Revelation Study app."
 publish_to: 'none'
 version: 1.0.0+25
 
-environment: 
+environment:
   sdk: ^3.5.3
 
 dependencies:
