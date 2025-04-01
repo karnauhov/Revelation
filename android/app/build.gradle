@@ -1,5 +1,5 @@
-import java.util.Properties
-import java.io.FileInputStream
+import java.nio.file.Files
+import java.nio.file.Paths
 
 plugins {
     id "com.android.application"
@@ -35,15 +35,19 @@ android {
 
     signingConfigs {
         create("release") {
-            def keystoreProperties = new Properties()
-            def keystorePropertiesFile = rootProject.file("key.properties")
-            if (keystorePropertiesFile.exists()) {
-                keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+            keyAlias = System.getenv('SIGNING_KEY_ALIAS')
+            keyPassword = System.getenv('SIGNING_KEY_PASSWORD')
+            storePassword = System.getenv('SIGNING_STORE_PASSWORD')
+            def storeFileBase64 = System.getenv('SIGNING_STORE_FILE_BASE64')
+            if (storeFileBase64 != null) {
+                def tempStoreFile = File.createTempFile("keystore", ".jks")
+                tempStoreFile.deleteOnExit()
+                def decodedBytes = storeFileBase64.decodeBase64()
+                Files.write(Paths.get(tempStoreFile.path), decodedBytes)
+                storeFile = tempStoreFile
+            } else {
+                throw new GradleException("The environment variable SIGNING_STORE_FILE_BASE64 is not set")
             }
-            keyAlias = keystoreProperties['keyAlias']
-            keyPassword = keystoreProperties['keyPassword']
-            storeFile = rootProject.file(keystoreProperties['storeFile'])
-            storePassword = keystoreProperties['storePassword']
         }
     }
 

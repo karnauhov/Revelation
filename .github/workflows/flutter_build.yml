@@ -102,8 +102,15 @@ jobs:
           Write-Output "Renaming $sourcePath to $destPath"
           Rename-Item -Path $sourcePath -NewName $destFileName
 
-      # - name: Build App Bundle
-      #   run: flutter build appbundle --release
+      - name: Build App Bundle (AAB)
+        run: flutter build appbundle --release
+
+      - name: Rename AAB
+        shell: pwsh
+        run: |
+          $version = '${{ steps.extract_version_windows.outputs.version }}'
+          $build = '${{ steps.extract_version_windows.outputs.build }}'
+          Move-Item -Path 'build/app/outputs/bundle/release/app-release.aab' -Destination "build/app/outputs/bundle/release/Revelation-android-$version-$build.aab"
 
       - name: Build Windows App
         run: flutter build windows --release --no-tree-shake-icons
@@ -155,6 +162,16 @@ jobs:
           asset_path: build/app/outputs/flutter-apk/Revelation-android-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.apk
           asset_name: Revelation-android-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.apk
           asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload AAB to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/bundle/release/Revelation-android-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.aab
+          asset_name: Revelation-android-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.aab
+          asset_content_type: application/octet-stream
 
       - name: Upload EXE to Release
         uses: actions/upload-release-asset@v1
