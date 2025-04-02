@@ -18,6 +18,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_description => 'Revelation Study app.';
 
   @override
+  String get privacy_policy => 'Privacy Policy';
+
+  @override
   String get license => 'License';
 
   @override
@@ -43,6 +46,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get primary_sources_screen => 'Primary Sources';
+
+  @override
+  String get primary_sources_header => 'Click on the image to open';
 
   @override
   String get settings_screen => 'Settings';
@@ -93,7 +99,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topic_0_name => 'Preface';
 
   @override
-  String get topic_0_description => 'Primary sources and principles.';
+  String get topic_0_description => 'Primary sources and principles';
 
   @override
   String get topic_1_name => 'Introduction';

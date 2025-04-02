@@ -18,6 +18,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get app_description => 'Приложение для изучения Откровения.';
 
   @override
+  String get privacy_policy => 'Политика конфиденциальности';
+
+  @override
   String get license => 'Лицензия';
 
   @override
@@ -43,6 +46,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get primary_sources_screen => 'Первоисточники';
+
+  @override
+  String get primary_sources_header => 'Нажмите на изображение, чтобы открыть';
 
   @override
   String get settings_screen => 'Настройки';
@@ -93,7 +99,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get topic_0_name => 'Предисловие';
 
   @override
-  String get topic_0_description => 'Первоисточники и принципы.';
+  String get topic_0_description => 'Первоисточники и принципы';
 
   @override
   String get topic_1_name => 'Введение';

@@ -52,7 +52,25 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
       slivers: [
         SliverAppBar(
           pinned: true,
-          title: Text(AppLocalizations.of(context)!.primary_sources_screen),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.primary_sources_screen,
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                AppLocalizations.of(context)!.primary_sources_header,
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(fontWeight: FontWeight.normal),
+              ),
+            ],
+          ),
         ),
         SliverList(
           delegate: SliverChildBuilderDelegate(

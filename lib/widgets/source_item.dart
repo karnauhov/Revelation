@@ -49,15 +49,29 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
             Floatable(
               float: FCFloat.start,
               padding: const EdgeInsets.only(right: 8),
-              child: GestureDetector(
-                onTap: () {
+              child: ElevatedButton(
+                onPressed: () {
                   // context.push('/primary');
                 },
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: Image.asset(
-                    widget.source.preview,
-                    fit: BoxFit.cover,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  elevation: 8,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.zero,
+                ),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.blueAccent, width: 1),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      widget.source.preview,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

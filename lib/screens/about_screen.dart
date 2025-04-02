@@ -59,6 +59,9 @@ class _AboutScreenState extends State<AboutScreen> {
                   // Contacts Links
                   _buildContactsLinks(context),
                   const Divider(),
+                  // Legal Links
+                  _buildLegalLinks(context),
+                  const Divider(),
                   // Acknowledgments
                   _buildAcknowledgements(context),
                   SizedBox(height: 4),
@@ -164,6 +167,23 @@ class _AboutScreenState extends State<AboutScreen> {
           iconPath: "assets/images/UI/email.svg",
           text: AppConstants.supportEmail,
           onTap: () => launchLink("mailto:${AppConstants.supportEmail}"),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLegalLinks(BuildContext context) {
+    return Column(
+      children: [
+        AboutLinkItem(
+          iconPath: "assets/images/UI/shield.svg",
+          text: AppLocalizations.of(context)!.privacy_policy,
+          onTap: () => launchLink(AppConstants.privacyPolicyUrl),
+        ),
+        AboutLinkItem(
+          iconPath: "assets/images/UI/agreement.svg",
+          text: AppLocalizations.of(context)!.license,
+          onTap: () => launchLink(AppConstants.licenseUrl),
         ),
       ],
     );

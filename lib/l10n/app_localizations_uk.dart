@@ -18,6 +18,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get app_description => 'Додаток для вивчення Об\'явлення.';
 
   @override
+  String get privacy_policy => 'Політика конфіденційності';
+
+  @override
   String get license => 'Ліцензія';
 
   @override
@@ -43,6 +46,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get primary_sources_screen => 'Першоджерела';
+
+  @override
+  String get primary_sources_header => 'Натисніть на зображення щоб відкрити';
 
   @override
   String get settings_screen => 'Налаштування';
@@ -93,7 +99,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get topic_0_name => 'Передмова';
 
   @override
-  String get topic_0_description => 'Першоджерела та принципи.';
+  String get topic_0_description => 'Першоджерела та принципи';
 
   @override
   String get topic_1_name => 'Вступ';

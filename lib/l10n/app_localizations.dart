@@ -115,6 +115,12 @@ abstract class AppLocalizations {
   /// **'Revelation Study app.'**
   String get app_description;
 
+  /// No description provided for @privacy_policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacy_policy;
+
   /// No description provided for @license.
   ///
   /// In en, this message translates to:
@@ -168,6 +174,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Primary Sources'**
   String get primary_sources_screen;
+
+  /// No description provided for @primary_sources_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Click on the image to open'**
+  String get primary_sources_header;
 
   /// No description provided for @settings_screen.
   ///
@@ -268,7 +280,7 @@ abstract class AppLocalizations {
   /// No description provided for @topic_0_description.
   ///
   /// In en, this message translates to:
-  /// **'Primary sources and principles.'**
+  /// **'Primary sources and principles'**
   String get topic_0_description;
 
   /// No description provided for @topic_1_name.
