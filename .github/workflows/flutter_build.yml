@@ -188,97 +188,97 @@ jobs:
           asset_name: Revelation-windows-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.exe
           asset_content_type: application/octet-stream
 
-  build-macos:
-    runs-on: macos-latest
-    needs: build-windows
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  # build-macos:
+  #   runs-on: macos-latest
+  #   needs: build-windows
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: "17"
-          cache: "gradle"
+  #     - name: Set up JDK 17
+  #       uses: actions/setup-java@v3
+  #       with:
+  #         distribution: "temurin"
+  #         java-version: "17"
+  #         cache: "gradle"
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.27.1"
-          cache: true
+  #     - name: Install Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: "3.27.1"
+  #         cache: true
 
-      - name: Get Flutter dependencies
-        run: flutter pub get
+  #     - name: Get Flutter dependencies
+  #       run: flutter pub get
 
-      - name: Extract version and build number (macOS)
-        id: extract_version_macos
-        run: |
-          if [ ! -f "pubspec.yaml" ]; then
-            echo "pubspec.yaml not found in root directory."
-            exit 1
-          fi
-          version_line=$(grep '^version:' pubspec.yaml)
-          if [[ $version_line =~ ^version:\ ([0-9]+\.[0-9]+\.[0-9]+)\+([0-9]+) ]]; then
-            version="${BASH_REMATCH[1]}"
-            build="${BASH_REMATCH[2]}"
-            echo "Extracted version: $version"
-            echo "Extracted build: $build"
-            echo "version=$version" >> $GITHUB_OUTPUT
-            echo "build=$build" >> $GITHUB_OUTPUT
-          else
-            echo "Failed to extract version and build from line: $version_line"
-            exit 1
-          fi
+  #     - name: Extract version and build number (macOS)
+  #       id: extract_version_macos
+  #       run: |
+  #         if [ ! -f "pubspec.yaml" ]; then
+  #           echo "pubspec.yaml not found in root directory."
+  #           exit 1
+  #         fi
+  #         version_line=$(grep '^version:' pubspec.yaml)
+  #         if [[ $version_line =~ ^version:\ ([0-9]+\.[0-9]+\.[0-9]+)\+([0-9]+) ]]; then
+  #           version="${BASH_REMATCH[1]}"
+  #           build="${BASH_REMATCH[2]}"
+  #           echo "Extracted version: $version"
+  #           echo "Extracted build: $build"
+  #           echo "version=$version" >> $GITHUB_OUTPUT
+  #           echo "build=$build" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "Failed to extract version and build from line: $version_line"
+  #           exit 1
+  #         fi
 
-      - name: Build macOS
-        run: flutter build macos --release --no-tree-shake-icons
+  #     - name: Build macOS
+  #       run: flutter build macos --release --no-tree-shake-icons
 
-      - name: Rename macOS Build
-        run: |
-          version=${{ steps.extract_version_macos.outputs.version }}
-          build=${{ steps.extract_version_macos.outputs.build }}
-          mv build/macos/Build/Products/Release/revelation.app build/macos/Build/Products/Release/Revelation-macos-$version-$build.app
+  #     - name: Rename macOS Build
+  #       run: |
+  #         version=${{ steps.extract_version_macos.outputs.version }}
+  #         build=${{ steps.extract_version_macos.outputs.build }}
+  #         mv build/macos/Build/Products/Release/revelation.app build/macos/Build/Products/Release/Revelation-macos-$version-$build.app
 
-      - name: Build iOS
-        run: flutter build ios --release --no-codesign
+  #     - name: Build iOS
+  #       run: flutter build ios --release --no-codesign
 
-      - name: Rename iOS Build
-        run: |
-          version=${{ steps.extract_version_macos.outputs.version }}
-          build=${{ steps.extract_version_macos.outputs.build }}
-          mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Revelation-ios-$version-$build.app
+  #     - name: Rename iOS Build
+  #       run: |
+  #         version=${{ steps.extract_version_macos.outputs.version }}
+  #         build=${{ steps.extract_version_macos.outputs.build }}
+  #         mv build/ios/iphoneos/Runner.app build/ios/iphoneos/Revelation-ios-$version-$build.app
 
-      - name: Upload macOS Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-build-artifacts
-          path: |
-            build/macos/Build/Products/Release/Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.app
-            build/ios/iphoneos/Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.app
+  #     - name: Upload macOS Artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: macos-build-artifacts
+  #         path: |
+  #           build/macos/Build/Products/Release/Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.app
+  #           build/ios/iphoneos/Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.app
 
-      - name: Zip macOS .app
-        run: zip -r Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip build/macos/Build/Products/Release/Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.app
+  #     - name: Zip macOS .app
+  #       run: zip -r Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip build/macos/Build/Products/Release/Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.app
 
-      - name: Upload macOS App to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.build-windows.outputs.release_upload_url }}
-          asset_path: Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip
-          asset_name: Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip
-          asset_content_type: application/zip
+  #     - name: Upload macOS App to Release
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.build-windows.outputs.release_upload_url }}
+  #         asset_path: Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip
+  #         asset_name: Revelation-macos-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip
+  #         asset_content_type: application/zip
 
-      - name: Zip iOS .app
-        run: zip -r Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip build/ios/iphoneos/Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.app  # .ipa
+  #     - name: Zip iOS .app
+  #       run: zip -r Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip build/ios/iphoneos/Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.app  # .ipa
       
-      - name: Upload iOS App to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.build-windows.outputs.release_upload_url }}
-          asset_path: Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip  # .ipa
-          asset_name: Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip  # .ipa
-          asset_content_type: application/zip
+  #     - name: Upload iOS App to Release
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.build-windows.outputs.release_upload_url }}
+  #         asset_path: Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip  # .ipa
+  #         asset_name: Revelation-ios-${{ steps.extract_version_macos.outputs.version }}-${{ steps.extract_version_macos.outputs.build }}.zip  # .ipa
+  #         asset_content_type: application/zip
