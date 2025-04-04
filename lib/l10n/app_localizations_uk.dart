@@ -126,6 +126,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get verses => 'Кількість віршів';
 
   @override
+  String get choose_page => 'Оберіть стрінку';
+
+  @override
+  String get images_are_missing => 'Зображення відсутні';
+
+  @override
+  String get image_not_loaded => 'Зображення не завантажено';
+
+  @override
   String get papyrus_18_title => 'Папірус 18 (P<sup>18</sup>)';
 
   @override

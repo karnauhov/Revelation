@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/utils/common.dart';
+import 'package:revelation/screens/primary_source_screen.dart';
 import 'package:revelation/screens/primary_sources_screen.dart';
 import 'package:revelation/screens/settings_screen.dart';
 import 'package:revelation/screens/about_screen.dart';
@@ -49,6 +52,29 @@ class AppRouter {
           state: state,
           child: PrimarySourcesScreen(),
         ),
+      ),
+      GoRoute(
+        path: '/primary_source',
+        name: 'primary_source',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          if (state.extra == null || state.extra is! PrimarySource) {
+            log.e('Please, send it with correct primary source parameter');
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.go('/');
+            });
+            return buildPageWithDefaultTransition<void>(
+              context: context,
+              state: state,
+              child: const SizedBox.shrink(),
+            );
+          }
+          final primarySource = state.extra as PrimarySource;
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: PrimarySourceScreen(primarySource: primarySource),
+          );
+        },
       ),
       GoRoute(
         path: '/settings',

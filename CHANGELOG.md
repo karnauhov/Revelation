@@ -4,6 +4,10 @@ All notable changes to this application will be documented here.
 
 ## [1.0.1] - In process
 
+### Added
+
+- Primary Source screen (page list, reload button, scale buttons, page image area)
+
 ### Changed
 
 - Primary Sources screen (header, image button)

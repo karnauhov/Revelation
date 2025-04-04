@@ -126,6 +126,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get verses => 'Quantity of verses';
 
   @override
+  String get choose_page => 'Choose page';
+
+  @override
+  String get images_are_missing => 'Images are missing';
+
+  @override
+  String get image_not_loaded => 'Image not loaded';
+
+  @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';
 
   @override

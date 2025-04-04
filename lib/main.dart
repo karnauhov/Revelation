@@ -4,15 +4,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/repositories/primary_sources_repository.dart';
-//import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'repositories/settings_repository.dart';
 import 'viewmodels/main_view_model.dart';
 import 'viewmodels/primary_sources_view_model.dart';
 import 'viewmodels/settings_view_model.dart';
 import 'utils/common.dart';
-//import 'utils/app_constants.dart';
 import 'app_router.dart';
 
 void main() async {
@@ -38,9 +38,16 @@ void main() async {
   final settingsViewModel = SettingsViewModel(SettingsRepository());
   await settingsViewModel.loadSettings();
 
-  // TODO Uncomment for connect to Supabase
-  //await Supabase.initialize(
-  //    url: AppConstants.supabaseUrl, anonKey: AppConstants.supabaseKey);
+  await dotenv.load();
+  if (dotenv.env.containsKey('SUPABASE_URL') &&
+      dotenv.env.containsKey('SUPABASE_KEY')) {
+    final supabaseUrl = dotenv.env['SUPABASE_URL'];
+    final supabaseKey = dotenv.env['SUPABASE_KEY'];
+    await Supabase.initialize(
+        url: supabaseUrl ?? "", anonKey: supabaseKey ?? "");
+  } else {
+    log.e("Supabase URL or key not found");
+  }
 
   runApp(
     MultiProvider(

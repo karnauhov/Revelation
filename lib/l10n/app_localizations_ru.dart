@@ -126,6 +126,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get verses => 'Количество стихов';
 
   @override
+  String get choose_page => 'Выберите страницу';
+
+  @override
+  String get images_are_missing => 'Изображения отсутствуют';
+
+  @override
+  String get image_not_loaded => 'Изображение не загружено';
+
+  @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';
 
   @override

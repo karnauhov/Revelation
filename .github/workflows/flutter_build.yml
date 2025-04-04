@@ -45,6 +45,11 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
 
+      - name: Create .env file
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
       - name: Analyze
         run: flutter analyze
 
@@ -210,6 +215,11 @@ jobs:
 
   #     - name: Get Flutter dependencies
   #       run: flutter pub get
+
+  #     - name: Create .env file
+  #       run: |
+  #         echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+  #         echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
 
   #     - name: Extract version and build number (macOS)
   #       id: extract_version_macos

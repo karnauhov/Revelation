@@ -331,6 +331,24 @@ abstract class AppLocalizations {
   /// **'Quantity of verses'**
   String get verses;
 
+  /// No description provided for @choose_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose page'**
+  String get choose_page;
+
+  /// No description provided for @images_are_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Images are missing'**
+  String get images_are_missing;
+
+  /// No description provided for @image_not_loaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Image not loaded'**
+  String get image_not_loaded;
+
   /// No description provided for @papyrus_18_title.
   ///
   /// In en, this message translates to:

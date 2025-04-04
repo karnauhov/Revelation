@@ -249,9 +249,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20051',
           preview: 'assets/images/Resources/20051/preview.png',
-          images: [
-            'primary_sources/20051/preview.jpg',
-          ])
+          images: [])
     ];
     return sources;
   }

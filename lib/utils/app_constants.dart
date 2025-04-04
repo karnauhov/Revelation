@@ -5,10 +5,6 @@ class AppConstants {
       "https://github.com/karnauhov/Revelation/blob/main/PrivacyPolicy.md";
   static const String licenseUrl =
       "https://github.com/karnauhov/Revelation/blob/main/LICENSE";
-  // TODO Move supabaseUrl and supabaseKey to environment variables (add changes to GitHub autobuild)
-  // get Project URL and API Key from supabase server
-  static const String supabaseUrl = "";
-  static const String supabaseKey = "";
   static const languages = {
     'en': 'English',
     'uk': 'Українська',
