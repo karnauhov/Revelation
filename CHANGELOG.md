@@ -6,7 +6,7 @@ All notable changes to this application will be documented here.
 
 ### Added
 
-- Primary Source screen (page list, reload button, scale buttons, page image area)
+- Primary Source screen (page list, redownload button, scale buttons, page image area)
 
 ### Changed
 

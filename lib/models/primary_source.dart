@@ -1,3 +1,5 @@
+import 'package:revelation/models/page.dart';
+
 class PrimarySource {
   final String title;
   final String date;
@@ -13,7 +15,7 @@ class PrimarySource {
   final String link2Title;
   final String link2Url;
   final String preview;
-  final List<String> images;
+  final List<Page> pages;
   bool showMore = false;
 
   PrimarySource({
@@ -31,6 +33,6 @@ class PrimarySource {
     required this.link2Title,
     required this.link2Url,
     required this.preview,
-    required this.images,
+    required this.pages,
   });
 }

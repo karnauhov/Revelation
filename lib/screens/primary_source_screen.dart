@@ -3,9 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PrimarySourceScreen extends StatefulWidget {
   final PrimarySource primarySource;
@@ -17,7 +18,7 @@ class PrimarySourceScreen extends StatefulWidget {
 }
 
 class PrimarySourceScreenState extends State<PrimarySourceScreen> {
-  String? selectedImage;
+  model.Page? selectedPage;
   Uint8List? imageData;
   bool isLoading = false;
   final TransformationController _transformationController =
@@ -26,15 +27,15 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.primarySource.images.isNotEmpty) {
-      selectedImage = widget.primarySource.images.first;
-      loadImage(selectedImage!);
+    if (widget.primarySource.pages.isNotEmpty) {
+      selectedPage = widget.primarySource.pages.first;
+      loadImage(selectedPage!.image);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> pages = widget.primarySource.images;
+    List<model.Page> pages = widget.primarySource.pages;
 
     return Scaffold(
       appBar: AppBar(
@@ -52,28 +53,29 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                DropdownButton<String>(
-                  value: selectedImage,
-                  hint: Text(widget.primarySource.images.isEmpty
+                DropdownButton<model.Page>(
+                  value: selectedPage,
+                  hint: Text(widget.primarySource.pages.isEmpty
                       ? AppLocalizations.of(context)!.images_are_missing
                       : AppLocalizations.of(context)!.choose_page),
-                  onChanged: (String? newPage) {
+                  onChanged: (model.Page? newPage) {
                     setState(() {
-                      selectedImage = newPage;
-                      loadImage(selectedImage!);
+                      selectedPage = newPage;
+                      loadImage(selectedPage!.image);
                     });
                   },
-                  items: pages.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
+                  items: pages
+                      .map<DropdownMenuItem<model.Page>>((model.Page value) {
+                    return DropdownMenuItem<model.Page>(
                       value: value,
-                      child: Text(value),
+                      child: Text("${value.name} (${value.content})"),
                     );
                   }).toList(),
                 ),
                 IconButton(
                   icon: const Icon(Icons.refresh),
-                  onPressed: selectedImage != null
-                      ? () => forceReloadImage(selectedImage!)
+                  onPressed: selectedPage != null
+                      ? () => forceReloadImage(selectedPage!.image)
                       : null,
                 ),
                 IconButton(
