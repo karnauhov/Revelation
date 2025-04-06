@@ -29,7 +29,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
     super.initState();
     if (widget.primarySource.pages.isNotEmpty) {
       selectedPage = widget.primarySource.pages.first;
-      loadImage(selectedPage!.image);
+      _loadImage(selectedPage!.image);
     }
   }
 
@@ -61,7 +61,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                   onChanged: (model.Page? newPage) {
                     setState(() {
                       selectedPage = newPage;
-                      loadImage(selectedPage!.image);
+                      _loadImage(selectedPage!.image);
                     });
                   },
                   items: pages
@@ -75,7 +75,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                 IconButton(
                   icon: const Icon(Icons.refresh),
                   onPressed: selectedPage != null
-                      ? () => forceReloadImage(selectedPage!.image)
+                      ? () => _loadImage(selectedPage!.image, isReload: true)
                       : null,
                 ),
                 IconButton(
@@ -125,7 +125,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                     child: InteractiveViewer(
                       transformationController: _transformationController,
                       minScale: 1.0,
-                      maxScale: 10.0,
+                      maxScale: 20.0,
                       child: Image.memory(imageData!),
                     ),
                   )
@@ -134,41 +134,35 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
     );
   }
 
-  Future<String> getLocalFilePath(String page) async {
+  Future<void> _loadImage(String page, {bool isReload = false}) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    if (isWeb()) {
+      await _downloadImage(page);
+    } else {
+      final localFilePath = await _getLocalFilePath(page);
+      final file = File(localFilePath);
+      if (!isReload && await file.exists()) {
+        final bytes = await file.readAsBytes();
+        setState(() {
+          imageData = bytes;
+          isLoading = false;
+        });
+      } else {
+        await _downloadImage(page);
+        await _saveImage(file);
+      }
+    }
+  }
+
+  Future<String> _getLocalFilePath(String page) async {
     final directory = await getApplicationDocumentsDirectory();
     return '${directory.path}/$page';
   }
 
-  Future<void> loadImage(String page) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    final localFilePath = await getLocalFilePath(page);
-    final file = File(localFilePath);
-
-    if (await file.exists()) {
-      final bytes = await file.readAsBytes();
-      setState(() {
-        imageData = bytes;
-        isLoading = false;
-      });
-    } else {
-      await _downloadAndSaveImage(page, file);
-    }
-  }
-
-  Future<void> forceReloadImage(String page) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    final localFilePath = await getLocalFilePath(page);
-    final file = File(localFilePath);
-    await _downloadAndSaveImage(page, file);
-  }
-
-  Future<void> _downloadAndSaveImage(String page, File file) async {
+  Future<void> _downloadImage(String page) async {
     try {
       final devider = page.indexOf("/");
       final repository = page.substring(0, devider);
@@ -177,19 +171,27 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
       final Uint8List fileBytes =
           await supabase.storage.from(repository).download(image);
 
-      await file.create(recursive: true);
-      await file.writeAsBytes(fileBytes);
-
       setState(() {
         imageData = fileBytes;
         isLoading = false;
       });
     } catch (e) {
-      log.e('Image loading error: $e');
+      log.e('Image downloading error: $e');
       setState(() {
         imageData = null;
         isLoading = false;
       });
+    }
+  }
+
+  Future<void> _saveImage(File file) async {
+    try {
+      if (imageData != null) {
+        await file.create(recursive: true);
+        await file.writeAsBytes(imageData!);
+      }
+    } catch (e) {
+      log.e('Image save error: $e');
     }
   }
 }
