@@ -16,6 +16,14 @@ class ImagePreviewController {
     _transformationController.value = Matrix4.identity()..scale(minScale);
   }
 
+  bool isImageFullyVisible(double availableWidth, double availableHeight) {
+    if (imageSize == null) return false;
+    final currentScale = _transformationController.value.getMaxScaleOnAxis();
+    final scaledWidth = imageSize!.width * currentScale;
+    final scaledHeight = imageSize!.height * currentScale;
+    return scaledWidth <= availableWidth && scaledHeight <= availableHeight;
+  }
+
   void zoomIn() {
     final currentScale = _transformationController.value.getMaxScaleOnAxis();
     final newScale = (currentScale * 1.25).clamp(minScale, maxScale);

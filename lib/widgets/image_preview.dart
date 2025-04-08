@@ -33,13 +33,21 @@ class ImagePreviewState extends State<ImagePreview> {
         }
         widget.controller
             .setImageSize(widget.controller.imageSize!, constraints.maxWidth);
-        return InteractiveViewer(
-          transformationController: widget.controller.transformationController,
-          minScale: widget.controller.minScale,
-          maxScale: widget.controller.maxScale,
-          constrained: false,
-          child: Center(
-            child: Image.memory(widget.imageData),
+        final imageFits = widget.controller
+            .isImageFullyVisible(constraints.maxWidth, constraints.maxHeight);
+
+        return MouseRegion(
+          cursor:
+              imageFits ? SystemMouseCursors.basic : SystemMouseCursors.grab,
+          child: InteractiveViewer(
+            transformationController:
+                widget.controller.transformationController,
+            minScale: widget.controller.minScale,
+            maxScale: widget.controller.maxScale,
+            constrained: false,
+            child: Center(
+              child: Image.memory(widget.imageData),
+            ),
           ),
         );
       },
