@@ -6,6 +6,7 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
+import 'package:revelation/utils/image_preview_controller.dart';
 import 'package:revelation/widgets/image_preview.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -22,6 +23,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
   model.Page? selectedPage;
   Uint8List? imageData;
   bool isLoading = false;
+  final ImagePreviewController _imageController = ImagePreviewController();
 
   @override
   void initState() {
@@ -73,27 +75,27 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.refresh),
+                  tooltip: AppLocalizations.of(context)!.reload_image,
                   onPressed: selectedPage != null
                       ? () => _loadImage(selectedPage!.image, isReload: true)
                       : null,
                 ),
                 IconButton(
                   icon: const Icon(Icons.zoom_in),
-                  onPressed: () {
-                    // TODO
-                  },
+                  tooltip: AppLocalizations.of(context)!.zoom_in,
+                  onPressed: imageData != null ? _imageController.zoomIn : null,
                 ),
                 IconButton(
                   icon: const Icon(Icons.zoom_out),
-                  onPressed: () {
-                    // TODO
-                  },
+                  tooltip: AppLocalizations.of(context)!.zoom_out,
+                  onPressed:
+                      imageData != null ? _imageController.zoomOut : null,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.fit_screen),
-                  onPressed: () {
-                    // TODO
-                  },
+                  icon: const Icon(Icons.width_full),
+                  tooltip: AppLocalizations.of(context)!.fit_to_page_width,
+                  onPressed:
+                      imageData != null ? _imageController.fitToWidth : null,
                 ),
               ],
             ),
@@ -109,7 +111,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
           child: isLoading
               ? const Center(child: CircularProgressIndicator())
               : imageData != null
-                  ? ImagePreview(imageData: imageData!)
+                  ? ImagePreview(
+                      imageData: imageData!,
+                      controller: _imageController,
+                    )
                   : Center(
                       child:
                           Text(AppLocalizations.of(context)!.image_not_loaded)),

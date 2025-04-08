@@ -349,6 +349,30 @@ abstract class AppLocalizations {
   /// **'Image not loaded'**
   String get image_not_loaded;
 
+  /// No description provided for @reload_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload image'**
+  String get reload_image;
+
+  /// No description provided for @zoom_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get zoom_in;
+
+  /// No description provided for @zoom_out.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get zoom_out;
+
+  /// No description provided for @fit_to_page_width.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit to page width'**
+  String get fit_to_page_width;
+
   /// No description provided for @papyrus_18_title.
   ///
   /// In en, this message translates to:

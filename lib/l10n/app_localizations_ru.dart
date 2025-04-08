@@ -135,6 +135,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get image_not_loaded => 'Изображение не загружено';
 
   @override
+  String get reload_image => 'Перезагрузить изображение';
+
+  @override
+  String get zoom_in => 'Увеличить';
+
+  @override
+  String get zoom_out => 'Уменьшить';
+
+  @override
+  String get fit_to_page_width => 'Подогнать по ширине страницы';
+
+  @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';
 
   @override

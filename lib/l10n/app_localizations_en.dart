@@ -135,6 +135,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get image_not_loaded => 'Image not loaded';
 
   @override
+  String get reload_image => 'Reload image';
+
+  @override
+  String get zoom_in => 'Zoom in';
+
+  @override
+  String get zoom_out => 'Zoom out';
+
+  @override
+  String get fit_to_page_width => 'Fit to page width';
+
+  @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';
 
   @override

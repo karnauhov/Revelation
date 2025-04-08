@@ -1,12 +1,15 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:revelation/utils/image_preview_controller.dart';
 
 class ImagePreview extends StatefulWidget {
   final Uint8List imageData;
+  final ImagePreviewController controller;
 
   const ImagePreview({
     required this.imageData,
+    required this.controller,
     super.key,
   });
 
@@ -15,11 +18,6 @@ class ImagePreview extends StatefulWidget {
 }
 
 class ImagePreviewState extends State<ImagePreview> {
-  final TransformationController _transformationController =
-      TransformationController();
-  Size? imageSize;
-  double minScale = 1.0;
-
   @override
   void initState() {
     super.initState();
@@ -28,19 +26,17 @@ class ImagePreviewState extends State<ImagePreview> {
 
   @override
   Widget build(BuildContext context) {
-    if (imageSize == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
     return LayoutBuilder(
       builder: (context, constraints) {
-        final availableWidth = constraints.maxWidth;
-        final imageWidth = imageSize!.width;
-        minScale = availableWidth / imageWidth;
-        _transformationController.value = Matrix4.identity()..scale(minScale);
+        if (widget.controller.imageSize == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        widget.controller
+            .setImageSize(widget.controller.imageSize!, constraints.maxWidth);
         return InteractiveViewer(
-          transformationController: _transformationController,
-          minScale: minScale,
-          maxScale: 20.0,
+          transformationController: widget.controller.transformationController,
+          minScale: widget.controller.minScale,
+          maxScale: widget.controller.maxScale,
           constrained: false,
           child: Center(
             child: Image.memory(widget.imageData),
@@ -50,36 +46,16 @@ class ImagePreviewState extends State<ImagePreview> {
     );
   }
 
-  void fitToWidth() {
-    if (imageSize != null) {
-      final availableWidth = context.size!.width;
-      final imageWidth = imageSize!.width;
-      minScale = availableWidth / imageWidth;
-      _transformationController.value = Matrix4.identity()..scale(minScale);
-    }
-  }
-
-  void zoomIn() {
-    final currentScale = _transformationController.value.getMaxScaleOnAxis();
-    final newScale = (currentScale * 1.25).clamp(minScale, 20.0);
-    _transformationController.value = Matrix4.identity()..scale(newScale);
-  }
-
-  void zoomOut() {
-    final currentScale = _transformationController.value.getMaxScaleOnAxis();
-    final newScale = (currentScale / 1.25).clamp(minScale, 20.0);
-    _transformationController.value = Matrix4.identity()..scale(newScale);
-  }
-
   Future<void> _decodeImage() async {
-    ui.decodeImageFromList(widget.imageData, _getImage);
-  }
-
-  void _getImage(ui.Image image) {
-    if (mounted) {
-      setState(() {
-        imageSize = Size(image.width.toDouble(), image.height.toDouble());
-      });
-    }
+    ui.decodeImageFromList(widget.imageData, (ui.Image image) {
+      if (mounted) {
+        setState(() {
+          widget.controller.setImageSize(
+            Size(image.width.toDouble(), image.height.toDouble()),
+            context.size!.width,
+          );
+        });
+      }
+    });
   }
 }

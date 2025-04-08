@@ -135,6 +135,18 @@ class AppLocalizationsUk extends AppLocalizations {
   String get image_not_loaded => 'Зображення не завантажено';
 
   @override
+  String get reload_image => 'Перезавантажити зображення';
+
+  @override
+  String get zoom_in => 'Збільшити';
+
+  @override
+  String get zoom_out => 'Зменьшити';
+
+  @override
+  String get fit_to_page_width => 'Підігнати за шириною сторінки';
+
+  @override
   String get papyrus_18_title => 'Папірус 18 (P<sup>18</sup>)';
 
   @override
