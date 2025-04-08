@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 
 class ImagePreview extends StatefulWidget {
   final Uint8List imageData;
-  final TransformationController controller;
 
   const ImagePreview({
     required this.imageData,
-    required this.controller,
     super.key,
   });
 
@@ -17,7 +15,10 @@ class ImagePreview extends StatefulWidget {
 }
 
 class ImagePreviewState extends State<ImagePreview> {
+  final TransformationController _transformationController =
+      TransformationController();
   Size? imageSize;
+  double minScale = 1.0;
 
   @override
   void initState() {
@@ -34,11 +35,11 @@ class ImagePreviewState extends State<ImagePreview> {
       builder: (context, constraints) {
         final availableWidth = constraints.maxWidth;
         final imageWidth = imageSize!.width;
-        final scale = availableWidth / imageWidth;
-        widget.controller.value = Matrix4.identity()..scale(scale);
+        minScale = availableWidth / imageWidth;
+        _transformationController.value = Matrix4.identity()..scale(minScale);
         return InteractiveViewer(
-          transformationController: widget.controller,
-          minScale: scale,
+          transformationController: _transformationController,
+          minScale: minScale,
           maxScale: 20.0,
           constrained: false,
           child: Center(
@@ -47,6 +48,27 @@ class ImagePreviewState extends State<ImagePreview> {
         );
       },
     );
+  }
+
+  void fitToWidth() {
+    if (imageSize != null) {
+      final availableWidth = context.size!.width;
+      final imageWidth = imageSize!.width;
+      minScale = availableWidth / imageWidth;
+      _transformationController.value = Matrix4.identity()..scale(minScale);
+    }
+  }
+
+  void zoomIn() {
+    final currentScale = _transformationController.value.getMaxScaleOnAxis();
+    final newScale = (currentScale * 1.25).clamp(minScale, 20.0);
+    _transformationController.value = Matrix4.identity()..scale(newScale);
+  }
+
+  void zoomOut() {
+    final currentScale = _transformationController.value.getMaxScaleOnAxis();
+    final newScale = (currentScale / 1.25).clamp(minScale, 20.0);
+    _transformationController.value = Matrix4.identity()..scale(newScale);
   }
 
   Future<void> _decodeImage() async {

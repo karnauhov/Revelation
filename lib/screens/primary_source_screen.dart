@@ -6,6 +6,7 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
+import 'package:revelation/widgets/image_preview.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PrimarySourceScreen extends StatefulWidget {
@@ -21,8 +22,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
   model.Page? selectedPage;
   Uint8List? imageData;
   bool isLoading = false;
-  final TransformationController _transformationController =
-      TransformationController();
 
   @override
   void initState() {
@@ -81,30 +80,19 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                 IconButton(
                   icon: const Icon(Icons.zoom_in),
                   onPressed: () {
-                    final currentScale =
-                        _transformationController.value.getMaxScaleOnAxis();
-                    _transformationController.value = Matrix4.identity()
-                      ..scale(currentScale * 1.25);
+                    // TODO
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.zoom_out),
                   onPressed: () {
-                    final currentScale =
-                        _transformationController.value.getMaxScaleOnAxis();
-                    final newScale = currentScale / 1.25;
-                    if (newScale >= 1.0) {
-                      _transformationController.value = Matrix4.identity()
-                        ..scale(newScale);
-                    } else {
-                      _transformationController.value = Matrix4.identity();
-                    }
+                    // TODO
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.fit_screen),
                   onPressed: () {
-                    _transformationController.value = Matrix4.identity();
+                    // TODO
                   },
                 ),
               ],
@@ -112,24 +100,20 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
           ),
         ),
       ),
-      body: Center(
-        child: isLoading
-            ? const CircularProgressIndicator()
-            : imageData != null
-                ? MouseRegion(
-                    cursor:
-                        _transformationController.value.getMaxScaleOnAxis() >
-                                1.0
-                            ? SystemMouseCursors.grab
-                            : MouseCursor.defer,
-                    child: InteractiveViewer(
-                      transformationController: _transformationController,
-                      minScale: 1.0,
-                      maxScale: 20.0,
-                      child: Image.memory(imageData!),
-                    ),
-                  )
-                : Text(AppLocalizations.of(context)!.image_not_loaded),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 1.0),
+          ),
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : imageData != null
+                  ? ImagePreview(imageData: imageData!)
+                  : Center(
+                      child:
+                          Text(AppLocalizations.of(context)!.image_not_loaded)),
+        ),
       ),
     );
   }
