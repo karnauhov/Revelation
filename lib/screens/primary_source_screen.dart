@@ -36,6 +36,13 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (selectedPage != null &&
+        !widget.primarySource.pages.contains(selectedPage)) {
+      selectedPage = widget.primarySource.pages.isNotEmpty
+          ? widget.primarySource.pages.first
+          : null;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: getStyledText(
@@ -66,7 +73,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                         onChanged: (model.Page? newPage) {
                           setState(() {
                             selectedPage = newPage;
-                            _loadImage(selectedPage!.image);
+                            if (newPage != null) {
+                              _loadImage(newPage.image);
+                            }
                           });
                         },
                         items: widget.primarySource.pages
@@ -121,7 +130,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                         onChanged: (model.Page? newPage) {
                           setState(() {
                             selectedPage = newPage;
-                            _loadImage(selectedPage!.image);
+                            if (newPage != null) {
+                              _loadImage(newPage.image);
+                            }
                           });
                         },
                         items: widget.primarySource.pages
@@ -159,7 +170,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                                 _imageController.backToMinScale();
                               }
                               break;
-                            default:
                           }
                         },
                         itemBuilder: (context) => [
