@@ -36,8 +36,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<model.Page> pages = widget.primarySource.pages;
-
     return Scaffold(
       appBar: AppBar(
         title: getStyledText(
@@ -65,7 +63,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                       _loadImage(selectedPage!.image);
                     });
                   },
-                  items: pages
+                  items: widget.primarySource.pages
                       .map<DropdownMenuItem<model.Page>>((model.Page value) {
                     return DropdownMenuItem<model.Page>(
                       value: value,
@@ -92,10 +90,11 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                       imageData != null ? _imageController.zoomOut : null,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.width_full),
-                  tooltip: AppLocalizations.of(context)!.fit_to_page_width,
-                  onPressed:
-                      imageData != null ? _imageController.fitToWidth : null,
+                  icon: const Icon(Icons.zoom_out_map),
+                  tooltip: AppLocalizations.of(context)!.restore_original_scale,
+                  onPressed: imageData != null
+                      ? _imageController.backToMinScale
+                      : null,
                 ),
               ],
             ),

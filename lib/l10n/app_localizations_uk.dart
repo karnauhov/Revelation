@@ -144,7 +144,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get zoom_out => 'Зменьшити';
 
   @override
-  String get fit_to_page_width => 'Підігнати за шириною сторінки';
+  String get restore_original_scale => 'Повернути початковий масштаб';
 
   @override
   String get papyrus_18_title => 'Папірус 18 (P<sup>18</sup>)';

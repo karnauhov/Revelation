@@ -10,18 +10,13 @@ class ImagePreviewController {
   TransformationController get transformationController =>
       _transformationController;
 
-  void setImageSize(Size size, double availableWidth) {
+  void setImageSize(Size size, double availableWidth, double availableHeight) {
     imageSize = size;
     minScale = availableWidth / size.width;
+    if (minScale * size.height < availableHeight) {
+      minScale = availableHeight / size.height;
+    }
     _transformationController.value = Matrix4.identity()..scale(minScale);
-  }
-
-  bool isImageFullyVisible(double availableWidth, double availableHeight) {
-    if (imageSize == null) return false;
-    final currentScale = _transformationController.value.getMaxScaleOnAxis();
-    final scaledWidth = imageSize!.width * currentScale;
-    final scaledHeight = imageSize!.height * currentScale;
-    return scaledWidth <= availableWidth && scaledHeight <= availableHeight;
   }
 
   void zoomIn() {
@@ -36,7 +31,7 @@ class ImagePreviewController {
     _transformationController.value = Matrix4.identity()..scale(newScale);
   }
 
-  void fitToWidth() {
+  void backToMinScale() {
     if (imageSize != null) {
       _transformationController.value = Matrix4.identity()..scale(minScale);
     }

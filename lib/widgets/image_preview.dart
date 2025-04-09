@@ -31,14 +31,11 @@ class ImagePreviewState extends State<ImagePreview> {
         if (widget.controller.imageSize == null) {
           return const Center(child: CircularProgressIndicator());
         }
-        widget.controller
-            .setImageSize(widget.controller.imageSize!, constraints.maxWidth);
-        final imageFits = widget.controller
-            .isImageFullyVisible(constraints.maxWidth, constraints.maxHeight);
+        widget.controller.setImageSize(widget.controller.imageSize!,
+            constraints.maxWidth, constraints.maxHeight);
 
         return MouseRegion(
-          cursor:
-              imageFits ? SystemMouseCursors.basic : SystemMouseCursors.grab,
+          cursor: SystemMouseCursors.grab,
           child: InteractiveViewer(
             transformationController:
                 widget.controller.transformationController,
@@ -59,9 +56,9 @@ class ImagePreviewState extends State<ImagePreview> {
       if (mounted) {
         setState(() {
           widget.controller.setImageSize(
-            Size(image.width.toDouble(), image.height.toDouble()),
-            context.size!.width,
-          );
+              Size(image.width.toDouble(), image.height.toDouble()),
+              context.size!.width,
+              context.size!.height);
         });
       }
     });

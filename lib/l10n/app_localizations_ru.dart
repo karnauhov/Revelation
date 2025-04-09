@@ -144,7 +144,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get zoom_out => 'Уменьшить';
 
   @override
-  String get fit_to_page_width => 'Подогнать по ширине страницы';
+  String get restore_original_scale => 'Вернуть первоначальный масштаб';
 
   @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';

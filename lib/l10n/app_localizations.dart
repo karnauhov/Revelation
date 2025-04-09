@@ -367,11 +367,11 @@ abstract class AppLocalizations {
   /// **'Zoom out'**
   String get zoom_out;
 
-  /// No description provided for @fit_to_page_width.
+  /// No description provided for @restore_original_scale.
   ///
   /// In en, this message translates to:
-  /// **'Fit to page width'**
-  String get fit_to_page_width;
+  /// **'Restore original scale'**
+  String get restore_original_scale;
 
   /// No description provided for @papyrus_18_title.
   ///

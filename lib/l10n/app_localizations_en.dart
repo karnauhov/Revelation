@@ -144,7 +144,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get zoom_out => 'Zoom out';
 
   @override
-  String get fit_to_page_width => 'Fit to page width';
+  String get restore_original_scale => 'Restore original scale';
 
   @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';
