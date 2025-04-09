@@ -49,54 +49,172 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
           preferredSize: const Size.fromHeight(48.0),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                DropdownButton<model.Page>(
-                  value: selectedPage,
-                  hint: Text(widget.primarySource.pages.isEmpty
-                      ? AppLocalizations.of(context)!.images_are_missing
-                      : AppLocalizations.of(context)!.choose_page),
-                  onChanged: (model.Page? newPage) {
-                    setState(() {
-                      selectedPage = newPage;
-                      _loadImage(selectedPage!.image);
-                    });
-                  },
-                  items: widget.primarySource.pages
-                      .map<DropdownMenuItem<model.Page>>((model.Page value) {
-                    return DropdownMenuItem<model.Page>(
-                      value: value,
-                      child: Text("${value.name} (${value.content})"),
-                    );
-                  }).toList(),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.refresh),
-                  tooltip: AppLocalizations.of(context)!.reload_image,
-                  onPressed: selectedPage != null
-                      ? () => _loadImage(selectedPage!.image, isReload: true)
-                      : null,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.zoom_in),
-                  tooltip: AppLocalizations.of(context)!.zoom_in,
-                  onPressed: imageData != null ? _imageController.zoomIn : null,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.zoom_out),
-                  tooltip: AppLocalizations.of(context)!.zoom_out,
-                  onPressed:
-                      imageData != null ? _imageController.zoomOut : null,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.zoom_out_map),
-                  tooltip: AppLocalizations.of(context)!.restore_original_scale,
-                  onPressed: imageData != null
-                      ? _imageController.backToMinScale
-                      : null,
-                ),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                const double minWidthForFullActions = 380.0;
+                if (constraints.maxWidth > minWidthForFullActions) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      DropdownButton<model.Page>(
+                        value: selectedPage,
+                        hint: Text(
+                          widget.primarySource.pages.isEmpty
+                              ? AppLocalizations.of(context)!.images_are_missing
+                              : AppLocalizations.of(context)!.choose_page,
+                        ),
+                        onChanged: (model.Page? newPage) {
+                          setState(() {
+                            selectedPage = newPage;
+                            _loadImage(selectedPage!.image);
+                          });
+                        },
+                        items: widget.primarySource.pages
+                            .map<DropdownMenuItem<model.Page>>(
+                                (model.Page value) {
+                          return DropdownMenuItem<model.Page>(
+                            value: value,
+                            child: Text("${value.name} (${value.content})"),
+                          );
+                        }).toList(),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.refresh),
+                        tooltip: AppLocalizations.of(context)!.reload_image,
+                        onPressed: selectedPage != null
+                            ? () =>
+                                _loadImage(selectedPage!.image, isReload: true)
+                            : null,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.zoom_in),
+                        tooltip: AppLocalizations.of(context)!.zoom_in,
+                        onPressed:
+                            imageData != null ? _imageController.zoomIn : null,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.zoom_out),
+                        tooltip: AppLocalizations.of(context)!.zoom_out,
+                        onPressed:
+                            imageData != null ? _imageController.zoomOut : null,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.zoom_out_map),
+                        tooltip: AppLocalizations.of(context)!
+                            .restore_original_scale,
+                        onPressed: imageData != null
+                            ? _imageController.backToMinScale
+                            : null,
+                      ),
+                    ],
+                  );
+                } else {
+                  return Row(
+                    children: [
+                      DropdownButton<model.Page>(
+                        value: selectedPage,
+                        hint: Text(
+                          widget.primarySource.pages.isEmpty
+                              ? AppLocalizations.of(context)!.images_are_missing
+                              : AppLocalizations.of(context)!.choose_page,
+                        ),
+                        onChanged: (model.Page? newPage) {
+                          setState(() {
+                            selectedPage = newPage;
+                            _loadImage(selectedPage!.image);
+                          });
+                        },
+                        items: widget.primarySource.pages
+                            .map<DropdownMenuItem<model.Page>>(
+                                (model.Page value) {
+                          return DropdownMenuItem<model.Page>(
+                            value: value,
+                            child: Text("${value.name} (${value.content})"),
+                          );
+                        }).toList(),
+                      ),
+                      const Spacer(),
+                      PopupMenuButton<String>(
+                        icon: const Icon(Icons.more_vert),
+                        tooltip: AppLocalizations.of(context)!.menu,
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'refresh':
+                              if (selectedPage != null) {
+                                _loadImage(selectedPage!.image, isReload: true);
+                              }
+                              break;
+                            case 'zoom_in':
+                              if (imageData != null) {
+                                _imageController.zoomIn();
+                              }
+                              break;
+                            case 'zoom_out':
+                              if (imageData != null) {
+                                _imageController.zoomOut();
+                              }
+                              break;
+                            case 'reset':
+                              if (imageData != null) {
+                                _imageController.backToMinScale();
+                              }
+                              break;
+                            default:
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'refresh',
+                            child: Row(
+                              children: [
+                                const Icon(Icons.refresh,
+                                    color: Colors.black54),
+                                const SizedBox(width: 8),
+                                Text(
+                                    AppLocalizations.of(context)!.reload_image),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'zoom_in',
+                            child: Row(
+                              children: [
+                                const Icon(Icons.zoom_in,
+                                    color: Colors.black54),
+                                const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!.zoom_in),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'zoom_out',
+                            child: Row(
+                              children: [
+                                const Icon(Icons.zoom_out,
+                                    color: Colors.black54),
+                                const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!.zoom_out),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'reset',
+                            child: Row(
+                              children: [
+                                const Icon(Icons.zoom_out_map,
+                                    color: Colors.black54),
+                                const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!
+                                    .restore_original_scale),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                }
+              },
             ),
           ),
         ),
@@ -116,7 +234,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                     )
                   : Center(
                       child:
-                          Text(AppLocalizations.of(context)!.image_not_loaded)),
+                          Text(AppLocalizations.of(context)!.image_not_loaded),
+                    ),
         ),
       ),
     );

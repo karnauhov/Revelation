@@ -370,7 +370,7 @@ abstract class AppLocalizations {
   /// No description provided for @restore_original_scale.
   ///
   /// In en, this message translates to:
-  /// **'Restore original scale'**
+  /// **'Original scale'**
   String get restore_original_scale;
 
   /// No description provided for @papyrus_18_title.
