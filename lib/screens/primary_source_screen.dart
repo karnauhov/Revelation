@@ -24,6 +24,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
   Uint8List? imageData;
   bool isLoading = false;
   final ImagePreviewController _imageController = ImagePreviewController();
+  final Map<String, bool> localPageLoaded = {};
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
       selectedPage = widget.primarySource.pages.first;
       _loadImage(selectedPage!.image);
     }
+    _checkLocalPages();
   }
 
   @override
@@ -73,19 +75,20 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                         onChanged: (model.Page? newPage) {
                           setState(() {
                             selectedPage = newPage;
-                            if (newPage != null) {
-                              _loadImage(newPage.image);
-                            }
                           });
+                          if (newPage != null) {
+                            _loadImage(newPage.image);
+                          }
                         },
                         items: widget.primarySource.pages
                             .map<DropdownMenuItem<model.Page>>(
-                                (model.Page value) {
-                          return DropdownMenuItem<model.Page>(
-                            value: value,
-                            child: Text("${value.name} (${value.content})"),
-                          );
-                        }).toList(),
+                          (model.Page value) {
+                            return DropdownMenuItem<model.Page>(
+                              value: value,
+                              child: _buildDropdownItem(value),
+                            );
+                          },
+                        ).toList(),
                       ),
                       IconButton(
                         icon: const Icon(Icons.refresh),
@@ -96,43 +99,46 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                             : null,
                       ),
                       IconButton(
-                          icon: const Icon(Icons.zoom_in),
-                          tooltip: AppLocalizations.of(context)!.zoom_in,
-                          onPressed: () {
-                            if (imageData != null) {
-                              final viewportCenter = Offset(
-                                MediaQuery.of(context).size.width / 2,
-                                MediaQuery.of(context).size.height / 2,
-                              );
-                              _imageController.zoomIn(viewportCenter);
-                            }
-                          }),
+                        icon: const Icon(Icons.zoom_in),
+                        tooltip: AppLocalizations.of(context)!.zoom_in,
+                        onPressed: () {
+                          if (imageData != null) {
+                            final viewportCenter = Offset(
+                              MediaQuery.of(context).size.width / 2,
+                              MediaQuery.of(context).size.height / 2,
+                            );
+                            _imageController.zoomIn(viewportCenter);
+                          }
+                        },
+                      ),
                       IconButton(
-                          icon: const Icon(Icons.zoom_out),
-                          tooltip: AppLocalizations.of(context)!.zoom_out,
-                          onPressed: () {
-                            if (imageData != null) {
-                              final viewportSize = Size(
-                                MediaQuery.of(context).size.width,
-                                MediaQuery.of(context).size.height,
-                              );
-                              final viewportCenter = Offset(
-                                MediaQuery.of(context).size.width / 2,
-                                MediaQuery.of(context).size.height / 2,
-                              );
-                              _imageController.zoomOut(
-                                  viewportCenter, viewportSize);
-                            }
-                          }),
+                        icon: const Icon(Icons.zoom_out),
+                        tooltip: AppLocalizations.of(context)!.zoom_out,
+                        onPressed: () {
+                          if (imageData != null) {
+                            final viewportSize = Size(
+                              MediaQuery.of(context).size.width,
+                              MediaQuery.of(context).size.height,
+                            );
+                            final viewportCenter = Offset(
+                              MediaQuery.of(context).size.width / 2,
+                              MediaQuery.of(context).size.height / 2,
+                            );
+                            _imageController.zoomOut(
+                                viewportCenter, viewportSize);
+                          }
+                        },
+                      ),
                       IconButton(
-                          icon: const Icon(Icons.zoom_out_map),
-                          tooltip: AppLocalizations.of(context)!
-                              .restore_original_scale,
-                          onPressed: () {
-                            if (imageData != null) {
-                              _imageController.backToMinScale();
-                            }
-                          }),
+                        icon: const Icon(Icons.zoom_out_map),
+                        tooltip: AppLocalizations.of(context)!
+                            .restore_original_scale,
+                        onPressed: () {
+                          if (imageData != null) {
+                            _imageController.backToMinScale();
+                          }
+                        },
+                      ),
                     ],
                   );
                 } else {
@@ -148,19 +154,20 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                         onChanged: (model.Page? newPage) {
                           setState(() {
                             selectedPage = newPage;
-                            if (newPage != null) {
-                              _loadImage(newPage.image);
-                            }
                           });
+                          if (newPage != null) {
+                            _loadImage(newPage.image);
+                          }
                         },
                         items: widget.primarySource.pages
                             .map<DropdownMenuItem<model.Page>>(
-                                (model.Page value) {
-                          return DropdownMenuItem<model.Page>(
-                            value: value,
-                            child: Text("${value.name} (${value.content})"),
-                          );
-                        }).toList(),
+                          (model.Page value) {
+                            return DropdownMenuItem<model.Page>(
+                              value: value,
+                              child: _buildDropdownItem(value),
+                            );
+                          },
+                        ).toList(),
                       ),
                       const Spacer(),
                       PopupMenuButton<String>(
@@ -282,6 +289,36 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
     );
   }
 
+  Future<void> _checkLocalPages() async {
+    if (isWeb()) {
+      for (var page in widget.primarySource.pages) {
+        setState(() {
+          localPageLoaded[page.image] = true;
+        });
+      }
+    } else {
+      for (var page in widget.primarySource.pages) {
+        final localFilePath = await _getLocalFilePath(page.image);
+        final exists = await File(localFilePath).exists();
+        setState(() {
+          localPageLoaded[page.image] = exists;
+        });
+      }
+    }
+  }
+
+  Widget _buildDropdownItem(model.Page page) {
+    Color textColor = (localPageLoaded[page.image] ?? false)
+        ? Colors.teal.shade900
+        : Colors.red.shade900;
+    FontWeight fontWeight =
+        (page == selectedPage) ? FontWeight.bold : FontWeight.normal;
+    return Text(
+      "${page.name} (${page.content})",
+      style: TextStyle(color: textColor, fontWeight: fontWeight),
+    );
+  }
+
   Future<void> _loadImage(String page, {bool isReload = false}) async {
     setState(() {
       isLoading = true;
@@ -289,6 +326,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
 
     if (isWeb()) {
       await _downloadImage(page);
+      setState(() {
+        localPageLoaded[page] = true;
+      });
     } else {
       final localFilePath = await _getLocalFilePath(page);
       final file = File(localFilePath);
@@ -297,10 +337,14 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
         setState(() {
           imageData = bytes;
           isLoading = false;
+          localPageLoaded[page] = true;
         });
       } else {
         await _downloadImage(page);
         await _saveImage(file);
+        setState(() {
+          localPageLoaded[page] = true;
+        });
       }
     }
   }
@@ -312,9 +356,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
 
   Future<void> _downloadImage(String page) async {
     try {
-      final devider = page.indexOf("/");
-      final repository = page.substring(0, devider);
-      final image = page.substring(devider + 1);
+      final divider = page.indexOf("/");
+      final repository = page.substring(0, divider);
+      final image = page.substring(divider + 1);
       final supabase = Supabase.instance.client;
       final Uint8List fileBytes =
           await supabase.storage.from(repository).download(image);
