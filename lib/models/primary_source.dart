@@ -15,24 +15,25 @@ class PrimarySource {
   final String link2Title;
   final String link2Url;
   final String preview;
+  final double maxScale;
   final List<Page> pages;
   bool showMore = false;
 
-  PrimarySource({
-    required this.title,
-    required this.date,
-    required this.content,
-    required this.quantity,
-    required this.material,
-    required this.textStyle,
-    required this.found,
-    required this.classification,
-    required this.currentLocation,
-    required this.link1Title,
-    required this.link1Url,
-    required this.link2Title,
-    required this.link2Url,
-    required this.preview,
-    required this.pages,
-  });
+  PrimarySource(
+      {required this.title,
+      required this.date,
+      required this.content,
+      required this.quantity,
+      required this.material,
+      required this.textStyle,
+      required this.found,
+      required this.classification,
+      required this.currentLocation,
+      required this.link1Title,
+      required this.link1Url,
+      required this.link2Title,
+      required this.link2Url,
+      required this.preview,
+      required this.maxScale,
+      required this.pages});
 }

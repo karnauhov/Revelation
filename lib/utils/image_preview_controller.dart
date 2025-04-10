@@ -5,8 +5,10 @@ class ImagePreviewController {
   final TransformationController _transformationController =
       TransformationController();
   double minScale = 1.0;
-  double maxScale = 20.0;
+  double maxScale = 10.0;
   Size? imageSize;
+
+  ImagePreviewController(this.maxScale);
 
   TransformationController get transformationController =>
       _transformationController;

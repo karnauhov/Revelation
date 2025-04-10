@@ -23,6 +23,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20001',
           preview: 'assets/images/Resources/20001/preview.png',
+          maxScale: 3,
           pages: [
             model.Page(
                 name: "325v",
@@ -113,6 +114,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20002',
           preview: 'assets/images/Resources/20002/preview.png',
+          maxScale: 3,
           pages: [
             model.Page(
                 name: "150r",
@@ -203,6 +205,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20046',
           preview: 'assets/images/Resources/20046/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "249r",
@@ -384,6 +387,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10047',
           preview: 'assets/images/Resources/10047/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1r",
@@ -482,6 +486,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10115',
           preview: 'assets/images/Resources/10115/preview.png',
+          maxScale: 3,
           pages: [
             model.Page(
                 name: "1v",
@@ -508,6 +513,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20004',
           preview: 'assets/images/Resources/20004/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "197r",
@@ -602,6 +608,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20025',
           preview: 'assets/images/Resources/20025/preview.png',
+          maxScale: 5,
           pages: []),
       PrimarySource(
           title: loc.uncial_51_title,
@@ -619,6 +626,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20051',
           preview: 'assets/images/Resources/20051/preview.png',
+          maxScale: 5,
           pages: [])
     ];
     return sources;
@@ -643,6 +651,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10018',
           preview: 'assets/images/Resources/10018/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1v",
@@ -665,6 +674,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10024',
           preview: 'assets/images/Resources/10024/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1r",
@@ -691,6 +701,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10043',
           preview: 'assets/images/Resources/10043/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1r",
@@ -717,6 +728,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10085',
           preview: 'assets/images/Resources/10085/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1r",
@@ -743,6 +755,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10098',
           preview: 'assets/images/Resources/10098/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1v",
@@ -765,6 +778,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20052',
           preview: 'assets/images/Resources/20052/preview.png',
+          maxScale: 10,
           pages: [
             model.Page(
                 name: "4v",
@@ -787,6 +801,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20163',
           preview: 'assets/images/Resources/20163/preview.png',
+          maxScale: 3,
           pages: [
             model.Page(
                 name: "1",
@@ -813,6 +828,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20169',
           preview: 'assets/images/Resources/20169/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1r",
@@ -839,6 +855,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20207',
           preview: 'assets/images/Resources/20207/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1",
@@ -865,6 +882,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20229',
           preview: 'assets/images/Resources/20229/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1r",
@@ -899,6 +917,7 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20308',
           preview: 'assets/images/Resources/20308/preview.png',
+          maxScale: 5,
           pages: [
             model.Page(
                 name: "1r",

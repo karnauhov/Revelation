@@ -23,12 +23,13 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
   model.Page? selectedPage;
   Uint8List? imageData;
   bool isLoading = false;
-  final ImagePreviewController _imageController = ImagePreviewController();
+  late ImagePreviewController _imageController;
   final Map<String, bool> localPageLoaded = {};
 
   @override
   void initState() {
     super.initState();
+    _imageController = ImagePreviewController(widget.primarySource.maxScale);
     if (widget.primarySource.pages.isNotEmpty) {
       selectedPage = widget.primarySource.pages.first;
       _loadImage(selectedPage!.image);
