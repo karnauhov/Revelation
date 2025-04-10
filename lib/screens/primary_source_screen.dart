@@ -112,11 +112,16 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                           tooltip: AppLocalizations.of(context)!.zoom_out,
                           onPressed: () {
                             if (imageData != null) {
+                              final viewportSize = Size(
+                                MediaQuery.of(context).size.width,
+                                MediaQuery.of(context).size.height,
+                              );
                               final viewportCenter = Offset(
                                 MediaQuery.of(context).size.width / 2,
                                 MediaQuery.of(context).size.height / 2,
                               );
-                              _imageController.zoomOut(viewportCenter);
+                              _imageController.zoomOut(
+                                  viewportCenter, viewportSize);
                             }
                           }),
                       IconButton(
@@ -179,11 +184,16 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                               break;
                             case 'zoom_out':
                               if (imageData != null) {
+                                final viewportSize = Size(
+                                  MediaQuery.of(context).size.width,
+                                  MediaQuery.of(context).size.height,
+                                );
                                 final viewportCenter = Offset(
                                   MediaQuery.of(context).size.width / 2,
                                   MediaQuery.of(context).size.height / 2,
                                 );
-                                _imageController.zoomOut(viewportCenter);
+                                _imageController.zoomOut(
+                                    viewportCenter, viewportSize);
                               }
                               break;
                             case 'reset':
