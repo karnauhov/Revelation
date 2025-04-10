@@ -61,7 +61,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                const double minWidthForFullActions = 380.0;
+                const double minWidthForFullActions = 390.0;
                 if (constraints.maxWidth > minWidthForFullActions) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.start,
