@@ -96,25 +96,38 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                             : null,
                       ),
                       IconButton(
-                        icon: const Icon(Icons.zoom_in),
-                        tooltip: AppLocalizations.of(context)!.zoom_in,
-                        onPressed:
-                            imageData != null ? _imageController.zoomIn : null,
-                      ),
+                          icon: const Icon(Icons.zoom_in),
+                          tooltip: AppLocalizations.of(context)!.zoom_in,
+                          onPressed: () {
+                            if (imageData != null) {
+                              final viewportCenter = Offset(
+                                MediaQuery.of(context).size.width / 2,
+                                MediaQuery.of(context).size.height / 2,
+                              );
+                              _imageController.zoomIn(viewportCenter);
+                            }
+                          }),
                       IconButton(
-                        icon: const Icon(Icons.zoom_out),
-                        tooltip: AppLocalizations.of(context)!.zoom_out,
-                        onPressed:
-                            imageData != null ? _imageController.zoomOut : null,
-                      ),
+                          icon: const Icon(Icons.zoom_out),
+                          tooltip: AppLocalizations.of(context)!.zoom_out,
+                          onPressed: () {
+                            if (imageData != null) {
+                              final viewportCenter = Offset(
+                                MediaQuery.of(context).size.width / 2,
+                                MediaQuery.of(context).size.height / 2,
+                              );
+                              _imageController.zoomOut(viewportCenter);
+                            }
+                          }),
                       IconButton(
-                        icon: const Icon(Icons.zoom_out_map),
-                        tooltip: AppLocalizations.of(context)!
-                            .restore_original_scale,
-                        onPressed: imageData != null
-                            ? _imageController.backToMinScale
-                            : null,
-                      ),
+                          icon: const Icon(Icons.zoom_out_map),
+                          tooltip: AppLocalizations.of(context)!
+                              .restore_original_scale,
+                          onPressed: () {
+                            if (imageData != null) {
+                              _imageController.backToMinScale();
+                            }
+                          }),
                     ],
                   );
                 } else {
@@ -157,12 +170,20 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen> {
                               break;
                             case 'zoom_in':
                               if (imageData != null) {
-                                _imageController.zoomIn();
+                                final viewportCenter = Offset(
+                                  MediaQuery.of(context).size.width / 2,
+                                  MediaQuery.of(context).size.height / 2,
+                                );
+                                _imageController.zoomIn(viewportCenter);
                               }
                               break;
                             case 'zoom_out':
                               if (imageData != null) {
-                                _imageController.zoomOut();
+                                final viewportCenter = Offset(
+                                  MediaQuery.of(context).size.width / 2,
+                                  MediaQuery.of(context).size.height / 2,
+                                );
+                                _imageController.zoomOut(viewportCenter);
                               }
                               break;
                             case 'reset':

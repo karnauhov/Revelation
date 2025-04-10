@@ -19,16 +19,28 @@ class ImagePreviewController {
     _transformationController.value = Matrix4.identity()..scale(minScale);
   }
 
-  void zoomIn() {
-    final currentScale = _transformationController.value.getMaxScaleOnAxis();
+  void zoomIn(Offset focalPoint) {
+    final matrix = _transformationController.value;
+    final inverseMatrix = Matrix4.inverted(matrix);
+    final focalImage = MatrixUtils.transformPoint(inverseMatrix, focalPoint);
+    final currentScale = matrix.getMaxScaleOnAxis();
     final newScale = (currentScale * 1.25).clamp(minScale, maxScale);
-    _transformationController.value = Matrix4.identity()..scale(newScale);
+    final newTranslation = focalPoint - focalImage * newScale;
+    _transformationController.value = Matrix4.identity()
+      ..translate(newTranslation.dx, newTranslation.dy)
+      ..scale(newScale);
   }
 
-  void zoomOut() {
-    final currentScale = _transformationController.value.getMaxScaleOnAxis();
+  void zoomOut(Offset focalPoint) {
+    final matrix = _transformationController.value;
+    final inverseMatrix = Matrix4.inverted(matrix);
+    final focalImage = MatrixUtils.transformPoint(inverseMatrix, focalPoint);
+    final currentScale = matrix.getMaxScaleOnAxis();
     final newScale = (currentScale / 1.25).clamp(minScale, maxScale);
-    _transformationController.value = Matrix4.identity()..scale(newScale);
+    final newTranslation = focalPoint - focalImage * newScale;
+    _transformationController.value = Matrix4.identity()
+      ..translate(newTranslation.dx, newTranslation.dy)
+      ..scale(newScale);
   }
 
   void backToMinScale() {
