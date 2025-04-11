@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:revelation/utils/image_preview_controller.dart';
+import 'package:revelation/controllers/image_preview_controller.dart';
 
 class ImagePreview extends StatefulWidget {
   final Uint8List imageData;

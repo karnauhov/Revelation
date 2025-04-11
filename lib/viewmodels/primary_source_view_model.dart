@@ -4,7 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
-import 'package:revelation/utils/image_preview_controller.dart';
+import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PrimarySourceViewModel extends ChangeNotifier {
