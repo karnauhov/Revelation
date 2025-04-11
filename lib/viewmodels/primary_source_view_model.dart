@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/models/zoom_status.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,9 +15,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool isLoading = false;
   final Map<String, bool> localPageLoaded = {};
   late ImagePreviewController imageController;
+  final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
+      const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false));
 
   PrimarySourceViewModel({required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
+    imageController.transformationController.addListener(_updateZoomStatus);
+
     if (primarySource.pages.isNotEmpty) {
       selectedPage = primarySource.pages.first;
       loadImage(selectedPage!.image);
@@ -62,6 +67,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
     }
     isLoading = false;
     notifyListeners();
+
+    _updateZoomStatus();
   }
 
   void changeSelectedPage(model.Page? newPage) {
@@ -101,6 +108,25 @@ class PrimarySourceViewModel extends ChangeNotifier {
       }
     } catch (e) {
       log.e('Image save error: $e');
+    }
+  }
+
+  void _updateZoomStatus() {
+    if (imageData == null) {
+      Future.microtask(() {
+        zoomStatusNotifier.value = const ZoomStatus(
+            canZoomIn: false, canZoomOut: false, canReset: false);
+      });
+    } else {
+      final currentScale =
+          imageController.transformationController.value.getMaxScaleOnAxis();
+      Future.microtask(() {
+        zoomStatusNotifier.value = ZoomStatus(
+          canZoomIn: currentScale < imageController.maxScale,
+          canZoomOut: currentScale > imageController.minScale,
+          canReset: currentScale != imageController.minScale,
+        );
+      });
     }
   }
 }
