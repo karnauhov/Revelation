@@ -26,6 +26,11 @@ class PrimarySourceScreen extends StatelessWidget {
             );
           }
 
+          final double width = MediaQuery.of(context).size.width;
+          const double threshold1 = 500.0;
+          const double threshold2 = 390.0;
+          final bool useActions = width > threshold1;
+
           return Scaffold(
             appBar: AppBar(
               title: getStyledText(
@@ -35,27 +40,27 @@ class PrimarySourceScreen extends StatelessWidget {
                     .headlineSmall
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(48.0),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      const double minWidthForFullActions = 390.0;
-                      if (constraints.maxWidth > minWidthForFullActions) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: _buildActions(context, viewModel),
-                        );
-                      } else {
-                        return Row(
-                          children: _buildActionsSmall(context, viewModel),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ),
+              actions: useActions ? _buildActions(context, viewModel) : null,
+              bottom: useActions
+                  ? null
+                  : PreferredSize(
+                      preferredSize: const Size.fromHeight(32.0),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final bool showFullActions =
+                                constraints.maxWidth > threshold2;
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: showFullActions
+                                  ? _buildActions(context, viewModel)
+                                  : _buildActionsSmall(context, viewModel),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
             ),
             body: Padding(
               padding: const EdgeInsets.all(10.0),
