@@ -1,5 +1,5 @@
 Для версии 1.0.1:
-- Сделать PrimarySourceViewModel вместо ImagePreviewController
+- Перенести в PrimarySourceViewModel все из ImagePreviewController (все проверить)
 - Перенести в PrimarySourceViewModel из других класов все что меняет состояние страницы (все проверить)
 - В PrimarySourceViewModel сделать статусы для disable для кнопок увеличение, уменьшение, сброс в исходный размер (когда нет изображения или действие не доступно)
 
