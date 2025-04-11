@@ -5,7 +5,7 @@ import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
-import 'package:revelation/widgets/image_preview.dart';
+import 'package:revelation/screens/primary_source/image_preview.dart';
 
 class PrimarySourceScreen extends StatelessWidget {
   final PrimarySource primarySource;

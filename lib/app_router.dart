@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
-import 'package:revelation/screens/primary_source_screen.dart';
-import 'package:revelation/screens/primary_sources_screen.dart';
-import 'package:revelation/screens/settings_screen.dart';
-import 'package:revelation/screens/about_screen.dart';
-import 'screens/main_screen.dart';
-import 'screens/topic_screen.dart';
+import 'package:revelation/screens/primary_source/primary_source_screen.dart';
+import 'package:revelation/screens/primary_sources/primary_sources_screen.dart';
+import 'package:revelation/screens/settings/settings_screen.dart';
+import 'package:revelation/screens/about/about_screen.dart';
+import 'screens/main/main_screen.dart';
+import 'screens/topic/topic_screen.dart';
 
 class AppRouter {
   static final AppRouter _instance = AppRouter._internal();

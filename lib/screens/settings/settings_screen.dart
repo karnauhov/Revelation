@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import '../viewmodels/settings_view_model.dart';
-import '../utils/app_constants.dart';
+import '../../viewmodels/settings_view_model.dart';
+import '../../utils/app_constants.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

@@ -3,9 +3,9 @@ import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/viewmodels/primary_sources_view_model.dart';
-import 'package:revelation/widgets/source_item.dart';
-import '../utils/common.dart';
-import '../models/primary_source.dart';
+import 'package:revelation/screens/primary_sources/source_item.dart';
+import '../../utils/common.dart';
+import '../../models/primary_source.dart';
 
 class PrimarySourcesScreen extends StatefulWidget {
   const PrimarySourcesScreen({super.key});

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/widgets/drawer_content.dart';
-import '../utils/common.dart';
-import '../viewmodels/main_view_model.dart';
-import '../widgets/svg_icon_button.dart';
-import '../widgets/topic_list.dart';
+import 'package:revelation/screens/main/drawer_content.dart';
+import '../../utils/common.dart';
+import '../../viewmodels/main_view_model.dart';
+import '../../common_widgets/svg_icon_button.dart';
+import 'topic_list.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

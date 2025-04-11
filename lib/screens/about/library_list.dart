@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/widgets/error_message.dart';
+import 'package:revelation/common_widgets/error_message.dart';
 import 'library_card.dart';
-import '../models/library_info.dart';
-import '../utils/common.dart';
+import '../../models/library_info.dart';
+import '../../utils/common.dart';
 
 class LibraryList extends StatefulWidget {
   const LibraryList({super.key});

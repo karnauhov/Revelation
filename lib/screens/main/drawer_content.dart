@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
 import 'drawer_item.dart';
-import '../utils/common.dart';
+import '../../utils/common.dart';
 
 class DrawerContent extends StatefulWidget {
   const DrawerContent({super.key});

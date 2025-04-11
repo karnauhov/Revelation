@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:revelation/l10n/app_localizations.dart';
-import '../utils/common.dart';
-import '../models/library_info.dart';
+import 'package:go_router/go_router.dart';
+import '../../models/topic_info.dart';
+import '../../utils/common.dart';
 
-class LibraryCard extends StatelessWidget {
-  final LibraryInfo library;
+class TopicCard extends StatelessWidget {
+  final TopicInfo topic;
 
-  const LibraryCard({super.key, required this.library});
+  const TopicCard({super.key, required this.topic});
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +20,17 @@ class LibraryCard extends StatelessWidget {
       child: ListTile(
         visualDensity: VisualDensity.compact,
         minTileHeight: 0,
-        onTap: () => launchLink(library.officialSite),
+        onTap: () => context.push('/topic', extra: {
+          'name': topic.name,
+          'description': topic.description,
+          'file': topic.route
+        }),
         leading: SizedBox(
           width: iconWidth,
           height: iconHeight,
           child: SvgPicture.asset(
-            library.idIcon.isNotEmpty
-                ? "assets/images/UI/${library.idIcon}.svg"
+            topic.idIcon.isNotEmpty
+                ? "assets/images/UI/${topic.idIcon}.svg"
                 : 'assets/images/UI/code.svg',
             width: iconWidth,
             height: iconHeight,
@@ -35,20 +39,16 @@ class LibraryCard extends StatelessWidget {
           ),
         ),
         title: Text(
-          library.name,
+          locLinks(context, topic.name),
           style: Theme.of(context)
               .textTheme
               .titleMedium
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
-        subtitle: GestureDetector(
-          onTap: () => launchLink(library.licenseLink),
-          child: Text(
-            "${AppLocalizations.of(context)!.license} (${library.license})",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              decoration: TextDecoration.underline,
-            ),
+        subtitle: Text(
+          locLinks(context, topic.description),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
