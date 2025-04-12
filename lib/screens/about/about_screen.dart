@@ -218,13 +218,13 @@ class _AboutScreenState extends State<AboutScreen> {
             AppLocalizations.of(context)!.acknowledgements_description_1,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-        const LibraryList(),
+        const InstitutionList(),
         if (AppLocalizations.of(context)!.acknowledgements_description_2 != "")
           Text(
             AppLocalizations.of(context)!.acknowledgements_description_2,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-        const InstitutionList(),
+        const LibraryList(),
       ],
     );
   }

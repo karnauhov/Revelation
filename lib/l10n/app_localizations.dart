@@ -136,13 +136,13 @@ abstract class AppLocalizations {
   /// No description provided for @acknowledgements_description_1.
   ///
   /// In en, this message translates to:
-  /// **'Many thanks to the developers who worked on the following software:'**
+  /// **'Sincere gratitude to the institutions for providing access to invaluable manuscripts:'**
   String get acknowledgements_description_1;
 
   /// No description provided for @acknowledgements_description_2.
   ///
   /// In en, this message translates to:
-  /// **'Sincere appreciation to the following institutions for digitizing and providing access to invaluable manuscripts and papyri:'**
+  /// **'Many thanks to the developers who worked on the following software:'**
   String get acknowledgements_description_2;
 
   /// No description provided for @all_rights_reserved.

@@ -27,10 +27,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get acknowledgements_title => 'Acknowledgments';
 
   @override
-  String get acknowledgements_description_1 => 'Many thanks to the developers who worked on the following software:';
+  String get acknowledgements_description_1 => 'Sincere gratitude to the institutions for providing access to invaluable manuscripts:';
 
   @override
-  String get acknowledgements_description_2 => 'Sincere appreciation to the following institutions for digitizing and providing access to invaluable manuscripts and papyri:';
+  String get acknowledgements_description_2 => 'Many thanks to the developers who worked on the following software:';
 
   @override
   String get all_rights_reserved => 'All rights reserved';

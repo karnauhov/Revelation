@@ -27,10 +27,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get acknowledgements_title => 'Подяки';
 
   @override
-  String get acknowledgements_description_1 => 'Велика подяка розробникам що працювали над наступним ПЗ:';
+  String get acknowledgements_description_1 => 'Щира подяка установам за наданий доступ до безцінних рукописів:';
 
   @override
-  String get acknowledgements_description_2 => 'Щира подяка таким установам за оцифрування та доступ до безцінних манускриптів і папірусів:';
+  String get acknowledgements_description_2 => 'Велика подяка розробникам що працювали над наступним ПЗ:';
 
   @override
   String get all_rights_reserved => 'Усі права захищені';
