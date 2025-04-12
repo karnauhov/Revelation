@@ -626,8 +626,381 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20051',
           preview: 'assets/images/Resources/20051/preview.png',
-          maxScale: 5,
-          pages: [])
+          maxScale: 3,
+          pages: [
+            model.Page(
+                name: "1",
+                content: "11:15-18",
+                image: "primary_sources/20051/20051_01.jpg"),
+            model.Page(
+                name: "2",
+                content: "11:18-12:1",
+                image: "primary_sources/20051/20051_02.jpg"),
+            model.Page(
+                name: "3",
+                content: "12:2",
+                image: "primary_sources/20051/20051_03.jpg"),
+            model.Page(
+                name: "4",
+                content: "12:3",
+                image: "primary_sources/20051/20051_04.jpg"),
+            model.Page(
+                name: "5",
+                content: "12:4-5",
+                image: "primary_sources/20051/20051_05.jpg"),
+            model.Page(
+                name: "6",
+                content: "12:5-6",
+                image: "primary_sources/20051/20051_06.jpg"),
+            model.Page(
+                name: "7",
+                content: "12:7-9",
+                image: "primary_sources/20051/20051_07.jpg"),
+            model.Page(
+                name: "8",
+                content: "12:9-10",
+                image: "primary_sources/20051/20051_08.jpg"),
+            model.Page(
+                name: "9",
+                content: "12:11-14",
+                image: "primary_sources/20051/20051_09.jpg"),
+            model.Page(
+                name: "10",
+                content: "12:15-17",
+                image: "primary_sources/20051/20051_10.jpg"),
+            model.Page(
+                name: "11",
+                content: "12:18-13:1,3-6",
+                image: "primary_sources/20051/20051_11.jpg"),
+            model.Page(
+                name: "12",
+                content: "13:6-10",
+                image: "primary_sources/20051/20051_12.jpg"),
+            model.Page(
+                name: "13",
+                content: "13:11-13",
+                image: "primary_sources/20051/20051_13.jpg"),
+            model.Page(
+                name: "14",
+                content: "13:13-17",
+                image: "primary_sources/20051/20051_14.jpg"),
+            model.Page(
+                name: "15",
+                content: "13:18",
+                image: "primary_sources/20051/20051_15.jpg"),
+            model.Page(
+                name: "16",
+                content: "14:1-3",
+                image: "primary_sources/20051/20051_16.jpg"),
+            model.Page(
+                name: "17",
+                content: "14:3-5",
+                image: "primary_sources/20051/20051_17.jpg"),
+            model.Page(
+                name: "18",
+                content: "14:6-8",
+                image: "primary_sources/20051/20051_18.jpg"),
+            model.Page(
+                name: "19",
+                content: "14:9-11",
+                image: "primary_sources/20051/20051_19.jpg"),
+            model.Page(
+                name: "20",
+                content: "14:11-13",
+                image: "primary_sources/20051/20051_20.jpg"),
+            model.Page(
+                name: "21",
+                content: "14:14-16",
+                image: "primary_sources/20051/20051_21.jpg"),
+            model.Page(
+                name: "22",
+                content: "14:17-19",
+                image: "primary_sources/20051/20051_22.jpg"),
+            model.Page(
+                name: "23",
+                content: "14:20",
+                image: "primary_sources/20051/20051_23.jpg"),
+            model.Page(
+                name: "24",
+                content: "15:1-2",
+                image: "primary_sources/20051/20051_24.jpg"),
+            model.Page(
+                name: "25",
+                content: "15:3-6",
+                image: "primary_sources/20051/20051_25.jpg"),
+            model.Page(
+                name: "26",
+                content: "15:7-16:1",
+                image: "primary_sources/20051/20051_26.jpg"),
+            model.Page(
+                name: "27",
+                content: "16:2-3",
+                image: "primary_sources/20051/20051_27.jpg"),
+            model.Page(
+                name: "28",
+                content: "16:4-6",
+                image: "primary_sources/20051/20051_28.jpg"),
+            model.Page(
+                name: "29",
+                content: "16:7",
+                image: "primary_sources/20051/20051_29.jpg"),
+            model.Page(
+                name: "30",
+                content: "16:8-9",
+                image: "primary_sources/20051/20051_30.jpg"),
+            model.Page(
+                name: "31",
+                content: "16:10-11",
+                image: "primary_sources/20051/20051_31.jpg"),
+            model.Page(
+                name: "32",
+                content: "-",
+                image: "primary_sources/20051/20051_32.jpg"),
+            model.Page(
+                name: "33",
+                content: "16:12",
+                image: "primary_sources/20051/20051_33.jpg"),
+            model.Page(
+                name: "34",
+                content: "16:13-16",
+                image: "primary_sources/20051/20051_34.jpg"),
+            model.Page(
+                name: "35",
+                content: "16:17-18",
+                image: "primary_sources/20051/20051_35.jpg"),
+            model.Page(
+                name: "36",
+                content: "16:19",
+                image: "primary_sources/20051/20051_36.jpg"),
+            model.Page(
+                name: "37",
+                content: "16:20-21",
+                image: "primary_sources/20051/20051_37.jpg"),
+            model.Page(
+                name: "38",
+                content: "17:1-3",
+                image: "primary_sources/20051/20051_38.jpg"),
+            model.Page(
+                name: "39",
+                content: "17:4-5",
+                image: "primary_sources/20051/20051_39.jpg"),
+            model.Page(
+                name: "40",
+                content: "17:6-7",
+                image: "primary_sources/20051/20051_40.jpg"),
+            model.Page(
+                name: "41",
+                content: "17:8-9",
+                image: "primary_sources/20051/20051_41.jpg"),
+            model.Page(
+                name: "42",
+                content: "-",
+                image: "primary_sources/20051/20051_42.jpg"),
+            model.Page(
+                name: "43",
+                content: "17:9-11",
+                image: "primary_sources/20051/20051_43.jpg"),
+            model.Page(
+                name: "44",
+                content: "17:12-18",
+                image: "primary_sources/20051/20051_44.jpg"),
+            model.Page(
+                name: "45",
+                content: "18:1-2",
+                image: "primary_sources/20051/20051_45.jpg"),
+            model.Page(
+                name: "46",
+                content: "18:2-6",
+                image: "primary_sources/20051/20051_46.jpg"),
+            model.Page(
+                name: "47",
+                content: "18:6-9",
+                image: "primary_sources/20051/20051_47.jpg"),
+            model.Page(
+                name: "48",
+                content: "18:9-14",
+                image: "primary_sources/20051/20051_48.jpg"),
+            model.Page(
+                name: "49",
+                content: "18:15-20",
+                image: "primary_sources/20051/20051_49.jpg"),
+            model.Page(
+                name: "50",
+                content: "18:21-24",
+                image: "primary_sources/20051/20051_50.jpg"),
+            model.Page(
+                name: "51",
+                content: "19:1-4",
+                image: "primary_sources/20051/20051_51.jpg"),
+            model.Page(
+                name: "52",
+                content: "19:5-7",
+                image: "primary_sources/20051/20051_52.jpg"),
+            model.Page(
+                name: "53",
+                content: "19:7-10",
+                image: "primary_sources/20051/20051_53.jpg"),
+            model.Page(
+                name: "54",
+                content: "19:11-12",
+                image: "primary_sources/20051/20051_54.jpg"),
+            model.Page(
+                name: "55",
+                content: "19:12-15",
+                image: "primary_sources/20051/20051_55.jpg"),
+            model.Page(
+                name: "56",
+                content: "19:16-18",
+                image: "primary_sources/20051/20051_56.jpg"),
+            model.Page(
+                name: "57",
+                content: "19:19-20",
+                image: "primary_sources/20051/20051_57.jpg"),
+            model.Page(
+                name: "58",
+                content: "19:20-21",
+                image: "primary_sources/20051/20051_58.jpg"),
+            model.Page(
+                name: "59",
+                content: "20:1-3",
+                image: "primary_sources/20051/20051_59.jpg"),
+            model.Page(
+                name: "60",
+                content: "20:4",
+                image: "primary_sources/20051/20051_60.jpg"),
+            model.Page(
+                name: "61",
+                content: "20:4",
+                image: "primary_sources/20051/20051_61.jpg"),
+            model.Page(
+                name: "62",
+                content: "20:5-6",
+                image: "primary_sources/20051/20051_62.jpg"),
+            model.Page(
+                name: "63",
+                content: "20:7-8",
+                image: "primary_sources/20051/20051_63.jpg"),
+            model.Page(
+                name: "64",
+                content: "-",
+                image: "primary_sources/20051/20051_64.jpg"),
+            model.Page(
+                name: "65",
+                content: "20:9-10",
+                image: "primary_sources/20051/20051_65.jpg"),
+            model.Page(
+                name: "66",
+                content: "-",
+                image: "primary_sources/20051/20051_66.jpg"),
+            model.Page(
+                name: "67",
+                content: "20:11",
+                image: "primary_sources/20051/20051_67.jpg"),
+            model.Page(
+                name: "68",
+                content: "20:12-13",
+                image: "primary_sources/20051/20051_68.jpg"),
+            model.Page(
+                name: "69",
+                content: "20:14-21:1",
+                image: "primary_sources/20051/20051_69.jpg"),
+            model.Page(
+                name: "70",
+                content: "21:2",
+                image: "primary_sources/20051/20051_70.jpg"),
+            model.Page(
+                name: "71",
+                content: "21:3-6",
+                image: "primary_sources/20051/20051_71.jpg"),
+            model.Page(
+                name: "72",
+                content: "21:6-8",
+                image: "primary_sources/20051/20051_72.jpg"),
+            model.Page(
+                name: "73",
+                content: "21:9-10",
+                image: "primary_sources/20051/20051_73.jpg"),
+            model.Page(
+                name: "74",
+                content: "21:10-12",
+                image: "primary_sources/20051/20051_74.jpg"),
+            model.Page(
+                name: "75",
+                content: "21:13-15",
+                image: "primary_sources/20051/20051_75.jpg"),
+            model.Page(
+                name: "76",
+                content: "21:16-18",
+                image: "primary_sources/20051/20051_76.jpg"),
+            model.Page(
+                name: "77",
+                content: "21:19",
+                image: "primary_sources/20051/20051_77.jpg"),
+            model.Page(
+                name: "78",
+                content: "21:20",
+                image: "primary_sources/20051/20051_78.jpg"),
+            model.Page(
+                name: "79",
+                content: "21:20-21",
+                image: "primary_sources/20051/20051_79.jpg"),
+            model.Page(
+                name: "80",
+                content: "21:21-25",
+                image: "primary_sources/20051/20051_80.jpg"),
+            model.Page(
+                name: "81",
+                content: "21:26-22:2",
+                image: "primary_sources/20051/20051_81.jpg"),
+            model.Page(
+                name: "82",
+                content: "22:3-4",
+                image: "primary_sources/20051/20051_82.jpg"),
+            model.Page(
+                name: "83",
+                content: "22:5-6",
+                image: "primary_sources/20051/20051_83.jpg"),
+            model.Page(
+                name: "84",
+                content: "22:7,15-16",
+                image: "primary_sources/20051/20051_84.jpg"),
+            model.Page(
+                name: "85",
+                content: "22:17-19",
+                image: "primary_sources/20051/20051_85.jpg"),
+            model.Page(
+                name: "86",
+                content: "22:20-21",
+                image: "primary_sources/20051/20051_86.jpg"),
+            model.Page(
+                name: "87",
+                content: "-",
+                image: "primary_sources/20051/20051_87.jpg"),
+            model.Page(
+                name: "88",
+                content: "-",
+                image: "primary_sources/20051/20051_88.jpg"),
+            model.Page(
+                name: "89",
+                content: "-",
+                image: "primary_sources/20051/20051_89.jpg"),
+            model.Page(
+                name: "90",
+                content: "-",
+                image: "primary_sources/20051/20051_90.jpg"),
+            model.Page(
+                name: "91",
+                content: "-",
+                image: "primary_sources/20051/20051_91.jpg"),
+            model.Page(
+                name: "92",
+                content: "-",
+                image: "primary_sources/20051/20051_92.jpg"),
+            model.Page(
+                name: "93",
+                content: "-",
+                image: "primary_sources/20051/20051_93.jpg"),
+          ])
     ];
     return sources;
   }
