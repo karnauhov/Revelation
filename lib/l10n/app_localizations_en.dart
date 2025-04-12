@@ -30,7 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get acknowledgements_description_1 => 'Many thanks to the developers who worked on the following software:';
 
   @override
-  String get acknowledgements_description_2 => '';
+  String get acknowledgements_description_2 => 'Sincere appreciation to the following institutions for digitizing and providing access to invaluable manuscripts and papyri:';
 
   @override
   String get all_rights_reserved => 'All rights reserved';
@@ -58,6 +58,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_loading_libraries => 'Error loading libraries';
+
+  @override
+  String get error_loading_institutions => 'Error loading institutions';
 
   @override
   String get error_loading_topics => 'Error loading topics';

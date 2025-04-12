@@ -30,7 +30,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get acknowledgements_description_1 => 'Большая благодарность разработчикам работавшим над следующим ПО:';
 
   @override
-  String get acknowledgements_description_2 => '';
+  String get acknowledgements_description_2 => 'Искренняя признательность следующим учреждениям за оцифровку и доступ к бесценным манускриптам и папирусам:';
 
   @override
   String get all_rights_reserved => 'Все права защищены';
@@ -58,6 +58,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get error_loading_libraries => 'Ошибка загрузки библиотек';
+
+  @override
+  String get error_loading_institutions => 'Ошибка загрузки учреждений';
 
   @override
   String get error_loading_topics => 'Ошибка загрузки тем';

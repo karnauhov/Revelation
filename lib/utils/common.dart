@@ -13,6 +13,7 @@ import 'package:xml/xml.dart';
 import '../app_router.dart';
 import '../models/topic_info.dart';
 import '../models/library_info.dart';
+import '../models/institution_info.dart';
 import 'dependent.dart';
 
 final log = Logger();
@@ -119,6 +120,48 @@ Future<List<LibraryInfo>> parseLibraries(
     }
 
     return libraries;
+  } on XmlException {
+    rethrow;
+  } on PlatformException {
+    rethrow;
+  } catch (e) {
+    throw Exception('Unknown error: $e');
+  }
+}
+
+Future<List<InstitutionInfo>> parseInstitutions(
+    AssetBundle bundle, String xmlPath) async {
+  try {
+    final xmlString = await bundle.loadString(xmlPath);
+    final document = XmlDocument.parse(xmlString);
+    final institutions = <InstitutionInfo>[];
+
+    for (var element in document.findAllElements('institution')) {
+      final name = element.getElement('name')?.innerText;
+      final idIcon = element.getElement('idIcon')?.innerText;
+      final primarySource = element.getElement('primarySource')?.innerText;
+      final officialSite = element.getElement('officialSite')?.innerText;
+      final primarySourceLink =
+          element.getElement('primarySourceLink')?.innerText;
+
+      if (name == null ||
+          idIcon == null ||
+          primarySource == null ||
+          officialSite == null ||
+          primarySourceLink == null) {
+        throw Exception('Missing required tags in institution element');
+      }
+
+      institutions.add(InstitutionInfo(
+        name: name,
+        idIcon: idIcon,
+        primarySource: primarySource,
+        officialSite: officialSite,
+        primarySourceLink: primarySourceLink,
+      ));
+    }
+
+    return institutions;
   } on XmlException {
     rethrow;
   } on PlatformException {

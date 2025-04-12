@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<institutions>
+    <institution>
+        <name>Library of Congress</name>
+        <idIcon>inst_loc</idIcon>
+        <primarySource>Collection of Manuscripts from the Monasteries of Mt. Athos</primarySource>
+        <officialSite>https://www.loc.gov</officialSite>
+        <primarySourceLink>https://www.loc.gov/resource/amedmonastery.00271051554-ma</primarySourceLink>
+    </institution>
+</institutions>

@@ -11,7 +11,7 @@ All notable changes to this application will be documented here.
 ### Changed
 
 - Primary Sources screen (header, image button)
-- About screen (Privacy Policy, License)
+- About screen (Privacy Policy, License, Institution list)
 
 ## [1.0.0] - 29.03.25
 

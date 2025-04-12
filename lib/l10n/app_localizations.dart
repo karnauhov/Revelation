@@ -142,7 +142,7 @@ abstract class AppLocalizations {
   /// No description provided for @acknowledgements_description_2.
   ///
   /// In en, this message translates to:
-  /// **''**
+  /// **'Sincere appreciation to the following institutions for digitizing and providing access to invaluable manuscripts and papyri:'**
   String get acknowledgements_description_2;
 
   /// No description provided for @all_rights_reserved.
@@ -198,6 +198,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error loading libraries'**
   String get error_loading_libraries;
+
+  /// No description provided for @error_loading_institutions.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading institutions'**
+  String get error_loading_institutions;
 
   /// No description provided for @error_loading_topics.
   ///

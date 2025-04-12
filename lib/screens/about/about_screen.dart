@@ -4,9 +4,10 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import '../../viewmodels/about_view_model.dart';
 import 'about_link_item.dart';
 import 'library_list.dart';
+import 'institution_list.dart';
+import '../../viewmodels/about_view_model.dart';
 import '../../utils/common.dart';
 import '../../utils/app_constants.dart';
 
@@ -223,6 +224,7 @@ class _AboutScreenState extends State<AboutScreen> {
             AppLocalizations.of(context)!.acknowledgements_description_2,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
+        const InstitutionList(),
       ],
     );
   }
