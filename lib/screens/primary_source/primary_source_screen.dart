@@ -109,7 +109,9 @@ class PrimarySourceScreen extends StatelessWidget {
         }).toList(),
       ),
       IconButton(
-        icon: const Icon(Icons.refresh),
+        icon: viewModel.refreshError
+            ? const Icon(Icons.sync_problem)
+            : const Icon(Icons.sync),
         tooltip: AppLocalizations.of(context)!.reload_image,
         onPressed: viewModel.selectedPage != null
             ? () => viewModel.loadImage(viewModel.selectedPage!.image,
@@ -246,7 +248,9 @@ class PrimarySourceScreen extends StatelessWidget {
                 enabled: viewModel.selectedPage != null,
                 child: Row(
                   children: [
-                    const Icon(Icons.refresh, color: Colors.black54),
+                    viewModel.refreshError
+                        ? const Icon(Icons.sync_problem, color: Colors.black54)
+                        : const Icon(Icons.sync, color: Colors.black54),
                     const SizedBox(width: 8),
                     Text(AppLocalizations.of(context)!.reload_image),
                   ],
@@ -294,11 +298,13 @@ class PrimarySourceScreen extends StatelessWidget {
 
   Widget _buildDropdownItem(
       BuildContext context, PrimarySourceViewModel viewModel, model.Page page) {
-    final bool loaded = viewModel.localPageLoaded[page.image] ?? false;
+    final bool? loaded = viewModel.localPageLoaded[page.image];
     return Text(
       "${page.name} (${page.content})",
       style: TextStyle(
-        color: loaded ? Colors.teal.shade900 : Colors.red.shade900,
+        color: loaded == null
+            ? Colors.grey.shade900
+            : (loaded ? Colors.teal.shade900 : Colors.red.shade900),
         fontWeight: page == viewModel.selectedPage
             ? FontWeight.bold
             : FontWeight.normal,

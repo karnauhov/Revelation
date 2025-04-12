@@ -13,7 +13,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   model.Page? selectedPage;
   Uint8List? imageData;
   bool isLoading = false;
-  final Map<String, bool> localPageLoaded = {};
+  bool refreshError = false;
+  final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
       const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false));
@@ -32,7 +33,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Future<void> checkLocalPages() async {
     if (isWeb()) {
       for (var page in primarySource.pages) {
-        localPageLoaded[page.image] = true;
+        localPageLoaded[page.image] = null;
       }
     } else {
       for (var page in primarySource.pages) {
@@ -49,8 +50,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
 
     if (isWeb()) {
-      await _downloadImage(page);
-      localPageLoaded[page] = true;
+      final downloaded = await _downloadImage(page, false);
+      localPageLoaded[page] = downloaded;
     } else {
       final localFilePath = await _getLocalFilePath(page);
       final file = File(localFilePath);
@@ -60,9 +61,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
         isLoading = false;
         localPageLoaded[page] = true;
       } else {
-        await _downloadImage(page);
-        await _saveImage(file);
-        localPageLoaded[page] = true;
+        final downloaded = await _downloadImage(page, isReload);
+        if (downloaded) {
+          await _saveImage(file);
+        }
+        localPageLoaded[page] = downloaded;
       }
     }
     isLoading = false;
@@ -84,7 +87,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     return '${directory.path}/$page';
   }
 
-  Future<void> _downloadImage(String page) async {
+  Future<bool> _downloadImage(String page, bool isReload) async {
     try {
       final divider = page.indexOf("/");
       final repository = page.substring(0, divider);
@@ -93,10 +96,19 @@ class PrimarySourceViewModel extends ChangeNotifier {
       final Uint8List fileBytes =
           await supabase.storage.from(repository).download(image);
 
+      refreshError = false;
       imageData = fileBytes;
+      return true;
     } catch (e) {
       log.e('Image downloading error: $e');
-      imageData = null;
+      if (isReload && localPageLoaded[page] != null) {
+        refreshError = true;
+        notifyListeners();
+        return localPageLoaded[page]!;
+      } else {
+        imageData = null;
+        return false;
+      }
     }
   }
 
