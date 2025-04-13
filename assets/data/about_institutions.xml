@@ -15,7 +15,7 @@
         <primarySourceLink>https://en.wikipedia.org/wiki/Biblical_manuscript</primarySourceLink>
     </institution>
     <institution>
-        <name>British Library</name>
+        <name>The British Library</name>
         <idIcon>inst_bl.svg</idIcon>
         <primarySource>Codex Sinaiticus</primarySource>
         <officialSite>https://www.bl.uk</officialSite>
@@ -36,14 +36,14 @@
         <primarySourceLink>https://gallica.bnf.fr/ark:/12148/btv1b8470433r.r=Codex%20Ephraemi%20Rescriptus?rk=21459;2</primarySourceLink>
     </institution>
     <institution>
-        <name>Library of Congress</name>
+        <name>The Library of Congress</name>
         <idIcon>inst_loc.svg</idIcon>
         <primarySource>Collection of Manuscripts from the Monasteries of Mt. Athos</primarySource>
         <officialSite>https://www.loc.gov</officialSite>
         <primarySourceLink>https://www.loc.gov/resource/amedmonastery.00271051554-ma</primarySourceLink>
     </institution>
     <institution>
-        <name>University of Chicago Library</name>
+        <name>The University of Chicago Library</name>
         <idIcon>inst_ucl.svg</idIcon>
         <primarySource>Uncial 0163</primarySource>
         <officialSite>https://www.lib.uchicago.edu</officialSite>
