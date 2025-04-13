@@ -29,6 +29,13 @@
         <primarySourceLink>https://viewer.cbl.ie/viewer/index</primarySourceLink>
     </institution>
     <institution>
+        <name>Source gallica.bnf.fr / Bibliothèque nationale de France</name>
+        <idIcon>inst_bnf</idIcon>
+        <primarySource>Codex Ephraemi Rescriptus</primarySource>
+        <officialSite>https://gallica.bnf.fr</officialSite>
+        <primarySourceLink>https://gallica.bnf.fr/ark:/12148/btv1b8470433r.r=Codex%20Ephraemi%20Rescriptus?rk=21459;2</primarySourceLink>
+    </institution>
+    <institution>
         <name>Library of Congress</name>
         <idIcon>inst_loc</idIcon>
         <primarySource>Collection of Manuscripts from the Monasteries of Mt. Athos</primarySource>
