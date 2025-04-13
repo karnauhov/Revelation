@@ -136,7 +136,7 @@ abstract class AppLocalizations {
   /// No description provided for @acknowledgements_description_1.
   ///
   /// In en, this message translates to:
-  /// **'Sincere gratitude to the institutions for providing access to invaluable manuscripts:'**
+  /// **'Sincere gratitude to the institutions for providing access to information and invaluable manuscripts:'**
   String get acknowledgements_description_1;
 
   /// No description provided for @acknowledgements_description_2.

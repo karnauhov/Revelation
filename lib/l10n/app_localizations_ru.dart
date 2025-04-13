@@ -27,7 +27,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get acknowledgements_title => 'Благодарности';
 
   @override
-  String get acknowledgements_description_1 => 'Искренняя признательность учреждениям за предоставленный доступ к бесценным рукописям:';
+  String get acknowledgements_description_1 => 'Искренняя признательность учреждениям за предоставленный доступ к информации и бесценным рукописям:';
 
   @override
   String get acknowledgements_description_2 => 'Большая благодарность разработчикам работавшим над следующим ПО:';
