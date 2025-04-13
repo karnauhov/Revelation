@@ -2,51 +2,58 @@
 <institutions>
     <institution>
         <name>INTF</name>
-        <idIcon>inst_munster</idIcon>
+        <idIcon>inst_munster.svg</idIcon>
         <primarySource>The New Testament Virtual Manuscript Room</primarySource>
         <officialSite>https://www.uni-muenster.de/INTF</officialSite>
         <primarySourceLink>https://ntvmr.uni-muenster.de</primarySourceLink>
     </institution>
     <institution>
         <name>Wikipedia</name>
-        <idIcon>inst_wiki</idIcon>
+        <idIcon>inst_wiki.svg</idIcon>
         <primarySource>Biblical manuscript</primarySource>
         <officialSite>https://www.wikipedia.org</officialSite>
         <primarySourceLink>https://en.wikipedia.org/wiki/Biblical_manuscript</primarySourceLink>
     </institution>
     <institution>
         <name>British Library</name>
-        <idIcon>inst_bl</idIcon>
+        <idIcon>inst_bl.svg</idIcon>
         <primarySource>Codex Sinaiticus</primarySource>
         <officialSite>https://www.bl.uk</officialSite>
         <primarySourceLink>https://www.codexsinaiticus.org</primarySourceLink>
     </institution>
     <institution>
         <name>The Chester Beatty</name>
-        <idIcon>inst_cb</idIcon>
+        <idIcon>inst_cb.svg</idIcon>
         <primarySource>Papyrus 47</primarySource>
         <officialSite>https://chesterbeatty.ie</officialSite>
         <primarySourceLink>https://viewer.cbl.ie/viewer/index</primarySourceLink>
     </institution>
     <institution>
         <name>Source gallica.bnf.fr / Bibliothèque nationale de France</name>
-        <idIcon>inst_bnf</idIcon>
+        <idIcon>inst_bnf.svg</idIcon>
         <primarySource>Codex Ephraemi Rescriptus</primarySource>
         <officialSite>https://gallica.bnf.fr</officialSite>
         <primarySourceLink>https://gallica.bnf.fr/ark:/12148/btv1b8470433r.r=Codex%20Ephraemi%20Rescriptus?rk=21459;2</primarySourceLink>
     </institution>
     <institution>
         <name>Library of Congress</name>
-        <idIcon>inst_loc</idIcon>
+        <idIcon>inst_loc.svg</idIcon>
         <primarySource>Collection of Manuscripts from the Monasteries of Mt. Athos</primarySource>
         <officialSite>https://www.loc.gov</officialSite>
         <primarySourceLink>https://www.loc.gov/resource/amedmonastery.00271051554-ma</primarySourceLink>
     </institution>
     <institution>
         <name>University of Chicago Library</name>
-        <idIcon>inst_ucl</idIcon>
+        <idIcon>inst_ucl.svg</idIcon>
         <primarySource>Uncial 0163</primarySource>
         <officialSite>https://www.lib.uchicago.edu</officialSite>
         <primarySourceLink>https://goodspeed.lib.uchicago.edu/view/index.php?doc=9351&obj=001</primarySourceLink>
+    </institution>
+    <institution>
+        <name>Princeton Theological Seminary</name>
+        <idIcon>inst_pts.png</idIcon>
+        <primarySource>Uncial 0169</primarySource>
+        <officialSite>https://ptsem.edu</officialSite>
+        <primarySourceLink>https://papyri.info/apis/pts.apis.5</primarySourceLink>
     </institution>
 </institutions>

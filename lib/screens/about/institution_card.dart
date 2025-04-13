@@ -20,19 +20,7 @@ class InstitutionCard extends StatelessWidget {
         visualDensity: VisualDensity.compact,
         minTileHeight: 0,
         onTap: () => launchLink(institution.officialSite),
-        leading: SizedBox(
-          width: iconWidth,
-          height: iconHeight,
-          child: SvgPicture.asset(
-            institution.idIcon.isNotEmpty
-                ? "assets/images/UI/${institution.idIcon}.svg"
-                : 'assets/images/UI/institution.svg',
-            width: iconWidth,
-            height: iconHeight,
-            placeholderBuilder: (BuildContext context) =>
-                CircularProgressIndicator(),
-          ),
-        ),
+        leading: _buildIcon(institution.idIcon, iconWidth, iconHeight),
         title: Text(
           institution.name,
           style: Theme.of(context)
@@ -52,5 +40,44 @@ class InstitutionCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildIcon(String idIcon, double iconWidth, double iconHeight) {
+    if (idIcon.isNotEmpty && idIcon.toLowerCase().endsWith('.svg')) {
+      return SizedBox(
+        width: iconWidth,
+        height: iconHeight,
+        child: SvgPicture.asset(
+          "assets/images/UI/${institution.idIcon}",
+          width: iconWidth,
+          height: iconHeight,
+          placeholderBuilder: (BuildContext context) =>
+              CircularProgressIndicator(),
+        ),
+      );
+    } else if (idIcon.isNotEmpty) {
+      return SizedBox(
+        width: iconWidth,
+        height: iconHeight,
+        child: Image.asset(
+          "assets/images/UI/${institution.idIcon}",
+          width: iconWidth,
+          height: iconHeight,
+          fit: BoxFit.contain,
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: iconWidth,
+        height: iconHeight,
+        child: SvgPicture.asset(
+          "assets/images/UI/institution.svg",
+          width: iconWidth,
+          height: iconHeight,
+          placeholderBuilder: (BuildContext context) =>
+              CircularProgressIndicator(),
+        ),
+      );
+    }
   }
 }

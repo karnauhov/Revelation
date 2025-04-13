@@ -1203,16 +1203,18 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20169',
           preview: 'assets/images/Resources/20169/preview.png',
-          maxScale: 5,
+          maxScale: 3,
           pages: [
             model.Page(
                 name: "1r",
                 content: "3:19-22; 4:1",
-                image: "primary_sources/20169/20169x00010.jpg"),
+                image:
+                    "primary_sources/20169/pts.apis.5.f.0.600_3000x3407.jpg"),
             model.Page(
                 name: "1v",
                 content: "4:1-3",
-                image: "primary_sources/20169/20169x00020.jpg"),
+                image:
+                    "primary_sources/20169/pts.apis.5.b.0.600_3000x3578.jpg"),
           ]),
       PrimarySource(
           title: loc.uncial_207_title,
