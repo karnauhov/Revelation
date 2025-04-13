@@ -22,6 +22,13 @@
         <primarySourceLink>https://www.codexsinaiticus.org</primarySourceLink>
     </institution>
     <institution>
+        <name>The Chester Beatty</name>
+        <idIcon>inst_cb</idIcon>
+        <primarySource>Papyrus 47</primarySource>
+        <officialSite>https://chesterbeatty.ie</officialSite>
+        <primarySourceLink>https://viewer.cbl.ie/viewer/index</primarySourceLink>
+    </institution>
+    <institution>
         <name>Library of Congress</name>
         <idIcon>inst_loc</idIcon>
         <primarySource>Collection of Manuscripts from the Monasteries of Mt. Athos</primarySource>

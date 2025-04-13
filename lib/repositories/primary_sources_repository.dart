@@ -392,83 +392,83 @@ class PrimarySourcesRepository {
             model.Page(
                 name: "1r",
                 content: "9:10-17",
-                image: "primary_sources/10047/T0005406.jpg"),
+                image: "primary_sources/10047/BP_03_001a_k.jpg"),
             model.Page(
                 name: "1v",
                 content: "9:17-21; 10:1",
-                image: "primary_sources/10047/T0005405.jpg"),
+                image: "primary_sources/10047/BP_03_001b_k.jpg"),
             model.Page(
                 name: "2r",
                 content: "10:2-8",
-                image: "primary_sources/10047/T0005495.jpg"),
+                image: "primary_sources/10047/BP_03_002a_k.jpg"),
             model.Page(
                 name: "2v",
                 content: "10:8-11; 11:1-3",
-                image: "primary_sources/10047/T0005494.jpg"),
+                image: "primary_sources/10047/BP_03_002b_k.jpg"),
             model.Page(
                 name: "3r",
                 content: "11:5-9",
-                image: "primary_sources/10047/T0005408.jpg"),
+                image: "primary_sources/10047/BP_03_003a_k.jpg"),
             model.Page(
                 name: "3v",
                 content: "11:10-13",
-                image: "primary_sources/10047/T0005407.jpg"),
+                image: "primary_sources/10047/BP_03_003b_k.jpg"),
             model.Page(
                 name: "4r",
                 content: "11:13-19",
-                image: "primary_sources/10047/T0005409.jpg"),
+                image: "primary_sources/10047/BP_03_004a_k.jpg"),
             model.Page(
                 name: "4v",
                 content: "11:19; 12:1-6",
-                image: "primary_sources/10047/T0005410.jpg"),
+                image: "primary_sources/10047/BP_03_004b_k.jpg"),
             model.Page(
                 name: "5r",
                 content: "12:6-12",
-                image: "primary_sources/10047/T0005411.jpg"),
+                image: "primary_sources/10047/BP_03_005a_k.jpg"),
             model.Page(
                 name: "5v",
                 content: "12:12-18; 13:1",
-                image: "primary_sources/10047/T0005412.jpg"),
+                image: "primary_sources/10047/BP_03_005b_k.jpg"),
             model.Page(
                 name: "6r",
                 content: "13:1-8",
-                image: "primary_sources/10047/T0004405b_a.jpg"),
+                image: "primary_sources/10047/BP_03_006a_k.jpg"),
             model.Page(
                 name: "6v",
                 content: "13:9-15",
-                image: "primary_sources/10047/T0005413.jpg"),
+                image: "primary_sources/10047/BP_03_006b_k.jpg"),
             model.Page(
                 name: "7r",
                 content: "13:16-18; 14:1-4",
-                image: "primary_sources/10047/T0004403.jpg"),
+                image: "primary_sources/10047/BP_03_007a_k.jpg"),
             model.Page(
                 name: "7v",
                 content: "14:4-10",
-                image: "primary_sources/10047/T0004404a.jpg"),
+                image: "primary_sources/10047/BP_03_007b_k.jpg"),
             model.Page(
                 name: "8r",
                 content: "14:10-15",
-                image: "primary_sources/10047/T0005416.jpg"),
+                image: "primary_sources/10047/BP_03_008a_k.jpg"),
             model.Page(
                 name: "8v",
                 content: "14:16-20; 15:1-2",
-                image: "primary_sources/10047/T0005417.jpg"),
+                image: "primary_sources/10047/BP_03_008b_k.jpg"),
             model.Page(
                 name: "9r",
                 content: "15:2-8; 16:1",
-                image: "primary_sources/10047/T0005418.jpg"),
+                image: "primary_sources/10047/BP_03_009a_k.jpg"),
             model.Page(
                 name: "9v",
                 content: "16:1-9",
-                image: "primary_sources/10047/T0005419.jpg"),
+                image: "primary_sources/10047/BP_03_009b_k.jpg"),
             model.Page(
                 name: "10r",
                 content: "16:9-15",
-                image: "primary_sources/10047/T0005420.jpg"),
+                image: "primary_sources/10047/BP_03_010a_k.jpg"),
             model.Page(
                 name: "10v",
                 content: "16:17-21; 17:1-2",
-                image: "primary_sources/10047/T0005421.jpg"),
+                image: "primary_sources/10047/BP_03_010b_k.jpg"),
           ]),
       PrimarySource(
           title: loc.papyrus_115_title,
