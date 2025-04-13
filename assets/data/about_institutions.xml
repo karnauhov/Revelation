@@ -31,9 +31,16 @@
                 <text>Codex Sinaiticus</text>
                 <link>https://www.codexsinaiticus.org</link>
             </source>
+        </sources>
+    </institution>
+    <institution>
+        <name>The Center for the Study of New Testament Manuscripts (CSNTM)</name>
+        <idIcon>inst_csntm.png</idIcon>
+        <officialSite>https://www.csntm.org</officialSite>
+        <sources>
             <source>
                 <text>Codex Alexandrinus</text>
-                <link></link>
+                <link>https://manuscripts.csntm.org/Manuscript/Group/GA_02</link>
             </source>
         </sources>
     </institution>
