@@ -56,4 +56,11 @@
         <officialSite>https://ptsem.edu</officialSite>
         <primarySourceLink>https://papyri.info/apis/pts.apis.5</primarySourceLink>
     </institution>
+    <institution>
+        <name>The University of Oxford</name>
+        <idIcon>inst_oxford.svg</idIcon>
+        <primarySource>Uncial 0308</primarySource>
+        <officialSite>https://www.ox.ac.uk</officialSite>
+        <primarySourceLink>https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4500_Revelation_XI_15-16_17-18/21179002</primarySourceLink>
+    </institution>
 </institutions>

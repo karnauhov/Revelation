@@ -1299,11 +1299,13 @@ class PrimarySourcesRepository {
             model.Page(
                 name: "1r",
                 content: "11:15-16",
-                image: "primary_sources/20308/Uncial_0308_POxy_4500_recto.jpg"),
+                image:
+                    "primary_sources/20308/POxy.v0066.n4500.a.flesh.hires.jpg"),
             model.Page(
                 name: "1v",
                 content: "11:17-18",
-                image: "primary_sources/20308/Uncial_0308_hair_side.jpg"),
+                image:
+                    "primary_sources/20308/POxy.v0066.n4500.a.hair.hires.jpg"),
           ]),
     ];
 
