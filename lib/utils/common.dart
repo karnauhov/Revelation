@@ -130,7 +130,9 @@ Future<List<LibraryInfo>> parseLibraries(
 }
 
 Future<List<InstitutionInfo>> parseInstitutions(
-    AssetBundle bundle, String xmlPath) async {
+  AssetBundle bundle,
+  String xmlPath,
+) async {
   try {
     final xmlString = await bundle.loadString(xmlPath);
     final document = XmlDocument.parse(xmlString);
@@ -139,25 +141,27 @@ Future<List<InstitutionInfo>> parseInstitutions(
     for (var element in document.findAllElements('institution')) {
       final name = element.getElement('name')?.innerText;
       final idIcon = element.getElement('idIcon')?.innerText;
-      final primarySource = element.getElement('primarySource')?.innerText;
       final officialSite = element.getElement('officialSite')?.innerText;
-      final primarySourceLink =
-          element.getElement('primarySourceLink')?.innerText;
 
-      if (name == null ||
-          idIcon == null ||
-          primarySource == null ||
-          officialSite == null ||
-          primarySourceLink == null) {
+      if (name == null || idIcon == null || officialSite == null) {
         throw Exception('Missing required tags in institution element');
+      }
+      final sourcesElement = element.getElement('sources');
+      final sources = <String, String>{};
+
+      if (sourcesElement != null) {
+        for (var source in sourcesElement.findElements('source')) {
+          final text = source.getElement('text')?.innerText ?? '';
+          final link = source.getElement('link')?.innerText ?? '';
+          sources[text] = link;
+        }
       }
 
       institutions.add(InstitutionInfo(
         name: name,
         idIcon: idIcon,
-        primarySource: primarySource,
         officialSite: officialSite,
-        primarySourceLink: primarySourceLink,
+        sources: sources,
       ));
     }
 
