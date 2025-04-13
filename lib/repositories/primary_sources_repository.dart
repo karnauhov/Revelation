@@ -1179,11 +1179,13 @@ class PrimarySourcesRepository {
             model.Page(
                 name: "1",
                 content: "16:17-18",
-                image: "primary_sources/20163/20163_A.jpg"),
+                image:
+                    "primary_sources/20163/ark_61001_b25p3r42st00_00000001.jpg"),
             model.Page(
                 name: "2",
                 content: "16:19-20",
-                image: "primary_sources/20163/20163_B.jpg"),
+                image:
+                    "primary_sources/20163/ark_61001_b25p3r42st00_00000002.jpg"),
           ]),
       PrimarySource(
           title: loc.uncial_169_title,

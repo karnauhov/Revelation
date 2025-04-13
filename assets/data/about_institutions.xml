@@ -42,4 +42,11 @@
         <officialSite>https://www.loc.gov</officialSite>
         <primarySourceLink>https://www.loc.gov/resource/amedmonastery.00271051554-ma</primarySourceLink>
     </institution>
+    <institution>
+        <name>University of Chicago Library</name>
+        <idIcon>inst_ucl</idIcon>
+        <primarySource>Uncial 0163</primarySource>
+        <officialSite>https://www.lib.uchicago.edu</officialSite>
+        <primarySourceLink>https://goodspeed.lib.uchicago.edu/view/index.php?doc=9351&obj=001</primarySourceLink>
+    </institution>
 </institutions>
