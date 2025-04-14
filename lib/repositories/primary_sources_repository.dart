@@ -1237,7 +1237,7 @@ class PrimarySourcesRepository {
             model.Page(
                 name: "1",
                 content: "9:7-15",
-                image: "primary_sources/20207/20207x00010Xa.jpg"),
+                image: "primary_sources/20207/GA_0207_recto.jpg"),
             model.Page(
                 name: "2",
                 content: "9:2-7",
