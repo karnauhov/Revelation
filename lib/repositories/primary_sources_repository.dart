@@ -1052,11 +1052,11 @@ class PrimarySourcesRepository {
             model.Page(
                 name: "1r",
                 content: "5:5-8",
-                image: "primary_sources/10024/P24_A.jpg"),
+                image: "primary_sources/10024/32259786.jpg"),
             model.Page(
                 name: "1v",
                 content: "6:5-8",
-                image: "primary_sources/10024/P24_B.jpg")
+                image: "primary_sources/10024/32259790.jpg")
           ]),
       PrimarySource(
           title: loc.papyrus_43_title,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <institutions>
     <institution>
-        <name>INTF</name>
+        <name>Das Institut für Neutestamentliche Textforschung (INTF)</name>
         <idIcon>inst_munster.svg</idIcon>
         <officialSite>https://www.uni-muenster.de/INTF</officialSite>
         <sources>
@@ -74,6 +74,21 @@
             <source>
                 <text>Collection of Manuscripts from the Monasteries of Mt. Athos</text>
                 <link>https://www.loc.gov/resource/amedmonastery.00271051554-ma</link>
+            </source>
+        </sources>
+    </institution>
+    <institution>
+        <name>Yale Library</name>
+        <idIcon>inst_yale.png</idIcon>
+        <officialSite>https://library.yale.edu</officialSite>
+        <sources>
+            <source>
+                <text>Papyrus 24 (recto)</text>
+                <link>https://collections.library.yale.edu/catalog/17147600</link>
+            </source>
+            <source>
+                <text>Papyrus 24 (verso)</text>
+                <link>https://collections.library.yale.edu/catalog/17147601</link>
             </source>
         </sources>
     </institution>
