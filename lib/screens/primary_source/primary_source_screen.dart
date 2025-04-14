@@ -28,7 +28,7 @@ class PrimarySourceScreen extends StatelessWidget {
 
           final double width = MediaQuery.of(context).size.width;
           const double threshold1 = 500.0;
-          const double threshold2 = 390.0;
+          const double threshold2 = 460.0;
           final bool useActions = width > threshold1;
 
           return Scaffold(

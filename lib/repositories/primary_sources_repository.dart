@@ -489,13 +489,37 @@ class PrimarySourcesRepository {
           maxScale: 3,
           pages: [
             model.Page(
+                name: "1r",
+                content: "2:1-3,27-29;5:8-9;8:3-8,11-13",
+                image: "primary_sources/10115/4499_a-i1.jpg"),
+            model.Page(
                 name: "1v",
-                content: "2:13-15",
-                image: "primary_sources/10115/10115x00040XX_INTF.jpg"),
+                content: "2:13-15;3:10-12;6:5-6;9:1-5,7-11",
+                image: "primary_sources/10115/4499_a-i2.jpg"),
+            model.Page(
+                name: "2r",
+                content: "9:11-16,18-21;11:1-5,8-12",
+                image: "primary_sources/10115/4499_j-o1.jpg"),
             model.Page(
                 name: "2v",
-                content: "3:10-12",
-                image: "primary_sources/10115/10115x00020XX_INTF.jpg"),
+                content: "10:1-4,8-11;11:1,13-15,18-19;12:1",
+                image: "primary_sources/10115/4499_j-o2.jpg"),
+            model.Page(
+                name: "3r",
+                content: "12:2-5,9-10;13:6-16",
+                image: "primary_sources/10115/4499_p-w1.jpg"),
+            model.Page(
+                name: "3v",
+                content: "12:13-17;13:1-3,18;14:1-3,5-7",
+                image: "primary_sources/10115/4499_p-w2.jpg"),
+            model.Page(
+                name: "4r",
+                content: "14:10-11,14-15",
+                image: "primary_sources/10115/4499_x-z1.jpg"),
+            model.Page(
+                name: "4v",
+                content: "14:18-20;15:1,4-7",
+                image: "primary_sources/10115/4499_x-z2.jpg"),
           ]),
       PrimarySource(
           title: loc.uncial_04_title,
