@@ -46,6 +46,17 @@
         </sources>
     </institution>
     <institution>
+        <name>Biblioteca Apostolica Vaticana</name>
+        <idIcon>inst_bav.png</idIcon>
+        <officialSite>https://www.vaticanlibrary.va</officialSite>
+        <sources>
+            <source>
+                <text>Codex Vaticanus 2066</text>
+                <link>https://digi.vatlib.it/view/MSS_Vat.gr.2066</link>
+            </source>
+        </sources>
+    </institution>
+    <institution>
         <name>The Chester Beatty</name>
         <idIcon>inst_cb.svg</idIcon>
         <officialSite>https://chesterbeatty.ie</officialSite>
@@ -64,6 +75,17 @@
             <source>
                 <text>Codex Ephraemi Rescriptus</text>
                 <link>https://gallica.bnf.fr/ark:/12148/btv1b8470433r.r=Codex%20Ephraemi%20Rescriptus?rk=21459;2</link>
+            </source>
+        </sources>
+    </institution>
+    <institution>
+        <name>Российская национальная библиотека</name>
+        <idIcon>inst_nlr.png</idIcon>
+        <officialSite>https://nlr.ru</officialSite>
+        <sources>
+            <source>
+                <text>Codex Porphyrianus</text>
+                <link></link>
             </source>
         </sources>
     </institution>
@@ -94,6 +116,28 @@
         </sources>
     </institution>
     <institution>
+        <name>Bibliothèque nationale et universitaire</name>
+        <idIcon>inst_bnu.svg</idIcon>
+        <officialSite>https://www.bnu.fr</officialSite>
+        <sources>
+            <source>
+                <text>Papyrus 85</text>
+                <link></link>
+            </source>
+        </sources>
+    </institution>
+    <institution>
+        <name>Institut français d’archéologie orientale du Caire</name>
+        <idIcon>inst_ifao.png</idIcon>
+        <officialSite>https://www.ifao.egnet.net</officialSite>
+        <sources>
+            <source>
+                <text>Papyrus 98</text>
+                <link></link>
+            </source>
+        </sources>
+    </institution>
+    <institution>
         <name>The University of Oxford</name>
         <idIcon>inst_oxford.svg</idIcon>
         <officialSite>https://www.ox.ac.uk</officialSite>
@@ -105,6 +149,17 @@
             <source>
                 <text>Uncial 0308</text>
                 <link>https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4500_Revelation_XI_15-16_17-18/21179002</link>
+            </source>
+        </sources>
+    </institution>
+    <institution>
+        <name>Μονή Αγίου Παντελεήμονος</name>
+        <idIcon></idIcon>
+        <officialSite>https://en.wikipedia.org/wiki/St._Panteleimon_Monastery</officialSite>
+        <sources>
+            <source>
+                <text>Uncial 052</text>
+                <link></link>
             </source>
         </sources>
     </institution>
@@ -127,6 +182,21 @@
             <source>
                 <text>Uncial 0169</text>
                 <link>https://papyri.info/apis/pts.apis.5</link>
+            </source>
+        </sources>
+    </institution>
+    <institution>
+        <name>Biblioteca Medicea Laurenziana</name>
+        <idIcon>inst_bml.png</idIcon>
+        <officialSite>https://www.bmlonline.it</officialSite>
+        <sources>
+            <source>
+                <text>Uncial 0207</text>
+                <link>https://psi-online.it/documents/psi;10;1166</link>
+            </source>
+            <source>
+                <text>Uncial 0229</text>
+                <link>https://psi-online.it/documents/psi;13;1296</link>
             </source>
         </sources>
     </institution>
