@@ -19,6 +19,7 @@ class PrimarySource {
   final String preview;
   final double maxScale;
   final List<Page> pages;
+  final List<Map<String, String>>? attributes;
   bool showMore = false;
 
   PrimarySource(
@@ -39,5 +40,6 @@ class PrimarySource {
       required this.link3Url,
       required this.preview,
       required this.maxScale,
-      required this.pages});
+      required this.pages,
+      required this.attributes});
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -15,6 +16,7 @@ class PrimarySourceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextTheme theme = Theme.of(context).textTheme;
     return ChangeNotifierProvider<PrimarySourceViewModel>(
       create: (_) => PrimarySourceViewModel(primarySource: primarySource),
       child: Consumer<PrimarySourceViewModel>(
@@ -62,29 +64,79 @@ class PrimarySourceScreen extends StatelessWidget {
                       ),
                     ),
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 1.0),
+            body: Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10.0, 0, 10, 0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 1.0),
+                      ),
+                      child: viewModel.isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : viewModel.imageData != null
+                              ? ImagePreview(
+                                  imageData: viewModel.imageData!,
+                                  controller: viewModel.imageController,
+                                )
+                              : Center(
+                                  child: Text(AppLocalizations.of(context)!
+                                      .image_not_loaded),
+                                ),
+                    ),
+                  ),
                 ),
-                child: viewModel.isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : viewModel.imageData != null
-                        ? ImagePreview(
-                            imageData: viewModel.imageData!,
-                            controller: viewModel.imageController,
-                          )
-                        : Center(
-                            child: Text(
-                                AppLocalizations.of(context)!.image_not_loaded),
-                          ),
-              ),
+                if (primarySource.attributes != null &&
+                    primarySource.attributes!.isNotEmpty)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 10, 2),
+                      child: Text.rich(
+                        TextSpan(
+                          style: theme.bodyMedium,
+                          children: _buildLinkSpans(primarySource.attributes!),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           );
         },
       ),
     );
+  }
+
+  List<InlineSpan> _buildLinkSpans(List<Map<String, String>> links) {
+    List<InlineSpan> spans = [];
+    for (int i = 0; i < links.length; i++) {
+      var link = links[i];
+      if (link['url'] != null && link['url']!.isNotEmpty) {
+        spans.add(
+          TextSpan(
+            text: link['text'],
+            style: const TextStyle(color: Colors.blue),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launchLink(link['url']!);
+              },
+          ),
+        );
+      } else {
+        spans.add(
+          TextSpan(
+            text: link['text'],
+          ),
+        );
+      }
+
+      if (i < links.length - 1) {
+        spans.add(const TextSpan(text: ', '));
+      }
+    }
+    return spans;
   }
 
   List<Widget> _buildActions(

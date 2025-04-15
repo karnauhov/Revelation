@@ -100,6 +100,9 @@ class PrimarySourcesRepository {
                 name: "334r",
                 content: "22:19-21",
                 image: "primary_sources/20001/20001_02690_Q90_2r_B695_p.jpg"),
+          ],
+          attributes: [
+            {"text": "The British Library", "url": "https://www.bl.uk"},
           ]),
       PrimarySource(
           title: loc.uncial_02_title,
@@ -193,6 +196,9 @@ class PrimarySourcesRepository {
                 name: "158v",
                 content: "22:14-21",
                 image: "primary_sources/20002/GA_02_0136b.jpg"),
+          ],
+          attributes: [
+            {"text": "The British Library", "url": "https://www.bl.uk"},
           ]),
       PrimarySource(
           title: loc.uncial_46_title,
@@ -370,6 +376,12 @@ class PrimarySourcesRepository {
                 name: "268r",
                 content: "22:7-21",
                 image: "primary_sources/20046/Vat.gr.2066_0567_fa_0278r_m.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "Biblioteca Apostolica Vaticana",
+              "url": "https://www.vaticanlibrary.va"
+            },
           ])
     ];
     return sources;
@@ -478,6 +490,9 @@ class PrimarySourcesRepository {
                 name: "10v",
                 content: "16:17-21; 17:1-2",
                 image: "primary_sources/10047/BP_03_010b_k.jpg"),
+          ],
+          attributes: [
+            {"text": "The Chester Beatty", "url": "https://chesterbeatty.ie"},
           ]),
       PrimarySource(
           title: loc.uncial_04_title,
@@ -576,6 +591,13 @@ class PrimarySourcesRepository {
                 content: "18:15-24; 19:1-5",
                 image:
                     "primary_sources/20004/20004_27_27.18.15-19.05_f123v.jpeg"),
+          ],
+          attributes: [
+            {"text": "gallica.bnf.fr", "url": "https://gallica.bnf.fr"},
+            {
+              "text": "Bibliothèque nationale de France",
+              "url": "https://www.bnf.fr"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_25_title,
@@ -596,7 +618,13 @@ class PrimarySourcesRepository {
           link3Url: "",
           preview: 'assets/images/Resources/20025/preview.png',
           maxScale: 5,
-          pages: []),
+          pages: [],
+          attributes: [
+            {
+              "text": "Российская национальная библиотека",
+              "url": "https://nlr.ru"
+            },
+          ]),
       PrimarySource(
           title: loc.uncial_51_title,
           date: loc.uncial_51_date,
@@ -989,6 +1017,12 @@ class PrimarySourcesRepository {
                 name: "93",
                 content: "-",
                 image: "primary_sources/20051/20051_93.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "Ιερά Μονή Παντοκράτορος Αγίου Όρους",
+              "url": "https://www.pantokrator.gr"
+            },
           ])
     ];
     return sources;
@@ -1021,6 +1055,9 @@ class PrimarySourcesRepository {
                 name: "1v",
                 content: "1:4-7",
                 image: "primary_sources/10018/BL-Papyrus_2053_f001v.jpg")
+          ],
+          attributes: [
+            {"text": "The British Library", "url": "https://www.bl.uk"},
           ]),
       PrimarySource(
           title: loc.papyrus_24_title,
@@ -1050,6 +1087,9 @@ class PrimarySourcesRepository {
                 name: "1v",
                 content: "6:5-8",
                 image: "primary_sources/10024/32259790.jpg")
+          ],
+          attributes: [
+            {"text": "Yale Library", "url": "https://library.yale.edu"},
           ]),
       PrimarySource(
           title: loc.papyrus_43_title,
@@ -1079,6 +1119,9 @@ class PrimarySourcesRepository {
                 name: "1v",
                 content: "15:8; 16:1-2",
                 image: "primary_sources/10043/P43_B.jpg")
+          ],
+          attributes: [
+            {"text": "The British Library", "url": "https://www.bl.uk"},
           ]),
       PrimarySource(
           title: loc.papyrus_85_title,
@@ -1109,6 +1152,12 @@ class PrimarySourcesRepository {
                 name: "1v",
                 content: "10:5-9",
                 image: "primary_sources/10085/10085x00020Xa_INTF.jpg")
+          ],
+          attributes: [
+            {
+              "text": "Bibliothèque nationale et universitaire",
+              "url": "https://www.bnu.fr"
+            },
           ]),
       PrimarySource(
           title: loc.papyrus_98_title,
@@ -1134,6 +1183,12 @@ class PrimarySourcesRepository {
                 name: "1v",
                 content: "1:13-20",
                 image: "primary_sources/10098/P98.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "Institut français d’archéologie orientale du Caire",
+              "url": "https://www.ifao.egnet.net"
+            },
           ]),
       PrimarySource(
           title: loc.papyrus_115_title,
@@ -1188,6 +1243,20 @@ class PrimarySourcesRepository {
                 name: "4v",
                 content: "14:18-20;15:1,4-7",
                 image: "primary_sources/10115/4499_x-z2.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "The Egypt Exploration Society",
+              "url": "https://www.ees.ac.uk"
+            },
+            {
+              "text": "Faculty of Classics (University of Oxford)",
+              "url": "https://www.classics.ox.ac.uk"
+            },
+            {
+              "text": "[License]",
+              "url": "https://rightsstatements.org/page/InC/1.0/?language=en"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_52_title,
@@ -1213,6 +1282,12 @@ class PrimarySourcesRepository {
                 name: "4v",
                 content: "8:12",
                 image: "primary_sources/20052/20052x00090XX_INTF.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "Μονή Αγίου Παντελεήμονος",
+              "url": "https://en.wikipedia.org/wiki/St._Panteleimon_Monastery"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_163_title,
@@ -1245,6 +1320,16 @@ class PrimarySourcesRepository {
                 content: "16:19-20",
                 image:
                     "primary_sources/20163/ark_61001_b25p3r42st00_00000002.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "The University of Chicago Library",
+              "url": "https://www.lib.uchicago.edu"
+            },
+            {
+              "text": "[License]",
+              "url": "https://creativecommons.org/licenses/by-nc/4.0"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_169_title,
@@ -1276,6 +1361,12 @@ class PrimarySourcesRepository {
                 content: "4:1-3",
                 image:
                     "primary_sources/20169/pts.apis.5.b.0.600_3000x3578.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "Princeton Theological Seminary",
+              "url": "https://ptsem.edu"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_207_title,
@@ -1305,6 +1396,12 @@ class PrimarySourcesRepository {
                 name: "2",
                 content: "9:2-7",
                 image: "primary_sources/20207/20207x00020Xa.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "Biblioteca Medicea Laurenziana",
+              "url": "https://www.bmlonline.it"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_229_title,
@@ -1342,6 +1439,12 @@ class PrimarySourcesRepository {
                 name: "2v",
                 content: "?",
                 image: "primary_sources/20229/PSI_XIII_1296_b_v.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "Biblioteca Medicea Laurenziana",
+              "url": "https://www.bmlonline.it"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_308_title,
@@ -1374,6 +1477,20 @@ class PrimarySourcesRepository {
                 content: "11:17-18",
                 image:
                     "primary_sources/20308/POxy.v0066.n4500.a.hair.hires.jpg"),
+          ],
+          attributes: [
+            {
+              "text": "The Egypt Exploration Society",
+              "url": "https://www.ees.ac.uk"
+            },
+            {
+              "text": "Faculty of Classics (University of Oxford)",
+              "url": "https://www.classics.ox.ac.uk"
+            },
+            {
+              "text": "[License]",
+              "url": "https://rightsstatements.org/page/InC/1.0/?language=en"
+            },
           ]),
     ];
 
