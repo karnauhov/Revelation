@@ -471,57 +471,6 @@ class PrimarySourcesRepository {
                 image: "primary_sources/10047/BP_03_010b_k.jpg"),
           ]),
       PrimarySource(
-          title: loc.papyrus_115_title,
-          date: loc.papyrus_115_date,
-          content: loc.papyrus_115_content,
-          quantity: 109,
-          material: loc.papyrus_115_material,
-          textStyle: loc.papyrus_115_textStyle,
-          found: loc.papyrus_115_found,
-          classification: loc.papyrus_115_classification,
-          currentLocation: loc.papyrus_115_currentLocation,
-          link1Title: loc.wikipedia,
-          link1Url: 'https://en.wikipedia.org/wiki/Papyrus_115',
-          link2Title: loc.intf,
-          link2Url:
-              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10115',
-          preview: 'assets/images/Resources/10115/preview.png',
-          maxScale: 3,
-          pages: [
-            model.Page(
-                name: "1r",
-                content: "2:1-3,27-29;5:8-9;8:3-8,11-13",
-                image: "primary_sources/10115/4499_a-i1.jpg"),
-            model.Page(
-                name: "1v",
-                content: "2:13-15;3:10-12;6:5-6;9:1-5,7-11",
-                image: "primary_sources/10115/4499_a-i2.jpg"),
-            model.Page(
-                name: "2r",
-                content: "9:11-16,18-21;11:1-5,8-12",
-                image: "primary_sources/10115/4499_j-o1.jpg"),
-            model.Page(
-                name: "2v",
-                content: "10:1-4,8-11;11:1,13-15,18-19;12:1",
-                image: "primary_sources/10115/4499_j-o2.jpg"),
-            model.Page(
-                name: "3r",
-                content: "12:2-5,9-10;13:6-16",
-                image: "primary_sources/10115/4499_p-w1.jpg"),
-            model.Page(
-                name: "3v",
-                content: "12:13-17;13:1-3,18;14:1-3,5-7",
-                image: "primary_sources/10115/4499_p-w2.jpg"),
-            model.Page(
-                name: "4r",
-                content: "14:10-11,14-15",
-                image: "primary_sources/10115/4499_x-z1.jpg"),
-            model.Page(
-                name: "4v",
-                content: "14:18-20;15:1,4-7",
-                image: "primary_sources/10115/4499_x-z2.jpg"),
-          ]),
-      PrimarySource(
           title: loc.uncial_04_title,
           date: loc.uncial_04_date,
           content: loc.uncial_04_content,
@@ -1053,7 +1002,7 @@ class PrimarySourcesRepository {
             model.Page(
                 name: "1v",
                 content: "1:4-7",
-                image: "primary_sources/10018/P18.jpg")
+                image: "primary_sources/10018/BL-Papyrus_2053_f001v.jpg")
           ]),
       PrimarySource(
           title: loc.papyrus_24_title,
@@ -1158,6 +1107,57 @@ class PrimarySourcesRepository {
                 name: "1v",
                 content: "1:13-20",
                 image: "primary_sources/10098/P98.jpg"),
+          ]),
+      PrimarySource(
+          title: loc.papyrus_115_title,
+          date: loc.papyrus_115_date,
+          content: loc.papyrus_115_content,
+          quantity: 109,
+          material: loc.papyrus_115_material,
+          textStyle: loc.papyrus_115_textStyle,
+          found: loc.papyrus_115_found,
+          classification: loc.papyrus_115_classification,
+          currentLocation: loc.papyrus_115_currentLocation,
+          link1Title: loc.wikipedia,
+          link1Url: 'https://en.wikipedia.org/wiki/Papyrus_115',
+          link2Title: loc.intf,
+          link2Url:
+              'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10115',
+          preview: 'assets/images/Resources/10115/preview.png',
+          maxScale: 3,
+          pages: [
+            model.Page(
+                name: "1r",
+                content: "2:1-3,27-29;5:8-9;8:3-8,11-13",
+                image: "primary_sources/10115/4499_a-i1.jpg"),
+            model.Page(
+                name: "1v",
+                content: "2:13-15;3:10-12;6:5-6;9:1-5,7-11",
+                image: "primary_sources/10115/4499_a-i2.jpg"),
+            model.Page(
+                name: "2r",
+                content: "9:11-16,18-21;11:1-5,8-12",
+                image: "primary_sources/10115/4499_j-o1.jpg"),
+            model.Page(
+                name: "2v",
+                content: "10:1-4,8-11;11:1,13-15,18-19;12:1",
+                image: "primary_sources/10115/4499_j-o2.jpg"),
+            model.Page(
+                name: "3r",
+                content: "12:2-5,9-10;13:6-16",
+                image: "primary_sources/10115/4499_p-w1.jpg"),
+            model.Page(
+                name: "3v",
+                content: "12:13-17;13:1-3,18;14:1-3,5-7",
+                image: "primary_sources/10115/4499_p-w2.jpg"),
+            model.Page(
+                name: "4r",
+                content: "14:10-11,14-15",
+                image: "primary_sources/10115/4499_x-z1.jpg"),
+            model.Page(
+                name: "4v",
+                content: "14:18-20;15:1,4-7",
+                image: "primary_sources/10115/4499_x-z2.jpg"),
           ]),
       PrimarySource(
           title: loc.uncial_52_title,
