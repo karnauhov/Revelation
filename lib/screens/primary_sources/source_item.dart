@@ -146,22 +146,39 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                   text: "🌐 ",
                   style: theme.bodyMedium,
                   children: [
-                    TextSpan(
-                      text: "[${widget.source.link1Title}], ",
-                      style: const TextStyle(color: Colors.blue),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          launchLink(widget.source.link1Url);
-                        },
-                    ),
-                    TextSpan(
-                      text: "[${widget.source.link2Title}]",
-                      style: const TextStyle(color: Colors.blue),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          launchLink(widget.source.link2Url);
-                        },
-                    )
+                    if (widget.source.link1Title.isNotEmpty)
+                      TextSpan(
+                        text: "[${widget.source.link1Title}]",
+                        style: const TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            if (widget.source.link1Url.isNotEmpty) {
+                              launchLink(widget.source.link1Url);
+                            }
+                          },
+                      ),
+                    if (widget.source.link2Title.isNotEmpty)
+                      TextSpan(
+                        text: ", [${widget.source.link2Title}]",
+                        style: const TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            if (widget.source.link2Url.isNotEmpty) {
+                              launchLink(widget.source.link2Url);
+                            }
+                          },
+                      ),
+                    if (widget.source.link3Title.isNotEmpty)
+                      TextSpan(
+                        text: ", [${widget.source.link3Title}]",
+                        style: const TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            if (widget.source.link3Url.isNotEmpty) {
+                              launchLink(widget.source.link3Url);
+                            }
+                          },
+                      )
                   ],
                 ),
               ),

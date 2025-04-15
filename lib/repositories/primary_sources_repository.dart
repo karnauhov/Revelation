@@ -22,6 +22,9 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20001',
+          link3Title: loc.image_source,
+          link3Url:
+              "https://ntvmr.uni-muenster.de/manuscript-workspace?docID=20001",
           preview: 'assets/images/Resources/20001/preview.png',
           maxScale: 3,
           pages: [
@@ -113,6 +116,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20002',
+          link3Title: loc.image_source,
+          link3Url: "https://manuscripts.csntm.org/Manuscript/Group/GA_02",
           preview: 'assets/images/Resources/20002/preview.png',
           maxScale: 3,
           pages: [
@@ -204,6 +209,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20046',
+          link3Title: loc.image_source,
+          link3Url: "https://digi.vatlib.it/view/MSS_Vat.gr.2066",
           preview: 'assets/images/Resources/20046/preview.png',
           maxScale: 5,
           pages: [
@@ -386,6 +393,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10047',
+          link3Title: loc.image_source,
+          link3Url: "https://viewer.cbl.ie/viewer/index",
           preview: 'assets/images/Resources/10047/preview.png',
           maxScale: 5,
           pages: [
@@ -485,6 +494,9 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20004',
+          link3Title: loc.image_source,
+          link3Url:
+              "https://gallica.bnf.fr/ark:/12148/btv1b8470433r.r=Codex%20Ephraemi%20Rescriptus?rk=21459;2",
           preview: 'assets/images/Resources/20004/preview.png',
           maxScale: 5,
           pages: [
@@ -580,6 +592,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20025',
+          link3Title: "",
+          link3Url: "",
           preview: 'assets/images/Resources/20025/preview.png',
           maxScale: 5,
           pages: []),
@@ -598,6 +612,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20051',
+          link3Title: loc.image_source,
+          link3Url: "https://www.loc.gov/resource/amedmonastery.00271051554-ma",
           preview: 'assets/images/Resources/20051/preview.png',
           maxScale: 3,
           pages: [
@@ -996,6 +1012,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10018',
+          link3Title: loc.image_source,
+          link3Url: "https://4care-skos.mf.no/4care-artefacts/298",
           preview: 'assets/images/Resources/10018/preview.png',
           maxScale: 5,
           pages: [
@@ -1019,6 +1037,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10024',
+          link3Title: loc.image_source,
+          link3Url: "https://collections.library.yale.edu/catalog/17147600",
           preview: 'assets/images/Resources/10024/preview.png',
           maxScale: 5,
           pages: [
@@ -1046,6 +1066,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10043',
+          link3Title: loc.image_source,
+          link3Url: "https://manuscripts.csntm.org/manuscript/View/GA_P43",
           preview: 'assets/images/Resources/10043/preview.png',
           maxScale: 5,
           pages: [
@@ -1073,6 +1095,9 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10085',
+          link3Title: loc.image_source,
+          link3Url:
+              "https://ntvmr.uni-muenster.de/manuscript-workspace?docID=10085",
           preview: 'assets/images/Resources/10085/preview.png',
           maxScale: 5,
           pages: [
@@ -1100,6 +1125,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10098',
+          link3Title: "",
+          link3Url: "",
           preview: 'assets/images/Resources/10098/preview.png',
           maxScale: 5,
           pages: [
@@ -1123,6 +1150,9 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10115',
+          link3Title: loc.image_source,
+          link3Url:
+              "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4499_Revelation_II_1-3_13-15_27-29_III_10-12_V_8-9_VI_5-6_VIII_3-8_11-IX_5_7-16_18-X_4_8-XI_5_8-15_18-XII_5_8-10_12-17_XIII_1-3_6-16_18-XIV_3_5-7_10-11_14-15_18-XV_1_4-7/21178999",
           preview: 'assets/images/Resources/10115/preview.png',
           maxScale: 3,
           pages: [
@@ -1174,6 +1204,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20052',
+          link3Title: "",
+          link3Url: "",
           preview: 'assets/images/Resources/20052/preview.png',
           maxScale: 10,
           pages: [
@@ -1197,6 +1229,9 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20163',
+          link3Title: loc.image_source,
+          link3Url:
+              "https://goodspeed.lib.uchicago.edu/view/index.php?doc=9351&obj=001",
           preview: 'assets/images/Resources/20163/preview.png',
           maxScale: 3,
           pages: [
@@ -1226,6 +1261,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20169',
+          link3Title: loc.image_source,
+          link3Url: "https://papyri.info/apis/pts.apis.5",
           preview: 'assets/images/Resources/20169/preview.png',
           maxScale: 3,
           pages: [
@@ -1255,6 +1292,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20207',
+          link3Title: loc.image_source,
+          link3Url: "https://psi-online.it/documents/psi;10;1166",
           preview: 'assets/images/Resources/20207/preview.png',
           maxScale: 5,
           pages: [
@@ -1282,6 +1321,8 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20229',
+          link3Title: loc.image_source,
+          link3Url: "https://psi-online.it/documents/psi;13;1296",
           preview: 'assets/images/Resources/20229/preview.png',
           maxScale: 5,
           pages: [
@@ -1317,6 +1358,9 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20308',
+          link3Title: loc.image_source,
+          link3Url:
+              "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4500_Revelation_XI_15-16_17-18/21179002",
           preview: 'assets/images/Resources/20308/preview.png',
           maxScale: 5,
           pages: [

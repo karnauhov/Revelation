@@ -96,6 +96,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get intf => 'INTF';
 
   @override
+  String get image_source => 'Источник изображений';
+
+  @override
   String get topic => 'Тема';
 
   @override

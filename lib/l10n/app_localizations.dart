@@ -271,6 +271,12 @@ abstract class AppLocalizations {
   /// **'INTF'**
   String get intf;
 
+  /// No description provided for @image_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Image source'**
+  String get image_source;
+
   /// No description provided for @topic.
   ///
   /// In en, this message translates to:

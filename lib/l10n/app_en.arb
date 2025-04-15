@@ -29,6 +29,7 @@
   "language": "Language",
   "wikipedia": "Wikipedia",
   "intf": "INTF",
+  "image_source": "Image source",
   "topic": "Topic",
   "topic_0_name": "Preface",
   "topic_0_description": "Primary sources and principles",

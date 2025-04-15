@@ -14,6 +14,8 @@ class PrimarySource {
   final String link1Url;
   final String link2Title;
   final String link2Url;
+  final String link3Title;
+  final String link3Url;
   final String preview;
   final double maxScale;
   final List<Page> pages;
@@ -33,6 +35,8 @@ class PrimarySource {
       required this.link1Url,
       required this.link2Title,
       required this.link2Url,
+      required this.link3Title,
+      required this.link3Url,
       required this.preview,
       required this.maxScale,
       required this.pages});

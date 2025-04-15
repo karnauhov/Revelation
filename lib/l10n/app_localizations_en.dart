@@ -96,6 +96,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intf => 'INTF';
 
   @override
+  String get image_source => 'Image source';
+
+  @override
   String get topic => 'Topic';
 
   @override
