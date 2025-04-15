@@ -68,7 +68,7 @@
         </sources>
     </institution>
     <institution>
-        <name>Source gallica.bnf.fr / Bibliothèque nationale de France</name>
+        <name>gallica.bnf.fr / Bibliothèque nationale de France</name>
         <idIcon>inst_bnf.svg</idIcon>
         <officialSite>https://gallica.bnf.fr</officialSite>
         <sources>

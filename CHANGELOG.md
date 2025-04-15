@@ -6,12 +6,12 @@ All notable changes to this application will be documented here.
 
 ### Added
 
-- Primary Source screen (page list, redownload button, scale buttons, toolbar menu, page image area)
+- Primary Source screen (page list, redownload button, scale buttons, toolbar menu, page image area, attributes)
 
 ### Changed
 
 - Primary Sources screen (header, image button)
-- About screen (Privacy Policy, License, Institution list)
+- About screen (pivacy policy, license, institution list)
 
 ## [1.0.0] - 29.03.25
 
@@ -20,11 +20,11 @@ All notable changes to this application will be documented here.
 - Support languages: English, Ukrainian, Russian;
 - Support platforms: Android;
 - Main menu (left side);
-- Main screen (List of topics);
-- Topic screen (Markdown content, Preface);
+- Main screen (list of topics);
+- Topic screen (markdown content, preface);
 - Primary Sources screen (7 papyri and 12 uncials);
-- Settings screen (Change language);
-- About screen (Common info, Contact link, Acknowledgments and 3rd party licenses, Changelog);
+- Settings screen (change language);
+- About screen (common info, contact link, acknowledgments and 3rd party licenses, changelog);
 
 ### Changed
 
