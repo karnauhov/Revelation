@@ -28,23 +28,20 @@
         <officialSite>https://www.bl.uk</officialSite>
         <sources>
             <source>
-                <text>Codex Sinaiticus</text>
-                <link>https://www.codexsinaiticus.org</link>
+                <text>Codex Sinaiticus (INTF)</text>
+                <link>https://ntvmr.uni-muenster.de/manuscript-workspace?docID=20001</link>
             </source>
             <source>
-                <text>Papyrus 18</text>
-                <link>https://4care-skos.mf.no/wp-content/uploads/BL-Papyrus_2053_f001v.jpg</link>
-            </source>
-        </sources>
-    </institution>
-    <institution>
-        <name>The Center for the Study of New Testament Manuscripts (CSNTM)</name>
-        <idIcon>inst_csntm.png</idIcon>
-        <officialSite>https://www.csntm.org</officialSite>
-        <sources>
-            <source>
-                <text>Codex Alexandrinus</text>
+                <text>Codex Alexandrinus (CSNTM)</text>
                 <link>https://manuscripts.csntm.org/Manuscript/Group/GA_02</link>
+            </source>
+            <source>
+                <text>Papyrus 18 (4CARE)</text>
+                <link>https://4care-skos.mf.no/4care-artefacts/298</link>
+            </source>
+            <source>
+                <text>Papyrus 43 (CSNTM)</text>
+                <link>https://manuscripts.csntm.org/manuscript/View/GA_P43</link>
             </source>
         </sources>
     </institution>
@@ -71,12 +68,12 @@
         </sources>
     </institution>
     <institution>
-        <name>The Library of Congress</name>
-        <idIcon>inst_loc.svg</idIcon>
-        <officialSite>https://www.loc.gov</officialSite>
+        <name>Ιερά Μονή Παντοκράτορος Αγίου Όρους</name>
+        <idIcon>inst_pntk.png</idIcon>
+        <officialSite>https://www.pantokrator.gr</officialSite>
         <sources>
             <source>
-                <text>Collection of Manuscripts from the Monasteries of Mt. Athos</text>
+                <text>Codex Athous Pantokratoros (The Library of Congress)</text>
                 <link>https://www.loc.gov/resource/amedmonastery.00271051554-ma</link>
             </source>
         </sources>
