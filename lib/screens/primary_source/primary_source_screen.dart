@@ -92,12 +92,14 @@ class PrimarySourceScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 10, 2),
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 2),
                       child: Text.rich(
                         TextSpan(
                           style: theme.bodyMedium,
                           children: _buildLinkSpans(primarySource.attributes!),
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.clip,
                       ),
                     ),
                   ),
