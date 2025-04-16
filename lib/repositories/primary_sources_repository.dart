@@ -102,7 +102,7 @@ class PrimarySourcesRepository {
                 image: "primary_sources/20001/20001_02690_Q90_2r_B695_p.jpg"),
           ],
           attributes: [
-            {"text": "The British Library", "url": "https://www.bl.uk"},
+            {"text": "📜 The British Library", "url": "https://www.bl.uk"},
           ]),
       PrimarySource(
           title: loc.uncial_02_title,
@@ -198,7 +198,7 @@ class PrimarySourcesRepository {
                 image: "primary_sources/20002/GA_02_0136b.jpg"),
           ],
           attributes: [
-            {"text": "The British Library", "url": "https://www.bl.uk"},
+            {"text": "📜 The British Library", "url": "https://www.bl.uk"},
           ]),
       PrimarySource(
           title: loc.uncial_46_title,
@@ -379,7 +379,7 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Biblioteca Apostolica Vaticana",
+              "text": "📜 Biblioteca Apostolica Vaticana",
               "url": "https://www.vaticanlibrary.va"
             },
           ])
@@ -492,7 +492,14 @@ class PrimarySourcesRepository {
                 image: "primary_sources/10047/BP_03_010b_k.jpg"),
           ],
           attributes: [
-            {"text": "The Chester Beatty", "url": "https://chesterbeatty.ie"},
+            {
+              "text": "📜 The Chester Beatty",
+              "url": "https://chesterbeatty.ie"
+            },
+            {
+              "text": "[Copyright]",
+              "url": "https://chesterbeatty.ie/about/copyright-2"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_04_title,
@@ -593,10 +600,18 @@ class PrimarySourcesRepository {
                     "primary_sources/20004/20004_27_27.18.15-19.05_f123v.jpeg"),
           ],
           attributes: [
-            {"text": "gallica.bnf.fr", "url": "https://gallica.bnf.fr"},
             {
-              "text": "Bibliothèque nationale de France",
+              "text": "📜 Bibliothèque nationale de France",
               "url": "https://www.bnf.fr"
+            },
+            {
+              "text": "📷 Source gallica.bnf.fr / BnF",
+              "url": "https://gallica.bnf.fr"
+            },
+            {
+              "text": "[Conditions]",
+              "url":
+                  "https://gallica.bnf.fr/accueil/fr/html/conditions-dutilisation-de-gallica"
             },
           ]),
       PrimarySource(
@@ -621,7 +636,7 @@ class PrimarySourcesRepository {
           pages: [],
           attributes: [
             {
-              "text": "Российская национальная библиотека",
+              "text": "📜 Российская национальная библиотека",
               "url": "https://nlr.ru"
             },
           ]),
@@ -1020,8 +1035,14 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Ιερά Μονή Παντοκράτορος Αγίου Όρους",
+              "text": "📜 Ιερά Μονή Παντοκράτορος Αγίου Όρους",
               "url": "https://www.pantokrator.gr"
+            },
+            {
+              "text":
+                  "📷 Library of Congress Collection of Manuscripts from the Monasteries of Mt. Athos",
+              "url":
+                  "https://www.loc.gov/collections/manuscripts-from-the-monasteries-of-mount-athos/about-this-collection"
             },
           ])
     ];
@@ -1057,7 +1078,11 @@ class PrimarySourcesRepository {
                 image: "primary_sources/10018/BL-Papyrus_2053_f001v.jpg")
           ],
           attributes: [
-            {"text": "The British Library", "url": "https://www.bl.uk"},
+            {"text": "📜 The British Library", "url": "https://www.bl.uk"},
+            {
+              "text": "📷 Sofia Heim, 2021, 'Artefact ID 298', 4CARE database",
+              "url": "https://4care-skos.mf.no/4care-artefacts/298"
+            },
           ]),
       PrimarySource(
           title: loc.papyrus_24_title,
@@ -1089,7 +1114,12 @@ class PrimarySourcesRepository {
                 image: "primary_sources/10024/32259790.jpg")
           ],
           attributes: [
-            {"text": "Yale Library", "url": "https://library.yale.edu"},
+            {"text": "📜 Yale Library", "url": "https://library.yale.edu"},
+            {
+              "text": "[Policy]",
+              "url":
+                  "https://lux.collections.yale.edu/content/open-access-policy-2011"
+            },
           ]),
       PrimarySource(
           title: loc.papyrus_43_title,
@@ -1121,7 +1151,7 @@ class PrimarySourcesRepository {
                 image: "primary_sources/10043/P43_B.jpg")
           ],
           attributes: [
-            {"text": "The British Library", "url": "https://www.bl.uk"},
+            {"text": "📜 The British Library", "url": "https://www.bl.uk"},
           ]),
       PrimarySource(
           title: loc.papyrus_85_title,
@@ -1155,7 +1185,7 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Bibliothèque nationale et universitaire",
+              "text": "📜 Bibliothèque nationale et universitaire",
               "url": "https://www.bnu.fr"
             },
           ]),
@@ -1186,7 +1216,7 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Institut français d’archéologie orientale du Caire",
+              "text": "📜 Institut français d’archéologie orientale du Caire",
               "url": "https://www.ifao.egnet.net"
             },
           ]),
@@ -1250,7 +1280,7 @@ class PrimarySourcesRepository {
               "url": "https://www.ees.ac.uk"
             },
             {
-              "text": "Faculty of Classics (University of Oxford)",
+              "text": "Faculty of Classics (📜 University of Oxford)",
               "url": "https://www.classics.ox.ac.uk"
             },
             {
@@ -1285,7 +1315,7 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Μονή Αγίου Παντελεήμονος",
+              "text": "📜 Μονή Αγίου Παντελεήμονος",
               "url": "https://en.wikipedia.org/wiki/St._Panteleimon_Monastery"
             },
           ]),
@@ -1323,7 +1353,7 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "The University of Chicago Library",
+              "text": "📜 The University of Chicago Library",
               "url": "https://www.lib.uchicago.edu"
             },
             {
@@ -1364,8 +1394,16 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Princeton Theological Seminary",
+              "text": "📜 Princeton Theological Seminary",
               "url": "https://ptsem.edu"
+            },
+            {
+              "text": "📷 Digital Corpus of Literary Papyri",
+              "url": "https://papyri.info"
+            },
+            {
+              "text": "[License]",
+              "url": "https://creativecommons.org/licenses/by/3.0"
             },
           ]),
       PrimarySource(
@@ -1399,7 +1437,7 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Biblioteca Medicea Laurenziana",
+              "text": "📜 Biblioteca Medicea Laurenziana",
               "url": "https://www.bmlonline.it"
             },
           ]),
@@ -1442,7 +1480,7 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Biblioteca Medicea Laurenziana",
+              "text": "📜 Biblioteca Medicea Laurenziana",
               "url": "https://www.bmlonline.it"
             },
           ]),
@@ -1484,7 +1522,7 @@ class PrimarySourcesRepository {
               "url": "https://www.ees.ac.uk"
             },
             {
-              "text": "Faculty of Classics (University of Oxford)",
+              "text": "Faculty of Classics (📜 University of Oxford)",
               "url": "https://www.classics.ox.ac.uk"
             },
             {

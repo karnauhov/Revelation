@@ -95,7 +95,7 @@ class PrimarySourceScreen extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 2),
                       child: Text.rich(
                         TextSpan(
-                          style: theme.bodyMedium,
+                          style: theme.bodySmall!.copyWith(fontSize: 10),
                           children: _buildLinkSpans(primarySource.attributes!),
                         ),
                         maxLines: 1,
