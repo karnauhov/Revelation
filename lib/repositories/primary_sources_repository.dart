@@ -1114,7 +1114,10 @@ class PrimarySourcesRepository {
                 image: "primary_sources/10024/32259790.jpg")
           ],
           attributes: [
-            {"text": "📜 Yale Library", "url": "https://library.yale.edu"},
+            {
+              "text": "📜 Special Collections, Yale Divinity Library",
+              "url": "https://library.yale.edu"
+            },
             {
               "text": "[Policy]",
               "url":
