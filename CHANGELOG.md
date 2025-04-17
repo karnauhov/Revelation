@@ -18,13 +18,13 @@ All notable changes to this application will be documented here.
 ### Added
 
 - Support languages: English, Ukrainian, Russian;
-- Support platforms: Android;
+- Support platforms: Android, Windows;
 - Main menu (left side);
 - Main screen (list of topics);
 - Topic screen (markdown content, preface);
 - Primary Sources screen (7 papyri and 12 uncials);
 - Settings screen (change language);
-- About screen (common info, contact link, acknowledgments and 3rd party licenses, changelog);
+- About screen (common info, contact links, acknowledgments and 3rd party licenses, changelog);
 
 ### Changed
 

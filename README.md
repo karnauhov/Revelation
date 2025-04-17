@@ -1,12 +1,15 @@
 # Revelation
-Revelation Study app
+This program has been created to help all Christians, regardless of denomination, better understand book of the Revelation.
 
-[Roadmap](./_docs/ROADMAP.md)
+## Install for different platforms
 
-[Changelog](./CHANGELOG.md)
+[Google Play](https://play.google.com/store/apps/details?id=ai11.link.revelation)  
+[Microsoft Store]()  
 
-[End-User License Agreement](./LICENSE)
+## Documents
 
-[Privacy Policy](./PrivacyPolicy.md)
-
-[TODO](./_docs/TODO.md)
+[Roadmap](./_docs/ROADMAP.md)  
+[Changelog](./CHANGELOG.md)  
+[End-User License Agreement](./LICENSE)  
+[Privacy Policy](./PrivacyPolicy.md)  
+[TODO](./_docs/TODO.md)  
