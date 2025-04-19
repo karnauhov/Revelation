@@ -223,163 +223,163 @@ class PrimarySourcesRepository {
             model.Page(
                 name: "249r",
                 content: "1:1-11",
-                image: "primary_sources/20046/Vat.gr.2066_0519_fa_0259r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0519_fa_0259r_l.jpg"),
             model.Page(
                 name: "249v",
                 content: "1:11-20; 2:1-2",
-                image: "primary_sources/20046/Vat.gr.2066_0520_fa_0259v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0520_fa_0259v_l.jpg"),
             model.Page(
                 name: "250r",
                 content: "2:2-14",
-                image: "primary_sources/20046/Vat.gr.2066_0521_fa_0260r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0521_fa_0260r_l.jpg"),
             model.Page(
                 name: "250v",
                 content: "2:14-26",
-                image: "primary_sources/20046/Vat.gr.2066_0522_fa_0260v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0522_fa_0260v_l.jpg"),
             model.Page(
                 name: "251r",
                 content: "2:26-29; 3:1-9",
-                image: "primary_sources/20046/Vat.gr.2066_0523_fa_0261r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0523_fa_0261r_l.jpg"),
             model.Page(
                 name: "251v",
                 content: "3:9-21",
-                image: "primary_sources/20046/Vat.gr.2066_0524_fa_0261v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0524_fa_0261v_l.jpg"),
             model.Page(
                 name: "252r",
                 content: "3:21-22; 4:1-10",
-                image: "primary_sources/20046/Vat.gr.2066_0525_fa_0262r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0525_fa_0262r_l.jpg"),
             model.Page(
                 name: "252v",
                 content: "4:10-11; 5:1-9",
-                image: "primary_sources/20046/Vat.gr.2066_0526_fa_0262v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0526_fa_0262v_l.jpg"),
             model.Page(
                 name: "253r",
                 content: "5:9-14; 6:1-5",
-                image: "primary_sources/20046/Vat.gr.2066_0527_fa_0263r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0527_fa_0263r_l.jpg"),
             model.Page(
                 name: "253v",
                 content: "6:5-15",
-                image: "primary_sources/20046/Vat.gr.2066_0528_fa_0263v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0528_fa_0263v_l.jpg"),
             model.Page(
                 name: "254r",
                 content: "6:15-17; 7:1-9",
-                image: "primary_sources/20046/Vat.gr.2066_0531_fa_0264r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0531_fa_0264r_l.jpg"),
             model.Page(
                 name: "254v",
                 content: "7:9-17",
-                image: "primary_sources/20046/Vat.gr.2066_0532_fa_0264v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0532_fa_0264v_l.jpg"),
             model.Page(
                 name: "255r",
                 content: "7:17; 8:1-11",
-                image: "primary_sources/20046/Vat.gr.2066_0533_fa_0265r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0533_fa_0265r_l.jpg"),
             model.Page(
                 name: "255v",
                 content: "8:11-13; 9:1-6",
-                image: "primary_sources/20046/Vat.gr.2066_0534_fa_0265v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0534_fa_0265v_l.jpg"),
             model.Page(
                 name: "256r",
                 content: "9:6-17",
-                image: "primary_sources/20046/Vat.gr.2066_0535_fa_0266r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0535_fa_0266r_l.jpg"),
             model.Page(
                 name: "256v",
                 content: "9:17-21; 10:1-4",
-                image: "primary_sources/20046/Vat.gr.2066_0536_fa_0266v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0536_fa_0266v_l.jpg"),
             model.Page(
                 name: "257r",
                 content: "10:4-11; 11:1-2",
-                image: "primary_sources/20046/Vat.gr.2066_0537_fa_0267r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0537_fa_0267r_l.jpg"),
             model.Page(
                 name: "257v",
                 content: "11:2-11",
-                image: "primary_sources/20046/Vat.gr.2066_0538_fa_0267v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0538_fa_0267v_l.jpg"),
             model.Page(
                 name: "258r",
                 content: "11:11-19; 12:1",
-                image: "primary_sources/20046/Vat.gr.2066_0539_fa_0268r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0539_fa_0268r_l.jpg"),
             model.Page(
                 name: "258v",
                 content: "12:1-11",
-                image: "primary_sources/20046/Vat.gr.2066_0540_fa_0268v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0540_fa_0268v_l.jpg"),
             model.Page(
                 name: "259r",
                 content: "12:11-18; 13:1-2",
-                image: "primary_sources/20046/Vat.gr.2066_0541_fa_0269r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0541_fa_0269r_l.jpg"),
             model.Page(
                 name: "259v",
                 content: "13:2-12",
-                image: "primary_sources/20046/Vat.gr.2066_0542_fa_0269v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0542_fa_0269v_l.jpg"),
             model.Page(
                 name: "260r",
                 content: "13:13-18; 14:1-3",
-                image: "primary_sources/20046/Vat.gr.2066_0543_fa_0270r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0543_fa_0270r_l.jpg"),
             model.Page(
                 name: "260v",
                 content: "14:3-11",
-                image: "primary_sources/20046/Vat.gr.2066_0544_fa_0270v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0544_fa_0270v_l.jpg"),
             model.Page(
                 name: "261r",
                 content: "14:9-20; 15:1",
-                image: "primary_sources/20046/Vat.gr.2066_0545_fa_0271r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0545_fa_0271r_l.jpg"),
             model.Page(
                 name: "261v",
                 content: "15:1-8; 16:1-2",
-                image: "primary_sources/20046/Vat.gr.2066_0546_fa_0271v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0546_fa_0271v_l.jpg"),
             model.Page(
                 name: "262r",
                 content: "16:2-13",
-                image: "primary_sources/20046/Vat.gr.2066_0547_fa_0272r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0547_fa_0272r_l.jpg"),
             model.Page(
                 name: "262v",
                 content: "16:13-21; 17:1",
-                image: "primary_sources/20046/Vat.gr.2066_0548_fa_0272v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0548_fa_0272v_l.jpg"),
             model.Page(
                 name: "263r",
                 content: "17:1-12",
-                image: "primary_sources/20046/Vat.gr.2066_0551_fa_0273r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0551_fa_0273r_l.jpg"),
             model.Page(
                 name: "263v",
                 content: "17:12-18; 18:1-5",
-                image: "primary_sources/20046/Vat.gr.2066_0552_fa_0273v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0552_fa_0273v_l.jpg"),
             model.Page(
                 name: "264r",
                 content: "18:5-15",
-                image: "primary_sources/20046/Vat.gr.2066_0555_fa_0274r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0555_fa_0274r_l.jpg"),
             model.Page(
                 name: "264v",
                 content: "18:15-24; 19:1",
-                image: "primary_sources/20046/Vat.gr.2066_0556_fa_0274v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0556_fa_0274v_l.jpg"),
             model.Page(
                 name: "265r",
                 content: "19:1-12",
-                image: "primary_sources/20046/Vat.gr.2066_0559_fa_0275r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0559_fa_0275r_l.jpg"),
             model.Page(
                 name: "265v",
                 content: "19:12-21",
-                image: "primary_sources/20046/Vat.gr.2066_0560_fa_0275v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0560_fa_0275v_l.jpg"),
             model.Page(
                 name: "266r",
                 content: "20:1-11",
-                image: "primary_sources/20046/Vat.gr.2066_0561_fa_0276r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0561_fa_0276r_l.jpg"),
             model.Page(
                 name: "266v",
                 content: "20:11-15; 21:1-8",
-                image: "primary_sources/20046/Vat.gr.2066_0562_fa_0276v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0562_fa_0276v_l.jpg"),
             model.Page(
                 name: "267r",
                 content: "21:8-20",
-                image: "primary_sources/20046/Vat.gr.2066_0565_fa_0277r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0565_fa_0277r_l.jpg"),
             model.Page(
                 name: "267v",
                 content: "21:20-27; 22:1-7",
-                image: "primary_sources/20046/Vat.gr.2066_0566_fa_0277v_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0566_fa_0277v_l.jpg"),
             model.Page(
                 name: "268r",
                 content: "22:7-21",
-                image: "primary_sources/20046/Vat.gr.2066_0567_fa_0278r_m.jpg"),
+                image: "primary_sources/20046/Vat.gr.2066_0567_fa_0278r_l.jpg"),
           ],
           attributes: [
             {
-              "text": "📜 Biblioteca Apostolica Vaticana",
+              "text": "📜 © Biblioteca Apostolica Vaticana",
               "url": "https://www.vaticanlibrary.va"
             },
           ])
