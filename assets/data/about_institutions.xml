@@ -191,9 +191,16 @@
         <officialSite>https://www.bmlonline.it</officialSite>
         <sources>
             <source>
-                <text>Uncial 0207</text>
-                <link>https://psi-online.it/documents/psi;10;1166</link>
+                <text>Uncial 0207 (CSNTM)</text>
+                <link>https://manuscripts.csntm.org/manuscript/View/GA_0207</link>
             </source>
+        </sources>
+    </institution>
+    <institution>
+        <name>Istituto Papirologico “Girolamo Vitelli”</name>
+        <idIcon>inst_ip.png</idIcon>
+        <officialSite>https://www.istitutopapirologico.unifi.it</officialSite>
+        <sources>
             <source>
                 <text>Uncial 0229</text>
                 <link>https://psi-online.it/documents/psi;13;1296</link>

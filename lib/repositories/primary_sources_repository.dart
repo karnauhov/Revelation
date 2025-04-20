@@ -1211,12 +1211,7 @@ class PrimarySourcesRepository {
           link3Url: "",
           preview: 'assets/images/Resources/10098/preview.png',
           maxScale: 5,
-          pages: [
-            model.Page(
-                name: "1v",
-                content: "1:13-20",
-                image: "primary_sources/10098/P98.jpg"),
-          ],
+          pages: [],
           attributes: [
             {
               "text": "📜 Institut français d’archéologie orientale du Caire",
@@ -1310,12 +1305,7 @@ class PrimarySourcesRepository {
           link3Url: "",
           preview: 'assets/images/Resources/20052/preview.png',
           maxScale: 10,
-          pages: [
-            model.Page(
-                name: "4v",
-                content: "8:12",
-                image: "primary_sources/20052/20052x00090XX_INTF.jpg"),
-          ],
+          pages: [],
           attributes: [
             {
               "text": "📜 Μονή Αγίου Παντελεήμονος",
@@ -1425,18 +1415,18 @@ class PrimarySourcesRepository {
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=20207',
           link3Title: loc.image_source,
-          link3Url: "https://psi-online.it/documents/psi;10;1166",
+          link3Url: "https://manuscripts.csntm.org/manuscript/View/GA_0207",
           preview: 'assets/images/Resources/20207/preview.png',
-          maxScale: 5,
+          maxScale: 2,
           pages: [
             model.Page(
                 name: "1",
                 content: "9:7-15",
-                image: "primary_sources/20207/GA_0207_recto.jpg"),
+                image: "primary_sources/20207/GA_0207_0001a.jpg"),
             model.Page(
                 name: "2",
                 content: "9:2-7",
-                image: "primary_sources/20207/20207x00020Xa.jpg"),
+                image: "primary_sources/20207/GA_0207_0001b.jpg"),
           ],
           attributes: [
             {
@@ -1466,25 +1456,25 @@ class PrimarySourcesRepository {
           pages: [
             model.Page(
                 name: "1r",
-                content: "?",
+                content: "-",
                 image: "primary_sources/20229/PSI_XIII_1296_a_r.jpg"),
             model.Page(
                 name: "1v",
-                content: "?",
+                content: "18:16-17",
                 image: "primary_sources/20229/PSI_XIII_1296_a_v.jpg"),
             model.Page(
                 name: "2r",
-                content: "?",
+                content: "19:4-6",
                 image: "primary_sources/20229/PSI_XIII_1296_b_r.jpg"),
             model.Page(
                 name: "2v",
-                content: "?",
+                content: "-",
                 image: "primary_sources/20229/PSI_XIII_1296_b_v.jpg"),
           ],
           attributes: [
             {
-              "text": "📜 Biblioteca Medicea Laurenziana",
-              "url": "https://www.bmlonline.it"
+              "text": "📜 Istituto Papirologico “Girolamo Vitelli”",
+              "url": "https://www.istitutopapirologico.unifi.it"
             },
           ]),
       PrimarySource(
