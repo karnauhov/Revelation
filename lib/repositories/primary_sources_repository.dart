@@ -1207,11 +1207,17 @@ class PrimarySourcesRepository {
           link2Title: loc.intf,
           link2Url:
               'https://ntvmr.uni-muenster.de/manuscript-catalog?docID=10098',
-          link3Title: "",
-          link3Url: "",
+          link3Title: loc.image_source,
+          link3Url:
+              "https://www.academia.edu/13166007/Another_Look_at_P.IFAO_II_31_P98_An_Updated_Transcription_and_Textual_Analysis",
           preview: 'assets/images/Resources/10098/preview.png',
-          maxScale: 5,
-          pages: [],
+          maxScale: 3,
+          pages: [
+            model.Page(
+                name: "1v",
+                content: "1:13-20",
+                image: "primary_sources/10098/P.IFAO_inv.237b.jpg"),
+          ],
           attributes: [
             {
               "text": "📜 Institut français d’archéologie orientale du Caire",
