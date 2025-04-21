@@ -1394,8 +1394,9 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "📜 Princeton Theological Seminary",
-              "url": "https://ptsem.edu"
+              "text":
+                  "📜 Papyrus Collection, Special Collections, Wright Library, Princeton Theological Seminary",
+              "url": "https://ptsem.edu/library/collections/special/art/papyrus"
             },
             {
               "text": "📷 Digital Corpus of Literary Papyri",
