@@ -497,7 +497,7 @@ class PrimarySourcesRepository {
               "url": "https://chesterbeatty.ie"
             },
             {
-              "text": "[Copyright]",
+              "text": "✅ Copyright",
               "url": "https://chesterbeatty.ie/about/copyright-2"
             },
           ]),
@@ -609,7 +609,7 @@ class PrimarySourcesRepository {
               "url": "https://gallica.bnf.fr"
             },
             {
-              "text": "[Conditions]",
+              "text": "✅ Conditions",
               "url":
                   "https://gallica.bnf.fr/accueil/fr/html/conditions-dutilisation-de-gallica"
             },
@@ -1044,6 +1044,11 @@ class PrimarySourcesRepository {
               "url":
                   "https://www.loc.gov/collections/manuscripts-from-the-monasteries-of-mount-athos/about-this-collection"
             },
+            {
+              "text": "✅ Rights & Access",
+              "url":
+                  "https://www.loc.gov/collections/manuscripts-from-the-monasteries-of-mount-athos/about-this-collection/rights-and-access"
+            }
           ])
     ];
     return sources;
@@ -1119,7 +1124,7 @@ class PrimarySourcesRepository {
               "url": "https://web.library.yale.edu/divinity/special-collections"
             },
             {
-              "text": "[Policy]",
+              "text": "✅ Policy",
               "url":
                   "https://lux.collections.yale.edu/content/open-access-policy-2011"
             },
@@ -1288,7 +1293,7 @@ class PrimarySourcesRepository {
               "url": "https://www.classics.ox.ac.uk"
             },
             {
-              "text": "[License]",
+              "text": "✅ License",
               "url": "https://rightsstatements.org/page/InC/1.0/?language=en"
             },
           ]),
@@ -1359,7 +1364,7 @@ class PrimarySourcesRepository {
                   "https://www.lib.uchicago.edu/collex/collections/goodspeed-manuscript-collection"
             },
             {
-              "text": "[License]",
+              "text": "✅ License",
               "url": "https://creativecommons.org/licenses/by-nc/4.0"
             },
           ]),
@@ -1405,7 +1410,7 @@ class PrimarySourcesRepository {
               "url": "https://papyri.info"
             },
             {
-              "text": "[License]",
+              "text": "✅ License",
               "url": "https://creativecommons.org/licenses/by/3.0"
             },
           ]),
@@ -1529,7 +1534,7 @@ class PrimarySourcesRepository {
               "url": "https://www.classics.ox.ac.uk"
             },
             {
-              "text": "[License]",
+              "text": "✅ License",
               "url": "https://rightsstatements.org/page/InC/1.0/?language=en"
             },
           ]),
