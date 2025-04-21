@@ -1116,7 +1116,7 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text": "📜 Special Collections, Yale Divinity Library",
-              "url": "https://library.yale.edu"
+              "url": "https://web.library.yale.edu/divinity/special-collections"
             },
             {
               "text": "[Policy]",
@@ -1353,8 +1353,10 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "📜 The University of Chicago Library",
-              "url": "https://www.lib.uchicago.edu"
+              "text":
+                  "📜 The University of Chicago Library (Goodspeed Manuscript Collection)",
+              "url":
+                  "https://www.lib.uchicago.edu/collex/collections/goodspeed-manuscript-collection"
             },
             {
               "text": "[License]",
