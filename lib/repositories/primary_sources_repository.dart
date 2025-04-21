@@ -1315,7 +1315,8 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text": "📜 Μονή Αγίου Παντελεήμονος",
-              "url": "https://en.wikipedia.org/wiki/St._Panteleimon_Monastery"
+              "url":
+                  "https://www.monastiria.gr/mount-athos-st-panteleimons-russian-monastery/?lang=en"
             },
           ]),
       PrimarySource(
