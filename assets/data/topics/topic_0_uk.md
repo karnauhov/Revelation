@@ -12,4 +12,4 @@
 
 ...
 
-![banner](resource:assets/images/Topics/banner_primary_sources.png)
+![banner](resource:assets/images/Topics/banner_preface.png)

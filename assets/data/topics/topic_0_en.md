@@ -12,4 +12,4 @@ The Book of Revelation is a book for all Christians. Jesus Christ Himself delive
 
 ...
 
-![banner](resource:assets/images/Topics/banner_primary_sources.png)
+![banner](resource:assets/images/Topics/banner_preface.png)
