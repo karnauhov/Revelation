@@ -7,10 +7,12 @@ All notable changes to this application will be documented here.
 ### Added
 
 - Primary Source screen (page list, redownload button, scale buttons, toolbar menu, page image area, attributes)
+- Topic screen (principles)
 
 ### Changed
 
 - Primary Sources screen (header, image button)
+- Topic screen (support own links)
 - About screen (pivacy policy, license, institution list)
 
 ## [1.0.0] - 29.03.25

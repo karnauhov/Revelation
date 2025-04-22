@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../utils/common.dart';
 import '../../viewmodels/settings_view_model.dart';
@@ -32,7 +33,7 @@ class _TopicScreenState extends State<TopicScreen> {
   @override
   Widget build(BuildContext context) {
     final settingsViewModel = Provider.of<SettingsViewModel>(context);
-    final futureMarkdown = loadMarkdownAsset(
+    final futureMarkdown = _loadMarkdownAsset(
       widget.file,
       settingsViewModel.settings.selectedLanguage,
     );
@@ -45,7 +46,10 @@ class _TopicScreenState extends State<TopicScreen> {
         return SingleChildScrollView(
           controller: _scrollController,
           padding: const EdgeInsets.all(8.0),
-          child: MarkdownBody(data: data),
+          child: MarkdownBody(
+              data: data,
+              onTapLink: (text, href, title) =>
+                  _onTapHandle(context, text, href, title)),
         );
       },
     ));
@@ -106,12 +110,39 @@ class _TopicScreenState extends State<TopicScreen> {
     );
   }
 
-  Future<String> loadMarkdownAsset(String? file, String language) async {
+  Future<String> _loadMarkdownAsset(String? file, String language) async {
     if (file != null) {
       final path = "assets/data/topics/${file}_$language.md";
       return await rootBundle.loadString(path);
     } else {
       return "";
+    }
+  }
+
+  void _onTapHandle(
+      BuildContext context, String text, String? href, String title) {
+    if (href != null) {
+      if (href.startsWith("http")) {
+        // Real link
+        launchLink(href);
+      } else {
+        // Own inner link
+        final address = href.split(".");
+        if (address.isNotEmpty) {
+          switch (address[0]) {
+            case "about":
+              Navigator.pop(context);
+              context.push('/about');
+              break;
+            case "sources":
+              Navigator.pop(context);
+              context.push('/primary_sources');
+              break;
+            default:
+              break;
+          }
+        }
+      }
     }
   }
 }
