@@ -25,13 +25,12 @@
 
 - Добавить ссылки на маркетплейсы в (about)
   - https://play.google.com/store/apps/details?id=ai11.link.revelation
-  - ...
+  - https://apps.microsoft.com/detail/9NXHRR2P4087
+- Добавить ссылку на сайт в (about) https://www.revelation.website
 - Добавить ссылку на последний релиз в (about) (https://github.com/karnauhov/Revelation/releases/latest)
 - Добавить ссылку на GitHub в (about)
   - https://github.com/karnauhov/Revelation
 - Добавить ссылку на главной странице в самом низу с иконками платформ и ссылкой в окно about
-- Разместить пакеты msix на сайте
-- Добавить ссылки для Windows в changelog (ссылку на приложение в Microsoft Store и на установочный пакет в GitHub)
 
 - Положить лицензию и политику конфиденциальности на сайт
 - Поменять везде ссылки (github, google play, microsoft store)

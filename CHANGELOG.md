@@ -6,7 +6,7 @@ All notable changes to this application will be documented here.
 
 ### Added
 
-- Support platforms: [Web](https://www.revelation.website), Windows;
+- Support platforms: [Web](https://www.revelation.website), [Windows](https://apps.microsoft.com/detail/9NXHRR2P4087);
 - Primary Source screen (page list, redownload button, scale buttons, toolbar menu, page image area, attributes);
 - Topic screen (principles);
 
