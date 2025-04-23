@@ -1,10 +1,11 @@
 # Revelation
 This program has been created to help all Christians, regardless of denomination, better understand book of the Revelation.
 
-## Install for different platforms
+## Versions for different platforms
 
-[Google Play](https://play.google.com/store/apps/details?id=ai11.link.revelation)  
-[Microsoft Store]()  
+WWW: [revelation.website](https://www.revelation.website)  
+Android: [Google Play](https://play.google.com/store/apps/details?id=ai11.link.revelation)  
+Windows: [Microsoft Store](), [Installation package (Assets; *.exe)](https://github.com/karnauhov/Revelation/releases/latest)  
 
 ## Documents
  

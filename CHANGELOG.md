@@ -6,21 +6,22 @@ All notable changes to this application will be documented here.
 
 ### Added
 
-- Primary Source screen (page list, redownload button, scale buttons, toolbar menu, page image area, attributes)
-- Topic screen (principles)
+- Support platforms: [Web](https://www.revelation.website), Windows;
+- Primary Source screen (page list, redownload button, scale buttons, toolbar menu, page image area, attributes);
+- Topic screen (principles);
 
 ### Changed
 
-- Primary Sources screen (header, image button)
-- Topic screen (support own links)
-- About screen (pivacy policy, license, institution list)
+- Primary Sources screen (header, image button);
+- Topic screen (support own links);
+- About screen (pivacy policy, license, institution list);
 
 ## [1.0.0] - 29.03.25
 
 ### Added
 
 - Support languages: English, Ukrainian, Russian;
-- Support platforms: Android, Windows;
+- Support platforms: [Android](https://play.google.com/store/apps/details?id=ai11.link.revelation);
 - Main menu (left side);
 - Main screen (list of topics);
 - Topic screen (markdown content, preface);

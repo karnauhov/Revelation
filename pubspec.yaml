@@ -15,7 +15,7 @@ dependencies:
   go_router: ^14.6.2
   window_manager: ^0.4.3
   flutter_cache_manager: ^3.4.1
-  get_it: ^8.0.3
+  get_it: ^7.7.0
   provider: ^6.1.2
   flutter_svg: ^2.0.16
   logger: ^2.5.0
@@ -37,6 +37,16 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.1
+  msix: ^3.16.8
+
+msix_config:
+  display_name: Revelation
+  identity_name: AI11.RevelationWin
+  publisher_display_name: AI11
+  publisher: CN=B37F48EC-C643-42C2-82FB-3DFB514F5E74
+  store: true
+  msix_version: 1.0.1.0
+  logo_path: .\assets\images\UI\app_icon.png
 
 flutter:
   generate: true
