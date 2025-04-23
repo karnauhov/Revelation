@@ -44,6 +44,7 @@ msix_config:
   identity_name: AI11.RevelationWin
   publisher_display_name: AI11
   publisher: CN=B37F48EC-C643-42C2-82FB-3DFB514F5E74
+  languages: en, uk, ru
   store: true
   msix_version: 1.0.1.0
   logo_path: .\assets\images\UI\app_icon.png
