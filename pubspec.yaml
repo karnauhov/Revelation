@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.1+46
+version: 1.0.1+47
 
 environment:
   sdk: ^3.5.3
@@ -40,7 +40,7 @@ dev_dependencies:
   msix: ^3.16.8
 
 msix_config:
-  display_name: Revelation
+  display_name: Revelation.Win
   identity_name: AI11.RevelationWin
   publisher_display_name: AI11
   publisher: CN=B37F48EC-C643-42C2-82FB-3DFB514F5E74

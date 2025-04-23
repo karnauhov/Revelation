@@ -4,6 +4,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/screens/about/icon_url.dart';
 import 'about_link_item.dart';
 import 'library_list.dart';
 import 'institution_list.dart';
@@ -62,6 +63,9 @@ class _AboutScreenState extends State<AboutScreen> {
                   const Divider(),
                   // Legal Links
                   _buildLegalLinks(context),
+                  const Divider(),
+                  // Marketplaces
+                  _buildMarketplaces(context),
                   const Divider(),
                   // Acknowledgments
                   _buildAcknowledgements(context),
@@ -169,6 +173,16 @@ class _AboutScreenState extends State<AboutScreen> {
           text: AppConstants.supportEmail,
           onTap: () => launchLink("mailto:${AppConstants.supportEmail}"),
         ),
+        AboutLinkItem(
+          iconPath: "assets/images/UI/www.svg",
+          text: AppLocalizations.of(context)!.website,
+          onTap: () => launchLink(AppConstants.websiteUrl),
+        ),
+        AboutLinkItem(
+          iconPath: "assets/images/UI/github.svg",
+          text: AppLocalizations.of(context)!.github_project,
+          onTap: () => launchLink(AppConstants.projectUrl),
+        ),
       ],
     );
   }
@@ -176,6 +190,11 @@ class _AboutScreenState extends State<AboutScreen> {
   Widget _buildLegalLinks(BuildContext context) {
     return Column(
       children: [
+        AboutLinkItem(
+          iconPath: "assets/images/UI/download.svg",
+          text: AppLocalizations.of(context)!.installation_packages,
+          onTap: () => launchLink(AppConstants.latestReleaseUrl),
+        ),
         AboutLinkItem(
           iconPath: "assets/images/UI/shield.svg",
           text: AppLocalizations.of(context)!.privacy_policy,
@@ -185,6 +204,40 @@ class _AboutScreenState extends State<AboutScreen> {
           iconPath: "assets/images/UI/agreement.svg",
           text: AppLocalizations.of(context)!.license,
           onTap: () => launchLink(AppConstants.licenseUrl),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMarketplaces(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SvgPicture.asset(
+              "assets/images/UI/folder.svg",
+              width: 24,
+              height: 24,
+            ),
+            const SizedBox(width: 16),
+            Text(
+              AppLocalizations.of(context)!.marketplaces,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 4),
+            IconUrl(
+              iconPath: "assets/images/UI/google_play.svg",
+              url: AppConstants.googlePlayUrl,
+            ),
+            IconUrl(
+              iconPath: "assets/images/UI/microsoft_store.svg",
+              url: AppConstants.microsoftStoreUrl,
+            ),
+          ],
         ),
       ],
     );

@@ -115,6 +115,18 @@ abstract class AppLocalizations {
   /// **'Revelation Study app.'**
   String get app_description;
 
+  /// No description provided for @website.
+  ///
+  /// In en, this message translates to:
+  /// **'Revelation.website'**
+  String get website;
+
+  /// No description provided for @github_project.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub project'**
+  String get github_project;
+
   /// No description provided for @privacy_policy.
   ///
   /// In en, this message translates to:
@@ -126,6 +138,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'License'**
   String get license;
+
+  /// No description provided for @installation_packages.
+  ///
+  /// In en, this message translates to:
+  /// **'Installation packages'**
+  String get installation_packages;
+
+  /// No description provided for @marketplaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Marketplaces'**
+  String get marketplaces;
 
   /// No description provided for @acknowledgements_title.
   ///

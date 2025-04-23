@@ -14,7 +14,7 @@ All notable changes to this application will be documented here.
 
 - Primary Sources screen (header, image button);
 - Topic screen (support own links);
-- About screen (pivacy policy, license, institution list);
+- About screen (website, GitHub, release, pivacy policy, license, marketplaces, institution list);
 
 ## [1.0.0] - 29.03.25
 

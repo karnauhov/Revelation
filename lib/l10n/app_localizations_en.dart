@@ -18,10 +18,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_description => 'Revelation Study app.';
 
   @override
+  String get website => 'Revelation.website';
+
+  @override
+  String get github_project => 'GitHub project';
+
+  @override
   String get privacy_policy => 'Privacy Policy';
 
   @override
   String get license => 'License';
+
+  @override
+  String get installation_packages => 'Installation packages';
+
+  @override
+  String get marketplaces => 'Marketplaces';
 
   @override
   String get acknowledgements_title => 'Acknowledgments';

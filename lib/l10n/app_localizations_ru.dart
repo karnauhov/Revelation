@@ -18,10 +18,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get app_description => 'Приложение для изучения Откровения.';
 
   @override
+  String get website => 'Revelation.website';
+
+  @override
+  String get github_project => 'GitHub проект';
+
+  @override
   String get privacy_policy => 'Политика конфиденциальности';
 
   @override
   String get license => 'Лицензия';
+
+  @override
+  String get installation_packages => 'Установочные пакеты';
+
+  @override
+  String get marketplaces => 'Магазины приложений';
 
   @override
   String get acknowledgements_title => 'Благодарности';

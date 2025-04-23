@@ -18,10 +18,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String get app_description => 'Додаток для вивчення Об\'явлення.';
 
   @override
+  String get website => 'Revelation.website';
+
+  @override
+  String get github_project => 'GitHub проект';
+
+  @override
   String get privacy_policy => 'Політика конфіденційності';
 
   @override
   String get license => 'Ліцензія';
+
+  @override
+  String get installation_packages => 'Інсталяційні пакети';
+
+  @override
+  String get marketplaces => 'Ринки додатків';
 
   @override
   String get acknowledgements_title => 'Подяки';
