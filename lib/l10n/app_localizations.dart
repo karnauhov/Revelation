@@ -157,12 +157,6 @@ abstract class AppLocalizations {
   /// **'Installation packages'**
   String get installation_packages;
 
-  /// No description provided for @marketplaces.
-  ///
-  /// In en, this message translates to:
-  /// **'Marketplaces'**
-  String get marketplaces;
-
   /// No description provided for @acknowledgements_title.
   ///
   /// In en, this message translates to:

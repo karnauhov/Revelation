@@ -75,24 +75,26 @@ class _AboutScreenState extends State<AboutScreen> {
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 4),
-                  const Divider(),
+                  const Divider(height: 1),
                   // Marketplaces
                   if (isWeb())
                     Container(
                       key: _marketplacesKey,
                       child: _buildMarketplaces(context),
                     ),
-                  if (isWeb()) const Divider(),
+                  if (isWeb()) const Divider(height: 1),
                   // Contacts Links
                   _buildContactsLinks(context),
-                  const Divider(),
+                  const Divider(height: 1),
                   // Legal Links
                   _buildLegalLinks(context),
-                  const Divider(),
+                  if (!viewModel.isAcknowledgementsExpanded)
+                    const Divider(height: 1),
                   // Acknowledgments
-                  _buildAcknowledgements(context),
-                  SizedBox(height: 4),
-                  if (!viewModel.isChangelogExpanded) const Divider(height: 1),
+                  _buildAcknowledgements(context, viewModel),
+                  if (!viewModel.isChangelogExpanded ||
+                      !viewModel.isAcknowledgementsExpanded)
+                    const Divider(height: 1),
                   // Changelog
                   _buildChangelog(context, viewModel),
                   if (!viewModel.isChangelogExpanded) const Divider(height: 1),
@@ -102,7 +104,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       key: _marketplacesKey,
                       child: _buildMarketplaces(context),
                     ),
-                  if (!isWeb()) const Divider(),
+                  if (!isWeb()) const Divider(height: 1),
                   // Copyright
                   Center(
                     child: Text(
@@ -220,6 +222,11 @@ class _AboutScreenState extends State<AboutScreen> {
     return Column(
       children: [
         AboutLinkItem(
+          iconPath: "assets/images/UI/download.svg",
+          text: AppLocalizations.of(context)!.installation_packages,
+          onTap: () => launchLink(AppConstants.latestReleaseUrl),
+        ),
+        AboutLinkItem(
           iconPath: "assets/images/UI/shield.svg",
           text: AppLocalizations.of(context)!.privacy_policy,
           onTap: () => context.push('/topic', extra: {
@@ -244,29 +251,12 @@ class _AboutScreenState extends State<AboutScreen> {
 
   Widget _buildMarketplaces(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        AboutLinkItem(
-          iconPath: "assets/images/UI/download.svg",
-          text: AppLocalizations.of(context)!.installation_packages,
-          onTap: () => launchLink(AppConstants.latestReleaseUrl),
-        ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              "assets/images/UI/folder.svg",
-              width: 24,
-              height: 24,
-            ),
-            const SizedBox(width: 16),
-            Text(
-              AppLocalizations.of(context)!.marketplaces,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(width: 4),
             IconUrl(
               iconPath: "assets/images/UI/google_play.svg",
               url: AppConstants.googlePlayUrl,
@@ -281,29 +271,32 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  Widget _buildAcknowledgements(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildAcknowledgements(
+      BuildContext context, AboutViewModel viewModel) {
+    return ExpansionTile(
+      initiallyExpanded: viewModel.isAcknowledgementsExpanded,
+      onExpansionChanged: (expanded) => viewModel.toggleAcknowledgements(),
+      tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+      minTileHeight: 30,
+      title: Row(
+        children: [
+          SvgPicture.asset(
+            "assets/images/UI/thank-you.svg",
+            width: 24,
+            height: 24,
+          ),
+          const SizedBox(width: 12),
+          Text(
+            AppLocalizations.of(context)!.acknowledgements_title,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
       children: [
         const SizedBox(height: 4),
-        Row(
-          children: [
-            SvgPicture.asset(
-              "assets/images/UI/thank-you.svg",
-              width: 24,
-              height: 24,
-            ),
-            const SizedBox(width: 16),
-            Text(
-              AppLocalizations.of(context)!.acknowledgements_title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
         if (AppLocalizations.of(context)!.acknowledgements_description_1 != "")
           Text(
             AppLocalizations.of(context)!.acknowledgements_description_1,
@@ -335,7 +328,7 @@ class _AboutScreenState extends State<AboutScreen> {
             width: 24,
             height: 24,
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Text(
             AppLocalizations.of(context)!.changelog,
             style: Theme.of(context)

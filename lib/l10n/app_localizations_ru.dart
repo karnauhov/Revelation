@@ -39,9 +39,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get installation_packages => 'Установочные пакеты';
 
   @override
-  String get marketplaces => 'Магазины приложений';
-
-  @override
   String get acknowledgements_title => 'Благодарности';
 
   @override

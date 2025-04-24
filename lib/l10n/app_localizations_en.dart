@@ -39,9 +39,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get installation_packages => 'Installation packages';
 
   @override
-  String get marketplaces => 'Marketplaces';
-
-  @override
   String get acknowledgements_title => 'Acknowledgments';
 
   @override

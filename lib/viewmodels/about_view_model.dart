@@ -9,6 +9,7 @@ class AboutViewModel extends ChangeNotifier {
 
   bool isLoading = true;
   bool isChangelogExpanded = false;
+  bool isAcknowledgementsExpanded = false;
 
   AboutViewModel() {
     _initData();
@@ -40,6 +41,11 @@ class AboutViewModel extends ChangeNotifier {
 
   void toggleChangelogExpanded() {
     isChangelogExpanded = !isChangelogExpanded;
+    notifyListeners();
+  }
+
+  void toggleAcknowledgements() {
+    isAcknowledgementsExpanded = !isAcknowledgementsExpanded;
     notifyListeners();
   }
 }

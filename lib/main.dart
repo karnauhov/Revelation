@@ -26,7 +26,7 @@ void main() async {
   if (isDesktop()) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
-        size: Size(800, 600), minimumSize: Size(800, 600), center: true);
+        size: Size(800, 630), minimumSize: Size(800, 630), center: true);
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
       await windowManager.focus();

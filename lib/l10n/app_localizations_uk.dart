@@ -39,9 +39,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get installation_packages => 'Інсталяційні пакети';
 
   @override
-  String get marketplaces => 'Ринки додатків';
-
-  @override
   String get acknowledgements_title => 'Подяки';
 
   @override
