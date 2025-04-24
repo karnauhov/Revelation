@@ -98,27 +98,6 @@ jobs:
             exit 1
           }
 
-      - name: Create MSIX Package
-        run: dart run msix:create
-
-      - name: Rename MSIX Package
-        shell: pwsh
-        run: |
-          $version = '${{ steps.extract_version_windows.outputs.version }}'
-          $build = '${{ steps.extract_version_windows.outputs.build }}'
-          Move-Item -Path 'build/windows/x64/runner/Release/revelation.msix' -Destination "build/windows/x64/runner/Release/Revelation-windows-$version-$build.msix"
-
-      - name: Build Web
-        run: flutter build web
-
-      - name: Zip Web Build
-        shell: pwsh
-        run: |
-          $version = '${{ steps.extract_version_windows.outputs.version }}'
-          $build   = '${{ steps.extract_version_windows.outputs.build }}'
-          Compress-Archive -Path 'build/web/*' `
-                        -DestinationPath "Revelation-web-$version-$build.zip"
-
       - name: Build APK
         run: flutter build apk --release
 
@@ -172,6 +151,27 @@ jobs:
             build/app/outputs/flutter-apk/Revelation-android-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.apk
             build/windows/Revelation-windows-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.exe
 
+      - name: Create MSIX Package
+        run: dart run msix:create
+
+      - name: Rename MSIX Package
+        shell: pwsh
+        run: |
+          $version = '${{ steps.extract_version_windows.outputs.version }}'
+          $build = '${{ steps.extract_version_windows.outputs.build }}'
+          Move-Item -Path 'build/windows/x64/runner/Release/revelation.msix' -Destination "build/windows/Revelation-windows-$version-$build.msix"
+
+      - name: Build Web
+        run: flutter build web
+
+      - name: Zip Web Build
+        shell: pwsh
+        run: |
+          $version = '${{ steps.extract_version_windows.outputs.version }}'
+          $build   = '${{ steps.extract_version_windows.outputs.build }}'
+          Compress-Archive -Path 'build/web/*' `
+                        -DestinationPath "build/Revelation-web-$version-$build.zip"
+
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -220,7 +220,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Revelation-windows-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.msix
+          asset_path: build/windows/Revelation-windows-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.msix
           asset_name: Revelation-windows-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.msix
           asset_content_type: application/octet-stream
 
@@ -230,7 +230,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Revelation-web-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.zip
+          asset_path: build/Revelation-web-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.zip
           asset_name: Revelation-web-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.zip
           asset_content_type: application/zip
 
