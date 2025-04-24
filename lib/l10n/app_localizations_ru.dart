@@ -27,7 +27,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get privacy_policy => 'Политика конфиденциальности';
 
   @override
+  String get privacy_policy_description => 'Документ о сборе информации пользователя, её использовании и защите';
+
+  @override
   String get license => 'Лицензия';
+
+  @override
+  String get license_description => 'Условия использования, воспроизведения и распространения программного обеспечения под лицензией Apache 2.0';
 
   @override
   String get installation_packages => 'Установочные пакеты';

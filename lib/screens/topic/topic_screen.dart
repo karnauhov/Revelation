@@ -122,7 +122,7 @@ class _TopicScreenState extends State<TopicScreen> {
   void _onTapHandle(
       BuildContext context, String text, String? href, String title) {
     if (href != null) {
-      if (href.startsWith("http")) {
+      if (href.startsWith("http") || href.startsWith("mailto")) {
         // Real link
         launchLink(href);
       } else {

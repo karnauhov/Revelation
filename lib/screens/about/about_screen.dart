@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/screens/about/icon_url.dart';
@@ -221,12 +222,21 @@ class _AboutScreenState extends State<AboutScreen> {
         AboutLinkItem(
           iconPath: "assets/images/UI/shield.svg",
           text: AppLocalizations.of(context)!.privacy_policy,
-          onTap: () => launchLink(AppConstants.privacyPolicyUrl),
+          onTap: () => context.push('/topic', extra: {
+            'name': AppLocalizations.of(context)!.privacy_policy,
+            'description':
+                AppLocalizations.of(context)!.privacy_policy_description,
+            'file': "privacy_policy"
+          }),
         ),
         AboutLinkItem(
           iconPath: "assets/images/UI/agreement.svg",
           text: AppLocalizations.of(context)!.license,
-          onTap: () => launchLink(AppConstants.licenseUrl),
+          onTap: () => context.push('/topic', extra: {
+            'name': AppLocalizations.of(context)!.license,
+            'description': AppLocalizations.of(context)!.license_description,
+            'file': "license"
+          }),
         ),
       ],
     );
