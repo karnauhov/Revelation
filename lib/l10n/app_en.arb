@@ -20,6 +20,7 @@
   "primary_sources_header": "Click on the image to open",
   "settings_screen": "Settings",
   "about_screen": "About",
+  "download": "Download",
   "error_loading_libraries": "Error loading libraries",
   "error_loading_institutions": "Error loading institutions",
   "error_loading_topics": "Error loading topics",

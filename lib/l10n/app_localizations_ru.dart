@@ -69,6 +69,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get about_screen => 'О программе';
 
   @override
+  String get download => 'Скачать';
+
+  @override
   String get error_loading_libraries => 'Ошибка загрузки библиотек';
 
   @override

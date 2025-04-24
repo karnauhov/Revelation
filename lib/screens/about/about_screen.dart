@@ -13,7 +13,8 @@ import '../../utils/common.dart';
 import '../../utils/app_constants.dart';
 
 class AboutScreen extends StatefulWidget {
-  const AboutScreen({super.key});
+  final bool scrollToStores;
+  const AboutScreen({super.key, this.scrollToStores = false});
 
   @override
   State<AboutScreen> createState() => _AboutScreenState();
@@ -21,8 +22,10 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen> {
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey _marketplacesKey = GlobalKey();
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
+  bool _didScroll = false;
 
   @override
   void dispose() {
@@ -42,6 +45,20 @@ class _AboutScreenState extends State<AboutScreen> {
             );
           }
 
+          if (widget.scrollToStores && !_didScroll) {
+            _didScroll = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              final targetContext = _marketplacesKey.currentContext;
+              if (targetContext != null) {
+                Scrollable.ensureVisible(
+                  targetContext,
+                  duration: const Duration(milliseconds: 300),
+                  alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
+                );
+              }
+            });
+          }
+
           Widget content = SafeArea(
             child: SingleChildScrollView(
               controller: _scrollController,
@@ -58,14 +75,18 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                   const SizedBox(height: 4),
                   const Divider(),
+                  // Marketplaces
+                  if (isWeb())
+                    Container(
+                      key: _marketplacesKey,
+                      child: _buildMarketplaces(context),
+                    ),
+                  if (isWeb()) const Divider(),
                   // Contacts Links
                   _buildContactsLinks(context),
                   const Divider(),
                   // Legal Links
                   _buildLegalLinks(context),
-                  const Divider(),
-                  // Marketplaces
-                  _buildMarketplaces(context),
                   const Divider(),
                   // Acknowledgments
                   _buildAcknowledgements(context),
@@ -74,6 +95,13 @@ class _AboutScreenState extends State<AboutScreen> {
                   // Changelog
                   _buildChangelog(context, viewModel),
                   if (!viewModel.isChangelogExpanded) const Divider(height: 1),
+                  // Marketplaces
+                  if (!isWeb())
+                    Container(
+                      key: _marketplacesKey,
+                      child: _buildMarketplaces(context),
+                    ),
+                  if (!isWeb()) const Divider(),
                   // Copyright
                   Center(
                     child: Text(
@@ -191,11 +219,6 @@ class _AboutScreenState extends State<AboutScreen> {
     return Column(
       children: [
         AboutLinkItem(
-          iconPath: "assets/images/UI/download.svg",
-          text: AppLocalizations.of(context)!.installation_packages,
-          onTap: () => launchLink(AppConstants.latestReleaseUrl),
-        ),
-        AboutLinkItem(
           iconPath: "assets/images/UI/shield.svg",
           text: AppLocalizations.of(context)!.privacy_policy,
           onTap: () => launchLink(AppConstants.privacyPolicyUrl),
@@ -212,6 +235,11 @@ class _AboutScreenState extends State<AboutScreen> {
   Widget _buildMarketplaces(BuildContext context) {
     return Column(
       children: [
+        AboutLinkItem(
+          iconPath: "assets/images/UI/download.svg",
+          text: AppLocalizations.of(context)!.installation_packages,
+          onTap: () => launchLink(AppConstants.latestReleaseUrl),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

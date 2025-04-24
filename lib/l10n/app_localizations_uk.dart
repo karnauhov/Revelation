@@ -69,6 +69,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get about_screen => 'Про програму';
 
   @override
+  String get download => 'Завантажити';
+
+  @override
   String get error_loading_libraries => 'Помилка завантаження бібліотек';
 
   @override

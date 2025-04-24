@@ -20,6 +20,7 @@
   "primary_sources_header": "Нажмите на изображение, чтобы открыть",
   "settings_screen": "Настройки",
   "about_screen": "О программе",
+  "download": "Скачать",
   "error_loading_libraries": "Ошибка загрузки библиотек",
   "error_loading_institutions": "Ошибка загрузки учреждений",
   "error_loading_topics": "Ошибка загрузки тем",

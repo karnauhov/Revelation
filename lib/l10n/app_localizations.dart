@@ -217,6 +217,12 @@ abstract class AppLocalizations {
   /// **'About'**
   String get about_screen;
 
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
+
   /// No description provided for @error_loading_libraries.
   ///
   /// In en, this message translates to:

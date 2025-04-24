@@ -88,11 +88,15 @@ class AppRouter {
       GoRoute(
         path: '/about',
         name: 'about',
-        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
-          context: context,
-          state: state,
-          child: AboutScreen(),
-        ),
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final scrollToStores = extra?['scrollToStores'] == true;
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: AboutScreen(scrollToStores: scrollToStores),
+          );
+        },
       ),
     ],
   );

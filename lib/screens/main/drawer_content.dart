@@ -94,6 +94,16 @@ class _DrawerContentState extends State<DrawerContent> {
                         context.push('/about');
                       },
                     ),
+                    if (isWeb())
+                      DrawerItem(
+                        assetPath: 'assets/images/UI/get_app.svg',
+                        text: AppLocalizations.of(context)!.download,
+                        onClick: () {
+                          Navigator.pop(context);
+                          context
+                              .push('/about', extra: {'scrollToStores': true});
+                        },
+                      ),
                   ],
                 ),
               ),

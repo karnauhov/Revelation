@@ -69,6 +69,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about_screen => 'About';
 
   @override
+  String get download => 'Download';
+
+  @override
   String get error_loading_libraries => 'Error loading libraries';
 
   @override
