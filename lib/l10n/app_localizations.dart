@@ -166,7 +166,7 @@ abstract class AppLocalizations {
   /// No description provided for @acknowledgements_description_1.
   ///
   /// In en, this message translates to:
-  /// **'Sincere gratitude to the institutions for providing access to information and invaluable manuscripts:'**
+  /// **'First and foremost, I would like to thank God for life; my wife, Ira, for her love and care; and my mother for her help and support.\nAlso, my sincere gratitude goes to the institutions that provided access to information and invaluable manuscripts:'**
   String get acknowledgements_description_1;
 
   /// No description provided for @acknowledgements_description_2.

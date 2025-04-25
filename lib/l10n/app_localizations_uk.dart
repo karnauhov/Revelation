@@ -42,7 +42,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get acknowledgements_title => 'Подяки';
 
   @override
-  String get acknowledgements_description_1 => 'Щира подяка установам за наданий доступ до інформації та безцінних рукописів:';
+  String get acknowledgements_description_1 => 'Насамперед хочу подякувати Богові за життя; свїй дружині Іринці - за любов і турботу; і мамі - за допомогу та підтримку.\nТакож моя щира вдячність установам за наданий доступ до інформації та безцінних рукописів:';
 
   @override
   String get acknowledgements_description_2 => 'Велика подяка розробникам що працювали над наступним ПЗ:';
