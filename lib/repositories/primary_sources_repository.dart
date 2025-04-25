@@ -102,7 +102,18 @@ class PrimarySourcesRepository {
                 image: "primary_sources/20001/20001_02690_Q90_2r_B695_p.jpg"),
           ],
           attributes: [
-            {"text": "📜 The British Library", "url": "https://www.bl.uk"},
+            {
+              "text": "📜 From the British Library Collection (Add. 43725)",
+              "url": "https://www.bl.uk"
+            },
+            {
+              "text": "📷 INTF",
+              "url": "https://ntvmr.uni-muenster.de/license-agreement"
+            },
+            {
+              "text": "✅ Terms and conditions",
+              "url": "https://www.bl.uk/terms/#websites"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_02_title,
@@ -198,7 +209,14 @@ class PrimarySourcesRepository {
                 image: "primary_sources/20002/GA_02_0136b.jpg"),
           ],
           attributes: [
-            {"text": "📜 The British Library", "url": "https://www.bl.uk"},
+            {
+              "text": "📜 From the British Library Collection (Royal 1 D.VIII)",
+              "url": "https://www.bl.uk"
+            },
+            {
+              "text": "✅ Terms and conditions",
+              "url": "https://www.bl.uk/terms/#websites"
+            },
           ]),
       PrimarySource(
           title: loc.uncial_46_title,
@@ -1083,10 +1101,17 @@ class PrimarySourcesRepository {
                 image: "primary_sources/10018/BL-Papyrus_2053_f001v.jpg")
           ],
           attributes: [
-            {"text": "📜 The British Library", "url": "https://www.bl.uk"},
+            {
+              "text": "📜 From the British Library Collection (Inv. Nr. 2053v)",
+              "url": "https://www.bl.uk"
+            },
             {
               "text": "📷 Sofia Heim, 2021, 'Artefact ID 298', 4CARE database",
               "url": "https://4care-skos.mf.no/4care-artefacts/298"
+            },
+            {
+              "text": "✅ Terms and conditions",
+              "url": "https://www.bl.uk/terms/#websites"
             },
           ]),
       PrimarySource(
@@ -1159,7 +1184,14 @@ class PrimarySourcesRepository {
                 image: "primary_sources/10043/P43_B.jpg")
           ],
           attributes: [
-            {"text": "📜 The British Library", "url": "https://www.bl.uk"},
+            {
+              "text": "📜 From the British Library Collection (Inv. Nr. 2241)",
+              "url": "https://www.bl.uk"
+            },
+            {
+              "text": "✅ Terms and conditions",
+              "url": "https://www.bl.uk/terms/#websites"
+            },
           ]),
       PrimarySource(
           title: loc.papyrus_85_title,
@@ -1195,6 +1227,10 @@ class PrimarySourcesRepository {
             {
               "text": "📜 Bibliothèque nationale et universitaire",
               "url": "https://www.bnu.fr"
+            },
+            {
+              "text": "📷 INTF",
+              "url": "https://ntvmr.uni-muenster.de/license-agreement"
             },
           ]),
       PrimarySource(
