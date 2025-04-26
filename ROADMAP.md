@@ -26,7 +26,7 @@
 - Improve the single‐source screen by adding more image‐editing tools: negative, contrast, brightness, color replacement, black-and-white filter, noise removal, and save changes.  
 - Enhance the foreword with details on the 7 study stages for each passage (per the rule: reading, understanding, application).  
 - Publish on Flathub (Linux).  
-- Revamp the entire UI in an “ancient manuscript” style using AI: logo, background, colors, fonts, icons, sounds, and music. Study [Material Theme Builder](https://material-foundation.github.io/material-theme-builder) and [M3 Guidelines](https://m3.material.io).  
+- Revamp the entire UI in an “ancient manuscript” style using AI: logo, background, colors, fonts, icons, sounds, and music, banners. Study [Material Theme Builder](https://material-foundation.github.io/material-theme-builder) and [M3 Guidelines](https://m3.material.io).  
 - Add background music (loaded from storage) and a toggle in settings to disable it.  
 - Fix the bug with opening mailto links.  
 
