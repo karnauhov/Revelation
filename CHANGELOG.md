@@ -8,6 +8,8 @@ All notable changes to this application will be documented here.
 
 - Support platforms: [Web](https://www.revelation.website), [Windows](https://apps.microsoft.com/detail/9NXHRR2P4087);
 - Primary Source screen (page list, redownload button, scale buttons, toolbar menu, page image area, attributes);
+- Upload primary-source images to supabase.com;
+- Obtain permissions to use images from the organizations that own the manuscripts and their images;
 - Topic screen (principles);
 
 ### Changed
