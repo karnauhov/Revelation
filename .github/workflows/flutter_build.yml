@@ -163,10 +163,7 @@ jobs:
 
       - name: Build web with secrets
         run: |
-          flutter build web \
-            --release \
-            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-            --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+          flutter build web --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
 
       - name: Zip Web Build
         shell: pwsh
@@ -176,8 +173,7 @@ jobs:
           $files = Get-ChildItem -Path 'build/web' -Recurse -File |
              Where-Object { $_.Name -ne '.env' } |
              ForEach-Object { $_.FullName }
-          Compress-Archive -Path $files `
-                       -DestinationPath "build/Revelation-web-$version-$build.zip" -Force
+          Compress-Archive -Path $files -DestinationPath "build/Revelation-web-$version-$build.zip" -Force
 
       - name: Create GitHub Release
         id: create_release
