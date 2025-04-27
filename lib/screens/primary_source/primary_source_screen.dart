@@ -21,7 +21,8 @@ class PrimarySourceScreen extends StatelessWidget {
       create: (_) => PrimarySourceViewModel(primarySource: primarySource),
       child: Consumer<PrimarySourceViewModel>(
         builder: (context, viewModel, child) {
-          if (viewModel.selectedPage != null &&
+          if (primarySource.permissionsReceived &&
+              viewModel.selectedPage != null &&
               !primarySource.pages.contains(viewModel.selectedPage)) {
             viewModel.changeSelectedPage(
               primarySource.pages.isNotEmpty ? primarySource.pages.first : null,
@@ -88,7 +89,8 @@ class PrimarySourceScreen extends StatelessWidget {
                   ),
                 ),
                 if (primarySource.attributes != null &&
-                    primarySource.attributes!.isNotEmpty)
+                    primarySource.attributes!.isNotEmpty &&
+                    primarySource.permissionsReceived)
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
@@ -104,6 +106,10 @@ class PrimarySourceScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                if (primarySource.attributes == null ||
+                    primarySource.attributes!.isEmpty ||
+                    !primarySource.permissionsReceived)
+                  Text.rich(TextSpan(text: ""))
               ],
             ),
           );
@@ -148,27 +154,32 @@ class PrimarySourceScreen extends StatelessWidget {
       DropdownButton<model.Page>(
         value: viewModel.selectedPage,
         hint: Text(
-          primarySource.pages.isEmpty
+          primarySource.pages.isEmpty || !primarySource.permissionsReceived
               ? AppLocalizations.of(context)!.images_are_missing
               : AppLocalizations.of(context)!.choose_page,
         ),
         onChanged: (model.Page? newPage) {
-          viewModel.changeSelectedPage(newPage);
+          if (primarySource.permissionsReceived) {
+            viewModel.changeSelectedPage(newPage);
+          }
         },
-        items: primarySource.pages
-            .map<DropdownMenuItem<model.Page>>((model.Page value) {
-          return DropdownMenuItem<model.Page>(
-            value: value,
-            child: _buildDropdownItem(context, viewModel, value),
-          );
-        }).toList(),
+        items: primarySource.permissionsReceived
+            ? primarySource.pages
+                .map<DropdownMenuItem<model.Page>>((model.Page value) {
+                return DropdownMenuItem<model.Page>(
+                  value: value,
+                  child: _buildDropdownItem(context, viewModel, value),
+                );
+              }).toList()
+            : List.empty(),
       ),
       IconButton(
         icon: viewModel.refreshError
             ? const Icon(Icons.sync_problem)
             : const Icon(Icons.sync),
         tooltip: AppLocalizations.of(context)!.reload_image,
-        onPressed: viewModel.selectedPage != null
+        onPressed: viewModel.primarySource.permissionsReceived &&
+                viewModel.selectedPage != null
             ? () => viewModel.loadImage(viewModel.selectedPage!.image,
                 isReload: true)
             : null,
@@ -237,20 +248,24 @@ class PrimarySourceScreen extends StatelessWidget {
       DropdownButton<model.Page>(
         value: viewModel.selectedPage,
         hint: Text(
-          primarySource.pages.isEmpty
+          primarySource.pages.isEmpty || !primarySource.permissionsReceived
               ? AppLocalizations.of(context)!.images_are_missing
               : AppLocalizations.of(context)!.choose_page,
         ),
         onChanged: (model.Page? newPage) {
-          viewModel.changeSelectedPage(newPage);
+          if (primarySource.permissionsReceived) {
+            viewModel.changeSelectedPage(newPage);
+          }
         },
-        items: primarySource.pages
-            .map<DropdownMenuItem<model.Page>>((model.Page value) {
-          return DropdownMenuItem<model.Page>(
-            value: value,
-            child: _buildDropdownItem(context, viewModel, value),
-          );
-        }).toList(),
+        items: primarySource.permissionsReceived
+            ? primarySource.pages
+                .map<DropdownMenuItem<model.Page>>((model.Page value) {
+                return DropdownMenuItem<model.Page>(
+                  value: value,
+                  child: _buildDropdownItem(context, viewModel, value),
+                );
+              }).toList()
+            : List.empty(),
       ),
       const Spacer(),
       ValueListenableBuilder<ZoomStatus>(
@@ -262,7 +277,8 @@ class PrimarySourceScreen extends StatelessWidget {
             onSelected: (value) {
               switch (value) {
                 case 'refresh':
-                  if (viewModel.selectedPage != null) {
+                  if (viewModel.selectedPage != null &&
+                      viewModel.primarySource.permissionsReceived) {
                     viewModel.loadImage(viewModel.selectedPage!.image,
                         isReload: true);
                   }
@@ -300,7 +316,8 @@ class PrimarySourceScreen extends StatelessWidget {
             itemBuilder: (context) => <PopupMenuEntry<String>>[
               PopupMenuItem(
                 value: 'refresh',
-                enabled: viewModel.selectedPage != null,
+                enabled: viewModel.selectedPage != null &&
+                    viewModel.primarySource.permissionsReceived,
                 child: Row(
                   children: [
                     viewModel.refreshError

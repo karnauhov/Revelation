@@ -110,7 +110,8 @@ class PrimarySourcesRepository {
               "text": "📷 INTF",
               "url": "https://ntvmr.uni-muenster.de/license-agreement"
             },
-          ]),
+          ],
+          permissionsReceived: true),
       PrimarySource(
           title: loc.uncial_02_title,
           date: loc.uncial_02_date,
@@ -214,7 +215,8 @@ class PrimarySourcesRepository {
                   "📷 The Center for the Study of New Testament Manuscripts (www.csntm.org) digitized Codex Alexandrinus at the British Library",
               "url": "https://www.csntm.org/terms-of-use-copyright"
             }
-          ]),
+          ],
+          permissionsReceived: false),
       PrimarySource(
           title: loc.uncial_46_title,
           date: loc.uncial_46_date,
@@ -397,7 +399,8 @@ class PrimarySourcesRepository {
               "text": "📜 © Biblioteca Apostolica Vaticana",
               "url": "https://www.vaticanlibrary.va"
             },
-          ])
+          ],
+          permissionsReceived: false)
     ];
     return sources;
   }
@@ -511,7 +514,8 @@ class PrimarySourcesRepository {
               "text": "📜 The Chester Beatty",
               "url": "https://chesterbeatty.ie/about/copyright-2"
             },
-          ]),
+          ],
+          permissionsReceived: true),
       PrimarySource(
           title: loc.uncial_04_title,
           date: loc.uncial_04_date,
@@ -620,7 +624,8 @@ class PrimarySourcesRepository {
               "url":
                   "https://gallica.bnf.fr/accueil/fr/html/conditions-dutilisation-de-gallica"
             },
-          ]),
+          ],
+          permissionsReceived: true),
       PrimarySource(
           title: loc.uncial_25_title,
           date: loc.uncial_25_date,
@@ -646,7 +651,8 @@ class PrimarySourcesRepository {
               "text": "📜 Российская национальная библиотека",
               "url": "https://nlr.ru"
             },
-          ]),
+          ],
+          permissionsReceived: false),
       PrimarySource(
           title: loc.uncial_51_title,
           date: loc.uncial_51_date,
@@ -1051,7 +1057,8 @@ class PrimarySourcesRepository {
               "url":
                   "https://www.loc.gov/collections/manuscripts-from-the-monasteries-of-mount-athos/about-this-collection/rights-and-access"
             }
-          ])
+          ],
+          permissionsReceived: false)
     ];
     return sources;
   }
@@ -1093,7 +1100,8 @@ class PrimarySourcesRepository {
               "text": "📷 Sofia Heim, 2021, 'Artefact ID 298', 4CARE database",
               "url": "https://4care-skos.mf.no/4care-artefacts/298"
             },
-          ]),
+          ],
+          permissionsReceived: true),
       PrimarySource(
           title: loc.papyrus_24_title,
           date: loc.papyrus_24_date,
@@ -1129,7 +1137,8 @@ class PrimarySourcesRepository {
               "url":
                   "https://lux.collections.yale.edu/content/open-access-policy-2011"
             },
-          ]),
+          ],
+          permissionsReceived: true),
       PrimarySource(
           title: loc.papyrus_43_title,
           date: loc.papyrus_43_date,
@@ -1169,7 +1178,8 @@ class PrimarySourcesRepository {
                   "📷 The Center for the Study of New Testament Manuscripts (www.csntm.org) digitized Papyrus 43 at the British Library",
               "url": "https://www.csntm.org/terms-of-use-copyright"
             },
-          ]),
+          ],
+          permissionsReceived: false),
       PrimarySource(
           title: loc.papyrus_85_title,
           date: loc.papyrus_85_date,
@@ -1209,7 +1219,8 @@ class PrimarySourcesRepository {
               "text": "📷 INTF",
               "url": "https://ntvmr.uni-muenster.de/license-agreement"
             },
-          ]),
+          ],
+          permissionsReceived: false),
       PrimarySource(
           title: loc.papyrus_98_title,
           date: loc.papyrus_98_date,
@@ -1241,7 +1252,8 @@ class PrimarySourcesRepository {
               "text": "📜 Institut français d’archéologie orientale du Caire",
               "url": "https://www.ifao.egnet.net"
             },
-          ]),
+          ],
+          permissionsReceived: false),
       PrimarySource(
           title: loc.papyrus_115_title,
           date: loc.papyrus_115_date,
@@ -1306,7 +1318,8 @@ class PrimarySourcesRepository {
               "url":
                   "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4499_Revelation_II_1-3_13-15_27-29_III_10-12_V_8-9_VI_5-6_VIII_3-8_11-IX_5_7-16_18-X_4_8-XI_5_8-15_18-XII_5_8-10_12-17_XIII_1-3_6-16_18-XIV_3_5-7_10-11_14-15_18-XV_1_4-7/21178999"
             },
-          ]),
+          ],
+          permissionsReceived: false),
       PrimarySource(
           title: loc.uncial_52_title,
           date: loc.uncial_52_date,
@@ -1333,7 +1346,8 @@ class PrimarySourcesRepository {
               "url":
                   "https://www.monastiria.gr/mount-athos-st-panteleimons-russian-monastery/?lang=en"
             },
-          ]),
+          ],
+          permissionsReceived: false),
       PrimarySource(
           title: loc.uncial_163_title,
           date: loc.uncial_163_date,
@@ -1373,7 +1387,8 @@ class PrimarySourcesRepository {
               "url":
                   "https://goodspeed.lib.uchicago.edu/view/index.php?doc=9351&obj=001"
             },
-          ]),
+          ],
+          permissionsReceived: true),
       PrimarySource(
           title: loc.uncial_169_title,
           date: loc.uncial_169_date,
@@ -1416,7 +1431,8 @@ class PrimarySourcesRepository {
               "text": "📷 Digital Corpus of Literary Papyri",
               "url": "https://papyri.info/apis/pts.apis.5"
             },
-          ]),
+          ],
+          permissionsReceived: true),
       PrimarySource(
           title: loc.uncial_207_title,
           date: loc.uncial_207_date,
@@ -1456,7 +1472,8 @@ class PrimarySourcesRepository {
                   "📷 The Center for the Study of New Testament Manuscripts (www.csntm.org) digitized Uncial 0207 at the Laurentian Library",
               "url": "https://www.csntm.org/terms-of-use-copyright"
             },
-          ]),
+          ],
+          permissionsReceived: false),
       PrimarySource(
           title: loc.uncial_229_title,
           date: loc.uncial_229_date,
@@ -1499,7 +1516,8 @@ class PrimarySourcesRepository {
               "text": "📜 Istituto Papirologico “Girolamo Vitelli”",
               "url": "https://www.istitutopapirologico.unifi.it"
             },
-          ]),
+          ],
+          permissionsReceived: false),
       PrimarySource(
           title: loc.uncial_308_title,
           date: loc.uncial_308_date,
@@ -1542,7 +1560,8 @@ class PrimarySourcesRepository {
               "url":
                   "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4500_Revelation_XI_15-16_17-18/21179002"
             },
-          ]),
+          ],
+          permissionsReceived: false),
     ];
 
     return sources;

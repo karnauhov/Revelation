@@ -23,7 +23,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     imageController = ImagePreviewController(primarySource.maxScale);
     imageController.transformationController.addListener(_updateZoomStatus);
 
-    if (primarySource.pages.isNotEmpty) {
+    if (primarySource.pages.isNotEmpty && primarySource.permissionsReceived) {
       selectedPage = primarySource.pages.first;
       loadImage(selectedPage!.image);
     }

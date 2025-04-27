@@ -20,6 +20,7 @@ class PrimarySource {
   final double maxScale;
   final List<Page> pages;
   final List<Map<String, String>>? attributes;
+  final bool permissionsReceived;
   bool showMore = false;
 
   PrimarySource(
@@ -41,5 +42,6 @@ class PrimarySource {
       required this.preview,
       required this.maxScale,
       required this.pages,
-      required this.attributes});
+      required this.attributes,
+      required this.permissionsReceived});
 }
