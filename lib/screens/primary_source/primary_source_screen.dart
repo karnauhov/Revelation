@@ -98,8 +98,9 @@ class PrimarySourceScreen extends StatelessWidget {
                           style: theme.bodySmall!.copyWith(fontSize: 10),
                           children: _buildLinkSpans(primarySource.attributes!),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.clip,
+                        maxLines: 5,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
@@ -135,7 +136,7 @@ class PrimarySourceScreen extends StatelessWidget {
       }
 
       if (i < links.length - 1) {
-        spans.add(const TextSpan(text: ', '));
+        spans.add(const TextSpan(text: '; '));
       }
     }
     return spans;

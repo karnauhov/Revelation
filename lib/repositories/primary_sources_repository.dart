@@ -104,15 +104,11 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text": "📜 From the British Library Collection (Add. 43725)",
-              "url": "https://www.bl.uk"
+              "url": "https://www.bl.uk/terms/#websites"
             },
             {
               "text": "📷 INTF",
               "url": "https://ntvmr.uni-muenster.de/license-agreement"
-            },
-            {
-              "text": "✅ Terms and conditions",
-              "url": "https://www.bl.uk/terms/#websites"
             },
           ]),
       PrimarySource(
@@ -211,12 +207,13 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text": "📜 From the British Library Collection (Royal 1 D.VIII)",
-              "url": "https://www.bl.uk"
-            },
-            {
-              "text": "✅ Terms and conditions",
               "url": "https://www.bl.uk/terms/#websites"
             },
+            {
+              "text":
+                  "📷 The Center for the Study of New Testament Manuscripts (www.csntm.org) digitized Codex Alexandrinus at the British Library",
+              "url": "https://www.csntm.org/terms-of-use-copyright"
+            }
           ]),
       PrimarySource(
           title: loc.uncial_46_title,
@@ -512,10 +509,6 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text": "📜 The Chester Beatty",
-              "url": "https://chesterbeatty.ie"
-            },
-            {
-              "text": "✅ Copyright",
               "url": "https://chesterbeatty.ie/about/copyright-2"
             },
           ]),
@@ -620,14 +613,10 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text": "📜 Bibliothèque nationale de France",
-              "url": "https://www.bnf.fr"
+              "url": "https://archivesetmanuscrits.bnf.fr/reproduction.html"
             },
             {
               "text": "📷 Source gallica.bnf.fr / BnF",
-              "url": "https://gallica.bnf.fr"
-            },
-            {
-              "text": "✅ Conditions",
               "url":
                   "https://gallica.bnf.fr/accueil/fr/html/conditions-dutilisation-de-gallica"
             },
@@ -1060,11 +1049,6 @@ class PrimarySourcesRepository {
               "text":
                   "📷 Library of Congress Collection of Manuscripts from the Monasteries of Mt. Athos",
               "url":
-                  "https://www.loc.gov/collections/manuscripts-from-the-monasteries-of-mount-athos/about-this-collection"
-            },
-            {
-              "text": "✅ Rights & Access",
-              "url":
                   "https://www.loc.gov/collections/manuscripts-from-the-monasteries-of-mount-athos/about-this-collection/rights-and-access"
             }
           ])
@@ -1103,15 +1087,11 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text": "📜 From the British Library Collection (Inv. Nr. 2053v)",
-              "url": "https://www.bl.uk"
+              "url": "https://www.bl.uk/terms/#websites"
             },
             {
               "text": "📷 Sofia Heim, 2021, 'Artefact ID 298', 4CARE database",
               "url": "https://4care-skos.mf.no/4care-artefacts/298"
-            },
-            {
-              "text": "✅ Terms and conditions",
-              "url": "https://www.bl.uk/terms/#websites"
             },
           ]),
       PrimarySource(
@@ -1146,10 +1126,6 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text": "📜 Special Collections, Yale Divinity Library",
-              "url": "https://web.library.yale.edu/divinity/special-collections"
-            },
-            {
-              "text": "✅ Policy",
               "url":
                   "https://lux.collections.yale.edu/content/open-access-policy-2011"
             },
@@ -1186,11 +1162,12 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text": "📜 From the British Library Collection (Inv. Nr. 2241)",
-              "url": "https://www.bl.uk"
+              "url": "https://www.bl.uk/terms/#websites"
             },
             {
-              "text": "✅ Terms and conditions",
-              "url": "https://www.bl.uk/terms/#websites"
+              "text":
+                  "📷 The Center for the Study of New Testament Manuscripts (www.csntm.org) digitized Papyrus 43 at the British Library",
+              "url": "https://www.csntm.org/terms-of-use-copyright"
             },
           ]),
       PrimarySource(
@@ -1326,11 +1303,8 @@ class PrimarySourcesRepository {
             },
             {
               "text": "Faculty of Classics (📜 University of Oxford)",
-              "url": "https://www.classics.ox.ac.uk"
-            },
-            {
-              "text": "✅ License",
-              "url": "https://rightsstatements.org/page/InC/1.0/?language=en"
+              "url":
+                  "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4499_Revelation_II_1-3_13-15_27-29_III_10-12_V_8-9_VI_5-6_VIII_3-8_11-IX_5_7-16_18-X_4_8-XI_5_8-15_18-XII_5_8-10_12-17_XIII_1-3_6-16_18-XIV_3_5-7_10-11_14-15_18-XV_1_4-7/21178999"
             },
           ]),
       PrimarySource(
@@ -1397,11 +1371,7 @@ class PrimarySourcesRepository {
               "text":
                   "📜 The University of Chicago Library (Goodspeed Manuscript Collection)",
               "url":
-                  "https://www.lib.uchicago.edu/collex/collections/goodspeed-manuscript-collection"
-            },
-            {
-              "text": "✅ License",
-              "url": "https://creativecommons.org/licenses/by-nc/4.0"
+                  "https://goodspeed.lib.uchicago.edu/view/index.php?doc=9351&obj=001"
             },
           ]),
       PrimarySource(
@@ -1439,15 +1409,12 @@ class PrimarySourcesRepository {
             {
               "text":
                   "📜 Papyrus Collection, Special Collections, Wright Library, Princeton Theological Seminary",
-              "url": "https://ptsem.edu/library/collections/special/art/papyrus"
+              "url":
+                  "https://ptsem.edu/library/collections/special/policies-and-forms/publish"
             },
             {
               "text": "📷 Digital Corpus of Literary Papyri",
-              "url": "https://papyri.info"
-            },
-            {
-              "text": "✅ License",
-              "url": "https://creativecommons.org/licenses/by/3.0"
+              "url": "https://papyri.info/apis/pts.apis.5"
             },
           ]),
       PrimarySource(
@@ -1483,6 +1450,11 @@ class PrimarySourcesRepository {
             {
               "text": "📜 Biblioteca Medicea Laurenziana",
               "url": "https://www.bmlonline.it"
+            },
+            {
+              "text":
+                  "📷 The Center for the Study of New Testament Manuscripts (www.csntm.org) digitized Uncial 0207 at the Laurentian Library",
+              "url": "https://www.csntm.org/terms-of-use-copyright"
             },
           ]),
       PrimarySource(
@@ -1567,11 +1539,8 @@ class PrimarySourcesRepository {
             },
             {
               "text": "Faculty of Classics (📜 University of Oxford)",
-              "url": "https://www.classics.ox.ac.uk"
-            },
-            {
-              "text": "✅ License",
-              "url": "https://rightsstatements.org/page/InC/1.0/?language=en"
+              "url":
+                  "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4500_Revelation_XI_15-16_17-18/21179002"
             },
           ]),
     ];

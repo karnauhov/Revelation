@@ -10,7 +10,7 @@
 ### 1.0.x (Introduction)
 
 #### 1.0.0
-+ Write a brief foreword about Revelation and the rationale for choosing the list of primary sources.  
++ Write a brief preface about Revelation and the rationale for choosing the list of primary sources.  
 + Create the primary‐sources list screen (7 papyri and 12 majuscules).  
 + Publish to Google Play Store.  
 
@@ -18,13 +18,13 @@
 + Load the primary sources from the server.  
 + Implement a screen for a single primary source where you can select a fragment and view its image.  
 * Update the primary‐source images.  
-* Expand the foreword with reflections on the principles of studying the Bible by the Bible (reading, understanding, application).  
+* Expand the preface with reflections on the principles of studying the Bible by the Bible (reading, understanding, application).  
 + Publish on the Web (GitHub Pages under a custom domain).  
 + Publish to Microsoft Store.  
 
 #### 1.0.2
 - Improve the single‐source screen by adding more image‐editing tools: negative, contrast, brightness, color replacement, black-and-white filter, noise removal, and save changes.  
-- Enhance the foreword with details on the 7 study stages for each passage (per the rule: reading, understanding, application).  
+- Enhance the preface with details on the 7 study stages for each passage (per the rule: reading, understanding, application).  
 - Publish on Flathub (Linux).  
 - Revamp the entire UI in an “ancient manuscript” style using AI: logo, background, colors, fonts, icons, sounds, and music, banners. Study [Material Theme Builder](https://material-foundation.github.io/material-theme-builder) and [M3 Guidelines](https://m3.material.io).  
 - Add background music (loaded from storage) and a toggle in settings to disable it.  
@@ -49,32 +49,32 @@
 #### 1.0.x
 - Draft a versioning plan for Stage 2 (Dictionary & Sentence Structure). This stage includes compiling a vocabulary list for the passage, working with Strong’s numbers and lexicon entries for each word, and performing a grammatical analysis of every sentence and word according to Koine Greek rules.  
 - Define the screens and widgets needed to support this stage, with detailed descriptions of their functionality.  
-- Specify what to write in the foreword for this stage, and at which point each piece of content should appear.  
+- Specify what to write for this stage, and at which point each piece of content should appear.  
 
 #### 1.0.x
 - Draft a versioning plan for Stage 3 (Identifying and Analyzing Allusions & References). This stage includes analyzing every word and phrase, studying their semantics and etymology, and exploring the text’s cross-references with other biblical books (see Chapter 7 “Depths of God”).  
 - Define the screens and widgets needed to support this stage, with detailed descriptions of their functionality.  
-- Specify what to write in the foreword for this stage, and at which point each piece of content should appear.  
+- Specify what to write for this stage, and at which point each piece of content should appear.  
 
 #### 1.0.x
 - Draft a versioning plan for Stage 4 (Christ in Revelation). This stage includes pinpointing how each section of text points to the person and ministry of Christ (see Chapter 8 “Depths of God”).  
 - Define the screens and widgets needed to support this stage, with detailed descriptions of their functionality.  
-- Specify what to write in the foreword for this stage, and at which point each piece of content should appear.  
+- Specify what to write for this stage, and at which point each piece of content should appear.  
 
 #### 1.0.x
 - Draft a versioning plan for Stage 5 (Structures & Connections). This stage includes studying the chiastic structure of Revelation, correlating this passage with other identified structures, and analyzing connections to other New Testament books, Daniel, the Old Testament, and the Bible as a whole (see Chapter 6 “Depths of God”).  
 - Define the screens and widgets needed to support this stage, with detailed descriptions of their functionality.  
-- Specify what to write in the foreword for this stage, and at which point each piece of content should appear.  
+- Specify what to write for this stage, and at which point each piece of content should appear.  
 
 #### 1.0.x
 - Draft a versioning plan for Stage 6 (Fulfillment in History & the Future). This stage includes determining how and when the text was fulfilled historically and how it may be fulfilled in the future.  
 - Define the screens and widgets needed to support this stage, with detailed descriptions of their functionality.  
-- Specify what to write in the foreword for this stage, and at which point each piece of content should appear.  
+- Specify what to write for this stage, and at which point each piece of content should appear.  
 
 #### 1.0.x
 - Draft a versioning plan for Stage 7 (Personal Application). This stage includes extracting spiritual lessons for personal life and determining what changes to make in one’s own life in light of the study.  
 - Define the screens and widgets needed to support this stage, with detailed descriptions of their functionality.  
-- Specify what to write in the foreword for this stage, and at which point each piece of content should appear.  
+- Specify what to write for this stage, and at which point each piece of content should appear.  
 
 ### 1.1.x (Greeting)
 - Draft the overall plan.  
