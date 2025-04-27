@@ -161,16 +161,23 @@ jobs:
           $build = '${{ steps.extract_version_windows.outputs.build }}'
           Move-Item -Path 'build/windows/x64/runner/Release/revelation.msix' -Destination "build/windows/Revelation-windows-$version-$build.msix"
 
-      - name: Build Web
-        run: flutter build web
+      - name: Build web with secrets
+        run: |
+          flutter build web \
+            --release \
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
 
       - name: Zip Web Build
         shell: pwsh
         run: |
           $version = '${{ steps.extract_version_windows.outputs.version }}'
           $build   = '${{ steps.extract_version_windows.outputs.build }}'
-          Compress-Archive -Path 'build/web/*' `
-                        -DestinationPath "build/Revelation-web-$version-$build.zip"
+          $files = Get-ChildItem -Path 'build/web' -Recurse -File |
+             Where-Object { $_.Name -ne '.env' } |
+             ForEach-Object { $_.FullName }
+          Compress-Archive -Path $files `
+                       -DestinationPath "build/Revelation-web-$version-$build.zip" -Force
 
       - name: Create GitHub Release
         id: create_release

@@ -38,15 +38,22 @@ void main() async {
   final settingsViewModel = SettingsViewModel(SettingsRepository());
   await settingsViewModel.loadSettings();
 
-  await dotenv.load();
-  if (dotenv.env.containsKey('SUPABASE_URL') &&
-      dotenv.env.containsKey('SUPABASE_KEY')) {
-    final supabaseUrl = dotenv.env['SUPABASE_URL'];
-    final supabaseKey = dotenv.env['SUPABASE_KEY'];
-    await Supabase.initialize(
-        url: supabaseUrl ?? "", anonKey: supabaseKey ?? "");
+  String supabaseUrl;
+  String supabaseKey;
+
+  if (isWeb() && !isLocalWeb()) {
+    supabaseUrl = const String.fromEnvironment('SUPABASE_URL');
+    supabaseKey = const String.fromEnvironment('SUPABASE_KEY');
   } else {
+    await dotenv.load();
+    supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
+    supabaseKey = dotenv.env['SUPABASE_KEY'] ?? '';
+  }
+
+  if (supabaseUrl.isEmpty || supabaseKey.isEmpty) {
     log.e("Supabase URL or key not found");
+  } else {
+    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
   }
 
   runApp(

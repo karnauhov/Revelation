@@ -28,6 +28,14 @@ bool isWeb() {
   return kIsWeb;
 }
 
+bool isLocalWeb() {
+  if (!kIsWeb) {
+    return false;
+  }
+  final host = Uri.base.host;
+  return host == 'localhost' || host == '127.0.0.1';
+}
+
 TargetPlatform getPlatform() {
   return defaultTargetPlatform;
 }
