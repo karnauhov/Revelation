@@ -98,6 +98,24 @@ jobs:
             exit 1
           }
 
+      - name: Build web with secrets
+        run: |
+          flutter build web --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+
+      - name: Zip Web Build
+        shell: pwsh
+        run: |
+          $version = '${{ steps.extract_version_windows.outputs.version }}'
+          $build   = '${{ steps.extract_version_windows.outputs.build }}'
+          $source  = 'build/web'
+          $tempDir = 'build/web_temp'
+          if (Test-Path $tempDir) {
+            Remove-Item $tempDir -Recurse -Force
+          }
+          Copy-Item -Path "$source/*" -Destination $tempDir -Recurse -Force -Exclude '.env'
+          Compress-Archive -Path "$tempDir/*" -DestinationPath "build/Revelation-web-$version-$build.zip" -Force 
+          Remove-Item $tempDir -Recurse -Force
+
       - name: Build APK
         run: flutter build apk --release
 
@@ -160,20 +178,6 @@ jobs:
           $version = '${{ steps.extract_version_windows.outputs.version }}'
           $build = '${{ steps.extract_version_windows.outputs.build }}'
           Move-Item -Path 'build/windows/x64/runner/Release/revelation.msix' -Destination "build/windows/Revelation-windows-$version-$build.msix"
-
-      - name: Build web with secrets
-        run: |
-          flutter build web --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
-
-      - name: Zip Web Build
-        shell: pwsh
-        run: |
-          $version = '${{ steps.extract_version_windows.outputs.version }}'
-          $build   = '${{ steps.extract_version_windows.outputs.build }}'
-          $files = Get-ChildItem -Path 'build/web' -Recurse -File |
-             Where-Object { $_.Name -ne '.env' } |
-             ForEach-Object { $_.FullName }
-          Compress-Archive -Path $files -DestinationPath "build/Revelation-web-$version-$build.zip" -Force
 
       - name: Create GitHub Release
         id: create_release
