@@ -112,8 +112,9 @@ jobs:
           if (Test-Path $tempDir) {
             Remove-Item $tempDir -Recurse -Force
           }
-          Copy-Item -Path "$source/*" -Destination $tempDir -Recurse -Force -Exclude '.env'
-          Compress-Archive -Path "$tempDir/*" -DestinationPath "build/Revelation-web-$version-$build.zip" -Force 
+          New-Item -ItemType Directory -Path $tempDir | Out-Null
+          Copy-Item -Path "$source\*" -Destination $tempDir -Recurse -Force -Exclude '.env'
+          Compress-Archive -Path "$tempDir\*" -DestinationPath "build/Revelation-web-$version-$build.zip" -Force
           Remove-Item $tempDir -Recurse -Force
 
       - name: Build APK
