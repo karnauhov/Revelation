@@ -18,6 +18,10 @@ All notable changes to this application will be documented here.
 - Topic screen (support own links);
 - About screen (website, GitHub, release, pivacy policy, license, marketplaces, institution list);
 
+### Fixed
+
+- Opening mailto links;
+
 ## [1.0.0] - 29.03.25
 
 ### Added

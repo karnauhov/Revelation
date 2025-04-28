@@ -8,7 +8,8 @@ import 'package:logger/logger.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:styled_text/tags/styled_text_tag_widget_builder.dart';
 import 'package:styled_text/widgets/styled_text.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart'
+    show launchUrl, canLaunchUrl, LaunchMode;
 import 'package:xml/xml.dart';
 import '../app_router.dart';
 import '../models/topic_info.dart';
@@ -220,18 +221,56 @@ Future<List<TopicInfo>> parseTopics(AssetBundle bundle, String xmlPath) async {
   }
 }
 
-launchLink(String url) async {
+Future<bool> launchLink(String url) async {
   try {
+    if (url.toLowerCase().startsWith('mailto:')) {
+      final Uri emailUri = Uri.parse(url);
+
+      if (isWeb()) {
+        final launched = await launchUrl(
+          emailUri,
+          mode: LaunchMode.platformDefault,
+        );
+        if (!launched) {
+          showCustomDialog(MessageType.errorBrokenLink, param: url);
+        }
+        return launched;
+      } else {
+        if (!await canLaunchUrl(emailUri)) {
+          showCustomDialog(MessageType.errorBrokenLink, param: url);
+          return false;
+        }
+        final launched = await launchUrl(
+          emailUri,
+          mode: LaunchMode.externalApplication,
+        );
+        if (!launched) {
+          showCustomDialog(MessageType.errorBrokenLink, param: url);
+        }
+        return launched;
+      }
+    }
+
     final Uri uri = Uri.parse(url);
-    final bool launched =
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!await canLaunchUrl(uri)) {
+      showCustomDialog(MessageType.errorBrokenLink, param: url);
+      return false;
+    }
+    final launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
     if (!launched) {
       showCustomDialog(MessageType.errorBrokenLink, param: url);
     }
     return launched;
   } catch (e) {
-    showCustomDialog(MessageType.errorBrokenLink,
-        param: url, markdownExtension: e.toString());
+    showCustomDialog(
+      MessageType.errorBrokenLink,
+      param: url,
+      markdownExtension: e.toString(),
+    );
+    return false;
   }
 }
 

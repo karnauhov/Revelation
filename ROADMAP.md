@@ -17,18 +17,19 @@
 #### 1.0.1
 + Load the primary sources from the server.  
 + Implement a screen for a single primary source where you can select a fragment and view its image.  
-* Update the primary‐source images.  
++ Update some primary‐source images, obtain permissions.  
 * Expand the preface with reflections on the principles of studying the Bible by the Bible (reading, understanding, application).  
 + Publish on the Web (GitHub Pages under a custom domain).  
 + Publish to Microsoft Store.  
++ Fix the bug with opening mailto links.  
 
 #### 1.0.2
 - Improve the single‐source screen by adding more image‐editing tools: negative, contrast, brightness, color replacement, black-and-white filter, noise removal, and save changes.  
 - Enhance the preface with details on the 7 study stages for each passage (per the rule: reading, understanding, application).  
 - Publish on Flathub (Linux).  
+- Update some primary‐source images, obtain permissions.  
 - Revamp the entire UI in an “ancient manuscript” style using AI: logo, background, colors, fonts, icons, sounds, and music, banners. Study [Material Theme Builder](https://material-foundation.github.io/material-theme-builder) and [M3 Guidelines](https://m3.material.io).  
 - Add background music (loaded from storage) and a toggle in settings to disable it.  
-- Fix the bug with opening mailto links.  
 
 #### 1.0.3
 - Add advanced image‐processing tools: color search and outlining, edge highlighting, recognition, and AI-based text detectors.  

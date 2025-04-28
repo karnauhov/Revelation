@@ -122,19 +122,16 @@ class _TopicScreenState extends State<TopicScreen> {
   void _onTapHandle(
       BuildContext context, String text, String? href, String title) {
     if (href != null) {
-      if (href.startsWith("http") || href.startsWith("mailto")) {
-        // Real link
-        launchLink(href);
-      } else {
+      if (href.startsWith("data:")) {
         // Own inner link
         final address = href.split(".");
         if (address.isNotEmpty) {
           switch (address[0]) {
-            case "about":
+            case "data:about":
               Navigator.pop(context);
               context.push('/about');
               break;
-            case "sources":
+            case "data:sources":
               Navigator.pop(context);
               context.push('/primary_sources');
               break;
@@ -142,6 +139,9 @@ class _TopicScreenState extends State<TopicScreen> {
               break;
           }
         }
+      } else {
+        // Real link
+        launchLink(href);
       }
     }
   }
