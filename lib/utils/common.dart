@@ -14,9 +14,9 @@ import '../app_router.dart';
 import '../models/topic_info.dart';
 import '../models/library_info.dart';
 import '../models/institution_info.dart';
-import 'dependent.dart';
+import 'dependent.dart' as dep;
 
-final log = Logger();
+final log = Logger(printer: SimplePrinter());
 
 bool isDesktop() {
   return [TargetPlatform.windows, TargetPlatform.linux, TargetPlatform.macOS]
@@ -34,6 +34,14 @@ bool isLocalWeb() {
   }
   final host = Uri.base.host;
   return host == 'localhost' || host == '127.0.0.1';
+}
+
+bool isMobileBrowser() {
+  return dep.isMobileBrowser();
+}
+
+Future<int> fetchMaxTextureSize() {
+  return dep.fetchMaxTextureSize();
 }
 
 TargetPlatform getPlatform() {
@@ -55,7 +63,7 @@ String getSystemLanguage() {
   String language = 'en';
   try {
     if (isWeb()) {
-      language = getPlatformLanguage();
+      language = dep.getPlatformLanguage();
     } else {
       final localeName = Platform.localeName;
       final parts = localeName.split('_');

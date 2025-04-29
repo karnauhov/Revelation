@@ -22,6 +22,7 @@ All notable changes to this application will be documented here.
 
 - Opening mailto links;
 - Opening custom dialog;
+- Mobile browser limits (MAX_TEXTURE_SIZE);
 
 ## [1.0.0] - 29.03.25
 
