@@ -10,6 +10,6 @@ The Book of Revelation is a book for all Christians. Jesus Christ Himself delive
 
 ## Principles
 
-...
+When studying the Book of Revelation, it is wise to adhere to the principle set forth in Rev. 1:3. This verse highlights three key stages of engaging with the text: **reading, hearing, and keeping**. Following this advice will contribute to a better understanding of the complex prophecies of Revelation, as it is essentially a general approach to studying the Holy Scripture.
 
 ![banner](resource:assets/images/Topics/banner_preface.png)
