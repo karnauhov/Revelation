@@ -1310,12 +1310,12 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Courtesy of The Egypt Exploration Society",
+              "text": "📜 Courtesy of The Egypt Exploration Society",
               "url":
                   "https://www.ees.ac.uk/collections/reproduction-requests-and-fees.html"
             },
             {
-              "text": "and the Faculty of Classics (📜 University of Oxford)",
+              "text": "and the Faculty of Classics (University of Oxford)",
               "url":
                   "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4499_Revelation_II_1-3_13-15_27-29_III_10-12_V_8-9_VI_5-6_VIII_3-8_11-IX_5_7-16_18-X_4_8-XI_5_8-15_18-XII_5_8-10_12-17_XIII_1-3_6-16_18-XIV_3_5-7_10-11_14-15_18-XV_1_4-7/21178999"
             },
@@ -1553,12 +1553,12 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "Courtesy of The Egypt Exploration Society",
+              "text": "📜 Courtesy of The Egypt Exploration Society",
               "url":
                   "https://www.ees.ac.uk/collections/reproduction-requests-and-fees.html"
             },
             {
-              "text": "and the Faculty of Classics (📜 University of Oxford)",
+              "text": "and the Faculty of Classics (University of Oxford)",
               "url":
                   "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4500_Revelation_XI_15-16_17-18/21179002"
             },
