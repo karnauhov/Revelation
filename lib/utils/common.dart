@@ -301,14 +301,13 @@ void showCustomDialog(MessageType type,
     builder: (BuildContext dialogContext) {
       return AlertDialog(
         title: Center(
-          child: Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
             ),
+            textAlign: TextAlign.center,
           ),
         ),
         content: Column(
@@ -316,31 +315,26 @@ void showCustomDialog(MessageType type,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
-              mainAxisSize: MainAxisSize.max,
               children: [
                 SvgPicture.asset(
                   icon,
                   width: 48,
                   height: 48,
                 ),
-                SizedBox(width: 10.0),
+                const SizedBox(width: 10.0),
                 Expanded(
                   child: Text(
                     message,
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                    ),
+                    style: const TextStyle(fontSize: 18.0),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
-            if (additional != "")
+            const SizedBox(height: 10),
+            if (additional.isNotEmpty)
               ExpansionTile(
                 title: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: 300.0,
-                  ),
+                  constraints: const BoxConstraints(minWidth: 300.0),
                   child: Row(
                     children: [
                       SvgPicture.asset(
@@ -348,7 +342,7 @@ void showCustomDialog(MessageType type,
                         width: 24,
                         height: 24,
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Text(
                         AppLocalizations.of(context)!.more_information,
                         style: Theme.of(context)
@@ -360,15 +354,13 @@ void showCustomDialog(MessageType type,
                   ),
                 ),
                 children: [MarkdownBody(data: additional)],
-              )
+              ),
           ],
         ),
-        actions: <Widget>[
+        actions: [
           TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
             child: Text(AppLocalizations.of(context)!.close),
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-            },
           ),
         ],
       );
