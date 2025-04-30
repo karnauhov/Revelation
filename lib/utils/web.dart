@@ -16,6 +16,10 @@ bool isMobileBrowser() {
   return (touches) > 0;
 }
 
+String getUserAgent() {
+  return window.navigator.userAgent;
+}
+
 Future<int> fetchMaxTextureSize() async {
   int result = await WebGLInterop.fetchMaxTextureSize();
   return result;

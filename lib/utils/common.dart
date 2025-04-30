@@ -16,7 +16,12 @@ import '../models/library_info.dart';
 import '../models/institution_info.dart';
 import 'dependent.dart' as dep;
 
-final log = Logger(printer: SimplePrinter());
+class AlwaysLogFilter extends LogFilter {
+  @override
+  bool shouldLog(LogEvent event) => true;
+}
+
+final log = Logger(printer: SimplePrinter(), filter: AlwaysLogFilter());
 
 bool isDesktop() {
   return [TargetPlatform.windows, TargetPlatform.linux, TargetPlatform.macOS]
@@ -38,6 +43,10 @@ bool isLocalWeb() {
 
 bool isMobileBrowser() {
   return dep.isMobileBrowser();
+}
+
+String getUserAgent() {
+  return dep.getUserAgent();
 }
 
 Future<int> fetchMaxTextureSize() {

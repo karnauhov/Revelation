@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:typed_data' as ui;
+import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:revelation/models/page.dart' as model;
@@ -19,9 +22,32 @@ class PrimarySourceViewModel extends ChangeNotifier {
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
       const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false));
 
+  late final bool _isWeb;
+  late final bool _isMobileWeb;
+  late final int _maxTextureSize;
+
   PrimarySourceViewModel({required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
     imageController.transformationController.addListener(_updateZoomStatus);
+
+    // Check for mobile web environment and fetch texture limits
+    _isWeb = isWeb();
+    if (_isWeb) {
+      _isMobileWeb = isMobileBrowser();
+      fetchMaxTextureSize().then((size) {
+        _maxTextureSize = size;
+        if (_isMobileWeb) {
+          log.w(
+              "A mobile browser with max texture size of $_maxTextureSize was detected.");
+        } else {
+          log.i(
+              "A browser with max texture size of $_maxTextureSize was detected.");
+        }
+      });
+    } else {
+      _isMobileWeb = false;
+      _maxTextureSize = 0;
+    }
 
     if (primarySource.pages.isNotEmpty && primarySource.permissionsReceived) {
       selectedPage = primarySource.pages.first;
@@ -31,7 +57,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   Future<void> checkLocalPages() async {
-    if (isWeb()) {
+    if (_isWeb) {
       for (var page in primarySource.pages) {
         localPageLoaded[page.image] = null;
       }
@@ -49,8 +75,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    if (isWeb()) {
+    if (_isWeb) {
       final downloaded = await _downloadImage(page, false);
+      // Transform imageData for mobile browsers if necessary
+      if (downloaded && imageData != null) {
+        imageData = await _transformImageDataForMobileBrowser(imageData!);
+      }
       localPageLoaded[page] = downloaded;
     } else {
       final localFilePath = await _getLocalFilePath(page);
@@ -121,6 +151,46 @@ class PrimarySourceViewModel extends ChangeNotifier {
     } catch (e) {
       log.e('Image save error: $e');
     }
+  }
+
+  /// Resizes [data] if running in a mobile browser to fit within GPU texture limits,
+  /// preserving aspect ratio.
+  Future<Uint8List> _transformImageDataForMobileBrowser(Uint8List data) async {
+    if (!(_isMobileWeb && _maxTextureSize > 0)) return data;
+    // Decode the image
+    final ui.Codec codec = await ui.instantiateImageCodec(data);
+    final ui.FrameInfo frame = await codec.getNextFrame();
+    final ui.Image image = frame.image;
+    final int width = image.width;
+    final int height = image.height;
+
+    // Calculate scaling ratio
+    final int maxDim = _maxTextureSize;
+    final double ratio = math.min(maxDim / width, maxDim / height);
+    if (ratio >= 1.0) {
+      return data;
+    }
+
+    final int targetWidth = (width * ratio).floor();
+    final int targetHeight = (height * ratio).floor();
+    log.w(
+        "Resizing the image to not exceed the maximum texture size. It was $width x $height, now it will be $targetWidth x $targetHeight.");
+
+    // Draw to new canvas
+    final ui.PictureRecorder recorder = ui.PictureRecorder();
+    final ui.Canvas canvas = ui.Canvas(recorder);
+    final ui.Paint paint = ui.Paint();
+    canvas.drawImageRect(
+      image,
+      ui.Rect.fromLTWH(0, 0, width.toDouble(), height.toDouble()),
+      ui.Rect.fromLTWH(0, 0, targetWidth.toDouble(), targetHeight.toDouble()),
+      paint,
+    );
+    final ui.Image resized =
+        await recorder.endRecording().toImage(targetWidth, targetHeight);
+    final ui.ByteData? bytes =
+        await resized.toByteData(format: ui.ImageByteFormat.png);
+    return bytes!.buffer.asUint8List();
   }
 
   void _updateZoomStatus() {

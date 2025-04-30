@@ -17,7 +17,9 @@ import 'app_router.dart';
 
 void main() async {
   if (isWeb()) {
-    log.d("Started on web");
+    final userAgent = getUserAgent();
+    final mobileBrowser = isMobileBrowser() ? " (mobile browser)" : "";
+    log.d("Started on web '$userAgent'$mobileBrowser");
   } else {
     log.d("Started on ${getPlatform()}");
   }
