@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data' as ui;
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,7 +23,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   late final bool _isWeb;
   late final bool _isMobileWeb;
-  late final int _maxTextureSize;
+  int _maxTextureSize = 4096;
 
   PrimarySourceViewModel({required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
@@ -32,10 +31,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
     // Check for mobile web environment and fetch texture limits
     _isWeb = isWeb();
+    _isMobileWeb = _isWeb && isMobileBrowser();
+
     if (_isWeb) {
-      _isMobileWeb = isMobileBrowser();
       fetchMaxTextureSize().then((size) {
-        _maxTextureSize = size;
+        _maxTextureSize = size > 0 ? size : 4096;
         if (_isMobileWeb) {
           log.w(
               "A mobile browser with max texture size of $_maxTextureSize was detected.");
@@ -45,7 +45,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
         }
       });
     } else {
-      _isMobileWeb = false;
       _maxTextureSize = 0;
     }
 
@@ -156,7 +155,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
   /// Resizes [data] if running in a mobile browser to fit within GPU texture limits,
   /// preserving aspect ratio.
   Future<Uint8List> _transformImageDataForMobileBrowser(Uint8List data) async {
-    if (!(_isMobileWeb && _maxTextureSize > 0)) return data;
+    if (!(_isMobileWeb && _maxTextureSize > 0)) {
+      return data;
+    }
+
     // Decode the image
     final ui.Codec codec = await ui.instantiateImageCodec(data);
     final ui.FrameInfo frame = await codec.getNextFrame();
@@ -165,7 +167,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     final int height = image.height;
 
     // Calculate scaling ratio
-    final int maxDim = _maxTextureSize;
+    final int maxDim = (_maxTextureSize * 0.9).floor();
     final double ratio = math.min(maxDim / width, maxDim / height);
     if (ratio >= 1.0) {
       return data;
@@ -174,7 +176,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     final int targetWidth = (width * ratio).floor();
     final int targetHeight = (height * ratio).floor();
     log.w(
-        "Resizing the image to not exceed the maximum texture size. It was $width x $height, now it will be $targetWidth x $targetHeight.");
+        "Resizing image from $width x $height to $targetWidth x $targetHeight (max: $maxDim)");
 
     // Draw to new canvas
     final ui.PictureRecorder recorder = ui.PictureRecorder();
@@ -188,9 +190,15 @@ class PrimarySourceViewModel extends ChangeNotifier {
     );
     final ui.Image resized =
         await recorder.endRecording().toImage(targetWidth, targetHeight);
-    final ui.ByteData? bytes =
+    final ByteData? bytes =
         await resized.toByteData(format: ui.ImageByteFormat.png);
-    return bytes!.buffer.asUint8List();
+
+    if (bytes == null) {
+      log.e("Failed to encode resized image");
+      return data;
+    }
+
+    return bytes.buffer.asUint8List();
   }
 
   void _updateZoomStatus() {
