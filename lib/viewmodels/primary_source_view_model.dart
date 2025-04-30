@@ -167,7 +167,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     final int height = image.height;
 
     // Calculate scaling ratio
-    final int maxDim = (_maxTextureSize * 0.9).floor();
+    final int maxDim = (_maxTextureSize * 0.75).floor();
     final double ratio = math.min(maxDim / width, maxDim / height);
     if (ratio >= 1.0) {
       return data;
