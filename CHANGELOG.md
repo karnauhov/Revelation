@@ -2,12 +2,13 @@
 
 All notable changes to this application will be documented here.
 
-## [1.0.1] - In process
+## [1.0.1](https://github.com/karnauhov/Revelation/releases/tag/v1.0.1%2B69) - 02.05.25
 
 ### Added
 
 - Support platforms: [Web](https://www.revelation.website), [Windows](https://apps.microsoft.com/detail/9NXHRR2P4087);
 - Primary Source screen (page list, redownload button, scale buttons, toolbar menu, page image area, attributes);
+- Download screen (for web);
 - Obtain permissions to use images from the organizations that own the manuscripts and their images;
 - Upload primary-source images to supabase.com (01, 04, 0163, 0169, 0308, P18, P24, P47, P115);
 - Prepared images for mobile browsers (resized to max any side 4096)
@@ -25,7 +26,7 @@ All notable changes to this application will be documented here.
 - Opening custom dialog;
 - Mobile browser limits (MAX_TEXTURE_SIZE);
 
-## [1.0.0] - 29.03.25
+## [1.0.0](https://github.com/karnauhov/Revelation/releases/tag/v1.0.0%2B27) - 29.03.25
 
 ### Added
 

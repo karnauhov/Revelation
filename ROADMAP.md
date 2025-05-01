@@ -17,11 +17,11 @@
 #### 1.0.1
 + Load the primary sources from the server.  
 + Implement a screen for a single primary source where you can select a fragment and view its image.  
++ Implement a screen for download app for different platforms.  
 + Update some primary‐source images, obtain permissions.  
-* Expand the preface with reflections on the principles of studying the Bible by the Bible (reading, understanding, application).  
++ Expand the preface with reflections on the principles of studying the Bible by the Bible (reading, understanding, application).  
 + Publish on the Web (GitHub Pages under a custom domain).  
 + Publish to Microsoft Store.  
-+ Fix the bug with opening mailto links.  
 
 #### 1.0.2
 - Improve the single‐source screen by adding more image‐editing tools: negative, contrast, brightness, color replacement, black-and-white filter, noise removal, and save changes.  
