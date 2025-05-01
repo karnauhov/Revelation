@@ -397,6 +397,18 @@ abstract class AppLocalizations {
   /// **'Image not loaded'**
   String get image_not_loaded;
 
+  /// No description provided for @low_quality.
+  ///
+  /// In en, this message translates to:
+  /// **'Low quality'**
+  String get low_quality;
+
+  /// No description provided for @low_quality_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile browsers use low-quality images. To view them in full resolution, install the app or view the page on desktop.'**
+  String get low_quality_message;
+
   /// No description provided for @reload_image.
   ///
   /// In en, this message translates to:

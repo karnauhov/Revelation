@@ -98,7 +98,21 @@ class PrimarySourceScreen extends StatelessWidget {
                       child: Text.rich(
                         TextSpan(
                           style: theme.bodySmall!.copyWith(fontSize: 10),
-                          children: _buildLinkSpans(primarySource.attributes!),
+                          children: [
+                            if (viewModel.isMobileWeb)
+                              TextSpan(
+                                text:
+                                    '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
+                                style: const TextStyle(color: Colors.blue),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    showCustomDialog(MessageType.warningCommon,
+                                        param: AppLocalizations.of(context)!
+                                            .low_quality_message);
+                                  },
+                              ),
+                            ..._buildLinkSpans(primarySource.attributes!),
+                          ],
                         ),
                         maxLines: 5,
                         softWrap: true,

@@ -50,6 +50,8 @@
   "choose_page": "Choose page",
   "images_are_missing": "Images are missing",
   "image_not_loaded": "Image not loaded",
+  "low_quality": "Low quality",
+  "low_quality_message": "Mobile browsers use low-quality images. To view them in full resolution, install the app or view the page on desktop.",
   "reload_image": "Reload image",
   "zoom_in": "Zoom in",
   "zoom_out": "Zoom out",

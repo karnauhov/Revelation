@@ -10,6 +10,7 @@ All notable changes to this application will be documented here.
 - Primary Source screen (page list, redownload button, scale buttons, toolbar menu, page image area, attributes);
 - Obtain permissions to use images from the organizations that own the manuscripts and their images;
 - Upload primary-source images to supabase.com (01, 04, 0163, 0169, 0308, P18, P24, P47, P115);
+- Prepared images for mobile browsers (resize to max 4096, quality 75%, non progressive, method DCT float)
 - Topic screen (principles);
 
 ### Changed
