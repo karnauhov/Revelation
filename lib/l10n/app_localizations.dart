@@ -400,13 +400,13 @@ abstract class AppLocalizations {
   /// No description provided for @low_quality.
   ///
   /// In en, this message translates to:
-  /// **'Low quality'**
+  /// **'Quality reduced'**
   String get low_quality;
 
   /// No description provided for @low_quality_message.
   ///
   /// In en, this message translates to:
-  /// **'Mobile browsers use low-quality images. To view them in full resolution, install the app or view the page on desktop.'**
+  /// **'A lower-quality image is used in the mobile browser. To view in maximum quality, install the app or open the page on a computer.'**
   String get low_quality_message;
 
   /// No description provided for @reload_image.

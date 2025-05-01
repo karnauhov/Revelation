@@ -159,10 +159,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get image_not_loaded => 'Image not loaded';
 
   @override
-  String get low_quality => 'Low quality';
+  String get low_quality => 'Quality reduced';
 
   @override
-  String get low_quality_message => 'Mobile browsers use low-quality images. To view them in full resolution, install the app or view the page on desktop.';
+  String get low_quality_message => 'A lower-quality image is used in the mobile browser. To view in maximum quality, install the app or open the page on a computer.';
 
   @override
   String get reload_image => 'Reload image';

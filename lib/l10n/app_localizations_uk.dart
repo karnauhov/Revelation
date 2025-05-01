@@ -159,10 +159,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get image_not_loaded => 'Зображення не завантажено';
 
   @override
-  String get low_quality => 'Низька якість';
+  String get low_quality => 'Якість знижено';
 
   @override
-  String get low_quality_message => 'У мобільному браузері використовується зображення низької якості. Для перегляду в максимальній якості встановіть додаток або відкрийте сторінку на комп’ютері.';
+  String get low_quality_message => 'У мобільному браузері використовується зображення зниженої якості. Щоб переглянути в максимальній якості, встановіть застосунок або відкрийте сторінку на комп’ютері.';
 
   @override
   String get reload_image => 'Перезавантажити зображення';
