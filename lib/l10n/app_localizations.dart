@@ -217,17 +217,35 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings_screen;
 
+  /// No description provided for @settings_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving automatically'**
+  String get settings_header;
+
   /// No description provided for @about_screen.
   ///
   /// In en, this message translates to:
   /// **'About'**
   String get about_screen;
 
+  /// No description provided for @about_header.
+  ///
+  /// In en, this message translates to:
+  /// **'General Information About the Application'**
+  String get about_header;
+
   /// No description provided for @download.
   ///
   /// In en, this message translates to:
   /// **'Download'**
   String get download;
+
+  /// No description provided for @download_header.
+  ///
+  /// In en, this message translates to:
+  /// **'It is recommended to install the application for your platform'**
+  String get download_header;
 
   /// No description provided for @error_loading_libraries.
   ///

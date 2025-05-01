@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/screens/about/icon_url.dart';
-import 'about_link_item.dart';
+import '../../common_widgets/icon_link_item.dart';
 import 'library_list.dart';
 import 'institution_list.dart';
 import '../../viewmodels/about_view_model.dart';
@@ -14,8 +14,7 @@ import '../../utils/common.dart';
 import '../../utils/app_constants.dart';
 
 class AboutScreen extends StatefulWidget {
-  final bool scrollToStores;
-  const AboutScreen({super.key, this.scrollToStores = false});
+  const AboutScreen({super.key});
 
   @override
   State<AboutScreen> createState() => _AboutScreenState();
@@ -23,10 +22,8 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen> {
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _marketplacesKey = GlobalKey();
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
-  bool _didScroll = false;
 
   @override
   void dispose() {
@@ -46,20 +43,6 @@ class _AboutScreenState extends State<AboutScreen> {
             );
           }
 
-          if (widget.scrollToStores && !_didScroll) {
-            _didScroll = true;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              final targetContext = _marketplacesKey.currentContext;
-              if (targetContext != null) {
-                Scrollable.ensureVisible(
-                  targetContext,
-                  duration: const Duration(milliseconds: 300),
-                  alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
-                );
-              }
-            });
-          }
-
           Widget content = SafeArea(
             child: SingleChildScrollView(
               controller: _scrollController,
@@ -77,11 +60,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   const SizedBox(height: 4),
                   const Divider(height: 1),
                   // Marketplaces
-                  if (isWeb())
-                    Container(
-                      key: _marketplacesKey,
-                      child: _buildMarketplaces(context),
-                    ),
+                  if (isWeb()) _buildMarketplaces(context),
                   if (isWeb()) const Divider(height: 1),
                   // Contacts Links
                   _buildContactsLinks(context),
@@ -99,11 +78,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   _buildChangelog(context, viewModel),
                   if (!viewModel.isChangelogExpanded) const Divider(height: 1),
                   // Marketplaces
-                  if (!isWeb())
-                    Container(
-                      key: _marketplacesKey,
-                      child: _buildMarketplaces(context),
-                    ),
+                  if (!isWeb()) _buildMarketplaces(context),
                   if (!isWeb()) const Divider(height: 1),
                   // Copyright
                   Center(
@@ -155,7 +130,25 @@ class _AboutScreenState extends State<AboutScreen> {
 
           return Scaffold(
             appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.about_screen),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.about_screen,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.about_header,
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(fontWeight: FontWeight.normal),
+                  ),
+                ],
+              ),
             ),
             body: content,
           );
@@ -199,17 +192,17 @@ class _AboutScreenState extends State<AboutScreen> {
   Widget _buildContactsLinks(BuildContext context) {
     return Column(
       children: [
-        AboutLinkItem(
+        IconLinkItem(
           iconPath: "assets/images/UI/email.svg",
           text: AppConstants.supportEmail,
           onTap: () => launchLink("mailto:${AppConstants.supportEmail}"),
         ),
-        AboutLinkItem(
+        IconLinkItem(
           iconPath: "assets/images/UI/www.svg",
           text: AppLocalizations.of(context)!.website,
           onTap: () => launchLink(AppConstants.websiteUrl),
         ),
-        AboutLinkItem(
+        IconLinkItem(
           iconPath: "assets/images/UI/github.svg",
           text: AppLocalizations.of(context)!.github_project,
           onTap: () => launchLink(AppConstants.projectUrl),
@@ -221,12 +214,12 @@ class _AboutScreenState extends State<AboutScreen> {
   Widget _buildLegalLinks(BuildContext context) {
     return Column(
       children: [
-        AboutLinkItem(
+        IconLinkItem(
           iconPath: "assets/images/UI/download.svg",
           text: AppLocalizations.of(context)!.installation_packages,
           onTap: () => launchLink(AppConstants.latestReleaseUrl),
         ),
-        AboutLinkItem(
+        IconLinkItem(
           iconPath: "assets/images/UI/shield.svg",
           text: AppLocalizations.of(context)!.privacy_policy,
           onTap: () => context.push('/topic', extra: {
@@ -236,7 +229,7 @@ class _AboutScreenState extends State<AboutScreen> {
             'file': "privacy_policy"
           }),
         ),
-        AboutLinkItem(
+        IconLinkItem(
           iconPath: "assets/images/UI/agreement.svg",
           text: AppLocalizations.of(context)!.license,
           onTap: () => context.push('/topic', extra: {

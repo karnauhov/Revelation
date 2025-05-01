@@ -100,8 +100,7 @@ class _DrawerContentState extends State<DrawerContent> {
                         text: AppLocalizations.of(context)!.download,
                         onClick: () {
                           Navigator.pop(context);
-                          context
-                              .push('/about', extra: {'scrollToStores': true});
+                          context.push('/download');
                         },
                       ),
                   ],

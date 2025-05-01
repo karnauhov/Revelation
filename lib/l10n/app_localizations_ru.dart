@@ -69,10 +69,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings_screen => 'Настройки';
 
   @override
+  String get settings_header => 'Сохраняются автоматически';
+
+  @override
   String get about_screen => 'О программе';
 
   @override
+  String get about_header => 'Общая информация о приложении';
+
+  @override
   String get download => 'Скачать';
+
+  @override
+  String get download_header => 'Рекомендуется установить приложение для вашей платформы';
 
   @override
   String get error_loading_libraries => 'Ошибка загрузки библиотек';

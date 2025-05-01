@@ -69,10 +69,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_screen => 'Settings';
 
   @override
+  String get settings_header => 'Saving automatically';
+
+  @override
   String get about_screen => 'About';
 
   @override
+  String get about_header => 'General Information About the Application';
+
+  @override
   String get download => 'Download';
+
+  @override
+  String get download_header => 'It is recommended to install the application for your platform';
 
   @override
   String get error_loading_libraries => 'Error loading libraries';

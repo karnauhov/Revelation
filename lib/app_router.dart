@@ -6,6 +6,7 @@ import 'package:revelation/screens/primary_source/primary_source_screen.dart';
 import 'package:revelation/screens/primary_sources/primary_sources_screen.dart';
 import 'package:revelation/screens/settings/settings_screen.dart';
 import 'package:revelation/screens/about/about_screen.dart';
+import 'package:revelation/screens/download/download_screen.dart';
 import 'screens/main/main_screen.dart';
 import 'screens/topic/topic_screen.dart';
 
@@ -88,15 +89,20 @@ class AppRouter {
       GoRoute(
         path: '/about',
         name: 'about',
-        pageBuilder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>?;
-          final scrollToStores = extra?['scrollToStores'] == true;
-          return buildPageWithDefaultTransition<void>(
-            context: context,
-            state: state,
-            child: AboutScreen(scrollToStores: scrollToStores),
-          );
-        },
+        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
+          context: context,
+          state: state,
+          child: AboutScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/download',
+        name: 'download',
+        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
+          context: context,
+          state: state,
+          child: DownloadScreen(),
+        ),
       ),
     ],
   );

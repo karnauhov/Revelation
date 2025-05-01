@@ -69,10 +69,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settings_screen => 'Налаштування';
 
   @override
+  String get settings_header => 'Зберігаються автоматично';
+
+  @override
   String get about_screen => 'Про програму';
 
   @override
+  String get about_header => 'Загальна інформація про застосунок';
+
+  @override
   String get download => 'Завантажити';
+
+  @override
+  String get download_header => 'Рекомендується встановити застосунок для вашої платформи';
 
   @override
   String get error_loading_libraries => 'Помилка завантаження бібліотек';

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class AboutLinkItem extends StatelessWidget {
+class IconLinkItem extends StatelessWidget {
   final String iconPath;
   final String text;
   final VoidCallback onTap;
 
-  const AboutLinkItem({
+  const IconLinkItem({
     super.key,
     required this.iconPath,
     required this.text,

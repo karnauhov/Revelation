@@ -17,7 +17,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final settingsViewModel = Provider.of<SettingsViewModel>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings_screen),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppLocalizations.of(context)!.settings_screen,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              AppLocalizations.of(context)!.settings_header,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall
+                  ?.copyWith(fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
       ),
       body: ListView(
         children: [
