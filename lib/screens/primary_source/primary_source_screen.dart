@@ -80,6 +80,7 @@ class PrimarySourceScreen extends StatelessWidget {
                               ? ImagePreview(
                                   imageData: viewModel.imageData!,
                                   controller: viewModel.imageController,
+                                  isNegative: viewModel.isNegative,
                                 )
                               : Center(
                                   child: Text(AppLocalizations.of(context)!
@@ -253,6 +254,19 @@ class PrimarySourceScreen extends StatelessWidget {
           );
         },
       ),
+      IconButton(
+        icon: Icon(
+          Icons.invert_colors,
+          color: viewModel.isNegative
+              ? Theme.of(context).colorScheme.secondary
+              : null,
+        ),
+        tooltip: AppLocalizations.of(context)!.toggle_negative,
+        onPressed: viewModel.primarySource.permissionsReceived &&
+                viewModel.selectedPage != null
+            ? () => viewModel.toggleNegative()
+            : null,
+      ),
     ];
   }
 
@@ -325,6 +339,9 @@ class PrimarySourceScreen extends StatelessWidget {
                     viewModel.imageController.backToMinScale();
                   }
                   break;
+                case 'toggle_negative':
+                  viewModel.toggleNegative();
+                  break;
               }
             },
             itemBuilder: (context) => <PopupMenuEntry<String>>[
@@ -374,6 +391,14 @@ class PrimarySourceScreen extends StatelessWidget {
                     Text(AppLocalizations.of(context)!.restore_original_scale),
                   ],
                 ),
+              ),
+              const PopupMenuDivider(),
+              CheckedPopupMenuItem(
+                value: 'toggle_negative',
+                enabled: viewModel.selectedPage != null &&
+                    viewModel.primarySource.permissionsReceived,
+                checked: viewModel.isNegative,
+                child: Text(AppLocalizations.of(context)!.toggle_negative),
               ),
             ],
           );

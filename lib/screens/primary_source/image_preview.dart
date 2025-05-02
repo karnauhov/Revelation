@@ -3,13 +3,22 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 
+const invertMatrix = <double>[
+  -1, 0, 0, 0, 255, // R = 255 - R
+  0, -1, 0, 0, 255, // G = 255 - G
+  0, 0, -1, 0, 255, // B = 255 - B
+  0, 0, 0, 1, 0, // A = A
+];
+
 class ImagePreview extends StatefulWidget {
   final Uint8List imageData;
   final ImagePreviewController controller;
+  final bool isNegative;
 
   const ImagePreview({
     required this.imageData,
     required this.controller,
+    required this.isNegative,
     super.key,
   });
 
@@ -34,6 +43,14 @@ class ImagePreviewState extends State<ImagePreview> {
         widget.controller.setImageSize(widget.controller.imageSize!,
             constraints.maxWidth, constraints.maxHeight);
 
+        Widget imageWidget = Image.memory(widget.imageData);
+        if (widget.isNegative) {
+          imageWidget = ColorFiltered(
+            colorFilter: const ColorFilter.matrix(invertMatrix),
+            child: imageWidget,
+          );
+        }
+
         return MouseRegion(
           cursor: SystemMouseCursors.grab,
           child: InteractiveViewer(
@@ -43,7 +60,7 @@ class ImagePreviewState extends State<ImagePreview> {
             maxScale: widget.controller.maxScale,
             constrained: false,
             child: Center(
-              child: Image.memory(widget.imageData),
+              child: imageWidget,
             ),
           ),
         );

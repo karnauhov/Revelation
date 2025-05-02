@@ -451,6 +451,12 @@ abstract class AppLocalizations {
   /// **'Original scale'**
   String get restore_original_scale;
 
+  /// No description provided for @toggle_negative.
+  ///
+  /// In en, this message translates to:
+  /// **'Negative'**
+  String get toggle_negative;
+
   /// No description provided for @papyrus_18_title.
   ///
   /// In en, this message translates to:

@@ -2,6 +2,12 @@
 
 All notable changes to this application will be documented here.
 
+## [1.0.2] - Under development
+
+### Added
+
+- Improved the Primary Source screen by adding more image‐editing tools: negative, ...
+
 ## [1.0.1](https://github.com/karnauhov/Revelation/releases/tag/v1.0.1%2B69) - 02.05.25
 
 ### Added

@@ -186,6 +186,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restore_original_scale => 'Original scale';
 
   @override
+  String get toggle_negative => 'Negative';
+
+  @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';
 
   @override

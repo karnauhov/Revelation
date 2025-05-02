@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.1+69
+version: 1.0.2+70
 
 environment:
   sdk: ^3.5.3
@@ -47,7 +47,7 @@ msix_config:
   publisher: CN=B37F48EC-C643-42C2-82FB-3DFB514F5E74
   languages: en, uk, ru
   store: true
-  msix_version: 1.0.1.0
+  msix_version: 1.0.2.0
   logo_path: .\assets\images\UI\app_icon.png
 
 flutter:

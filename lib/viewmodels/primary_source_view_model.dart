@@ -15,6 +15,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Uint8List? imageData;
   bool isLoading = false;
   bool refreshError = false;
+  bool isNegative = false;
   final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
@@ -107,6 +108,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (newPage != null) {
       loadImage(newPage.image);
     }
+  }
+
+  void toggleNegative() {
+    isNegative = !isNegative;
+    notifyListeners();
   }
 
   Future<String> _getLocalFilePath(String page) async {

@@ -24,7 +24,7 @@
 + Publish to Microsoft Store.  
 
 #### 1.0.2
-- Improve the single‐source screen by adding more image‐editing tools: negative, contrast, brightness, color replacement, black-and-white filter, noise removal, and save changes.  
+* Improve the Primary Source screen by adding more image‐editing tools: negative, contrast, brightness, color replacement, black-and-white filter, noise removal, and save changes.  
 - Enhance the preface with details on the 7 study stages for each passage (per the rule: reading, understanding, application).  
 - Publish on Flathub (Linux).  
 - Update some primary‐source images, obtain permissions.  

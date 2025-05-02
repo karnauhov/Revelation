@@ -1,8 +1,8 @@
 #define MyAppName "Revelation"
 #define MyAppCompany "Oleh Karnaukhov"
 #define MyAppFileName "revelation.exe"
-#define MyAppVersion "1.0.1"
-#define MyAppBuild "69"
+#define MyAppVersion "1.0.2"
+#define MyAppBuild "70"
 #define CurrentYear GetDateTimeString('yyyy', '', '')
 
 [Languages]
