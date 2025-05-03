@@ -17,6 +17,7 @@ class PrimarySourceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dropdownWidth = _calcPagesListWidth(context);
     TextTheme theme = Theme.of(context).textTheme;
     return ChangeNotifierProvider<PrimarySourceViewModel>(
       create: (_) => PrimarySourceViewModel(primarySource: primarySource),
@@ -31,7 +32,6 @@ class PrimarySourceScreen extends StatelessWidget {
           }
 
           final double screenWidth = MediaQuery.of(context).size.width;
-          final dropdownWidth = _calcPagesListWidth(context, viewModel);
           final bool isBottom = _isBottomToolbar(screenWidth, dropdownWidth);
 
           return Scaffold(
@@ -165,9 +165,7 @@ class PrimarySourceScreen extends StatelessWidget {
     return spans;
   }
 
-  double _calcPagesListWidth(
-      BuildContext context, PrimarySourceViewModel viewModel) {
-    // TODO Fix it
+  double _calcPagesListWidth(BuildContext context) {
     final itemStyle =
         Theme.of(context).textTheme.bodyMedium ?? TextStyle(fontSize: 16);
 
@@ -240,8 +238,8 @@ class PrimarySourceToolbar extends StatelessWidget {
   }
 
   int _calcFitButtons(double actionWidth) {
-    const double buttonCellWidth = 46.0;
-    const double startOffset = 48.0;
+    const double buttonCellWidth = 40.0;
+    const double startOffset = 80.0;
     final fit = ((actionWidth - startOffset) / buttonCellWidth).floor();
     return fit.clamp(0, PrimarySourceScreen.numButtons);
   }
@@ -253,7 +251,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         hint: Text(
           primarySource.pages.isEmpty || !primarySource.permissionsReceived
               ? AppLocalizations.of(context)!.images_are_missing
-              : AppLocalizations.of(context)!.choose_page,
+              : "",
         ),
         onChanged: (model.Page? newPage) {
           if (primarySource.permissionsReceived) {
