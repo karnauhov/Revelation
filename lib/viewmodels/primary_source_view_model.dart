@@ -139,7 +139,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
       } else {
         modifiedImage = image;
       }
-      log.d(modifiedImage);
       final supabase = Supabase.instance.client;
       final Uint8List fileBytes =
           await supabase.storage.from(repository).download(modifiedImage);
