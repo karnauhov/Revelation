@@ -16,6 +16,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool isLoading = false;
   bool refreshError = false;
   bool isNegative = false;
+  bool isMonochrome = false;
   final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
@@ -112,6 +113,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   void toggleNegative() {
     isNegative = !isNegative;
+    notifyListeners();
+  }
+
+  void toggleMonochrome() {
+    isMonochrome = !isMonochrome;
     notifyListeners();
   }
 

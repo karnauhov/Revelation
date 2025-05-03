@@ -27,6 +27,7 @@ class PrimarySourcesRepository {
               "https://ntvmr.uni-muenster.de/manuscript-workspace?docID=20001",
           preview: 'assets/images/PrimarySources/preview_20001.png',
           maxScale: 3,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "325v",
@@ -131,6 +132,7 @@ class PrimarySourcesRepository {
           link3Url: "https://manuscripts.csntm.org/Manuscript/Group/GA_02",
           preview: 'assets/images/PrimarySources/preview_20002.png',
           maxScale: 3,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "150r",
@@ -236,6 +238,7 @@ class PrimarySourcesRepository {
           link3Url: "https://digi.vatlib.it/view/MSS_Vat.gr.2066",
           preview: 'assets/images/PrimarySources/preview_20046.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "249r",
@@ -427,6 +430,7 @@ class PrimarySourcesRepository {
           link3Url: "https://viewer.cbl.ie/viewer/index",
           preview: 'assets/images/PrimarySources/preview_10047.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1r",
@@ -536,6 +540,7 @@ class PrimarySourcesRepository {
               "https://gallica.bnf.fr/ark:/12148/btv1b8470433r.r=Codex%20Ephraemi%20Rescriptus?rk=21459;2",
           preview: 'assets/images/PrimarySources/preview_20004.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "197r",
@@ -645,6 +650,7 @@ class PrimarySourcesRepository {
           link3Url: "",
           preview: 'assets/images/PrimarySources/preview_20025.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [],
           attributes: [
             {
@@ -672,6 +678,7 @@ class PrimarySourcesRepository {
           link3Url: "https://www.loc.gov/resource/amedmonastery.00271051554-ma",
           preview: 'assets/images/PrimarySources/preview_20051.png',
           maxScale: 3,
+          isMonochrome: true,
           pages: [
             model.Page(
                 name: "1",
@@ -1085,6 +1092,7 @@ class PrimarySourcesRepository {
           link3Url: "https://4care-skos.mf.no/4care-artefacts/298",
           preview: 'assets/images/PrimarySources/preview_10018.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1v",
@@ -1121,6 +1129,7 @@ class PrimarySourcesRepository {
           link3Url: "https://collections.library.yale.edu/catalog/17147600",
           preview: 'assets/images/PrimarySources/preview_10024.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1r",
@@ -1158,6 +1167,7 @@ class PrimarySourcesRepository {
           link3Url: "https://manuscripts.csntm.org/manuscript/View/GA_P43",
           preview: 'assets/images/PrimarySources/preview_10043.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1r",
@@ -1200,6 +1210,7 @@ class PrimarySourcesRepository {
               "https://ntvmr.uni-muenster.de/manuscript-workspace?docID=10085",
           preview: 'assets/images/PrimarySources/preview_10085.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1r",
@@ -1241,6 +1252,7 @@ class PrimarySourcesRepository {
               "https://www.academia.edu/13166007/Another_Look_at_P.IFAO_II_31_P98_An_Updated_Transcription_and_Textual_Analysis",
           preview: 'assets/images/PrimarySources/preview_10098.png',
           maxScale: 3,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1v",
@@ -1274,6 +1286,7 @@ class PrimarySourcesRepository {
               "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4499_Revelation_II_1-3_13-15_27-29_III_10-12_V_8-9_VI_5-6_VIII_3-8_11-IX_5_7-16_18-X_4_8-XI_5_8-15_18-XII_5_8-10_12-17_XIII_1-3_6-16_18-XIV_3_5-7_10-11_14-15_18-XV_1_4-7/21178999",
           preview: 'assets/images/PrimarySources/preview_10115.png',
           maxScale: 3,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1r",
@@ -1340,6 +1353,7 @@ class PrimarySourcesRepository {
           link3Url: "",
           preview: 'assets/images/PrimarySources/preview_20052.png',
           maxScale: 10,
+          isMonochrome: true,
           pages: [],
           attributes: [
             {
@@ -1369,6 +1383,7 @@ class PrimarySourcesRepository {
               "https://goodspeed.lib.uchicago.edu/view/index.php?doc=9351&obj=001",
           preview: 'assets/images/PrimarySources/preview_20163.png',
           maxScale: 3,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1",
@@ -1409,6 +1424,7 @@ class PrimarySourcesRepository {
           link3Url: "https://papyri.info/apis/pts.apis.5",
           preview: 'assets/images/PrimarySources/preview_20169.png',
           maxScale: 3,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1r",
@@ -1453,6 +1469,7 @@ class PrimarySourcesRepository {
           link3Url: "https://manuscripts.csntm.org/manuscript/View/GA_0207",
           preview: 'assets/images/PrimarySources/preview_20207.png',
           maxScale: 2,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1",
@@ -1494,6 +1511,7 @@ class PrimarySourcesRepository {
           link3Url: "https://psi-online.it/documents/psi;13;1296",
           preview: 'assets/images/PrimarySources/preview_20229.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1r",
@@ -1539,6 +1557,7 @@ class PrimarySourcesRepository {
               "https://portal.sds.ox.ac.uk/articles/online_resource/P_Oxy_LXVI_4500_Revelation_XI_15-16_17-18/21179002",
           preview: 'assets/images/PrimarySources/preview_20308.png',
           maxScale: 5,
+          isMonochrome: false,
           pages: [
             model.Page(
                 name: "1r",

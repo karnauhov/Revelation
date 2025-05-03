@@ -6,7 +6,7 @@ All notable changes to this application will be documented here.
 
 ### Added
 
-- Improved the Primary Source screen by adding more image‐editing tools: negative, ...
+- Improved the Primary Source screen by adding more image‐editing tools: negative, monochrome, ...
 
 ### Changed
 

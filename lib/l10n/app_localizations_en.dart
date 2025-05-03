@@ -189,6 +189,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toggle_negative => 'Negative';
 
   @override
+  String get toggle_monochrome => 'Monochrome';
+
+  @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';
 
   @override

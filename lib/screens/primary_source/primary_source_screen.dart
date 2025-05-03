@@ -11,7 +11,7 @@ import 'package:revelation/screens/primary_source/image_preview.dart';
 
 class PrimarySourceScreen extends StatelessWidget {
   final PrimarySource primarySource;
-  static final numButtons = 5;
+  static final numButtons = 6;
 
   const PrimarySourceScreen({required this.primarySource, super.key});
 
@@ -84,6 +84,7 @@ class PrimarySourceScreen extends StatelessWidget {
                                   imageData: viewModel.imageData!,
                                   controller: viewModel.imageController,
                                   isNegative: viewModel.isNegative,
+                                  isMonochrome: viewModel.isMonochrome,
                                 )
                               : Center(
                                   child: Text(AppLocalizations.of(context)!
@@ -356,6 +357,29 @@ class PrimarySourceToolbar extends StatelessWidget {
             ? () => viewModel.toggleNegative()
             : null,
       ),
+      IconButton(
+        icon: Icon(
+          Icons.monochrome_photos,
+          color: viewModel.isMonochrome
+              ? Theme.of(context).colorScheme.secondary
+              : null,
+        ),
+        style: IconButton.styleFrom(
+          backgroundColor: viewModel.isMonochrome
+              ? Theme.of(context)
+                  .colorScheme
+                  .secondary
+                  .withAlpha((0.2 * 255).round())
+              : Colors.transparent,
+          shape: const CircleBorder(),
+        ),
+        tooltip: AppLocalizations.of(context)!.toggle_monochrome,
+        onPressed: viewModel.primarySource.permissionsReceived &&
+                viewModel.selectedPage != null &&
+                !viewModel.primarySource.isMonochrome
+            ? () => viewModel.toggleMonochrome()
+            : null,
+      ),
     ];
   }
 
@@ -414,7 +438,17 @@ class PrimarySourceToolbar extends StatelessWidget {
                     }
                     break;
                   case 'toggle_negative':
-                    viewModel.toggleNegative();
+                    if (viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived) {
+                      viewModel.toggleNegative();
+                    }
+                    break;
+                  case 'toggle_monochrome':
+                    if (viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived &&
+                        !viewModel.primarySource.isMonochrome) {
+                      viewModel.toggleMonochrome();
+                    }
                     break;
                 }
               },
@@ -480,6 +514,16 @@ class PrimarySourceToolbar extends StatelessWidget {
                         viewModel.primarySource.permissionsReceived,
                     checked: viewModel.isNegative,
                     child: Text(AppLocalizations.of(context)!.toggle_negative),
+                  ),
+                if (numButtons < 6)
+                  CheckedPopupMenuItem(
+                    value: 'toggle_monochrome',
+                    enabled: viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived &&
+                        !viewModel.primarySource.isMonochrome,
+                    checked: viewModel.isMonochrome,
+                    child:
+                        Text(AppLocalizations.of(context)!.toggle_monochrome),
                   ),
               ],
             );

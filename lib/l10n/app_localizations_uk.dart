@@ -189,6 +189,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get toggle_negative => 'Негатив';
 
   @override
+  String get toggle_monochrome => 'Монохромний';
+
+  @override
   String get papyrus_18_title => 'Папірус 18 (P<sup>18</sup>)';
 
   @override

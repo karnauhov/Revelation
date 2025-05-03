@@ -10,15 +10,24 @@ const invertMatrix = <double>[
   0, 0, 0, 1, 0, // A = A
 ];
 
+const grayscaleMatrix = <double>[
+  0.2126, 0.7152, 0.0722, 0, 0, // R
+  0.2126, 0.7152, 0.0722, 0, 0, // G
+  0.2126, 0.7152, 0.0722, 0, 0, // B
+  0, 0, 0, 1, 0, // A
+];
+
 class ImagePreview extends StatefulWidget {
   final Uint8List imageData;
   final ImagePreviewController controller;
   final bool isNegative;
+  final bool isMonochrome;
 
   const ImagePreview({
     required this.imageData,
     required this.controller,
     required this.isNegative,
+    required this.isMonochrome,
     super.key,
   });
 
@@ -47,6 +56,12 @@ class ImagePreviewState extends State<ImagePreview> {
         if (widget.isNegative) {
           imageWidget = ColorFiltered(
             colorFilter: const ColorFilter.matrix(invertMatrix),
+            child: imageWidget,
+          );
+        }
+        if (widget.isMonochrome) {
+          imageWidget = ColorFiltered(
+            colorFilter: const ColorFilter.matrix(grayscaleMatrix),
             child: imageWidget,
           );
         }

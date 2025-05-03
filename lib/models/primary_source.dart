@@ -18,6 +18,7 @@ class PrimarySource {
   final String link3Url;
   final String preview;
   final double maxScale;
+  final bool isMonochrome;
   final List<Page> pages;
   final List<Map<String, String>>? attributes;
   final bool permissionsReceived;
@@ -41,6 +42,7 @@ class PrimarySource {
       required this.link3Url,
       required this.preview,
       required this.maxScale,
+      required this.isMonochrome,
       required this.pages,
       required this.attributes,
       required this.permissionsReceived});

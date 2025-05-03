@@ -457,6 +457,12 @@ abstract class AppLocalizations {
   /// **'Negative'**
   String get toggle_negative;
 
+  /// No description provided for @toggle_monochrome.
+  ///
+  /// In en, this message translates to:
+  /// **'Monochrome'**
+  String get toggle_monochrome;
+
   /// No description provided for @papyrus_18_title.
   ///
   /// In en, this message translates to:
