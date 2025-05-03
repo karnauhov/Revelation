@@ -341,6 +341,15 @@ class PrimarySourceToolbar extends StatelessWidget {
               ? Theme.of(context).colorScheme.secondary
               : null,
         ),
+        style: IconButton.styleFrom(
+          backgroundColor: viewModel.isNegative
+              ? Theme.of(context)
+                  .colorScheme
+                  .secondary
+                  .withAlpha((0.2 * 255).round())
+              : Colors.transparent,
+          shape: const CircleBorder(),
+        ),
         tooltip: AppLocalizations.of(context)!.toggle_negative,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
