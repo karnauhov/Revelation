@@ -11,6 +11,7 @@ import 'package:revelation/screens/primary_source/image_preview.dart';
 
 class PrimarySourceScreen extends StatelessWidget {
   final PrimarySource primarySource;
+  static final numButtons = 5;
 
   const PrimarySourceScreen({required this.primarySource, super.key});
 
@@ -29,10 +30,9 @@ class PrimarySourceScreen extends StatelessWidget {
             );
           }
 
-          final double width = MediaQuery.of(context).size.width;
-          const double threshold1 = 500.0;
-          const double threshold2 = 460.0;
-          final bool useActions = width > threshold1;
+          final double screenWidth = MediaQuery.of(context).size.width;
+          final dropdownWidth = _calcPagesListWidth(context, viewModel);
+          final bool isBottom = _isBottomToolbar(screenWidth, dropdownWidth);
 
           return Scaffold(
             appBar: AppBar(
@@ -43,27 +43,30 @@ class PrimarySourceScreen extends StatelessWidget {
                     .headlineSmall
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
-              actions: useActions ? _buildActions(context, viewModel) : null,
-              bottom: useActions
+              actions: isBottom
                   ? null
-                  : PreferredSize(
+                  : [
+                      PrimarySourceToolbar(
+                        viewModel: viewModel,
+                        primarySource: primarySource,
+                        isBottom: false,
+                        dropdownWidth: dropdownWidth,
+                      ),
+                    ],
+              bottom: isBottom
+                  ? PreferredSize(
                       preferredSize: const Size.fromHeight(32.0),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final bool showFullActions =
-                                constraints.maxWidth > threshold2;
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: showFullActions
-                                  ? _buildActions(context, viewModel)
-                                  : _buildActionsSmall(context, viewModel),
-                            );
-                          },
+                        child: PrimarySourceToolbar(
+                          viewModel: viewModel,
+                          primarySource: primarySource,
+                          isBottom: true,
+                          dropdownWidth: dropdownWidth,
                         ),
                       ),
-                    ),
+                    )
+                  : null,
             ),
             body: Column(
               children: [
@@ -155,7 +158,6 @@ class PrimarySourceScreen extends StatelessWidget {
           ),
         );
       }
-
       if (i < links.length - 1) {
         spans.add(const TextSpan(text: '; '));
       }
@@ -163,8 +165,88 @@ class PrimarySourceScreen extends StatelessWidget {
     return spans;
   }
 
-  List<Widget> _buildActions(
+  double _calcPagesListWidth(
       BuildContext context, PrimarySourceViewModel viewModel) {
+    // TODO Fix it
+    final itemStyle =
+        Theme.of(context).textTheme.bodyMedium ?? TextStyle(fontSize: 16);
+
+    double calculateTextWidth(String text) {
+      return (TextPainter(
+        text: TextSpan(text: text, style: itemStyle),
+        textDirection: TextDirection.ltr,
+        maxLines: 1,
+      )..layout())
+          .size
+          .width;
+    }
+
+    double maxWidth;
+    if (primarySource.permissionsReceived && primarySource.pages.isNotEmpty) {
+      maxWidth = primarySource.pages
+          .map((page) => calculateTextWidth("${page.name} (${page.content})"))
+          .reduce((a, b) => a > b ? a : b);
+    } else {
+      maxWidth =
+          calculateTextWidth(AppLocalizations.of(context)!.images_are_missing);
+    }
+    return maxWidth + 40;
+  }
+
+  bool _isBottomToolbar(double screenWidth, double dropdownWidth) {
+    const widthForTitle = 100;
+    const double iconButtonWidth = 48.0;
+    final double actionsWidth = dropdownWidth + numButtons * iconButtonWidth;
+    return actionsWidth > screenWidth - widthForTitle * 1 - 60;
+  }
+}
+
+class PrimarySourceToolbar extends StatelessWidget {
+  final PrimarySourceViewModel viewModel;
+  final PrimarySource primarySource;
+  final bool isBottom;
+  final double dropdownWidth;
+
+  const PrimarySourceToolbar({
+    required this.viewModel,
+    required this.primarySource,
+    required this.isBottom,
+    required this.dropdownWidth,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isBottom) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final int calcButtons =
+              _calcFitButtons(constraints.maxWidth - dropdownWidth);
+          final bool showFullActions =
+              calcButtons >= PrimarySourceScreen.numButtons;
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: showFullActions
+                ? _buildFullActions(context)
+                : _buildAdaptiveActions(context, calcButtons),
+          );
+        },
+      );
+    } else {
+      return Row(
+        children: _buildFullActions(context),
+      );
+    }
+  }
+
+  int _calcFitButtons(double actionWidth) {
+    const double buttonCellWidth = 46.0;
+    const double startOffset = 48.0;
+    final fit = ((actionWidth - startOffset) / buttonCellWidth).floor();
+    return fit.clamp(0, PrimarySourceScreen.numButtons);
+  }
+
+  List<Widget> _buildFullActions(BuildContext context) {
     return [
       DropdownButton<model.Page>(
         value: viewModel.selectedPage,
@@ -270,140 +352,132 @@ class PrimarySourceScreen extends StatelessWidget {
     ];
   }
 
-  List<Widget> _buildActionsSmall(
-      BuildContext context, PrimarySourceViewModel viewModel) {
+  List<Widget> _buildAdaptiveActions(BuildContext context, int numButtons) {
+    final allActions = _buildFullActions(context);
+    final visibleActions =
+        allActions.sublist(0, 1 + (numButtons > 0 ? numButtons : 0));
+    final overflowActions = numButtons < PrimarySourceScreen.numButtons
+        ? allActions.sublist(1 + numButtons)
+        : [];
+
     return [
-      DropdownButton<model.Page>(
-        value: viewModel.selectedPage,
-        hint: Text(
-          primarySource.pages.isEmpty || !primarySource.permissionsReceived
-              ? AppLocalizations.of(context)!.images_are_missing
-              : AppLocalizations.of(context)!.choose_page,
+      ...visibleActions,
+      if (overflowActions.isNotEmpty)
+        ValueListenableBuilder<ZoomStatus>(
+          valueListenable: viewModel.zoomStatusNotifier,
+          builder: (context, zoomStatus, child) {
+            return PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              tooltip: AppLocalizations.of(context)!.menu,
+              onSelected: (value) {
+                switch (value) {
+                  case 'refresh':
+                    if (viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived) {
+                      viewModel.loadImage(viewModel.selectedPage!.image,
+                          isReload: true);
+                    }
+                    break;
+                  case 'zoom_in':
+                    if (zoomStatus.canZoomIn) {
+                      final viewportCenter = Offset(
+                        MediaQuery.of(context).size.width / 2,
+                        MediaQuery.of(context).size.height / 2,
+                      );
+                      viewModel.imageController.zoomIn(viewportCenter);
+                    }
+                    break;
+                  case 'zoom_out':
+                    if (zoomStatus.canZoomOut) {
+                      final viewportSize = Size(
+                        MediaQuery.of(context).size.width,
+                        MediaQuery.of(context).size.height,
+                      );
+                      final viewportCenter = Offset(
+                        MediaQuery.of(context).size.width / 2,
+                        MediaQuery.of(context).size.height / 2,
+                      );
+                      viewModel.imageController
+                          .zoomOut(viewportCenter, viewportSize);
+                    }
+                    break;
+                  case 'reset':
+                    if (zoomStatus.canReset) {
+                      viewModel.imageController.backToMinScale();
+                    }
+                    break;
+                  case 'toggle_negative':
+                    viewModel.toggleNegative();
+                    break;
+                }
+              },
+              itemBuilder: (context) => [
+                if (numButtons < 1)
+                  PopupMenuItem(
+                    value: 'refresh',
+                    enabled: viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived,
+                    child: Row(
+                      children: [
+                        viewModel.refreshError
+                            ? const Icon(Icons.sync_problem,
+                                color: Colors.black54)
+                            : const Icon(Icons.sync, color: Colors.black54),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.reload_image),
+                      ],
+                    ),
+                  ),
+                if (numButtons < 2)
+                  PopupMenuItem(
+                    value: 'zoom_in',
+                    enabled: zoomStatus.canZoomIn,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.zoom_in, color: Colors.black54),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.zoom_in),
+                      ],
+                    ),
+                  ),
+                if (numButtons < 3)
+                  PopupMenuItem(
+                    value: 'zoom_out',
+                    enabled: zoomStatus.canZoomOut,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.zoom_out, color: Colors.black54),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.zoom_out),
+                      ],
+                    ),
+                  ),
+                if (numButtons < 4)
+                  PopupMenuItem(
+                    value: 'reset',
+                    enabled: zoomStatus.canReset,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.zoom_out_map, color: Colors.black54),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!
+                            .restore_original_scale),
+                      ],
+                    ),
+                  ),
+                if (numButtons < 5) const PopupMenuDivider(),
+                if (numButtons < 5)
+                  CheckedPopupMenuItem(
+                    value: 'toggle_negative',
+                    enabled: viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived,
+                    checked: viewModel.isNegative,
+                    child: Text(AppLocalizations.of(context)!.toggle_negative),
+                  ),
+              ],
+            );
+          },
         ),
-        onChanged: (model.Page? newPage) {
-          if (primarySource.permissionsReceived) {
-            viewModel.changeSelectedPage(newPage);
-          }
-        },
-        items: primarySource.permissionsReceived
-            ? primarySource.pages
-                .map<DropdownMenuItem<model.Page>>((model.Page value) {
-                return DropdownMenuItem<model.Page>(
-                  value: value,
-                  child: _buildDropdownItem(context, viewModel, value),
-                );
-              }).toList()
-            : List.empty(),
-      ),
-      const Spacer(),
-      ValueListenableBuilder<ZoomStatus>(
-        valueListenable: viewModel.zoomStatusNotifier,
-        builder: (context, zoomStatus, child) {
-          return PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            tooltip: AppLocalizations.of(context)!.menu,
-            onSelected: (value) {
-              switch (value) {
-                case 'refresh':
-                  if (viewModel.selectedPage != null &&
-                      viewModel.primarySource.permissionsReceived) {
-                    viewModel.loadImage(viewModel.selectedPage!.image,
-                        isReload: true);
-                  }
-                  break;
-                case 'zoom_in':
-                  if (zoomStatus.canZoomIn) {
-                    final viewportCenter = Offset(
-                      MediaQuery.of(context).size.width / 2,
-                      MediaQuery.of(context).size.height / 2,
-                    );
-                    viewModel.imageController.zoomIn(viewportCenter);
-                  }
-                  break;
-                case 'zoom_out':
-                  if (zoomStatus.canZoomOut) {
-                    final viewportSize = Size(
-                      MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.height,
-                    );
-                    final viewportCenter = Offset(
-                      MediaQuery.of(context).size.width / 2,
-                      MediaQuery.of(context).size.height / 2,
-                    );
-                    viewModel.imageController
-                        .zoomOut(viewportCenter, viewportSize);
-                  }
-                  break;
-                case 'reset':
-                  if (zoomStatus.canReset) {
-                    viewModel.imageController.backToMinScale();
-                  }
-                  break;
-                case 'toggle_negative':
-                  viewModel.toggleNegative();
-                  break;
-              }
-            },
-            itemBuilder: (context) => <PopupMenuEntry<String>>[
-              PopupMenuItem(
-                value: 'refresh',
-                enabled: viewModel.selectedPage != null &&
-                    viewModel.primarySource.permissionsReceived,
-                child: Row(
-                  children: [
-                    viewModel.refreshError
-                        ? const Icon(Icons.sync_problem, color: Colors.black54)
-                        : const Icon(Icons.sync, color: Colors.black54),
-                    const SizedBox(width: 8),
-                    Text(AppLocalizations.of(context)!.reload_image),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'zoom_in',
-                enabled: zoomStatus.canZoomIn,
-                child: Row(
-                  children: [
-                    const Icon(Icons.zoom_in, color: Colors.black54),
-                    const SizedBox(width: 8),
-                    Text(AppLocalizations.of(context)!.zoom_in),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'zoom_out',
-                enabled: zoomStatus.canZoomOut,
-                child: Row(
-                  children: [
-                    const Icon(Icons.zoom_out, color: Colors.black54),
-                    const SizedBox(width: 8),
-                    Text(AppLocalizations.of(context)!.zoom_out),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'reset',
-                enabled: zoomStatus.canReset,
-                child: Row(
-                  children: [
-                    const Icon(Icons.zoom_out_map, color: Colors.black54),
-                    const SizedBox(width: 8),
-                    Text(AppLocalizations.of(context)!.restore_original_scale),
-                  ],
-                ),
-              ),
-              const PopupMenuDivider(),
-              CheckedPopupMenuItem(
-                value: 'toggle_negative',
-                enabled: viewModel.selectedPage != null &&
-                    viewModel.primarySource.permissionsReceived,
-                checked: viewModel.isNegative,
-                child: Text(AppLocalizations.of(context)!.toggle_negative),
-              ),
-            ],
-          );
-        },
-      ),
     ];
   }
 
