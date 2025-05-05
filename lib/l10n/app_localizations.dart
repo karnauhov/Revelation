@@ -469,12 +469,6 @@ abstract class AppLocalizations {
   /// **'Brightness and Contrast'**
   String get brightness_contrast;
 
-  /// No description provided for @image_parameters.
-  ///
-  /// In en, this message translates to:
-  /// **'Image parameters'**
-  String get image_parameters;
-
   /// No description provided for @brightness.
   ///
   /// In en, this message translates to:

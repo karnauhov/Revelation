@@ -195,9 +195,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get brightness_contrast => 'Brightness and Contrast';
 
   @override
-  String get image_parameters => 'Image parameters';
-
-  @override
   String get brightness => 'Brightness';
 
   @override

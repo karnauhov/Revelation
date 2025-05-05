@@ -195,9 +195,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get brightness_contrast => 'Яскравість і контрастність';
 
   @override
-  String get image_parameters => 'Параметри зображення';
-
-  @override
   String get brightness => 'Яскравість';
 
   @override
