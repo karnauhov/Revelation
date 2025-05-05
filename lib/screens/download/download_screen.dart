@@ -79,6 +79,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
           iconPath: "assets/images/UI/google_play.svg",
           text: "Google Play",
           onTap: () => launchLink(AppConstants.googlePlayUrl),
+          leftMargin: 30,
         ),
       ],
     );
@@ -108,6 +109,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
           iconPath: "assets/images/UI/microsoft_store.svg",
           text: "Microsoft Store",
           onTap: () => launchLink(AppConstants.microsoftStoreUrl),
+          leftMargin: 30,
         ),
       ],
     );

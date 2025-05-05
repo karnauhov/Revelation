@@ -5,18 +5,20 @@ class IconLinkItem extends StatelessWidget {
   final String iconPath;
   final String text;
   final VoidCallback onTap;
+  final double leftMargin;
 
   const IconLinkItem({
     super.key,
     required this.iconPath,
     required this.text,
     required this.onTap,
+    this.leftMargin = 0,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.all(0),
+      contentPadding: EdgeInsets.fromLTRB(leftMargin, 0, 0, 0),
       visualDensity: VisualDensity.compact,
       minTileHeight: 0,
       leading: SvgPicture.asset(

@@ -22,12 +22,16 @@ class ImagePreview extends StatefulWidget {
   final ImagePreviewController controller;
   final bool isNegative;
   final bool isMonochrome;
+  final double brightness;
+  final double contrast;
 
   const ImagePreview({
     required this.imageData,
     required this.controller,
     required this.isNegative,
     required this.isMonochrome,
+    required this.brightness,
+    required this.contrast,
     super.key,
   });
 
@@ -52,13 +56,34 @@ class ImagePreviewState extends State<ImagePreview> {
         widget.controller.setImageSize(widget.controller.imageSize!,
             constraints.maxWidth, constraints.maxHeight);
 
+        // Calculate brightness and contrast adjustments
+        double contrastFactor = widget.contrast / 100.0;
+        double brightnessOffset = widget.brightness * 2.55;
+        double offset = 128 - contrastFactor * 128 + brightnessOffset;
+        List<double> brightnessContrastMatrix = [
+          contrastFactor, 0, 0, 0, offset, //R
+          0, contrastFactor, 0, 0, offset, //G
+          0, 0, contrastFactor, 0, offset, //B
+          0, 0, 0, 1, 0 //A
+        ];
+
         Widget imageWidget = Image.memory(widget.imageData);
+
+        // Apply brightness and contrast filter
+        imageWidget = ColorFiltered(
+          colorFilter: ColorFilter.matrix(brightnessContrastMatrix),
+          child: imageWidget,
+        );
+
+        // Apply invert filter if enabled
         if (widget.isNegative) {
           imageWidget = ColorFiltered(
             colorFilter: const ColorFilter.matrix(invertMatrix),
             child: imageWidget,
           );
         }
+
+        // Apply monochrome filter if enabled
         if (widget.isMonochrome) {
           imageWidget = ColorFiltered(
             colorFilter: const ColorFilter.matrix(grayscaleMatrix),

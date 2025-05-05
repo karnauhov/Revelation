@@ -244,7 +244,7 @@ abstract class AppLocalizations {
   /// No description provided for @download_header.
   ///
   /// In en, this message translates to:
-  /// **'It is recommended to install the application for your platform'**
+  /// **'Install the application for your platform'**
   String get download_header;
 
   /// No description provided for @error_loading_libraries.
@@ -462,6 +462,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Monochrome'**
   String get toggle_monochrome;
+
+  /// No description provided for @brightness_contrast.
+  ///
+  /// In en, this message translates to:
+  /// **'Brightness and Contrast'**
+  String get brightness_contrast;
+
+  /// No description provided for @image_parameters.
+  ///
+  /// In en, this message translates to:
+  /// **'Image parameters'**
+  String get image_parameters;
+
+  /// No description provided for @brightness.
+  ///
+  /// In en, this message translates to:
+  /// **'Brightness'**
+  String get brightness;
+
+  /// No description provided for @contrast.
+  ///
+  /// In en, this message translates to:
+  /// **'Contrast'**
+  String get contrast;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
 
   /// No description provided for @papyrus_18_title.
   ///

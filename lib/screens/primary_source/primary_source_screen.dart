@@ -5,13 +5,14 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/models/zoom_status.dart';
+import 'package:revelation/screens/primary_source/brightness_contrast_dialog.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
 import 'package:revelation/screens/primary_source/image_preview.dart';
 
 class PrimarySourceScreen extends StatelessWidget {
   final PrimarySource primarySource;
-  static final numButtons = 6;
+  static final numButtons = 7;
 
   const PrimarySourceScreen({required this.primarySource, super.key});
 
@@ -85,6 +86,8 @@ class PrimarySourceScreen extends StatelessWidget {
                                   controller: viewModel.imageController,
                                   isNegative: viewModel.isNegative,
                                   isMonochrome: viewModel.isMonochrome,
+                                  brightness: viewModel.brightness,
+                                  contrast: viewModel.contrast,
                                 )
                               : Center(
                                   child: Text(AppLocalizations.of(context)!
@@ -380,6 +383,16 @@ class PrimarySourceToolbar extends StatelessWidget {
             ? () => viewModel.toggleMonochrome()
             : null,
       ),
+      IconButton(
+        icon: const Icon(Icons.brightness_6),
+        tooltip: AppLocalizations.of(context)!.brightness_contrast,
+        onPressed: viewModel.primarySource.permissionsReceived &&
+                viewModel.selectedPage != null
+            ? () {
+                _showBrightnessContrastDialog(context);
+              }
+            : null,
+      ),
     ];
   }
 
@@ -448,6 +461,12 @@ class PrimarySourceToolbar extends StatelessWidget {
                         viewModel.primarySource.permissionsReceived &&
                         !viewModel.primarySource.isMonochrome) {
                       viewModel.toggleMonochrome();
+                    }
+                    break;
+                  case 'brightness_contrast':
+                    if (viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived) {
+                      _showBrightnessContrastDialog(context);
                     }
                     break;
                 }
@@ -525,6 +544,19 @@ class PrimarySourceToolbar extends StatelessWidget {
                     child:
                         Text(AppLocalizations.of(context)!.toggle_monochrome),
                   ),
+                if (numButtons < 7)
+                  PopupMenuItem(
+                    value: 'brightness_contrast',
+                    enabled: viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.brightness_6, color: Colors.black54),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.brightness_contrast),
+                      ],
+                    ),
+                  ),
               ],
             );
           },
@@ -545,6 +577,36 @@ class PrimarySourceToolbar extends StatelessWidget {
             ? FontWeight.bold
             : FontWeight.normal,
       ),
+    );
+  }
+
+  Future<void> _showBrightnessContrastDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (context) {
+        return Stack(
+          children: [
+            Positioned(
+              right: -60,
+              top: 75,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 350, maxWidth: 500),
+                child: BrightnessContrastDialog(
+                  onApply: (brightness, contrast) {
+                    viewModel.applyBrightnessContrast(brightness, contrast);
+                  },
+                  onCancel: () {
+                    viewModel.resetBrightnessContrast();
+                  },
+                  brightness: viewModel.brightness,
+                  contrast: viewModel.contrast,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

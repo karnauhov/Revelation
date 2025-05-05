@@ -81,7 +81,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get download => 'Download';
 
   @override
-  String get download_header => 'It is recommended to install the application for your platform';
+  String get download_header => 'Install the application for your platform';
 
   @override
   String get error_loading_libraries => 'Error loading libraries';
@@ -190,6 +190,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get toggle_monochrome => 'Monochrome';
+
+  @override
+  String get brightness_contrast => 'Brightness and Contrast';
+
+  @override
+  String get image_parameters => 'Image parameters';
+
+  @override
+  String get brightness => 'Brightness';
+
+  @override
+  String get contrast => 'Contrast';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get reset => 'Reset';
 
   @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';

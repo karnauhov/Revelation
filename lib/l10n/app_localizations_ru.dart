@@ -81,7 +81,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get download => 'Скачать';
 
   @override
-  String get download_header => 'Рекомендуется установить приложение для вашей платформы';
+  String get download_header => 'Установите приложение для вашей платформы';
 
   @override
   String get error_loading_libraries => 'Ошибка загрузки библиотек';
@@ -190,6 +190,24 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get toggle_monochrome => 'Монохромный';
+
+  @override
+  String get brightness_contrast => 'Яркость и контрастность';
+
+  @override
+  String get image_parameters => 'Параметры изображения';
+
+  @override
+  String get brightness => 'Яркость';
+
+  @override
+  String get contrast => 'Контрастность';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get reset => 'Сбросить';
 
   @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';

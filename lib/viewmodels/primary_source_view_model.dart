@@ -17,6 +17,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool refreshError = false;
   bool isNegative = false;
   bool isMonochrome = false;
+  double brightness = 0;
+  double contrast = 100;
   final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
@@ -33,7 +35,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
     imageController = ImagePreviewController(primarySource.maxScale);
     imageController.transformationController.addListener(_updateZoomStatus);
 
-    // Check for mobile web environment and fetch texture limits
     _isWeb = isWeb();
     _isMobileWeb = _isWeb && isMobileBrowser();
 
@@ -118,6 +119,18 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   void toggleMonochrome() {
     isMonochrome = !isMonochrome;
+    notifyListeners();
+  }
+
+  void applyBrightnessContrast(double brightness, double contrast) {
+    this.brightness = brightness;
+    this.contrast = contrast;
+    notifyListeners();
+  }
+
+  void resetBrightnessContrast() {
+    brightness = 0;
+    contrast = 100;
     notifyListeners();
   }
 

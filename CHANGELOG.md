@@ -6,11 +6,12 @@ All notable changes to this application will be documented here.
 
 ### Added
 
-- Improved the Primary Source screen by adding more image‐editing tools: negative, monochrome, ...
+- Improved the Primary Source screen by adding more image‐editing tools: negative, monochrome, brightness, contrast, ...
 
 ### Changed
 
 - Improved PrimarySourceToolbar (did it adaptive);
+- Improved Download screen;
 
 ## [1.0.1](https://github.com/karnauhov/Revelation/releases/tag/v1.0.1%2B69) - 02.05.25
 
