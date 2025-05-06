@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ReplaceColorDialog extends StatefulWidget {
   final Function(Color, Color, double) onApply;
@@ -87,7 +88,41 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 icon: const Icon(Icons.palette),
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
-                  // TODO: implement color picker dialog
+                  Color picked = newColor;
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(AppLocalizations.of(context)!.select_color),
+                        content: SingleChildScrollView(
+                          child: ColorPicker(
+                            pickerColor: picked,
+                            onColorChanged: (color) {
+                              picked = color;
+                            },
+                            pickerAreaHeightPercent: 0.8,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text(AppLocalizations.of(context)!.cancel),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          TextButton(
+                            child: Text(AppLocalizations.of(context)!.ok),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                newColor = picked;
+                              });
+                              widget.onApply(
+                                  colorToReplace, newColor, tolerance);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
               ),
             ],

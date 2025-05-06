@@ -204,6 +204,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get ok => 'OK';
 
   @override
+  String get cancel => 'Скасувати';
+
+  @override
   String get reset => 'Скинути';
 
   @override
@@ -220,6 +223,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get palette => 'Палітра';
+
+  @override
+  String get select_color => 'Виберіть колір';
 
   @override
   String get tolerance => 'Допуск';

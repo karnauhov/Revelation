@@ -204,6 +204,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ok => 'OK';
 
   @override
+  String get cancel => 'Сancel';
+
+  @override
   String get reset => 'Reset';
 
   @override
@@ -220,6 +223,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get palette => 'Palette';
+
+  @override
+  String get select_color => 'Select color';
 
   @override
   String get tolerance => 'Tolerance';

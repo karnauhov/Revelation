@@ -487,6 +487,12 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get ok;
 
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Сancel'**
+  String get cancel;
+
   /// No description provided for @reset.
   ///
   /// In en, this message translates to:
@@ -522,6 +528,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Palette'**
   String get palette;
+
+  /// No description provided for @select_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Select color'**
+  String get select_color;
 
   /// No description provided for @tolerance.
   ///
