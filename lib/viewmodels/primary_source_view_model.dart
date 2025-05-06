@@ -32,9 +32,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
   late final bool _isWeb;
   late final bool _isMobileWeb;
   int _maxTextureSize = 4096;
+  bool _pipetteMode = false;
+  void Function(Color)? _onPipettePicked;
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
+  bool get pipetteMode => _pipetteMode;
 
   PrimarySourceViewModel({required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
@@ -136,6 +139,21 @@ class PrimarySourceViewModel extends ChangeNotifier {
   void resetBrightnessContrast() {
     brightness = 0;
     contrast = 100;
+    notifyListeners();
+  }
+
+  void startPipetteMode(void Function(Color) onPicked) {
+    _pipetteMode = true;
+    _onPipettePicked = onPicked;
+    notifyListeners();
+  }
+
+  void finishPipetteMode(Color color) {
+    if (_pipetteMode && _onPipettePicked != null) {
+      _onPipettePicked!(color);
+    }
+    _pipetteMode = false;
+    _onPipettePicked = null;
     notifyListeners();
   }
 

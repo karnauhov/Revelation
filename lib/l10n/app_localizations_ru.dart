@@ -228,6 +228,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get select_color => 'Выберите цвет';
 
   @override
+  String get pick_color_header => 'Выберите точку на изображении';
+
+  @override
+  String get pick_color_description => 'Нажмите на ту область изображения, цвет которой вы хотите изменить (при необходимости увеличьте эту область)';
+
+  @override
   String get tolerance => 'Допуск';
 
   @override

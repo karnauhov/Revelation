@@ -73,6 +73,8 @@
   "new_color": "New color",
   "palette": "Palette",
   "select_color": "Select color",
+  "pick_color_header": "Select a point on the image",
+  "pick_color_description": "Click on the area of the image whose color you want to change (you can zoom in on this area if needed)",
   "tolerance": "Tolerance",
   "papyrus_18_title": "Papyrus 18 (P<sup>18</sup>)",
   "papyrus_18_date": "3rd or early 4th century AD",

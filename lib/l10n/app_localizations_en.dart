@@ -228,6 +228,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_color => 'Select color';
 
   @override
+  String get pick_color_header => 'Select a point on the image';
+
+  @override
+  String get pick_color_description => 'Click on the area of the image whose color you want to change (you can zoom in on this area if needed)';
+
+  @override
   String get tolerance => 'Tolerance';
 
   @override

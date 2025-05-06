@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:revelation/utils/common.dart';
+import 'package:revelation/viewmodels/primary_source_view_model.dart';
 
 class ReplaceColorDialog extends StatefulWidget {
+  final PrimarySourceViewModel viewModel;
+  final BuildContext parentContext;
   final Function(Color, Color, double) onApply;
   final Function() onCancel;
   final Color colorToReplace;
@@ -10,6 +14,8 @@ class ReplaceColorDialog extends StatefulWidget {
   final double tolerance;
 
   const ReplaceColorDialog({
+    required this.viewModel,
+    required this.parentContext,
     required this.onApply,
     required this.onCancel,
     this.colorToReplace = const Color(0xFFFFFFFF),
@@ -62,7 +68,11 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 icon: const Icon(Icons.colorize),
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
-                  // TODO: implement pipette picker
+                  Navigator.of(context).pop();
+                  widget.viewModel.startPipetteMode((pickedColor) {
+                    log.d("PickedColor: $pickedColor");
+                    // TODO Show Replace Color Dialog
+                  });
                 },
               ),
             ],

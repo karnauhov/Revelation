@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
+import 'package:revelation/viewmodels/primary_source_view_model.dart';
 
 const invertMatrix = <double>[
   -1, 0, 0, 0, 255, // R = 255 - R
@@ -67,32 +69,71 @@ class ImagePreviewState extends State<ImagePreview> {
           0, 0, 0, 1, 0 //A
         ];
 
+        final vm = context.watch<PrimarySourceViewModel>();
         Widget imageWidget = Image.memory(widget.imageData);
+        Widget wrapped;
 
-        // Apply brightness and contrast filter
-        imageWidget = ColorFiltered(
-          colorFilter: ColorFilter.matrix(brightnessContrastMatrix),
-          child: imageWidget,
-        );
+        if (vm.pipetteMode) {
+          wrapped = GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: (TapDownDetails details) async {
+              final renderBox = context.findRenderObject() as RenderBox;
+              final local = renderBox.globalToLocal(details.globalPosition);
+              final scaleX =
+                  widget.controller.imageSize!.width / renderBox.size.width;
+              final scaleY =
+                  widget.controller.imageSize!.height / renderBox.size.height;
+              final px = (local.dx * scaleX)
+                  .clamp(0, widget.controller.imageSize!.width - 1)
+                  .toInt();
+              final py = (local.dy * scaleY)
+                  .clamp(0, widget.controller.imageSize!.height - 1)
+                  .toInt();
 
-        // Apply invert filter if enabled
-        if (widget.isNegative) {
-          imageWidget = ColorFiltered(
-            colorFilter: const ColorFilter.matrix(invertMatrix),
+              final ui.Image decoded =
+                  await decodeImageFromList(widget.imageData);
+              final byteData =
+                  await decoded.toByteData(format: ui.ImageByteFormat.rawRgba);
+              final offset = (py * decoded.width + px) * 4;
+              final r = byteData!.getUint8(offset);
+              final g = byteData.getUint8(offset + 1);
+              final b = byteData.getUint8(offset + 2);
+              final a = byteData.getUint8(offset + 3);
+              final picked = Color.fromARGB(a, r, g, b);
+
+              vm.finishPipetteMode(picked);
+            },
             child: imageWidget,
           );
-        }
-
-        // Apply monochrome filter if enabled
-        if (widget.isMonochrome) {
+        } else {
+          // Apply brightness and contrast filter
           imageWidget = ColorFiltered(
-            colorFilter: const ColorFilter.matrix(grayscaleMatrix),
+            colorFilter: ColorFilter.matrix(brightnessContrastMatrix),
             child: imageWidget,
           );
+
+          // Apply invert filter if enabled
+          if (widget.isNegative) {
+            imageWidget = ColorFiltered(
+              colorFilter: const ColorFilter.matrix(invertMatrix),
+              child: imageWidget,
+            );
+          }
+
+          // Apply monochrome filter if enabled
+          if (widget.isMonochrome) {
+            imageWidget = ColorFiltered(
+              colorFilter: const ColorFilter.matrix(grayscaleMatrix),
+              child: imageWidget,
+            );
+          }
+          wrapped = imageWidget;
         }
 
         return MouseRegion(
-          cursor: SystemMouseCursors.grab,
+          cursor: vm.pipetteMode
+              ? SystemMouseCursors.precise
+              : SystemMouseCursors.grab,
           child: InteractiveViewer(
             transformationController:
                 widget.controller.transformationController,
@@ -100,7 +141,7 @@ class ImagePreviewState extends State<ImagePreview> {
             maxScale: widget.controller.maxScale,
             constrained: false,
             child: Center(
-              child: imageWidget,
+              child: wrapped,
             ),
           ),
         );

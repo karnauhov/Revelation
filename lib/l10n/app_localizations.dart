@@ -535,6 +535,18 @@ abstract class AppLocalizations {
   /// **'Select color'**
   String get select_color;
 
+  /// No description provided for @pick_color_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a point on the image'**
+  String get pick_color_header;
+
+  /// No description provided for @pick_color_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Click on the area of the image whose color you want to change (you can zoom in on this area if needed)'**
+  String get pick_color_description;
+
   /// No description provided for @tolerance.
   ///
   /// In en, this message translates to:

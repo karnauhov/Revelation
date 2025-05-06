@@ -37,39 +37,49 @@ class PrimarySourceScreen extends StatelessWidget {
           final bool isBottom = _isBottomToolbar(screenWidth, dropdownWidth);
 
           return Scaffold(
-            appBar: AppBar(
-              title: getStyledText(
-                primarySource.title,
-                Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              actions: isBottom
-                  ? null
-                  : [
-                      PrimarySourceToolbar(
-                        viewModel: viewModel,
-                        primarySource: primarySource,
-                        isBottom: false,
-                        dropdownWidth: dropdownWidth,
-                      ),
-                    ],
-              bottom: isBottom
-                  ? PreferredSize(
-                      preferredSize: const Size.fromHeight(32.0),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: PrimarySourceToolbar(
-                          viewModel: viewModel,
-                          primarySource: primarySource,
-                          isBottom: true,
-                          dropdownWidth: dropdownWidth,
-                        ),
-                      ),
-                    )
-                  : null,
-            ),
+            appBar: viewModel.pipetteMode
+                ? AppBar(
+                    title: Text(
+                    AppLocalizations.of(context)!.pick_color_header,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ))
+                : AppBar(
+                    title: getStyledText(
+                      primarySource.title,
+                      Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    actions: isBottom
+                        ? null
+                        : [
+                            PrimarySourceToolbar(
+                              viewModel: viewModel,
+                              primarySource: primarySource,
+                              isBottom: false,
+                              dropdownWidth: dropdownWidth,
+                            ),
+                          ],
+                    bottom: isBottom
+                        ? PreferredSize(
+                            preferredSize: const Size.fromHeight(32.0),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: PrimarySourceToolbar(
+                                viewModel: viewModel,
+                                primarySource: primarySource,
+                                isBottom: true,
+                                dropdownWidth: dropdownWidth,
+                              ),
+                            ),
+                          )
+                        : null,
+                  ),
             body: Column(
               children: [
                 Expanded(
@@ -104,29 +114,38 @@ class PrimarySourceScreen extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 2),
-                      child: Text.rich(
-                        TextSpan(
-                          style: theme.bodySmall!.copyWith(fontSize: 10),
-                          children: [
-                            if (viewModel.isMobileWeb)
+                      child: viewModel.pipetteMode
+                          ? Text(
+                              AppLocalizations.of(context)!
+                                  .pick_color_description,
+                              style: theme.bodySmall!.copyWith(fontSize: 10),
+                            )
+                          : Text.rich(
                               TextSpan(
-                                text:
-                                    '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
-                                style: const TextStyle(color: Colors.blue),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    showCustomDialog(MessageType.warningCommon,
-                                        param: AppLocalizations.of(context)!
-                                            .low_quality_message);
-                                  },
+                                style: theme.bodySmall!.copyWith(fontSize: 10),
+                                children: [
+                                  if (viewModel.isMobileWeb)
+                                    TextSpan(
+                                      text:
+                                          '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
+                                      style:
+                                          const TextStyle(color: Colors.blue),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          showCustomDialog(
+                                              MessageType.warningCommon,
+                                              param:
+                                                  AppLocalizations.of(context)!
+                                                      .low_quality_message);
+                                        },
+                                    ),
+                                  ..._buildLinkSpans(primarySource.attributes!),
+                                ],
                               ),
-                            ..._buildLinkSpans(primarySource.attributes!),
-                          ],
-                        ),
-                        maxLines: 5,
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                              maxLines: 5,
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                     ),
                   ),
                 if (primarySource.attributes == null ||
@@ -643,6 +662,7 @@ class PrimarySourceToolbar extends StatelessWidget {
   Future<void> _showReplaceColorDialog(BuildContext context) {
     return showDialog(
       context: context,
+      useRootNavigator: false,
       barrierColor: Colors.transparent,
       builder: (context) {
         return Stack(
@@ -653,6 +673,8 @@ class PrimarySourceToolbar extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(minWidth: 350, maxWidth: 450),
                 child: ReplaceColorDialog(
+                  viewModel: viewModel,
+                  parentContext: context,
                   onApply: (colorToReplace, newColor, tolerance) {
                     viewModel.applyColorReplacement(
                         colorToReplace, newColor, tolerance);
