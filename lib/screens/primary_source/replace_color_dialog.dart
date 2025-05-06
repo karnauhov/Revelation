@@ -153,7 +153,6 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   min: 0,
                   max: 100,
                   divisions: 100,
-                  label: tolerance.toStringAsFixed(0),
                   onChanged: (value) {
                     setState(() {
                       tolerance = value;
