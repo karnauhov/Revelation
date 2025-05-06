@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:revelation/models/page.dart' as model;
@@ -19,6 +20,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool isMonochrome = false;
   double brightness = 0;
   double contrast = 100;
+  Color colorToReplace = const Color(0xFFFFFFFF);
+  Color newColor = const Color(0xFFFFFFFF);
+  double tolerance = 1;
+
   final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
@@ -131,6 +136,21 @@ class PrimarySourceViewModel extends ChangeNotifier {
   void resetBrightnessContrast() {
     brightness = 0;
     contrast = 100;
+    notifyListeners();
+  }
+
+  void applyColorReplacement(
+      Color colorToReplace, Color newColor, double tolerance) {
+    this.colorToReplace = colorToReplace;
+    this.newColor = newColor;
+    this.tolerance = tolerance;
+    notifyListeners();
+  }
+
+  void resetColorReplacement() {
+    colorToReplace = const Color(0xFFFFFFFF);
+    newColor = const Color(0xFFFFFFFF);
+    tolerance = 1;
     notifyListeners();
   }
 

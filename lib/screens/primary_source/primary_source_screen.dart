@@ -5,14 +5,15 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/models/zoom_status.dart';
+import 'package:revelation/screens/primary_source/image_preview.dart';
 import 'package:revelation/screens/primary_source/brightness_contrast_dialog.dart';
+import 'package:revelation/screens/primary_source/replace_color_dialog.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
-import 'package:revelation/screens/primary_source/image_preview.dart';
 
 class PrimarySourceScreen extends StatelessWidget {
   final PrimarySource primarySource;
-  static final numButtons = 7;
+  static final numButtons = 8;
 
   const PrimarySourceScreen({required this.primarySource, super.key});
 
@@ -393,6 +394,16 @@ class PrimarySourceToolbar extends StatelessWidget {
               }
             : null,
       ),
+      IconButton(
+        icon: const Icon(Icons.colorize),
+        tooltip: AppLocalizations.of(context)!.color_replacement,
+        onPressed: viewModel.primarySource.permissionsReceived &&
+                viewModel.selectedPage != null
+            ? () {
+                _showReplaceColorDialog(context);
+              }
+            : null,
+      ),
     ];
   }
 
@@ -467,6 +478,12 @@ class PrimarySourceToolbar extends StatelessWidget {
                     if (viewModel.selectedPage != null &&
                         viewModel.primarySource.permissionsReceived) {
                       _showBrightnessContrastDialog(context);
+                    }
+                    break;
+                  case 'replace_color':
+                    if (viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived) {
+                      _showReplaceColorDialog(context);
                     }
                     break;
                 }
@@ -557,6 +574,19 @@ class PrimarySourceToolbar extends StatelessWidget {
                       ],
                     ),
                   ),
+                if (numButtons < 8)
+                  PopupMenuItem(
+                    value: 'replace_color',
+                    enabled: viewModel.selectedPage != null &&
+                        viewModel.primarySource.permissionsReceived,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.colorize, color: Colors.black54),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.color_replacement),
+                      ],
+                    ),
+                  ),
               ],
             );
           },
@@ -601,6 +631,38 @@ class PrimarySourceToolbar extends StatelessWidget {
                   },
                   brightness: viewModel.brightness,
                   contrast: viewModel.contrast,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showReplaceColorDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (context) {
+        return Stack(
+          children: [
+            Positioned(
+              right: -35,
+              top: 75,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 350, maxWidth: 450),
+                child: ReplaceColorDialog(
+                  onApply: (colorToReplace, newColor, tolerance) {
+                    viewModel.applyColorReplacement(
+                        colorToReplace, newColor, tolerance);
+                  },
+                  onCancel: () {
+                    viewModel.resetColorReplacement();
+                  },
+                  colorToReplace: viewModel.colorToReplace,
+                  newColor: viewModel.newColor,
+                  tolerance: viewModel.tolerance,
                 ),
               ),
             ),

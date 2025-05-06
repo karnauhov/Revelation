@@ -174,13 +174,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get low_quality_message => 'В мобильном браузере используется изображение сниженного качества. Для просмотра в максимальном качестве установите приложение или откройте страницу на компьютере.';
 
   @override
-  String get reload_image => 'Перезагрузить изображение';
+  String get reload_image => 'Перезагрузка изображения';
 
   @override
-  String get zoom_in => 'Увеличить';
+  String get zoom_in => 'Увеличение';
 
   @override
-  String get zoom_out => 'Уменьшить';
+  String get zoom_out => 'Уменьшение';
 
   @override
   String get restore_original_scale => 'Первоначальный масштаб';
@@ -189,7 +189,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get toggle_negative => 'Негатив';
 
   @override
-  String get toggle_monochrome => 'Монохромный';
+  String get toggle_monochrome => 'Монохромность';
 
   @override
   String get brightness_contrast => 'Яркость и контрастность';
@@ -205,6 +205,24 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get reset => 'Сбросить';
+
+  @override
+  String get color_replacement => 'Замена цвета';
+
+  @override
+  String get color_to_replace => 'Цвет для замены';
+
+  @override
+  String get eyedropper => 'Пипетка';
+
+  @override
+  String get new_color => 'Новый цвет';
+
+  @override
+  String get palette => 'Палитра';
+
+  @override
+  String get tolerance => 'Допуск';
 
   @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';

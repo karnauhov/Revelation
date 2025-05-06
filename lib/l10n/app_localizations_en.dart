@@ -174,7 +174,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get low_quality_message => 'A lower-quality image is used in the mobile browser. To view in maximum quality, install the app or open the page on a computer.';
 
   @override
-  String get reload_image => 'Reload image';
+  String get reload_image => 'Reloading the image';
 
   @override
   String get zoom_in => 'Zoom in';
@@ -205,6 +205,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reset => 'Reset';
+
+  @override
+  String get color_replacement => 'Color replacement';
+
+  @override
+  String get color_to_replace => 'Color to replace';
+
+  @override
+  String get eyedropper => 'Eyedropper';
+
+  @override
+  String get new_color => 'New color';
+
+  @override
+  String get palette => 'Palette';
+
+  @override
+  String get tolerance => 'Tolerance';
 
   @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';

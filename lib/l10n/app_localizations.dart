@@ -430,7 +430,7 @@ abstract class AppLocalizations {
   /// No description provided for @reload_image.
   ///
   /// In en, this message translates to:
-  /// **'Reload image'**
+  /// **'Reloading the image'**
   String get reload_image;
 
   /// No description provided for @zoom_in.
@@ -492,6 +492,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get reset;
+
+  /// No description provided for @color_replacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Color replacement'**
+  String get color_replacement;
+
+  /// No description provided for @color_to_replace.
+  ///
+  /// In en, this message translates to:
+  /// **'Color to replace'**
+  String get color_to_replace;
+
+  /// No description provided for @eyedropper.
+  ///
+  /// In en, this message translates to:
+  /// **'Eyedropper'**
+  String get eyedropper;
+
+  /// No description provided for @new_color.
+  ///
+  /// In en, this message translates to:
+  /// **'New color'**
+  String get new_color;
+
+  /// No description provided for @palette.
+  ///
+  /// In en, this message translates to:
+  /// **'Palette'**
+  String get palette;
+
+  /// No description provided for @tolerance.
+  ///
+  /// In en, this message translates to:
+  /// **'Tolerance'**
+  String get tolerance;
 
   /// No description provided for @papyrus_18_title.
   ///
