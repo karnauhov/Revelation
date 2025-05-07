@@ -152,6 +152,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (_pipetteMode && _onPipettePicked != null) {
       _onPipettePicked!(color);
     }
+    if (color != null) {
+      colorToReplace = color;
+    }
     _pipetteMode = false;
     _onPipettePicked = null;
     notifyListeners();

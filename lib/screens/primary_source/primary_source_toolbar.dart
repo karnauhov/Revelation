@@ -13,12 +13,14 @@ class PrimarySourceToolbar extends StatelessWidget {
   final PrimarySource primarySource;
   final bool isBottom;
   final double dropdownWidth;
+  final BuildContext screenContext;
 
   const PrimarySourceToolbar({
     required this.viewModel,
     required this.primarySource,
     required this.isBottom,
     required this.dropdownWidth,
+    required this.screenContext,
     super.key,
   });
 
@@ -194,7 +196,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
             ? () {
-                _showBrightnessContrastDialog(context);
+                _showBrightnessContrastDialog();
               }
             : null,
       ),
@@ -204,7 +206,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
             ? () {
-                _showReplaceColorDialog(context);
+                _showReplaceColorDialog();
               }
             : null,
       ),
@@ -281,13 +283,13 @@ class PrimarySourceToolbar extends StatelessWidget {
                   case 'brightness_contrast':
                     if (viewModel.selectedPage != null &&
                         viewModel.primarySource.permissionsReceived) {
-                      _showBrightnessContrastDialog(context);
+                      _showBrightnessContrastDialog();
                     }
                     break;
                   case 'replace_color':
                     if (viewModel.selectedPage != null &&
                         viewModel.primarySource.permissionsReceived) {
-                      _showReplaceColorDialog(context);
+                      _showReplaceColorDialog();
                     }
                     break;
                 }
@@ -414,9 +416,9 @@ class PrimarySourceToolbar extends StatelessWidget {
     );
   }
 
-  Future<void> _showBrightnessContrastDialog(BuildContext context) {
+  Future<void> _showBrightnessContrastDialog() {
     return showDialog(
-      context: context,
+      context: screenContext,
       barrierColor: Colors.transparent,
       builder: (context) {
         return Stack(
@@ -444,9 +446,9 @@ class PrimarySourceToolbar extends StatelessWidget {
     );
   }
 
-  Future<void> _showReplaceColorDialog(BuildContext context) {
+  Future<void> _showReplaceColorDialog() {
     return showDialog(
-      context: context,
+      context: screenContext,
       useRootNavigator: false,
       barrierColor: Colors.transparent,
       builder: (context) {
@@ -459,7 +461,7 @@ class PrimarySourceToolbar extends StatelessWidget {
                 constraints: const BoxConstraints(minWidth: 350, maxWidth: 450),
                 child: ReplaceColorDialog(
                   viewModel: viewModel,
-                  parentContext: context,
+                  parentContext: screenContext,
                   onApply: (colorToReplace, newColor, tolerance) {
                     viewModel.applyColorReplacement(
                         colorToReplace, newColor, tolerance);

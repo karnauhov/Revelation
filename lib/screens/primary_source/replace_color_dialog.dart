@@ -71,10 +71,44 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   Navigator.of(context).pop();
                   widget.viewModel.startPipetteMode((pickedColor) {
                     log.d("PickedColor: $pickedColor");
-                    // TODO Show Replace Color Dialog
+                    showDialog(
+                      context: widget.parentContext,
+                      useRootNavigator: false,
+                      barrierColor: Colors.transparent,
+                      builder: (context) {
+                        return Stack(
+                          children: [
+                            Positioned(
+                              right: -35,
+                              top: 75,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                    minWidth: 350, maxWidth: 450),
+                                child: ReplaceColorDialog(
+                                  viewModel: widget.viewModel,
+                                  parentContext: widget.parentContext,
+                                  onApply:
+                                      (colorToReplace, newColor, tolerance) {
+                                    widget.viewModel.applyColorReplacement(
+                                        colorToReplace, newColor, tolerance);
+                                  },
+                                  onCancel: () {
+                                    widget.viewModel.resetColorReplacement();
+                                  },
+                                  colorToReplace:
+                                      widget.viewModel.colorToReplace,
+                                  newColor: widget.viewModel.newColor,
+                                  tolerance: widget.viewModel.tolerance,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   });
                 },
-              ),
+              )
             ],
           ),
           const SizedBox(height: 8),
