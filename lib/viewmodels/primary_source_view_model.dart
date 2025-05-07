@@ -34,6 +34,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   int _maxTextureSize = 4096;
   bool _pipetteMode = false;
   void Function(Color?)? _onPipettePicked;
+  bool _isColorToReplace = true;
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
@@ -142,9 +143,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void startPipetteMode(void Function(Color?) onPicked) {
+  void startPipetteMode(void Function(Color?) onPicked, bool isColorToReplace) {
     _pipetteMode = true;
     _onPipettePicked = onPicked;
+    _isColorToReplace = isColorToReplace;
     notifyListeners();
   }
 
@@ -153,7 +155,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
       _onPipettePicked!(color);
     }
     if (color != null) {
-      colorToReplace = color;
+      if (_isColorToReplace) {
+        colorToReplace = color;
+      } else {
+        newColor = color;
+      }
     }
     _pipetteMode = false;
     _onPipettePicked = null;

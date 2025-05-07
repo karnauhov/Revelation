@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
 
 class ReplaceColorDialog extends StatefulWidget {
@@ -65,12 +64,52 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 ),
               ),
               IconButton(
+                icon: const Icon(Icons.palette),
+                tooltip: AppLocalizations.of(context)!.palette,
+                onPressed: () async {
+                  Color picked = colorToReplace;
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(AppLocalizations.of(context)!.select_color),
+                        content: SingleChildScrollView(
+                          child: ColorPicker(
+                            pickerColor: picked,
+                            onColorChanged: (color) {
+                              picked = color;
+                            },
+                            pickerAreaHeightPercent: 0.8,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text(AppLocalizations.of(context)!.cancel),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          TextButton(
+                            child: Text(AppLocalizations.of(context)!.ok),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                colorToReplace = picked;
+                              });
+                              widget.onApply(
+                                  colorToReplace, newColor, tolerance);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+              IconButton(
                 icon: const Icon(Icons.colorize),
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
                   Navigator.of(context).pop();
                   widget.viewModel.startPipetteMode((pickedColor) {
-                    log.d("PickedColor: $pickedColor");
                     showDialog(
                       context: widget.parentContext,
                       useRootNavigator: false,
@@ -106,7 +145,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                         );
                       },
                     );
-                  });
+                  }, true);
                 },
               )
             ],
@@ -169,6 +208,50 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   );
                 },
               ),
+              IconButton(
+                icon: const Icon(Icons.colorize),
+                tooltip: AppLocalizations.of(context)!.eyedropper,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  widget.viewModel.startPipetteMode((pickedColor) {
+                    showDialog(
+                      context: widget.parentContext,
+                      useRootNavigator: false,
+                      barrierColor: Colors.transparent,
+                      builder: (context) {
+                        return Stack(
+                          children: [
+                            Positioned(
+                              right: -35,
+                              top: 75,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                    minWidth: 350, maxWidth: 450),
+                                child: ReplaceColorDialog(
+                                  viewModel: widget.viewModel,
+                                  parentContext: widget.parentContext,
+                                  onApply:
+                                      (colorToReplace, newColor, tolerance) {
+                                    widget.viewModel.applyColorReplacement(
+                                        colorToReplace, newColor, tolerance);
+                                  },
+                                  onCancel: () {
+                                    widget.viewModel.resetColorReplacement();
+                                  },
+                                  colorToReplace:
+                                      widget.viewModel.colorToReplace,
+                                  newColor: widget.viewModel.newColor,
+                                  tolerance: widget.viewModel.tolerance,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }, false);
+                },
+              )
             ],
           ),
           const SizedBox(height: 8),

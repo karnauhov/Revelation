@@ -201,7 +201,7 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
-        icon: const Icon(Icons.colorize),
+        icon: const Icon(Icons.format_paint),
         tooltip: AppLocalizations.of(context)!.color_replacement,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
@@ -387,7 +387,7 @@ class PrimarySourceToolbar extends StatelessWidget {
                         viewModel.primarySource.permissionsReceived,
                     child: Row(
                       children: [
-                        const Icon(Icons.colorize, color: Colors.black54),
+                        const Icon(Icons.format_paint, color: Colors.black54),
                         const SizedBox(width: 8),
                         Text(AppLocalizations.of(context)!.color_replacement),
                       ],

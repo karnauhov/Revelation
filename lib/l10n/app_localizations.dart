@@ -544,7 +544,7 @@ abstract class AppLocalizations {
   /// No description provided for @pick_color_description.
   ///
   /// In en, this message translates to:
-  /// **'Click on the area of the image whose color you want to change (you can zoom in on this area if needed)'**
+  /// **'Click on the area of the image where you want to pick a color. You can zoom in if needed.'**
   String get pick_color_description;
 
   /// No description provided for @tolerance.
