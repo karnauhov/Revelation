@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
+import 'package:vector_math/vector_math_64.dart';
 
 const invertMatrix = <double>[
   -1, 0, 0, 0, 255, // R = 255 - R
@@ -79,16 +80,18 @@ class ImagePreviewState extends State<ImagePreview> {
             onTapDown: (TapDownDetails details) async {
               final renderBox = context.findRenderObject() as RenderBox;
               final local = renderBox.globalToLocal(details.globalPosition);
-              final scaleX =
-                  widget.controller.imageSize!.width / renderBox.size.width;
-              final scaleY =
-                  widget.controller.imageSize!.height / renderBox.size.height;
-              final px = (local.dx * scaleX)
+              final matrix = widget.controller.transformationController.value;
+              final inverseMatrix = Matrix4.inverted(matrix);
+
+              final localPoint = Offset(local.dx, local.dy);
+              final transformed = inverseMatrix
+                  .transform3(Vector3(localPoint.dx, localPoint.dy, 0));
+              final px = transformed.x
                   .clamp(0, widget.controller.imageSize!.width - 1)
-                  .toInt();
-              final py = (local.dy * scaleY)
+                  .round();
+              final py = transformed.y
                   .clamp(0, widget.controller.imageSize!.height - 1)
-                  .toInt();
+                  .round();
 
               final ui.Image decoded =
                   await decodeImageFromList(widget.imageData);
