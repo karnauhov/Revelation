@@ -134,6 +134,10 @@ class PrimarySourceScreen extends StatelessWidget {
                                           isMonochrome: viewModel.isMonochrome,
                                           brightness: viewModel.brightness,
                                           contrast: viewModel.contrast,
+                                          colorToReplace:
+                                              viewModel.colorToReplace,
+                                          newColor: viewModel.newColor,
+                                          tolerance: viewModel.tolerance,
                                         )
                                       : Center(
                                           child: Text(

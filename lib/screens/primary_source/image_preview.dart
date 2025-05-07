@@ -27,6 +27,9 @@ class ImagePreview extends StatefulWidget {
   final bool isMonochrome;
   final double brightness;
   final double contrast;
+  final Color colorToReplace;
+  final Color newColor;
+  final double tolerance;
 
   const ImagePreview({
     required this.imageData,
@@ -35,6 +38,9 @@ class ImagePreview extends StatefulWidget {
     required this.isMonochrome,
     required this.brightness,
     required this.contrast,
+    required this.colorToReplace,
+    required this.newColor,
+    required this.tolerance,
     super.key,
   });
 
@@ -58,17 +64,6 @@ class ImagePreviewState extends State<ImagePreview> {
         }
         widget.controller.setImageSize(widget.controller.imageSize!,
             constraints.maxWidth, constraints.maxHeight);
-
-        // Calculate brightness and contrast adjustments
-        double contrastFactor = widget.contrast / 100.0;
-        double brightnessOffset = widget.brightness * 2.55;
-        double offset = 128 - contrastFactor * 128 + brightnessOffset;
-        List<double> brightnessContrastMatrix = [
-          contrastFactor, 0, 0, 0, offset, //R
-          0, contrastFactor, 0, 0, offset, //G
-          0, 0, contrastFactor, 0, offset, //B
-          0, 0, 0, 1, 0 //A
-        ];
 
         final vm = context.watch<PrimarySourceViewModel>();
         Widget imageWidget = Image.memory(widget.imageData);
@@ -109,7 +104,18 @@ class ImagePreviewState extends State<ImagePreview> {
             child: imageWidget,
           );
         } else {
+          // TODO implement color replacement by using colorToReplace, newColor, tolerance
+
           // Apply brightness and contrast filter
+          double contrastFactor = widget.contrast / 100.0;
+          double brightnessOffset = widget.brightness * 2.55;
+          double offset = 128 - contrastFactor * 128 + brightnessOffset;
+          List<double> brightnessContrastMatrix = [
+            contrastFactor, 0, 0, 0, offset, //R
+            0, contrastFactor, 0, 0, offset, //G
+            0, 0, contrastFactor, 0, offset, //B
+            0, 0, 0, 1, 0 //A
+          ];
           imageWidget = ColorFiltered(
             colorFilter: ColorFilter.matrix(brightnessContrastMatrix),
             child: imageWidget,
