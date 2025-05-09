@@ -1440,7 +1440,7 @@ class PrimarySourcesRepository {
           attributes: [
             {
               "text":
-                  "📜 Papyrus Collection, Special Collections, Wright Library, Princeton Theological Seminary",
+                  "📜 Papyrus Collection, Special Collections and Archives, Wright Library, Princeton Theological Seminary, USA",
               "url":
                   "https://ptsem.edu/library/collections/special/policies-and-forms/publish"
             },
