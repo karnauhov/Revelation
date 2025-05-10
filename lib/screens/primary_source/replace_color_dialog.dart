@@ -6,8 +6,9 @@ import 'package:revelation/viewmodels/primary_source_view_model.dart';
 class ReplaceColorDialog extends StatefulWidget {
   final PrimarySourceViewModel viewModel;
   final BuildContext parentContext;
-  final Function(Color, Color, double) onApply;
+  final Function(Rect?, Color, Color, double) onApply;
   final Function() onCancel;
+  final Rect? selectedArea;
   final Color colorToReplace;
   final Color newColor;
   final double tolerance;
@@ -17,9 +18,10 @@ class ReplaceColorDialog extends StatefulWidget {
     required this.parentContext,
     required this.onApply,
     required this.onCancel,
+    this.selectedArea,
     this.colorToReplace = const Color(0xFFFFFFFF),
     this.newColor = const Color(0xFFFFFFFF),
-    this.tolerance = 1.0,
+    this.tolerance = 0.0,
     super.key,
   });
 
@@ -28,6 +30,7 @@ class ReplaceColorDialog extends StatefulWidget {
 }
 
 class ReplaceColorDialogState extends State<ReplaceColorDialog> {
+  late Rect? selectedArea;
   late Color colorToReplace;
   late Color newColor;
   late double tolerance;
@@ -35,6 +38,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
   @override
   void initState() {
     super.initState();
+    selectedArea = widget.selectedArea;
     colorToReplace = widget.colorToReplace;
     newColor = widget.newColor;
     tolerance = widget.tolerance;
@@ -47,6 +51,72 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '${AppLocalizations.of(context)!.area}:',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  widget.viewModel.selectedArea == null
+                      ? AppLocalizations.of(context)!.not_selected
+                      : '(${widget.viewModel.selectedArea!.left.toStringAsFixed(0)}, ${widget.viewModel.selectedArea!.top.toStringAsFixed(0)}) - (${widget.viewModel.selectedArea!.right.toStringAsFixed(0)}, ${widget.viewModel.selectedArea!.bottom.toStringAsFixed(0)})',
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.crop),
+                tooltip: AppLocalizations.of(context)!.area_selection,
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  widget.viewModel.startSelectAreaMode((onSelected) {
+                    showDialog(
+                      context: widget.parentContext,
+                      useRootNavigator: false,
+                      barrierColor: Colors.transparent,
+                      builder: (context) {
+                        return Stack(
+                          children: [
+                            Positioned(
+                              right: -35,
+                              top: 75,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                    minWidth: 350, maxWidth: 450),
+                                child: ReplaceColorDialog(
+                                  viewModel: widget.viewModel,
+                                  parentContext: widget.parentContext,
+                                  onApply: (selectedArea, colorToReplace,
+                                      newColor, tolerance) {
+                                    widget.viewModel.applyColorReplacement(
+                                        selectedArea,
+                                        colorToReplace,
+                                        newColor,
+                                        tolerance);
+                                  },
+                                  onCancel: () {
+                                    widget.viewModel.resetColorReplacement();
+                                  },
+                                  selectedArea: widget.viewModel.selectedArea,
+                                  colorToReplace:
+                                      widget.viewModel.colorToReplace,
+                                  newColor: widget.viewModel.newColor,
+                                  tolerance: widget.viewModel.tolerance,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
@@ -94,8 +164,8 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                               setState(() {
                                 colorToReplace = picked;
                               });
-                              widget.onApply(
-                                  colorToReplace, newColor, tolerance);
+                              widget.onApply(selectedArea, colorToReplace,
+                                  newColor, tolerance);
                             },
                           ),
                         ],
@@ -126,14 +196,18 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                                 child: ReplaceColorDialog(
                                   viewModel: widget.viewModel,
                                   parentContext: widget.parentContext,
-                                  onApply:
-                                      (colorToReplace, newColor, tolerance) {
+                                  onApply: (selectedArea, colorToReplace,
+                                      newColor, tolerance) {
                                     widget.viewModel.applyColorReplacement(
-                                        colorToReplace, newColor, tolerance);
+                                        selectedArea,
+                                        colorToReplace,
+                                        newColor,
+                                        tolerance);
                                   },
                                   onCancel: () {
                                     widget.viewModel.resetColorReplacement();
                                   },
+                                  selectedArea: widget.viewModel.selectedArea,
                                   colorToReplace:
                                       widget.viewModel.colorToReplace,
                                   newColor: widget.viewModel.newColor,
@@ -198,8 +272,8 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                               setState(() {
                                 newColor = picked;
                               });
-                              widget.onApply(
-                                  colorToReplace, newColor, tolerance);
+                              widget.onApply(selectedArea, colorToReplace,
+                                  newColor, tolerance);
                             },
                           ),
                         ],
@@ -230,14 +304,18 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                                 child: ReplaceColorDialog(
                                   viewModel: widget.viewModel,
                                   parentContext: widget.parentContext,
-                                  onApply:
-                                      (colorToReplace, newColor, tolerance) {
+                                  onApply: (selectedArea, colorToReplace,
+                                      newColor, tolerance) {
                                     widget.viewModel.applyColorReplacement(
-                                        colorToReplace, newColor, tolerance);
+                                        selectedArea,
+                                        colorToReplace,
+                                        newColor,
+                                        tolerance);
                                   },
                                   onCancel: () {
                                     widget.viewModel.resetColorReplacement();
                                   },
+                                  selectedArea: widget.viewModel.selectedArea,
                                   colorToReplace:
                                       widget.viewModel.colorToReplace,
                                   newColor: widget.viewModel.newColor,
@@ -276,7 +354,8 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                     });
                   },
                   onChangeEnd: (value) {
-                    widget.onApply(colorToReplace, newColor, tolerance);
+                    widget.onApply(
+                        selectedArea, colorToReplace, newColor, tolerance);
                   },
                 ),
               ),
@@ -294,7 +373,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
         ),
         TextButton(
           onPressed: () {
-            widget.onApply(colorToReplace, newColor, tolerance);
+            widget.onApply(selectedArea, colorToReplace, newColor, tolerance);
             Navigator.of(context).pop();
           },
           child: Text(AppLocalizations.of(context)!.ok),

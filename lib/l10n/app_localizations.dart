@@ -499,6 +499,24 @@ abstract class AppLocalizations {
   /// **'Reset'**
   String get reset;
 
+  /// No description provided for @area.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get area;
+
+  /// No description provided for @not_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not selected'**
+  String get not_selected;
+
+  /// No description provided for @area_selection.
+  ///
+  /// In en, this message translates to:
+  /// **'Area selection'**
+  String get area_selection;
+
   /// No description provided for @color_replacement.
   ///
   /// In en, this message translates to:
@@ -514,7 +532,7 @@ abstract class AppLocalizations {
   /// No description provided for @eyedropper.
   ///
   /// In en, this message translates to:
-  /// **'Eyedropper'**
+  /// **'Color selection'**
   String get eyedropper;
 
   /// No description provided for @new_color.
@@ -535,6 +553,18 @@ abstract class AppLocalizations {
   /// **'Select color'**
   String get select_color;
 
+  /// No description provided for @select_area_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an area on the image'**
+  String get select_area_header;
+
+  /// No description provided for @select_area_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a rectangular area on the image: touch the starting point, drag, and release. You can zoom in and move the image if needed.'**
+  String get select_area_description;
+
   /// No description provided for @pick_color_header.
   ///
   /// In en, this message translates to:
@@ -544,7 +574,7 @@ abstract class AppLocalizations {
   /// No description provided for @pick_color_description.
   ///
   /// In en, this message translates to:
-  /// **'Click on the area of the image where you want to pick a color. You can zoom in if needed.'**
+  /// **'Click on the area of the image where you want to pick a color. You can zoom in and move the image if needed.'**
   String get pick_color_description;
 
   /// No description provided for @tolerance.

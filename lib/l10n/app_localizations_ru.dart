@@ -210,13 +210,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get reset => 'Сбросить';
 
   @override
+  String get area => 'Область';
+
+  @override
+  String get not_selected => 'Не выделена';
+
+  @override
+  String get area_selection => 'Выделение области';
+
+  @override
   String get color_replacement => 'Замена цвета';
 
   @override
   String get color_to_replace => 'Цвет для замены';
 
   @override
-  String get eyedropper => 'Пипетка';
+  String get eyedropper => 'Выбор цвета';
 
   @override
   String get new_color => 'Новый цвет';
@@ -228,10 +237,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get select_color => 'Выберите цвет';
 
   @override
+  String get select_area_header => 'Выберите область на изображении';
+
+  @override
+  String get select_area_description => 'Выделите прямоугольную область на изображении: коснитесь начальной точки, проведите и отпустите. При необходимости вы можете увеличить или передвинуть изображение.';
+
+  @override
   String get pick_color_header => 'Выберите точку на изображении';
 
   @override
-  String get pick_color_description => 'Нажмите на область изображения, откуда вы хотите выбрать цвет. При необходимости вы можете увеличить изображение.';
+  String get pick_color_description => 'Нажмите на область изображения, откуда вы хотите выбрать цвет. При необходимости вы можете увеличить или передвинуть изображение.';
 
   @override
   String get tolerance => 'Допуск';

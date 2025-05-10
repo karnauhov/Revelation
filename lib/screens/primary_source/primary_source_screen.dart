@@ -9,9 +9,9 @@ import 'package:revelation/screens/primary_source/primary_source_toolbar.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
 
-// Define the intent for exiting pipette mode
-class ExitPipetteModeIntent extends Intent {
-  const ExitPipetteModeIntent();
+// Define the intent for exiting pipette or selectArea mode
+class ExitChooseModeIntent extends Intent {
+  const ExitChooseModeIntent();
 }
 
 class PrimarySourceScreen extends StatelessWidget {
@@ -40,25 +40,30 @@ class PrimarySourceScreen extends StatelessWidget {
           final bool isBottom = _isBottomToolbar(screenWidth, dropdownWidth);
 
           return PopScope(
-            canPop: !viewModel.pipetteMode,
+            canPop: !viewModel.pipetteMode && !viewModel.selectAreaMode,
             onPopInvokedWithResult: (didPop, result) {
               if (!didPop && viewModel.pipetteMode) {
                 viewModel.finishPipetteMode(null);
+              }
+              if (!didPop && viewModel.selectAreaMode) {
+                viewModel.finishSelectAreaMode(null);
               }
             },
             child: Shortcuts(
               shortcuts: {
                 const SingleActivator(LogicalKeyboardKey.escape):
-                    const ExitPipetteModeIntent(),
+                    const ExitChooseModeIntent(),
                 const SingleActivator(LogicalKeyboardKey.backspace):
-                    const ExitPipetteModeIntent(),
+                    const ExitChooseModeIntent(),
               },
               child: Actions(
                 actions: {
-                  ExitPipetteModeIntent: CallbackAction<ExitPipetteModeIntent>(
+                  ExitChooseModeIntent: CallbackAction<ExitChooseModeIntent>(
                     onInvoke: (intent) {
                       if (viewModel.pipetteMode) {
                         viewModel.finishPipetteMode(null);
+                      } else if (viewModel.selectAreaMode) {
+                        viewModel.finishSelectAreaMode(null);
                       }
                       return null;
                     },
@@ -67,52 +72,64 @@ class PrimarySourceScreen extends StatelessWidget {
                 child: Focus(
                   autofocus: true,
                   child: Scaffold(
-                    appBar: viewModel.pipetteMode
+                    appBar: viewModel.selectAreaMode
                         ? AppBar(
                             title: Text(
-                              AppLocalizations.of(context)!.pick_color_header,
+                              AppLocalizations.of(context)!.select_area_header,
                               style: Theme.of(context)
                                   .textTheme
                                   .headlineSmall
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           )
-                        : AppBar(
-                            title: getStyledText(
-                              primarySource.title,
-                              Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            actions: isBottom
-                                ? null
-                                : [
-                                    PrimarySourceToolbar(
-                                      viewModel: viewModel,
-                                      primarySource: primarySource,
-                                      isBottom: false,
-                                      dropdownWidth: dropdownWidth,
-                                      screenContext: context,
-                                    ),
-                                  ],
-                            bottom: isBottom
-                                ? PreferredSize(
-                                    preferredSize: const Size.fromHeight(32.0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0),
-                                      child: PrimarySourceToolbar(
-                                        viewModel: viewModel,
-                                        primarySource: primarySource,
-                                        isBottom: true,
-                                        dropdownWidth: dropdownWidth,
-                                        screenContext: context,
-                                      ),
-                                    ),
-                                  )
-                                : null,
-                          ),
+                        : viewModel.pipetteMode
+                            ? AppBar(
+                                title: Text(
+                                  AppLocalizations.of(context)!
+                                      .pick_color_header,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              )
+                            : AppBar(
+                                title: getStyledText(
+                                  primarySource.title,
+                                  Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                actions: isBottom
+                                    ? null
+                                    : [
+                                        PrimarySourceToolbar(
+                                          viewModel: viewModel,
+                                          primarySource: primarySource,
+                                          isBottom: false,
+                                          dropdownWidth: dropdownWidth,
+                                          screenContext: context,
+                                        ),
+                                      ],
+                                bottom: isBottom
+                                    ? PreferredSize(
+                                        preferredSize:
+                                            const Size.fromHeight(32.0),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16.0),
+                                          child: PrimarySourceToolbar(
+                                            viewModel: viewModel,
+                                            primarySource: primarySource,
+                                            isBottom: true,
+                                            dropdownWidth: dropdownWidth,
+                                            screenContext: context,
+                                          ),
+                                        ),
+                                      )
+                                    : null,
+                              ),
                     body: Column(
                       children: [
                         Expanded(
@@ -129,11 +146,14 @@ class PrimarySourceScreen extends StatelessWidget {
                                   : viewModel.imageData != null
                                       ? ImagePreview(
                                           imageData: viewModel.imageData!,
+                                          imageName: viewModel.imageName,
                                           controller: viewModel.imageController,
                                           isNegative: viewModel.isNegative,
                                           isMonochrome: viewModel.isMonochrome,
                                           brightness: viewModel.brightness,
                                           contrast: viewModel.contrast,
+                                          replaceRegion:
+                                              Rect.fromLTRB(100, 100, 300, 300),
                                           colorToReplace:
                                               viewModel.colorToReplace,
                                           newColor: viewModel.newColor,
@@ -154,41 +174,50 @@ class PrimarySourceScreen extends StatelessWidget {
                             alignment: Alignment.centerRight,
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 2),
-                              child: viewModel.pipetteMode
+                              child: viewModel.selectAreaMode
                                   ? Text(
                                       AppLocalizations.of(context)!
-                                          .pick_color_description,
+                                          .select_area_description,
                                       style: theme.bodySmall!
                                           .copyWith(fontSize: 10),
                                     )
-                                  : Text.rich(
-                                      TextSpan(
-                                        style: theme.bodySmall!
-                                            .copyWith(fontSize: 10),
-                                        children: [
-                                          if (viewModel.isMobileWeb)
-                                            TextSpan(
-                                              text:
-                                                  '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
-                                              style: const TextStyle(
-                                                  color: Colors.blue),
-                                              recognizer: TapGestureRecognizer()
-                                                ..onTap = () {
-                                                  showCustomDialog(
-                                                      MessageType.warningCommon,
-                                                      param: AppLocalizations
-                                                              .of(context)!
-                                                          .low_quality_message);
-                                                },
-                                            ),
-                                          ..._buildLinkSpans(
-                                              primarySource.attributes!),
-                                        ],
-                                      ),
-                                      maxLines: 5,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                  : viewModel.pipetteMode
+                                      ? Text(
+                                          AppLocalizations.of(context)!
+                                              .pick_color_description,
+                                          style: theme.bodySmall!
+                                              .copyWith(fontSize: 10),
+                                        )
+                                      : Text.rich(
+                                          TextSpan(
+                                            style: theme.bodySmall!
+                                                .copyWith(fontSize: 10),
+                                            children: [
+                                              if (viewModel.isMobileWeb)
+                                                TextSpan(
+                                                  text:
+                                                      '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
+                                                  style: const TextStyle(
+                                                      color: Colors.blue),
+                                                  recognizer:
+                                                      TapGestureRecognizer()
+                                                        ..onTap = () {
+                                                          showCustomDialog(
+                                                              MessageType
+                                                                  .warningCommon,
+                                                              param: AppLocalizations
+                                                                      .of(context)!
+                                                                  .low_quality_message);
+                                                        },
+                                                ),
+                                              ..._buildLinkSpans(
+                                                  primarySource.attributes!),
+                                            ],
+                                          ),
+                                          maxLines: 5,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                             ),
                           ),
                         if (primarySource.attributes == null ||

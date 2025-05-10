@@ -462,13 +462,14 @@ class PrimarySourceToolbar extends StatelessWidget {
                 child: ReplaceColorDialog(
                   viewModel: viewModel,
                   parentContext: screenContext,
-                  onApply: (colorToReplace, newColor, tolerance) {
+                  onApply: (selectedArea, colorToReplace, newColor, tolerance) {
                     viewModel.applyColorReplacement(
-                        colorToReplace, newColor, tolerance);
+                        selectedArea, colorToReplace, newColor, tolerance);
                   },
                   onCancel: () {
                     viewModel.resetColorReplacement();
                   },
+                  selectedArea: viewModel.selectedArea,
                   colorToReplace: viewModel.colorToReplace,
                   newColor: viewModel.newColor,
                   tolerance: viewModel.tolerance,

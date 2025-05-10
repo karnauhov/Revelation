@@ -14,15 +14,17 @@ class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySource primarySource;
   model.Page? selectedPage;
   Uint8List? imageData;
+  String imageName = "";
   bool isLoading = false;
   bool refreshError = false;
   bool isNegative = false;
   bool isMonochrome = false;
   double brightness = 0;
   double contrast = 100;
+  Rect? selectedArea;
   Color colorToReplace = const Color(0xFFFFFFFF);
   Color newColor = const Color(0xFFFFFFFF);
-  double tolerance = 1;
+  double tolerance = 0;
 
   final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
@@ -35,10 +37,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool _pipetteMode = false;
   void Function(Color?)? _onPipettePicked;
   bool _isColorToReplace = true;
+  bool _selectAreaMode = false;
+  void Function(Rect?)? _onAreaSelected;
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
   bool get pipetteMode => _pipetteMode;
+  bool get selectAreaMode => _selectAreaMode;
 
   PrimarySourceViewModel({required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
@@ -97,6 +102,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       if (!isReload && await file.exists()) {
         final bytes = await file.readAsBytes();
         imageData = bytes;
+        imageName = "${primarySource.hashCode}_$page";
         isLoading = false;
         localPageLoaded[page] = true;
       } else {
@@ -143,6 +149,22 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void startSelectAreaMode(void Function(Rect?) onSelected) {
+    _selectAreaMode = true;
+    _onAreaSelected = onSelected;
+    notifyListeners();
+  }
+
+  void finishSelectAreaMode(Rect? selectRect) {
+    if (_selectAreaMode && _onAreaSelected != null) {
+      _onAreaSelected!(selectRect);
+    }
+    selectedArea = selectRect;
+    _selectAreaMode = false;
+    _onAreaSelected = null;
+    notifyListeners();
+  }
+
   void startPipetteMode(void Function(Color?) onPicked, bool isColorToReplace) {
     _pipetteMode = true;
     _onPipettePicked = onPicked;
@@ -166,8 +188,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void applyColorReplacement(
-      Color colorToReplace, Color newColor, double tolerance) {
+  void applyColorReplacement(Rect? selectedArea, Color colorToReplace,
+      Color newColor, double tolerance) {
+    this.selectedArea = selectedArea;
     this.colorToReplace = colorToReplace;
     this.newColor = newColor;
     this.tolerance = tolerance;
@@ -175,9 +198,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void resetColorReplacement() {
+    selectedArea = null;
     colorToReplace = const Color(0xFFFFFFFF);
     newColor = const Color(0xFFFFFFFF);
-    tolerance = 1;
+    tolerance = 0;
     notifyListeners();
   }
 
@@ -211,6 +235,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
       refreshError = false;
       imageData = fileBytes;
+      imageName = "${primarySource.hashCode}_$page";
       return true;
     } catch (e) {
       log.e('Image downloading error: $e');
@@ -220,6 +245,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
         return localPageLoaded[page]!;
       } else {
         imageData = null;
+        imageName = "";
         return false;
       }
     }

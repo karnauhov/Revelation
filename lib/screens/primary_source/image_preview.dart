@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
@@ -22,22 +23,26 @@ const grayscaleMatrix = <double>[
 
 class ImagePreview extends StatefulWidget {
   final Uint8List imageData;
+  final String imageName;
   final ImagePreviewController controller;
   final bool isNegative;
   final bool isMonochrome;
   final double brightness;
   final double contrast;
+  final Rect? replaceRegion;
   final Color colorToReplace;
   final Color newColor;
   final double tolerance;
 
   const ImagePreview({
     required this.imageData,
+    required this.imageName,
     required this.controller,
     required this.isNegative,
     required this.isMonochrome,
     required this.brightness,
     required this.contrast,
+    required this.replaceRegion,
     required this.colorToReplace,
     required this.newColor,
     required this.tolerance,
@@ -49,10 +54,15 @@ class ImagePreview extends StatefulWidget {
 }
 
 class ImagePreviewState extends State<ImagePreview> {
+  String? _imageName;
+  img.Image? _original;
+
   @override
   void initState() {
     super.initState();
     _decodeImage();
+    _original = null;
+    _imageName = null;
   }
 
   @override
@@ -66,10 +76,15 @@ class ImagePreviewState extends State<ImagePreview> {
             constraints.maxWidth, constraints.maxHeight);
 
         final vm = context.watch<PrimarySourceViewModel>();
-        Widget imageWidget = Image.memory(widget.imageData);
+        Widget imageWidget;
         Widget wrapped;
 
-        if (vm.pipetteMode) {
+        if (vm.selectAreaMode) {
+          // TODO Implement select area
+          imageWidget = Image.memory(widget.imageData);
+          wrapped = imageWidget;
+        } else if (vm.pipetteMode) {
+          imageWidget = Image.memory(widget.imageData);
           wrapped = GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapDown: (TapDownDetails details) async {
@@ -104,17 +119,43 @@ class ImagePreviewState extends State<ImagePreview> {
             child: imageWidget,
           );
         } else {
-          // TODO implement color replacement by using colorToReplace, newColor, tolerance
+          // Color replacement
+          imageWidget = Stack(
+            children: [
+              Image.memory(widget.imageData),
+              if (widget.tolerance > 0 && widget.replaceRegion != null)
+                FutureBuilder<Uint8List>(
+                  future: _createModifiedRegionImage(
+                    region: widget.replaceRegion!,
+                    data: widget.imageData,
+                    target: widget.colorToReplace,
+                    replacement: widget.newColor,
+                    tolerance: widget.tolerance,
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done ||
+                        snapshot.data == null) {
+                      return const SizedBox.shrink();
+                    }
+                    return Positioned(
+                      left: widget.replaceRegion!.left,
+                      top: widget.replaceRegion!.top,
+                      child: Image.memory(snapshot.data!),
+                    );
+                  },
+                ),
+            ],
+          );
 
           // Apply brightness and contrast filter
           double contrastFactor = widget.contrast / 100.0;
           double brightnessOffset = widget.brightness * 2.55;
           double offset = 128 - contrastFactor * 128 + brightnessOffset;
           List<double> brightnessContrastMatrix = [
-            contrastFactor, 0, 0, 0, offset, //R
-            0, contrastFactor, 0, 0, offset, //G
-            0, 0, contrastFactor, 0, offset, //B
-            0, 0, 0, 1, 0 //A
+            contrastFactor, 0, 0, 0, offset, // R
+            0, contrastFactor, 0, 0, offset, // G
+            0, 0, contrastFactor, 0, offset, // B
+            0, 0, 0, 1, 0 // A
           ];
           imageWidget = ColorFiltered(
             colorFilter: ColorFilter.matrix(brightnessContrastMatrix),
@@ -140,9 +181,12 @@ class ImagePreviewState extends State<ImagePreview> {
         }
 
         return MouseRegion(
-          cursor: vm.pipetteMode
-              ? SystemMouseCursors.precise
-              : SystemMouseCursors.grab,
+          cursor: vm.selectAreaMode
+              ? SystemMouseCursors
+                  .resizeUpLeftDownRight //TODO choose correct cursor for this mode
+              : vm.pipetteMode
+                  ? SystemMouseCursors.precise
+                  : SystemMouseCursors.grab,
           child: InteractiveViewer(
             transformationController:
                 widget.controller.transformationController,
@@ -169,5 +213,55 @@ class ImagePreviewState extends State<ImagePreview> {
         });
       }
     });
+  }
+
+  Future<Uint8List> _createModifiedRegionImage({
+    required Rect region,
+    required Uint8List data,
+    required Color target,
+    required Color replacement,
+    required double tolerance,
+  }) async {
+    if (tolerance == 0) return Uint8List(0);
+    if (_imageName == null ||
+        _original == null ||
+        _imageName != widget.imageName) {
+      _original = img.decodeImage(widget.imageData);
+      _imageName = widget.imageName;
+    }
+
+    final int startX = region.left.toInt().clamp(0, _original!.width - 1);
+    final int startY = region.top.toInt().clamp(0, _original!.height - 1);
+    final int width =
+        (region.width.toInt()).clamp(0, _original!.width - startX);
+    final int height =
+        (region.height.toInt()).clamp(0, _original!.height - startY);
+
+    if (width <= 0 || height <= 0) return Uint8List(0);
+
+    final img.Image regionImage = img.copyCrop(_original!,
+        x: startX, y: startY, width: width, height: height);
+
+    final int r0 = (target.r * 255).round();
+    final int g0 = (target.g * 255).round();
+    final int b0 = (target.b * 255).round();
+    final int replacementR = (replacement.r * 255).round();
+    final int replacementG = (replacement.g * 255).round();
+    final int replacementB = (replacement.b * 255).round();
+    final double tolSq = tolerance * tolerance;
+
+    for (int y = 0; y < regionImage.height; y++) {
+      for (int x = 0; x < regionImage.width; x++) {
+        final img.Pixel px = regionImage.getPixel(x, y);
+        final int r = px.r.toInt(), g = px.g.toInt(), b = px.b.toInt();
+        final int dr = r - r0, dg = g - g0, db = b - b0;
+        if (dr * dr + dg * dg + db * db <= tolSq) {
+          regionImage.setPixelRgba(
+              x, y, replacementR, replacementG, replacementB, px.a);
+        }
+      }
+    }
+
+    return Uint8List.fromList(img.encodePng(regionImage));
   }
 }

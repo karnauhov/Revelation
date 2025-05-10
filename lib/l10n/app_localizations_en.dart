@@ -210,13 +210,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reset => 'Reset';
 
   @override
+  String get area => 'Area';
+
+  @override
+  String get not_selected => 'Not selected';
+
+  @override
+  String get area_selection => 'Area selection';
+
+  @override
   String get color_replacement => 'Color replacement';
 
   @override
   String get color_to_replace => 'Color to replace';
 
   @override
-  String get eyedropper => 'Eyedropper';
+  String get eyedropper => 'Color selection';
 
   @override
   String get new_color => 'New color';
@@ -228,10 +237,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_color => 'Select color';
 
   @override
+  String get select_area_header => 'Select an area on the image';
+
+  @override
+  String get select_area_description => 'Select a rectangular area on the image: touch the starting point, drag, and release. You can zoom in and move the image if needed.';
+
+  @override
   String get pick_color_header => 'Select a point on the image';
 
   @override
-  String get pick_color_description => 'Click on the area of the image where you want to pick a color. You can zoom in if needed.';
+  String get pick_color_description => 'Click on the area of the image where you want to pick a color. You can zoom in and move the image if needed.';
 
   @override
   String get tolerance => 'Tolerance';
