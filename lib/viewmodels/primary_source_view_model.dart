@@ -39,11 +39,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool _isColorToReplace = true;
   bool _selectAreaMode = false;
   void Function(Rect?)? _onAreaSelected;
+  bool _isMenuOpen = false;
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
   bool get pipetteMode => _pipetteMode;
   bool get selectAreaMode => _selectAreaMode;
+  bool get isMenuOpen => _isMenuOpen;
 
   PrimarySourceViewModel({required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
@@ -203,6 +205,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
     colorToReplace = const Color(0xFFFFFFFF);
     newColor = const Color(0xFFFFFFFF);
     tolerance = 0;
+    notifyListeners();
+  }
+
+  void setMenuOpen(bool value) {
+    _isMenuOpen = value;
     notifyListeners();
   }
 

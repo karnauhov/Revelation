@@ -121,8 +121,8 @@ class PrimarySourceToolbar extends StatelessWidget {
                       MediaQuery.of(context).size.height,
                     );
                     final viewportCenter = Offset(
-                      MediaQuery.of(context).size.width / 2,
-                      MediaQuery.of(context).size.height / 2,
+                      viewportSize.width / 2,
+                      viewportSize.height / 2,
                     );
                     viewModel.imageController
                         .zoomOut(viewportCenter, viewportSize);
@@ -227,214 +227,244 @@ class PrimarySourceToolbar extends StatelessWidget {
         ValueListenableBuilder<ZoomStatus>(
           valueListenable: viewModel.zoomStatusNotifier,
           builder: (context, zoomStatus, child) {
-            return PopupMenuButton<String>(
+            final GlobalKey menuKey = GlobalKey();
+            return IconButton(
+              key: menuKey,
               icon: const Icon(Icons.more_vert),
               tooltip: AppLocalizations.of(context)!.menu,
-              onSelected: (value) {
-                switch (value) {
-                  case 'refresh':
-                    if (viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived) {
-                      viewModel.loadImage(viewModel.selectedPage!.image,
-                          isReload: true);
-                    }
-                    break;
-                  case 'zoom_in':
-                    if (zoomStatus.canZoomIn) {
-                      final viewportCenter = Offset(
-                        MediaQuery.of(context).size.width / 2,
-                        MediaQuery.of(context).size.height / 2,
-                      );
-                      viewModel.imageController.zoomIn(viewportCenter);
-                    }
-                    break;
-                  case 'zoom_out':
-                    if (zoomStatus.canZoomOut) {
-                      final viewportSize = Size(
-                        MediaQuery.of(context).size.width,
-                        MediaQuery.of(context).size.height,
-                      );
-                      final viewportCenter = Offset(
-                        MediaQuery.of(context).size.width / 2,
-                        MediaQuery.of(context).size.height / 2,
-                      );
-                      viewModel.imageController
-                          .zoomOut(viewportCenter, viewportSize);
-                    }
-                    break;
-                  case 'reset':
-                    if (zoomStatus.canReset) {
-                      viewModel.imageController.backToMinScale();
-                    }
-                    break;
-                  case 'toggle_negative':
-                    if (viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived) {
-                      viewModel.toggleNegative();
-                    }
-                    break;
-                  case 'toggle_monochrome':
-                    if (viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived &&
-                        !viewModel.primarySource.isMonochrome) {
-                      viewModel.toggleMonochrome();
-                    }
-                    break;
-                  case 'brightness_contrast':
-                    if (viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived) {
-                      _showBrightnessContrastDialog();
-                    }
-                    break;
-                  case 'replace_color':
-                    if (viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived) {
-                      _showReplaceColorDialog();
-                    }
-                    break;
+              onPressed: () async {
+                final RenderBox button =
+                    menuKey.currentContext!.findRenderObject() as RenderBox;
+                final RenderBox overlay =
+                    Overlay.of(context).context.findRenderObject() as RenderBox;
+                final RelativeRect position = RelativeRect.fromRect(
+                  Rect.fromPoints(
+                    button.localToGlobal(Offset.zero, ancestor: overlay),
+                    button.localToGlobal(button.size.bottomRight(Offset.zero),
+                        ancestor: overlay),
+                  ),
+                  Offset.zero & overlay.size,
+                );
+
+                // Pre-calculate viewport size and center
+                final viewportSize = MediaQuery.of(context).size;
+                final viewportCenter = Offset(
+                  viewportSize.width / 2,
+                  viewportSize.height / 2,
+                );
+
+                viewModel.setMenuOpen(true);
+
+                final selectedValue = await showMenu<String>(
+                  context: context,
+                  position: position,
+                  items: [
+                    if (numButtons < 1)
+                      PopupMenuItem(
+                        value: 'refresh',
+                        enabled: viewModel.selectedPage != null &&
+                            viewModel.primarySource.permissionsReceived,
+                        child: Row(
+                          children: [
+                            viewModel.refreshError
+                                ? const Icon(Icons.sync_problem,
+                                    color: Colors.black54)
+                                : const Icon(Icons.sync, color: Colors.black54),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!.reload_image),
+                          ],
+                        ),
+                      ),
+                    if (numButtons < 2)
+                      PopupMenuItem(
+                        value: 'zoom_in',
+                        enabled: zoomStatus.canZoomIn,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.zoom_in, color: Colors.black54),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!.zoom_in),
+                          ],
+                        ),
+                      ),
+                    if (numButtons < 3)
+                      PopupMenuItem(
+                        value: 'zoom_out',
+                        enabled: zoomStatus.canZoomOut,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.zoom_out, color: Colors.black54),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!.zoom_out),
+                          ],
+                        ),
+                      ),
+                    if (numButtons < 4)
+                      PopupMenuItem(
+                        value: 'reset',
+                        enabled: zoomStatus.canReset,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.zoom_out_map,
+                                color: Colors.black54),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!
+                                .restore_original_scale),
+                          ],
+                        ),
+                      ),
+                    if (numButtons < 5) const PopupMenuDivider(),
+                    if (numButtons < 5)
+                      PopupMenuItem(
+                        padding: viewModel.isNegative
+                            ? const EdgeInsets.symmetric(horizontal: 4.0)
+                            : const EdgeInsets.symmetric(horizontal: 12.0),
+                        value: 'toggle_negative',
+                        enabled: viewModel.selectedPage != null &&
+                            viewModel.primarySource.permissionsReceived,
+                        child: Row(
+                          children: [
+                            if (viewModel.isNegative)
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary
+                                        .withAlpha((0.2 * 255).round())),
+                                child: Icon(Icons.invert_colors,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                            if (!viewModel.isNegative)
+                              Icon(Icons.invert_colors, color: null),
+                            if (!viewModel.isNegative) const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!.toggle_negative),
+                          ],
+                        ),
+                      ),
+                    if (numButtons < 6)
+                      PopupMenuItem(
+                        padding: viewModel.isMonochrome
+                            ? const EdgeInsets.symmetric(horizontal: 4.0)
+                            : const EdgeInsets.symmetric(horizontal: 12.0),
+                        value: 'toggle_monochrome',
+                        enabled: viewModel.selectedPage != null &&
+                            viewModel.primarySource.permissionsReceived &&
+                            !viewModel.primarySource.isMonochrome,
+                        child: Row(
+                          children: [
+                            if (viewModel.isMonochrome)
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary
+                                        .withAlpha((0.2 * 255).round())),
+                                child: Icon(Icons.monochrome_photos,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                            if (!viewModel.isMonochrome)
+                              Icon(Icons.monochrome_photos, color: null),
+                            if (!viewModel.isMonochrome)
+                              const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!
+                                .toggle_monochrome),
+                          ],
+                        ),
+                      ),
+                    if (numButtons < 7)
+                      PopupMenuItem(
+                        value: 'brightness_contrast',
+                        enabled: viewModel.selectedPage != null &&
+                            viewModel.primarySource.permissionsReceived,
+                        child: Row(
+                          children: [
+                            Icon(Icons.brightness_6, color: null),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!
+                                .brightness_contrast),
+                          ],
+                        ),
+                      ),
+                    if (numButtons < 8)
+                      PopupMenuItem(
+                        value: 'replace_color',
+                        enabled: viewModel.selectedPage != null &&
+                            viewModel.primarySource.permissionsReceived,
+                        child: Row(
+                          children: [
+                            Icon(Icons.format_paint, color: null),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!
+                                .color_replacement),
+                          ],
+                        ),
+                      ),
+                  ],
+                );
+
+                viewModel.setMenuOpen(false);
+
+                if (selectedValue != null) {
+                  switch (selectedValue) {
+                    case 'refresh':
+                      if (viewModel.selectedPage != null &&
+                          viewModel.primarySource.permissionsReceived) {
+                        viewModel.loadImage(viewModel.selectedPage!.image,
+                            isReload: true);
+                      }
+                      break;
+                    case 'zoom_in':
+                      if (zoomStatus.canZoomIn) {
+                        viewModel.imageController.zoomIn(viewportCenter);
+                      }
+                      break;
+                    case 'zoom_out':
+                      if (zoomStatus.canZoomOut) {
+                        viewModel.imageController
+                            .zoomOut(viewportCenter, viewportSize);
+                      }
+                      break;
+                    case 'reset':
+                      if (zoomStatus.canReset) {
+                        viewModel.imageController.backToMinScale();
+                      }
+                      break;
+                    case 'toggle_negative':
+                      if (viewModel.selectedPage != null &&
+                          viewModel.primarySource.permissionsReceived) {
+                        viewModel.toggleNegative();
+                      }
+                      break;
+                    case 'toggle_monochrome':
+                      if (viewModel.selectedPage != null &&
+                          viewModel.primarySource.permissionsReceived &&
+                          !viewModel.primarySource.isMonochrome) {
+                        viewModel.toggleMonochrome();
+                      }
+                      break;
+                    case 'brightness_contrast':
+                      if (viewModel.selectedPage != null &&
+                          viewModel.primarySource.permissionsReceived) {
+                        _showBrightnessContrastDialog();
+                      }
+                      break;
+                    case 'replace_color':
+                      if (viewModel.selectedPage != null &&
+                          viewModel.primarySource.permissionsReceived) {
+                        _showReplaceColorDialog();
+                      }
+                      break;
+                  }
                 }
               },
-              itemBuilder: (context) => [
-                if (numButtons < 1)
-                  PopupMenuItem(
-                    value: 'refresh',
-                    enabled: viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived,
-                    child: Row(
-                      children: [
-                        viewModel.refreshError
-                            ? const Icon(Icons.sync_problem,
-                                color: Colors.black54)
-                            : const Icon(Icons.sync, color: Colors.black54),
-                        const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.reload_image),
-                      ],
-                    ),
-                  ),
-                if (numButtons < 2)
-                  PopupMenuItem(
-                    value: 'zoom_in',
-                    enabled: zoomStatus.canZoomIn,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.zoom_in, color: Colors.black54),
-                        const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.zoom_in),
-                      ],
-                    ),
-                  ),
-                if (numButtons < 3)
-                  PopupMenuItem(
-                    value: 'zoom_out',
-                    enabled: zoomStatus.canZoomOut,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.zoom_out, color: Colors.black54),
-                        const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.zoom_out),
-                      ],
-                    ),
-                  ),
-                if (numButtons < 4)
-                  PopupMenuItem(
-                    value: 'reset',
-                    enabled: zoomStatus.canReset,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.zoom_out_map, color: Colors.black54),
-                        const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!
-                            .restore_original_scale),
-                      ],
-                    ),
-                  ),
-                if (numButtons < 5) const PopupMenuDivider(),
-                if (numButtons < 5)
-                  PopupMenuItem(
-                    padding: viewModel.isNegative
-                        ? const EdgeInsets.symmetric(horizontal: 4.0)
-                        : const EdgeInsets.symmetric(horizontal: 12.0),
-                    value: 'toggle_negative',
-                    enabled: viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived,
-                    child: Row(
-                      children: [
-                        if (viewModel.isNegative)
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .secondary
-                                    .withAlpha((0.2 * 255).round())),
-                            child: Icon(Icons.invert_colors,
-                                color: Theme.of(context).colorScheme.secondary),
-                          ),
-                        if (!viewModel.isNegative)
-                          Icon(Icons.invert_colors, color: null),
-                        if (!viewModel.isNegative) const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.toggle_negative),
-                      ],
-                    ),
-                  ),
-                if (numButtons < 6)
-                  PopupMenuItem(
-                    padding: viewModel.isMonochrome
-                        ? const EdgeInsets.symmetric(horizontal: 4.0)
-                        : const EdgeInsets.symmetric(horizontal: 12.0),
-                    value: 'toggle_monochrome',
-                    enabled: viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived &&
-                        !viewModel.primarySource.isMonochrome,
-                    child: Row(
-                      children: [
-                        if (viewModel.isMonochrome)
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .secondary
-                                    .withAlpha((0.2 * 255).round())),
-                            child: Icon(Icons.monochrome_photos,
-                                color: Theme.of(context).colorScheme.secondary),
-                          ),
-                        if (!viewModel.isMonochrome)
-                          Icon(Icons.monochrome_photos, color: null),
-                        if (!viewModel.isMonochrome) const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.toggle_monochrome),
-                      ],
-                    ),
-                  ),
-                if (numButtons < 7)
-                  PopupMenuItem(
-                    value: 'brightness_contrast',
-                    enabled: viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived,
-                    child: Row(
-                      children: [
-                        Icon(Icons.brightness_6, color: null),
-                        const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.brightness_contrast),
-                      ],
-                    ),
-                  ),
-                if (numButtons < 8)
-                  PopupMenuItem(
-                    value: 'replace_color',
-                    enabled: viewModel.selectedPage != null &&
-                        viewModel.primarySource.permissionsReceived,
-                    child: Row(
-                      children: [
-                        Icon(Icons.format_paint, color: null),
-                        const SizedBox(width: 8),
-                        Text(AppLocalizations.of(context)!.color_replacement),
-                      ],
-                    ),
-                  ),
-              ],
             );
           },
         ),

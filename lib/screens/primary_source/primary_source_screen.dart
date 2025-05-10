@@ -14,25 +14,59 @@ class ExitChooseModeIntent extends Intent {
   const ExitChooseModeIntent();
 }
 
-class PrimarySourceScreen extends StatelessWidget {
+class PrimarySourceScreen extends StatefulWidget {
   final PrimarySource primarySource;
   static final numButtons = 8;
 
   const PrimarySourceScreen({required this.primarySource, super.key});
 
   @override
+  PrimarySourceScreenState createState() => PrimarySourceScreenState();
+}
+
+class PrimarySourceScreenState extends State<PrimarySourceScreen>
+    with WidgetsBindingObserver {
+  late PrimarySourceViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    if (_viewModel.isMenuOpen) {
+      Navigator.of(context).pop();
+      _viewModel.setMenuOpen(false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final dropdownWidth = calcPagesListWidth(context);
     TextTheme theme = Theme.of(context).textTheme;
     return ChangeNotifierProvider<PrimarySourceViewModel>(
-      create: (_) => PrimarySourceViewModel(primarySource: primarySource),
+      create: (_) =>
+          PrimarySourceViewModel(primarySource: widget.primarySource),
       child: Consumer<PrimarySourceViewModel>(
         builder: (context, viewModel, child) {
-          if (primarySource.permissionsReceived &&
+          _viewModel = viewModel;
+
+          if (widget.primarySource.permissionsReceived &&
               viewModel.selectedPage != null &&
-              !primarySource.pages.contains(viewModel.selectedPage)) {
+              !widget.primarySource.pages.contains(viewModel.selectedPage)) {
             viewModel.changeSelectedPage(
-              primarySource.pages.isNotEmpty ? primarySource.pages.first : null,
+              widget.primarySource.pages.isNotEmpty
+                  ? widget.primarySource.pages.first
+                  : null,
             );
           }
 
@@ -95,7 +129,7 @@ class PrimarySourceScreen extends StatelessWidget {
                               )
                             : AppBar(
                                 title: getStyledText(
-                                  primarySource.title,
+                                  widget.primarySource.title,
                                   Theme.of(context)
                                       .textTheme
                                       .headlineSmall
@@ -106,7 +140,7 @@ class PrimarySourceScreen extends StatelessWidget {
                                     : [
                                         PrimarySourceToolbar(
                                           viewModel: viewModel,
-                                          primarySource: primarySource,
+                                          primarySource: widget.primarySource,
                                           isBottom: false,
                                           dropdownWidth: dropdownWidth,
                                           screenContext: context,
@@ -121,7 +155,7 @@ class PrimarySourceScreen extends StatelessWidget {
                                               horizontal: 16.0),
                                           child: PrimarySourceToolbar(
                                             viewModel: viewModel,
-                                            primarySource: primarySource,
+                                            primarySource: widget.primarySource,
                                             isBottom: true,
                                             dropdownWidth: dropdownWidth,
                                             screenContext: context,
@@ -166,9 +200,9 @@ class PrimarySourceScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        if (primarySource.attributes != null &&
-                            primarySource.attributes!.isNotEmpty &&
-                            primarySource.permissionsReceived)
+                        if (widget.primarySource.attributes != null &&
+                            widget.primarySource.attributes!.isNotEmpty &&
+                            widget.primarySource.permissionsReceived)
                           Align(
                             alignment: Alignment.centerRight,
                             child: Padding(
@@ -209,8 +243,8 @@ class PrimarySourceScreen extends StatelessWidget {
                                                                   .low_quality_message);
                                                         },
                                                 ),
-                                              ..._buildLinkSpans(
-                                                  primarySource.attributes!),
+                                              ..._buildLinkSpans(widget
+                                                  .primarySource.attributes!),
                                             ],
                                           ),
                                           maxLines: 5,
@@ -219,9 +253,9 @@ class PrimarySourceScreen extends StatelessWidget {
                                         ),
                             ),
                           ),
-                        if (primarySource.attributes == null ||
-                            primarySource.attributes!.isEmpty ||
-                            !primarySource.permissionsReceived)
+                        if (widget.primarySource.attributes == null ||
+                            widget.primarySource.attributes!.isEmpty ||
+                            !widget.primarySource.permissionsReceived)
                           Text.rich(TextSpan(text: ""))
                       ],
                     ),
@@ -279,8 +313,9 @@ class PrimarySourceScreen extends StatelessWidget {
     }
 
     double maxWidth;
-    if (primarySource.permissionsReceived && primarySource.pages.isNotEmpty) {
-      maxWidth = primarySource.pages
+    if (widget.primarySource.permissionsReceived &&
+        widget.primarySource.pages.isNotEmpty) {
+      maxWidth = widget.primarySource.pages
           .map((page) => calculateTextWidth("${page.name} (${page.content})"))
           .reduce((a, b) => a > b ? a : b);
     } else {
@@ -293,7 +328,8 @@ class PrimarySourceScreen extends StatelessWidget {
   bool _isBottomToolbar(double screenWidth, double dropdownWidth) {
     const widthForTitle = 100;
     const double iconButtonWidth = 48.0;
-    final double actionsWidth = dropdownWidth + numButtons * iconButtonWidth;
+    final double actionsWidth =
+        dropdownWidth + PrimarySourceScreen.numButtons * iconButtonWidth;
     return actionsWidth > screenWidth - widthForTitle * 1 - 60;
   }
 }

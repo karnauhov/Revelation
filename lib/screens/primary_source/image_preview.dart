@@ -78,7 +78,9 @@ class ImagePreviewState extends State<ImagePreview> {
         }
         final currentSize = Size(constraints.maxWidth, constraints.maxHeight);
         bool recalcAnyway = false;
-        if (_lastContainerSize == null || _lastContainerSize != currentSize) {
+        if (_lastContainerSize == null ||
+            _lastContainerSize!.width != currentSize.width ||
+            (_lastContainerSize!.height - currentSize.height).abs() > 40) {
           _lastContainerSize = currentSize;
           recalcAnyway = true;
         }
