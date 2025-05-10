@@ -243,7 +243,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_area_header => 'Select an area on the image';
 
   @override
-  String get select_area_description => 'Select a rectangular area on the image: touch the starting point, drag, and release. You can zoom in and move the image if needed.';
+  String get select_area_description => 'Select a rectangular area on the image: touch the starting point, drag, and release. You can zoom in if needed.';
 
   @override
   String get pick_color_header => 'Select a point on the image';

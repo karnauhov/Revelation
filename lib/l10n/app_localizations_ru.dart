@@ -243,7 +243,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get select_area_header => 'Выберите область на изображении';
 
   @override
-  String get select_area_description => 'Выделите прямоугольную область на изображении: коснитесь начальной точки, проведите и отпустите. При необходимости вы можете увеличить или передвинуть изображение.';
+  String get select_area_description => 'Выделите прямоугольную область на изображении: коснитесь начальной точки, проведите и отпустите. При необходимости вы можете увеличить изображение.';
 
   @override
   String get pick_color_header => 'Выберите точку на изображении';

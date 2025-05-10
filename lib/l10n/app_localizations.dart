@@ -568,7 +568,7 @@ abstract class AppLocalizations {
   /// No description provided for @select_area_description.
   ///
   /// In en, this message translates to:
-  /// **'Select a rectangular area on the image: touch the starting point, drag, and release. You can zoom in and move the image if needed.'**
+  /// **'Select a rectangular area on the image: touch the starting point, drag, and release. You can zoom in if needed.'**
   String get select_area_description;
 
   /// No description provided for @pick_color_header.

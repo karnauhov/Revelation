@@ -78,7 +78,7 @@
   "palette": "Palette",
   "select_color": "Select color",
   "select_area_header": "Select an area on the image",
-  "select_area_description": "Select a rectangular area on the image: touch the starting point, drag, and release. You can zoom in and move the image if needed.",
+  "select_area_description": "Select a rectangular area on the image: touch the starting point, drag, and release. You can zoom in if needed.",
   "pick_color_header": "Select a point on the image",
   "pick_color_description": "Click on the area of the image where you want to pick a color. You can zoom in and move the image if needed.",
   "tolerance": "Tolerance",
