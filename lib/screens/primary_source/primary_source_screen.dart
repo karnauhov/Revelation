@@ -152,8 +152,7 @@ class PrimarySourceScreen extends StatelessWidget {
                                           isMonochrome: viewModel.isMonochrome,
                                           brightness: viewModel.brightness,
                                           contrast: viewModel.contrast,
-                                          replaceRegion:
-                                              Rect.fromLTRB(100, 100, 300, 300),
+                                          replaceRegion: viewModel.selectedArea,
                                           colorToReplace:
                                               viewModel.colorToReplace,
                                           newColor: viewModel.newColor,

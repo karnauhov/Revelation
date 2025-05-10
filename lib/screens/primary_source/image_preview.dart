@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
-import 'package:vector_math/vector_math_64.dart';
+import 'package:vector_math/vector_math_64.dart' as math;
 
 const invertMatrix = <double>[
   -1, 0, 0, 0, 255, // R = 255 - R
@@ -56,6 +56,8 @@ class ImagePreview extends StatefulWidget {
 class ImagePreviewState extends State<ImagePreview> {
   String? _imageName;
   img.Image? _original;
+  Offset? _start;
+  Offset? _end;
 
   @override
   void initState() {
@@ -80,34 +82,60 @@ class ImagePreviewState extends State<ImagePreview> {
         Widget wrapped;
 
         if (vm.selectAreaMode) {
-          // TODO Implement select area
-          imageWidget = Image.memory(widget.imageData);
+          imageWidget = GestureDetector(
+            onPanStart: (details) {
+              final coord = _getCursorCoord(details.globalPosition);
+              setState(() {
+                _start = Offset(coord.x.toDouble(), coord.y.toDouble());
+                _end = _start;
+              });
+            },
+            onPanUpdate: (details) {
+              final coord = _getCursorCoord(details.globalPosition);
+              setState(() {
+                _end = Offset(coord.x.toDouble(), coord.y.toDouble());
+              });
+            },
+            onPanEnd: (details) {
+              if (_start != null && _end != null) {
+                final rect = Rect.fromPoints(_start!, _end!);
+                vm.finishSelectAreaMode(rect);
+                setState(() {
+                  _start = null;
+                  _end = null;
+                });
+              }
+            },
+            child: Stack(
+              children: [
+                Image.memory(widget.imageData),
+                if (_start != null && _end != null)
+                  Positioned(
+                    left: _start!.dx < _end!.dx ? _start!.dx : _end!.dx,
+                    top: _start!.dy < _end!.dy ? _start!.dy : _end!.dy,
+                    width: (_start!.dx - _end!.dx).abs(),
+                    height: (_start!.dy - _end!.dy).abs(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blue, width: 2),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
           wrapped = imageWidget;
         } else if (vm.pipetteMode) {
           imageWidget = Image.memory(widget.imageData);
           wrapped = GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapDown: (TapDownDetails details) async {
-              final renderBox = context.findRenderObject() as RenderBox;
-              final local = renderBox.globalToLocal(details.globalPosition);
-              final matrix = widget.controller.transformationController.value;
-              final inverseMatrix = Matrix4.inverted(matrix);
-
-              final localPoint = Offset(local.dx, local.dy);
-              final transformed = inverseMatrix
-                  .transform3(Vector3(localPoint.dx, localPoint.dy, 0));
-              final px = transformed.x
-                  .clamp(0, widget.controller.imageSize!.width - 1)
-                  .round();
-              final py = transformed.y
-                  .clamp(0, widget.controller.imageSize!.height - 1)
-                  .round();
-
+              final coord = _getCursorCoord(details.globalPosition);
               final ui.Image decoded =
                   await decodeImageFromList(widget.imageData);
               final byteData =
                   await decoded.toByteData(format: ui.ImageByteFormat.rawRgba);
-              final offset = (py * decoded.width + px) * 4;
+              final offset = (coord.y * decoded.width + coord.x) * 4;
               final r = byteData!.getUint8(offset);
               final g = byteData.getUint8(offset + 1);
               final b = byteData.getUint8(offset + 2);
@@ -182,8 +210,7 @@ class ImagePreviewState extends State<ImagePreview> {
 
         return MouseRegion(
           cursor: vm.selectAreaMode
-              ? SystemMouseCursors
-                  .resizeUpLeftDownRight //TODO choose correct cursor for this mode
+              ? SystemMouseCursors.precise
               : vm.pipetteMode
                   ? SystemMouseCursors.precise
                   : SystemMouseCursors.grab,
@@ -200,6 +227,21 @@ class ImagePreviewState extends State<ImagePreview> {
         );
       },
     );
+  }
+
+  LocalCoord _getCursorCoord(Offset globalPosition) {
+    final renderBox = context.findRenderObject() as RenderBox;
+    final local = renderBox.globalToLocal(globalPosition);
+    final matrix = widget.controller.transformationController.value;
+    final inverseMatrix = Matrix4.inverted(matrix);
+    final localPoint = Offset(local.dx, local.dy);
+    final transformed =
+        inverseMatrix.transform3(math.Vector3(localPoint.dx, localPoint.dy, 0));
+    final px =
+        transformed.x.clamp(0, widget.controller.imageSize!.width - 1).round();
+    final py =
+        transformed.y.clamp(0, widget.controller.imageSize!.height - 1).round();
+    return LocalCoord(px, py);
   }
 
   Future<void> _decodeImage() async {
@@ -264,4 +306,11 @@ class ImagePreviewState extends State<ImagePreview> {
 
     return Uint8List.fromList(img.encodePng(regionImage));
   }
+}
+
+class LocalCoord {
+  late final int x;
+  late final int y;
+
+  LocalCoord(this.x, this.y);
 }
