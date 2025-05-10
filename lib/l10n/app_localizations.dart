@@ -505,6 +505,12 @@ abstract class AppLocalizations {
   /// **'Area'**
   String get area;
 
+  /// No description provided for @size.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get size;
+
   /// No description provided for @not_selected.
   ///
   /// In en, this message translates to:

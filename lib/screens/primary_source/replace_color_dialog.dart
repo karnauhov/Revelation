@@ -63,7 +63,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 child: Text(
                   widget.viewModel.selectedArea == null
                       ? AppLocalizations.of(context)!.not_selected
-                      : '(${widget.viewModel.selectedArea!.left.toStringAsFixed(0)}, ${widget.viewModel.selectedArea!.top.toStringAsFixed(0)}) - (${widget.viewModel.selectedArea!.right.toStringAsFixed(0)}, ${widget.viewModel.selectedArea!.bottom.toStringAsFixed(0)})',
+                      : '${AppLocalizations.of(context)!.size} (${(widget.viewModel.selectedArea!.right - widget.viewModel.selectedArea!.left).abs().toStringAsFixed(0)} x ${(widget.viewModel.selectedArea!.bottom - widget.viewModel.selectedArea!.top).abs().toStringAsFixed(0)})',
                 ),
               ),
               IconButton(

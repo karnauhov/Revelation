@@ -121,6 +121,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   void changeSelectedPage(model.Page? newPage) {
     selectedPage = newPage;
+    resetColorReplacement();
     notifyListeners();
     if (newPage != null) {
       loadImage(newPage.image);

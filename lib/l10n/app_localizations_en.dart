@@ -213,6 +213,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get area => 'Area';
 
   @override
+  String get size => 'Size';
+
+  @override
   String get not_selected => 'Not selected';
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -383,4 +384,18 @@ void showCustomDialog(MessageType type,
       );
     },
   );
+}
+
+Rect createNonZeroRect(Offset start, Offset end) {
+  double left = min(start.dx, end.dx);
+  double top = min(start.dy, end.dy);
+  double right = max(start.dx, end.dx);
+  double bottom = max(start.dy, end.dy);
+  if (right - left < 1) {
+    right = left + 1;
+  }
+  if (bottom - top < 1) {
+    bottom = top + 1;
+  }
+  return Rect.fromLTRB(left, top, right, bottom);
 }

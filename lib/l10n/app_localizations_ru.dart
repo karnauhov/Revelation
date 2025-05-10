@@ -213,6 +213,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get area => 'Область';
 
   @override
+  String get size => 'Размер';
+
+  @override
   String get not_selected => 'Не выделена';
 
   @override

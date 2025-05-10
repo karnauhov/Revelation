@@ -213,6 +213,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get area => 'Область';
 
   @override
+  String get size => 'Розмір';
+
+  @override
   String get not_selected => 'Не виділена';
 
   @override

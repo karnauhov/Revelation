@@ -4,6 +4,7 @@ import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
+import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 
@@ -98,7 +99,7 @@ class ImagePreviewState extends State<ImagePreview> {
             },
             onPanEnd: (details) {
               if (_start != null && _end != null) {
-                final rect = Rect.fromPoints(_start!, _end!);
+                final rect = createNonZeroRect(_start!, _end!);
                 vm.finishSelectAreaMode(rect);
                 setState(() {
                   _start = null;
