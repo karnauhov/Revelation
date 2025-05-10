@@ -191,7 +191,7 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
-        icon: const Icon(Icons.brightness_6),
+        icon: Icon(Icons.brightness_6, color: null),
         tooltip: AppLocalizations.of(context)!.brightness_contrast,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
@@ -201,7 +201,7 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
-        icon: const Icon(Icons.format_paint),
+        icon: Icon(Icons.format_paint, color: null),
         tooltip: AppLocalizations.of(context)!.color_replacement,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
@@ -350,22 +350,63 @@ class PrimarySourceToolbar extends StatelessWidget {
                   ),
                 if (numButtons < 5) const PopupMenuDivider(),
                 if (numButtons < 5)
-                  CheckedPopupMenuItem(
+                  PopupMenuItem(
+                    padding: viewModel.isNegative
+                        ? const EdgeInsets.symmetric(horizontal: 4.0)
+                        : const EdgeInsets.symmetric(horizontal: 12.0),
                     value: 'toggle_negative',
                     enabled: viewModel.selectedPage != null &&
                         viewModel.primarySource.permissionsReceived,
-                    checked: viewModel.isNegative,
-                    child: Text(AppLocalizations.of(context)!.toggle_negative),
+                    child: Row(
+                      children: [
+                        if (viewModel.isNegative)
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withAlpha((0.2 * 255).round())),
+                            child: Icon(Icons.invert_colors,
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        if (!viewModel.isNegative)
+                          Icon(Icons.invert_colors, color: null),
+                        if (!viewModel.isNegative) const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.toggle_negative),
+                      ],
+                    ),
                   ),
                 if (numButtons < 6)
-                  CheckedPopupMenuItem(
+                  PopupMenuItem(
+                    padding: viewModel.isMonochrome
+                        ? const EdgeInsets.symmetric(horizontal: 4.0)
+                        : const EdgeInsets.symmetric(horizontal: 12.0),
                     value: 'toggle_monochrome',
                     enabled: viewModel.selectedPage != null &&
                         viewModel.primarySource.permissionsReceived &&
                         !viewModel.primarySource.isMonochrome,
-                    checked: viewModel.isMonochrome,
-                    child:
+                    child: Row(
+                      children: [
+                        if (viewModel.isMonochrome)
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withAlpha((0.2 * 255).round())),
+                            child: Icon(Icons.monochrome_photos,
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        if (!viewModel.isMonochrome)
+                          Icon(Icons.monochrome_photos, color: null),
+                        if (!viewModel.isMonochrome) const SizedBox(width: 8),
                         Text(AppLocalizations.of(context)!.toggle_monochrome),
+                      ],
+                    ),
                   ),
                 if (numButtons < 7)
                   PopupMenuItem(
@@ -374,7 +415,7 @@ class PrimarySourceToolbar extends StatelessWidget {
                         viewModel.primarySource.permissionsReceived,
                     child: Row(
                       children: [
-                        const Icon(Icons.brightness_6, color: Colors.black54),
+                        Icon(Icons.brightness_6, color: null),
                         const SizedBox(width: 8),
                         Text(AppLocalizations.of(context)!.brightness_contrast),
                       ],
@@ -387,7 +428,7 @@ class PrimarySourceToolbar extends StatelessWidget {
                         viewModel.primarySource.permissionsReceived,
                     child: Row(
                       children: [
-                        const Icon(Icons.format_paint, color: Colors.black54),
+                        Icon(Icons.format_paint, color: null),
                         const SizedBox(width: 8),
                         Text(AppLocalizations.of(context)!.color_replacement),
                       ],

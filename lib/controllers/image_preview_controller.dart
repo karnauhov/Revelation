@@ -13,13 +13,16 @@ class ImagePreviewController {
   TransformationController get transformationController =>
       _transformationController;
 
-  void setImageSize(Size size, double availableWidth, double availableHeight) {
-    imageSize = size;
-    minScale = availableWidth / size.width;
-    if (minScale * size.height < availableHeight) {
-      minScale = availableHeight / size.height;
+  void setImageSize(Size size, double availableWidth, double availableHeight,
+      {recalc = false}) {
+    if (imageSize == null || imageSize != size || recalc) {
+      imageSize = size;
+      minScale = availableWidth / size.width;
+      if (minScale * size.height < availableHeight) {
+        minScale = availableHeight / size.height;
+      }
+      _transformationController.value = Matrix4.identity()..scale(minScale);
     }
-    _transformationController.value = Matrix4.identity()..scale(minScale);
   }
 
   void zoomIn(Offset focalPoint) {

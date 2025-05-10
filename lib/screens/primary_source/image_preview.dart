@@ -59,6 +59,7 @@ class ImagePreviewState extends State<ImagePreview> {
   img.Image? _original;
   Offset? _start;
   Offset? _end;
+  Size? _lastContainerSize;
 
   @override
   void initState() {
@@ -75,8 +76,15 @@ class ImagePreviewState extends State<ImagePreview> {
         if (widget.controller.imageSize == null) {
           return const Center(child: CircularProgressIndicator());
         }
+        final currentSize = Size(constraints.maxWidth, constraints.maxHeight);
+        bool recalcAnyway = false;
+        if (_lastContainerSize == null || _lastContainerSize != currentSize) {
+          _lastContainerSize = currentSize;
+          recalcAnyway = true;
+        }
         widget.controller.setImageSize(widget.controller.imageSize!,
-            constraints.maxWidth, constraints.maxHeight);
+            constraints.maxWidth, constraints.maxHeight,
+            recalc: recalcAnyway);
 
         final vm = context.watch<PrimarySourceViewModel>();
         Widget imageWidget;
