@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
 
 class ReplaceColorDialog extends StatefulWidget {
@@ -361,27 +362,28 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               ),
             ],
           ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 280),
-                child: Text.rich(
-                  textAlign: TextAlign.center,
-                  TextSpan(
-                    text:
-                        "⚠️ ${AppLocalizations.of(context)!.replace_color_message}",
-                    style: const TextStyle(fontSize: 10),
+          if (isWeb())
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 280),
+                  child: Text.rich(
+                    textAlign: TextAlign.center,
+                    TextSpan(
+                      text:
+                          "⚠️ ${AppLocalizations.of(context)!.replace_color_message}",
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                    maxLines: 3,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 3,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
       actions: [

@@ -276,10 +276,11 @@ class ImagePreviewState extends State<ImagePreview> {
     required double tolerance,
   }) async {
     if (tolerance == 0) return Uint8List(0);
+    // TODO Add wait cursor
     if (_imageName == null ||
         _original == null ||
         _imageName != widget.imageName) {
-      _original = img.decodeImage(widget.imageData);
+      _original = img.decodeImage(data);
       _imageName = widget.imageName;
     }
 
@@ -315,7 +316,9 @@ class ImagePreviewState extends State<ImagePreview> {
       }
     }
 
-    return Uint8List.fromList(img.encodePng(regionImage));
+    final result = Uint8List.fromList(img.encodePng(regionImage));
+    // TODO Return cursor back
+    return result;
   }
 }
 
