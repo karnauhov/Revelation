@@ -361,6 +361,27 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               ),
             ],
           ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 280),
+                child: Text.rich(
+                  textAlign: TextAlign.center,
+                  TextSpan(
+                    text:
+                        "⚠️ ${AppLocalizations.of(context)!.replace_color_message}",
+                    style: const TextStyle(fontSize: 10),
+                  ),
+                  maxLines: 3,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
       actions: [
