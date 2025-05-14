@@ -8,6 +8,7 @@ class PrimarySourcesRepository {
     AppLocalizations loc = AppLocalizations.of(context)!;
     final sources = [
       PrimarySource(
+          id: "U001",
           title: loc.uncial_01_title,
           date: loc.uncial_01_date,
           content: loc.uncial_01_content,
@@ -114,6 +115,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: true),
       PrimarySource(
+          id: "U002",
           title: loc.uncial_02_title,
           date: loc.uncial_02_date,
           content: loc.uncial_02_content,
@@ -220,6 +222,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: false),
       PrimarySource(
+          id: "U046",
           title: loc.uncial_46_title,
           date: loc.uncial_46_date,
           content: loc.uncial_46_content,
@@ -412,6 +415,7 @@ class PrimarySourcesRepository {
     AppLocalizations loc = AppLocalizations.of(context)!;
     final sources = [
       PrimarySource(
+          id: "P047",
           title: loc.papyrus_47_title,
           date: loc.papyrus_47_date,
           content: loc.papyrus_47_content,
@@ -521,6 +525,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: true),
       PrimarySource(
+          id: "U004",
           title: loc.uncial_04_title,
           date: loc.uncial_04_date,
           content: loc.uncial_04_content,
@@ -632,6 +637,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: true),
       PrimarySource(
+          id: "U025",
           title: loc.uncial_25_title,
           date: loc.uncial_25_date,
           content: loc.uncial_25_content,
@@ -660,6 +666,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: false),
       PrimarySource(
+          id: "U051",
           title: loc.uncial_51_title,
           date: loc.uncial_51_date,
           content: loc.uncial_51_content,
@@ -1065,7 +1072,7 @@ class PrimarySourcesRepository {
                   "https://www.loc.gov/collections/manuscripts-from-the-monasteries-of-mount-athos/about-this-collection/rights-and-access"
             }
           ],
-          permissionsReceived: false)
+          permissionsReceived: true),
     ];
     return sources;
   }
@@ -1074,6 +1081,7 @@ class PrimarySourcesRepository {
     AppLocalizations loc = AppLocalizations.of(context)!;
     final sources = [
       PrimarySource(
+          id: "P018",
           title: loc.papyrus_18_title,
           date: loc.papyrus_18_date,
           content: loc.papyrus_18_content,
@@ -1111,6 +1119,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: true),
       PrimarySource(
+          id: "P024",
           title: loc.papyrus_24_title,
           date: loc.papyrus_24_date,
           content: loc.papyrus_24_content,
@@ -1149,6 +1158,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: true),
       PrimarySource(
+          id: "P043",
           title: loc.papyrus_43_title,
           date: loc.papyrus_43_date,
           content: loc.papyrus_43_content,
@@ -1191,6 +1201,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: false),
       PrimarySource(
+          id: "P085",
           title: loc.papyrus_85_title,
           date: loc.papyrus_85_date,
           content: loc.papyrus_85_content,
@@ -1233,6 +1244,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: false),
       PrimarySource(
+          id: "P098",
           title: loc.papyrus_98_title,
           date: loc.papyrus_98_date,
           content: loc.papyrus_98_content,
@@ -1267,6 +1279,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: false),
       PrimarySource(
+          id: "P115",
           title: loc.papyrus_115_title,
           date: loc.papyrus_115_date,
           content: loc.papyrus_115_content,
@@ -1335,6 +1348,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: true),
       PrimarySource(
+          id: "U052",
           title: loc.uncial_52_title,
           date: loc.uncial_52_date,
           content: loc.uncial_52_content,
@@ -1364,6 +1378,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: false),
       PrimarySource(
+          id: "U163",
           title: loc.uncial_163_title,
           date: loc.uncial_163_date,
           content: loc.uncial_163_content,
@@ -1406,6 +1421,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: true),
       PrimarySource(
+          id: "U169",
           title: loc.uncial_169_title,
           date: loc.uncial_169_date,
           content: loc.uncial_169_content,
@@ -1451,6 +1467,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: true),
       PrimarySource(
+          id: "U207",
           title: loc.uncial_207_title,
           date: loc.uncial_207_date,
           content: loc.uncial_207_content,
@@ -1493,6 +1510,7 @@ class PrimarySourcesRepository {
           ],
           permissionsReceived: false),
       PrimarySource(
+          id: "U229",
           title: loc.uncial_229_title,
           date: loc.uncial_229_date,
           content: loc.uncial_229_content,
@@ -1535,9 +1553,14 @@ class PrimarySourcesRepository {
               "text": "📜 Istituto Papirologico “Girolamo Vitelli”",
               "url": "https://www.istitutopapirologico.unifi.it"
             },
+            {
+              "text": "📷 PSIonline",
+              "url": "https://psi-online.it/rightpermission"
+            }
           ],
           permissionsReceived: false),
       PrimarySource(
+          id: "U308",
           title: loc.uncial_308_title,
           date: loc.uncial_308_date,
           content: loc.uncial_308_content,

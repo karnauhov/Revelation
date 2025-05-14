@@ -192,6 +192,16 @@ class PrimarySourceToolbar extends StatelessWidget {
       ),
       IconButton(
         icon: Icon(Icons.brightness_6, color: null),
+        style: IconButton.styleFrom(
+          backgroundColor:
+              viewModel.brightness != 0 || viewModel.contrast != 100
+                  ? Theme.of(context)
+                      .colorScheme
+                      .secondary
+                      .withAlpha((0.2 * 255).round())
+                  : Colors.transparent,
+          shape: const CircleBorder(),
+        ),
         tooltip: AppLocalizations.of(context)!.brightness_contrast,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
@@ -202,6 +212,16 @@ class PrimarySourceToolbar extends StatelessWidget {
       ),
       IconButton(
         icon: Icon(Icons.format_paint, color: null),
+        style: IconButton.styleFrom(
+          backgroundColor:
+              viewModel.selectedArea != null && viewModel.tolerance != 0
+                  ? Theme.of(context)
+                      .colorScheme
+                      .secondary
+                      .withAlpha((0.2 * 255).round())
+                  : Colors.transparent,
+          shape: const CircleBorder(),
+        ),
         tooltip: AppLocalizations.of(context)!.color_replacement,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
@@ -381,13 +401,36 @@ class PrimarySourceToolbar extends StatelessWidget {
                       ),
                     if (numButtons < 7)
                       PopupMenuItem(
+                        padding: viewModel.brightness != 0 ||
+                                viewModel.contrast != 100
+                            ? const EdgeInsets.symmetric(horizontal: 4.0)
+                            : const EdgeInsets.symmetric(horizontal: 12.0),
                         value: 'brightness_contrast',
                         enabled: viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived,
                         child: Row(
                           children: [
-                            Icon(Icons.brightness_6, color: null),
-                            const SizedBox(width: 8),
+                            if (viewModel.brightness != 0 ||
+                                viewModel.contrast != 100)
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary
+                                        .withAlpha((0.2 * 255).round())),
+                                child: Icon(Icons.brightness_6,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                            if (viewModel.brightness == 0 &&
+                                viewModel.contrast == 100)
+                              Icon(Icons.brightness_6, color: null),
+                            if (viewModel.brightness == 0 &&
+                                viewModel.contrast == 100)
+                              const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)!
                                 .brightness_contrast),
                           ],
@@ -395,13 +438,36 @@ class PrimarySourceToolbar extends StatelessWidget {
                       ),
                     if (numButtons < 8)
                       PopupMenuItem(
+                        padding: viewModel.selectedArea != null &&
+                                viewModel.tolerance != 0
+                            ? const EdgeInsets.symmetric(horizontal: 4.0)
+                            : const EdgeInsets.symmetric(horizontal: 12.0),
                         value: 'replace_color',
                         enabled: viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived,
                         child: Row(
                           children: [
-                            Icon(Icons.format_paint, color: null),
-                            const SizedBox(width: 8),
+                            if (viewModel.selectedArea != null &&
+                                viewModel.tolerance != 0)
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary
+                                        .withAlpha((0.2 * 255).round())),
+                                child: Icon(Icons.format_paint,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                            if (viewModel.selectedArea == null ||
+                                viewModel.tolerance == 0)
+                              Icon(Icons.format_paint, color: null),
+                            if (viewModel.selectedArea == null ||
+                                viewModel.tolerance == 0)
+                              const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)!
                                 .color_replacement),
                           ],

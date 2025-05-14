@@ -1,6 +1,7 @@
 import 'package:revelation/models/page.dart';
 
 class PrimarySource {
+  final String id;
   final String title;
   final String date;
   final String content;
@@ -25,7 +26,8 @@ class PrimarySource {
   bool showMore = false;
 
   PrimarySource(
-      {required this.title,
+      {required this.id,
+      required this.title,
       required this.date,
       required this.content,
       required this.quantity,

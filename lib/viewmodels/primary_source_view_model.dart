@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:revelation/models/page.dart' as model;
+import 'package:revelation/models/pages_settings.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/models/zoom_status.dart';
+import 'package:revelation/repositories/pages_repository.dart';
 import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
@@ -12,6 +14,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySource primarySource;
+  final PagesRepository _pagesRepository;
   model.Page? selectedPage;
   Uint8List? imageData;
   String imageName = "";
@@ -31,6 +34,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
       const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false));
 
+  PagesSettings? _pagesSettings;
+  late String _pageSettings;
   late final bool _isWeb;
   late final bool _isMobileWeb;
   int _maxTextureSize = 4096;
@@ -46,8 +51,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool get pipetteMode => _pipetteMode;
   bool get selectAreaMode => _selectAreaMode;
   bool get isMenuOpen => _isMenuOpen;
+  String get pageSettings => _pageSettings;
 
-  PrimarySourceViewModel({required this.primarySource}) {
+  PrimarySourceViewModel(this._pagesRepository, {required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
     imageController.transformationController.addListener(_updateZoomStatus);
 
@@ -73,22 +79,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
       selectedPage = primarySource.pages.first;
       loadImage(selectedPage!.image);
     }
-    checkLocalPages();
-  }
-
-  Future<void> checkLocalPages() async {
-    if (_isWeb) {
-      for (var page in primarySource.pages) {
-        localPageLoaded[page.image] = null;
-      }
-    } else {
-      for (var page in primarySource.pages) {
-        final localFilePath = await _getLocalFilePath(page.image);
-        final exists = await File(localFilePath).exists();
-        localPageLoaded[page.image] = exists;
-      }
-    }
-    notifyListeners();
+    _checkLocalPages();
+    _getPagesSettings();
   }
 
   Future<void> loadImage(String page, {bool isReload = false}) async {
@@ -121,9 +113,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _updateZoomStatus();
   }
 
-  void changeSelectedPage(model.Page? newPage) {
+  Future<void> changeSelectedPage(model.Page? newPage) async {
     selectedPage = newPage;
     resetColorReplacement();
+    await _getPagesSettings();
     notifyListeners();
     if (newPage != null) {
       loadImage(newPage.image);
@@ -132,23 +125,27 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   void toggleNegative() {
     isNegative = !isNegative;
+    savePageSettings();
     notifyListeners();
   }
 
   void toggleMonochrome() {
     isMonochrome = !isMonochrome;
+    savePageSettings();
     notifyListeners();
   }
 
   void applyBrightnessContrast(double brightness, double contrast) {
     this.brightness = brightness;
     this.contrast = contrast;
+    savePageSettings();
     notifyListeners();
   }
 
   void resetBrightnessContrast() {
     brightness = 0;
     contrast = 100;
+    savePageSettings();
     notifyListeners();
   }
 
@@ -210,6 +207,76 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   void setMenuOpen(bool value) {
     _isMenuOpen = value;
+    notifyListeners();
+  }
+
+  void savePageSettings() {
+    if (_pagesSettings != null && selectedPage != null) {
+      final pageId = "${primarySource.id}_${selectedPage!.name}";
+      // TODO save also: position, scale
+      _pageSettings = PagesSettings.packData(
+          isNegative: isNegative,
+          isMonochrome: isMonochrome,
+          brightness: brightness,
+          contrast: contrast);
+      _pagesSettings!.pages[pageId] = _pageSettings;
+      _pagesRepository.savePages(_pagesSettings!);
+    } else {
+      _pageSettings = "";
+    }
+  }
+
+  void removePageSettings() {
+    if (_pagesSettings != null && selectedPage != null) {
+      final pageId = "${primarySource.id}_${selectedPage!.name}";
+      _pageSettings = "";
+      _pagesSettings!.pages[pageId] = _pageSettings;
+      _pagesRepository.savePages(_pagesSettings!);
+    } else {
+      _pageSettings = "";
+    }
+  }
+
+  Future<void> _getPagesSettings() async {
+    _pagesSettings ??= await _pagesRepository.getPages();
+    if (selectedPage != null) {
+      final pageId = "${primarySource.id}_${selectedPage!.name}";
+      if (_pagesSettings!.pages.containsKey(pageId)) {
+        _pageSettings = _pagesSettings!.pages[pageId] ?? "";
+      } else {
+        _pageSettings = "";
+      }
+    } else {
+      _pageSettings = "";
+    }
+    // TODO restore also: position, scale
+    if (_pageSettings.isNotEmpty) {
+      final pageSettings = PagesSettings.unpackData(_pageSettings);
+      isNegative = pageSettings['isNegative'];
+      isMonochrome = pageSettings['isMonochrome'];
+      brightness = pageSettings['brightness'];
+      contrast = pageSettings['contrast'];
+    } else {
+      isNegative = false;
+      isMonochrome = false;
+      brightness = 0;
+      contrast = 100;
+    }
+    notifyListeners();
+  }
+
+  Future<void> _checkLocalPages() async {
+    if (_isWeb) {
+      for (var page in primarySource.pages) {
+        localPageLoaded[page.image] = null;
+      }
+    } else {
+      for (var page in primarySource.pages) {
+        final localFilePath = await _getLocalFilePath(page.image);
+        final exists = await File(localFilePath).exists();
+        localPageLoaded[page.image] = exists;
+      }
+    }
     notifyListeners();
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/repositories/pages_repository.dart';
 import 'package:revelation/screens/primary_source/image_preview.dart';
 import 'package:revelation/screens/primary_source/primary_source_toolbar.dart';
 import 'package:revelation/utils/common.dart';
@@ -54,8 +55,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final dropdownWidth = calcPagesListWidth(context);
     TextTheme theme = Theme.of(context).textTheme;
     return ChangeNotifierProvider<PrimarySourceViewModel>(
-      create: (_) =>
-          PrimarySourceViewModel(primarySource: widget.primarySource),
+      create: (_) => PrimarySourceViewModel(PagesRepository(),
+          primarySource: widget.primarySource),
       child: Consumer<PrimarySourceViewModel>(
         builder: (context, viewModel, child) {
           _viewModel = viewModel;
