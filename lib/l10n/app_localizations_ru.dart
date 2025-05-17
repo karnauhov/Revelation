@@ -258,6 +258,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get replace_color_message => 'При первом вызове формирование матрицы пикселей займёт некоторое время.';
 
   @override
+  String get page_settings_reset => 'Сброс настроек страницы';
+
+  @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';
 
   @override

@@ -17,7 +17,7 @@ class ExitChooseModeIntent extends Intent {
 
 class PrimarySourceScreen extends StatefulWidget {
   final PrimarySource primarySource;
-  static final numButtons = 8;
+  static final numButtons = 9;
 
   const PrimarySourceScreen({required this.primarySource, super.key});
 

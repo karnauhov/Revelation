@@ -595,6 +595,12 @@ abstract class AppLocalizations {
   /// **'On the first call, generating the pixel matrix will take some time.'**
   String get replace_color_message;
 
+  /// No description provided for @page_settings_reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Page settings reset'**
+  String get page_settings_reset;
+
   /// No description provided for @papyrus_18_title.
   ///
   /// In en, this message translates to:

@@ -24,10 +24,10 @@
 + Publish to Microsoft Store.  
 
 #### 1.0.2
-* Improve the Primary Source screen by adding more image‐editing tools: negative, monochrome, contrast and brightness, color replacement, save changes.  
-- Enhance the preface with details on the 7 study stages for each passage (per the rule: reading, understanding, application).  
++ Improve the Primary Source screen by adding more image‐editing tools: negative, monochrome, contrast and brightness, color replacement, save changes.  
 - Publish on Flathub and Snapcraft (Linux).  
-- Update some primary‐source images, obtain permissions.  
+- Enhance the preface with details on the 7 study stages for each passage (per the rule: reading, understanding, application).  
+* Update some primary‐source images, obtain permissions.  
 - Revamp the entire UI in an “ancient manuscript” style using AI: logo, background, colors, fonts, icons, sounds, and music, banners. Study [Material Theme Builder](https://material-foundation.github.io/material-theme-builder) and [M3 Guidelines](https://m3.material.io).  
 - Add background music (loaded from storage) and a toggle in settings to disable it.  
 

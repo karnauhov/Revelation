@@ -263,12 +263,21 @@ class PrimarySourceViewModel extends ChangeNotifier {
     } else {
       _pageSettings = "";
     }
+    savedX = dx = 0;
+    savedY = dy = 0;
+    savedScale = scale = 0;
+    isNegative = false;
+    isMonochrome = false;
+    brightness = 0;
+    contrast = 100;
+    imageController.backToMinScale();
+    resetColorReplacement();
   }
 
   void restorePositionAndScale() {
     if (!scaleAndPositionRestored) {
       _restoreDebounceTimer?.cancel();
-      _restoreDebounceTimer = Timer(const Duration(milliseconds: 400), () {
+      _restoreDebounceTimer = Timer(const Duration(milliseconds: 500), () {
         imageController.setTransformParams(savedX, savedY, savedScale);
         scaleAndPositionRestored = true;
       });

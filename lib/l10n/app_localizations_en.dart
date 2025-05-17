@@ -258,6 +258,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get replace_color_message => 'On the first call, generating the pixel matrix will take some time.';
 
   @override
+  String get page_settings_reset => 'Page settings reset';
+
+  @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';
 
   @override

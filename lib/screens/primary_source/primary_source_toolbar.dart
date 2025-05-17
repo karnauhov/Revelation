@@ -230,6 +230,16 @@ class PrimarySourceToolbar extends StatelessWidget {
               }
             : null,
       ),
+      IconButton(
+        icon: Icon(Icons.cleaning_services, color: null),
+        tooltip: AppLocalizations.of(context)!.page_settings_reset,
+        onPressed: viewModel.primarySource.permissionsReceived &&
+                viewModel.selectedPage != null
+            ? () {
+                viewModel.removePageSettings();
+              }
+            : null,
+      ),
     ];
   }
 
@@ -473,6 +483,18 @@ class PrimarySourceToolbar extends StatelessWidget {
                           ],
                         ),
                       ),
+                    if (numButtons < 9)
+                      PopupMenuItem(
+                        value: 'reset_page',
+                        child: Row(
+                          children: [
+                            const Icon(Icons.cleaning_services, color: null),
+                            const SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)!
+                                .page_settings_reset),
+                          ],
+                        ),
+                      ),
                   ],
                 );
 
@@ -527,6 +549,12 @@ class PrimarySourceToolbar extends StatelessWidget {
                           viewModel.primarySource.permissionsReceived) {
                         _showReplaceColorDialog();
                       }
+                    case 'reset_page':
+                      if (viewModel.selectedPage != null &&
+                          viewModel.primarySource.permissionsReceived) {
+                        viewModel.removePageSettings();
+                      }
+
                       break;
                   }
                 }

@@ -7,7 +7,7 @@ All notable changes to this application will be documented here.
 ### Added
 
 - Uploaded primary-source images to supabase.com (051);
-- Improved the Primary Source screen by adding more image‐editing tools: negative, monochrome, brightness, contrast, color replacement ...
+- Improved the Primary Source screen by adding restore page settings and more image‐editing tools: negative, monochrome, brightness, contrast, color replacement, reset settings
 
 ### Changed
 
