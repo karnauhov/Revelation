@@ -30,7 +30,6 @@ class ImagePreviewController {
     _transformationController.value = Matrix4.identity()
       ..translate(dx, dy)
       ..scale(clampedScale);
-    print("APPLY dx: $dx, dy: $dy, scale: $scale");
   }
 
   void zoomIn(Offset focalPoint) {

@@ -219,6 +219,8 @@ class ImagePreviewState extends State<ImagePreview> {
           wrapped = imageWidget;
         }
 
+        vm.restorePositionAndScale();
+
         return MouseRegion(
           cursor: vm.selectAreaMode
               ? SystemMouseCursors.precise
@@ -257,23 +259,14 @@ class ImagePreviewState extends State<ImagePreview> {
 
   void _decodeImage() {
     ui.decodeImageFromList(widget.imageData, (ui.Image image) {
-      if (!mounted) return;
-
-      widget.controller.setImageSize(
-        Size(image.width.toDouble(), image.height.toDouble()),
-        context.size!.width,
-        context.size!.height,
-      );
-
-      final vm = context.read<PrimarySourceViewModel>();
-      if (!vm.imageShown) {
-        vm.imageShown = true;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          vm.restorePositionAndScale();
+      if (mounted) {
+        setState(() {
+          widget.controller.setImageSize(
+              Size(image.width.toDouble(), image.height.toDouble()),
+              context.size!.width,
+              context.size!.height);
         });
       }
-
-      setState(() {});
     });
   }
 

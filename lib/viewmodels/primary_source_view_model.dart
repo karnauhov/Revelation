@@ -54,7 +54,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool _selectAreaMode = false;
   void Function(Rect?)? _onAreaSelected;
   bool _isMenuOpen = false;
-  Timer? _debounceTimer;
+  Timer? _restoreDebounceTimer;
+  Timer? _saveDebounceTimer;
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
@@ -248,7 +249,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
           contrast: contrast);
       _pagesSettings!.pages[pageId] = _pageSettings;
       _pagesRepository.savePages(_pagesSettings!);
-      print("SAVE dx: $dx, dy: $dy, scale: $scale");
     } else {
       _pageSettings = "";
     }
@@ -267,9 +267,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   void restorePositionAndScale() {
     if (!scaleAndPositionRestored) {
-      imageController.setTransformParams(savedX, savedY, savedScale);
+      _restoreDebounceTimer?.cancel();
+      _restoreDebounceTimer = Timer(const Duration(milliseconds: 400), () {
+        imageController.setTransformParams(savedX, savedY, savedScale);
+        scaleAndPositionRestored = true;
+      });
     }
-    scaleAndPositionRestored = true;
   }
 
   Future<void> _getPagesSettings() async {
@@ -302,7 +305,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
       brightness = 0;
       contrast = 100;
     }
-    print("LOAD dx: $dx, dy: $dy, scale: $scale");
   }
 
   Future<void> _checkLocalPages() async {
@@ -396,8 +398,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
         );
       });
       if (scaleAndPositionRestored) {
-        _debounceTimer?.cancel();
-        _debounceTimer = Timer(const Duration(seconds: 1), savePageSettings);
+        _saveDebounceTimer?.cancel();
+        _saveDebounceTimer =
+            Timer(const Duration(seconds: 1), savePageSettings);
       }
     }
   }
