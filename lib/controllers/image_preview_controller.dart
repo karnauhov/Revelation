@@ -25,6 +25,14 @@ class ImagePreviewController {
     }
   }
 
+  void setTransformParams(double dx, double dy, double scale) {
+    final clampedScale = scale.clamp(minScale, maxScale);
+    _transformationController.value = Matrix4.identity()
+      ..translate(dx, dy)
+      ..scale(clampedScale);
+    print("APPLY dx: $dx, dy: $dy, scale: $scale");
+  }
+
   void zoomIn(Offset focalPoint) {
     // 1. Get the current matrix and calculate the coordinate of the focal point in image coordinates.
     final matrix = _transformationController.value;

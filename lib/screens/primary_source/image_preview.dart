@@ -255,16 +255,25 @@ class ImagePreviewState extends State<ImagePreview> {
     return LocalCoord(px, py);
   }
 
-  Future<void> _decodeImage() async {
+  void _decodeImage() {
     ui.decodeImageFromList(widget.imageData, (ui.Image image) {
-      if (mounted) {
-        setState(() {
-          widget.controller.setImageSize(
-              Size(image.width.toDouble(), image.height.toDouble()),
-              context.size!.width,
-              context.size!.height);
+      if (!mounted) return;
+
+      widget.controller.setImageSize(
+        Size(image.width.toDouble(), image.height.toDouble()),
+        context.size!.width,
+        context.size!.height,
+      );
+
+      final vm = context.read<PrimarySourceViewModel>();
+      if (!vm.imageShown) {
+        vm.imageShown = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          vm.restorePositionAndScale();
         });
       }
+
+      setState(() {});
     });
   }
 
@@ -276,7 +285,6 @@ class ImagePreviewState extends State<ImagePreview> {
     required double tolerance,
   }) async {
     if (tolerance == 0) return Uint8List(0);
-    // TODO Add wait cursor
     if (_imageName == null ||
         _original == null ||
         _imageName != widget.imageName) {
@@ -317,7 +325,6 @@ class ImagePreviewState extends State<ImagePreview> {
     }
 
     final result = Uint8List.fromList(img.encodePng(regionImage));
-    // TODO Return cursor back
     return result;
   }
 }

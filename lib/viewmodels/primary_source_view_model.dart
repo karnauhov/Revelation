@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:revelation/models/page.dart' as model;
@@ -20,6 +21,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
   String imageName = "";
   bool isLoading = false;
   bool refreshError = false;
+  bool imageShown = false;
+  bool scaleAndPositionRestored = false;
+  double dx = 0;
+  double dy = 0;
+  double scale = 1;
+  double savedX = 0;
+  double savedY = 0;
+  double savedScale = 0;
   bool isNegative = false;
   bool isMonochrome = false;
   double brightness = 0;
@@ -45,6 +54,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool _selectAreaMode = false;
   void Function(Rect?)? _onAreaSelected;
   bool _isMenuOpen = false;
+  Timer? _debounceTimer;
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
@@ -55,7 +65,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   PrimarySourceViewModel(this._pagesRepository, {required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
-    imageController.transformationController.addListener(_updateZoomStatus);
+    imageController.transformationController
+        .addListener(_updateTransformStatus);
 
     _isWeb = isWeb();
     _isMobileWeb = _isWeb && isMobileBrowser();
@@ -80,11 +91,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
       loadImage(selectedPage!.image);
     }
     _checkLocalPages();
-    _getPagesSettings();
   }
 
   Future<void> loadImage(String page, {bool isReload = false}) async {
     isLoading = true;
+    imageShown = false;
+    scaleAndPositionRestored = false;
+    await _getPagesSettings();
     notifyListeners();
 
     if (_isWeb) {
@@ -107,19 +120,29 @@ class PrimarySourceViewModel extends ChangeNotifier {
         localPageLoaded[page] = downloaded;
       }
     }
+    _updateTransformStatus();
     isLoading = false;
     notifyListeners();
-
-    _updateZoomStatus();
   }
 
   Future<void> changeSelectedPage(model.Page? newPage) async {
+    imageShown = false;
+    scaleAndPositionRestored = false;
     selectedPage = newPage;
     resetColorReplacement();
-    await _getPagesSettings();
     notifyListeners();
     if (newPage != null) {
       loadImage(newPage.image);
+    } else {
+      scaleAndPositionRestored = true;
+      savedX = dx = 0;
+      savedY = dy = 0;
+      savedScale = scale = 0;
+      isNegative = false;
+      isMonochrome = false;
+      brightness = 0;
+      contrast = 100;
+      notifyListeners();
     }
   }
 
@@ -211,16 +234,21 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void savePageSettings() {
-    if (_pagesSettings != null && selectedPage != null) {
+    if (_pagesSettings != null &&
+        selectedPage != null &&
+        scaleAndPositionRestored) {
       final pageId = "${primarySource.id}_${selectedPage!.name}";
-      // TODO save also: position, scale
       _pageSettings = PagesSettings.packData(
+          posX: dx,
+          posY: dy,
+          scale: scale,
           isNegative: isNegative,
           isMonochrome: isMonochrome,
           brightness: brightness,
           contrast: contrast);
       _pagesSettings!.pages[pageId] = _pageSettings;
       _pagesRepository.savePages(_pagesSettings!);
+      print("SAVE dx: $dx, dy: $dy, scale: $scale");
     } else {
       _pageSettings = "";
     }
@@ -237,6 +265,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
     }
   }
 
+  void restorePositionAndScale() {
+    if (!scaleAndPositionRestored) {
+      imageController.setTransformParams(savedX, savedY, savedScale);
+    }
+    scaleAndPositionRestored = true;
+  }
+
   Future<void> _getPagesSettings() async {
     _pagesSettings ??= await _pagesRepository.getPages();
     if (selectedPage != null) {
@@ -249,20 +284,25 @@ class PrimarySourceViewModel extends ChangeNotifier {
     } else {
       _pageSettings = "";
     }
-    // TODO restore also: position, scale
     if (_pageSettings.isNotEmpty) {
       final pageSettings = PagesSettings.unpackData(_pageSettings);
+      savedX = dx = pageSettings['position']['x'];
+      savedY = dy = pageSettings['position']['y'];
+      savedScale = scale = pageSettings['scale'];
       isNegative = pageSettings['isNegative'];
       isMonochrome = pageSettings['isMonochrome'];
       brightness = pageSettings['brightness'];
       contrast = pageSettings['contrast'];
     } else {
+      savedX = dx = 0;
+      savedY = dy = 0;
+      savedScale = scale = 0;
       isNegative = false;
       isMonochrome = false;
       brightness = 0;
       contrast = 100;
     }
-    notifyListeners();
+    print("LOAD dx: $dx, dy: $dy, scale: $scale");
   }
 
   Future<void> _checkLocalPages() async {
@@ -337,22 +377,28 @@ class PrimarySourceViewModel extends ChangeNotifier {
     }
   }
 
-  void _updateZoomStatus() {
+  void _updateTransformStatus() {
     if (imageData == null) {
       Future.microtask(() {
         zoomStatusNotifier.value = const ZoomStatus(
             canZoomIn: false, canZoomOut: false, canReset: false);
       });
     } else {
-      final currentScale =
-          imageController.transformationController.value.getMaxScaleOnAxis();
+      final matrix = imageController.transformationController.value;
+      dx = matrix.storage[12];
+      dy = matrix.storage[13];
+      scale = matrix.getMaxScaleOnAxis();
       Future.microtask(() {
         zoomStatusNotifier.value = ZoomStatus(
-          canZoomIn: currentScale < imageController.maxScale,
-          canZoomOut: currentScale > imageController.minScale,
-          canReset: currentScale != imageController.minScale,
+          canZoomIn: scale < imageController.maxScale,
+          canZoomOut: scale > imageController.minScale,
+          canReset: scale != imageController.minScale,
         );
       });
+      if (scaleAndPositionRestored) {
+        _debounceTimer?.cancel();
+        _debounceTimer = Timer(const Duration(seconds: 1), savePageSettings);
+      }
     }
   }
 }
