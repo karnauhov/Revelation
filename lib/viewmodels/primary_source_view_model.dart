@@ -277,7 +277,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   void restorePositionAndScale() {
     if (!scaleAndPositionRestored) {
       _restoreDebounceTimer?.cancel();
-      _restoreDebounceTimer = Timer(const Duration(milliseconds: 500), () {
+      _restoreDebounceTimer = Timer(const Duration(milliseconds: 1000), () {
         imageController.setTransformParams(savedX, savedY, savedScale);
         scaleAndPositionRestored = true;
       });
