@@ -1234,8 +1234,10 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "📜 Bibliothèque nationale et universitaire",
-              "url": "https://www.bnu.fr"
+              "text":
+                  "📜 Coll. et photogr. BNU de Strasbourg (P. Gr. 1027-1028)",
+              "url":
+                  "https://www.bnu.fr/fr/services-et-collections/numerisation-la-demande#les-images-de-la-bnu-et-la-licence-ouverte"
             },
             {
               "text": "📷 INTF",
