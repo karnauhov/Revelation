@@ -7,12 +7,13 @@ All notable changes to this application will be documented here.
 ### Added
 
 - Uploaded primary-source images to supabase.com (051);
-- Improved the Primary Source screen by adding restore page settings and more image‐editing tools: negative, monochrome, brightness, contrast, color replacement, reset settings
+- Improved the Primary Source screen by adding restore page settings and more image‐editing tools: negative, monochrome, brightness, contrast, color replacement, reset settings;
 
 ### Changed
 
 - Improved PrimarySourceToolbar (did it adaptive);
 - Improved Download screen;
+- Topic screen (description of principles);
 
 ## [1.0.1](https://github.com/karnauhov/Revelation/releases/tag/v1.0.1%2B69) - 02.05.25
 
