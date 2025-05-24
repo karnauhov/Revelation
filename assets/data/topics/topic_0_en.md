@@ -24,10 +24,24 @@ These three activities represent the complete model of a believer’s spiritual 
 
 For the practical implementation of this principle, a step-by-step study of each fragment of the Book of Revelation is proposed, where at each stage special attention is paid to the corresponding aspect of this approach. Since reading begins with working with primary sources in the original language, it is advisable to divide this activity into two stages:
 
-### Stage 1. Formation of a common text from all primary sources.
+### Stage 1. Forming a general text from all primary sources.
 
-At this stage, the text of the passage is compared across all available primary sources, and a **consolidated version** is created that reflects all differences between the sources.
+At this stage, the text of the passage is compared across all available primary sources, and **a consolidated version is created** that reflects all the differences between the sources. This process allows for the consideration of all available historical variants of the text, emphasizing the importance of each one and enabling the studied passage to be viewed from different perspectives. This is especially important for the Book of Revelation, where the diversity of textual traditions can enrich the understanding of its symbols and imagery.
 
 ### Stage 2. Dictionary and sentence structure.
 
-This stage includes compiling a dictionary for the studied passage, working with Strong's numbers and dictionary entries for each word, as well as a detailed **grammatical analysis of each word and sentence** in accordance with the rules of the ancient Greek language of the New Testament.
+This stage involves compiling a dictionary for the studied passage, working with Strong's numbers and dictionary entries for each word, as well as a detailed **grammatical analysis of each word and sentence** in accordance with the rules of New Testament Greek. This approach ensures a deep understanding of the linguistic features of the text, which is necessary for a correct interpretation of its meaning.
+
+After reading and gaining a superficial understanding of the text, the next three stages will allow one to "hear the essence" and "see the depth and breadth" of each text.
+
+### Stage 3. Identifying and analyzing Old Testament allusions.
+
+This stage is critically important for a deep study of the Book of Revelation, helping to reveal its profound **connections to the Old Testament**. It aims at identifying and analyzing allusions that enrich the understanding of the text and reveal how the Old Testament is used to convey the meaning of the message. Without this analysis, the true meaning of the book may remain a mystery.
+
+### Stage 4. The Revelation of Jesus Christ.
+
+This central and most important stage in studying the Book of Revelation focuses on interpreting the text through the lens of Jesus Christ and the New Testament, transforming Old Testament symbols and themes in light of His life, death, and resurrection to reveal the spiritual and universal significance of the apocalyptic visions. This Christological approach emphasizes that the Book of Revelation is not just prophecies about the end times but a Christian text **centered on** **Christ and His redemptive work**, making its message relevant to the church. Without this perspective, the main significance of the book may be missed, whereas the goal of this stage is to ensure that each passage is understood as a revelation of Jesus Christ.
+
+### Stage 5. Analysis of structure and connections.
+
+This stage helps to see the **text in the context of the entire Book of Revelation**, establishing connections between the passage and other parts of the book, which allows for a deeper understanding of its meaning and the author's intent. The context of each passage may even be found in another part of the book, not just in adjacent passages. This underscores the importance of structural analysis for understanding the text in a broader context.
