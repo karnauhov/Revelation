@@ -68,4 +68,4 @@ And Jesus Himself reminds us:
 
 These exhortations are addressed to every Christian, especially at times when our faith feels weak. They call us not just to assent to the truth but to actively follow it each day.
 
-![map](resource:assets/images/Topics/banner_preface3.png)
+![map](resource:assets/images/Topics/preface3.jpg)
