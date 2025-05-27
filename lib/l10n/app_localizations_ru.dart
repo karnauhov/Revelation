@@ -132,7 +132,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get topic_0_name => 'Предисловие';
 
   @override
-  String get topic_0_description => 'Первоисточники и принципы';
+  String get topic_0_description => 'Первоисточники, принципы, этапы';
 
   @override
   String get topic_1_name => 'Введение';

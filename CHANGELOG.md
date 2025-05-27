@@ -13,7 +13,7 @@ All notable changes to this application will be documented here.
 
 - Improved PrimarySourceToolbar (did it adaptive);
 - Improved Download screen;
-- Topic screen (description of principles);
+- Topic screen (description of principles and stages);
 
 ## [1.0.1](https://github.com/karnauhov/Revelation/releases/tag/v1.0.1%2B69) - 02.05.25
 

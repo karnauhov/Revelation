@@ -1275,8 +1275,9 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "📜 Institut français d’archéologie orientale du Caire",
-              "url": "https://www.ifao.egnet.net"
+              "text": "📜 © IFAO, inv. 237b",
+              "url":
+                  "https://www.ifao.egnet.net/archives-scientifiques/reproductions/reproductions-demande"
             },
           ],
           permissionsReceived: false),
@@ -1501,8 +1502,9 @@ class PrimarySourcesRepository {
           ],
           attributes: [
             {
-              "text": "📜 Biblioteca Medicea Laurenziana",
-              "url": "https://www.bmlonline.it"
+              "text":
+                  "📜 Firenze, Biblioteca Medicea Laurenziana,  PSI 1166. Su concessione del MiC. E' vietata ogni ulteriore riproduzione con qualsiasi mezzo",
+              "url": "https://psi-online.it/rightpermission"
             },
             {
               "text":

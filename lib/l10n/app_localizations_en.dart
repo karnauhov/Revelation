@@ -132,7 +132,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topic_0_name => 'Preface';
 
   @override
-  String get topic_0_description => 'Primary sources and principles';
+  String get topic_0_description => 'Primary sources, principles, stages';
 
   @override
   String get topic_1_name => 'Introduction';
