@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.2+77
+version: 1.0.2+78
 
 environment:
   sdk: ^3.5.3
