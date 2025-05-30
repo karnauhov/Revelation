@@ -104,6 +104,10 @@ class RevelationApp extends StatelessWidget {
       ],
       onGenerateTitle: onGenerateTitle,
       theme: ThemeData(
+        fontFamily: 'Roboto',
+        fontFamilyFallback: <String>[
+          'Noto Sans',
+        ],
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),

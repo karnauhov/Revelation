@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.2+78
+version: 1.0.2+79
 
 environment:
   sdk: ^3.5.3
@@ -64,3 +64,14 @@ flutter:
     - assets/images/UI/
     - assets/images/Topics/
     - assets/images/PrimarySources/
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
+          weight: 400
+
+    - family: Noto Sans
+      fonts:
+        - asset: assets/fonts/NotoSans/NotoSans-Regular.ttf
+          weight: 400
