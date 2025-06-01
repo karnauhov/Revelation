@@ -2,6 +2,12 @@
 
 All notable changes to this application will be documented here.
 
+## [1.0.3] - Under development
+
+### Changed
+
+- The application design has been completely revamped: main icon, ...
+
 ## [1.0.2](https://github.com/karnauhov/Revelation/releases/tag/v1.0.2%2B80) - 31.05.25
 
 ### Added
