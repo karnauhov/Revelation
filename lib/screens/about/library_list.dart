@@ -26,6 +26,9 @@ class _LibraryListState extends State<LibraryList> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return FutureBuilder<List<LibraryInfo>>(
       future: _librariesFuture,
       builder: (context, snapshot) {
@@ -41,7 +44,11 @@ class _LibraryListState extends State<LibraryList> {
               errorMessage:
                   AppLocalizations.of(context)!.error_loading_libraries);
         } else {
-          return CircularProgressIndicator();
+          return Center(
+            child: CircularProgressIndicator(
+              color: colorScheme.primary,
+            ),
+          );
         }
       },
     );

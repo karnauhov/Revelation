@@ -17,6 +17,9 @@ class IconLinkItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return ListTile(
       contentPadding: EdgeInsets.fromLTRB(leftMargin, 0, 0, 0),
       visualDensity: VisualDensity.compact,
@@ -28,7 +31,7 @@ class IconLinkItem extends StatelessWidget {
       ),
       title: Text(
         text,
-        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        style: TextStyle(color: colorScheme.primary),
       ),
       onTap: onTap,
     );

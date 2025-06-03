@@ -32,6 +32,8 @@ class _TopicScreenState extends State<TopicScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final settingsViewModel = Provider.of<SettingsViewModel>(context);
     final futureMarkdown = _loadMarkdownAsset(
       widget.file,
@@ -47,9 +49,11 @@ class _TopicScreenState extends State<TopicScreen> {
           controller: _scrollController,
           padding: const EdgeInsets.all(8.0),
           child: MarkdownBody(
-              data: data,
-              onTapLink: (text, href, title) =>
-                  _onTapHandle(context, text, href, title)),
+            data: data,
+            styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+            onTapLink: (text, href, title) =>
+                _onTapHandle(context, text, href, title),
+          ),
         );
       },
     ));

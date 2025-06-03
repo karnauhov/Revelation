@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/repositories/primary_sources_repository.dart';
+import 'package:revelation/theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:get_it/get_it.dart';
@@ -108,7 +109,7 @@ class RevelationApp extends StatelessWidget {
         fontFamilyFallback: <String>[
           'Noto Sans',
         ],
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: MaterialTheme.lightScheme(),
         useMaterial3: true,
       ),
     );

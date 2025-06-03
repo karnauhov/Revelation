@@ -7,22 +7,29 @@ class ErrorMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64.0,
-              color: Colors.red,
+              color: colorScheme.error,
             ),
             const SizedBox(height: 16.0),
             Text(
               errorMessage,
-              style: const TextStyle(fontSize: 16.0),
               textAlign: TextAlign.center,
+              style: textTheme.bodyMedium?.copyWith(
+                fontSize: 16.0,
+                color: colorScheme.onSurface,
+              ),
             ),
           ],
         ),

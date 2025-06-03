@@ -33,13 +33,20 @@ class _AboutScreenState extends State<AboutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return ChangeNotifierProvider(
       create: (_) => AboutViewModel(),
       child: Consumer<AboutViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isLoading) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(
+                  color: colorScheme.primary,
+                ),
+              ),
             );
           }
 
@@ -55,39 +62,43 @@ class _AboutScreenState extends State<AboutScreen> {
                   const SizedBox(height: 8),
                   Text(
                     AppLocalizations.of(context)!.app_description,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                   const SizedBox(height: 4),
-                  const Divider(height: 1),
-                  // Marketplaces
+                  Divider(height: 1, color: colorScheme.outlineVariant),
+                  // Marketplaces (Web)
                   if (isWeb()) _buildMarketplaces(context),
-                  if (isWeb()) const Divider(height: 1),
+                  if (isWeb())
+                    Divider(height: 1, color: colorScheme.outlineVariant),
                   // Contacts Links
                   _buildContactsLinks(context),
-                  const Divider(height: 1),
+                  Divider(height: 1, color: colorScheme.outlineVariant),
                   // Legal Links
                   _buildLegalLinks(context),
                   if (!viewModel.isAcknowledgementsExpanded)
-                    const Divider(height: 1),
+                    Divider(height: 1, color: colorScheme.outlineVariant),
                   // Acknowledgments
                   _buildAcknowledgements(context, viewModel),
                   if (!viewModel.isChangelogExpanded ||
                       !viewModel.isAcknowledgementsExpanded)
-                    const Divider(height: 1),
+                    Divider(height: 1, color: colorScheme.outlineVariant),
                   // Changelog
                   _buildChangelog(context, viewModel),
-                  if (!viewModel.isChangelogExpanded) const Divider(height: 1),
-                  // Marketplaces
+                  if (!viewModel.isChangelogExpanded)
+                    Divider(height: 1, color: colorScheme.outlineVariant),
+                  // Marketplaces (Desktop & Mobile)
                   if (!isWeb()) _buildMarketplaces(context),
-                  if (!isWeb()) const Divider(height: 1),
+                  if (!isWeb())
+                    Divider(height: 1, color: colorScheme.outlineVariant),
                   // Copyright
                   Center(
                     child: Text(
                       "© ${DateTime.now().year} ${AppConstants.author}. ${AppLocalizations.of(context)!.all_rights_reserved}.",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(color: Colors.grey),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.outline,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -135,17 +146,15 @@ class _AboutScreenState extends State<AboutScreen> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.about_screen,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
                     AppLocalizations.of(context)!.about_header,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelSmall
-                        ?.copyWith(fontWeight: FontWeight.normal),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                 ],
               ),
@@ -158,6 +167,9 @@ class _AboutScreenState extends State<AboutScreen> {
   }
 
   Widget _buildAppInfo(BuildContext context, AboutViewModel viewModel) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Row(
       children: [
         SvgPicture.asset(
@@ -171,17 +183,17 @@ class _AboutScreenState extends State<AboutScreen> {
           children: [
             Text(
               AppLocalizations.of(context)!.app_name,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
             ),
             Text(
               "${AppLocalizations.of(context)!.version} ${viewModel.appVersion} (${viewModel.buildNumber})",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.normal),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.normal,
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -266,6 +278,9 @@ class _AboutScreenState extends State<AboutScreen> {
 
   Widget _buildAcknowledgements(
       BuildContext context, AboutViewModel viewModel) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return ExpansionTile(
       initiallyExpanded: viewModel.isAcknowledgementsExpanded,
       onExpansionChanged: (expanded) => viewModel.toggleAcknowledgements(),
@@ -281,10 +296,10 @@ class _AboutScreenState extends State<AboutScreen> {
           const SizedBox(width: 12),
           Text(
             AppLocalizations.of(context)!.acknowledgements_title,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
+            ),
           ),
         ],
       ),
@@ -293,13 +308,17 @@ class _AboutScreenState extends State<AboutScreen> {
         if (AppLocalizations.of(context)!.acknowledgements_description_1 != "")
           Text(
             AppLocalizations.of(context)!.acknowledgements_description_1,
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface,
+            ),
           ),
         const InstitutionList(),
         if (AppLocalizations.of(context)!.acknowledgements_description_2 != "")
           Text(
             AppLocalizations.of(context)!.acknowledgements_description_2,
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface,
+            ),
           ),
         const LibraryList(),
       ],
@@ -307,6 +326,9 @@ class _AboutScreenState extends State<AboutScreen> {
   }
 
   Widget _buildChangelog(BuildContext context, AboutViewModel viewModel) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return ExpansionTile(
       minTileHeight: 30,
       tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
@@ -324,10 +346,10 @@ class _AboutScreenState extends State<AboutScreen> {
           const SizedBox(width: 12),
           Text(
             AppLocalizations.of(context)!.changelog,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
+            ),
           ),
         ],
       ),
@@ -337,9 +359,19 @@ class _AboutScreenState extends State<AboutScreen> {
                 padding: const EdgeInsets.all(4.0),
                 child: MarkdownBody(
                   data: viewModel.changelog,
+                  styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+                  onTapLink: (text, href, title) {
+                    if (href != null && href.isNotEmpty) {
+                      launchLink(href);
+                    }
+                  },
                 ),
               )
-            : const Center(child: CircularProgressIndicator()),
+            : Center(
+                child: CircularProgressIndicator(
+                  color: colorScheme.primary,
+                ),
+              ),
       ],
     );
   }

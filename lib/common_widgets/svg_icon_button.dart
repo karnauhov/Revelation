@@ -17,6 +17,9 @@ class SvgIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Material(
       color: Colors.transparent,
       shape: const CircleBorder(),
@@ -24,8 +27,8 @@ class SvgIconButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(size * 1.2),
         customBorder: const CircleBorder(),
-        hoverColor: Colors.grey.withValues(alpha: 0.25),
-        splashColor: Colors.transparent,
+        hoverColor: colorScheme.primary.withValues(alpha: 0.08),
+        splashColor: colorScheme.primary.withValues(alpha: 0.12),
         highlightColor: Colors.transparent,
         child: Tooltip(
           message: tooltip,

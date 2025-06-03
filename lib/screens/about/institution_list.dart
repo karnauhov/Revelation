@@ -26,6 +26,9 @@ class _InstitutionListState extends State<InstitutionList> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return FutureBuilder<List<InstitutionInfo>>(
       future: _institutionsFuture,
       builder: (context, snapshot) {
@@ -41,7 +44,11 @@ class _InstitutionListState extends State<InstitutionList> {
               errorMessage:
                   AppLocalizations.of(context)!.error_loading_institutions);
         } else {
-          return CircularProgressIndicator();
+          return Center(
+            child: CircularProgressIndicator(
+              color: colorScheme.primary,
+            ),
+          );
         }
       },
     );

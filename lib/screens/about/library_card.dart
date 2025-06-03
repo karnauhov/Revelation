@@ -14,9 +14,12 @@ class LibraryCard extends StatelessWidget {
     const iconWidth = 48.0;
     const iconHeight = 48.0;
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Card(
       margin: EdgeInsets.symmetric(vertical: 4),
-      color: Theme.of(context).colorScheme.surfaceContainer,
+      color: colorScheme.surfaceContainer,
       child: ListTile(
         visualDensity: VisualDensity.compact,
         minTileHeight: 0,
@@ -36,17 +39,17 @@ class LibraryCard extends StatelessWidget {
         ),
         title: Text(
           library.name,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: colorScheme.onSurface,
+          ),
         ),
         subtitle: GestureDetector(
           onTap: () => launchLink(library.licenseLink),
           child: Text(
             "${AppLocalizations.of(context)!.license} (${library.license})",
             style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
+              color: colorScheme.primary,
               decoration: TextDecoration.underline,
             ),
           ),

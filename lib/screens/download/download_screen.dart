@@ -15,6 +15,9 @@ class DownloadScreen extends StatefulWidget {
 class _DownloadScreenState extends State<DownloadScreen> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -22,16 +25,12 @@ class _DownloadScreenState extends State<DownloadScreen> {
           children: [
             Text(
               AppLocalizations.of(context)!.download,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
+              style: theme.textTheme.headlineSmall
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
               AppLocalizations.of(context)!.download_header,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall
+              style: theme.textTheme.labelSmall
                   ?.copyWith(fontWeight: FontWeight.normal),
             ),
           ],
@@ -44,10 +43,16 @@ class _DownloadScreenState extends State<DownloadScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildAndroidLinks(context),
-              const Divider(height: 1),
+              Divider(
+                height: 1,
+                color: colorScheme.outlineVariant,
+              ),
               const SizedBox(height: 4),
               _buildWindowsLinks(context),
-              const Divider(height: 1),
+              Divider(
+                height: 1,
+                color: colorScheme.outlineVariant,
+              ),
             ],
           ),
         ),
@@ -56,7 +61,11 @@ class _DownloadScreenState extends State<DownloadScreen> {
   }
 
   Widget _buildAndroidLinks(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -68,10 +77,10 @@ class _DownloadScreenState extends State<DownloadScreen> {
             const SizedBox(width: 12),
             Text(
               "Android",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
             ),
           ],
         ),
@@ -86,7 +95,11 @@ class _DownloadScreenState extends State<DownloadScreen> {
   }
 
   Widget _buildWindowsLinks(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -98,10 +111,10 @@ class _DownloadScreenState extends State<DownloadScreen> {
             const SizedBox(width: 12),
             Text(
               "Windows",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
             ),
           ],
         ),

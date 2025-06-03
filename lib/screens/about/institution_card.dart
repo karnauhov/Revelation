@@ -14,9 +14,12 @@ class InstitutionCard extends StatelessWidget {
     const iconWidth = 48.0;
     const iconHeight = 48.0;
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
-      color: Theme.of(context).colorScheme.surfaceContainer,
+      color: colorScheme.surfaceContainer,
       child: ListTile(
         visualDensity: VisualDensity.compact,
         minTileHeight: 0,
@@ -24,10 +27,10 @@ class InstitutionCard extends StatelessWidget {
         leading: _buildIcon(institution.idIcon, iconWidth, iconHeight),
         title: Text(
           institution.name,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: colorScheme.onSurface,
+          ),
         ),
         subtitle: _buildSourcesText(context),
       ),
@@ -36,6 +39,7 @@ class InstitutionCard extends StatelessWidget {
 
   Widget _buildSourcesText(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final List<InlineSpan> children = [];
     final entries = institution.sources.entries.toList();
 
@@ -47,7 +51,7 @@ class InstitutionCard extends StatelessWidget {
           TextSpan(
             text: text,
             style: TextStyle(
-              color: theme.colorScheme.primary,
+              color: colorScheme.primary,
               decoration: TextDecoration.underline,
             ),
             recognizer: TapGestureRecognizer()..onTap = () => launchLink(url),
@@ -57,7 +61,9 @@ class InstitutionCard extends StatelessWidget {
         children.add(
           TextSpan(
             text: text,
-            style: theme.textTheme.bodyMedium,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurface,
+            ),
           ),
         );
       }
@@ -66,14 +72,21 @@ class InstitutionCard extends StatelessWidget {
         children.add(
           TextSpan(
             text: ', ',
-            style: theme.textTheme.bodyMedium,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurface,
+            ),
           ),
         );
       }
     }
 
     return RichText(
-      text: TextSpan(children: children, style: theme.textTheme.bodyMedium),
+      text: TextSpan(
+        children: children,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurface,
+        ),
+      ),
     );
   }
 
