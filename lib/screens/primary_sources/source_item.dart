@@ -25,9 +25,13 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    TextTheme theme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: colorScheme.surfaceContainerHigh,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
         child: FloatColumn(
@@ -41,7 +45,9 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                     padding: const EdgeInsets.only(right: 0),
                     child: getStyledText(
                       widget.source.title,
-                      theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface),
                     ),
                   ),
                 ),
@@ -55,7 +61,7 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                   context.push('/primary_source', extra: widget.source);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
+                  backgroundColor: colorScheme.surface,
                   elevation: 8,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -65,7 +71,7 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                 child: Ink(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.blueAccent, width: 1),
+                    border: Border.all(color: colorScheme.primary, width: 1),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
@@ -80,14 +86,16 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
             WrappableText(
               text: TextSpan(
                 text: "✒ ${widget.source.date}",
-                style: theme.bodyMedium,
+                style: textTheme.bodyMedium
+                    ?.copyWith(color: colorScheme.onSurface),
               ),
             ),
             WrappableText(
               text: TextSpan(
                 text:
                     "📖 ${widget.source.content} [${AppLocalizations.of(context)!.verses}: ${widget.source.quantity}]",
-                style: theme.bodyMedium,
+                style: textTheme.bodyMedium
+                    ?.copyWith(color: colorScheme.onSurface),
               ),
             ),
             WrappableText(
@@ -95,7 +103,8 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                 text: !_showMore
                     ? "(${AppLocalizations.of(context)!.show_more})"
                     : "(${AppLocalizations.of(context)!.hide})",
-                style: const TextStyle(color: Colors.blue),
+                style:
+                    textTheme.bodyMedium?.copyWith(color: colorScheme.primary),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     setState(() {
@@ -109,47 +118,54 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
               WrappableText(
                 text: TextSpan(
                   text: "📜 ${widget.source.material}",
-                  style: theme.bodyMedium,
+                  style: textTheme.bodyMedium
+                      ?.copyWith(color: colorScheme.onSurface),
                 ),
               ),
             if (_showMore)
               WrappableText(
                 text: TextSpan(
                   text: "🔎 ${widget.source.textStyle}",
-                  style: theme.bodyMedium,
+                  style: textTheme.bodyMedium
+                      ?.copyWith(color: colorScheme.onSurface),
                 ),
               ),
             if (_showMore)
               WrappableText(
                 text: TextSpan(
                   text: "🗂 ${widget.source.classification}",
-                  style: theme.bodyMedium,
+                  style: textTheme.bodyMedium
+                      ?.copyWith(color: colorScheme.onSurface),
                 ),
               ),
             if (_showMore)
               WrappableText(
                 text: TextSpan(
                   text: "🔓 ${widget.source.found}",
-                  style: theme.bodyMedium,
+                  style: textTheme.bodyMedium
+                      ?.copyWith(color: colorScheme.onSurface),
                 ),
               ),
             if (_showMore)
               WrappableText(
                 text: TextSpan(
                   text: "📌 ${widget.source.currentLocation}",
-                  style: theme.bodyMedium,
+                  style: textTheme.bodyMedium
+                      ?.copyWith(color: colorScheme.onSurface),
                 ),
               ),
             if (_showMore)
               Text.rich(
                 TextSpan(
                   text: "🌐 ",
-                  style: theme.bodyMedium,
+                  style: textTheme.bodyMedium
+                      ?.copyWith(color: colorScheme.onSurface),
                   children: [
                     if (widget.source.link1Title.isNotEmpty)
                       TextSpan(
                         text: "[${widget.source.link1Title}]",
-                        style: const TextStyle(color: Colors.blue),
+                        style: textTheme.bodyMedium
+                            ?.copyWith(color: colorScheme.primary),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             if (widget.source.link1Url.isNotEmpty) {
@@ -160,7 +176,8 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                     if (widget.source.link2Title.isNotEmpty)
                       TextSpan(
                         text: ", [${widget.source.link2Title}]",
-                        style: const TextStyle(color: Colors.blue),
+                        style: textTheme.bodyMedium
+                            ?.copyWith(color: colorScheme.primary),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             if (widget.source.link2Url.isNotEmpty) {
@@ -171,7 +188,8 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                     if (widget.source.link3Title.isNotEmpty)
                       TextSpan(
                         text: ", [${widget.source.link3Title}]",
-                        style: const TextStyle(color: Colors.blue),
+                        style: textTheme.bodyMedium
+                            ?.copyWith(color: colorScheme.primary),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             if (widget.source.link3Url.isNotEmpty) {

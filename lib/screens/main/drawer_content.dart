@@ -51,6 +51,10 @@ class _DrawerContentState extends State<DrawerContent> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final dividerColor = colorScheme.onSurface.withValues(alpha: 0.12);
+
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -58,6 +62,7 @@ class _DrawerContentState extends State<DrawerContent> {
           Expanded(
             child: Scrollbar(
               controller: _scrollController,
+              thumbVisibility: true,
               child: GestureDetector(
                 onVerticalDragStart: _onDragStart,
                 onVerticalDragUpdate: _onDragUpdate,
@@ -65,7 +70,7 @@ class _DrawerContentState extends State<DrawerContent> {
                 behavior: HitTestBehavior.opaque,
                 child: ListView(
                   controller: _scrollController,
-                  padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: [
                     DrawerItem(
@@ -77,7 +82,7 @@ class _DrawerContentState extends State<DrawerContent> {
                         context.push('/primary_sources');
                       },
                     ),
-                    const Divider(),
+                    Divider(color: dividerColor),
                     DrawerItem(
                       assetPath: 'assets/images/UI/settings.svg',
                       text: AppLocalizations.of(context)!.settings_screen,

@@ -36,14 +36,15 @@ class AppRouter {
       GoRoute(
         path: '/topic',
         name: 'topic',
-        builder: (BuildContext context, GoRouterState state) {
-          final extra = state.extra as Map<String, dynamic>?;
-          return TopicScreen(
-            name: extra?['name'],
-            description: extra?['description'],
-            file: extra?['file'],
-          );
-        },
+        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
+          context: context,
+          state: state,
+          child: TopicScreen(
+            name: (state.extra as Map<String, dynamic>?)?['name'],
+            description: (state.extra as Map<String, dynamic>?)?['description'],
+            file: (state.extra as Map<String, dynamic>?)?['file'],
+          ),
+        ),
       ),
       GoRoute(
         path: '/primary_sources',

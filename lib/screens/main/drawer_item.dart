@@ -15,17 +15,22 @@ class DrawerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final backgroundColor = colorScheme.primary.withValues(alpha: 0.25);
+    final contentColor = colorScheme.onSurface;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: InkWell(
         onTap: onClick,
         borderRadius: BorderRadius.circular(8.0),
+        splashColor: colorScheme.primary.withValues(alpha: 0.12),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-            color:
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
+            color: backgroundColor,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Row(
@@ -38,9 +43,10 @@ class DrawerItem extends StatelessWidget {
               const SizedBox(width: 16.0),
               Text(
                 text,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(color: contentColor),
               ),
             ],
           ),

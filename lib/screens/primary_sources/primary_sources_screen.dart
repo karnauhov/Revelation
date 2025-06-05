@@ -37,6 +37,8 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     final primarySourcesViewModel =
         Provider.of<PrimarySourcesViewModel>(context);
     List<PrimarySource> fullSources =
@@ -57,16 +59,12 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
             children: [
               Text(
                 AppLocalizations.of(context)!.primary_sources_screen,
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
+                style: textTheme.headlineSmall
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 AppLocalizations.of(context)!.primary_sources_header,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelSmall
+                style: textTheme.labelSmall
                     ?.copyWith(fontWeight: FontWeight.normal),
               ),
             ],
@@ -157,10 +155,21 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
   }
 
   Widget _buildSourceHeader(BuildContext context, String header) {
-    TextTheme theme = Theme.of(context).textTheme;
-    return Text(header,
-        style: theme.titleSmall?.copyWith(color: Colors.grey),
-        textAlign: TextAlign.center);
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0.0),
+      child: Text(
+        header,
+        textAlign: TextAlign.center,
+        style: textTheme.titleSmall?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
   }
 
   Widget _buildSourceItem(BuildContext context, PrimarySource source) {

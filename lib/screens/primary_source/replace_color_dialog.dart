@@ -76,10 +76,16 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   widget.viewModel.selectedArea == null
                       ? AppLocalizations.of(context)!.not_selected
                       : '${AppLocalizations.of(context)!.size} (${(widget.viewModel.selectedArea!.right - widget.viewModel.selectedArea!.left).abs().toStringAsFixed(0)} x ${(widget.viewModel.selectedArea!.bottom - widget.viewModel.selectedArea!.top).abs().toStringAsFixed(0)})',
+                  style: TextStyle(
+                    color: colorScheme.onSurface,
+                  ),
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.crop),
+                icon: Icon(
+                  Icons.crop,
+                  color: colorScheme.primary,
+                ),
                 tooltip: AppLocalizations.of(context)!.area_selection,
                 onPressed: () async {
                   Navigator.of(context).pop();
@@ -145,11 +151,16 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 height: 24,
                 decoration: BoxDecoration(
                   color: colorToReplace,
-                  border: Border.all(color: Colors.black26),
+                  border: Border.all(
+                    color: colorScheme.outline,
+                  ),
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.palette),
+                icon: Icon(
+                  Icons.palette,
+                  color: colorScheme.primary,
+                ),
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
                   Color picked = colorToReplace;
@@ -157,7 +168,11 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text(AppLocalizations.of(context)!.select_color),
+                        backgroundColor: colorScheme.surface,
+                        title: Text(
+                          AppLocalizations.of(context)!.select_color,
+                          style: TextStyle(color: colorScheme.onSurface),
+                        ),
                         content: SingleChildScrollView(
                           child: ColorPicker(
                             pickerColor: picked,
@@ -169,11 +184,23 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                         ),
                         actions: [
                           TextButton(
-                            child: Text(AppLocalizations.of(context)!.cancel),
+                            style: TextButton.styleFrom(
+                              foregroundColor: colorScheme.primary,
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.cancel,
+                              style: TextStyle(color: colorScheme.primary),
+                            ),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                           TextButton(
-                            child: Text(AppLocalizations.of(context)!.ok),
+                            style: TextButton.styleFrom(
+                              foregroundColor: colorScheme.primary,
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.ok,
+                              style: TextStyle(color: colorScheme.primary),
+                            ),
                             onPressed: () {
                               Navigator.of(context).pop();
                               setState(() {
@@ -190,7 +217,10 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.colorize),
+                icon: Icon(
+                  Icons.colorize,
+                  color: colorScheme.primary,
+                ),
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -256,11 +286,16 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 height: 24,
                 decoration: BoxDecoration(
                   color: newColor,
-                  border: Border.all(color: Colors.black26),
+                  border: Border.all(
+                    color: colorScheme.outline,
+                  ),
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.palette),
+                icon: Icon(
+                  Icons.palette,
+                  color: colorScheme.primary,
+                ),
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
                   Color picked = newColor;
@@ -268,7 +303,11 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text(AppLocalizations.of(context)!.select_color),
+                        backgroundColor: colorScheme.surface,
+                        title: Text(
+                          AppLocalizations.of(context)!.select_color,
+                          style: TextStyle(color: colorScheme.onSurface),
+                        ),
                         content: SingleChildScrollView(
                           child: ColorPicker(
                             pickerColor: picked,
@@ -280,11 +319,23 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                         ),
                         actions: [
                           TextButton(
-                            child: Text(AppLocalizations.of(context)!.cancel),
+                            style: TextButton.styleFrom(
+                              foregroundColor: colorScheme.primary,
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.cancel,
+                              style: TextStyle(color: colorScheme.primary),
+                            ),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                           TextButton(
-                            child: Text(AppLocalizations.of(context)!.ok),
+                            style: TextButton.styleFrom(
+                              foregroundColor: colorScheme.primary,
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.ok,
+                              style: TextStyle(color: colorScheme.primary),
+                            ),
                             onPressed: () {
                               Navigator.of(context).pop();
                               setState(() {
@@ -301,7 +352,10 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.colorize),
+                icon: Icon(
+                  Icons.colorize,
+                  color: colorScheme.primary,
+                ),
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -368,9 +422,9 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   value: tolerance,
                   min: 0,
                   max: 100,
+                  divisions: 100,
                   activeColor: colorScheme.primary,
                   inactiveColor: colorScheme.onSurface.withValues(alpha: 0.3),
-                  divisions: 100,
                   onChanged: (value) {
                     setState(() {
                       tolerance = value;
@@ -391,13 +445,16 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 280),
+                  constraints: const BoxConstraints(maxWidth: 280),
                   child: Text.rich(
                     textAlign: TextAlign.center,
                     TextSpan(
                       text:
                           "⚠️ ${AppLocalizations.of(context)!.replace_color_message}",
-                      style: const TextStyle(fontSize: 10),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: colorScheme.onSurface,
+                      ),
                     ),
                     maxLines: 3,
                     softWrap: true,

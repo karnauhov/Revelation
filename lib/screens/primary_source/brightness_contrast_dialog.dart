@@ -33,19 +33,32 @@ class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return AlertDialog(
+      backgroundColor: colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: colorScheme.primary),
+        borderRadius: BorderRadius.circular(8),
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '${AppLocalizations.of(context)!.brightness}: ${brightness.toStringAsFixed(0)}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Slider(
             value: brightness,
             min: -100,
             max: 100,
+            activeColor: colorScheme.primary,
+            inactiveColor: colorScheme.onSurface.withValues(alpha: 0.3),
             onChanged: (value) {
               setState(() {
                 brightness = value;
@@ -61,12 +74,17 @@ class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
           const SizedBox(height: 20),
           Text(
             '${AppLocalizations.of(context)!.contrast}: ${contrast.toStringAsFixed(0)}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Slider(
             value: contrast,
             min: 0,
             max: 200,
+            activeColor: colorScheme.primary,
+            inactiveColor: colorScheme.onSurface.withValues(alpha: 0.3),
             onChanged: (value) {
               setState(() {
                 contrast = value;
@@ -83,17 +101,29 @@ class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
       ),
       actions: [
         TextButton(
+          style: TextButton.styleFrom(
+            foregroundColor: colorScheme.primary,
+          ),
           onPressed: () {
             widget.onCancel();
             Navigator.of(context).pop();
           },
-          child: Text(AppLocalizations.of(context)!.reset),
+          child: Text(
+            AppLocalizations.of(context)!.reset,
+            style: TextStyle(color: colorScheme.primary),
+          ),
         ),
         TextButton(
+          style: TextButton.styleFrom(
+            foregroundColor: colorScheme.primary,
+          ),
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(AppLocalizations.of(context)!.ok),
+          child: Text(
+            AppLocalizations.of(context)!.ok,
+            style: TextStyle(color: colorScheme.primary),
+          ),
         ),
       ],
     );

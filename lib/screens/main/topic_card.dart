@@ -13,10 +13,15 @@ class TopicCard extends StatelessWidget {
   Widget build(BuildContext context) {
     const iconWidth = 48.0;
     const iconHeight = 48.0;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final cardColor = colorScheme.surfaceContainerHighest;
+    final onSurfaceColor = colorScheme.onSurface;
+    final onSurfaceVariantColor = colorScheme.onSurfaceVariant;
 
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 4),
-      color: Theme.of(context).colorScheme.surfaceContainer,
+      margin: const EdgeInsets.symmetric(vertical: 4.0),
+      color: cardColor,
       child: ListTile(
         visualDensity: VisualDensity.compact,
         minTileHeight: 0,
@@ -34,22 +39,34 @@ class TopicCard extends StatelessWidget {
                 : 'assets/images/UI/code.svg',
             width: iconWidth,
             height: iconHeight,
-            placeholderBuilder: (BuildContext context) =>
-                CircularProgressIndicator(),
+            placeholderBuilder: (BuildContext context) => Center(
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  color: colorScheme.primary,
+                ),
+              ),
+            ),
           ),
         ),
         title: Text(
           locLinks(context, topic.name),
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: onSurfaceColor,
+              ),
         ),
         subtitle: Text(
           locLinks(context, topic.description),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: onSurfaceVariantColor,
+              ),
+        ),
+        trailing: Icon(
+          Icons.chevron_right,
+          color: onSurfaceVariantColor,
         ),
       ),
     );

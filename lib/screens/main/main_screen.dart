@@ -28,6 +28,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return ChangeNotifierProvider(
       create: (_) => MainViewModel(),
       child: Consumer<MainViewModel>(
@@ -82,29 +85,28 @@ class _MainScreenState extends State<MainScreen> {
           }
 
           return Scaffold(
-            appBar: AppBar(
-              title: const Text(''),
-              leading: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
-                child: Builder(
-                  builder: (context) => SvgIconButton(
-                    assetPath: 'assets/images/UI/menu.svg',
-                    tooltip: AppLocalizations.of(context)!.menu,
-                    size: 24,
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
+              appBar: AppBar(
+                  title: const Text(''),
+                  leading: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
+                    child: Builder(
+                      builder: (context) => SvgIconButton(
+                        assetPath: 'assets/images/UI/menu.svg',
+                        tooltip: AppLocalizations.of(context)!.menu,
+                        size: 24,
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                      ),
+                    ),
                   ),
-                ),
+                  foregroundColor: colorScheme.onPrimary),
+              drawer: Drawer(
+                  backgroundColor: colorScheme.surface, child: DrawerContent()),
+              body: SizedBox.expand(
+                child: content,
               ),
-            ),
-            drawer: const Drawer(
-              child: DrawerContent(),
-            ),
-            body: SizedBox.expand(
-              child: content,
-            ),
-          );
+              backgroundColor: colorScheme.surface);
         },
       ),
     );

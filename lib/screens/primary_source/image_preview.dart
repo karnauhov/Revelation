@@ -71,10 +71,18 @@ class ImagePreviewState extends State<ImagePreview> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         if (widget.controller.imageSize == null) {
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+            color: colorScheme.surface,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
         final currentSize = Size(constraints.maxWidth, constraints.maxHeight);
         bool recalcAnyway = false;
@@ -128,7 +136,11 @@ class ImagePreviewState extends State<ImagePreview> {
                     height: (_start!.dy - _end!.dy).abs(),
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blue, width: 2),
+                        border: Border.all(
+                          color: colorScheme.primary,
+                          width: 2,
+                        ),
+                        color: colorScheme.onSurface.withValues(alpha: 0.1),
                       ),
                     ),
                   ),
@@ -234,7 +246,10 @@ class ImagePreviewState extends State<ImagePreview> {
             maxScale: widget.controller.maxScale,
             constrained: false,
             child: Center(
-              child: wrapped,
+              child: Container(
+                color: colorScheme.surface,
+                child: wrapped,
+              ),
             ),
           ),
         );
