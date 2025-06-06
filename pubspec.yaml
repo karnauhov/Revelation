@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.3+82
+version: 1.0.3+83
 
 environment:
   sdk: ^3.5.3
@@ -31,7 +31,6 @@ dependencies:
   intl: ^0.19.0
   supabase_flutter: ^2.8.3
   path_provider: ^2.1.5
-  flutter_dotenv: ^5.2.1
   flutter_colorpicker: ^1.1.0
   vector_math: ^2.1.4
   image: ^4.5.4
@@ -50,14 +49,13 @@ msix_config:
   publisher: CN=B37F48EC-C643-42C2-82FB-3DFB514F5E74
   languages: en, uk, ru
   store: true
-  msix_version: 1.0.85.0
+  msix_version: 1.0.86.0
   logo_path: .\assets\images\UI\app_icon.png
 
 flutter:
   generate: true
   uses-material-design: true
   assets:
-    - .env
     - CHANGELOG.md
     - assets/data/
     - assets/data/topics/
@@ -66,12 +64,8 @@ flutter:
     - assets/images/PrimarySources/
 
   fonts:
-    - family: Roboto
+    - family: Arimo
       fonts:
-        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
+        - asset: assets/fonts/Arimo/Arimo.ttf
           weight: 400
 
-    - family: Noto Sans
-      fonts:
-        - asset: assets/fonts/NotoSans/NotoSans-Regular.ttf
-          weight: 400

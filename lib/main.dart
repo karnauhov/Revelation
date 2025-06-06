@@ -8,7 +8,6 @@ import 'package:revelation/theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:get_it/get_it.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'repositories/settings_repository.dart';
 import 'viewmodels/main_view_model.dart';
 import 'viewmodels/primary_sources_view_model.dart';
@@ -41,17 +40,8 @@ void main() async {
   final settingsViewModel = SettingsViewModel(SettingsRepository());
   await settingsViewModel.loadSettings();
 
-  String supabaseUrl;
-  String supabaseKey;
-
-  if (isWeb() && !isLocalWeb()) {
-    supabaseUrl = const String.fromEnvironment('SUPABASE_URL');
-    supabaseKey = const String.fromEnvironment('SUPABASE_KEY');
-  } else {
-    await dotenv.load();
-    supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
-    supabaseKey = dotenv.env['SUPABASE_KEY'] ?? '';
-  }
+  String supabaseUrl = const String.fromEnvironment('SUPABASE_URL');
+  String supabaseKey = const String.fromEnvironment('SUPABASE_KEY');
 
   if (supabaseUrl.isEmpty || supabaseKey.isEmpty) {
     log.e("Supabase URL or key not found");
@@ -105,10 +95,7 @@ class RevelationApp extends StatelessWidget {
       ],
       onGenerateTitle: onGenerateTitle,
       theme: ThemeData(
-        fontFamily: 'Roboto',
-        fontFamilyFallback: <String>[
-          'Noto Sans',
-        ],
+        fontFamily: 'Arimo',
         colorScheme: MaterialTheme.lightScheme(),
         useMaterial3: true,
       ),

@@ -45,11 +45,6 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Create .env file
-        run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
-          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
-
       - name: Analyze
         run: flutter analyze
 
@@ -99,7 +94,7 @@ jobs:
           }
 
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
 
       - name: Rename APK
         shell: pwsh
@@ -113,7 +108,7 @@ jobs:
           Rename-Item -Path $sourcePath -NewName $destFileName
 
       - name: Build App Bundle (AAB)
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
 
       - name: Rename AAB
         shell: pwsh
@@ -123,7 +118,7 @@ jobs:
           Move-Item -Path 'build/app/outputs/bundle/release/app-release.aab' -Destination "build/app/outputs/bundle/release/Revelation-android-$version-$build.aab"
 
       - name: Build Windows App
-        run: flutter build windows --release --no-tree-shake-icons
+        run: flutter build windows --release --no-tree-shake-icons --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
 
       - name: Install Inno Setup
         run: |
@@ -176,7 +171,7 @@ jobs:
             Remove-Item $tempDir -Recurse -Force
           }
           New-Item -ItemType Directory -Path $tempDir | Out-Null
-          Copy-Item -Path "$source\*" -Destination $tempDir -Recurse -Force -Exclude '.env'
+          Copy-Item -Path "$source\*" -Destination $tempDir -Recurse -Force
           Compress-Archive -Path "$tempDir\*" -DestinationPath "build/Revelation-web-$version-$build.zip" -Force
           Remove-Item $tempDir -Recurse -Force
 
@@ -265,11 +260,6 @@ jobs:
   #     - name: Get Flutter dependencies
   #       run: flutter pub get
 
-  #     - name: Create .env file
-  #       run: |
-  #         echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
-  #         echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
-
   #     - name: Extract version and build number (macOS)
   #       id: extract_version_macos
   #       run: |
@@ -291,7 +281,7 @@ jobs:
   #         fi
 
   #     - name: Build macOS
-  #       run: flutter build macos --release --no-tree-shake-icons
+  #       run: flutter build macos --release --no-tree-shake-icons --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
 
   #     - name: Rename macOS Build
   #       run: |
@@ -300,7 +290,7 @@ jobs:
   #         mv build/macos/Build/Products/Release/revelation.app build/macos/Build/Products/Release/Revelation-macos-$version-$build.app
 
   #     - name: Build iOS
-  #       run: flutter build ios --release --no-codesign
+  #       run: flutter build ios --release --no-codesign --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
 
   #     - name: Rename iOS Build
   #       run: |
