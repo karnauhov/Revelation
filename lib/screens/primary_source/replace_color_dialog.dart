@@ -84,7 +84,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.crop,
-                  color: colorScheme.primary,
+                  color: null,
                 ),
                 tooltip: AppLocalizations.of(context)!.area_selection,
                 onPressed: () async {
@@ -159,7 +159,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.palette,
-                  color: colorScheme.primary,
+                  color: null,
                 ),
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
@@ -219,7 +219,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.colorize,
-                  color: colorScheme.primary,
+                  color: null,
                 ),
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
@@ -294,7 +294,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.palette,
-                  color: colorScheme.primary,
+                  color: null,
                 ),
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
@@ -354,7 +354,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.colorize,
-                  color: colorScheme.primary,
+                  color: null,
                 ),
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {

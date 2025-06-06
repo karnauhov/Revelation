@@ -56,6 +56,9 @@ class PrimarySourceToolbar extends StatelessWidget {
   }
 
   List<Widget> _buildFullActions(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return [
       DropdownButton<model.Page>(
         value: viewModel.selectedPage,
@@ -63,6 +66,7 @@ class PrimarySourceToolbar extends StatelessWidget {
           primarySource.pages.isEmpty || !primarySource.permissionsReceived
               ? AppLocalizations.of(context)!.images_are_missing
               : "",
+          style: TextStyle(color: colorScheme.onSurfaceVariant),
         ),
         onChanged: (model.Page? newPage) {
           if (primarySource.permissionsReceived) {
@@ -81,8 +85,8 @@ class PrimarySourceToolbar extends StatelessWidget {
       ),
       IconButton(
         icon: viewModel.refreshError
-            ? const Icon(Icons.sync_problem)
-            : const Icon(Icons.sync),
+            ? Icon(Icons.sync_problem, color: colorScheme.error)
+            : Icon(Icons.sync),
         tooltip: AppLocalizations.of(context)!.reload_image,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
@@ -148,16 +152,11 @@ class PrimarySourceToolbar extends StatelessWidget {
       IconButton(
         icon: Icon(
           Icons.invert_colors,
-          color: viewModel.isNegative
-              ? Theme.of(context).colorScheme.secondary
-              : null,
+          color: viewModel.isNegative ? colorScheme.secondary : null,
         ),
         style: IconButton.styleFrom(
           backgroundColor: viewModel.isNegative
-              ? Theme.of(context)
-                  .colorScheme
-                  .secondary
-                  .withAlpha((0.2 * 255).round())
+              ? colorScheme.secondaryContainer
               : Colors.transparent,
           shape: const CircleBorder(),
         ),
@@ -170,16 +169,11 @@ class PrimarySourceToolbar extends StatelessWidget {
       IconButton(
         icon: Icon(
           Icons.monochrome_photos,
-          color: viewModel.isMonochrome
-              ? Theme.of(context).colorScheme.secondary
-              : null,
+          color: viewModel.isMonochrome ? colorScheme.secondary : null,
         ),
         style: IconButton.styleFrom(
           backgroundColor: viewModel.isMonochrome
-              ? Theme.of(context)
-                  .colorScheme
-                  .secondary
-                  .withAlpha((0.2 * 255).round())
+              ? colorScheme.secondaryContainer
               : Colors.transparent,
           shape: const CircleBorder(),
         ),
@@ -191,14 +185,14 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
-        icon: Icon(Icons.brightness_6, color: null),
+        icon: Icon(Icons.brightness_6,
+            color: viewModel.brightness != 0 || viewModel.contrast != 100
+                ? colorScheme.secondary
+                : null),
         style: IconButton.styleFrom(
           backgroundColor:
               viewModel.brightness != 0 || viewModel.contrast != 100
-                  ? Theme.of(context)
-                      .colorScheme
-                      .secondary
-                      .withAlpha((0.2 * 255).round())
+                  ? colorScheme.secondaryContainer
                   : Colors.transparent,
           shape: const CircleBorder(),
         ),
@@ -211,14 +205,14 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
-        icon: Icon(Icons.format_paint, color: null),
+        icon: Icon(Icons.format_paint,
+            color: viewModel.selectedArea != null && viewModel.tolerance != 0
+                ? colorScheme.secondary
+                : null),
         style: IconButton.styleFrom(
           backgroundColor:
               viewModel.selectedArea != null && viewModel.tolerance != 0
-                  ? Theme.of(context)
-                      .colorScheme
-                      .secondary
-                      .withAlpha((0.2 * 255).round())
+                  ? colorScheme.secondaryContainer
                   : Colors.transparent,
           shape: const CircleBorder(),
         ),
@@ -258,6 +252,8 @@ class PrimarySourceToolbar extends StatelessWidget {
           valueListenable: viewModel.zoomStatusNotifier,
           builder: (context, zoomStatus, child) {
             final GlobalKey menuKey = GlobalKey();
+            final theme = Theme.of(context);
+            final colorScheme = theme.colorScheme;
             return IconButton(
               key: menuKey,
               icon: const Icon(Icons.more_vert),
@@ -297,9 +293,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                         child: Row(
                           children: [
                             viewModel.refreshError
-                                ? const Icon(Icons.sync_problem,
-                                    color: Colors.black54)
-                                : const Icon(Icons.sync, color: Colors.black54),
+                                ? Icon(Icons.sync_problem,
+                                    color: colorScheme.error)
+                                : Icon(Icons.sync,
+                                    color: colorScheme.onSurface),
                             const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)!.reload_image),
                           ],
@@ -311,7 +308,7 @@ class PrimarySourceToolbar extends StatelessWidget {
                         enabled: zoomStatus.canZoomIn,
                         child: Row(
                           children: [
-                            const Icon(Icons.zoom_in, color: Colors.black54),
+                            Icon(Icons.zoom_in, color: colorScheme.onSurface),
                             const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)!.zoom_in),
                           ],
@@ -323,7 +320,7 @@ class PrimarySourceToolbar extends StatelessWidget {
                         enabled: zoomStatus.canZoomOut,
                         child: Row(
                           children: [
-                            const Icon(Icons.zoom_out, color: Colors.black54),
+                            Icon(Icons.zoom_out, color: colorScheme.onSurface),
                             const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)!.zoom_out),
                           ],
@@ -335,8 +332,8 @@ class PrimarySourceToolbar extends StatelessWidget {
                         enabled: zoomStatus.canReset,
                         child: Row(
                           children: [
-                            const Icon(Icons.zoom_out_map,
-                                color: Colors.black54),
+                            Icon(Icons.zoom_out_map,
+                                color: colorScheme.onSurface),
                             const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)!
                                 .restore_original_scale),
@@ -358,18 +355,15 @@ class PrimarySourceToolbar extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary
-                                        .withAlpha((0.2 * 255).round())),
+                                  shape: BoxShape.circle,
+                                  color: colorScheme.secondaryContainer,
+                                ),
                                 child: Icon(Icons.invert_colors,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                    color: colorScheme.secondary),
                               ),
                             if (!viewModel.isNegative)
-                              Icon(Icons.invert_colors, color: null),
+                              Icon(Icons.invert_colors,
+                                  color: colorScheme.onSurface),
                             if (!viewModel.isNegative) const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)!.toggle_negative),
                           ],
@@ -390,18 +384,15 @@ class PrimarySourceToolbar extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary
-                                        .withAlpha((0.2 * 255).round())),
+                                  shape: BoxShape.circle,
+                                  color: colorScheme.secondaryContainer,
+                                ),
                                 child: Icon(Icons.monochrome_photos,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                    color: colorScheme.secondary),
                               ),
                             if (!viewModel.isMonochrome)
-                              Icon(Icons.monochrome_photos, color: null),
+                              Icon(Icons.monochrome_photos,
+                                  color: colorScheme.onSurface),
                             if (!viewModel.isMonochrome)
                               const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)!
@@ -425,19 +416,16 @@ class PrimarySourceToolbar extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary
-                                        .withAlpha((0.2 * 255).round())),
+                                  shape: BoxShape.circle,
+                                  color: colorScheme.secondaryContainer,
+                                ),
                                 child: Icon(Icons.brightness_6,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                    color: colorScheme.secondary),
                               ),
                             if (viewModel.brightness == 0 &&
                                 viewModel.contrast == 100)
-                              Icon(Icons.brightness_6, color: null),
+                              Icon(Icons.brightness_6,
+                                  color: colorScheme.onSurface),
                             if (viewModel.brightness == 0 &&
                                 viewModel.contrast == 100)
                               const SizedBox(width: 8),
@@ -462,19 +450,16 @@ class PrimarySourceToolbar extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary
-                                        .withAlpha((0.2 * 255).round())),
+                                  shape: BoxShape.circle,
+                                  color: colorScheme.secondaryContainer,
+                                ),
                                 child: Icon(Icons.format_paint,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                                    color: colorScheme.secondary),
                               ),
                             if (viewModel.selectedArea == null ||
                                 viewModel.tolerance == 0)
-                              Icon(Icons.format_paint, color: null),
+                              Icon(Icons.format_paint,
+                                  color: colorScheme.onSurface),
                             if (viewModel.selectedArea == null ||
                                 viewModel.tolerance == 0)
                               const SizedBox(width: 8),
@@ -488,7 +473,8 @@ class PrimarySourceToolbar extends StatelessWidget {
                         value: 'reset_page',
                         child: Row(
                           children: [
-                            const Icon(Icons.cleaning_services, color: null),
+                            Icon(Icons.cleaning_services,
+                                color: colorScheme.onSurface),
                             const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)!
                                 .page_settings_reset),
@@ -549,12 +535,12 @@ class PrimarySourceToolbar extends StatelessWidget {
                           viewModel.primarySource.permissionsReceived) {
                         _showReplaceColorDialog();
                       }
+                      break;
                     case 'reset_page':
                       if (viewModel.selectedPage != null &&
                           viewModel.primarySource.permissionsReceived) {
                         viewModel.removePageSettings();
                       }
-
                       break;
                   }
                 }
@@ -567,13 +553,17 @@ class PrimarySourceToolbar extends StatelessWidget {
 
   Widget _buildDropdownItem(
       BuildContext context, PrimarySourceViewModel viewModel, model.Page page) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final bool? loaded = viewModel.localPageLoaded[page.image];
+    final Color textColor = loaded == null
+        ? colorScheme.onSurfaceVariant
+        : (loaded ? colorScheme.primary : colorScheme.error);
+
     return Text(
       "${page.name} (${page.content})",
       style: TextStyle(
-        color: loaded == null
-            ? Colors.grey.shade900
-            : (loaded ? Colors.teal.shade900 : Colors.red.shade900),
+        color: textColor,
         fontWeight: page == viewModel.selectedPage
             ? FontWeight.bold
             : FontWeight.normal,

@@ -53,7 +53,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   @override
   Widget build(BuildContext context) {
     final dropdownWidth = calcPagesListWidth(context);
-    TextTheme theme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final TextTheme textTheme = theme.textTheme;
+    final ColorScheme colorScheme = theme.colorScheme;
+
     return ChangeNotifierProvider<PrimarySourceViewModel>(
       create: (_) => PrimarySourceViewModel(PagesRepository(),
           primarySource: widget.primarySource),
@@ -111,9 +114,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                         ? AppBar(
                             title: Text(
                               AppLocalizations.of(context)!.select_area_header,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
+                              style: textTheme.headlineSmall
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           )
@@ -122,18 +123,14 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                 title: Text(
                                   AppLocalizations.of(context)!
                                       .pick_color_header,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall
+                                  style: textTheme.headlineSmall
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                               )
                             : AppBar(
                                 title: getStyledText(
                                   widget.primarySource.title,
-                                  Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall
+                                  textTheme.headlineSmall
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 actions: isBottom
@@ -169,15 +166,19 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(10.0, 0, 10, 0),
+                            padding:
+                                const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
                             child: Container(
                               decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.black, width: 1.0),
+                                border: Border.all(
+                                    color: colorScheme.onSurface, width: 1.0),
                               ),
                               child: viewModel.isLoading
-                                  ? const Center(
-                                      child: CircularProgressIndicator())
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                        color: colorScheme.primary,
+                                      ),
+                                    )
                                   : viewModel.imageData != null
                                       ? ImagePreview(
                                           imageData: viewModel.imageData!,
@@ -195,8 +196,13 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                         )
                                       : Center(
                                           child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .image_not_loaded),
+                                            AppLocalizations.of(context)!
+                                                .image_not_loaded,
+                                            style: textTheme.bodyMedium
+                                                ?.copyWith(
+                                                    color: colorScheme
+                                                        .onSurfaceVariant),
+                                          ),
                                         ),
                             ),
                           ),
@@ -207,32 +213,42 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                           Align(
                             alignment: Alignment.centerRight,
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 2),
+                              padding:
+                                  const EdgeInsets.fromLTRB(10.0, 0, 10.0, 2.0),
                               child: viewModel.selectAreaMode
                                   ? Text(
                                       AppLocalizations.of(context)!
                                           .select_area_description,
-                                      style: theme.bodySmall!
-                                          .copyWith(fontSize: 10),
+                                      style: textTheme.bodySmall?.copyWith(
+                                          fontSize: 10,
+                                          color: colorScheme.onSurfaceVariant),
                                     )
                                   : viewModel.pipetteMode
                                       ? Text(
                                           AppLocalizations.of(context)!
                                               .pick_color_description,
-                                          style: theme.bodySmall!
-                                              .copyWith(fontSize: 10),
+                                          style: textTheme.bodySmall?.copyWith(
+                                              fontSize: 10,
+                                              color:
+                                                  colorScheme.onSurfaceVariant),
                                         )
                                       : Text.rich(
                                           TextSpan(
-                                            style: theme.bodySmall!
-                                                .copyWith(fontSize: 10),
+                                            style: textTheme.bodySmall
+                                                ?.copyWith(
+                                                    fontSize: 10,
+                                                    color: colorScheme
+                                                        .onSurfaceVariant),
                                             children: [
                                               if (viewModel.isMobileWeb)
                                                 TextSpan(
                                                   text:
                                                       '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
-                                                  style: const TextStyle(
-                                                      color: Colors.blue),
+                                                  style: textTheme.bodySmall
+                                                      ?.copyWith(
+                                                    fontSize: 10,
+                                                    color: colorScheme.primary,
+                                                  ),
                                                   recognizer:
                                                       TapGestureRecognizer()
                                                         ..onTap = () {
@@ -271,14 +287,21 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   }
 
   List<InlineSpan> _buildLinkSpans(List<Map<String, String>> links) {
-    List<InlineSpan> spans = [];
+    final theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
+    final TextStyle defaultStyle =
+        Theme.of(context).textTheme.bodySmall!.copyWith(
+              fontSize: 10,
+              color: colorScheme.onSurfaceVariant,
+            );
+    final List<InlineSpan> spans = [];
     for (int i = 0; i < links.length; i++) {
-      var link = links[i];
+      final link = links[i];
       if (link['url'] != null && link['url']!.isNotEmpty) {
         spans.add(
           TextSpan(
             text: link['text'],
-            style: const TextStyle(color: Colors.blue),
+            style: defaultStyle.copyWith(color: colorScheme.primary),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 launchLink(link['url']!);
@@ -289,18 +312,22 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         spans.add(
           TextSpan(
             text: link['text'],
+            style: defaultStyle,
           ),
         );
       }
       if (i < links.length - 1) {
-        spans.add(const TextSpan(text: '; '));
+        spans.add(TextSpan(
+          text: '; ',
+          style: defaultStyle,
+        ));
       }
     }
     return spans;
   }
 
   double calcPagesListWidth(BuildContext context) {
-    final itemStyle =
+    final TextStyle itemStyle =
         Theme.of(context).textTheme.bodyMedium ?? TextStyle(fontSize: 16);
 
     double calculateTextWidth(String text) {
