@@ -109,6 +109,7 @@ class _TopicScreenState extends State<TopicScreen> {
             ),
           ],
         ),
+        foregroundColor: colorScheme.primary,
       ),
       body: content,
     );

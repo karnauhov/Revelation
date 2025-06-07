@@ -35,6 +35,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
             ),
           ],
         ),
+        foregroundColor: colorScheme.primary,
       ),
       body: SafeArea(
         child: Padding(

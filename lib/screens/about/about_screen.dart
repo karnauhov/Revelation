@@ -158,6 +158,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                 ],
               ),
+              foregroundColor: colorScheme.primary,
             ),
             body: content,
           );
@@ -265,10 +266,12 @@ class _AboutScreenState extends State<AboutScreen> {
             IconUrl(
               iconPath: "assets/images/UI/google_play.svg",
               url: AppConstants.googlePlayUrl,
+              tooltip: "Google Play",
             ),
             IconUrl(
               iconPath: "assets/images/UI/microsoft_store.svg",
               url: AppConstants.microsoftStoreUrl,
+              tooltip: "Microsoft Store",
             ),
           ],
         ),
@@ -298,7 +301,7 @@ class _AboutScreenState extends State<AboutScreen> {
             AppLocalizations.of(context)!.acknowledgements_title,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
+              color: colorScheme.primary,
             ),
           ),
         ],
@@ -348,7 +351,7 @@ class _AboutScreenState extends State<AboutScreen> {
             AppLocalizations.of(context)!.changelog,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
+              color: colorScheme.primary,
             ),
           ),
         ],

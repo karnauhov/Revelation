@@ -18,7 +18,7 @@ class DrawerItem extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final backgroundColor = colorScheme.primary.withValues(alpha: 0.25);
-    final contentColor = colorScheme.onSurface;
+    final contentColor = colorScheme.primary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),

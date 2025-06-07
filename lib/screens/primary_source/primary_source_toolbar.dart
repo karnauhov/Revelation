@@ -471,6 +471,8 @@ class PrimarySourceToolbar extends StatelessWidget {
                     if (numButtons < 9)
                       PopupMenuItem(
                         value: 'reset_page',
+                        enabled: viewModel.selectedPage != null &&
+                            viewModel.primarySource.permissionsReceived,
                         child: Row(
                           children: [
                             Icon(Icons.cleaning_services,

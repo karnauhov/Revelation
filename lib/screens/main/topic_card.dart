@@ -16,8 +16,7 @@ class TopicCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final cardColor = colorScheme.surfaceContainerHighest;
-    final onSurfaceColor = colorScheme.onSurface;
-    final onSurfaceVariantColor = colorScheme.onSurfaceVariant;
+    final titleColor = colorScheme.primary;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -55,18 +54,18 @@ class TopicCard extends StatelessWidget {
           locLinks(context, topic.name),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: onSurfaceColor,
+                color: titleColor,
               ),
         ),
         subtitle: Text(
           locLinks(context, topic.description),
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: onSurfaceVariantColor,
+                color: titleColor,
               ),
         ),
         trailing: Icon(
           Icons.chevron_right,
-          color: onSurfaceVariantColor,
+          color: titleColor,
         ),
       ),
     );

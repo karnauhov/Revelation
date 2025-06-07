@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SvgIconButton extends StatelessWidget {
+class NewIconButton extends StatelessWidget {
   final String assetPath;
   final String tooltip;
   final double size;
   final VoidCallback onPressed;
 
-  const SvgIconButton({
+  const NewIconButton({
     super.key,
     required this.assetPath,
     required this.tooltip,
@@ -19,6 +19,21 @@ class SvgIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    Widget iconWidget;
+    if (assetPath.toLowerCase().endsWith('.svg')) {
+      iconWidget = SvgPicture.asset(
+        assetPath,
+        width: size,
+        height: size,
+      );
+    } else {
+      iconWidget = Image.asset(
+        assetPath,
+        width: size,
+        height: size,
+      );
+    }
 
     return Material(
       color: Colors.transparent,
@@ -34,11 +49,7 @@ class SvgIconButton extends StatelessWidget {
           message: tooltip,
           child: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: SvgPicture.asset(
-              assetPath,
-              width: size,
-              height: size,
-            ),
+            child: iconWidget,
           ),
         ),
       ),

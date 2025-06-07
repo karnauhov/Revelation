@@ -92,7 +92,7 @@ class _DrawerContentState extends State<DrawerContent> {
                       },
                     ),
                     DrawerItem(
-                      assetPath: 'assets/images/UI/smartphone.svg',
+                      assetPath: 'assets/images/UI/about.svg',
                       text: AppLocalizations.of(context)!.about_screen,
                       onClick: () {
                         Navigator.pop(context);

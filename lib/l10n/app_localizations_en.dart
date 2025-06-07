@@ -135,12 +135,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topic_0_description => 'Primary sources, principles, stages';
 
   @override
-  String get topic_1_name => 'Introduction';
-
-  @override
-  String get topic_1_description => 'Revelation 1:1-3';
-
-  @override
   String get show_more => 'show more information';
 
   @override

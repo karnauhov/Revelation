@@ -29,7 +29,7 @@ class InstitutionCard extends StatelessWidget {
           institution.name,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
+            color: colorScheme.primary,
           ),
         ),
         subtitle: _buildSourcesText(context),
@@ -51,9 +51,9 @@ class InstitutionCard extends StatelessWidget {
           TextSpan(
             text: text,
             style: TextStyle(
-              color: colorScheme.primary,
-              decoration: TextDecoration.underline,
-            ),
+                color: colorScheme.primary,
+                decoration: TextDecoration.underline,
+                decorationColor: colorScheme.primary),
             recognizer: TapGestureRecognizer()..onTap = () => launchLink(url),
           ),
         );

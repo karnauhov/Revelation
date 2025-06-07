@@ -20,15 +20,26 @@ class IconLinkItem extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    Widget iconWidget;
+    if (iconPath.toLowerCase().endsWith('.svg')) {
+      iconWidget = SvgPicture.asset(
+        iconPath,
+        width: 24,
+        height: 24,
+      );
+    } else {
+      iconWidget = Image.asset(
+        iconPath,
+        width: 24,
+        height: 24,
+      );
+    }
+
     return ListTile(
       contentPadding: EdgeInsets.fromLTRB(leftMargin, 0, 0, 0),
       visualDensity: VisualDensity.compact,
       minTileHeight: 0,
-      leading: SvgPicture.asset(
-        iconPath,
-        width: 24,
-        height: 24,
-      ),
+      leading: iconWidget,
       title: Text(
         text,
         style: TextStyle(color: colorScheme.primary),

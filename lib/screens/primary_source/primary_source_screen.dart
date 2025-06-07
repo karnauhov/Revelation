@@ -117,6 +117,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                               style: textTheme.headlineSmall
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
+                            foregroundColor: colorScheme.primary,
                           )
                         : viewModel.pipetteMode
                             ? AppBar(
@@ -126,6 +127,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                   style: textTheme.headlineSmall
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
+                                foregroundColor: colorScheme.primary,
                               )
                             : AppBar(
                                 title: getStyledText(
@@ -161,6 +163,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                         ),
                                       )
                                     : null,
+                                foregroundColor: colorScheme.primary,
                               ),
                     body: Column(
                       children: [

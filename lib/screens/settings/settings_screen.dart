@@ -35,6 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
         ),
+        foregroundColor: colorScheme.primary,
       ),
       body: ListView(
         children: [
@@ -42,7 +43,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(
               AppLocalizations.of(context)!.language,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface,
+                color: colorScheme.primary,
               ),
             ),
             subtitle: Text(
@@ -50,12 +51,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       .languages[settingsViewModel.settings.selectedLanguage] ??
                   "",
               style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+                color: colorScheme.secondary,
               ),
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: colorScheme.onSurfaceVariant,
+              color: colorScheme.primary,
             ),
             onTap: () async {
               final selected = await _showLanguageDialog(
@@ -100,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: isSelected
                           ? colorScheme.onPrimaryContainer
-                          : colorScheme.onSurface,
+                          : colorScheme.primary,
                     ),
                   ),
                   selected: isSelected,

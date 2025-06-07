@@ -38,6 +38,7 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
     final primarySourcesViewModel =
         Provider.of<PrimarySourcesViewModel>(context);
@@ -69,6 +70,7 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
               ),
             ],
           ),
+          foregroundColor: colorScheme.primary,
         ),
         SliverList(
           delegate: SliverChildBuilderDelegate(

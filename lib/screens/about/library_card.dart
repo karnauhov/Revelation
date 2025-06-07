@@ -41,7 +41,7 @@ class LibraryCard extends StatelessWidget {
           library.name,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
+            color: colorScheme.primary,
           ),
         ),
         subtitle: GestureDetector(
@@ -49,9 +49,9 @@ class LibraryCard extends StatelessWidget {
           child: Text(
             "${AppLocalizations.of(context)!.license} (${library.license})",
             style: TextStyle(
-              color: colorScheme.primary,
-              decoration: TextDecoration.underline,
-            ),
+                color: colorScheme.primary,
+                decoration: TextDecoration.underline,
+                decorationColor: colorScheme.primary),
           ),
         ),
       ),

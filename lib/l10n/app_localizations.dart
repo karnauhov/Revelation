@@ -349,18 +349,6 @@ abstract class AppLocalizations {
   /// **'Primary sources, principles, stages'**
   String get topic_0_description;
 
-  /// No description provided for @topic_1_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Introduction'**
-  String get topic_1_name;
-
-  /// No description provided for @topic_1_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Revelation 1:1-3'**
-  String get topic_1_description;
-
   /// No description provided for @show_more.
   ///
   /// In en, this message translates to:
