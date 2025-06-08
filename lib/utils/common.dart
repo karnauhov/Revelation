@@ -70,12 +70,9 @@ String locLinks(BuildContext context, String key) {
 String locColorThemes(BuildContext context, String key) {
   final localizations = AppLocalizations.of(context);
   final Map<String, String> translations = {
-    "ruby": localizations!.ruby_color_theme,
-    "sunset": localizations.sunset_color_theme,
-    "manuscript": localizations.manuscript_color_theme,
+    "manuscript": localizations!.manuscript_color_theme,
     "forest": localizations.forest_color_theme,
     "sky": localizations.sky_color_theme,
-    "water": localizations.water_color_theme,
     "grape": localizations.grape_color_theme,
   };
   return translations[key] ?? key;

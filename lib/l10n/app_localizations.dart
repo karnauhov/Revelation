@@ -319,18 +319,6 @@ abstract class AppLocalizations {
   /// **'Color theme'**
   String get color_theme;
 
-  /// No description provided for @ruby_color_theme.
-  ///
-  /// In en, this message translates to:
-  /// **'Ruby'**
-  String get ruby_color_theme;
-
-  /// No description provided for @sunset_color_theme.
-  ///
-  /// In en, this message translates to:
-  /// **'Sunset'**
-  String get sunset_color_theme;
-
   /// No description provided for @manuscript_color_theme.
   ///
   /// In en, this message translates to:
@@ -348,12 +336,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sky'**
   String get sky_color_theme;
-
-  /// No description provided for @water_color_theme.
-  ///
-  /// In en, this message translates to:
-  /// **'Water'**
-  String get water_color_theme;
 
   /// No description provided for @grape_color_theme.
   ///

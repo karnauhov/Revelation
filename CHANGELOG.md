@@ -4,6 +4,10 @@ All notable changes to this application will be documented here.
 
 ## [1.0.3] - Under development
 
+### Added
+
+- Color theme and font size in settings
+
 ### Changed
 
 - The application design has been completely revamped: main icon, color scheme, font "Arimo", UI icons, ...

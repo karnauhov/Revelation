@@ -120,12 +120,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get color_theme => 'Color theme';
 
   @override
-  String get ruby_color_theme => 'Ruby';
-
-  @override
-  String get sunset_color_theme => 'Sunset';
-
-  @override
   String get manuscript_color_theme => 'Manuscript';
 
   @override
@@ -133,9 +127,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sky_color_theme => 'Sky';
-
-  @override
-  String get water_color_theme => 'Water';
 
   @override
   String get grape_color_theme => 'Grape';

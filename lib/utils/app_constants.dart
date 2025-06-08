@@ -16,13 +16,10 @@ class AppConstants {
     'ru': 'Русский',
   };
   static const themes = {
-    'ruby': 1,
-    'sunset': 2,
-    'manuscript': 3,
-    'forest': 4,
-    'sky': 5,
-    'water': 6,
-    'grape': 7,
+    'manuscript': 1,
+    'forest': 2,
+    'sky': 3,
+    'grape': 4,
   };
   static const fontSizes = {
     'tiny': 1,

@@ -120,12 +120,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get color_theme => 'Кольорова тема';
 
   @override
-  String get ruby_color_theme => 'Рубін';
-
-  @override
-  String get sunset_color_theme => 'Захід сонця';
-
-  @override
   String get manuscript_color_theme => 'Рукопис';
 
   @override
@@ -133,9 +127,6 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get sky_color_theme => 'Небо';
-
-  @override
-  String get water_color_theme => 'Вода';
 
   @override
   String get grape_color_theme => 'Виноград';
