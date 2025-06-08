@@ -74,6 +74,8 @@ class _DownloadScreenState extends State<DownloadScreen> {
               "assets/images/UI/android.svg",
               width: 24,
               height: 24,
+              colorFilter:
+                  ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
             ),
             const SizedBox(width: 12),
             Text(
@@ -108,6 +110,8 @@ class _DownloadScreenState extends State<DownloadScreen> {
               "assets/images/UI/windows.svg",
               width: 24,
               height: 24,
+              colorFilter:
+                  ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
             ),
             const SizedBox(width: 12),
             Text(

@@ -39,6 +39,7 @@ class DrawerItem extends StatelessWidget {
                 assetPath,
                 width: 24.0,
                 height: 24.0,
+                colorFilter: ColorFilter.mode(contentColor, BlendMode.srcIn),
               ),
               const SizedBox(width: 16.0),
               Text(

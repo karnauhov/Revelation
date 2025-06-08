@@ -27,15 +27,23 @@ class LibraryCard extends StatelessWidget {
         leading: SizedBox(
           width: iconWidth,
           height: iconHeight,
-          child: SvgPicture.asset(
-            library.idIcon.isNotEmpty
-                ? "assets/images/UI/${library.idIcon}.svg"
-                : 'assets/images/UI/code.svg',
-            width: iconWidth,
-            height: iconHeight,
-            placeholderBuilder: (BuildContext context) =>
-                CircularProgressIndicator(),
-          ),
+          child: library.idIcon.isNotEmpty
+              ? SvgPicture.asset(
+                  "assets/images/UI/${library.idIcon}.svg",
+                  width: iconWidth,
+                  height: iconHeight,
+                  placeholderBuilder: (BuildContext context) =>
+                      CircularProgressIndicator(),
+                )
+              : SvgPicture.asset(
+                  "assets/images/UI/code.svg",
+                  width: iconWidth,
+                  height: iconHeight,
+                  placeholderBuilder: (BuildContext context) =>
+                      CircularProgressIndicator(),
+                  colorFilter:
+                      ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+                ),
         ),
         title: Text(
           library.name,

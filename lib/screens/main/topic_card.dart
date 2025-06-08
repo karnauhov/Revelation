@@ -38,6 +38,7 @@ class TopicCard extends StatelessWidget {
                 : 'assets/images/UI/code.svg',
             width: iconWidth,
             height: iconHeight,
+            colorFilter: ColorFilter.mode(titleColor, BlendMode.srcIn),
             placeholderBuilder: (BuildContext context) => Center(
               child: SizedBox(
                 width: 24.0,

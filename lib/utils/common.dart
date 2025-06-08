@@ -415,6 +415,9 @@ void showCustomDialog(MessageType type,
   showDialog(
     context: context,
     builder: (BuildContext dialogContext) {
+      final theme = Theme.of(context);
+      final colorScheme = theme.colorScheme;
+
       return AlertDialog(
         title: Center(
           child: Text(
@@ -436,6 +439,8 @@ void showCustomDialog(MessageType type,
                   icon,
                   width: 48,
                   height: 48,
+                  colorFilter:
+                      ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
                 ),
                 const SizedBox(width: 10.0),
                 Expanded(
@@ -457,6 +462,8 @@ void showCustomDialog(MessageType type,
                         "assets/images/UI/additional.svg",
                         width: 24,
                         height: 24,
+                        colorFilter: ColorFilter.mode(
+                            colorScheme.primary, BlendMode.srcIn),
                       ),
                       const SizedBox(width: 16),
                       Text(

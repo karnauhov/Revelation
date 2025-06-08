@@ -26,12 +26,14 @@ class IconLinkItem extends StatelessWidget {
         iconPath,
         width: 24,
         height: 24,
+        colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
       );
     } else {
       iconWidget = Image.asset(
         iconPath,
         width: 24,
         height: 24,
+        color: colorScheme.primary,
       );
     }
 

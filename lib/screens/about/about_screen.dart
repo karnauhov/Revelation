@@ -295,6 +295,7 @@ class _AboutScreenState extends State<AboutScreen> {
             "assets/images/UI/thank-you.svg",
             width: 24,
             height: 24,
+            colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
           ),
           const SizedBox(width: 12),
           Text(
@@ -345,6 +346,7 @@ class _AboutScreenState extends State<AboutScreen> {
             "assets/images/UI/changelog.svg",
             width: 24,
             height: 24,
+            colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
           ),
           const SizedBox(width: 12),
           Text(

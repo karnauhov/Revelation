@@ -26,12 +26,14 @@ class NewIconButton extends StatelessWidget {
         assetPath,
         width: size,
         height: size,
+        colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
       );
     } else {
       iconWidget = Image.asset(
         assetPath,
         width: size,
         height: size,
+        color: colorScheme.primary,
       );
     }
 

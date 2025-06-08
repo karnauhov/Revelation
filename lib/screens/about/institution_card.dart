@@ -24,7 +24,8 @@ class InstitutionCard extends StatelessWidget {
         visualDensity: VisualDensity.compact,
         minTileHeight: 0,
         onTap: () => launchLink(institution.officialSite),
-        leading: _buildIcon(institution.idIcon, iconWidth, iconHeight),
+        leading: _buildIcon(
+            institution.idIcon, iconWidth, iconHeight, colorScheme.primary),
         title: Text(
           institution.name,
           style: theme.textTheme.titleMedium?.copyWith(
@@ -90,7 +91,8 @@ class InstitutionCard extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon(String idIcon, double iconWidth, double iconHeight) {
+  Widget _buildIcon(
+      String idIcon, double iconWidth, double iconHeight, Color color) {
     final iconPath = "assets/images/UI/${institution.idIcon}";
 
     if (idIcon.isNotEmpty && idIcon.toLowerCase().endsWith('.svg')) {
@@ -126,6 +128,7 @@ class InstitutionCard extends StatelessWidget {
           height: iconHeight,
           placeholderBuilder: (BuildContext context) =>
               const CircularProgressIndicator(),
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
         ),
       );
     }
