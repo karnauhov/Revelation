@@ -1,12 +1,12 @@
 # Privacy Policy
 
-_Last updated: [29.03.25]_
+_Last updated: [08.06.25]_
 
 ## Introduction
 Revelation is an application designed for studying the Book of Revelation. This application does not collect, store, or transmit any personal user data.
 
 ## Data Collection
-Revelation does not require registration or login and does not request any personal information. We do not track user activity, nor do we use cookies or similar technologies.
+Revelation does not require registration or login and does not request any personal information. We do not track user activity, nor do we use cookies.
 
 ## Data Sharing
 Since we do not collect any user data, we do not share any data with third parties.

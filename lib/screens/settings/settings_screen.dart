@@ -39,35 +39,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
-          ListTile(
-            title: Text(
-              AppLocalizations.of(context)!.language,
-              style: theme.textTheme.bodyMedium?.copyWith(
+          Card(
+            margin: const EdgeInsets.all(8.0),
+            color: colorScheme.surfaceContainerHighest,
+            child: ListTile(
+              title: Text(
+                AppLocalizations.of(context)!.language,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.primary,
+                ),
+              ),
+              subtitle: Text(
+                AppConstants.languages[
+                        settingsViewModel.settings.selectedLanguage] ??
+                    "",
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.secondary,
+                ),
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
                 color: colorScheme.primary,
               ),
+              onTap: () async {
+                final selected = await _showLanguageDialog(
+                  context,
+                  settingsViewModel.settings.selectedLanguage,
+                );
+                if (selected != null) {
+                  settingsViewModel.changeLanguage(selected);
+                }
+              },
             ),
-            subtitle: Text(
-              AppConstants
-                      .languages[settingsViewModel.settings.selectedLanguage] ??
-                  "",
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.secondary,
-              ),
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: colorScheme.primary,
-            ),
-            onTap: () async {
-              final selected = await _showLanguageDialog(
-                context,
-                settingsViewModel.settings.selectedLanguage,
-              );
-              if (selected != null) {
-                settingsViewModel.changeLanguage(selected);
-              }
-            },
-          ),
+          )
         ],
       ),
     );
