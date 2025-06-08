@@ -67,6 +67,32 @@ String locLinks(BuildContext context, String key) {
   return translations[key] ?? key;
 }
 
+String locColorThemes(BuildContext context, String key) {
+  final localizations = AppLocalizations.of(context);
+  final Map<String, String> translations = {
+    "ruby": localizations!.ruby_color_theme,
+    "sunset": localizations.sunset_color_theme,
+    "manuscript": localizations.manuscript_color_theme,
+    "forest": localizations.forest_color_theme,
+    "sky": localizations.sky_color_theme,
+    "water": localizations.water_color_theme,
+    "grape": localizations.grape_color_theme,
+  };
+  return translations[key] ?? key;
+}
+
+String locFontSizes(BuildContext context, String key) {
+  final localizations = AppLocalizations.of(context);
+  final Map<String, String> translations = {
+    "tiny": localizations!.tiny_font_size,
+    "small": localizations.small_font_size,
+    "medium": localizations.medium_font_size,
+    "large": localizations.large_font_size,
+    "huge": localizations.huge_font_size,
+  };
+  return translations[key] ?? key;
+}
+
 String getSystemLanguage() {
   String language = 'en';
   try {

@@ -117,6 +117,48 @@ class AppLocalizationsUk extends AppLocalizations {
   String get language => 'Мова';
 
   @override
+  String get color_theme => 'Кольорова тема';
+
+  @override
+  String get ruby_color_theme => 'Рубін';
+
+  @override
+  String get sunset_color_theme => 'Захід сонця';
+
+  @override
+  String get manuscript_color_theme => 'Рукопис';
+
+  @override
+  String get forest_color_theme => 'Ліс';
+
+  @override
+  String get sky_color_theme => 'Небо';
+
+  @override
+  String get water_color_theme => 'Вода';
+
+  @override
+  String get grape_color_theme => 'Виноград';
+
+  @override
+  String get font_size => 'Розмір шрифту';
+
+  @override
+  String get tiny_font_size => 'Крихітний';
+
+  @override
+  String get small_font_size => 'Маленький';
+
+  @override
+  String get medium_font_size => 'Середній';
+
+  @override
+  String get large_font_size => 'Великий';
+
+  @override
+  String get huge_font_size => 'Величезний';
+
+  @override
   String get wikipedia => 'Вікіпедія';
 
   @override

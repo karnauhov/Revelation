@@ -313,6 +313,90 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get language;
 
+  /// No description provided for @color_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Color theme'**
+  String get color_theme;
+
+  /// No description provided for @ruby_color_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruby'**
+  String get ruby_color_theme;
+
+  /// No description provided for @sunset_color_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunset'**
+  String get sunset_color_theme;
+
+  /// No description provided for @manuscript_color_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Manuscript'**
+  String get manuscript_color_theme;
+
+  /// No description provided for @forest_color_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Forest'**
+  String get forest_color_theme;
+
+  /// No description provided for @sky_color_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky'**
+  String get sky_color_theme;
+
+  /// No description provided for @water_color_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get water_color_theme;
+
+  /// No description provided for @grape_color_theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Grape'**
+  String get grape_color_theme;
+
+  /// No description provided for @font_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Font size'**
+  String get font_size;
+
+  /// No description provided for @tiny_font_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Tiny'**
+  String get tiny_font_size;
+
+  /// No description provided for @small_font_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Small'**
+  String get small_font_size;
+
+  /// No description provided for @medium_font_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get medium_font_size;
+
+  /// No description provided for @large_font_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Large'**
+  String get large_font_size;
+
+  /// No description provided for @huge_font_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Huge'**
+  String get huge_font_size;
+
   /// No description provided for @wikipedia.
   ///
   /// In en, this message translates to:

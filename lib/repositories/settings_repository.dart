@@ -10,7 +10,10 @@ class SettingsRepository {
     final prefs = await SharedPreferences.getInstance();
     final String? jsonString = prefs.getString(_settingsKey);
     if (jsonString == null) {
-      return AppSettings(selectedLanguage: getSystemLanguage());
+      return AppSettings(
+          selectedLanguage: getSystemLanguage(),
+          selectedTheme: 'manuscript',
+          selectedFontSize: 'medium');
     }
     final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
     return AppSettings.fromMap(jsonMap);

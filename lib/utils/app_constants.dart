@@ -15,4 +15,20 @@ class AppConstants {
     'uk': 'Українська',
     'ru': 'Русский',
   };
+  static const themes = {
+    'ruby': 1,
+    'sunset': 2,
+    'manuscript': 3,
+    'forest': 4,
+    'sky': 5,
+    'water': 6,
+    'grape': 7,
+  };
+  static const fontSizes = {
+    'tiny': 1,
+    'small': 2,
+    'medium': 3,
+    'large': 4,
+    'huge': 5,
+  };
 }

@@ -74,6 +74,8 @@ class RevelationApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final settingsViewModel = context.watch<SettingsViewModel>();
     final currentLocale = Locale(settingsViewModel.settings.selectedLanguage);
+    final colorScheme =
+        MaterialTheme.getTheme(settingsViewModel.settings.selectedTheme);
     final appRouter = AppRouter();
     final materialApp = MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -96,7 +98,7 @@ class RevelationApp extends StatelessWidget {
       onGenerateTitle: onGenerateTitle,
       theme: ThemeData(
         fontFamily: 'Arimo',
-        colorScheme: MaterialTheme.lightScheme(),
+        colorScheme: colorScheme,
         useMaterial3: true,
       ),
     );

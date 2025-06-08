@@ -5,7 +5,10 @@ import '../utils/common.dart';
 
 class SettingsViewModel extends ChangeNotifier {
   final SettingsRepository _settingsRepository;
-  AppSettings _settings = AppSettings(selectedLanguage: getSystemLanguage());
+  AppSettings _settings = AppSettings(
+      selectedLanguage: getSystemLanguage(),
+      selectedTheme: 'manuscript',
+      selectedFontSize: 'medium');
   AppSettings get settings => _settings;
   SettingsViewModel(this._settingsRepository);
 
@@ -15,7 +18,28 @@ class SettingsViewModel extends ChangeNotifier {
   }
 
   Future<void> changeLanguage(String newLanguage) async {
-    _settings = AppSettings(selectedLanguage: newLanguage);
+    _settings = AppSettings(
+        selectedLanguage: newLanguage,
+        selectedTheme: _settings.selectedTheme,
+        selectedFontSize: _settings.selectedFontSize);
+    await _settingsRepository.saveSettings(_settings);
+    notifyListeners();
+  }
+
+  Future<void> changeTheme(String newTheme) async {
+    _settings = AppSettings(
+        selectedLanguage: _settings.selectedLanguage,
+        selectedTheme: newTheme,
+        selectedFontSize: _settings.selectedFontSize);
+    await _settingsRepository.saveSettings(_settings);
+    notifyListeners();
+  }
+
+  Future<void> changeFontSize(String newFontSize) async {
+    _settings = AppSettings(
+        selectedLanguage: _settings.selectedLanguage,
+        selectedTheme: _settings.selectedTheme,
+        selectedFontSize: newFontSize);
     await _settingsRepository.saveSettings(_settings);
     notifyListeners();
   }

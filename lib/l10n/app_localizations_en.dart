@@ -117,6 +117,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
+  String get color_theme => 'Color theme';
+
+  @override
+  String get ruby_color_theme => 'Ruby';
+
+  @override
+  String get sunset_color_theme => 'Sunset';
+
+  @override
+  String get manuscript_color_theme => 'Manuscript';
+
+  @override
+  String get forest_color_theme => 'Forest';
+
+  @override
+  String get sky_color_theme => 'Sky';
+
+  @override
+  String get water_color_theme => 'Water';
+
+  @override
+  String get grape_color_theme => 'Grape';
+
+  @override
+  String get font_size => 'Font size';
+
+  @override
+  String get tiny_font_size => 'Tiny';
+
+  @override
+  String get small_font_size => 'Small';
+
+  @override
+  String get medium_font_size => 'Medium';
+
+  @override
+  String get large_font_size => 'Large';
+
+  @override
+  String get huge_font_size => 'Huge';
+
+  @override
   String get wikipedia => 'Wikipedia';
 
   @override

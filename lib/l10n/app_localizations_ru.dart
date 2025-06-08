@@ -117,6 +117,48 @@ class AppLocalizationsRu extends AppLocalizations {
   String get language => 'Язык';
 
   @override
+  String get color_theme => 'Цветовая тема';
+
+  @override
+  String get ruby_color_theme => 'Рубин';
+
+  @override
+  String get sunset_color_theme => 'Закат';
+
+  @override
+  String get manuscript_color_theme => 'Рукопись';
+
+  @override
+  String get forest_color_theme => 'Лес';
+
+  @override
+  String get sky_color_theme => 'Небо';
+
+  @override
+  String get water_color_theme => 'Вода';
+
+  @override
+  String get grape_color_theme => 'Виноград';
+
+  @override
+  String get font_size => 'Размер шрифта';
+
+  @override
+  String get tiny_font_size => 'Крошечный';
+
+  @override
+  String get small_font_size => 'Маленький';
+
+  @override
+  String get medium_font_size => 'Средний';
+
+  @override
+  String get large_font_size => 'Большой';
+
+  @override
+  String get huge_font_size => 'Огромный';
+
+  @override
   String get wikipedia => 'Википедия';
 
   @override
