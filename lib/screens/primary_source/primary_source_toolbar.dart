@@ -85,8 +85,9 @@ class PrimarySourceToolbar extends StatelessWidget {
       ),
       IconButton(
         icon: viewModel.refreshError
-            ? Icon(Icons.sync_problem, color: colorScheme.error)
+            ? Icon(Icons.sync_problem)
             : Icon(Icons.sync),
+        color: viewModel.refreshError ? colorScheme.error : colorScheme.primary,
         tooltip: AppLocalizations.of(context)!.reload_image,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
@@ -99,6 +100,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         builder: (context, zoomStatus, child) {
           return IconButton(
             icon: const Icon(Icons.zoom_in),
+            color: colorScheme.primary,
             tooltip: AppLocalizations.of(context)!.zoom_in,
             onPressed: zoomStatus.canZoomIn
                 ? () {
@@ -117,6 +119,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         builder: (context, zoomStatus, child) {
           return IconButton(
             icon: const Icon(Icons.zoom_out),
+            color: colorScheme.primary,
             tooltip: AppLocalizations.of(context)!.zoom_out,
             onPressed: zoomStatus.canZoomOut
                 ? () {
@@ -140,6 +143,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         builder: (context, zoomStatus, child) {
           return IconButton(
             icon: const Icon(Icons.zoom_out_map),
+            color: colorScheme.primary,
             tooltip: AppLocalizations.of(context)!.restore_original_scale,
             onPressed: zoomStatus.canReset
                 ? () {
@@ -150,10 +154,8 @@ class PrimarySourceToolbar extends StatelessWidget {
         },
       ),
       IconButton(
-        icon: Icon(
-          Icons.invert_colors,
-          color: viewModel.isNegative ? colorScheme.secondary : null,
-        ),
+        icon: const Icon(Icons.invert_colors),
+        color: colorScheme.primary,
         style: IconButton.styleFrom(
           backgroundColor: viewModel.isNegative
               ? colorScheme.secondaryContainer
@@ -167,10 +169,8 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
-        icon: Icon(
-          Icons.monochrome_photos,
-          color: viewModel.isMonochrome ? colorScheme.secondary : null,
-        ),
+        icon: const Icon(Icons.monochrome_photos),
+        color: colorScheme.primary,
         style: IconButton.styleFrom(
           backgroundColor: viewModel.isMonochrome
               ? colorScheme.secondaryContainer
@@ -185,10 +185,8 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
-        icon: Icon(Icons.brightness_6,
-            color: viewModel.brightness != 0 || viewModel.contrast != 100
-                ? colorScheme.secondary
-                : null),
+        icon: const Icon(Icons.brightness_6),
+        color: colorScheme.primary,
         style: IconButton.styleFrom(
           backgroundColor:
               viewModel.brightness != 0 || viewModel.contrast != 100
@@ -205,10 +203,8 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
-        icon: Icon(Icons.format_paint,
-            color: viewModel.selectedArea != null && viewModel.tolerance != 0
-                ? colorScheme.secondary
-                : null),
+        icon: const Icon(Icons.format_paint),
+        color: colorScheme.primary,
         style: IconButton.styleFrom(
           backgroundColor:
               viewModel.selectedArea != null && viewModel.tolerance != 0
@@ -225,7 +221,8 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
-        icon: Icon(Icons.cleaning_services, color: null),
+        icon: const Icon(Icons.cleaning_services),
+        color: colorScheme.primary,
         tooltip: AppLocalizations.of(context)!.page_settings_reset,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
@@ -257,6 +254,7 @@ class PrimarySourceToolbar extends StatelessWidget {
             return IconButton(
               key: menuKey,
               icon: const Icon(Icons.more_vert),
+              color: colorScheme.primary,
               tooltip: AppLocalizations.of(context)!.menu,
               onPressed: () async {
                 final RenderBox button =
@@ -290,54 +288,89 @@ class PrimarySourceToolbar extends StatelessWidget {
                         value: 'refresh',
                         enabled: viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived,
-                        child: Row(
-                          children: [
-                            viewModel.refreshError
-                                ? Icon(Icons.sync_problem,
-                                    color: colorScheme.error)
-                                : Icon(Icons.sync,
-                                    color: colorScheme.onSurface),
-                            const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!.reload_image),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled = viewModel.selectedPage != null &&
+                                viewModel.primarySource.permissionsReceived;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                viewModel.refreshError
+                                    ? Icon(Icons.sync_problem,
+                                        color: isEnabled
+                                            ? colorScheme.error
+                                            : colorScheme.onSurface
+                                                .withValues(alpha: 0.38))
+                                    : Icon(Icons.sync, color: iconColor),
+                                const SizedBox(width: 8),
+                                Text(
+                                    AppLocalizations.of(context)!.reload_image),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     if (numButtons < 2)
                       PopupMenuItem(
                         value: 'zoom_in',
                         enabled: zoomStatus.canZoomIn,
-                        child: Row(
-                          children: [
-                            Icon(Icons.zoom_in, color: colorScheme.onSurface),
-                            const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!.zoom_in),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled = zoomStatus.canZoomIn;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                Icon(Icons.zoom_in, color: iconColor),
+                                const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!.zoom_in),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     if (numButtons < 3)
                       PopupMenuItem(
                         value: 'zoom_out',
                         enabled: zoomStatus.canZoomOut,
-                        child: Row(
-                          children: [
-                            Icon(Icons.zoom_out, color: colorScheme.onSurface),
-                            const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!.zoom_out),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled = zoomStatus.canZoomOut;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                Icon(Icons.zoom_out, color: iconColor),
+                                const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!.zoom_out),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     if (numButtons < 4)
                       PopupMenuItem(
                         value: 'reset',
                         enabled: zoomStatus.canReset,
-                        child: Row(
-                          children: [
-                            Icon(Icons.zoom_out_map,
-                                color: colorScheme.onSurface),
-                            const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!
-                                .restore_original_scale),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled = zoomStatus.canReset;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                Icon(Icons.zoom_out_map, color: iconColor),
+                                const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!
+                                    .restore_original_scale),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     if (numButtons < 5) const PopupMenuDivider(),
@@ -349,24 +382,34 @@ class PrimarySourceToolbar extends StatelessWidget {
                         value: 'toggle_negative',
                         enabled: viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived,
-                        child: Row(
-                          children: [
-                            if (viewModel.isNegative)
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: colorScheme.secondaryContainer,
-                                ),
-                                child: Icon(Icons.invert_colors,
-                                    color: colorScheme.secondary),
-                              ),
-                            if (!viewModel.isNegative)
-                              Icon(Icons.invert_colors,
-                                  color: colorScheme.onSurface),
-                            if (!viewModel.isNegative) const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!.toggle_negative),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled = viewModel.selectedPage != null &&
+                                viewModel.primarySource.permissionsReceived;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                if (isEnabled && viewModel.isNegative)
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorScheme.secondaryContainer,
+                                    ),
+                                    child: Icon(Icons.invert_colors,
+                                        color: colorScheme.primary),
+                                  )
+                                else
+                                  Icon(Icons.invert_colors, color: iconColor),
+                                if (!viewModel.isNegative)
+                                  const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!
+                                    .toggle_negative),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     if (numButtons < 6)
@@ -378,26 +421,36 @@ class PrimarySourceToolbar extends StatelessWidget {
                         enabled: viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived &&
                             !viewModel.primarySource.isMonochrome,
-                        child: Row(
-                          children: [
-                            if (viewModel.isMonochrome)
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: colorScheme.secondaryContainer,
-                                ),
-                                child: Icon(Icons.monochrome_photos,
-                                    color: colorScheme.secondary),
-                              ),
-                            if (!viewModel.isMonochrome)
-                              Icon(Icons.monochrome_photos,
-                                  color: colorScheme.onSurface),
-                            if (!viewModel.isMonochrome)
-                              const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!
-                                .toggle_monochrome),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled = viewModel.selectedPage != null &&
+                                viewModel.primarySource.permissionsReceived &&
+                                !viewModel.primarySource.isMonochrome;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                if (isEnabled && viewModel.isMonochrome)
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorScheme.secondaryContainer,
+                                    ),
+                                    child: Icon(Icons.monochrome_photos,
+                                        color: colorScheme.primary),
+                                  )
+                                else
+                                  Icon(Icons.monochrome_photos,
+                                      color: iconColor),
+                                if (!viewModel.isMonochrome)
+                                  const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!
+                                    .toggle_monochrome),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     if (numButtons < 7)
@@ -409,29 +462,37 @@ class PrimarySourceToolbar extends StatelessWidget {
                         value: 'brightness_contrast',
                         enabled: viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived,
-                        child: Row(
-                          children: [
-                            if (viewModel.brightness != 0 ||
-                                viewModel.contrast != 100)
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: colorScheme.secondaryContainer,
-                                ),
-                                child: Icon(Icons.brightness_6,
-                                    color: colorScheme.secondary),
-                              ),
-                            if (viewModel.brightness == 0 &&
-                                viewModel.contrast == 100)
-                              Icon(Icons.brightness_6,
-                                  color: colorScheme.onSurface),
-                            if (viewModel.brightness == 0 &&
-                                viewModel.contrast == 100)
-                              const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!
-                                .brightness_contrast),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled = viewModel.selectedPage != null &&
+                                viewModel.primarySource.permissionsReceived;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                if (isEnabled &&
+                                    (viewModel.brightness != 0 ||
+                                        viewModel.contrast != 100))
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorScheme.secondaryContainer,
+                                    ),
+                                    child: Icon(Icons.brightness_6,
+                                        color: colorScheme.primary),
+                                  )
+                                else
+                                  Icon(Icons.brightness_6, color: iconColor),
+                                if (viewModel.brightness == 0 &&
+                                    viewModel.contrast == 100)
+                                  const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!
+                                    .brightness_contrast),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     if (numButtons < 8)
@@ -443,29 +504,37 @@ class PrimarySourceToolbar extends StatelessWidget {
                         value: 'replace_color',
                         enabled: viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived,
-                        child: Row(
-                          children: [
-                            if (viewModel.selectedArea != null &&
-                                viewModel.tolerance != 0)
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: colorScheme.secondaryContainer,
-                                ),
-                                child: Icon(Icons.format_paint,
-                                    color: colorScheme.secondary),
-                              ),
-                            if (viewModel.selectedArea == null ||
-                                viewModel.tolerance == 0)
-                              Icon(Icons.format_paint,
-                                  color: colorScheme.onSurface),
-                            if (viewModel.selectedArea == null ||
-                                viewModel.tolerance == 0)
-                              const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!
-                                .color_replacement),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled = viewModel.selectedPage != null &&
+                                viewModel.primarySource.permissionsReceived;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                if (isEnabled &&
+                                    viewModel.selectedArea != null &&
+                                    viewModel.tolerance != 0)
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorScheme.secondaryContainer,
+                                    ),
+                                    child: Icon(Icons.format_paint,
+                                        color: colorScheme.primary),
+                                  )
+                                else
+                                  Icon(Icons.format_paint, color: iconColor),
+                                if (viewModel.selectedArea == null ||
+                                    viewModel.tolerance == 0)
+                                  const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!
+                                    .color_replacement),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     if (numButtons < 9)
@@ -473,14 +542,22 @@ class PrimarySourceToolbar extends StatelessWidget {
                         value: 'reset_page',
                         enabled: viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived,
-                        child: Row(
-                          children: [
-                            Icon(Icons.cleaning_services,
-                                color: colorScheme.onSurface),
-                            const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!
-                                .page_settings_reset),
-                          ],
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled = viewModel.selectedPage != null &&
+                                viewModel.primarySource.permissionsReceived;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                Icon(Icons.cleaning_services, color: iconColor),
+                                const SizedBox(width: 8),
+                                Text(AppLocalizations.of(context)!
+                                    .page_settings_reset),
+                              ],
+                            );
+                          },
                         ),
                       ),
                   ],

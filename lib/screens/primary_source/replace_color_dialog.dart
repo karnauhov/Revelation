@@ -84,8 +84,8 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.crop,
-                  color: null,
                 ),
+                color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.area_selection,
                 onPressed: () async {
                   Navigator.of(context).pop();
@@ -159,8 +159,8 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.palette,
-                  color: null,
                 ),
+                color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
                   Color picked = colorToReplace;
@@ -219,8 +219,8 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.colorize,
-                  color: null,
                 ),
+                color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -294,8 +294,8 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.palette,
-                  color: null,
                 ),
+                color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
                   Color picked = newColor;
@@ -354,8 +354,8 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
               IconButton(
                 icon: Icon(
                   Icons.colorize,
-                  color: null,
                 ),
+                color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
                   Navigator.of(context).pop();
