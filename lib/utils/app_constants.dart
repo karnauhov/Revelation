@@ -22,10 +22,8 @@ class AppConstants {
     'grape': 4,
   };
   static const fontSizes = {
-    'tiny': 1,
-    'small': 2,
-    'medium': 3,
-    'large': 4,
-    'huge': 5,
+    'small': 1,
+    'medium': 2,
+    'large': 3,
   };
 }

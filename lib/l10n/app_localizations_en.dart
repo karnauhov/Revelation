@@ -135,9 +135,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get font_size => 'Font size';
 
   @override
-  String get tiny_font_size => 'Tiny';
-
-  @override
   String get small_font_size => 'Small';
 
   @override
@@ -145,9 +142,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get large_font_size => 'Large';
-
-  @override
-  String get huge_font_size => 'Huge';
 
   @override
   String get wikipedia => 'Wikipedia';
@@ -219,7 +213,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toggle_monochrome => 'Monochrome';
 
   @override
-  String get brightness_contrast => 'Brightness and Contrast';
+  String get brightness_contrast => 'Brightness, Contrast';
 
   @override
   String get brightness => 'Brightness';

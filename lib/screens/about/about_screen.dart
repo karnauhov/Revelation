@@ -148,6 +148,7 @@ class _AboutScreenState extends State<AboutScreen> {
                     AppLocalizations.of(context)!.about_screen,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
+                      height: 0.9,
                     ),
                   ),
                   Text(

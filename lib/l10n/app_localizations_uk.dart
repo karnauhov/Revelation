@@ -135,9 +135,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get font_size => 'Розмір шрифту';
 
   @override
-  String get tiny_font_size => 'Крихітний';
-
-  @override
   String get small_font_size => 'Маленький';
 
   @override
@@ -145,9 +142,6 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get large_font_size => 'Великий';
-
-  @override
-  String get huge_font_size => 'Величезний';
 
   @override
   String get wikipedia => 'Вікіпедія';
@@ -201,7 +195,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get low_quality_message => 'У мобільному браузері використовується зображення зниженої якості. Щоб переглянути в максимальній якості, встановіть застосунок або відкрийте сторінку на комп’ютері.';
 
   @override
-  String get reload_image => 'Перезавантаження зображення';
+  String get reload_image => 'Перезавантаження';
 
   @override
   String get zoom_in => 'Збільшення';
@@ -219,7 +213,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get toggle_monochrome => 'Монохромність';
 
   @override
-  String get brightness_contrast => 'Яскравість і контрастність';
+  String get brightness_contrast => 'Яскравість, контрастність';
 
   @override
   String get brightness => 'Яскравість';
@@ -285,7 +279,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get replace_color_message => 'При першому виклику формування матриці пікселів займе певний час.';
 
   @override
-  String get page_settings_reset => 'Скидання налаштувань сторінки';
+  String get page_settings_reset => 'Скидання налаштувань';
 
   @override
   String get papyrus_18_title => 'Папірус 18 (P<sup>18</sup>)';

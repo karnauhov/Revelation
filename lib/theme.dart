@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 class MaterialTheme {
-  static ColorScheme getTheme(String key) {
+  static ColorScheme getColorTheme(String key) {
     switch (key) {
       case 'manuscript':
         return manuscript();
@@ -13,6 +13,19 @@ class MaterialTheme {
         return grape();
       default:
         return manuscript();
+    }
+  }
+
+  static TextTheme getTextTheme(BuildContext context, String key) {
+    switch (key) {
+      case 'small':
+        return getScaledTextTheme(context, 1);
+      case 'medium':
+        return getScaledTextTheme(context, 1.15);
+      case 'large':
+        return getScaledTextTheme(context, 1.3);
+      default:
+        return getScaledTextTheme(context, 1.15);
     }
   }
 
@@ -217,6 +230,132 @@ class MaterialTheme {
       surfaceContainer: Color(0xfff5ebf6),
       surfaceContainerHigh: Color(0xffefe5f0),
       surfaceContainerHighest: Color(0xffe9dfea),
+    );
+  }
+
+  static TextTheme getScaledTextTheme(BuildContext context, double scale) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return TextTheme(
+      displayLarge: textTheme.displayLarge?.copyWith(
+        fontSize: textTheme.displayLarge?.fontSize != null
+            ? textTheme.displayLarge!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.displayLarge?.letterSpacing != null
+            ? textTheme.displayLarge!.letterSpacing! * scale
+            : null,
+      ),
+      displayMedium: textTheme.displayMedium?.copyWith(
+        fontSize: textTheme.displayMedium?.fontSize != null
+            ? textTheme.displayMedium!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.displayMedium?.letterSpacing != null
+            ? textTheme.displayMedium!.letterSpacing! * scale
+            : null,
+      ),
+      displaySmall: textTheme.displaySmall?.copyWith(
+        fontSize: textTheme.displaySmall?.fontSize != null
+            ? textTheme.displaySmall!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.displaySmall?.letterSpacing != null
+            ? textTheme.displaySmall!.letterSpacing! * scale
+            : null,
+      ),
+      headlineLarge: textTheme.headlineLarge?.copyWith(
+        fontSize: textTheme.headlineLarge?.fontSize != null
+            ? textTheme.headlineLarge!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.headlineLarge?.letterSpacing != null
+            ? textTheme.headlineLarge!.letterSpacing! * scale
+            : null,
+      ),
+      headlineMedium: textTheme.headlineMedium?.copyWith(
+        fontSize: textTheme.headlineMedium?.fontSize != null
+            ? textTheme.headlineMedium!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.headlineMedium?.letterSpacing != null
+            ? textTheme.headlineMedium!.letterSpacing! * scale
+            : null,
+      ),
+      headlineSmall: textTheme.headlineSmall?.copyWith(
+        fontSize: textTheme.headlineSmall?.fontSize != null
+            ? textTheme.headlineSmall!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.headlineSmall?.letterSpacing != null
+            ? textTheme.headlineSmall!.letterSpacing! * scale
+            : null,
+      ),
+      titleLarge: textTheme.titleLarge?.copyWith(
+        fontSize: textTheme.titleLarge?.fontSize != null
+            ? textTheme.titleLarge!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.titleLarge?.letterSpacing != null
+            ? textTheme.titleLarge!.letterSpacing! * scale
+            : null,
+      ),
+      titleMedium: textTheme.titleMedium?.copyWith(
+        fontSize: textTheme.titleMedium?.fontSize != null
+            ? textTheme.titleMedium!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.titleMedium?.letterSpacing != null
+            ? textTheme.titleMedium!.letterSpacing! * scale
+            : null,
+      ),
+      titleSmall: textTheme.titleSmall?.copyWith(
+        fontSize: textTheme.titleSmall?.fontSize != null
+            ? textTheme.titleSmall!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.titleSmall?.letterSpacing != null
+            ? textTheme.titleSmall!.letterSpacing! * scale
+            : null,
+      ),
+      bodyLarge: textTheme.bodyLarge?.copyWith(
+        fontSize: textTheme.bodyLarge?.fontSize != null
+            ? textTheme.bodyLarge!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.bodyLarge?.letterSpacing != null
+            ? textTheme.bodyLarge!.letterSpacing! * scale
+            : null,
+      ),
+      bodyMedium: textTheme.bodyMedium?.copyWith(
+        fontSize: textTheme.bodyMedium?.fontSize != null
+            ? textTheme.bodyMedium!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.bodyMedium?.letterSpacing != null
+            ? textTheme.bodyMedium!.letterSpacing! * scale
+            : null,
+      ),
+      bodySmall: textTheme.bodySmall?.copyWith(
+        fontSize: textTheme.bodySmall?.fontSize != null
+            ? textTheme.bodySmall!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.bodySmall?.letterSpacing != null
+            ? textTheme.bodySmall!.letterSpacing! * scale
+            : null,
+      ),
+      labelLarge: textTheme.labelLarge?.copyWith(
+        fontSize: textTheme.labelLarge?.fontSize != null
+            ? textTheme.labelLarge!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.labelLarge?.letterSpacing != null
+            ? textTheme.labelLarge!.letterSpacing! * scale
+            : null,
+      ),
+      labelMedium: textTheme.labelMedium?.copyWith(
+        fontSize: textTheme.labelMedium?.fontSize != null
+            ? textTheme.labelMedium!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.labelMedium?.letterSpacing != null
+            ? textTheme.labelMedium!.letterSpacing! * scale
+            : null,
+      ),
+      labelSmall: textTheme.labelSmall?.copyWith(
+        fontSize: textTheme.labelSmall?.fontSize != null
+            ? textTheme.labelSmall!.fontSize! * scale
+            : null,
+        letterSpacing: textTheme.labelSmall?.letterSpacing != null
+            ? textTheme.labelSmall!.letterSpacing! * scale
+            : null,
+      ),
     );
   }
 }

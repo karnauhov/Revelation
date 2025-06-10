@@ -349,12 +349,6 @@ abstract class AppLocalizations {
   /// **'Font size'**
   String get font_size;
 
-  /// No description provided for @tiny_font_size.
-  ///
-  /// In en, this message translates to:
-  /// **'Tiny'**
-  String get tiny_font_size;
-
   /// No description provided for @small_font_size.
   ///
   /// In en, this message translates to:
@@ -372,12 +366,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Large'**
   String get large_font_size;
-
-  /// No description provided for @huge_font_size.
-  ///
-  /// In en, this message translates to:
-  /// **'Huge'**
-  String get huge_font_size;
 
   /// No description provided for @wikipedia.
   ///
@@ -520,7 +508,7 @@ abstract class AppLocalizations {
   /// No description provided for @brightness_contrast.
   ///
   /// In en, this message translates to:
-  /// **'Brightness and Contrast'**
+  /// **'Brightness, Contrast'**
   String get brightness_contrast;
 
   /// No description provided for @brightness.

@@ -135,9 +135,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get font_size => 'Размер шрифта';
 
   @override
-  String get tiny_font_size => 'Крошечный';
-
-  @override
   String get small_font_size => 'Маленький';
 
   @override
@@ -145,9 +142,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get large_font_size => 'Большой';
-
-  @override
-  String get huge_font_size => 'Огромный';
 
   @override
   String get wikipedia => 'Википедия';
@@ -201,7 +195,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get low_quality_message => 'В мобильном браузере используется изображение сниженного качества. Для просмотра в максимальном качестве установите приложение или откройте страницу на компьютере.';
 
   @override
-  String get reload_image => 'Перезагрузка изображения';
+  String get reload_image => 'Перезагрузка';
 
   @override
   String get zoom_in => 'Увеличение';
@@ -210,7 +204,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get zoom_out => 'Уменьшение';
 
   @override
-  String get restore_original_scale => 'Первоначальный масштаб';
+  String get restore_original_scale => 'Начальный масштаб';
 
   @override
   String get toggle_negative => 'Негатив';
@@ -219,7 +213,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get toggle_monochrome => 'Монохромность';
 
   @override
-  String get brightness_contrast => 'Яркость и контрастность';
+  String get brightness_contrast => 'Яркость, контрастность';
 
   @override
   String get brightness => 'Яркость';
@@ -285,7 +279,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get replace_color_message => 'При первом вызове формирование матрицы пикселей займёт некоторое время.';
 
   @override
-  String get page_settings_reset => 'Сброс настроек страницы';
+  String get page_settings_reset => 'Сброс настроек';
 
   @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';

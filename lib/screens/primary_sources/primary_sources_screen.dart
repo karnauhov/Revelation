@@ -60,8 +60,10 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
             children: [
               Text(
                 AppLocalizations.of(context)!.primary_sources_screen,
-                style: textTheme.headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  height: 0.9,
+                ),
               ),
               Text(
                 AppLocalizations.of(context)!.primary_sources_header,

@@ -639,13 +639,25 @@ class PrimarySourceToolbar extends StatelessWidget {
         ? colorScheme.onSurfaceVariant
         : (loaded ? colorScheme.primary : colorScheme.error);
 
-    return Text(
-      "${page.name} (${page.content})",
-      style: TextStyle(
-        color: textColor,
-        fontWeight: page == viewModel.selectedPage
-            ? FontWeight.bold
-            : FontWeight.normal,
+    final FontWeight weight =
+        page == viewModel.selectedPage ? FontWeight.bold : FontWeight.normal;
+
+    return Text.rich(
+      TextSpan(
+        style: TextStyle(
+          color: textColor,
+          fontWeight: weight,
+        ),
+        children: [
+          TextSpan(text: page.name),
+          TextSpan(
+            text: ' (${page.content})',
+            style: theme.textTheme.bodySmall!.copyWith(
+              color: textColor,
+              fontWeight: weight,
+            ),
+          ),
+        ],
       ),
     );
   }

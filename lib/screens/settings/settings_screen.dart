@@ -27,8 +27,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             Text(
               AppLocalizations.of(context)!.settings_screen,
-              style: theme.textTheme.headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                height: 0.9,
+              ),
             ),
             Text(
               AppLocalizations.of(context)!.settings_header,
@@ -203,7 +205,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final key = AppConstants.themes.keys.elementAt(i);
               final name = locColorThemes(context, key);
               final isSelected = key == current;
-              final itemColorScheme = MaterialTheme.getTheme(key);
+              final itemColorScheme = MaterialTheme.getColorTheme(key);
               return ListTile(
                 title: Text(
                   name,
@@ -242,10 +244,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final key = AppConstants.fontSizes.keys.elementAt(i);
               final name = locFontSizes(context, key);
               final isSelected = key == current;
+              final textTheme = MaterialTheme.getTextTheme(context, key);
               return ListTile(
                 title: Text(
                   name,
-                  style: theme.textTheme.bodyMedium?.copyWith(
+                  style: textTheme.bodyMedium?.copyWith(
                     color: isSelected
                         ? colorScheme.onPrimaryContainer
                         : colorScheme.primary,

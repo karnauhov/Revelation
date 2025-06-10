@@ -95,10 +95,10 @@ class _TopicScreenState extends State<TopicScreen> {
           children: [
             Text(
               locLinks(context, widget.name ?? ""),
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    height: 0.9,
+                  ),
             ),
             Text(
               locLinks(context, widget.description ?? ""),

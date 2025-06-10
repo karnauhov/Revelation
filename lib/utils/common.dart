@@ -81,11 +81,9 @@ String locColorThemes(BuildContext context, String key) {
 String locFontSizes(BuildContext context, String key) {
   final localizations = AppLocalizations.of(context);
   final Map<String, String> translations = {
-    "tiny": localizations!.tiny_font_size,
-    "small": localizations.small_font_size,
+    "small": localizations!.small_font_size,
     "medium": localizations.medium_font_size,
     "large": localizations.large_font_size,
-    "huge": localizations.huge_font_size,
   };
   return translations[key] ?? key;
 }

@@ -26,7 +26,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
             Text(
               AppLocalizations.of(context)!.download,
               style: theme.textTheme.headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
+                  ?.copyWith(fontWeight: FontWeight.bold, height: 0.9),
             ),
             Text(
               AppLocalizations.of(context)!.download_header,
