@@ -48,7 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             margin: const EdgeInsets.all(8.0),
             color: colorScheme.surfaceContainerHighest,
             child: ListTile(
-              leading: Icon(Icons.language, color: colorScheme.primary),
+              leading: Icon(Icons.translate, color: colorScheme.primary),
               title: Text(
                 AppLocalizations.of(context)!.language,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -151,11 +151,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
             margin: const EdgeInsets.all(8.0),
             color: colorScheme.surfaceContainerHighest,
             child: ListTile(
-              leading: Icon(Icons.volume_up, color: colorScheme.primary),
+              leading: Icon(
+                  settingsViewModel.settings.soundEnabled
+                      ? Icons.volume_up
+                      : Icons.volume_off,
+                  color: colorScheme.primary),
               title: Text(
                 AppLocalizations.of(context)!.sound,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: colorScheme.primary,
+                ),
+              ),
+              subtitle: Text(
+                settingsViewModel.settings.soundEnabled
+                    ? AppLocalizations.of(context)!.on
+                    : AppLocalizations.of(context)!.off,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.secondary,
                 ),
               ),
               trailing: Switch(
@@ -190,19 +202,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 final isSelected = code == currentLanguage;
                 return GestureDetector(
                   onTap: () => Navigator.pop(context, code),
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: isSelected ? colorScheme.primaryContainer : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      name,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: isSelected
-                            ? colorScheme.onPrimaryContainer
-                            : colorScheme.primary,
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isSelected ? colorScheme.primaryContainer : null,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        name,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: isSelected
+                              ? colorScheme.onPrimaryContainer
+                              : colorScheme.primary,
+                        ),
                       ),
                     ),
                   ),
@@ -235,19 +250,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final itemColorScheme = MaterialTheme.getColorTheme(key);
               return GestureDetector(
                 onTap: () => Navigator.pop(context, key),
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isSelected ? itemColorScheme.primaryContainer : null,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    name,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: isSelected
-                          ? itemColorScheme.onPrimaryContainer
-                          : itemColorScheme.primary,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color:
+                          isSelected ? itemColorScheme.primaryContainer : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: isSelected
+                            ? itemColorScheme.onPrimaryContainer
+                            : itemColorScheme.primary,
+                      ),
                     ),
                   ),
                 ),
@@ -280,19 +299,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final textTheme = MaterialTheme.getTextTheme(context, key);
               return GestureDetector(
                 onTap: () => Navigator.pop(context, key),
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isSelected ? colorScheme.primaryContainer : null,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    name,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: isSelected
-                          ? colorScheme.onPrimaryContainer
-                          : colorScheme.primary,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isSelected ? colorScheme.primaryContainer : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      name,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: isSelected
+                            ? colorScheme.onPrimaryContainer
+                            : colorScheme.primary,
+                      ),
                     ),
                   ),
                 ),

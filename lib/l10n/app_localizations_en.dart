@@ -147,6 +147,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sound => 'Sound';
 
   @override
+  String get on => 'On';
+
+  @override
+  String get off => 'Off';
+
+  @override
   String get wikipedia => 'Wikipedia';
 
   @override

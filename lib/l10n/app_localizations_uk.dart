@@ -147,6 +147,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get sound => 'Звук';
 
   @override
+  String get on => 'Увімкнено';
+
+  @override
+  String get off => 'Вимкнено';
+
+  @override
   String get wikipedia => 'Вікіпедія';
 
   @override

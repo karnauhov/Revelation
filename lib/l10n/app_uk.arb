@@ -46,6 +46,8 @@
   "medium_font_size": "Середній",
   "large_font_size": "Великий",
   "sound": "Звук",
+  "on": "Увімкнено",
+  "off": "Вимкнено",
   "wikipedia": "Вікіпедія",
   "intf": "INTF",
   "image_source": "Джерело зображень",

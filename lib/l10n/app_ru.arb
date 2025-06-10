@@ -46,6 +46,8 @@
   "medium_font_size": "Средний",
   "large_font_size": "Большой",
   "sound": "Звук",
+  "on": "Включен",
+  "off": "Выключен",
   "wikipedia": "Википедия",
   "intf": "INTF",
   "image_source": "Источник изображений",

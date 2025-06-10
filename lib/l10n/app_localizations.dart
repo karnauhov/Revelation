@@ -373,6 +373,18 @@ abstract class AppLocalizations {
   /// **'Sound'**
   String get sound;
 
+  /// No description provided for @on.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get on;
+
+  /// No description provided for @off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get off;
+
   /// No description provided for @wikipedia.
   ///
   /// In en, this message translates to:
