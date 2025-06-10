@@ -13,7 +13,8 @@ class SettingsRepository {
       return AppSettings(
           selectedLanguage: getSystemLanguage(),
           selectedTheme: 'manuscript',
-          selectedFontSize: 'medium');
+          selectedFontSize: 'medium',
+          soundEnabled: true);
     }
     final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
     return AppSettings.fromMap(jsonMap);

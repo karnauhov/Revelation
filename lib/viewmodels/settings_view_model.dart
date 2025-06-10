@@ -8,7 +8,8 @@ class SettingsViewModel extends ChangeNotifier {
   AppSettings _settings = AppSettings(
       selectedLanguage: getSystemLanguage(),
       selectedTheme: 'manuscript',
-      selectedFontSize: 'medium');
+      selectedFontSize: 'medium',
+      soundEnabled: true);
   AppSettings get settings => _settings;
   SettingsViewModel(this._settingsRepository);
 
@@ -21,7 +22,8 @@ class SettingsViewModel extends ChangeNotifier {
     _settings = AppSettings(
         selectedLanguage: newLanguage,
         selectedTheme: _settings.selectedTheme,
-        selectedFontSize: _settings.selectedFontSize);
+        selectedFontSize: _settings.selectedFontSize,
+        soundEnabled: _settings.soundEnabled);
     await _settingsRepository.saveSettings(_settings);
     notifyListeners();
   }
@@ -30,7 +32,8 @@ class SettingsViewModel extends ChangeNotifier {
     _settings = AppSettings(
         selectedLanguage: _settings.selectedLanguage,
         selectedTheme: newTheme,
-        selectedFontSize: _settings.selectedFontSize);
+        selectedFontSize: _settings.selectedFontSize,
+        soundEnabled: _settings.soundEnabled);
     await _settingsRepository.saveSettings(_settings);
     notifyListeners();
   }
@@ -39,7 +42,18 @@ class SettingsViewModel extends ChangeNotifier {
     _settings = AppSettings(
         selectedLanguage: _settings.selectedLanguage,
         selectedTheme: _settings.selectedTheme,
-        selectedFontSize: newFontSize);
+        selectedFontSize: newFontSize,
+        soundEnabled: _settings.soundEnabled);
+    await _settingsRepository.saveSettings(_settings);
+    notifyListeners();
+  }
+
+  Future<void> setSoundEnabled(bool allowSound) async {
+    _settings = AppSettings(
+        selectedLanguage: _settings.selectedLanguage,
+        selectedTheme: _settings.selectedTheme,
+        selectedFontSize: _settings.selectedFontSize,
+        soundEnabled: allowSound);
     await _settingsRepository.saveSettings(_settings);
     notifyListeners();
   }

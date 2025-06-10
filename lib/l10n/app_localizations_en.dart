@@ -144,6 +144,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get large_font_size => 'Large';
 
   @override
+  String get sound => 'Sound';
+
+  @override
   String get wikipedia => 'Wikipedia';
 
   @override

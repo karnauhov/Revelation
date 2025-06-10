@@ -144,6 +144,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get large_font_size => 'Великий';
 
   @override
+  String get sound => 'Звук';
+
+  @override
   String get wikipedia => 'Вікіпедія';
 
   @override

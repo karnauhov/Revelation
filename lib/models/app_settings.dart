@@ -2,11 +2,13 @@ class AppSettings {
   final String selectedLanguage;
   final String selectedTheme;
   final String selectedFontSize;
+  final bool soundEnabled;
 
   AppSettings({
     required this.selectedLanguage,
     required this.selectedTheme,
     required this.selectedFontSize,
+    required this.soundEnabled,
   });
 
   Map<String, dynamic> toMap() {
@@ -14,6 +16,7 @@ class AppSettings {
       'selectedLanguage': selectedLanguage,
       'selectedTheme': selectedTheme,
       'selectedFontSize': selectedFontSize,
+      'soundEnabled': soundEnabled,
     };
   }
 
@@ -22,6 +25,7 @@ class AppSettings {
       selectedLanguage: map['selectedLanguage'] ?? 'en',
       selectedTheme: map['selectedTheme'] ?? 'manuscript',
       selectedFontSize: map['selectedFontSize'] ?? 'medium',
+      soundEnabled: map['soundEnabled'] ?? true,
     );
   }
 }

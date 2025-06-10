@@ -367,6 +367,12 @@ abstract class AppLocalizations {
   /// **'Large'**
   String get large_font_size;
 
+  /// No description provided for @sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound'**
+  String get sound;
+
   /// No description provided for @wikipedia.
   ///
   /// In en, this message translates to:

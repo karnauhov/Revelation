@@ -48,6 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             margin: const EdgeInsets.all(8.0),
             color: colorScheme.surfaceContainerHighest,
             child: ListTile(
+              leading: Icon(Icons.language, color: colorScheme.primary),
               title: Text(
                 AppLocalizations.of(context)!.language,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -82,6 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             margin: const EdgeInsets.all(8.0),
             color: colorScheme.surfaceContainerHighest,
             child: ListTile(
+              leading: Icon(Icons.color_lens, color: colorScheme.primary),
               title: Text(
                 AppLocalizations.of(context)!.color_theme,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -115,6 +117,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             margin: const EdgeInsets.all(8.0),
             color: colorScheme.surfaceContainerHighest,
             child: ListTile(
+              leading: Icon(Icons.format_size, color: colorScheme.primary),
               title: Text(
                 AppLocalizations.of(context)!.font_size,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -143,6 +146,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
           ),
+          // Sound Toggle
+          Card(
+            margin: const EdgeInsets.all(8.0),
+            color: colorScheme.surfaceContainerHighest,
+            child: ListTile(
+              leading: Icon(Icons.volume_up, color: colorScheme.primary),
+              title: Text(
+                AppLocalizations.of(context)!.sound,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.primary,
+                ),
+              ),
+              trailing: Switch(
+                value: settingsViewModel.settings.soundEnabled,
+                onChanged: (value) => settingsViewModel.setSoundEnabled(value),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -167,18 +188,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 final code = AppConstants.languages.keys.elementAt(index);
                 final name = AppConstants.languages[code]!;
                 final isSelected = code == currentLanguage;
-                return ListTile(
-                  title: Text(
-                    name,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: isSelected
-                          ? colorScheme.onPrimaryContainer
-                          : colorScheme.primary,
+                return GestureDetector(
+                  onTap: () => Navigator.pop(context, code),
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isSelected ? colorScheme.primaryContainer : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: isSelected
+                            ? colorScheme.onPrimaryContainer
+                            : colorScheme.primary,
+                      ),
                     ),
                   ),
-                  selected: isSelected,
-                  selectedTileColor: colorScheme.primaryContainer,
-                  onTap: () => Navigator.pop(context, code),
                 );
               },
             ),
@@ -206,18 +233,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final name = locColorThemes(context, key);
               final isSelected = key == current;
               final itemColorScheme = MaterialTheme.getColorTheme(key);
-              return ListTile(
-                title: Text(
-                  name,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: isSelected
-                        ? itemColorScheme.onPrimaryContainer
-                        : itemColorScheme.primary,
+              return GestureDetector(
+                onTap: () => Navigator.pop(context, key),
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isSelected ? itemColorScheme.primaryContainer : null,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    name,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: isSelected
+                          ? itemColorScheme.onPrimaryContainer
+                          : itemColorScheme.primary,
+                    ),
                   ),
                 ),
-                selected: isSelected,
-                selectedTileColor: itemColorScheme.primaryContainer,
-                onTap: () => Navigator.pop(context, key),
               );
             },
           ),
@@ -245,18 +278,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final name = locFontSizes(context, key);
               final isSelected = key == current;
               final textTheme = MaterialTheme.getTextTheme(context, key);
-              return ListTile(
-                title: Text(
-                  name,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: isSelected
-                        ? colorScheme.onPrimaryContainer
-                        : colorScheme.primary,
+              return GestureDetector(
+                onTap: () => Navigator.pop(context, key),
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isSelected ? colorScheme.primaryContainer : null,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    name,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: isSelected
+                          ? colorScheme.onPrimaryContainer
+                          : colorScheme.primary,
+                    ),
                   ),
                 ),
-                selected: isSelected,
-                selectedTileColor: colorScheme.primaryContainer,
-                onTap: () => Navigator.pop(context, key),
               );
             },
           ),

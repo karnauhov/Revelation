@@ -144,6 +144,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get large_font_size => 'Большой';
 
   @override
+  String get sound => 'Звук';
+
+  @override
   String get wikipedia => 'Википедия';
 
   @override
