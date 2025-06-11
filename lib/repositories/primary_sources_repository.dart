@@ -1226,11 +1226,11 @@ class PrimarySourcesRepository {
             model.Page(
                 name: "1r",
                 content: "9:19-21; 10:1-2",
-                image: "primary_sources/10085/10085x00010Xa_INTF.jpg"),
+                image: "primary_sources/10085/FR674821001_019a_PGR1028-r.jpg"),
             model.Page(
                 name: "1v",
                 content: "10:5-9",
-                image: "primary_sources/10085/10085x00020Xa_INTF.jpg")
+                image: "primary_sources/10085/FR674821001_019a_PGR1028-v.jpg")
           ],
           attributes: [
             {
@@ -1238,13 +1238,9 @@ class PrimarySourcesRepository {
                   "📜 Coll. et photogr. BNU de Strasbourg (P. Gr. 1027-1028)",
               "url":
                   "https://www.bnu.fr/fr/services-et-collections/numerisation-la-demande#les-images-de-la-bnu-et-la-licence-ouverte"
-            },
-            {
-              "text": "📷 INTF",
-              "url": "https://ntvmr.uni-muenster.de/license-agreement"
-            },
+            }
           ],
-          permissionsReceived: false),
+          permissionsReceived: true),
       PrimarySource(
           id: "P098",
           title: loc.papyrus_98_title,
