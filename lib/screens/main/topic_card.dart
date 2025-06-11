@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import '../../models/topic_info.dart';
-import '../../utils/common.dart';
+import 'package:revelation/models/topic_info.dart';
+import 'package:revelation/utils/common.dart';
 
 class TopicCard extends StatelessWidget {
   final TopicInfo topic;

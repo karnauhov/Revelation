@@ -7,6 +7,7 @@ All notable changes to this application will be documented here.
 ### Added
 
 - Color theme, font size and sound in settings
+- Sounds
 
 ### Changed
 

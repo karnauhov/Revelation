@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/screens/main/drawer_content.dart';
+import 'package:revelation/viewmodels/settings_view_model.dart';
 import '../../utils/common.dart';
 import '../../viewmodels/main_view_model.dart';
 import '../../common_widgets/new_icon_button.dart';
@@ -19,6 +21,16 @@ class _MainScreenState extends State<MainScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = Provider.of<SettingsViewModel>(context, listen: false);
+      AudioController aud = AudioController();
+      aud.init(viewModel);
+    });
+  }
 
   @override
   void dispose() {

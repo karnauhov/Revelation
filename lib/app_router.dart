@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
+import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/screens/primary_source/primary_source_screen.dart';
 import 'package:revelation/screens/primary_sources/primary_sources_screen.dart';
 import 'package:revelation/screens/settings/settings_screen.dart';
@@ -20,6 +21,7 @@ class AppRouter {
   AppRouter._internal();
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final aud = AudioController();
 
   late final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
@@ -36,24 +38,30 @@ class AppRouter {
       GoRoute(
         path: '/topic',
         name: 'topic',
-        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
-          context: context,
-          state: state,
-          child: TopicScreen(
-            name: (state.extra as Map<String, dynamic>?)?['name'],
-            description: (state.extra as Map<String, dynamic>?)?['description'],
-            file: (state.extra as Map<String, dynamic>?)?['file'],
-          ),
-        ),
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          aud.playSound("page");
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: TopicScreen(
+              name: (state.extra as Map<String, dynamic>?)?['name'],
+              description:
+                  (state.extra as Map<String, dynamic>?)?['description'],
+              file: (state.extra as Map<String, dynamic>?)?['file'],
+            ),
+          );
+        },
       ),
       GoRoute(
         path: '/primary_sources',
         name: 'primary_sources',
-        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
-          context: context,
-          state: state,
-          child: PrimarySourcesScreen(),
-        ),
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: PrimarySourcesScreen(),
+          );
+        },
       ),
       GoRoute(
         path: '/primary_source',
@@ -81,29 +89,35 @@ class AppRouter {
       GoRoute(
         path: '/settings',
         name: 'settings',
-        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
-          context: context,
-          state: state,
-          child: SettingsScreen(),
-        ),
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: SettingsScreen(),
+          );
+        },
       ),
       GoRoute(
         path: '/about',
         name: 'about',
-        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
-          context: context,
-          state: state,
-          child: AboutScreen(),
-        ),
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: AboutScreen(),
+          );
+        },
       ),
       GoRoute(
         path: '/download',
         name: 'download',
-        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
-          context: context,
-          state: state,
-          child: DownloadScreen(),
-        ),
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: DownloadScreen(),
+          );
+        },
       ),
     ],
   );
