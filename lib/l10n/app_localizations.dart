@@ -172,7 +172,7 @@ abstract class AppLocalizations {
   /// No description provided for @acknowledgements_description_2.
   ///
   /// In en, this message translates to:
-  /// **'Many thanks to the developers who worked on the following software:'**
+  /// **'Many thanks to the creators of the following software and resources:'**
   String get acknowledgements_description_2;
 
   /// No description provided for @all_rights_reserved.

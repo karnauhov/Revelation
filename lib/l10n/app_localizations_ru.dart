@@ -45,7 +45,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get acknowledgements_description_1 => 'В первую очередь хочу поблагодарить Бога за жизнь; свою жену Иру - за любовь и заботу; и маму - за помощь и поддержку.\nТакже моя искренняя признательность учреждениям за предоставленный доступ к информации и бесценным рукописям:';
 
   @override
-  String get acknowledgements_description_2 => 'Огромное спасибо разработчикам работавшим над следующим ПО:';
+  String get acknowledgements_description_2 => 'Огромное спасибо создателям следующего ПО и ресурсов:';
 
   @override
   String get all_rights_reserved => 'Все права защищены';

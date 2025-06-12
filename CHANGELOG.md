@@ -13,6 +13,7 @@ All notable changes to this application will be documented here.
 ### Changed
 
 - The application design has been completely revamped: main icon, color scheme, font "Arimo", UI icons, ...
+- About screen (Resources attributes);
 
 ## [1.0.2](https://github.com/karnauhov/Revelation/releases/tag/v1.0.2%2B80) - 31.05.25
 

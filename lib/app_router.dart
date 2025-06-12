@@ -56,6 +56,7 @@ class AppRouter {
         path: '/primary_sources',
         name: 'primary_sources',
         pageBuilder: (BuildContext context, GoRouterState state) {
+          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -79,6 +80,7 @@ class AppRouter {
             );
           }
           final primarySource = state.extra as PrimarySource;
+          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -90,6 +92,7 @@ class AppRouter {
         path: '/settings',
         name: 'settings',
         pageBuilder: (BuildContext context, GoRouterState state) {
+          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -101,6 +104,7 @@ class AppRouter {
         path: '/about',
         name: 'about',
         pageBuilder: (BuildContext context, GoRouterState state) {
+          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -112,6 +116,7 @@ class AppRouter {
         path: '/download',
         name: 'download',
         pageBuilder: (BuildContext context, GoRouterState state) {
+          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,

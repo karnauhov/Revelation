@@ -45,7 +45,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get acknowledgements_description_1 => 'First and foremost, I would like to thank God for life; my wife, Ira, for her love and care; and my mother for her help and support.\nAlso, my sincere gratitude goes to the institutions that provided access to information and invaluable manuscripts:';
 
   @override
-  String get acknowledgements_description_2 => 'Many thanks to the developers who worked on the following software:';
+  String get acknowledgements_description_2 => 'Many thanks to the creators of the following software and resources:';
 
   @override
   String get all_rights_reserved => 'All rights reserved';

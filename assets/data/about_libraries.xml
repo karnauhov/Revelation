@@ -14,4 +14,25 @@
         <officialSite>https://dart.dev</officialSite>
         <licenseLink>https://github.com/dart-lang/sdk/blob/main/LICENSE</licenseLink>
     </library>
+    <library>
+        <name>Vectors and icons by SVG Repo</name>
+        <idIcon>lib_svgrepo</idIcon>
+        <license>SVG Repo License</license>
+        <officialSite>https://www.svgrepo.com</officialSite>
+        <licenseLink>https://www.svgrepo.com/page/licensing</licenseLink>
+    </library>
+    <library>
+        <name>paper by 1bob</name>
+        <idIcon>sound</idIcon>
+        <license>Creative Commons 0</license>
+        <officialSite>https://freesound.org/s/651514</officialSite>
+        <licenseLink>https://creativecommons.org/publicdomain/zero/1.0</licenseLink>
+    </library>
+    <library>
+        <name>blink 4 damped.wav by natharra</name>
+        <idIcon>sound</idIcon>
+        <license>Attribution 3.0</license>
+        <officialSite>https://freesound.org/s/71469</officialSite>
+        <licenseLink>https://creativecommons.org/licenses/by/3.0</licenseLink>
+    </library>
 </licenses>

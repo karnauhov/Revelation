@@ -33,6 +33,8 @@ class AudioController {
 
     _sources["page"] =
         AssetSource('assets/sounds/page.mp3', mimeType: "audio/mpeg");
+    _sources["stone"] =
+        AssetSource('assets/sounds/stone.mp3', mimeType: "audio/mpeg");
   }
 
   void playSound(String sourceName) {
