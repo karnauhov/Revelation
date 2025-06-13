@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/settings_view_model.dart';
 
 class AudioController {
@@ -35,6 +36,8 @@ class AudioController {
         AssetSource('assets/sounds/page.mp3', mimeType: "audio/mpeg");
     _sources["stone"] =
         AssetSource('assets/sounds/stone.mp3', mimeType: "audio/mpeg");
+    _sources["click"] =
+        AssetSource('assets/sounds/click.mp3', mimeType: "audio/mpeg");
   }
 
   void playSound(String sourceName) {
@@ -43,7 +46,9 @@ class AudioController {
           _settingsVM.settings.soundEnabled) {
         _soundPlayer.play(_sources[sourceName]!);
       }
-    } catch (_) {}
+    } catch (e) {
+      log.e(e);
+    }
   }
 
   Future<void> stopSound() async {

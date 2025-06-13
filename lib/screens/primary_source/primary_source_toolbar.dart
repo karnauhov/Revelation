@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
@@ -14,8 +15,9 @@ class PrimarySourceToolbar extends StatelessWidget {
   final bool isBottom;
   final double dropdownWidth;
   final BuildContext screenContext;
+  final aud = AudioController();
 
-  const PrimarySourceToolbar({
+  PrimarySourceToolbar({
     required this.viewModel,
     required this.primarySource,
     required this.isBottom,
@@ -69,6 +71,7 @@ class PrimarySourceToolbar extends StatelessWidget {
           style: TextStyle(color: colorScheme.onSurfaceVariant),
         ),
         onChanged: (model.Page? newPage) {
+          aud.playSound("click");
           if (primarySource.permissionsReceived) {
             viewModel.changeSelectedPage(newPage);
           }
@@ -82,6 +85,9 @@ class PrimarySourceToolbar extends StatelessWidget {
                 );
               }).toList()
             : List.empty(),
+        onTap: () {
+          aud.playSound("click");
+        },
       ),
       IconButton(
         icon: viewModel.refreshError
@@ -91,8 +97,11 @@ class PrimarySourceToolbar extends StatelessWidget {
         tooltip: AppLocalizations.of(context)!.reload_image,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
-            ? () => viewModel.loadImage(viewModel.selectedPage!.image,
-                isReload: true)
+            ? () {
+                aud.playSound("click");
+                viewModel.loadImage(viewModel.selectedPage!.image,
+                    isReload: true);
+              }
             : null,
       ),
       ValueListenableBuilder<ZoomStatus>(
@@ -104,6 +113,7 @@ class PrimarySourceToolbar extends StatelessWidget {
             tooltip: AppLocalizations.of(context)!.zoom_in,
             onPressed: zoomStatus.canZoomIn
                 ? () {
+                    aud.playSound("click");
                     final viewportCenter = Offset(
                       MediaQuery.of(context).size.width / 2,
                       MediaQuery.of(context).size.height / 2,
@@ -123,6 +133,7 @@ class PrimarySourceToolbar extends StatelessWidget {
             tooltip: AppLocalizations.of(context)!.zoom_out,
             onPressed: zoomStatus.canZoomOut
                 ? () {
+                    aud.playSound("click");
                     final viewportSize = Size(
                       MediaQuery.of(context).size.width,
                       MediaQuery.of(context).size.height,
@@ -147,6 +158,7 @@ class PrimarySourceToolbar extends StatelessWidget {
             tooltip: AppLocalizations.of(context)!.restore_original_scale,
             onPressed: zoomStatus.canReset
                 ? () {
+                    aud.playSound("click");
                     viewModel.imageController.backToMinScale();
                   }
                 : null,
@@ -165,7 +177,10 @@ class PrimarySourceToolbar extends StatelessWidget {
         tooltip: AppLocalizations.of(context)!.toggle_negative,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
-            ? () => viewModel.toggleNegative()
+            ? () {
+                aud.playSound("click");
+                viewModel.toggleNegative();
+              }
             : null,
       ),
       IconButton(
@@ -181,7 +196,10 @@ class PrimarySourceToolbar extends StatelessWidget {
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null &&
                 !viewModel.primarySource.isMonochrome
-            ? () => viewModel.toggleMonochrome()
+            ? () {
+                aud.playSound("click");
+                viewModel.toggleMonochrome();
+              }
             : null,
       ),
       IconButton(
@@ -198,6 +216,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
             ? () {
+                aud.playSound("click");
                 _showBrightnessContrastDialog();
               }
             : null,
@@ -216,6 +235,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
             ? () {
+                aud.playSound("click");
                 _showReplaceColorDialog();
               }
             : null,
@@ -227,6 +247,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
             ? () {
+                aud.playSound("click");
                 viewModel.removePageSettings();
               }
             : null,
@@ -257,6 +278,7 @@ class PrimarySourceToolbar extends StatelessWidget {
               color: colorScheme.primary,
               tooltip: AppLocalizations.of(context)!.menu,
               onPressed: () async {
+                aud.playSound("click");
                 final RenderBox button =
                     menuKey.currentContext!.findRenderObject() as RenderBox;
                 final RenderBox overlay =
@@ -566,6 +588,7 @@ class PrimarySourceToolbar extends StatelessWidget {
                 viewModel.setMenuOpen(false);
 
                 if (selectedValue != null) {
+                  aud.playSound("click");
                   switch (selectedValue) {
                     case 'refresh':
                       if (viewModel.selectedPage != null &&

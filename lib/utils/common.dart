@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:logger/logger.dart';
+import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:styled_text/tags/styled_text_tag_widget_builder.dart';
 import 'package:styled_text/widgets/styled_text.dart';
@@ -334,6 +335,7 @@ MarkdownStyleSheet getMarkdownStyleSheet(
 Future<bool> launchLink(String url) async {
   try {
     // !DO NOT CALL canLaunchUrl
+    AudioController().playSound("click");
     if (url.toLowerCase().startsWith('mailto:')) {
       final Uri emailUri = Uri.parse(url);
       final launched = await launchUrl(emailUri,
@@ -477,7 +479,10 @@ void showCustomDialog(MessageType type,
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
+            onPressed: () {
+              AudioController().playSound("click");
+              Navigator.of(dialogContext).pop();
+            },
             child: Text(AppLocalizations.of(context)!.close),
           ),
         ],

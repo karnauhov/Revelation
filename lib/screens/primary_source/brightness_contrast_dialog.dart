@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 
 class BrightnessContrastDialog extends StatefulWidget {
@@ -21,6 +22,7 @@ class BrightnessContrastDialog extends StatefulWidget {
 }
 
 class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
+  final aud = AudioController();
   double brightness = 0;
   double contrast = 100;
 
@@ -65,6 +67,7 @@ class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
               });
             },
             onChangeEnd: (value) {
+              aud.playSound("click");
               setState(() {
                 brightness = value;
               });
@@ -86,6 +89,7 @@ class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
             activeColor: colorScheme.primary,
             inactiveColor: colorScheme.onSurface.withValues(alpha: 0.3),
             onChanged: (value) {
+              aud.playSound("click");
               setState(() {
                 contrast = value;
               });
@@ -105,6 +109,7 @@ class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
             foregroundColor: colorScheme.primary,
           ),
           onPressed: () {
+            aud.playSound("click");
             widget.onCancel();
             Navigator.of(context).pop();
           },
@@ -118,6 +123,7 @@ class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
             foregroundColor: colorScheme.primary,
           ),
           onPressed: () {
+            aud.playSound("click");
             Navigator.of(context).pop();
           },
           child: Text(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:revelation/utils/common.dart';
@@ -31,6 +32,7 @@ class ReplaceColorDialog extends StatefulWidget {
 }
 
 class ReplaceColorDialogState extends State<ReplaceColorDialog> {
+  final aud = AudioController();
   late Rect? selectedArea;
   late Color colorToReplace;
   late Color newColor;
@@ -88,6 +90,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.area_selection,
                 onPressed: () async {
+                  aud.playSound("click");
                   Navigator.of(context).pop();
                   widget.viewModel.startSelectAreaMode((onSelected) {
                     showDialog(
@@ -163,6 +166,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
+                  aud.playSound("click");
                   Color picked = colorToReplace;
                   await showDialog(
                     context: context,
@@ -184,15 +188,17 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                         ),
                         actions: [
                           TextButton(
-                            style: TextButton.styleFrom(
-                              foregroundColor: colorScheme.primary,
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.cancel,
-                              style: TextStyle(color: colorScheme.primary),
-                            ),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
+                              style: TextButton.styleFrom(
+                                foregroundColor: colorScheme.primary,
+                              ),
+                              child: Text(
+                                AppLocalizations.of(context)!.cancel,
+                                style: TextStyle(color: colorScheme.primary),
+                              ),
+                              onPressed: () {
+                                aud.playSound("click");
+                                Navigator.of(context).pop();
+                              }),
                           TextButton(
                             style: TextButton.styleFrom(
                               foregroundColor: colorScheme.primary,
@@ -202,6 +208,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                               style: TextStyle(color: colorScheme.primary),
                             ),
                             onPressed: () {
+                              aud.playSound("click");
                               Navigator.of(context).pop();
                               setState(() {
                                 colorToReplace = picked;
@@ -223,6 +230,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
+                  aud.playSound("click");
                   Navigator.of(context).pop();
                   widget.viewModel.startPipetteMode((pickedColor) {
                     showDialog(
@@ -298,6 +306,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
+                  aud.playSound("click");
                   Color picked = newColor;
                   await showDialog(
                     context: context,
@@ -319,15 +328,17 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                         ),
                         actions: [
                           TextButton(
-                            style: TextButton.styleFrom(
-                              foregroundColor: colorScheme.primary,
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.cancel,
-                              style: TextStyle(color: colorScheme.primary),
-                            ),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
+                              style: TextButton.styleFrom(
+                                foregroundColor: colorScheme.primary,
+                              ),
+                              child: Text(
+                                AppLocalizations.of(context)!.cancel,
+                                style: TextStyle(color: colorScheme.primary),
+                              ),
+                              onPressed: () {
+                                aud.playSound("click");
+                                Navigator.of(context).pop();
+                              }),
                           TextButton(
                             style: TextButton.styleFrom(
                               foregroundColor: colorScheme.primary,
@@ -337,6 +348,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                               style: TextStyle(color: colorScheme.primary),
                             ),
                             onPressed: () {
+                              aud.playSound("click");
                               Navigator.of(context).pop();
                               setState(() {
                                 newColor = picked;
@@ -358,6 +370,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
+                  aud.playSound("click");
                   Navigator.of(context).pop();
                   widget.viewModel.startPipetteMode((pickedColor) {
                     showDialog(
@@ -426,6 +439,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   activeColor: colorScheme.primary,
                   inactiveColor: colorScheme.onSurface.withValues(alpha: 0.3),
                   onChanged: (value) {
+                    aud.playSound("click");
                     setState(() {
                       tolerance = value;
                     });
@@ -471,6 +485,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
             foregroundColor: colorScheme.primary,
           ),
           onPressed: () {
+            aud.playSound("click");
             widget.onCancel();
             Navigator.of(context).pop();
           },
@@ -484,6 +499,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
             foregroundColor: colorScheme.primary,
           ),
           onPressed: () {
+            aud.playSound("click");
             widget.onApply(selectedArea, colorToReplace, newColor, tolerance);
             Navigator.of(context).pop();
           },

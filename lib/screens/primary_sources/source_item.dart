@@ -2,6 +2,7 @@ import 'package:float_column/float_column.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
@@ -16,6 +17,7 @@ class SourceItemWidget extends StatefulWidget {
 
 class _SourceItemWidgetState extends State<SourceItemWidget> {
   late bool _showMore;
+  final aud = AudioController();
 
   @override
   void initState() {
@@ -110,6 +112,7 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                       ?.copyWith(color: colorScheme.primary),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
+                      aud.playSound("click");
                       setState(() {
                         _showMore = !_showMore;
                         widget.source.showMore = _showMore;

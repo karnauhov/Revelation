@@ -4,6 +4,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/screens/about/icon_url.dart';
 import '../../common_widgets/icon_link_item.dart';
@@ -22,6 +23,7 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen> {
   final ScrollController _scrollController = ScrollController();
+  final aud = AudioController();
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
 
@@ -287,7 +289,10 @@ class _AboutScreenState extends State<AboutScreen> {
 
     return ExpansionTile(
       initiallyExpanded: viewModel.isAcknowledgementsExpanded,
-      onExpansionChanged: (expanded) => viewModel.toggleAcknowledgements(),
+      onExpansionChanged: (expanded) {
+        aud.playSound("click");
+        viewModel.toggleAcknowledgements();
+      },
       tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
       minTileHeight: 30,
       title: Row(
@@ -339,6 +344,7 @@ class _AboutScreenState extends State<AboutScreen> {
       tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
       initiallyExpanded: viewModel.isChangelogExpanded,
       onExpansionChanged: (expanded) {
+        aud.playSound("click");
         viewModel.toggleChangelogExpanded();
       },
       title: Row(

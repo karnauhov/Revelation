@@ -27,14 +27,16 @@ class AppRouter {
     navigatorKey: navigatorKey,
     routes: [
       GoRoute(
-        path: '/',
-        name: 'main',
-        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
-          context: context,
-          state: state,
-          child: MainScreen(),
-        ),
-      ),
+          path: '/',
+          name: 'main',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            aud.playSound("page");
+            return buildPageWithDefaultTransition<void>(
+              context: context,
+              state: state,
+              child: MainScreen(),
+            );
+          }),
       GoRoute(
         path: '/topic',
         name: 'topic',

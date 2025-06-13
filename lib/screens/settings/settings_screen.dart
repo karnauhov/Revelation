@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/theme.dart';
 import 'package:revelation/utils/common.dart';
@@ -14,6 +15,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  final aud = AudioController();
+
   @override
   Widget build(BuildContext context) {
     final settingsViewModel = Provider.of<SettingsViewModel>(context);
@@ -68,6 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: colorScheme.primary,
               ),
               onTap: () async {
+                aud.playSound("click");
                 final selected = await _showLanguageDialog(
                   context,
                   settingsViewModel.settings.selectedLanguage,
@@ -102,6 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: colorScheme.primary,
               ),
               onTap: () async {
+                aud.playSound("click");
                 final selected = await _showThemeDialog(
                   context,
                   settingsViewModel.settings.selectedTheme,
@@ -136,6 +141,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: colorScheme.primary,
               ),
               onTap: () async {
+                aud.playSound("click");
                 final selected = await _showFontSizeDialog(
                   context,
                   settingsViewModel.settings.selectedFontSize,
@@ -172,7 +178,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               trailing: Switch(
                 value: settingsViewModel.settings.soundEnabled,
-                onChanged: (value) => settingsViewModel.setSoundEnabled(value),
+                onChanged: (value) {
+                  if (!value) {
+                    aud.playSound("click");
+                  }
+                  settingsViewModel.setSoundEnabled(value);
+                  if (value) {
+                    aud.playSound("click");
+                  }
+                },
               ),
             ),
           ),
@@ -201,7 +215,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 final name = AppConstants.languages[code]!;
                 final isSelected = code == currentLanguage;
                 return GestureDetector(
-                  onTap: () => Navigator.pop(context, code),
+                  onTap: () async {
+                    aud.playSound("click");
+                    Navigator.pop(context, code);
+                  },
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: Container(
@@ -249,7 +266,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final isSelected = key == current;
               final itemColorScheme = MaterialTheme.getColorTheme(key);
               return GestureDetector(
-                onTap: () => Navigator.pop(context, key),
+                onTap: () async {
+                  aud.playSound("click");
+                  Navigator.pop(context, key);
+                },
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: Container(
@@ -298,7 +318,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final isSelected = key == current;
               final textTheme = MaterialTheme.getTextTheme(context, key);
               return GestureDetector(
-                onTap: () => Navigator.pop(context, key),
+                onTap: () async {
+                  aud.playSound("click");
+                  Navigator.pop(context, key);
+                },
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: Container(

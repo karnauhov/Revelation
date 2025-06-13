@@ -19,6 +19,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final ScrollController _scrollController = ScrollController();
+  final aud = AudioController();
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
 
@@ -115,6 +116,11 @@ class _MainScreenState extends State<MainScreen> {
                   foregroundColor: colorScheme.primary),
               drawer: Drawer(
                   backgroundColor: colorScheme.surface, child: DrawerContent()),
+              onDrawerChanged: (isOpened) {
+                if (isOpened) {
+                  aud.playSound("stone");
+                }
+              },
               body: SizedBox.expand(
                 child: content,
               ),

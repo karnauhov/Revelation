@@ -168,4 +168,11 @@
         <officialSite>https://freesound.org/s/71469</officialSite>
         <licenseLink>https://creativecommons.org/licenses/by/3.0</licenseLink>
     </library>
+    <library>
+        <name>Sound 'Toggle Switch.wav' by andrewweathers</name>
+        <idIcon>file_sound</idIcon>
+        <license>Attribution NonCommercial 3.0</license>
+        <officialSite>https://freesound.org/s/25431</officialSite>
+        <licenseLink>https://creativecommons.org/licenses/by-nc/3.0</licenseLink>
+    </library>
 </licenses>
