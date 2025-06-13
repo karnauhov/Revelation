@@ -8,7 +8,8 @@ import 'drawer_item.dart';
 import '../../utils/common.dart';
 
 class DrawerContent extends StatefulWidget {
-  const DrawerContent({super.key});
+  final VoidCallback onItemClicked;
+  const DrawerContent({super.key, required this.onItemClicked});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -78,6 +79,7 @@ class _DrawerContentState extends State<DrawerContent> {
                       text:
                           AppLocalizations.of(context)!.primary_sources_screen,
                       onClick: () {
+                        widget.onItemClicked();
                         Navigator.pop(context);
                         context.push('/primary_sources');
                       },
@@ -87,6 +89,7 @@ class _DrawerContentState extends State<DrawerContent> {
                       assetPath: 'assets/images/UI/settings.svg',
                       text: AppLocalizations.of(context)!.settings_screen,
                       onClick: () {
+                        widget.onItemClicked();
                         Navigator.pop(context);
                         context.push('/settings');
                       },
@@ -95,6 +98,7 @@ class _DrawerContentState extends State<DrawerContent> {
                       assetPath: 'assets/images/UI/about.svg',
                       text: AppLocalizations.of(context)!.about_screen,
                       onClick: () {
+                        widget.onItemClicked();
                         Navigator.pop(context);
                         context.push('/about');
                       },
@@ -104,6 +108,7 @@ class _DrawerContentState extends State<DrawerContent> {
                         assetPath: 'assets/images/UI/get_app.svg',
                         text: AppLocalizations.of(context)!.download,
                         onClick: () {
+                          widget.onItemClicked();
                           Navigator.pop(context);
                           context.push('/download');
                         },
@@ -121,6 +126,7 @@ class _DrawerContentState extends State<DrawerContent> {
                 assetPath: 'assets/images/UI/close.svg',
                 text: AppLocalizations.of(context)!.close_app,
                 onClick: () {
+                  widget.onItemClicked();
                   SystemNavigator.pop();
                   if (isDesktop()) {
                     windowManager.close();

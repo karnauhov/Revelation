@@ -22,6 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   final aud = AudioController();
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
+  bool _closedByItem = false;
 
   @override
   void initState() {
@@ -115,10 +116,20 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   foregroundColor: colorScheme.primary),
               drawer: Drawer(
-                  backgroundColor: colorScheme.surface, child: DrawerContent()),
+                  backgroundColor: colorScheme.surface,
+                  child: DrawerContent(onItemClicked: () {
+                    setState(() {
+                      _closedByItem = true;
+                    });
+                  })),
               onDrawerChanged: (isOpened) {
                 if (isOpened) {
                   aud.playSound("stone");
+                } else {
+                  if (!_closedByItem) {
+                    aud.playSound("stone");
+                  }
+                  _closedByItem = false;
                 }
               },
               body: SizedBox.expand(
