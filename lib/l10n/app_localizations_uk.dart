@@ -153,6 +153,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get off => 'Вимкнено';
 
   @override
+  String get package => 'Пакет';
+
+  @override
+  String get font => 'Шрифт';
+
+  @override
   String get wikipedia => 'Вікіпедія';
 
   @override

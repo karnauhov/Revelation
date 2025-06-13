@@ -36,140 +36,140 @@
         <licenseLink>https://www.svgrepo.com/page/licensing</licenseLink>
     </library>
     <library>
-        <name>Package 'window_manager'</name>
+        <name>@Package 'window_manager'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/window_manager</officialSite>
         <licenseLink>https://pub.dev/packages/window_manager/license</licenseLink>
     </library>
     <library>
-        <name>Package 'flutter_cache_manager'</name>
+        <name>@Package 'flutter_cache_manager'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/flutter_cache_manager</officialSite>
         <licenseLink>https://pub.dev/packages/flutter_cache_manager/license</licenseLink>
     </library>
     <library>
-        <name>Package 'get_it'</name>
+        <name>@Package 'get_it'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/get_it</officialSite>
         <licenseLink>https://pub.dev/packages/get_it/license</licenseLink>
     </library>
     <library>
-        <name>Package 'provider'</name>
+        <name>@Package 'provider'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/provider</officialSite>
         <licenseLink>https://pub.dev/packages/provider/license</licenseLink>
     </library>
     <library>
-        <name>Package 'logger'</name>
+        <name>@Package 'logger'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/logger</officialSite>
         <licenseLink>https://pub.dev/packages/logger/license</licenseLink>
     </library>
     <library>
-        <name>Package 'package_info_plus'</name>
+        <name>@Package 'package_info_plus'</name>
         <idIcon></idIcon>
         <license>BSD-3-Clause</license>
         <officialSite>https://pub.dev/packages/package_info_plus</officialSite>
         <licenseLink>https://pub.dev/packages/package_info_plus/license</licenseLink>
     </library>
     <library>
-        <name>Package 'xml'</name>
+        <name>@Package 'xml'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/xml</officialSite>
         <licenseLink>https://pub.dev/packages/xml/license</licenseLink>
     </library>
     <library>
-        <name>Package 'float_column'</name>
+        <name>@Package 'float_column'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/float_column</officialSite>
         <licenseLink>https://pub.dev/packages/float_column/license</licenseLink>
     </library>
     <library>
-        <name>Package 'styled_text'</name>
+        <name>@Package 'styled_text'</name>
         <idIcon></idIcon>
         <license>BSD-3-Clause</license>
         <officialSite>https://pub.dev/packages/styled_text</officialSite>
         <licenseLink>https://pub.dev/packages/styled_text/license</licenseLink>
     </library>
     <library>
-        <name>Package 'supabase_flutter'</name>
+        <name>@Package 'supabase_flutter'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/supabase_flutter</officialSite>
         <licenseLink>https://pub.dev/packages/supabase_flutter/license</licenseLink>
     </library>
     <library>
-        <name>Package 'flutter_colorpicker'</name>
+        <name>@Package 'flutter_colorpicker'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/flutter_colorpicker</officialSite>
         <licenseLink>https://pub.dev/packages/flutter_colorpicker/license</licenseLink>
     </library>
     <library>
-        <name>Package 'vector_math'</name>
+        <name>@Package 'vector_math'</name>
         <idIcon></idIcon>
         <license>Zlib, BSD-3-Clause</license>
         <officialSite>https://pub.dev/packages/vector_math</officialSite>
         <licenseLink>https://pub.dev/packages/vector_math/license</licenseLink>
     </library>
     <library>
-        <name>Package 'image'</name>
+        <name>@Package 'image'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/image</officialSite>
         <licenseLink>https://pub.dev/packages/image/license</licenseLink>
     </library>
     <library>
-        <name>Package 'audioplayers'</name>
+        <name>@Package 'audioplayers'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/audioplayers</officialSite>
         <licenseLink>https://pub.dev/packages/audioplayers/license</licenseLink>
     </library>
     <library>
-        <name>Package 'flutter_launcher_icons'</name>
+        <name>@Package 'flutter_launcher_icons'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/flutter_launcher_icons</officialSite>
         <licenseLink>https://pub.dev/packages/flutter_launcher_icons/license</licenseLink>
     </library>
     <library>
-        <name>Package 'msix'</name>
+        <name>@Package 'msix'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/msix</officialSite>
         <licenseLink>https://pub.dev/packages/msix/license</licenseLink>
     </library>
     <library>
-        <name>Font 'Arimo'</name>
+        <name>@Font 'Arimo'</name>
         <idIcon>file_font</idIcon>
         <license>Apache License</license>
         <officialSite>https://fonts.google.com/specimen/Arimo</officialSite>
         <licenseLink>https://fonts.google.com/specimen/Arimo/license</licenseLink>
     </library>
     <library>
-        <name>Sound 'paper' by 1bob</name>
+        <name>@Sound 'paper' by 1bob</name>
         <idIcon>file_sound</idIcon>
         <license>Creative Commons 0</license>
         <officialSite>https://freesound.org/s/651514</officialSite>
         <licenseLink>https://creativecommons.org/publicdomain/zero/1.0</licenseLink>
     </library>
     <library>
-        <name>Sound 'blink 4 damped.wav' by natharra</name>
+        <name>@Sound 'blink 4 damped.wav' by natharra</name>
         <idIcon>file_sound</idIcon>
         <license>Attribution 3.0</license>
         <officialSite>https://freesound.org/s/71469</officialSite>
         <licenseLink>https://creativecommons.org/licenses/by/3.0</licenseLink>
     </library>
     <library>
-        <name>Sound 'Toggle Switch.wav' by andrewweathers</name>
+        <name>@Sound 'Toggle Switch.wav' by andrewweathers</name>
         <idIcon>file_sound</idIcon>
         <license>Attribution NonCommercial 3.0</license>
         <officialSite>https://freesound.org/s/25431</officialSite>

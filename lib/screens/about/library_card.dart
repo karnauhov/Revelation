@@ -13,12 +13,11 @@ class LibraryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     const iconWidth = 48.0;
     const iconHeight = 48.0;
-
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       color: colorScheme.surfaceContainer,
       child: ListTile(
         visualDensity: VisualDensity.compact,
@@ -27,36 +26,10 @@ class LibraryCard extends StatelessWidget {
         leading: SizedBox(
           width: iconWidth,
           height: iconHeight,
-          child: library.idIcon.isNotEmpty
-              ? (library.idIcon.startsWith("lib")
-                  ? SvgPicture.asset(
-                      "assets/images/UI/${library.idIcon}.svg",
-                      width: iconWidth,
-                      height: iconHeight,
-                      placeholderBuilder: (BuildContext context) =>
-                          CircularProgressIndicator(),
-                    )
-                  : SvgPicture.asset(
-                      "assets/images/UI/${library.idIcon}.svg",
-                      width: iconWidth,
-                      height: iconHeight,
-                      placeholderBuilder: (BuildContext context) =>
-                          CircularProgressIndicator(),
-                      colorFilter: ColorFilter.mode(
-                          colorScheme.primary, BlendMode.srcIn),
-                    ))
-              : SvgPicture.asset(
-                  "assets/images/UI/code.svg",
-                  width: iconWidth,
-                  height: iconHeight,
-                  placeholderBuilder: (BuildContext context) =>
-                      CircularProgressIndicator(),
-                  colorFilter:
-                      ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
-                ),
+          child: _buildIcon(colorScheme, iconWidth, iconHeight),
         ),
         title: Text(
-          library.name,
+          _getLocalizedName(context, library.name),
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: colorScheme.primary,
@@ -67,11 +40,59 @@ class LibraryCard extends StatelessWidget {
           child: Text(
             "${AppLocalizations.of(context)!.license} (${library.license})",
             style: TextStyle(
-                color: colorScheme.primary,
-                decoration: TextDecoration.underline,
-                decorationColor: colorScheme.primary),
+              color: colorScheme.primary,
+              decoration: TextDecoration.underline,
+              decorationColor: colorScheme.primary,
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  String _getLocalizedName(BuildContext context, String name) {
+    final loc = AppLocalizations.of(context)!;
+    return name
+        .replaceAll('@Package', loc.package)
+        .replaceAll('@Font', loc.font)
+        .replaceAll('@Sound', loc.sound);
+  }
+
+  Widget _buildIcon(ColorScheme colorScheme, double width, double height) {
+    if (library.idIcon.isEmpty) {
+      return SvgPicture.asset(
+        'assets/images/UI/code.svg',
+        width: width,
+        height: height,
+        placeholderBuilder: (BuildContext context) =>
+            const CircularProgressIndicator(),
+        colorFilter: ColorFilter.mode(
+          colorScheme.primary,
+          BlendMode.srcIn,
+        ),
+      );
+    }
+
+    final assetPath = 'assets/images/UI/${library.idIcon}.svg';
+    placeholder(BuildContext context) => const CircularProgressIndicator();
+
+    if (library.idIcon.startsWith('lib')) {
+      return SvgPicture.asset(
+        assetPath,
+        width: width,
+        height: height,
+        placeholderBuilder: placeholder,
+      );
+    }
+
+    return SvgPicture.asset(
+      assetPath,
+      width: width,
+      height: height,
+      placeholderBuilder: placeholder,
+      colorFilter: ColorFilter.mode(
+        colorScheme.primary,
+        BlendMode.srcIn,
       ),
     );
   }

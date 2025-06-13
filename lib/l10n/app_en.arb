@@ -48,6 +48,8 @@
   "sound": "Sound",
   "on": "On",
   "off": "Off",
+  "package": "Package",
+  "font": "Font",
   "wikipedia": "Wikipedia",
   "intf": "INTF",
   "image_source": "Image source",

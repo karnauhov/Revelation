@@ -153,6 +153,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get off => 'Выключен';
 
   @override
+  String get package => 'Пакет';
+
+  @override
+  String get font => 'Шрифт';
+
+  @override
   String get wikipedia => 'Википедия';
 
   @override

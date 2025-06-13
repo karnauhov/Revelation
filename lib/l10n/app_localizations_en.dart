@@ -153,6 +153,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get off => 'Off';
 
   @override
+  String get package => 'Package';
+
+  @override
+  String get font => 'Font';
+
+  @override
   String get wikipedia => 'Wikipedia';
 
   @override

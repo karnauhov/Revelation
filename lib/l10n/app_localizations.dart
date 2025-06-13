@@ -385,6 +385,18 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get off;
 
+  /// No description provided for @package.
+  ///
+  /// In en, this message translates to:
+  /// **'Package'**
+  String get package;
+
+  /// No description provided for @font.
+  ///
+  /// In en, this message translates to:
+  /// **'Font'**
+  String get font;
+
   /// No description provided for @wikipedia.
   ///
   /// In en, this message translates to:
