@@ -1,9 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="73" height="22" viewBox="0 0 73 22">
-  <defs>
-    <clipPath id="clip-logo_svg">
-      <rect width="73" height="22"/>
-    </clipPath>
-  </defs>
   <g id="logo_svg" clip-path="url(#clip-logo_svg)">
     <g id="logo_svg-2" data-name="logo_svg" transform="translate(0.527 2.437)">
       <path id="Path_8" data-name="Path 8" d="M2.066,0H16.751a2.066,2.066,0,0,1,2.066,2.066V19.934A2.066,2.066,0,0,1,16.751,22H2.066A2.066,2.066,0,0,1,0,19.934V2.066A2.066,2.066,0,0,1,2.066,0Z" transform="translate(52.531 -2.437)" fill="#6b9bd2"/>
