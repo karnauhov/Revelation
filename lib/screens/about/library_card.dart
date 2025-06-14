@@ -53,9 +53,13 @@ class LibraryCard extends StatelessWidget {
   String _getLocalizedName(BuildContext context, String name) {
     final loc = AppLocalizations.of(context)!;
     return name
+        .replaceAll('@Vectors', loc.vectors)
+        .replaceAll('@Icons', loc.icons)
         .replaceAll('@Package', loc.package)
         .replaceAll('@Font', loc.font)
-        .replaceAll('@Sound', loc.sound);
+        .replaceAll('@Sound', loc.sound)
+        .replaceAll('@and', loc.and)
+        .replaceAll('@by', loc.by);
   }
 
   Widget _buildIcon(ColorScheme colorScheme, double width, double height) {

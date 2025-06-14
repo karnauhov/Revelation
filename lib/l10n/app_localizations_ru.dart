@@ -153,6 +153,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get off => 'Выключен';
 
   @override
+  String get vectors => 'Векторы';
+
+  @override
+  String get icons => 'Иконки';
+
+  @override
+  String get and => 'и';
+
+  @override
+  String get by => 'от';
+
+  @override
   String get package => 'Пакет';
 
   @override

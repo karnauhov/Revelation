@@ -153,6 +153,18 @@ class AppLocalizationsUk extends AppLocalizations {
   String get off => 'Вимкнено';
 
   @override
+  String get vectors => 'Вектори';
+
+  @override
+  String get icons => 'Іконки';
+
+  @override
+  String get and => 'і';
+
+  @override
+  String get by => 'від';
+
+  @override
   String get package => 'Пакет';
 
   @override

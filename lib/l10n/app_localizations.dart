@@ -385,6 +385,30 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get off;
 
+  /// No description provided for @vectors.
+  ///
+  /// In en, this message translates to:
+  /// **'Vectors'**
+  String get vectors;
+
+  /// No description provided for @icons.
+  ///
+  /// In en, this message translates to:
+  /// **'Icons'**
+  String get icons;
+
+  /// No description provided for @and.
+  ///
+  /// In en, this message translates to:
+  /// **'and'**
+  String get and;
+
+  /// No description provided for @by.
+  ///
+  /// In en, this message translates to:
+  /// **'by'**
+  String get by;
+
   /// No description provided for @package.
   ///
   /// In en, this message translates to:

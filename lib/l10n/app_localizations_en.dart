@@ -153,6 +153,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get off => 'Off';
 
   @override
+  String get vectors => 'Vectors';
+
+  @override
+  String get icons => 'Icons';
+
+  @override
+  String get and => 'and';
+
+  @override
+  String get by => 'by';
+
+  @override
   String get package => 'Package';
 
   @override

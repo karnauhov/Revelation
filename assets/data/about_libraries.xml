@@ -29,7 +29,7 @@
         <licenseLink>https://supabase.com/terms</licenseLink>
     </library>
     <library>
-        <name>Vectors and icons by SVG Repo</name>
+        <name>@Vectors @and @Icons @by SVG Repo</name>
         <idIcon>lib_svgrepo</idIcon>
         <license>SVG Repo License</license>
         <officialSite>https://www.svgrepo.com</officialSite>
@@ -155,21 +155,21 @@
         <licenseLink>https://fonts.google.com/specimen/Arimo/license</licenseLink>
     </library>
     <library>
-        <name>@Sound 'paper' by 1bob</name>
+        <name>@Sound 'paper' @by 1bob</name>
         <idIcon>file_sound</idIcon>
         <license>Creative Commons 0</license>
         <officialSite>https://freesound.org/s/651514</officialSite>
         <licenseLink>https://creativecommons.org/publicdomain/zero/1.0</licenseLink>
     </library>
     <library>
-        <name>@Sound 'blink 4 damped.wav' by natharra</name>
+        <name>@Sound 'blink 4 damped.wav' @by natharra</name>
         <idIcon>file_sound</idIcon>
         <license>Attribution 3.0</license>
         <officialSite>https://freesound.org/s/71469</officialSite>
         <licenseLink>https://creativecommons.org/licenses/by/3.0</licenseLink>
     </library>
     <library>
-        <name>@Sound 'Toggle Switch.wav' by andrewweathers</name>
+        <name>@Sound 'Toggle Switch.wav' @by andrewweathers</name>
         <idIcon>file_sound</idIcon>
         <license>Attribution NonCommercial 3.0</license>
         <officialSite>https://freesound.org/s/25431</officialSite>
