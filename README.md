@@ -13,4 +13,4 @@ Windows: [Microsoft Store](https://apps.microsoft.com/detail/9NXHRR2P4087), [Ins
 [Roadmap](./ROADMAP.md)  
 [Privacy Policy](./assets/data/topics/privacy_policy_en.md) ([uk](./assets/data/topics/privacy_policy_uk.md), [ru](./assets/data/topics/privacy_policy_ru.md))  
 [License](./assets/data/topics/license_en.md) ([uk](./assets/data/topics/license_uk.md), [ru](./assets/data/topics/license_ru.md))  
-[Notice](./NOTICE.md)  
+[Notice](./NOTICE)  
