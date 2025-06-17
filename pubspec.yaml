@@ -22,7 +22,7 @@ dependencies:
 
   # dart.dev packages
   web: ^1.1.0
-  intl: ^0.20.2
+  intl: ^0.19.0
 
   # 3d party packages
   window_manager: ^0.4.3
