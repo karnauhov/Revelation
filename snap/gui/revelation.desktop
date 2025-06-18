@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0.3.92
+Type=Application
+Name=Revelation
+Comment=Revelation Study app
+Exec=/home/oleh/Projects/Revelation/build/linux/x64/debug/bundle/revelation
+Icon=/home/oleh/Projects/Revelation/build/linux/x64/debug/bundle/data/flutter_assets/assets/images/UI/app_icon_linux.png
+Terminal=false
+SingleMainWindow=true;
+Categories=Education;Spirituality;
