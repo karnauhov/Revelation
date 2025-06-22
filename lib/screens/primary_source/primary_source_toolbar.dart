@@ -176,7 +176,8 @@ class PrimarySourceToolbar extends StatelessWidget {
         ),
         tooltip: AppLocalizations.of(context)!.toggle_negative,
         onPressed: viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null
+                viewModel.selectedPage != null &&
+                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
                 aud.playSound("click");
                 viewModel.toggleNegative();
@@ -195,7 +196,8 @@ class PrimarySourceToolbar extends StatelessWidget {
         tooltip: AppLocalizations.of(context)!.toggle_monochrome,
         onPressed: viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null &&
-                !viewModel.primarySource.isMonochrome
+                !viewModel.primarySource.isMonochrome &&
+                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
                 aud.playSound("click");
                 viewModel.toggleMonochrome();
@@ -214,7 +216,8 @@ class PrimarySourceToolbar extends StatelessWidget {
         ),
         tooltip: AppLocalizations.of(context)!.brightness_contrast,
         onPressed: viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null
+                viewModel.selectedPage != null &&
+                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
                 aud.playSound("click");
                 _showBrightnessContrastDialog();
@@ -233,7 +236,8 @@ class PrimarySourceToolbar extends StatelessWidget {
         ),
         tooltip: AppLocalizations.of(context)!.color_replacement,
         onPressed: viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null
+                viewModel.selectedPage != null &&
+                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
                 aud.playSound("click");
                 _showReplaceColorDialog();
@@ -245,7 +249,8 @@ class PrimarySourceToolbar extends StatelessWidget {
         color: colorScheme.primary,
         tooltip: AppLocalizations.of(context)!.page_settings_reset,
         onPressed: viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null
+                viewModel.selectedPage != null &&
+                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
                 aud.playSound("click");
                 viewModel.removePageSettings();
@@ -403,7 +408,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                             : const EdgeInsets.symmetric(horizontal: 12.0),
                         value: 'toggle_negative',
                         enabled: viewModel.selectedPage != null &&
-                            viewModel.primarySource.permissionsReceived,
+                            viewModel.primarySource.permissionsReceived &&
+                            viewModel.localPageLoaded[
+                                    viewModel.selectedPage!.image] ==
+                                true,
                         child: Builder(
                           builder: (context) {
                             final isEnabled = viewModel.selectedPage != null &&
@@ -442,7 +450,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                         value: 'toggle_monochrome',
                         enabled: viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived &&
-                            !viewModel.primarySource.isMonochrome,
+                            !viewModel.primarySource.isMonochrome &&
+                            viewModel.localPageLoaded[
+                                    viewModel.selectedPage!.image] ==
+                                true,
                         child: Builder(
                           builder: (context) {
                             final isEnabled = viewModel.selectedPage != null &&
@@ -483,7 +494,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                             : const EdgeInsets.symmetric(horizontal: 12.0),
                         value: 'brightness_contrast',
                         enabled: viewModel.selectedPage != null &&
-                            viewModel.primarySource.permissionsReceived,
+                            viewModel.primarySource.permissionsReceived &&
+                            viewModel.localPageLoaded[
+                                    viewModel.selectedPage!.image] ==
+                                true,
                         child: Builder(
                           builder: (context) {
                             final isEnabled = viewModel.selectedPage != null &&
@@ -525,7 +539,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                             : const EdgeInsets.symmetric(horizontal: 12.0),
                         value: 'replace_color',
                         enabled: viewModel.selectedPage != null &&
-                            viewModel.primarySource.permissionsReceived,
+                            viewModel.primarySource.permissionsReceived &&
+                            viewModel.localPageLoaded[
+                                    viewModel.selectedPage!.image] ==
+                                true,
                         child: Builder(
                           builder: (context) {
                             final isEnabled = viewModel.selectedPage != null &&
@@ -563,7 +580,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                       PopupMenuItem(
                         value: 'reset_page',
                         enabled: viewModel.selectedPage != null &&
-                            viewModel.primarySource.permissionsReceived,
+                            viewModel.primarySource.permissionsReceived &&
+                            viewModel.localPageLoaded[
+                                    viewModel.selectedPage!.image] ==
+                                true,
                         child: Builder(
                           builder: (context) {
                             final isEnabled = viewModel.selectedPage != null &&

@@ -34,6 +34,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get license => 'Лицензия';
 
   @override
+  String get support_us => 'Поддержите нас';
+
+  @override
   String get license_description =>
       'Условия использования, воспроизведения и распространения программного обеспечения под лицензией Apache 2.0';
 

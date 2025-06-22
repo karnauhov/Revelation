@@ -2,6 +2,7 @@ class AppConstants {
   static const String author = "Karnaukhov Oleh";
   static const String supportEmail = "karnauhov.oleg@gmail.com";
   static const String projectUrl = "https://github.com/karnauhov/Revelation";
+  static const String joinPartUrl = "/demo/@loc.html#join";
   static const String latestReleaseUrl =
       "https://github.com/karnauhov/Revelation/releases/latest";
   static const String websiteUrl = "https://www.revelation.website";

@@ -148,6 +148,12 @@ abstract class AppLocalizations {
   /// **'License'**
   String get license;
 
+  /// No description provided for @support_us.
+  ///
+  /// In en, this message translates to:
+  /// **'Support us'**
+  String get support_us;
+
   /// No description provided for @license_description.
   ///
   /// In en, this message translates to:

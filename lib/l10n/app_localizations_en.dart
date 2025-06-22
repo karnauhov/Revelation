@@ -34,6 +34,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get license => 'License';
 
   @override
+  String get support_us => 'Support us';
+
+  @override
   String get license_description =>
       'The terms for using, reproducing, and distributing software under the Apache 2.0 license';
 

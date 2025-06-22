@@ -34,6 +34,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get license => 'Ліцензія';
 
   @override
+  String get support_us => 'Підтримайте нас';
+
+  @override
   String get license_description =>
       'Умови використання, відтворення та поширення програмного забезпечення під ліцензією Apache 2.0';
 

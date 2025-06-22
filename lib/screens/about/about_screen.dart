@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/screens/about/icon_url.dart';
+import 'package:revelation/viewmodels/settings_view_model.dart';
 import '../../common_widgets/icon_link_item.dart';
 import 'library_list.dart';
 import 'institution_list.dart';
@@ -37,6 +38,8 @@ class _AboutScreenState extends State<AboutScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final settingsViewModel = context.watch<SettingsViewModel>();
+    final currentLocale = settingsViewModel.settings.selectedLanguage;
 
     return ChangeNotifierProvider(
       create: (_) => AboutViewModel(),
@@ -78,7 +81,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   _buildContactsLinks(context),
                   Divider(height: 1, color: colorScheme.outlineVariant),
                   // Legal Links
-                  _buildLegalLinks(context),
+                  _buildLegalLinks(context, currentLocale),
                   if (!viewModel.isAcknowledgementsExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Acknowledgments
@@ -227,7 +230,7 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  Widget _buildLegalLinks(BuildContext context) {
+  Widget _buildLegalLinks(BuildContext context, String currentLocale) {
     return Column(
       children: [
         IconLinkItem(
@@ -246,13 +249,19 @@ class _AboutScreenState extends State<AboutScreen> {
           }),
         ),
         IconLinkItem(
-          iconPath: "assets/images/UI/agreement.svg",
+          iconPath: "assets/images/UI/license.svg",
           text: AppLocalizations.of(context)!.license,
           onTap: () => context.push('/topic', extra: {
             'name': AppLocalizations.of(context)!.license,
             'description': AppLocalizations.of(context)!.license_description,
             'file': "license"
           }),
+        ),
+        IconLinkItem(
+          iconPath: "assets/images/UI/support_us.svg",
+          text: AppLocalizations.of(context)!.support_us,
+          onTap: () => launchLink(AppConstants.websiteUrl +
+              AppConstants.joinPartUrl.replaceFirst('@loc', currentLocale)),
         ),
       ],
     );
