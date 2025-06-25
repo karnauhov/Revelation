@@ -134,11 +134,11 @@
         <licenseLink>https://pub.dev/packages/audioplayers/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'icons_launcher'</name>
+        <name>@Package 'flutter_launcher_icons'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
-        <officialSite>https://pub.dev/packages/icons_launcher</officialSite>
-        <licenseLink>https://pub.dev/packages/icons_launcher/license</licenseLink>
+        <officialSite>https://pub.dev/packages/flutter_launcher_icons</officialSite>
+        <licenseLink>https://pub.dev/packages/flutter_launcher_icons/license</licenseLink>
     </library>
     <library>
         <name>@Package 'msix'</name>
