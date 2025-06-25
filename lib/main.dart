@@ -28,7 +28,10 @@ void main() async {
   if (isDesktop()) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
-        size: Size(800, 630), minimumSize: Size(800, 630), center: true);
+      size: Size(800, 630),
+      minimumSize: Size(800, 630),
+      center: true,
+    );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
       await windowManager.focus();
@@ -52,9 +55,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<MainViewModel>(
-          create: (_) => MainViewModel(),
-        ),
+        ChangeNotifierProvider<MainViewModel>(create: (_) => MainViewModel()),
         ChangeNotifierProvider<SettingsViewModel>(
           create: (_) => settingsViewModel,
         ),
@@ -74,10 +75,13 @@ class RevelationApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final settingsViewModel = context.watch<SettingsViewModel>();
     final currentLocale = Locale(settingsViewModel.settings.selectedLanguage);
-    final colorScheme =
-        MaterialTheme.getColorTheme(settingsViewModel.settings.selectedTheme);
+    final colorScheme = MaterialTheme.getColorTheme(
+      settingsViewModel.settings.selectedTheme,
+    );
     final textTheme = MaterialTheme.getTextTheme(
-        context, settingsViewModel.settings.selectedFontSize);
+      context,
+      settingsViewModel.settings.selectedFontSize,
+    );
     final appRouter = AppRouter();
     final materialApp = MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -92,11 +96,7 @@ class RevelationApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('uk'),
-        Locale('ru'),
-      ],
+      supportedLocales: const [Locale('en'), Locale('uk'), Locale('ru')],
       onGenerateTitle: onGenerateTitle,
       theme: ThemeData(
         fontFamily: 'Arimo',
