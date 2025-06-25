@@ -6,8 +6,7 @@
       "request": "launch",
       "type": "dart",
       "args": [
-        "--dart-define=SUPABASE_URL=${SUPABASE_URL}",
-        "--dart-define=SUPABASE_KEY=${SUPABASE_KEY}"
+        "--dart-define-from-file=api-keys.json"
       ]
     },
     {
@@ -16,8 +15,7 @@
       "type": "dart",
       "flutterMode": "profile",
       "args": [
-        "--dart-define=SUPABASE_URL=${SUPABASE_URL}",
-        "--dart-define=SUPABASE_KEY=${SUPABASE_KEY}"
+        "--dart-define-from-file=api-keys.json"
       ]
     },
     {
@@ -26,8 +24,7 @@
       "type": "dart",
       "flutterMode": "release",
       "args": [
-        "--dart-define=SUPABASE_URL=${SUPABASE_URL}",
-        "--dart-define=SUPABASE_KEY=${SUPABASE_KEY}"
+        "--dart-define-from-file=api-keys.json"
       ]
     }
   ]

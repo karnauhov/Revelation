@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 *.env
+api-keys.json
 .DS_Store
 .atom/
 .build/
