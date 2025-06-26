@@ -1,0 +1,48 @@
+name: revelation
+title: Revelation
+version: '1.0.3.95'
+license: Apache-2.0
+summary: Revelation Study app.
+description: This program has been created to help all Christians, regardless of denomination, better understand this book. This task may seem difficult – nearly impossible, considering the differences in doctrines, cultures, customs, generations, and even Bible translations. In order to overcome all these differences accumulated over 2,000 years, let us try to get as close as possible to the time when the book was written. To this end, we will begin by reading a text as close as possible to the original. As primary sources for the text, we will choose all the papyri and uncials containing the text of the Book of Revelation in the original language. Papyri are a type of ancient manuscript written on a material of the same name, and uncials are manuscripts written in large, rounded letters. There are actually few of them – only [7 papyri and 12 uncials](https://en.wikipedia.org/wiki/Biblical_manuscript). I believe that God has governed which sources of the Book of Revelation, and to what extent, have been preserved to bear witness to His Revelation.
+type: app
+
+base: core24
+grade: stable
+confinement: strict
+
+source-code: https://github.com/karnauhov/Revelation
+contact: karnauhov.oleg@gmail.com
+website: https://www.revelation.website
+issues: karnauhov.oleg@gmail.com
+donation:
+  - https://www.revelation.website/demo/en.html#join
+  - https://www.gofundme.com/f/open-source-cross-platform-revelation-study-app
+  - https://waygiver.com/campaigns/3333
+  - https://www.givesendgo.com/revelation-website
+
+apps:
+  revelation:
+    command: bin/revelation
+    plugs:
+      - desktop
+      - desktop-legacy
+      - x11
+      - wayland
+      - network
+      - home
+
+parts:
+  revelation:
+    plugin: dump
+    source: build/linux/x64/release/bundle/
+    organize:
+      revelation: bin/revelation
+    stage-packages:
+      - libglib2.0-0
+      - libgtk-3-0
+      - libstdc++6
+      - libpulse0
+      - libgstreamer-plugins-base1.0-0
+      - gstreamer1.0-plugins-base
+      - gstreamer1.0-plugins-good
+      - gstreamer1.0-plugins-ugly
