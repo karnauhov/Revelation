@@ -25,13 +25,16 @@ class _DownloadScreenState extends State<DownloadScreen> {
           children: [
             Text(
               AppLocalizations.of(context)!.download,
-              style: theme.textTheme.headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold, height: 0.9),
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                height: 0.9,
+              ),
             ),
             Text(
               AppLocalizations.of(context)!.download_header,
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(fontWeight: FontWeight.normal),
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ],
         ),
@@ -44,16 +47,13 @@ class _DownloadScreenState extends State<DownloadScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildAndroidLinks(context),
-              Divider(
-                height: 1,
-                color: colorScheme.outlineVariant,
-              ),
+              Divider(height: 1, color: colorScheme.outlineVariant),
               const SizedBox(height: 4),
               _buildWindowsLinks(context),
-              Divider(
-                height: 1,
-                color: colorScheme.outlineVariant,
-              ),
+              Divider(height: 1, color: colorScheme.outlineVariant),
+              const SizedBox(height: 4),
+              _buildLinuxLinks(context),
+              Divider(height: 1, color: colorScheme.outlineVariant),
             ],
           ),
         ),
@@ -74,8 +74,10 @@ class _DownloadScreenState extends State<DownloadScreen> {
               "assets/images/UI/android.svg",
               width: 24,
               height: 24,
-              colorFilter:
-                  ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                colorScheme.primary,
+                BlendMode.srcIn,
+              ),
             ),
             const SizedBox(width: 12),
             Text(
@@ -110,8 +112,10 @@ class _DownloadScreenState extends State<DownloadScreen> {
               "assets/images/UI/windows.svg",
               width: 24,
               height: 24,
-              colorFilter:
-                  ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                colorScheme.primary,
+                BlendMode.srcIn,
+              ),
             ),
             const SizedBox(width: 12),
             Text(
@@ -127,6 +131,44 @@ class _DownloadScreenState extends State<DownloadScreen> {
           iconPath: "assets/images/UI/microsoft_store.svg",
           text: "Microsoft Store",
           onTap: () => launchLink(AppConstants.microsoftStoreUrl),
+          leftMargin: 30,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLinuxLinks(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            SvgPicture.asset(
+              "assets/images/UI/linux.svg",
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(
+                colorScheme.primary,
+                BlendMode.srcIn,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              "Linux",
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ],
+        ),
+        IconLinkItem(
+          iconPath: "assets/images/UI/snapcraft.svg",
+          text: "Snapcraft",
+          onTap: () => launchLink(AppConstants.snapcraftUrl),
           leftMargin: 30,
         ),
       ],

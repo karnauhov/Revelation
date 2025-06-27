@@ -48,9 +48,7 @@ class _AboutScreenState extends State<AboutScreen> {
           if (viewModel.isLoading) {
             return Scaffold(
               body: Center(
-                child: CircularProgressIndicator(
-                  color: colorScheme.primary,
-                ),
+                child: CircularProgressIndicator(color: colorScheme.primary),
               ),
             );
           }
@@ -241,27 +239,36 @@ class _AboutScreenState extends State<AboutScreen> {
         IconLinkItem(
           iconPath: "assets/images/UI/shield.svg",
           text: AppLocalizations.of(context)!.privacy_policy,
-          onTap: () => context.push('/topic', extra: {
-            'name': AppLocalizations.of(context)!.privacy_policy,
-            'description':
-                AppLocalizations.of(context)!.privacy_policy_description,
-            'file': "privacy_policy"
-          }),
+          onTap: () => context.push(
+            '/topic',
+            extra: {
+              'name': AppLocalizations.of(context)!.privacy_policy,
+              'description': AppLocalizations.of(
+                context,
+              )!.privacy_policy_description,
+              'file': "privacy_policy",
+            },
+          ),
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/license.svg",
           text: AppLocalizations.of(context)!.license,
-          onTap: () => context.push('/topic', extra: {
-            'name': AppLocalizations.of(context)!.license,
-            'description': AppLocalizations.of(context)!.license_description,
-            'file': "license"
-          }),
+          onTap: () => context.push(
+            '/topic',
+            extra: {
+              'name': AppLocalizations.of(context)!.license,
+              'description': AppLocalizations.of(context)!.license_description,
+              'file': "license",
+            },
+          ),
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/support_us.svg",
           text: AppLocalizations.of(context)!.support_us,
-          onTap: () => launchLink(AppConstants.websiteUrl +
-              AppConstants.joinPartUrl.replaceFirst('@loc', currentLocale)),
+          onTap: () => launchLink(
+            AppConstants.websiteUrl +
+                AppConstants.joinPartUrl.replaceFirst('@loc', currentLocale),
+          ),
         ),
       ],
     );
@@ -285,6 +292,11 @@ class _AboutScreenState extends State<AboutScreen> {
               url: AppConstants.microsoftStoreUrl,
               tooltip: "Microsoft Store",
             ),
+            IconUrl(
+              iconPath: "assets/images/UI/snapcraft.svg",
+              url: AppConstants.snapcraftUrl,
+              tooltip: "Snapcraft",
+            ),
           ],
         ),
       ],
@@ -292,7 +304,9 @@ class _AboutScreenState extends State<AboutScreen> {
   }
 
   Widget _buildAcknowledgements(
-      BuildContext context, AboutViewModel viewModel) {
+    BuildContext context,
+    AboutViewModel viewModel,
+  ) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -389,9 +403,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 ),
               )
             : Center(
-                child: CircularProgressIndicator(
-                  color: colorScheme.primary,
-                ),
+                child: CircularProgressIndicator(color: colorScheme.primary),
               ),
       ],
     );
