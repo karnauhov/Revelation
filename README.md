@@ -6,7 +6,7 @@ This program has been created to help all Christians, regardless of denomination
 
 Web: [revelation.website](https://www.revelation.website)  
 Android: [Google Play](https://play.google.com/store/apps/details?id=ai11.link.revelation)  
-Windows: [Microsoft Store](https://apps.microsoft.com/detail/9NXHRR2P4087), [Installation package (Assets; \*.exe)](https://github.com/karnauhov/Revelation/releases/latest)  
+Windows: [Microsoft Store](https://apps.microsoft.com/detail/9NXHRR2P4087), [Installation package (Assets; \*.exe, \*.msix)](https://github.com/karnauhov/Revelation/releases/latest)  
 Linux: [Snapcraft](https://snapcraft.io/revelation)
 
 ## Documents
