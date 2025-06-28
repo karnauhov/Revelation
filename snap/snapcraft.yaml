@@ -19,37 +19,30 @@ description: |
   have been preserved to bear witness to His Revelation.
 type: app
 
-base: core24
+base: core22
 grade: stable
 confinement: strict
 
 source-code: https://github.com/karnauhov/Revelation
 contact: karnauhov.oleg@gmail.com
 website: https://www.revelation.website
-issues: karnauhov.oleg@gmail.com
-donation:
-  - https://www.revelation.website/demo/en.html#join
-  - https://www.gofundme.com/f/open-source-cross-platform-revelation-study-app
-  - https://waygiver.com/campaigns/3333
-  - https://www.givesendgo.com/revelation-website
+issues: https://github.com/karnauhov/Revelation/issues
+donation: https://www.revelation.website/demo/en.html#join
 
 apps:
   revelation:
-    command: bin/revelation
+    command: revelation
     extensions: [gnome]
-    plugs:
-      - desktop
-      - desktop-legacy
-      - x11
-      - wayland
-      - network
-      - home
 
 parts:
   revelation:
-    plugin: dump
-    source: build/linux/x64/release/bundle/
-    organize:
-      revelation: bin/revelation
-      lib/*: lib/
-      data/*: data/
+    source: .
+    plugin: flutter
+    flutter-channel: stable
+    flutter-target: lib/main.dart
+    build-packages:
+      - curl
+
+architectures:
+  - build-on: [ amd64 ]
+  - build-on: [ arm64 ]

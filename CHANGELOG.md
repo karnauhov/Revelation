@@ -6,6 +6,7 @@ All notable changes to this application will be documented here.
 
 ### Added
 
+- Support platforms: [Linux](https://snapcraft.io/revelation);
 - Uploaded primary-source images to supabase.com (P85);
 - Color theme, font size and sound in settings
 - Sounds
