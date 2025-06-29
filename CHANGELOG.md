@@ -6,10 +6,11 @@ All notable changes to this application will be documented here.
 
 ### Added
 
+- Support languages: Spanish;
 - Support platforms: [Linux](https://snapcraft.io/revelation);
 - Uploaded primary-source images to supabase.com (P85);
-- Color theme, font size and sound in settings
-- Sounds
+- Color theme, font size and sound in settings;
+- Sounds;
 
 ### Changed
 

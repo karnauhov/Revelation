@@ -14,6 +14,7 @@ class AppConstants {
   static const String mobileBrowserSuffix = "_mb";
   static const languages = {
     'en': 'English',
+    'es': 'Español',
     'uk': 'Українська',
     'ru': 'Русский',
   };

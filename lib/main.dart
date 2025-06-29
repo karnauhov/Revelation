@@ -96,7 +96,12 @@ class RevelationApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('en'), Locale('uk'), Locale('ru')],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('es'),
+        Locale('uk'),
+        Locale('ru'),
+      ],
       onGenerateTitle: onGenerateTitle,
       theme: ThemeData(
         fontFamily: 'Arimo',
