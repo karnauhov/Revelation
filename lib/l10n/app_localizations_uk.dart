@@ -9,7 +9,7 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
-  String get app_name => 'Revelation';
+  String get app_name => 'Об\'явлення';
 
   @override
   String get version => 'Версія';
