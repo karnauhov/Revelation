@@ -1,21 +1,21 @@
-# Политика конфиденциальности
+# Política de privacidad
 
-_Последнее обновление: [08.06.25]_
+_Última actualización: [08.06.25]_
 
-## Введение
-Revelation — это приложение, предназначенное для изучения Книги Откровения. Это приложение не собирает, не хранит и не передаёт никаких персональных данных пользователей.
+## Introducción
+Revelation es una aplicación diseñada para el estudio del Libro de la Revelación. Esta aplicación no recopila, almacena ni transmite ningún dato personal de sus usuarios.
 
-## Сбор данных
-Revelation не требует регистрации или входа в систему и не запрашивает никакой персональной информации. Мы не отслеживаем активность пользователей, а также не используем файлы cookie.
+## Recopilación de datos
+Revelation no requiere registro ni inicio de sesión, y no solicita información personal alguna. No hacemos seguimiento de la actividad de los usuarios ni utilizamos cookies.
 
-## Передача данных
-Поскольку мы не собираем никаких пользовательских данных, мы ничего не передаём третьим лицам.
+## Transferencia de datos
+Dado que no recopilamos ningún dato de usuario, no transmitimos información a terceros.
 
-## Безопасность
-Так как Revelation не хранит никакой информации о пользователях, отсутствуют риски, связанные с утечками или взломами данных.
+## Seguridad
+Al no almacenar ninguna información de los usuarios, no existen riesgos asociados a fugas o hackeos de datos.
 
-## Изменения в этой политике
-Эта политика конфиденциальности может быть обновлена в случае изменения функциональности приложения. Все обновления будут опубликованы на этой странице.
+## Cambios en esta política
+Esta política de privacidad puede actualizarse si cambian las funcionalidades de la aplicación. Todas las actualizaciones se publicarán en esta página.
 
-## Контакты
-Если у вас есть вопросы по этой политике конфиденциальности, пожалуйста, свяжитесь с нами по адресу [ok.ai11.link@gmail.com]("mailto:ok.ai11.link@gmail.com").
+## Contacto
+Si tienes preguntas sobre esta política de privacidad, ponte en contacto con nosotros en [ok.ai11.link@gmail.com]("mailto:ok.ai11.link@gmail.com").
