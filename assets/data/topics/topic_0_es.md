@@ -1,71 +1,71 @@
-Если вы не верите в Бога или если ваша религия не Христианство, то не спешите уходить отсюда. Думаю, вы не случайно сюда попали, и вас тоже заинтересует то, что Бог хочет сказать людям.
+Si no crees en Dios o si tu religión no es el cristianismo, no te apresures a marcharte de aquí. Creo que no has llegado por casualidad, y también te interesará lo que Dios quiere decir a la gente.
 
-Книга Откровение – это книга для всех христиан. Сам Иисус Христос передал это послание. Уже с первых строк ясно, от Кого это послание, к кому оно обращено и **как правильно с ним поступить**. 
+El libro de Apocalipsis es un libro para todos los cristianos. El mismo Jesucristo transmitió este mensaje. Desde las primeras líneas queda claro de quién es este mensaje, a quién va dirigido y **cómo tratarlo correctamente**. 
 
-> «Блажен **читающий** и **слушающие** слова пророчества сего и **соблюдающие** написанное в нем; ибо время близко.» (Откр 1:3)
+> «Bienaventurado **el que lee**, y **los que oyen** las palabras de esta profecía, y **guardan** las cosas en ella escritas; porque el tiempo está cerca» (Ap 1:3)
 
-## Первоисточники
+## Fuentes primarias
 
-[Данная программа](data:about) создана, чтобы *помочь всем христианам, независимо от деноминации, лучше понять эту книгу*. Это может показаться трудным, а учитывая различия в доктринах, культурах, обычаях, поколениях и даже переводах Библии – почти невозможным. Чтобы преодолеть все эти различия, накопленные за две тысячи лет, давайте попробуем вернуться как можно ближе ко времени написания книги. Для этого, мы попробуем начать с чтения текста, как можно более близкого к оригиналу. В качестве [первоисточников](data:sources) текста выберем все папирусы и унциалы Нового Завета, содержащие слова из книги Откровение на языке оригинала. Папирусы – это вид древних рукописей на материале с таким же названием, а унциалы – рукописи, написанные крупными округлыми буквами. Их на самом деле не так много: всего [7 папирусов и 12 унциалов](https://en.wikipedia.org/wiki/Biblical_manuscript). Верю, что Бог управляет тем, какие источники книги Откровение и в каком объёме должны были сохраниться, чтобы быть свидетельством Его Откровения.
+[Este programa](data:about) fue creado para *ayudar a todos los cristianos, independientemente de su denominación, a comprender mejor este libro*. Puede parecer una tarea ardua, y dadas las diferencias en doctrinas, culturas, costumbres, generaciones e incluso en las traducciones de la Biblia, casi imposible. Para superar todas esas divergencias acumuladas a lo largo de dos mil años, intentemos volver lo más cerca posible al tiempo en que se escribió el libro. Para ello, comenzaremos leyendo un texto lo más cercano posible al original. Como [fuentes primarias](data:sources) del texto, seleccionaremos todos los papiros y unciales del Nuevo Testamento que contengan palabras del libro de Apocalipsis en idioma original. Los papiros son manuscritos antiguos escritos en un material llamado así, y los unciales son manuscritos escritos con letras grandes y redondeadas. En realidad no son tantos: solo [7 papiros y 12 unciales](https://en.wikipedia.org/wiki/Biblical_manuscript). Confío en que Dios ha dirigido qué fuentes del libro de Apocalipsis y en qué cantidad debían conservarse, para ser testimonio de Su revelación.
 
 ![codex](resource:assets/images/Topics/preface1.png)
 
-## Принципы
+## Principios
 
-При изучении книги Откровение разумно придерживаться принципа, изложенного в Откр. 1:3. Фактически этот стих описывает идеальную модель взаимодействия человека с текстами Священных Писаний, выделяя три ключевые активности:
+Al estudiar el libro de Apocalipsis, es sensato adherirse al principio expuesto en Ap. 1:3. De hecho, este versículo describe el modelo ideal de interacción del ser humano con los textos de las Sagradas Escrituras, destacando tres actividades clave:
 
-1. ἀναγινώσκω (**читать**) - представляет первый способ взаимодействия с Божьим Словом: познание его через чтение. В контексте времен Нового Завета это часто было публичное чтение для собрания верующих. Иисус часто указывал на важность чтения Писания вопросом "разве вы не читали?", подчеркивая, что Писание должно быть известно и понятно. Чтение является первым шагом к пониманию истин от Бога.
-2. ἀκούω (**слушать**) - представляет второй способ: внутреннее восприятие и понимание услышанного или прочитанного. Иисус многократно подчеркивал разницу между простым физическим слышанием и истинным слушанием, ведущим к пониманию ("кто имеет уши слышать, да слышит"). Это указывает на более глубокий уровень взаимодействия с истиной, требующий не только восприятия, но и осмысления.
-3. τηρέω (**соблюдать / хранить**) - представляет третий и наиболее важный способ: практическое применение познанного и понятого. Это активное действие, проявление веры в повседневной жизни. Иисус неоднократно подчеркивал, что истинная любовь к Нему выражается в соблюдении Его заповедей. Это слово также имеет смысл "хранить", что подразумевает постоянное усилие и внимание к исполнению Божественной воли.
+1. ἀναγινώσκω (**leer**) - representa la primera forma de interacción con la Palabra de Dios: conocerla a través de la lectura. En el contexto del Nuevo Testamento, esto a menudo implicaba una lectura pública para la congregación de creyentes. Jesús señalaba a menudo la importancia de la lectura de las Escrituras con la pregunta “¿no habéis leído?”, subrayando que las Escrituras deben ser conocidas y comprendidas. Leer es el primer paso hacia la comprensión de las verdades de Dios.
+2. ἀκούω (**escuchar**) - representa la segunda forma: la percepción interior y la comprensión de lo escuchado o leído. Jesús enfatizó repetidamente la diferencia entre oír físicamente y escuchar de verdad, lo que conduce a la comprensión (“el que tenga oídos para oír, que oiga”). Esto alude a un nivel más profundo de relación con la verdad, que requiere no solo recibir información, sino también meditarla.
+3. τηρέω (**guardar / conservar**) - representa la tercera y más importante forma: la aplicación práctica de lo conocido y comprendido. Es una acción activa, la manifestación de la fe en la vida cotidiana. Jesús subrayó que el verdadero amor por Él se muestra guardando sus mandamientos. Esta palabra también conlleva el sentido de “conservar”, lo que implica un esfuerzo constante y atención en cumplir la voluntad divina.
 
-В словах Иисуса Христа особенно четко прослеживается важность всех трех аспектов. Он учил не просто **знанию Писания** (чтению), но его **глубокому пониманию** (слушанию) и, что самое важное, его **воплощению в жизнь** (соблюдению). Заметно, что наибольший акцент в учении Христа делается именно на последнем аспекте - τηρέω (соблюдении), что видно из многочисленных высказываний, где соблюдение заповедей связывается с любовью к Нему, пребыванием в Его любви и обретением жизни вечной.
+En las palabras de Jesucristo se aprecia con claridad la importancia de los tres aspectos. Él enseñó no solo el **conocimiento de las Escrituras** (lectura), sino su **profunda comprensión** (escucha) y, lo más importante, su **incorporación en la vida** (guardar). Se nota que el mayor énfasis en la enseñanza de Cristo recae en el último aspecto - τηρέω (guardar) –, como se ve en las numerosas expresiones donde guardar los mandamientos se vincula con el amor a Él, permanecer en su amor y alcanzar la vida eterna.
 
-Эти три активности представляют полную модель духовного роста верующего: от знакомства со словом Божьим через его внутреннее принятие к активному воплощению в повседневной жизни. *Блаженство, о котором говорится в этом стихе, обещано именно тем, кто проходит весь этот путь - от чтения через слушание к соблюдению*.
+Estas tres actividades constituyen un modelo completo de crecimiento espiritual del creyente: desde el encuentro con la Palabra de Dios, pasando por su aceptación interior, hasta su manifestación activa en la vida diaria. *La bienaventuranza prometida en este versículo es para quienes recorren todo el camino: de la lectura, a la escucha, y al guardar*.
 
 ![tree](resource:assets/images/Topics/preface2.png)
 
-## Этапы изучения
+## Etapas de estudio
 
-Для практического воплощения этого принципа предлагается поэтапное изучение каждого фрагмента книги Откровение, при котором на каждом этапе особое внимание уделяется соответствующему аспекту данного подхода. Поскольку чтение начинается с работы с первоисточниками на языке оригинала, данную активность целесообразно разделить на два этапа:
+Para aplicar prácticamente este principio, se propone un estudio por etapas de cada fragmento del libro de Apocalipsis, prestando en cada fase especial atención al aspecto correspondiente de este enfoque. Dado que la lectura comienza con el trabajo con las fuentes primarias en el idioma original, conviene dividir esta actividad en dos etapas:
 
-### **Этап 1. Формирование общего текста из всех первоисточников.**
+### **Etapa 1. Elaboración del texto general a partir de todas las fuentes primarias.**
 
-На этом этапе осуществляется сопоставление текста отрывка во всех имеющихся первоисточниках и *создание консолидированного варианта*, в котором отражены все различия между источниками. Этот процесс позволяет учесть все доступные исторические варианты текста, что подчеркивает важность каждого из них и позволяет увидеть исследуемый отрывок с разных точек зрения. Это особенно важно для книги Откровение, где многообразие текстовых традиций может обогатить понимание символов и образов.
+En esta etapa se coteja el texto del pasaje en todas las fuentes disponibles y se *crea una versión consolidada*, en la que se reflejan todas las variantes textuales. Este proceso permite tener en cuenta todas las versiones históricas del texto, subrayar la importancia de cada una y contemplar el pasaje desde distintas perspectivas. Esto es especialmente relevante para el libro de Apocalipsis, donde la diversidad de tradiciones textuales puede enriquecer la comprensión de sus símbolos e imágenes.
 
-### **Этап 2. Словарь и структура предложений.**
+### **Etapa 2. Léxico y estructura de las oraciones.**
 
-Данный этап включает составление словаря для изучаемого отрывка, работу с номерами Стронга и словарными статьями для каждого слова, а также подробный *грамматический анализ каждого слова и предложения* в соответствии с правилами древнегреческого языка Нового Завета. Такой подход обеспечит глубокое понимание языковых особенностей текста, что необходимо для корректной интерпретации его смысла.
+Esta fase incluye la elaboración de un glosario para el pasaje estudiado, el trabajo con los números de Strong y las entradas lexicográficas de cada palabra, así como un detalle de *análisis gramatical de cada palabra y oración* conforme a las reglas del griego del Nuevo Testamento. Este enfoque garantiza una comprensión profunda de las particularidades lingüísticas del texto, esencial para su correcta interpretación.
 
-После прочтения и поверхносного понимания текста следующие 3 этапа позволят "услышать суть" и "увидеть глубину и широту" каждого текста. 
+Tras la lectura y la comprensión superficial del pasaje, las siguientes tres etapas permitirán “oír la esencia” y “ver la profundidad y amplitud” de cada texto.
 
-### **Этап 3. Выявление и анализ ветхозаветных аллюзий.**
+### **Etapa 3. Identificación y análisis de alusiones al Antiguo Testamento.**
 
-Этот этап является критически важным для глубокого изучения книги Откровение, помогая раскрыть её глубокие *связи с Ветхим Заветом*. Он направлен на выявление и анализ аллюзий, которые обогащают понимание текста и раскрывают, как используется Ветхий Завет для передачи смысла послания. Без этого анализа подлинный смысл книги может остаться загадкой.
+Esta fase es fundamental para un estudio profundo del Apocalipsis, ayudando a desvelar sus *vínculos con el Antiguo Testamento*. Se centra en identificar y analizar las alusiones que enriquecen la comprensión del texto y muestran cómo el Antiguo Testamento se utiliza para transmitir el mensaje. Sin este análisis, el verdadero sentido del libro podría permanecer oculto.
 
-### **Этап 4. Откровение Иисуса Христа.**
+### **Etapa 4. Revelación de Jesucristo.**
 
-Этот центральный и важнейший этап в изучении книги Откровение сосредотачивается на интерпретации текста через призму Иисуса Христа и Нового Завета, преобразуя ветхозаветные символы и темы в свете Его жизни, смерти и воскресения, чтобы раскрыть духовное и универсальное значение апокалиптических видений. Этот христологический подход подчеркивает, что книга Откровение — это не просто пророчества о конце времен, а христианский текст, *в центре* которого *стоит Христос и Его искупительное дело*, что делает его послание актуальным для церкви. Без такой перспективы основное значение книги может быть упущено, тогда как цель этапа — обеспечить понимание каждого отрывка как откровения Иисуса Христа.
+Esta etapa central y decisiva en el estudio del Apocalipsis se enfoca en interpretar el texto a la luz de Jesucristo y el Nuevo Testamento, transformando los símbolos y temas del Antiguo Testamento a la luz de su vida, muerte y resurrección. Este enfoque cristológico resalta que el libro de Apocalipsis no es sólo profecías sobre el fin de los tiempos, sino un texto cristiano *con Cristo y su obra redentora en el centro*, lo que hace su mensaje pertinente para la Iglesia. Sin esta perspectiva, se corre el riesgo de perder el significado esencial del libro.
 
-### **Этап 5. Анализ структуры и связей.**
+### **Etapa 5. Análisis de la estructura y las conexiones.**
 
-Данный этап помогает увидеть *текст в контексте всей книги Откровение*, устанавливая связи отрывка с другими частями книги, что позволяет глубже понять его смысл и авторский замысел. Контекст каждого отрывка может даже находиться в другой части книги, а не только в соседних отрывках. Это подчеркивает важность структурного анализа для понимания текста в широком контексте.
+Esta fase ayuda a ver *el texto en el contexto de todo el libro de Apocalipsis*, estableciendo vínculos entre el pasaje y otras partes de la obra, lo que enriquece la comprensión de su sentido y del propósito del autor. El contexto de un pasaje puede hallarse incluso en una sección distante, no solo en párrafos adyacentes, subrayando la importancia del análisis estructural.
 
-И наконец, после глубокого понимания текста, последние 2 этапа позволят увидеть, как текст вписывается в Божий план в истории или ещё ожидает своего исполнения, а также взглянуть на свою жизнь в свете открытых истин. «Этапы исполнения» направлены на укрепление веры, побуждая к жизни в послушании и верности Слову Божьему.
+Finalmente, después de obtener una comprensión profunda del texto, las dos últimas etapas permitirán ver cómo el texto encaja en el plan divino a lo largo de la historia o aún espera su cumplimiento, así como reflexionar sobre nuestra propia vida a la luz de las verdades reveladas. Las “etapas de cumplimiento” apuntan a fortalecer la fe y a movernos hacia una vida de obediencia y fidelidad a la Palabra de Dios.
 
-### **Этап 6. Исполнение пророчеств.**
+### **Etapa 6. Cumplimiento de las profecías.**
 
-На этом этапе мы обратим внимание на то, как пророчества могли раскрываться в разные периоды истории или отметить те, что ещё не нашли своего полного осуществления. Цель этапа не в том, чтобы дать все ответы, а в том, чтобы внимательно изучить *то, что уже произошло в истории церкви и человечества в целом*. Это поможет нам глубже осознать, как замысел Божий проявлялся на протяжении веков и ещё больше укрепит веру в Бога и Его Слово.
+En esta fase prestaremos atención a cómo las profecías se han ido cumpliendo a lo largo de distintas épocas históricas o señalaremos aquellas que aún no han encontrado plena realización. El objetivo no es dar todas las respuestas, sino examinar con detalle *lo que ya ha ocurrido en la historia de la Iglesia y de la humanidad en general*. Esto nos ayudará a comprender mejor cómo el plan de Dios se ha manifestado a través de los siglos y reforzará nuestra fe en Él y en Su Palabra.
 
-### **Этап 7. Живая вера в действии.**
+### **Etapa 7. Fe viva en acción.**
 
-Этот этап побуждает нас *задуматься о том, как мы сами живём в свете Откровения Иисуса Христа*. Вера — это не просто слова или мысли, она должна находить отклик в наших поступках. Писание ясно говорит:
+Esta etapa nos invita a *reflexionar sobre cómo vivimos nosotros mismos a la luz de la revelación de Jesucristo*. La fe no es solo palabras o ideas: debe traducirse en hechos. La Escritura dice claramente:
 
-> «Будьте же **исполнители слова**, а не слышатели только, обманывающие самих себя.» (Иак 1:22).
+> «Pero sed **hacedores de la palabra**, y no tan solamente oidores, engañándoos a vosotros mismos.» (Stg 1:22).
 
-Иисус тоже напоминает:
+Y Jesús también recuerda:
 
-> «Если любите Меня, **соблюдите Мои заповеди**.» (Ин 14:15).
+> «Si me amáis, **guardad mis mandamientos**.» (Jn 14:15).
 
-Эти слова обращены к каждому христианину, особенно когда мы чувствуем, что наша вера иногда ослабевает. Они призывают нас не просто соглашаться с истиной, но и активно следовать ей каждый день.
+Estas palabras van dirigidas a cada cristiano, especialmente cuando sentimos que nuestra fe flaquea. Nos animan no solo a aceptar la verdad, sino a seguirla activamente cada día.
 
 ![map](resource:assets/images/Topics/preface3.jpg)
