@@ -37,11 +37,18 @@ apps:
 parts:
   revelation:
     source: .
+    build-environment:
+      - PUB_CACHE: /root/.pub-cache
     plugin: flutter
     flutter-channel: stable
     flutter-target: lib/main.dart
+    override-pull: |
+      snapcraftctl pull
+      rm -rf $SNAPCRAFT_PART_SRC/build
     build-packages:
       - curl
+      - libgstreamer1.0-dev
+      - libgstreamer-plugins-base1.0-dev
 
 architectures:
   - build-on: [ amd64 ]
