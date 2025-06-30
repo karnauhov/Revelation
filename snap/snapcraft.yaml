@@ -33,6 +33,10 @@ apps:
   revelation:
     command: revelation
     extensions: [gnome]
+    plugs:
+      - desktop
+      - jack1
+      - shared-memory
 
 parts:
   revelation:
@@ -42,13 +46,27 @@ parts:
     plugin: flutter
     flutter-channel: stable
     flutter-target: lib/main.dart
-    override-pull: |
-      snapcraftctl pull
-      rm -rf $SNAPCRAFT_PART_SRC/build
+    override-build: |
+      set -eux
+      apt-get update
+      apt-get install -y git unzip xz-utils
+      git clone https://github.com/flutter/flutter.git -b stable /usr/local/flutter
+      export PATH="$PATH:/usr/local/flutter/bin"
+      flutter doctor
+      cd $CRAFT_PART_SRC
+      rm -rf build
+      flutter precache --linux
+      flutter clean
+      flutter pub get
+      flutter build linux --release --dart-define-from-file=api-keys.json --target lib/main.dart
+      snapcraftctl build
     build-packages:
       - curl
       - libgstreamer1.0-dev
       - libgstreamer-plugins-base1.0-dev
+    stage-packages:
+      - libgstreamer1.0-0
+      - libgstreamer-plugins-base1.0-0
 
 architectures:
   - build-on: [ amd64 ]
