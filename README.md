@@ -18,3 +18,7 @@ Linux: [Snapcraft](https://snapcraft.io/revelation)
 [License Notice](./NOTICE)  
 [Changelog](./CHANGELOG.md)  
 [Dev Info](./DEV_INFO.md)
+
+## QR Code
+
+<img src="qrcode.png" width="256" height="256" />
