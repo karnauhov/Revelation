@@ -10,7 +10,7 @@ class AppConstants {
       "https://play.google.com/store/apps/details?id=ai11.link.revelation";
   static const String microsoftStoreUrl =
       "https://apps.microsoft.com/detail/9NXHRR2P4087";
-  static const String snapcraftUrl = "https://snapcraft.io/revelation";
+  static const String snapcraftUrl = "https://snapcraft.io/revelation-x";
   static const String mobileBrowserSuffix = "_mb";
   static const languages = {
     'en': 'English',

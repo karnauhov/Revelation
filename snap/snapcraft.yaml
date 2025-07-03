@@ -1,6 +1,6 @@
-name: revelation
+name: revelation-x
 title: Revelation
-version: '1.0.3.97'
+version: '1.0.3.98'
 license: Apache-2.0
 summary: Revelation Study app.
 description: |
@@ -28,7 +28,7 @@ issues: https://github.com/karnauhov/Revelation/issues
 donation: https://www.revelation.website/demo/en.html#join
 
 apps:
-  revelation:
+  revelation-x:
     command: revelation
     extensions: [gnome]
     plugs:
@@ -42,7 +42,7 @@ apps:
       - alsa
 
 parts:
-  revelation:
+  revelation-x:
     source: .
     build-environment:
       - PUB_CACHE: /root/.pub-cache
