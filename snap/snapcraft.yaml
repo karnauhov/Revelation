@@ -1,6 +1,6 @@
 name: revelation-x
 title: Revelation
-version: '1.0.3.103'
+version: '1.0.3.104'
 license: Apache-2.0
 summary: Revelation Study app.
 description: |
@@ -70,16 +70,11 @@ parts:
       - curl
       - libgstreamer1.0-dev
       - libgstreamer-plugins-base1.0-dev
-      - libasound2
       - libpulse0 
     stage-packages:
       - libgstreamer1.0-0
       - libgstreamer-plugins-base1.0-0
-      - libasound2
       - libpulse0
-      - adwaita-icon-theme
-      - hicolor-icon-theme
-      - xcursor-themes
 
 architectures:
   - build-on: [ amd64 ]
