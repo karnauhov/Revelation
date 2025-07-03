@@ -2,7 +2,7 @@
 #define MyAppCompany "Oleh Karnaukhov"
 #define MyAppFileName "revelation.exe"
 #define MyAppVersion "1.0.3"
-#define MyAppBuild "102"
+#define MyAppBuild "103"
 #define CurrentYear GetDateTimeString('yyyy', '', '')
 
 [Languages]
@@ -16,7 +16,7 @@ AppVersion={#MyAppVersion}
 AppPublisher="Oleh Karnaukhov"
 AppPublisherURL="https://g.dev/karnaukhov"
 AppCopyright="Copyright © {#CurrentYear} {#MyAppCompany}. All rights reserved"
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName={commonpf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 OutputDir=build\windows
 OutputBaseFilename={#MyAppName}-windows-{#MyAppVersion}-{#MyAppBuild}
