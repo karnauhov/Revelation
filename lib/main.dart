@@ -33,6 +33,7 @@ void main() async {
       center: true,
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.setIcon('assets/images/UI/app_icon.png');
       await windowManager.show();
       await windowManager.focus();
     });
@@ -117,6 +118,7 @@ class RevelationApp extends StatelessWidget {
     String title = AppLocalizations.of(context)!.app_name;
     if (isDesktop()) {
       windowManager.setTitle(title);
+      windowManager.setIcon('assets/images/UI/app_icon.png');
     }
     return title;
   }
