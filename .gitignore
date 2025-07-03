@@ -5,7 +5,6 @@
 *.swp
 *.env
 api-keys.json
-snapcraft_build.sh
 .DS_Store
 .atom/
 .build/

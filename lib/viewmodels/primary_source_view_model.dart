@@ -41,7 +41,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
-      const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false));
+    const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false),
+  );
 
   PagesSettings? _pagesSettings;
   late String _pageSettings;
@@ -66,8 +67,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   PrimarySourceViewModel(this._pagesRepository, {required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
-    imageController.transformationController
-        .addListener(_updateTransformStatus);
+    imageController.transformationController.addListener(
+      _updateTransformStatus,
+    );
 
     _isWeb = isWeb();
     _isMobileWeb = _isWeb && isMobileBrowser();
@@ -77,10 +79,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
         _maxTextureSize = size > 0 ? size : 4096;
         if (_isMobileWeb) {
           log.w(
-              "A mobile browser with max texture size of $_maxTextureSize was detected.");
+            "A mobile browser with max texture size of $_maxTextureSize was detected.",
+          );
         } else {
           log.i(
-              "A browser with max texture size of $_maxTextureSize was detected.");
+            "A browser with max texture size of $_maxTextureSize was detected.",
+          );
         }
       });
     } else {
@@ -95,31 +99,35 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   Future<void> loadImage(String page, {bool isReload = false}) async {
-    isLoading = true;
-    imageShown = false;
-    scaleAndPositionRestored = false;
-    await _getPagesSettings();
-    notifyListeners();
+    try {
+      isLoading = true;
+      imageShown = false;
+      scaleAndPositionRestored = false;
+      await _getPagesSettings();
+      notifyListeners();
 
-    if (_isWeb) {
-      final downloaded = await _downloadImage(page, false);
-      localPageLoaded[page] = downloaded;
-    } else {
-      final localFilePath = await _getLocalFilePath(page);
-      final file = File(localFilePath);
-      if (!isReload && await file.exists()) {
-        final bytes = await file.readAsBytes();
-        imageData = bytes;
-        imageName = "${primarySource.hashCode}_$page";
-        isLoading = false;
-        localPageLoaded[page] = true;
-      } else {
-        final downloaded = await _downloadImage(page, isReload);
-        if (downloaded) {
-          await _saveImage(file);
-        }
+      if (_isWeb) {
+        final downloaded = await _downloadImage(page, false);
         localPageLoaded[page] = downloaded;
+      } else {
+        final localFilePath = await _getLocalFilePath(page);
+        final file = File(localFilePath);
+        if (!isReload && await file.exists()) {
+          final bytes = await file.readAsBytes();
+          imageData = bytes;
+          imageName = "${primarySource.hashCode}_$page";
+          isLoading = false;
+          localPageLoaded[page] = true;
+        } else {
+          final downloaded = await _downloadImage(page, isReload);
+          if (downloaded) {
+            await _saveImage(file);
+          }
+          localPageLoaded[page] = downloaded;
+        }
       }
+    } catch (e) {
+      log.e('Image loading error: $e');
     }
     _updateTransformStatus();
     isLoading = false;
@@ -212,8 +220,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void applyColorReplacement(Rect? selectedArea, Color colorToReplace,
-      Color newColor, double tolerance) {
+  void applyColorReplacement(
+    Rect? selectedArea,
+    Color colorToReplace,
+    Color newColor,
+    double tolerance,
+  ) {
     this.selectedArea = selectedArea;
     this.colorToReplace = colorToReplace;
     this.newColor = newColor;
@@ -240,13 +252,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
         scaleAndPositionRestored) {
       final pageId = "${primarySource.id}_${selectedPage!.name}";
       _pageSettings = PagesSettings.packData(
-          posX: dx,
-          posY: dy,
-          scale: scale,
-          isNegative: isNegative,
-          isMonochrome: isMonochrome,
-          brightness: brightness,
-          contrast: contrast);
+        posX: dx,
+        posY: dy,
+        scale: scale,
+        isNegative: isNegative,
+        isMonochrome: isMonochrome,
+        brightness: brightness,
+        contrast: contrast,
+      );
       _pagesSettings!.pages[pageId] = _pageSettings;
       _pagesRepository.savePages(_pagesSettings!);
     } else {
@@ -356,8 +369,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
         modifiedImage = image;
       }
       final supabase = Supabase.instance.client;
-      final Uint8List fileBytes =
-          await supabase.storage.from(repository).download(modifiedImage);
+      final Uint8List fileBytes = await supabase.storage
+          .from(repository)
+          .download(modifiedImage);
 
       refreshError = false;
       imageData = fileBytes;
@@ -392,7 +406,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (imageData == null) {
       Future.microtask(() {
         zoomStatusNotifier.value = const ZoomStatus(
-            canZoomIn: false, canZoomOut: false, canReset: false);
+          canZoomIn: false,
+          canZoomOut: false,
+          canReset: false,
+        );
       });
     } else {
       final matrix = imageController.transformationController.value;
@@ -408,8 +425,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
       });
       if (scaleAndPositionRestored) {
         _saveDebounceTimer?.cancel();
-        _saveDebounceTimer =
-            Timer(const Duration(seconds: 1), savePageSettings);
+        _saveDebounceTimer = Timer(
+          const Duration(seconds: 1),
+          savePageSettings,
+        );
       }
     }
   }

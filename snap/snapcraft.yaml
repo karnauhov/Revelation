@@ -1,6 +1,6 @@
 name: revelation
 title: Revelation
-version: '1.0.3.96'
+version: '1.0.3.97'
 license: Apache-2.0
 summary: Revelation Study app.
 description: |
@@ -32,6 +32,8 @@ apps:
     command: revelation
     extensions: [gnome]
     plugs:
+      - home
+      - network
       - desktop
       - jack1
       - shared-memory
@@ -60,7 +62,8 @@ parts:
       flutter clean
       flutter pub get
       flutter build linux --release --dart-define-from-file=api-keys.json --target lib/main.dart
-      snapcraftctl build
+      mkdir -p $CRAFT_PART_INSTALL/
+      cp -r build/linux/*/release/bundle/* $CRAFT_PART_INSTALL/
     build-packages:
       - curl
       - libgstreamer1.0-dev
