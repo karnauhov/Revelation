@@ -192,6 +192,7 @@ jobs:
             });
             console.log('Release created:', response.data);
             const uploadUrl = response.data.upload_url;
+            fs.writeFileSync('upload_url.txt', uploadUrl);
             fs.appendFileSync(process.env.GITHUB_OUTPUT, `upload_url=${uploadUrl}\n`);
       
       - name: Upload upload_url as artifact
