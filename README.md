@@ -21,4 +21,4 @@ Linux: [Snapcraft](https://snapcraft.io/revelation-x)
 
 ---
 
-<img src=".\_art\Sticker.jpg" width="512" height="256" />
+<a href="https://www.revelation.website"><img src=".\_art\Sticker.jpg" width="512" height="256" /></a>
