@@ -34,17 +34,17 @@ jobs:
           java-version: "17"
           cache: "gradle"
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.32.4"
-          cache: true
+      # - name: Install Flutter
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: "3.32.4"
+      #     cache: true
 
-      - name: Get Flutter dependencies
-        run: flutter pub get
+      # - name: Get Flutter dependencies
+      #   run: flutter pub get
 
-      - name: Analyze
-        run: flutter analyze
+      # - name: Analyze
+      #   run: flutter analyze
 
       - name: Extract version and build number (Windows)
         id: extract_version_windows
@@ -192,7 +192,7 @@ jobs:
             });
             console.log('Release created:', response.data);
             fs.appendFileSync(process.env.GITHUB_OUTPUT, `upload_url=${response.data.upload_url}\n`);
-          outputs: ${response.data.upload_url}
+            echo "GITHUB_OUTPUT=process.env.GITHUB_OUTPUT"
 
       # - name: Upload APK to Release
       #   uses: actions/upload-release-asset@v1
@@ -245,7 +245,7 @@ jobs:
       #     asset_content_type: application/zip
 
     outputs:
-      release_upload_url: ${{ steps.create_release.outputs }}
+      release_upload_url: ${{ process.env.GITHUB_OUTPUT.upload_url }}
 
   build-linux:
     runs-on: ubuntu-latest
