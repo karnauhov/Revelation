@@ -191,8 +191,12 @@ jobs:
               prerelease: false,
             });
             console.log('Release created:', response.data);
-            fs.appendFileSync(process.env.GITHUB_OUTPUT, `upload_url=${response.data.upload_url}\n`);
-            echo "GITHUB_OUTPUT=process.env.GITHUB_OUTPUT"
+            const uploadUrl = response.data.upload_url;
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `upload_url=${uploadUrl}\n`);
+      
+      - name: Debug upload_url
+        run: |
+          echo "Upload URL: ${{ steps.create_release.outputs.upload_url }}"
 
       # - name: Upload APK to Release
       #   uses: actions/upload-release-asset@v1
@@ -245,7 +249,7 @@ jobs:
       #     asset_content_type: application/zip
 
     outputs:
-      release_upload_url: ${{ process.env.GITHUB_OUTPUT.upload_url }}
+      release_upload_url: ${{ steps.create_release.outputs.upload_url }}
 
   build-linux:
     runs-on: ubuntu-latest
@@ -254,6 +258,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Check received upload_url
+        run: |
+          echo "Received Upload URL: ${{ needs.build-windows.outputs.release_upload_url }}"
 
       - name: Install dependencies
         run: |
