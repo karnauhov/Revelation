@@ -1,10 +1,10 @@
 [Desktop Entry]
-Version=1.0.3.112
+Version=1.0.3.113
 Type=Application
 Name=Revelation
 Comment=Revelation Study app
 Exec=revelation-x
-Icon=${SNAP}/meta/gui/revelation.png
+Icon=${SNAP}/meta/gui/revelation-x.png
 Terminal=false
 SingleMainWindow=true;
 Categories=Education;Spirituality;

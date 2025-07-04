@@ -1,6 +1,6 @@
 name: revelation-x
 title: Revelation
-version: '1.0.3.112'
+version: '1.0.3.113'
 license: Apache-2.0
 summary: Revelation Study app.
 description: |
@@ -14,7 +14,7 @@ description: |
   the text of the Book of Revelation in the original language.
   I believe that God has governed which sources of the Book of Revelation, and to what extent,
   have been preserved to bear witness to His Revelation.
-icon: snap/gui/revelation.png
+icon: snap/gui/revelation-x.png
 type: app
 
 base: core22
@@ -29,7 +29,7 @@ donation: https://www.revelation.website/demo/en.html#join
 
 apps:
   revelation-x:
-    command: revelation-x
+    command: revelation
     extensions: [gnome]
     plugs:
       - home
@@ -47,8 +47,6 @@ parts:
     source: .
     build-environment:
       - PUB_CACHE: /root/.pub-cache
-    organize:
-      bin/revelation-x: revelation-x
     plugin: flutter
     flutter-channel: stable
     flutter-target: lib/main.dart
