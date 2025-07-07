@@ -70,6 +70,7 @@
   "choose_page": "Choose page",
   "images_are_missing": "Images are missing",
   "image_not_loaded": "Image not loaded",
+  "click_for_info": "Click on the image element you’re interested in to get information about it.",
   "low_quality": "Quality reduced",
   "low_quality_message": "A lower-quality image is used in the mobile browser. To view in maximum quality, install the app or open the page on a computer.",
   "reload_image": "Reloading the image",

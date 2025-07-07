@@ -70,6 +70,7 @@
   "choose_page": "Seleccione la página",
   "images_are_missing": "Las imágenes no están disponibles",
   "image_not_loaded": "Imagen no cargada",
+  "click_for_info": "Haga clic en el elemento de la imagen que le interese para obtener información sobre él.",
   "low_quality": "Calidad reducida",
   "low_quality_message": "En el navegador móvil se utiliza una imagen de calidad reducida. Para ver en máxima calidad, instale la aplicación o abra la página en una computadora.",
   "reload_image": "Recargar",

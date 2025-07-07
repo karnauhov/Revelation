@@ -9,6 +9,7 @@ import 'package:revelation/screens/primary_source/image_preview.dart';
 import 'package:revelation/screens/primary_source/primary_source_toolbar.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 // Define the intent for exiting pipette or selectArea mode
 class ExitChooseModeIntent extends Intent {
@@ -28,6 +29,9 @@ class PrimarySourceScreen extends StatefulWidget {
 class PrimarySourceScreenState extends State<PrimarySourceScreen>
     with WidgetsBindingObserver {
   late PrimarySourceViewModel _viewModel;
+  double? leftWidth;
+  double? topHeight;
+  bool showDescription = true;
 
   @override
   void initState() {
@@ -58,8 +62,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final ColorScheme colorScheme = theme.colorScheme;
 
     return ChangeNotifierProvider<PrimarySourceViewModel>(
-      create: (_) => PrimarySourceViewModel(PagesRepository(),
-          primarySource: widget.primarySource),
+      create: (_) => PrimarySourceViewModel(
+        PagesRepository(),
+        primarySource: widget.primarySource,
+      ),
       child: Consumer<PrimarySourceViewModel>(
         builder: (context, viewModel, child) {
           _viewModel = viewModel;
@@ -114,67 +120,75 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                         ? AppBar(
                             title: Text(
                               AppLocalizations.of(context)!.select_area_header,
-                              style: textTheme.headlineSmall
-                                  ?.copyWith(fontWeight: FontWeight.bold),
+                              style: textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             foregroundColor: colorScheme.primary,
                           )
                         : viewModel.pipetteMode
-                            ? AppBar(
-                                title: Text(
-                                  AppLocalizations.of(context)!
-                                      .pick_color_header,
-                                  style: textTheme.headlineSmall
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                foregroundColor: colorScheme.primary,
-                              )
-                            : AppBar(
-                                title: getStyledText(
-                                  widget.primarySource.title,
-                                  textTheme.headlineSmall
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                actions: isBottom
-                                    ? null
-                                    : [
-                                        PrimarySourceToolbar(
-                                          viewModel: viewModel,
-                                          primarySource: widget.primarySource,
-                                          isBottom: false,
-                                          dropdownWidth: dropdownWidth,
-                                          screenContext: context,
-                                        ),
-                                      ],
-                                bottom: isBottom
-                                    ? PreferredSize(
-                                        preferredSize:
-                                            const Size.fromHeight(32.0),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16.0),
-                                          child: PrimarySourceToolbar(
-                                            viewModel: viewModel,
-                                            primarySource: widget.primarySource,
-                                            isBottom: true,
-                                            dropdownWidth: dropdownWidth,
-                                            screenContext: context,
-                                          ),
-                                        ),
-                                      )
-                                    : null,
-                                foregroundColor: colorScheme.primary,
+                        ? AppBar(
+                            title: Text(
+                              AppLocalizations.of(context)!.pick_color_header,
+                              style: textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
                               ),
+                            ),
+                            foregroundColor: colorScheme.primary,
+                          )
+                        : AppBar(
+                            title: getStyledText(
+                              widget.primarySource.title,
+                              textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            actions: isBottom
+                                ? null
+                                : [
+                                    PrimarySourceToolbar(
+                                      viewModel: viewModel,
+                                      primarySource: widget.primarySource,
+                                      isBottom: false,
+                                      dropdownWidth: dropdownWidth,
+                                      screenContext: context,
+                                    ),
+                                  ],
+                            bottom: isBottom
+                                ? PreferredSize(
+                                    preferredSize: const Size.fromHeight(32.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0,
+                                      ),
+                                      child: PrimarySourceToolbar(
+                                        viewModel: viewModel,
+                                        primarySource: widget.primarySource,
+                                        isBottom: true,
+                                        dropdownWidth: dropdownWidth,
+                                        screenContext: context,
+                                      ),
+                                    ),
+                                  )
+                                : null,
+                            foregroundColor: colorScheme.primary,
+                          ),
                     body: Column(
                       children: [
                         Expanded(
                           child: Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+                            padding: const EdgeInsets.fromLTRB(
+                              10.0,
+                              0,
+                              10.0,
+                              0,
+                            ),
                             child: Container(
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                    color: colorScheme.onSurface, width: 1.0),
+                                  color: colorScheme.onSurface,
+                                  width: 1.0,
+                                ),
                               ),
                               child: viewModel.isLoading
                                   ? Center(
@@ -183,30 +197,17 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                       ),
                                     )
                                   : viewModel.imageData != null
-                                      ? ImagePreview(
-                                          imageData: viewModel.imageData!,
-                                          imageName: viewModel.imageName,
-                                          controller: viewModel.imageController,
-                                          isNegative: viewModel.isNegative,
-                                          isMonochrome: viewModel.isMonochrome,
-                                          brightness: viewModel.brightness,
-                                          contrast: viewModel.contrast,
-                                          replaceRegion: viewModel.selectedArea,
-                                          colorToReplace:
-                                              viewModel.colorToReplace,
-                                          newColor: viewModel.newColor,
-                                          tolerance: viewModel.tolerance,
-                                        )
-                                      : Center(
-                                          child: Text(
-                                            AppLocalizations.of(context)!
-                                                .image_not_loaded,
-                                            style: textTheme.bodyMedium
-                                                ?.copyWith(
-                                                    color: colorScheme
-                                                        .onSurfaceVariant),
-                                          ),
+                                  ? _buildSplitView(context, viewModel)
+                                  : Center(
+                                      child: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.image_not_loaded,
+                                        style: textTheme.bodyMedium?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
                                         ),
+                                      ),
+                                    ),
                             ),
                           ),
                         ),
@@ -216,67 +217,73 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                           Align(
                             alignment: Alignment.centerRight,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(10.0, 0, 10.0, 2.0),
+                              padding: const EdgeInsets.fromLTRB(
+                                10.0,
+                                0,
+                                10.0,
+                                2.0,
+                              ),
                               child: viewModel.selectAreaMode
                                   ? Text(
-                                      AppLocalizations.of(context)!
-                                          .select_area_description,
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.select_area_description,
                                       style: textTheme.bodySmall?.copyWith(
-                                          fontSize: 10,
-                                          color: colorScheme.onSurfaceVariant),
+                                        fontSize: 10,
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
                                     )
                                   : viewModel.pipetteMode
-                                      ? Text(
-                                          AppLocalizations.of(context)!
-                                              .pick_color_description,
-                                          style: textTheme.bodySmall?.copyWith(
-                                              fontSize: 10,
-                                              color:
-                                                  colorScheme.onSurfaceVariant),
-                                        )
-                                      : Text.rich(
-                                          TextSpan(
-                                            style: textTheme.bodySmall
-                                                ?.copyWith(
-                                                    fontSize: 10,
-                                                    color: colorScheme
-                                                        .onSurfaceVariant),
-                                            children: [
-                                              if (viewModel.isMobileWeb)
-                                                TextSpan(
-                                                  text:
-                                                      '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
-                                                  style: textTheme.bodySmall
-                                                      ?.copyWith(
+                                  ? Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.pick_color_description,
+                                      style: textTheme.bodySmall?.copyWith(
+                                        fontSize: 10,
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                    )
+                                  : Text.rich(
+                                      TextSpan(
+                                        style: textTheme.bodySmall?.copyWith(
+                                          fontSize: 10,
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                        children: [
+                                          if (viewModel.isMobileWeb)
+                                            TextSpan(
+                                              text:
+                                                  '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
+                                              style: textTheme.bodySmall
+                                                  ?.copyWith(
                                                     fontSize: 10,
                                                     color: colorScheme.primary,
                                                   ),
-                                                  recognizer:
-                                                      TapGestureRecognizer()
-                                                        ..onTap = () {
-                                                          showCustomDialog(
-                                                              MessageType
-                                                                  .warningCommon,
-                                                              param: AppLocalizations
-                                                                      .of(context)!
-                                                                  .low_quality_message);
-                                                        },
-                                                ),
-                                              ..._buildLinkSpans(widget
-                                                  .primarySource.attributes!),
-                                            ],
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () {
+                                                  showCustomDialog(
+                                                    MessageType.warningCommon,
+                                                    param: AppLocalizations.of(
+                                                      context,
+                                                    )!.low_quality_message,
+                                                  );
+                                                },
+                                            ),
+                                          ..._buildLinkSpans(
+                                            widget.primarySource.attributes!,
                                           ),
-                                          maxLines: 5,
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                        ],
+                                      ),
+                                      maxLines: 5,
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                             ),
                           ),
                         if (widget.primarySource.attributes == null ||
                             widget.primarySource.attributes!.isEmpty ||
                             !widget.primarySource.permissionsReceived)
-                          Text.rich(TextSpan(text: ""))
+                          Text.rich(TextSpan(text: "")),
                       ],
                     ),
                   ),
@@ -289,14 +296,154 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     );
   }
 
+  Widget _buildImagePreview(PrimarySourceViewModel viewModel) {
+    return ImagePreview(
+      imageData: viewModel.imageData!,
+      imageName: viewModel.imageName,
+      controller: viewModel.imageController,
+      isNegative: viewModel.isNegative,
+      isMonochrome: viewModel.isMonochrome,
+      brightness: viewModel.brightness,
+      contrast: viewModel.contrast,
+      replaceRegion: viewModel.selectedArea,
+      colorToReplace: viewModel.colorToReplace,
+      newColor: viewModel.newColor,
+      tolerance: viewModel.tolerance,
+    );
+  }
+
+  Widget _buildDragHandle({
+    required bool isHorizontal,
+    required double minSize,
+    required double maxSize,
+    required double currentSize,
+    required Function(double) onSizeUpdate,
+    required Color color,
+  }) {
+    return MouseRegion(
+      cursor: isHorizontal
+          ? SystemMouseCursors.resizeColumn
+          : SystemMouseCursors.resizeRow,
+      child: GestureDetector(
+        onHorizontalDragUpdate: isHorizontal
+            ? (details) {
+                onSizeUpdate(
+                  (currentSize + details.delta.dx).clamp(minSize, maxSize),
+                );
+              }
+            : null,
+        onVerticalDragUpdate: !isHorizontal
+            ? (details) {
+                onSizeUpdate(
+                  (currentSize + details.delta.dy).clamp(minSize, maxSize),
+                );
+              }
+            : null,
+        child: Container(
+          width: isHorizontal ? 5 : null,
+          height: !isHorizontal ? 5 : null,
+          color: color,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDescriptionView(
+    BuildContext context,
+    PrimarySourceViewModel viewModel,
+  ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      color: colorScheme.surface,
+      child: Markdown(
+        data:
+            viewModel.descriptionContent ??
+            AppLocalizations.of(context)!.click_for_info,
+        styleSheet: MarkdownStyleSheet.fromTheme(
+          theme,
+        ).copyWith(p: theme.textTheme.bodyMedium),
+      ),
+    );
+  }
+
+  Widget _buildSplitView(
+    BuildContext context,
+    PrimarySourceViewModel viewModel,
+  ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final totalWidth = constraints.maxWidth;
+        final totalHeight = constraints.maxHeight;
+        final isLandscape =
+            MediaQuery.of(context).orientation == Orientation.landscape;
+
+        if (!showDescription) {
+          return _buildImagePreview(viewModel);
+        }
+
+        if (isLandscape) {
+          final minWidth = totalWidth * 0.2;
+          final maxWidth = totalWidth * 0.8;
+          leftWidth ??= totalWidth * 0.5;
+          leftWidth = leftWidth!.clamp(minWidth, maxWidth);
+
+          return Row(
+            children: [
+              SizedBox(width: leftWidth, child: _buildImagePreview(viewModel)),
+              _buildDragHandle(
+                isHorizontal: true,
+                minSize: minWidth,
+                maxSize: maxWidth,
+                currentSize: leftWidth!,
+                onSizeUpdate: (newSize) {
+                  setState(() {
+                    leftWidth = newSize;
+                  });
+                },
+                color: colorScheme.primary,
+              ),
+              Expanded(child: _buildDescriptionView(context, viewModel)),
+            ],
+          );
+        } else {
+          final minHeight = totalHeight * 0.2;
+          final maxHeight = totalHeight * 0.8;
+          topHeight ??= totalHeight * 0.5;
+          topHeight = topHeight!.clamp(minHeight, maxHeight);
+
+          return Column(
+            children: [
+              SizedBox(height: topHeight, child: _buildImagePreview(viewModel)),
+              _buildDragHandle(
+                isHorizontal: false,
+                minSize: minHeight,
+                maxSize: maxHeight,
+                currentSize: topHeight!,
+                onSizeUpdate: (newSize) {
+                  setState(() {
+                    topHeight = newSize;
+                  });
+                },
+                color: colorScheme.primary,
+              ),
+              Expanded(child: _buildDescriptionView(context, viewModel)),
+            ],
+          );
+        }
+      },
+    );
+  }
+
   List<InlineSpan> _buildLinkSpans(List<Map<String, String>> links) {
     final theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
-    final TextStyle defaultStyle =
-        Theme.of(context).textTheme.bodySmall!.copyWith(
-              fontSize: 10,
-              color: colorScheme.onSurfaceVariant,
-            );
+    final TextStyle defaultStyle = Theme.of(context).textTheme.bodySmall!
+        .copyWith(fontSize: 10, color: colorScheme.onSurfaceVariant);
     final List<InlineSpan> spans = [];
     for (int i = 0; i < links.length; i++) {
       final link = links[i];
@@ -312,18 +459,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           ),
         );
       } else {
-        spans.add(
-          TextSpan(
-            text: link['text'],
-            style: defaultStyle,
-          ),
-        );
+        spans.add(TextSpan(text: link['text'], style: defaultStyle));
       }
       if (i < links.length - 1) {
-        spans.add(TextSpan(
-          text: '; ',
-          style: defaultStyle,
-        ));
+        spans.add(TextSpan(text: '; ', style: defaultStyle));
       }
     }
     return spans;
@@ -338,9 +477,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         text: TextSpan(text: text, style: itemStyle),
         textDirection: TextDirection.ltr,
         maxLines: 1,
-      )..layout())
-          .size
-          .width;
+      )..layout()).size.width;
     }
 
     double maxWidth;
@@ -350,8 +487,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           .map((page) => calculateTextWidth("${page.name} (${page.content})"))
           .reduce((a, b) => a > b ? a : b);
     } else {
-      maxWidth =
-          calculateTextWidth(AppLocalizations.of(context)!.images_are_missing);
+      maxWidth = calculateTextWidth(
+        AppLocalizations.of(context)!.images_are_missing,
+      );
     }
     return maxWidth + 40;
   }

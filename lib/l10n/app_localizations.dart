@@ -522,6 +522,12 @@ abstract class AppLocalizations {
   /// **'Image not loaded'**
   String get image_not_loaded;
 
+  /// No description provided for @click_for_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Click on the image element you’re interested in to get information about it.'**
+  String get click_for_info;
+
   /// No description provided for @low_quality.
   ///
   /// In en, this message translates to:

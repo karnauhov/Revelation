@@ -225,6 +225,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get image_not_loaded => 'Imagen no cargada';
 
   @override
+  String get click_for_info =>
+      'Haga clic en el elemento de la imagen que le interese para obtener información sobre él.';
+
+  @override
   String get low_quality => 'Calidad reducida';
 
   @override

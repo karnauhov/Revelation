@@ -2,6 +2,12 @@
 
 All notable changes to this application will be documented here.
 
+## [1.0.4] - Under development
+
+### Added
+
+- Description area in Primary Source Screen
+
 ## [1.0.3](https://github.com/karnauhov/Revelation/releases/tag/v1.0.3%2B113) - 04.07.25
 
 ### Added

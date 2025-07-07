@@ -225,6 +225,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get image_not_loaded => 'Зображення не завантажено';
 
   @override
+  String get click_for_info =>
+      'Натисніть на потрібний вам елемент зображення, щоб отримати інформацію про нього.';
+
+  @override
   String get low_quality => 'Якість знижено';
 
   @override

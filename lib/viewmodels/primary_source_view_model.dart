@@ -37,6 +37,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Color colorToReplace = const Color(0xFFFFFFFF);
   Color newColor = const Color(0xFFFFFFFF);
   double tolerance = 0;
+  bool showDescription = true;
+  String? descriptionContent;
 
   final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
@@ -295,6 +297,16 @@ class PrimarySourceViewModel extends ChangeNotifier {
         scaleAndPositionRestored = true;
       });
     }
+  }
+
+  void toggleDescription() {
+    showDescription = !showDescription;
+    notifyListeners();
+  }
+
+  void updateDescriptionContent(String content) {
+    descriptionContent = content;
+    notifyListeners();
   }
 
   Future<void> _getPagesSettings() async {
