@@ -29,9 +29,6 @@ class PrimarySourceScreen extends StatefulWidget {
 class PrimarySourceScreenState extends State<PrimarySourceScreen>
     with WidgetsBindingObserver {
   late PrimarySourceViewModel _viewModel;
-  double? leftWidth;
-  double? topHeight;
-  bool showDescription = true;
 
   @override
   void initState() {
@@ -312,42 +309,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     );
   }
 
-  Widget _buildDragHandle({
-    required bool isHorizontal,
-    required double minSize,
-    required double maxSize,
-    required double currentSize,
-    required Function(double) onSizeUpdate,
-    required Color color,
-  }) {
-    return MouseRegion(
-      cursor: isHorizontal
-          ? SystemMouseCursors.resizeColumn
-          : SystemMouseCursors.resizeRow,
-      child: GestureDetector(
-        onHorizontalDragUpdate: isHorizontal
-            ? (details) {
-                onSizeUpdate(
-                  (currentSize + details.delta.dx).clamp(minSize, maxSize),
-                );
-              }
-            : null,
-        onVerticalDragUpdate: !isHorizontal
-            ? (details) {
-                onSizeUpdate(
-                  (currentSize + details.delta.dy).clamp(minSize, maxSize),
-                );
-              }
-            : null,
-        child: Container(
-          width: isHorizontal ? 5 : null,
-          height: !isHorizontal ? 5 : null,
-          color: color,
-        ),
-      ),
-    );
-  }
-
   Widget _buildDescriptionView(
     BuildContext context,
     PrimarySourceViewModel viewModel,
@@ -382,56 +343,36 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         final isLandscape =
             MediaQuery.of(context).orientation == Orientation.landscape;
 
-        if (!showDescription) {
-          return _buildImagePreview(viewModel);
-        }
-
         if (isLandscape) {
-          final minWidth = totalWidth * 0.2;
-          final maxWidth = totalWidth * 0.8;
-          leftWidth ??= totalWidth * 0.5;
-          leftWidth = leftWidth!.clamp(minWidth, maxWidth);
-
+          final previewWidth = totalWidth * 2 / 3;
+          final descriptionWidth = totalWidth * 1 / 3 - 10;
           return Row(
             children: [
-              SizedBox(width: leftWidth, child: _buildImagePreview(viewModel)),
-              _buildDragHandle(
-                isHorizontal: true,
-                minSize: minWidth,
-                maxSize: maxWidth,
-                currentSize: leftWidth!,
-                onSizeUpdate: (newSize) {
-                  setState(() {
-                    leftWidth = newSize;
-                  });
-                },
-                color: colorScheme.primary,
+              SizedBox(
+                width: previewWidth,
+                child: _buildImagePreview(viewModel),
               ),
-              Expanded(child: _buildDescriptionView(context, viewModel)),
+              Container(width: 1, color: colorScheme.onSurface),
+              SizedBox(
+                width: descriptionWidth,
+                child: _buildDescriptionView(context, viewModel),
+              ),
             ],
           );
         } else {
-          final minHeight = totalHeight * 0.2;
-          final maxHeight = totalHeight * 0.8;
-          topHeight ??= totalHeight * 0.5;
-          topHeight = topHeight!.clamp(minHeight, maxHeight);
-
+          final previewHeight = totalHeight * 2 / 3;
+          final descriptionHeight = totalHeight * 1 / 3 - 10;
           return Column(
             children: [
-              SizedBox(height: topHeight, child: _buildImagePreview(viewModel)),
-              _buildDragHandle(
-                isHorizontal: false,
-                minSize: minHeight,
-                maxSize: maxHeight,
-                currentSize: topHeight!,
-                onSizeUpdate: (newSize) {
-                  setState(() {
-                    topHeight = newSize;
-                  });
-                },
-                color: colorScheme.primary,
+              SizedBox(
+                height: previewHeight,
+                child: _buildImagePreview(viewModel),
               ),
-              Expanded(child: _buildDescriptionView(context, viewModel)),
+              Container(height: 1, color: colorScheme.onSurface),
+              SizedBox(
+                height: descriptionHeight,
+                child: _buildDescriptionView(context, viewModel),
+              ),
             ],
           );
         }
