@@ -358,7 +358,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   Future<String> _getLocalFilePath(String page) async {
     final directory = await getApplicationDocumentsDirectory();
-    return '${directory.path}/$page';
+    return '${directory.path}/${AppConstants.folder}/$page';
   }
 
   Future<bool> _downloadImage(String page, bool isReload) async {

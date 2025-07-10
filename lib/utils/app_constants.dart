@@ -20,4 +20,5 @@ class AppConstants {
   };
   static const themes = {'manuscript': 1, 'forest': 2, 'sky': 3, 'grape': 4};
   static const fontSizes = {'small': 1, 'medium': 2, 'large': 3};
+  static const String folder = "revelation";
 }
