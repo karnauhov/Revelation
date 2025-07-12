@@ -381,6 +381,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
         modifiedImage = image;
       }
       final supabase = Supabase.instance.client;
+      // There’s a bug in the headers when they contain Cyrillic (or other non‑Latin) characters
+      if (supabase.storage.headers.containsKey(
+        "X-Supabase-Client-Platform-Version",
+      )) {
+        supabase.storage.headers.remove("X-Supabase-Client-Platform-Version");
+      }
       final Uint8List fileBytes = await supabase.storage
           .from(repository)
           .download(modifiedImage);
