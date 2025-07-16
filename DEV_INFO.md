@@ -12,3 +12,8 @@
 - Deploy on [Snapcraft](https://snapcraft.io) and [GitHub Releases](https://github.com/karnauhov/Revelation/releases)
 - Deploy on [Goole Play](https://play.google.com/console/u/1/developers/8693299089478158768/app/4975644827990074725/tracks/production)
 - Deploy on [Microsoft Sore](https://partner.microsoft.com/ru-ru/dashboard/products/9NXHRR2P4087/overview)
+
+# Preparing new databases
+
+- Copy DB file to web\db\...
+- Upload DB file on supabase

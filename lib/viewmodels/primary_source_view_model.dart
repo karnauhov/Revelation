@@ -2,16 +2,14 @@ import 'dart:io';
 import 'dart:ui';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/pages_settings.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/models/zoom_status.dart';
 import 'package:revelation/repositories/pages_repository.dart';
-import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:revelation/managers/server_manager.dart';
 
 class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySource primarySource;
@@ -357,46 +355,21 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   Future<String> _getLocalFilePath(String page) async {
-    final directory = await getApplicationDocumentsDirectory();
-    return '${directory.path}/${AppConstants.folder}/$page';
+    final appFolder = await getAppFolder();
+    return '${appFolder}/$page';
   }
 
   Future<bool> _downloadImage(String page, bool isReload) async {
-    try {
-      final divider = page.indexOf("/");
-      final repository = page.substring(0, divider);
-      final image = page.substring(divider + 1);
-
-      // Fix image url for mobile browser
-      String modifiedImage;
-      if (_isMobileWeb) {
-        final lastDotIndex = image.lastIndexOf('.');
-        if (lastDotIndex != -1) {
-          modifiedImage =
-              '${image.substring(0, lastDotIndex)}${AppConstants.mobileBrowserSuffix}${image.substring(lastDotIndex)}';
-        } else {
-          modifiedImage = '$image${AppConstants.mobileBrowserSuffix}';
-        }
-      } else {
-        modifiedImage = image;
-      }
-      final supabase = Supabase.instance.client;
-      // There’s a bug in the headers when they contain Cyrillic (or other non‑Latin) characters
-      if (supabase.storage.headers.containsKey(
-        "X-Supabase-Client-Platform-Version",
-      )) {
-        supabase.storage.headers.remove("X-Supabase-Client-Platform-Version");
-      }
-      final Uint8List fileBytes = await supabase.storage
-          .from(repository)
-          .download(modifiedImage);
-
+    final Uint8List? fileBytes = await ServerManager().downloadImage(
+      page,
+      _isMobileWeb,
+    );
+    if (fileBytes != null) {
       refreshError = false;
       imageData = fileBytes;
       imageName = "${primarySource.hashCode}_$page";
       return true;
-    } catch (e) {
-      log.e('Image downloading error: $e');
+    } else {
       if (isReload && localPageLoaded[page] != null) {
         refreshError = true;
         notifyListeners();

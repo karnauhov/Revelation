@@ -8,6 +8,7 @@ All notable changes to this application will be documented here.
 
 - Description area in Primary Source Screen
 - Uploaded primary-source images to supabase.com (02, P43);
+- Support local DB SQLite
 
 ## [1.0.3](https://github.com/karnauhov/Revelation/releases/tag/v1.0.3%2B113) - 04.07.25
 

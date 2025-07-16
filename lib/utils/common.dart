@@ -6,8 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:logger/logger.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/utils/app_constants.dart';
+import 'package:revelation/managers/server_manager.dart';
 import 'package:styled_text/tags/styled_text_tag_widget_builder.dart';
 import 'package:styled_text/widgets/styled_text.dart';
 import 'package:url_launcher/url_launcher.dart' show launchUrl, LaunchMode;
@@ -26,8 +30,11 @@ class AlwaysLogFilter extends LogFilter {
 final log = Logger(printer: SimplePrinter(), filter: AlwaysLogFilter());
 
 bool isDesktop() {
-  return [TargetPlatform.windows, TargetPlatform.linux, TargetPlatform.macOS]
-          .contains(defaultTargetPlatform) &&
+  return [
+        TargetPlatform.windows,
+        TargetPlatform.linux,
+        TargetPlatform.macOS,
+      ].contains(defaultTargetPlatform) &&
       !kIsWeb;
 }
 
@@ -121,21 +128,25 @@ StyledText getStyledText(String text, TextStyle? style) {
         return Transform.translate(
           offset: const Offset(0.5, -4),
           child: Text(
-              style: style?.copyWith(fontSize: (style.fontSize ?? 18) - 6),
-              textContent ?? ""),
+            style: style?.copyWith(fontSize: (style.fontSize ?? 18) - 6),
+            textContent ?? "",
+          ),
         );
       }),
       'b': StyledTextWidgetBuilderTag((_, attributes, textContent) {
         return Text(
-            style: style?.copyWith(fontWeight: FontWeight.w700),
-            textContent ?? "");
+          style: style?.copyWith(fontWeight: FontWeight.w700),
+          textContent ?? "",
+        );
       }),
     },
   );
 }
 
 Future<List<LibraryInfo>> parseLibraries(
-    AssetBundle bundle, String xmlPath) async {
+  AssetBundle bundle,
+  String xmlPath,
+) async {
   try {
     final xmlString = await bundle.loadString(xmlPath);
     final document = XmlDocument.parse(xmlString);
@@ -156,13 +167,15 @@ Future<List<LibraryInfo>> parseLibraries(
         throw Exception('Missing required tags in library element');
       }
 
-      libraries.add(LibraryInfo(
-        name: name,
-        idIcon: idIcon,
-        license: license,
-        officialSite: officialSite,
-        licenseLink: licenseLink,
-      ));
+      libraries.add(
+        LibraryInfo(
+          name: name,
+          idIcon: idIcon,
+          license: license,
+          officialSite: officialSite,
+          licenseLink: licenseLink,
+        ),
+      );
     }
 
     return libraries;
@@ -203,12 +216,14 @@ Future<List<InstitutionInfo>> parseInstitutions(
         }
       }
 
-      institutions.add(InstitutionInfo(
-        name: name,
-        idIcon: idIcon,
-        officialSite: officialSite,
-        sources: sources,
-      ));
+      institutions.add(
+        InstitutionInfo(
+          name: name,
+          idIcon: idIcon,
+          officialSite: officialSite,
+          sources: sources,
+        ),
+      );
     }
 
     return institutions;
@@ -240,12 +255,14 @@ Future<List<TopicInfo>> parseTopics(AssetBundle bundle, String xmlPath) async {
         throw Exception('Missing required tags in topic element');
       }
 
-      topics.add(TopicInfo(
-        name: name,
-        idIcon: idIcon,
-        description: description,
-        route: route,
-      ));
+      topics.add(
+        TopicInfo(
+          name: name,
+          idIcon: idIcon,
+          description: description,
+          route: route,
+        ),
+      );
     }
 
     return topics;
@@ -259,11 +276,11 @@ Future<List<TopicInfo>> parseTopics(AssetBundle bundle, String xmlPath) async {
 }
 
 MarkdownStyleSheet getMarkdownStyleSheet(
-    ThemeData theme, ColorScheme colorScheme) {
+  ThemeData theme,
+  ColorScheme colorScheme,
+) {
   return MarkdownStyleSheet.fromTheme(theme).copyWith(
-    p: theme.textTheme.bodyMedium?.copyWith(
-      color: colorScheme.onSurface,
-    ),
+    p: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
     h1: theme.textTheme.headlineSmall?.copyWith(
       fontWeight: FontWeight.bold,
       color: colorScheme.onSurface,
@@ -289,12 +306,9 @@ MarkdownStyleSheet getMarkdownStyleSheet(
       color: colorScheme.onSurface,
     ),
     a: TextStyle(
-            decoration: TextDecoration.underline,
-            decorationColor: colorScheme.primary)
-        .copyWith(
-      color: colorScheme.primary,
-      inherit: true,
-    ),
+      decoration: TextDecoration.underline,
+      decorationColor: colorScheme.primary,
+    ).copyWith(color: colorScheme.primary, inherit: true),
     strong: theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
       color: colorScheme.onSurface,
@@ -312,14 +326,9 @@ MarkdownStyleSheet getMarkdownStyleSheet(
     ),
     blockquoteDecoration: BoxDecoration(
       color: colorScheme.surfaceContainer,
-      border: Border(
-        left: BorderSide(color: colorScheme.primary, width: 4),
-      ),
+      border: Border(left: BorderSide(color: colorScheme.primary, width: 4)),
     ),
-    blockquotePadding: const EdgeInsets.symmetric(
-      horizontal: 8,
-      vertical: 4,
-    ),
+    blockquotePadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     code: theme.textTheme.bodySmall?.copyWith(
       fontFamily: 'monospace',
       backgroundColor: colorScheme.surfaceContainerHighest,
@@ -338,10 +347,12 @@ Future<bool> launchLink(String url) async {
     AudioController().playSound("click");
     if (url.toLowerCase().startsWith('mailto:')) {
       final Uri emailUri = Uri.parse(url);
-      final launched = await launchUrl(emailUri,
-          mode: isWeb()
-              ? LaunchMode.platformDefault
-              : LaunchMode.externalApplication);
+      final launched = await launchUrl(
+        emailUri,
+        mode: isWeb()
+            ? LaunchMode.platformDefault
+            : LaunchMode.externalApplication,
+      );
       if (!launched) {
         showCustomDialog(MessageType.errorBrokenLink, param: url);
       }
@@ -364,15 +375,13 @@ Future<bool> launchLink(String url) async {
   }
 }
 
-enum MessageType {
-  errorCommon,
-  errorBrokenLink,
-  warningCommon,
-  infoCommon,
-}
+enum MessageType { errorCommon, errorBrokenLink, warningCommon, infoCommon }
 
-void showCustomDialog(MessageType type,
-    {String param = "", String markdownExtension = ""}) {
+void showCustomDialog(
+  MessageType type, {
+  String param = "",
+  String markdownExtension = "",
+}) {
   BuildContext? context =
       AppRouter().navigatorKey.currentState?.overlay?.context;
   log.d("${type.name}: $param [$markdownExtension]");
@@ -419,10 +428,7 @@ void showCustomDialog(MessageType type,
         title: Center(
           child: Text(
             title,
-            style: const TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
         ),
@@ -436,15 +442,14 @@ void showCustomDialog(MessageType type,
                   icon,
                   width: 48,
                   height: 48,
-                  colorFilter:
-                      ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(width: 10.0),
                 Expanded(
-                  child: Text(
-                    message,
-                    style: const TextStyle(fontSize: 18.0),
-                  ),
+                  child: Text(message, style: const TextStyle(fontSize: 18.0)),
                 ),
               ],
             ),
@@ -460,14 +465,14 @@ void showCustomDialog(MessageType type,
                         width: 24,
                         height: 24,
                         colorFilter: ColorFilter.mode(
-                            colorScheme.primary, BlendMode.srcIn),
+                          colorScheme.primary,
+                          BlendMode.srcIn,
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Text(
                         AppLocalizations.of(context)!.more_information,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
+                        style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -503,4 +508,62 @@ Rect createNonZeroRect(Offset start, Offset end) {
     bottom = top + 1;
   }
   return Rect.fromLTRB(left, top, right, bottom);
+}
+
+Future<String> getAppFolder() async {
+  final directory = await getApplicationDocumentsDirectory();
+  return '${directory.path}/${AppConstants.folder}';
+}
+
+Future<bool> isUpdateNeeded(String folder, String fileName) async {
+  try {
+    final loc = await getLastUpdateFileLocal(folder, fileName);
+    final serv = await ServerManager().getLastUpdateFileFromServer(
+      folder,
+      fileName,
+    );
+    return loc == null ||
+        loc.millisecondsSinceEpoch < serv!.millisecondsSinceEpoch;
+  } catch (e) {
+    log.e('Checking is update needed error: $e');
+  }
+  return false;
+}
+
+Future<String> updateLocalFile(String folder, String filePath) async {
+  final appFolder = await getAppFolder();
+  final file = File(p.join(appFolder, folder, filePath));
+
+  try {
+    final Uint8List? fileBytes = await ServerManager().downloadDB(
+      folder,
+      filePath,
+    );
+    if (fileBytes != null) {
+      if (file.existsSync()) {
+        file.delete();
+      }
+      await file.create(recursive: true);
+      await file.writeAsBytes(fileBytes);
+    }
+  } catch (e) {
+    log.e('Update local file error: $e');
+  }
+
+  return file.path;
+}
+
+Future<DateTime?> getLastUpdateFileLocal(String folder, String filePath) async {
+  try {
+    final appFolder = await getAppFolder();
+    final file = File(p.join(appFolder, folder, filePath));
+    if (file.existsSync()) {
+      return file.lastModifiedSync();
+    } else {
+      return null;
+    }
+  } catch (e) {
+    log.e('Getting file info local error: $e');
+    return null;
+  }
 }

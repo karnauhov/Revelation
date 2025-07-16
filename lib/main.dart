@@ -3,9 +3,10 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/managers/db_manager.dart';
 import 'package:revelation/repositories/primary_sources_repository.dart';
 import 'package:revelation/theme.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:revelation/managers/server_manager.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:get_it/get_it.dart';
 import 'repositories/settings_repository.dart';
@@ -44,13 +45,12 @@ void main() async {
   final settingsViewModel = SettingsViewModel(SettingsRepository());
   await settingsViewModel.loadSettings();
 
-  String supabaseUrl = const String.fromEnvironment('SUPABASE_URL');
-  String supabaseKey = const String.fromEnvironment('SUPABASE_KEY');
-
-  if (supabaseUrl.isEmpty || supabaseKey.isEmpty) {
-    log.e("Supabase URL or key not found");
-  } else {
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+  final isServerConnected = await ServerManager().init();
+  if (isServerConnected) {
+    await DBManager().init(settingsViewModel.settings.selectedLanguage);
+    settingsViewModel.addListener(() {
+      DBManager().updateLanguage(settingsViewModel.settings.selectedLanguage);
+    });
   }
 
   runApp(

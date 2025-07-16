@@ -134,6 +134,20 @@
         <licenseLink>https://pub.dev/packages/audioplayers/license</licenseLink>
     </library>
     <library>
+        <name>@Package 'drift'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/drift</officialSite>
+        <licenseLink>https://pub.dev/packages/drift/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'drift_flutter'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/drift_flutter</officialSite>
+        <licenseLink>https://pub.dev/packages/drift_flutter/license</licenseLink>
+    </library>
+    <library>
         <name>@Package 'flutter_launcher_icons'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
@@ -146,6 +160,20 @@
         <license>MIT License</license>
         <officialSite>https://pub.dev/packages/msix</officialSite>
         <licenseLink>https://pub.dev/packages/msix/license</licenseLink>
+    </library>
+        <library>
+        <name>@Package 'drift_dev'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/drift_dev</officialSite>
+        <licenseLink>https://pub.dev/packages/drift_dev/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'build_runner'</name>
+        <idIcon></idIcon>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/build_runner</officialSite>
+        <licenseLink>https://pub.dev/packages/build_runner/license</licenseLink>
     </library>
     <library>
         <name>@Font 'Arimo'</name>
