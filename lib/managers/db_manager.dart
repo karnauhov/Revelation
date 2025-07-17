@@ -29,6 +29,7 @@ class DBManager {
 
   Future<void> updateLanguage(String newLanguage) async {
     if (_dbLanguage != newLanguage) {
+      await _localizedDB.close();
       _dbLanguage = newLanguage;
       _localizedDB = getLocalizedDB(_dbLanguage);
       _greekDescs = await _localizedDB.select(_localizedDB.greekDescs).get();
