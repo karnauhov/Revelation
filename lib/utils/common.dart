@@ -10,6 +10,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/models/recommended_info.dart';
 import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/managers/server_manager.dart';
 import 'package:styled_text/tags/styled_text_tag_widget_builder.dart';
@@ -266,6 +267,39 @@ Future<List<TopicInfo>> parseTopics(AssetBundle bundle, String xmlPath) async {
     }
 
     return topics;
+  } on XmlException {
+    rethrow;
+  } on PlatformException {
+    rethrow;
+  } catch (e) {
+    throw Exception('Unknown error: $e');
+  }
+}
+
+Future<List<RecommendedInfo>> parseRecommended(
+  AssetBundle bundle,
+  String xmlPath,
+) async {
+  try {
+    final xmlString = await bundle.loadString(xmlPath);
+    final document = XmlDocument.parse(xmlString);
+    final recommendations = <RecommendedInfo>[];
+
+    for (var element in document.findAllElements('recommendation')) {
+      final name = element.getElement('name')?.innerText;
+      final idIcon = element.getElement('idIcon')?.innerText;
+      final officialSite = element.getElement('officialSite')?.innerText;
+
+      if (name == null || idIcon == null || officialSite == null) {
+        throw Exception('Missing required tags in recommendation element');
+      }
+
+      recommendations.add(
+        RecommendedInfo(name: name, idIcon: idIcon, officialSite: officialSite),
+      );
+    }
+
+    return recommendations;
   } on XmlException {
     rethrow;
   } on PlatformException {

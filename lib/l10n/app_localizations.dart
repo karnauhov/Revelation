@@ -186,6 +186,18 @@ abstract class AppLocalizations {
   /// **'Many thanks to the creators of the following software and resources:'**
   String get acknowledgements_description_2;
 
+  /// No description provided for @recommended_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get recommended_title;
+
+  /// No description provided for @recommended_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended resources for studying Revelation and the Bible as a whole:'**
+  String get recommended_description;
+
   /// No description provided for @all_rights_reserved.
   ///
   /// In en, this message translates to:
@@ -269,6 +281,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error loading institutions'**
   String get error_loading_institutions;
+
+  /// No description provided for @error_loading_recommendations.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading recommendations'**
+  String get error_loading_recommendations;
 
   /// No description provided for @error_loading_topics.
   ///

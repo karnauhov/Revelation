@@ -55,6 +55,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Muchas gracias a los creadores del siguiente software y recursos:';
 
   @override
+  String get recommended_title => 'Recomendado';
+
+  @override
+  String get recommended_description =>
+      'Recursos recomendados para el estudio del Apocalipsis y de la Biblia en general:';
+
+  @override
   String get all_rights_reserved => 'Todos los derechos reservados';
 
   @override
@@ -95,6 +102,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get error_loading_institutions => 'Error al cargar instituciones';
+
+  @override
+  String get error_loading_recommendations => 'Error al cargar recomendaciones';
 
   @override
   String get error_loading_topics => 'Error al cargar temas';

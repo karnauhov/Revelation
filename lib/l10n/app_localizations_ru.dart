@@ -55,6 +55,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Огромное спасибо создателям следующего ПО и ресурсов:';
 
   @override
+  String get recommended_title => 'Рекомендуемое';
+
+  @override
+  String get recommended_description =>
+      'Рекомендуемые ресурсы для изучения Откровения и Библии в целом:';
+
+  @override
   String get all_rights_reserved => 'Все права защищены';
 
   @override
@@ -95,6 +102,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get error_loading_institutions => 'Ошибка загрузки учреждений';
+
+  @override
+  String get error_loading_recommendations => 'Ошибка загрузки рекомендаций';
 
   @override
   String get error_loading_topics => 'Ошибка загрузки тем';

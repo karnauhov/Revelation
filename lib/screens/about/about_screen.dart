@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/screens/about/icon_url.dart';
+import 'package:revelation/screens/about/recommended_list.dart';
 import 'package:revelation/viewmodels/settings_view_model.dart';
 import '../../common_widgets/icon_link_item.dart';
 import 'library_list.dart';
@@ -84,8 +85,13 @@ class _AboutScreenState extends State<AboutScreen> {
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Acknowledgments
                   _buildAcknowledgements(context, viewModel),
-                  if (!viewModel.isChangelogExpanded ||
+                  if (!viewModel.isRecommendedExpanded ||
                       !viewModel.isAcknowledgementsExpanded)
+                    Divider(height: 1, color: colorScheme.outlineVariant),
+                  // Recommended
+                  _buildRecommended(context, viewModel),
+                  if (!viewModel.isChangelogExpanded ||
+                      !viewModel.isRecommendedExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Changelog
                   _buildChangelog(context, viewModel),
@@ -354,6 +360,50 @@ class _AboutScreenState extends State<AboutScreen> {
             ),
           ),
         const LibraryList(),
+      ],
+    );
+  }
+
+  Widget _buildRecommended(BuildContext context, AboutViewModel viewModel) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return ExpansionTile(
+      initiallyExpanded: viewModel.isRecommendedExpanded,
+      onExpansionChanged: (expanded) {
+        aud.playSound("click");
+        viewModel.toggleRecommended();
+      },
+      tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+      minTileHeight: 30,
+      title: Row(
+        children: [
+          SvgPicture.asset(
+            "assets/images/UI/like.svg",
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            AppLocalizations.of(context)!.recommended_title,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
+      children: [
+        const SizedBox(height: 4),
+        if (AppLocalizations.of(context)!.recommended_description != "")
+          Text(
+            AppLocalizations.of(context)!.recommended_description,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface,
+            ),
+          ),
+        const RecommendedList(),
       ],
     );
   }

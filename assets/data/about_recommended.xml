@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<recommendations>
+    <recommendation>
+        <name>OnBible</name>
+        <idIcon>like_on_bible.png</idIcon>
+        <officialSite>https://on-bible.com</officialSite>
+    </recommendation>
+    <recommendation>
+        <name>СЛОЖНЫХ ТЕКСТОВ НЕТ</name>
+        <idIcon>like_stn.jpg</idIcon>
+        <officialSite>https://www.youtube.com/@-CTH-</officialSite>
+    </recommendation>
+</recommendations>

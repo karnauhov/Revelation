@@ -10,16 +10,14 @@ class AboutViewModel extends ChangeNotifier {
   bool isLoading = true;
   bool isChangelogExpanded = false;
   bool isAcknowledgementsExpanded = false;
+  bool isRecommendedExpanded = false;
 
   AboutViewModel() {
     _initData();
   }
 
   Future<void> _initData() async {
-    await Future.wait([
-      _initPackageInfo(),
-      _loadChangelog(),
-    ]);
+    await Future.wait([_initPackageInfo(), _loadChangelog()]);
     isLoading = false;
     notifyListeners();
   }
@@ -46,6 +44,11 @@ class AboutViewModel extends ChangeNotifier {
 
   void toggleAcknowledgements() {
     isAcknowledgementsExpanded = !isAcknowledgementsExpanded;
+    notifyListeners();
+  }
+
+  void toggleRecommended() {
+    isRecommendedExpanded = !isRecommendedExpanded;
     notifyListeners();
   }
 }
