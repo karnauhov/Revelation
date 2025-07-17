@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:revelation/managers/db_manager.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/pages_settings.dart';
 import 'package:revelation/models/primary_source.dart';
@@ -57,6 +58,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool _isMenuOpen = false;
   Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
+  DBManager _dbManager = DBManager();
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
@@ -305,6 +307,22 @@ class PrimarySourceViewModel extends ChangeNotifier {
   void updateDescriptionContent(String content) {
     descriptionContent = content;
     notifyListeners();
+  }
+
+  void showInfoForStrongNumber(int strongNumber) {
+    final wordIndex = _dbManager.greekWords.indexWhere(
+      (word) => word.id == strongNumber,
+    );
+    final descIndex = _dbManager.greekDescs.indexWhere(
+      (desc) => desc.id == strongNumber,
+    );
+    if (wordIndex != -1 && descIndex != -1) {
+      final content =
+          _dbManager.greekWords[wordIndex].word +
+          "\n\r" +
+          _dbManager.greekDescs[descIndex].desc;
+      updateDescriptionContent(content);
+    }
   }
 
   Future<void> _getPagesSettings() async {
