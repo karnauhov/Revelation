@@ -322,9 +322,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         data:
             viewModel.descriptionContent ??
             AppLocalizations.of(context)!.click_for_info,
-        styleSheet: MarkdownStyleSheet.fromTheme(
-          theme,
-        ).copyWith(p: theme.textTheme.bodyMedium),
+        styleSheet: getMarkdownStyleSheet(theme, colorScheme),
       ),
     );
   }

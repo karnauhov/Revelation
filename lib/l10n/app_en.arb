@@ -105,6 +105,8 @@
   "tolerance": "Tolerance",
   "replace_color_message": "On the first call, generating the pixel matrix will take some time.",
   "page_settings_reset": "Page settings reset",
+  "strong_number": "Strong’s number",
+  "strong_translit": "Transliteration",
   "papyrus_18_title": "Papyrus 18 (P<sup>18</sup>)",
   "papyrus_18_date": "3rd or early 4th century AD",
   "papyrus_18_content": "Fragment of Revelation (1:4-7).",

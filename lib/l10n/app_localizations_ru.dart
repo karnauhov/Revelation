@@ -336,6 +336,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get page_settings_reset => 'Сброс настроек';
 
   @override
+  String get strong_number => 'Номер по Стронгу';
+
+  @override
+  String get strong_translit => 'Транслитерация';
+
+  @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';
 
   @override

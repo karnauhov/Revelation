@@ -1,3 +1,6 @@
+// import 'dart:convert';
+// import 'dart:io';
+// import 'package:drift/drift.dart';
 import 'package:revelation/db/db_common.dart';
 import 'package:revelation/db/db_localized.dart';
 import 'package:revelation/db/connect/shared.dart';
@@ -35,6 +38,44 @@ class DBManager {
       _greekDescs = await _localizedDB.select(_localizedDB.greekDescs).get();
     }
   }
+
+  // Future<void> importDictionaryFromFile(String filePath) async {
+  //   final file = File(filePath);
+  //   final content = await file.readAsString();
+
+  //   final regex = RegExp(
+  //     r'var strongsGreekDictionary = (\{.*\});',
+  //     dotAll: true,
+  //   );
+  //   final match = regex.firstMatch(content);
+  //   if (match != null) {
+  //     final jsonString = match.group(1)!;
+  //     final dictionary = json.decode(jsonString) as Map<String, dynamic>;
+  //     for (var entry in dictionary.entries) {
+  //       final key = entry.key;
+  //       final value = entry.value as Map<String, dynamic>;
+  //       final id = int.parse(key.substring(1));
+  //       final translit = value['translit'] as String? ?? '';
+  //       final strongsDef = value['strongs_def'] as String? ?? '';
+
+  //       final updatedRows =
+  //           await (_commonDB.update(_commonDB.greekWords)
+  //                 ..where((tbl) => tbl.id.equals(id)))
+  //               .write(GreekWordsCompanion(translit: Value(translit)));
+  //       if (updatedRows == 0) {
+  //         print('Warning: No record found for id $id');
+  //       }
+
+  //       await _localizedDB
+  //           .into(_localizedDB.greekDescs)
+  //           .insert(
+  //             GreekDescsCompanion.insert(id: Value(id), desc: strongsDef),
+  //           );
+  //     }
+  //   } else {
+  //     print('Error parsing file');
+  //   }
+  // }
 
   // Future<void> importWordsFromFile(String filePath) async {
   //   final file = File(filePath);

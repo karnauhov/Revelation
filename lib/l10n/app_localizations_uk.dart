@@ -337,6 +337,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get page_settings_reset => 'Скидання налаштувань';
 
   @override
+  String get strong_number => 'Номер за Стронгом';
+
+  @override
+  String get strong_translit => 'Транслітерація';
+
+  @override
   String get papyrus_18_title => 'Папірус 18 (P<sup>18</sup>)';
 
   @override

@@ -732,6 +732,18 @@ abstract class AppLocalizations {
   /// **'Page settings reset'**
   String get page_settings_reset;
 
+  /// No description provided for @strong_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong’s number'**
+  String get strong_number;
+
+  /// No description provided for @strong_translit.
+  ///
+  /// In en, this message translates to:
+  /// **'Transliteration'**
+  String get strong_translit;
+
   /// No description provided for @papyrus_18_title.
   ///
   /// In en, this message translates to:

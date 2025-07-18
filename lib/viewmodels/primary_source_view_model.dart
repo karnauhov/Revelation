@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'dart:ui';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/managers/db_manager.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/pages_settings.dart';
@@ -309,19 +310,37 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void showInfoForStrongNumber(int strongNumber) {
+  void showInfoForStrongNumber(int strongNumber, BuildContext context) {
     final wordIndex = _dbManager.greekWords.indexWhere(
       (word) => word.id == strongNumber,
     );
-    final descIndex = _dbManager.greekDescs.indexWhere(
-      (desc) => desc.id == strongNumber,
-    );
-    if (wordIndex != -1 && descIndex != -1) {
-      final content =
-          _dbManager.greekWords[wordIndex].word +
-          "\n\r" +
-          _dbManager.greekDescs[descIndex].desc;
-      updateDescriptionContent(content);
+    if (wordIndex != -1) {
+      final word = _dbManager.greekWords[wordIndex].word;
+      if (word != "") {
+        final buffer = StringBuffer();
+        buffer.write("## ");
+        buffer.write(word.trim());
+        buffer.write("\n\r");
+        buffer.write(AppLocalizations.of(context)!.strong_number);
+        buffer.write(": **");
+        buffer.write(_dbManager.greekWords[wordIndex].id);
+        buffer.write("**\n\r");
+        buffer.write(AppLocalizations.of(context)!.strong_translit);
+        buffer.write(": **");
+        buffer.write(_dbManager.greekWords[wordIndex].translit);
+        buffer.write("**\n\r");
+        final descIndex = _dbManager.greekDescs.indexWhere(
+          (desc) => desc.id == strongNumber,
+        );
+        if (descIndex != -1) {
+          final desc = _dbManager.greekDescs[descIndex].desc.trim();
+          if (desc != "") {
+            buffer.write("\n\r>");
+            buffer.write(_dbManager.greekDescs[descIndex].desc.trim());
+          }
+        }
+        updateDescriptionContent(buffer.toString());
+      }
     }
   }
 

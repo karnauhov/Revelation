@@ -336,6 +336,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get page_settings_reset => 'Page settings reset';
 
   @override
+  String get strong_number => 'Strong’s number';
+
+  @override
+  String get strong_translit => 'Transliteration';
+
+  @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';
 
   @override

@@ -105,6 +105,8 @@
   "tolerance": "Допуск",
   "replace_color_message": "При першому виклику формування матриці пікселів займе певний час.",
   "page_settings_reset": "Скидання налаштувань",
+  "strong_number": "Номер за Стронгом",
+  "strong_translit": "Транслітерація",
   "papyrus_18_title": "Папірус 18 (P<sup>18</sup>)",
   "papyrus_18_date": "III чи початок IV століття н.е.",
   "papyrus_18_content": "Фрагмент Об'явлення (1:4-7).",
