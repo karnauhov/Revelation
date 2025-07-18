@@ -12,6 +12,7 @@ import 'package:revelation/repositories/pages_repository.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:revelation/managers/server_manager.dart';
+import 'package:revelation/utils/transliteration.dart';
 
 class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySource primarySource;
@@ -60,6 +61,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
   DBManager _dbManager = DBManager();
+  Transliteration _translit = Transliteration();
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
@@ -327,7 +329,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
         buffer.write("**\n\r");
         buffer.write(AppLocalizations.of(context)!.strong_translit);
         buffer.write(": **");
-        buffer.write(_dbManager.greekWords[wordIndex].translit);
+        buffer.write(_translit.transliterate(word.trim(), _dbManager.langDB));
+        //buffer.write(_dbManager.greekWords[wordIndex].translit);
         buffer.write("**\n\r");
         final descIndex = _dbManager.greekDescs.indexWhere(
           (desc) => desc.id == strongNumber,

@@ -21,6 +21,7 @@ class DBManager {
 
   List<GreekWord> get greekWords => _greekWords;
   List<GreekDesc> get greekDescs => _greekDescs;
+  String get langDB => _dbLanguage;
 
   Future<void> init(String language) async {
     _dbLanguage = language;
