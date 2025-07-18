@@ -35,4 +35,24 @@ class DBManager {
       _greekDescs = await _localizedDB.select(_localizedDB.greekDescs).get();
     }
   }
+
+  // Future<void> importWordsFromFile(String filePath) async {
+  //   final file = File(filePath);
+  //   final lines = await file.readAsLines();
+  //   for (var line in lines) {
+  //     final parts = line.split('|');
+  //     if (parts.length == 2) {
+  //       try {
+  //         final id = int.parse(parts[0]);
+  //         final word = parts[1];
+  //         await _commonDB
+  //             .into(_commonDB.greekWords)
+  //             .insert(GreekWordsCompanion.insert(id: Value(id), word: word));
+  //         print('Inserted $id: $word');
+  //       } catch (e) {
+  //         print('Error parsing line: $line');
+  //       }
+  //     }
+  //   }
+  // }
 }
