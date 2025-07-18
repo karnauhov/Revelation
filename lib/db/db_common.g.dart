@@ -31,19 +31,8 @@ class $GreekWordsTable extends GreekWords
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _translitMeta = const VerificationMeta(
-    'translit',
-  );
   @override
-  late final GeneratedColumn<String> translit = GeneratedColumn<String>(
-    'translit',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, word, translit];
+  List<GeneratedColumn> get $columns => [id, word];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -67,14 +56,6 @@ class $GreekWordsTable extends GreekWords
     } else if (isInserting) {
       context.missing(_wordMeta);
     }
-    if (data.containsKey('translit')) {
-      context.handle(
-        _translitMeta,
-        translit.isAcceptableOrUnknown(data['translit']!, _translitMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_translitMeta);
-    }
     return context;
   }
 
@@ -92,10 +73,6 @@ class $GreekWordsTable extends GreekWords
         DriftSqlType.string,
         data['${effectivePrefix}word'],
       )!,
-      translit: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}translit'],
-      )!,
     );
   }
 
@@ -108,27 +85,17 @@ class $GreekWordsTable extends GreekWords
 class GreekWord extends DataClass implements Insertable<GreekWord> {
   final int id;
   final String word;
-  final String translit;
-  const GreekWord({
-    required this.id,
-    required this.word,
-    required this.translit,
-  });
+  const GreekWord({required this.id, required this.word});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['word'] = Variable<String>(word);
-    map['translit'] = Variable<String>(translit);
     return map;
   }
 
   GreekWordsCompanion toCompanion(bool nullToAbsent) {
-    return GreekWordsCompanion(
-      id: Value(id),
-      word: Value(word),
-      translit: Value(translit),
-    );
+    return GreekWordsCompanion(id: Value(id), word: Value(word));
   }
 
   factory GreekWord.fromJson(
@@ -139,7 +106,6 @@ class GreekWord extends DataClass implements Insertable<GreekWord> {
     return GreekWord(
       id: serializer.fromJson<int>(json['id']),
       word: serializer.fromJson<String>(json['word']),
-      translit: serializer.fromJson<String>(json['translit']),
     );
   }
   @override
@@ -148,20 +114,15 @@ class GreekWord extends DataClass implements Insertable<GreekWord> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'word': serializer.toJson<String>(word),
-      'translit': serializer.toJson<String>(translit),
     };
   }
 
-  GreekWord copyWith({int? id, String? word, String? translit}) => GreekWord(
-    id: id ?? this.id,
-    word: word ?? this.word,
-    translit: translit ?? this.translit,
-  );
+  GreekWord copyWith({int? id, String? word}) =>
+      GreekWord(id: id ?? this.id, word: word ?? this.word);
   GreekWord copyWithCompanion(GreekWordsCompanion data) {
     return GreekWord(
       id: data.id.present ? data.id.value : this.id,
       word: data.word.present ? data.word.value : this.word,
-      translit: data.translit.present ? data.translit.value : this.translit,
     );
   }
 
@@ -169,60 +130,42 @@ class GreekWord extends DataClass implements Insertable<GreekWord> {
   String toString() {
     return (StringBuffer('GreekWord(')
           ..write('id: $id, ')
-          ..write('word: $word, ')
-          ..write('translit: $translit')
+          ..write('word: $word')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, word, translit);
+  int get hashCode => Object.hash(id, word);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is GreekWord &&
-          other.id == this.id &&
-          other.word == this.word &&
-          other.translit == this.translit);
+      (other is GreekWord && other.id == this.id && other.word == this.word);
 }
 
 class GreekWordsCompanion extends UpdateCompanion<GreekWord> {
   final Value<int> id;
   final Value<String> word;
-  final Value<String> translit;
   const GreekWordsCompanion({
     this.id = const Value.absent(),
     this.word = const Value.absent(),
-    this.translit = const Value.absent(),
   });
   GreekWordsCompanion.insert({
     this.id = const Value.absent(),
     required String word,
-    required String translit,
-  }) : word = Value(word),
-       translit = Value(translit);
+  }) : word = Value(word);
   static Insertable<GreekWord> custom({
     Expression<int>? id,
     Expression<String>? word,
-    Expression<String>? translit,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (word != null) 'word': word,
-      if (translit != null) 'translit': translit,
     });
   }
 
-  GreekWordsCompanion copyWith({
-    Value<int>? id,
-    Value<String>? word,
-    Value<String>? translit,
-  }) {
-    return GreekWordsCompanion(
-      id: id ?? this.id,
-      word: word ?? this.word,
-      translit: translit ?? this.translit,
-    );
+  GreekWordsCompanion copyWith({Value<int>? id, Value<String>? word}) {
+    return GreekWordsCompanion(id: id ?? this.id, word: word ?? this.word);
   }
 
   @override
@@ -234,9 +177,6 @@ class GreekWordsCompanion extends UpdateCompanion<GreekWord> {
     if (word.present) {
       map['word'] = Variable<String>(word.value);
     }
-    if (translit.present) {
-      map['translit'] = Variable<String>(translit.value);
-    }
     return map;
   }
 
@@ -244,8 +184,7 @@ class GreekWordsCompanion extends UpdateCompanion<GreekWord> {
   String toString() {
     return (StringBuffer('GreekWordsCompanion(')
           ..write('id: $id, ')
-          ..write('word: $word, ')
-          ..write('translit: $translit')
+          ..write('word: $word')
           ..write(')'))
         .toString();
   }
@@ -263,17 +202,9 @@ abstract class _$CommonDB extends GeneratedDatabase {
 }
 
 typedef $$GreekWordsTableCreateCompanionBuilder =
-    GreekWordsCompanion Function({
-      Value<int> id,
-      required String word,
-      required String translit,
-    });
+    GreekWordsCompanion Function({Value<int> id, required String word});
 typedef $$GreekWordsTableUpdateCompanionBuilder =
-    GreekWordsCompanion Function({
-      Value<int> id,
-      Value<String> word,
-      Value<String> translit,
-    });
+    GreekWordsCompanion Function({Value<int> id, Value<String> word});
 
 class $$GreekWordsTableFilterComposer
     extends Composer<_$CommonDB, $GreekWordsTable> {
@@ -291,11 +222,6 @@ class $$GreekWordsTableFilterComposer
 
   ColumnFilters<String> get word => $composableBuilder(
     column: $table.word,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get translit => $composableBuilder(
-    column: $table.translit,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -318,11 +244,6 @@ class $$GreekWordsTableOrderingComposer
     column: $table.word,
     builder: (column) => ColumnOrderings(column),
   );
-
-  ColumnOrderings<String> get translit => $composableBuilder(
-    column: $table.translit,
-    builder: (column) => ColumnOrderings(column),
-  );
 }
 
 class $$GreekWordsTableAnnotationComposer
@@ -339,9 +260,6 @@ class $$GreekWordsTableAnnotationComposer
 
   GeneratedColumn<String> get word =>
       $composableBuilder(column: $table.word, builder: (column) => column);
-
-  GeneratedColumn<String> get translit =>
-      $composableBuilder(column: $table.translit, builder: (column) => column);
 }
 
 class $$GreekWordsTableTableManager
@@ -374,18 +292,10 @@ class $$GreekWordsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> word = const Value.absent(),
-                Value<String> translit = const Value.absent(),
-              }) => GreekWordsCompanion(id: id, word: word, translit: translit),
+              }) => GreekWordsCompanion(id: id, word: word),
           createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String word,
-                required String translit,
-              }) => GreekWordsCompanion.insert(
-                id: id,
-                word: word,
-                translit: translit,
-              ),
+              ({Value<int> id = const Value.absent(), required String word}) =>
+                  GreekWordsCompanion.insert(id: id, word: word),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),

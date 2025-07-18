@@ -330,7 +330,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
         buffer.write(AppLocalizations.of(context)!.strong_translit);
         buffer.write(": **");
         buffer.write(_translit.transliterate(word.trim(), _dbManager.langDB));
-        //buffer.write(_dbManager.greekWords[wordIndex].translit);
         buffer.write("**\n\r");
         final descIndex = _dbManager.greekDescs.indexWhere(
           (desc) => desc.id == strongNumber,

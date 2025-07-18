@@ -8,9 +8,44 @@ class Transliteration {
     return _instance;
   }
 
-  final Set<String> _greekVowels = {'α', 'ε', 'η', 'ι', 'ο', 'υ', 'ω'};
-  final Set<String> _diphthongFirst = {'α', 'ε', 'ο', 'υ', 'η'};
-  final Set<String> _specialConsonants = {'γγ', 'γκ', 'γξ', 'γχ'};
+  final Set<String> _greekVowels = {
+    'α',
+    'ε',
+    'η',
+    'ι',
+    'ο',
+    'υ',
+    'ω',
+    'Α',
+    'Ε',
+    'Η',
+    'Ι',
+    'Ο',
+    'Υ',
+    'Ω',
+  };
+  final Set<String> _diphthongFirst = {
+    'α',
+    'ε',
+    'ο',
+    'υ',
+    'η',
+    'Α',
+    'Ε',
+    'Ο',
+    'Υ',
+    'Η',
+  };
+  final Set<String> _specialConsonants = {
+    'γγ',
+    'γκ',
+    'γξ',
+    'γχ',
+    'Γγ',
+    'Γκ',
+    'Γξ',
+    'Γχ',
+  };
 
   String transliterate(String greekWord, String locale) {
     String result = "";
@@ -112,7 +147,8 @@ class Transliteration {
         i++;
       } else {
         String mapped = letterMap[baseLetter] ?? baseLetter;
-        if ((baseLetter == 'ρ' || _greekVowels.contains(baseLetter)) &&
+        if ((baseLetter.toLowerCase() == 'ρ' ||
+                _greekVowels.contains(baseLetter.toLowerCase())) &&
             diacritics.contains('\u0314')) {
           mapped = breathingMark + mapped;
         }
@@ -163,6 +199,30 @@ class Transliteration {
     'χ': 'ch',
     'ψ': 'ps',
     'ω': 'o',
+    'Α': 'A',
+    'Β': 'B',
+    'Γ': 'G',
+    'Δ': 'D',
+    'Ε': 'E',
+    'Ζ': 'Z',
+    'Η': 'E',
+    'Θ': 'Th',
+    'Ι': 'I',
+    'Κ': 'K',
+    'Λ': 'L',
+    'Μ': 'M',
+    'Ν': 'N',
+    'Ξ': 'X',
+    'Ο': 'O',
+    'Π': 'P',
+    'Ρ': 'R',
+    'Σ': 'S',
+    'Τ': 'T',
+    'Υ': 'Y',
+    'Φ': 'Ph',
+    'Χ': 'Ch',
+    'Ψ': 'Ps',
+    'Ω': 'O',
   };
   final Map<String, String> _latinDiphthongMap = {
     'αι': 'ai',
@@ -173,6 +233,14 @@ class Transliteration {
     'αυ': 'au',
     'ευ': 'eu',
     'ηυ': 'eu',
+    'Αι': 'Ai',
+    'Ει': 'Ei',
+    'Οι': 'Oi',
+    'Ου': 'Ou',
+    'Υι': 'Ui',
+    'Αυ': 'Au',
+    'Ευ': 'Eu',
+    'Ηυ': 'Eu',
   };
   final String _latinBreathingMark = 'h';
   final Map<String, String> _latinSpecialConsonantMap = {
@@ -180,6 +248,10 @@ class Transliteration {
     'γκ': 'ng',
     'γξ': 'nx',
     'γχ': 'nch',
+    'Γγ': 'Ng',
+    'Γκ': 'Ng',
+    'Γξ': 'Nx',
+    'Γχ': 'Nch',
   };
 
   final Map<String, String> _cyrillicLetterMap = {
@@ -208,6 +280,30 @@ class Transliteration {
     'χ': 'х',
     'ψ': 'пс',
     'ω': 'о',
+    'Α': 'А',
+    'Β': 'Б',
+    'Γ': 'Г',
+    'Δ': 'Д',
+    'Ε': 'Е',
+    'Ζ': 'З',
+    'Η': 'Э',
+    'Θ': 'Т',
+    'Ι': 'И',
+    'Κ': 'К',
+    'Λ': 'Л',
+    'Μ': 'М',
+    'Ν': 'Н',
+    'Ξ': 'Кс',
+    'Ο': 'О',
+    'Π': 'П',
+    'Ρ': 'Р',
+    'Σ': 'С',
+    'Τ': 'Т',
+    'Υ': 'У',
+    'Φ': 'Ф',
+    'Χ': 'Х',
+    'Ψ': 'Пс',
+    'Ω': 'О',
   };
   final Map<String, String> _cyrillicDiphthongMap = {
     'αι': 'ай',
@@ -218,6 +314,14 @@ class Transliteration {
     'αυ': 'ав',
     'ευ': 'ев',
     'ηυ': 'ев',
+    'Αι': 'Ай',
+    'Ει': 'Ей',
+    'Οι': 'Ой',
+    'Ου': 'У',
+    'Υι': 'Уй',
+    'Αυ': 'Ав',
+    'Ευ': 'Ев',
+    'Ηυ': 'Ев',
   };
   final String _cyrillicBreathingMark = '\'';
   final Map<String, String> _cyrillicSpecialConsonantMap = {
@@ -225,6 +329,10 @@ class Transliteration {
     'γκ': 'нг',
     'γξ': 'нкс',
     'γχ': 'нх',
+    'Γγ': 'Нг',
+    'Γк': 'Нг',
+    'Γξ': 'Нкс',
+    'Γχ': 'Нх',
   };
 
   final Map<String, String> _ukrainianLetterMap = {
@@ -253,5 +361,29 @@ class Transliteration {
     'χ': 'х',
     'ψ': 'пс',
     'ω': 'о',
+    'Α': 'А',
+    'Β': 'Б',
+    'Γ': 'Г',
+    'Δ': 'Д',
+    'Ε': 'Е',
+    'Ζ': 'З',
+    'Η': 'Е',
+    'Θ': 'Т',
+    'Ι': 'І',
+    'Κ': 'К',
+    'Λ': 'Л',
+    'Μ': 'М',
+    'Ν': 'Н',
+    'Ξ': 'Кс',
+    'О': 'О',
+    'Π': 'П',
+    'Ρ': 'Р',
+    'Σ': 'С',
+    'Τ': 'Т',
+    'Υ': 'У',
+    'Φ': 'Ф',
+    'Χ': 'Х',
+    'Ψ': 'Пс',
+    'Ω': 'О',
   };
 }
