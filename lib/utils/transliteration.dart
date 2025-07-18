@@ -1,3 +1,5 @@
+import 'package:unorm_dart/unorm_dart.dart' as unorm;
+
 class Transliteration {
   static final Transliteration _instance = Transliteration._internal();
   Transliteration._internal();
@@ -55,11 +57,12 @@ class Transliteration {
     Map<String, String> diphthongMap,
     String breathingMark,
   ) {
+    final word = unorm.nfd(greekWord);
     String result = '';
     int i = 0;
 
-    while (i < greekWord.length) {
-      String char = greekWord[i];
+    while (i < word.length) {
+      String char = word[i];
 
       if (char == ' ') {
         result += ' ';
@@ -69,16 +72,16 @@ class Transliteration {
 
       List<String> diacritics = [];
       int j = i + 1;
-      while (j < greekWord.length &&
-          _isCombiningDiacritic(greekWord[j].codeUnitAt(0))) {
-        diacritics.add(greekWord[j]);
+      while (j < word.length && _isCombiningDiacritic(word[j].codeUnitAt(0))) {
+        diacritics.add(word[j]);
         j++;
       }
 
-      String nextBase = _getNextBaseLetter(greekWord, j);
-      String diphthong = char + nextBase;
+      String baseLetter = char;
+      String nextBase = _getNextBaseLetter(word, j);
+      String diphthong = baseLetter + nextBase;
 
-      if (_diphthongFirst.contains(char) &&
+      if (_diphthongFirst.contains(baseLetter) &&
           _greekVowels.contains(nextBase) &&
           diphthongMap.containsKey(diphthong)) {
         String mapped = diphthongMap[diphthong]!;
@@ -87,17 +90,18 @@ class Transliteration {
         }
         result += mapped;
         i = j;
-        while (i < greekWord.length &&
-            _isCombiningDiacritic(greekWord[i].codeUnitAt(0))) {
+        while (i < word.length &&
+            _isCombiningDiacritic(word[i].codeUnitAt(0))) {
           i++;
         }
         i++;
       } else {
-        String base = letterMap[char] ?? char;
-        if (_greekVowels.contains(char) && diacritics.contains('\u0314')) {
-          base = breathingMark + base;
+        String mapped = letterMap[baseLetter] ?? baseLetter;
+        if (_greekVowels.contains(baseLetter) &&
+            diacritics.contains('\u0314')) {
+          mapped = breathingMark + mapped;
         }
-        result += base;
+        result += mapped;
         i = j;
       }
     }

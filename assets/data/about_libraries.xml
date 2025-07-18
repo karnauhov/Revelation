@@ -148,6 +148,13 @@
         <licenseLink>https://pub.dev/packages/drift_flutter/license</licenseLink>
     </library>
     <library>
+        <name>@Package 'unorm_dart'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/unorm_dart</officialSite>
+        <licenseLink>https://pub.dev/packages/unorm_dart/license</licenseLink>
+    </library>
+    <library>
         <name>@Package 'flutter_launcher_icons'</name>
         <idIcon></idIcon>
         <license>MIT License</license>

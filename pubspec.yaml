@@ -41,6 +41,7 @@ dependencies:
   audioplayers: ^6.5.0
   drift: ^2.27.0
   drift_flutter: ^0.2.4
+  unorm_dart: ^0.3.1+1
 
 dev_dependencies:
   flutter_test:
