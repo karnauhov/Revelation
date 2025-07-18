@@ -10,6 +10,7 @@ class Transliteration {
 
   final Set<String> _greekVowels = {'α', 'ε', 'η', 'ι', 'ο', 'υ', 'ω'};
   final Set<String> _diphthongFirst = {'α', 'ε', 'ο', 'υ', 'η'};
+  final Set<String> _specialConsonants = {'γγ', 'γκ', 'γξ', 'γχ'};
 
   String transliterate(String greekWord, String locale) {
     String result = "";
@@ -21,6 +22,7 @@ class Transliteration {
           _latinLetterMap,
           _latinDiphthongMap,
           _latinBreathingMark,
+          _latinSpecialConsonantMap,
         );
         break;
       case 'ru':
@@ -29,6 +31,7 @@ class Transliteration {
           _cyrillicLetterMap,
           _cyrillicDiphthongMap,
           _cyrillicBreathingMark,
+          _cyrillicSpecialConsonantMap,
         );
         break;
       case 'uk':
@@ -37,6 +40,7 @@ class Transliteration {
           _ukrainianLetterMap,
           _cyrillicDiphthongMap,
           _cyrillicBreathingMark,
+          _cyrillicSpecialConsonantMap,
         );
         break;
       default:
@@ -45,6 +49,7 @@ class Transliteration {
           _latinLetterMap,
           _latinDiphthongMap,
           _latinBreathingMark,
+          _latinSpecialConsonantMap,
         );
         break;
     }
@@ -56,6 +61,7 @@ class Transliteration {
     Map<String, String> letterMap,
     Map<String, String> diphthongMap,
     String breathingMark,
+    Map<String, String> specialConsonantMap,
   ) {
     final word = unorm.nfd(greekWord);
     String result = '';
@@ -68,6 +74,15 @@ class Transliteration {
         result += ' ';
         i++;
         continue;
+      }
+
+      if (i + 1 < word.length) {
+        String potentialSpecial = char + word[i + 1];
+        if (_specialConsonants.contains(potentialSpecial)) {
+          result += specialConsonantMap[potentialSpecial]!;
+          i += 2;
+          continue;
+        }
       }
 
       List<String> diacritics = [];
@@ -97,7 +112,7 @@ class Transliteration {
         i++;
       } else {
         String mapped = letterMap[baseLetter] ?? baseLetter;
-        if (_greekVowels.contains(baseLetter) &&
+        if ((baseLetter == 'ρ' || _greekVowels.contains(baseLetter)) &&
             diacritics.contains('\u0314')) {
           mapped = breathingMark + mapped;
         }
@@ -160,6 +175,12 @@ class Transliteration {
     'ηυ': 'eu',
   };
   final String _latinBreathingMark = 'h';
+  final Map<String, String> _latinSpecialConsonantMap = {
+    'γγ': 'ng',
+    'γκ': 'ng',
+    'γξ': 'nx',
+    'γχ': 'nch',
+  };
 
   final Map<String, String> _cyrillicLetterMap = {
     'α': 'а',
@@ -199,6 +220,12 @@ class Transliteration {
     'ηυ': 'ев',
   };
   final String _cyrillicBreathingMark = '\'';
+  final Map<String, String> _cyrillicSpecialConsonantMap = {
+    'γγ': 'нг',
+    'γκ': 'нг',
+    'γξ': 'нкс',
+    'γχ': 'нх',
+  };
 
   final Map<String, String> _ukrainianLetterMap = {
     'α': 'а',
@@ -215,7 +242,7 @@ class Transliteration {
     'μ': 'м',
     'ν': 'н',
     'ξ': 'кс',
-    'ο': 'о',
+    'о': 'о',
     'π': 'п',
     'ρ': 'р',
     'σ': 'с',
