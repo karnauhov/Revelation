@@ -31,8 +31,9 @@ class PrimarySourceToolbar extends StatelessWidget {
     if (isBottom) {
       return LayoutBuilder(
         builder: (context, constraints) {
-          final int calcButtons =
-              _calcFitButtons(constraints.maxWidth - dropdownWidth);
+          final int calcButtons = _calcFitButtons(
+            constraints.maxWidth - dropdownWidth,
+          );
           final bool showFullActions =
               calcButtons >= PrimarySourceScreen.numButtons;
           return Row(
@@ -44,9 +45,7 @@ class PrimarySourceToolbar extends StatelessWidget {
         },
       );
     } else {
-      return Row(
-        children: _buildFullActions(context),
-      );
+      return Row(children: _buildFullActions(context));
     }
   }
 
@@ -77,8 +76,9 @@ class PrimarySourceToolbar extends StatelessWidget {
           }
         },
         items: primarySource.permissionsReceived
-            ? primarySource.pages
-                .map<DropdownMenuItem<model.Page>>((model.Page value) {
+            ? primarySource.pages.map<DropdownMenuItem<model.Page>>((
+                model.Page value,
+              ) {
                 return DropdownMenuItem<model.Page>(
                   value: value,
                   child: _buildDropdownItem(context, viewModel, value),
@@ -95,12 +95,15 @@ class PrimarySourceToolbar extends StatelessWidget {
             : Icon(Icons.sync),
         color: viewModel.refreshError ? colorScheme.error : colorScheme.primary,
         tooltip: AppLocalizations.of(context)!.reload_image,
-        onPressed: viewModel.primarySource.permissionsReceived &&
+        onPressed:
+            viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null
             ? () {
                 aud.playSound("click");
-                viewModel.loadImage(viewModel.selectedPage!.image,
-                    isReload: true);
+                viewModel.loadImage(
+                  viewModel.selectedPage!.image,
+                  isReload: true,
+                );
               }
             : null,
       ),
@@ -142,8 +145,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                       viewportSize.width / 2,
                       viewportSize.height / 2,
                     );
-                    viewModel.imageController
-                        .zoomOut(viewportCenter, viewportSize);
+                    viewModel.imageController.zoomOut(
+                      viewportCenter,
+                      viewportSize,
+                    );
                   }
                 : null,
           );
@@ -175,7 +180,8 @@ class PrimarySourceToolbar extends StatelessWidget {
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.toggle_negative,
-        onPressed: viewModel.primarySource.permissionsReceived &&
+        onPressed:
+            viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null &&
                 viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
@@ -194,7 +200,8 @@ class PrimarySourceToolbar extends StatelessWidget {
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.toggle_monochrome,
-        onPressed: viewModel.primarySource.permissionsReceived &&
+        onPressed:
+            viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null &&
                 !viewModel.primarySource.isMonochrome &&
                 viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
@@ -210,12 +217,13 @@ class PrimarySourceToolbar extends StatelessWidget {
         style: IconButton.styleFrom(
           backgroundColor:
               viewModel.brightness != 0 || viewModel.contrast != 100
-                  ? colorScheme.secondaryContainer
-                  : Colors.transparent,
+              ? colorScheme.secondaryContainer
+              : Colors.transparent,
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.brightness_contrast,
-        onPressed: viewModel.primarySource.permissionsReceived &&
+        onPressed:
+            viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null &&
                 viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
@@ -230,12 +238,13 @@ class PrimarySourceToolbar extends StatelessWidget {
         style: IconButton.styleFrom(
           backgroundColor:
               viewModel.selectedArea != null && viewModel.tolerance != 0
-                  ? colorScheme.secondaryContainer
-                  : Colors.transparent,
+              ? colorScheme.secondaryContainer
+              : Colors.transparent,
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.color_replacement,
-        onPressed: viewModel.primarySource.permissionsReceived &&
+        onPressed:
+            viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null &&
                 viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
@@ -248,7 +257,8 @@ class PrimarySourceToolbar extends StatelessWidget {
         icon: const Icon(Icons.cleaning_services),
         color: colorScheme.primary,
         tooltip: AppLocalizations.of(context)!.page_settings_reset,
-        onPressed: viewModel.primarySource.permissionsReceived &&
+        onPressed:
+            viewModel.primarySource.permissionsReceived &&
                 viewModel.selectedPage != null &&
                 viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
@@ -262,8 +272,10 @@ class PrimarySourceToolbar extends StatelessWidget {
 
   List<Widget> _buildAdaptiveActions(BuildContext context, int numButtons) {
     final allActions = _buildFullActions(context);
-    final visibleActions =
-        allActions.sublist(0, 1 + (numButtons > 0 ? numButtons : 0));
+    final visibleActions = allActions.sublist(
+      0,
+      1 + (numButtons > 0 ? numButtons : 0),
+    );
     final overflowActions = numButtons < PrimarySourceScreen.numButtons
         ? allActions.sublist(1 + numButtons)
         : [];
@@ -291,8 +303,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                 final RelativeRect position = RelativeRect.fromRect(
                   Rect.fromPoints(
                     button.localToGlobal(Offset.zero, ancestor: overlay),
-                    button.localToGlobal(button.size.bottomRight(Offset.zero),
-                        ancestor: overlay),
+                    button.localToGlobal(
+                      button.size.bottomRight(Offset.zero),
+                      ancestor: overlay,
+                    ),
                   ),
                   Offset.zero & overlay.size,
                 );
@@ -313,11 +327,13 @@ class PrimarySourceToolbar extends StatelessWidget {
                     if (numButtons < 1)
                       PopupMenuItem(
                         value: 'refresh',
-                        enabled: viewModel.selectedPage != null &&
+                        enabled:
+                            viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived,
                         child: Builder(
                           builder: (context) {
-                            final isEnabled = viewModel.selectedPage != null &&
+                            final isEnabled =
+                                viewModel.selectedPage != null &&
                                 viewModel.primarySource.permissionsReceived;
                             final iconColor = isEnabled
                                 ? colorScheme.primary
@@ -325,15 +341,19 @@ class PrimarySourceToolbar extends StatelessWidget {
                             return Row(
                               children: [
                                 viewModel.refreshError
-                                    ? Icon(Icons.sync_problem,
+                                    ? Icon(
+                                        Icons.sync_problem,
                                         color: isEnabled
                                             ? colorScheme.error
-                                            : colorScheme.onSurface
-                                                .withValues(alpha: 0.38))
+                                            : colorScheme.onSurface.withValues(
+                                                alpha: 0.38,
+                                              ),
+                                      )
                                     : Icon(Icons.sync, color: iconColor),
                                 const SizedBox(width: 8),
                                 Text(
-                                    AppLocalizations.of(context)!.reload_image),
+                                  AppLocalizations.of(context)!.reload_image,
+                                ),
                               ],
                             );
                           },
@@ -393,8 +413,11 @@ class PrimarySourceToolbar extends StatelessWidget {
                               children: [
                                 Icon(Icons.zoom_out_map, color: iconColor),
                                 const SizedBox(width: 8),
-                                Text(AppLocalizations.of(context)!
-                                    .restore_original_scale),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.restore_original_scale,
+                                ),
                               ],
                             );
                           },
@@ -407,14 +430,17 @@ class PrimarySourceToolbar extends StatelessWidget {
                             ? const EdgeInsets.symmetric(horizontal: 4.0)
                             : const EdgeInsets.symmetric(horizontal: 12.0),
                         value: 'toggle_negative',
-                        enabled: viewModel.selectedPage != null &&
+                        enabled:
+                            viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived &&
-                            viewModel.localPageLoaded[
-                                    viewModel.selectedPage!.image] ==
+                            viewModel.localPageLoaded[viewModel
+                                    .selectedPage!
+                                    .image] ==
                                 true,
                         child: Builder(
                           builder: (context) {
-                            final isEnabled = viewModel.selectedPage != null &&
+                            final isEnabled =
+                                viewModel.selectedPage != null &&
                                 viewModel.primarySource.permissionsReceived;
                             final iconColor = isEnabled
                                 ? colorScheme.primary
@@ -428,15 +454,18 @@ class PrimarySourceToolbar extends StatelessWidget {
                                       shape: BoxShape.circle,
                                       color: colorScheme.secondaryContainer,
                                     ),
-                                    child: Icon(Icons.invert_colors,
-                                        color: colorScheme.primary),
+                                    child: Icon(
+                                      Icons.invert_colors,
+                                      color: colorScheme.primary,
+                                    ),
                                   )
                                 else
                                   Icon(Icons.invert_colors, color: iconColor),
                                 if (!viewModel.isNegative)
                                   const SizedBox(width: 8),
-                                Text(AppLocalizations.of(context)!
-                                    .toggle_negative),
+                                Text(
+                                  AppLocalizations.of(context)!.toggle_negative,
+                                ),
                               ],
                             );
                           },
@@ -448,15 +477,18 @@ class PrimarySourceToolbar extends StatelessWidget {
                             ? const EdgeInsets.symmetric(horizontal: 4.0)
                             : const EdgeInsets.symmetric(horizontal: 12.0),
                         value: 'toggle_monochrome',
-                        enabled: viewModel.selectedPage != null &&
+                        enabled:
+                            viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived &&
                             !viewModel.primarySource.isMonochrome &&
-                            viewModel.localPageLoaded[
-                                    viewModel.selectedPage!.image] ==
+                            viewModel.localPageLoaded[viewModel
+                                    .selectedPage!
+                                    .image] ==
                                 true,
                         child: Builder(
                           builder: (context) {
-                            final isEnabled = viewModel.selectedPage != null &&
+                            final isEnabled =
+                                viewModel.selectedPage != null &&
                                 viewModel.primarySource.permissionsReceived &&
                                 !viewModel.primarySource.isMonochrome;
                             final iconColor = isEnabled
@@ -471,16 +503,23 @@ class PrimarySourceToolbar extends StatelessWidget {
                                       shape: BoxShape.circle,
                                       color: colorScheme.secondaryContainer,
                                     ),
-                                    child: Icon(Icons.monochrome_photos,
-                                        color: colorScheme.primary),
+                                    child: Icon(
+                                      Icons.monochrome_photos,
+                                      color: colorScheme.primary,
+                                    ),
                                   )
                                 else
-                                  Icon(Icons.monochrome_photos,
-                                      color: iconColor),
+                                  Icon(
+                                    Icons.monochrome_photos,
+                                    color: iconColor,
+                                  ),
                                 if (!viewModel.isMonochrome)
                                   const SizedBox(width: 8),
-                                Text(AppLocalizations.of(context)!
-                                    .toggle_monochrome),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.toggle_monochrome,
+                                ),
                               ],
                             );
                           },
@@ -488,19 +527,23 @@ class PrimarySourceToolbar extends StatelessWidget {
                       ),
                     if (numButtons < 7)
                       PopupMenuItem(
-                        padding: viewModel.brightness != 0 ||
+                        padding:
+                            viewModel.brightness != 0 ||
                                 viewModel.contrast != 100
                             ? const EdgeInsets.symmetric(horizontal: 4.0)
                             : const EdgeInsets.symmetric(horizontal: 12.0),
                         value: 'brightness_contrast',
-                        enabled: viewModel.selectedPage != null &&
+                        enabled:
+                            viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived &&
-                            viewModel.localPageLoaded[
-                                    viewModel.selectedPage!.image] ==
+                            viewModel.localPageLoaded[viewModel
+                                    .selectedPage!
+                                    .image] ==
                                 true,
                         child: Builder(
                           builder: (context) {
-                            final isEnabled = viewModel.selectedPage != null &&
+                            final isEnabled =
+                                viewModel.selectedPage != null &&
                                 viewModel.primarySource.permissionsReceived;
                             final iconColor = isEnabled
                                 ? colorScheme.primary
@@ -516,16 +559,21 @@ class PrimarySourceToolbar extends StatelessWidget {
                                       shape: BoxShape.circle,
                                       color: colorScheme.secondaryContainer,
                                     ),
-                                    child: Icon(Icons.brightness_6,
-                                        color: colorScheme.primary),
+                                    child: Icon(
+                                      Icons.brightness_6,
+                                      color: colorScheme.primary,
+                                    ),
                                   )
                                 else
                                   Icon(Icons.brightness_6, color: iconColor),
                                 if (viewModel.brightness == 0 &&
                                     viewModel.contrast == 100)
                                   const SizedBox(width: 8),
-                                Text(AppLocalizations.of(context)!
-                                    .brightness_contrast),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.brightness_contrast,
+                                ),
                               ],
                             );
                           },
@@ -533,19 +581,23 @@ class PrimarySourceToolbar extends StatelessWidget {
                       ),
                     if (numButtons < 8)
                       PopupMenuItem(
-                        padding: viewModel.selectedArea != null &&
+                        padding:
+                            viewModel.selectedArea != null &&
                                 viewModel.tolerance != 0
                             ? const EdgeInsets.symmetric(horizontal: 4.0)
                             : const EdgeInsets.symmetric(horizontal: 12.0),
                         value: 'replace_color',
-                        enabled: viewModel.selectedPage != null &&
+                        enabled:
+                            viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived &&
-                            viewModel.localPageLoaded[
-                                    viewModel.selectedPage!.image] ==
+                            viewModel.localPageLoaded[viewModel
+                                    .selectedPage!
+                                    .image] ==
                                 true,
                         child: Builder(
                           builder: (context) {
-                            final isEnabled = viewModel.selectedPage != null &&
+                            final isEnabled =
+                                viewModel.selectedPage != null &&
                                 viewModel.primarySource.permissionsReceived;
                             final iconColor = isEnabled
                                 ? colorScheme.primary
@@ -561,16 +613,21 @@ class PrimarySourceToolbar extends StatelessWidget {
                                       shape: BoxShape.circle,
                                       color: colorScheme.secondaryContainer,
                                     ),
-                                    child: Icon(Icons.format_paint,
-                                        color: colorScheme.primary),
+                                    child: Icon(
+                                      Icons.format_paint,
+                                      color: colorScheme.primary,
+                                    ),
                                   )
                                 else
                                   Icon(Icons.format_paint, color: iconColor),
                                 if (viewModel.selectedArea == null ||
                                     viewModel.tolerance == 0)
                                   const SizedBox(width: 8),
-                                Text(AppLocalizations.of(context)!
-                                    .color_replacement),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.color_replacement,
+                                ),
                               ],
                             );
                           },
@@ -579,14 +636,17 @@ class PrimarySourceToolbar extends StatelessWidget {
                     if (numButtons < 9)
                       PopupMenuItem(
                         value: 'reset_page',
-                        enabled: viewModel.selectedPage != null &&
+                        enabled:
+                            viewModel.selectedPage != null &&
                             viewModel.primarySource.permissionsReceived &&
-                            viewModel.localPageLoaded[
-                                    viewModel.selectedPage!.image] ==
+                            viewModel.localPageLoaded[viewModel
+                                    .selectedPage!
+                                    .image] ==
                                 true,
                         child: Builder(
                           builder: (context) {
-                            final isEnabled = viewModel.selectedPage != null &&
+                            final isEnabled =
+                                viewModel.selectedPage != null &&
                                 viewModel.primarySource.permissionsReceived;
                             final iconColor = isEnabled
                                 ? colorScheme.primary
@@ -595,8 +655,11 @@ class PrimarySourceToolbar extends StatelessWidget {
                               children: [
                                 Icon(Icons.cleaning_services, color: iconColor),
                                 const SizedBox(width: 8),
-                                Text(AppLocalizations.of(context)!
-                                    .page_settings_reset),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.page_settings_reset,
+                                ),
                               ],
                             );
                           },
@@ -613,8 +676,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                     case 'refresh':
                       if (viewModel.selectedPage != null &&
                           viewModel.primarySource.permissionsReceived) {
-                        viewModel.loadImage(viewModel.selectedPage!.image,
-                            isReload: true);
+                        viewModel.loadImage(
+                          viewModel.selectedPage!.image,
+                          isReload: true,
+                        );
                       }
                       break;
                     case 'zoom_in':
@@ -624,8 +689,10 @@ class PrimarySourceToolbar extends StatelessWidget {
                       break;
                     case 'zoom_out':
                       if (zoomStatus.canZoomOut) {
-                        viewModel.imageController
-                            .zoomOut(viewportCenter, viewportSize);
+                        viewModel.imageController.zoomOut(
+                          viewportCenter,
+                          viewportSize,
+                        );
                       }
                       break;
                     case 'reset':
@@ -674,7 +741,10 @@ class PrimarySourceToolbar extends StatelessWidget {
   }
 
   Widget _buildDropdownItem(
-      BuildContext context, PrimarySourceViewModel viewModel, model.Page page) {
+    BuildContext context,
+    PrimarySourceViewModel viewModel,
+    model.Page page,
+  ) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final bool? loaded = viewModel.localPageLoaded[page.image];
@@ -682,15 +752,13 @@ class PrimarySourceToolbar extends StatelessWidget {
         ? colorScheme.onSurfaceVariant
         : (loaded ? colorScheme.primary : colorScheme.error);
 
-    final FontWeight weight =
-        page == viewModel.selectedPage ? FontWeight.bold : FontWeight.normal;
+    final FontWeight weight = page == viewModel.selectedPage
+        ? FontWeight.bold
+        : FontWeight.normal;
 
     return Text.rich(
       TextSpan(
-        style: TextStyle(
-          color: textColor,
-          fontWeight: weight,
-        ),
+        style: TextStyle(color: textColor, fontWeight: weight),
         children: [
           TextSpan(text: page.name),
           TextSpan(
@@ -753,7 +821,11 @@ class PrimarySourceToolbar extends StatelessWidget {
                   parentContext: screenContext,
                   onApply: (selectedArea, colorToReplace, newColor, tolerance) {
                     viewModel.applyColorReplacement(
-                        selectedArea, colorToReplace, newColor, tolerance);
+                      selectedArea,
+                      colorToReplace,
+                      newColor,
+                      tolerance,
+                    );
                   },
                   onCancel: () {
                     viewModel.resetColorReplacement();
