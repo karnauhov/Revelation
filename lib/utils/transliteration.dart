@@ -56,7 +56,6 @@ class Transliteration {
           greekWord,
           _latinLetterMap,
           _latinDiphthongMap,
-          _latinBreathingMark,
           _latinSpecialConsonantMap,
         );
         break;
@@ -65,7 +64,6 @@ class Transliteration {
           greekWord,
           _cyrillicLetterMap,
           _cyrillicDiphthongMap,
-          _cyrillicBreathingMark,
           _cyrillicSpecialConsonantMap,
         );
         break;
@@ -74,7 +72,6 @@ class Transliteration {
           greekWord,
           _ukrainianLetterMap,
           _cyrillicDiphthongMap,
-          _cyrillicBreathingMark,
           _cyrillicSpecialConsonantMap,
         );
         break;
@@ -83,7 +80,6 @@ class Transliteration {
           greekWord,
           _latinLetterMap,
           _latinDiphthongMap,
-          _latinBreathingMark,
           _latinSpecialConsonantMap,
         );
         break;
@@ -95,7 +91,6 @@ class Transliteration {
     String greekWord,
     Map<String, String> letterMap,
     Map<String, String> diphthongMap,
-    String breathingMark,
     Map<String, String> specialConsonantMap,
   ) {
     final word = unorm.nfd(greekWord);
@@ -136,7 +131,7 @@ class Transliteration {
           diphthongMap.containsKey(diphthong)) {
         String mapped = diphthongMap[diphthong]!;
         if (diacritics.contains('\u0314')) {
-          mapped = breathingMark + mapped;
+          mapped = _breathingMark + mapped;
         }
         result += mapped;
         i = j;
@@ -150,7 +145,7 @@ class Transliteration {
         if ((baseLetter.toLowerCase() == 'ρ' ||
                 _greekVowels.contains(baseLetter.toLowerCase())) &&
             diacritics.contains('\u0314')) {
-          mapped = breathingMark + mapped;
+          mapped = _breathingMark + mapped;
         }
         result += mapped;
         i = j;
@@ -173,6 +168,7 @@ class Transliteration {
     return '';
   }
 
+  final String _breathingMark = '\'';
   final Map<String, String> _latinLetterMap = {
     'α': 'a',
     'β': 'b',
@@ -242,7 +238,6 @@ class Transliteration {
     'Ευ': 'Eu',
     'Ηυ': 'Eu',
   };
-  final String _latinBreathingMark = 'h';
   final Map<String, String> _latinSpecialConsonantMap = {
     'γγ': 'ng',
     'γκ': 'ng',
@@ -323,7 +318,6 @@ class Transliteration {
     'Ευ': 'Ев',
     'Ηυ': 'Ев',
   };
-  final String _cyrillicBreathingMark = '\'';
   final Map<String, String> _cyrillicSpecialConsonantMap = {
     'γγ': 'нг',
     'γκ': 'нг',
