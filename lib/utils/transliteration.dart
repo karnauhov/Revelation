@@ -135,11 +135,11 @@ class Transliteration {
         }
         result += mapped;
         i = j;
+        i++;
         while (i < word.length &&
             _isCombiningDiacritic(word[i].codeUnitAt(0))) {
           i++;
         }
-        i++;
       } else {
         String mapped = letterMap[baseLetter] ?? baseLetter;
         if ((baseLetter.toLowerCase() == 'ρ' ||
