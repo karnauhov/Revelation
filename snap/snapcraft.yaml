@@ -22,7 +22,7 @@ grade: stable
 confinement: strict
 
 source-code: https://github.com/karnauhov/Revelation
-contact: karnauhov.oleg@gmail.com
+contact: https://t.me/karnauhov
 website: https://www.revelation.website
 issues: https://github.com/karnauhov/Revelation/issues
 donation: https://www.revelation.website/demo/en.html#join
