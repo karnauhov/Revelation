@@ -1,6 +1,8 @@
 // import 'dart:convert';
 // import 'dart:io';
 // import 'package:drift/drift.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:path/path.dart' as path;
 import 'package:revelation/db/db_common.dart';
 import 'package:revelation/db/db_localized.dart';
 import 'package:revelation/db/connect/shared.dart';
@@ -39,6 +41,112 @@ class DBManager {
       _greekDescs = await _localizedDB.select(_localizedDB.greekDescs).get();
     }
   }
+
+  // List<String> getUniqueValuesAfterHash(String filePath) {
+  //   final file = File(filePath);
+
+  //   if (!file.existsSync()) {
+  //     print('File not found: $filePath');
+  //     return [];
+  //   }
+
+  //   final lines = file.readAsLinesSync();
+  //   final uniqueValues = <String>{};
+
+  //   for (var line in lines) {
+  //     final parts = line.split('#');
+  //     if (parts.length > 1) {
+  //       final value = parts.last.trim();
+  //       if (value.isNotEmpty) {
+  //         uniqueValues.add(value);
+  //       }
+  //     }
+  //   }
+
+  //   final sortedList = uniqueValues.toList()..sort();
+  //   return sortedList;
+  // }
+
+  // String stripTags(String html) {
+  //   final regExp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
+  //   return html.replaceAll(regExp, '');
+  // }
+
+  // Future<void> fetchAndParse() async {
+  //   // Create directory for HTML files if it doesn't exist
+  //   final htmlDir = Directory('C:/Users/karna/Downloads/html_files');
+  //   if (!await htmlDir.exists()) {
+  //     await htmlDir.create();
+  //   }
+
+  //   // Open output.txt for writing
+  //   final file = File('C:/Users/karna/Downloads/output.txt').openWrite();
+
+  //   // Loop through numbers 1 to 5624
+  //   for (int number = 2106; number <= 5624; number++) {
+  //     // Handle missing numbers
+  //     if (number == 2717 || (number >= 3203 && number <= 3302)) {
+  //       final line = '$number#';
+  //       file.write('$line\n');
+  //       print(line);
+  //       continue;
+  //     }
+
+  //     // Define path for HTML file
+  //     final htmlFilePath = path.join(htmlDir.path, '$number.html');
+  //     final htmlFile = File(htmlFilePath);
+  //     String html;
+
+  //     // Check if HTML file already exists locally
+  //     if (await htmlFile.exists()) {
+  //       html = await htmlFile.readAsString();
+  //     } else {
+  //       // Fetch HTML from URL if file doesn't exist
+  //       final url = 'https://biblehub.com/greek/$number.htm';
+  //       try {
+  //         final response = await http.get(Uri.parse(url));
+  //         if (response.statusCode == 200) {
+  //           html = response.body;
+  //           await htmlFile.writeAsString(html); // Save HTML to file
+  //         } else {
+  //           print('Failed to fetch $url: ${response.statusCode}');
+  //           continue;
+  //         }
+  //       } catch (e) {
+  //         print('Error fetching $url: $e');
+  //         continue;
+  //       }
+  //     }
+
+  //     // Parse HTML to extract Part of Speech
+  //     final startMarker = 'Part of Speech: </span>';
+  //     final endMarker = '<br>';
+  //     final startIndex = html.indexOf(startMarker);
+  //     if (startIndex != -1) {
+  //       final valueStart = startIndex + startMarker.length;
+  //       final endIndex = html.indexOf(endMarker, valueStart);
+  //       if (endIndex != -1) {
+  //         final substring = html.substring(valueStart, endIndex);
+  //         final value = stripTags(substring).trim();
+  //         final line = '$number#$value';
+  //         file.write('$line\n');
+  //         print(line);
+  //       } else {
+  //         print('End marker not found for $number');
+  //       }
+  //     } else {
+  //       print('Start marker not found for $number');
+  //     }
+
+  //     // Add delay to avoid overloading the server
+  //     await Future.delayed(Duration(seconds: 1));
+  //     await file.flush();
+  //   }
+
+  //   // Close the output file
+  //   await file.flush();
+  //   file.close();
+  // }
 
   // Future<void> importDictionaryFromFile(String filePath) async {
   //   final file = File(filePath);
