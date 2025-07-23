@@ -345,55 +345,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strong_part_of_speech => 'Part of speech';
 
   @override
-  String get strong_indeclNumAdj => 'Indeclinable Numeral (Adjective)';
+  String get strong_indeclNumAdj => 'indeclinable numeral (adjective)';
 
   @override
-  String get strong_indeclLetN => 'Indeclinable Letter (Noun)';
+  String get strong_indeclLetN => 'indeclinable letter (noun)';
 
   @override
   String get strong_indeclinable => 'indeclinable';
 
   @override
-  String get strong_adj => 'Adjective';
+  String get strong_adj => 'adjective';
 
   @override
-  String get strong_advCor => 'Adverb, Correlative';
+  String get strong_advCor => 'adverb, correlative';
 
   @override
-  String get strong_advInt => 'Adverb, Interrogative';
+  String get strong_advInt => 'adverb, interrogative';
 
   @override
-  String get strong_advNeg => 'Adverb, Negative';
+  String get strong_advNeg => 'adverb, negative';
 
   @override
-  String get strong_advSup => 'Adverb, Superlative';
+  String get strong_advSup => 'adverb, superlative';
 
   @override
-  String get strong_adv => 'Adverb';
+  String get strong_adv => 'adverb';
 
   @override
-  String get strong_comp => 'Comparative';
+  String get strong_comp => 'comparative';
 
   @override
-  String get strong_aramaicTransWord => 'Aramaic Transliterated Word';
+  String get strong_aramaicTransWord => 'aramaic transliterated word';
 
   @override
-  String get strong_hebrewForm => 'Hebrew Form';
+  String get strong_hebrewForm => 'hebrew form';
 
   @override
-  String get strong_hebrewNoun => 'Hebrew Noun';
+  String get strong_hebrewNoun => 'hebrew noun';
 
   @override
-  String get strong_hebrew => 'Hebrew';
+  String get strong_hebrew => 'hebrew';
 
   @override
   String get strong_location => 'location';
 
   @override
-  String get strong_properNoun => 'Proper Noun';
+  String get strong_properNoun => 'proper noun';
 
   @override
-  String get strong_noun => 'Noun';
+  String get strong_noun => 'noun';
 
   @override
   String get strong_masc => 'masculine';
@@ -411,85 +411,85 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strong_otherType => 'other Type';
 
   @override
-  String get strong_verbImp => 'Verb (Imperative)';
+  String get strong_verbImp => 'verb (imperative)';
 
   @override
-  String get strong_verb => 'Verb';
+  String get strong_verb => 'verb';
 
   @override
-  String get strong_pronDat => 'Pronoun, Dative Case';
+  String get strong_pronDat => 'pronoun, dative case';
 
   @override
-  String get strong_pronPoss => 'Possessive Pronoun';
+  String get strong_pronPoss => 'possessive pronoun';
 
   @override
-  String get strong_pronPers => 'Personal Pronoun';
+  String get strong_pronPers => 'personal pronoun';
 
   @override
-  String get strong_pronRecip => 'Reciprocal Pronoun';
+  String get strong_pronRecip => 'reciprocal pronoun';
 
   @override
-  String get strong_pronRefl => 'Reflexive Pronoun';
+  String get strong_pronRefl => 'reflexive pronoun';
 
   @override
-  String get strong_pronRel => 'Relative Pronoun';
+  String get strong_pronRel => 'relative pronoun';
 
   @override
-  String get strong_pronCorrel => 'Correlative Pronoun';
+  String get strong_pronCorrel => 'correlative pronoun';
 
   @override
-  String get strong_pronIndef => 'Indefinite Pronoun';
+  String get strong_pronIndef => 'indefinite pronoun';
 
   @override
-  String get strong_pronInterr => 'Interrogative Pronoun';
+  String get strong_pronInterr => 'interrogative pronoun';
 
   @override
-  String get strong_pronDem => 'Demonstrative Pronoun';
+  String get strong_pronDem => 'demonstrative pronoun';
 
   @override
-  String get strong_pron => 'Pronoun';
+  String get strong_pron => 'pronoun';
 
   @override
-  String get strong_particleCond => 'Conditional Particle';
+  String get strong_particleCond => 'conditional particle';
 
   @override
-  String get strong_particleDisj => 'Disjunctive Particle';
+  String get strong_particleDisj => 'disjunctive particle';
 
   @override
-  String get strong_particleInterr => 'Interrogative Particle';
+  String get strong_particleInterr => 'interrogative particle';
 
   @override
-  String get strong_particleNeg => 'Negative Particle';
+  String get strong_particleNeg => 'negative particle';
 
   @override
-  String get strong_particle => 'Particle';
+  String get strong_particle => 'particle';
 
   @override
-  String get strong_interj => 'Interjection';
+  String get strong_interj => 'interjection';
 
   @override
-  String get strong_participle => 'Participle';
+  String get strong_participle => 'participle';
 
   @override
-  String get strong_prefix => 'Prefix';
+  String get strong_prefix => 'prefix';
 
   @override
-  String get strong_prep => 'Preposition';
+  String get strong_prep => 'preposition';
 
   @override
-  String get strong_artDef => 'Definite Article';
+  String get strong_artDef => 'definite article';
 
   @override
-  String get strong_phraseIdi => 'Phrase (idiomatic expression)';
+  String get strong_phraseIdi => 'phrase (idiomatic expression)';
 
   @override
-  String get strong_phrase => 'Phrase';
+  String get strong_phrase => 'phrase';
 
   @override
-  String get strong_conjNeg => 'Negative Conjunction';
+  String get strong_conjNeg => 'negative conjunction';
 
   @override
-  String get strong_conj => 'Conjunction';
+  String get strong_conj => 'conjunction';
 
   @override
   String get strong_or => 'or';

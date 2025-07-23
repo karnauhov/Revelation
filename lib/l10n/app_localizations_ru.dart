@@ -346,55 +346,55 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get strong_indeclNumAdj =>
-      'Неизменяемое числительное (в функции прилагательного)';
+      'неизменяемое числительное (в функции прилагательного)';
 
   @override
-  String get strong_indeclLetN => 'Неизменяемая буква (существительное)';
+  String get strong_indeclLetN => 'неизменяемая буква (существительное)';
 
   @override
   String get strong_indeclinable => 'неизменяемое';
 
   @override
-  String get strong_adj => 'Прилагательное';
+  String get strong_adj => 'прилагательное';
 
   @override
-  String get strong_advCor => 'Соотносительное наречие';
+  String get strong_advCor => 'соотносительное наречие';
 
   @override
-  String get strong_advInt => 'Вопросительное наречие';
+  String get strong_advInt => 'вопросительное наречие';
 
   @override
-  String get strong_advNeg => 'Отрицательное наречие';
+  String get strong_advNeg => 'отрицательное наречие';
 
   @override
-  String get strong_advSup => 'Наречие, превосходная степень';
+  String get strong_advSup => 'наречие, превосходная степень';
 
   @override
-  String get strong_adv => 'Наречие';
+  String get strong_adv => 'наречие';
 
   @override
-  String get strong_comp => 'Сравнительная степень';
+  String get strong_comp => 'сравнительная степень';
 
   @override
-  String get strong_aramaicTransWord => 'Транслитерированное арамейское слово';
+  String get strong_aramaicTransWord => 'транслитерированное арамейское слово';
 
   @override
-  String get strong_hebrewForm => 'Форма на иврите';
+  String get strong_hebrewForm => 'форма на иврите';
 
   @override
-  String get strong_hebrewNoun => 'Существительное на иврите';
+  String get strong_hebrewNoun => 'существительное на иврите';
 
   @override
-  String get strong_hebrew => 'Иврит';
+  String get strong_hebrew => 'иврит';
 
   @override
   String get strong_location => 'географическое название';
 
   @override
-  String get strong_properNoun => 'Имя собственное';
+  String get strong_properNoun => 'имя собственное';
 
   @override
-  String get strong_noun => 'Существительное';
+  String get strong_noun => 'существительное';
 
   @override
   String get strong_masc => 'мужской род';
@@ -412,85 +412,85 @@ class AppLocalizationsRu extends AppLocalizations {
   String get strong_otherType => 'другой тип';
 
   @override
-  String get strong_verbImp => 'Глагол (повелительное наклонение)';
+  String get strong_verbImp => 'глагол (повелительное наклонение)';
 
   @override
-  String get strong_verb => 'Глагол';
+  String get strong_verb => 'глагол';
 
   @override
   String get strong_pronDat => 'Местоимение, дательный падеж';
 
   @override
-  String get strong_pronPoss => 'Притяжательное местоимение';
+  String get strong_pronPoss => 'притяжательное местоимение';
 
   @override
-  String get strong_pronPers => 'Личное местоимение';
+  String get strong_pronPers => 'личное местоимение';
 
   @override
-  String get strong_pronRecip => 'Взаимное местоимение';
+  String get strong_pronRecip => 'взаимное местоимение';
 
   @override
-  String get strong_pronRefl => 'Возвратное местоимение';
+  String get strong_pronRefl => 'возвратное местоимение';
 
   @override
-  String get strong_pronRel => 'Относительное местоимение';
+  String get strong_pronRel => 'относительное местоимение';
 
   @override
-  String get strong_pronCorrel => 'Соотносительное местоимение';
+  String get strong_pronCorrel => 'соотносительное местоимение';
 
   @override
-  String get strong_pronIndef => 'Неопределённое местоимение';
+  String get strong_pronIndef => 'неопределённое местоимение';
 
   @override
-  String get strong_pronInterr => 'Вопросительное местоимение';
+  String get strong_pronInterr => 'вопросительное местоимение';
 
   @override
-  String get strong_pronDem => 'Указательное местоимение';
+  String get strong_pronDem => 'указательное местоимение';
 
   @override
-  String get strong_pron => 'Местоимение';
+  String get strong_pron => 'местоимение';
 
   @override
-  String get strong_particleCond => 'Условная частица';
+  String get strong_particleCond => 'условная частица';
 
   @override
-  String get strong_particleDisj => 'Разделительная частица';
+  String get strong_particleDisj => 'разделительная частица';
 
   @override
-  String get strong_particleInterr => 'Вопросительная частица';
+  String get strong_particleInterr => 'вопросительная частица';
 
   @override
-  String get strong_particleNeg => 'Отрицательная частица';
+  String get strong_particleNeg => 'отрицательная частица';
 
   @override
-  String get strong_particle => 'Частица';
+  String get strong_particle => 'частица';
 
   @override
-  String get strong_interj => 'Междометие';
+  String get strong_interj => 'междометие';
 
   @override
-  String get strong_participle => 'Причастие';
+  String get strong_participle => 'причастие';
 
   @override
-  String get strong_prefix => 'Префикс';
+  String get strong_prefix => 'префикс';
 
   @override
-  String get strong_prep => 'Предлог';
+  String get strong_prep => 'предлог';
 
   @override
-  String get strong_artDef => 'Определённый артикль';
+  String get strong_artDef => 'определённый артикль';
 
   @override
-  String get strong_phraseIdi => 'Фраза (идиоматическое выражение)';
+  String get strong_phraseIdi => 'фраза (идиоматическое выражение)';
 
   @override
-  String get strong_phrase => 'Фраза';
+  String get strong_phrase => 'фраза';
 
   @override
-  String get strong_conjNeg => 'Отрицательный союз';
+  String get strong_conjNeg => 'отрицательный союз';
 
   @override
-  String get strong_conj => 'Союз';
+  String get strong_conj => 'союз';
 
   @override
   String get strong_or => 'или';

@@ -11,6 +11,10 @@ All notable changes to this application will be documented here.
 - Support local DB SQLite
 - Tables for Strong Dictionary
 
+### Changed
+
+- About screen (Recommended);
+
 ## [1.0.3](https://github.com/karnauhov/Revelation/releases/tag/v1.0.3%2B113) - 04.07.25
 
 ### Added

@@ -347,55 +347,55 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get strong_indeclNumAdj =>
-      'Незмінний числівник (у функції прикметника)';
+      'незмінний числівник (у функції прикметника)';
 
   @override
-  String get strong_indeclLetN => 'Незмінна буква (іменник)';
+  String get strong_indeclLetN => 'незмінна буква (іменник)';
 
   @override
   String get strong_indeclinable => 'незмінне';
 
   @override
-  String get strong_adj => 'Прикметник';
+  String get strong_adj => 'прикметник';
 
   @override
-  String get strong_advCor => 'Співвідносний прислівник';
+  String get strong_advCor => 'співвідносний прислівник';
 
   @override
-  String get strong_advInt => 'Питальний прислівник';
+  String get strong_advInt => 'питальний прислівник';
 
   @override
-  String get strong_advNeg => 'Заперечний прислівник';
+  String get strong_advNeg => 'заперечний прислівник';
 
   @override
-  String get strong_advSup => 'Прислівник, найвищий ступінь';
+  String get strong_advSup => 'прислівник, найвищий ступінь';
 
   @override
-  String get strong_adv => 'Прислівник';
+  String get strong_adv => 'прислівник';
 
   @override
-  String get strong_comp => 'Вищий ступінь порівняння';
+  String get strong_comp => 'ступінь порівняння';
 
   @override
-  String get strong_aramaicTransWord => 'Транслитероване арамейське слово';
+  String get strong_aramaicTransWord => 'транслитероване арамейське слово';
 
   @override
-  String get strong_hebrewForm => 'Форма на івриті';
+  String get strong_hebrewForm => 'форма на івриті';
 
   @override
-  String get strong_hebrewNoun => 'Іменник на івриті';
+  String get strong_hebrewNoun => 'іменник на івриті';
 
   @override
-  String get strong_hebrew => 'Іврит';
+  String get strong_hebrew => 'іврит';
 
   @override
   String get strong_location => 'географічна назва';
 
   @override
-  String get strong_properNoun => 'Власна назва';
+  String get strong_properNoun => 'власна назва';
 
   @override
-  String get strong_noun => 'Іменник';
+  String get strong_noun => 'іменник';
 
   @override
   String get strong_masc => 'чоловічий рід';
@@ -413,85 +413,85 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_otherType => 'інший тип';
 
   @override
-  String get strong_verbImp => 'Дієслово (наказовий спосіб)';
+  String get strong_verbImp => 'дієслово (наказовий спосіб)';
 
   @override
-  String get strong_verb => 'Дієслово';
+  String get strong_verb => 'дієслово';
 
   @override
-  String get strong_pronDat => 'Займенник, давальний відмінок';
+  String get strong_pronDat => 'займенник, давальний відмінок';
 
   @override
-  String get strong_pronPoss => 'Присвійний займенник';
+  String get strong_pronPoss => 'присвійний займенник';
 
   @override
-  String get strong_pronPers => 'Особовий займенник';
+  String get strong_pronPers => 'особовий займенник';
 
   @override
-  String get strong_pronRecip => 'Взаємний займенник';
+  String get strong_pronRecip => 'взаємний займенник';
 
   @override
-  String get strong_pronRefl => 'Зворотний займенник';
+  String get strong_pronRefl => 'зворотний займенник';
 
   @override
-  String get strong_pronRel => 'Відносний займенник';
+  String get strong_pronRel => 'відносний займенник';
 
   @override
-  String get strong_pronCorrel => 'Співвідносний займенник';
+  String get strong_pronCorrel => 'співвідносний займенник';
 
   @override
-  String get strong_pronIndef => 'Неозначений займенник';
+  String get strong_pronIndef => 'неозначений займенник';
 
   @override
-  String get strong_pronInterr => 'Питальний займенник';
+  String get strong_pronInterr => 'питальний займенник';
 
   @override
-  String get strong_pronDem => 'Вказівний займенник';
+  String get strong_pronDem => 'вказівний займенник';
 
   @override
-  String get strong_pron => 'Займенник';
+  String get strong_pron => 'займенник';
 
   @override
-  String get strong_particleCond => 'Умовна частка';
+  String get strong_particleCond => 'умовна частка';
 
   @override
-  String get strong_particleDisj => 'Роздільна частка';
+  String get strong_particleDisj => 'роздільна частка';
 
   @override
-  String get strong_particleInterr => 'Питальна частка';
+  String get strong_particleInterr => 'питальна частка';
 
   @override
-  String get strong_particleNeg => 'Заперечна частка';
+  String get strong_particleNeg => 'заперечна частка';
 
   @override
-  String get strong_particle => 'Частка';
+  String get strong_particle => 'частка';
 
   @override
-  String get strong_interj => 'Вигук';
+  String get strong_interj => 'вигук';
 
   @override
-  String get strong_participle => 'Дієприкметник';
+  String get strong_participle => 'дієприкметник';
 
   @override
-  String get strong_prefix => 'Префікс';
+  String get strong_prefix => 'префікс';
 
   @override
-  String get strong_prep => 'Прийменник';
+  String get strong_prep => 'прийменник';
 
   @override
-  String get strong_artDef => 'Означений артикль';
+  String get strong_artDef => 'означений артикль';
 
   @override
-  String get strong_phraseIdi => 'Фраза (ідіоматичний вираз)';
+  String get strong_phraseIdi => 'фраза (ідіоматичний вираз)';
 
   @override
-  String get strong_phrase => 'Фраза';
+  String get strong_phrase => 'фраза';
 
   @override
-  String get strong_conjNeg => 'Заперечний сполучник';
+  String get strong_conjNeg => 'заперечний сполучник';
 
   @override
-  String get strong_conj => 'Сполучник';
+  String get strong_conj => 'сполучник';
 
   @override
   String get strong_or => 'або';
