@@ -331,6 +331,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
         buffer.write(": **");
         buffer.write(_translit.transliterate(word.trim(), _dbManager.langDB));
         buffer.write("**\n\r");
+        buffer.write(AppLocalizations.of(context)!.strong_part_of_speech);
+        buffer.write(": **");
+        buffer.write(
+          _replaceKeys(context, _dbManager.greekWords[wordIndex].category),
+        );
+        buffer.write("**\n\r");
         final descIndex = _dbManager.greekDescs.indexWhere(
           (desc) => desc.id == strongNumber,
         );
@@ -344,6 +350,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
         updateDescriptionContent(buffer.toString());
       }
     }
+  }
+
+  String _replaceKeys(BuildContext context, String input) {
+    final regex = RegExp(r'@\w+');
+    return input.replaceAllMapped(regex, (match) {
+      final key = match.group(0)!;
+      return locLinks(context, key);
+    });
   }
 
   Future<void> _getPagesSettings() async {

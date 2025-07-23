@@ -342,6 +342,160 @@ class AppLocalizationsRu extends AppLocalizations {
   String get strong_translit => 'Транслитерация';
 
   @override
+  String get strong_part_of_speech => 'Часть речи';
+
+  @override
+  String get strong_indeclNumAdj =>
+      'Неизменяемое числительное (в функции прилагательного)';
+
+  @override
+  String get strong_indeclLetN => 'Неизменяемая буква (существительное)';
+
+  @override
+  String get strong_indeclinable => 'неизменяемое';
+
+  @override
+  String get strong_adj => 'Прилагательное';
+
+  @override
+  String get strong_advCor => 'Соотносительное наречие';
+
+  @override
+  String get strong_advInt => 'Вопросительное наречие';
+
+  @override
+  String get strong_advNeg => 'Отрицательное наречие';
+
+  @override
+  String get strong_advSup => 'Наречие, превосходная степень';
+
+  @override
+  String get strong_adv => 'Наречие';
+
+  @override
+  String get strong_comp => 'Сравнительная степень';
+
+  @override
+  String get strong_aramaicTransWord => 'Транслитерированное арамейское слово';
+
+  @override
+  String get strong_hebrewForm => 'Форма на иврите';
+
+  @override
+  String get strong_hebrewNoun => 'Существительное на иврите';
+
+  @override
+  String get strong_hebrew => 'Иврит';
+
+  @override
+  String get strong_location => 'географическое название';
+
+  @override
+  String get strong_properNoun => 'Имя собственное';
+
+  @override
+  String get strong_noun => 'Существительное';
+
+  @override
+  String get strong_masc => 'мужской род';
+
+  @override
+  String get strong_fem => 'женский род';
+
+  @override
+  String get strong_neut => 'средний род';
+
+  @override
+  String get strong_plur => 'множественное число';
+
+  @override
+  String get strong_otherType => 'другой тип';
+
+  @override
+  String get strong_verbImp => 'Глагол (повелительное наклонение)';
+
+  @override
+  String get strong_verb => 'Глагол';
+
+  @override
+  String get strong_pronDat => 'Местоимение, дательный падеж';
+
+  @override
+  String get strong_pronPoss => 'Притяжательное местоимение';
+
+  @override
+  String get strong_pronPers => 'Личное местоимение';
+
+  @override
+  String get strong_pronRecip => 'Взаимное местоимение';
+
+  @override
+  String get strong_pronRefl => 'Возвратное местоимение';
+
+  @override
+  String get strong_pronRel => 'Относительное местоимение';
+
+  @override
+  String get strong_pronCorrel => 'Соотносительное местоимение';
+
+  @override
+  String get strong_pronIndef => 'Неопределённое местоимение';
+
+  @override
+  String get strong_pronInterr => 'Вопросительное местоимение';
+
+  @override
+  String get strong_pronDem => 'Указательное местоимение';
+
+  @override
+  String get strong_pron => 'Местоимение';
+
+  @override
+  String get strong_particleCond => 'Условная частица';
+
+  @override
+  String get strong_particleDisj => 'Разделительная частица';
+
+  @override
+  String get strong_particleInterr => 'Вопросительная частица';
+
+  @override
+  String get strong_particleNeg => 'Отрицательная частица';
+
+  @override
+  String get strong_particle => 'Частица';
+
+  @override
+  String get strong_interj => 'Междометие';
+
+  @override
+  String get strong_participle => 'Причастие';
+
+  @override
+  String get strong_prefix => 'Префикс';
+
+  @override
+  String get strong_prep => 'Предлог';
+
+  @override
+  String get strong_artDef => 'Определённый артикль';
+
+  @override
+  String get strong_phraseIdi => 'Фраза (идиоматическое выражение)';
+
+  @override
+  String get strong_phrase => 'Фраза';
+
+  @override
+  String get strong_conjNeg => 'Отрицательный союз';
+
+  @override
+  String get strong_conj => 'Союз';
+
+  @override
+  String get strong_or => 'или';
+
+  @override
   String get papyrus_18_title => 'Папирус 18 (P<sup>18</sup>)';
 
   @override

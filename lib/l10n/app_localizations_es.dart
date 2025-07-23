@@ -342,6 +342,159 @@ class AppLocalizationsEs extends AppLocalizations {
   String get strong_translit => 'Transliteración';
 
   @override
+  String get strong_part_of_speech => 'Parte de la oración';
+
+  @override
+  String get strong_indeclNumAdj => 'Numeral indeclinable (adjetivo)';
+
+  @override
+  String get strong_indeclLetN => 'Letra indeclinable (sustantivo)';
+
+  @override
+  String get strong_indeclinable => 'indeclinable';
+
+  @override
+  String get strong_adj => 'Adjetivo';
+
+  @override
+  String get strong_advCor => 'Adverbio correlativo';
+
+  @override
+  String get strong_advInt => 'Adverbio interrogativo';
+
+  @override
+  String get strong_advNeg => 'Adverbio negativo';
+
+  @override
+  String get strong_advSup => 'Adverbio superlativo';
+
+  @override
+  String get strong_adv => 'Adverbio';
+
+  @override
+  String get strong_comp => 'Comparativo';
+
+  @override
+  String get strong_aramaicTransWord => 'Palabra transliterada aramea';
+
+  @override
+  String get strong_hebrewForm => 'Forma hebrea';
+
+  @override
+  String get strong_hebrewNoun => 'Sustantivo hebreo';
+
+  @override
+  String get strong_hebrew => 'Hebreo';
+
+  @override
+  String get strong_location => 'ubicación';
+
+  @override
+  String get strong_properNoun => 'Nombre propio';
+
+  @override
+  String get strong_noun => 'Sustantivo';
+
+  @override
+  String get strong_masc => 'masculino';
+
+  @override
+  String get strong_fem => 'femenino';
+
+  @override
+  String get strong_neut => 'neutro';
+
+  @override
+  String get strong_plur => 'plural';
+
+  @override
+  String get strong_otherType => 'otro tipo';
+
+  @override
+  String get strong_verbImp => 'Verbo (imperativo)';
+
+  @override
+  String get strong_verb => 'Verbo';
+
+  @override
+  String get strong_pronDat => 'Pronombre dativo';
+
+  @override
+  String get strong_pronPoss => 'Pronombre posesivo';
+
+  @override
+  String get strong_pronPers => 'Pronombre personal';
+
+  @override
+  String get strong_pronRecip => 'Pronombre recíproco';
+
+  @override
+  String get strong_pronRefl => 'Pronombre reflexivo';
+
+  @override
+  String get strong_pronRel => 'Pronombre relativo';
+
+  @override
+  String get strong_pronCorrel => 'Pronombre correlativo';
+
+  @override
+  String get strong_pronIndef => 'Pronombre indefinido';
+
+  @override
+  String get strong_pronInterr => 'Pronombre interrogativo';
+
+  @override
+  String get strong_pronDem => 'Pronombre demostrativo';
+
+  @override
+  String get strong_pron => 'Pronombre';
+
+  @override
+  String get strong_particleCond => 'Partícula condicional';
+
+  @override
+  String get strong_particleDisj => 'Partícula disyuntiva';
+
+  @override
+  String get strong_particleInterr => 'Partícula interrogativa';
+
+  @override
+  String get strong_particleNeg => 'Partícula negativa';
+
+  @override
+  String get strong_particle => 'Partícula';
+
+  @override
+  String get strong_interj => 'Interjección';
+
+  @override
+  String get strong_participle => 'Participio';
+
+  @override
+  String get strong_prefix => 'Prefijo';
+
+  @override
+  String get strong_prep => 'Preposición';
+
+  @override
+  String get strong_artDef => 'Artículo definido';
+
+  @override
+  String get strong_phraseIdi => 'Frase (expresión idiomática)';
+
+  @override
+  String get strong_phrase => 'Frase';
+
+  @override
+  String get strong_conjNeg => 'Conjunción negativa';
+
+  @override
+  String get strong_conj => 'Conjunción';
+
+  @override
+  String get strong_or => 'o';
+
+  @override
   String get papyrus_18_title => 'Papiro 18 (P<sup>18</sup>)';
 
   @override

@@ -744,6 +744,312 @@ abstract class AppLocalizations {
   /// **'Transliteration'**
   String get strong_translit;
 
+  /// No description provided for @strong_part_of_speech.
+  ///
+  /// In en, this message translates to:
+  /// **'Part of speech'**
+  String get strong_part_of_speech;
+
+  /// No description provided for @strong_indeclNumAdj.
+  ///
+  /// In en, this message translates to:
+  /// **'Indeclinable Numeral (Adjective)'**
+  String get strong_indeclNumAdj;
+
+  /// No description provided for @strong_indeclLetN.
+  ///
+  /// In en, this message translates to:
+  /// **'Indeclinable Letter (Noun)'**
+  String get strong_indeclLetN;
+
+  /// No description provided for @strong_indeclinable.
+  ///
+  /// In en, this message translates to:
+  /// **'indeclinable'**
+  String get strong_indeclinable;
+
+  /// No description provided for @strong_adj.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjective'**
+  String get strong_adj;
+
+  /// No description provided for @strong_advCor.
+  ///
+  /// In en, this message translates to:
+  /// **'Adverb, Correlative'**
+  String get strong_advCor;
+
+  /// No description provided for @strong_advInt.
+  ///
+  /// In en, this message translates to:
+  /// **'Adverb, Interrogative'**
+  String get strong_advInt;
+
+  /// No description provided for @strong_advNeg.
+  ///
+  /// In en, this message translates to:
+  /// **'Adverb, Negative'**
+  String get strong_advNeg;
+
+  /// No description provided for @strong_advSup.
+  ///
+  /// In en, this message translates to:
+  /// **'Adverb, Superlative'**
+  String get strong_advSup;
+
+  /// No description provided for @strong_adv.
+  ///
+  /// In en, this message translates to:
+  /// **'Adverb'**
+  String get strong_adv;
+
+  /// No description provided for @strong_comp.
+  ///
+  /// In en, this message translates to:
+  /// **'Comparative'**
+  String get strong_comp;
+
+  /// No description provided for @strong_aramaicTransWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Aramaic Transliterated Word'**
+  String get strong_aramaicTransWord;
+
+  /// No description provided for @strong_hebrewForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew Form'**
+  String get strong_hebrewForm;
+
+  /// No description provided for @strong_hebrewNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew Noun'**
+  String get strong_hebrewNoun;
+
+  /// No description provided for @strong_hebrew.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew'**
+  String get strong_hebrew;
+
+  /// No description provided for @strong_location.
+  ///
+  /// In en, this message translates to:
+  /// **'location'**
+  String get strong_location;
+
+  /// No description provided for @strong_properNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'Proper Noun'**
+  String get strong_properNoun;
+
+  /// No description provided for @strong_noun.
+  ///
+  /// In en, this message translates to:
+  /// **'Noun'**
+  String get strong_noun;
+
+  /// No description provided for @strong_masc.
+  ///
+  /// In en, this message translates to:
+  /// **'masculine'**
+  String get strong_masc;
+
+  /// No description provided for @strong_fem.
+  ///
+  /// In en, this message translates to:
+  /// **'feminine'**
+  String get strong_fem;
+
+  /// No description provided for @strong_neut.
+  ///
+  /// In en, this message translates to:
+  /// **'neuter'**
+  String get strong_neut;
+
+  /// No description provided for @strong_plur.
+  ///
+  /// In en, this message translates to:
+  /// **'plural'**
+  String get strong_plur;
+
+  /// No description provided for @strong_otherType.
+  ///
+  /// In en, this message translates to:
+  /// **'other Type'**
+  String get strong_otherType;
+
+  /// No description provided for @strong_verbImp.
+  ///
+  /// In en, this message translates to:
+  /// **'Verb (Imperative)'**
+  String get strong_verbImp;
+
+  /// No description provided for @strong_verb.
+  ///
+  /// In en, this message translates to:
+  /// **'Verb'**
+  String get strong_verb;
+
+  /// No description provided for @strong_pronDat.
+  ///
+  /// In en, this message translates to:
+  /// **'Pronoun, Dative Case'**
+  String get strong_pronDat;
+
+  /// No description provided for @strong_pronPoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Possessive Pronoun'**
+  String get strong_pronPoss;
+
+  /// No description provided for @strong_pronPers.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Pronoun'**
+  String get strong_pronPers;
+
+  /// No description provided for @strong_pronRecip.
+  ///
+  /// In en, this message translates to:
+  /// **'Reciprocal Pronoun'**
+  String get strong_pronRecip;
+
+  /// No description provided for @strong_pronRefl.
+  ///
+  /// In en, this message translates to:
+  /// **'Reflexive Pronoun'**
+  String get strong_pronRefl;
+
+  /// No description provided for @strong_pronRel.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative Pronoun'**
+  String get strong_pronRel;
+
+  /// No description provided for @strong_pronCorrel.
+  ///
+  /// In en, this message translates to:
+  /// **'Correlative Pronoun'**
+  String get strong_pronCorrel;
+
+  /// No description provided for @strong_pronIndef.
+  ///
+  /// In en, this message translates to:
+  /// **'Indefinite Pronoun'**
+  String get strong_pronIndef;
+
+  /// No description provided for @strong_pronInterr.
+  ///
+  /// In en, this message translates to:
+  /// **'Interrogative Pronoun'**
+  String get strong_pronInterr;
+
+  /// No description provided for @strong_pronDem.
+  ///
+  /// In en, this message translates to:
+  /// **'Demonstrative Pronoun'**
+  String get strong_pronDem;
+
+  /// No description provided for @strong_pron.
+  ///
+  /// In en, this message translates to:
+  /// **'Pronoun'**
+  String get strong_pron;
+
+  /// No description provided for @strong_particleCond.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditional Particle'**
+  String get strong_particleCond;
+
+  /// No description provided for @strong_particleDisj.
+  ///
+  /// In en, this message translates to:
+  /// **'Disjunctive Particle'**
+  String get strong_particleDisj;
+
+  /// No description provided for @strong_particleInterr.
+  ///
+  /// In en, this message translates to:
+  /// **'Interrogative Particle'**
+  String get strong_particleInterr;
+
+  /// No description provided for @strong_particleNeg.
+  ///
+  /// In en, this message translates to:
+  /// **'Negative Particle'**
+  String get strong_particleNeg;
+
+  /// No description provided for @strong_particle.
+  ///
+  /// In en, this message translates to:
+  /// **'Particle'**
+  String get strong_particle;
+
+  /// No description provided for @strong_interj.
+  ///
+  /// In en, this message translates to:
+  /// **'Interjection'**
+  String get strong_interj;
+
+  /// No description provided for @strong_participle.
+  ///
+  /// In en, this message translates to:
+  /// **'Participle'**
+  String get strong_participle;
+
+  /// No description provided for @strong_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefix'**
+  String get strong_prefix;
+
+  /// No description provided for @strong_prep.
+  ///
+  /// In en, this message translates to:
+  /// **'Preposition'**
+  String get strong_prep;
+
+  /// No description provided for @strong_artDef.
+  ///
+  /// In en, this message translates to:
+  /// **'Definite Article'**
+  String get strong_artDef;
+
+  /// No description provided for @strong_phraseIdi.
+  ///
+  /// In en, this message translates to:
+  /// **'Phrase (idiomatic expression)'**
+  String get strong_phraseIdi;
+
+  /// No description provided for @strong_phrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Phrase'**
+  String get strong_phrase;
+
+  /// No description provided for @strong_conjNeg.
+  ///
+  /// In en, this message translates to:
+  /// **'Negative Conjunction'**
+  String get strong_conjNeg;
+
+  /// No description provided for @strong_conj.
+  ///
+  /// In en, this message translates to:
+  /// **'Conjunction'**
+  String get strong_conj;
+
+  /// No description provided for @strong_or.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get strong_or;
+
   /// No description provided for @papyrus_18_title.
   ///
   /// In en, this message translates to:

@@ -42,6 +42,35 @@ class DBManager {
     }
   }
 
+  // Future<void> importCategoriesFromFile(String filePath) async {
+  //   final file = File(filePath);
+  //   if (!await file.exists()) {
+  //     throw Exception('File not found: \$filePath');
+  //   }
+  //   final lines = await file.readAsLines();
+
+  //   await _commonDB.transaction(() async {
+  //     for (var line in lines) {
+  //       line = line.trim();
+  //       if (line.isEmpty) continue;
+
+  //       final hashIndex = line.indexOf('#');
+  //       if (hashIndex <= 0) continue;
+
+  //       final idPart = line.substring(0, hashIndex);
+  //       final categoryPart = line.substring(hashIndex + 1);
+
+  //       final id = int.tryParse(idPart);
+  //       if (id == null) continue;
+
+  //       await (_commonDB.update(_commonDB.greekWords)
+  //             ..where((tbl) => tbl.id.equals(id)))
+  //           .write(GreekWordsCompanion(category: Value(categoryPart)));
+  //       print(idPart + "; " + categoryPart);
+  //     }
+  //   });
+  // }
+
   // List<String> getUniqueValuesAfterHash(String filePath) {
   //   final file = File(filePath);
 

@@ -343,6 +343,160 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_translit => 'Транслітерація';
 
   @override
+  String get strong_part_of_speech => 'Частина мови';
+
+  @override
+  String get strong_indeclNumAdj =>
+      'Незмінний числівник (у функції прикметника)';
+
+  @override
+  String get strong_indeclLetN => 'Незмінна буква (іменник)';
+
+  @override
+  String get strong_indeclinable => 'незмінне';
+
+  @override
+  String get strong_adj => 'Прикметник';
+
+  @override
+  String get strong_advCor => 'Співвідносний прислівник';
+
+  @override
+  String get strong_advInt => 'Питальний прислівник';
+
+  @override
+  String get strong_advNeg => 'Заперечний прислівник';
+
+  @override
+  String get strong_advSup => 'Прислівник, найвищий ступінь';
+
+  @override
+  String get strong_adv => 'Прислівник';
+
+  @override
+  String get strong_comp => 'Вищий ступінь порівняння';
+
+  @override
+  String get strong_aramaicTransWord => 'Транслитероване арамейське слово';
+
+  @override
+  String get strong_hebrewForm => 'Форма на івриті';
+
+  @override
+  String get strong_hebrewNoun => 'Іменник на івриті';
+
+  @override
+  String get strong_hebrew => 'Іврит';
+
+  @override
+  String get strong_location => 'географічна назва';
+
+  @override
+  String get strong_properNoun => 'Власна назва';
+
+  @override
+  String get strong_noun => 'Іменник';
+
+  @override
+  String get strong_masc => 'чоловічий рід';
+
+  @override
+  String get strong_fem => 'жіночий рід';
+
+  @override
+  String get strong_neut => 'середній рід';
+
+  @override
+  String get strong_plur => 'множина';
+
+  @override
+  String get strong_otherType => 'інший тип';
+
+  @override
+  String get strong_verbImp => 'Дієслово (наказовий спосіб)';
+
+  @override
+  String get strong_verb => 'Дієслово';
+
+  @override
+  String get strong_pronDat => 'Займенник, давальний відмінок';
+
+  @override
+  String get strong_pronPoss => 'Присвійний займенник';
+
+  @override
+  String get strong_pronPers => 'Особовий займенник';
+
+  @override
+  String get strong_pronRecip => 'Взаємний займенник';
+
+  @override
+  String get strong_pronRefl => 'Зворотний займенник';
+
+  @override
+  String get strong_pronRel => 'Відносний займенник';
+
+  @override
+  String get strong_pronCorrel => 'Співвідносний займенник';
+
+  @override
+  String get strong_pronIndef => 'Неозначений займенник';
+
+  @override
+  String get strong_pronInterr => 'Питальний займенник';
+
+  @override
+  String get strong_pronDem => 'Вказівний займенник';
+
+  @override
+  String get strong_pron => 'Займенник';
+
+  @override
+  String get strong_particleCond => 'Умовна частка';
+
+  @override
+  String get strong_particleDisj => 'Роздільна частка';
+
+  @override
+  String get strong_particleInterr => 'Питальна частка';
+
+  @override
+  String get strong_particleNeg => 'Заперечна частка';
+
+  @override
+  String get strong_particle => 'Частка';
+
+  @override
+  String get strong_interj => 'Вигук';
+
+  @override
+  String get strong_participle => 'Дієприкметник';
+
+  @override
+  String get strong_prefix => 'Префікс';
+
+  @override
+  String get strong_prep => 'Прийменник';
+
+  @override
+  String get strong_artDef => 'Означений артикль';
+
+  @override
+  String get strong_phraseIdi => 'Фраза (ідіоматичний вираз)';
+
+  @override
+  String get strong_phrase => 'Фраза';
+
+  @override
+  String get strong_conjNeg => 'Заперечний сполучник';
+
+  @override
+  String get strong_conj => 'Сполучник';
+
+  @override
+  String get strong_or => 'або';
+
+  @override
   String get papyrus_18_title => 'Папірус 18 (P<sup>18</sup>)';
 
   @override

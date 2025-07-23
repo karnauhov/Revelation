@@ -342,6 +342,159 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strong_translit => 'Transliteration';
 
   @override
+  String get strong_part_of_speech => 'Part of speech';
+
+  @override
+  String get strong_indeclNumAdj => 'Indeclinable Numeral (Adjective)';
+
+  @override
+  String get strong_indeclLetN => 'Indeclinable Letter (Noun)';
+
+  @override
+  String get strong_indeclinable => 'indeclinable';
+
+  @override
+  String get strong_adj => 'Adjective';
+
+  @override
+  String get strong_advCor => 'Adverb, Correlative';
+
+  @override
+  String get strong_advInt => 'Adverb, Interrogative';
+
+  @override
+  String get strong_advNeg => 'Adverb, Negative';
+
+  @override
+  String get strong_advSup => 'Adverb, Superlative';
+
+  @override
+  String get strong_adv => 'Adverb';
+
+  @override
+  String get strong_comp => 'Comparative';
+
+  @override
+  String get strong_aramaicTransWord => 'Aramaic Transliterated Word';
+
+  @override
+  String get strong_hebrewForm => 'Hebrew Form';
+
+  @override
+  String get strong_hebrewNoun => 'Hebrew Noun';
+
+  @override
+  String get strong_hebrew => 'Hebrew';
+
+  @override
+  String get strong_location => 'location';
+
+  @override
+  String get strong_properNoun => 'Proper Noun';
+
+  @override
+  String get strong_noun => 'Noun';
+
+  @override
+  String get strong_masc => 'masculine';
+
+  @override
+  String get strong_fem => 'feminine';
+
+  @override
+  String get strong_neut => 'neuter';
+
+  @override
+  String get strong_plur => 'plural';
+
+  @override
+  String get strong_otherType => 'other Type';
+
+  @override
+  String get strong_verbImp => 'Verb (Imperative)';
+
+  @override
+  String get strong_verb => 'Verb';
+
+  @override
+  String get strong_pronDat => 'Pronoun, Dative Case';
+
+  @override
+  String get strong_pronPoss => 'Possessive Pronoun';
+
+  @override
+  String get strong_pronPers => 'Personal Pronoun';
+
+  @override
+  String get strong_pronRecip => 'Reciprocal Pronoun';
+
+  @override
+  String get strong_pronRefl => 'Reflexive Pronoun';
+
+  @override
+  String get strong_pronRel => 'Relative Pronoun';
+
+  @override
+  String get strong_pronCorrel => 'Correlative Pronoun';
+
+  @override
+  String get strong_pronIndef => 'Indefinite Pronoun';
+
+  @override
+  String get strong_pronInterr => 'Interrogative Pronoun';
+
+  @override
+  String get strong_pronDem => 'Demonstrative Pronoun';
+
+  @override
+  String get strong_pron => 'Pronoun';
+
+  @override
+  String get strong_particleCond => 'Conditional Particle';
+
+  @override
+  String get strong_particleDisj => 'Disjunctive Particle';
+
+  @override
+  String get strong_particleInterr => 'Interrogative Particle';
+
+  @override
+  String get strong_particleNeg => 'Negative Particle';
+
+  @override
+  String get strong_particle => 'Particle';
+
+  @override
+  String get strong_interj => 'Interjection';
+
+  @override
+  String get strong_participle => 'Participle';
+
+  @override
+  String get strong_prefix => 'Prefix';
+
+  @override
+  String get strong_prep => 'Preposition';
+
+  @override
+  String get strong_artDef => 'Definite Article';
+
+  @override
+  String get strong_phraseIdi => 'Phrase (idiomatic expression)';
+
+  @override
+  String get strong_phrase => 'Phrase';
+
+  @override
+  String get strong_conjNeg => 'Negative Conjunction';
+
+  @override
+  String get strong_conj => 'Conjunction';
+
+  @override
+  String get strong_or => 'or';
+
+  @override
   String get papyrus_18_title => 'Papyrus 18 (P<sup>18</sup>)';
 
   @override
