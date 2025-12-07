@@ -6,7 +6,7 @@ import re
 DB_PATH = r"C:\Users\karna\Downloads\Revelation\revelation_ru.sqlite"
 
 print("Downloading page...")
-with urllib.request.urlopen("https://www.bible.in.ua/underl/S/S/g01.htm") as resp:
+with urllib.request.urlopen("https://www.bible.in.ua/underl/S/S/g00.htm") as resp:
     html_bytes = resp.read()
 html = html_bytes.decode("windows-1251", errors="replace")
 match = re.search(r'a\s*=\s*new\s*Array\s*\((.*)\);', html, re.DOTALL)
@@ -33,7 +33,28 @@ def write_to_db(src: str):
                 print(f"Skipping invalid ID at index {index}: '{el[1]}'")
                 gid_error = True
         elif (index - 4) % 5 == 0 and not gid_error:
-            desc = el[1] or el[0] or el[2]
+            raw_desc = el[1] or el[0] or el[2]
+            s_index = raw_desc.find("</b\\>")
+            if s_index != -1:
+                desc = raw_desc[s_index + 6:]
+            else:
+                s_index = raw_desc.find("</font\\>")
+                if s_index != -1:
+                    desc = raw_desc[s_index + 9:]
+                else:
+                    desc = raw_desc
+            desc = desc.replace("\\<", "<")
+            desc = desc.replace("\\>", ">")
+            if desc.endswith("<br>"):
+                desc = desc[: -4]
+            if desc.endswith("<br>"):
+                desc = desc[: -4]
+            if desc.endswith("<br>"):
+                desc = desc[: -4]
+            desc = desc.replace("<br> ", "\\n\\r")
+            desc = desc.replace("<br>", "\\n\\r")
+            # TODO replace tags i, b, a, 
+            # TODO remove tag font and words "син."
             try:
                 cur.execute("INSERT OR REPLACE INTO greek_descs (id, desc) VALUES (?, ?)", (gid, desc))
                 count += 1
