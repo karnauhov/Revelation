@@ -51,10 +51,14 @@ def write_to_db(src: str):
                 desc = desc[: -4]
             if desc.endswith("<br>"):
                 desc = desc[: -4]
-            desc = desc.replace("<br> ", "\\n\\r")
-            desc = desc.replace("<br>", "\\n\\r")
-            # TODO replace tags i, b, a, 
-            # TODO remove tag font and words "син."
+            desc = desc.replace("<br> ", "\n>")
+            desc = desc.replace("<br>", "\n>")
+            desc = desc.replace("<i>", "*")
+            desc = desc.replace("</i>", "*")
+            desc = desc.replace("</b>", "**")
+            desc = desc.replace("</b>", "**")
+            # TODO replace tag a 
+            # TODO remove tag font and word "син."
             try:
                 cur.execute("INSERT OR REPLACE INTO greek_descs (id, desc) VALUES (?, ?)", (gid, desc))
                 count += 1
