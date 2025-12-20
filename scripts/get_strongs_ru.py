@@ -1,22 +1,16 @@
 # get_strongs_ru.py
 import sqlite3
 import urllib.request
+import urllib.error
 from bs4 import BeautifulSoup, NavigableString
 import re
 import os
+import time
 
 DB_PATH = r"C:\Users\karna\Downloads\Revelation\revelation_ru.sqlite"
+BASE_URL = "https://www.bible.in.ua/underl/S/S/g{num:02d}.htm"
 STRONG_BASE_RE = re.compile(r'^[hgHG]\d{2}\.htm$')
 FONT_PATTERN = re.compile(r'\(<font\b[^>]*>.*?</font>\)', flags=re.IGNORECASE | re.DOTALL)
-
-print("Downloading page...")
-with urllib.request.urlopen("https://www.bible.in.ua/underl/S/S/g00.htm") as resp:
-    html_bytes = resp.read()
-html = html_bytes.decode("windows-1251", errors="replace")
-match = re.search(r'a\s*=\s*new\s*Array\s*\((.*)\);', html, re.DOTALL)
-if not match:
-    raise Exception("Array not found!")
-array_src = match.group(1).strip()
 
 def write_to_db(src: str):
     conn = sqlite3.connect(DB_PATH)
@@ -34,7 +28,7 @@ def write_to_db(src: str):
                 gid = int(el[1] or el[0] or el[2])
                 gid_error = False
             except ValueError:
-                print(f"Skipping invalid ID at index {index}: '{el[1]}'")
+                print(f"Skipping invalid ID at index {index}: '{el[1] or el[0] or el[2]}'")
                 gid_error = True
         elif (index - 4) % 5 == 0 and not gid_error:
             raw_desc = el[1] or el[0] or el[2]
@@ -151,4 +145,45 @@ def html_links_to_md(html: str, *, convert_non_htm=False, text_only=False) -> st
 def remove_font_parentheses(text: str) -> str:
     return FONT_PATTERN.sub('', text)
 
-write_to_db(array_src)
+if __name__ == "__main__":
+    for i in range(0, 57):
+        url = BASE_URL.format(num=i)
+        print(f"Downloading page {i:02d} -> {url} ...")
+        try:
+            with urllib.request.urlopen(url, timeout=20) as resp:
+                html_bytes = resp.read()
+        except urllib.error.HTTPError as e:
+            print(f"HTTP error for {url}: {e.code} {e.reason} — skip")
+            continue
+        except urllib.error.URLError as e:
+            print(f"URL error for {url}: {e.reason} — skip")
+            continue
+        except Exception as e:
+            print(f"Other error downloading {url}: {e} — skip")
+            continue
+
+        try:
+            html = html_bytes.decode("windows-1251", errors="replace")
+        except Exception as e:
+            print(f"Decoding error {url}: {e} — skip")
+            continue
+
+        match = re.search(r'a\s*=\s*new\s*Array\s*\((.*)\);', html, re.DOTALL)
+        if not match:
+            print(f"Array not found on page {url} — skip")
+            continue
+
+        array_src = match.group(1).strip()
+        if not array_src:
+            print(f"Empty array on page {url} — skip")
+            continue
+
+        try:
+            print(f"Parsing and writing data from page {i:02d} ...")
+            write_to_db(array_src)
+        except Exception as e:
+            print(f"Error processing data with {url}: {e}")
+
+        time.sleep(1)
+
+    print("All done.")
