@@ -7,6 +7,7 @@ import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/repositories/pages_repository.dart';
 import 'package:revelation/screens/primary_source/image_preview.dart';
 import 'package:revelation/screens/primary_source/primary_source_toolbar.dart';
+import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -323,6 +324,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
             viewModel.descriptionContent ??
             AppLocalizations.of(context)!.click_for_info,
         styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+        onTapLink: (text, href, title) =>
+            _onTapHandle(context, text, href, title, viewModel),
       ),
     );
   }
@@ -439,5 +442,58 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final double actionsWidth =
         dropdownWidth + PrimarySourceScreen.numButtons * iconButtonWidth;
     return actionsWidth > screenWidth - widthForTitle * 1 - 60;
+  }
+
+  void _onTapHandle(
+    BuildContext context,
+    String text,
+    String? href,
+    String title,
+    PrimarySourceViewModel viewModel,
+  ) {
+    if (href != null) {
+      if (href.startsWith("strong:")) {
+        // Own Strong's number link
+        final address = href.split(":");
+        if (address.isNotEmpty && address.length > 1) {
+          if (address[1].startsWith("H") || address[1].startsWith("h")) {
+            final hebrewUrl = AppConstants.hebrewUrl.replaceFirst(
+              "@index",
+              address[1].substring(1),
+            );
+            launchLink(hebrewUrl);
+          } else if (address[1].startsWith("G") || address[1].startsWith("g")) {
+            int? greekNum = int.tryParse(address[1].substring(1));
+            if (greekNum != null) {
+              viewModel.showInfoForStrongNumber(greekNum, context);
+            } else {
+              log.w("Wrong Strong's Greek number: '${address[1]}'");
+            }
+          } else {
+            log.w("Wrong Strong's number: '${address[1]}'");
+          }
+        }
+      } else if (href.startsWith("bible:")) {
+        // Own Bible link
+        final address = href.split(":");
+        if (address.isNotEmpty && address.length > 1) {
+          final Locale locale = Localizations.localeOf(context);
+          final bibleTranslation =
+              AppConstants.onlineBibleBooks[locale.languageCode];
+          final bookAndChapter = splitTrailingDigits(address[1]);
+          final bibleBook = bookAndChapter[0];
+          final bibleChapter = bookAndChapter[1];
+          String bibleLink =
+              "${AppConstants.onlineBibleUrl}?b=${bibleTranslation}&bk=${bibleBook}&ch=${bibleChapter}";
+          if (address.length > 2) {
+            bibleLink += "&v=${address[2]}";
+          }
+          launchLink(bibleLink);
+        }
+      } else {
+        // Real link
+        launchLink(href);
+      }
+    }
   }
 }

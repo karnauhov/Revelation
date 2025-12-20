@@ -1,9 +1,13 @@
 # get_strongs_ru.py
 import sqlite3
 import urllib.request
+from bs4 import BeautifulSoup, NavigableString
 import re
+import os
 
 DB_PATH = r"C:\Users\karna\Downloads\Revelation\revelation_ru.sqlite"
+STRONG_BASE_RE = re.compile(r'^[hgHG]\d{2}\.htm$')
+FONT_PATTERN = re.compile(r'\(<font\b[^>]*>.*?</font>\)', flags=re.IGNORECASE | re.DOTALL)
 
 print("Downloading page...")
 with urllib.request.urlopen("https://www.bible.in.ua/underl/S/S/g00.htm") as resp:
@@ -51,14 +55,22 @@ def write_to_db(src: str):
                 desc = desc[: -4]
             if desc.endswith("<br>"):
                 desc = desc[: -4]
-            desc = desc.replace("<br> ", "\n>")
-            desc = desc.replace("<br>", "\n>")
+            desc = desc.replace("<br> ", "\r\n")
+            desc = desc.replace("<br>", "\r\n")
             desc = desc.replace("<i>", "*")
             desc = desc.replace("</i>", "*")
             desc = desc.replace("</b>", "**")
             desc = desc.replace("</b>", "**")
-            # TODO replace tag a 
-            # TODO remove tag font and word "син."
+            desc = desc.replace("\\""", "")
+            desc = html_links_to_md(desc)
+            desc = remove_font_parentheses(desc)
+            desc = desc.replace(" ;", ";")
+            desc = desc.replace(" ,", ",")
+            desc = desc.replace(" .", ".")
+            desc = desc.replace("    ", " ")
+            desc = desc.replace("   ", " ")
+            desc = desc.replace("  ", " ")
+            #print(f"Q{gid}: {desc}")
             try:
                 cur.execute("INSERT OR REPLACE INTO greek_descs (id, desc) VALUES (?, ?)", (gid, desc))
                 count += 1
@@ -68,5 +80,75 @@ def write_to_db(src: str):
     conn.commit()
     conn.close()
     print(f"Success! Inserted/updated {count} complete records into 'greek_descs' table.")
+
+def html_links_to_md(html: str, *, convert_non_htm=False, text_only=False) -> str:
+    soup = BeautifulSoup(html, 'html.parser')
+
+    for a in list(soup.find_all('a', href=True)):
+        href = a['href']
+        href_no_query = href.split('?', 1)[0]
+
+        if '#' in href_no_query:
+            href_path, frag = href_no_query.split('#', 1)
+        else:
+            href_path, frag = href_no_query, None
+
+        base = os.path.basename(href_path)
+        new_md = None
+
+        if base.lower().endswith('.htm') and STRONG_BASE_RE.match(base) and frag:
+            m = re.match(r'\s*0*([0-9]+)', frag)
+            if m:
+                num = str(int(m.group(1)))
+                letter = base[0].upper()
+                scheme = f'strong:{letter}{num}'
+                text = f'{letter}{num}'
+                new_md = f'[{text}]({scheme})'
+
+        elif base.lower().endswith('.htm'):
+            name = os.path.splitext(base)[0]
+            if name:
+                visible = a.get_text(strip=True) or name
+
+                next_node = a.next_sibling
+                if isinstance(next_node, NavigableString):
+                    m = re.match(r'^(\s+)(\d+):(\d+)', str(next_node))
+                    if m:
+                        leading_spaces = m.group(1) 
+                        chap = m.group(2)
+                        verse = m.group(3)
+                        visible_with_ref = f'{visible} {chap}:{verse}'
+                        scheme = f'bible:{name}:{verse}'
+                        new_md = f'[{visible_with_ref}]({scheme})'
+                        rest = str(next_node)[m.end():]
+                        new_next = leading_spaces + rest
+                        if new_next == '':
+                            next_node.extract()
+                        else:
+                            next_node.replace_with(NavigableString(new_next))
+                    else:
+                        scheme = f'bible:{name}'
+                        text = visible
+                        new_md = f'[{text}]({scheme})'
+                else:
+                    scheme = f'bible:{name}'
+                    text = visible
+                    new_md = f'[{text}]({scheme})'
+
+        else:
+            if convert_non_htm:
+                text = a.get_text(strip=True) or href
+                new_md = f'[{text}]({href})'
+
+        if new_md is not None:
+            a.replace_with(NavigableString(new_md))
+
+    if text_only:
+        return soup.get_text()
+    else:
+        return str(soup)
+
+def remove_font_parentheses(text: str) -> str:
+    return FONT_PATTERN.sub('', text)
 
 write_to_db(array_src)

@@ -651,3 +651,16 @@ Future<DateTime?> getLastUpdateFileLocal(String folder, String filePath) async {
     return null;
   }
 }
+
+List<String> splitTrailingDigits(String s) {
+  final str = s.trim();
+  final reg = RegExp(r'^(.*?)(\d+)\s*$');
+  final m = reg.firstMatch(str);
+  if (m != null) {
+    final prefix = m.group(1)!.trimRight();
+    final digits = m.group(2)!;
+    return [prefix, digits];
+  } else {
+    return [str, ''];
+  }
+}

@@ -23,4 +23,12 @@ class AppConstants {
   static const String folder = "revelation";
   static const String commonDB = "revelation.sqlite";
   static const String localizedDB = "revelation_@loc.sqlite";
+  static const String hebrewUrl = "https://biblehub.com/hebrew/@index.htm";
+  static const String onlineBibleUrl = "https://on-bible.com/bible";
+  static const onlineBibleBooks = {
+    'en': 'kjv',
+    'es': 'kjv',
+    'uk': 'ubo',
+    'ru': 'rst',
+  };
 }

@@ -41,22 +41,23 @@ class _TopicScreenState extends State<TopicScreen> {
     );
 
     Widget content = SizedBox.expand(
-        child: FutureBuilder<String>(
-      future: futureMarkdown,
-      builder: (context, snapshot) {
-        final data = snapshot.data ?? '';
-        return SingleChildScrollView(
-          controller: _scrollController,
-          padding: const EdgeInsets.all(8.0),
-          child: MarkdownBody(
-            data: data,
-            styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-            onTapLink: (text, href, title) =>
-                _onTapHandle(context, text, href, title),
-          ),
-        );
-      },
-    ));
+      child: FutureBuilder<String>(
+        future: futureMarkdown,
+        builder: (context, snapshot) {
+          final data = snapshot.data ?? '';
+          return SingleChildScrollView(
+            controller: _scrollController,
+            padding: const EdgeInsets.all(8.0),
+            child: MarkdownBody(
+              data: data,
+              styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+              onTapLink: (text, href, title) =>
+                  _onTapHandle(context, text, href, title),
+            ),
+          );
+        },
+      ),
+    );
 
     if (isDesktop() || isWeb()) {
       content = Listener(
@@ -96,16 +97,15 @@ class _TopicScreenState extends State<TopicScreen> {
             Text(
               locLinks(context, widget.name ?? ""),
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    height: 0.9,
-                  ),
+                fontWeight: FontWeight.bold,
+                height: 0.9,
+              ),
             ),
             Text(
               locLinks(context, widget.description ?? ""),
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall
-                  ?.copyWith(fontWeight: FontWeight.normal),
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal),
             ),
           ],
         ),
@@ -125,24 +125,18 @@ class _TopicScreenState extends State<TopicScreen> {
   }
 
   void _onTapHandle(
-      BuildContext context, String text, String? href, String title) {
+    BuildContext context,
+    String text,
+    String? href,
+    String title,
+  ) {
     if (href != null) {
-      if (href.startsWith("data:")) {
-        // Own inner link
-        final address = href.split(".");
-        if (address.isNotEmpty) {
-          switch (address[0]) {
-            case "data:about":
-              Navigator.pop(context);
-              context.push('/about');
-              break;
-            case "data:sources":
-              Navigator.pop(context);
-              context.push('/primary_sources');
-              break;
-            default:
-              break;
-          }
+      if (href.startsWith("screen:")) {
+        // Own screen link
+        final address = href.split(":");
+        if (address.isNotEmpty && address.length > 1) {
+          Navigator.pop(context);
+          context.push('/${address[1]}');
         }
       } else {
         // Real link
