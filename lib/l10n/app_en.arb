@@ -105,6 +105,8 @@
   "tolerance": "Tolerance",
   "replace_color_message": "On the first call, generating the pixel matrix will take some time.",
   "page_settings_reset": "Page settings reset",
+  "toggle_show_word_separators": "Word separators",
+  "toggle_show_strong_numbers": "Strong's numbers",
   "strong_number": "Strong’s number",
   "strong_translit": "Transliteration",
   "strong_part_of_speech": "Part of speech",

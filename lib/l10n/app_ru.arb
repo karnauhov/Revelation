@@ -105,6 +105,8 @@
   "tolerance": "Допуск",
   "replace_color_message": "При первом вызове формирование матрицы пикселей займёт некоторое время.",
   "page_settings_reset": "Сброс настроек",
+  "toggle_show_word_separators": "Разделители слов",
+  "toggle_show_strong_numbers": "Номера Стронга",
   "strong_number": "Номер по Стронгу",
   "strong_translit": "Транслитерация",
   "strong_part_of_speech": "Часть речи",

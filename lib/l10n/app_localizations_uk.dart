@@ -337,7 +337,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get page_settings_reset => 'Скидання налаштувань';
 
   @override
-  String get strong_number => 'Номер за Стронгом';
+  String get toggle_show_word_separators => 'Роздільники слів';
+
+  @override
+  String get toggle_show_strong_numbers => 'Номери Стронґа';
+
+  @override
+  String get strong_number => 'Номер за Стронґом';
 
   @override
   String get strong_translit => 'Транслітерація';

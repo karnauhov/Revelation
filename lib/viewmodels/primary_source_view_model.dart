@@ -40,6 +40,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   double tolerance = 0;
   bool showDescription = true;
   String? descriptionContent;
+  bool showWordSeparators = false;
+  bool showStrongNumbers = false;
 
   final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
@@ -121,6 +123,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
           final bytes = await file.readAsBytes();
           imageData = bytes;
           imageName = "${primarySource.hashCode}_$page";
+
           isLoading = false;
           localPageLoaded[page] = true;
         } else {
@@ -156,6 +159,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
       isMonochrome = false;
       brightness = 0;
       contrast = 100;
+      showWordSeparators = false;
+      showStrongNumbers = false;
       notifyListeners();
     }
   }
@@ -246,6 +251,18 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleShowWordSeparators() {
+    showWordSeparators = !showWordSeparators;
+    savePageSettings();
+    notifyListeners();
+  }
+
+  void toggleShowStrongNumbers() {
+    showStrongNumbers = !showStrongNumbers;
+    savePageSettings();
+    notifyListeners();
+  }
+
   void setMenuOpen(bool value) {
     _isMenuOpen = value;
     notifyListeners();
@@ -264,6 +281,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
         isMonochrome: isMonochrome,
         brightness: brightness,
         contrast: contrast,
+        showWordSeparators: showWordSeparators,
+        showStrongNumbers: showStrongNumbers,
       );
       _pagesSettings!.pages[pageId] = _pageSettings;
       _pagesRepository.savePages(_pagesSettings!);
@@ -288,6 +307,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
     isMonochrome = false;
     brightness = 0;
     contrast = 100;
+    showWordSeparators = false;
+    showStrongNumbers = false;
     imageController.backToMinScale();
     resetColorReplacement();
   }
@@ -381,6 +402,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
       isMonochrome = pageSettings['isMonochrome'];
       brightness = pageSettings['brightness'];
       contrast = pageSettings['contrast'];
+      showWordSeparators = pageSettings['wordSeparators'];
+      showStrongNumbers = pageSettings['strongNumbers'];
     } else {
       savedX = dx = 0;
       savedY = dy = 0;
@@ -389,6 +412,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
       isMonochrome = false;
       brightness = 0;
       contrast = 100;
+      showWordSeparators = false;
+      showStrongNumbers = false;
     }
   }
 

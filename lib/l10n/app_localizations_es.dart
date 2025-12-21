@@ -336,6 +336,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get page_settings_reset => 'Restablecer configuración';
 
   @override
+  String get toggle_show_word_separators => 'Separadores de palabras';
+
+  @override
+  String get toggle_show_strong_numbers => 'Números de Strong';
+
+  @override
   String get strong_number => 'Número de Strong';
 
   @override

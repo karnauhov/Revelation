@@ -19,7 +19,7 @@ class ExitChooseModeIntent extends Intent {
 
 class PrimarySourceScreen extends StatefulWidget {
   final PrimarySource primarySource;
-  static final numButtons = 9;
+  static final numButtons = 11;
 
   const PrimarySourceScreen({required this.primarySource, super.key});
 
@@ -307,6 +307,14 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       colorToReplace: viewModel.colorToReplace,
       newColor: viewModel.newColor,
       tolerance: viewModel.tolerance,
+      showWordSeparators: viewModel.showWordSeparators,
+      showStrongNumbers: viewModel.showStrongNumbers,
+      wordSeparators: viewModel.selectedPage != null
+          ? viewModel.selectedPage!.wordSeparators
+          : [],
+      strongNumbers: viewModel.selectedPage != null
+          ? viewModel.selectedPage!.strongNumbers
+          : [],
     );
   }
 

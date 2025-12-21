@@ -336,6 +336,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get page_settings_reset => 'Сброс настроек';
 
   @override
+  String get toggle_show_word_separators => 'Разделители слов';
+
+  @override
+  String get toggle_show_strong_numbers => 'Номера Стронга';
+
+  @override
   String get strong_number => 'Номер по Стронгу';
 
   @override

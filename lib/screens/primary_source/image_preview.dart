@@ -4,6 +4,8 @@ import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
+import 'package:revelation/models/page_line.dart';
+import 'package:revelation/models/page_text.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
@@ -34,6 +36,10 @@ class ImagePreview extends StatefulWidget {
   final Color colorToReplace;
   final Color newColor;
   final double tolerance;
+  final bool showWordSeparators;
+  final bool showStrongNumbers;
+  final List<PageLine> wordSeparators;
+  final List<PageText> strongNumbers;
 
   const ImagePreview({
     required this.imageData,
@@ -47,6 +53,10 @@ class ImagePreview extends StatefulWidget {
     required this.colorToReplace,
     required this.newColor,
     required this.tolerance,
+    required this.showWordSeparators,
+    required this.showStrongNumbers,
+    required this.wordSeparators,
+    required this.strongNumbers,
     super.key,
   });
 
@@ -79,9 +89,7 @@ class ImagePreviewState extends State<ImagePreview> {
         if (widget.controller.imageSize == null) {
           return Container(
             color: colorScheme.surface,
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
+            child: const Center(child: CircularProgressIndicator()),
           );
         }
         final currentSize = Size(constraints.maxWidth, constraints.maxHeight);
@@ -92,9 +100,12 @@ class ImagePreviewState extends State<ImagePreview> {
           _lastContainerSize = currentSize;
           recalcAnyway = true;
         }
-        widget.controller.setImageSize(widget.controller.imageSize!,
-            constraints.maxWidth, constraints.maxHeight,
-            recalc: recalcAnyway);
+        widget.controller.setImageSize(
+          widget.controller.imageSize!,
+          constraints.maxWidth,
+          constraints.maxHeight,
+          recalc: recalcAnyway,
+        );
 
         final vm = context.watch<PrimarySourceViewModel>();
         Widget imageWidget;
@@ -154,10 +165,12 @@ class ImagePreviewState extends State<ImagePreview> {
             behavior: HitTestBehavior.opaque,
             onTapDown: (TapDownDetails details) async {
               final coord = _getCursorCoord(details.globalPosition);
-              final ui.Image decoded =
-                  await decodeImageFromList(widget.imageData);
-              final byteData =
-                  await decoded.toByteData(format: ui.ImageByteFormat.rawRgba);
+              final ui.Image decoded = await decodeImageFromList(
+                widget.imageData,
+              );
+              final byteData = await decoded.toByteData(
+                format: ui.ImageByteFormat.rawRgba,
+              );
               final offset = (coord.y * decoded.width + coord.x) * 4;
               final r = byteData!.getUint8(offset);
               final g = byteData.getUint8(offset + 1);
@@ -206,7 +219,7 @@ class ImagePreviewState extends State<ImagePreview> {
             contrastFactor, 0, 0, 0, offset, // R
             0, contrastFactor, 0, 0, offset, // G
             0, 0, contrastFactor, 0, offset, // B
-            0, 0, 0, 1, 0 // A
+            0, 0, 0, 1, 0, // A
           ];
           imageWidget = ColorFiltered(
             colorFilter: ColorFilter.matrix(brightnessContrastMatrix),
@@ -228,7 +241,45 @@ class ImagePreviewState extends State<ImagePreview> {
               child: imageWidget,
             );
           }
-          wrapped = imageWidget;
+
+          // Apply filters
+          if (widget.showWordSeparators || widget.showStrongNumbers) {
+            final imgSize = widget.controller.imageSize!;
+            wrapped = Center(
+              child: SizedBox(
+                width: imgSize.width,
+                height: imgSize.height,
+                child: Stack(
+                  children: [
+                    Positioned.fill(child: imageWidget),
+                    // Draw multiple word separators (lines)
+                    if (widget.showWordSeparators &&
+                        widget.wordSeparators.isNotEmpty)
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: RelativeLinesPainter(
+                            lines: widget.wordSeparators,
+                          ),
+                        ),
+                      ),
+
+                    // Draw multiple Strong's numbers (texts)
+                    if (widget.showStrongNumbers &&
+                        widget.strongNumbers.isNotEmpty)
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: RelativeTextsPainter(
+                            texts: widget.strongNumbers,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            wrapped = imageWidget;
+          }
         }
 
         vm.restorePositionAndScale();
@@ -237,8 +288,8 @@ class ImagePreviewState extends State<ImagePreview> {
           cursor: vm.selectAreaMode
               ? SystemMouseCursors.precise
               : vm.pipetteMode
-                  ? SystemMouseCursors.precise
-                  : SystemMouseCursors.grab,
+              ? SystemMouseCursors.precise
+              : SystemMouseCursors.grab,
           child: InteractiveViewer(
             transformationController:
                 widget.controller.transformationController,
@@ -246,10 +297,7 @@ class ImagePreviewState extends State<ImagePreview> {
             maxScale: widget.controller.maxScale,
             constrained: false,
             child: Center(
-              child: Container(
-                color: colorScheme.surface,
-                child: wrapped,
-              ),
+              child: Container(color: colorScheme.surface, child: wrapped),
             ),
           ),
         );
@@ -263,12 +311,15 @@ class ImagePreviewState extends State<ImagePreview> {
     final matrix = widget.controller.transformationController.value;
     final inverseMatrix = Matrix4.inverted(matrix);
     final localPoint = Offset(local.dx, local.dy);
-    final transformed =
-        inverseMatrix.transform3(math.Vector3(localPoint.dx, localPoint.dy, 0));
-    final px =
-        transformed.x.clamp(0, widget.controller.imageSize!.width - 1).round();
-    final py =
-        transformed.y.clamp(0, widget.controller.imageSize!.height - 1).round();
+    final transformed = inverseMatrix.transform3(
+      math.Vector3(localPoint.dx, localPoint.dy, 0),
+    );
+    final px = transformed.x
+        .clamp(0, widget.controller.imageSize!.width - 1)
+        .round();
+    final py = transformed.y
+        .clamp(0, widget.controller.imageSize!.height - 1)
+        .round();
     return LocalCoord(px, py);
   }
 
@@ -277,9 +328,10 @@ class ImagePreviewState extends State<ImagePreview> {
       if (mounted) {
         setState(() {
           widget.controller.setImageSize(
-              Size(image.width.toDouble(), image.height.toDouble()),
-              context.size!.width,
-              context.size!.height);
+            Size(image.width.toDouble(), image.height.toDouble()),
+            context.size!.width,
+            context.size!.height,
+          );
         });
       }
     });
@@ -302,15 +354,24 @@ class ImagePreviewState extends State<ImagePreview> {
 
     final int startX = region.left.toInt().clamp(0, _original!.width - 1);
     final int startY = region.top.toInt().clamp(0, _original!.height - 1);
-    final int width =
-        (region.width.toInt()).clamp(0, _original!.width - startX);
-    final int height =
-        (region.height.toInt()).clamp(0, _original!.height - startY);
+    final int width = (region.width.toInt()).clamp(
+      0,
+      _original!.width - startX,
+    );
+    final int height = (region.height.toInt()).clamp(
+      0,
+      _original!.height - startY,
+    );
 
     if (width <= 0 || height <= 0) return Uint8List(0);
 
-    final img.Image regionImage = img.copyCrop(_original!,
-        x: startX, y: startY, width: width, height: height);
+    final img.Image regionImage = img.copyCrop(
+      _original!,
+      x: startX,
+      y: startY,
+      width: width,
+      height: height,
+    );
 
     final int r0 = (target.r * 255).round();
     final int g0 = (target.g * 255).round();
@@ -327,7 +388,13 @@ class ImagePreviewState extends State<ImagePreview> {
         final int dr = r - r0, dg = g - g0, db = b - b0;
         if (dr * dr + dg * dg + db * db <= tolSq) {
           regionImage.setPixelRgba(
-              x, y, replacementR, replacementG, replacementB, px.a);
+            x,
+            y,
+            replacementR,
+            replacementG,
+            replacementB,
+            px.a,
+          );
         }
       }
     }
@@ -342,4 +409,104 @@ class LocalCoord {
   late final int y;
 
   LocalCoord(this.x, this.y);
+}
+
+class RelativeLinesPainter extends CustomPainter {
+  final List<PageLine> lines;
+
+  RelativeLinesPainter({required this.lines});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final l in lines) {
+      final Offset start = Offset(
+        size.width * l.startX,
+        size.height * l.startY,
+      );
+      final Offset end = Offset(size.width * l.endX, size.height * l.endY);
+
+      final paint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = l.strokeWidth
+        ..strokeCap = StrokeCap.round
+        ..color = l.color;
+
+      canvas.drawLine(start, end, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant RelativeLinesPainter old) {
+    return old.lines != lines;
+  }
+}
+
+class RelativeTextsPainter extends CustomPainter {
+  final List<PageText> texts;
+
+  RelativeTextsPainter({required this.texts});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final t in texts) {
+      final double fontSize = size.height * t.fontSizeFrac;
+      final double dx = size.width * t.positionX;
+      final double dy = size.height * t.positionY;
+
+      final Offset offset = Offset(dx, dy);
+
+      if (t.strokeWidth > 0 && t.strokeColor.a > 0) {
+        final TextPainter strokePainter = TextPainter(
+          text: TextSpan(
+            text: t.text,
+            style: TextStyle(
+              fontSize: fontSize,
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = t.strokeWidth
+                ..color = t.strokeColor,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        );
+        strokePainter.layout();
+        final Offset centered = Offset(
+          offset.dx - strokePainter.width / 2,
+          offset.dy - strokePainter.height / 2,
+        );
+        strokePainter.paint(canvas, centered);
+      }
+
+      final TextPainter fillPainter = TextPainter(
+        text: TextSpan(
+          text: t.text,
+          style: TextStyle(
+            fontSize: fontSize,
+            color: t.color,
+            fontWeight: FontWeight.w700,
+            shadows: const [
+              Shadow(
+                blurRadius: 1.0,
+                offset: Offset(0.5, 0.5),
+                color: Color(0x44000000),
+              ),
+            ],
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      fillPainter.layout();
+      final Offset centeredFill = Offset(
+        offset.dx - fillPainter.width / 2,
+        offset.dy - fillPainter.height / 2,
+      );
+      fillPainter.paint(canvas, centeredFill);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant RelativeTextsPainter old) {
+    return old.texts != texts;
+  }
 }

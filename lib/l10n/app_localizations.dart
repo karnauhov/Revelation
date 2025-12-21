@@ -732,6 +732,18 @@ abstract class AppLocalizations {
   /// **'Page settings reset'**
   String get page_settings_reset;
 
+  /// No description provided for @toggle_show_word_separators.
+  ///
+  /// In en, this message translates to:
+  /// **'Word separators'**
+  String get toggle_show_word_separators;
+
+  /// No description provided for @toggle_show_strong_numbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong\'s numbers'**
+  String get toggle_show_strong_numbers;
+
   /// No description provided for @strong_number.
   ///
   /// In en, this message translates to:

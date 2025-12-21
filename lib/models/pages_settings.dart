@@ -4,9 +4,7 @@ import 'dart:typed_data';
 class PagesSettings {
   final Map<String, dynamic> pages;
 
-  PagesSettings({
-    required this.pages,
-  });
+  PagesSettings({required this.pages});
 
   Map<String, dynamic> toMap() {
     return {'pages': pages};
@@ -28,6 +26,8 @@ class PagesSettings {
     bool isMonochrome = false,
     double brightness = 0,
     double contrast = 100,
+    bool showWordSeparators = false,
+    bool showStrongNumbers = false,
   }) {
     final buffer = ByteData(8 * 5 + 1);
 
@@ -43,7 +43,11 @@ class PagesSettings {
     buffer.setFloat64(offset, contrast, Endian.little);
     offset += 8;
 
-    int flags = (isNegative ? 1 : 0) | (isMonochrome ? 2 : 0);
+    int flags =
+        (isNegative ? 1 : 0) |
+        (isMonochrome ? 2 : 0) |
+        (showWordSeparators ? 4 : 0) |
+        (showStrongNumbers ? 8 : 0);
     buffer.setUint8(offset, flags);
 
     final bytes = buffer.buffer.asUint8List();
@@ -76,6 +80,8 @@ class PagesSettings {
     int flags = buffer.getUint8(offset);
     bool isNegative = (flags & 1) != 0;
     bool isMonochrome = (flags & 2) != 0;
+    bool showWordSeparators = (flags & 4) != 0;
+    bool showStrongNumbers = (flags & 8) != 0;
 
     return {
       'position': {'x': posX, 'y': posY},
@@ -84,6 +90,8 @@ class PagesSettings {
       'contrast': contrast,
       'isNegative': isNegative,
       'isMonochrome': isMonochrome,
+      'wordSeparators': showWordSeparators,
+      'strongNumbers': showStrongNumbers,
     };
   }
 }

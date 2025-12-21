@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/page.dart' as model;
+import 'package:revelation/models/page_line.dart';
+import 'package:revelation/models/page_text.dart';
 import 'package:revelation/models/primary_source.dart';
 
 class PrimarySourcesRepository {
@@ -34,6 +36,11 @@ class PrimarySourcesRepository {
             name: "325v",
             content: "1:1-20; 2:1-7",
             image: "primary_sources/20001/20001_02520_Q89_1v_B678_p.jpg",
+            wordSeparators: [
+              PageLine(0.255, 0.188, 0.255, 0.202),
+              PageLine(0.362, 0.191, 0.362, 0.205),
+            ],
+            strongNumbers: [PageText("602", 0.310, 0.188)],
           ),
           model.Page(
             name: "326r",

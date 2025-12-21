@@ -255,6 +255,46 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
+        icon: const Icon(Icons.horizontal_distribute),
+        color: colorScheme.primary,
+        style: IconButton.styleFrom(
+          backgroundColor: viewModel.showWordSeparators
+              ? colorScheme.secondaryContainer
+              : Colors.transparent,
+          shape: const CircleBorder(),
+        ),
+        tooltip: AppLocalizations.of(context)!.toggle_show_word_separators,
+        onPressed:
+            viewModel.primarySource.permissionsReceived &&
+                viewModel.selectedPage != null &&
+                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+            ? () {
+                aud.playSound("click");
+                viewModel.toggleShowWordSeparators();
+              }
+            : null,
+      ),
+      IconButton(
+        icon: const Icon(Icons.local_offer),
+        color: colorScheme.primary,
+        style: IconButton.styleFrom(
+          backgroundColor: viewModel.showStrongNumbers
+              ? colorScheme.secondaryContainer
+              : Colors.transparent,
+          shape: const CircleBorder(),
+        ),
+        tooltip: AppLocalizations.of(context)!.toggle_show_strong_numbers,
+        onPressed:
+            viewModel.primarySource.permissionsReceived &&
+                viewModel.selectedPage != null &&
+                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+            ? () {
+                aud.playSound("click");
+                viewModel.toggleShowStrongNumbers();
+              }
+            : null,
+      ),
+      IconButton(
         icon: const Icon(Icons.cleaning_services),
         color: colorScheme.primary,
         tooltip: AppLocalizations.of(context)!.page_settings_reset,
@@ -640,6 +680,107 @@ class PrimarySourceToolbar extends StatelessWidget {
                       ),
                     if (numButtons < 9)
                       PopupMenuItem(
+                        padding: viewModel.showWordSeparators
+                            ? const EdgeInsets.symmetric(horizontal: 4.0)
+                            : const EdgeInsets.symmetric(horizontal: 12.0),
+                        value: 'toggle_show_word_separators',
+                        enabled:
+                            viewModel.selectedPage != null &&
+                            viewModel.primarySource.permissionsReceived &&
+                            viewModel.localPageLoaded[viewModel
+                                    .selectedPage!
+                                    .image] ==
+                                true,
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled =
+                                viewModel.selectedPage != null &&
+                                viewModel.primarySource.permissionsReceived;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                if (isEnabled && viewModel.showWordSeparators)
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorScheme.secondaryContainer,
+                                    ),
+                                    child: Icon(
+                                      Icons.horizontal_distribute,
+                                      color: colorScheme.primary,
+                                    ),
+                                  )
+                                else
+                                  Icon(
+                                    Icons.horizontal_distribute,
+                                    color: iconColor,
+                                  ),
+                                if (!viewModel.showWordSeparators)
+                                  const SizedBox(width: 8),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.toggle_show_word_separators,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    if (numButtons < 10)
+                      PopupMenuItem(
+                        padding: viewModel.showStrongNumbers
+                            ? const EdgeInsets.symmetric(horizontal: 4.0)
+                            : const EdgeInsets.symmetric(horizontal: 12.0),
+                        value: 'toggle_show_strong_numbers',
+                        enabled:
+                            viewModel.selectedPage != null &&
+                            viewModel.primarySource.permissionsReceived &&
+                            viewModel.localPageLoaded[viewModel
+                                    .selectedPage!
+                                    .image] ==
+                                true,
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled =
+                                viewModel.selectedPage != null &&
+                                viewModel.primarySource.permissionsReceived;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                if (isEnabled && viewModel.showStrongNumbers)
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorScheme.secondaryContainer,
+                                    ),
+                                    child: Icon(
+                                      Icons.local_offer,
+                                      color: colorScheme.primary,
+                                    ),
+                                  )
+                                else
+                                  Icon(Icons.local_offer, color: iconColor),
+                                if (!viewModel.showStrongNumbers)
+                                  const SizedBox(width: 8),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.toggle_show_strong_numbers,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    if (numButtons < 11)
+                      PopupMenuItem(
                         value: 'reset_page',
                         enabled:
                             viewModel.selectedPage != null &&
@@ -728,6 +869,18 @@ class PrimarySourceToolbar extends StatelessWidget {
                       if (viewModel.selectedPage != null &&
                           viewModel.primarySource.permissionsReceived) {
                         _showReplaceColorDialog();
+                      }
+                      break;
+                    case 'toggle_show_word_separators':
+                      if (viewModel.selectedPage != null &&
+                          viewModel.primarySource.permissionsReceived) {
+                        viewModel.toggleShowWordSeparators();
+                      }
+                      break;
+                    case 'toggle_show_strong_numbers':
+                      if (viewModel.selectedPage != null &&
+                          viewModel.primarySource.permissionsReceived) {
+                        viewModel.toggleShowStrongNumbers();
                       }
                       break;
                     case 'reset_page':

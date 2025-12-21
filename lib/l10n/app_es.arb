@@ -105,6 +105,8 @@
   "tolerance": "Tolerancia",
   "replace_color_message": "La primera vez que se invoca, la formación de la matriz de píxeles tomará algún tiempo.",
   "page_settings_reset": "Restablecer configuración",
+  "toggle_show_word_separators": "Separadores de palabras",
+  "toggle_show_strong_numbers": "Números de Strong",
   "strong_number": "Número de Strong",
   "strong_translit": "Transliteración",
   "strong_part_of_speech": "Parte de la oración",
