@@ -39,8 +39,16 @@ class PrimarySourcesRepository {
             wordSeparators: [
               PageLine(0.255, 0.188, 0.255, 0.202),
               PageLine(0.362, 0.191, 0.362, 0.205),
+              PageLine(0.372, 0.215, 0.372, 0.229),
+              PageLine(0.281, 0.228, 0.281, 0.240),
+              PageLine(0.165, 0.228, 0.165, 0.240),
+              PageLine(0.211, 0.228, 0.211, 0.240),
             ],
-            strongNumbers: [PageText("602", 0.310, 0.188)],
+            strongNumbers: [
+              PageText("602", 0.310, 0.188),
+              PageText("40", 0.392, 0.216),
+              PageText("1401", 0.195, 0.228),
+            ],
           ),
           model.Page(
             name: "326r",

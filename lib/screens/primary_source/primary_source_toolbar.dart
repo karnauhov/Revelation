@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -304,11 +303,7 @@ class PrimarySourceToolbar extends StatelessWidget {
                 viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
             ? () {
                 aud.playSound("click");
-                // viewModel.removePageSettings();
-                viewModel.showInfoForStrongNumber(
-                  Random().nextInt(5624) + 1,
-                  context,
-                );
+                viewModel.removePageSettings();
               }
             : null,
       ),

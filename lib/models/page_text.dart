@@ -13,7 +13,7 @@ class PageText {
     this.text,
     this.positionX,
     this.positionY, {
-    this.fontSizeFrac = 0.01,
+    this.fontSizeFrac = 0.008,
     this.color = Colors.red,
     this.strokeColor = Colors.transparent,
     this.strokeWidth = 0.0,

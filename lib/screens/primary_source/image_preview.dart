@@ -40,6 +40,7 @@ class ImagePreview extends StatefulWidget {
   final bool showStrongNumbers;
   final List<PageLine> wordSeparators;
   final List<PageText> strongNumbers;
+  final ValueChanged<String>? onStrongNumberTap;
 
   const ImagePreview({
     required this.imageData,
@@ -57,6 +58,7 @@ class ImagePreview extends StatefulWidget {
     required this.showStrongNumbers,
     required this.wordSeparators,
     required this.strongNumbers,
+    this.onStrongNumberTap,
     super.key,
   });
 
@@ -267,9 +269,15 @@ class ImagePreviewState extends State<ImagePreview> {
                     if (widget.showStrongNumbers &&
                         widget.strongNumbers.isNotEmpty)
                       Positioned.fill(
-                        child: CustomPaint(
-                          painter: RelativeTextsPainter(
-                            texts: widget.strongNumbers,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTapDown: (TapDownDetails details) {
+                            _handleTapOnStrongNumbers(details.globalPosition);
+                          },
+                          child: CustomPaint(
+                            painter: RelativeTextsPainter(
+                              texts: widget.strongNumbers,
+                            ),
                           ),
                         ),
                       ),
@@ -401,6 +409,47 @@ class ImagePreviewState extends State<ImagePreview> {
 
     final result = Uint8List.fromList(img.encodePng(regionImage));
     return result;
+  }
+
+  void _handleTapOnStrongNumbers(Offset globalPosition) {
+    if (widget.onStrongNumberTap == null) return;
+    if (widget.controller.imageSize == null) return;
+
+    final LocalCoord coord = _getCursorCoord(globalPosition);
+    final imgWidth = widget.controller.imageSize!.width;
+    final imgHeight = widget.controller.imageSize!.height;
+    final Size imgSize = Size(imgWidth, imgHeight);
+
+    for (final t in widget.strongNumbers) {
+      final double fontSize = imgSize.height * t.fontSizeFrac;
+      final double dx = imgSize.width * t.positionX;
+      final double dy = imgSize.height * t.positionY;
+      final TextPainter tp = TextPainter(
+        text: TextSpan(
+          text: t.text,
+          style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w700),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      tp.layout();
+      final double left = dx - tp.width / 2;
+      final double top = dy - tp.height / 2;
+      final double right = left + tp.width;
+      final double bottom = top + tp.height;
+      const double extra = 4.0;
+      final hitLeft = left - extra;
+      final hitTop = top - extra;
+      final hitRight = right + extra;
+      final hitBottom = bottom + extra;
+
+      if (coord.x >= hitLeft &&
+          coord.x <= hitRight &&
+          coord.y >= hitTop &&
+          coord.y <= hitBottom) {
+        widget.onStrongNumberTap!(t.text);
+        return;
+      }
+    }
   }
 }
 

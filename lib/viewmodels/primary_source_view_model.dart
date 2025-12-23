@@ -345,9 +345,17 @@ class PrimarySourceViewModel extends ChangeNotifier {
         buffer.write(word.trim());
         buffer.write("\n\r");
         buffer.write(AppLocalizations.of(context)!.strong_number);
-        buffer.write(": **");
+        final prevId = _getNeighborStrongNumber(
+          _dbManager.greekWords[wordIndex].id,
+          forward: false,
+        );
+        buffer.write(": [<](strong:G${prevId})**");
         buffer.write(_dbManager.greekWords[wordIndex].id);
-        buffer.write("**\n\r");
+        final nextId = _getNeighborStrongNumber(
+          _dbManager.greekWords[wordIndex].id,
+          forward: true,
+        );
+        buffer.write("**[>](strong:G${nextId})\n\r");
         buffer.write(AppLocalizations.of(context)!.strong_translit);
         buffer.write(": **");
         buffer.write(_translit.transliterate(word.trim(), _dbManager.langDB));
@@ -500,5 +508,28 @@ class PrimarySourceViewModel extends ChangeNotifier {
         );
       }
     }
+  }
+
+  int _getNeighborStrongNumber(int current, {bool forward = true}) {
+    const int minVal = 1;
+    const int maxVal = 5624;
+
+    bool isForbidden(int x) => x == 2717 || (x >= 3203 && x <= 3302);
+
+    if (current < minVal) {
+      current = minVal;
+    }
+    if (current > maxVal) {
+      current = maxVal;
+    }
+
+    int candidate = current;
+    do {
+      candidate = forward ? candidate + 1 : candidate - 1;
+      if (candidate > maxVal) candidate = minVal;
+      if (candidate < minVal) candidate = maxVal;
+    } while (isForbidden(candidate));
+
+    return candidate;
   }
 }
