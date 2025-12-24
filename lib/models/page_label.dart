@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class PageText {
+class PageLabel {
   final String text;
   final double positionX;
   final double positionY;
@@ -9,7 +9,7 @@ class PageText {
   final Color strokeColor;
   final double strokeWidth;
 
-  PageText(
+  PageLabel(
     this.text,
     this.positionX,
     this.positionY, {

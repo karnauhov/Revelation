@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:revelation/models/page_line.dart';
-import 'package:revelation/models/page_text.dart';
+import 'package:revelation/models/page_label.dart';
+import 'package:revelation/models/page_word.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
@@ -39,8 +40,8 @@ class ImagePreview extends StatefulWidget {
   final bool showWordSeparators;
   final bool showStrongNumbers;
   final List<PageLine> wordSeparators;
-  final List<PageText> strongNumbers;
-  final ValueChanged<String>? onStrongNumberTap;
+  final List<PageLabel> strongNumbers;
+  final List<PageWord> words;
 
   const ImagePreview({
     required this.imageData,
@@ -58,7 +59,7 @@ class ImagePreview extends StatefulWidget {
     required this.showStrongNumbers,
     required this.wordSeparators,
     required this.strongNumbers,
-    this.onStrongNumberTap,
+    required this.words,
     super.key,
   });
 
@@ -94,6 +95,7 @@ class ImagePreviewState extends State<ImagePreview> {
             child: const Center(child: CircularProgressIndicator()),
           );
         }
+
         final currentSize = Size(constraints.maxWidth, constraints.maxHeight);
         bool recalcAnyway = false;
         if (_lastContainerSize == null ||
@@ -102,6 +104,7 @@ class ImagePreviewState extends State<ImagePreview> {
           _lastContainerSize = currentSize;
           recalcAnyway = true;
         }
+
         widget.controller.setImageSize(
           widget.controller.imageSize!,
           constraints.maxWidth,
@@ -163,29 +166,9 @@ class ImagePreviewState extends State<ImagePreview> {
           wrapped = imageWidget;
         } else if (vm.pipetteMode) {
           imageWidget = Image.memory(widget.imageData);
-          wrapped = GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown: (TapDownDetails details) async {
-              final coord = _getCursorCoord(details.globalPosition);
-              final ui.Image decoded = await decodeImageFromList(
-                widget.imageData,
-              );
-              final byteData = await decoded.toByteData(
-                format: ui.ImageByteFormat.rawRgba,
-              );
-              final offset = (coord.y * decoded.width + coord.x) * 4;
-              final r = byteData!.getUint8(offset);
-              final g = byteData.getUint8(offset + 1);
-              final b = byteData.getUint8(offset + 2);
-              final a = byteData.getUint8(offset + 3);
-              final picked = Color.fromARGB(a, r, g, b);
-
-              vm.finishPipetteMode(picked);
-            },
-            child: imageWidget,
-          );
+          wrapped = imageWidget;
         } else {
-          // Color replacement
+          // Color replacement and filters
           imageWidget = Stack(
             children: [
               Image.memory(widget.imageData),
@@ -244,53 +227,68 @@ class ImagePreviewState extends State<ImagePreview> {
             );
           }
 
-          // Apply filters
-          if (widget.showWordSeparators || widget.showStrongNumbers) {
-            final imgSize = widget.controller.imageSize!;
-            wrapped = Center(
-              child: SizedBox(
-                width: imgSize.width,
-                height: imgSize.height,
-                child: Stack(
-                  children: [
-                    Positioned.fill(child: imageWidget),
-                    // Draw multiple word separators (lines)
-                    if (widget.showWordSeparators &&
-                        widget.wordSeparators.isNotEmpty)
-                      Positioned.fill(
-                        child: CustomPaint(
-                          painter: RelativeLinesPainter(
-                            lines: widget.wordSeparators,
-                          ),
-                        ),
-                      ),
+          final imgSize = widget.controller.imageSize!;
+          final Widget contentStack = Center(
+            child: SizedBox(
+              width: imgSize.width,
+              height: imgSize.height,
+              child: Stack(
+                children: [
+                  // Base image
+                  Positioned.fill(child: imageWidget),
 
-                    // Draw multiple Strong's numbers (texts)
-                    if (widget.showStrongNumbers &&
-                        widget.strongNumbers.isNotEmpty)
-                      Positioned.fill(
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTapDown: (TapDownDetails details) {
-                            _handleTapOnStrongNumbers(details.globalPosition);
-                          },
-                          child: CustomPaint(
-                            painter: RelativeTextsPainter(
-                              texts: widget.strongNumbers,
-                            ),
-                          ),
+                  // Draw multiple word separators (lines)
+                  if (widget.showWordSeparators &&
+                      widget.wordSeparators.isNotEmpty)
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: RelativeLinesPainter(
+                          lines: widget.wordSeparators,
                         ),
                       ),
-                  ],
-                ),
+                    ),
+
+                  // Draw multiple Strong's numbers (texts)
+                  if (widget.showStrongNumbers &&
+                      widget.strongNumbers.isNotEmpty)
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: RelativeTextsPainter(
+                          texts: widget.strongNumbers,
+                        ),
+                      ),
+                    ),
+                ],
               ),
-            );
-          } else {
-            wrapped = imageWidget;
-          }
+            ),
+          );
+
+          wrapped = contentStack;
         }
 
         vm.restorePositionAndScale();
+
+        // Single GestureDetector
+        final Widget gestureWrapped = GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapDown: (TapDownDetails details) async {
+            if (await _handlePipetteModeTap(details.globalPosition, vm)) {
+              return;
+            }
+            if (_handleSelectArea(vm)) {
+              return;
+            }
+            if (_handleTapOnStrongNumbers(details.globalPosition, vm)) {
+              return;
+            }
+            if (_handleTapOnWords(details.globalPosition, vm)) {
+              return;
+            }
+          },
+          child: Center(
+            child: Container(color: colorScheme.surface, child: wrapped),
+          ),
+        );
 
         return MouseRegion(
           cursor: vm.selectAreaMode
@@ -304,9 +302,7 @@ class ImagePreviewState extends State<ImagePreview> {
             minScale: widget.controller.minScale,
             maxScale: widget.controller.maxScale,
             constrained: false,
-            child: Center(
-              child: Container(color: colorScheme.surface, child: wrapped),
-            ),
+            child: gestureWrapped,
           ),
         );
       },
@@ -411,9 +407,108 @@ class ImagePreviewState extends State<ImagePreview> {
     return result;
   }
 
-  void _handleTapOnStrongNumbers(Offset globalPosition) {
-    if (widget.onStrongNumberTap == null) return;
-    if (widget.controller.imageSize == null) return;
+  Future<bool> _handlePipetteModeTap(
+    Offset globalPosition,
+    PrimarySourceViewModel vm,
+  ) async {
+    if (vm.pipetteMode) {
+      final coord = _getCursorCoord(globalPosition);
+      final ui.Image decoded = await decodeImageFromList(widget.imageData);
+      final byteData = await decoded.toByteData(
+        format: ui.ImageByteFormat.rawRgba,
+      );
+      if (byteData == null) {
+        return false;
+      }
+      final offset = (coord.y * decoded.width + coord.x) * 4;
+      if (offset < 0 || offset + 3 >= byteData.lengthInBytes) {
+        return false;
+      }
+      final r = byteData.getUint8(offset);
+      final g = byteData.getUint8(offset + 1);
+      final b = byteData.getUint8(offset + 2);
+      final a = byteData.getUint8(offset + 3);
+      final picked = Color.fromARGB(a, r, g, b);
+      vm.finishPipetteMode(picked);
+      return true;
+    }
+    return false;
+  }
+
+  bool _handleSelectArea(PrimarySourceViewModel vm) {
+    if (vm.selectAreaMode) {
+      return true;
+    }
+    return false;
+  }
+
+  bool _handleTapOnWords(Offset globalPosition, PrimarySourceViewModel vm) {
+    if (widget.controller.imageSize == null) {
+      return false;
+    }
+    if (widget.words.isEmpty) {
+      return false;
+    }
+
+    final LocalCoord coord = _getCursorCoord(globalPosition);
+    final imgWidth = widget.controller.imageSize!.width;
+    final imgHeight = widget.controller.imageSize!.height;
+    final Size imgSize = Size(imgWidth, imgHeight);
+    const double extra = 4.0;
+
+    for (int wi = 0; wi < widget.words.length; wi++) {
+      final pw = widget.words[wi];
+      for (final r in pw.rectangles) {
+        final bool fractionalX =
+            (r.startX >= 0.0 && r.startX <= 1.0) &&
+            (r.endX >= 0.0 && r.endX <= 1.0);
+        final bool fractionalY =
+            (r.startY >= 0.0 && r.startY <= 1.0) &&
+            (r.endY >= 0.0 && r.endY <= 1.0);
+
+        double left, top, right, bottom;
+        if (fractionalX && fractionalY) {
+          left = imgSize.width * r.startX;
+          top = imgSize.height * r.startY;
+          right = imgSize.width * r.endX;
+          bottom = imgSize.height * r.endY;
+        } else {
+          left = r.startX;
+          top = r.startY;
+          right = r.endX;
+          bottom = r.endY;
+        }
+
+        final double hitLeft = (left < right ? left : right) - extra;
+        final double hitTop = (top < bottom ? top : bottom) - extra;
+        final double hitRight = (left < right ? right : left) + extra;
+        final double hitBottom = (top < bottom ? bottom : top) + extra;
+
+        if (coord.x >= hitLeft &&
+            coord.x <= hitRight &&
+            coord.y >= hitTop &&
+            coord.y <= hitBottom) {
+          vm.showInfoForWord(wi, context);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool _handleTapOnStrongNumbers(
+    Offset globalPosition,
+    PrimarySourceViewModel vm,
+  ) {
+    if (widget.controller.imageSize == null) {
+      return false;
+    }
+    if (widget.strongNumbers.isEmpty) {
+      return false;
+    }
+    if (!vm.showStrongNumbers) {
+      return false;
+    }
 
     final LocalCoord coord = _getCursorCoord(globalPosition);
     final imgWidth = widget.controller.imageSize!.width;
@@ -446,10 +541,14 @@ class ImagePreviewState extends State<ImagePreview> {
           coord.x <= hitRight &&
           coord.y >= hitTop &&
           coord.y <= hitBottom) {
-        widget.onStrongNumberTap!(t.text);
-        return;
+        final int? number = int.tryParse(t.text);
+        if (number != null) {
+          vm.showInfoForStrongNumber(number, context);
+          return true;
+        }
       }
     }
+    return false;
   }
 }
 
@@ -491,7 +590,7 @@ class RelativeLinesPainter extends CustomPainter {
 }
 
 class RelativeTextsPainter extends CustomPainter {
-  final List<PageText> texts;
+  final List<PageLabel> texts;
 
   RelativeTextsPainter({required this.texts});
 

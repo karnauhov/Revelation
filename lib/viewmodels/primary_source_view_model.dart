@@ -358,7 +358,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
         buffer.write("**[>](strong:G${nextId})\n\r");
         buffer.write(AppLocalizations.of(context)!.strong_translit);
         buffer.write(": **");
-        buffer.write(_translit.transliterate(word.trim(), _dbManager.langDB));
+        buffer.write(
+          _translit
+              .transliterate(word.toLowerCase().trim(), _dbManager.langDB)
+              .toLowerCase(),
+        );
         buffer.write("**\n\r");
         buffer.write(AppLocalizations.of(context)!.strong_part_of_speech);
         buffer.write(": **");
@@ -378,6 +382,46 @@ class PrimarySourceViewModel extends ChangeNotifier {
         }
         updateDescriptionContent(buffer.toString());
       }
+    }
+  }
+
+  void showInfoForWord(int wordIndex, BuildContext context) {
+    if (selectedPage != null &&
+        selectedPage!.words.isNotEmpty &&
+        wordIndex >= 0 &&
+        selectedPage!.words.length > wordIndex) {
+      final word = selectedPage!.words[wordIndex];
+      final buffer = StringBuffer();
+      buffer.write("## ");
+      buffer.write(_strikeThroughByIndexes(word.text, word.notExist));
+      buffer.write("\n\r");
+      if (word.sn != null) {
+        buffer.write(AppLocalizations.of(context)!.strong_number);
+        buffer.write(": **");
+        buffer.write("[${word.sn!}](strong:G${word.sn!})");
+        buffer.write("**\n\r");
+      }
+      buffer.write(AppLocalizations.of(context)!.strong_translit);
+      buffer.write(": **");
+      buffer.write(
+        _translit
+            .transliterate(word.text.toLowerCase().trim(), _dbManager.langDB)
+            .toLowerCase(),
+      );
+      buffer.write("**\n\r");
+      if (word.sn != null) {
+        final descIndex = _dbManager.greekDescs.indexWhere(
+          (desc) => desc.id == word.sn!,
+        );
+        if (descIndex != -1) {
+          final desc = _dbManager.greekDescs[descIndex].desc.trim();
+          if (desc != "") {
+            buffer.write("\n\r>");
+            buffer.write(_dbManager.greekDescs[descIndex].desc.trim());
+          }
+        }
+      }
+      updateDescriptionContent(buffer.toString());
     }
   }
 
@@ -531,5 +575,32 @@ class PrimarySourceViewModel extends ChangeNotifier {
     } while (isForbidden(candidate));
 
     return candidate;
+  }
+
+  String _strikeThroughByIndexes(String word, Iterable<int> indices) {
+    if (word.isEmpty) return word;
+    final codePoints = word.runes.toList();
+    final length = codePoints.length;
+    final normalized = <int>{};
+    for (final idx in indices) {
+      final normalizedIdx = idx;
+      if (normalizedIdx >= 0 && normalizedIdx < length) {
+        normalized.add(normalizedIdx);
+      }
+    }
+    if (normalized.isEmpty) return word;
+
+    final buffer = StringBuffer();
+    for (var i = 0; i < length; i++) {
+      final ch = String.fromCharCode(codePoints[i]);
+      if (normalized.contains(i)) {
+        buffer.write('~~');
+        buffer.write(ch);
+        buffer.write('~~');
+      } else {
+        buffer.write(ch);
+      }
+    }
+    return buffer.toString();
   }
 }

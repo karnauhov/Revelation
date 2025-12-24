@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/page_line.dart';
-import 'package:revelation/models/page_text.dart';
+import 'package:revelation/models/page_label.dart';
+import 'package:revelation/models/page_rect.dart';
+import 'package:revelation/models/page_word.dart';
 import 'package:revelation/models/primary_source.dart';
 
 class PrimarySourcesRepository {
@@ -45,9 +47,21 @@ class PrimarySourcesRepository {
               PageLine(0.211, 0.228, 0.211, 0.240),
             ],
             strongNumbers: [
-              PageText("602", 0.310, 0.188),
-              PageText("40", 0.392, 0.216),
-              PageText("1401", 0.195, 0.228),
+              PageLabel("602", 0.310, 0.188),
+              PageLabel("40", 0.388, 0.216),
+              PageLabel("1401", 0.195, 0.228),
+            ],
+            words: [
+              PageWord("ΑΠΟΚΑΛΥΨΙϹ", [
+                PageRect(0.255, 0.188, 0.362, 0.205),
+              ], sn: 602),
+              PageWord("ΑΓΙΟΙϹ", [
+                PageRect(0.372, 0.215, 0.395, 0.229),
+                PageRect(0.256, 0.228, 0.281, 0.240),
+              ], sn: 40),
+              PageWord("ΔΟΥΛΟΙϹ", [
+                PageRect(0.165, 0.228, 0.211, 0.240),
+              ], sn: 1401),
             ],
           ),
           model.Page(

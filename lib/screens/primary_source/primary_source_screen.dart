@@ -315,12 +315,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       strongNumbers: viewModel.selectedPage != null
           ? viewModel.selectedPage!.strongNumbers
           : [],
-      onStrongNumberTap: (String text) {
-        final int? number = int.tryParse(text);
-        if (number != null) {
-          viewModel.showInfoForStrongNumber(number, context);
-        }
-      },
+      words: viewModel.selectedPage != null
+          ? viewModel.selectedPage!.words
+          : [],
     );
   }
 
