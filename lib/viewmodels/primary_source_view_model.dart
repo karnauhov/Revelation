@@ -58,6 +58,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   void Function(Color?)? _onPipettePicked;
   bool _isColorToReplace = true;
   bool _selectAreaMode = false;
+  bool _serviceSelectMode = false;
   void Function(Rect?)? _onAreaSelected;
   bool _isMenuOpen = false;
   Timer? _restoreDebounceTimer;
@@ -193,6 +194,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   void startSelectAreaMode(void Function(Rect?) onSelected) {
     _selectAreaMode = true;
+    _serviceSelectMode = false;
+    _onAreaSelected = onSelected;
+    notifyListeners();
+  }
+
+  void startGettingServiceRectangle(void Function(Rect?) onSelected) {
+    _selectAreaMode = true;
+    _serviceSelectMode = true;
     _onAreaSelected = onSelected;
     notifyListeners();
   }
@@ -201,8 +210,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (_selectAreaMode && _onAreaSelected != null) {
       _onAreaSelected!(selectRect);
     }
-    selectedArea = selectRect;
+    if (!_serviceSelectMode) {
+      selectedArea = selectRect;
+    }
     _selectAreaMode = false;
+    _serviceSelectMode = false;
     _onAreaSelected = null;
     notifyListeners();
   }

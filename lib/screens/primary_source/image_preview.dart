@@ -459,25 +459,11 @@ class ImagePreviewState extends State<ImagePreview> {
     for (int wi = 0; wi < widget.words.length; wi++) {
       final pw = widget.words[wi];
       for (final r in pw.rectangles) {
-        final bool fractionalX =
-            (r.startX >= 0.0 && r.startX <= 1.0) &&
-            (r.endX >= 0.0 && r.endX <= 1.0);
-        final bool fractionalY =
-            (r.startY >= 0.0 && r.startY <= 1.0) &&
-            (r.endY >= 0.0 && r.endY <= 1.0);
-
         double left, top, right, bottom;
-        if (fractionalX && fractionalY) {
-          left = imgSize.width * r.startX;
-          top = imgSize.height * r.startY;
-          right = imgSize.width * r.endX;
-          bottom = imgSize.height * r.endY;
-        } else {
-          left = r.startX;
-          top = r.startY;
-          right = r.endX;
-          bottom = r.endY;
-        }
+        left = imgSize.width * r.startX;
+        top = imgSize.height * r.startY;
+        right = imgSize.width * r.endX;
+        bottom = imgSize.height * r.endY;
 
         final double hitLeft = (left < right ? left : right) - extra;
         final double hitTop = (top < bottom ? top : bottom) - extra;

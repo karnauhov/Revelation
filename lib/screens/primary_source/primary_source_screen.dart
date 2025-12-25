@@ -17,6 +17,13 @@ class ExitChooseModeIntent extends Intent {
   const ExitChooseModeIntent();
 }
 
+// Define the intent for select rectangle
+class SelectRectangleIntent extends Intent {
+  final bool separators;
+  final bool center;
+  const SelectRectangleIntent({required this.separators, required this.center});
+}
+
 class PrimarySourceScreen extends StatefulWidget {
   final PrimarySource primarySource;
   static final numButtons = 11;
@@ -97,6 +104,27 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                     const ExitChooseModeIntent(),
                 const SingleActivator(LogicalKeyboardKey.backspace):
                     const ExitChooseModeIntent(),
+                const SingleActivator(
+                  LogicalKeyboardKey.keyR,
+                  alt: true,
+                ): const SelectRectangleIntent(
+                  separators: false,
+                  center: false,
+                ),
+                const SingleActivator(
+                  LogicalKeyboardKey.keyS,
+                  alt: true,
+                ): const SelectRectangleIntent(
+                  separators: true,
+                  center: false,
+                ),
+                const SingleActivator(
+                  LogicalKeyboardKey.keyC,
+                  alt: true,
+                ): const SelectRectangleIntent(
+                  separators: false,
+                  center: true,
+                ),
               },
               child: Actions(
                 actions: {
@@ -107,6 +135,38 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                       } else if (viewModel.selectAreaMode) {
                         viewModel.finishSelectAreaMode(null);
                       }
+                      return null;
+                    },
+                  ),
+                  SelectRectangleIntent: CallbackAction<SelectRectangleIntent>(
+                    onInvoke: (intent) {
+                      viewModel.startGettingServiceRectangle((rect) {
+                        if (rect != null &&
+                            viewModel.imageController.imageSize != null &&
+                            viewModel.imageController.imageSize!.width != 0 &&
+                            viewModel.imageController.imageSize!.height != 0) {
+                          final w = viewModel.imageController.imageSize!.width;
+                          final h = viewModel.imageController.imageSize!.height;
+                          double left = roundTo(rect.left / w, 3);
+                          double top = roundTo(rect.top / h, 3);
+                          double right = roundTo(rect.right / w, 3);
+                          double bottom = roundTo(rect.bottom / h, 3);
+                          String result = "";
+                          if (intent.separators) {
+                            result =
+                                "PageLine(${left}, ${top}, ${left}, ${bottom})\nPageLine(${right}, ${top}, ${right}, ${bottom})";
+                          } else if (intent.center) {
+                            double centerX = roundTo((left + right) / 2, 3);
+                            double centerY = roundTo((top + bottom) / 2, 3);
+                            result = "PageLabel(\"?\", ${centerX}, ${centerY})";
+                          } else {
+                            result =
+                                "PageRect(${left}, ${top}, ${right}, ${bottom})";
+                          }
+                          Clipboard.setData(ClipboardData(text: result));
+                          log.d(result);
+                        }
+                      });
                       return null;
                     },
                   ),

@@ -10,6 +10,8 @@ All notable changes to this application will be documented here.
 - Uploaded primary-source images to supabase.com (02, P43);
 - Support local DB SQLite
 - Tables for Strong Dictionary
+- Layers "Word separators" and "Strong's numbers" on Primary Source Screen
+- Service commands to copy to the clipboard the coordinates of a rectangular area (Alt + R), separators (Alt + S), and a center point (Alt + C)
 
 ### Changed
 

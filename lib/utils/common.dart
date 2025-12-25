@@ -664,3 +664,7 @@ List<String> splitTrailingDigits(String s) {
     return [str, ''];
   }
 }
+
+double roundTo(double value, int round) {
+  return double.parse(value.toStringAsFixed(round));
+}
