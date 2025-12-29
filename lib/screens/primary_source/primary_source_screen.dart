@@ -154,14 +154,15 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                           String result = "";
                           if (intent.separators) {
                             result =
-                                "PageLine(${left}, ${top}, ${left}, ${bottom})\nPageLine(${right}, ${top}, ${right}, ${bottom})";
+                                "PageLine(${left}, ${top}, ${left}, ${bottom}),\nPageLine(${right}, ${top}, ${right}, ${bottom}),";
                           } else if (intent.center) {
                             double centerX = roundTo((left + right) / 2, 3);
                             double centerY = roundTo((top + bottom) / 2, 3);
-                            result = "PageLabel(\"?\", ${centerX}, ${centerY})";
+                            result =
+                                "PageLabel(\"?\", ${centerX}, ${centerY}),";
                           } else {
                             result =
-                                "PageRect(${left}, ${top}, ${right}, ${bottom})";
+                                "PageRect(${left}, ${top}, ${right}, ${bottom}),";
                           }
                           Clipboard.setData(ClipboardData(text: result));
                           log.d(result);

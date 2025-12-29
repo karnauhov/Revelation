@@ -13,8 +13,8 @@ class PageLabel {
     this.text,
     this.positionX,
     this.positionY, {
-    this.fontSizeFrac = 0.008,
-    this.color = Colors.red,
+    this.fontSizeFrac = 0.004,
+    this.color = Colors.indigoAccent,
     this.strokeColor = Colors.transparent,
     this.strokeWidth = 0.0,
   });

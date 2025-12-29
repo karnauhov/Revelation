@@ -413,14 +413,33 @@ class PrimarySourceViewModel extends ChangeNotifier {
         buffer.write("[${word.sn!}](strong:G${word.sn!})");
         buffer.write("**\n\r");
       }
-      buffer.write(AppLocalizations.of(context)!.strong_translit);
-      buffer.write(": **");
-      buffer.write(
-        _translit
-            .transliterate(word.text.toLowerCase().trim(), _dbManager.langDB)
-            .toLowerCase(),
-      );
-      buffer.write("**\n\r");
+      if (_containsAnyLetter(word.text)) {
+        buffer.write(AppLocalizations.of(context)!.strong_translit);
+        buffer.write(": **");
+        if (word.snTranslit && word.sn != null) {
+          final wordIndex = _dbManager.greekWords.indexWhere(
+            (w) => w.id == word.sn,
+          );
+          buffer.write(
+            _translit
+                .transliterate(
+                  _dbManager.greekWords[wordIndex].word.toLowerCase().trim(),
+                  _dbManager.langDB,
+                )
+                .toLowerCase(),
+          );
+        } else {
+          buffer.write(
+            _translit
+                .transliterate(
+                  word.text.toLowerCase().trim(),
+                  _dbManager.langDB,
+                )
+                .toLowerCase(),
+          );
+        }
+        buffer.write("**\n\r");
+      }
       if (word.sn != null) {
         final descIndex = _dbManager.greekDescs.indexWhere(
           (desc) => desc.id == word.sn!,
@@ -606,7 +625,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     for (var i = 0; i < length; i++) {
       final ch = String.fromCharCode(codePoints[i]);
       if (normalized.contains(i)) {
-        buffer.write('~~');
+        buffer.write('‎~~');
         buffer.write(ch);
         buffer.write('~~');
       } else {
@@ -614,5 +633,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
       }
     }
     return buffer.toString();
+  }
+
+  bool _containsAnyLetter(String text) {
+    final regExp = RegExp(r'\p{L}', unicode: true);
+    return regExp.hasMatch(text);
   }
 }
