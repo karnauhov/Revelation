@@ -14,8 +14,8 @@ class PageRect {
     this.startY,
     this.endX,
     this.endY, {
-    this.color = Colors.grey,
-    this.strokeColor = const Color.fromARGB(103, 239, 232, 9),
-    this.strokeWidth = 6.0,
+    this.color = Colors.transparent,
+    this.strokeColor = Colors.green,
+    this.strokeWidth = 2.0,
   });
 }

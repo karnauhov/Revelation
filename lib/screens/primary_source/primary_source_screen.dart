@@ -83,6 +83,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                   ? widget.primarySource.pages.first
                   : null,
             );
+            viewModel.showCommonInfo(context);
           }
 
           final double screenWidth = MediaQuery.of(context).size.width;

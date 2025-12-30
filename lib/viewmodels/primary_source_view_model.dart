@@ -14,6 +14,8 @@ import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:revelation/managers/server_manager.dart';
 import 'package:revelation/utils/transliteration.dart';
 
+enum DescriptionType { word, strongNumber, verse, info }
+
 class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySource primarySource;
   final PagesRepository _pagesRepository;
@@ -65,6 +67,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Timer? _saveDebounceTimer;
   DBManager _dbManager = DBManager();
   Transliteration _translit = Transliteration();
+  DescriptionType _currentDescriptionType = DescriptionType.info;
+  int? _currentDescriptionNumber = null;
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
@@ -72,6 +76,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool get selectAreaMode => _selectAreaMode;
   bool get isMenuOpen => _isMenuOpen;
   String get pageSettings => _pageSettings;
+  DescriptionType get currentDescriptionType => _currentDescriptionType;
+  int? get currentDescriptionNumber => _currentDescriptionNumber;
 
   PrimarySourceViewModel(this._pagesRepository, {required this.primarySource}) {
     imageController = ImagePreviewController(primarySource.maxScale);
@@ -340,9 +346,23 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateDescriptionContent(String content) {
+  void updateDescriptionContent(
+    String content,
+    DescriptionType type,
+    int? number,
+  ) {
     descriptionContent = content;
+    _currentDescriptionType = type;
+    _currentDescriptionNumber = number;
     notifyListeners();
+  }
+
+  void showCommonInfo(BuildContext context) {
+    updateDescriptionContent(
+      AppLocalizations.of(context)!.click_for_info,
+      DescriptionType.info,
+      null,
+    );
   }
 
   void showInfoForStrongNumber(int strongNumber, BuildContext context) {
@@ -392,7 +412,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
             buffer.write(_dbManager.greekDescs[descIndex].desc.trim());
           }
         }
-        updateDescriptionContent(buffer.toString());
+        updateDescriptionContent(
+          buffer.toString(),
+          DescriptionType.strongNumber,
+          strongNumber,
+        );
       }
     }
   }
@@ -452,7 +476,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
           }
         }
       }
-      updateDescriptionContent(buffer.toString());
+      updateDescriptionContent(
+        buffer.toString(),
+        DescriptionType.word,
+        wordIndex,
+      );
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:revelation/models/page_line.dart';
 import 'package:revelation/models/page_label.dart';
+import 'package:revelation/models/page_rect.dart';
 import 'package:revelation/models/page_word.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
@@ -255,6 +256,28 @@ class ImagePreviewState extends State<ImagePreview> {
                       child: CustomPaint(
                         painter: RelativeTextsPainter(
                           texts: widget.strongNumbers,
+                          selectedNumber:
+                              (vm.currentDescriptionType ==
+                                      DescriptionType.strongNumber &&
+                                  vm.currentDescriptionNumber != null)
+                              ? vm.currentDescriptionNumber
+                              : null,
+                        ),
+                      ),
+                    ),
+
+                  // Draw rectangles for selected word
+                  if (vm.currentDescriptionType == DescriptionType.word &&
+                      vm.currentDescriptionNumber != null &&
+                      widget.words.isNotEmpty &&
+                      vm.currentDescriptionNumber! >= 0 &&
+                      vm.currentDescriptionNumber! < widget.words.length)
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: RelativeRectsPainter(
+                          rects: widget
+                              .words[vm.currentDescriptionNumber!]
+                              .rectangles,
                         ),
                       ),
                     ),
@@ -577,8 +600,9 @@ class RelativeLinesPainter extends CustomPainter {
 
 class RelativeTextsPainter extends CustomPainter {
   final List<PageLabel> texts;
+  final int? selectedNumber;
 
-  RelativeTextsPainter({required this.texts});
+  RelativeTextsPainter({required this.texts, this.selectedNumber});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -589,6 +613,10 @@ class RelativeTextsPainter extends CustomPainter {
 
       final Offset offset = Offset(dx, dy);
 
+      final int? number = int.tryParse(t.text);
+      final bool isSelected =
+          selectedNumber != null && number != null && number == selectedNumber;
+
       if (t.strokeWidth > 0 && t.strokeColor.a > 0) {
         final TextPainter strokePainter = TextPainter(
           text: TextSpan(
@@ -598,7 +626,7 @@ class RelativeTextsPainter extends CustomPainter {
               foreground: Paint()
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = t.strokeWidth
-                ..color = t.strokeColor,
+                ..color = isSelected ? Colors.red : t.strokeColor,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -617,7 +645,7 @@ class RelativeTextsPainter extends CustomPainter {
           text: t.text,
           style: TextStyle(
             fontSize: fontSize,
-            color: t.color,
+            color: isSelected ? Colors.red : t.color,
             fontWeight: FontWeight.w700,
             shadows: const [
               Shadow(
@@ -641,6 +669,51 @@ class RelativeTextsPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant RelativeTextsPainter old) {
-    return old.texts != texts;
+    return old.texts != texts || old.selectedNumber != selectedNumber;
+  }
+}
+
+class RelativeRectsPainter extends CustomPainter {
+  final List<PageRect> rects;
+
+  RelativeRectsPainter({required this.rects});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final r in rects) {
+      final double left = size.width * r.startX;
+      final double top = size.height * r.startY;
+      final double right = size.width * r.endX;
+      final double bottom = size.height * r.endY;
+
+      final Rect rect = Rect.fromLTRB(
+        left < right ? left : right,
+        top < bottom ? top : bottom,
+        left < right ? right : left,
+        top < bottom ? bottom : top,
+      );
+
+      // Fill
+      if (r.color.a > 0) {
+        final Paint fillPaint = Paint()
+          ..style = PaintingStyle.fill
+          ..color = r.color;
+        canvas.drawRect(rect, fillPaint);
+      }
+
+      // Stroke
+      if (r.strokeWidth > 0 && r.strokeColor.a > 0) {
+        final Paint strokePaint = Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = r.strokeWidth
+          ..color = r.strokeColor;
+        canvas.drawRect(rect, strokePaint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant RelativeRectsPainter old) {
+    return old.rects != rects;
   }
 }
