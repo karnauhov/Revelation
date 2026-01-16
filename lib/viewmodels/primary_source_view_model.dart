@@ -485,6 +485,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   String _replaceKeys(BuildContext context, String input) {
+    // ignore: deprecated_member_use
     final regex = RegExp(r'@\w+');
     return input.replaceAllMapped(regex, (match) {
       final key = match.group(0)!;
@@ -664,6 +665,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   bool _containsAnyLetter(String text) {
+    // ignore: deprecated_member_use
     final regExp = RegExp(r'\p{L}', unicode: true);
     return regExp.hasMatch(text);
   }

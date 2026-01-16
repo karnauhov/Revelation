@@ -13,23 +13,28 @@ class ImagePreviewController {
   TransformationController get transformationController =>
       _transformationController;
 
-  void setImageSize(Size size, double availableWidth, double availableHeight,
-      {recalc = false}) {
+  void setImageSize(
+    Size size,
+    double availableWidth,
+    double availableHeight, {
+    recalc = false,
+  }) {
     if (imageSize == null || imageSize != size || recalc) {
       imageSize = size;
       minScale = availableWidth / size.width;
       if (minScale * size.height < availableHeight) {
         minScale = availableHeight / size.height;
       }
-      _transformationController.value = Matrix4.identity()..scale(minScale);
+      _transformationController.value = Matrix4.identity()
+        ..scaleByDouble(minScale, minScale, minScale, 1.0);
     }
   }
 
   void setTransformParams(double dx, double dy, double scale) {
     final clampedScale = scale.clamp(minScale, maxScale);
     _transformationController.value = Matrix4.identity()
-      ..translate(dx, dy)
-      ..scale(clampedScale);
+      ..translateByDouble(dx, dy, 0.0, 1.0)
+      ..scaleByDouble(clampedScale, clampedScale, clampedScale, 1.0);
   }
 
   void zoomIn(Offset focalPoint) {
@@ -47,8 +52,8 @@ class ImagePreviewController {
 
     // 4. Form a new transformation matrix.
     _transformationController.value = Matrix4.identity()
-      ..translate(newTranslation.dx, newTranslation.dy)
-      ..scale(newScale);
+      ..translateByDouble(newTranslation.dx, newTranslation.dy, 0.0, 1.0)
+      ..scaleByDouble(newScale, newScale, newScale, 1.0);
   }
 
   void zoomOut(Offset focalPoint, Size viewportSize) {
@@ -66,8 +71,8 @@ class ImagePreviewController {
 
     // 4. Form a new transformation matrix.
     Matrix4 newMatrix = Matrix4.identity()
-      ..translate(newTranslation.dx, newTranslation.dy)
-      ..scale(newScale);
+      ..translateByDouble(newTranslation.dx, newTranslation.dy, 0.0, 1.0)
+      ..scaleByDouble(newScale, newScale, newScale, 1.0);
 
     // 5. Find the positions of the image corners after transformation.
     final corners = <Offset>[
@@ -97,7 +102,9 @@ class ImagePreviewController {
       }
       if (xMax < viewportSize.width) {
         newTranslation = Offset(
-            newTranslation.dx + (viewportSize.width - xMax), newTranslation.dy);
+          newTranslation.dx + (viewportSize.width - xMax),
+          newTranslation.dy,
+        );
       }
     } else {
       initialScale = true;
@@ -109,8 +116,10 @@ class ImagePreviewController {
         newTranslation = Offset(newTranslation.dx, newTranslation.dy - yMin);
       }
       if (yMax < viewportSize.height) {
-        newTranslation = Offset(newTranslation.dx,
-            newTranslation.dy + (viewportSize.height - yMax));
+        newTranslation = Offset(
+          newTranslation.dx,
+          newTranslation.dy + (viewportSize.height - yMax),
+        );
       }
     } else {
       initialScale = true;
@@ -121,14 +130,15 @@ class ImagePreviewController {
       backToMinScale();
     } else {
       _transformationController.value = Matrix4.identity()
-        ..translate(newTranslation.dx, newTranslation.dy)
-        ..scale(newScale);
+        ..translateByDouble(newTranslation.dx, newTranslation.dy, 0.0, 1.0)
+        ..scaleByDouble(newScale, newScale, newScale, 1.0);
     }
   }
 
   void backToMinScale() {
     if (imageSize != null) {
-      _transformationController.value = Matrix4.identity()..scale(minScale);
+      _transformationController.value = Matrix4.identity()
+        ..scaleByDouble(minScale, minScale, minScale, 1.0);
     }
   }
 }
