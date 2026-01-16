@@ -65,6 +65,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get all_rights_reserved => 'Todos los derechos reservados';
 
   @override
+  String get ad_loading => 'Cargando anuncio...';
+
+  @override
   String get menu => 'Menú';
 
   @override

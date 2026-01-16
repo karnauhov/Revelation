@@ -65,6 +65,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get all_rights_reserved => 'Все права защищены';
 
   @override
+  String get ad_loading => 'Загрузка рекламы...';
+
+  @override
   String get menu => 'Меню';
 
   @override

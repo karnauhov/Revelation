@@ -65,6 +65,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get all_rights_reserved => 'Усі права захищені';
 
   @override
+  String get ad_loading => 'Завантаження реклами...';
+
+  @override
   String get menu => 'Меню';
 
   @override

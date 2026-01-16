@@ -39,6 +39,14 @@ bool isDesktop() {
       !kIsWeb;
 }
 
+bool isMobile() {
+  return [
+        TargetPlatform.android,
+        TargetPlatform.iOS,
+      ].contains(defaultTargetPlatform) &&
+      !kIsWeb;
+}
+
 bool isWeb() {
   return kIsWeb;
 }

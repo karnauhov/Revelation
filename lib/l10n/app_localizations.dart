@@ -204,6 +204,12 @@ abstract class AppLocalizations {
   /// **'All rights reserved'**
   String get all_rights_reserved;
 
+  /// No description provided for @ad_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad Loading...'**
+  String get ad_loading;
+
   /// No description provided for @menu.
   ///
   /// In en, this message translates to:

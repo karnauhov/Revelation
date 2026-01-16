@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/common_widgets/ad_mob_banner.dart';
 import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/screens/about/icon_url.dart';
@@ -28,6 +31,14 @@ class _AboutScreenState extends State<AboutScreen> {
   final aud = AudioController();
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    if (isMobile()) {
+      MobileAds.instance.initialize();
+    }
+  }
 
   @override
   void dispose() {
@@ -101,6 +112,14 @@ class _AboutScreenState extends State<AboutScreen> {
                   if (!isWeb()) _buildMarketplaces(context),
                   if (!isWeb())
                     Divider(height: 1, color: colorScheme.outlineVariant),
+                  // AdMob Banner
+                  if (isMobile())
+                    AdMobBanner(
+                      width: MediaQuery.sizeOf(context).width * 1.0,
+                      height: 50.0,
+                      showsTestAd: kDebugMode,
+                      androidAdUnitID: 'ca-app-pub-3945087976657115/2932040150',
+                    ),
                   // Copyright
                   Center(
                     child: Text(
