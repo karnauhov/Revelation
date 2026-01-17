@@ -261,20 +261,7 @@ class ImagePreviewState extends State<ImagePreview> {
                     ),
 
                   // Draw rectangles for selected word
-                  if (vm.currentDescriptionType == DescriptionType.word &&
-                      vm.currentDescriptionNumber != null &&
-                      widget.words.isNotEmpty &&
-                      vm.currentDescriptionNumber! >= 0 &&
-                      vm.currentDescriptionNumber! < widget.words.length)
-                    Positioned.fill(
-                      child: CustomPaint(
-                        painter: RelativeRectsPainter(
-                          rects: widget
-                              .words[vm.currentDescriptionNumber!]
-                              .rectangles,
-                        ),
-                      ),
-                    ),
+                  _buildSelectedWordRects(vm),
                 ],
               ),
             ),
@@ -422,6 +409,59 @@ class ImagePreviewState extends State<ImagePreview> {
 
     final result = Uint8List.fromList(img.encodePng(regionImage));
     return result;
+  }
+
+  Widget _buildSelectedWordRects(PrimarySourceViewModel vm) {
+    if (vm.currentDescriptionType != DescriptionType.word ||
+        vm.currentDescriptionNumber == null ||
+        widget.words.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final int idx = vm.currentDescriptionNumber!;
+    if (idx < 0 || idx >= widget.words.length) {
+      return const SizedBox.shrink();
+    }
+
+    final selectedWord = widget.words[idx];
+    final List<Widget> layers = [];
+
+    if (selectedWord.sn != null) {
+      final snRects = widget.words
+          .where((w) => w.sn != null && w.sn == selectedWord.sn)
+          .expand((w) => w.rectangles)
+          .toList();
+      if (snRects.isNotEmpty) {
+        layers.add(
+          Positioned.fill(
+            child: CustomPaint(
+              painter: RelativeRectsDashedPainter(
+                rects: snRects,
+                color: Colors.blue.withAlpha(45),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+
+    if (selectedWord.rectangles.isNotEmpty) {
+      layers.add(
+        Positioned.fill(
+          child: CustomPaint(
+            painter: RelativeRectsPainter(
+              rects: selectedWord.rectangles,
+              color: Colors.blue.withAlpha(25),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (layers.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Stack(children: layers);
   }
 
   Future<bool> _handlePipetteModeTap(
@@ -737,10 +777,139 @@ class RelativeTextsPainter extends CustomPainter {
   }
 }
 
+class RelativeRectsDashedPainter extends CustomPainter {
+  final List<PageRect> rects;
+  final Color color;
+  final Color strokeColor;
+  final double strokeWidth;
+  final double dashWidth;
+  final double gapWidth;
+
+  RelativeRectsDashedPainter({
+    required this.rects,
+    this.color = Colors.transparent,
+    this.strokeColor = Colors.green,
+    this.strokeWidth = 2.0,
+    this.dashWidth = 6.0,
+    this.gapWidth = 3.0,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint strokePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..color = strokeColor;
+
+    for (final r in rects) {
+      final double left = size.width * r.startX;
+      final double top = size.height * r.startY;
+      final double right = size.width * r.endX;
+      final double bottom = size.height * r.endY;
+
+      final Rect rect = Rect.fromLTRB(
+        left < right ? left : right,
+        top < bottom ? top : bottom,
+        left < right ? right : left,
+        top < bottom ? bottom : top,
+      );
+
+      if (color.a > 0) {
+        final Paint fillPaint = Paint()
+          ..style = PaintingStyle.fill
+          ..color = color;
+        canvas.drawRect(rect, fillPaint);
+      }
+
+      _drawDashedRect(canvas, rect, strokePaint, dashWidth, gapWidth);
+    }
+  }
+
+  void _drawDashedRect(
+    Canvas canvas,
+    Rect rect,
+    Paint paint,
+    double dashW,
+    double gapW,
+  ) {
+    _drawDashedLine(
+      canvas,
+      Offset(rect.left, rect.top),
+      Offset(rect.right, rect.top),
+      paint,
+      dashW,
+      gapW,
+    );
+    _drawDashedLine(
+      canvas,
+      Offset(rect.right, rect.top),
+      Offset(rect.right, rect.bottom),
+      paint,
+      dashW,
+      gapW,
+    );
+    _drawDashedLine(
+      canvas,
+      Offset(rect.right, rect.bottom),
+      Offset(rect.left, rect.bottom),
+      paint,
+      dashW,
+      gapW,
+    );
+    _drawDashedLine(
+      canvas,
+      Offset(rect.left, rect.bottom),
+      Offset(rect.left, rect.top),
+      paint,
+      dashW,
+      gapW,
+    );
+  }
+
+  void _drawDashedLine(
+    Canvas canvas,
+    Offset p1,
+    Offset p2,
+    Paint paint,
+    double dashW,
+    double gapW,
+  ) {
+    final double totalLength = (p2 - p1).distance;
+    if (totalLength <= 0) return;
+    final Offset direction = (p2 - p1) / totalLength;
+    double drawn = 0.0;
+    while (drawn < totalLength) {
+      final double remaining = totalLength - drawn;
+      final double len = remaining < dashW ? remaining : dashW;
+      final Offset start = p1 + direction * drawn;
+      final Offset end = p1 + direction * (drawn + len);
+      canvas.drawLine(start, end, paint);
+      drawn += dashW + gapW;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant RelativeRectsDashedPainter old) {
+    return old.rects != rects ||
+        old.strokeColor != strokeColor ||
+        old.strokeWidth != strokeWidth ||
+        old.dashWidth != dashWidth ||
+        old.gapWidth != gapWidth;
+  }
+}
+
 class RelativeRectsPainter extends CustomPainter {
   final List<PageRect> rects;
+  final Color color;
+  final Color strokeColor;
+  final double strokeWidth;
 
-  RelativeRectsPainter({required this.rects});
+  RelativeRectsPainter({
+    required this.rects,
+    this.color = Colors.transparent,
+    this.strokeColor = Colors.green,
+    this.strokeWidth = 2.0,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -758,19 +927,19 @@ class RelativeRectsPainter extends CustomPainter {
       );
 
       // Fill
-      if (r.color.a > 0) {
+      if (color.a > 0) {
         final Paint fillPaint = Paint()
           ..style = PaintingStyle.fill
-          ..color = r.color;
+          ..color = color;
         canvas.drawRect(rect, fillPaint);
       }
 
       // Stroke
-      if (r.strokeWidth > 0 && r.strokeColor.a > 0) {
+      if (strokeWidth > 0 && strokeColor.a > 0) {
         final Paint strokePaint = Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = r.strokeWidth
-          ..color = r.strokeColor;
+          ..strokeWidth = strokeWidth
+          ..color = strokeColor;
         canvas.drawRect(rect, strokePaint);
       }
     }
