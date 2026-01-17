@@ -6,6 +6,7 @@ class PageWord {
   final List<int> notExist;
   final int? sn;
   final bool snTranslit;
+  final double snXshift;
 
   PageWord(
     this.text,
@@ -13,5 +14,6 @@ class PageWord {
     this.notExist = const [],
     this.sn = null,
     this.snTranslit = false,
+    this.snXshift = 0,
   });
 }

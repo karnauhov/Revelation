@@ -4,8 +4,6 @@ import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
-import 'package:revelation/models/page_line.dart';
-import 'package:revelation/models/page_label.dart';
 import 'package:revelation/models/page_rect.dart';
 import 'package:revelation/models/page_word.dart';
 import 'package:revelation/utils/common.dart';
@@ -40,8 +38,6 @@ class ImagePreview extends StatefulWidget {
   final double tolerance;
   final bool showWordSeparators;
   final bool showStrongNumbers;
-  final List<PageLine> wordSeparators;
-  final List<PageLabel> strongNumbers;
   final List<PageWord> words;
 
   const ImagePreview({
@@ -58,8 +54,6 @@ class ImagePreview extends StatefulWidget {
     required this.tolerance,
     required this.showWordSeparators,
     required this.showStrongNumbers,
-    required this.wordSeparators,
-    required this.strongNumbers,
     required this.words,
     super.key,
   });
@@ -74,6 +68,8 @@ class ImagePreviewState extends State<ImagePreview> {
   Offset? _start;
   Offset? _end;
   Size? _lastContainerSize;
+  List<SingleLine>? _lines;
+  List<TextLabel>? _strongLabels;
 
   @override
   void initState() {
@@ -81,6 +77,8 @@ class ImagePreviewState extends State<ImagePreview> {
     _decodeImage();
     _original = null;
     _imageName = null;
+    _lines = _prepareWordSeparators(widget.words);
+    _strongLabels = _preparStrongNumbers(widget.words);
   }
 
   @override
@@ -239,23 +237,19 @@ class ImagePreviewState extends State<ImagePreview> {
                   Positioned.fill(child: imageWidget),
 
                   // Draw multiple word separators (lines)
-                  if (widget.showWordSeparators &&
-                      widget.wordSeparators.isNotEmpty)
+                  if (widget.showWordSeparators && _lines != null)
                     Positioned.fill(
                       child: CustomPaint(
-                        painter: RelativeLinesPainter(
-                          lines: widget.wordSeparators,
-                        ),
+                        painter: RelativeLinesPainter(lines: _lines!),
                       ),
                     ),
 
                   // Draw multiple Strong's numbers (texts)
-                  if (widget.showStrongNumbers &&
-                      widget.strongNumbers.isNotEmpty)
+                  if (widget.showStrongNumbers && _strongLabels != null)
                     Positioned.fill(
                       child: CustomPaint(
                         painter: RelativeTextsPainter(
-                          texts: widget.strongNumbers,
+                          texts: _strongLabels!,
                           selectedNumber:
                               (vm.currentDescriptionType ==
                                       DescriptionType.strongNumber &&
@@ -512,7 +506,7 @@ class ImagePreviewState extends State<ImagePreview> {
     if (widget.controller.imageSize == null) {
       return false;
     }
-    if (widget.strongNumbers.isEmpty) {
+    if (_strongLabels == null) {
       return false;
     }
     if (!vm.showStrongNumbers) {
@@ -524,10 +518,10 @@ class ImagePreviewState extends State<ImagePreview> {
     final imgHeight = widget.controller.imageSize!.height;
     final Size imgSize = Size(imgWidth, imgHeight);
 
-    for (final t in widget.strongNumbers) {
+    for (final t in _strongLabels!) {
       final double fontSize = imgSize.height * t.fontSizeFrac;
-      final double dx = imgSize.width * t.positionX;
-      final double dy = imgSize.height * t.positionY;
+      final double dx = imgSize.width * t.positionX + (fontSize * 0.2);
+      final double dy = imgSize.height * t.positionY - (fontSize * 1.2);
       final TextPainter tp = TextPainter(
         text: TextSpan(
           text: t.text,
@@ -536,8 +530,8 @@ class ImagePreviewState extends State<ImagePreview> {
         textDirection: TextDirection.ltr,
       );
       tp.layout();
-      final double left = dx - tp.width / 2;
-      final double top = dy - tp.height / 2;
+      final double left = dx;
+      final double top = dy;
       final double right = left + tp.width;
       final double bottom = top + tp.height;
       const double extra = 4.0;
@@ -559,6 +553,44 @@ class ImagePreviewState extends State<ImagePreview> {
     }
     return false;
   }
+
+  List<SingleLine> _prepareWordSeparators(List<PageWord> words) {
+    List<SingleLine> result = [];
+    for (var word in words) {
+      if (word.rectangles.isNotEmpty) {
+        SingleLine firstLine = SingleLine(
+          word.rectangles[0].startX,
+          word.rectangles[0].startY,
+          word.rectangles[0].startX,
+          word.rectangles[0].endY,
+        );
+        SingleLine lastLine = SingleLine(
+          word.rectangles[word.rectangles.length - 1].endX,
+          word.rectangles[word.rectangles.length - 1].startY,
+          word.rectangles[word.rectangles.length - 1].endX,
+          word.rectangles[word.rectangles.length - 1].endY,
+        );
+        result.add(firstLine);
+        result.add(lastLine);
+      }
+    }
+    return result;
+  }
+
+  List<TextLabel> _preparStrongNumbers(List<PageWord> words) {
+    List<TextLabel> result = [];
+    for (var word in words) {
+      if (word.sn != null && word.rectangles.isNotEmpty) {
+        TextLabel strongLabel = TextLabel(
+          word.sn.toString(),
+          word.rectangles[0].startX + word.snXshift,
+          word.rectangles[0].startY,
+        );
+        result.add(strongLabel);
+      }
+    }
+    return result;
+  }
 }
 
 class LocalCoord {
@@ -568,8 +600,46 @@ class LocalCoord {
   LocalCoord(this.x, this.y);
 }
 
+class SingleLine {
+  final double startX;
+  final double startY;
+  final double endX;
+  final double endY;
+  final Color color;
+  final double strokeWidth;
+
+  SingleLine(
+    this.startX,
+    this.startY,
+    this.endX,
+    this.endY, {
+    this.color = Colors.red,
+    this.strokeWidth = 6.0,
+  });
+}
+
+class TextLabel {
+  final String text;
+  final double positionX;
+  final double positionY;
+  final double fontSizeFrac;
+  final Color color;
+  final Color strokeColor;
+  final double strokeWidth;
+
+  TextLabel(
+    this.text,
+    this.positionX,
+    this.positionY, {
+    this.fontSizeFrac = 0.004,
+    this.color = Colors.indigoAccent,
+    this.strokeColor = Colors.transparent,
+    this.strokeWidth = 0.0,
+  });
+}
+
 class RelativeLinesPainter extends CustomPainter {
-  final List<PageLine> lines;
+  final List<SingleLine> lines;
 
   RelativeLinesPainter({required this.lines});
 
@@ -599,7 +669,7 @@ class RelativeLinesPainter extends CustomPainter {
 }
 
 class RelativeTextsPainter extends CustomPainter {
-  final List<PageLabel> texts;
+  final List<TextLabel> texts;
   final int? selectedNumber;
 
   RelativeTextsPainter({required this.texts, this.selectedNumber});
@@ -608,8 +678,8 @@ class RelativeTextsPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     for (final t in texts) {
       final double fontSize = size.height * t.fontSizeFrac;
-      final double dx = size.width * t.positionX;
-      final double dy = size.height * t.positionY;
+      final double dx = size.width * t.positionX + (fontSize * 0.2);
+      final double dy = size.height * t.positionY - (fontSize * 1.2);
 
       final Offset offset = Offset(dx, dy);
 
@@ -633,10 +703,7 @@ class RelativeTextsPainter extends CustomPainter {
           textDirection: TextDirection.ltr,
         );
         strokePainter.layout();
-        final Offset centered = Offset(
-          offset.dx - strokePainter.width / 2,
-          offset.dy - strokePainter.height / 2,
-        );
+        final Offset centered = Offset(offset.dx, offset.dy);
         strokePainter.paint(canvas, centered);
       }
 
@@ -659,10 +726,7 @@ class RelativeTextsPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       );
       fillPainter.layout();
-      final Offset centeredFill = Offset(
-        offset.dx - fillPainter.width / 2,
-        offset.dy - fillPainter.height / 2,
-      );
+      final Offset centeredFill = Offset(offset.dx, offset.dy);
       fillPainter.paint(canvas, centeredFill);
     }
   }

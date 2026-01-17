@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.4+126
+version: 1.0.4+127
 
 environment:
   sdk: ^3.9.0
@@ -16,7 +16,6 @@ dependencies:
   cupertino_icons: ^1.0.8
   go_router: ^17.0.1 
   flutter_svg: ^2.2.3
-  flutter_markdown: ^0.7.7
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.4
   path_provider: ^2.1.5
@@ -33,6 +32,7 @@ dependencies:
   logger: ^2.6.2
   package_info_plus: ^9.0.0
   xml: ^6.6.1
+  flutter_markdown_plus: ^1.0.7
   float_column: ^4.0.3
   styled_text: ^8.1.0
   supabase_flutter: ^2.12.0
@@ -43,7 +43,7 @@ dependencies:
   drift: ^2.30.1
   drift_flutter: ^0.2.8
   unorm_dart: ^0.3.2
-  google_mobile_ads: ^6.0.0
+  google_mobile_ads: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,7 +67,7 @@ msix_config:
   publisher: CN=B37F48EC-C643-42C2-82FB-3DFB514F5E74
   languages: en, es, uk, ru
   store: true
-  msix_version: 1.0.130.0
+  msix_version: 1.0.131.0
   logo_path: .\assets\images\UI\app_icon.png
 
 flutter:

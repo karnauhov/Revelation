@@ -10,7 +10,7 @@ import 'package:revelation/screens/primary_source/primary_source_toolbar.dart';
 import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 // Define the intent for exiting pipette or selectArea mode
 class ExitChooseModeIntent extends Intent {
@@ -19,9 +19,7 @@ class ExitChooseModeIntent extends Intent {
 
 // Define the intent for select rectangle
 class SelectRectangleIntent extends Intent {
-  final bool separators;
-  final bool center;
-  const SelectRectangleIntent({required this.separators, required this.center});
+  const SelectRectangleIntent();
 }
 
 class PrimarySourceScreen extends StatefulWidget {
@@ -105,27 +103,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                     const ExitChooseModeIntent(),
                 const SingleActivator(LogicalKeyboardKey.backspace):
                     const ExitChooseModeIntent(),
-                const SingleActivator(
-                  LogicalKeyboardKey.keyR,
-                  alt: true,
-                ): const SelectRectangleIntent(
-                  separators: false,
-                  center: false,
-                ),
-                const SingleActivator(
-                  LogicalKeyboardKey.keyS,
-                  alt: true,
-                ): const SelectRectangleIntent(
-                  separators: true,
-                  center: false,
-                ),
-                const SingleActivator(
-                  LogicalKeyboardKey.keyC,
-                  alt: true,
-                ): const SelectRectangleIntent(
-                  separators: false,
-                  center: true,
-                ),
+                const SingleActivator(LogicalKeyboardKey.keyR, alt: true):
+                    const SelectRectangleIntent(),
               },
               child: Actions(
                 actions: {
@@ -152,19 +131,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                           double top = roundTo(rect.top / h, 3);
                           double right = roundTo(rect.right / w, 3);
                           double bottom = roundTo(rect.bottom / h, 3);
-                          String result = "";
-                          if (intent.separators) {
-                            result =
-                                "PageLine(${left}, ${top}, ${left}, ${bottom}),\nPageLine(${right}, ${top}, ${right}, ${bottom}),";
-                          } else if (intent.center) {
-                            double centerX = roundTo((left + right) / 2, 3);
-                            double centerY = roundTo((top + bottom) / 2, 3);
-                            result =
-                                "PageLabel(\"?\", ${centerX}, ${centerY}),";
-                          } else {
-                            result =
-                                "PageRect(${left}, ${top}, ${right}, ${bottom}),";
-                          }
+                          String result =
+                              "PageRect(${left}, ${top}, ${right}, ${bottom}),";
                           Clipboard.setData(ClipboardData(text: result));
                           log.d(result);
                         }
@@ -371,12 +339,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       tolerance: viewModel.tolerance,
       showWordSeparators: viewModel.showWordSeparators,
       showStrongNumbers: viewModel.showStrongNumbers,
-      wordSeparators: viewModel.selectedPage != null
-          ? viewModel.selectedPage!.wordSeparators
-          : [],
-      strongNumbers: viewModel.selectedPage != null
-          ? viewModel.selectedPage!.strongNumbers
-          : [],
       words: viewModel.selectedPage != null
           ? viewModel.selectedPage!.words
           : [],
