@@ -42,8 +42,54 @@ class $GreekWordsTable extends GreekWords
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _synonymsMeta = const VerificationMeta(
+    'synonyms',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, word, category];
+  late final GeneratedColumn<String> synonyms = GeneratedColumn<String>(
+    'synonyms',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _originMeta = const VerificationMeta('origin');
+  @override
+  late final GeneratedColumn<String> origin = GeneratedColumn<String>(
+    'origin',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _usageMeta = const VerificationMeta('usage');
+  @override
+  late final GeneratedColumn<String> usage = GeneratedColumn<String>(
+    'usage',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hebrewMeta = const VerificationMeta('hebrew');
+  @override
+  late final GeneratedColumn<String> hebrew = GeneratedColumn<String>(
+    'hebrew',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    word,
+    category,
+    synonyms,
+    origin,
+    usage,
+    hebrew,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -75,6 +121,38 @@ class $GreekWordsTable extends GreekWords
     } else if (isInserting) {
       context.missing(_categoryMeta);
     }
+    if (data.containsKey('synonyms')) {
+      context.handle(
+        _synonymsMeta,
+        synonyms.isAcceptableOrUnknown(data['synonyms']!, _synonymsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_synonymsMeta);
+    }
+    if (data.containsKey('origin')) {
+      context.handle(
+        _originMeta,
+        origin.isAcceptableOrUnknown(data['origin']!, _originMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_originMeta);
+    }
+    if (data.containsKey('usage')) {
+      context.handle(
+        _usageMeta,
+        usage.isAcceptableOrUnknown(data['usage']!, _usageMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_usageMeta);
+    }
+    if (data.containsKey('hebrew')) {
+      context.handle(
+        _hebrewMeta,
+        hebrew.isAcceptableOrUnknown(data['hebrew']!, _hebrewMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hebrewMeta);
+    }
     return context;
   }
 
@@ -96,6 +174,22 @@ class $GreekWordsTable extends GreekWords
         DriftSqlType.string,
         data['${effectivePrefix}category'],
       )!,
+      synonyms: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}synonyms'],
+      )!,
+      origin: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}origin'],
+      )!,
+      usage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}usage'],
+      )!,
+      hebrew: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hebrew'],
+      )!,
     );
   }
 
@@ -109,10 +203,18 @@ class GreekWord extends DataClass implements Insertable<GreekWord> {
   final int id;
   final String word;
   final String category;
+  final String synonyms;
+  final String origin;
+  final String usage;
+  final String hebrew;
   const GreekWord({
     required this.id,
     required this.word,
     required this.category,
+    required this.synonyms,
+    required this.origin,
+    required this.usage,
+    required this.hebrew,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -120,6 +222,10 @@ class GreekWord extends DataClass implements Insertable<GreekWord> {
     map['id'] = Variable<int>(id);
     map['word'] = Variable<String>(word);
     map['category'] = Variable<String>(category);
+    map['synonyms'] = Variable<String>(synonyms);
+    map['origin'] = Variable<String>(origin);
+    map['usage'] = Variable<String>(usage);
+    map['hebrew'] = Variable<String>(hebrew);
     return map;
   }
 
@@ -128,6 +234,10 @@ class GreekWord extends DataClass implements Insertable<GreekWord> {
       id: Value(id),
       word: Value(word),
       category: Value(category),
+      synonyms: Value(synonyms),
+      origin: Value(origin),
+      usage: Value(usage),
+      hebrew: Value(hebrew),
     );
   }
 
@@ -140,6 +250,10 @@ class GreekWord extends DataClass implements Insertable<GreekWord> {
       id: serializer.fromJson<int>(json['id']),
       word: serializer.fromJson<String>(json['word']),
       category: serializer.fromJson<String>(json['category']),
+      synonyms: serializer.fromJson<String>(json['synonyms']),
+      origin: serializer.fromJson<String>(json['origin']),
+      usage: serializer.fromJson<String>(json['usage']),
+      hebrew: serializer.fromJson<String>(json['hebrew']),
     );
   }
   @override
@@ -149,19 +263,39 @@ class GreekWord extends DataClass implements Insertable<GreekWord> {
       'id': serializer.toJson<int>(id),
       'word': serializer.toJson<String>(word),
       'category': serializer.toJson<String>(category),
+      'synonyms': serializer.toJson<String>(synonyms),
+      'origin': serializer.toJson<String>(origin),
+      'usage': serializer.toJson<String>(usage),
+      'hebrew': serializer.toJson<String>(hebrew),
     };
   }
 
-  GreekWord copyWith({int? id, String? word, String? category}) => GreekWord(
+  GreekWord copyWith({
+    int? id,
+    String? word,
+    String? category,
+    String? synonyms,
+    String? origin,
+    String? usage,
+    String? hebrew,
+  }) => GreekWord(
     id: id ?? this.id,
     word: word ?? this.word,
     category: category ?? this.category,
+    synonyms: synonyms ?? this.synonyms,
+    origin: origin ?? this.origin,
+    usage: usage ?? this.usage,
+    hebrew: hebrew ?? this.hebrew,
   );
   GreekWord copyWithCompanion(GreekWordsCompanion data) {
     return GreekWord(
       id: data.id.present ? data.id.value : this.id,
       word: data.word.present ? data.word.value : this.word,
       category: data.category.present ? data.category.value : this.category,
+      synonyms: data.synonyms.present ? data.synonyms.value : this.synonyms,
+      origin: data.origin.present ? data.origin.value : this.origin,
+      usage: data.usage.present ? data.usage.value : this.usage,
+      hebrew: data.hebrew.present ? data.hebrew.value : this.hebrew,
     );
   }
 
@@ -170,46 +304,79 @@ class GreekWord extends DataClass implements Insertable<GreekWord> {
     return (StringBuffer('GreekWord(')
           ..write('id: $id, ')
           ..write('word: $word, ')
-          ..write('category: $category')
+          ..write('category: $category, ')
+          ..write('synonyms: $synonyms, ')
+          ..write('origin: $origin, ')
+          ..write('usage: $usage, ')
+          ..write('hebrew: $hebrew')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, word, category);
+  int get hashCode =>
+      Object.hash(id, word, category, synonyms, origin, usage, hebrew);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is GreekWord &&
           other.id == this.id &&
           other.word == this.word &&
-          other.category == this.category);
+          other.category == this.category &&
+          other.synonyms == this.synonyms &&
+          other.origin == this.origin &&
+          other.usage == this.usage &&
+          other.hebrew == this.hebrew);
 }
 
 class GreekWordsCompanion extends UpdateCompanion<GreekWord> {
   final Value<int> id;
   final Value<String> word;
   final Value<String> category;
+  final Value<String> synonyms;
+  final Value<String> origin;
+  final Value<String> usage;
+  final Value<String> hebrew;
   const GreekWordsCompanion({
     this.id = const Value.absent(),
     this.word = const Value.absent(),
     this.category = const Value.absent(),
+    this.synonyms = const Value.absent(),
+    this.origin = const Value.absent(),
+    this.usage = const Value.absent(),
+    this.hebrew = const Value.absent(),
   });
   GreekWordsCompanion.insert({
     this.id = const Value.absent(),
     required String word,
     required String category,
+    required String synonyms,
+    required String origin,
+    required String usage,
+    required String hebrew,
   }) : word = Value(word),
-       category = Value(category);
+       category = Value(category),
+       synonyms = Value(synonyms),
+       origin = Value(origin),
+       usage = Value(usage),
+       hebrew = Value(hebrew);
   static Insertable<GreekWord> custom({
     Expression<int>? id,
     Expression<String>? word,
     Expression<String>? category,
+    Expression<String>? synonyms,
+    Expression<String>? origin,
+    Expression<String>? usage,
+    Expression<String>? hebrew,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (word != null) 'word': word,
       if (category != null) 'category': category,
+      if (synonyms != null) 'synonyms': synonyms,
+      if (origin != null) 'origin': origin,
+      if (usage != null) 'usage': usage,
+      if (hebrew != null) 'hebrew': hebrew,
     });
   }
 
@@ -217,11 +384,19 @@ class GreekWordsCompanion extends UpdateCompanion<GreekWord> {
     Value<int>? id,
     Value<String>? word,
     Value<String>? category,
+    Value<String>? synonyms,
+    Value<String>? origin,
+    Value<String>? usage,
+    Value<String>? hebrew,
   }) {
     return GreekWordsCompanion(
       id: id ?? this.id,
       word: word ?? this.word,
       category: category ?? this.category,
+      synonyms: synonyms ?? this.synonyms,
+      origin: origin ?? this.origin,
+      usage: usage ?? this.usage,
+      hebrew: hebrew ?? this.hebrew,
     );
   }
 
@@ -237,6 +412,18 @@ class GreekWordsCompanion extends UpdateCompanion<GreekWord> {
     if (category.present) {
       map['category'] = Variable<String>(category.value);
     }
+    if (synonyms.present) {
+      map['synonyms'] = Variable<String>(synonyms.value);
+    }
+    if (origin.present) {
+      map['origin'] = Variable<String>(origin.value);
+    }
+    if (usage.present) {
+      map['usage'] = Variable<String>(usage.value);
+    }
+    if (hebrew.present) {
+      map['hebrew'] = Variable<String>(hebrew.value);
+    }
     return map;
   }
 
@@ -245,7 +432,11 @@ class GreekWordsCompanion extends UpdateCompanion<GreekWord> {
     return (StringBuffer('GreekWordsCompanion(')
           ..write('id: $id, ')
           ..write('word: $word, ')
-          ..write('category: $category')
+          ..write('category: $category, ')
+          ..write('synonyms: $synonyms, ')
+          ..write('origin: $origin, ')
+          ..write('usage: $usage, ')
+          ..write('hebrew: $hebrew')
           ..write(')'))
         .toString();
   }
@@ -267,12 +458,20 @@ typedef $$GreekWordsTableCreateCompanionBuilder =
       Value<int> id,
       required String word,
       required String category,
+      required String synonyms,
+      required String origin,
+      required String usage,
+      required String hebrew,
     });
 typedef $$GreekWordsTableUpdateCompanionBuilder =
     GreekWordsCompanion Function({
       Value<int> id,
       Value<String> word,
       Value<String> category,
+      Value<String> synonyms,
+      Value<String> origin,
+      Value<String> usage,
+      Value<String> hebrew,
     });
 
 class $$GreekWordsTableFilterComposer
@@ -296,6 +495,26 @@ class $$GreekWordsTableFilterComposer
 
   ColumnFilters<String> get category => $composableBuilder(
     column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get synonyms => $composableBuilder(
+    column: $table.synonyms,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get origin => $composableBuilder(
+    column: $table.origin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get usage => $composableBuilder(
+    column: $table.usage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hebrew => $composableBuilder(
+    column: $table.hebrew,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -323,6 +542,26 @@ class $$GreekWordsTableOrderingComposer
     column: $table.category,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get synonyms => $composableBuilder(
+    column: $table.synonyms,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get origin => $composableBuilder(
+    column: $table.origin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get usage => $composableBuilder(
+    column: $table.usage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hebrew => $composableBuilder(
+    column: $table.hebrew,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$GreekWordsTableAnnotationComposer
@@ -342,6 +581,18 @@ class $$GreekWordsTableAnnotationComposer
 
   GeneratedColumn<String> get category =>
       $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get synonyms =>
+      $composableBuilder(column: $table.synonyms, builder: (column) => column);
+
+  GeneratedColumn<String> get origin =>
+      $composableBuilder(column: $table.origin, builder: (column) => column);
+
+  GeneratedColumn<String> get usage =>
+      $composableBuilder(column: $table.usage, builder: (column) => column);
+
+  GeneratedColumn<String> get hebrew =>
+      $composableBuilder(column: $table.hebrew, builder: (column) => column);
 }
 
 class $$GreekWordsTableTableManager
@@ -375,16 +626,36 @@ class $$GreekWordsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> word = const Value.absent(),
                 Value<String> category = const Value.absent(),
-              }) => GreekWordsCompanion(id: id, word: word, category: category),
+                Value<String> synonyms = const Value.absent(),
+                Value<String> origin = const Value.absent(),
+                Value<String> usage = const Value.absent(),
+                Value<String> hebrew = const Value.absent(),
+              }) => GreekWordsCompanion(
+                id: id,
+                word: word,
+                category: category,
+                synonyms: synonyms,
+                origin: origin,
+                usage: usage,
+                hebrew: hebrew,
+              ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String word,
                 required String category,
+                required String synonyms,
+                required String origin,
+                required String usage,
+                required String hebrew,
               }) => GreekWordsCompanion.insert(
                 id: id,
                 word: word,
                 category: category,
+                synonyms: synonyms,
+                origin: origin,
+                usage: usage,
+                hebrew: hebrew,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

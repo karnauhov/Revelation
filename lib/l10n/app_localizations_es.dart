@@ -351,6 +351,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get strong_translit => 'Transliteración';
 
   @override
+  String get strong_synonyms => 'Sinónimos';
+
+  @override
+  String get strong_origin => 'Etimología';
+
+  @override
+  String get strong_usage => 'Uso';
+
+  @override
+  String get strong_hebrewEquivalent => 'Equivalente hebreo';
+
+  @override
   String get strong_part_of_speech => 'Parte de la oración';
 
   @override

@@ -762,6 +762,30 @@ abstract class AppLocalizations {
   /// **'Transliteration'**
   String get strong_translit;
 
+  /// No description provided for @strong_synonyms.
+  ///
+  /// In en, this message translates to:
+  /// **'Synonyms'**
+  String get strong_synonyms;
+
+  /// No description provided for @strong_origin.
+  ///
+  /// In en, this message translates to:
+  /// **'Etymology'**
+  String get strong_origin;
+
+  /// No description provided for @strong_usage.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage'**
+  String get strong_usage;
+
+  /// No description provided for @strong_hebrewEquivalent.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew equivalent'**
+  String get strong_hebrewEquivalent;
+
   /// No description provided for @strong_part_of_speech.
   ///
   /// In en, this message translates to:

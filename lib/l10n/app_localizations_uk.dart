@@ -352,6 +352,18 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_translit => 'Транслітерація';
 
   @override
+  String get strong_synonyms => 'Синоніми';
+
+  @override
+  String get strong_origin => 'Етимологія';
+
+  @override
+  String get strong_usage => 'Використання';
+
+  @override
+  String get strong_hebrewEquivalent => 'Аналог івритом';
+
+  @override
   String get strong_part_of_speech => 'Частина мови';
 
   @override

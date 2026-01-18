@@ -412,6 +412,38 @@ class PrimarySourceViewModel extends ChangeNotifier {
             buffer.write(_dbManager.greekDescs[descIndex].desc.trim());
           }
         }
+        final synonyms = _dbManager.greekWords[wordIndex].synonyms.trim();
+        if (synonyms != "") {
+          buffer.write("\n\r");
+          buffer.write(AppLocalizations.of(context)!.strong_synonyms);
+          buffer.write(": ");
+          buffer.write(_getSynonyms(synonyms));
+          buffer.write("\n\r");
+        }
+        final origin = _dbManager.greekWords[wordIndex].origin.trim();
+        if (origin != "") {
+          buffer.write("\n\r");
+          buffer.write(AppLocalizations.of(context)!.strong_origin);
+          buffer.write(": **");
+          buffer.write(origin);
+          buffer.write("**\n\r");
+        }
+        final usage = _dbManager.greekWords[wordIndex].usage.trim();
+        if (usage != "") {
+          buffer.write("\n\r");
+          buffer.write(AppLocalizations.of(context)!.strong_usage);
+          buffer.write(": **");
+          buffer.write(usage);
+          buffer.write("**\n\r");
+        }
+        final hebrew = _dbManager.greekWords[wordIndex].hebrew.trim();
+        if (hebrew != "") {
+          buffer.write("\n\r");
+          buffer.write(AppLocalizations.of(context)!.strong_hebrewEquivalent);
+          buffer.write(": **");
+          buffer.write(hebrew);
+          buffer.write("**\n\r");
+        }
         updateDescriptionContent(
           buffer.toString(),
           DescriptionType.strongNumber,
@@ -637,6 +669,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
     return candidate;
   }
 
+  bool _doesStrongNumberExist(int sn) {
+    const int minVal = 1;
+    const int maxVal = 5624;
+    bool isForbidden(int x) => x == 2717 || (x >= 3203 && x <= 3302);
+    return sn >= minVal && sn <= maxVal && !(isForbidden(sn));
+  }
+
   String _strikeThroughByIndexes(String word, Iterable<int> indices) {
     if (word.isEmpty) return word;
     final codePoints = word.runes.toList();
@@ -668,5 +707,31 @@ class PrimarySourceViewModel extends ChangeNotifier {
     // ignore: deprecated_member_use
     final regExp = RegExp(r'\p{L}', unicode: true);
     return regExp.hasMatch(text);
+  }
+
+  String _getSynonyms(String content) {
+    final buffer = StringBuffer();
+    if (content != "") {
+      final synonymsList = content.split(",");
+      for (var synonym in synonymsList) {
+        int? syn = int.tryParse(synonym.trim());
+        if (syn != null && _doesStrongNumberExist(syn)) {
+          final wordIndex = _dbManager.greekWords.indexWhere(
+            (word) => word.id == syn,
+          );
+          if (wordIndex != -1) {
+            final synWord = _dbManager.greekWords[wordIndex].word;
+            buffer.write('**${synWord}** ([G${syn}](strong:G${syn})), ');
+          }
+        }
+      }
+      String result = buffer.toString();
+      if (result.endsWith(', ')) {
+        result = result.substring(0, result.length - 2);
+      }
+      return result;
+    } else {
+      return "";
+    }
   }
 }
