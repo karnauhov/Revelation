@@ -162,13 +162,6 @@
         <licenseLink>https://pub.dev/packages/unorm_dart/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'google_mobile_ads'</name>
-        <idIcon></idIcon>
-        <license>Apache-2.0</license>
-        <officialSite>https://pub.dev/packages/google_mobile_ads</officialSite>
-        <licenseLink>https://pub.dev/packages/google_mobile_ads/license</licenseLink>
-    </library>
-    <library>
         <name>@Package 'flutter_launcher_icons'</name>
         <idIcon></idIcon>
         <license>MIT License</license>

@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.4+127
+version: 1.0.4+128
 
 environment:
   sdk: ^3.9.0
@@ -43,7 +43,6 @@ dependencies:
   drift: ^2.30.1
   drift_flutter: ^0.2.8
   unorm_dart: ^0.3.2
-  google_mobile_ads: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,7 +66,7 @@ msix_config:
   publisher: CN=B37F48EC-C643-42C2-82FB-3DFB514F5E74
   languages: en, es, uk, ru
   store: true
-  msix_version: 1.0.131.0
+  msix_version: 1.0.132.0
   logo_path: .\assets\images\UI\app_icon.png
 
 flutter:
