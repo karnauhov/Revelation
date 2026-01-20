@@ -360,9 +360,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get strong_usage => 'Использование';
 
   @override
-  String get strong_hebrewEquivalent => 'Аналог на иврите';
-
-  @override
   String get strong_part_of_speech => 'Часть речи';
 
   @override

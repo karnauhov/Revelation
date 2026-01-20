@@ -373,9 +373,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
       final word = _dbManager.greekWords[wordIndex].word;
       if (word != "") {
         final buffer = StringBuffer();
+
+        // Word
         buffer.write("## ");
         buffer.write(word.trim());
         buffer.write("\n\r");
+
+        // Strong number
         buffer.write(AppLocalizations.of(context)!.strong_number);
         final prevId = _getNeighborStrongNumber(
           _dbManager.greekWords[wordIndex].id,
@@ -396,12 +400,36 @@ class PrimarySourceViewModel extends ChangeNotifier {
               .toLowerCase(),
         );
         buffer.write("**\n\r");
+
+        // Part of speech
         buffer.write(AppLocalizations.of(context)!.strong_part_of_speech);
         buffer.write(": **");
         buffer.write(
           _replaceKeys(context, _dbManager.greekWords[wordIndex].category),
         );
         buffer.write("**\n\r");
+
+        // Etymology
+        final origin = _dbManager.greekWords[wordIndex].origin.trim();
+        if (origin != "") {
+          buffer.write("\n\r");
+          buffer.write(AppLocalizations.of(context)!.strong_origin);
+          buffer.write(": ");
+          buffer.write(_getOrigins(origin));
+          buffer.write("\n\r");
+        }
+
+        // Synonyms
+        final synonyms = _dbManager.greekWords[wordIndex].synonyms.trim();
+        if (synonyms != "") {
+          buffer.write("\n\r");
+          buffer.write(AppLocalizations.of(context)!.strong_synonyms);
+          buffer.write(": ");
+          buffer.write(_getSynonyms(synonyms));
+          buffer.write("\n\r");
+        }
+
+        // Translation
         final descIndex = _dbManager.greekDescs.indexWhere(
           (desc) => desc.id == strongNumber,
         );
@@ -412,37 +440,15 @@ class PrimarySourceViewModel extends ChangeNotifier {
             buffer.write(_dbManager.greekDescs[descIndex].desc.trim());
           }
         }
-        final synonyms = _dbManager.greekWords[wordIndex].synonyms.trim();
-        if (synonyms != "") {
-          buffer.write("\n\r");
-          buffer.write(AppLocalizations.of(context)!.strong_synonyms);
-          buffer.write(": ");
-          buffer.write(_getSynonyms(synonyms));
-          buffer.write("\n\r");
-        }
-        final origin = _dbManager.greekWords[wordIndex].origin.trim();
-        if (origin != "") {
-          buffer.write("\n\r");
-          buffer.write(AppLocalizations.of(context)!.strong_origin);
-          buffer.write(": **");
-          buffer.write(origin);
-          buffer.write("**\n\r");
-        }
+
+        // Usage
         final usage = _dbManager.greekWords[wordIndex].usage.trim();
         if (usage != "") {
           buffer.write("\n\r");
           buffer.write(AppLocalizations.of(context)!.strong_usage);
-          buffer.write(": **");
+          buffer.write(": ");
           buffer.write(usage);
-          buffer.write("**\n\r");
-        }
-        final hebrew = _dbManager.greekWords[wordIndex].hebrew.trim();
-        if (hebrew != "") {
           buffer.write("\n\r");
-          buffer.write(AppLocalizations.of(context)!.strong_hebrewEquivalent);
-          buffer.write(": **");
-          buffer.write(hebrew);
-          buffer.write("**\n\r");
         }
         updateDescriptionContent(
           buffer.toString(),
@@ -707,6 +713,38 @@ class PrimarySourceViewModel extends ChangeNotifier {
     // ignore: deprecated_member_use
     final regExp = RegExp(r'\p{L}', unicode: true);
     return regExp.hasMatch(text);
+  }
+
+  String _getOrigins(String content) {
+    final buffer = StringBuffer();
+    if (content != "") {
+      final originList = content.split(",");
+      for (var origin in originList) {
+        if (origin.startsWith("G")) {
+          int? originID = int.tryParse(origin.substring(1));
+          if (originID != null && _doesStrongNumberExist(originID)) {
+            final wordIndex = _dbManager.greekWords.indexWhere(
+              (word) => word.id == originID,
+            );
+            if (wordIndex != -1) {
+              final originWord = _dbManager.greekWords[wordIndex].word;
+              buffer.write(
+                '**${originWord}** ([G${originID}](strong:G${originID})), ',
+              );
+            }
+          }
+        } else if (origin.startsWith("H")) {
+          buffer.write('[${origin}](strong:${origin}), ');
+        }
+      }
+      String result = buffer.toString();
+      if (result.endsWith(', ')) {
+        result = result.substring(0, result.length - 2);
+      }
+      return result;
+    } else {
+      return "";
+    }
   }
 
   String _getSynonyms(String content) {

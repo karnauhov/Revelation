@@ -9,7 +9,6 @@ class GreekWords extends Table {
   TextColumn get synonyms => text().named('synonyms')();
   TextColumn get origin => text().named('origin')();
   TextColumn get usage => text().named('usage')();
-  TextColumn get hebrew => text().named('hebrew')();
 }
 
 @DriftDatabase(tables: [GreekWords])

@@ -780,12 +780,6 @@ abstract class AppLocalizations {
   /// **'Usage'**
   String get strong_usage;
 
-  /// No description provided for @strong_hebrewEquivalent.
-  ///
-  /// In en, this message translates to:
-  /// **'Hebrew equivalent'**
-  String get strong_hebrewEquivalent;
-
   /// No description provided for @strong_part_of_speech.
   ///
   /// In en, this message translates to:

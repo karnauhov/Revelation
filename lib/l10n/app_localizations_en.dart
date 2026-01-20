@@ -360,9 +360,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strong_usage => 'Usage';
 
   @override
-  String get strong_hebrewEquivalent => 'Hebrew equivalent';
-
-  @override
   String get strong_part_of_speech => 'Part of speech';
 
   @override
