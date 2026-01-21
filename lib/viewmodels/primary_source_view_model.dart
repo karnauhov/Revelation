@@ -451,7 +451,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
         if (usage != "") {
           buffer.write(AppLocalizations.of(context)!.strong_usage);
           buffer.write(": \n\r");
-          buffer.write(usage);
+          buffer.write(_getUsage(usage));
           buffer.write("\n\r");
         }
 
@@ -788,6 +788,24 @@ class PrimarySourceViewModel extends ChangeNotifier {
               .replaceAll("\n\r", "\n")
               .replaceAll("\r", "")
               .replaceAll("\n", "\n > ");
+    }
+    return result;
+  }
+
+  String _getUsage(String content) {
+    String result = "";
+    if (content != "") {
+      // TODO remove [] temporary
+      result =
+          "**" +
+          content
+              .trim()
+              .replaceAll(" [], ", " ")
+              .replaceAll("\n", "; **")
+              .replaceAll(":", "**:");
+      if (result.endsWith("**")) {
+        result = result.substring(0, result.length - 2);
+      }
     }
     return result;
   }
