@@ -358,6 +358,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_origin => 'Етимологія';
 
   @override
+  String get strong_translation => 'Переклад';
+
+  @override
   String get strong_usage => 'Використання';
 
   @override

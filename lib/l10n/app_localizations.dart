@@ -774,6 +774,12 @@ abstract class AppLocalizations {
   /// **'Etymology'**
   String get strong_origin;
 
+  /// No description provided for @strong_translation.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation'**
+  String get strong_translation;
+
   /// No description provided for @strong_usage.
   ///
   /// In en, this message translates to:

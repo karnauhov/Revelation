@@ -392,6 +392,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
           forward: true,
         );
         buffer.write("**[>](strong:G${nextId})\n\r");
+
+        // Transliteration
         buffer.write(AppLocalizations.of(context)!.strong_translit);
         buffer.write(": **");
         buffer.write(
@@ -402,12 +404,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
         buffer.write("**\n\r");
 
         // Part of speech
-        buffer.write(AppLocalizations.of(context)!.strong_part_of_speech);
-        buffer.write(": **");
-        buffer.write(
-          _replaceKeys(context, _dbManager.greekWords[wordIndex].category),
-        );
-        buffer.write("**\n\r");
+        final category = _dbManager.greekWords[wordIndex].category.trim();
+        if (category != "") {
+          buffer.write(AppLocalizations.of(context)!.strong_part_of_speech);
+          buffer.write(": **");
+          buffer.write(_replaceKeys(context, category));
+          buffer.write("**\n\r");
+        }
 
         // Etymology
         final origin = _dbManager.greekWords[wordIndex].origin.trim();
@@ -436,20 +439,22 @@ class PrimarySourceViewModel extends ChangeNotifier {
         if (descIndex != -1) {
           final desc = _dbManager.greekDescs[descIndex].desc.trim();
           if (desc != "") {
-            buffer.write("\n\r>");
-            buffer.write(_dbManager.greekDescs[descIndex].desc.trim());
+            buffer.write(AppLocalizations.of(context)!.strong_translation);
+            buffer.write(": \n\r");
+            buffer.write(_getTranslation(desc));
+            buffer.write("\n\r");
           }
         }
 
         // Usage
         final usage = _dbManager.greekWords[wordIndex].usage.trim();
         if (usage != "") {
-          buffer.write("\n\r");
           buffer.write(AppLocalizations.of(context)!.strong_usage);
-          buffer.write(": ");
+          buffer.write(": \n\r");
           buffer.write(usage);
           buffer.write("\n\r");
         }
+
         updateDescriptionContent(
           buffer.toString(),
           DescriptionType.strongNumber,
@@ -509,8 +514,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
         if (descIndex != -1) {
           final desc = _dbManager.greekDescs[descIndex].desc.trim();
           if (desc != "") {
-            buffer.write("\n\r>");
-            buffer.write(_dbManager.greekDescs[descIndex].desc.trim());
+            buffer.write("\n\r");
+            buffer.write(_getTranslation(desc));
           }
         }
       }
@@ -771,5 +776,19 @@ class PrimarySourceViewModel extends ChangeNotifier {
     } else {
       return "";
     }
+  }
+
+  String _getTranslation(String content) {
+    String result = "";
+    if (content != "") {
+      result =
+          "> " +
+          content
+              .trim()
+              .replaceAll("\n\r", "\n")
+              .replaceAll("\r", "")
+              .replaceAll("\n", "\n > ");
+    }
+    return result;
   }
 }

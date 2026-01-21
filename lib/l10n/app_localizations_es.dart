@@ -357,6 +357,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get strong_origin => 'Etimología';
 
   @override
+  String get strong_translation => 'Traducción';
+
+  @override
   String get strong_usage => 'Uso';
 
   @override

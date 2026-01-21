@@ -357,6 +357,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get strong_origin => 'Этимология';
 
   @override
+  String get strong_translation => 'Перевод';
+
+  @override
   String get strong_usage => 'Использование';
 
   @override
