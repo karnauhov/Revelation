@@ -450,7 +450,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
         final usage = _dbManager.greekWords[wordIndex].usage.trim();
         if (usage != "") {
           buffer.write(AppLocalizations.of(context)!.strong_usage);
-          buffer.write(": \n\r");
+          buffer.write(": ");
           buffer.write(_getUsage(usage));
           buffer.write("\n\r");
         }
@@ -795,9 +795,19 @@ class PrimarySourceViewModel extends ChangeNotifier {
   String _getUsage(String content) {
     String result = "";
     if (content != "") {
+      int sum = 0;
+      for (String line in content.split("\n")) {
+        int index = line.lastIndexOf("], ");
+        if (index != -1) {
+          int? wordUsages = int.tryParse(line.substring(index + 3));
+          if (wordUsages != null) {
+            sum += wordUsages;
+          }
+        }
+      }
       // TODO remove [] temporary
       result =
-          "**" +
+          "${sum}\n\r**" +
           content
               .trim()
               .replaceAll(" [], ", " ")
