@@ -62,6 +62,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Recommended resources for studying Revelation and the Bible as a whole:';
 
   @override
+  String get bug_report => 'Report a bug';
+
+  @override
+  String get log_copied_message =>
+      'Logs have been copied to the clipboard. Please send them to me at:';
+
+  @override
+  String get bug_report_wish =>
+      'Please add a short description of the error and, if possible, attach a screenshot to the message.';
+
+  @override
   String get all_rights_reserved => 'All rights reserved';
 
   @override
@@ -348,7 +359,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strong_number => 'Strong’s number';
 
   @override
-  String get strong_translit => 'Transliteration';
+  String get strong_pronunciation => 'Pronunciation';
 
   @override
   String get strong_synonyms => 'Synonyms';

@@ -62,6 +62,17 @@ class AppLocalizationsUk extends AppLocalizations {
       'Рекомендовані ресурси для вивчення Об\'явлення та Біблії загалом:';
 
   @override
+  String get bug_report => 'Повідомити про помилку';
+
+  @override
+  String get log_copied_message =>
+      'Логи скопійовано до буфера обміну. Будь ласка, надішліть їх мені:';
+
+  @override
+  String get bug_report_wish =>
+      'Будь ласка, додайте короткий опис помилки і, якщо можливо, прикріпіть скриншот екрана до повідомлення.';
+
+  @override
   String get all_rights_reserved => 'Усі права захищені';
 
   @override
@@ -349,7 +360,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_number => 'Номер за Стронґом';
 
   @override
-  String get strong_translit => 'Транслітерація';
+  String get strong_pronunciation => 'Вимова';
 
   @override
   String get strong_synonyms => 'Синоніми';

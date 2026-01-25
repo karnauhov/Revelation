@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:logger/logger.dart';
+import 'package:get_it/get_it.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:revelation/controllers/audio_controller.dart';
@@ -15,6 +17,7 @@ import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/managers/server_manager.dart';
 import 'package:styled_text/tags/styled_text_tag_widget_builder.dart';
 import 'package:styled_text/widgets/styled_text.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 import 'package:url_launcher/url_launcher.dart' show launchUrl, LaunchMode;
 import 'package:xml/xml.dart';
 import '../app_router.dart';
@@ -23,12 +26,7 @@ import '../models/library_info.dart';
 import '../models/institution_info.dart';
 import 'dependent.dart' as dep;
 
-class AlwaysLogFilter extends LogFilter {
-  @override
-  bool shouldLog(LogEvent event) => true;
-}
-
-final log = Logger(printer: SimplePrinter(), filter: AlwaysLogFilter());
+final log = GetIt.I<Talker>();
 
 bool isDesktop() {
   return [
@@ -172,7 +170,7 @@ String getSystemLanguage() {
       }
     }
   } catch (e) {
-    log.d(e);
+    log.debug(e);
   }
   return language;
 }
@@ -446,6 +444,7 @@ Future<bool> launchLink(String url) async {
             : LaunchMode.externalApplication,
       );
       if (!launched) {
+        log.warning("Mailto link was not opened");
         showCustomDialog(MessageType.errorBrokenLink, param: url);
       }
       return launched;
@@ -454,7 +453,10 @@ Future<bool> launchLink(String url) async {
     final Uri uri = Uri.parse(url);
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!launched) {
+      log.warning("Link $url was not opened");
       showCustomDialog(MessageType.errorBrokenLink, param: url);
+    } else {
+      log.info("Link $url has been opened");
     }
     return launched;
   } catch (e) {
@@ -476,42 +478,48 @@ void showCustomDialog(
 }) {
   BuildContext? context =
       AppRouter().navigatorKey.currentState?.overlay?.context;
-  log.d("${type.name}: $param [$markdownExtension]");
+  log.debug("${type.name}: $param [$markdownExtension]");
   if (context == null) {
-    log.e("The context is not available to display dialog.");
+    log.error("The context is not available to display dialog.");
     return;
   }
 
   String title = "";
   String icon = "";
   String message = "";
+  String name = "";
   String additional = markdownExtension;
   switch (type) {
     case MessageType.errorCommon:
       title = AppLocalizations.of(context)!.error;
       icon = "assets/images/UI/error.svg";
       message = param;
+      name = "error_dialog";
       break;
     case MessageType.errorBrokenLink:
       title = AppLocalizations.of(context)!.error;
       icon = "assets/images/UI/error.svg";
       message =
           "${AppLocalizations.of(context)!.unable_to_follow_the_link}: $param";
+      name = "error_dialog";
       break;
     case MessageType.warningCommon:
       title = AppLocalizations.of(context)!.attention;
       icon = "assets/images/UI/attention.svg";
       message = param;
+      name = "warning_dialog";
       break;
     case MessageType.infoCommon:
       title = AppLocalizations.of(context)!.info;
       icon = "assets/images/UI/info.svg";
       message = param;
+      name = "info_dialog";
       break;
   }
 
   showDialog(
     context: context,
+    routeSettings: RouteSettings(name: name),
     builder: (BuildContext dialogContext) {
       final theme = Theme.of(context);
       final colorScheme = theme.colorScheme;
@@ -617,7 +625,7 @@ Future<bool> isUpdateNeeded(String folder, String fileName) async {
     return loc == null ||
         loc.millisecondsSinceEpoch < serv!.millisecondsSinceEpoch;
   } catch (e) {
-    log.e('Checking is update needed error: $e');
+    log.error('Checking is update needed error: $e');
   }
   return false;
 }
@@ -639,7 +647,7 @@ Future<String> updateLocalFile(String folder, String filePath) async {
       await file.writeAsBytes(fileBytes);
     }
   } catch (e) {
-    log.e('Update local file error: $e');
+    log.error('Update local file error: $e');
   }
 
   return file.path;
@@ -655,7 +663,7 @@ Future<DateTime?> getLastUpdateFileLocal(String folder, String filePath) async {
       return null;
     }
   } catch (e) {
-    log.e('Getting file info local error: $e');
+    log.error('Getting file info local error: $e');
     return null;
   }
 }
@@ -676,4 +684,181 @@ List<String> splitTrailingDigits(String s) {
 
 double roundTo(double value, int round) {
   return double.parse(value.toStringAsFixed(round));
+}
+
+Future<String> collectSystemAndAppInfo({BuildContext? context}) async {
+  final buf = StringBuffer();
+  final deviceInfo = DeviceInfoPlugin();
+  void safeWrite(String key, Object? value) {
+    buf.writeln('$key: ${value ?? "null"}');
+  }
+
+  // PLATFORM / DART
+  try {
+    buf.write("=======PLATFORM / DART=======\r\n");
+    safeWrite('IsWeb', kIsWeb);
+    safeWrite('Platform.operatingSystem', Platform.operatingSystem);
+    safeWrite(
+      'Platform.operatingSystemVersion',
+      Platform.operatingSystemVersion,
+    );
+    safeWrite('dartVersion', Platform.version);
+    safeWrite('isAndroid', Platform.isAndroid);
+    safeWrite('isIOS', Platform.isIOS);
+    safeWrite('isMacOS', Platform.isMacOS);
+    safeWrite('isWindows', Platform.isWindows);
+    safeWrite('isLinux', Platform.isLinux);
+  } catch (e) {
+    safeWrite('PlatformInfoError', e);
+  }
+
+  // PACKAGE / APP
+  try {
+    buf.write("\r\n=======PACKAGE / APP=======\r\n");
+    final pkg = await PackageInfo.fromPlatform();
+    safeWrite('appName', pkg.appName);
+    safeWrite('packageName', pkg.packageName);
+    safeWrite('version', pkg.version);
+    safeWrite('buildNumber', pkg.buildNumber);
+    safeWrite('buildSignature', pkg.buildSignature);
+  } catch (e) {
+    safeWrite('PackageInfoError', e);
+  }
+
+  // DEVICE INFO (device_info_plus)
+  try {
+    buf.write("\r\n=======DEVICE INFO=======\r\n");
+    if (kIsWeb) {
+      final web = await deviceInfo.webBrowserInfo;
+      safeWrite('web_userAgent', web.userAgent);
+      safeWrite('web_platform', web.platform);
+      safeWrite('web_vendor', web.vendor);
+      safeWrite('web_language', web.language);
+      safeWrite('web_languages', web.languages);
+      safeWrite('web_hardwareConcurrency', web.hardwareConcurrency);
+      safeWrite('web_maxTouchPoints', web.maxTouchPoints);
+      safeWrite('web_product', web.product);
+    } else if (Platform.isAndroid) {
+      final a = await deviceInfo.androidInfo;
+      try {
+        final map = a.data;
+        map.forEach((k, v) => safeWrite('android.$k', v));
+      } catch (_) {
+        safeWrite('android.model', a.model);
+        safeWrite('android.manufacturer', a.manufacturer);
+        safeWrite('android.version.sdkInt', a.version.sdkInt);
+        safeWrite('android.version.release', a.version.release);
+        safeWrite('android.isPhysicalDevice', a.isPhysicalDevice);
+      }
+    } else if (Platform.isIOS) {
+      final i = await deviceInfo.iosInfo;
+      try {
+        final map = i.data;
+        map.forEach((k, v) => safeWrite('ios.$k', v));
+      } catch (_) {
+        safeWrite('ios.name', i.name);
+        safeWrite('ios.systemName', i.systemName);
+        safeWrite('ios.systemVersion', i.systemVersion);
+        safeWrite('ios.model', i.model);
+        safeWrite('ios.identifierForVendor', i.identifierForVendor);
+        safeWrite('ios.utsname.sysname', i.utsname.sysname);
+      }
+    } else if (Platform.isMacOS) {
+      final m = await deviceInfo.macOsInfo;
+      try {
+        final map = m.data;
+        map.forEach((k, v) => safeWrite('macos.$k', v));
+      } catch (_) {
+        safeWrite('macos.computerName', m.computerName);
+        safeWrite('macos.arch', m.arch);
+        safeWrite('macos.kernelVersion', m.kernelVersion);
+      }
+    } else if (Platform.isWindows) {
+      final w = await deviceInfo.windowsInfo;
+      try {
+        final map = w.data;
+        map.forEach((k, v) => safeWrite('windows.$k', v));
+      } catch (_) {
+        safeWrite('windows.computerName', w.computerName);
+        safeWrite('windows.numberOfCores', w.numberOfCores);
+        safeWrite('windows.systemMemoryInMegabytes', w.systemMemoryInMegabytes);
+      }
+    } else if (Platform.isLinux) {
+      final l = await deviceInfo.linuxInfo;
+      try {
+        final map = l.data;
+        map.forEach((k, v) => safeWrite('linux.$k', v));
+      } catch (_) {
+        safeWrite('linux.name', l.name);
+        safeWrite('linux.version', l.version);
+        safeWrite('linux.id', l.id);
+      }
+    } else {
+      safeWrite('deviceInfo', 'unknown platform');
+    }
+  } catch (e) {
+    safeWrite('DeviceInfoError', e);
+  }
+
+  // SCREEN / DISPLAY
+  try {
+    buf.write("\r\n=======SCREEN / DISPLAY=======\r\n");
+    double devicePixelRatio;
+    Size physicalSize;
+    if (context != null) {
+      // ignore: use_build_context_synchronously
+      final mq = MediaQuery.of(context);
+      devicePixelRatio = mq.devicePixelRatio;
+      physicalSize = Size(
+        mq.size.width * mq.devicePixelRatio,
+        mq.size.height * mq.devicePixelRatio,
+      );
+      safeWrite('screen.logicalWidth', mq.size.width);
+      safeWrite('screen.logicalHeight', mq.size.height);
+      safeWrite('screen.devicePixelRatio', mq.devicePixelRatio);
+      safeWrite('screen.orientation', mq.orientation.toString());
+    } else {
+      // ignore: deprecated_member_use
+      final window = WidgetsBinding.instance.window;
+      devicePixelRatio = window.devicePixelRatio;
+      physicalSize = window.physicalSize;
+      safeWrite('screen.physicalWidth', physicalSize.width);
+      safeWrite('screen.physicalHeight', physicalSize.height);
+      safeWrite('screen.devicePixelRatio', devicePixelRatio);
+    }
+  } catch (e) {
+    safeWrite('ScreenInfoError', e);
+  }
+
+  // LOCALE / TIMEZONE
+  try {
+    buf.write("\r\n=======LOCALE / TIMEZONE=======\r\n");
+    String? locale;
+    if (context != null) {
+      // ignore: use_build_context_synchronously
+      locale = Localizations.localeOf(context).toString();
+    } else {
+      locale = PlatformDispatcher.instance.locale.toString();
+    }
+    safeWrite('locale', locale);
+    safeWrite('timeZoneName', DateTime.now().timeZoneName);
+    safeWrite('timeZoneOffset', DateTime.now().timeZoneOffset.toString());
+  } catch (e) {
+    safeWrite('LocaleOrTimezoneError', e);
+  }
+
+  // ENVIRONMENT (Debug / Release)
+  try {
+    buf.write("\r\n=======ENVIRONMENT=======\r\n");
+    var isDebug = false;
+    assert(() {
+      isDebug = true;
+      return true;
+    }());
+    safeWrite('buildMode.isDebug', isDebug);
+  } catch (e) {
+    safeWrite('BuildModeError', e);
+  }
+
+  return buf.toString();
 }

@@ -78,15 +78,11 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   widget.viewModel.selectedArea == null
                       ? AppLocalizations.of(context)!.not_selected
                       : '${AppLocalizations.of(context)!.size} (${(widget.viewModel.selectedArea!.right - widget.viewModel.selectedArea!.left).abs().toStringAsFixed(0)} x ${(widget.viewModel.selectedArea!.bottom - widget.viewModel.selectedArea!.top).abs().toStringAsFixed(0)})',
-                  style: TextStyle(
-                    color: colorScheme.onSurface,
-                  ),
+                  style: TextStyle(color: colorScheme.onSurface),
                 ),
               ),
               IconButton(
-                icon: Icon(
-                  Icons.crop,
-                ),
+                icon: Icon(Icons.crop),
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.area_selection,
                 onPressed: () async {
@@ -95,6 +91,9 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   widget.viewModel.startSelectAreaMode((onSelected) {
                     showDialog(
                       context: widget.parentContext,
+                      routeSettings: RouteSettings(
+                        name: "replace_color_dialog",
+                      ),
                       useRootNavigator: false,
                       barrierColor: Colors.transparent,
                       builder: (context) {
@@ -105,18 +104,26 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                               top: 75,
                               child: ConstrainedBox(
                                 constraints: const BoxConstraints(
-                                    minWidth: 350, maxWidth: 450),
+                                  minWidth: 350,
+                                  maxWidth: 450,
+                                ),
                                 child: ReplaceColorDialog(
                                   viewModel: widget.viewModel,
                                   parentContext: widget.parentContext,
-                                  onApply: (selectedArea, colorToReplace,
-                                      newColor, tolerance) {
-                                    widget.viewModel.applyColorReplacement(
+                                  onApply:
+                                      (
                                         selectedArea,
                                         colorToReplace,
                                         newColor,
-                                        tolerance);
-                                  },
+                                        tolerance,
+                                      ) {
+                                        widget.viewModel.applyColorReplacement(
+                                          selectedArea,
+                                          colorToReplace,
+                                          newColor,
+                                          tolerance,
+                                        );
+                                      },
                                   onCancel: () {
                                     widget.viewModel.resetColorReplacement();
                                   },
@@ -154,15 +161,11 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 height: 24,
                 decoration: BoxDecoration(
                   color: colorToReplace,
-                  border: Border.all(
-                    color: colorScheme.outline,
-                  ),
+                  border: Border.all(color: colorScheme.outline),
                 ),
               ),
               IconButton(
-                icon: Icon(
-                  Icons.palette,
-                ),
+                icon: Icon(Icons.palette),
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
@@ -170,6 +173,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   Color picked = colorToReplace;
                   await showDialog(
                     context: context,
+                    routeSettings: RouteSettings(name: "palette_dialog"),
                     builder: (context) {
                       return AlertDialog(
                         backgroundColor: colorScheme.surface,
@@ -188,17 +192,18 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                         ),
                         actions: [
                           TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: colorScheme.primary,
-                              ),
-                              child: Text(
-                                AppLocalizations.of(context)!.cancel,
-                                style: TextStyle(color: colorScheme.primary),
-                              ),
-                              onPressed: () {
-                                aud.playSound("click");
-                                Navigator.of(context).pop();
-                              }),
+                            style: TextButton.styleFrom(
+                              foregroundColor: colorScheme.primary,
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.cancel,
+                              style: TextStyle(color: colorScheme.primary),
+                            ),
+                            onPressed: () {
+                              aud.playSound("click");
+                              Navigator.of(context).pop();
+                            },
+                          ),
                           TextButton(
                             style: TextButton.styleFrom(
                               foregroundColor: colorScheme.primary,
@@ -213,8 +218,12 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                               setState(() {
                                 colorToReplace = picked;
                               });
-                              widget.onApply(selectedArea, colorToReplace,
-                                  newColor, tolerance);
+                              widget.onApply(
+                                selectedArea,
+                                colorToReplace,
+                                newColor,
+                                tolerance,
+                              );
                             },
                           ),
                         ],
@@ -224,9 +233,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 },
               ),
               IconButton(
-                icon: Icon(
-                  Icons.colorize,
-                ),
+                icon: Icon(Icons.colorize),
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
@@ -235,6 +242,9 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   widget.viewModel.startPipetteMode((pickedColor) {
                     showDialog(
                       context: widget.parentContext,
+                      routeSettings: RouteSettings(
+                        name: "replace_color_dialog",
+                      ),
                       useRootNavigator: false,
                       barrierColor: Colors.transparent,
                       builder: (context) {
@@ -245,18 +255,26 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                               top: 75,
                               child: ConstrainedBox(
                                 constraints: const BoxConstraints(
-                                    minWidth: 350, maxWidth: 450),
+                                  minWidth: 350,
+                                  maxWidth: 450,
+                                ),
                                 child: ReplaceColorDialog(
                                   viewModel: widget.viewModel,
                                   parentContext: widget.parentContext,
-                                  onApply: (selectedArea, colorToReplace,
-                                      newColor, tolerance) {
-                                    widget.viewModel.applyColorReplacement(
+                                  onApply:
+                                      (
                                         selectedArea,
                                         colorToReplace,
                                         newColor,
-                                        tolerance);
-                                  },
+                                        tolerance,
+                                      ) {
+                                        widget.viewModel.applyColorReplacement(
+                                          selectedArea,
+                                          colorToReplace,
+                                          newColor,
+                                          tolerance,
+                                        );
+                                      },
                                   onCancel: () {
                                     widget.viewModel.resetColorReplacement();
                                   },
@@ -274,7 +292,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                     );
                   }, true);
                 },
-              )
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -294,15 +312,11 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 height: 24,
                 decoration: BoxDecoration(
                   color: newColor,
-                  border: Border.all(
-                    color: colorScheme.outline,
-                  ),
+                  border: Border.all(color: colorScheme.outline),
                 ),
               ),
               IconButton(
-                icon: Icon(
-                  Icons.palette,
-                ),
+                icon: Icon(Icons.palette),
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.palette,
                 onPressed: () async {
@@ -310,6 +324,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   Color picked = newColor;
                   await showDialog(
                     context: context,
+                    routeSettings: RouteSettings(name: "palette_dialog"),
                     builder: (context) {
                       return AlertDialog(
                         backgroundColor: colorScheme.surface,
@@ -328,17 +343,18 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                         ),
                         actions: [
                           TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: colorScheme.primary,
-                              ),
-                              child: Text(
-                                AppLocalizations.of(context)!.cancel,
-                                style: TextStyle(color: colorScheme.primary),
-                              ),
-                              onPressed: () {
-                                aud.playSound("click");
-                                Navigator.of(context).pop();
-                              }),
+                            style: TextButton.styleFrom(
+                              foregroundColor: colorScheme.primary,
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.cancel,
+                              style: TextStyle(color: colorScheme.primary),
+                            ),
+                            onPressed: () {
+                              aud.playSound("click");
+                              Navigator.of(context).pop();
+                            },
+                          ),
                           TextButton(
                             style: TextButton.styleFrom(
                               foregroundColor: colorScheme.primary,
@@ -353,8 +369,12 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                               setState(() {
                                 newColor = picked;
                               });
-                              widget.onApply(selectedArea, colorToReplace,
-                                  newColor, tolerance);
+                              widget.onApply(
+                                selectedArea,
+                                colorToReplace,
+                                newColor,
+                                tolerance,
+                              );
                             },
                           ),
                         ],
@@ -364,9 +384,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                 },
               ),
               IconButton(
-                icon: Icon(
-                  Icons.colorize,
-                ),
+                icon: Icon(Icons.colorize),
                 color: colorScheme.primary,
                 tooltip: AppLocalizations.of(context)!.eyedropper,
                 onPressed: () {
@@ -375,6 +393,9 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   widget.viewModel.startPipetteMode((pickedColor) {
                     showDialog(
                       context: widget.parentContext,
+                      routeSettings: RouteSettings(
+                        name: "replace_color_dialog",
+                      ),
                       useRootNavigator: false,
                       barrierColor: Colors.transparent,
                       builder: (context) {
@@ -385,18 +406,26 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                               top: 75,
                               child: ConstrainedBox(
                                 constraints: const BoxConstraints(
-                                    minWidth: 350, maxWidth: 450),
+                                  minWidth: 350,
+                                  maxWidth: 450,
+                                ),
                                 child: ReplaceColorDialog(
                                   viewModel: widget.viewModel,
                                   parentContext: widget.parentContext,
-                                  onApply: (selectedArea, colorToReplace,
-                                      newColor, tolerance) {
-                                    widget.viewModel.applyColorReplacement(
+                                  onApply:
+                                      (
                                         selectedArea,
                                         colorToReplace,
                                         newColor,
-                                        tolerance);
-                                  },
+                                        tolerance,
+                                      ) {
+                                        widget.viewModel.applyColorReplacement(
+                                          selectedArea,
+                                          colorToReplace,
+                                          newColor,
+                                          tolerance,
+                                        );
+                                      },
                                   onCancel: () {
                                     widget.viewModel.resetColorReplacement();
                                   },
@@ -414,7 +443,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                     );
                   }, false);
                 },
-              )
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -446,7 +475,11 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                   },
                   onChangeEnd: (value) {
                     widget.onApply(
-                        selectedArea, colorToReplace, newColor, tolerance);
+                      selectedArea,
+                      colorToReplace,
+                      newColor,
+                      tolerance,
+                    );
                   },
                 ),
               ),
@@ -481,9 +514,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
       ),
       actions: [
         TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: colorScheme.primary,
-          ),
+          style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
           onPressed: () {
             aud.playSound("click");
             widget.onCancel();
@@ -495,9 +526,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
           ),
         ),
         TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: colorScheme.primary,
-          ),
+          style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
           onPressed: () {
             aud.playSound("click");
             widget.onApply(selectedArea, colorToReplace, newColor, tolerance);

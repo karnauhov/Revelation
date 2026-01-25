@@ -1,10 +1,10 @@
 import 'package:unorm_dart/unorm_dart.dart' as unorm;
 
-class Transliteration {
-  static final Transliteration _instance = Transliteration._internal();
-  Transliteration._internal();
+class Pronunciation {
+  static final Pronunciation _instance = Pronunciation._internal();
+  Pronunciation._internal();
 
-  factory Transliteration() {
+  factory Pronunciation() {
     return _instance;
   }
 
@@ -47,12 +47,12 @@ class Transliteration {
     'Γχ',
   };
 
-  String transliterate(String greekWord, String locale) {
+  String convert(String greekWord, String locale) {
     String result = "";
     switch (locale) {
       case 'en':
       case 'es':
-        result = _transliterate(
+        result = _convert(
           greekWord,
           _latinLetterMap,
           _latinDiphthongMap,
@@ -60,7 +60,7 @@ class Transliteration {
         );
         break;
       case 'ru':
-        result = _transliterate(
+        result = _convert(
           greekWord,
           _cyrillicLetterMap,
           _cyrillicDiphthongMap,
@@ -68,7 +68,7 @@ class Transliteration {
         );
         break;
       case 'uk':
-        result = _transliterate(
+        result = _convert(
           greekWord,
           _ukrainianLetterMap,
           _cyrillicDiphthongMap,
@@ -76,7 +76,7 @@ class Transliteration {
         );
         break;
       default:
-        result = _transliterate(
+        result = _convert(
           greekWord,
           _latinLetterMap,
           _latinDiphthongMap,
@@ -87,7 +87,7 @@ class Transliteration {
     return result;
   }
 
-  String _transliterate(
+  String _convert(
     String greekWord,
     Map<String, String> letterMap,
     Map<String, String> diphthongMap,

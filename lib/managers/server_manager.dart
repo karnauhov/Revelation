@@ -15,10 +15,11 @@ class ServerManager {
     String supabaseUrl = const String.fromEnvironment('SUPABASE_URL');
     String supabaseKey = const String.fromEnvironment('SUPABASE_KEY');
     if (supabaseUrl.isEmpty || supabaseKey.isEmpty) {
-      log.e("Supabase URL or key not found");
+      log.error("Supabase URL or key not found");
       return false;
     } else {
       await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+      log.info("Supabase is initialized");
       return true;
     }
   }
@@ -28,7 +29,7 @@ class ServerManager {
       final Uint8List? fileBytes = await _downloadFile(repository, fileName);
       return fileBytes;
     } catch (e) {
-      log.e('DB downloading error: $e');
+      log.error('DB downloading error: $e');
       return null;
     }
   }
@@ -58,7 +59,7 @@ class ServerManager {
       );
       return fileBytes;
     } catch (e) {
-      log.e('Image downloading error: $e');
+      log.error('Image downloading error: $e');
       return null;
     }
   }
@@ -73,7 +74,7 @@ class ServerManager {
       final fileObject = await supabase.storage.from(repository).info(filePath);
       return DateTime.parse(fileObject.lastModified!);
     } catch (e) {
-      log.e('Getting file info from server error: $e');
+      log.error('Getting file info from server error: $e');
       return null;
     }
   }
@@ -85,9 +86,10 @@ class ServerManager {
       final Uint8List fileBytes = await supabase.storage
           .from(repository)
           .download(filePath);
+      log.info('File $repository/$filePath has been downloaded.');
       return fileBytes;
     } catch (e) {
-      log.e('File downloading error: $e');
+      log.error('File downloading error: $e');
       return null;
     }
   }

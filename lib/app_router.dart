@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
@@ -8,6 +9,7 @@ import 'package:revelation/screens/primary_sources/primary_sources_screen.dart';
 import 'package:revelation/screens/settings/settings_screen.dart';
 import 'package:revelation/screens/about/about_screen.dart';
 import 'package:revelation/screens/download/download_screen.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 import 'screens/main/main_screen.dart';
 import 'screens/topic/topic_screen.dart';
 
@@ -27,16 +29,17 @@ class AppRouter {
     navigatorKey: navigatorKey,
     routes: [
       GoRoute(
-          path: '/',
-          name: 'main',
-          pageBuilder: (BuildContext context, GoRouterState state) {
-            aud.playSound("page");
-            return buildPageWithDefaultTransition<void>(
-              context: context,
-              state: state,
-              child: MainScreen(),
-            );
-          }),
+        path: '/',
+        name: 'main',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          aud.playSound("page");
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: MainScreen(),
+          );
+        },
+      ),
       GoRoute(
         path: '/topic',
         name: 'topic',
@@ -71,7 +74,7 @@ class AppRouter {
         name: 'primary_source',
         pageBuilder: (BuildContext context, GoRouterState state) {
           if (state.extra == null || state.extra is! PrimarySource) {
-            log.e('Please, send it with correct primary source parameter');
+            log.error('Please, send it with correct primary source parameter');
             WidgetsBinding.instance.addPostFrameCallback((_) {
               context.go('/');
             });
@@ -127,6 +130,7 @@ class AppRouter {
         },
       ),
     ],
+    observers: <NavigatorObserver>[TalkerRouteObserver(GetIt.I<Talker>())],
   );
 }
 
@@ -137,6 +141,8 @@ CustomTransitionPage buildPageWithDefaultTransition<T>({
 }) {
   return CustomTransitionPage<T>(
     key: state.pageKey,
+    name: state.name,
+    arguments: _getRouteArgs(state),
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return SlideTransition(
@@ -149,4 +155,13 @@ CustomTransitionPage buildPageWithDefaultTransition<T>({
     },
     transitionDuration: const Duration(milliseconds: 300),
   );
+}
+
+String? _getRouteArgs(GoRouterState state) {
+  if (state.extra is Map<String, dynamic>) {
+    return (state.extra as Map<String, dynamic>)['file'];
+  } else if (state.extra is PrimarySource) {
+    return (state.extra as PrimarySource).id;
+  }
+  return null;
 }

@@ -64,18 +64,18 @@
         <licenseLink>https://pub.dev/packages/provider/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'logger'</name>
-        <idIcon></idIcon>
-        <license>MIT License</license>
-        <officialSite>https://pub.dev/packages/logger</officialSite>
-        <licenseLink>https://pub.dev/packages/logger/license</licenseLink>
-    </library>
-    <library>
         <name>@Package 'package_info_plus'</name>
         <idIcon></idIcon>
         <license>BSD-3-Clause</license>
         <officialSite>https://pub.dev/packages/package_info_plus</officialSite>
         <licenseLink>https://pub.dev/packages/package_info_plus/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'device_info_plus'</name>
+        <idIcon></idIcon>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/device_info_plus</officialSite>
+        <licenseLink>https://pub.dev/packages/device_info_plus/license</licenseLink>
     </library>
     <library>
         <name>@Package 'xml'</name>
@@ -160,6 +160,13 @@
         <license>MIT</license>
         <officialSite>https://pub.dev/packages/unorm_dart</officialSite>
         <licenseLink>https://pub.dev/packages/unorm_dart/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'talker_flutter'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/talker_flutter</officialSite>
+        <licenseLink>https://pub.dev/packages/talker_flutter/license</licenseLink>
     </library>
     <library>
         <name>@Package 'flutter_launcher_icons'</name>

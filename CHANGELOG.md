@@ -15,7 +15,7 @@ All notable changes to this application will be documented here.
 
 ### Changed
 
-- About screen (Recommended);
+- About screen (Recommended, Bug report);
 
 ## [1.0.3](https://github.com/karnauhov/Revelation/releases/tag/v1.0.3%2B113) - 04.07.25
 

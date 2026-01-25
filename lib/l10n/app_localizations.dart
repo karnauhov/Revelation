@@ -198,6 +198,24 @@ abstract class AppLocalizations {
   /// **'Recommended resources for studying Revelation and the Bible as a whole:'**
   String get recommended_description;
 
+  /// No description provided for @bug_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a bug'**
+  String get bug_report;
+
+  /// No description provided for @log_copied_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs have been copied to the clipboard. Please send them to me at:'**
+  String get log_copied_message;
+
+  /// No description provided for @bug_report_wish.
+  ///
+  /// In en, this message translates to:
+  /// **'Please add a short description of the error and, if possible, attach a screenshot to the message.'**
+  String get bug_report_wish;
+
   /// No description provided for @all_rights_reserved.
   ///
   /// In en, this message translates to:
@@ -756,11 +774,11 @@ abstract class AppLocalizations {
   /// **'Strong’s number'**
   String get strong_number;
 
-  /// No description provided for @strong_translit.
+  /// No description provided for @strong_pronunciation.
   ///
   /// In en, this message translates to:
-  /// **'Transliteration'**
-  String get strong_translit;
+  /// **'Pronunciation'**
+  String get strong_pronunciation;
 
   /// No description provided for @strong_synonyms.
   ///

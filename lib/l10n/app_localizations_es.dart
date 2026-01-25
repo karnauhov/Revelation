@@ -62,6 +62,17 @@ class AppLocalizationsEs extends AppLocalizations {
       'Recursos recomendados para el estudio del Apocalipsis y de la Biblia en general:';
 
   @override
+  String get bug_report => 'Informar de un error';
+
+  @override
+  String get log_copied_message =>
+      'Los registros se han copiado en el portapapeles. Por favor, envíelos a:';
+
+  @override
+  String get bug_report_wish =>
+      'Por favor, añada una breve descripción del error y, si es posible, adjunte una captura de pantalla al mensaje.';
+
+  @override
   String get all_rights_reserved => 'Todos los derechos reservados';
 
   @override
@@ -348,7 +359,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get strong_number => 'Número de Strong';
 
   @override
-  String get strong_translit => 'Transliteración';
+  String get strong_pronunciation => 'Pronunciación';
 
   @override
   String get strong_synonyms => 'Sinónimos';

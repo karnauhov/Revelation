@@ -5,7 +5,7 @@ class PageWord {
   final List<PageRect> rectangles;
   final List<int> notExist;
   final int? sn;
-  final bool snTranslit;
+  final bool snPronounce;
   final double snXshift;
 
   PageWord(
@@ -13,7 +13,7 @@ class PageWord {
     this.rectangles, {
     this.notExist = const [],
     this.sn = null,
-    this.snTranslit = false,
+    this.snPronounce = false,
     this.snXshift = 0,
   });
 }

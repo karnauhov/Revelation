@@ -12,7 +12,7 @@ import 'package:revelation/repositories/pages_repository.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:revelation/managers/server_manager.dart';
-import 'package:revelation/utils/transliteration.dart';
+import 'package:revelation/utils/pronunciation.dart';
 
 enum DescriptionType { word, strongNumber, verse, info }
 
@@ -66,7 +66,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
   DBManager _dbManager = DBManager();
-  Transliteration _translit = Transliteration();
+  Pronunciation _pronunciation = Pronunciation();
   DescriptionType _currentDescriptionType = DescriptionType.info;
   int? _currentDescriptionNumber = null;
 
@@ -92,11 +92,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
       fetchMaxTextureSize().then((size) {
         _maxTextureSize = size > 0 ? size : 4096;
         if (_isMobileWeb) {
-          log.w(
+          log.warning(
             "A mobile browser with max texture size of $_maxTextureSize was detected.",
           );
         } else {
-          log.i(
+          log.info(
             "A browser with max texture size of $_maxTextureSize was detected.",
           );
         }
@@ -142,7 +142,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
         }
       }
     } catch (e) {
-      log.e('Image loading error: $e');
+      log.error('Image loading error: $e');
     }
     _updateTransformStatus();
     isLoading = false;
@@ -393,12 +393,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
         );
         buffer.write("**[>](strong:G${nextId})\n\r");
 
-        // Transliteration
-        buffer.write(AppLocalizations.of(context)!.strong_translit);
+        // Pronunciation
+        buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
         buffer.write(": **");
         buffer.write(
-          _translit
-              .transliterate(word.toLowerCase().trim(), _dbManager.langDB)
+          _pronunciation
+              .convert(word.toLowerCase().trim(), _dbManager.langDB)
               .toLowerCase(),
         );
         buffer.write("**\n\r");
@@ -481,15 +481,15 @@ class PrimarySourceViewModel extends ChangeNotifier {
         buffer.write("**\n\r");
       }
       if (_containsAnyLetter(word.text)) {
-        buffer.write(AppLocalizations.of(context)!.strong_translit);
+        buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
         buffer.write(": **");
-        if (word.snTranslit && word.sn != null) {
+        if (word.snPronounce && word.sn != null) {
           final wordIndex = _dbManager.greekWords.indexWhere(
             (w) => w.id == word.sn,
           );
           buffer.write(
-            _translit
-                .transliterate(
+            _pronunciation
+                .convert(
                   _dbManager.greekWords[wordIndex].word.toLowerCase().trim(),
                   _dbManager.langDB,
                 )
@@ -497,11 +497,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
           );
         } else {
           buffer.write(
-            _translit
-                .transliterate(
-                  word.text.toLowerCase().trim(),
-                  _dbManager.langDB,
-                )
+            _pronunciation
+                .convert(word.text.toLowerCase().trim(), _dbManager.langDB)
                 .toLowerCase(),
           );
         }
@@ -622,7 +619,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
         await file.writeAsBytes(imageData!);
       }
     } catch (e) {
-      log.e('Image save error: $e');
+      log.error('Image save error: $e');
     }
   }
 

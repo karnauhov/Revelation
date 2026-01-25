@@ -930,6 +930,7 @@ class PrimarySourceToolbar extends StatelessWidget {
   Future<void> _showBrightnessContrastDialog() {
     return showDialog(
       context: screenContext,
+      routeSettings: RouteSettings(name: "brightness_contrast_dialog"),
       barrierColor: Colors.transparent,
       builder: (context) {
         return Stack(
@@ -960,6 +961,7 @@ class PrimarySourceToolbar extends StatelessWidget {
   Future<void> _showReplaceColorDialog() {
     return showDialog(
       context: screenContext,
+      routeSettings: RouteSettings(name: "replace_color_dialog"),
       useRootNavigator: false,
       barrierColor: Colors.transparent,
       builder: (context) {

@@ -134,7 +134,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                           String result =
                               "PageRect(${left}, ${top}, ${right}, ${bottom}),";
                           Clipboard.setData(ClipboardData(text: result));
-                          log.d(result);
+                          log.debug(result);
                         }
                       });
                       return null;
@@ -502,10 +502,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
             if (greekNum != null) {
               viewModel.showInfoForStrongNumber(greekNum, context);
             } else {
-              log.w("Wrong Strong's Greek number: '${address[1]}'");
+              log.warning("Wrong Strong's Greek number: '${address[1]}'");
             }
           } else {
-            log.w("Wrong Strong's number: '${address[1]}'");
+            log.warning("Wrong Strong's number: '${address[1]}'");
           }
         }
       } else if (href.startsWith("bible:")) {

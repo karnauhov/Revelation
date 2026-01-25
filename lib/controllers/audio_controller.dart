@@ -32,12 +32,18 @@ class AudioController {
       ),
     );
 
-    _sources["page"] =
-        AssetSource('assets/sounds/page.mp3', mimeType: "audio/mpeg");
-    _sources["stone"] =
-        AssetSource('assets/sounds/stone.mp3', mimeType: "audio/mpeg");
-    _sources["click"] =
-        AssetSource('assets/sounds/click.mp3', mimeType: "audio/mpeg");
+    _sources["page"] = AssetSource(
+      'assets/sounds/page.mp3',
+      mimeType: "audio/mpeg",
+    );
+    _sources["stone"] = AssetSource(
+      'assets/sounds/stone.mp3',
+      mimeType: "audio/mpeg",
+    );
+    _sources["click"] = AssetSource(
+      'assets/sounds/click.mp3',
+      mimeType: "audio/mpeg",
+    );
   }
 
   void playSound(String sourceName) {
@@ -47,7 +53,7 @@ class AudioController {
         _soundPlayer.play(_sources[sourceName]!);
       }
     } catch (e) {
-      log.e(e);
+      log.error(e);
     }
   }
 

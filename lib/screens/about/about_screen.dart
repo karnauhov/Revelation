@@ -1,7 +1,9 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/audio_controller.dart';
@@ -9,6 +11,7 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/screens/about/icon_url.dart';
 import 'package:revelation/screens/about/recommended_list.dart';
 import 'package:revelation/viewmodels/settings_view_model.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 import '../../common_widgets/icon_link_item.dart';
 import 'library_list.dart';
 import 'institution_list.dart';
@@ -102,6 +105,9 @@ class _AboutScreenState extends State<AboutScreen> {
                   _buildChangelog(context, viewModel),
                   if (!viewModel.isChangelogExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
+                  // Bugs report
+                  _buildBugsReport(context, settingsViewModel.settings.toMap()),
+                  Divider(height: 1, color: colorScheme.outlineVariant),
                   // Marketplaces (Desktop & Mobile)
                   if (!isWeb()) _buildMarketplaces(context),
                   if (!isWeb())
@@ -461,6 +467,53 @@ class _AboutScreenState extends State<AboutScreen> {
                 child: CircularProgressIndicator(color: colorScheme.primary),
               ),
       ],
+    );
+  }
+
+  Widget _buildBugsReport(BuildContext context, Map<String, dynamic> settings) {
+    return Column(
+      children: [
+        IconLinkItem(
+          iconPath: "assets/images/UI/bug.svg",
+          text: AppLocalizations.of(context)!.bug_report,
+          onTap: () async {
+            try {
+              StringBuffer sb = StringBuffer();
+              sb.write(AppLocalizations.of(context)!.bug_report_wish);
+              sb.write("\r\n\r\n=======TIMESTAMP=======\r\n");
+              sb.write("${DateTime.now().toIso8601String()}\r\n\r\n");
+              sb.write("=======LOGS=======\r\n");
+              sb.write(GetIt.I<Talker>().history.text());
+              sb.write("\r\n");
+              sb.write(await collectSystemAndAppInfo(context: context));
+              sb.write("\r\n=======APP SETTINGS=======\r\n");
+              settings.forEach((key, value) {
+                sb.writeln("$key: $value");
+              });
+              final content = sb.toString();
+              final emailBodyContent = Uri.encodeFull(content);
+              Clipboard.setData(ClipboardData(text: content));
+              final openEmailResult = await launchLink(
+                "mailto:${AppConstants.supportEmail}?subject=Revelation%20Bug%20Report&body=${emailBodyContent}",
+              );
+              if (!openEmailResult) {
+                _showBugMessage();
+              }
+            } catch (ex, st) {
+              log.handle(ex, st);
+              _showBugMessage();
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  void _showBugMessage() {
+    final snackMessage =
+        "${AppLocalizations.of(context)!.log_copied_message} ${AppConstants.supportEmail}";
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(snackMessage), duration: Duration(seconds: 10)),
     );
   }
 }

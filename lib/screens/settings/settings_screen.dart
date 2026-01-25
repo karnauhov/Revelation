@@ -37,8 +37,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             Text(
               AppLocalizations.of(context)!.settings_header,
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(fontWeight: FontWeight.normal),
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ],
         ),
@@ -59,8 +60,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               subtitle: Text(
-                AppConstants.languages[
-                        settingsViewModel.settings.selectedLanguage] ??
+                AppConstants.languages[settingsViewModel
+                        .settings
+                        .selectedLanguage] ??
                     '',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: colorScheme.secondary,
@@ -96,7 +98,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               subtitle: Text(
                 locColorThemes(
-                    context, settingsViewModel.settings.selectedTheme),
+                  context,
+                  settingsViewModel.settings.selectedTheme,
+                ),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: colorScheme.secondary,
                 ),
@@ -131,7 +135,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               subtitle: Text(
                 locFontSizes(
-                    context, settingsViewModel.settings.selectedFontSize),
+                  context,
+                  settingsViewModel.settings.selectedFontSize,
+                ),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: colorScheme.secondary,
                 ),
@@ -158,10 +164,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             color: colorScheme.surfaceContainerHighest,
             child: ListTile(
               leading: Icon(
-                  settingsViewModel.settings.soundEnabled
-                      ? Icons.volume_up
-                      : Icons.volume_off,
-                  color: colorScheme.primary),
+                settingsViewModel.settings.soundEnabled
+                    ? Icons.volume_up
+                    : Icons.volume_off,
+                color: colorScheme.primary,
+              ),
               title: Text(
                 AppLocalizations.of(context)!.sound,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -196,12 +203,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<String?> _showLanguageDialog(
-      BuildContext context, String currentLanguage) async {
+    BuildContext context,
+    String currentLanguage,
+  ) async {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return showDialog<String>(
       context: context,
+      routeSettings: RouteSettings(name: "select_language_dialog"),
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: colorScheme.surface,
@@ -253,6 +263,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return showDialog<String>(
       context: context,
+      routeSettings: RouteSettings(name: "select_theme_dialog"),
       builder: (_) => AlertDialog(
         backgroundColor: colorScheme.surface,
         content: SizedBox(
@@ -276,8 +287,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color:
-                          isSelected ? itemColorScheme.primaryContainer : null,
+                      color: isSelected
+                          ? itemColorScheme.primaryContainer
+                          : null,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -299,12 +311,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<String?> _showFontSizeDialog(
-      BuildContext context, String current) async {
+    BuildContext context,
+    String current,
+  ) async {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return showDialog<String>(
       context: context,
+      routeSettings: RouteSettings(name: "select_font_size_dialog"),
       builder: (_) => AlertDialog(
         backgroundColor: colorScheme.surface,
         content: SizedBox(
