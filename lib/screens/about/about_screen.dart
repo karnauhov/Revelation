@@ -478,21 +478,22 @@ class _AboutScreenState extends State<AboutScreen> {
           text: AppLocalizations.of(context)!.bug_report,
           onTap: () async {
             try {
-              StringBuffer sb = StringBuffer();
-              sb.write(AppLocalizations.of(context)!.bug_report_wish);
-              sb.write("\r\n\r\n=======TIMESTAMP=======\r\n");
-              sb.write("${DateTime.now().toIso8601String()}\r\n\r\n");
-              sb.write("=======LOGS=======\r\n");
-              sb.write(GetIt.I<Talker>().history.text());
-              sb.write("\r\n");
-              sb.write(await collectSystemAndAppInfo(context: context));
-              sb.write("\r\n=======APP SETTINGS=======\r\n");
+              StringBuffer sbEmail = StringBuffer();
+              StringBuffer sbTechInfo = StringBuffer();
+              sbEmail.write(AppLocalizations.of(context)!.bug_report_wish);
+              sbEmail.write("\r\n\r\n");
+              sbTechInfo.write("=======TIMESTAMP=======\r\n");
+              sbTechInfo.write("${DateTime.now().toIso8601String()}\r\n\r\n");
+              sbTechInfo.write("=======LOGS=======\r\n");
+              sbTechInfo.write(GetIt.I<Talker>().history.text());
+              sbTechInfo.write("\r\n");
+              sbTechInfo.write(await collectSystemAndAppInfo(context: context));
+              sbTechInfo.write("\r\n=======APP SETTINGS=======\r\n");
               settings.forEach((key, value) {
-                sb.writeln("$key: $value");
+                sbTechInfo.writeln("$key: $value");
               });
-              final content = sb.toString();
-              final emailBodyContent = Uri.encodeFull(content);
-              Clipboard.setData(ClipboardData(text: content));
+              final emailBodyContent = Uri.encodeFull(sbEmail.toString());
+              Clipboard.setData(ClipboardData(text: sbTechInfo.toString()));
               final openEmailResult = await launchLink(
                 "mailto:${AppConstants.supportEmail}?subject=Revelation%20Bug%20Report&body=${emailBodyContent}",
               );

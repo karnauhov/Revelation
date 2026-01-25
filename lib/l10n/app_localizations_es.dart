@@ -70,7 +70,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get bug_report_wish =>
-      'Por favor, añada una breve descripción del error y, si es posible, adjunte una captura de pantalla al mensaje.';
+      'Por favor, describa brevemente el error y pegue el texto copiado al portapapeles (¡esto es importante!). Si es posible, adjunte una captura de pantalla a su mensaje. Gracias, está ayudando a mejorar la aplicación.';
 
   @override
   String get all_rights_reserved => 'Todos los derechos reservados';
