@@ -778,13 +778,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   String _getTranslation(String content) {
     String result = "";
     if (content != "") {
-      result =
-          "> " +
-          content
-              .trim()
-              .replaceAll("\n\r", "\n")
-              .replaceAll("\r", "")
-              .replaceAll("\n", "\n > ");
+      result = "*** \n" + content.trim().replaceAll("\n\r", "\n") + "\n ***";
     }
     return result;
   }
