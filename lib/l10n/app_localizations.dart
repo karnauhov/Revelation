@@ -462,6 +462,12 @@ abstract class AppLocalizations {
   /// **'by'**
   String get by;
 
+  /// No description provided for @strongsConcordance.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong\'s Concordance'**
+  String get strongsConcordance;
+
   /// No description provided for @package.
   ///
   /// In en, this message translates to:
@@ -791,12 +797,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Etymology'**
   String get strong_origin;
-
-  /// No description provided for @strong_translation.
-  ///
-  /// In en, this message translates to:
-  /// **'Translation'**
-  String get strong_translation;
 
   /// No description provided for @strong_usage.
   ///

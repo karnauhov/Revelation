@@ -37,14 +37,22 @@ class LibraryCard extends StatelessWidget {
         ),
         subtitle: GestureDetector(
           onTap: () => launchLink(library.licenseLink),
-          child: Text(
-            "${AppLocalizations.of(context)!.license} (${library.license})",
-            style: TextStyle(
-              color: colorScheme.primary,
-              decoration: TextDecoration.underline,
-              decorationColor: colorScheme.primary,
-            ),
-          ),
+          child: library.licenseLink != ""
+              ? Text(
+                  "${AppLocalizations.of(context)!.license} (${library.license})",
+                  style: TextStyle(
+                    color: colorScheme.primary,
+                    decoration: TextDecoration.underline,
+                    decorationColor: colorScheme.primary,
+                  ),
+                )
+              : Text(
+                  library.license,
+                  style: TextStyle(
+                    color: colorScheme.primary,
+                    decorationColor: colorScheme.primary,
+                  ),
+                ),
         ),
       ),
     );
@@ -55,6 +63,7 @@ class LibraryCard extends StatelessWidget {
     return name
         .replaceAll('@Vectors', loc.vectors)
         .replaceAll('@Icons', loc.icons)
+        .replaceAll('@StrongsConcordance', loc.strongsConcordance)
         .replaceAll('@Package', loc.package)
         .replaceAll('@Font', loc.font)
         .replaceAll('@Sound', loc.sound)
@@ -70,10 +79,7 @@ class LibraryCard extends StatelessWidget {
         height: height,
         placeholderBuilder: (BuildContext context) =>
             const CircularProgressIndicator(),
-        colorFilter: ColorFilter.mode(
-          colorScheme.primary,
-          BlendMode.srcIn,
-        ),
+        colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
       );
     }
 
@@ -94,10 +100,7 @@ class LibraryCard extends StatelessWidget {
       width: width,
       height: height,
       placeholderBuilder: placeholder,
-      colorFilter: ColorFilter.mode(
-        colorScheme.primary,
-        BlendMode.srcIn,
-      ),
+      colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
     );
   }
 }

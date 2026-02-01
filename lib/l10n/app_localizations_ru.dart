@@ -196,6 +196,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get by => 'от';
 
   @override
+  String get strongsConcordance => 'Конкорданция Стронга';
+
+  @override
   String get package => 'Пакет';
 
   @override
@@ -366,9 +369,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get strong_origin => 'Этимология';
-
-  @override
-  String get strong_translation => 'Перевод';
 
   @override
   String get strong_usage => 'Использование';

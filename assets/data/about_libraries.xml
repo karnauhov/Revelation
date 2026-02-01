@@ -36,6 +36,27 @@
         <licenseLink>https://www.svgrepo.com/page/licensing</licenseLink>
     </library>
     <library>
+        <name>@StrongsConcordance (en)</name>
+        <idIcon>dictionary</idIcon>
+        <license>blueletterbible.org</license>
+        <officialSite>https://www.blueletterbible.org/lexicon/g1/tr/tr/0-1/</officialSite>
+        <licenseLink></licenseLink>
+    </library>
+    <library>
+        <name>@StrongsConcordance (en)</name>
+        <idIcon>dictionary</idIcon>
+        <license>biblehub.com</license>
+        <officialSite>https://biblehub.com/strongs.htm</officialSite>
+        <licenseLink></licenseLink>
+    </library>
+    <library>
+        <name>@StrongsConcordance (ru)</name>
+        <idIcon>dictionary</idIcon>
+        <license>bible.in.ua</license>
+        <officialSite>https://www.bible.in.ua/underl/S/S/index.htm</officialSite>
+        <licenseLink></licenseLink>
+    </library>
+    <library>
         <name>@Package 'window_manager'</name>
         <idIcon></idIcon>
         <license>MIT License</license>

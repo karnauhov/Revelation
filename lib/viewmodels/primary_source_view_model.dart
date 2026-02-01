@@ -385,13 +385,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
           _dbManager.greekWords[wordIndex].id,
           forward: false,
         );
-        buffer.write(": [<](strong:G${prevId})**");
+        buffer.write(": [🡄](strong:G${prevId}) **");
         buffer.write(_dbManager.greekWords[wordIndex].id);
         final nextId = _getNeighborStrongNumber(
           _dbManager.greekWords[wordIndex].id,
           forward: true,
         );
-        buffer.write("**[>](strong:G${nextId})\n\r");
+        buffer.write("** [🡆](strong:G${nextId})\n\r");
 
         // Pronunciation
         buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
@@ -402,6 +402,18 @@ class PrimarySourceViewModel extends ChangeNotifier {
               .toLowerCase(),
         );
         buffer.write("**\n\r");
+
+        // Translation
+        final descIndex = _dbManager.greekDescs.indexWhere(
+          (desc) => desc.id == strongNumber,
+        );
+        if (descIndex != -1) {
+          final desc = _dbManager.greekDescs[descIndex].desc.trim();
+          if (desc != "") {
+            buffer.write(_getTranslation(desc));
+            buffer.write("\n\r");
+          }
+        }
 
         // Part of speech
         final category = _dbManager.greekWords[wordIndex].category.trim();
@@ -430,20 +442,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
           buffer.write(": ");
           buffer.write(_getSynonyms(synonyms));
           buffer.write("\n\r");
-        }
-
-        // Translation
-        final descIndex = _dbManager.greekDescs.indexWhere(
-          (desc) => desc.id == strongNumber,
-        );
-        if (descIndex != -1) {
-          final desc = _dbManager.greekDescs[descIndex].desc.trim();
-          if (desc != "") {
-            buffer.write(AppLocalizations.of(context)!.strong_translation);
-            buffer.write(": \n\r");
-            buffer.write(_getTranslation(desc));
-            buffer.write("\n\r");
-          }
         }
 
         // Usage

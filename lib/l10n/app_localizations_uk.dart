@@ -197,6 +197,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get by => 'від';
 
   @override
+  String get strongsConcordance => 'Конкорданс Стронґа';
+
+  @override
   String get package => 'Пакет';
 
   @override
@@ -367,9 +370,6 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get strong_origin => 'Етимологія';
-
-  @override
-  String get strong_translation => 'Переклад';
 
   @override
   String get strong_usage => 'Використання';

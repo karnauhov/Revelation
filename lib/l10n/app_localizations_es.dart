@@ -196,6 +196,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get by => 'por';
 
   @override
+  String get strongsConcordance => 'Concordancia de Strong';
+
+  @override
   String get package => 'Paquete';
 
   @override
@@ -366,9 +369,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get strong_origin => 'Etimología';
-
-  @override
-  String get strong_translation => 'Traducción';
 
   @override
   String get strong_usage => 'Uso';

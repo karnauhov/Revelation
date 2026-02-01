@@ -9,8 +9,8 @@ All notable changes to this application will be documented here.
 - Description area in Primary Source Screen
 - Uploaded primary-source images to supabase.com (02, P43);
 - Support local DB SQLite
-- Tables for Strong Dictionary
-- Layers "Word separators" and "Strong's numbers" on Primary Source Screen
+- Tables for Strong Dictionary (common, translations: en, ru)
+- Layers "Words", "Strong's numbers" and "Word separators" on Primary Source Screen
 - Service command to copy to the clipboard the coordinates of a rectangular area (Alt + R)
 
 ### Changed
