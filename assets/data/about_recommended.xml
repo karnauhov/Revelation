@@ -2,12 +2,32 @@
 <recommendations>
     <recommendation>
         <name>OnBible</name>
-        <idIcon>like_on_bible.png</idIcon>
+        <idIcon>like_onbible.png</idIcon>
         <officialSite>https://on-bible.com</officialSite>
     </recommendation>
     <recommendation>
         <name>СЛОЖНЫХ ТЕКСТОВ НЕТ</name>
         <idIcon>like_stn.jpg</idIcon>
         <officialSite>https://www.youtube.com/@-CTH-</officialSite>
+    </recommendation>
+    <recommendation>
+        <name>Center for New Testament Restoration</name>
+        <idIcon>like_cntr.svg</idIcon>
+        <officialSite>https://www.greekcntr.org/home/index.html</officialSite>
+    </recommendation>
+    <recommendation>
+        <name>Blue Letter Bible</name>
+        <idIcon>like_blb.svg</idIcon>
+        <officialSite>https://www.blueletterbible.org</officialSite>
+    </recommendation>
+    <recommendation>
+        <name>Bible Hub</name>
+        <idIcon>like_biblehub.png</idIcon>
+        <officialSite>https://biblehub.com</officialSite>
+    </recommendation>
+    <recommendation>
+        <name>Симфония номеров Иакова Стронга</name>
+        <idIcon>like_bible_in_ua.png</idIcon>
+        <officialSite>https://www.bible.in.ua/underl/S/S/index.htm</officialSite>
     </recommendation>
 </recommendations>

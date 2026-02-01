@@ -385,13 +385,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
           _dbManager.greekWords[wordIndex].id,
           forward: false,
         );
-        buffer.write(": [🡄](strong:G${prevId}) **");
+        buffer.write(": [<-](strong:G${prevId}) **");
         buffer.write(_dbManager.greekWords[wordIndex].id);
         final nextId = _getNeighborStrongNumber(
           _dbManager.greekWords[wordIndex].id,
           forward: true,
         );
-        buffer.write("** [🡆](strong:G${nextId})\n\r");
+        buffer.write("** [->](strong:G${nextId})\n\r");
 
         // Pronunciation
         buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
