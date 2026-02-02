@@ -368,7 +368,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get strong_synonyms => 'Синонимы';
 
   @override
-  String get strong_origin => 'Этимология';
+  String get strong_origin => 'Этимология и сравнение';
 
   @override
   String get strong_usage => 'Использование';

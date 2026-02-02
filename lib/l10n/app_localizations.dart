@@ -795,7 +795,7 @@ abstract class AppLocalizations {
   /// No description provided for @strong_origin.
   ///
   /// In en, this message translates to:
-  /// **'Etymology'**
+  /// **'Etymology & comparison'**
   String get strong_origin;
 
   /// No description provided for @strong_usage.
