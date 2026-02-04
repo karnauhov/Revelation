@@ -294,6 +294,42 @@ abstract class AppLocalizations {
   /// **'Install the application for your platform'**
   String get download_header;
 
+  /// No description provided for @download_android.
+  ///
+  /// In en, this message translates to:
+  /// **'Android'**
+  String get download_android;
+
+  /// No description provided for @download_windows.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows'**
+  String get download_windows;
+
+  /// No description provided for @download_linux.
+  ///
+  /// In en, this message translates to:
+  /// **'Linux'**
+  String get download_linux;
+
+  /// No description provided for @download_google_play.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Play'**
+  String get download_google_play;
+
+  /// No description provided for @download_microsoft_store.
+  ///
+  /// In en, this message translates to:
+  /// **'Microsoft Store'**
+  String get download_microsoft_store;
+
+  /// No description provided for @download_snapcraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapcraft'**
+  String get download_snapcraft;
+
   /// No description provided for @error_loading_libraries.
   ///
   /// In en, this message translates to:

@@ -5,18 +5,37 @@ import '../../common_widgets/icon_link_item.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/common.dart';
 
-class DownloadScreen extends StatefulWidget {
+class DownloadScreen extends StatelessWidget {
   const DownloadScreen({super.key});
 
-  @override
-  State<DownloadScreen> createState() => _DownloadScreenState();
-}
-
-class _DownloadScreenState extends State<DownloadScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+    final sections = [
+      _DownloadSection(
+        iconPath: "assets/images/UI/android.svg",
+        title: l10n.download_android,
+        linkIconPath: "assets/images/UI/google_play.svg",
+        linkText: l10n.download_google_play,
+        url: AppConstants.googlePlayUrl,
+      ),
+      _DownloadSection(
+        iconPath: "assets/images/UI/windows.svg",
+        title: l10n.download_windows,
+        linkIconPath: "assets/images/UI/microsoft_store.svg",
+        linkText: l10n.download_microsoft_store,
+        url: AppConstants.microsoftStoreUrl,
+      ),
+      _DownloadSection(
+        iconPath: "assets/images/UI/linux.svg",
+        title: l10n.download_linux,
+        linkIconPath: "assets/images/UI/snapcraft.svg",
+        linkText: l10n.download_snapcraft,
+        url: AppConstants.snapcraftUrl,
+      ),
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -24,14 +43,16 @@ class _DownloadScreenState extends State<DownloadScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppLocalizations.of(context)!.download,
+              l10n.download,
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 height: 0.9,
               ),
             ),
             Text(
-              AppLocalizations.of(context)!.download_header,
+              l10n.download_header,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.normal,
               ),
@@ -43,25 +64,30 @@ class _DownloadScreenState extends State<DownloadScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildAndroidLinks(context),
-              Divider(height: 1, color: colorScheme.outlineVariant),
-              const SizedBox(height: 4),
-              _buildWindowsLinks(context),
-              Divider(height: 1, color: colorScheme.outlineVariant),
-              const SizedBox(height: 4),
-              _buildLinuxLinks(context),
-              Divider(height: 1, color: colorScheme.outlineVariant),
-            ],
+          child: ListView.separated(
+            itemCount: sections.length,
+            itemBuilder: (context, index) {
+              return _buildPlatformSection(
+                context,
+                sections[index],
+              );
+            },
+            separatorBuilder: (context, index) => Column(
+              children: [
+                Divider(height: 1, color: colorScheme.outlineVariant),
+                const SizedBox(height: 4),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildAndroidLinks(BuildContext context) {
+  Widget _buildPlatformSection(
+    BuildContext context,
+    _DownloadSection section,
+  ) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -71,7 +97,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
         Row(
           children: [
             SvgPicture.asset(
-              "assets/images/UI/android.svg",
+              section.iconPath,
               width: 24,
               height: 24,
               colorFilter: ColorFilter.mode(
@@ -81,7 +107,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
             ),
             const SizedBox(width: 12),
             Text(
-              "Android",
+              section.title,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
@@ -90,88 +116,28 @@ class _DownloadScreenState extends State<DownloadScreen> {
           ],
         ),
         IconLinkItem(
-          iconPath: "assets/images/UI/google_play.svg",
-          text: "Google Play",
-          onTap: () => launchLink(AppConstants.googlePlayUrl),
+          iconPath: section.linkIconPath,
+          text: section.linkText,
+          onTap: () => launchLink(section.url),
           leftMargin: 30,
         ),
       ],
     );
   }
+}
 
-  Widget _buildWindowsLinks(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+class _DownloadSection {
+  const _DownloadSection({
+    required this.iconPath,
+    required this.title,
+    required this.linkIconPath,
+    required this.linkText,
+    required this.url,
+  });
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            SvgPicture.asset(
-              "assets/images/UI/windows.svg",
-              width: 24,
-              height: 24,
-              colorFilter: ColorFilter.mode(
-                colorScheme.primary,
-                BlendMode.srcIn,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              "Windows",
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ),
-        IconLinkItem(
-          iconPath: "assets/images/UI/microsoft_store.svg",
-          text: "Microsoft Store",
-          onTap: () => launchLink(AppConstants.microsoftStoreUrl),
-          leftMargin: 30,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLinuxLinks(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            SvgPicture.asset(
-              "assets/images/UI/linux.svg",
-              width: 24,
-              height: 24,
-              colorFilter: ColorFilter.mode(
-                colorScheme.primary,
-                BlendMode.srcIn,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              "Linux",
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ),
-        IconLinkItem(
-          iconPath: "assets/images/UI/snapcraft.svg",
-          text: "Snapcraft",
-          onTap: () => launchLink(AppConstants.snapcraftUrl),
-          leftMargin: 30,
-        ),
-      ],
-    );
-  }
+  final String iconPath;
+  final String title;
+  final String linkIconPath;
+  final String linkText;
+  final String url;
 }

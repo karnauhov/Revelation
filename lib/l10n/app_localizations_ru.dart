@@ -112,6 +112,24 @@ class AppLocalizationsRu extends AppLocalizations {
   String get download_header => 'Установите приложение для вашей платформы';
 
   @override
+  String get download_android => 'Android';
+
+  @override
+  String get download_windows => 'Windows';
+
+  @override
+  String get download_linux => 'Linux';
+
+  @override
+  String get download_google_play => 'Google Play';
+
+  @override
+  String get download_microsoft_store => 'Microsoft Store';
+
+  @override
+  String get download_snapcraft => 'Snapcraft';
+
+  @override
   String get error_loading_libraries => 'Ошибка загрузки библиотек';
 
   @override
