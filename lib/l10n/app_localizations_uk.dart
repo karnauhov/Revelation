@@ -387,7 +387,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_synonyms => 'Синоніми';
 
   @override
-  String get strong_origin => 'Етимологія та порівняння';
+  String get strong_origin => 'Аналіз слова';
 
   @override
   String get strong_usage => 'Використання';

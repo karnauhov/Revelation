@@ -386,7 +386,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strong_synonyms => 'Synonyms';
 
   @override
-  String get strong_origin => 'Etymology & comparison';
+  String get strong_origin => 'Word analysis';
 
   @override
   String get strong_usage => 'Usage';
