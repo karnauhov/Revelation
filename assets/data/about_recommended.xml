@@ -30,4 +30,9 @@
         <idIcon>like_bible_in_ua.png</idIcon>
         <officialSite>https://www.bible.in.ua/underl/S/S/index.htm</officialSite>
     </recommendation>
+    <recommendation>
+        <name>Diccionario de Strong de griego</name>
+        <idIcon>like_logosklogos.png</idIcon>
+        <officialSite>https://www.logosklogos.com/strongcodes</officialSite>
+    </recommendation>
 </recommendations>

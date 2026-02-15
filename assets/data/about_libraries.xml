@@ -57,6 +57,13 @@
         <licenseLink></licenseLink>
     </library>
     <library>
+        <name>@StrongsConcordance (es)</name>
+        <idIcon>dictionary</idIcon>
+        <license>logosklogos.com</license>
+        <officialSite>https://www.logosklogos.com/strongcodes</officialSite>
+        <licenseLink></licenseLink>
+    </library>
+    <library>
         <name>@Package 'window_manager'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
