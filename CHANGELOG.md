@@ -2,14 +2,14 @@
 
 All notable changes to this application will be documented here.
 
-## [1.0.4] - Under development
+## [1.0.4](https://github.com/karnauhov/Revelation/releases/tag/v1.0.4%2B134) - 21.02.26
 
 ### Added
 
 - Description area in Primary Source Screen
 - Uploaded primary-source images to supabase.com (02, P43);
 - Support local DB SQLite
-- Tables for Strong Dictionary (common, translations: en, ru, es)
+- Tables for Strong Dictionary (common, translations: en, es, ru, uk)
 - Layers "Words", "Strong's numbers" and "Word separators" on Primary Source Screen
 - Service command to copy to the clipboard the coordinates of a rectangular area (Alt + R)
 

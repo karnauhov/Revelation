@@ -70,7 +70,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bug_report_wish =>
-      'Please briefly describe the issue and paste the text copied to the clipboard (this is important!). If possible, attach a screenshot to your message. Thank you, you’re helping make the app better.';
+      'Please briefly describe the error and paste into the email the technical information that the application has just automatically copied to the clipboard (this is important!). If possible, attach a screenshot to your message. Thank you, you’re helping make the app better.';
 
   @override
   String get all_rights_reserved => 'All rights reserved';

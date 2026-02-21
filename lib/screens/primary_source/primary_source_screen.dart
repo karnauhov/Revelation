@@ -373,23 +373,30 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
             },
           ),
           Positioned(
-            top: 0,
-            right: 0,
+            top: -2,
+            right: -8,
             child: Tooltip(
               key: _referenceTooltipKey,
               message: localizations.strong_reference_commentary,
               constraints: BoxConstraints(maxWidth: tooltipMaxWidth),
               showDuration: const Duration(seconds: 12),
               preferBelow: false,
-              child: IconButton(
-                onPressed: () {
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
                   _referenceTooltipKey.currentState?.ensureTooltipVisible();
                 },
-                icon: const Icon(Icons.info_outline),
-                iconSize: 18,
-                color: colorScheme.primary,
-                padding: const EdgeInsets.all(4),
-                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                child: SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: Center(
+                    child: Icon(
+                      Icons.info_outline,
+                      size: 18,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

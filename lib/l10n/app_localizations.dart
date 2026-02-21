@@ -213,7 +213,7 @@ abstract class AppLocalizations {
   /// No description provided for @bug_report_wish.
   ///
   /// In en, this message translates to:
-  /// **'Please briefly describe the issue and paste the text copied to the clipboard (this is important!). If possible, attach a screenshot to your message. Thank you, you’re helping make the app better.'**
+  /// **'Please briefly describe the error and paste into the email the technical information that the application has just automatically copied to the clipboard (this is important!). If possible, attach a screenshot to your message. Thank you, you’re helping make the app better.'**
   String get bug_report_wish;
 
   /// No description provided for @all_rights_reserved.
