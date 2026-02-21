@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../utils/app_link_handler.dart';
 import '../../utils/common.dart';
 import '../../viewmodels/settings_view_model.dart';
 
@@ -51,8 +51,9 @@ class _TopicScreenState extends State<TopicScreen> {
             child: MarkdownBody(
               data: data,
               styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-              onTapLink: (text, href, title) =>
-                  _onTapHandle(context, text, href, title),
+              onTapLink: (text, href, title) {
+                handleAppLink(context, href, popBeforeScreenPush: true);
+              },
             ),
           );
         },
@@ -121,27 +122,6 @@ class _TopicScreenState extends State<TopicScreen> {
       return await rootBundle.loadString(path);
     } else {
       return "";
-    }
-  }
-
-  void _onTapHandle(
-    BuildContext context,
-    String text,
-    String? href,
-    String title,
-  ) {
-    if (href != null) {
-      if (href.startsWith("screen:")) {
-        // Own screen link
-        final address = href.split(":");
-        if (address.isNotEmpty && address.length > 1) {
-          Navigator.pop(context);
-          context.push('/${address[1]}');
-        }
-      } else {
-        // Real link
-        launchLink(href);
-      }
     }
   }
 }

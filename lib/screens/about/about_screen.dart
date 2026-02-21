@@ -16,6 +16,7 @@ import '../../common_widgets/icon_link_item.dart';
 import 'library_list.dart';
 import 'institution_list.dart';
 import '../../viewmodels/about_view_model.dart';
+import '../../utils/app_link_handler.dart';
 import '../../utils/common.dart';
 import '../../utils/app_constants.dart';
 
@@ -457,9 +458,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   data: viewModel.changelog,
                   styleSheet: getMarkdownStyleSheet(theme, colorScheme),
                   onTapLink: (text, href, title) {
-                    if (href != null && href.isNotEmpty) {
-                      launchLink(href);
-                    }
+                    handleAppLink(context, href);
                   },
                 ),
               )
