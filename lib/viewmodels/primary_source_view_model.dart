@@ -474,9 +474,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
       buffer.write("\n\r");
       if (word.sn != null) {
         buffer.write(AppLocalizations.of(context)!.strong_number);
-        buffer.write(": **");
-        buffer.write("[${word.sn!}](strong:G${word.sn!})");
-        buffer.write("**\n\r");
+        buffer.write(": ");
+        buffer.write(_formatGreekStrongLink(word.sn!));
+        buffer.write("\n\r");
       }
       if (_containsAnyLetter(word.text)) {
         buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
@@ -723,15 +723,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
         if (origin.startsWith("G")) {
           int? originID = int.tryParse(origin.substring(1));
           if (originID != null && _doesStrongNumberExist(originID)) {
-            final wordIndex = _dbManager.greekWords.indexWhere(
-              (word) => word.id == originID,
-            );
-            if (wordIndex != -1) {
-              final originWord = _dbManager.greekWords[wordIndex].word;
-              buffer.write(
-                '**${originWord}** ([G${originID}](strong:G${originID})), ',
-              );
-            }
+            buffer.write('${_formatGreekStrongLink(originID)}, ');
           }
         } else if (origin.startsWith("H")) {
           buffer.write('[${origin}](strong:${origin}), ');
@@ -754,13 +746,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       for (var synonym in synonymsList) {
         int? syn = int.tryParse(synonym.trim());
         if (syn != null && _doesStrongNumberExist(syn)) {
-          final wordIndex = _dbManager.greekWords.indexWhere(
-            (word) => word.id == syn,
-          );
-          if (wordIndex != -1) {
-            final synWord = _dbManager.greekWords[wordIndex].word;
-            buffer.write('**${synWord}** ([G${syn}](strong:G${syn})), ');
-          }
+          buffer.write('${_formatGreekStrongLink(syn)}, ');
         }
       }
       String result = buffer.toString();
@@ -776,9 +762,47 @@ class PrimarySourceViewModel extends ChangeNotifier {
   String _getTranslation(String content) {
     String result = "";
     if (content != "") {
-      result = "*** \n" + content.trim().replaceAll("\n\r", "\n") + "\n ***";
+      result =
+          "*** \n" +
+          _expandGreekStrongLinks(content.trim().replaceAll("\n\r", "\n")) +
+          "\n ***";
     }
     return result;
+  }
+
+  String _formatGreekStrongLink(int strongNumber) {
+    final strongCode = "G$strongNumber";
+    final greekWord = _getGreekWordByStrongNumber(strongNumber);
+    if (greekWord == null) {
+      return "[$strongCode](strong:$strongCode)";
+    }
+    return "**$greekWord** ([$strongCode](strong:$strongCode))";
+  }
+
+  String? _getGreekWordByStrongNumber(int strongNumber) {
+    final wordIndex = _dbManager.greekWords.indexWhere(
+      (word) => word.id == strongNumber,
+    );
+    if (wordIndex == -1) {
+      return null;
+    }
+    final greekWord = _dbManager.greekWords[wordIndex].word.trim();
+    return greekWord.isEmpty ? null : greekWord;
+  }
+
+  String _expandGreekStrongLinks(String content) {
+    final regex = RegExp(r'\[([Gg])(\d+)\]\(strong:([Gg])(\d+)\)');
+    return content.replaceAllMapped(regex, (match) {
+      final visibleNumber = int.tryParse(match.group(2)!);
+      final hrefNumber = int.tryParse(match.group(4)!);
+      if (visibleNumber == null ||
+          hrefNumber == null ||
+          visibleNumber != hrefNumber ||
+          !_doesStrongNumberExist(visibleNumber)) {
+        return match.group(0)!;
+      }
+      return _formatGreekStrongLink(visibleNumber);
+    });
   }
 
   String _getUsage(String content) {
