@@ -1,4 +1,4 @@
-import 'package:unorm_dart/unorm_dart.dart' as unorm;
+﻿import 'package:unorm_dart/unorm_dart.dart' as unorm;
 
 class Pronunciation {
   static final Pronunciation _instance = Pronunciation._internal();
@@ -8,6 +8,23 @@ class Pronunciation {
     return _instance;
   }
 
+  // Academic baseline for transliteration rules used below:
+  // SBL style table (as reproduced by UBS/TBT), including:
+  // - gamma-nasal rule (g -> n before γ/κ/ξ/χ),
+  // - upsilon treatment in diphthongs,
+  // - rough-breathing handling.
+  // Source: https://translation.bible/publications/the-bible-translator/tbt-style-guide/
+  // (Section 8.2, based on The SBL Handbook of Style, 2nd ed.).
+
+  // Koine phonology background (for historical context) and bibliography
+  // to Gignac 1976, Teodorsson 1977, Horrocks 2014:
+  // https://www.koinegreek.com/koine-pronunciation
+
+  static const String _roughBreathing = '̔';
+  static const String _diaeresis = '̈';
+  final String _breathingMark = '\'';
+
+  // Vowel inventory used for diphthong detection and rough-breathing rules.
   final Set<String> _greekVowels = {
     'α',
     'ε',
@@ -24,6 +41,8 @@ class Pronunciation {
     'Υ',
     'Ω',
   };
+
+  // First element candidates for diphthongs treated by this transliteration.
   final Set<String> _diphthongFirst = {
     'α',
     'ε',
@@ -36,6 +55,8 @@ class Pronunciation {
     'Υ',
     'Η',
   };
+
+  // SBL gamma-nasal contexts (γγ, γκ, γξ, γχ), plus title-case forms.
   final Set<String> _specialConsonants = {
     'γγ',
     'γκ',
@@ -48,43 +69,37 @@ class Pronunciation {
   };
 
   String convert(String greekWord, String locale) {
-    String result = "";
     switch (locale) {
       case 'en':
       case 'es':
-        result = _convert(
+        return _convert(
           greekWord,
           _latinLetterMap,
           _latinDiphthongMap,
           _latinSpecialConsonantMap,
         );
-        break;
       case 'ru':
-        result = _convert(
+        return _convert(
           greekWord,
           _cyrillicLetterMap,
           _cyrillicDiphthongMap,
           _cyrillicSpecialConsonantMap,
         );
-        break;
       case 'uk':
-        result = _convert(
+        return _convert(
           greekWord,
           _ukrainianLetterMap,
           _cyrillicDiphthongMap,
           _cyrillicSpecialConsonantMap,
         );
-        break;
       default:
-        result = _convert(
+        return _convert(
           greekWord,
           _latinLetterMap,
           _latinDiphthongMap,
           _latinSpecialConsonantMap,
         );
-        break;
     }
-    return result;
   }
 
   String _convert(
@@ -94,81 +109,104 @@ class Pronunciation {
     Map<String, String> specialConsonantMap,
   ) {
     final word = unorm.nfd(greekWord);
-    String result = '';
+    final result = StringBuffer();
     int i = 0;
 
     while (i < word.length) {
-      String char = word[i];
-
+      final char = word[i];
       if (char == ' ') {
-        result += ' ';
+        result.write(' ');
         i++;
         continue;
       }
 
       if (i + 1 < word.length) {
-        String potentialSpecial = char + word[i + 1];
+        final potentialSpecial = char + word[i + 1];
         if (_specialConsonants.contains(potentialSpecial)) {
-          result += specialConsonantMap[potentialSpecial]!;
+          result.write(specialConsonantMap[potentialSpecial]!);
           i += 2;
           continue;
         }
       }
 
-      List<String> diacritics = [];
-      int j = i + 1;
-      while (j < word.length && _isCombiningDiacritic(word[j].codeUnitAt(0))) {
-        diacritics.add(word[j]);
-        j++;
-      }
+      final baseLetter = char;
+      final firstDiacritics = _collectCombiningDiacritics(word, i + 1);
+      final afterFirstDiacriticsIndex = i + 1 + firstDiacritics.length;
+      final nextBaseIndex = _getNextBaseIndex(word, afterFirstDiacriticsIndex);
+      final nextBase = nextBaseIndex == -1 ? '' : word[nextBaseIndex];
+      final diphthong = baseLetter + nextBase;
+      final secondDiacritics = nextBaseIndex == -1
+          ? const <String>[]
+          : _collectCombiningDiacritics(word, nextBaseIndex + 1);
 
-      String baseLetter = char;
-      String nextBase = _getNextBaseLetter(word, j);
-      String diphthong = baseLetter + nextBase;
+      final hasRoughBreathing =
+          firstDiacritics.contains(_roughBreathing) ||
+          secondDiacritics.contains(_roughBreathing);
+      final secondHasDiaeresis = secondDiacritics.contains(_diaeresis);
 
-      if (_diphthongFirst.contains(baseLetter) &&
+      final isMappedDiphthong =
+          _diphthongFirst.contains(baseLetter) &&
           _greekVowels.contains(nextBase) &&
-          diphthongMap.containsKey(diphthong)) {
-        String mapped = diphthongMap[diphthong]!;
-        if (diacritics.contains('\u0314')) {
+          diphthongMap.containsKey(diphthong) &&
+          !secondHasDiaeresis;
+
+      if (isMappedDiphthong) {
+        var mapped = diphthongMap[diphthong]!;
+        // Rough breathing is written on the second element of initial diphthongs
+        // in polytonic Greek, but transliterates before the full diphthong.
+        if (hasRoughBreathing) {
           mapped = _breathingMark + mapped;
         }
-        result += mapped;
-        i = j;
-        i++;
-        while (i < word.length &&
-            _isCombiningDiacritic(word[i].codeUnitAt(0))) {
-          i++;
-        }
-      } else {
-        String mapped = letterMap[baseLetter] ?? baseLetter;
-        if ((baseLetter.toLowerCase() == 'ρ' ||
-                _greekVowels.contains(baseLetter.toLowerCase())) &&
-            diacritics.contains('\u0314')) {
-          mapped = _breathingMark + mapped;
-        }
-        result += mapped;
-        i = j;
+        result.write(mapped);
+        i = _skipCombiningDiacritics(word, nextBaseIndex + 1);
+        continue;
       }
+
+      var mapped = letterMap[baseLetter] ?? baseLetter;
+      if ((baseLetter.toLowerCase() == 'ρ' ||
+              _greekVowels.contains(baseLetter.toLowerCase())) &&
+          firstDiacritics.contains(_roughBreathing)) {
+        mapped = _breathingMark + mapped;
+      }
+      result.write(mapped);
+      i = afterFirstDiacriticsIndex;
     }
-    return result;
+
+    return result.toString();
+  }
+
+  List<String> _collectCombiningDiacritics(String s, int start) {
+    final diacritics = <String>[];
+    int i = start;
+    while (i < s.length && _isCombiningDiacritic(s[i].codeUnitAt(0))) {
+      diacritics.add(s[i]);
+      i++;
+    }
+    return diacritics;
+  }
+
+  int _skipCombiningDiacritics(String s, int start) {
+    int i = start;
+    while (i < s.length && _isCombiningDiacritic(s[i].codeUnitAt(0))) {
+      i++;
+    }
+    return i;
   }
 
   bool _isCombiningDiacritic(int code) {
     return code >= 0x0300 && code <= 0x036F;
   }
 
-  String _getNextBaseLetter(String s, int start) {
+  int _getNextBaseIndex(String s, int start) {
     for (int j = start; j < s.length; j++) {
-      String c = s[j];
-      if (!_isCombiningDiacritic(c.codeUnitAt(0))) {
-        return c;
+      if (!_isCombiningDiacritic(s[j].codeUnitAt(0))) {
+        return j;
       }
     }
-    return '';
+    return -1;
   }
 
-  final String _breathingMark = '\'';
+  // Base alphabet map (Latin transliteration profile).
   final Map<String, String> _latinLetterMap = {
     'α': 'a',
     'β': 'b',
@@ -220,6 +258,8 @@ class Pronunciation {
     'Ψ': 'Ps',
     'Ω': 'O',
   };
+
+  // Diphthong table used by 'en'/'es' transliteration output.
   final Map<String, String> _latinDiphthongMap = {
     'αι': 'ai',
     'ει': 'ei',
@@ -238,6 +278,8 @@ class Pronunciation {
     'Ευ': 'Eu',
     'Ηυ': 'Eu',
   };
+
+  // Gamma-nasal realizations per SBL transliteration note.
   final Map<String, String> _latinSpecialConsonantMap = {
     'γγ': 'ng',
     'γκ': 'ng',
@@ -249,6 +291,9 @@ class Pronunciation {
     'Γχ': 'Nch',
   };
 
+  // Cyrillic maps are project-specific readability profiles for UI output.
+  // They are not a strict one-to-one academic transliteration standard.
+  // Cyrillic transliteration profile for 'ru'.
   final Map<String, String> _cyrillicLetterMap = {
     'α': 'а',
     'β': 'б',
@@ -300,6 +345,8 @@ class Pronunciation {
     'Ψ': 'Пс',
     'Ω': 'О',
   };
+
+  // Cyrillic diphthong table used by both 'ru' and 'uk' in current UX.
   final Map<String, String> _cyrillicDiphthongMap = {
     'αι': 'ай',
     'ει': 'ей',
@@ -318,17 +365,20 @@ class Pronunciation {
     'Ευ': 'Ев',
     'Ηυ': 'Ев',
   };
+
+  // Cyrillic gamma-nasal combinations for 'ru'/'uk'.
   final Map<String, String> _cyrillicSpecialConsonantMap = {
     'γγ': 'нг',
     'γκ': 'нг',
     'γξ': 'нкс',
     'γχ': 'нх',
     'Γγ': 'Нг',
-    'Γк': 'Нг',
+    'Γκ': 'Нг',
     'Γξ': 'Нкс',
     'Γχ': 'Нх',
   };
 
+  // Cyrillic transliteration profile for 'uk' locale.
   final Map<String, String> _ukrainianLetterMap = {
     'α': 'а',
     'β': 'б',
@@ -344,7 +394,7 @@ class Pronunciation {
     'μ': 'м',
     'ν': 'н',
     'ξ': 'кс',
-    'о': 'о',
+    'ο': 'о',
     'π': 'п',
     'ρ': 'р',
     'σ': 'с',
@@ -369,7 +419,7 @@ class Pronunciation {
     'Μ': 'М',
     'Ν': 'Н',
     'Ξ': 'Кс',
-    'О': 'О',
+    'Ο': 'О',
     'Π': 'П',
     'Ρ': 'Р',
     'Σ': 'С',
