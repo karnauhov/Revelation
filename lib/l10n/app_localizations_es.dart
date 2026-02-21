@@ -392,6 +392,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get strong_usage => 'Uso';
 
   @override
+  String get strong_reference_commentary =>
+      'Fuente de la traducción: https://www.logosklogos.com/strongcodes\nEl análisis de una palabra puede incluir las siguientes referencias: formas derivadas, palabras para comparación, combinaciones léxicas y palabras relacionadas.';
+
+  @override
   String get strong_part_of_speech => 'Parte de la oración';
 
   @override

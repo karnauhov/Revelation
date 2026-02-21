@@ -393,6 +393,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_usage => 'Використання';
 
   @override
+  String get strong_reference_commentary =>
+      'Джерело перекладу: здійснено за допомогою ChatGPT\nАналіз слова може включати такі посилання: похідні форми, слова для порівняння, словосполучення та пов’язані слова.';
+
+  @override
   String get strong_part_of_speech => 'Частина мови';
 
   @override

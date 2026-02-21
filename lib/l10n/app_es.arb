@@ -123,6 +123,7 @@
   "strong_synonyms": "Sinónimos",
   "strong_origin": "Análisis de la palabra",
   "strong_usage": "Uso",
+  "strong_reference_commentary": "Fuente de la traducción: https://www.logosklogos.com/strongcodes\nEl análisis de una palabra puede incluir las siguientes referencias: formas derivadas, palabras para comparación, combinaciones léxicas y palabras relacionadas.",
   "strong_part_of_speech": "Parte de la oración",
   "strong_indeclNumAdj": "numeral indeclinable (adjetivo)",
   "strong_indeclLetN": "letra indeclinable (sustantivo)",

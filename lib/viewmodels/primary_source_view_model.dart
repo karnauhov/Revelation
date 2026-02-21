@@ -475,7 +475,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       if (word.sn != null) {
         buffer.write(AppLocalizations.of(context)!.strong_number);
         buffer.write(": ");
-        buffer.write(_formatGreekStrongLink(word.sn!));
+        buffer.write("**[${word.sn!}](strong:G${word.sn!})**");
         buffer.write("\n\r");
       }
       if (_containsAnyLetter(word.text)) {

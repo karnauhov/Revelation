@@ -35,6 +35,8 @@ class PrimarySourceScreen extends StatefulWidget {
 class PrimarySourceScreenState extends State<PrimarySourceScreen>
     with WidgetsBindingObserver {
   late PrimarySourceViewModel _viewModel;
+  final GlobalKey<TooltipState> _referenceTooltipKey =
+      GlobalKey<TooltipState>();
 
   @override
   void initState() {
@@ -351,21 +353,47 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   ) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final localizations = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final tooltipMaxWidth = screenWidth > 432 ? 420.0 : screenWidth - 12.0;
 
     return Container(
       color: colorScheme.surface,
-      child: Markdown(
-        data:
-            viewModel.descriptionContent ??
-            AppLocalizations.of(context)!.click_for_info,
-        styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-        onTapLink: (text, href, title) {
-          handleAppLink(
-            context,
-            href,
-            onGreekStrongTap: viewModel.showInfoForStrongNumber,
-          );
-        },
+      child: Stack(
+        children: [
+          Markdown(
+            data: viewModel.descriptionContent ?? localizations.click_for_info,
+            styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+            onTapLink: (text, href, title) {
+              handleAppLink(
+                context,
+                href,
+                onGreekStrongTap: viewModel.showInfoForStrongNumber,
+              );
+            },
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Tooltip(
+              key: _referenceTooltipKey,
+              message: localizations.strong_reference_commentary,
+              constraints: BoxConstraints(maxWidth: tooltipMaxWidth),
+              showDuration: const Duration(seconds: 12),
+              preferBelow: false,
+              child: IconButton(
+                onPressed: () {
+                  _referenceTooltipKey.currentState?.ensureTooltipVisible();
+                },
+                icon: const Icon(Icons.info_outline),
+                iconSize: 18,
+                color: colorScheme.primary,
+                padding: const EdgeInsets.all(4),
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

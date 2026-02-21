@@ -392,6 +392,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get strong_usage => 'Использование';
 
   @override
+  String get strong_reference_commentary =>
+      'Источник перевода: https://www.bible.in.ua/underl\nАнализ слова может включать следующие ссылки: производные формы, слова для сравнения, словосочетания и связанные слова.';
+
+  @override
   String get strong_part_of_speech => 'Часть речи';
 
   @override
