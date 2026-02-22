@@ -816,6 +816,12 @@ abstract class AppLocalizations {
   /// **'Strong’s number'**
   String get strong_number;
 
+  /// No description provided for @strong_picker_unavailable_numbers.
+  ///
+  /// In en, this message translates to:
+  /// **'2717 and 3203-3302 are unavailable'**
+  String get strong_picker_unavailable_numbers;
+
   /// No description provided for @strong_pronunciation.
   ///
   /// In en, this message translates to:

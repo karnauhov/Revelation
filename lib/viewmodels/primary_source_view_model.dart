@@ -16,6 +16,13 @@ import 'package:revelation/utils/pronunciation.dart';
 
 enum DescriptionType { word, strongNumber, verse, info }
 
+class GreekStrongPickerEntry {
+  final int number;
+  final String word;
+
+  const GreekStrongPickerEntry({required this.number, required this.word});
+}
+
 class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySource primarySource;
   final PagesRepository _pagesRepository;
@@ -69,6 +76,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Pronunciation _pronunciation = Pronunciation();
   DescriptionType _currentDescriptionType = DescriptionType.info;
   int? _currentDescriptionNumber = null;
+  List<GreekStrongPickerEntry>? _strongPickerEntriesCache;
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
@@ -365,6 +373,21 @@ class PrimarySourceViewModel extends ChangeNotifier {
     );
   }
 
+  List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
+    _strongPickerEntriesCache ??= List<GreekStrongPickerEntry>.unmodifiable(
+      _dbManager.greekWords
+          .where((word) => _doesStrongNumberExist(word.id))
+          .map(
+            (word) =>
+                GreekStrongPickerEntry(number: word.id, word: word.word.trim()),
+          )
+          .where((entry) => entry.word.isNotEmpty)
+          .toList()
+        ..sort((a, b) => a.number.compareTo(b.number)),
+    );
+    return _strongPickerEntriesCache!;
+  }
+
   void showInfoForStrongNumber(int strongNumber, BuildContext context) {
     final wordIndex = _dbManager.greekWords.indexWhere(
       (word) => word.id == strongNumber,
@@ -386,7 +409,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
           forward: false,
         );
         buffer.write(": [<-](strong:G${prevId}) **");
-        buffer.write(_dbManager.greekWords[wordIndex].id);
+        buffer.write(
+          "[${_dbManager.greekWords[wordIndex].id}]"
+          "(strong_picker:G${_dbManager.greekWords[wordIndex].id})",
+        );
         final nextId = _getNeighborStrongNumber(
           _dbManager.greekWords[wordIndex].id,
           forward: true,

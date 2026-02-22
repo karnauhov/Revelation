@@ -381,6 +381,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_number => 'Номер за Стронґом';
 
   @override
+  String get strong_picker_unavailable_numbers => '2717 і 3203-3302 недоступні';
+
+  @override
   String get strong_pronunciation => 'Вимова';
 
   @override

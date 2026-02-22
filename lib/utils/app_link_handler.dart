@@ -5,12 +5,15 @@ import 'package:revelation/utils/common.dart';
 
 typedef GreekStrongTapHandler =
     void Function(int strongNumber, BuildContext context);
+typedef GreekStrongPickerTapHandler =
+    void Function(int strongNumber, BuildContext context);
 
 Future<bool> handleAppLink(
   BuildContext context,
   String? href, {
   bool popBeforeScreenPush = false,
   GreekStrongTapHandler? onGreekStrongTap,
+  GreekStrongPickerTapHandler? onGreekStrongPickerTap,
 }) async {
   final link = href?.trim();
   if (link == null || link.isEmpty) {
@@ -26,10 +29,14 @@ Future<bool> handleAppLink(
   }
 
   if (_hasScheme(link, 'strong')) {
-    return _handleStrongLink(
+    return _handleStrongLink(context, link, onGreekStrongTap: onGreekStrongTap);
+  }
+
+  if (_hasScheme(link, 'strong_picker')) {
+    return _handleStrongPickerLink(
       context,
       link,
-      onGreekStrongTap: onGreekStrongTap,
+      onGreekStrongPickerTap: onGreekStrongPickerTap,
     );
   }
 
@@ -115,6 +122,43 @@ Future<bool> _handleStrongLink(
 
   log.warning("Wrong Strong's number: '$strongCode'");
   return false;
+}
+
+Future<bool> _handleStrongPickerLink(
+  BuildContext context,
+  String href, {
+  GreekStrongPickerTapHandler? onGreekStrongPickerTap,
+}) async {
+  final address = href.split(':');
+  if (address.length < 2) {
+    log.warning("Wrong Strong picker link: '$href'");
+    return false;
+  }
+
+  final strongCode = address[1].trim();
+  if (strongCode.isEmpty) {
+    log.warning("Wrong Strong picker link: '$href'");
+    return false;
+  }
+
+  if (!(strongCode.startsWith('G') || strongCode.startsWith('g'))) {
+    log.warning("Wrong Strong picker number: '$strongCode'");
+    return false;
+  }
+
+  final greekNum = int.tryParse(strongCode.substring(1));
+  if (greekNum == null) {
+    log.warning("Wrong Strong picker number: '$strongCode'");
+    return false;
+  }
+
+  if (onGreekStrongPickerTap == null) {
+    log.warning("Strong picker callback is not set for link: '$href'");
+    return false;
+  }
+
+  onGreekStrongPickerTap(greekNum, context);
+  return true;
 }
 
 Future<bool> _handleBibleLink(BuildContext context, String href) async {

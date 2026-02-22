@@ -7,6 +7,7 @@ import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/repositories/pages_repository.dart';
 import 'package:revelation/screens/primary_source/image_preview.dart';
 import 'package:revelation/screens/primary_source/primary_source_toolbar.dart';
+import 'package:revelation/screens/primary_source/strong_number_picker_dialog.dart';
 import 'package:revelation/utils/app_link_handler.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
@@ -369,11 +370,18 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                 context,
                 href,
                 onGreekStrongTap: viewModel.showInfoForStrongNumber,
+                onGreekStrongPickerTap: (strongNumber, linkContext) {
+                  _openStrongNumberPickerDialog(
+                    linkContext,
+                    viewModel,
+                    strongNumber,
+                  );
+                },
               );
             },
           ),
           Positioned(
-            top: -2,
+            top: -8,
             right: -8,
             child: Tooltip(
               key: _referenceTooltipKey,
@@ -403,6 +411,27 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         ],
       ),
     );
+  }
+
+  Future<void> _openStrongNumberPickerDialog(
+    BuildContext dialogContext,
+    PrimarySourceViewModel viewModel,
+    int initialStrongNumber,
+  ) async {
+    final pickedStrongNumber = await showDialog<int>(
+      context: dialogContext,
+      routeSettings: const RouteSettings(name: 'strong_number_picker_dialog'),
+      builder: (context) => StrongNumberPickerDialog(
+        entries: viewModel.getGreekStrongPickerEntries(),
+        initialStrongNumber: initialStrongNumber,
+      ),
+    );
+
+    if (!mounted || pickedStrongNumber == null) {
+      return;
+    }
+
+    viewModel.showInfoForStrongNumber(pickedStrongNumber, context);
   }
 
   Widget _buildSplitView(

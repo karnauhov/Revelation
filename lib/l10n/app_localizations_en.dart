@@ -380,6 +380,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strong_number => 'Strong’s number';
 
   @override
+  String get strong_picker_unavailable_numbers =>
+      '2717 and 3203-3302 are unavailable';
+
+  @override
   String get strong_pronunciation => 'Pronunciation';
 
   @override
