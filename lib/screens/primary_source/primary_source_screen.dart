@@ -394,7 +394,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final screenWidth = MediaQuery.sizeOf(context).width;
     final tooltipMaxWidth = screenWidth > 432 ? 420.0 : screenWidth - 12.0;
 
-    return Container(
+    final descriptionView = Container(
       color: colorScheme.surface,
       child: Stack(
         children: [
@@ -446,6 +446,18 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           ),
         ],
       ),
+    );
+
+    if (!_isMobileSwipeNavigationEnabled(viewModel)) {
+      return descriptionView;
+    }
+
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onHorizontalDragEnd: (details) {
+        _handleDescriptionSwipe(details, viewModel);
+      },
+      child: descriptionView,
     );
   }
 
@@ -582,6 +594,30 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final double actionsWidth =
         dropdownWidth + PrimarySourceScreen.numButtons * iconButtonWidth;
     return actionsWidth > screenWidth - widthForTitle * 1 - 60;
+  }
+
+  bool _isMobileSwipeNavigationEnabled(PrimarySourceViewModel viewModel) {
+    return isMobile() || viewModel.isMobileWeb;
+  }
+
+  void _handleDescriptionSwipe(
+    DragEndDetails details,
+    PrimarySourceViewModel viewModel,
+  ) {
+    if (!_isMobileSwipeNavigationEnabled(viewModel)) {
+      return;
+    }
+    if (viewModel.selectAreaMode || viewModel.pipetteMode) {
+      return;
+    }
+
+    final velocity = details.primaryVelocity;
+    if (velocity == null || velocity.abs() < 250) {
+      return;
+    }
+
+    final bool forward = velocity < 0;
+    viewModel.navigateDescriptionSelection(context, forward: forward);
   }
 
   void _tryNavigateSelectedWord(

@@ -373,6 +373,45 @@ class PrimarySourceViewModel extends ChangeNotifier {
     );
   }
 
+  bool navigateDescriptionSelection(
+    BuildContext context, {
+    required bool forward,
+  }) {
+    if (_currentDescriptionType == DescriptionType.word) {
+      final words = selectedPage?.words;
+      final currentIndex = _currentDescriptionNumber;
+      if (words == null ||
+          words.isEmpty ||
+          currentIndex == null ||
+          currentIndex < 0 ||
+          currentIndex >= words.length) {
+        return false;
+      }
+
+      final int nextIndex = forward
+          ? (currentIndex + 1) % words.length
+          : (currentIndex - 1 + words.length) % words.length;
+      showInfoForWord(nextIndex, context);
+      return true;
+    }
+
+    if (_currentDescriptionType == DescriptionType.strongNumber) {
+      final currentStrongNumber = _currentDescriptionNumber;
+      if (currentStrongNumber == null) {
+        return false;
+      }
+
+      final nextStrongNumber = _getNeighborStrongNumber(
+        currentStrongNumber,
+        forward: forward,
+      );
+      showInfoForStrongNumber(nextStrongNumber, context);
+      return true;
+    }
+
+    return false;
+  }
+
   List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
     _strongPickerEntriesCache ??= List<GreekStrongPickerEntry>.unmodifiable(
       _dbManager.greekWords
