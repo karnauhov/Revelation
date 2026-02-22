@@ -1,0 +1,1 @@
+Estoy sinceramente agradecido a todos los que han mostrado interés en la aplicación y no la eliminan mientras esperan nuevas versiones. Esto realmente me inspira a seguir trabajando en ella. En el futuro, aquí se añadirá un análisis de Apocalipsis 1:1-3 según el plan descrito en el prefacio.

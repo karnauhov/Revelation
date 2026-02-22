@@ -78,6 +78,8 @@ String locLinks(BuildContext context, String key) {
   final Map<String, String> translations = {
     "topic_0_name": localizations!.topic_0_name,
     "topic_0_description": localizations.topic_0_description,
+    "topic_1_name": localizations.topic_1_name,
+    "topic_1_description": localizations.topic_1_description,
     "@indeclNumAdj": localizations.strong_indeclNumAdj,
     "@indeclLetN": localizations.strong_indeclLetN,
     "@indeclinable": localizations.strong_indeclinable,
