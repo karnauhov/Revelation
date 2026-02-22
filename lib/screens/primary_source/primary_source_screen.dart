@@ -23,6 +23,13 @@ class SelectRectangleIntent extends Intent {
   const SelectRectangleIntent();
 }
 
+// Define the intent for moving to the next/previous selected word
+class NavigateSelectedWordIntent extends Intent {
+  final bool forward;
+
+  const NavigateSelectedWordIntent({required this.forward});
+}
+
 class PrimarySourceScreen extends StatefulWidget {
   final PrimarySource primarySource;
   static final numButtons = 11;
@@ -89,6 +96,32 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
 
           final double screenWidth = MediaQuery.of(context).size.width;
           final bool isBottom = _isBottomToolbar(screenWidth, dropdownWidth);
+          final bool allowWordNavigationByArrows = isDesktop() || isWeb();
+          final bool isWordSelected =
+              viewModel.currentDescriptionType == DescriptionType.word &&
+              viewModel.currentDescriptionNumber != null &&
+              (viewModel.selectedPage?.words.isNotEmpty ?? false);
+          final shortcuts = <ShortcutActivator, Intent>{
+            const SingleActivator(LogicalKeyboardKey.escape):
+                const ExitChooseModeIntent(),
+            const SingleActivator(LogicalKeyboardKey.backspace):
+                const ExitChooseModeIntent(),
+            const SingleActivator(LogicalKeyboardKey.keyR, alt: true):
+                const SelectRectangleIntent(),
+          };
+
+          if (allowWordNavigationByArrows && isWordSelected) {
+            shortcuts.addAll({
+              const SingleActivator(LogicalKeyboardKey.arrowLeft):
+                  const NavigateSelectedWordIntent(forward: false),
+              const SingleActivator(LogicalKeyboardKey.arrowUp):
+                  const NavigateSelectedWordIntent(forward: false),
+              const SingleActivator(LogicalKeyboardKey.arrowRight):
+                  const NavigateSelectedWordIntent(forward: true),
+              const SingleActivator(LogicalKeyboardKey.arrowDown):
+                  const NavigateSelectedWordIntent(forward: true),
+            });
+          }
 
           return PopScope(
             canPop: !viewModel.pipetteMode && !viewModel.selectAreaMode,
@@ -101,14 +134,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
               }
             },
             child: Shortcuts(
-              shortcuts: {
-                const SingleActivator(LogicalKeyboardKey.escape):
-                    const ExitChooseModeIntent(),
-                const SingleActivator(LogicalKeyboardKey.backspace):
-                    const ExitChooseModeIntent(),
-                const SingleActivator(LogicalKeyboardKey.keyR, alt: true):
-                    const SelectRectangleIntent(),
-              },
+              shortcuts: shortcuts,
               child: Actions(
                 actions: {
                   ExitChooseModeIntent: CallbackAction<ExitChooseModeIntent>(
@@ -143,6 +169,16 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                       return null;
                     },
                   ),
+                  NavigateSelectedWordIntent:
+                      CallbackAction<NavigateSelectedWordIntent>(
+                        onInvoke: (intent) {
+                          _tryNavigateSelectedWord(
+                            viewModel,
+                            forward: intent.forward,
+                          );
+                          return null;
+                        },
+                      ),
                 },
                 child: Focus(
                   autofocus: true,
@@ -546,5 +582,35 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final double actionsWidth =
         dropdownWidth + PrimarySourceScreen.numButtons * iconButtonWidth;
     return actionsWidth > screenWidth - widthForTitle * 1 - 60;
+  }
+
+  void _tryNavigateSelectedWord(
+    PrimarySourceViewModel viewModel, {
+    required bool forward,
+  }) {
+    if (!(isDesktop() || isWeb())) {
+      return;
+    }
+    if (viewModel.selectAreaMode || viewModel.pipetteMode) {
+      return;
+    }
+    if (viewModel.currentDescriptionType != DescriptionType.word) {
+      return;
+    }
+    final words = viewModel.selectedPage?.words;
+    if (words == null || words.isEmpty) {
+      return;
+    }
+    final currentIndex = viewModel.currentDescriptionNumber;
+    if (currentIndex == null ||
+        currentIndex < 0 ||
+        currentIndex >= words.length) {
+      return;
+    }
+
+    final int nextIndex = forward
+        ? (currentIndex + 1) % words.length
+        : (currentIndex - 1 + words.length) % words.length;
+    viewModel.showInfoForWord(nextIndex, context);
   }
 }
