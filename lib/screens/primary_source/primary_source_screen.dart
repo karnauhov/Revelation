@@ -415,6 +415,24 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
             },
           ),
           Positioned(
+            left: 4,
+            bottom: 4,
+            child: _buildDescriptionNavigationOverlayButton(
+              context,
+              viewModel,
+              forward: false,
+            ),
+          ),
+          Positioned(
+            right: 4,
+            bottom: 4,
+            child: _buildDescriptionNavigationOverlayButton(
+              context,
+              viewModel,
+              forward: true,
+            ),
+          ),
+          Positioned(
             top: -8,
             right: -8,
             child: Tooltip(
@@ -456,6 +474,53 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         _handleDescriptionSwipe(details, viewModel);
       },
       child: descriptionView,
+    );
+  }
+
+  Widget _buildDescriptionNavigationOverlayButton(
+    BuildContext context,
+    PrimarySourceViewModel viewModel, {
+    required bool forward,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final bool canNavigate =
+        _canNavigateDescriptionByArrow(viewModel) &&
+        !viewModel.selectAreaMode &&
+        !viewModel.pipetteMode;
+
+    final Color bgColor = colorScheme.surface.withValues(
+      alpha: canNavigate ? 0.08 : 0.04,
+    );
+    final Color iconColor = colorScheme.primary.withValues(
+      alpha: canNavigate ? 0.35 : 0.18,
+    );
+
+    return IgnorePointer(
+      ignoring: !canNavigate,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkResponse(
+          radius: 28,
+          highlightShape: BoxShape.circle,
+          onTap: () {
+            viewModel.navigateDescriptionSelection(context, forward: forward);
+          },
+          child: Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+            alignment: Alignment.center,
+            child: Icon(
+              forward
+                  ? Icons.arrow_forward_ios_rounded
+                  : Icons.arrow_back_ios_new_rounded,
+              size: 22,
+              color: iconColor,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
