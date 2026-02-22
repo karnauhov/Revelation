@@ -145,7 +145,7 @@ jobs:
             build/windows/Revelation-windows-${{ steps.extract_version_windows.outputs.version }}-${{ steps.extract_version_windows.outputs.build }}.exe
 
       - name: Create MSIX Package
-        run: dart run msix:create
+        run: dart run msix:create --build-windows false
 
       - name: Rename MSIX Package
         shell: pwsh
