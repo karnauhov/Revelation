@@ -23,11 +23,11 @@ class SelectRectangleIntent extends Intent {
   const SelectRectangleIntent();
 }
 
-// Define the intent for moving to the next/previous selected word
-class NavigateSelectedWordIntent extends Intent {
+// Define the intent for moving to the next/previous selected description
+class NavigateSelectedDescriptionIntent extends Intent {
   final bool forward;
 
-  const NavigateSelectedWordIntent({required this.forward});
+  const NavigateSelectedDescriptionIntent({required this.forward});
 }
 
 class PrimarySourceScreen extends StatefulWidget {
@@ -96,11 +96,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
 
           final double screenWidth = MediaQuery.of(context).size.width;
           final bool isBottom = _isBottomToolbar(screenWidth, dropdownWidth);
-          final bool allowWordNavigationByArrows = isDesktop() || isWeb();
-          final bool isWordSelected =
-              viewModel.currentDescriptionType == DescriptionType.word &&
-              viewModel.currentDescriptionNumber != null &&
-              (viewModel.selectedPage?.words.isNotEmpty ?? false);
+          final bool allowDescriptionNavigationByArrows =
+              (isDesktop() || isWeb()) &&
+              _canNavigateDescriptionByArrow(viewModel);
           final shortcuts = <ShortcutActivator, Intent>{
             const SingleActivator(LogicalKeyboardKey.escape):
                 const ExitChooseModeIntent(),
@@ -110,16 +108,16 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                 const SelectRectangleIntent(),
           };
 
-          if (allowWordNavigationByArrows && isWordSelected) {
+          if (allowDescriptionNavigationByArrows) {
             shortcuts.addAll({
               const SingleActivator(LogicalKeyboardKey.arrowLeft):
-                  const NavigateSelectedWordIntent(forward: false),
+                  const NavigateSelectedDescriptionIntent(forward: false),
               const SingleActivator(LogicalKeyboardKey.arrowUp):
-                  const NavigateSelectedWordIntent(forward: false),
+                  const NavigateSelectedDescriptionIntent(forward: false),
               const SingleActivator(LogicalKeyboardKey.arrowRight):
-                  const NavigateSelectedWordIntent(forward: true),
+                  const NavigateSelectedDescriptionIntent(forward: true),
               const SingleActivator(LogicalKeyboardKey.arrowDown):
-                  const NavigateSelectedWordIntent(forward: true),
+                  const NavigateSelectedDescriptionIntent(forward: true),
             });
           }
 
@@ -169,10 +167,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                       return null;
                     },
                   ),
-                  NavigateSelectedWordIntent:
-                      CallbackAction<NavigateSelectedWordIntent>(
+                  NavigateSelectedDescriptionIntent:
+                      CallbackAction<NavigateSelectedDescriptionIntent>(
                         onInvoke: (intent) {
-                          _tryNavigateSelectedWord(
+                          _tryNavigateDescriptionByArrow(
                             viewModel,
                             forward: intent.forward,
                           );
@@ -620,7 +618,23 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     viewModel.navigateDescriptionSelection(context, forward: forward);
   }
 
-  void _tryNavigateSelectedWord(
+  bool _canNavigateDescriptionByArrow(PrimarySourceViewModel viewModel) {
+    if (viewModel.currentDescriptionNumber == null) {
+      return false;
+    }
+
+    if (viewModel.currentDescriptionType == DescriptionType.word) {
+      return viewModel.selectedPage?.words.isNotEmpty ?? false;
+    }
+
+    if (viewModel.currentDescriptionType == DescriptionType.strongNumber) {
+      return true;
+    }
+
+    return false;
+  }
+
+  void _tryNavigateDescriptionByArrow(
     PrimarySourceViewModel viewModel, {
     required bool forward,
   }) {
@@ -630,23 +644,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     if (viewModel.selectAreaMode || viewModel.pipetteMode) {
       return;
     }
-    if (viewModel.currentDescriptionType != DescriptionType.word) {
+    if (!_canNavigateDescriptionByArrow(viewModel)) {
       return;
     }
-    final words = viewModel.selectedPage?.words;
-    if (words == null || words.isEmpty) {
-      return;
-    }
-    final currentIndex = viewModel.currentDescriptionNumber;
-    if (currentIndex == null ||
-        currentIndex < 0 ||
-        currentIndex >= words.length) {
-      return;
-    }
-
-    final int nextIndex = forward
-        ? (currentIndex + 1) % words.length
-        : (currentIndex - 1 + words.length) % words.length;
-    viewModel.showInfoForWord(nextIndex, context);
+    viewModel.navigateDescriptionSelection(context, forward: forward);
   }
 }
