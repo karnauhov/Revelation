@@ -383,7 +383,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get toggle_show_strong_numbers => 'Номера Стронга';
 
   @override
-  String get strong_number => 'Номер по Стронгу';
+  String get strong_number => '№ Стронга';
 
   @override
   String get strong_picker_unavailable_numbers => '2717 и 3203-3302 недоступны';

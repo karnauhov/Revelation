@@ -825,7 +825,7 @@ abstract class AppLocalizations {
   /// No description provided for @strong_number.
   ///
   /// In en, this message translates to:
-  /// **'Strong’s number'**
+  /// **'Strong’s #'**
   String get strong_number;
 
   /// No description provided for @strong_picker_unavailable_numbers.

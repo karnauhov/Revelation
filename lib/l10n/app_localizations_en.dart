@@ -383,7 +383,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toggle_show_strong_numbers => 'Strong\'s numbers';
 
   @override
-  String get strong_number => 'Strong’s number';
+  String get strong_number => 'Strong’s #';
 
   @override
   String get strong_picker_unavailable_numbers =>

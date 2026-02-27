@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "skills": {
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "computedHash": "25872a21881a950edc3db1f3329664d60405d539660ce05b3265db2de06a7dfd"
+    },
+    "flutter-adaptive-ui": {
+      "source": "madteacher/mad-agents-skills",
+      "sourceType": "github",
+      "computedHash": "7b9c4ecda94f80ae16addab433432ae0e76d1b114a3f87e2df9269954e6196b6"
+    },
+    "flutter-animations": {
+      "source": "madteacher/mad-agents-skills",
+      "sourceType": "github",
+      "computedHash": "0c62d299cfdb82a8a22eadcb9b58c998cb6ceb85368a342689143a0278e4c7bb"
+    },
+    "flutter-architecture": {
+      "source": "madteacher/mad-agents-skills",
+      "sourceType": "github",
+      "computedHash": "6d65653e2930a5f5b108f5ce90520272e37fda9269197e6446a4e07576b36bf5"
+    },
+    "flutter-drift": {
+      "source": "madteacher/mad-agents-skills",
+      "sourceType": "github",
+      "computedHash": "fdc83f22f073ca2d925c3255bd8c206475caf29c7f15c52ef41f5f848c2e126f"
+    },
+    "flutter-expert": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "computedHash": "247127e54cf58b670ef4b757bbbd0a3a2d2a306506b4ad2d85131df6f5715391"
+    },
+    "flutter-internationalization": {
+      "source": "madteacher/mad-agents-skills",
+      "sourceType": "github",
+      "computedHash": "0273dbd14444877c8c0acce18b4fc2fce8f3cb6cee2c52bdfd256f6858a73a83"
+    },
+    "flutter-testing": {
+      "source": "madteacher/mad-agents-skills",
+      "sourceType": "github",
+      "computedHash": "fd878a3c2073f6efbc6cedc4d02c926d1dba79307aa837b2df88c383605dad1e"
+    }
+  }
+}

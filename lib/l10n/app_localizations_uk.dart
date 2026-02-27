@@ -384,7 +384,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get toggle_show_strong_numbers => 'Номери Стронґа';
 
   @override
-  String get strong_number => 'Номер за Стронґом';
+  String get strong_number => '№ Стронґа';
 
   @override
   String get strong_picker_unavailable_numbers => '2717 і 3203-3302 недоступні';
