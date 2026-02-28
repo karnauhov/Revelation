@@ -8,6 +8,7 @@ import argparse
 import base64
 import datetime as dt
 import io
+import json
 import mimetypes
 import re
 import sqlite3
@@ -67,6 +68,18 @@ class ResourceRow:
     size_bytes: int
 
 
+@dataclass
+class StrongRow:
+    id: int
+    word: str
+    category: str
+    synonyms: str
+    origin: str
+    usage: str
+    localized_flags: dict[str, bool]
+    localized_search: str
+
+
 def default_work_dir() -> Path:
     preferred = Path(r"C:\Users\karna\OneDrive\Documents\revelation\db")
     if preferred.exists():
@@ -118,18 +131,23 @@ class TopicContentTool(tk.Tk):
         self.topics: list[TopicRow] = []
         self.topic_texts: list[TopicTextRow] = []
         self.common_resources: list[ResourceRow] = []
+        self.strong_rows: list[StrongRow] = []
+        self.strong_filtered_indices: list[int] = []
         self.selected_topic_index: int | None = None
         self.selected_text_index: int | None = None
         self.selected_resource_index: int | None = None
         self.selected_resource_original_key: str | None = None
+        self.selected_strong_index: int | None = None
         self.resource_data_buffer = b""
         self.resource_preview_image: tk.PhotoImage | None = None
 
         self.folder_var = tk.StringVar(value=str(self.work_dir))
         self.db_var = tk.StringVar()
-        self.file_info_var = tk.StringVar(value="Файл: -")
-        self.status_var = tk.StringVar(value="Выберите локализованную БД для начала работы.")
+        self.file_info_var = tk.StringVar(value="-")
+        self.status_var = tk.StringVar(value="-")
         self.resources_db_var = tk.StringVar(value="Общая БД: -")
+        self.strong_local_db_var = tk.StringVar(value="-")
+        self.strong_common_db_var = tk.StringVar(value="-")
         self.future_local_db_var = tk.StringVar(value="-")
         self.future_common_db_var = tk.StringVar(value="-")
 
@@ -145,13 +163,27 @@ class TopicContentTool(tk.Tk):
         self.resource_file_name_var = tk.StringVar()
         self.resource_mime_var = tk.StringVar()
         self.resource_size_var = tk.StringVar(value="-")
+        self.strong_filter_var = tk.StringVar()
+        self.strong_id_var = tk.StringVar(value="-")
+        self.strong_word_var = tk.StringVar()
+        self.strong_category_var = tk.StringVar()
+        self.strong_category_display_var = tk.StringVar(value="-")
+        self.strong_category_raw_preview_var = tk.StringVar(value="Сохранится в БД: -")
+        self.strong_synonyms_var = tk.StringVar()
+        self.strong_languages_var = tk.StringVar(value="-")
         self.preview_unavailable_reason = ""
         self.preview_html: HtmlFrameType | None = None
         self.preview_text: tk.Text | None = None
         self.ui_icons: dict[str, tk.PhotoImage] = {}
         self.status_indicator_image: tk.PhotoImage | None = None
+        self.strong_category_labels_by_token: dict[str, str] = self._load_ru_strong_category_labels()
+        self.strong_tree_lang_columns: list[str] = []
+        self.strong_desc_texts_by_lang: dict[str, tk.Text] = {}
+        self.strong_local_db_paths_by_lang: dict[str, Path] = {}
+        self.strong_desc_presence_by_lang: dict[str, set[int]] = {}
 
         self._build_ui()
+        self.strong_filter_var.trace_add("write", self._on_strong_filter_changed)
         self._refresh_db_list(initial_select=True)
         self.after(0, self._maximize_window)
 
@@ -205,10 +237,7 @@ class TopicContentTool(tk.Tk):
 
         self._build_articles_section(self.articles_section)
         self._build_resources_section(self.resources_section)
-        self._build_future_section(
-            self.strong_section,
-            "Раздел «Словарь Стронга» скоро будет доступен.",
-        )
+        self._build_strong_section(self.strong_section)
         self._build_future_section(
             self.sources_section,
             "Раздел «Первоисточники» скоро будет доступен.",
@@ -233,14 +262,6 @@ class TopicContentTool(tk.Tk):
             column=0,
             sticky="ew",
         )
-        self.status_indicator_image = self.ui_icons.get("status_clean")
-        self.dirty_indicator_label = tk.Label(
-            file_info_wrap,
-            image=self.status_indicator_image,
-            text="",
-            padx=6,
-        )
-        self.dirty_indicator_label.grid(row=0, column=1, sticky="e")
         ttk.Separator(status_frame, orient="vertical").grid(
             row=0,
             column=1,
@@ -272,13 +293,6 @@ class TopicContentTool(tk.Tk):
         self.db_combo.grid(row=0, column=1, sticky="ew")
         self.db_combo.bind("<<ComboboxSelected>>", self._on_db_combo_selected)
 
-        self.btn_save = ttk.Button(
-            top,
-            **self._button_kwargs("save", "Сохранить изменения"),
-            command=self._save_all,
-        )
-        self.btn_save.grid(row=0, column=2, padx=(8, 0))
-
         self.article_sections = ttk.Notebook(parent)
         self.article_sections.grid(row=1, column=0, sticky="nsew")
 
@@ -300,18 +314,212 @@ class TopicContentTool(tk.Tk):
 
         ttk.Label(top, text="Общая БД ресурсов:").grid(row=0, column=0, sticky="w", padx=(0, 8))
         ttk.Label(top, textvariable=self.resources_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
-        self.btn_reload_resources = ttk.Button(
-            top,
-            **self._button_kwargs("refresh", "Обновить ресурсы"),
-            command=self._reload_resources_section,
-        )
-        self.btn_reload_resources.grid(row=0, column=2, padx=(8, 0))
 
         resources_body = ttk.Frame(parent)
         resources_body.grid(row=1, column=0, sticky="nsew")
         resources_body.columnconfigure(0, weight=1)
         resources_body.rowconfigure(0, weight=1)
         self._build_resources_tab(resources_body)
+
+    def _build_strong_section(self, parent: ttk.Frame) -> None:
+        parent.columnconfigure(0, weight=1)
+        parent.rowconfigure(2, weight=1)
+
+        top = ttk.Frame(parent, padding=(8, 8, 8, 0))
+        top.grid(row=0, column=0, sticky="ew")
+        top.columnconfigure(1, weight=1)
+        top.columnconfigure(3, weight=1)
+
+        ttk.Label(top, text="Локализованные БД:").grid(
+            row=0,
+            column=0,
+            sticky="w",
+            padx=(0, 8),
+        )
+        self.entry_strong_langs = ttk.Entry(top, textvariable=self.strong_languages_var, state="readonly")
+        self.entry_strong_langs.grid(row=0, column=1, sticky="ew")
+        ttk.Label(top, text="Общая БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
+        ttk.Label(top, textvariable=self.strong_common_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
+
+        filter_row = ttk.Frame(parent, padding=(8, 8, 8, 0))
+        filter_row.grid(row=1, column=0, sticky="ew")
+        filter_row.columnconfigure(1, weight=1)
+        ttk.Label(filter_row, text="Поиск (ID/слово/часть речи/переводы):").grid(
+            row=0,
+            column=0,
+            sticky="w",
+            padx=(0, 8),
+        )
+        self.entry_strong_filter = ttk.Entry(filter_row, textvariable=self.strong_filter_var)
+        self.entry_strong_filter.grid(row=0, column=1, sticky="ew")
+        self.btn_clear_strong_filter = ttk.Button(
+            filter_row,
+            text="Очистить",
+            command=self._clear_strong_filter,
+        )
+        self.btn_clear_strong_filter.grid(row=0, column=2, padx=(8, 0))
+
+        body = ttk.Frame(parent)
+        body.grid(row=2, column=0, sticky="nsew")
+        body.columnconfigure(0, weight=1)
+        body.rowconfigure(0, weight=1)
+
+        pane = self._new_split_pane(body)
+        pane.grid(row=0, column=0, sticky="nsew")
+
+        left = ttk.Frame(pane, padding=8)
+        right = ttk.Frame(pane, padding=8)
+        pane.add(left, stretch="always")
+        pane.add(right, stretch="always")
+        self._set_initial_split(pane, ratio=0.5)
+
+        left.columnconfigure(0, weight=1)
+        left.rowconfigure(0, weight=1)
+        left.rowconfigure(1, weight=1)
+
+        tree_wrap = ttk.Frame(left)
+        tree_wrap.grid(row=0, column=0, sticky="nsew", pady=(0, 8))
+        tree_wrap.columnconfigure(0, weight=1)
+        tree_wrap.rowconfigure(0, weight=1)
+
+        self.strong_tree = ttk.Treeview(
+            tree_wrap,
+            columns=("id", "word", "synonyms", "origin", "category"),
+            show="headings",
+            selectmode="browse",
+        )
+        self.strong_tree.heading("id", text="Strong")
+        self.strong_tree.heading("word", text="Слово")
+        self.strong_tree.heading("synonyms", text="Синонимы")
+        self.strong_tree.heading("origin", text="Анализ слова")
+        self.strong_tree.heading("category", text="Часть речи и форма")
+        base_word_col_width = 160
+        self.strong_tree.column("id", width=base_word_col_width // 2, anchor="center")
+        self.strong_tree.column("word", width=base_word_col_width, anchor="w")
+        self.strong_tree.column("synonyms", width=base_word_col_width, anchor="w")
+        self.strong_tree.column("origin", width=base_word_col_width, anchor="w")
+        self.strong_tree.column("category", width=base_word_col_width * 2, anchor="w")
+        self.strong_tree.grid(row=0, column=0, sticky="nsew")
+        self.strong_tree.bind("<<TreeviewSelect>>", self._on_strong_selected)
+
+        strong_scroll = ttk.Scrollbar(tree_wrap, orient="vertical", command=self.strong_tree.yview)
+        strong_scroll.grid(row=0, column=1, sticky="ns")
+        self.strong_tree.configure(yscrollcommand=strong_scroll.set)
+        self._rebuild_strong_tree_columns()
+
+        common_box = ttk.LabelFrame(left, text="Общая часть")
+        common_box.grid(row=1, column=0, sticky="nsew")
+        common_box.columnconfigure(1, weight=1)
+        common_box.rowconfigure(4, weight=0)
+        common_box.rowconfigure(5, weight=1)
+
+        ttk.Label(common_box, text="Слово:").grid(row=0, column=0, sticky="w", padx=(8, 8), pady=(6, 4))
+        self.entry_strong_word = ttk.Entry(common_box, textvariable=self.strong_word_var)
+        self.entry_strong_word.grid(row=0, column=1, sticky="ew", padx=(0, 8), pady=(6, 4))
+
+        ttk.Label(common_box, text="Часть речи и форма:").grid(row=1, column=0, sticky="w", padx=(8, 8), pady=4)
+        category_wrap = ttk.Frame(common_box)
+        category_wrap.grid(row=1, column=1, sticky="ew", padx=(0, 8), pady=4)
+        category_wrap.columnconfigure(0, weight=1)
+        self.entry_strong_category = ttk.Entry(
+            category_wrap,
+            textvariable=self.strong_category_display_var,
+            state="readonly",
+        )
+        self.entry_strong_category.grid(row=0, column=0, sticky="ew")
+        self.btn_pick_strong_category = ttk.Button(
+            category_wrap,
+            text="Выбрать...",
+            command=self._open_strong_category_picker,
+        )
+        self.btn_pick_strong_category.grid(row=0, column=1, padx=(8, 0))
+        ttk.Label(
+            common_box,
+            textvariable=self.strong_category_raw_preview_var,
+            foreground="#5f5f5f",
+        ).grid(row=2, column=0, columnspan=2, sticky="w", padx=8, pady=(0, 4))
+
+        ttk.Label(common_box, text="Синонимы:").grid(row=3, column=0, sticky="w", padx=(8, 8), pady=4)
+        self.entry_strong_synonyms = ttk.Entry(common_box, textvariable=self.strong_synonyms_var)
+        self.entry_strong_synonyms.grid(row=3, column=1, sticky="ew", padx=(0, 8), pady=4)
+
+        ttk.Label(common_box, text="Анализ слова:").grid(
+            row=4,
+            column=0,
+            sticky="nw",
+            padx=(8, 8),
+            pady=4,
+        )
+        origin_wrap = ttk.Frame(common_box)
+        origin_wrap.grid(row=4, column=1, sticky="ew", padx=(0, 8), pady=4)
+        origin_wrap.columnconfigure(0, weight=1)
+        self.strong_origin_text = tk.Text(origin_wrap, wrap="word", height=1, undo=True)
+        self.strong_origin_text.grid(row=0, column=0, sticky="ew")
+        origin_scroll = ttk.Scrollbar(origin_wrap, orient="vertical", command=self.strong_origin_text.yview)
+        origin_scroll.grid(row=0, column=1, sticky="ns")
+        self.strong_origin_text.configure(yscrollcommand=origin_scroll.set)
+
+        ttk.Label(common_box, text="Использование:").grid(
+            row=5,
+            column=0,
+            sticky="nw",
+            padx=(8, 8),
+            pady=(4, 8),
+        )
+        usage_wrap = ttk.Frame(common_box)
+        usage_wrap.grid(row=5, column=1, sticky="nsew", padx=(0, 8), pady=(4, 8))
+        usage_wrap.columnconfigure(0, weight=1)
+        usage_wrap.rowconfigure(0, weight=1)
+        self.strong_usage_text = tk.Text(usage_wrap, wrap="word", height=10, undo=True)
+        self.strong_usage_text.grid(row=0, column=0, sticky="nsew")
+        usage_scroll = ttk.Scrollbar(usage_wrap, orient="vertical", command=self.strong_usage_text.yview)
+        usage_scroll.grid(row=0, column=1, sticky="ns")
+        self.strong_usage_text.configure(yscrollcommand=usage_scroll.set)
+
+        right.columnconfigure(0, weight=1)
+        right.rowconfigure(0, weight=1)
+
+        local_box = ttk.LabelFrame(right, text="Переводы")
+        local_box.grid(row=0, column=0, sticky="nsew")
+        local_box.columnconfigure(0, weight=1)
+        local_box.rowconfigure(0, weight=1)
+        self.strong_local_canvas = tk.Canvas(
+            local_box,
+            highlightthickness=0,
+            borderwidth=0,
+        )
+        self.strong_local_canvas.grid(row=0, column=0, sticky="nsew")
+        local_scroll = ttk.Scrollbar(
+            local_box,
+            orient="vertical",
+            command=self.strong_local_canvas.yview,
+        )
+        local_scroll.grid(row=0, column=1, sticky="ns")
+        self.strong_local_canvas.configure(yscrollcommand=local_scroll.set)
+        self.strong_local_container = ttk.Frame(self.strong_local_canvas)
+        self.strong_local_window_id = self.strong_local_canvas.create_window(
+            (0, 0),
+            window=self.strong_local_container,
+            anchor="nw",
+        )
+        self.strong_local_container.bind("<Configure>", self._on_strong_local_container_configure)
+        self.strong_local_canvas.bind("<Configure>", self._on_strong_local_canvas_configure)
+        self._rebuild_strong_localized_editors()
+
+        strong_actions = ttk.Frame(right)
+        strong_actions.grid(row=1, column=0, sticky="w", pady=(8, 0))
+        self.btn_apply_strong = ttk.Button(
+            strong_actions,
+            **self._button_kwargs("save", "Сохранить"),
+            command=self._apply_strong_changes,
+        )
+        self.btn_apply_strong.pack(side="left")
+        self.btn_cancel_strong = ttk.Button(
+            strong_actions,
+            **self._button_kwargs("cancel", "Отменить"),
+            command=self._reload_selected_strong,
+        )
+        self.btn_cancel_strong.pack(side="left", padx=(8, 0))
 
     def _build_future_section(self, parent: ttk.Frame, message: str) -> None:
         parent.columnconfigure(0, weight=1)
@@ -357,24 +565,291 @@ class TopicContentTool(tk.Tk):
     def _reload_resources_section(self) -> None:
         self._open_common_connection()
         self._load_common_resources()
+        self._load_strong_rows()
         self._update_ui_availability()
         self._update_file_info()
         if self.common_db_path is None:
             self._set_status("Общая БД ресурсов не найдена.")
         else:
-            self._set_status(f"Ресурсы перечитаны из {self.common_db_path.name}.")
+            self._set_status(f"Ресурсы перечитаны из {self.common_db_path.stem}.")
+
+    def _reload_strong_section(self) -> None:
+        self._open_common_connection()
+        self._load_common_resources()
+        self._load_strong_rows()
+        self._update_ui_availability()
+        self._update_file_info()
+        if self.common_db_path is None:
+            self._set_status("Общая БД не найдена. Словарь Стронга недоступен.")
+            return
+        if not self.db_files:
+            self._set_status("Локализованные БД не найдены. Словарь Стронга недоступен.")
+            return
+        self._set_status(
+            (
+                "Словарь Стронга перечитан: "
+                f"{self.common_db_path.stem} + {len(self.db_files)} локализованных БД."
+            )
+        )
 
     def _update_section_db_labels(self) -> None:
         local_text = "-"
         if self.current_db_path is not None:
-            local_text = str(self.current_db_path)
+            local_text = self.current_db_path.stem
         self.future_local_db_var.set(local_text)
+        self.strong_local_db_var.set(local_text)
 
         common_text = "-"
         if self.common_db_path is not None:
-            common_text = str(self.common_db_path)
+            common_text = self.common_db_path.stem
         self.future_common_db_var.set(common_text)
         self.resources_db_var.set(common_text)
+        self.strong_common_db_var.set(common_text)
+        languages = [lang for lang, _ in self._localized_db_entries()]
+        self.strong_languages_var.set(", ".join(languages) if languages else "-")
+
+    def _load_ru_strong_category_labels(self) -> dict[str, str]:
+        labels: dict[str, str] = {}
+        ru_arb_path = self.project_root / "lib" / "l10n" / "app_ru.arb"
+        try:
+            payload = json.loads(ru_arb_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return labels
+
+        for key, value in payload.items():
+            if not isinstance(key, str) or not isinstance(value, str):
+                continue
+            if not key.startswith("strong_"):
+                continue
+            if key.startswith("@"):
+                continue
+            token = key.removeprefix("strong_")
+            if token:
+                labels[token] = value.strip()
+        return labels
+
+    def _localized_db_entries(self) -> list[tuple[str, Path]]:
+        seen_langs: set[str] = set()
+        entries: list[tuple[str, Path]] = []
+        for display_key, db_path in sorted(self.db_files.items(), key=lambda item: item[0]):
+            lang = display_key.split("  ", maxsplit=1)[0].strip().lower()
+            if not lang:
+                continue
+            lang = lang[:2]
+            if lang in seen_langs:
+                continue
+            seen_langs.add(lang)
+            entries.append((lang, db_path))
+        return entries
+
+    def _rebuild_strong_tree_columns(self) -> None:
+        if not hasattr(self, "strong_tree"):
+            return
+        language_columns = [lang for lang, _ in self._localized_db_entries()]
+        self.strong_tree_lang_columns = language_columns
+        columns: tuple[str, ...] = ("id", "word", "synonyms", "origin", "category", *language_columns)
+        try:
+            # Reset previous display columns first to avoid stale dynamic indexes.
+            self.strong_tree.configure(displaycolumns="#all")
+        except tk.TclError:
+            pass
+        self.strong_tree.configure(columns=columns)
+        self.strong_tree.configure(displaycolumns=columns)
+
+        self.strong_tree.heading("id", text="Strong")
+        self.strong_tree.heading("word", text="Слово")
+        self.strong_tree.heading("synonyms", text="Синонимы")
+        self.strong_tree.heading("origin", text="Анализ слова")
+        self.strong_tree.heading("category", text="Часть речи и форма")
+        base_word_col_width = 160
+        self.strong_tree.column("id", width=base_word_col_width // 2, anchor="center")
+        self.strong_tree.column("word", width=base_word_col_width, anchor="w")
+        self.strong_tree.column("synonyms", width=base_word_col_width, anchor="w")
+        self.strong_tree.column("origin", width=base_word_col_width, anchor="w")
+        self.strong_tree.column("category", width=base_word_col_width * 2, anchor="w")
+
+        for lang in language_columns:
+            self.strong_tree.heading(lang, text=lang.upper())
+            self.strong_tree.column(lang, width=base_word_col_width // 4, anchor="center")
+
+    def _rebuild_strong_localized_editors(self) -> None:
+        self.strong_desc_texts_by_lang.clear()
+        self.strong_local_db_paths_by_lang.clear()
+
+        if not hasattr(self, "strong_local_container"):
+            return
+
+        for child in self.strong_local_container.winfo_children():
+            child.destroy()
+
+        entries = self._localized_db_entries()
+        self.strong_local_container.columnconfigure(0, weight=1)
+        if not entries:
+            ttk.Label(
+                self.strong_local_container,
+                text="Локализованные БД не найдены.",
+                foreground="#5f5f5f",
+                padding=(6, 6),
+            ).grid(row=0, column=0, sticky="w")
+            self._on_strong_local_container_configure()
+            return
+
+        for idx, (lang, db_path) in enumerate(entries):
+            self.strong_local_db_paths_by_lang[lang] = db_path
+            row_wrap = ttk.Frame(self.strong_local_container)
+            row_wrap.grid(row=idx, column=0, sticky="nsew", padx=4, pady=(0, 8))
+            row_wrap.columnconfigure(1, weight=1)
+            row_wrap.rowconfigure(0, weight=1)
+
+            ttk.Label(
+                row_wrap,
+                text=lang.upper(),
+                width=4,
+                anchor="nw",
+            ).grid(row=0, column=0, sticky="nw", padx=(0, 8), pady=(2, 0))
+
+            text_widget = tk.Text(row_wrap, wrap="word", undo=True, height=6)
+            text_widget.grid(row=0, column=1, sticky="nsew")
+            scroll = ttk.Scrollbar(row_wrap, orient="vertical", command=text_widget.yview)
+            scroll.grid(row=0, column=2, sticky="ns")
+            text_widget.configure(yscrollcommand=scroll.set)
+            self.strong_desc_texts_by_lang[lang] = text_widget
+
+        self._on_strong_local_container_configure()
+
+    def _on_strong_local_container_configure(self, _event: object | None = None) -> None:
+        if not hasattr(self, "strong_local_canvas"):
+            return
+        self.strong_local_canvas.configure(scrollregion=self.strong_local_canvas.bbox("all"))
+
+    def _on_strong_local_canvas_configure(self, event: tk.Event[tk.Misc]) -> None:
+        if not hasattr(self, "strong_local_canvas"):
+            return
+        if not hasattr(self, "strong_local_window_id"):
+            return
+        self.strong_local_canvas.itemconfigure(self.strong_local_window_id, width=event.width)
+
+    def _extract_category_tokens(self, category_raw: str) -> list[str]:
+        found = re.findall(r"@([A-Za-z][A-Za-z0-9_]*)", category_raw or "")
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for token in found:
+            if token in seen:
+                continue
+            seen.add(token)
+            ordered.append(token)
+        return ordered
+
+    def _format_strong_category_display(self, category_raw: str) -> str:
+        raw = category_raw.strip()
+        if not raw:
+            return "-"
+        tokens = self._extract_category_tokens(raw)
+        if not tokens:
+            return raw
+        labels = [self.strong_category_labels_by_token.get(token, f"@{token}") for token in tokens]
+        return ", ".join(labels)
+
+    def _sync_strong_category_visuals(self) -> None:
+        raw = self.strong_category_var.get().strip()
+        self.strong_category_display_var.set(self._format_strong_category_display(raw))
+        preview = raw if raw else "-"
+        self.strong_category_raw_preview_var.set(f"Сохранится в БД: {preview}")
+
+    def _open_strong_category_picker(self) -> None:
+        options: list[str] = []
+        used_tokens: set[str] = set()
+        for row in self.strong_rows:
+            used_tokens.update(self._extract_category_tokens(row.category))
+        if used_tokens:
+            options = sorted(
+                used_tokens,
+                key=lambda token: (
+                    self.strong_category_labels_by_token.get(token, token).lower(),
+                    token.lower(),
+                ),
+            )
+        elif self.strong_category_labels_by_token:
+            options = sorted(
+                self.strong_category_labels_by_token.keys(),
+                key=lambda token: (
+                    self.strong_category_labels_by_token.get(token, token).lower(),
+                    token.lower(),
+                ),
+            )
+
+        if not options:
+            messagebox.showinfo(
+                "Нет данных",
+                "Не удалось найти список категорий для выбора.",
+                parent=self,
+            )
+            return
+
+        dialog = tk.Toplevel(self)
+        dialog.title("Категории Стронга")
+        dialog.transient(self)
+        dialog.grab_set()
+        dialog.resizable(True, True)
+        dialog.minsize(520, 360)
+
+        body = ttk.Frame(dialog, padding=10)
+        body.grid(row=0, column=0, sticky="nsew")
+        dialog.columnconfigure(0, weight=1)
+        dialog.rowconfigure(0, weight=1)
+        body.columnconfigure(0, weight=1)
+        body.rowconfigure(1, weight=1)
+
+        ttk.Label(
+            body,
+            text=(
+                "Выберите нужные категории. В БД будут сохранены @ключи,\n"
+                "а в интерфейсе показываются русские эквиваленты."
+            ),
+            justify="left",
+        ).grid(row=0, column=0, sticky="w", pady=(0, 8))
+
+        list_wrap = ttk.Frame(body)
+        list_wrap.grid(row=1, column=0, sticky="nsew")
+        list_wrap.columnconfigure(0, weight=1)
+        list_wrap.rowconfigure(0, weight=1)
+        listbox = tk.Listbox(list_wrap, selectmode="extended", exportselection=False)
+        listbox.grid(row=0, column=0, sticky="nsew")
+        scroll = ttk.Scrollbar(list_wrap, orient="vertical", command=listbox.yview)
+        scroll.grid(row=0, column=1, sticky="ns")
+        listbox.configure(yscrollcommand=scroll.set)
+
+        for token in options:
+            label = self.strong_category_labels_by_token.get(token, token)
+            listbox.insert(tk.END, f"{label} (@{token})")
+
+        current_tokens = set(self._extract_category_tokens(self.strong_category_var.get().strip()))
+        for idx, token in enumerate(options):
+            if token in current_tokens:
+                listbox.selection_set(idx)
+
+        actions = ttk.Frame(body)
+        actions.grid(row=2, column=0, sticky="e", pady=(8, 0))
+
+        def apply_selection() -> None:
+            selected_tokens = [options[int(i)] for i in listbox.curselection()]
+            raw = ", ".join(f"@{token}" for token in selected_tokens)
+            self.strong_category_var.set(raw)
+            self._sync_strong_category_visuals()
+            dialog.destroy()
+
+        ttk.Button(actions, text="Применить", command=apply_selection).pack(side="left")
+        ttk.Button(actions, text="Отмена", command=dialog.destroy).pack(side="left", padx=(8, 0))
+
+        self._fit_and_center_toplevel(
+            dialog,
+            min_width=520,
+            max_width=760,
+            min_height=360,
+            max_height=680,
+        )
+        dialog.bind("<Escape>", lambda _e: dialog.destroy())
+        listbox.focus_set()
 
     def _maximize_window(self) -> None:
         try:
@@ -409,6 +884,40 @@ class TopicContentTool(tk.Tk):
             "compound": "left",
         }
 
+    def _new_split_pane(self, parent: tk.Misc) -> tk.PanedWindow:
+        pane = tk.PanedWindow(
+            parent,
+            orient=tk.HORIZONTAL,
+            sashwidth=8,
+            sashrelief="raised",
+            showhandle=True,
+            relief="groove",
+            bd=1,
+            opaqueresize=True,
+        )
+        try:
+            pane.configure(sashcursor="sb_h_double_arrow", handlesize=8, handlepad=2, sashpad=2)
+        except tk.TclError:
+            pass
+        return pane
+
+    def _set_initial_split(self, pane: tk.PanedWindow, *, ratio: float = 0.5) -> None:
+        safe_ratio = max(0.1, min(0.9, ratio))
+
+        def apply_split() -> None:
+            try:
+                if len(pane.panes()) < 2:
+                    return
+                width = pane.winfo_width()
+                if width <= 2:
+                    pane.after(50, apply_split)
+                    return
+                pane.sash_place(0, int(width * safe_ratio), 1)
+            except tk.TclError:
+                return
+
+        pane.after_idle(apply_split)
+
     def _set_ttk_widget_enabled(
         self,
         widget: tk.Widget,
@@ -423,7 +932,10 @@ class TopicContentTool(tk.Tk):
                 widget.configure(state="disabled")
             return
         if isinstance(widget, ttk.Entry):
-            widget.configure(state="normal" if enabled else "disabled")
+            if enabled:
+                widget.configure(state="readonly" if readonly_when_enabled else "normal")
+            else:
+                widget.configure(state="disabled")
             return
         if hasattr(widget, "state"):
             try:
@@ -436,9 +948,13 @@ class TopicContentTool(tk.Tk):
         except tk.TclError:
             pass
 
-    def _set_editor_controls_enabled(self, localized_enabled: bool, resources_enabled: bool) -> None:
+    def _set_editor_controls_enabled(
+        self,
+        localized_enabled: bool,
+        resources_enabled: bool,
+        strong_enabled: bool,
+    ) -> None:
         localized_widgets: list[tuple[tk.Widget, bool]] = [
-            (self.btn_save, False),
             (self.topics_tree, False),
             (self.btn_add_topic, False),
             (self.btn_delete_topic, False),
@@ -470,7 +986,6 @@ class TopicContentTool(tk.Tk):
             self.preview_text.configure(state="disabled")
 
         resource_widgets: list[tuple[tk.Widget, bool]] = [
-            (self.btn_reload_resources, False),
             (self.resources_tree, False),
             (self.btn_add_resource, False),
             (self.btn_delete_resource, False),
@@ -500,6 +1015,36 @@ class TopicContentTool(tk.Tk):
                 text="Предпросмотр ресурса недоступен.\nВыберите запись из списка.",
             )
 
+        strong_widgets: list[tuple[tk.Widget, bool]] = [
+            (self.entry_strong_langs, True),
+            (self.entry_strong_filter, False),
+            (self.btn_clear_strong_filter, False),
+            (self.strong_tree, False),
+            (self.entry_strong_word, False),
+            (self.entry_strong_category, True),
+            (self.btn_pick_strong_category, False),
+            (self.entry_strong_synonyms, False),
+            (self.btn_apply_strong, False),
+            (self.btn_cancel_strong, False),
+        ]
+        for widget, readonly_when_enabled in strong_widgets:
+            self._set_ttk_widget_enabled(
+                widget,
+                strong_enabled,
+                readonly_when_enabled=readonly_when_enabled,
+            )
+        self.strong_origin_text.configure(state="normal" if strong_enabled else "disabled")
+        self.strong_usage_text.configure(state="normal" if strong_enabled else "disabled")
+        for text_widget in self.strong_desc_texts_by_lang.values():
+            text_widget.configure(state="normal" if strong_enabled else "disabled")
+
+        if not strong_enabled:
+            self._clear_strong_editor(
+                message="Откройте общую БД для редактирования словаря Стронга.",
+            )
+        elif self.selected_strong_index is None:
+            self._clear_strong_editor()
+
     def _update_ui_availability(self) -> None:
         has_loaded_db = self.connection is not None and self.current_db_path is not None
         has_common_db = self.common_connection is not None and self.common_db_path is not None
@@ -508,19 +1053,21 @@ class TopicContentTool(tk.Tk):
         self._set_editor_controls_enabled(
             localized_enabled=has_loaded_db,
             resources_enabled=has_common_db,
+            strong_enabled=has_common_db,
         )
 
     def _build_topics_tab(self, parent: ttk.Frame) -> None:
         parent.columnconfigure(0, weight=1)
         parent.rowconfigure(0, weight=1)
 
-        pane = ttk.Panedwindow(parent, orient="horizontal")
+        pane = self._new_split_pane(parent)
         pane.grid(row=0, column=0, sticky="nsew")
 
         left = ttk.Frame(pane, padding=8)
         right = ttk.Frame(pane, padding=8)
-        pane.add(left, weight=2)
-        pane.add(right, weight=3)
+        pane.add(left, stretch="always")
+        pane.add(right, stretch="always")
+        self._set_initial_split(pane, ratio=0.5)
 
         left.columnconfigure(0, weight=1)
         left.rowconfigure(0, weight=1)
@@ -612,13 +1159,13 @@ class TopicContentTool(tk.Tk):
         topic_actions.grid(row=6, column=1, sticky="w")
         self.btn_apply_topic = ttk.Button(
             topic_actions,
-            **self._button_kwargs("apply", "Применить к записи"),
+            **self._button_kwargs("save", "Сохранить"),
             command=self._apply_topic_changes,
         )
         self.btn_apply_topic.pack(side="left")
         self.btn_cancel_topic = ttk.Button(
             topic_actions,
-            **self._button_kwargs("cancel", "Отменить изменения"),
+            **self._button_kwargs("cancel", "Отменить"),
             command=self._reload_selected_topic,
         )
         self.btn_cancel_topic.pack(side="left", padx=(8, 0))
@@ -627,13 +1174,14 @@ class TopicContentTool(tk.Tk):
         parent.columnconfigure(0, weight=1)
         parent.rowconfigure(0, weight=1)
 
-        pane = ttk.Panedwindow(parent, orient="horizontal")
+        pane = self._new_split_pane(parent)
         pane.grid(row=0, column=0, sticky="nsew")
 
         left = ttk.Frame(pane, padding=8)
         right = ttk.Frame(pane, padding=8)
-        pane.add(left, weight=2)
-        pane.add(right, weight=4)
+        pane.add(left, stretch="always")
+        pane.add(right, stretch="always")
+        self._set_initial_split(pane, ratio=0.5)
 
         left.columnconfigure(0, weight=1)
         left.rowconfigure(0, weight=1)
@@ -715,13 +1263,13 @@ class TopicContentTool(tk.Tk):
         text_actions.grid(row=3, column=0, sticky="w", pady=(8, 0))
         self.btn_apply_text = ttk.Button(
             text_actions,
-            **self._button_kwargs("apply", "Применить к записи"),
+            **self._button_kwargs("save", "Сохранить"),
             command=self._apply_text_changes,
         )
         self.btn_apply_text.pack(side="left")
         self.btn_cancel_text = ttk.Button(
             text_actions,
-            **self._button_kwargs("cancel", "Отменить изменения"),
+            **self._button_kwargs("cancel", "Отменить"),
             command=self._reload_selected_text,
         )
         self.btn_cancel_text.pack(side="left", padx=(8, 0))
@@ -730,13 +1278,14 @@ class TopicContentTool(tk.Tk):
         parent.columnconfigure(0, weight=1)
         parent.rowconfigure(0, weight=1)
 
-        pane = ttk.Panedwindow(parent, orient="horizontal")
+        pane = self._new_split_pane(parent)
         pane.grid(row=0, column=0, sticky="nsew")
 
         left = ttk.Frame(pane, padding=8)
         right = ttk.Frame(pane, padding=8)
-        pane.add(left, weight=2)
-        pane.add(right, weight=3)
+        pane.add(left, stretch="always")
+        pane.add(right, stretch="always")
+        self._set_initial_split(pane, ratio=0.5)
 
         left.columnconfigure(0, weight=1)
         left.rowconfigure(0, weight=1)
@@ -784,7 +1333,7 @@ class TopicContentTool(tk.Tk):
         self.btn_open_resource.pack(side="left", padx=(8, 0))
         self.btn_export_resource = ttk.Button(
             resources_buttons,
-            **self._button_kwargs("save", "Сохранить как"),
+            **self._button_kwargs("publish", "Экспорт..."),
             command=self._export_resource_to_file,
         )
         self.btn_export_resource.pack(side="left", padx=(8, 0))
@@ -817,13 +1366,13 @@ class TopicContentTool(tk.Tk):
         self.btn_pick_resource_file.pack(side="left")
         self.btn_apply_resource = ttk.Button(
             resource_actions,
-            **self._button_kwargs("apply", "Применить к ресурсу"),
+            **self._button_kwargs("save", "Сохранить"),
             command=self._apply_resource_changes,
         )
         self.btn_apply_resource.pack(side="left", padx=(8, 0))
         self.btn_cancel_resource = ttk.Button(
             resource_actions,
-            **self._button_kwargs("cancel", "Отменить изменения"),
+            **self._button_kwargs("cancel", "Отменить"),
             command=self._reload_selected_resource,
         )
         self.btn_cancel_resource.pack(side="left", padx=(8, 0))
@@ -869,8 +1418,12 @@ class TopicContentTool(tk.Tk):
                 key = self._display_key_for_db(db_path)
                 self.db_files[key] = db_path
 
+        self._rebuild_strong_tree_columns()
+        self._rebuild_strong_localized_editors()
+
         self._open_common_connection()
         self._load_common_resources()
+        self._load_strong_rows()
         self._update_section_db_labels()
 
         values = list(self.db_files.keys())
@@ -892,6 +1445,7 @@ class TopicContentTool(tk.Tk):
             if initial_select:
                 self._load_db(self.db_files[previous])
             else:
+                self._load_strong_rows()
                 self._update_ui_availability()
                 self._update_section_db_labels()
                 self._update_file_info()
@@ -931,7 +1485,6 @@ class TopicContentTool(tk.Tk):
         self._set_dirty(False)
         self._update_section_db_labels()
         self._update_file_info()
-        self._set_status(f"Открыта БД: {db_path.name}")
         self._update_ui_availability()
 
     def _open_common_connection(self) -> None:
@@ -986,6 +1539,11 @@ class TopicContentTool(tk.Tk):
               sort_order INTEGER NOT NULL DEFAULT 0,
               is_visible INTEGER NOT NULL DEFAULT 1
             );
+
+            CREATE TABLE IF NOT EXISTS greek_descs (
+              id INTEGER NOT NULL PRIMARY KEY,
+              "desc" TEXT NOT NULL
+            );
             """
         )
         self.connection.commit()
@@ -993,6 +1551,15 @@ class TopicContentTool(tk.Tk):
     def _ensure_common_schema_on_connection(self, connection: sqlite3.Connection) -> None:
         connection.executescript(
             """
+            CREATE TABLE IF NOT EXISTS greek_words (
+              id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+              word TEXT NOT NULL,
+              category TEXT NOT NULL,
+              synonyms TEXT NOT NULL,
+              origin TEXT NOT NULL,
+              usage TEXT NOT NULL
+            );
+
             CREATE TABLE IF NOT EXISTS common_resources (
               key TEXT NOT NULL PRIMARY KEY,
               file_name TEXT NOT NULL,
@@ -1035,6 +1602,7 @@ class TopicContentTool(tk.Tk):
         self.topic_texts = [TopicTextRow(route=row["route"], markdown=row["markdown"]) for row in text_rows]
 
         self._load_common_resources()
+        self._load_strong_rows()
         self._refresh_topics_tree()
         self._refresh_texts_list()
         self._refresh_topic_route_options()
@@ -1048,6 +1616,10 @@ class TopicContentTool(tk.Tk):
         self.common_resources.clear()
         self._refresh_resources_tree()
         self._clear_resource_editor()
+        self.strong_rows.clear()
+        self.strong_filtered_indices.clear()
+        self._refresh_strong_tree()
+        self._clear_strong_editor()
         self._refresh_topic_icon_options()
 
     def _clear_local_views(self) -> None:
@@ -1156,6 +1728,502 @@ class TopicContentTool(tk.Tk):
                 ),
             )
 
+    def _on_strong_filter_changed(self, *_args: object) -> None:
+        if not hasattr(self, "strong_tree"):
+            return
+        selected_id: int | None = None
+        if self.selected_strong_index is not None and 0 <= self.selected_strong_index < len(self.strong_rows):
+            selected_id = self.strong_rows[self.selected_strong_index].id
+        self._apply_strong_filter(keep_selected_id=selected_id)
+
+    def _clear_strong_filter(self) -> None:
+        self.strong_filter_var.set("")
+        self.entry_strong_filter.focus_set()
+
+    def _set_text_widget_content(self, widget: tk.Text, value: str) -> None:
+        previous_state = str(widget.cget("state"))
+        if previous_state == "disabled":
+            widget.configure(state="normal")
+        widget.delete("1.0", tk.END)
+        if value:
+            widget.insert("1.0", value)
+        if previous_state == "disabled":
+            widget.configure(state="disabled")
+
+    def _text_widget_content(self, widget: tk.Text) -> str:
+        return widget.get("1.0", "end-1c")
+
+    def _load_localized_desc_from_db(self, db_path: Path, strong_id: int) -> tuple[bool, str, str | None]:
+        if not db_path.exists():
+            return False, "", "Файл БД не найден."
+
+        local_connection: sqlite3.Connection | None = None
+        try:
+            use_active_connection = (
+                self.connection is not None
+                and self.current_db_path is not None
+                and db_path.resolve() == self.current_db_path.resolve()
+            )
+            if use_active_connection:
+                assert self.connection is not None
+                con = self.connection
+            else:
+                local_connection = sqlite3.connect(db_path)
+                local_connection.row_factory = sqlite3.Row
+                con = local_connection
+
+            row = con.execute(
+                """
+                SELECT "desc"
+                FROM greek_descs
+                WHERE id = ?
+                LIMIT 1
+                """,
+                (strong_id,),
+            ).fetchone()
+        except sqlite3.DatabaseError as exc:
+            return False, "", f"Ошибка чтения: {exc}"
+        finally:
+            if local_connection is not None:
+                local_connection.close()
+
+        if row is None:
+            return False, "", None
+        return True, (row["desc"] or ""), None
+
+    def _upsert_localized_desc_in_db(self, db_path: Path, strong_id: int, desc: str) -> None:
+        use_active_connection = (
+            self.connection is not None
+            and self.current_db_path is not None
+            and db_path.resolve() == self.current_db_path.resolve()
+        )
+        local_connection: sqlite3.Connection | None = None
+        try:
+            if use_active_connection:
+                assert self.connection is not None
+                con = self.connection
+            else:
+                local_connection = sqlite3.connect(db_path)
+                local_connection.row_factory = sqlite3.Row
+                con = local_connection
+
+            with con:
+                con.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS greek_descs (
+                      id INTEGER NOT NULL PRIMARY KEY,
+                      "desc" TEXT NOT NULL
+                    )
+                    """
+                )
+                con.execute(
+                    """
+                    INSERT INTO greek_descs(id, "desc")
+                    VALUES(?, ?)
+                    ON CONFLICT(id) DO UPDATE SET
+                        "desc" = excluded."desc"
+                    """,
+                    (strong_id, desc),
+                )
+        finally:
+            if local_connection is not None:
+                local_connection.close()
+
+    def _restore_localized_desc_in_db(
+        self,
+        db_path: Path,
+        strong_id: int,
+        *,
+        existed: bool,
+        desc: str,
+    ) -> None:
+        use_active_connection = (
+            self.connection is not None
+            and self.current_db_path is not None
+            and db_path.resolve() == self.current_db_path.resolve()
+        )
+        local_connection: sqlite3.Connection | None = None
+        try:
+            if use_active_connection:
+                assert self.connection is not None
+                con = self.connection
+            else:
+                local_connection = sqlite3.connect(db_path)
+                local_connection.row_factory = sqlite3.Row
+                con = local_connection
+
+            with con:
+                con.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS greek_descs (
+                      id INTEGER NOT NULL PRIMARY KEY,
+                      "desc" TEXT NOT NULL
+                    )
+                    """
+                )
+                if existed:
+                    con.execute(
+                        """
+                        INSERT INTO greek_descs(id, "desc")
+                        VALUES(?, ?)
+                        ON CONFLICT(id) DO UPDATE SET
+                            "desc" = excluded."desc"
+                        """,
+                        (strong_id, desc),
+                    )
+                else:
+                    con.execute("DELETE FROM greek_descs WHERE id = ?", (strong_id,))
+        finally:
+            if local_connection is not None:
+                local_connection.close()
+
+    def _load_strong_rows(self) -> None:
+        selected_id: int | None = None
+        if self.selected_strong_index is not None and 0 <= self.selected_strong_index < len(self.strong_rows):
+            selected_id = self.strong_rows[self.selected_strong_index].id
+
+        self.strong_rows.clear()
+        common_rows: list[sqlite3.Row] = []
+        if self.common_connection is not None:
+            try:
+                common_rows = self.common_connection.execute(
+                    """
+                    SELECT id, word, category, synonyms, origin, usage
+                    FROM greek_words
+                    ORDER BY id ASC
+                    """
+                ).fetchall()
+            except sqlite3.DatabaseError:
+                common_rows = []
+
+        self.strong_desc_presence_by_lang = {}
+        localized_search_texts_by_id: dict[int, list[str]] = {}
+        for lang, db_path in self._localized_db_entries():
+            ids: set[int] = set()
+            use_active_connection = (
+                self.connection is not None
+                and self.current_db_path is not None
+                and db_path.resolve() == self.current_db_path.resolve()
+            )
+            local_connection: sqlite3.Connection | None = None
+            try:
+                if use_active_connection:
+                    assert self.connection is not None
+                    con = self.connection
+                else:
+                    local_connection = sqlite3.connect(db_path)
+                    local_connection.row_factory = sqlite3.Row
+                    con = local_connection
+
+                desc_rows = con.execute(
+                    """
+                    SELECT id, "desc"
+                    FROM greek_descs
+                    ORDER BY id ASC
+                    """
+                ).fetchall()
+                for desc_row in desc_rows:
+                    strong_id = int(desc_row["id"])
+                    ids.add(strong_id)
+                    desc_text = (desc_row["desc"] or "").strip()
+                    if not desc_text:
+                        continue
+                    localized_search_texts_by_id.setdefault(strong_id, []).append(desc_text.lower())
+            except sqlite3.DatabaseError:
+                ids = set()
+            finally:
+                if local_connection is not None:
+                    local_connection.close()
+            self.strong_desc_presence_by_lang[lang] = ids
+
+        self.strong_rows = [
+            StrongRow(
+                id=int(row["id"]),
+                word=row["word"] or "",
+                category=row["category"] or "",
+                synonyms=row["synonyms"] or "",
+                origin=row["origin"] or "",
+                usage=row["usage"] or "",
+                localized_flags={
+                    lang: int(row["id"]) in ids
+                    for lang, ids in self.strong_desc_presence_by_lang.items()
+                },
+                localized_search=" ".join(localized_search_texts_by_id.get(int(row["id"]), [])),
+            )
+            for row in common_rows
+        ]
+
+        self._apply_strong_filter(keep_selected_id=selected_id)
+
+    def _refresh_strong_tree(self) -> None:
+        self.strong_tree.delete(*self.strong_tree.get_children())
+        for view_idx, row_idx in enumerate(self.strong_filtered_indices):
+            row = self.strong_rows[row_idx]
+            synonyms = re.sub(r"\s+", " ", row.synonyms.strip())
+            origin = re.sub(r"\s+", " ", row.origin.strip())
+            values: list[str] = [
+                f"G{row.id}",
+                row.word.strip(),
+                synonyms,
+                origin,
+                self._format_strong_category_display(row.category),
+            ]
+            for lang in self.strong_tree_lang_columns:
+                values.append("✓" if row.localized_flags.get(lang, False) else "-")
+            self.strong_tree.insert(
+                "",
+                "end",
+                iid=str(view_idx),
+                values=tuple(values),
+            )
+
+    def _apply_strong_filter(self, *, keep_selected_id: int | None = None) -> None:
+        query = self.strong_filter_var.get().strip().lower()
+        self.strong_filtered_indices = []
+
+        for idx, row in enumerate(self.strong_rows):
+            if not query:
+                self.strong_filtered_indices.append(idx)
+                continue
+            haystack = " ".join(
+                [
+                    str(row.id),
+                    f"g{row.id}",
+                    row.word.lower(),
+                    row.category.lower(),
+                    row.localized_search,
+                ]
+            )
+            if query in haystack:
+                self.strong_filtered_indices.append(idx)
+
+        self._refresh_strong_tree()
+        if keep_selected_id is not None and self._select_strong_by_id(keep_selected_id):
+            return
+        if self.strong_filtered_indices:
+            first_idx = self.strong_filtered_indices[0]
+            self.strong_tree.selection_set("0")
+            self.strong_tree.focus("0")
+            self.strong_tree.see("0")
+            self.selected_strong_index = first_idx
+            self._reload_selected_strong()
+            return
+
+        if self.common_connection is None:
+            self._clear_strong_editor(message="Общая БД не подключена.")
+            return
+        if self.strong_rows and query:
+            self._clear_strong_editor(message="По фильтру ничего не найдено.")
+            return
+        self._clear_strong_editor(message="Нет записей в таблице greek_words.")
+
+    def _on_strong_selected(self, _event: object) -> None:
+        selection = self.strong_tree.selection()
+        if not selection:
+            self.selected_strong_index = None
+            return
+        view_idx = int(selection[0])
+        if view_idx < 0 or view_idx >= len(self.strong_filtered_indices):
+            self.selected_strong_index = None
+            self._clear_strong_editor()
+            return
+        self.selected_strong_index = self.strong_filtered_indices[view_idx]
+        self._reload_selected_strong()
+
+    def _clear_strong_editor(self, *, message: str = "Локализованная часть: выберите запись из списка.") -> None:
+        self.selected_strong_index = None
+        self.strong_id_var.set("-")
+        self.strong_word_var.set("")
+        self.strong_category_var.set("")
+        self._sync_strong_category_visuals()
+        self.strong_synonyms_var.set("")
+        self._set_text_widget_content(self.strong_origin_text, "")
+        self._set_text_widget_content(self.strong_usage_text, "")
+        for text_widget in self.strong_desc_texts_by_lang.values():
+            self._set_text_widget_content(text_widget, "")
+
+    def _reload_selected_strong(self) -> None:
+        if self.selected_strong_index is None:
+            self._clear_strong_editor()
+            return
+        if self.selected_strong_index < 0 or self.selected_strong_index >= len(self.strong_rows):
+            self._clear_strong_editor()
+            return
+
+        row = self.strong_rows[self.selected_strong_index]
+        self.strong_id_var.set(f"G{row.id}")
+        self.strong_word_var.set(row.word)
+        self.strong_category_var.set(row.category)
+        self._sync_strong_category_visuals()
+        self.strong_synonyms_var.set(row.synonyms)
+        self._set_text_widget_content(self.strong_origin_text, row.origin)
+        self._set_text_widget_content(self.strong_usage_text, row.usage)
+
+        for lang, db_path in self.strong_local_db_paths_by_lang.items():
+            found, desc, error = self._load_localized_desc_from_db(db_path, row.id)
+            text_widget = self.strong_desc_texts_by_lang.get(lang)
+            if text_widget is None:
+                continue
+            if error is not None:
+                self._set_text_widget_content(text_widget, f"[Ошибка чтения] {error}")
+            elif not found:
+                self._set_text_widget_content(text_widget, "")
+            else:
+                self._set_text_widget_content(text_widget, desc)
+
+    def _select_strong_by_id(self, strong_id: int) -> bool:
+        for view_idx, row_idx in enumerate(self.strong_filtered_indices):
+            if self.strong_rows[row_idx].id != strong_id:
+                continue
+            iid = str(view_idx)
+            self.strong_tree.selection_set(iid)
+            self.strong_tree.focus(iid)
+            self.strong_tree.see(iid)
+            self.selected_strong_index = row_idx
+            self._reload_selected_strong()
+            return True
+        return False
+
+    def _apply_strong_changes(self) -> None:
+        if self.selected_strong_index is None:
+            messagebox.showinfo("Нет выбора", "Сначала выберите статью словаря Стронга.", parent=self)
+            return
+        if self.selected_strong_index < 0 or self.selected_strong_index >= len(self.strong_rows):
+            self._clear_strong_editor()
+            return
+        if self.common_connection is None or self.common_db_path is None:
+            messagebox.showwarning("Нет общей БД", "Общая БД недоступна.", parent=self)
+            return
+
+        row = self.strong_rows[self.selected_strong_index]
+        strong_id = row.id
+
+        word = self.strong_word_var.get().strip()
+        category = self.strong_category_var.get().strip()
+        synonyms = self.strong_synonyms_var.get().strip()
+        origin = self._text_widget_content(self.strong_origin_text).strip()
+        usage = self._text_widget_content(self.strong_usage_text).strip()
+        localized_desc_values: dict[str, str] = {
+            lang: self._text_widget_content(text_widget).strip()
+            for lang, text_widget in self.strong_desc_texts_by_lang.items()
+        }
+
+        if not word:
+            messagebox.showwarning("Ошибка", "Поле word не может быть пустым.", parent=self)
+            return
+
+        old_common = self.common_connection.execute(
+            """
+            SELECT word, category, synonyms, origin, usage
+            FROM greek_words
+            WHERE id = ?
+            LIMIT 1
+            """,
+            (strong_id,),
+        ).fetchone()
+
+        try:
+            with self.common_connection:
+                updated = self.common_connection.execute(
+                    """
+                    UPDATE greek_words
+                    SET word = ?, category = ?, synonyms = ?, origin = ?, usage = ?
+                    WHERE id = ?
+                    """,
+                    (word, category, synonyms, origin, usage, strong_id),
+                )
+                if updated.rowcount == 0:
+                    self.common_connection.execute(
+                        """
+                        INSERT INTO greek_words(id, word, category, synonyms, origin, usage)
+                        VALUES(?, ?, ?, ?, ?, ?)
+                        """,
+                        (strong_id, word, category, synonyms, origin, usage),
+                    )
+        except sqlite3.DatabaseError as exc:
+            messagebox.showerror(
+                "Ошибка сохранения",
+                f"Не удалось сохранить общую часть словаря:\n{exc}",
+                parent=self,
+            )
+            return
+
+        old_localized_descs: dict[str, tuple[bool, str]] = {}
+        for lang, db_path in self.strong_local_db_paths_by_lang.items():
+            found, desc_old, _error = self._load_localized_desc_from_db(db_path, strong_id)
+            old_localized_descs[lang] = (found, desc_old if found else "")
+
+        localized_saved_order: list[str] = []
+        try:
+            for lang, db_path in self.strong_local_db_paths_by_lang.items():
+                self._upsert_localized_desc_in_db(
+                    db_path,
+                    strong_id,
+                    localized_desc_values.get(lang, ""),
+                )
+                localized_saved_order.append(lang)
+        except sqlite3.DatabaseError as local_exc:
+            rollback_ok = True
+            try:
+                with self.common_connection:
+                    if old_common is None:
+                        self.common_connection.execute("DELETE FROM greek_words WHERE id = ?", (strong_id,))
+                    else:
+                        self.common_connection.execute(
+                            """
+                            UPDATE greek_words
+                            SET word = ?, category = ?, synonyms = ?, origin = ?, usage = ?
+                            WHERE id = ?
+                            """,
+                            (
+                                old_common["word"],
+                                old_common["category"],
+                                old_common["synonyms"],
+                                old_common["origin"],
+                                old_common["usage"],
+                                strong_id,
+                            ),
+                        )
+            except sqlite3.DatabaseError:
+                rollback_ok = False
+
+            for lang in reversed(localized_saved_order):
+                db_path = self.strong_local_db_paths_by_lang.get(lang)
+                if db_path is None:
+                    continue
+                existed, old_desc = old_localized_descs.get(lang, (False, ""))
+                try:
+                    self._restore_localized_desc_in_db(
+                        db_path,
+                        strong_id,
+                        existed=existed,
+                        desc=old_desc,
+                    )
+                except sqlite3.DatabaseError:
+                    rollback_ok = False
+
+            rollback_note = (
+                "Общая и локализованные части были откатены."
+                if rollback_ok
+                else "Не удалось полностью откатить изменения. Проверьте запись вручную."
+            )
+            messagebox.showerror(
+                "Ошибка сохранения",
+                f"Не удалось сохранить локализованную часть словаря:\n{local_exc}\n\n{rollback_note}",
+                parent=self,
+            )
+            return
+
+        self._load_strong_rows()
+        self._select_strong_by_id(strong_id)
+        self._update_file_info()
+        self._set_status(
+            (
+                f"Словарная статья G{strong_id} сохранена "
+                f"в {self.common_db_path.stem} и {len(self.strong_local_db_paths_by_lang)} локализованных БД."
+            )
+        )
+
     def _on_topic_route_changed(self, _event: object | None = None) -> None:
         route = self._route_value_from_editor()
         self._update_topic_route_visual_state(route, selection_exists=self.selected_topic_index is not None)
@@ -1221,16 +2289,114 @@ class TopicContentTool(tk.Tk):
         self.topic_visible_var.set(True)
         self._update_topic_route_visual_state("", selection_exists=False)
 
-    def _add_topic(self) -> None:
-        route = simpledialog.askstring(
-            "Новая статья",
-            "Введите маршрут для новой статьи главного окна.\n"
-            "Оставьте пустым для варианта (без статьи):",
-            parent=self,
+    def _ask_topic_route_for_new_topic(self) -> str | None:
+        used_routes = {row.route for row in self.topics if row.route.strip()}
+        available_routes = sorted(
+            {
+                row.route
+                for row in self.topic_texts
+                if row.route.strip() and row.route not in used_routes
+            }
         )
+        if not available_routes:
+            messagebox.showinfo(
+                "Нет доступных статей",
+                "Нет свободных маршрутов. Сначала добавьте статью во вкладке 'Все статьи'.",
+                parent=self,
+            )
+            return None
+
+        dialog = tk.Toplevel(self)
+        dialog.title("Выбор статьи")
+        dialog.transient(self)
+        dialog.grab_set()
+        dialog.resizable(False, False)
+
+        container = ttk.Frame(dialog, padding=12)
+        container.grid(row=0, column=0, sticky="nsew")
+        dialog.columnconfigure(0, weight=1)
+        dialog.rowconfigure(0, weight=1)
+        container.columnconfigure(0, weight=1)
+
+        ttk.Label(container, text="Выберите статью из списка:").grid(
+            row=0,
+            column=0,
+            sticky="w",
+            pady=(0, 6),
+        )
+        route_var = tk.StringVar(value=available_routes[0])
+        route_combo = ttk.Combobox(
+            container,
+            textvariable=route_var,
+            values=available_routes,
+            state="readonly",
+        )
+        route_combo.grid(row=1, column=0, sticky="ew")
+
+        result: dict[str, str | None] = {"route": None}
+
+        def apply_selection() -> None:
+            value = route_var.get().strip()
+            if not value:
+                return
+            result["route"] = value
+            dialog.destroy()
+
+        def cancel_selection() -> None:
+            dialog.destroy()
+
+        actions = ttk.Frame(container)
+        actions.grid(row=2, column=0, sticky="e", pady=(10, 0))
+        ttk.Button(actions, text="Выбрать", command=apply_selection).pack(side="left")
+        ttk.Button(actions, text="Отмена", command=cancel_selection).pack(side="left", padx=(8, 0))
+
+        self._fit_and_center_toplevel(
+            dialog,
+            min_width=420,
+            max_width=620,
+            min_height=150,
+            max_height=240,
+        )
+        dialog.protocol("WM_DELETE_WINDOW", cancel_selection)
+        dialog.bind("<Escape>", lambda _e: cancel_selection())
+        dialog.bind("<Return>", lambda _e: apply_selection())
+        route_combo.focus_set()
+        self.wait_window(dialog)
+        return result["route"]
+
+    def _restore_local_rows_after_save_error(self) -> None:
+        if self.connection is None:
+            return
+        try:
+            self._load_rows()
+        except sqlite3.DatabaseError as exc:
+            messagebox.showerror(
+                "Ошибка чтения",
+                f"Не удалось перечитать локализованную БД после ошибки сохранения:\n{exc}",
+                parent=self,
+            )
+            self._clear_local_views()
+
+    def _save_articles_immediately(
+        self,
+        *,
+        success_status: str,
+        topic_route: str | None = None,
+        text_route: str | None = None,
+    ) -> bool:
+        if self._save_all(status_text=success_status):
+            return True
+        self._restore_local_rows_after_save_error()
+        if topic_route is not None:
+            self._select_topic_by_route(topic_route)
+        if text_route is not None:
+            self._select_text_by_route(text_route)
+        return False
+
+    def _add_topic(self) -> None:
+        route = self._ask_topic_route_for_new_topic()
         if route is None:
             return
-        route = route.strip()
         if any(t.route == route for t in self.topics):
             duplicate_route = self._display_route_value(route)
             messagebox.showwarning(
@@ -1255,9 +2421,12 @@ class TopicContentTool(tk.Tk):
         self._refresh_topics_tree()
         self._refresh_topic_route_options()
         self._select_topic_by_route(route)
-        self._set_dirty(True)
-        self._set_status(
-            f"Добавлена статья с маршрутом '{self._display_route_value(route)}' в список главного окна."
+        self._save_articles_immediately(
+            success_status=(
+                "Статья с маршрутом "
+                f"'{self._display_route_value(route)}' добавлена в список главного окна."
+            ),
+            topic_route=route,
         )
 
     def _delete_topic(self) -> None:
@@ -1277,9 +2446,11 @@ class TopicContentTool(tk.Tk):
         del self.topics[self.selected_topic_index]
         self._refresh_topics_tree()
         self._clear_topic_editor()
-        self._set_dirty(True)
-        self._set_status(
-            f"Статья с маршрутом '{self._display_route_value(row.route)}' удалена из списка главного окна."
+        self._save_articles_immediately(
+            success_status=(
+                "Статья с маршрутом "
+                f"'{self._display_route_value(row.route)}' удалена из списка главного окна."
+            )
         )
 
     def _apply_topic_changes(self) -> None:
@@ -1325,12 +2496,12 @@ class TopicContentTool(tk.Tk):
         self._refresh_topic_route_options()
         self._select_topic_by_route(route)
         self._update_topic_route_visual_state(route, selection_exists=True)
-        self._set_dirty(True)
-        self._set_status(
-            (
+        self._save_articles_immediately(
+            success_status=(
                 "Изменения для статьи с маршрутом "
-                f"'{self._display_route_value(route)}' применены в списке главного окна."
-            )
+                f"'{self._display_route_value(route)}' сохранены."
+            ),
+            topic_route=route,
         )
 
     def _sort_topics(self) -> None:
@@ -1397,8 +2568,10 @@ class TopicContentTool(tk.Tk):
         self._refresh_texts_list()
         self._refresh_topic_route_options()
         self._select_text_by_route(route)
-        self._set_dirty(True)
-        self._set_status(f"Добавлена статья с маршрутом '{route}' в общий список статей.")
+        self._save_articles_immediately(
+            success_status=f"Статья с маршрутом '{route}' добавлена в общий список статей.",
+            text_route=route,
+        )
 
     def _delete_text(self) -> None:
         if self.selected_text_index is None:
@@ -1414,8 +2587,9 @@ class TopicContentTool(tk.Tk):
         self._refresh_texts_list()
         self._refresh_topic_route_options()
         self._clear_text_editor()
-        self._set_dirty(True)
-        self._set_status(f"Статья с маршрутом '{row.route}' удалена из общего списка статей.")
+        self._save_articles_immediately(
+            success_status=f"Статья с маршрутом '{row.route}' удалена из общего списка статей."
+        )
 
     def _apply_text_changes(self) -> None:
         if self.selected_text_index is None:
@@ -1444,8 +2618,10 @@ class TopicContentTool(tk.Tk):
         self._refresh_topic_route_options()
         self._select_text_by_route(route)
         self._refresh_preview()
-        self._set_dirty(True)
-        self._set_status(f"Изменения для статьи с маршрутом '{route}' применены.")
+        self._save_articles_immediately(
+            success_status=f"Изменения для статьи с маршрутом '{route}' сохранены.",
+            text_route=route,
+        )
 
     def _sort_topic_texts(self) -> None:
         self.topic_texts.sort(key=lambda item: item.route)
@@ -1519,7 +2695,7 @@ class TopicContentTool(tk.Tk):
             self.resources_tree.selection_remove(*selection)
         self.selected_resource_index = None
         self.selected_resource_original_key = None
-        self._set_status("Новый ресурс подготовлен. Проверьте поля и нажмите 'Применить к ресурсу'.")
+        self._set_status("Новый ресурс подготовлен. Проверьте поля и нажмите 'Сохранить'.")
 
     def _pick_file_for_resource_editor(self) -> None:
         selected = filedialog.askopenfilename(
@@ -1530,7 +2706,7 @@ class TopicContentTool(tk.Tk):
         if not selected:
             return
         if self._load_resource_file_into_editor(Path(selected), suggest_new_key=False):
-            self._set_status("Файл ресурса обновлен. Нажмите 'Применить к ресурсу' для сохранения.")
+            self._set_status("Файл ресурса обновлен. Нажмите 'Сохранить'.")
 
     def _load_resource_file_into_editor(self, path: Path, *, suggest_new_key: bool) -> bool:
         try:
@@ -1653,20 +2829,29 @@ class TopicContentTool(tk.Tk):
                 if topic.id_icon == old_key:
                     topic.id_icon = key
                     affected_topics += 1
-            if affected_topics > 0:
-                self._set_dirty(True)
-                if self.selected_topic_index is not None:
-                    self._reload_selected_topic()
+        topics_sync_failed = False
+        if affected_topics > 0:
+            if self.selected_topic_index is not None:
+                self._reload_selected_topic()
+            if self.connection is not None and self.current_db_path is not None:
+                if not self._save_all(silent=True):
+                    topics_sync_failed = True
+                    self._restore_local_rows_after_save_error()
 
         self._load_common_resources()
         self._select_resource_by_key(key)
         self._update_file_info()
         self._set_status(
             (
-                f"Ресурс '{key}' сохранен в {self.common_db_path.name}."
+                f"Ресурс '{key}' сохранен в {self.common_db_path.stem}."
                 if affected_topics == 0
                 else (
                     f"Ресурс '{key}' сохранен. Обновлено иконок статей главного окна: {affected_topics}."
+                    if not topics_sync_failed
+                    else (
+                        f"Ресурс '{key}' сохранен, но обновление иконок "
+                        "в локализованной БД не удалось."
+                    )
                 )
             )
         )
@@ -1704,10 +2889,14 @@ class TopicContentTool(tk.Tk):
             if topic.id_icon == row.key:
                 topic.id_icon = ""
                 affected_topics += 1
+        topics_sync_failed = False
         if affected_topics > 0:
-            self._set_dirty(True)
             if self.selected_topic_index is not None:
                 self._reload_selected_topic()
+            if self.connection is not None and self.current_db_path is not None:
+                if not self._save_all(silent=True):
+                    topics_sync_failed = True
+                    self._restore_local_rows_after_save_error()
 
         self._load_common_resources()
         self._clear_resource_editor()
@@ -1715,7 +2904,11 @@ class TopicContentTool(tk.Tk):
         suffix = (
             ""
             if affected_topics == 0
-            else f" Иконки сброшены у {affected_topics} статьи(ей) главного окна."
+            else (
+                f" Иконки сброшены у {affected_topics} статьи(ей) главного окна."
+                if not topics_sync_failed
+                else " Но сохранить изменения иконок в локализованной БД не удалось."
+            )
         )
         self._set_status(f"Ресурс '{row.key}' удален.{suffix}")
 
@@ -1898,7 +3091,7 @@ class TopicContentTool(tk.Tk):
             self.resource_preview_image_label.configure(
                 text=(
                     "Для этого типа файла используйте кнопки\n"
-                    "'Открыть ресурс' или 'Сохранить как'."
+                    "'Открыть ресурс' или 'Экспорт...'."
                 )
             )
 
@@ -2141,7 +3334,7 @@ class TopicContentTool(tk.Tk):
         )
         return f"data:image/svg+xml;utf8,{urllib.parse.quote(svg)}"
 
-    def _save_all(self) -> bool:
+    def _save_all(self, *, status_text: str | None = None, silent: bool = False) -> bool:
         if self.connection is None or self.current_db_path is None:
             messagebox.showwarning("Нет БД", "Сначала откройте локализованную БД.", parent=self)
             return False
@@ -2181,7 +3374,8 @@ class TopicContentTool(tk.Tk):
 
         self._set_dirty(False)
         self._update_file_info()
-        self._set_status(f"Сохранено: {self.current_db_path.name}")
+        if not silent:
+            self._set_status(status_text or f"Сохранено: {self.current_db_path.stem}")
         return True
 
     def _copy_to_web_db(self) -> None:
@@ -2359,44 +3553,96 @@ class TopicContentTool(tk.Tk):
         self.file_info_var.set(text)
 
     def _set_status_indicator(self, *, dirty_like: bool) -> None:
-        icon_key = "status_dirty" if dirty_like else "status_clean"
-        self.status_indicator_image = self.ui_icons.get(icon_key)
-        if self.status_indicator_image is not None:
-            self.dirty_indicator_label.configure(image=self.status_indicator_image, text="")
-        else:
-            indicator_color = self.ALERT_COLOR if dirty_like else self.OK_COLOR
-            self.dirty_indicator_label.configure(image="", text="●", fg=indicator_color)
+        _ = dirty_like
+        return
 
-    def _format_db_info(self, path: Path | None, *, title: str) -> str:
+    def _db_short_name(self, path: Path) -> str:
+        stem = path.stem
+        if stem == "revelation":
+            return "rev"
+        exact_lang = re.fullmatch(r"revelation_([A-Za-z0-9]{2})", stem)
+        if exact_lang is not None:
+            return f"_{exact_lang.group(1).lower()}"
+        if stem.startswith("revelation_"):
+            suffix = stem.split("_", maxsplit=1)[1].strip()
+            if suffix:
+                return f"_{suffix.lower()}"
+        return stem
+
+    def _format_db_info(self, path: Path | None) -> str:
         if path is None or not path.exists():
-            return f"{title}: -"
+            return "-"
         stat = path.stat()
         modified = dt.datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
         size_kb = stat.st_size / 1024
-        return f"{title}: {path} | Изменен: {modified} | Размер: {size_kb:.1f} KB"
+        return f"{self._db_short_name(path)} {modified} 💾 {size_kb:.1f} KB"
+
+    def _compose_db_info_line(self, paths: list[Path | None]) -> str:
+        parts: list[str] = []
+        seen: set[str] = set()
+        for path in paths:
+            if path is None:
+                continue
+            resolved = str(path.resolve())
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            if not path.exists():
+                continue
+            parts.append(self._format_db_info(path))
+        return " | ".join(parts) if parts else "-"
 
     def _update_file_info(self) -> None:
         self._update_section_db_labels()
         section = self._active_section_key()
         has_local = self.current_db_path is not None and self.current_db_path.exists()
         has_common = self.common_db_path is not None and self.common_db_path.exists()
+        localized_entries = self._localized_db_entries()
+        localized_paths = [db_path for _, db_path in localized_entries if db_path.exists()]
 
         if section == "articles":
-            self._set_status_indicator(dirty_like=self.dirty)
-            dirty_text = "есть" if self.dirty else "нет"
-            base = self._format_db_info(self.current_db_path, title="Локализованная БД")
-            self._set_file_info(f"{base} | Несохраненные изменения: {dirty_text}")
+            self._set_status_indicator(dirty_like=not has_local)
+            self._set_file_info(
+                self._compose_db_info_line(
+                    [
+                        self.current_db_path,
+                    ]
+                )
+            )
             return
 
         if section == "resources":
             self._set_status_indicator(dirty_like=not has_common)
-            self._set_file_info(self._format_db_info(self.common_db_path, title="Общая БД ресурсов"))
+            self._set_file_info(
+                self._compose_db_info_line(
+                    [
+                        self.common_db_path,
+                    ]
+                )
+            )
+            return
+
+        if section == "strong":
+            self._set_status_indicator(dirty_like=not (has_common and bool(localized_paths)))
+            self._set_file_info(
+                self._compose_db_info_line(
+                    [
+                        self.common_db_path,
+                        *localized_paths,
+                    ]
+                )
+            )
             return
 
         self._set_status_indicator(dirty_like=not (has_local and has_common))
-        local_part = self._format_db_info(self.current_db_path, title="Локализованная БД")
-        common_part = self._format_db_info(self.common_db_path, title="Общая БД")
-        self._set_file_info(f"{local_part} || {common_part}")
+        self._set_file_info(
+            self._compose_db_info_line(
+                [
+                    self.current_db_path,
+                    self.common_db_path,
+                ]
+            )
+        )
 
     def _on_close(self) -> None:
         if not self._allow_switch_when_dirty():
