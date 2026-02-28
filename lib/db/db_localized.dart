@@ -62,14 +62,6 @@ class LocalizedDB extends _$LocalizedDB {
             is_visible INTEGER NOT NULL DEFAULT 1
           )
         """);
-        await customStatement("""
-          INSERT INTO topics(route, name, description, id_icon, sort_order, is_visible)
-          SELECT tt.route, tt.route, '', 'code', 0, 1
-          FROM topic_texts tt
-          WHERE NOT EXISTS (
-            SELECT 1 FROM topics t WHERE t.route = tt.route
-          )
-        """);
       }
     },
   );
