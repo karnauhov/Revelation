@@ -79,6 +79,8 @@ class TopicContentTool(tk.Tk):
         "refresh": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAv0lEQVQ4y92TPQrCQBCFvybaxMpTmDQWwZ/Cs+UEUdyInV5ET6Gks7QULAJCdHEsDBLdXUzafNsN77Ezs2+hjYQsyMjJyZgTlNXYLvZYoZHK0Sg8YsQu3yMUKCb4+ExZc0c4IXaDQjgz/KqNyMu7DAI0xY8c4k9zBgmCcsothgPC2Cm3GK4IvSb7b2wwW/qDbeg3G4Sk7lohQqMZ1H24iAvC0pWkajT6zNjyQNjRcc1hhu9JSrdevG8cSQnb+INfa9dgs2rwKa8AAAAASUVORK5CYII=",
         "save": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAXklEQVQ4y2NgGLTAk+Exw38csB6bhkc4lePQAhLGBnBqIaQBQwthDf+poIEQHEoafjKUM0gAYTmQRZSGMrhoGXEaJOGikjTSQLKTiPL0I4KB+oj4DASCjxk8Bm3mBwATwvSdhoWVegAAAABJRU5ErkJggg==",
         "publish": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPElEQVQ4y2NgGDKgHghJUv4fCOtJU060FoRyorSgKieoBVM5Xi3YlRPhMGSlRIERqYF24D8eSB0NQxUAAMVCcIlDCOtfAAAAAElFTkSuQmCC",
+        "open_resource": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAC7klEQVR42uVVz4tURxD+qqt7friRRVkSDQQkDEpGBKHdjW6E0V0IGySSHN7J/Af5FwLjevIi/gMieH54kSXmoIuTQxh/PE/JRIJsEsghGLNRZpM37/XrLg/OhJmd3WT0oAc/KHivu6jvq6ruauBNBo1YFHH/+9WreAk0VX321ts6K3WJctObcl4XlSOpV/fXkhtP+3EFANTEJehbFEVcq902gLooO6TryuoXLiq/MvNqVfkr9XpUGo47TtBsDtZkK4vj2D98+E3W2TfzRRC5yoqnAbxFpCDAz51OvWg0Gv9WRo+pXl4OADA/f3rnE/NUvHNjZSwppf2jRy54vqxYfaZIGRHxAnoMLIeNDctjBFEUcRzHoX50YY6hz3X9P/PkmJjUSJYk4ADKiSQopmkv/i8IviuVK6d8UYwVZCSDWm2pRD67wCV13OXFhgA8aNYgOIi6gMyQYhAICqIDufNZ3isJ8O5mgoE6iuPYY/d6WYBjWZ5t+Irb703vnRx/7/U62wOVvlffNzMVRL5kNpmEsB6Cv2nK5Z0QXvyhvesTkFwFgCRJ/JYZsNZCBVIAquvck9/a7XR4P7jqx8boKwCMhz9FwoeJ1CIJCiD2nTtYHbhue4qkv1YJwQAga60BgP2zjSVj+GsAunC9zx/cabUB2TPcnlptqbxdicbAWgsASZLEHfhw8UTFVK4LUSgKf7pz79traDaVArlhbdPTf4SJCYZ9pCi+D8GvhDw/8+O91evW2h2D4/x/0JM4/ZS0HgP4dDAmgBU36VDZloBDMNZak6YpVatVSdP3CQCq1RUBYKy1SBWpFycQKJD4Tru9PrqRDP84ADg4t9B9fi6EJicg9IjU1AezJ89uauKQBlEECgB9JMGTbOM3Mq4bjYZutVqhPrfwlTGlZWYN0H9PcwkeeZb+7nw41O8TDd/8rd4DZa3lHu8+qTTNeu88BeItZAkEJEARQJce3L3552t9V8cRRWzX1ia5I0iSpNhclleKZ9KpP8l/B+AQAAAAAElFTkSuQmCC",
+        "replace_file": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAD/0lEQVR42p1W3WtcVRD/zTnnfuTDTZsoRBC0sH5k11RkmzTEyJKmq9XSah8WLCL42Ad9EEQkKupD++SbKOqLf0CgEsGYiqYGahq3BLTa5EGpCUqDtEnz0Wb33nvOjA+pMU12TdJ5OueeM/Ob+c2cmUuoLoTtiWCnks/nzQ5VaMeHmUy+0e1Kaipqz5PGcp0qlYaX1tmRLQHS6UOB3xy/ScArAOqlBgMk5JRW4lhGJ+9vPoaBgX8v8sa7aj0QN9lQEb2nlLp7C3INM6c8Y45kZ+ZOo1ikDfY2AQAAvGCFWXjRsbvJQZJ2JmqNcfNeZ6LW9WvrqTQgi9Ym8MO6o9mZuS9rgVRLqAcAN5Jk4a/x8XI19+/r6rJNqNcAFqLyyrDvBy9kZua/mCwWj2FgwK3PiarFQcjs5fN5k04fCjKZjJ/JZHygqAHATxp9CEJACFCX4yS+bow5kp2eG3y4u/uuWwBUKwJAQCBgdHTUArD/HUwil8t5i/eYCuai80FY/6SA+tlZWJvA84PDnOBVAKdyuZw3MTGRmBrGucm5cntX30EovZ+tFRE4XYk/m5g4dx2AynQdeN0l9tnERQwogtATIPTRBqdNlcIVInIVnfpKky4YLwC8AMwOTtEbbbnel6Ymzg5Njo+UAJTW3k5n72tKmwIhsjUBnE2RQZQQqEl7fsHG0bx19mMSVADZpz3/eQ0ebNvf+9zUj2eHHunoa9HEOV0xPzi4ujUGapXp2jNSSmwcD4r2Hpwsjbxz6cLIyZAbXnScHCWCVoLTmY6+k56myyLou3ixuyxEulo6bwPQZkkE4rFzlUW9cnxy/Jt5ANi7t9BQ0StXIDjunB1SygR+GPQzOx0HwQfA+0zMsiXAWggQaQmCAMWibtvX97hrtK0QBBAUFOEn0jpxSXyeRfp/Pzd8dVVH0XYBAAALCwAGBpxS/Aks3hbCVUAiAUwQ1nvO2u+mLnz/Yfdq3QuIb1TtKdU7IJmZn0cXsx0Hn/bDoDOulPdA0Gw8X1sbo7y8cAKKfgMgY2Njy0BRE64VmB0Eov4/AgEJJGnv6dkFso9Za9/SFb2HoA4zSwWkTwizRh2X2tt7dmc7e59q71r4WinzDFsLEKmtKEoIEOu8VOjMp7+MnTkFAJce2P2ttfHLBDSYIPwIZf23q/P+IFJnQCg458oEOIhwTYqSqF55RlJEBDj+tawdZToP+FaczU5fU1BqWYSNTWIopepXIxawcwAhVMYjWNd4W2Wu37Q0PARV5yxEHgXgA0SA8K3WJSQIASoDEgFSgUgEkViIyopUJMyjju3n165M/zk7OytY7YY7G5nOpjZ912ZJmlIpKg1vPULvZOhvkHfVdv4I6A6tb/L6H2+T3BgFT/QJAAAAAElFTkSuQmCC",
         "add": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAVw8B8IRzXgUoQLUkfDaDyQqmFYAwDqLDPNE6CZygAAAABJRU5ErkJggg==",
         "delete": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOElEQVQ4y2NgGAJAgeE+w38ovA/k4QH/8UDqaCADkGz+qIZRDTjAI6zKH+HW4MHwGEP5Y6Do4AYAnknHV/9dX/AAAAAASUVORK5CYII=",
         "apply": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAASUlEQVQ4jWNgGAU4gQZpygMZfjHUk6b8P/Eaho5yFoaVQAUkmB4OlPyFpIUIx9QjaSHS7TAtJHgVooWkkAFpIUE5RAtJykcEAABPQC0fT3oYggAAAABJRU5ErkJggg==",
@@ -120,6 +122,9 @@ class TopicContentTool(tk.Tk):
         self.db_var = tk.StringVar()
         self.file_info_var = tk.StringVar(value="Файл: -")
         self.status_var = tk.StringVar(value="Выберите локализованную БД для начала работы.")
+        self.resources_db_var = tk.StringVar(value="Общая БД: -")
+        self.future_local_db_var = tk.StringVar(value="-")
+        self.future_common_db_var = tk.StringVar(value="-")
 
         self.topic_route_var = tk.StringVar(value=self.NO_ARTICLE_OPTION)
         self.topic_name_var = tk.StringVar()
@@ -158,47 +163,53 @@ class TopicContentTool(tk.Tk):
         ttk.Entry(header, textvariable=self.folder_var, state="readonly").grid(row=0, column=1, sticky="ew")
         self.btn_choose_folder = ttk.Button(
             header,
-            **self._button_kwargs("choose_folder", "Выбрать папку"),
+            **self._button_kwargs("choose_folder", "Выбрать папку с БД"),
             command=self._choose_folder,
         )
         self.btn_choose_folder.grid(row=0, column=2, padx=(8, 0))
         self.btn_refresh = ttk.Button(
             header,
-            **self._button_kwargs("refresh", "Обновить список"),
+            **self._button_kwargs("refresh", "Перечитать файлы БД"),
             command=self._refresh_db_list,
         )
         self.btn_refresh.grid(row=0, column=3, padx=(8, 0))
-
-        ttk.Label(header, text="Локализованная БД:").grid(row=1, column=0, sticky="w", pady=(8, 0), padx=(0, 8))
-        self.db_combo = ttk.Combobox(header, textvariable=self.db_var, state="readonly")
-        self.db_combo.grid(row=1, column=1, sticky="ew", pady=(8, 0))
-        self.db_combo.bind("<<ComboboxSelected>>", self._on_db_combo_selected)
-        self.btn_save = ttk.Button(
-            header,
-            **self._button_kwargs("save", "Сохранить изменения"),
-            command=self._save_all,
-        )
-        self.btn_save.grid(row=1, column=2, padx=(8, 0), pady=(8, 0))
         self.btn_publish = ttk.Button(
             header,
-            **self._button_kwargs("publish", "Переписать в web/db"),
+            **self._button_kwargs("publish", "Скопировать в проект"),
             command=self._copy_to_web_db,
         )
-        self.btn_publish.grid(row=1, column=3, padx=(8, 0), pady=(8, 0))
+        self.btn_publish.grid(row=0, column=4, padx=(8, 0))
 
         self.sections = ttk.Notebook(self)
         self.sections.grid(row=1, column=0, sticky="nsew", padx=10, pady=(0, 6))
+        self.sections.bind("<<NotebookTabChanged>>", self._on_main_section_changed)
 
-        self.topics_tab = ttk.Frame(self.sections)
-        self.texts_tab = ttk.Frame(self.sections)
-        self.resources_tab = ttk.Frame(self.sections)
-        self.sections.add(self.topics_tab, text="Статьи главного окна")
-        self.sections.add(self.texts_tab, text="Все статьи")
-        self.sections.add(self.resources_tab, text="Ресурсы")
+        self.articles_section = ttk.Frame(self.sections)
+        self.resources_section = ttk.Frame(self.sections)
+        self.strong_section = ttk.Frame(self.sections)
+        self.sources_section = ttk.Frame(self.sections)
+        self.bibles_section = ttk.Frame(self.sections)
 
-        self._build_topics_tab(self.topics_tab)
-        self._build_texts_tab(self.texts_tab)
-        self._build_resources_tab(self.resources_tab)
+        self.sections.add(self.articles_section, text="Статьи")
+        self.sections.add(self.resources_section, text="Ресурсы")
+        self.sections.add(self.strong_section, text="Словарь Стронга")
+        self.sections.add(self.sources_section, text="Первоисточники")
+        self.sections.add(self.bibles_section, text="Библии")
+
+        self._build_articles_section(self.articles_section)
+        self._build_resources_section(self.resources_section)
+        self._build_future_section(
+            self.strong_section,
+            "Раздел «Словарь Стронга» скоро будет доступен.",
+        )
+        self._build_future_section(
+            self.sources_section,
+            "Раздел «Первоисточники» скоро будет доступен.",
+        )
+        self._build_future_section(
+            self.bibles_section,
+            "Раздел «Библии» скоро будет доступен.",
+        )
 
         ttk.Separator(self, orient="horizontal").grid(row=2, column=0, sticky="ew")
 
@@ -238,6 +249,125 @@ class TopicContentTool(tk.Tk):
         message_label.grid(row=0, column=2, sticky="ew")
         message_label.bind("<Button-1>", self._open_message_log)
         self._update_ui_availability()
+        self._update_section_db_labels()
+        self._update_file_info()
+
+    def _build_articles_section(self, parent: ttk.Frame) -> None:
+        parent.columnconfigure(0, weight=1)
+        parent.rowconfigure(1, weight=1)
+
+        top = ttk.Frame(parent, padding=(8, 8, 8, 0))
+        top.grid(row=0, column=0, sticky="ew")
+        top.columnconfigure(1, weight=1)
+
+        ttk.Label(top, text="Локализованная БД:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        self.db_combo = ttk.Combobox(top, textvariable=self.db_var, state="readonly")
+        self.db_combo.grid(row=0, column=1, sticky="ew")
+        self.db_combo.bind("<<ComboboxSelected>>", self._on_db_combo_selected)
+
+        self.btn_save = ttk.Button(
+            top,
+            **self._button_kwargs("save", "Сохранить изменения"),
+            command=self._save_all,
+        )
+        self.btn_save.grid(row=0, column=2, padx=(8, 0))
+
+        self.article_sections = ttk.Notebook(parent)
+        self.article_sections.grid(row=1, column=0, sticky="nsew")
+
+        self.topics_tab = ttk.Frame(self.article_sections)
+        self.texts_tab = ttk.Frame(self.article_sections)
+        self.article_sections.add(self.topics_tab, text="Статьи главного окна")
+        self.article_sections.add(self.texts_tab, text="Все статьи")
+
+        self._build_topics_tab(self.topics_tab)
+        self._build_texts_tab(self.texts_tab)
+
+    def _build_resources_section(self, parent: ttk.Frame) -> None:
+        parent.columnconfigure(0, weight=1)
+        parent.rowconfigure(1, weight=1)
+
+        top = ttk.Frame(parent, padding=(8, 8, 8, 0))
+        top.grid(row=0, column=0, sticky="ew")
+        top.columnconfigure(1, weight=1)
+
+        ttk.Label(top, text="Общая БД ресурсов:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        ttk.Label(top, textvariable=self.resources_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
+        self.btn_reload_resources = ttk.Button(
+            top,
+            **self._button_kwargs("refresh", "Обновить ресурсы"),
+            command=self._reload_resources_section,
+        )
+        self.btn_reload_resources.grid(row=0, column=2, padx=(8, 0))
+
+        resources_body = ttk.Frame(parent)
+        resources_body.grid(row=1, column=0, sticky="nsew")
+        resources_body.columnconfigure(0, weight=1)
+        resources_body.rowconfigure(0, weight=1)
+        self._build_resources_tab(resources_body)
+
+    def _build_future_section(self, parent: ttk.Frame, message: str) -> None:
+        parent.columnconfigure(0, weight=1)
+        parent.rowconfigure(1, weight=1)
+
+        top = ttk.Frame(parent, padding=(8, 8, 8, 0))
+        top.grid(row=0, column=0, sticky="ew")
+        top.columnconfigure(1, weight=1)
+        top.columnconfigure(3, weight=1)
+
+        ttk.Label(top, text="Локализованная БД:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        ttk.Label(top, textvariable=self.future_local_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
+        ttk.Label(top, text="Общая БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
+        ttk.Label(top, textvariable=self.future_common_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
+
+        body = ttk.Frame(parent, padding=20)
+        body.grid(row=1, column=0, sticky="nsew")
+        body.columnconfigure(0, weight=1)
+        body.rowconfigure(0, weight=1)
+        ttk.Label(
+            body,
+            text=message,
+            anchor="center",
+            justify="center",
+            foreground="#4f4f4f",
+        ).grid(row=0, column=0, sticky="nsew")
+
+    def _on_main_section_changed(self, _event: object | None = None) -> None:
+        self._update_file_info()
+
+    def _active_section_key(self) -> str:
+        selected = self.sections.select()
+        if selected == str(self.resources_section):
+            return "resources"
+        if selected == str(self.strong_section):
+            return "strong"
+        if selected == str(self.sources_section):
+            return "sources"
+        if selected == str(self.bibles_section):
+            return "bibles"
+        return "articles"
+
+    def _reload_resources_section(self) -> None:
+        self._open_common_connection()
+        self._load_common_resources()
+        self._update_ui_availability()
+        self._update_file_info()
+        if self.common_db_path is None:
+            self._set_status("Общая БД ресурсов не найдена.")
+        else:
+            self._set_status(f"Ресурсы перечитаны из {self.common_db_path.name}.")
+
+    def _update_section_db_labels(self) -> None:
+        local_text = "-"
+        if self.current_db_path is not None:
+            local_text = str(self.current_db_path)
+        self.future_local_db_var.set(local_text)
+
+        common_text = "-"
+        if self.common_db_path is not None:
+            common_text = str(self.common_db_path)
+        self.future_common_db_var.set(common_text)
+        self.resources_db_var.set(common_text)
 
     def _maximize_window(self) -> None:
         try:
@@ -302,7 +432,6 @@ class TopicContentTool(tk.Tk):
     def _set_editor_controls_enabled(self, localized_enabled: bool, resources_enabled: bool) -> None:
         localized_widgets: list[tuple[tk.Widget, bool]] = [
             (self.btn_save, False),
-            (self.btn_publish, False),
             (self.topics_tree, False),
             (self.btn_add_topic, False),
             (self.btn_delete_topic, False),
@@ -334,6 +463,7 @@ class TopicContentTool(tk.Tk):
             self.preview_text.configure(state="disabled")
 
         resource_widgets: list[tuple[tk.Widget, bool]] = [
+            (self.btn_reload_resources, False),
             (self.resources_tree, False),
             (self.btn_add_resource, False),
             (self.btn_delete_resource, False),
@@ -356,7 +486,7 @@ class TopicContentTool(tk.Tk):
         if not resources_enabled:
             self.resource_preview_image_label.configure(
                 image="",
-                text="Загрузите локализованную и общую БД для работы с ресурсами.",
+                text="Общая БД ресурсов не найдена в рабочей папке.",
             )
         elif self.selected_resource_index is None and not self.resource_data_buffer:
             self.resource_preview_image_label.configure(
@@ -368,9 +498,10 @@ class TopicContentTool(tk.Tk):
         has_loaded_db = self.connection is not None and self.current_db_path is not None
         has_common_db = self.common_connection is not None and self.common_db_path is not None
         self.db_combo.configure(state="readonly" if self.db_files else "disabled")
+        self.btn_publish.state(["!disabled"])
         self._set_editor_controls_enabled(
             localized_enabled=has_loaded_db,
-            resources_enabled=has_loaded_db and has_common_db,
+            resources_enabled=has_common_db,
         )
 
     def _build_topics_tab(self, parent: ttk.Frame) -> None:
@@ -641,7 +772,7 @@ class TopicContentTool(tk.Tk):
         self.btn_delete_resource.pack(side="left", padx=(8, 0))
         self.btn_open_resource = ttk.Button(
             resources_buttons,
-            **self._button_kwargs("refresh", "Открыть ресурс"),
+            **self._button_kwargs("open_resource", "Открыть ресурс"),
             command=self._open_resource_external,
         )
         self.btn_open_resource.pack(side="left", padx=(8, 0))
@@ -674,7 +805,7 @@ class TopicContentTool(tk.Tk):
         resource_actions.grid(row=4, column=1, sticky="w", pady=(4, 8))
         self.btn_pick_resource_file = ttk.Button(
             resource_actions,
-            **self._button_kwargs("choose_folder", "Заменить файл"),
+            **self._button_kwargs("replace_file", "Заменить файл"),
             command=self._pick_file_for_resource_editor,
         )
         self.btn_pick_resource_file.pack(side="left")
@@ -742,16 +873,21 @@ class TopicContentTool(tk.Tk):
                 key = self._display_key_for_db(db_path)
                 self.db_files[key] = db_path
 
+        self._open_common_connection()
+        self._load_common_resources()
+        self._update_section_db_labels()
+
         values = list(self.db_files.keys())
         self.db_combo["values"] = values
         if not values:
             self.db_var.set("")
-            self._close_connection()
+            self._close_local_connection()
             self.current_db_path = None
-            self._clear_all_db_views()
-            self._set_file_info("Файл: локализованные БД не найдены.")
+            self._clear_local_views()
+            self._set_dirty(False)
             self._set_status("В выбранной папке нет файлов вида revelation_<lang>.sqlite.")
             self._update_ui_availability()
+            self._update_file_info()
             return
 
         previous = self.db_var.get()
@@ -761,6 +897,8 @@ class TopicContentTool(tk.Tk):
                 self._load_db(self.db_files[previous])
             else:
                 self._update_ui_availability()
+                self._update_section_db_labels()
+                self._update_file_info()
             return
 
         self.db_var.set(values[0])
@@ -786,7 +924,7 @@ class TopicContentTool(tk.Tk):
         self._load_db(db_path)
 
     def _load_db(self, db_path: Path) -> None:
-        self._close_connection()
+        self._close_local_connection()
         self.connection = sqlite3.connect(db_path)
         self.connection.row_factory = sqlite3.Row
         self.current_db_path = db_path
@@ -795,6 +933,7 @@ class TopicContentTool(tk.Tk):
         self._ensure_schema()
         self._load_rows()
         self._set_dirty(False)
+        self._update_section_db_labels()
         self._update_file_info()
         self._set_status(f"Открыта БД: {db_path.name}")
         self._update_ui_availability()
@@ -805,15 +944,17 @@ class TopicContentTool(tk.Tk):
             self.common_connection = None
             self.common_db_path = None
 
-        for index, path in enumerate(self._common_db_candidates()):
-            if index > 0 and not path.exists():
+        for path in self._common_db_candidates():
+            if not path.exists():
                 continue
             con: sqlite3.Connection | None = None
             try:
-                path.parent.mkdir(parents=True, exist_ok=True)
                 con = sqlite3.connect(path)
                 con.row_factory = sqlite3.Row
-                self._ensure_common_schema_on_connection(con)
+                cur = con.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='common_resources'")
+                if cur.fetchone() is None:
+                    con.close()
+                    continue
                 self.common_connection = con
                 self.common_db_path = path.resolve()
                 return
@@ -823,10 +964,7 @@ class TopicContentTool(tk.Tk):
                 continue
 
     def _common_db_candidates(self) -> list[Path]:
-        candidates = [
-            self.work_dir / "revelation.sqlite",
-            self.project_root / "web" / "db" / "revelation.sqlite",
-        ]
+        candidates = [self.work_dir / "revelation.sqlite"]
         unique: list[Path] = []
         for path in candidates:
             resolved = path.resolve()
@@ -910,15 +1048,19 @@ class TopicContentTool(tk.Tk):
         self._clear_resource_editor()
 
     def _clear_all_db_views(self) -> None:
+        self._clear_local_views()
+        self.common_resources.clear()
+        self._refresh_resources_tree()
+        self._clear_resource_editor()
+        self._refresh_topic_icon_options()
+
+    def _clear_local_views(self) -> None:
         self.topics.clear()
         self.topic_texts.clear()
-        self.common_resources.clear()
         self._refresh_topics_tree()
         self._refresh_texts_list()
-        self._refresh_resources_tree()
         self._clear_topic_editor()
         self._clear_text_editor()
-        self._clear_resource_editor()
         self._refresh_topic_route_options()
         self._refresh_topic_icon_options()
 
@@ -978,6 +1120,7 @@ class TopicContentTool(tk.Tk):
         if self.common_connection is None:
             self._refresh_resources_tree()
             self._refresh_topic_icon_options()
+            self._update_section_db_labels()
             return
         try:
             rows = self.common_connection.execute(
@@ -1000,6 +1143,7 @@ class TopicContentTool(tk.Tk):
         ]
         self._refresh_resources_tree()
         self._refresh_topic_icon_options()
+        self._update_section_db_labels()
 
     def _refresh_resources_tree(self) -> None:
         self.resources_tree.delete(*self.resources_tree.get_children())
@@ -1038,9 +1182,14 @@ class TopicContentTool(tk.Tk):
         )
 
     def _refresh_texts_list(self) -> None:
+        was_disabled = str(self.texts_list.cget("state")) == "disabled"
+        if was_disabled:
+            self.texts_list.configure(state="normal")
         self.texts_list.delete(0, tk.END)
         for row in self.topic_texts:
             self.texts_list.insert(tk.END, row.route)
+        if was_disabled:
+            self.texts_list.configure(state="disabled")
 
     def _on_topic_selected(self, _event: object) -> None:
         selection = self.topics_tree.selection()
@@ -1516,6 +1665,7 @@ class TopicContentTool(tk.Tk):
 
         self._load_common_resources()
         self._select_resource_by_key(key)
+        self._update_file_info()
         self._set_status(
             (
                 f"Ресурс '{key}' сохранен в {self.common_db_path.name}."
@@ -1566,6 +1716,7 @@ class TopicContentTool(tk.Tk):
 
         self._load_common_resources()
         self._clear_resource_editor()
+        self._update_file_info()
         suffix = (
             ""
             if affected_topics == 0
@@ -1950,19 +2101,30 @@ class TopicContentTool(tk.Tk):
             if answer and not self._save_all():
                 return
 
-        enabled_tests = self._find_enabled_test_articles(source_dir)
-        if enabled_tests and not self._confirm_copy_with_enabled_tests(enabled_tests):
-            self._set_status("Копирование в web/db отменено из-за включенных тестовых статей.")
-            return
+        test_enabled_db_files = self._find_localized_dbs_with_enabled_tests(source_dir)
 
         files = sorted(source_dir.glob("revelation*.sqlite"))
         if not files:
             messagebox.showwarning("Нет БД", "В рабочей папке не найдены файлы revelation*.sqlite.", parent=self)
             return
 
+        confirmation_text = (
+            f"Переписать {len(files)} файл(ов) из:\n{source_dir}\n\n"
+            f"в:\n{target_dir}\n\n"
+            "Это только копирование файлов в web/db."
+        )
+        if test_enabled_db_files:
+            test_block = "\n".join(f"- {name}" for name in test_enabled_db_files)
+            confirmation_text += (
+                "\n\n"
+                "ВНИМАНИЕ: найдены локализованные БД с включенными тестовыми статьями.\n"
+                "Они тоже будут опубликованы:\n"
+                f"{test_block}"
+            )
+
         if not messagebox.askyesno(
             "Подтверждение",
-            f"Переписать {len(files)} файл(ов) из:\n{source_dir}\n\nв:\n{target_dir}\n\nЭто только копирование файлов в web/db.",
+            confirmation_text,
             parent=self,
         ):
             return
@@ -1971,10 +2133,9 @@ class TopicContentTool(tk.Tk):
         for src in files:
             shutil.copy2(src, target_dir / src.name)
 
-        self._set_status(f"Файлы переписаны в {target_dir}")
-        self._show_centered_info("Готово", f"Скопировано файлов: {len(files)}")
+        self._set_status(f"Файлы переписаны в {target_dir}. Скопировано файлов: {len(files)}")
 
-    def _find_enabled_test_articles(self, source_dir: Path) -> list[str]:
+    def _find_localized_dbs_with_enabled_tests(self, source_dir: Path) -> list[str]:
         found: list[str] = []
         db_files = sorted(source_dir.glob("revelation_*.sqlite"))
         for db_file in db_files:
@@ -1991,82 +2152,9 @@ class TopicContentTool(tk.Tk):
                     ).fetchall()
             except sqlite3.DatabaseError:
                 continue
-            for row in rows:
-                found.append(f"{db_file.name}: {row[0]}")
+            if rows:
+                found.append(db_file.name)
         return sorted(found)
-
-    def _confirm_copy_with_enabled_tests(self, routes: list[str]) -> bool:
-        dialog = tk.Toplevel(self)
-        dialog.title("Предупреждение")
-        dialog.transient(self)
-        dialog.grab_set()
-        dialog.resizable(False, False)
-
-        frame = ttk.Frame(dialog, padding=14)
-        frame.grid(row=0, column=0, sticky="nsew")
-        frame.columnconfigure(0, weight=1)
-
-        routes_text = "\n".join(f"- {route}" for route in routes)
-        warning_text = (
-            "Обнаружены включенные тестовые статьи.\n"
-            "Они будут опубликованы после копирования в web/db.\n\n"
-            f"{routes_text}\n\n"
-            "Продолжить копирование?"
-        )
-        ttk.Label(
-            frame,
-            text=warning_text,
-            justify="left",
-            anchor="w",
-            wraplength=560,
-        ).grid(row=0, column=0, sticky="w")
-
-        result = {"confirmed": False}
-
-        def on_continue() -> None:
-            result["confirmed"] = True
-            dialog.destroy()
-
-        def on_cancel() -> None:
-            dialog.destroy()
-
-        buttons_row = ttk.Frame(frame)
-        buttons_row.grid(row=1, column=0, sticky="ew", pady=(12, 0))
-        buttons_row.columnconfigure(0, weight=1)
-        centered_buttons = ttk.Frame(buttons_row)
-        centered_buttons.grid(row=0, column=0)
-
-        continue_btn = ttk.Button(
-            centered_buttons,
-            **self._button_kwargs("warning", "Все равно копировать"),
-            command=on_continue,
-        )
-        continue_btn.pack(side="left")
-        cancel_btn = ttk.Button(
-            centered_buttons,
-            **self._button_kwargs("cancel", "Отмена"),
-            command=on_cancel,
-        )
-        cancel_btn.pack(side="left", padx=(10, 0))
-
-        self._fit_and_center_toplevel(
-            dialog,
-            min_width=500,
-            max_width=680,
-            min_height=200,
-            max_height=340,
-            pad_x=16,
-            pad_y=16,
-        )
-
-        # Default action is cancel.
-        cancel_btn.focus_set()
-        dialog.bind("<Escape>", lambda _e: on_cancel())
-        dialog.bind("<Return>", lambda _e: on_cancel())
-        dialog.protocol("WM_DELETE_WINDOW", on_cancel)
-
-        self.wait_window(dialog)
-        return bool(result["confirmed"])
 
     def _show_centered_info(self, title: str, message: str) -> None:
         dialog = tk.Toplevel(self)
@@ -2171,28 +2259,45 @@ class TopicContentTool(tk.Tk):
     def _set_file_info(self, text: str) -> None:
         self.file_info_var.set(text)
 
-    def _update_file_info(self) -> None:
-        icon_key = "status_dirty" if self.dirty else "status_clean"
+    def _set_status_indicator(self, *, dirty_like: bool) -> None:
+        icon_key = "status_dirty" if dirty_like else "status_clean"
         self.status_indicator_image = self.ui_icons.get(icon_key)
         if self.status_indicator_image is not None:
             self.dirty_indicator_label.configure(image=self.status_indicator_image, text="")
         else:
-            indicator_color = self.ALERT_COLOR if self.dirty else self.OK_COLOR
+            indicator_color = self.ALERT_COLOR if dirty_like else self.OK_COLOR
             self.dirty_indicator_label.configure(image="", text="●", fg=indicator_color)
-        if self.current_db_path is None or not self.current_db_path.exists():
-            suffix = "есть" if self.dirty else "нет"
-            self._set_file_info(f"Файл: - | Несохраненные изменения: {suffix}")
-            return
-        stat = self.current_db_path.stat()
+
+    def _format_db_info(self, path: Path | None, *, title: str) -> str:
+        if path is None or not path.exists():
+            return f"{title}: -"
+        stat = path.stat()
         modified = dt.datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
         size_kb = stat.st_size / 1024
-        dirty_text = "есть" if self.dirty else "нет"
-        self._set_file_info(
-            (
-                f"Файл: {self.current_db_path} | Изменен: {modified} | Размер: {size_kb:.1f} KB | "
-                f"Несохраненные изменения: {dirty_text}"
-            )
-        )
+        return f"{title}: {path} | Изменен: {modified} | Размер: {size_kb:.1f} KB"
+
+    def _update_file_info(self) -> None:
+        self._update_section_db_labels()
+        section = self._active_section_key()
+        has_local = self.current_db_path is not None and self.current_db_path.exists()
+        has_common = self.common_db_path is not None and self.common_db_path.exists()
+
+        if section == "articles":
+            self._set_status_indicator(dirty_like=self.dirty)
+            dirty_text = "есть" if self.dirty else "нет"
+            base = self._format_db_info(self.current_db_path, title="Локализованная БД")
+            self._set_file_info(f"{base} | Несохраненные изменения: {dirty_text}")
+            return
+
+        if section == "resources":
+            self._set_status_indicator(dirty_like=not has_common)
+            self._set_file_info(self._format_db_info(self.common_db_path, title="Общая БД ресурсов"))
+            return
+
+        self._set_status_indicator(dirty_like=not (has_local and has_common))
+        local_part = self._format_db_info(self.current_db_path, title="Локализованная БД")
+        common_part = self._format_db_info(self.common_db_path, title="Общая БД")
+        self._set_file_info(f"{local_part} || {common_part}")
 
     def _on_close(self) -> None:
         if not self._allow_switch_when_dirty():
@@ -2200,14 +2305,18 @@ class TopicContentTool(tk.Tk):
         self._close_connection()
         self.destroy()
 
-    def _close_connection(self) -> None:
+    def _close_local_connection(self) -> None:
         if self.connection is not None:
             self.connection.close()
             self.connection = None
+
+    def _close_connection(self) -> None:
+        self._close_local_connection()
         if self.common_connection is not None:
             self.common_connection.close()
             self.common_connection = None
             self.common_db_path = None
+        self._update_section_db_labels()
         self._update_ui_availability()
 
 
