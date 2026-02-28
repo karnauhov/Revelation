@@ -295,6 +295,26 @@ class PrimarySourceToolbar extends StatelessWidget {
             : null,
       ),
       IconButton(
+        icon: const Icon(Icons.format_list_numbered),
+        color: colorScheme.primary,
+        style: IconButton.styleFrom(
+          backgroundColor: viewModel.showVerseNumbers
+              ? colorScheme.secondaryContainer
+              : Colors.transparent,
+          shape: const CircleBorder(),
+        ),
+        tooltip: AppLocalizations.of(context)!.toggle_show_verse_numbers,
+        onPressed:
+            viewModel.primarySource.permissionsReceived &&
+                viewModel.selectedPage != null &&
+                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+            ? () {
+                aud.playSound("click");
+                viewModel.toggleShowVerseNumbers();
+              }
+            : null,
+      ),
+      IconButton(
         icon: const Icon(Icons.cleaning_services),
         color: colorScheme.primary,
         tooltip: AppLocalizations.of(context)!.page_settings_reset,
@@ -777,6 +797,58 @@ class PrimarySourceToolbar extends StatelessWidget {
                       ),
                     if (numButtons < 11)
                       PopupMenuItem(
+                        padding: viewModel.showVerseNumbers
+                            ? const EdgeInsets.symmetric(horizontal: 4.0)
+                            : const EdgeInsets.symmetric(horizontal: 12.0),
+                        value: 'toggle_show_verse_numbers',
+                        enabled:
+                            viewModel.selectedPage != null &&
+                            viewModel.primarySource.permissionsReceived &&
+                            viewModel.localPageLoaded[viewModel
+                                    .selectedPage!
+                                    .image] ==
+                                true,
+                        child: Builder(
+                          builder: (context) {
+                            final isEnabled =
+                                viewModel.selectedPage != null &&
+                                viewModel.primarySource.permissionsReceived;
+                            final iconColor = isEnabled
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(alpha: 0.38);
+                            return Row(
+                              children: [
+                                if (isEnabled && viewModel.showVerseNumbers)
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: colorScheme.secondaryContainer,
+                                    ),
+                                    child: Icon(
+                                      Icons.format_list_numbered,
+                                      color: colorScheme.primary,
+                                    ),
+                                  )
+                                else
+                                  Icon(
+                                    Icons.format_list_numbered,
+                                    color: iconColor,
+                                  ),
+                                if (!viewModel.showVerseNumbers)
+                                  const SizedBox(width: 8),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.toggle_show_verse_numbers,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    if (numButtons < 12)
+                      PopupMenuItem(
                         value: 'reset_page',
                         enabled:
                             viewModel.selectedPage != null &&
@@ -877,6 +949,12 @@ class PrimarySourceToolbar extends StatelessWidget {
                       if (viewModel.selectedPage != null &&
                           viewModel.primarySource.permissionsReceived) {
                         viewModel.toggleShowStrongNumbers();
+                      }
+                      break;
+                    case 'toggle_show_verse_numbers':
+                      if (viewModel.selectedPage != null &&
+                          viewModel.primarySource.permissionsReceived) {
+                        viewModel.toggleShowVerseNumbers();
                       }
                       break;
                     case 'reset_page':

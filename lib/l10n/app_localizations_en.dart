@@ -383,6 +383,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toggle_show_strong_numbers => 'Strong\'s numbers';
 
   @override
+  String get toggle_show_verse_numbers => 'Verse numbers';
+
+  @override
   String get strong_number => 'Strong’s #';
 
   @override

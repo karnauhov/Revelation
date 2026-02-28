@@ -73,7 +73,29 @@ class AppRouter {
         path: '/primary_source',
         name: 'primary_source',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          if (state.extra == null || state.extra is! PrimarySource) {
+          PrimarySource? primarySource;
+          String? initialPageName;
+          int? initialWordIndex;
+
+          if (state.extra is PrimarySource) {
+            primarySource = state.extra as PrimarySource;
+          } else if (state.extra is Map<String, dynamic>) {
+            final extra = state.extra as Map<String, dynamic>;
+            if (extra['primarySource'] is PrimarySource) {
+              primarySource = extra['primarySource'] as PrimarySource;
+            }
+            if (extra['pageName'] is String) {
+              initialPageName = extra['pageName'] as String;
+            }
+            final rawWordIndex = extra['wordIndex'];
+            if (rawWordIndex is int) {
+              initialWordIndex = rawWordIndex;
+            } else if (rawWordIndex is String) {
+              initialWordIndex = int.tryParse(rawWordIndex);
+            }
+          }
+
+          if (primarySource == null) {
             log.error('Please, send it with correct primary source parameter');
             WidgetsBinding.instance.addPostFrameCallback((_) {
               context.go('/');
@@ -84,12 +106,15 @@ class AppRouter {
               child: const SizedBox.shrink(),
             );
           }
-          final primarySource = state.extra as PrimarySource;
           aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
-            child: PrimarySourceScreen(primarySource: primarySource),
+            child: PrimarySourceScreen(
+              primarySource: primarySource,
+              initialPageName: initialPageName,
+              initialWordIndex: initialWordIndex,
+            ),
           );
         },
       ),
@@ -159,7 +184,11 @@ CustomTransitionPage buildPageWithDefaultTransition<T>({
 
 String? _getRouteArgs(GoRouterState state) {
   if (state.extra is Map<String, dynamic>) {
-    return (state.extra as Map<String, dynamic>)['file'];
+    final extra = state.extra as Map<String, dynamic>;
+    if (extra['primarySource'] is PrimarySource) {
+      return (extra['primarySource'] as PrimarySource).id;
+    }
+    return extra['file'];
   } else if (state.extra is PrimarySource) {
     return (state.extra as PrimarySource).id;
   }

@@ -1,10 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/repositories/pages_repository.dart';
+import 'package:revelation/repositories/primary_sources_repository.dart';
 import 'package:revelation/screens/primary_source/image_preview.dart';
 import 'package:revelation/screens/primary_source/primary_source_toolbar.dart';
 import 'package:revelation/screens/primary_source/strong_number_picker_dialog.dart';
@@ -32,9 +35,16 @@ class NavigateSelectedDescriptionIntent extends Intent {
 
 class PrimarySourceScreen extends StatefulWidget {
   final PrimarySource primarySource;
-  static final numButtons = 11;
+  final String? initialPageName;
+  final int? initialWordIndex;
+  static final numButtons = 12;
 
-  const PrimarySourceScreen({required this.primarySource, super.key});
+  const PrimarySourceScreen({
+    required this.primarySource,
+    this.initialPageName,
+    this.initialWordIndex,
+    super.key,
+  });
 
   @override
   PrimarySourceScreenState createState() => PrimarySourceScreenState();
@@ -45,6 +55,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   late PrimarySourceViewModel _viewModel;
   final GlobalKey<TooltipState> _referenceTooltipKey =
       GlobalKey<TooltipState>();
+  bool _initialWordReferenceApplied = false;
 
   @override
   void initState() {
@@ -82,6 +93,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       child: Consumer<PrimarySourceViewModel>(
         builder: (context, viewModel, child) {
           _viewModel = viewModel;
+          _tryApplyInitialWordReference(viewModel);
 
           if (widget.primarySource.permissionsReceived &&
               viewModel.selectedPage != null &&
@@ -376,9 +388,17 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       tolerance: viewModel.tolerance,
       showWordSeparators: viewModel.showWordSeparators,
       showStrongNumbers: viewModel.showStrongNumbers,
+      showVerseNumbers: viewModel.showVerseNumbers,
       words: viewModel.selectedPage != null
           ? viewModel.selectedPage!.words
           : [],
+      verses: viewModel.selectedPage != null
+          ? viewModel.selectedPage!.verses
+          : [],
+      selectedVerseIndex:
+          viewModel.currentDescriptionType == DescriptionType.verse
+          ? viewModel.currentDescriptionNumber
+          : null,
     );
   }
 
@@ -391,6 +411,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final localizations = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.sizeOf(context).width;
     final tooltipMaxWidth = screenWidth > 432 ? 420.0 : screenWidth - 12.0;
+    final bool showStrongInfoIcon =
+        viewModel.currentDescriptionType == DescriptionType.word ||
+        viewModel.currentDescriptionType == DescriptionType.strongNumber;
 
     final descriptionView = Container(
       color: colorScheme.surface,
@@ -409,6 +432,15 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                     linkContext,
                     viewModel,
                     strongNumber,
+                  );
+                },
+                onWordTap: (sourceId, pageName, wordIndex, linkContext) {
+                  return _handleWordLinkTap(
+                    sourceId: sourceId,
+                    pageName: pageName,
+                    wordIndex: wordIndex,
+                    linkContext: linkContext,
+                    viewModel: viewModel,
                   );
                 },
               );
@@ -432,34 +464,35 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
               forward: true,
             ),
           ),
-          Positioned(
-            top: -8,
-            right: -8,
-            child: Tooltip(
-              key: _referenceTooltipKey,
-              message: localizations.strong_reference_commentary,
-              constraints: BoxConstraints(maxWidth: tooltipMaxWidth),
-              showDuration: const Duration(seconds: 12),
-              preferBelow: false,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  _referenceTooltipKey.currentState?.ensureTooltipVisible();
-                },
-                child: SizedBox(
-                  width: 32,
-                  height: 32,
-                  child: Center(
-                    child: Icon(
-                      Icons.info_outline,
-                      size: 18,
-                      color: colorScheme.primary,
+          if (showStrongInfoIcon)
+            Positioned(
+              top: -8,
+              right: -8,
+              child: Tooltip(
+                key: _referenceTooltipKey,
+                message: localizations.strong_reference_commentary,
+                constraints: BoxConstraints(maxWidth: tooltipMaxWidth),
+                showDuration: const Duration(seconds: 12),
+                preferBelow: false,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    _referenceTooltipKey.currentState?.ensureTooltipVisible();
+                  },
+                  child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: Center(
+                      child: Icon(
+                        Icons.info_outline,
+                        size: 18,
+                        color: colorScheme.primary,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -543,6 +576,119 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     }
 
     viewModel.showInfoForStrongNumber(pickedStrongNumber, context);
+  }
+
+  void _tryApplyInitialWordReference(PrimarySourceViewModel viewModel) {
+    if (_initialWordReferenceApplied || widget.initialWordIndex == null) {
+      return;
+    }
+    _initialWordReferenceApplied = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) {
+        return;
+      }
+      await _openWordInCurrentSource(
+        viewModel: viewModel,
+        linkContext: context,
+        pageName: widget.initialPageName,
+        wordIndex: widget.initialWordIndex!,
+      );
+    });
+  }
+
+  Future<void> _handleWordLinkTap({
+    required String? sourceId,
+    required String? pageName,
+    required int wordIndex,
+    required BuildContext linkContext,
+    required PrimarySourceViewModel viewModel,
+  }) async {
+    final normalizedSourceId = sourceId?.trim();
+    final normalizedPageName = pageName?.trim();
+
+    if (normalizedSourceId == null ||
+        normalizedSourceId.isEmpty ||
+        normalizedSourceId == widget.primarySource.id) {
+      await _openWordInCurrentSource(
+        viewModel: viewModel,
+        linkContext: linkContext,
+        pageName: normalizedPageName,
+        wordIndex: wordIndex,
+      );
+      return;
+    }
+
+    final targetSource = _findPrimarySourceById(
+      linkContext,
+      normalizedSourceId,
+    );
+    if (targetSource == null) {
+      log.warning("Primary source '$normalizedSourceId' was not found.");
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
+    linkContext.push(
+      '/primary_source',
+      extra: {
+        'primarySource': targetSource,
+        'pageName': normalizedPageName,
+        'wordIndex': wordIndex,
+      },
+    );
+  }
+
+  Future<void> _openWordInCurrentSource({
+    required PrimarySourceViewModel viewModel,
+    required BuildContext linkContext,
+    required String? pageName,
+    required int wordIndex,
+  }) async {
+    if (wordIndex < 0) {
+      return;
+    }
+
+    if (pageName != null && pageName.isNotEmpty) {
+      model.Page? targetPage;
+      for (final page in widget.primarySource.pages) {
+        if (page.name == pageName) {
+          targetPage = page;
+          break;
+        }
+      }
+      if (targetPage == null) {
+        log.warning(
+          "Page '$pageName' was not found in source '${widget.primarySource.id}'.",
+        );
+        return;
+      }
+      if (viewModel.selectedPage != targetPage) {
+        await viewModel.changeSelectedPage(targetPage);
+      }
+    }
+
+    if (!linkContext.mounted) {
+      return;
+    }
+    viewModel.showInfoForWord(wordIndex, linkContext);
+  }
+
+  PrimarySource? _findPrimarySourceById(BuildContext context, String sourceId) {
+    final repo = PrimarySourcesRepository();
+    final allSources = <PrimarySource>[]
+      ..addAll(repo.getFullPrimarySources(context))
+      ..addAll(repo.getSignificantPrimarySources(context))
+      ..addAll(repo.getFragmentsPrimarySources(context));
+
+    for (final source in allSources) {
+      if (source.id == sourceId) {
+        return source;
+      }
+    }
+    return null;
   }
 
   Widget _buildSplitView(
@@ -694,6 +840,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
 
     if (viewModel.currentDescriptionType == DescriptionType.strongNumber) {
       return true;
+    }
+
+    if (viewModel.currentDescriptionType == DescriptionType.verse) {
+      return viewModel.selectedPage?.verses.isNotEmpty ?? false;
     }
 
     return false;

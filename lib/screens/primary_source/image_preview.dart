@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:revelation/models/page_rect.dart';
 import 'package:revelation/models/page_word.dart';
+import 'package:revelation/models/verse.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
@@ -38,7 +39,10 @@ class ImagePreview extends StatefulWidget {
   final double tolerance;
   final bool showWordSeparators;
   final bool showStrongNumbers;
+  final bool showVerseNumbers;
   final List<PageWord> words;
+  final List<Verse> verses;
+  final int? selectedVerseIndex;
 
   const ImagePreview({
     required this.imageData,
@@ -54,7 +58,10 @@ class ImagePreview extends StatefulWidget {
     required this.tolerance,
     required this.showWordSeparators,
     required this.showStrongNumbers,
+    required this.showVerseNumbers,
     required this.words,
+    required this.verses,
+    this.selectedVerseIndex,
     super.key,
   });
 
@@ -236,6 +243,16 @@ class ImagePreviewState extends State<ImagePreview> {
                   // Base image
                   Positioned.fill(child: imageWidget),
 
+                  if (widget.verses.isNotEmpty && widget.showVerseNumbers)
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: RelativeVersesPainter(
+                          verses: widget.verses,
+                          selectedVerseIndex: widget.selectedVerseIndex,
+                        ),
+                      ),
+                    ),
+
                   // Draw multiple word separators (lines)
                   if (widget.showWordSeparators && _lines != null)
                     Positioned.fill(
@@ -280,6 +297,9 @@ class ImagePreviewState extends State<ImagePreview> {
               return;
             }
             if (_handleSelectArea(vm)) {
+              return;
+            }
+            if (_handleTapOnVerseLabels(details.globalPosition, vm)) {
               return;
             }
             if (_handleTapOnStrongNumbers(details.globalPosition, vm)) {
@@ -499,6 +519,32 @@ class ImagePreviewState extends State<ImagePreview> {
     return false;
   }
 
+  bool _handleTapOnVerseLabels(
+    Offset globalPosition,
+    PrimarySourceViewModel vm,
+  ) {
+    if (!widget.showVerseNumbers ||
+        widget.controller.imageSize == null ||
+        widget.verses.isEmpty) {
+      return false;
+    }
+
+    final LocalCoord coord = _getCursorCoord(globalPosition);
+    final imgSize = widget.controller.imageSize!;
+    final tapPoint = Offset(coord.x.toDouble(), coord.y.toDouble());
+
+    for (int i = 0; i < widget.verses.length; i++) {
+      final verse = widget.verses[i];
+      final labelRect = RelativeVersesPainter.getLabelRect(verse, imgSize);
+      if (labelRect.contains(tapPoint)) {
+        vm.showInfoForVerse(i, context);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   bool _handleTapOnWords(Offset globalPosition, PrimarySourceViewModel vm) {
     if (widget.controller.imageSize == null) {
       return false;
@@ -705,6 +751,148 @@ class RelativeLinesPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant RelativeLinesPainter old) {
     return old.lines != lines;
+  }
+}
+
+class RelativeVersesPainter extends CustomPainter {
+  final List<Verse> verses;
+  final int? selectedVerseIndex;
+  static const Color _strokeColor = Color(0xFF0B8A5A);
+  static const double _strokeWidth = 3.0;
+  static const double _labelFontSize = 26.0;
+  static const double _labelPadX = 4.0;
+  static const double _labelPadY = 2.0;
+
+  RelativeVersesPainter({required this.verses, this.selectedVerseIndex});
+
+  static String verseLabel(Verse verse) {
+    return '${verse.chapterNumber}:${verse.verseNumber}';
+  }
+
+  static TextPainter _buildLabelPainter(
+    Verse verse, {
+    Color color = _strokeColor,
+  }) {
+    final tp = TextPainter(
+      text: TextSpan(
+        text: verseLabel(verse),
+        style: TextStyle(
+          color: color,
+          fontSize: _labelFontSize,
+          fontWeight: FontWeight.w700,
+          height: 1.0,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    tp.layout();
+    return tp;
+  }
+
+  static Rect getLabelRect(Verse verse, Size size) {
+    final textPainter = _buildLabelPainter(verse);
+    final rawX = verse.labelPosition.dx * size.width;
+    final rawY = verse.labelPosition.dy * size.height;
+    final textX = rawX.clamp(
+      0.0,
+      size.width - textPainter.width - (_labelPadX * 2),
+    );
+    final textY = rawY.clamp(
+      0.0,
+      size.height - textPainter.height - (_labelPadY * 2),
+    );
+    return Rect.fromLTWH(
+      textX - _labelPadX,
+      textY - _labelPadY,
+      textPainter.width + (_labelPadX * 2),
+      textPainter.height + (_labelPadY * 2),
+    );
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final strokePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _strokeWidth
+      ..strokeJoin = StrokeJoin.miter
+      ..strokeCap = StrokeCap.square
+      ..color = _strokeColor;
+    final haloPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _strokeWidth + 1.8
+      ..strokeJoin = StrokeJoin.miter
+      ..strokeCap = StrokeCap.square
+      ..color = _strokeColor.withValues(alpha: 0.28);
+    final fillPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = _strokeColor.withValues(alpha: 0.12);
+
+    for (int i = 0; i < verses.length; i++) {
+      final verse = verses[i];
+      final bool isSelected =
+          selectedVerseIndex != null && selectedVerseIndex == i;
+
+      if (isSelected) {
+        for (final contour in verse.contours) {
+          if (contour.length < 2) {
+            continue;
+          }
+          final path = Path();
+          path.moveTo(
+            contour.first.dx * size.width,
+            contour.first.dy * size.height,
+          );
+          for (var j = 1; j < contour.length; j++) {
+            path.lineTo(
+              contour[j].dx * size.width,
+              contour[j].dy * size.height,
+            );
+          }
+          path.close();
+          canvas.drawPath(path, fillPaint);
+          canvas.drawPath(path, haloPaint);
+          canvas.drawPath(path, strokePaint);
+        }
+      }
+
+      _paintVerseLabel(canvas, size, verse, selected: isSelected);
+    }
+  }
+
+  void _paintVerseLabel(
+    Canvas canvas,
+    Size size,
+    Verse verse, {
+    required bool selected,
+  }) {
+    final textPainter = _buildLabelPainter(
+      verse,
+      color: selected ? Colors.white : _strokeColor,
+    );
+    final rect = getLabelRect(verse, size);
+    final bgRect = RRect.fromRectAndRadius(rect, const Radius.circular(3));
+
+    final bgPaint = Paint()
+      ..color = selected
+          ? _strokeColor.withValues(alpha: 0.95)
+          : Colors.white.withValues(alpha: 0.82);
+    final borderPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = selected ? 1.3 : 1
+      ..color = _strokeColor.withValues(alpha: 0.95);
+
+    canvas.drawRRect(bgRect, bgPaint);
+    canvas.drawRRect(bgRect, borderPaint);
+    textPainter.paint(
+      canvas,
+      Offset(rect.left + _labelPadX, rect.top + _labelPadY),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant RelativeVersesPainter oldDelegate) {
+    return oldDelegate.verses != verses ||
+        oldDelegate.selectedVerseIndex != selectedVerseIndex;
   }
 }
 

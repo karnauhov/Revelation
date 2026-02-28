@@ -384,6 +384,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get toggle_show_strong_numbers => 'Номери Стронґа';
 
   @override
+  String get toggle_show_verse_numbers => 'Номери віршів';
+
+  @override
   String get strong_number => '№ Стронґа';
 
   @override

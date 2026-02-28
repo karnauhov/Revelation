@@ -6,7 +6,13 @@ All notable changes to this application will be documented here.
 
 ### Added
 
-- ...
+- Verse labels and interactive verse selection overlays on Primary Source pages
+- Verse description mode with per-word links that jump to the exact word on the page
+- Toggle to show or hide verse numbers in Primary Source toolbar
+
+### Changed
+
+- Primary Source description info icon is now shown only for word and Strong's number modes
 
 ## [1.0.4](https://github.com/karnauhov/Revelation/releases/tag/v1.0.4%2B134) - 22.02.26
 

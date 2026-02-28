@@ -51,6 +51,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   String? descriptionContent;
   bool showWordSeparators = false;
   bool showStrongNumbers = false;
+  bool showVerseNumbers = true;
 
   final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
@@ -176,6 +177,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       contrast = 100;
       showWordSeparators = false;
       showStrongNumbers = false;
+      showVerseNumbers = true;
       notifyListeners();
     }
   }
@@ -289,6 +291,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleShowVerseNumbers() {
+    showVerseNumbers = !showVerseNumbers;
+    savePageSettings();
+    notifyListeners();
+  }
+
   void setMenuOpen(bool value) {
     _isMenuOpen = value;
     notifyListeners();
@@ -309,6 +317,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
         contrast: contrast,
         showWordSeparators: showWordSeparators,
         showStrongNumbers: showStrongNumbers,
+        showVerseNumbers: showVerseNumbers,
       );
       _pagesSettings!.pages[pageId] = _pageSettings;
       _pagesRepository.savePages(_pagesSettings!);
@@ -335,6 +344,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     contrast = 100;
     showWordSeparators = false;
     showStrongNumbers = false;
+    showVerseNumbers = true;
     imageController.backToMinScale();
     resetColorReplacement();
   }
@@ -406,6 +416,24 @@ class PrimarySourceViewModel extends ChangeNotifier {
         forward: forward,
       );
       showInfoForStrongNumber(nextStrongNumber, context);
+      return true;
+    }
+
+    if (_currentDescriptionType == DescriptionType.verse) {
+      final verses = selectedPage?.verses;
+      final currentIndex = _currentDescriptionNumber;
+      if (verses == null ||
+          verses.isEmpty ||
+          currentIndex == null ||
+          currentIndex < 0 ||
+          currentIndex >= verses.length) {
+        return false;
+      }
+
+      final int nextIndex = forward
+          ? (currentIndex + 1) % verses.length
+          : (currentIndex - 1 + verses.length) % verses.length;
+      showInfoForVerse(nextIndex, context);
       return true;
     }
 
@@ -587,6 +615,49 @@ class PrimarySourceViewModel extends ChangeNotifier {
     }
   }
 
+  void showInfoForVerse(int verseIndex, BuildContext context) {
+    if (selectedPage == null ||
+        selectedPage!.verses.isEmpty ||
+        verseIndex < 0 ||
+        verseIndex >= selectedPage!.verses.length) {
+      return;
+    }
+
+    final verse = selectedPage!.verses[verseIndex];
+    final words = selectedPage!.words;
+    final buffer = StringBuffer();
+    final verseRef = "${verse.chapterNumber}:${verse.verseNumber}";
+    final sourceId = primarySource.id;
+    final pageName = selectedPage!.name;
+
+    buffer.write("## ");
+    buffer.write(AppLocalizations.of(context)!.app_name);
+    buffer.write(" ");
+    buffer.write(verseRef);
+    buffer.write("\n\r");
+
+    final parts = <String>[];
+    for (final wordIndex in verse.wordIndexes) {
+      if (wordIndex < 0 || wordIndex >= words.length) {
+        continue;
+      }
+      final word = words[wordIndex];
+      final text = _strikeThroughByIndexes(word.text, word.notExist);
+      parts.add("[$text](word:$sourceId:$pageName:$wordIndex)");
+    }
+    if (parts.isNotEmpty) {
+      buffer.write(parts.join(' '));
+    } else {
+      buffer.write(AppLocalizations.of(context)!.click_for_info);
+    }
+
+    updateDescriptionContent(
+      buffer.toString(),
+      DescriptionType.verse,
+      verseIndex,
+    );
+  }
+
   String _replaceKeys(BuildContext context, String input) {
     // ignore: deprecated_member_use
     final regex = RegExp(r'@\w+');
@@ -619,6 +690,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       contrast = pageSettings['contrast'];
       showWordSeparators = pageSettings['wordSeparators'];
       showStrongNumbers = pageSettings['strongNumbers'];
+      showVerseNumbers = pageSettings['verseNumbers'];
     } else {
       savedX = dx = 0;
       savedY = dy = 0;
@@ -629,6 +701,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       contrast = 100;
       showWordSeparators = false;
       showStrongNumbers = false;
+      showVerseNumbers = true;
     }
   }
 

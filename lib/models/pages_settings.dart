@@ -28,8 +28,12 @@ class PagesSettings {
     double contrast = 100,
     bool showWordSeparators = false,
     bool showStrongNumbers = false,
+    bool showVerseNumbers = true,
   }) {
-    final buffer = ByteData(8 * 5 + 1);
+    const int doublesCount = 5;
+    const int flagsOffset = 8 * doublesCount;
+    const int totalBytes = flagsOffset + 2; // flags + format marker
+    final buffer = ByteData(totalBytes);
 
     int offset = 0;
     buffer.setFloat64(offset, posX, Endian.little);
@@ -47,8 +51,10 @@ class PagesSettings {
         (isNegative ? 1 : 0) |
         (isMonochrome ? 2 : 0) |
         (showWordSeparators ? 4 : 0) |
-        (showStrongNumbers ? 8 : 0);
+        (showStrongNumbers ? 8 : 0) |
+        (showVerseNumbers ? 16 : 0);
     buffer.setUint8(offset, flags);
+    buffer.setUint8(offset + 1, 1); // format marker
 
     final bytes = buffer.buffer.asUint8List();
     String b64 = base64Url.encode(bytes);
@@ -78,10 +84,12 @@ class PagesSettings {
     offset += 8;
 
     int flags = buffer.getUint8(offset);
+    final bool hasVerseNumbersFlag = bytes.length >= (8 * 5 + 2);
     bool isNegative = (flags & 1) != 0;
     bool isMonochrome = (flags & 2) != 0;
     bool showWordSeparators = (flags & 4) != 0;
     bool showStrongNumbers = (flags & 8) != 0;
+    bool showVerseNumbers = hasVerseNumbersFlag ? (flags & 16) != 0 : true;
 
     return {
       'position': {'x': posX, 'y': posY},
@@ -92,6 +100,7 @@ class PagesSettings {
       'isMonochrome': isMonochrome,
       'wordSeparators': showWordSeparators,
       'strongNumbers': showStrongNumbers,
+      'verseNumbers': showVerseNumbers,
     };
   }
 }

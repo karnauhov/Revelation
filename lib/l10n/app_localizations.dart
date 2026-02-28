@@ -822,6 +822,12 @@ abstract class AppLocalizations {
   /// **'Strong\'s numbers'**
   String get toggle_show_strong_numbers;
 
+  /// No description provided for @toggle_show_verse_numbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse numbers'**
+  String get toggle_show_verse_numbers;
+
   /// No description provided for @strong_number.
   ///
   /// In en, this message translates to:
