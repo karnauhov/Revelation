@@ -2319,8 +2319,6 @@ class TopicContentTool(tk.Tk):
     def _set_dirty(self, value: bool) -> None:
         self.dirty = value
         title = self.BASE_TITLE
-        if self.current_db_path is not None:
-            title = f"{title} | {self.current_db_path.name}"
         if self.dirty:
             title = f"* {title}"
         self.title(title)
