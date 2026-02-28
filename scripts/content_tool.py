@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import base64
 import datetime as dt
+import io
 import mimetypes
 import re
 import sqlite3
@@ -24,6 +25,12 @@ try:
     from markdown import markdown as md_to_html
 except ImportError:
     md_to_html = None
+
+try:
+    from PIL import Image, ImageTk
+except ImportError:
+    Image = None
+    ImageTk = None
 
 if TYPE_CHECKING:
     from tkinterweb import HtmlFrame as HtmlFrameType
@@ -482,7 +489,6 @@ class TopicContentTool(tk.Tk):
                 resources_enabled,
                 readonly_when_enabled=readonly_when_enabled,
             )
-        self.resource_preview_text.configure(state="disabled")
         if not resources_enabled:
             self.resource_preview_image_label.configure(
                 image="",
@@ -825,7 +831,7 @@ class TopicContentTool(tk.Tk):
         preview_frame = ttk.LabelFrame(right, text="Просмотр ресурса")
         preview_frame.grid(row=5, column=0, columnspan=2, sticky="nsew")
         preview_frame.columnconfigure(0, weight=1)
-        preview_frame.rowconfigure(1, weight=1)
+        preview_frame.rowconfigure(0, weight=1)
 
         self.resource_preview_image_label = tk.Label(
             preview_frame,
@@ -837,17 +843,7 @@ class TopicContentTool(tk.Tk):
             padx=8,
             pady=8,
         )
-        self.resource_preview_image_label.grid(row=0, column=0, sticky="nsew", padx=6, pady=(6, 4))
-
-        self.resource_preview_text = tk.Text(preview_frame, height=6, wrap="word", state="disabled")
-        self.resource_preview_text.grid(row=1, column=0, sticky="nsew", padx=6, pady=(0, 6))
-        resource_preview_scroll = ttk.Scrollbar(
-            preview_frame,
-            orient="vertical",
-            command=self.resource_preview_text.yview,
-        )
-        resource_preview_scroll.grid(row=1, column=1, sticky="ns", pady=(0, 6))
-        self.resource_preview_text.configure(yscrollcommand=resource_preview_scroll.set)
+        self.resource_preview_image_label.grid(row=0, column=0, sticky="nsew", padx=6, pady=6)
 
     def _choose_folder(self) -> None:
         chosen = filedialog.askdirectory(initialdir=str(self.work_dir), title="Выберите папку с БД")
@@ -1507,7 +1503,6 @@ class TopicContentTool(tk.Tk):
             image="",
             text="Предпросмотр ресурса недоступен.\nВыберите запись из списка.",
         )
-        self._set_resource_preview_text("")
 
     def _add_resource_from_file(self) -> None:
         selected = filedialog.askopenfilename(
@@ -1758,31 +1753,147 @@ class TopicContentTool(tk.Tk):
             mime = self._guess_mime_type(file_name)
         return data, mime, file_name
 
+    def _convert_svg_to_png_for_preview(self, svg_data: bytes) -> tuple[bytes | None, str | None]:
+        try:
+            cairosvg_module = __import__("cairosvg")
+        except ModuleNotFoundError:
+            return (
+                None,
+                "SVG предпросмотр недоступен: пакет cairosvg не установлен.\n"
+                "Установите: pip install cairosvg",
+            )
+        except Exception as exc:
+            return None, self._format_svg_preview_error(exc)
+
+        try:
+            return cairosvg_module.svg2png(bytestring=svg_data), None
+        except Exception as exc:
+            return None, self._format_svg_preview_error(exc)
+
+    def _format_svg_preview_error(self, exc: Exception) -> str:
+        error_text = str(exc).strip()
+        low = error_text.lower()
+        if "cairo" in low and ("no library called" in low or "cannot load library" in low):
+            return (
+                "SVG предпросмотр недоступен: пакет cairosvg найден, но системная библиотека Cairo недоступна.\n"
+                "Установите Cairo (Windows: libcairo-2.dll, например через GTK Runtime)."
+            )
+        if not error_text:
+            return "SVG предпросмотр недоступен из-за ошибки рендера SVG."
+        short_error = error_text.splitlines()[0]
+        return f"SVG предпросмотр недоступен: {short_error}"
+
+    def _convert_pdf_to_png_for_preview(self, pdf_data: bytes) -> tuple[bytes | None, str | None]:
+        try:
+            fitz_module = __import__("fitz")
+        except ModuleNotFoundError:
+            return (
+                None,
+                "PDF предпросмотр недоступен: пакет PyMuPDF не установлен.\n"
+                "Установите: pip install pymupdf",
+            )
+        except Exception as exc:
+            return None, self._format_pdf_preview_error(exc)
+
+        doc = None
+        try:
+            doc = fitz_module.open(stream=pdf_data, filetype="pdf")
+            if doc.page_count == 0:
+                return None, "PDF предпросмотр недоступен: документ не содержит страниц."
+            page = doc.load_page(0)
+            matrix = fitz_module.Matrix(1.6, 1.6)
+            pix = page.get_pixmap(matrix=matrix, alpha=False)
+            return pix.tobytes("png"), None
+        except Exception as exc:
+            return None, self._format_pdf_preview_error(exc)
+        finally:
+            if doc is not None:
+                doc.close()
+
+    def _format_pdf_preview_error(self, exc: Exception) -> str:
+        error_text = str(exc).strip()
+        if not error_text:
+            return "PDF предпросмотр недоступен из-за ошибки рендера PDF."
+        short_error = error_text.splitlines()[0]
+        return f"PDF предпросмотр недоступен: {short_error}"
+
+    def _try_set_preview_image_from_bytes(self, image_data: bytes) -> bool:
+        if not image_data:
+            return False
+
+        if Image is not None and ImageTk is not None:
+            try:
+                with Image.open(io.BytesIO(image_data)) as pil_image:
+                    # Keep preview reasonably sized for the editor pane.
+                    max_size = (860, 380)
+                    resampling = (
+                        Image.Resampling.LANCZOS
+                        if hasattr(Image, "Resampling")
+                        else Image.LANCZOS
+                    )
+                    preview_image = pil_image.copy()
+                    preview_image.thumbnail(max_size, resampling)
+                self.resource_preview_image = ImageTk.PhotoImage(preview_image)
+                self.resource_preview_image_label.configure(image=self.resource_preview_image, text="")
+                return True
+            except Exception:
+                pass
+
+        try:
+            encoded = base64.b64encode(image_data).decode("ascii")
+            self.resource_preview_image = tk.PhotoImage(data=encoded)
+            self.resource_preview_image_label.configure(image=self.resource_preview_image, text="")
+            return True
+        except tk.TclError:
+            return False
+
     def _render_resource_preview(self, data: bytes, mime: str, file_name: str, key: str) -> None:
         self.resource_preview_image = None
         self.resource_preview_image_label.configure(image="")
 
-        info_lines = [
-            f"Ключ: {key}",
-            f"Имя файла: {file_name}",
-            f"MIME: {mime or self._guess_mime_type(file_name)}",
-            f"Размер: {self._format_size(len(data))}",
-        ]
+        lower_mime = (mime or "").lower()
+        is_pdf = lower_mime == "application/pdf" or Path(file_name).suffix.lower() == ".pdf"
 
         if self._is_graphic_resource(mime, file_name) and data:
-            try:
-                encoded = base64.b64encode(data).decode("ascii")
-                self.resource_preview_image = tk.PhotoImage(data=encoded)
-                self.resource_preview_image_label.configure(image=self.resource_preview_image, text="")
-                info_lines.append("Предпросмотр: изображение показано выше.")
-            except tk.TclError:
-                self.resource_preview_image_label.configure(
-                    text=(
-                        "Встроенный предпросмотр этого изображения недоступен в Tk.\n"
-                        "Используйте кнопку 'Открыть ресурс'."
+            lower_mime = (mime or "").lower()
+            is_svg = lower_mime.startswith("image/svg") or Path(file_name).suffix.lower() == ".svg"
+            preview_data = data
+            svg_error_message: str | None = None
+            if is_svg:
+                converted_png, svg_error_message = self._convert_svg_to_png_for_preview(data)
+                if converted_png is not None:
+                    preview_data = converted_png
+
+            preview_loaded = self._try_set_preview_image_from_bytes(preview_data)
+
+            if not preview_loaded:
+                if is_svg and svg_error_message:
+                    self.resource_preview_image_label.configure(
+                        text=svg_error_message,
                     )
-                )
-                info_lines.append("Предпросмотр: формат изображения не поддерживается встроенно.")
+                else:
+                    self.resource_preview_image_label.configure(
+                        text=(
+                            "Встроенный предпросмотр этого изображения недоступен в Tk.\n"
+                            "Используйте кнопку 'Открыть ресурс'."
+                        )
+                    )
+        elif is_pdf and data:
+            png_data, pdf_error_message = self._convert_pdf_to_png_for_preview(data)
+            preview_loaded = False
+            if png_data is not None:
+                preview_loaded = self._try_set_preview_image_from_bytes(png_data)
+
+            if not preview_loaded:
+                if pdf_error_message:
+                    self.resource_preview_image_label.configure(text=pdf_error_message)
+                else:
+                    self.resource_preview_image_label.configure(
+                        text=(
+                            "PDF предпросмотр недоступен во встроенном просмотре.\n"
+                            "Используйте кнопку 'Открыть ресурс'."
+                        )
+                    )
         else:
             self.resource_preview_image_label.configure(
                 text=(
@@ -1790,16 +1901,6 @@ class TopicContentTool(tk.Tk):
                     "'Открыть ресурс' или 'Сохранить как'."
                 )
             )
-            info_lines.append("Предпросмотр: встроенно отображаются только поддерживаемые изображения.")
-
-        self._set_resource_preview_text("\n".join(info_lines))
-
-    def _set_resource_preview_text(self, text: str) -> None:
-        self.resource_preview_text.configure(state="normal")
-        self.resource_preview_text.delete("1.0", tk.END)
-        if text:
-            self.resource_preview_text.insert("1.0", text)
-        self.resource_preview_text.configure(state="disabled")
 
     def _resource_payload_from_editor_or_db(self) -> tuple[bytes, str, str, str] | None:
         key = self.resource_key_var.get().strip()
