@@ -17,13 +17,17 @@ def parse_args() -> argparse.Namespace:
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    inc_parser = subparsers.add_parser("inc-build", help="Increment build number.")
-    inc_parser.add_argument(
+    for inc_cmd in ("inc-build", "bump-build", "increase-build"):
+        inc_parser = subparsers.add_parser(
+            inc_cmd,
+            help="Increment build number.",
+        )
+        inc_parser.add_argument(
         "--step",
         type=int,
         default=1,
         help="Increment step for build number (default: 1).",
-    )
+        )
 
     set_parser = subparsers.add_parser(
         "set-version",
@@ -160,7 +164,7 @@ def main() -> None:
     pubspec_text = (repo_root / "pubspec.yaml").read_text(encoding="utf-8")
     current_version, current_build = parse_pubspec_version(pubspec_text)
 
-    if args.command == "inc-build":
+    if args.command in ("inc-build", "bump-build", "increase-build"):
         if args.step <= 0:
             raise SystemExit("--step must be > 0")
         new_version = current_version

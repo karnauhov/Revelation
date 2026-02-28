@@ -11,10 +11,39 @@ class GreekWords extends Table {
   TextColumn get usage => text().named('usage')();
 }
 
-@DriftDatabase(tables: [GreekWords])
+class CommonResources extends Table {
+  TextColumn get key => text()();
+  TextColumn get fileName => text().named('file_name')();
+  TextColumn get mimeType => text().named('mime_type')();
+  BlobColumn get data => blob()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
+@DriftDatabase(tables: [GreekWords, CommonResources])
 class CommonDB extends _$CommonDB {
   CommonDB(QueryExecutor e) : super(e);
 
-  // @override
-  int get schemaVersion => 1;
+  @override
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (Migrator m) async {
+      await m.createAll();
+    },
+    onUpgrade: (Migrator m, int from, int to) async {
+      if (from < 2) {
+        await customStatement("""
+          CREATE TABLE IF NOT EXISTS common_resources (
+            key TEXT NOT NULL PRIMARY KEY,
+            file_name TEXT NOT NULL,
+            mime_type TEXT NOT NULL,
+            data BLOB NOT NULL
+          )
+        """);
+      }
+    },
+  );
 }

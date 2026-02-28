@@ -1,1 +1,0 @@
-I sincerely appreciate everyone who has shown interest in the app and keeps it installed while waiting for new versions. This truly inspires me to continue working on it. In the future, an analysis of Revelation 1:1-3 will be added here according to the plan described in the preface.

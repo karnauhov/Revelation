@@ -130,6 +130,11 @@ class AppLocalizationsUk extends AppLocalizations {
   String get download_snapcraft => 'Snapcraft';
 
   @override
+  String file_saved_at(Object path) {
+    return 'Збережено: $path';
+  }
+
+  @override
   String get error_loading_libraries => 'Помилка завантаження бібліотек';
 
   @override
@@ -234,18 +239,6 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get topic => 'Тема';
-
-  @override
-  String get topic_0_name => 'Передмова';
-
-  @override
-  String get topic_0_description => 'Першоджерела, принципи, етапи';
-
-  @override
-  String get topic_1_name => 'Вступ';
-
-  @override
-  String get topic_1_description => 'Об. 1:1-3';
 
   @override
   String get show_more => 'показати більше інформації';

@@ -330,6 +330,12 @@ abstract class AppLocalizations {
   /// **'Snapcraft'**
   String get download_snapcraft;
 
+  /// No description provided for @file_saved_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: {path}'**
+  String file_saved_at(Object path);
+
   /// No description provided for @error_loading_libraries.
   ///
   /// In en, this message translates to:
@@ -539,30 +545,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Topic'**
   String get topic;
-
-  /// No description provided for @topic_0_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Preface'**
-  String get topic_0_name;
-
-  /// No description provided for @topic_0_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Primary sources, principles, stages'**
-  String get topic_0_description;
-
-  /// No description provided for @topic_1_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Introduction'**
-  String get topic_1_name;
-
-  /// No description provided for @topic_1_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Rev. 1:1-3'**
-  String get topic_1_description;
 
   /// No description provided for @show_more.
   ///

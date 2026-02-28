@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/common_widgets/error_message.dart';
+import 'package:revelation/managers/db_manager.dart';
+import 'package:revelation/viewmodels/settings_view_model.dart';
 import 'topic_card.dart';
 import '../../models/topic_info.dart';
-import '../../utils/common.dart';
 
 class TopicList extends StatefulWidget {
   const TopicList({super.key});
@@ -16,11 +17,39 @@ class TopicList extends StatefulWidget {
 
 class _TopicListState extends State<TopicList> {
   late Future<List<TopicInfo>> _topicsFuture;
+  String? _topicsLanguage;
 
   @override
   void initState() {
     super.initState();
-    _topicsFuture = parseTopics(rootBundle, 'assets/data/topics.xml');
+    _topicsFuture = Future.value(const []);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final language = Provider.of<SettingsViewModel>(
+      context,
+    ).settings.selectedLanguage;
+    if (_topicsLanguage != language) {
+      _topicsLanguage = language;
+      _topicsFuture = _loadTopicsFromDb(language);
+    }
+  }
+
+  Future<List<TopicInfo>> _loadTopicsFromDb(String language) async {
+    await DBManager().updateLanguage(language);
+    final topics = await DBManager().getTopics();
+    return topics
+        .map(
+          (topic) => TopicInfo(
+            name: topic.name,
+            idIcon: topic.idIcon,
+            description: topic.description,
+            route: topic.route,
+          ),
+        )
+        .toList(growable: false);
   }
 
   @override

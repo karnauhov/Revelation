@@ -21,7 +21,6 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:url_launcher/url_launcher.dart' show launchUrl, LaunchMode;
 import 'package:xml/xml.dart';
 import '../app_router.dart';
-import '../models/topic_info.dart';
 import '../models/library_info.dart';
 import '../models/institution_info.dart';
 import 'dependent.dart' as dep;
@@ -74,12 +73,8 @@ TargetPlatform getPlatform() {
 }
 
 String locLinks(BuildContext context, String key) {
-  final localizations = AppLocalizations.of(context);
+  final localizations = AppLocalizations.of(context)!;
   final Map<String, String> translations = {
-    "topic_0_name": localizations!.topic_0_name,
-    "topic_0_description": localizations.topic_0_description,
-    "topic_1_name": localizations.topic_1_name,
-    "topic_1_description": localizations.topic_1_description,
     "@indeclNumAdj": localizations.strong_indeclNumAdj,
     "@indeclLetN": localizations.strong_indeclLetN,
     "@indeclinable": localizations.strong_indeclinable,
@@ -286,45 +281,6 @@ Future<List<InstitutionInfo>> parseInstitutions(
     }
 
     return institutions;
-  } on XmlException {
-    rethrow;
-  } on PlatformException {
-    rethrow;
-  } catch (e) {
-    throw Exception('Unknown error: $e');
-  }
-}
-
-Future<List<TopicInfo>> parseTopics(AssetBundle bundle, String xmlPath) async {
-  try {
-    final xmlString = await bundle.loadString(xmlPath);
-    final document = XmlDocument.parse(xmlString);
-    final topics = <TopicInfo>[];
-
-    for (var element in document.findAllElements('topic')) {
-      final name = element.getElement('name')?.innerText;
-      final idIcon = element.getElement('idIcon')?.innerText;
-      final description = element.getElement('description')?.innerText;
-      final route = element.getElement('route')?.innerText;
-
-      if (name == null ||
-          idIcon == null ||
-          description == null ||
-          route == null) {
-        throw Exception('Missing required tags in topic element');
-      }
-
-      topics.add(
-        TopicInfo(
-          name: name,
-          idIcon: idIcon,
-          description: description,
-          route: route,
-        ),
-      );
-    }
-
-    return topics;
   } on XmlException {
     rethrow;
   } on PlatformException {

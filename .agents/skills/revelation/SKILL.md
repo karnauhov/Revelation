@@ -1,6 +1,6 @@
 ﻿---
 name: revelation
-description: Use for Revelation project release/version updates: increment build, set semantic version, and keep pubspec.yaml, setup.iss, snap/snapcraft.yaml, and snap/gui/revelation-x.desktop in sync. It also recalculates msix_version with rule third segment = patch + build.
+description: Use for Revelation project release/version updates when asked to increment build number or sync release versions (e.g. "increase build number", "bump build", "увеличь билд номер", "подними билд"). Keeps pubspec.yaml, setup.iss, snap/snapcraft.yaml, and snap/gui/revelation-x.desktop in sync and recalculates msix_version with rule third segment = patch + build.
 ---
 
 # Revelation
@@ -13,6 +13,7 @@ Use this skill when the user asks to:
 - increment build number
 - set a new semantic version (`X.Y.Z`)
 - synchronize release/version fields across project files
+- commands in Russian like: `увеличь билд номер`, `подними билд`, `инкремент билда`
 
 ## Source of truth and rules
 

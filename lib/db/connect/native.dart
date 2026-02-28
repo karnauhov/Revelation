@@ -32,6 +32,7 @@ LazyDatabase getLazyDatabase(dbFile) {
       } else {
         final appFolder = await getAppFolder();
         final file = File(p.join(appFolder, folder, dbFile));
+        await file.parent.create(recursive: true);
         return NativeDatabase(file);
       }
     } catch (e, st) {

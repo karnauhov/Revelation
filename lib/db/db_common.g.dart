@@ -396,15 +396,333 @@ class GreekWordsCompanion extends UpdateCompanion<GreekWord> {
   }
 }
 
+class $CommonResourcesTable extends CommonResources
+    with TableInfo<$CommonResourcesTable, CommonResource> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CommonResourcesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileNameMeta = const VerificationMeta(
+    'fileName',
+  );
+  @override
+  late final GeneratedColumn<String> fileName = GeneratedColumn<String>(
+    'file_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mimeTypeMeta = const VerificationMeta(
+    'mimeType',
+  );
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+    'mime_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<Uint8List> data = GeneratedColumn<Uint8List>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [key, fileName, mimeType, data];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'common_resources';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CommonResource> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('file_name')) {
+      context.handle(
+        _fileNameMeta,
+        fileName.isAcceptableOrUnknown(data['file_name']!, _fileNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileNameMeta);
+    }
+    if (data.containsKey('mime_type')) {
+      context.handle(
+        _mimeTypeMeta,
+        mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mimeTypeMeta);
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  CommonResource map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CommonResource(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      fileName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_name'],
+      )!,
+      mimeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mime_type'],
+      )!,
+      data: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}data'],
+      )!,
+    );
+  }
+
+  @override
+  $CommonResourcesTable createAlias(String alias) {
+    return $CommonResourcesTable(attachedDatabase, alias);
+  }
+}
+
+class CommonResource extends DataClass implements Insertable<CommonResource> {
+  final String key;
+  final String fileName;
+  final String mimeType;
+  final Uint8List data;
+  const CommonResource({
+    required this.key,
+    required this.fileName,
+    required this.mimeType,
+    required this.data,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['file_name'] = Variable<String>(fileName);
+    map['mime_type'] = Variable<String>(mimeType);
+    map['data'] = Variable<Uint8List>(data);
+    return map;
+  }
+
+  CommonResourcesCompanion toCompanion(bool nullToAbsent) {
+    return CommonResourcesCompanion(
+      key: Value(key),
+      fileName: Value(fileName),
+      mimeType: Value(mimeType),
+      data: Value(data),
+    );
+  }
+
+  factory CommonResource.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CommonResource(
+      key: serializer.fromJson<String>(json['key']),
+      fileName: serializer.fromJson<String>(json['fileName']),
+      mimeType: serializer.fromJson<String>(json['mimeType']),
+      data: serializer.fromJson<Uint8List>(json['data']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'fileName': serializer.toJson<String>(fileName),
+      'mimeType': serializer.toJson<String>(mimeType),
+      'data': serializer.toJson<Uint8List>(data),
+    };
+  }
+
+  CommonResource copyWith({
+    String? key,
+    String? fileName,
+    String? mimeType,
+    Uint8List? data,
+  }) => CommonResource(
+    key: key ?? this.key,
+    fileName: fileName ?? this.fileName,
+    mimeType: mimeType ?? this.mimeType,
+    data: data ?? this.data,
+  );
+  CommonResource copyWithCompanion(CommonResourcesCompanion data) {
+    return CommonResource(
+      key: data.key.present ? data.key.value : this.key,
+      fileName: data.fileName.present ? data.fileName.value : this.fileName,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
+      data: data.data.present ? data.data.value : this.data,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommonResource(')
+          ..write('key: $key, ')
+          ..write('fileName: $fileName, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('data: $data')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(key, fileName, mimeType, $driftBlobEquality.hash(data));
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CommonResource &&
+          other.key == this.key &&
+          other.fileName == this.fileName &&
+          other.mimeType == this.mimeType &&
+          $driftBlobEquality.equals(other.data, this.data));
+}
+
+class CommonResourcesCompanion extends UpdateCompanion<CommonResource> {
+  final Value<String> key;
+  final Value<String> fileName;
+  final Value<String> mimeType;
+  final Value<Uint8List> data;
+  final Value<int> rowid;
+  const CommonResourcesCompanion({
+    this.key = const Value.absent(),
+    this.fileName = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.data = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CommonResourcesCompanion.insert({
+    required String key,
+    required String fileName,
+    required String mimeType,
+    required Uint8List data,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       fileName = Value(fileName),
+       mimeType = Value(mimeType),
+       data = Value(data);
+  static Insertable<CommonResource> custom({
+    Expression<String>? key,
+    Expression<String>? fileName,
+    Expression<String>? mimeType,
+    Expression<Uint8List>? data,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (fileName != null) 'file_name': fileName,
+      if (mimeType != null) 'mime_type': mimeType,
+      if (data != null) 'data': data,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CommonResourcesCompanion copyWith({
+    Value<String>? key,
+    Value<String>? fileName,
+    Value<String>? mimeType,
+    Value<Uint8List>? data,
+    Value<int>? rowid,
+  }) {
+    return CommonResourcesCompanion(
+      key: key ?? this.key,
+      fileName: fileName ?? this.fileName,
+      mimeType: mimeType ?? this.mimeType,
+      data: data ?? this.data,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (fileName.present) {
+      map['file_name'] = Variable<String>(fileName.value);
+    }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<Uint8List>(data.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommonResourcesCompanion(')
+          ..write('key: $key, ')
+          ..write('fileName: $fileName, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('data: $data, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$CommonDB extends GeneratedDatabase {
   _$CommonDB(QueryExecutor e) : super(e);
   $CommonDBManager get managers => $CommonDBManager(this);
   late final $GreekWordsTable greekWords = $GreekWordsTable(this);
+  late final $CommonResourcesTable commonResources = $CommonResourcesTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [greekWords];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    greekWords,
+    commonResources,
+  ];
 }
 
 typedef $$GreekWordsTableCreateCompanionBuilder =
@@ -614,10 +932,193 @@ typedef $$GreekWordsTableProcessedTableManager =
       GreekWord,
       PrefetchHooks Function()
     >;
+typedef $$CommonResourcesTableCreateCompanionBuilder =
+    CommonResourcesCompanion Function({
+      required String key,
+      required String fileName,
+      required String mimeType,
+      required Uint8List data,
+      Value<int> rowid,
+    });
+typedef $$CommonResourcesTableUpdateCompanionBuilder =
+    CommonResourcesCompanion Function({
+      Value<String> key,
+      Value<String> fileName,
+      Value<String> mimeType,
+      Value<Uint8List> data,
+      Value<int> rowid,
+    });
+
+class $$CommonResourcesTableFilterComposer
+    extends Composer<_$CommonDB, $CommonResourcesTable> {
+  $$CommonResourcesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CommonResourcesTableOrderingComposer
+    extends Composer<_$CommonDB, $CommonResourcesTable> {
+  $$CommonResourcesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CommonResourcesTableAnnotationComposer
+    extends Composer<_$CommonDB, $CommonResourcesTable> {
+  $$CommonResourcesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<String> get fileName =>
+      $composableBuilder(column: $table.fileName, builder: (column) => column);
+
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+}
+
+class $$CommonResourcesTableTableManager
+    extends
+        RootTableManager<
+          _$CommonDB,
+          $CommonResourcesTable,
+          CommonResource,
+          $$CommonResourcesTableFilterComposer,
+          $$CommonResourcesTableOrderingComposer,
+          $$CommonResourcesTableAnnotationComposer,
+          $$CommonResourcesTableCreateCompanionBuilder,
+          $$CommonResourcesTableUpdateCompanionBuilder,
+          (
+            CommonResource,
+            BaseReferences<_$CommonDB, $CommonResourcesTable, CommonResource>,
+          ),
+          CommonResource,
+          PrefetchHooks Function()
+        > {
+  $$CommonResourcesTableTableManager(_$CommonDB db, $CommonResourcesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CommonResourcesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CommonResourcesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CommonResourcesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<String> fileName = const Value.absent(),
+                Value<String> mimeType = const Value.absent(),
+                Value<Uint8List> data = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CommonResourcesCompanion(
+                key: key,
+                fileName: fileName,
+                mimeType: mimeType,
+                data: data,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required String fileName,
+                required String mimeType,
+                required Uint8List data,
+                Value<int> rowid = const Value.absent(),
+              }) => CommonResourcesCompanion.insert(
+                key: key,
+                fileName: fileName,
+                mimeType: mimeType,
+                data: data,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CommonResourcesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CommonDB,
+      $CommonResourcesTable,
+      CommonResource,
+      $$CommonResourcesTableFilterComposer,
+      $$CommonResourcesTableOrderingComposer,
+      $$CommonResourcesTableAnnotationComposer,
+      $$CommonResourcesTableCreateCompanionBuilder,
+      $$CommonResourcesTableUpdateCompanionBuilder,
+      (
+        CommonResource,
+        BaseReferences<_$CommonDB, $CommonResourcesTable, CommonResource>,
+      ),
+      CommonResource,
+      PrefetchHooks Function()
+    >;
 
 class $CommonDBManager {
   final _$CommonDB _db;
   $CommonDBManager(this._db);
   $$GreekWordsTableTableManager get greekWords =>
       $$GreekWordsTableTableManager(_db, _db.greekWords);
+  $$CommonResourcesTableTableManager get commonResources =>
+      $$CommonResourcesTableTableManager(_db, _db.commonResources);
 }

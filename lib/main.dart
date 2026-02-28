@@ -73,14 +73,16 @@ void main() async {
       final settingsViewModel = SettingsViewModel(SettingsRepository());
       await settingsViewModel.loadSettings();
 
-      final isServerConnected = await ServerManager().init();
-      if (isServerConnected) {
+      await ServerManager().init();
+      try {
         await DBManager().init(settingsViewModel.settings.selectedLanguage);
         settingsViewModel.addListener(() {
           DBManager().updateLanguage(
             settingsViewModel.settings.selectedLanguage,
           );
         });
+      } catch (e, st) {
+        talker.handle(e, st, 'Failed to initialize local databases');
       }
 
       runApp(
