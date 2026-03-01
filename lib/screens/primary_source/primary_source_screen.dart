@@ -58,7 +58,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       GlobalKey<TooltipState>();
   final PrimarySourceReferenceResolver _referenceResolver =
       PrimarySourceReferenceResolver();
-  bool _initialWordReferenceApplied = false;
+  bool _initialReferenceApplied = false;
 
   @override
   void initState() {
@@ -96,7 +96,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       child: Consumer<PrimarySourceViewModel>(
         builder: (context, viewModel, child) {
           _viewModel = viewModel;
-          _tryApplyInitialWordReference(viewModel);
+          _tryApplyInitialReference(viewModel);
 
           if (widget.primarySource.permissionsReceived &&
               viewModel.selectedPage != null &&
@@ -578,43 +578,58 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     viewModel.showInfoForStrongNumber(pickedStrongNumber, context);
   }
 
-  void _tryApplyInitialWordReference(PrimarySourceViewModel viewModel) {
-    if (_initialWordReferenceApplied || widget.initialWordIndex == null) {
+  void _tryApplyInitialReference(PrimarySourceViewModel viewModel) {
+    if (_initialReferenceApplied) {
       return;
     }
-    _initialWordReferenceApplied = true;
+
+    final normalizedPageName = widget.initialPageName?.trim();
+    final hasPageName =
+        normalizedPageName != null && normalizedPageName.isNotEmpty;
+    final hasWordIndex = widget.initialWordIndex != null;
+    if (!hasPageName && !hasWordIndex) {
+      return;
+    }
+    _initialReferenceApplied = true;
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) {
         return;
       }
-      await _openWordInCurrentSource(
+      await _openReferenceInCurrentSource(
         viewModel: viewModel,
         linkContext: context,
-        pageName: widget.initialPageName,
-        wordIndex: widget.initialWordIndex!,
+        pageName: normalizedPageName,
+        wordIndex: widget.initialWordIndex,
+        navigateToFirstPageWhenPageMissing: false,
       );
     });
   }
 
   Future<void> _handleWordLinkTap({
-    required String? sourceId,
+    required String sourceId,
     required String? pageName,
-    required int wordIndex,
+    required int? wordIndex,
     required BuildContext linkContext,
     required PrimarySourceViewModel viewModel,
   }) async {
-    final normalizedSourceId = sourceId?.trim();
+    final normalizedSourceId = sourceId.trim();
     final normalizedPageName = pageName?.trim();
+    final shouldOpenFirstPage =
+        normalizedPageName == null || normalizedPageName.isEmpty;
 
-    if (normalizedSourceId == null ||
-        normalizedSourceId.isEmpty ||
-        normalizedSourceId == widget.primarySource.id) {
-      await _openWordInCurrentSource(
+    if (normalizedSourceId.isEmpty) {
+      log.warning("Empty source id in word link.");
+      return;
+    }
+
+    if (normalizedSourceId == widget.primarySource.id) {
+      await _openReferenceInCurrentSource(
         viewModel: viewModel,
         linkContext: linkContext,
         pageName: normalizedPageName,
         wordIndex: wordIndex,
+        navigateToFirstPageWhenPageMissing: shouldOpenFirstPage,
       );
       return;
     }
@@ -635,22 +650,20 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       '/primary_source',
       extra: {
         'primarySource': targetSource,
-        'pageName': normalizedPageName,
-        'wordIndex': wordIndex,
+        if (normalizedPageName != null && normalizedPageName.isNotEmpty)
+          'pageName': normalizedPageName,
+        if (wordIndex != null) 'wordIndex': wordIndex,
       },
     );
   }
 
-  Future<void> _openWordInCurrentSource({
+  Future<void> _openReferenceInCurrentSource({
     required PrimarySourceViewModel viewModel,
     required BuildContext linkContext,
-    required String? pageName,
-    required int wordIndex,
+    String? pageName,
+    int? wordIndex,
+    required bool navigateToFirstPageWhenPageMissing,
   }) async {
-    if (wordIndex < 0) {
-      return;
-    }
-
     if (pageName != null && pageName.isNotEmpty) {
       model.Page? targetPage;
       for (final page in widget.primarySource.pages) {
@@ -668,6 +681,21 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       if (viewModel.selectedPage != targetPage) {
         await viewModel.changeSelectedPage(targetPage);
       }
+    } else if (navigateToFirstPageWhenPageMissing &&
+        widget.primarySource.pages.isNotEmpty) {
+      final firstPage = widget.primarySource.pages.first;
+      if (viewModel.selectedPage != firstPage) {
+        await viewModel.changeSelectedPage(firstPage);
+      }
+    }
+
+    if (wordIndex == null) {
+      return;
+    }
+
+    if (wordIndex < 0) {
+      log.warning("Wrong word index in word link: '$wordIndex'.");
+      return;
     }
 
     if (!linkContext.mounted) {

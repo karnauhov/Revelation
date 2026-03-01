@@ -379,7 +379,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get toggle_show_verse_numbers => 'Números de versículos';
 
   @override
-  String get strong_number => '# de Strong';
+  String get strong_number => 'Número de Strong';
 
   @override
   String get strong_picker_unavailable_numbers =>

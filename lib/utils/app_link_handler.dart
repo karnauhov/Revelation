@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/services/primary_source_reference_resolver.dart';
 import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/utils/common.dart';
 
@@ -11,14 +12,16 @@ typedef GreekStrongPickerTapHandler =
     void Function(int strongNumber, BuildContext context);
 typedef WordTapHandler =
     FutureOr<void> Function(
-      String? sourceId,
+      String sourceId,
       String? pageName,
-      int wordIndex,
+      int? wordIndex,
       BuildContext context,
     );
 
 GreekStrongTapHandler? _defaultGreekStrongTapHandler;
 GreekStrongPickerTapHandler? _defaultGreekStrongPickerTapHandler;
+final PrimarySourceReferenceResolver _referenceResolver =
+    PrimarySourceReferenceResolver();
 
 void setDefaultGreekStrongTapHandler(GreekStrongTapHandler? handler) {
   _defaultGreekStrongTapHandler = handler;
@@ -64,7 +67,12 @@ Future<bool> handleAppLink(
   }
 
   if (_hasScheme(link, 'word')) {
-    return _handleWordLink(context, link, onWordTap: onWordTap);
+    return _handleWordLink(
+      context,
+      link,
+      onWordTap: onWordTap,
+      popBeforeScreenPush: popBeforeScreenPush,
+    );
   }
 
   if (_hasScheme(link, 'bible')) {
@@ -201,39 +209,85 @@ Future<bool> _handleWordLink(
   BuildContext context,
   String href, {
   WordTapHandler? onWordTap,
+  required bool popBeforeScreenPush,
 }) async {
   final address = href.split(':');
-  if (address.length < 2) {
+  if (address.length < 2 || address.length > 4) {
     log.warning("Wrong word link: '$href'");
     return false;
   }
 
-  String? sourceId;
+  final sourceId = address[1].trim();
+  if (sourceId.isEmpty) {
+    log.warning("Wrong source id in word link: '$href'");
+    return false;
+  }
+
   String? pageName;
   int? wordIndex;
 
-  if (address.length == 2) {
-    wordIndex = int.tryParse(address[1].trim());
-  } else if (address.length >= 4) {
-    sourceId = address[1].trim();
+  if (address.length >= 3) {
     pageName = address[2].trim();
+    if (pageName.isEmpty) {
+      log.warning("Wrong page name in word link: '$href'");
+      return false;
+    }
+  }
+
+  if (address.length == 4) {
     wordIndex = int.tryParse(address[3].trim());
-  } else {
-    log.warning("Wrong word link format: '$href'");
+    if (wordIndex == null || wordIndex < 0) {
+      log.warning("Wrong word index in link: '$href'");
+      return false;
+    }
+  }
+
+  if (onWordTap != null) {
+    await onWordTap(sourceId, pageName, wordIndex, context);
+    return true;
+  }
+
+  return _openPrimarySourceFromWordLink(
+    context,
+    sourceId: sourceId,
+    pageName: pageName,
+    wordIndex: wordIndex,
+    popBeforeScreenPush: popBeforeScreenPush,
+  );
+}
+
+Future<bool> _openPrimarySourceFromWordLink(
+  BuildContext context, {
+  required String sourceId,
+  String? pageName,
+  int? wordIndex,
+  required bool popBeforeScreenPush,
+}) async {
+  final source = _referenceResolver.findSourceById(context, sourceId);
+  if (source == null) {
+    log.warning("Primary source '$sourceId' was not found for word link.");
     return false;
   }
 
-  if (wordIndex == null || wordIndex < 0) {
-    log.warning("Wrong word index in link: '$href'");
+  if (pageName != null &&
+      _referenceResolver.findPageByName(source, pageName) == null) {
+    log.warning("Page '$pageName' was not found in source '$sourceId'.");
     return false;
   }
 
-  if (onWordTap == null) {
-    log.warning("Word callback is not set for link: '$href'");
-    return false;
+  if (popBeforeScreenPush && Navigator.of(context).canPop()) {
+    Navigator.pop(context);
   }
 
-  await onWordTap(sourceId, pageName, wordIndex, context);
+  final extra = <String, dynamic>{'primarySource': source};
+  if (pageName != null) {
+    extra['pageName'] = pageName;
+  }
+  if (wordIndex != null) {
+    extra['wordIndex'] = wordIndex;
+  }
+
+  context.push('/primary_source', extra: extra);
   return true;
 }
 

@@ -379,7 +379,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get toggle_show_verse_numbers => 'Номера стихов';
 
   @override
-  String get strong_number => '№ Стронга';
+  String get strong_number => 'Номер Стронга';
 
   @override
   String get strong_picker_unavailable_numbers => '2717 и 3203-3302 недоступны';
