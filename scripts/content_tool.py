@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import base64
 import datetime as dt
 import io
@@ -80,6 +81,190 @@ class StrongRow:
     localized_search: str
 
 
+GREEK_DESC_GROUP_RANGES: list[tuple[int, int]] = [
+    (1, 158),
+    (159, 381),
+    (382, 574),
+    (575, 743),
+    (744, 907),
+    (908, 1084),
+    (1085, 1252),
+    (1253, 1408),
+    (1409, 1582),
+    (1583, 1791),
+    (1792, 1949),
+    (1950, 2114),
+    (2115, 2250),
+    (2251, 2415),
+    (2416, 2576),
+    (2577, 2734),
+    (2735, 2896),
+    (2897, 3067),
+    (3068, 3325),
+    (3326, 3489),
+    (3490, 3632),
+    (3633, 3766),
+    (3767, 3887),
+    (3888, 4026),
+    (4027, 4151),
+    (4152, 4278),
+    (4279, 4403),
+    (4404, 4520),
+    (4521, 4659),
+    (4660, 4784),
+    (4785, 4909),
+    (4910, 5034),
+    (5035, 5163),
+    (5164, 5269),
+    (5270, 5403),
+    (5404, 5505),
+    (5506, 5624),
+]
+GREEK_DESC_KJV_PATTERN = re.compile(r"; \[in KJV:.*?\]", re.DOTALL)
+
+
+def clean_greek_desc_for_prompt(text: str | None) -> str:
+    if not text:
+        return ""
+    return GREEK_DESC_KJV_PATTERN.sub("", text)
+
+
+def _load_greek_desc_translation_prompt_header() -> str:
+    fallback = (
+        "Ты переводчик-лексикограф словаря Стронга.\n"
+        "Переведи текстовые поля (в первую очередь поле 'desc') аккуратно и терминологически последовательно.\n"
+        "Верни только валидный JSON-массив, без пояснений и без изменения структуры объектов."
+    )
+    export_script_path = Path(__file__).resolve().parent / "export_greek_descs_groups.py"
+    try:
+        source = export_script_path.read_text(encoding="utf-8")
+        module = ast.parse(source)
+    except (OSError, SyntaxError):
+        return fallback
+
+    docstring = ast.get_docstring(module) or ""
+    marker = "Промпт для перевода:"
+    marker_index = docstring.find(marker)
+    if marker_index < 0:
+        return fallback
+
+    prompt_text = docstring[marker_index + len(marker):].strip()
+    return prompt_text or fallback
+
+
+GREEK_DESC_TRANSLATION_PROMPT_HEADER = _load_greek_desc_translation_prompt_header()
+
+LANGUAGE_NAME_RU_BY_CODE: dict[str, str] = {
+    "af": "Африкаанс",
+    "sq": "Албанский",
+    "am": "Амхарский",
+    "ar": "Арабский",
+    "hy": "Армянский",
+    "az": "Азербайджанский",
+    "eu": "Баскский",
+    "be": "Белорусский",
+    "bn": "Бенгальский",
+    "bs": "Боснийский",
+    "bg": "Болгарский",
+    "my": "Бирманский",
+    "ca": "Каталанский",
+    "ug": "Уйгурский",
+    "zh": "Китайский",
+    "co": "Корсиканский",
+    "hr": "Хорватский",
+    "cs": "Чешский",
+    "da": "Датский",
+    "nl": "Нидерландский",
+    "en": "Английский",
+    "eo": "Эсперанто",
+    "et": "Эстонский",
+    "fi": "Финский",
+    "fr": "Французский",
+    "fy": "Фризский",
+    "gl": "Галисийский",
+    "ka": "Грузинский",
+    "de": "Немецкий",
+    "el": "Греческий",
+    "gu": "Гуджарати",
+    "ht": "Гаитянский креольский",
+    "ha": "Хауса",
+    "uz": "Узбекский",
+    "he": "Иврит",
+    "hi": "Хинди",
+    "vi": "Вьетнамский",
+    "hu": "Венгерский",
+    "is": "Исландский",
+    "ig": "Игбо",
+    "id": "Индонезийский",
+    "ga": "Ирландский",
+    "it": "Итальянский",
+    "ja": "Японский",
+    "jv": "Яванский",
+    "kn": "Каннада",
+    "kk": "Казахский",
+    "km": "Кхмерский",
+    "rw": "Киньяруанда",
+    "ko": "Корейский",
+    "ku": "Курдский",
+    "ky": "Киргизский",
+    "lo": "Лаосский",
+    "la": "Латынь",
+    "lv": "Латышский",
+    "lt": "Литовский",
+    "lb": "Люксембургский",
+    "mk": "Македонский",
+    "mg": "Малагасийский",
+    "ms": "Малайский",
+    "ml": "Малаялам",
+    "mt": "Мальтийский",
+    "mi": "Маори",
+    "mr": "Маратхи",
+    "mn": "Монгольский",
+    "ne": "Непальский",
+    "no": "Норвежский",
+    "ny": "Ньянджа",
+    "or": "Ория",
+    "ps": "Пушту",
+    "fa": "Персидский",
+    "pl": "Польский",
+    "pt": "Португальский",
+    "pa": "Панджаби",
+    "ro": "Румынский",
+    "ru": "Русский",
+    "sm": "Самоанский",
+    "gd": "Шотландский гэльский",
+    "sr": "Сербский",
+    "st": "Сесото",
+    "sn": "Шона",
+    "sd": "Синдхи",
+    "si": "Сингальский",
+    "sk": "Словацкий",
+    "sl": "Словенский",
+    "so": "Сомалийский",
+    "es": "Испанский",
+    "su": "Сунданский",
+    "sw": "Суахили",
+    "sv": "Шведский",
+    "tl": "Тагальский",
+    "tg": "Таджикский",
+    "ta": "Тамильский",
+    "tt": "Татарский",
+    "te": "Телугу",
+    "th": "Тайский",
+    "tr": "Турецкий",
+    "tk": "Туркменский",
+    "uk": "Украинский",
+    "ur": "Урду",
+}
+
+
+def target_language_name_ru(lang_code: str) -> str:
+    code = (lang_code or "").strip().lower()
+    if code in LANGUAGE_NAME_RU_BY_CODE:
+        return LANGUAGE_NAME_RU_BY_CODE[code]
+    return f"Код языка: {code.upper()}" if code else "-"
+
+
 def default_work_dir() -> Path:
     preferred = Path(r"C:\Users\karna\OneDrive\Documents\revelation\db")
     if preferred.exists():
@@ -97,6 +282,7 @@ class TopicContentTool(tk.Tk):
     ICON_PNG_BASE64 = {
         "choose_folder": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAR0lEQVQ4y2NgGC7AneExw38kWE9Iw30U5URo+YuhARM+ZvAgTcN/hkeoGgiB/8hqaK/h30jU8J/mGh6RmjQ80JI3wcQ3tAEA40iFo4b69OwAAAAASUVORK5CYII=",
         "refresh": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAv0lEQVQ4y92TPQrCQBCFvybaxMpTmDQWwZ/Cs+UEUdyInV5ET6Gks7QULAJCdHEsDBLdXUzafNsN77Ezs2+hjYQsyMjJyZgTlNXYLvZYoZHK0Sg8YsQu3yMUKCb4+ExZc0c4IXaDQjgz/KqNyMu7DAI0xY8c4k9zBgmCcsothgPC2Cm3GK4IvSb7b2wwW/qDbeg3G4Sk7lohQqMZ1H24iAvC0pWkajT6zNjyQNjRcc1hhu9JSrdevG8cSQnb+INfa9dgs2rwKa8AAAAASUVORK5CYII=",
+        "translate": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAv0lEQVQ4y92TPQrCQBCFvybaxMpTmDQWwZ/Cs+UEUdyInV5ET6Gks7QULAJCdHEsDBLdXUzafNsN77Ezs2+hjYQsyMjJyZgTlNXYLvZYoZHK0Sg8YsQu3yMUKCb4+ExZc0c4IXaDQjgz/KqNyMu7DAI0xY8c4k9zBgmCcsothgPC2Cm3GK4IvSb7b2wwW/qDbeg3G4Sk7lohQqMZ1H24iAvC0pWkajT6zNjyQNjRcc1hhu9JSrdevG8cSQnb+INfa9dgs2rwKa8AAAAASUVORK5CYII=",
         "save": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAXklEQVQ4y2NgGLTAk+Exw38csB6bhkc4lePQAhLGBnBqIaQBQwthDf+poIEQHEoafjKUM0gAYTmQRZSGMrhoGXEaJOGikjTSQLKTiPL0I4KB+oj4DASCjxk8Bm3mBwATwvSdhoWVegAAAABJRU5ErkJggg==",
         "publish": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPElEQVQ4y2NgGDKgHghJUv4fCOtJU060FoRyorSgKieoBVM5Xi3YlRPhMGSlRIERqYF24D8eSB0NQxUAAMVCcIlDCOtfAAAAAElFTkSuQmCC",
         "open_resource": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAC7klEQVR42uVVz4tURxD+qqt7friRRVkSDQQkDEpGBKHdjW6E0V0IGySSHN7J/Af5FwLjevIi/gMieH54kSXmoIuTQxh/PE/JRIJsEsghGLNRZpM37/XrLg/OhJmd3WT0oAc/KHivu6jvq6ruauBNBo1YFHH/+9WreAk0VX321ts6K3WJctObcl4XlSOpV/fXkhtP+3EFANTEJehbFEVcq902gLooO6TryuoXLiq/MvNqVfkr9XpUGo47TtBsDtZkK4vj2D98+E3W2TfzRRC5yoqnAbxFpCDAz51OvWg0Gv9WRo+pXl4OADA/f3rnE/NUvHNjZSwppf2jRy54vqxYfaZIGRHxAnoMLIeNDctjBFEUcRzHoX50YY6hz3X9P/PkmJjUSJYk4ADKiSQopmkv/i8IviuVK6d8UYwVZCSDWm2pRD67wCV13OXFhgA8aNYgOIi6gMyQYhAICqIDufNZ3isJ8O5mgoE6iuPYY/d6WYBjWZ5t+Irb703vnRx/7/U62wOVvlffNzMVRL5kNpmEsB6Cv2nK5Z0QXvyhvesTkFwFgCRJ/JYZsNZCBVIAquvck9/a7XR4P7jqx8boKwCMhz9FwoeJ1CIJCiD2nTtYHbhue4qkv1YJwQAga60BgP2zjSVj+GsAunC9zx/cabUB2TPcnlptqbxdicbAWgsASZLEHfhw8UTFVK4LUSgKf7pz79traDaVArlhbdPTf4SJCYZ9pCi+D8GvhDw/8+O91evW2h2D4/x/0JM4/ZS0HgP4dDAmgBU36VDZloBDMNZak6YpVatVSdP3CQCq1RUBYKy1SBWpFycQKJD4Tru9PrqRDP84ADg4t9B9fi6EJicg9IjU1AezJ89uauKQBlEECgB9JMGTbOM3Mq4bjYZutVqhPrfwlTGlZWYN0H9PcwkeeZb+7nw41O8TDd/8rd4DZa3lHu8+qTTNeu88BeItZAkEJEARQJce3L3552t9V8cRRWzX1ia5I0iSpNhclleKZ9KpP8l/B+AQAAAAAElFTkSuQmCC",
@@ -181,8 +367,20 @@ class TopicContentTool(tk.Tk):
         self.strong_desc_texts_by_lang: dict[str, tk.Text] = {}
         self.strong_local_db_paths_by_lang: dict[str, Path] = {}
         self.strong_desc_presence_by_lang: dict[str, set[int]] = {}
+        self.strong_group_dialog: tk.Toplevel | None = None
+        self.strong_group_target_lang_var = tk.StringVar(value="")
+        self.strong_group_target_lang_name_var = tk.StringVar(value="-")
+        self.strong_group_target_combo: ttk.Combobox | None = None
+        self.strong_group_source_info_var = tk.StringVar(value="-")
+        self.strong_group_selected_label_var = tk.StringVar(value="Группа не выбрана.")
+        self.strong_group_status_labels_by_index: dict[int, ttk.Label] = {}
+        self.strong_group_progress_labels_by_index: dict[int, ttk.Label] = {}
+        self.strong_group_prompt_text: tk.Text | None = None
+        self.strong_group_response_text: tk.Text | None = None
+        self.strong_group_current_index: int | None = None
 
         self._build_ui()
+        self._install_global_text_shortcuts()
         self.strong_filter_var.trace_add("write", self._on_strong_filter_changed)
         self._refresh_db_list(initial_select=True)
         self.after(0, self._maximize_window)
@@ -520,6 +718,12 @@ class TopicContentTool(tk.Tk):
             command=self._reload_selected_strong,
         )
         self.btn_cancel_strong.pack(side="left", padx=(8, 0))
+        self.btn_group_translate_strong = ttk.Button(
+            strong_actions,
+            **self._button_kwargs("translate", "Групповой перевод..."),
+            command=self._open_strong_group_translation_dialog,
+        )
+        self.btn_group_translate_strong.pack(side="left", padx=(16, 0))
 
     def _build_future_section(self, parent: ttk.Frame, message: str) -> None:
         parent.columnconfigure(0, weight=1)
@@ -692,6 +896,9 @@ class TopicContentTool(tk.Tk):
                 padding=(6, 6),
             ).grid(row=0, column=0, sticky="w")
             self._on_strong_local_container_configure()
+            if self.strong_group_dialog is not None and self.strong_group_dialog.winfo_exists():
+                self._refresh_strong_group_target_options()
+                self._refresh_strong_group_status_rows()
             return
 
         for idx, (lang, db_path) in enumerate(entries):
@@ -716,6 +923,9 @@ class TopicContentTool(tk.Tk):
             self.strong_desc_texts_by_lang[lang] = text_widget
 
         self._on_strong_local_container_configure()
+        if self.strong_group_dialog is not None and self.strong_group_dialog.winfo_exists():
+            self._refresh_strong_group_target_options()
+            self._refresh_strong_group_status_rows()
 
     def _on_strong_local_container_configure(self, _event: object | None = None) -> None:
         if not hasattr(self, "strong_local_canvas"):
@@ -728,6 +938,811 @@ class TopicContentTool(tk.Tk):
         if not hasattr(self, "strong_local_window_id"):
             return
         self.strong_local_canvas.itemconfigure(self.strong_local_window_id, width=event.width)
+
+    def _open_strong_group_translation_dialog(self) -> None:
+        entries = self._localized_db_entries()
+        if not entries:
+            messagebox.showwarning(
+                "Нет локализованных БД",
+                "Сначала подключите локализованные БД, чтобы работать с групповым переводом.",
+                parent=self,
+            )
+            return
+
+        if self.strong_group_dialog is not None and self.strong_group_dialog.winfo_exists():
+            self.strong_group_dialog.deiconify()
+            self.strong_group_dialog.lift()
+            self.strong_group_dialog.focus_set()
+            self._refresh_strong_group_target_options()
+            self._refresh_strong_group_status_rows()
+            return
+
+        dialog = tk.Toplevel(self)
+        self.strong_group_dialog = dialog
+        dialog.title("Групповой перевод greek_descs")
+        dialog.geometry("1420x860")
+        dialog.minsize(1120, 680)
+        dialog.transient(self)
+        dialog.protocol("WM_DELETE_WINDOW", self._close_strong_group_translation_dialog)
+
+        root = ttk.Frame(dialog, padding=10)
+        root.grid(row=0, column=0, sticky="nsew")
+        dialog.columnconfigure(0, weight=1)
+        dialog.rowconfigure(0, weight=1)
+        root.columnconfigure(0, weight=1)
+        root.columnconfigure(1, weight=1)
+        root.rowconfigure(1, weight=1)
+
+        controls = ttk.Frame(root)
+        controls.grid(row=0, column=0, columnspan=2, sticky="ew")
+        controls.columnconfigure(1, weight=1)
+        controls.columnconfigure(6, weight=1)
+
+        ttk.Label(controls, text="Источник для промпта:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        ttk.Label(controls, textvariable=self.strong_group_source_info_var).grid(row=0, column=1, sticky="w")
+        ttk.Label(controls, text="Целевая БД (импорт):").grid(row=0, column=2, sticky="w", padx=(16, 8))
+        self.strong_group_target_combo = ttk.Combobox(
+            controls,
+            textvariable=self.strong_group_target_lang_var,
+            state="readonly",
+            width=8,
+        )
+        self.strong_group_target_combo.grid(row=0, column=3, sticky="w")
+        self.strong_group_target_combo.bind("<<ComboboxSelected>>", self._on_strong_group_target_lang_changed)
+        self._refresh_strong_group_target_options()
+        ttk.Label(controls, text="Целевой язык:").grid(row=0, column=4, sticky="w", padx=(12, 6))
+        ttk.Entry(
+            controls,
+            textvariable=self.strong_group_target_lang_name_var,
+            state="readonly",
+            width=22,
+        ).grid(row=0, column=5, sticky="w")
+        ttk.Button(
+            controls,
+            text="Обновить статус групп",
+            command=self._refresh_strong_group_status_rows,
+        ).grid(row=0, column=6, sticky="e", padx=(16, 0))
+        ttk.Label(controls, textvariable=self.strong_group_selected_label_var).grid(
+            row=1,
+            column=0,
+            columnspan=7,
+            sticky="w",
+            pady=(6, 0),
+        )
+
+        body = ttk.Frame(root)
+        body.grid(row=1, column=0, columnspan=2, sticky="nsew", pady=(8, 0))
+        body.columnconfigure(0, weight=1)
+        body.columnconfigure(1, weight=1)
+        body.rowconfigure(0, weight=1)
+
+        groups_box = ttk.LabelFrame(body, text="Переводы номеров Стронга.")
+        groups_box.grid(row=0, column=0, sticky="nsew", padx=(0, 6))
+        groups_box.columnconfigure(0, weight=1)
+        groups_box.rowconfigure(0, weight=1)
+
+        groups_canvas = tk.Canvas(groups_box, highlightthickness=0, borderwidth=0)
+        groups_canvas.grid(row=0, column=0, sticky="nsew")
+        groups_scroll = ttk.Scrollbar(groups_box, orient="vertical", command=groups_canvas.yview)
+        groups_scroll.grid(row=0, column=1, sticky="ns")
+        groups_canvas.configure(yscrollcommand=groups_scroll.set)
+
+        rows_wrap = ttk.Frame(groups_canvas)
+        rows_window = groups_canvas.create_window((0, 0), window=rows_wrap, anchor="nw")
+        rows_wrap.bind("<Configure>", lambda _event: groups_canvas.configure(scrollregion=groups_canvas.bbox("all")))
+        groups_canvas.bind(
+            "<Configure>",
+            lambda event: groups_canvas.itemconfigure(rows_window, width=event.width),
+        )
+
+        rows_wrap.columnconfigure(2, weight=1)
+        rows_wrap.columnconfigure(3, weight=1)
+        ttk.Label(rows_wrap, text="✓", anchor="center").grid(row=0, column=0, sticky="ew", padx=(4, 8), pady=(4, 6))
+        ttk.Label(rows_wrap, text="#", anchor="center").grid(row=0, column=1, sticky="ew", padx=(0, 8), pady=(4, 6))
+        ttk.Label(rows_wrap, text="Диапазоны номеров Стронга.", anchor="w").grid(
+            row=0,
+            column=2,
+            sticky="ew",
+            padx=(0, 8),
+            pady=(4, 6),
+        )
+        ttk.Label(rows_wrap, text="Переведено", anchor="center").grid(
+            row=0,
+            column=3,
+            sticky="ew",
+            padx=(0, 8),
+            pady=(4, 6),
+        )
+        ttk.Label(rows_wrap, text="Действие", anchor="center").grid(
+            row=0,
+            column=4,
+            sticky="ew",
+            padx=(0, 8),
+            pady=(4, 6),
+        )
+
+        self.strong_group_status_labels_by_index.clear()
+        self.strong_group_progress_labels_by_index.clear()
+        for index, (start_id, end_id) in enumerate(GREEK_DESC_GROUP_RANGES):
+            row_index = index + 1
+            status_label = ttk.Label(rows_wrap, text="□", anchor="center")
+            status_label.grid(row=row_index, column=0, sticky="ew", padx=(4, 8), pady=3)
+            self.strong_group_status_labels_by_index[index] = status_label
+
+            ttk.Label(rows_wrap, text=f"{row_index:02d}", anchor="center").grid(
+                row=row_index,
+                column=1,
+                sticky="ew",
+                padx=(0, 8),
+                pady=3,
+            )
+            ttk.Label(rows_wrap, text=f"{start_id}-{end_id}", anchor="w").grid(
+                row=row_index,
+                column=2,
+                sticky="ew",
+                padx=(0, 8),
+                pady=3,
+            )
+            progress_label = ttk.Label(rows_wrap, text="-/-", anchor="center")
+            progress_label.grid(row=row_index, column=3, sticky="ew", padx=(0, 8), pady=3)
+            self.strong_group_progress_labels_by_index[index] = progress_label
+            ttk.Button(
+                rows_wrap,
+                text="Подготовить промпт",
+                command=lambda idx=index: self._prepare_strong_group_prompt(idx),
+            ).grid(row=row_index, column=4, sticky="ew", padx=(0, 8), pady=2)
+
+        right_column = ttk.Frame(body)
+        right_column.grid(row=0, column=1, sticky="nsew", padx=(6, 0))
+        right_column.columnconfigure(0, weight=1)
+        right_column.rowconfigure(0, weight=1)
+        right_column.rowconfigure(1, weight=1)
+
+        prompt_box = ttk.LabelFrame(right_column, text="Готовый промпт")
+        prompt_box.grid(row=0, column=0, sticky="nsew", pady=(0, 6))
+        prompt_box.columnconfigure(0, weight=1)
+        prompt_box.rowconfigure(1, weight=1)
+        prompt_actions = ttk.Frame(prompt_box)
+        prompt_actions.grid(row=0, column=0, sticky="w", padx=6, pady=(6, 2))
+        ttk.Button(prompt_actions, text="Копировать промпт", command=self._copy_strong_group_prompt_to_clipboard).pack(
+            side="left"
+        )
+        self.strong_group_prompt_text = tk.Text(prompt_box, wrap="word", undo=True)
+        self.strong_group_prompt_text.grid(row=1, column=0, sticky="nsew", padx=6, pady=(2, 6))
+        prompt_scroll = ttk.Scrollbar(prompt_box, orient="vertical", command=self.strong_group_prompt_text.yview)
+        prompt_scroll.grid(row=1, column=1, sticky="ns", pady=(2, 6), padx=(0, 6))
+        self.strong_group_prompt_text.configure(yscrollcommand=prompt_scroll.set)
+
+        response_box = ttk.LabelFrame(right_column, text="Ответ ИИ (вставьте JSON)")
+        response_box.grid(row=1, column=0, sticky="nsew", pady=(6, 0))
+        response_box.columnconfigure(0, weight=1)
+        response_box.rowconfigure(1, weight=1)
+        response_actions = ttk.Frame(response_box)
+        response_actions.grid(row=0, column=0, sticky="w", padx=6, pady=(6, 2))
+        ttk.Button(
+            response_actions,
+            text="Вставить из буфера",
+            command=self._paste_strong_group_response_from_clipboard,
+        ).pack(side="left")
+        ttk.Button(
+            response_actions,
+            text="Очистить",
+            command=self._clear_strong_group_response_text,
+        ).pack(side="left", padx=(8, 0))
+        ttk.Button(
+            response_actions,
+            text="Импортировать ответ в целевую БД",
+            command=self._import_strong_group_response,
+        ).pack(side="left", padx=(8, 0))
+        self.strong_group_response_text = tk.Text(response_box, wrap="word", undo=True)
+        self.strong_group_response_text.grid(row=1, column=0, sticky="nsew", padx=6, pady=(2, 6))
+        response_scroll = ttk.Scrollbar(response_box, orient="vertical", command=self.strong_group_response_text.yview)
+        response_scroll.grid(row=1, column=1, sticky="ns", pady=(2, 6), padx=(0, 6))
+        self.strong_group_response_text.configure(yscrollcommand=response_scroll.set)
+
+        bottom = ttk.Frame(root)
+        bottom.grid(row=2, column=0, columnspan=2, sticky="e", pady=(8, 0))
+        ttk.Button(bottom, text="Закрыть", command=self._close_strong_group_translation_dialog).pack(side="right")
+
+        self.strong_group_current_index = None
+        self.strong_group_selected_label_var.set("Группа не выбрана.")
+        if self.strong_group_prompt_text is not None:
+            self._set_text_widget_content(self.strong_group_prompt_text, "")
+        if self.strong_group_response_text is not None:
+            self._set_text_widget_content(self.strong_group_response_text, "")
+        self._refresh_strong_group_status_rows()
+
+    def _close_strong_group_translation_dialog(self) -> None:
+        if self.strong_group_dialog is not None and self.strong_group_dialog.winfo_exists():
+            self.strong_group_dialog.destroy()
+        self.strong_group_dialog = None
+        self.strong_group_target_combo = None
+        self.strong_group_prompt_text = None
+        self.strong_group_response_text = None
+        self.strong_group_current_index = None
+        self.strong_group_status_labels_by_index.clear()
+        self.strong_group_progress_labels_by_index.clear()
+
+    def _refresh_strong_group_target_options(self) -> None:
+        if self.strong_group_target_combo is None:
+            return
+        languages = [lang for lang, _ in self._localized_db_entries() if lang != "en"]
+        self.strong_group_target_combo.configure(values=languages)
+        if not languages:
+            self.strong_group_target_lang_var.set("")
+            self.strong_group_target_lang_name_var.set("-")
+            return
+
+        current_lang = self.strong_group_target_lang_var.get().strip().lower()
+        if current_lang not in languages:
+            self.strong_group_target_lang_var.set(self._default_strong_group_target_lang(languages))
+        self._sync_strong_group_target_language_name()
+
+    def _default_strong_group_target_lang(self, languages: list[str]) -> str:
+        if not languages:
+            return ""
+        current_lang = self._lang_for_db_path(self.current_db_path)
+        if current_lang in languages and current_lang != "en":
+            return current_lang
+        for lang in languages:
+            if lang != "en":
+                return lang
+        return languages[0]
+
+    def _lang_for_db_path(self, db_path: Path | None) -> str | None:
+        if db_path is None:
+            return None
+        for lang, path in self._localized_db_entries():
+            try:
+                if path.resolve() == db_path.resolve():
+                    return lang
+            except OSError:
+                continue
+        return None
+
+    def _resolve_strong_group_source_db(self) -> tuple[str, Path] | None:
+        entries = self._localized_db_entries()
+        for lang, db_path in entries:
+            if lang == "en":
+                return lang, db_path
+        return entries[0] if entries else None
+
+    def _resolve_strong_group_target_db(self) -> tuple[str, Path] | None:
+        lang = self.strong_group_target_lang_var.get().strip().lower()
+        if not lang or lang == "en":
+            return None
+        db_path = self.strong_local_db_paths_by_lang.get(lang)
+        if db_path is None:
+            for candidate_lang, candidate_path in self._localized_db_entries():
+                if candidate_lang == lang:
+                    db_path = candidate_path
+                    break
+        if db_path is None:
+            return None
+        return lang, db_path
+
+    def _on_strong_group_target_lang_changed(self, _event: object | None = None) -> None:
+        self._sync_strong_group_target_language_name()
+        self._refresh_strong_group_status_rows()
+
+    def _sync_strong_group_target_language_name(self) -> None:
+        lang = self.strong_group_target_lang_var.get().strip().lower()
+        self.strong_group_target_lang_name_var.set(target_language_name_ru(lang))
+
+    def _install_global_text_shortcuts(self) -> None:
+        for class_name in ("Text", "Entry", "TEntry", "TCombobox"):
+            self.bind_class(class_name, "<Control-a>", self._on_text_shortcut_select_all)
+            self.bind_class(class_name, "<Control-A>", self._on_text_shortcut_select_all)
+            self.bind_class(class_name, "<Control-c>", self._on_text_shortcut_copy)
+            self.bind_class(class_name, "<Control-C>", self._on_text_shortcut_copy)
+            self.bind_class(class_name, "<Control-v>", self._on_text_shortcut_paste)
+            self.bind_class(class_name, "<Control-V>", self._on_text_shortcut_paste)
+
+    def _is_entry_like_widget(self, widget: object) -> bool:
+        return isinstance(widget, (tk.Entry, ttk.Entry, ttk.Combobox))
+
+    def _is_text_like_widget(self, widget: object) -> bool:
+        return isinstance(widget, tk.Text) or self._is_entry_like_widget(widget)
+
+    def _on_text_shortcut_select_all(self, event: tk.Event[tk.Misc]) -> str | None:
+        widget = event.widget
+        if not self._is_text_like_widget(widget):
+            return None
+        if isinstance(widget, tk.Text):
+            widget.tag_add("sel", "1.0", "end-1c")
+            widget.mark_set("insert", "end-1c")
+            widget.see("insert")
+            return "break"
+        if self._is_entry_like_widget(widget):
+            try:
+                widget.selection_range(0, tk.END)
+                widget.icursor(tk.END)
+                if hasattr(widget, "xview_moveto"):
+                    widget.xview_moveto(1.0)
+            except tk.TclError:
+                pass
+            return "break"
+        return None
+
+    def _on_text_shortcut_copy(self, event: tk.Event[tk.Misc]) -> str | None:
+        widget = event.widget
+        if not self._is_text_like_widget(widget):
+            return None
+
+        if isinstance(widget, tk.Text):
+            try:
+                selection = widget.get("sel.first", "sel.last")
+            except tk.TclError:
+                return "break"
+        elif self._is_entry_like_widget(widget):
+            try:
+                selection = widget.selection_get()
+            except tk.TclError:
+                return "break"
+        else:
+            return None
+
+        self.clipboard_clear()
+        self.clipboard_append(selection)
+        self.update_idletasks()
+        return "break"
+
+    def _on_text_shortcut_paste(self, event: tk.Event[tk.Misc]) -> str | None:
+        widget = event.widget
+        if not self._is_text_like_widget(widget):
+            return None
+
+        try:
+            clipboard_text = self.clipboard_get()
+        except tk.TclError:
+            return "break"
+
+        if isinstance(widget, tk.Text):
+            text_state = str(widget.cget("state"))
+            if text_state == "disabled":
+                return "break"
+            try:
+                widget.delete("sel.first", "sel.last")
+            except tk.TclError:
+                pass
+            widget.insert("insert", clipboard_text)
+            return "break"
+
+        if self._is_entry_like_widget(widget):
+            try:
+                entry_state = str(widget.cget("state"))
+            except tk.TclError:
+                entry_state = "normal"
+            if entry_state in {"disabled", "readonly"}:
+                return "break"
+            try:
+                widget.delete("sel.first", "sel.last")
+            except tk.TclError:
+                pass
+            widget.insert(tk.INSERT, clipboard_text)
+            return "break"
+
+        return None
+
+    def _paste_strong_group_response_from_clipboard(self) -> None:
+        if self.strong_group_response_text is None:
+            return
+        self._paste_text_widget_from_clipboard(self.strong_group_response_text, replace_all=True)
+
+    def _clear_strong_group_response_text(self) -> None:
+        if self.strong_group_response_text is None:
+            return
+        self._set_text_widget_content(self.strong_group_response_text, "")
+        self.strong_group_response_text.focus_set()
+
+    def _paste_text_widget_from_clipboard(self, widget: tk.Text, *, replace_all: bool) -> None:
+        try:
+            clipboard_text = self.clipboard_get()
+        except tk.TclError:
+            messagebox.showwarning("Буфер обмена", "Буфер обмена пуст или недоступен.", parent=self)
+            return
+
+        if replace_all:
+            self._set_text_widget_content(widget, clipboard_text)
+        else:
+            try:
+                widget.delete("sel.first", "sel.last")
+            except tk.TclError:
+                pass
+            widget.insert("insert", clipboard_text)
+        widget.focus_set()
+
+    def _copy_strong_group_prompt_to_clipboard(self) -> None:
+        if self.strong_group_prompt_text is None:
+            return
+        prompt = self._text_widget_content(self.strong_group_prompt_text).strip()
+        if not prompt:
+            messagebox.showinfo("Нет промпта", "Сначала подготовьте промпт по одной из групп.", parent=self)
+            return
+        self.clipboard_clear()
+        self.clipboard_append(prompt)
+        self.update_idletasks()
+        self._set_status("Промпт скопирован в буфер обмена.")
+
+    def _prepare_strong_group_prompt(self, group_index: int) -> None:
+        if group_index < 0 or group_index >= len(GREEK_DESC_GROUP_RANGES):
+            return
+        source = self._resolve_strong_group_source_db()
+        if source is None:
+            messagebox.showwarning("Нет БД", "Не удалось определить БД-источник для экспорта группы.", parent=self)
+            return
+        target = self._resolve_strong_group_target_db()
+        if target is None:
+            messagebox.showwarning("Нет целевой БД", "Выберите целевую БД (язык) для подготовки промпта.", parent=self)
+            return
+        target_lang, target_db_path = target
+        source_lang, source_db_path = source
+        start_id, end_id = GREEK_DESC_GROUP_RANGES[group_index]
+
+        try:
+            source_records = self._fetch_group_records_for_prompt(source_db_path, start_id, end_id)
+            translated_ids = self._fetch_non_empty_desc_ids_for_group(target_db_path, start_id, end_id)
+        except (OSError, sqlite3.DatabaseError) as exc:
+            messagebox.showerror(
+                "Ошибка экспорта группы",
+                f"Не удалось прочитать данные из БД:\n{exc}",
+                parent=self,
+            )
+            return
+        if not source_records:
+            messagebox.showwarning(
+                "Пустая группа",
+                f"В диапазоне {start_id}-{end_id} нет записей в таблице greek_descs.",
+                parent=self,
+            )
+            return
+
+        missing_records = [
+            record
+            for record in source_records
+            if int(record["id"]) not in translated_ids
+        ]
+        if missing_records:
+            records = missing_records
+            scope_note = (
+                f"В промпт включены только непереведённые ID: {len(records)} из {len(source_records)}."
+            )
+        else:
+            records = source_records
+            scope_note = (
+                f"Все ID в группе уже переведены. Сформирован полный список ({len(records)}) для перегенерации."
+            )
+
+        prompt_text = self._build_group_translation_prompt(
+            source_lang=source_lang,
+            target_lang=target_lang,
+            start_id=start_id,
+            end_id=end_id,
+            records=records,
+        )
+        if self.strong_group_prompt_text is not None:
+            self._set_text_widget_content(self.strong_group_prompt_text, prompt_text)
+        self.strong_group_current_index = group_index
+        self.strong_group_selected_label_var.set(
+            f"Группа #{group_index + 1:02d}: {start_id}-{end_id}. {scope_note}"
+        )
+        self._set_status(
+            (
+                f"Подготовлен промпт для группы #{group_index + 1:02d} ({start_id}-{end_id}): "
+                f"{len(records)} записей, цель {target_db_path.name}."
+            )
+        )
+
+    def _fetch_group_records_for_prompt(self, db_path: Path, start_id: int, end_id: int) -> list[dict[str, Any]]:
+        if not db_path.exists():
+            raise FileNotFoundError(f"Файл БД не найден: {db_path}")
+        with sqlite3.connect(str(db_path)) as con:
+            rows = con.execute(
+                """
+                SELECT id, "desc"
+                FROM greek_descs
+                WHERE id BETWEEN ? AND ?
+                ORDER BY id ASC
+                """,
+                (start_id, end_id),
+            ).fetchall()
+        return [
+            {
+                "id": int(row[0]),
+                "desc": clean_greek_desc_for_prompt(row[1]),
+            }
+            for row in rows
+        ]
+
+    def _fetch_non_empty_desc_ids_for_group(self, db_path: Path, start_id: int, end_id: int) -> set[int]:
+        if not db_path.exists():
+            raise FileNotFoundError(f"Файл БД не найден: {db_path}")
+        with sqlite3.connect(str(db_path)) as con:
+            rows = con.execute(
+                """
+                SELECT id
+                FROM greek_descs
+                WHERE id BETWEEN ? AND ?
+                  AND trim("desc") <> ""
+                ORDER BY id ASC
+                """,
+                (start_id, end_id),
+            ).fetchall()
+        return {int(row[0]) for row in rows}
+
+    def _build_group_translation_prompt(
+        self,
+        *,
+        source_lang: str,
+        target_lang: str,
+        start_id: int,
+        end_id: int,
+        records: list[dict[str, Any]],
+    ) -> str:
+        payload = json.dumps(records, ensure_ascii=False, indent=2)
+        _ = source_lang
+        _ = start_id
+        _ = end_id
+        target_lang_name = self.strong_group_target_lang_name_var.get().strip() or target_language_name_ru(target_lang)
+        header = self._normalize_translation_prompt_header_for_target_alias(
+            GREEK_DESC_TRANSLATION_PROMPT_HEADER.strip()
+        )
+        return (
+            f"Целевой язык перевода: {target_lang_name}.\n"
+            "Ниже в инструкции фраза 'целевой язык' означает именно этот язык.\n\n"
+            f"{header}\n\n"
+            "JSON для перевода:\n"
+            f"{payload}\n"
+        )
+
+    def _normalize_translation_prompt_header_for_target_alias(self, header: str) -> str:
+        adapted = header
+        replacements = [
+            ("с английского на украинский язык", "с английского на целевой язык"),
+            ("на грамотный, выверенный украинский язык", "на грамотный, выверенный целевой язык"),
+            ("украинского языка", "целевого языка"),
+            ("украинский язык", "целевой язык"),
+            ("по-украински", "на целевом языке"),
+            ("украинских", "целевого языка"),
+            ("украинской", "целевого языка"),
+            ("украинский", "целевой"),
+        ]
+        for source_text, target_text in replacements:
+            adapted = adapted.replace(source_text, target_text)
+        return adapted
+
+    def _refresh_strong_group_status_rows(self) -> None:
+        if not self.strong_group_status_labels_by_index:
+            return
+        source = self._resolve_strong_group_source_db()
+        target = self._resolve_strong_group_target_db()
+
+        if source is None:
+            self.strong_group_source_info_var.set("Источник не найден.")
+            for index in self.strong_group_status_labels_by_index:
+                self.strong_group_status_labels_by_index[index].configure(text="?")
+                progress = self.strong_group_progress_labels_by_index.get(index)
+                if progress is not None:
+                    progress.configure(text="-/-")
+            return
+
+        source_lang, source_db_path = source
+        source_text = f"{source_lang.upper()} ({source_db_path.name})"
+        if source_lang != "en":
+            source_text += " [EN не найдена]"
+        self.strong_group_source_info_var.set(source_text)
+
+        if target is None:
+            for index in self.strong_group_status_labels_by_index:
+                self.strong_group_status_labels_by_index[index].configure(text="?")
+                progress = self.strong_group_progress_labels_by_index.get(index)
+                if progress is not None:
+                    progress.configure(text="-/-")
+            return
+
+        _target_lang, target_db_path = target
+        try:
+            source_counts = self._group_row_counts_by_range(source_db_path, non_empty_only=False)
+            translated_counts = self._group_row_counts_by_range(target_db_path, non_empty_only=True)
+        except (OSError, sqlite3.DatabaseError):
+            for index in self.strong_group_status_labels_by_index:
+                self.strong_group_status_labels_by_index[index].configure(text="!")
+                progress = self.strong_group_progress_labels_by_index.get(index)
+                if progress is not None:
+                    progress.configure(text="error")
+            return
+
+        for index in self.strong_group_status_labels_by_index:
+            source_count = source_counts[index] if index < len(source_counts) else 0
+            translated_count = translated_counts[index] if index < len(translated_counts) else 0
+            is_complete = source_count > 0 and translated_count >= source_count
+            self.strong_group_status_labels_by_index[index].configure(text="✓" if is_complete else "□")
+            progress = self.strong_group_progress_labels_by_index.get(index)
+            if progress is not None:
+                progress.configure(text=f"{translated_count}/{source_count}")
+
+    def _group_row_counts_by_range(self, db_path: Path, *, non_empty_only: bool) -> list[int]:
+        if not db_path.exists():
+            raise FileNotFoundError(f"Файл БД не найден: {db_path}")
+        condition = 'AND trim("desc") <> ""' if non_empty_only else ""
+        query = (
+            'SELECT COUNT(*) FROM greek_descs '
+            f'WHERE id BETWEEN ? AND ? {condition}'
+        )
+        counts: list[int] = []
+        with sqlite3.connect(str(db_path)) as con:
+            for start_id, end_id in GREEK_DESC_GROUP_RANGES:
+                row = con.execute(query, (start_id, end_id)).fetchone()
+                counts.append(int(row[0] or 0) if row is not None else 0)
+        return counts
+
+    def _import_strong_group_response(self) -> None:
+        if self.strong_group_current_index is None:
+            messagebox.showinfo("Группа не выбрана", "Сначала нажмите «Подготовить промпт» у нужной группы.", parent=self)
+            return
+        if self.strong_group_response_text is None:
+            return
+        target = self._resolve_strong_group_target_db()
+        if target is None:
+            messagebox.showwarning("Нет целевой БД", "Выберите целевой язык для импорта.", parent=self)
+            return
+        target_lang, target_db_path = target
+        start_id, end_id = GREEK_DESC_GROUP_RANGES[self.strong_group_current_index]
+        response_text = self._text_widget_content(self.strong_group_response_text).strip()
+        if not response_text:
+            messagebox.showinfo("Пустой ответ", "Вставьте ответ ИИ в правое поле.", parent=self)
+            return
+
+        try:
+            payload = self._parse_json_payload_from_ai_response(response_text)
+            records, duplicate_ids = self._normalize_group_import_records(payload)
+        except ValueError as exc:
+            messagebox.showerror("Ошибка JSON", str(exc), parent=self)
+            return
+
+        if not records:
+            messagebox.showwarning("Нет данных", "В JSON нет записей для импорта.", parent=self)
+            return
+        out_of_range = [record_id for record_id, _desc in records if record_id < start_id or record_id > end_id]
+        if out_of_range:
+            preview = ", ".join(str(item) for item in out_of_range[:8])
+            messagebox.showerror(
+                "ID вне диапазона",
+                (
+                    f"В ответе есть ID вне выбранной группы {start_id}-{end_id}: {preview}\n"
+                    "Исправьте JSON и повторите импорт."
+                ),
+                parent=self,
+            )
+            return
+
+        try:
+            inserted, updated_existing, table_rows_after = self._upsert_group_records_in_db(target_db_path, records)
+        except (OSError, sqlite3.DatabaseError) as exc:
+            messagebox.showerror("Ошибка импорта", f"Не удалось сохранить переводы:\n{exc}", parent=self)
+            return
+
+        self._load_strong_rows()
+        self._refresh_strong_group_status_rows()
+        self._update_file_info()
+        self._set_status(
+            (
+                f"Группа #{self.strong_group_current_index + 1:02d} ({start_id}-{end_id}) импортирована в {target_lang}: "
+                f"{len(records)} записей, +{inserted} новых, обновлено {updated_existing}."
+            )
+        )
+        duplicate_note = ""
+        if duplicate_ids > 0:
+            duplicate_note = f"\nДубликаты ID в ответе: {duplicate_ids} (взят последний вариант)."
+        messagebox.showinfo(
+            "Импорт завершен",
+            (
+                f"Целевая БД: {target_db_path.name}\n"
+                f"Диапазон: {start_id}-{end_id}\n"
+                f"Импортировано уникальных ID: {len(records)}\n"
+                f"Добавлено новых строк: {inserted}\n"
+                f"Обновлено существующих: {updated_existing}\n"
+                f"Всего строк в greek_descs: {table_rows_after}"
+                f"{duplicate_note}"
+            ),
+            parent=self,
+        )
+
+    def _parse_json_payload_from_ai_response(self, text: str) -> object:
+        payload_text = text.strip()
+        if not payload_text:
+            raise ValueError("Ответ пустой.")
+
+        fenced_match = re.search(r"```(?:json)?\s*([\s\S]*?)```", payload_text, re.IGNORECASE)
+        if fenced_match is not None:
+            payload_text = fenced_match.group(1).strip()
+
+        start_candidates = [pos for pos in (payload_text.find("["), payload_text.find("{")) if pos >= 0]
+        if start_candidates:
+            payload_text = payload_text[min(start_candidates):]
+
+        decoder = json.JSONDecoder()
+        try:
+            payload, _end = decoder.raw_decode(payload_text)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"Не удалось разобрать JSON: {exc.msg} (позиция {exc.pos}).") from exc
+        return payload
+
+    def _normalize_group_import_records(self, payload: object) -> tuple[list[tuple[int, str]], int]:
+        if not isinstance(payload, list):
+            raise ValueError("Ожидался JSON-массив объектов с полями id и desc.")
+        by_id: dict[int, str] = {}
+        duplicate_ids = 0
+        for index, item in enumerate(payload, start=1):
+            source = f"ответ#{index}"
+            if not isinstance(item, dict):
+                raise ValueError(f"В {source} ожидается объект.")
+            if "id" not in item or "desc" not in item:
+                raise ValueError(f"В {source} нужны поля id и desc.")
+            record_id = self._normalize_group_record_id(item["id"], source)
+            desc = self._normalize_group_record_desc(item["desc"], source)
+            if record_id in by_id:
+                duplicate_ids += 1
+            by_id[record_id] = desc
+        records = sorted(by_id.items(), key=lambda pair: pair[0])
+        return records, duplicate_ids
+
+    def _normalize_group_record_id(self, value: object, source: str) -> int:
+        if isinstance(value, int):
+            return value
+        if isinstance(value, str):
+            stripped = value.strip()
+            if stripped.isdigit():
+                return int(stripped)
+        raise ValueError(f"Некорректный id в {source}: {value!r}")
+
+    def _normalize_group_record_desc(self, value: object, source: str) -> str:
+        if isinstance(value, str):
+            return value
+        raise ValueError(f"Некорректный desc в {source}: ожидается строка.")
+
+    def _upsert_group_records_in_db(self, db_path: Path, records: list[tuple[int, str]]) -> tuple[int, int, int]:
+        use_active_connection = (
+            self.connection is not None
+            and self.current_db_path is not None
+            and db_path.resolve() == self.current_db_path.resolve()
+        )
+        local_connection: sqlite3.Connection | None = None
+        try:
+            if use_active_connection:
+                assert self.connection is not None
+                con = self.connection
+            else:
+                local_connection = sqlite3.connect(str(db_path))
+                con = local_connection
+
+            with con:
+                con.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS greek_descs (
+                      id INTEGER NOT NULL PRIMARY KEY,
+                      "desc" TEXT NOT NULL
+                    )
+                    """
+                )
+                before_count = int(con.execute('SELECT COUNT(*) FROM greek_descs').fetchone()[0])
+                con.executemany(
+                    '''
+                    INSERT INTO greek_descs (id, "desc")
+                    VALUES (?, ?)
+                    ON CONFLICT(id) DO UPDATE SET
+                        "desc" = excluded."desc"
+                    ''',
+                    records,
+                )
+                after_count = int(con.execute('SELECT COUNT(*) FROM greek_descs').fetchone()[0])
+
+            inserted = after_count - before_count
+            updated_existing = len(records) - inserted
+            return inserted, updated_existing, after_count
+        finally:
+            if local_connection is not None:
+                local_connection.close()
 
     def _extract_category_tokens(self, category_raw: str) -> list[str]:
         found = re.findall(r"@([A-Za-z][A-Za-z0-9_]*)", category_raw or "")
@@ -1026,6 +2041,7 @@ class TopicContentTool(tk.Tk):
             (self.entry_strong_synonyms, False),
             (self.btn_apply_strong, False),
             (self.btn_cancel_strong, False),
+            (self.btn_group_translate_strong, False),
         ]
         for widget, readonly_when_enabled in strong_widgets:
             self._set_ttk_widget_enabled(
@@ -1924,10 +2940,10 @@ class TopicContentTool(tk.Tk):
                 ).fetchall()
                 for desc_row in desc_rows:
                     strong_id = int(desc_row["id"])
-                    ids.add(strong_id)
                     desc_text = (desc_row["desc"] or "").strip()
                     if not desc_text:
                         continue
+                    ids.add(strong_id)
                     localized_search_texts_by_id.setdefault(strong_id, []).append(desc_text.lower())
             except sqlite3.DatabaseError:
                 ids = set()
