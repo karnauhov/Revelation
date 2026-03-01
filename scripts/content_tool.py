@@ -2006,6 +2006,7 @@ class TopicContentTool(tk.Tk):
             (self.btn_delete_resource, False),
             (self.btn_open_resource, False),
             (self.btn_export_resource, False),
+            (self.btn_vacuum_resources, False),
             (self.entry_resource_key, False),
             (self.entry_resource_name, False),
             (self.entry_resource_mime, False),
@@ -2353,6 +2354,12 @@ class TopicContentTool(tk.Tk):
             command=self._export_resource_to_file,
         )
         self.btn_export_resource.pack(side="left", padx=(8, 0))
+        self.btn_vacuum_resources = ttk.Button(
+            resources_buttons,
+            **self._button_kwargs("refresh", "Сжать БД (VACUUM)"),
+            command=self._vacuum_common_resources_db,
+        )
+        self.btn_vacuum_resources.pack(side="left", padx=(8, 0))
 
         right.columnconfigure(1, weight=1)
         right.rowconfigure(5, weight=1)
@@ -4173,6 +4180,65 @@ class TopicContentTool(tk.Tk):
             return
         label = key or file_name
         self._set_status(f"Ресурс '{label}' сохранен в {target}")
+
+    def _vacuum_common_resources_db(self) -> None:
+        if self.common_connection is None or self.common_db_path is None:
+            messagebox.showwarning("Нет общей БД", "Общая БД с ресурсами недоступна.", parent=self)
+            return
+
+        db_path = self.common_db_path
+        before_size = db_path.stat().st_size if db_path.exists() else 0
+        if not messagebox.askyesno(
+            "Сжать БД",
+            (
+                f"Выполнить VACUUM для '{db_path.name}'?\n\n"
+                "Операция перепакует файл БД и может занять время.\n"
+                "На время выполнения интерфейс будет недоступен."
+            ),
+            parent=self,
+        ):
+            return
+
+        selected_key: str | None = None
+        if self.selected_resource_index is not None and 0 <= self.selected_resource_index < len(self.common_resources):
+            selected_key = self.common_resources[self.selected_resource_index].key
+
+        try:
+            self.common_connection.commit()
+            self.common_connection.execute("VACUUM")
+            self.common_connection.commit()
+        except sqlite3.DatabaseError as exc:
+            messagebox.showerror("Ошибка VACUUM", f"Не удалось сжать БД:\n{exc}", parent=self)
+            return
+
+        after_size = before_size
+        try:
+            after_size = db_path.stat().st_size
+        except OSError:
+            pass
+
+        self._load_common_resources()
+        if selected_key:
+            self._select_resource_by_key(selected_key)
+        self._update_file_info()
+
+        reduced_size = before_size - after_size
+        if reduced_size > 0:
+            self._set_status(
+                (
+                    f"VACUUM завершен: {db_path.stem}. "
+                    f"{self._format_size(before_size)} -> {self._format_size(after_size)} "
+                    f"(освобождено {self._format_size(reduced_size)})."
+                )
+            )
+            return
+
+        self._set_status(
+            (
+                f"VACUUM завершен: {db_path.stem}. "
+                f"{self._format_size(before_size)} -> {self._format_size(after_size)}."
+            )
+        )
 
     def _format_size(self, size_bytes: int) -> str:
         if size_bytes < 1024:
