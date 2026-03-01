@@ -17,6 +17,19 @@ typedef WordTapHandler =
       BuildContext context,
     );
 
+GreekStrongTapHandler? _defaultGreekStrongTapHandler;
+GreekStrongPickerTapHandler? _defaultGreekStrongPickerTapHandler;
+
+void setDefaultGreekStrongTapHandler(GreekStrongTapHandler? handler) {
+  _defaultGreekStrongTapHandler = handler;
+}
+
+void setDefaultGreekStrongPickerTapHandler(
+  GreekStrongPickerTapHandler? handler,
+) {
+  _defaultGreekStrongPickerTapHandler = handler;
+}
+
 Future<bool> handleAppLink(
   BuildContext context,
   String? href, {
@@ -126,11 +139,12 @@ Future<bool> _handleStrongLink(
       log.warning("Wrong Strong's Greek number: '$strongCode'");
       return false;
     }
-    if (onGreekStrongTap == null) {
+    final strongHandler = onGreekStrongTap ?? _defaultGreekStrongTapHandler;
+    if (strongHandler == null) {
       log.warning("Greek Strong's callback is not set for link: '$href'");
       return false;
     }
-    onGreekStrongTap(greekNum, context);
+    strongHandler(greekNum, context);
     return true;
   }
 
@@ -166,13 +180,21 @@ Future<bool> _handleStrongPickerLink(
     return false;
   }
 
-  if (onGreekStrongPickerTap == null) {
-    log.warning("Strong picker callback is not set for link: '$href'");
-    return false;
+  final pickerHandler =
+      onGreekStrongPickerTap ?? _defaultGreekStrongPickerTapHandler;
+  if (pickerHandler != null) {
+    pickerHandler(greekNum, context);
+    return true;
   }
 
-  onGreekStrongPickerTap(greekNum, context);
-  return true;
+  final strongHandler = _defaultGreekStrongTapHandler;
+  if (strongHandler != null) {
+    strongHandler(greekNum, context);
+    return true;
+  }
+
+  log.warning("Strong picker callback is not set for link: '$href'");
+  return false;
 }
 
 Future<bool> _handleWordLink(

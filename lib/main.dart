@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/common_widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/managers/db_manager.dart';
 import 'package:revelation/repositories/primary_sources_repository.dart';
 import 'package:revelation/theme.dart';
 import 'package:revelation/managers/server_manager.dart';
 import 'package:revelation/utils/app_logger_formatter.dart';
+import 'package:revelation/utils/app_link_handler.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:get_it/get_it.dart';
@@ -84,6 +86,13 @@ void main() async {
       } catch (e, st) {
         talker.handle(e, st, 'Failed to initialize local databases');
       }
+
+      setDefaultGreekStrongTapHandler((strongNumber, context) {
+        showStrongDictionaryDialog(context, strongNumber);
+      });
+      setDefaultGreekStrongPickerTapHandler((strongNumber, context) {
+        showStrongDictionaryDialog(context, strongNumber);
+      });
 
       runApp(
         MultiProvider(

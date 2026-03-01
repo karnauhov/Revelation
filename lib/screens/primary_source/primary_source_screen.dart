@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/common_widgets/description_markdown_view.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/models/description_kind.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/repositories/pages_repository.dart';
-import 'package:revelation/repositories/primary_sources_repository.dart';
 import 'package:revelation/screens/primary_source/image_preview.dart';
 import 'package:revelation/screens/primary_source/primary_source_toolbar.dart';
 import 'package:revelation/screens/primary_source/strong_number_picker_dialog.dart';
+import 'package:revelation/services/primary_source_reference_resolver.dart';
 import 'package:revelation/utils/app_link_handler.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/viewmodels/primary_source_view_model.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 // Define the intent for exiting pipette or selectArea mode
 class ExitChooseModeIntent extends Intent {
@@ -55,6 +56,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   late PrimarySourceViewModel _viewModel;
   final GlobalKey<TooltipState> _referenceTooltipKey =
       GlobalKey<TooltipState>();
+  final PrimarySourceReferenceResolver _referenceResolver =
+      PrimarySourceReferenceResolver();
   bool _initialWordReferenceApplied = false;
 
   @override
@@ -396,7 +399,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           ? viewModel.selectedPage!.verses
           : [],
       selectedVerseIndex:
-          viewModel.currentDescriptionType == DescriptionType.verse
+          viewModel.currentDescriptionType == DescriptionKind.verse
           ? viewModel.currentDescriptionNumber
           : null,
     );
@@ -412,39 +415,36 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final screenWidth = MediaQuery.sizeOf(context).width;
     final tooltipMaxWidth = screenWidth > 432 ? 420.0 : screenWidth - 12.0;
     final bool showStrongInfoIcon =
-        viewModel.currentDescriptionType == DescriptionType.word ||
-        viewModel.currentDescriptionType == DescriptionType.strongNumber;
+        viewModel.currentDescriptionType == DescriptionKind.word ||
+        viewModel.currentDescriptionType == DescriptionKind.strongNumber;
 
     final descriptionView = Container(
       color: colorScheme.surface,
       child: Stack(
         children: [
-          Markdown(
-            data: viewModel.descriptionContent ?? localizations.click_for_info,
-            styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-            onTapLink: (text, href, title) {
-              handleAppLink(
-                context,
-                href,
-                onGreekStrongTap: viewModel.showInfoForStrongNumber,
-                onGreekStrongPickerTap: (strongNumber, linkContext) {
-                  _openStrongNumberPickerDialog(
-                    linkContext,
-                    viewModel,
-                    strongNumber,
-                  );
-                },
-                onWordTap: (sourceId, pageName, wordIndex, linkContext) {
-                  return _handleWordLinkTap(
-                    sourceId: sourceId,
-                    pageName: pageName,
-                    wordIndex: wordIndex,
-                    linkContext: linkContext,
-                    viewModel: viewModel,
-                  );
-                },
-              );
-            },
+          Positioned.fill(
+            child: DescriptionMarkdownView(
+              data:
+                  viewModel.descriptionContent ?? localizations.click_for_info,
+              padding: const EdgeInsets.fromLTRB(8, 2, 8, 58),
+              onGreekStrongTap: viewModel.showInfoForStrongNumber,
+              onGreekStrongPickerTap: (strongNumber, linkContext) {
+                _openStrongNumberPickerDialog(
+                  linkContext,
+                  viewModel,
+                  strongNumber,
+                );
+              },
+              onWordTap: (sourceId, pageName, wordIndex, linkContext) {
+                return _handleWordLinkTap(
+                  sourceId: sourceId,
+                  pageName: pageName,
+                  wordIndex: wordIndex,
+                  linkContext: linkContext,
+                  viewModel: viewModel,
+                );
+              },
+            ),
           ),
           Positioned(
             left: 4,
@@ -677,18 +677,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   }
 
   PrimarySource? _findPrimarySourceById(BuildContext context, String sourceId) {
-    final repo = PrimarySourcesRepository();
-    final allSources = <PrimarySource>[]
-      ..addAll(repo.getFullPrimarySources(context))
-      ..addAll(repo.getSignificantPrimarySources(context))
-      ..addAll(repo.getFragmentsPrimarySources(context));
-
-    for (final source in allSources) {
-      if (source.id == sourceId) {
-        return source;
-      }
-    }
-    return null;
+    return _referenceResolver.findSourceById(context, sourceId);
   }
 
   Widget _buildSplitView(
@@ -834,15 +823,15 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       return false;
     }
 
-    if (viewModel.currentDescriptionType == DescriptionType.word) {
+    if (viewModel.currentDescriptionType == DescriptionKind.word) {
       return viewModel.selectedPage?.words.isNotEmpty ?? false;
     }
 
-    if (viewModel.currentDescriptionType == DescriptionType.strongNumber) {
+    if (viewModel.currentDescriptionType == DescriptionKind.strongNumber) {
       return true;
     }
 
-    if (viewModel.currentDescriptionType == DescriptionType.verse) {
+    if (viewModel.currentDescriptionType == DescriptionKind.verse) {
       return viewModel.selectedPage?.verses.isNotEmpty ?? false;
     }
 

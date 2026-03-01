@@ -220,7 +220,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get by => 'від';
 
   @override
-  String get strongsConcordance => 'Конкорданс Стронґа';
+  String get strongsConcordance => 'Конкорданція Стронґа';
 
   @override
   String get package => 'Пакет';

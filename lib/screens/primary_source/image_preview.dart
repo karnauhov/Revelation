@@ -4,6 +4,7 @@ import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
+import 'package:revelation/models/description_kind.dart';
 import 'package:revelation/models/page_rect.dart';
 import 'package:revelation/models/page_word.dart';
 import 'package:revelation/models/verse.dart';
@@ -269,7 +270,7 @@ class ImagePreviewState extends State<ImagePreview> {
                           texts: _strongLabels!,
                           selectedNumber:
                               (vm.currentDescriptionType ==
-                                      DescriptionType.strongNumber &&
+                                      DescriptionKind.strongNumber &&
                                   vm.currentDescriptionNumber != null)
                               ? vm.currentDescriptionNumber
                               : null,
@@ -432,7 +433,7 @@ class ImagePreviewState extends State<ImagePreview> {
   }
 
   Widget _buildSelectedWordRects(PrimarySourceViewModel vm) {
-    if (vm.currentDescriptionType != DescriptionType.word ||
+    if (vm.currentDescriptionType != DescriptionKind.word ||
         vm.currentDescriptionNumber == null ||
         widget.words.isEmpty) {
       return const SizedBox.shrink();

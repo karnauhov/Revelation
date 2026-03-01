@@ -3,29 +3,23 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/managers/db_manager.dart';
+import 'package:revelation/models/description_kind.dart';
+import 'package:revelation/models/description_request.dart';
+import 'package:revelation/models/greek_strong_picker_entry.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/pages_settings.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/models/zoom_status.dart';
 import 'package:revelation/repositories/pages_repository.dart';
+import 'package:revelation/services/description_content_service.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/image_preview_controller.dart';
 import 'package:revelation/managers/server_manager.dart';
-import 'package:revelation/utils/pronunciation.dart';
-
-enum DescriptionType { word, strongNumber, verse, info }
-
-class GreekStrongPickerEntry {
-  final int number;
-  final String word;
-
-  const GreekStrongPickerEntry({required this.number, required this.word});
-}
 
 class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySource primarySource;
   final PagesRepository _pagesRepository;
+  final DescriptionContentService _descriptionService;
   model.Page? selectedPage;
   Uint8List? imageData;
   String imageName = "";
@@ -73,11 +67,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool _isMenuOpen = false;
   Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
-  DBManager _dbManager = DBManager();
-  Pronunciation _pronunciation = Pronunciation();
-  DescriptionType _currentDescriptionType = DescriptionType.info;
+  DescriptionKind _currentDescriptionType = DescriptionKind.info;
   int? _currentDescriptionNumber = null;
-  List<GreekStrongPickerEntry>? _strongPickerEntriesCache;
 
   bool get isMobileWeb => _isMobileWeb;
   int get maxTextureSize => _maxTextureSize;
@@ -85,10 +76,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool get selectAreaMode => _selectAreaMode;
   bool get isMenuOpen => _isMenuOpen;
   String get pageSettings => _pageSettings;
-  DescriptionType get currentDescriptionType => _currentDescriptionType;
+  DescriptionKind get currentDescriptionType => _currentDescriptionType;
   int? get currentDescriptionNumber => _currentDescriptionNumber;
 
-  PrimarySourceViewModel(this._pagesRepository, {required this.primarySource}) {
+  PrimarySourceViewModel(
+    this._pagesRepository, {
+    required this.primarySource,
+    DescriptionContentService? descriptionService,
+  }) : _descriptionService = descriptionService ?? DescriptionContentService() {
     imageController = ImagePreviewController(primarySource.maxScale);
     imageController.transformationController.addListener(
       _updateTransformStatus,
@@ -366,7 +361,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   void updateDescriptionContent(
     String content,
-    DescriptionType type,
+    DescriptionKind type,
     int? number,
   ) {
     descriptionContent = content;
@@ -378,7 +373,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   void showCommonInfo(BuildContext context) {
     updateDescriptionContent(
       AppLocalizations.of(context)!.click_for_info,
-      DescriptionType.info,
+      DescriptionKind.info,
       null,
     );
   }
@@ -387,7 +382,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     BuildContext context, {
     required bool forward,
   }) {
-    if (_currentDescriptionType == DescriptionType.word) {
+    if (_currentDescriptionType == DescriptionKind.word) {
       final words = selectedPage?.words;
       final currentIndex = _currentDescriptionNumber;
       if (words == null ||
@@ -405,7 +400,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       return true;
     }
 
-    if (_currentDescriptionType == DescriptionType.strongNumber) {
+    if (_currentDescriptionType == DescriptionKind.strongNumber) {
       final currentStrongNumber = _currentDescriptionNumber;
       if (currentStrongNumber == null) {
         return false;
@@ -419,7 +414,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       return true;
     }
 
-    if (_currentDescriptionType == DescriptionType.verse) {
+    if (_currentDescriptionType == DescriptionKind.verse) {
       final verses = selectedPage?.verses;
       final currentIndex = _currentDescriptionNumber;
       if (verses == null ||
@@ -441,178 +436,41 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
-    _strongPickerEntriesCache ??= List<GreekStrongPickerEntry>.unmodifiable(
-      _dbManager.greekWords
-          .where((word) => _doesStrongNumberExist(word.id))
-          .map(
-            (word) =>
-                GreekStrongPickerEntry(number: word.id, word: word.word.trim()),
-          )
-          .where((entry) => entry.word.isNotEmpty)
-          .toList()
-        ..sort((a, b) => a.number.compareTo(b.number)),
-    );
-    return _strongPickerEntriesCache!;
+    return _descriptionService.getGreekStrongPickerEntries();
   }
 
   void showInfoForStrongNumber(int strongNumber, BuildContext context) {
-    final wordIndex = _dbManager.greekWords.indexWhere(
-      (word) => word.id == strongNumber,
+    final content = _descriptionService.buildStrongContent(
+      context,
+      strongNumber,
     );
-    if (wordIndex != -1) {
-      final word = _dbManager.greekWords[wordIndex].word;
-      if (word != "") {
-        final buffer = StringBuffer();
-
-        // Word
-        buffer.write("## ");
-        buffer.write(word.trim());
-        buffer.write("\n\r");
-
-        // Strong number
-        buffer.write(AppLocalizations.of(context)!.strong_number);
-        final prevId = _getNeighborStrongNumber(
-          _dbManager.greekWords[wordIndex].id,
-          forward: false,
-        );
-        buffer.write(": [<-](strong:G${prevId}) **");
-        buffer.write(
-          "[${_dbManager.greekWords[wordIndex].id}]"
-          "(strong_picker:G${_dbManager.greekWords[wordIndex].id})",
-        );
-        final nextId = _getNeighborStrongNumber(
-          _dbManager.greekWords[wordIndex].id,
-          forward: true,
-        );
-        buffer.write("** [->](strong:G${nextId})\n\r");
-
-        // Pronunciation
-        buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
-        buffer.write(": **");
-        buffer.write(
-          _pronunciation
-              .convert(word.toLowerCase().trim(), _dbManager.langDB)
-              .toLowerCase(),
-        );
-        buffer.write("**\n\r");
-
-        // Translation
-        final descIndex = _dbManager.greekDescs.indexWhere(
-          (desc) => desc.id == strongNumber,
-        );
-        if (descIndex != -1) {
-          final desc = _dbManager.greekDescs[descIndex].desc.trim();
-          if (desc != "") {
-            buffer.write(_getTranslation(desc));
-            buffer.write("\n\r");
-          }
-        }
-
-        // Part of speech
-        final category = _dbManager.greekWords[wordIndex].category.trim();
-        if (category != "") {
-          buffer.write(AppLocalizations.of(context)!.strong_part_of_speech);
-          buffer.write(": **");
-          buffer.write(_replaceKeys(context, category));
-          buffer.write("**\n\r");
-        }
-
-        // Etymology
-        final origin = _dbManager.greekWords[wordIndex].origin.trim();
-        if (origin != "") {
-          buffer.write("\n\r");
-          buffer.write(AppLocalizations.of(context)!.strong_origin);
-          buffer.write(": ");
-          buffer.write(_getOrigins(origin));
-          buffer.write("\n\r");
-        }
-
-        // Synonyms
-        final synonyms = _dbManager.greekWords[wordIndex].synonyms.trim();
-        if (synonyms != "") {
-          buffer.write("\n\r");
-          buffer.write(AppLocalizations.of(context)!.strong_synonyms);
-          buffer.write(": ");
-          buffer.write(_getSynonyms(synonyms));
-          buffer.write("\n\r");
-        }
-
-        // Usage
-        final usage = _dbManager.greekWords[wordIndex].usage.trim();
-        if (usage != "") {
-          buffer.write(AppLocalizations.of(context)!.strong_usage);
-          buffer.write(": ");
-          buffer.write(_getUsage(usage));
-          buffer.write("\n\r");
-        }
-
-        updateDescriptionContent(
-          buffer.toString(),
-          DescriptionType.strongNumber,
-          strongNumber,
-        );
-      }
+    if (content == null) {
+      return;
     }
+
+    updateDescriptionContent(content.markdown, content.kind, strongNumber);
   }
 
   void showInfoForWord(int wordIndex, BuildContext context) {
-    if (selectedPage != null &&
-        selectedPage!.words.isNotEmpty &&
-        wordIndex >= 0 &&
-        selectedPage!.words.length > wordIndex) {
-      final word = selectedPage!.words[wordIndex];
-      final buffer = StringBuffer();
-      buffer.write("## ");
-      buffer.write(_strikeThroughByIndexes(word.text, word.notExist));
-      buffer.write("\n\r");
-      if (word.sn != null) {
-        buffer.write(AppLocalizations.of(context)!.strong_number);
-        buffer.write(": ");
-        buffer.write("**[${word.sn!}](strong:G${word.sn!})**");
-        buffer.write("\n\r");
-      }
-      if (_containsAnyLetter(word.text)) {
-        buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
-        buffer.write(": **");
-        if (word.snPronounce && word.sn != null) {
-          final wordIndex = _dbManager.greekWords.indexWhere(
-            (w) => w.id == word.sn,
-          );
-          buffer.write(
-            _pronunciation
-                .convert(
-                  _dbManager.greekWords[wordIndex].word.toLowerCase().trim(),
-                  _dbManager.langDB,
-                )
-                .toLowerCase(),
-          );
-        } else {
-          buffer.write(
-            _pronunciation
-                .convert(word.text.toLowerCase().trim(), _dbManager.langDB)
-                .toLowerCase(),
-          );
-        }
-        buffer.write("**\n\r");
-      }
-      if (word.sn != null) {
-        final descIndex = _dbManager.greekDescs.indexWhere(
-          (desc) => desc.id == word.sn!,
-        );
-        if (descIndex != -1) {
-          final desc = _dbManager.greekDescs[descIndex].desc.trim();
-          if (desc != "") {
-            buffer.write("\n\r");
-            buffer.write(_getTranslation(desc));
-          }
-        }
-      }
-      updateDescriptionContent(
-        buffer.toString(),
-        DescriptionType.word,
-        wordIndex,
-      );
+    if (selectedPage == null) {
+      return;
     }
+
+    final content = _descriptionService.buildContent(
+      context,
+      WordDescriptionRequest(
+        sourceId: primarySource.id,
+        pageName: selectedPage!.name,
+        wordIndex: wordIndex,
+      ),
+      fallbackSource: primarySource,
+      fallbackPage: selectedPage,
+    );
+    if (content == null) {
+      return;
+    }
+
+    updateDescriptionContent(content.markdown, content.kind, wordIndex);
   }
 
   void showInfoForVerse(int verseIndex, BuildContext context) {
@@ -624,47 +482,23 @@ class PrimarySourceViewModel extends ChangeNotifier {
     }
 
     final verse = selectedPage!.verses[verseIndex];
-    final words = selectedPage!.words;
-    final buffer = StringBuffer();
-    final verseRef = "${verse.chapterNumber}:${verse.verseNumber}";
-    final sourceId = primarySource.id;
-    final pageName = selectedPage!.name;
-
-    buffer.write("## ");
-    buffer.write(AppLocalizations.of(context)!.app_name);
-    buffer.write(" ");
-    buffer.write(verseRef);
-    buffer.write("\n\r");
-
-    final parts = <String>[];
-    for (final wordIndex in verse.wordIndexes) {
-      if (wordIndex < 0 || wordIndex >= words.length) {
-        continue;
-      }
-      final word = words[wordIndex];
-      final text = _strikeThroughByIndexes(word.text, word.notExist);
-      parts.add("[$text](word:$sourceId:$pageName:$wordIndex)");
-    }
-    if (parts.isNotEmpty) {
-      buffer.write(parts.join(' '));
-    } else {
-      buffer.write(AppLocalizations.of(context)!.click_for_info);
-    }
-
-    updateDescriptionContent(
-      buffer.toString(),
-      DescriptionType.verse,
-      verseIndex,
+    final content = _descriptionService.buildContent(
+      context,
+      VerseDescriptionRequest(
+        sourceId: primarySource.id,
+        chapterNumber: verse.chapterNumber,
+        verseNumber: verse.verseNumber,
+        pageName: selectedPage!.name,
+        combineAcrossPages: false,
+      ),
+      fallbackSource: primarySource,
+      fallbackPage: selectedPage,
     );
-  }
+    if (content == null) {
+      return;
+    }
 
-  String _replaceKeys(BuildContext context, String input) {
-    // ignore: deprecated_member_use
-    final regex = RegExp(r'@\w+');
-    return input.replaceAllMapped(regex, (match) {
-      final key = match.group(0)!;
-      return locLinks(context, key);
-    });
+    updateDescriptionContent(content.markdown, content.kind, verseIndex);
   }
 
   Future<void> _getPagesSettings() async {
@@ -791,183 +625,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   int _getNeighborStrongNumber(int current, {bool forward = true}) {
-    const int minVal = 1;
-    const int maxVal = 5624;
-
-    bool isForbidden(int x) => x == 2717 || (x >= 3203 && x <= 3302);
-
-    if (current < minVal) {
-      current = minVal;
-    }
-    if (current > maxVal) {
-      current = maxVal;
-    }
-
-    int candidate = current;
-    do {
-      candidate = forward ? candidate + 1 : candidate - 1;
-      if (candidate > maxVal) candidate = minVal;
-      if (candidate < minVal) candidate = maxVal;
-    } while (isForbidden(candidate));
-
-    return candidate;
-  }
-
-  bool _doesStrongNumberExist(int sn) {
-    const int minVal = 1;
-    const int maxVal = 5624;
-    bool isForbidden(int x) => x == 2717 || (x >= 3203 && x <= 3302);
-    return sn >= minVal && sn <= maxVal && !(isForbidden(sn));
-  }
-
-  String _strikeThroughByIndexes(String word, Iterable<int> indices) {
-    if (word.isEmpty) return word;
-    final codePoints = word.runes.toList();
-    final length = codePoints.length;
-    final normalized = <int>{};
-    for (final idx in indices) {
-      final normalizedIdx = idx;
-      if (normalizedIdx >= 0 && normalizedIdx < length) {
-        normalized.add(normalizedIdx);
-      }
-    }
-    if (normalized.isEmpty) return word;
-
-    final buffer = StringBuffer();
-    for (var i = 0; i < length; i++) {
-      final ch = String.fromCharCode(codePoints[i]);
-      if (normalized.contains(i)) {
-        buffer.write('‎~~');
-        buffer.write(ch);
-        buffer.write('~~');
-      } else {
-        buffer.write(ch);
-      }
-    }
-    return buffer.toString();
-  }
-
-  bool _containsAnyLetter(String text) {
-    // ignore: deprecated_member_use
-    final regExp = RegExp(r'\p{L}', unicode: true);
-    return regExp.hasMatch(text);
-  }
-
-  String _getOrigins(String content) {
-    final buffer = StringBuffer();
-    if (content != "") {
-      final originList = content.split(",");
-      for (var origin in originList) {
-        if (origin.startsWith("G")) {
-          int? originID = int.tryParse(origin.substring(1));
-          if (originID != null && _doesStrongNumberExist(originID)) {
-            buffer.write('${_formatGreekStrongLink(originID)}, ');
-          }
-        } else if (origin.startsWith("H")) {
-          buffer.write('[${origin}](strong:${origin}), ');
-        }
-      }
-      String result = buffer.toString();
-      if (result.endsWith(', ')) {
-        result = result.substring(0, result.length - 2);
-      }
-      return result;
-    } else {
-      return "";
-    }
-  }
-
-  String _getSynonyms(String content) {
-    final buffer = StringBuffer();
-    if (content != "") {
-      final synonymsList = content.split(",");
-      for (var synonym in synonymsList) {
-        int? syn = int.tryParse(synonym.trim());
-        if (syn != null && _doesStrongNumberExist(syn)) {
-          buffer.write('${_formatGreekStrongLink(syn)}, ');
-        }
-      }
-      String result = buffer.toString();
-      if (result.endsWith(', ')) {
-        result = result.substring(0, result.length - 2);
-      }
-      return result;
-    } else {
-      return "";
-    }
-  }
-
-  String _getTranslation(String content) {
-    String result = "";
-    if (content != "") {
-      result =
-          "*** \n" +
-          _expandGreekStrongLinks(content.trim().replaceAll("\n\r", "\n")) +
-          "\n ***";
-    }
-    return result;
-  }
-
-  String _formatGreekStrongLink(int strongNumber) {
-    final strongCode = "G$strongNumber";
-    final greekWord = _getGreekWordByStrongNumber(strongNumber);
-    if (greekWord == null) {
-      return "[$strongCode](strong:$strongCode)";
-    }
-    return "**$greekWord** ([$strongCode](strong:$strongCode))";
-  }
-
-  String? _getGreekWordByStrongNumber(int strongNumber) {
-    final wordIndex = _dbManager.greekWords.indexWhere(
-      (word) => word.id == strongNumber,
+    return _descriptionService.getNeighborStrongNumber(
+      current,
+      forward: forward,
     );
-    if (wordIndex == -1) {
-      return null;
-    }
-    final greekWord = _dbManager.greekWords[wordIndex].word.trim();
-    return greekWord.isEmpty ? null : greekWord;
-  }
-
-  String _expandGreekStrongLinks(String content) {
-    final regex = RegExp(r'\[([Gg])(\d+)\]\(strong:([Gg])(\d+)\)');
-    return content.replaceAllMapped(regex, (match) {
-      final visibleNumber = int.tryParse(match.group(2)!);
-      final hrefNumber = int.tryParse(match.group(4)!);
-      if (visibleNumber == null ||
-          hrefNumber == null ||
-          visibleNumber != hrefNumber ||
-          !_doesStrongNumberExist(visibleNumber)) {
-        return match.group(0)!;
-      }
-      return _formatGreekStrongLink(visibleNumber);
-    });
-  }
-
-  String _getUsage(String content) {
-    String result = "";
-    if (content != "") {
-      int sum = 0;
-      for (String line in content.split("\n")) {
-        int index = line.lastIndexOf("], ");
-        if (index != -1) {
-          int? wordUsages = int.tryParse(line.substring(index + 3));
-          if (wordUsages != null) {
-            sum += wordUsages;
-          }
-        }
-      }
-      // TODO remove [] temporary
-      result =
-          "${sum}\n\r**" +
-          content
-              .trim()
-              .replaceAll(" [], ", " ")
-              .replaceAll("\n", "; **")
-              .replaceAll(":", "**:");
-      if (result.endsWith("**")) {
-        result = result.substring(0, result.length - 2);
-      }
-    }
-    return result;
   }
 }
