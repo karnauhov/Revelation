@@ -44,15 +44,20 @@ class AppRouter {
         path: '/topic',
         name: 'topic',
         pageBuilder: (BuildContext context, GoRouterState state) {
+          final extra = state.extra is Map<String, dynamic>
+              ? state.extra as Map<String, dynamic>
+              : null;
+          final query = state.uri.queryParameters;
+
           aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
             child: TopicScreen(
-              name: (state.extra as Map<String, dynamic>?)?['name'],
+              name: (extra?['name'] as String?) ?? query['name'],
               description:
-                  (state.extra as Map<String, dynamic>?)?['description'],
-              file: (state.extra as Map<String, dynamic>?)?['file'],
+                  (extra?['description'] as String?) ?? query['description'],
+              file: (extra?['file'] as String?) ?? query['file'],
             ),
           );
         },

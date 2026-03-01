@@ -46,18 +46,13 @@ except ImportError:
 
 
 @dataclass
-class TopicRow:
+class ArticleRow:
     route: str
     name: str
     description: str
     id_icon: str
     sort_order: int
     is_visible: bool
-
-
-@dataclass
-class TopicTextRow:
-    route: str
     markdown: str
 
 
@@ -314,13 +309,11 @@ class TopicContentTool(tk.Tk):
         self.preview_after_id: str | None = None
         self.markdown_change_internal = False
 
-        self.topics: list[TopicRow] = []
-        self.topic_texts: list[TopicTextRow] = []
+        self.articles: list[ArticleRow] = []
         self.common_resources: list[ResourceRow] = []
         self.strong_rows: list[StrongRow] = []
         self.strong_filtered_indices: list[int] = []
-        self.selected_topic_index: int | None = None
-        self.selected_text_index: int | None = None
+        self.selected_article_index: int | None = None
         self.selected_resource_index: int | None = None
         self.selected_resource_original_key: str | None = None
         self.selected_strong_index: int | None = None
@@ -344,7 +337,6 @@ class TopicContentTool(tk.Tk):
         self.topic_sort_var = tk.StringVar(value="0")
         self.topic_visible_var = tk.BooleanVar(value=True)
 
-        self.text_route_var = tk.StringVar()
         self.resource_key_var = tk.StringVar()
         self.resource_file_name_var = tk.StringVar()
         self.resource_mime_var = tk.StringVar()
@@ -491,16 +483,11 @@ class TopicContentTool(tk.Tk):
         self.db_combo.grid(row=0, column=1, sticky="ew")
         self.db_combo.bind("<<ComboboxSelected>>", self._on_db_combo_selected)
 
-        self.article_sections = ttk.Notebook(parent)
-        self.article_sections.grid(row=1, column=0, sticky="nsew")
-
-        self.topics_tab = ttk.Frame(self.article_sections)
-        self.texts_tab = ttk.Frame(self.article_sections)
-        self.article_sections.add(self.topics_tab, text="Статьи главного окна")
-        self.article_sections.add(self.texts_tab, text="Все статьи")
-
-        self._build_topics_tab(self.topics_tab)
-        self._build_texts_tab(self.texts_tab)
+        articles_body = ttk.Frame(parent)
+        articles_body.grid(row=1, column=0, sticky="nsew")
+        articles_body.columnconfigure(0, weight=1)
+        articles_body.rowconfigure(0, weight=1)
+        self._build_articles_tab(articles_body)
 
     def _build_resources_section(self, parent: ttk.Frame) -> None:
         parent.columnconfigure(0, weight=1)
@@ -1970,10 +1957,11 @@ class TopicContentTool(tk.Tk):
         strong_enabled: bool,
     ) -> None:
         localized_widgets: list[tuple[tk.Widget, bool]] = [
-            (self.topics_tree, False),
-            (self.btn_add_topic, False),
-            (self.btn_delete_topic, False),
-            (self.topic_route_combo, True),
+            (self.articles_tree, False),
+            (self.btn_add_article, False),
+            (self.btn_delete_article, False),
+            (self.btn_vacuum_localized_db, False),
+            (self.article_route_entry, False),
             (self.entry_topic_name, False),
             (self.entry_topic_description, False),
             (self.topic_icon_combo, True),
@@ -1981,11 +1969,6 @@ class TopicContentTool(tk.Tk):
             (self.check_topic_visible, False),
             (self.btn_apply_topic, False),
             (self.btn_cancel_topic, False),
-            (self.btn_add_text, False),
-            (self.btn_delete_text, False),
-            (self.entry_text_route, False),
-            (self.btn_apply_text, False),
-            (self.btn_cancel_text, False),
             (self.md_tabs, False),
         ]
         for widget, readonly_when_enabled in localized_widgets:
@@ -1995,7 +1978,6 @@ class TopicContentTool(tk.Tk):
                 readonly_when_enabled=readonly_when_enabled,
             )
 
-        self.texts_list.configure(state="normal" if localized_enabled else "disabled")
         self.markdown_text.configure(state="normal" if localized_enabled else "disabled")
         if self.preview_text is not None:
             self.preview_text.configure(state="disabled")
@@ -2073,7 +2055,7 @@ class TopicContentTool(tk.Tk):
             strong_enabled=has_common_db,
         )
 
-    def _build_topics_tab(self, parent: ttk.Frame) -> None:
+    def _build_articles_tab(self, parent: ttk.Frame) -> None:
         parent.columnconfigure(0, weight=1)
         parent.rowconfigure(0, weight=1)
 
@@ -2089,56 +2071,62 @@ class TopicContentTool(tk.Tk):
         left.columnconfigure(0, weight=1)
         left.rowconfigure(0, weight=1)
 
-        self.topics_tree = ttk.Treeview(
+        self.articles_tree = ttk.Treeview(
             left,
             columns=("route", "name", "sort", "visible"),
             show="headings",
             selectmode="browse",
         )
-        self.topics_tree.heading("route", text="Маршрут")
-        self.topics_tree.heading("name", text="Заголовок статьи")
-        self.topics_tree.heading("sort", text="Порядок")
-        self.topics_tree.heading("visible", text="Показывать")
-        self.topics_tree.column("route", width=200, anchor="w")
-        self.topics_tree.column("name", width=260, anchor="w")
-        self.topics_tree.column("sort", width=90, anchor="center")
-        self.topics_tree.column("visible", width=110, anchor="center")
-        self.topics_tree.grid(row=0, column=0, sticky="nsew")
-        self.topics_tree.bind("<<TreeviewSelect>>", self._on_topic_selected)
-        self.topics_tree.tag_configure(self.UNBOUND_TAG, foreground=self.ALERT_COLOR)
+        self.articles_tree.heading("route", text="Маршрут")
+        self.articles_tree.heading("name", text="Заголовок статьи")
+        self.articles_tree.heading("sort", text="Порядок")
+        self.articles_tree.heading("visible", text="Показывать")
+        self.articles_tree.column("route", width=200, anchor="w")
+        self.articles_tree.column("name", width=260, anchor="w")
+        self.articles_tree.column("sort", width=90, anchor="center")
+        self.articles_tree.column("visible", width=110, anchor="center")
+        self.articles_tree.grid(row=0, column=0, sticky="nsew")
+        self.articles_tree.bind("<<TreeviewSelect>>", self._on_article_selected)
+        self.articles_tree.tag_configure(self.UNBOUND_TAG, foreground=self.ALERT_COLOR)
 
-        topics_scroll = ttk.Scrollbar(left, orient="vertical", command=self.topics_tree.yview)
+        topics_scroll = ttk.Scrollbar(left, orient="vertical", command=self.articles_tree.yview)
         topics_scroll.grid(row=0, column=1, sticky="ns")
-        self.topics_tree.configure(yscrollcommand=topics_scroll.set)
+        self.articles_tree.configure(yscrollcommand=topics_scroll.set)
 
         topics_buttons = ttk.Frame(left)
         topics_buttons.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(8, 0))
-        self.btn_add_topic = ttk.Button(
+        self.btn_add_article = ttk.Button(
             topics_buttons,
             **self._button_kwargs("add", "Добавить статью"),
-            command=self._add_topic,
+            command=self._add_article,
         )
-        self.btn_add_topic.pack(side="left")
-        self.btn_delete_topic = ttk.Button(
+        self.btn_add_article.pack(side="left")
+        self.btn_delete_article = ttk.Button(
             topics_buttons,
             **self._button_kwargs("delete", "Удалить статью"),
-            command=self._delete_topic,
+            command=self._delete_article,
         )
-        self.btn_delete_topic.pack(side="left", padx=(8, 0))
+        self.btn_delete_article.pack(side="left", padx=(8, 0))
+        self.btn_vacuum_localized_db = ttk.Button(
+            topics_buttons,
+            **self._button_kwargs("refresh", "Сжать локализованную БД (VACUUM)"),
+            command=self._vacuum_current_localized_db,
+        )
+        self.btn_vacuum_localized_db.pack(side="left", padx=(8, 0))
 
         right.columnconfigure(1, weight=1)
+        right.rowconfigure(8, weight=1)
 
-        self.topic_route_label = tk.Label(right, text="Маршрут:")
-        self.topic_route_label.grid(row=0, column=0, sticky="w", padx=(0, 8), pady=(0, 4))
-        self.topic_route_label_default_fg = self.topic_route_label.cget("fg")
-        self.topic_route_combo = ttk.Combobox(
+        self.article_route_label = tk.Label(right, text="Маршрут:")
+        self.article_route_label.grid(row=0, column=0, sticky="w", padx=(0, 8), pady=(0, 4))
+        self.article_route_label_default_fg = self.article_route_label.cget("fg")
+        self.article_route_entry = tk.Entry(
             right,
             textvariable=self.topic_route_var,
-            state="readonly",
         )
-        self.topic_route_combo.grid(row=0, column=1, sticky="ew", pady=(0, 4))
-        self.topic_route_combo.bind("<<ComboboxSelected>>", self._on_topic_route_changed)
-        self.topic_route_default_fg = self.topic_route_combo.cget("foreground") or "black"
+        self.article_route_entry.grid(row=0, column=1, sticky="ew", pady=(0, 4))
+        self.article_route_entry.bind("<KeyRelease>", self._on_article_route_changed)
+        self.article_route_default_fg = self.article_route_entry.cget("foreground") or "black"
 
         ttk.Label(right, text="Заголовок статьи:").grid(row=1, column=0, sticky="w", padx=(0, 8), pady=4)
         self.entry_topic_name = ttk.Entry(right, textvariable=self.topic_name_var)
@@ -2177,64 +2165,18 @@ class TopicContentTool(tk.Tk):
         self.btn_apply_topic = ttk.Button(
             topic_actions,
             **self._button_kwargs("save", "Сохранить"),
-            command=self._apply_topic_changes,
+            command=self._apply_article_changes,
         )
         self.btn_apply_topic.pack(side="left")
         self.btn_cancel_topic = ttk.Button(
             topic_actions,
             **self._button_kwargs("cancel", "Отменить"),
-            command=self._reload_selected_topic,
+            command=self._reload_selected_article,
         )
         self.btn_cancel_topic.pack(side="left", padx=(8, 0))
 
-    def _build_texts_tab(self, parent: ttk.Frame) -> None:
-        parent.columnconfigure(0, weight=1)
-        parent.rowconfigure(0, weight=1)
-
-        pane = self._new_split_pane(parent)
-        pane.grid(row=0, column=0, sticky="nsew")
-
-        left = ttk.Frame(pane, padding=8)
-        right = ttk.Frame(pane, padding=8)
-        pane.add(left, stretch="always")
-        pane.add(right, stretch="always")
-        self._set_initial_split(pane, ratio=0.5)
-
-        left.columnconfigure(0, weight=1)
-        left.rowconfigure(0, weight=1)
-
-        self.texts_list = tk.Listbox(left, exportselection=False)
-        self.texts_list.grid(row=0, column=0, sticky="nsew")
-        self.texts_list.bind("<<ListboxSelect>>", self._on_text_selected)
-
-        texts_scroll = ttk.Scrollbar(left, orient="vertical", command=self.texts_list.yview)
-        texts_scroll.grid(row=0, column=1, sticky="ns")
-        self.texts_list.configure(yscrollcommand=texts_scroll.set)
-
-        text_buttons = ttk.Frame(left)
-        text_buttons.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(8, 0))
-        self.btn_add_text = ttk.Button(
-            text_buttons,
-            **self._button_kwargs("add", "Добавить статью"),
-            command=self._add_text,
-        )
-        self.btn_add_text.pack(side="left")
-        self.btn_delete_text = ttk.Button(
-            text_buttons,
-            **self._button_kwargs("delete", "Удалить статью"),
-            command=self._delete_text,
-        )
-        self.btn_delete_text.pack(side="left", padx=(8, 0))
-
-        right.columnconfigure(0, weight=1)
-        right.rowconfigure(2, weight=1)
-
-        ttk.Label(right, text="Маршрут:").grid(row=0, column=0, sticky="w")
-        self.entry_text_route = ttk.Entry(right, textvariable=self.text_route_var)
-        self.entry_text_route.grid(row=1, column=0, sticky="ew", pady=(2, 8))
-
         self.md_tabs = ttk.Notebook(right)
-        self.md_tabs.grid(row=2, column=0, sticky="nsew")
+        self.md_tabs.grid(row=8, column=0, columnspan=2, sticky="nsew", pady=(10, 0))
         self.md_tabs.bind("<<NotebookTabChanged>>", self._on_md_tab_changed)
 
         edit_tab = ttk.Frame(self.md_tabs)
@@ -2275,21 +2217,6 @@ class TopicContentTool(tk.Tk):
             preview_scroll = ttk.Scrollbar(preview_tab, orient="vertical", command=self.preview_text.yview)
             preview_scroll.grid(row=0, column=1, sticky="ns")
             self.preview_text.configure(yscrollcommand=preview_scroll.set)
-
-        text_actions = ttk.Frame(right)
-        text_actions.grid(row=3, column=0, sticky="w", pady=(8, 0))
-        self.btn_apply_text = ttk.Button(
-            text_actions,
-            **self._button_kwargs("save", "Сохранить"),
-            command=self._apply_text_changes,
-        )
-        self.btn_apply_text.pack(side="left")
-        self.btn_cancel_text = ttk.Button(
-            text_actions,
-            **self._button_kwargs("cancel", "Отменить"),
-            command=self._reload_selected_text,
-        )
-        self.btn_cancel_text.pack(side="left", padx=(8, 0))
 
     def _build_resources_tab(self, parent: ttk.Frame) -> None:
         parent.columnconfigure(0, weight=1)
@@ -2549,6 +2476,16 @@ class TopicContentTool(tk.Tk):
             return
         self.connection.executescript(
             """
+            CREATE TABLE IF NOT EXISTS articles (
+              route TEXT NOT NULL PRIMARY KEY,
+              name TEXT NOT NULL,
+              description TEXT NOT NULL,
+              id_icon TEXT NOT NULL,
+              sort_order INTEGER NOT NULL DEFAULT 0,
+              is_visible INTEGER NOT NULL DEFAULT 1,
+              markdown TEXT NOT NULL
+            );
+
             CREATE TABLE IF NOT EXISTS topic_texts (
               route TEXT NOT NULL PRIMARY KEY,
               markdown TEXT NOT NULL
@@ -2567,6 +2504,48 @@ class TopicContentTool(tk.Tk):
               id INTEGER NOT NULL PRIMARY KEY,
               "desc" TEXT NOT NULL
             );
+            """
+        )
+        self.connection.executescript(
+            """
+            INSERT INTO articles(route, name, description, id_icon, sort_order, is_visible, markdown)
+            SELECT
+              t.route,
+              t.name,
+              t.description,
+              t.id_icon,
+              t.sort_order,
+              t.is_visible,
+              COALESCE(tt.markdown, '')
+            FROM topics t
+            LEFT JOIN topic_texts tt ON tt.route = t.route
+            WHERE EXISTS (SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'topics')
+              AND EXISTS (SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'topic_texts')
+              AND NOT EXISTS (
+                SELECT 1
+                FROM articles a
+                WHERE a.route = t.route
+              );
+
+            INSERT INTO articles(route, name, description, id_icon, sort_order, is_visible, markdown)
+            SELECT
+              tt.route,
+              tt.route,
+              '',
+              '',
+              0,
+              0,
+              tt.markdown
+            FROM topic_texts tt
+            WHERE EXISTS (SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'topic_texts')
+              AND NOT EXISTS (
+                SELECT 1
+                FROM articles a
+                WHERE a.route = tt.route
+              );
+
+            DROP TABLE IF EXISTS topics;
+            DROP TABLE IF EXISTS topic_texts;
             """
         )
         self.connection.commit()
@@ -2596,42 +2575,31 @@ class TopicContentTool(tk.Tk):
     def _load_rows(self) -> None:
         assert self.connection is not None
 
-        topic_rows = self.connection.execute(
+        article_rows = self.connection.execute(
             """
-            SELECT route, name, description, id_icon, sort_order, is_visible
-            FROM topics
+            SELECT route, name, description, id_icon, sort_order, is_visible, markdown
+            FROM articles
             ORDER BY sort_order ASC, route ASC
             """
         ).fetchall()
-        self.topics = [
-            TopicRow(
+        self.articles = [
+            ArticleRow(
                 route=row["route"],
                 name=row["name"],
                 description=row["description"],
                 id_icon=row["id_icon"],
                 sort_order=int(row["sort_order"]),
                 is_visible=bool(row["is_visible"]),
+                markdown=row["markdown"] or "",
             )
-            for row in topic_rows
+            for row in article_rows
         ]
-
-        text_rows = self.connection.execute(
-            """
-            SELECT route, markdown
-            FROM topic_texts
-            ORDER BY route ASC
-            """
-        ).fetchall()
-        self.topic_texts = [TopicTextRow(route=row["route"], markdown=row["markdown"]) for row in text_rows]
 
         self._load_common_resources()
         self._load_strong_rows()
-        self._refresh_topics_tree()
-        self._refresh_texts_list()
-        self._refresh_topic_route_options()
+        self._refresh_articles_tree()
         self._refresh_topic_icon_options()
-        self._clear_topic_editor()
-        self._clear_text_editor()
+        self._clear_article_editor()
         self._clear_resource_editor()
 
     def _clear_all_db_views(self) -> None:
@@ -2646,35 +2614,23 @@ class TopicContentTool(tk.Tk):
         self._refresh_topic_icon_options()
 
     def _clear_local_views(self) -> None:
-        self.topics.clear()
-        self.topic_texts.clear()
-        self._refresh_topics_tree()
-        self._refresh_texts_list()
-        self._clear_topic_editor()
-        self._clear_text_editor()
-        self._refresh_topic_route_options()
+        self.articles.clear()
+        self._refresh_articles_tree()
+        self._clear_article_editor()
         self._refresh_topic_icon_options()
 
-    def _refresh_topics_tree(self) -> None:
-        self.topics_tree.delete(*self.topics_tree.get_children())
-        for idx, row in enumerate(self.topics):
+    def _refresh_articles_tree(self) -> None:
+        self.articles_tree.delete(*self.articles_tree.get_children())
+        for idx, row in enumerate(self.articles):
             route_display = row.route if row.route else self.NO_ARTICLE_OPTION
             tags = (self.UNBOUND_TAG,) if not row.route else ()
-            self.topics_tree.insert(
+            self.articles_tree.insert(
                 "",
                 "end",
                 iid=str(idx),
                 values=(route_display, row.name, row.sort_order, "Да" if row.is_visible else "Нет"),
                 tags=tags,
             )
-
-    def _refresh_topic_route_options(self) -> None:
-        article_routes = sorted({row.route for row in self.topic_texts if row.route.strip()})
-        current = self.topic_route_var.get().strip()
-        if current and current != self.NO_ARTICLE_OPTION and current not in article_routes:
-            article_routes.append(current)
-            article_routes.sort()
-        self.topic_route_combo["values"] = [self.NO_ARTICLE_OPTION, *article_routes]
 
     def _refresh_topic_icon_options(self) -> None:
         image_keys = sorted(
@@ -3247,9 +3203,9 @@ class TopicContentTool(tk.Tk):
             )
         )
 
-    def _on_topic_route_changed(self, _event: object | None = None) -> None:
+    def _on_article_route_changed(self, _event: object | None = None) -> None:
         route = self._route_value_from_editor()
-        self._update_topic_route_visual_state(route, selection_exists=self.selected_topic_index is not None)
+        self._update_article_route_visual_state(route, selection_exists=self.selected_article_index is not None)
 
     def _route_value_from_editor(self) -> str:
         value = self.topic_route_var.get().strip()
@@ -3260,38 +3216,28 @@ class TopicContentTool(tk.Tk):
     def _display_route_value(self, route: str) -> str:
         return route if route else self.NO_ARTICLE_OPTION
 
-    def _update_topic_route_visual_state(self, route: str, *, selection_exists: bool) -> None:
+    def _update_article_route_visual_state(self, route: str, *, selection_exists: bool) -> None:
         is_unbound = selection_exists and not route
-        color = self.ALERT_COLOR if is_unbound else self.topic_route_default_fg
-        self.topic_route_combo.configure(foreground=color)
-        self.topic_route_label.configure(
-            fg=self.ALERT_COLOR if is_unbound else self.topic_route_label_default_fg
+        color = self.ALERT_COLOR if is_unbound else self.article_route_default_fg
+        self.article_route_entry.configure(foreground=color)
+        self.article_route_label.configure(
+            fg=self.ALERT_COLOR if is_unbound else self.article_route_label_default_fg
         )
 
-    def _refresh_texts_list(self) -> None:
-        was_disabled = str(self.texts_list.cget("state")) == "disabled"
-        if was_disabled:
-            self.texts_list.configure(state="normal")
-        self.texts_list.delete(0, tk.END)
-        for row in self.topic_texts:
-            self.texts_list.insert(tk.END, row.route)
-        if was_disabled:
-            self.texts_list.configure(state="disabled")
-
-    def _on_topic_selected(self, _event: object) -> None:
-        selection = self.topics_tree.selection()
+    def _on_article_selected(self, _event: object) -> None:
+        selection = self.articles_tree.selection()
         if not selection:
-            self.selected_topic_index = None
-            self._update_topic_route_visual_state("", selection_exists=False)
+            self.selected_article_index = None
+            self._update_article_route_visual_state("", selection_exists=False)
             return
-        self.selected_topic_index = int(selection[0])
-        self._reload_selected_topic()
+        self.selected_article_index = int(selection[0])
+        self._reload_selected_article()
 
-    def _reload_selected_topic(self) -> None:
-        if self.selected_topic_index is None:
-            self._clear_topic_editor()
+    def _reload_selected_article(self) -> None:
+        if self.selected_article_index is None:
+            self._clear_article_editor()
             return
-        row = self.topics[self.selected_topic_index]
+        row = self.articles[self.selected_article_index]
         self.topic_route_var.set(self._display_route_value(row.route))
         self.topic_name_var.set(row.name)
         self.topic_description_var.set(row.description)
@@ -3299,93 +3245,29 @@ class TopicContentTool(tk.Tk):
         self._refresh_topic_icon_options()
         self.topic_sort_var.set(str(row.sort_order))
         self.topic_visible_var.set(row.is_visible)
-        self._update_topic_route_visual_state(row.route, selection_exists=True)
+        self.markdown_change_internal = True
+        self.markdown_text.delete("1.0", tk.END)
+        self.markdown_text.insert("1.0", row.markdown)
+        self.markdown_text.edit_modified(False)
+        self.markdown_change_internal = False
+        self._refresh_preview()
+        self._update_article_route_visual_state(row.route, selection_exists=True)
 
-    def _clear_topic_editor(self) -> None:
-        self.selected_topic_index = None
-        self.topic_route_var.set(self.NO_ARTICLE_OPTION)
+    def _clear_article_editor(self) -> None:
+        self.selected_article_index = None
+        self.topic_route_var.set("")
         self.topic_name_var.set("")
         self.topic_description_var.set("")
         self.topic_icon_var.set(self.NO_ICON_OPTION)
         self._refresh_topic_icon_options()
         self.topic_sort_var.set("0")
         self.topic_visible_var.set(True)
-        self._update_topic_route_visual_state("", selection_exists=False)
-
-    def _ask_topic_route_for_new_topic(self) -> str | None:
-        used_routes = {row.route for row in self.topics if row.route.strip()}
-        available_routes = sorted(
-            {
-                row.route
-                for row in self.topic_texts
-                if row.route.strip() and row.route not in used_routes
-            }
-        )
-        if not available_routes:
-            messagebox.showinfo(
-                "Нет доступных статей",
-                "Нет свободных маршрутов. Сначала добавьте статью во вкладке 'Все статьи'.",
-                parent=self,
-            )
-            return None
-
-        dialog = tk.Toplevel(self)
-        dialog.title("Выбор статьи")
-        dialog.transient(self)
-        dialog.grab_set()
-        dialog.resizable(False, False)
-
-        container = ttk.Frame(dialog, padding=12)
-        container.grid(row=0, column=0, sticky="nsew")
-        dialog.columnconfigure(0, weight=1)
-        dialog.rowconfigure(0, weight=1)
-        container.columnconfigure(0, weight=1)
-
-        ttk.Label(container, text="Выберите статью из списка:").grid(
-            row=0,
-            column=0,
-            sticky="w",
-            pady=(0, 6),
-        )
-        route_var = tk.StringVar(value=available_routes[0])
-        route_combo = ttk.Combobox(
-            container,
-            textvariable=route_var,
-            values=available_routes,
-            state="readonly",
-        )
-        route_combo.grid(row=1, column=0, sticky="ew")
-
-        result: dict[str, str | None] = {"route": None}
-
-        def apply_selection() -> None:
-            value = route_var.get().strip()
-            if not value:
-                return
-            result["route"] = value
-            dialog.destroy()
-
-        def cancel_selection() -> None:
-            dialog.destroy()
-
-        actions = ttk.Frame(container)
-        actions.grid(row=2, column=0, sticky="e", pady=(10, 0))
-        ttk.Button(actions, text="Выбрать", command=apply_selection).pack(side="left")
-        ttk.Button(actions, text="Отмена", command=cancel_selection).pack(side="left", padx=(8, 0))
-
-        self._fit_and_center_toplevel(
-            dialog,
-            min_width=420,
-            max_width=620,
-            min_height=150,
-            max_height=240,
-        )
-        dialog.protocol("WM_DELETE_WINDOW", cancel_selection)
-        dialog.bind("<Escape>", lambda _e: cancel_selection())
-        dialog.bind("<Return>", lambda _e: apply_selection())
-        route_combo.focus_set()
-        self.wait_window(dialog)
-        return result["route"]
+        self.markdown_change_internal = True
+        self.markdown_text.delete("1.0", tk.END)
+        self.markdown_text.edit_modified(False)
+        self.markdown_change_internal = False
+        self._render_preview_content("")
+        self._update_article_route_visual_state("", selection_exists=False)
 
     def _restore_local_rows_after_save_error(self) -> None:
         if self.connection is None:
@@ -3404,97 +3286,97 @@ class TopicContentTool(tk.Tk):
         self,
         *,
         success_status: str,
-        topic_route: str | None = None,
-        text_route: str | None = None,
+        article_route: str | None = None,
     ) -> bool:
         if self._save_all(status_text=success_status):
             return True
         self._restore_local_rows_after_save_error()
-        if topic_route is not None:
-            self._select_topic_by_route(topic_route)
-        if text_route is not None:
-            self._select_text_by_route(text_route)
+        if article_route is not None:
+            self._select_article_by_route(article_route)
         return False
 
-    def _add_topic(self) -> None:
-        route = self._ask_topic_route_for_new_topic()
+    def _add_article(self) -> None:
+        route = simpledialog.askstring(
+            "Новая статья",
+            "Введите маршрут для новой статьи:",
+            parent=self,
+        )
         if route is None:
             return
-        if any(t.route == route for t in self.topics):
-            duplicate_route = self._display_route_value(route)
+        route = route.strip()
+        if not route:
+            messagebox.showwarning(
+                "Пустой маршрут",
+                "Маршрут не может быть пустым.",
+                parent=self,
+            )
+            return
+        if any(t.route == route for t in self.articles):
             messagebox.showwarning(
                 "Дубликат",
-                f"Статья с маршрутом '{duplicate_route}' уже существует в списке главного окна.",
+                f"Статья с маршрутом '{route}' уже существует.",
                 parent=self,
             )
             return
 
-        next_sort = max((t.sort_order for t in self.topics), default=-1) + 1
-        self.topics.append(
-            TopicRow(
+        next_sort = max((t.sort_order for t in self.articles), default=-1) + 1
+        self.articles.append(
+            ArticleRow(
                 route=route,
                 name=route or "Новая статья",
                 description="",
                 id_icon="",
                 sort_order=next_sort,
                 is_visible=True,
+                markdown="",
             )
         )
-        self._sort_topics()
-        self._refresh_topics_tree()
-        self._refresh_topic_route_options()
-        self._select_topic_by_route(route)
+        self._sort_articles()
+        self._refresh_articles_tree()
+        self._select_article_by_route(route)
         self._save_articles_immediately(
-            success_status=(
-                "Статья с маршрутом "
-                f"'{self._display_route_value(route)}' добавлена в список главного окна."
-            ),
-            topic_route=route,
+            success_status=f"Статья с маршрутом '{route}' добавлена.",
+            article_route=route,
         )
 
-    def _delete_topic(self) -> None:
-        if self.selected_topic_index is None:
+    def _delete_article(self) -> None:
+        if self.selected_article_index is None:
             return
-        row = self.topics[self.selected_topic_index]
+        row = self.articles[self.selected_article_index]
         if not messagebox.askyesno(
             "Удаление статьи",
-            (
-                f"Удалить статью с маршрутом '{self._display_route_value(row.route)}' "
-                "только из списка главного окна?\n\n"
-                "Содержимое статьи не изменяется."
-            ),
+            f"Удалить статью с маршрутом '{row.route}'?",
             parent=self,
         ):
             return
-        del self.topics[self.selected_topic_index]
-        self._refresh_topics_tree()
-        self._clear_topic_editor()
+        del self.articles[self.selected_article_index]
+        self._refresh_articles_tree()
+        self._clear_article_editor()
         self._save_articles_immediately(
-            success_status=(
-                "Статья с маршрутом "
-                f"'{self._display_route_value(row.route)}' удалена из списка главного окна."
-            )
+            success_status=f"Статья с маршрутом '{row.route}' удалена."
         )
 
-    def _apply_topic_changes(self) -> None:
-        if self.selected_topic_index is None:
+    def _apply_article_changes(self) -> None:
+        if self.selected_article_index is None:
             messagebox.showinfo("Нет выбора", "Сначала выберите запись в статьях главного окна.", parent=self)
             return
-        row = self.topics[self.selected_topic_index]
+        row = self.articles[self.selected_article_index]
 
         route = self._route_value_from_editor()
         name = self.topic_name_var.get().strip()
         description = self.topic_description_var.get().strip()
         icon = self._icon_value_from_editor()
         sort_raw = self.topic_sort_var.get().strip()
+        markdown = self.markdown_text.get("1.0", "end-1c")
 
-        if any(i != self.selected_topic_index and t.route == route for i, t in enumerate(self.topics)):
+        if not route:
+            messagebox.showwarning("Ошибка", "Маршрут не может быть пустым.", parent=self)
+            return
+
+        if any(i != self.selected_article_index and t.route == route for i, t in enumerate(self.articles)):
             messagebox.showwarning(
                 "Дубликат",
-                (
-                    f"Маршрут '{self._display_route_value(route)}' уже существует "
-                    "в статьях главного окна."
-                ),
+                f"Маршрут '{route}' уже существует.",
                 parent=self,
             )
             return
@@ -3513,150 +3395,28 @@ class TopicContentTool(tk.Tk):
         row.id_icon = icon
         row.sort_order = sort_order
         row.is_visible = bool(self.topic_visible_var.get())
-
-        self._sort_topics()
-        self._refresh_topics_tree()
-        self._refresh_topic_route_options()
-        self._select_topic_by_route(route)
-        self._update_topic_route_visual_state(route, selection_exists=True)
-        self._save_articles_immediately(
-            success_status=(
-                "Изменения для статьи с маршрутом "
-                f"'{self._display_route_value(route)}' сохранены."
-            ),
-            topic_route=route,
-        )
-
-    def _sort_topics(self) -> None:
-        self.topics.sort(key=lambda item: (item.sort_order, item.route))
-
-    def _select_topic_by_route(self, route: str) -> None:
-        for idx, row in enumerate(self.topics):
-            if row.route == route:
-                self.topics_tree.selection_set(str(idx))
-                self.topics_tree.focus(str(idx))
-                self.topics_tree.see(str(idx))
-                self.selected_topic_index = idx
-                self._reload_selected_topic()
-                return
-
-    def _on_text_selected(self, _event: object) -> None:
-        selection = self.texts_list.curselection()
-        if not selection:
-            self.selected_text_index = None
-            return
-        self.selected_text_index = int(selection[0])
-        self._reload_selected_text()
-
-    def _reload_selected_text(self) -> None:
-        if self.selected_text_index is None:
-            self._clear_text_editor()
-            return
-        row = self.topic_texts[self.selected_text_index]
-        self.text_route_var.set(row.route)
-        self.markdown_change_internal = True
-        self.markdown_text.delete("1.0", tk.END)
-        self.markdown_text.insert("1.0", row.markdown)
-        self.markdown_text.edit_modified(False)
-        self.markdown_change_internal = False
-        self._refresh_preview()
-
-    def _clear_text_editor(self) -> None:
-        self.selected_text_index = None
-        self.text_route_var.set("")
-        self.markdown_change_internal = True
-        self.markdown_text.delete("1.0", tk.END)
-        self.markdown_text.edit_modified(False)
-        self.markdown_change_internal = False
-        self._render_preview_content("")
-
-    def _add_text(self) -> None:
-        route = simpledialog.askstring("Новая статья", "Введите маршрут для новой статьи:", parent=self)
-        if route is None:
-            return
-        route = route.strip()
-        if not route:
-            messagebox.showwarning("Пустой маршрут", "Маршрут не может быть пустым.", parent=self)
-            return
-        if any(t.route == route for t in self.topic_texts):
-            messagebox.showwarning(
-                "Дубликат",
-                f"Статья с маршрутом '{route}' уже существует в общем списке статей.",
-                parent=self,
-            )
-            return
-
-        self.topic_texts.append(TopicTextRow(route=route, markdown=""))
-        self._sort_topic_texts()
-        self._refresh_texts_list()
-        self._refresh_topic_route_options()
-        self._select_text_by_route(route)
-        self._save_articles_immediately(
-            success_status=f"Статья с маршрутом '{route}' добавлена в общий список статей.",
-            text_route=route,
-        )
-
-    def _delete_text(self) -> None:
-        if self.selected_text_index is None:
-            return
-        row = self.topic_texts[self.selected_text_index]
-        if not messagebox.askyesno(
-            "Удаление статьи",
-            f"Удалить статью с маршрутом '{row.route}' только из общего списка статей?\n\nСписок главного окна не изменяется.",
-            parent=self,
-        ):
-            return
-        del self.topic_texts[self.selected_text_index]
-        self._refresh_texts_list()
-        self._refresh_topic_route_options()
-        self._clear_text_editor()
-        self._save_articles_immediately(
-            success_status=f"Статья с маршрутом '{row.route}' удалена из общего списка статей."
-        )
-
-    def _apply_text_changes(self) -> None:
-        if self.selected_text_index is None:
-            messagebox.showinfo("Нет выбора", "Сначала выберите запись из всех статей.", parent=self)
-            return
-
-        row = self.topic_texts[self.selected_text_index]
-        route = self.text_route_var.get().strip()
-        markdown = self.markdown_text.get("1.0", "end-1c")
-
-        if not route:
-            messagebox.showwarning("Ошибка", "Маршрут не может быть пустым.", parent=self)
-            return
-        if any(i != self.selected_text_index and t.route == route for i, t in enumerate(self.topic_texts)):
-            messagebox.showwarning(
-                "Дубликат",
-                f"Маршрут '{route}' уже существует в общем списке статей.",
-                parent=self,
-            )
-            return
-
-        row.route = route
         row.markdown = markdown
-        self._sort_topic_texts()
-        self._refresh_texts_list()
-        self._refresh_topic_route_options()
-        self._select_text_by_route(route)
-        self._refresh_preview()
+
+        self._sort_articles()
+        self._refresh_articles_tree()
+        self._select_article_by_route(route)
+        self._update_article_route_visual_state(route, selection_exists=True)
         self._save_articles_immediately(
             success_status=f"Изменения для статьи с маршрутом '{route}' сохранены.",
-            text_route=route,
+            article_route=route,
         )
 
-    def _sort_topic_texts(self) -> None:
-        self.topic_texts.sort(key=lambda item: item.route)
+    def _sort_articles(self) -> None:
+        self.articles.sort(key=lambda item: (item.sort_order, item.route))
 
-    def _select_text_by_route(self, route: str) -> None:
-        for idx, row in enumerate(self.topic_texts):
+    def _select_article_by_route(self, route: str) -> None:
+        for idx, row in enumerate(self.articles):
             if row.route == route:
-                self.texts_list.selection_clear(0, tk.END)
-                self.texts_list.selection_set(idx)
-                self.texts_list.see(idx)
-                self.selected_text_index = idx
-                self._reload_selected_text()
+                self.articles_tree.selection_set(str(idx))
+                self.articles_tree.focus(str(idx))
+                self.articles_tree.see(str(idx))
+                self.selected_article_index = idx
+                self._reload_selected_article()
                 return
 
     def _on_resource_selected(self, _event: object) -> None:
@@ -3848,14 +3608,14 @@ class TopicContentTool(tk.Tk):
             return
 
         if old_key and old_key != key:
-            for topic in self.topics:
+            for topic in self.articles:
                 if topic.id_icon == old_key:
                     topic.id_icon = key
                     affected_topics += 1
         topics_sync_failed = False
         if affected_topics > 0:
-            if self.selected_topic_index is not None:
-                self._reload_selected_topic()
+            if self.selected_article_index is not None:
+                self._reload_selected_article()
             if self.connection is not None and self.current_db_path is not None:
                 if not self._save_all(silent=True):
                     topics_sync_failed = True
@@ -3908,14 +3668,14 @@ class TopicContentTool(tk.Tk):
             return
 
         affected_topics = 0
-        for topic in self.topics:
+        for topic in self.articles:
             if topic.id_icon == row.key:
                 topic.id_icon = ""
                 affected_topics += 1
         topics_sync_failed = False
         if affected_topics > 0:
-            if self.selected_topic_index is not None:
-                self._reload_selected_topic()
+            if self.selected_article_index is not None:
+                self._reload_selected_article()
             if self.connection is not None and self.current_db_path is not None:
                 if not self._save_all(silent=True):
                     topics_sync_failed = True
@@ -4187,7 +3947,10 @@ class TopicContentTool(tk.Tk):
             return
 
         db_path = self.common_db_path
-        before_size = db_path.stat().st_size if db_path.exists() else 0
+        before_stats = self._collect_sqlite_space_stats(
+            db_path,
+            connection=self.common_connection,
+        )
         if not messagebox.askyesno(
             "Сжать БД",
             (
@@ -4204,24 +3967,27 @@ class TopicContentTool(tk.Tk):
             selected_key = self.common_resources[self.selected_resource_index].key
 
         try:
-            self.common_connection.commit()
-            self.common_connection.execute("VACUUM")
-            self.common_connection.commit()
+            _before, after_stats = self._run_vacuum_for_db(
+                db_path,
+                connection=self.common_connection,
+            )
         except sqlite3.DatabaseError as exc:
             messagebox.showerror("Ошибка VACUUM", f"Не удалось сжать БД:\n{exc}", parent=self)
             return
-
-        after_size = before_size
-        try:
-            after_size = db_path.stat().st_size
-        except OSError:
-            pass
 
         self._load_common_resources()
         if selected_key:
             self._select_resource_by_key(selected_key)
         self._update_file_info()
+        self._show_vacuum_result_dialog(
+            db_path,
+            before_stats,
+            after_stats,
+            title="VACUUM: общая БД",
+        )
 
+        before_size = int(before_stats["size_bytes"])
+        after_size = int(after_stats["size_bytes"])
         reduced_size = before_size - after_size
         if reduced_size > 0:
             self._set_status(
@@ -4239,6 +4005,177 @@ class TopicContentTool(tk.Tk):
                 f"{self._format_size(before_size)} -> {self._format_size(after_size)}."
             )
         )
+
+    def _vacuum_current_localized_db(self) -> None:
+        db_key = self.db_var.get()
+        db_path = self.db_files.get(db_key)
+        if db_path is None:
+            db_path = self.current_db_path
+        if db_path is None:
+            messagebox.showwarning(
+                "Нет локализованной БД",
+                "Откройте локализованную БД, чтобы выполнить VACUUM.",
+                parent=self,
+            )
+            return
+
+        local_connection: sqlite3.Connection | None = None
+        if self.connection is not None and self.current_db_path == db_path:
+            local_connection = self.connection
+
+        before_stats = self._collect_sqlite_space_stats(
+            db_path,
+            connection=local_connection,
+        )
+
+        if not messagebox.askyesno(
+            "Сжать локализованную БД",
+            (
+                f"Выполнить VACUUM для '{db_path.name}'?\n\n"
+                "Операция перепакует файл БД и может занять время.\n"
+                "На время выполнения интерфейс будет недоступен."
+            ),
+            parent=self,
+        ):
+            return
+
+        try:
+            _before, after_stats = self._run_vacuum_for_db(
+                db_path,
+                connection=local_connection,
+            )
+        except sqlite3.DatabaseError as exc:
+            messagebox.showerror("Ошибка VACUUM", f"Не удалось сжать БД:\n{exc}", parent=self)
+            return
+
+        self._update_file_info()
+        self._show_vacuum_result_dialog(
+            db_path,
+            before_stats,
+            after_stats,
+            title="VACUUM: локализованная БД",
+        )
+
+        before_size = int(before_stats["size_bytes"])
+        after_size = int(after_stats["size_bytes"])
+        reduced_size = before_size - after_size
+        if reduced_size > 0:
+            self._set_status(
+                (
+                    f"VACUUM завершен: {db_path.stem}. "
+                    f"{self._format_size(before_size)} -> {self._format_size(after_size)} "
+                    f"(освобождено {self._format_size(reduced_size)})."
+                )
+            )
+            return
+
+        self._set_status(
+            (
+                f"VACUUM завершен: {db_path.stem}. "
+                f"{self._format_size(before_size)} -> {self._format_size(after_size)}."
+            )
+        )
+
+    def _collect_sqlite_space_stats(
+        self,
+        db_path: Path,
+        connection: sqlite3.Connection | None = None,
+    ) -> dict[str, float]:
+        con = connection
+        own_connection = False
+        if con is None:
+            con = sqlite3.connect(db_path)
+            own_connection = True
+
+        try:
+            page_size = int(con.execute("PRAGMA page_size").fetchone()[0])
+            page_count = int(con.execute("PRAGMA page_count").fetchone()[0])
+            freelist_count = int(con.execute("PRAGMA freelist_count").fetchone()[0])
+        finally:
+            if own_connection:
+                con.close()
+
+        try:
+            file_size = int(db_path.stat().st_size)
+        except OSError:
+            file_size = page_size * page_count
+
+        free_bytes = page_size * freelist_count
+        free_pct_pages = (100.0 * freelist_count / page_count) if page_count else 0.0
+        free_pct_file = (100.0 * free_bytes / file_size) if file_size else 0.0
+
+        return {
+            "file_size": float(file_size),
+            "page_size": float(page_size),
+            "page_count": float(page_count),
+            "freelist_count": float(freelist_count),
+            "free_bytes": float(free_bytes),
+            "free_pct_pages": free_pct_pages,
+            "free_pct_file": free_pct_file,
+            "size_bytes": float(file_size),
+        }
+
+    def _run_vacuum_for_db(
+        self,
+        db_path: Path,
+        connection: sqlite3.Connection | None = None,
+    ) -> tuple[dict[str, float], dict[str, float]]:
+        before_stats = self._collect_sqlite_space_stats(db_path, connection=connection)
+
+        con = connection
+        own_connection = False
+        if con is None:
+            con = sqlite3.connect(db_path)
+            own_connection = True
+
+        try:
+            con.commit()
+            con.execute("VACUUM")
+            con.commit()
+        finally:
+            if own_connection:
+                con.close()
+
+        after_stats = self._collect_sqlite_space_stats(db_path, connection=connection)
+        return before_stats, after_stats
+
+    def _show_vacuum_result_dialog(
+        self,
+        db_path: Path,
+        before_stats: dict[str, float],
+        after_stats: dict[str, float],
+        *,
+        title: str = "VACUUM",
+    ) -> None:
+        before_size = int(before_stats["size_bytes"])
+        after_size = int(after_stats["size_bytes"])
+        reduced_size = before_size - after_size
+        reduced_pct = (100.0 * reduced_size / before_size) if before_size > 0 and reduced_size > 0 else 0.0
+
+        before_free_bytes = int(before_stats["free_bytes"])
+        after_free_bytes = int(after_stats["free_bytes"])
+
+        lines = [
+            f"БД: {db_path.name}",
+            "",
+            (
+                "Размер файла: "
+                f"{self._format_size(before_size)} -> {self._format_size(after_size)}"
+            ),
+            (
+                "Свободных страниц: "
+                f"{self._format_size(before_free_bytes)} ({before_stats['free_pct_pages']:.2f}% страниц) -> "
+                f"{self._format_size(after_free_bytes)} ({after_stats['free_pct_pages']:.2f}% страниц)"
+            ),
+        ]
+        if reduced_size > 0:
+            lines.append(
+                f"Освобождено: {self._format_size(reduced_size)} ({reduced_pct:.2f}% от файла)."
+            )
+        else:
+            lines.append("Освобождено: 0 B.")
+
+        messagebox.showinfo(title, "\n".join(lines), parent=self)
 
     def _format_size(self, size_bytes: int) -> str:
         if size_bytes < 1024:
@@ -4423,11 +4360,11 @@ class TopicContentTool(tk.Tk):
 
         try:
             with self.connection:
-                self.connection.execute("DELETE FROM topics")
+                self.connection.execute("DELETE FROM articles")
                 self.connection.executemany(
                     """
-                    INSERT INTO topics(route, name, description, id_icon, sort_order, is_visible)
-                    VALUES(?, ?, ?, ?, ?, ?)
+                    INSERT INTO articles(route, name, description, id_icon, sort_order, is_visible, markdown)
+                    VALUES(?, ?, ?, ?, ?, ?, ?)
                     """,
                     [
                         (
@@ -4437,18 +4374,10 @@ class TopicContentTool(tk.Tk):
                             row.id_icon,
                             row.sort_order,
                             1 if row.is_visible else 0,
+                            row.markdown,
                         )
-                        for row in self.topics
+                        for row in self.articles
                     ],
-                )
-
-                self.connection.execute("DELETE FROM topic_texts")
-                self.connection.executemany(
-                    """
-                    INSERT INTO topic_texts(route, markdown)
-                    VALUES(?, ?)
-                    """,
-                    [(row.route, row.markdown) for row in self.topic_texts],
                 )
         except sqlite3.DatabaseError as exc:
             messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить изменения:\n{exc}", parent=self)
@@ -4521,7 +4450,7 @@ class TopicContentTool(tk.Tk):
                     rows = con.execute(
                         """
                         SELECT route
-                        FROM topics
+                        FROM articles
                         WHERE is_visible = 1
                         AND lower(route) LIKE '%test%'
                         ORDER BY route ASC

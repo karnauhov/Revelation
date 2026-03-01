@@ -39,14 +39,14 @@ class _TopicListState extends State<TopicList> {
 
   Future<List<TopicInfo>> _loadTopicsFromDb(String language) async {
     await DBManager().updateLanguage(language);
-    final topics = await DBManager().getTopics();
-    return topics
+    final articles = await DBManager().getArticles();
+    return articles
         .map(
-          (topic) => TopicInfo(
-            name: topic.name,
-            idIcon: topic.idIcon,
-            description: topic.description,
-            route: topic.route,
+          (article) => TopicInfo(
+            name: article.name,
+            idIcon: article.idIcon,
+            description: article.description,
+            route: article.route,
           ),
         )
         .toList(growable: false);
@@ -66,11 +66,13 @@ class _TopicListState extends State<TopicList> {
           );
         } else if (snapshot.hasError) {
           return ErrorMessage(
-              errorMessage: AppLocalizations.of(context)!.error_loading_topics);
+            errorMessage: AppLocalizations.of(context)!.error_loading_topics,
+          );
         } else {
           return Center(
             child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary)),
+              valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+            ),
           );
         }
       },

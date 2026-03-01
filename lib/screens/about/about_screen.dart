@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -257,28 +256,16 @@ class _AboutScreenState extends State<AboutScreen> {
         IconLinkItem(
           iconPath: "assets/images/UI/shield.svg",
           text: AppLocalizations.of(context)!.privacy_policy,
-          onTap: () => context.push(
-            '/topic',
-            extra: {
-              'name': AppLocalizations.of(context)!.privacy_policy,
-              'description': AppLocalizations.of(
-                context,
-              )!.privacy_policy_description,
-              'file': "privacy_policy",
-            },
-          ),
+          onTap: () {
+            handleAppLink(context, 'topic:privacy_policy');
+          },
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/license.svg",
           text: AppLocalizations.of(context)!.license,
-          onTap: () => context.push(
-            '/topic',
-            extra: {
-              'name': AppLocalizations.of(context)!.license,
-              'description': AppLocalizations.of(context)!.license_description,
-              'file': "license",
-            },
-          ),
+          onTap: () {
+            handleAppLink(context, 'topic:license');
+          },
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/support_us.svg",

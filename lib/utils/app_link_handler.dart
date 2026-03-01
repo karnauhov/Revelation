@@ -54,6 +54,14 @@ Future<bool> handleAppLink(
     );
   }
 
+  if (_hasScheme(link, 'topic')) {
+    return _handleTopicLink(
+      context,
+      link,
+      popBeforeScreenPush: popBeforeScreenPush,
+    );
+  }
+
   if (_hasScheme(link, 'strong')) {
     return _handleStrongLink(context, link, onGreekStrongTap: onGreekStrongTap);
   }
@@ -109,6 +117,35 @@ Future<bool> _handleScreenLink(
 
   final targetRoute = route.startsWith('/') ? route : '/$route';
   context.push(targetRoute);
+  return true;
+}
+
+Future<bool> _handleTopicLink(
+  BuildContext context,
+  String href, {
+  required bool popBeforeScreenPush,
+}) async {
+  final separatorIndex = href.indexOf(':');
+  if (separatorIndex == -1 || separatorIndex >= href.length - 1) {
+    log.warning("Wrong topic link: '$href'");
+    return false;
+  }
+
+  final route = href.substring(separatorIndex + 1).trim();
+  if (route.isEmpty) {
+    log.warning("Wrong topic link: '$href'");
+    return false;
+  }
+
+  if (popBeforeScreenPush && Navigator.of(context).canPop()) {
+    Navigator.pop(context);
+  }
+
+  final topicRoute = Uri(
+    path: '/topic',
+    queryParameters: <String, String>{'file': route},
+  ).toString();
+  context.push(topicRoute);
   return true;
 }
 

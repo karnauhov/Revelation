@@ -138,12 +138,6 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get privacy_policy;
 
-  /// No description provided for @privacy_policy_description.
-  ///
-  /// In en, this message translates to:
-  /// **'A document about the collection, use, and protection of user information'**
-  String get privacy_policy_description;
-
   /// No description provided for @license.
   ///
   /// In en, this message translates to:
@@ -155,12 +149,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Support us'**
   String get support_us;
-
-  /// No description provided for @license_description.
-  ///
-  /// In en, this message translates to:
-  /// **'The terms for using, reproducing, and distributing software under the Apache 2.0 license'**
-  String get license_description;
 
   /// No description provided for @installation_packages.
   ///

@@ -27,18 +27,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get privacy_policy => 'Політика конфіденційності';
 
   @override
-  String get privacy_policy_description =>
-      'Документ про збір інформації користувача, її використання та захист';
-
-  @override
   String get license => 'Ліцензія';
 
   @override
   String get support_us => 'Підтримайте нас';
-
-  @override
-  String get license_description =>
-      'Умови використання, відтворення та поширення програмного забезпечення під ліцензією Apache 2.0';
 
   @override
   String get installation_packages => 'Інсталяційні пакети';

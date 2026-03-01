@@ -29,6 +29,11 @@ class _TopicScreenState extends State<TopicScreen> {
   static const String _assetResourceScheme = 'resource:';
 
   final ScrollController _scrollController = ScrollController();
+  Future<_TopicContentData>? _topicFuture;
+  String? _loadedLanguage;
+  String? _loadedRoute;
+  String? _loadedName;
+  String? _loadedDescription;
 
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
@@ -43,22 +48,28 @@ class _TopicScreenState extends State<TopicScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context)!;
     final settingsViewModel = Provider.of<SettingsViewModel>(context);
-    final futureMarkdown = _loadMarkdownFromDb(
-      widget.file,
-      settingsViewModel.settings.selectedLanguage,
-    );
+    _ensureTopicFuture(settingsViewModel.settings.selectedLanguage);
+    final futureTopicData = _topicFuture!;
 
-    Widget content = SizedBox.expand(
-      child: FutureBuilder<String>(
-        future: futureMarkdown,
-        builder: (context, snapshot) {
-          final data = snapshot.data ?? '';
-          return SingleChildScrollView(
+    return FutureBuilder<_TopicContentData>(
+      future: futureTopicData,
+      builder: (context, snapshot) {
+        final topicData =
+            snapshot.data ??
+            _TopicContentData(
+              name: widget.name ?? '',
+              description: widget.description ?? '',
+              markdown: '',
+            );
+
+        Widget content = SizedBox.expand(
+          child: SingleChildScrollView(
             controller: _scrollController,
             padding: const EdgeInsets.all(8.0),
             child: MarkdownBody(
-              data: data,
+              data: topicData.markdown,
               styleSheet: getMarkdownStyleSheet(theme, colorScheme),
               imageBuilder: (uri, title, alt) =>
                   _buildMarkdownImage(context, uri, alt),
@@ -66,73 +77,132 @@ class _TopicScreenState extends State<TopicScreen> {
                 await _handleTopicLink(context, href);
               },
             ),
+          ),
+        );
+
+        if (isDesktop() || isWeb()) {
+          content = Listener(
+            onPointerDown: (event) {
+              if (event.buttons == kPrimaryMouseButton) {
+                setState(() {
+                  _isDragging = true;
+                  _lastOffset = event.position;
+                });
+              }
+            },
+            onPointerMove: (event) {
+              if (_isDragging) {
+                final dy = event.position.dy - _lastOffset.dy;
+                _scrollController.jumpTo(_scrollController.offset - dy);
+                setState(() {
+                  _lastOffset = event.position;
+                });
+              }
+            },
+            onPointerUp: (event) {
+              if (event.buttons == 0) {
+                setState(() {
+                  _isDragging = false;
+                });
+              }
+            },
+            child: content,
           );
-        },
-      ),
-    );
+        }
 
-    if (isDesktop() || isWeb()) {
-      content = Listener(
-        onPointerDown: (event) {
-          if (event.buttons == kPrimaryMouseButton) {
-            setState(() {
-              _isDragging = true;
-              _lastOffset = event.position;
-            });
-          }
-        },
-        onPointerMove: (event) {
-          if (_isDragging) {
-            final dy = event.position.dy - _lastOffset.dy;
-            _scrollController.jumpTo(_scrollController.offset - dy);
-            setState(() {
-              _lastOffset = event.position;
-            });
-          }
-        },
-        onPointerUp: (event) {
-          if (event.buttons == 0) {
-            setState(() {
-              _isDragging = false;
-            });
-          }
-        },
-        child: content,
-      );
-    }
+        final title = _firstNonEmpty(widget.name, topicData.name, l10n.topic);
+        final subtitle = _firstNonEmpty(
+          widget.description,
+          topicData.description,
+          '',
+        );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.name ?? "",
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                height: 0.9,
-              ),
+        return Scaffold(
+          appBar: AppBar(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    height: 0.9,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              widget.description ?? "",
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal),
-            ),
-          ],
-        ),
-        foregroundColor: colorScheme.primary,
-      ),
-      body: content,
+            foregroundColor: colorScheme.primary,
+          ),
+          body: content,
+        );
+      },
     );
   }
 
-  Future<String> _loadMarkdownFromDb(String? route, String language) async {
+  Future<_TopicContentData> _loadTopicContent(
+    String? route,
+    String language,
+  ) async {
     if (route == null) {
-      return "";
+      return _TopicContentData(
+        name: widget.name ?? '',
+        description: widget.description ?? '',
+        markdown: '',
+      );
     }
-    await DBManager().updateLanguage(language);
-    return DBManager().getTopicMarkdown(route);
+
+    final dbManager = DBManager();
+    await dbManager.updateLanguage(language);
+    final markdown = await dbManager.getArticleMarkdown(route);
+
+    var name = widget.name ?? '';
+    var description = widget.description ?? '';
+    if (name.isEmpty || description.isEmpty) {
+      final article = await dbManager.getArticleByRoute(route);
+      name = _firstNonEmpty(name, article?.name);
+      description = _firstNonEmpty(description, article?.description);
+    }
+
+    return _TopicContentData(
+      name: name,
+      description: description,
+      markdown: markdown,
+    );
+  }
+
+  void _ensureTopicFuture(String language) {
+    final route = widget.file ?? '';
+    final name = widget.name ?? '';
+    final description = widget.description ?? '';
+    final needsReload =
+        _topicFuture == null ||
+        _loadedLanguage != language ||
+        _loadedRoute != route ||
+        _loadedName != name ||
+        _loadedDescription != description;
+    if (needsReload) {
+      _loadedLanguage = language;
+      _loadedRoute = route;
+      _loadedName = name;
+      _loadedDescription = description;
+      _topicFuture = _loadTopicContent(widget.file, language);
+    }
+  }
+
+  String _firstNonEmpty(String? first, String? second, [String fallback = '']) {
+    if (first != null && first.trim().isNotEmpty) {
+      return first;
+    }
+    if (second != null && second.trim().isNotEmpty) {
+      return second;
+    }
+    return fallback;
   }
 
   Future<bool> _handleTopicLink(BuildContext context, String? href) async {
@@ -330,4 +400,16 @@ class _TopicScreenState extends State<TopicScreen> {
         return 'application/octet-stream';
     }
   }
+}
+
+class _TopicContentData {
+  final String name;
+  final String description;
+  final String markdown;
+
+  const _TopicContentData({
+    required this.name,
+    required this.description,
+    required this.markdown,
+  });
 }

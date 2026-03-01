@@ -27,18 +27,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacy_policy => 'Privacy Policy';
 
   @override
-  String get privacy_policy_description =>
-      'A document about the collection, use, and protection of user information';
-
-  @override
   String get license => 'License';
 
   @override
   String get support_us => 'Support us';
-
-  @override
-  String get license_description =>
-      'The terms for using, reproducing, and distributing software under the Apache 2.0 license';
 
   @override
   String get installation_packages => 'Installation packages';

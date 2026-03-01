@@ -19,13 +19,11 @@ class DBManager {
   late LocalizedDB _localizedDB;
   late List<GreekWord> _greekWords;
   late List<GreekDesc> _greekDescs;
-  late List<TopicText> _topicTexts;
-  late List<Topic> _topics;
+  late List<Article> _articles;
 
   List<GreekWord> get greekWords => _greekWords;
   List<GreekDesc> get greekDescs => _greekDescs;
-  List<TopicText> get topicTexts => _topicTexts;
-  List<Topic> get topics => _topics;
+  List<Article> get articles => _articles;
   String get langDB => _dbLanguage;
   bool get isInitialized => _isInitialized;
 
@@ -36,8 +34,7 @@ class DBManager {
     _hasLocalizedDb = true;
     _greekWords = await _commonDB.select(_commonDB.greekWords).get();
     _greekDescs = await _localizedDB.select(_localizedDB.greekDescs).get();
-    _topicTexts = await _localizedDB.select(_localizedDB.topicTexts).get();
-    _topics = await getTopics();
+    _articles = await getArticles();
     _isInitialized = true;
     log.info("DB is initialized (${language})");
   }
@@ -52,17 +49,16 @@ class DBManager {
       _localizedDB = getLocalizedDB(_dbLanguage);
       _hasLocalizedDb = true;
       _greekDescs = await _localizedDB.select(_localizedDB.greekDescs).get();
-      _topicTexts = await _localizedDB.select(_localizedDB.topicTexts).get();
-      _topics = await getTopics();
+      _articles = await getArticles();
       log.info("The DB is reinitialized for the new language: ${newLanguage}");
     }
   }
 
-  Future<List<Topic>> getTopics({bool onlyVisible = true}) async {
+  Future<List<Article>> getArticles({bool onlyVisible = true}) async {
     if (!_hasLocalizedDb) {
       return [];
     }
-    final query = _localizedDB.select(_localizedDB.topics)
+    final query = _localizedDB.select(_localizedDB.articles)
       ..orderBy([
         (t) => OrderingTerm(expression: t.sortOrder, mode: OrderingMode.asc),
         (t) => OrderingTerm(expression: t.route, mode: OrderingMode.asc),
@@ -73,14 +69,23 @@ class DBManager {
     return query.get();
   }
 
-  Future<String> getTopicMarkdown(String route) async {
+  Future<String> getArticleMarkdown(String route) async {
     if (!_isInitialized || route.isEmpty) {
       return "";
     }
-    final query = _localizedDB.select(_localizedDB.topicTexts)
+    final query = _localizedDB.select(_localizedDB.articles)
+      ..where((a) => a.route.equals(route));
+    final article = await query.getSingleOrNull();
+    return article?.markdown ?? "";
+  }
+
+  Future<Article?> getArticleByRoute(String route) async {
+    if (!_isInitialized || route.isEmpty) {
+      return null;
+    }
+    final query = _localizedDB.select(_localizedDB.articles)
       ..where((t) => t.route.equals(route));
-    final topic = await query.getSingleOrNull();
-    return topic?.markdown ?? "";
+    return query.getSingleOrNull();
   }
 
   Future<CommonResource?> getCommonResource(String key) async {
