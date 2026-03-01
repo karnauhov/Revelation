@@ -528,16 +528,16 @@ class TopicContentTool(tk.Tk):
         top.columnconfigure(1, weight=1)
         top.columnconfigure(3, weight=1)
 
-        ttk.Label(top, text="Локализованные БД:").grid(
+        ttk.Label(top, text="Общая БД:").grid(
             row=0,
             column=0,
             sticky="w",
             padx=(0, 8),
         )
+        ttk.Label(top, textvariable=self.strong_common_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
+        ttk.Label(top, text="Локализованные БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
         self.entry_strong_langs = ttk.Entry(top, textvariable=self.strong_languages_var, state="readonly")
-        self.entry_strong_langs.grid(row=0, column=1, sticky="ew")
-        ttk.Label(top, text="Общая БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
-        ttk.Label(top, textvariable=self.strong_common_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
+        self.entry_strong_langs.grid(row=0, column=3, sticky="ew")
 
         filter_row = ttk.Frame(parent, padding=(8, 8, 8, 0))
         filter_row.grid(row=1, column=0, sticky="ew")
