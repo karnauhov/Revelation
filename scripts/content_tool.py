@@ -776,6 +776,7 @@ class TopicContentTool(tk.Tk):
         self.message_log: list[tuple[str, str]] = []
         self.preview_after_id: str | None = None
         self.markdown_change_internal = False
+        self.supabase_storage_config_cache: tuple[str, str] | None = None
 
         self.articles: list[ArticleRow] = []
         self.common_resources: list[ResourceRow] = []
@@ -5845,6 +5846,139 @@ class TopicContentTool(tk.Tk):
         except OSError:
             return False
 
+    def _load_supabase_storage_config(self) -> tuple[str, str] | None:
+        if self.supabase_storage_config_cache is not None:
+            return self.supabase_storage_config_cache
+
+        base_url = os.environ.get("SUPABASE_URL", "").strip()
+        api_key = os.environ.get("SUPABASE_KEY", "").strip()
+        config_path = self.project_root / "api-keys.json"
+        if config_path.exists():
+            try:
+                payload = json.loads(config_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                payload = {}
+            if isinstance(payload, dict):
+                base_url = str(payload.get("SUPABASE_URL", base_url)).strip()
+                api_key = str(payload.get("SUPABASE_KEY", api_key)).strip()
+
+        if not base_url:
+            return None
+        self.supabase_storage_config_cache = (base_url.rstrip("/"), api_key)
+        return self.supabase_storage_config_cache
+
+    def _primary_source_download_request(self, image_path: str) -> tuple[str, dict[str, str]] | None:
+        normalized = image_path.replace("\\", "/").strip().lstrip("/")
+        if not normalized or "/" not in normalized:
+            return None
+        bucket, object_path = normalized.split("/", maxsplit=1)
+        config = self._load_supabase_storage_config()
+        if config is None:
+            return None
+        base_url, api_key = config
+        url = f"{base_url}/storage/v1/object/public/{bucket}/{urllib.parse.quote(object_path, safe='/')}"
+        headers: dict[str, str] = {}
+        if api_key:
+            headers["apikey"] = api_key
+            headers["Authorization"] = f"Bearer {api_key}"
+        return url, headers
+
+    def _download_primary_source_image(
+        self,
+        image_path: str,
+        *,
+        force: bool,
+    ) -> tuple[str, Path, str]:
+        local_path = self._primary_source_local_path(image_path)
+        try:
+            local_path.parent.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            return "failed", local_path, f"Не удалось создать папку: {exc}"
+
+        if local_path.exists() and not force:
+            return "skipped", local_path, "Файл уже существует локально."
+
+        request_info = self._primary_source_download_request(image_path)
+        if request_info is None:
+            return "failed", local_path, "Не удалось собрать URL для скачивания из storage."
+        url, headers = request_info
+
+        try:
+            request = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(request, timeout=120) as response:
+                data = response.read()
+        except Exception as exc:
+            return "failed", local_path, f"Ошибка сети: {exc}"
+
+        if not data:
+            return "failed", local_path, "Storage вернул пустой ответ."
+
+        try:
+            local_path.write_bytes(data)
+        except OSError as exc:
+            return "failed", local_path, f"Не удалось записать файл: {exc}"
+        return "downloaded", local_path, f"Скачано {len(data)} байт."
+
+    def _download_primary_source_page_rows(
+        self,
+        page_rows: list[PrimarySourcePageSummary],
+        *,
+        force: bool,
+        summary_title: str,
+    ) -> None:
+        if not page_rows:
+            messagebox.showinfo("Нет страниц", "У выбранного первоисточника нет страниц.", parent=self)
+            return
+
+        downloaded: list[str] = []
+        skipped: list[str] = []
+        failed: list[str] = []
+
+        for page_row in page_rows:
+            status, local_path, details = self._download_primary_source_image(page_row.image_path, force=force)
+            if status == "downloaded":
+                downloaded.append(f"{page_row.page_name} -> {local_path}")
+            elif status == "skipped":
+                skipped.append(f"{page_row.page_name} -> {local_path}")
+            else:
+                failed.append(f"{page_row.page_name}: {details}")
+
+        selected_page_name = self.selected_primary_source_page_name
+        self._load_primary_source_pages()
+        if selected_page_name:
+            self._select_primary_source_page(selected_page_name)
+        self._refresh_primary_source_validation()
+
+        summary_lines = [
+            f"Downloaded: {len(downloaded)}",
+            f"Skipped: {len(skipped)}",
+            f"Failed: {len(failed)}",
+            f"Root: {self._primary_sources_root_dir()}",
+        ]
+        if downloaded:
+            summary_lines.append("")
+            summary_lines.append("Downloaded files:")
+            summary_lines.extend(downloaded[:12])
+            if len(downloaded) > 12:
+                summary_lines.append(f"... и еще {len(downloaded) - 12}")
+        if skipped:
+            summary_lines.append("")
+            summary_lines.append("Skipped files:")
+            summary_lines.extend(skipped[:12])
+            if len(skipped) > 12:
+                summary_lines.append(f"... и еще {len(skipped) - 12}")
+        if failed:
+            summary_lines.append("")
+            summary_lines.append("Failed files:")
+            summary_lines.extend(failed[:12])
+            if len(failed) > 12:
+                summary_lines.append(f"... и еще {len(failed) - 12}")
+
+        self._set_status(
+            f"{summary_title}: downloaded={len(downloaded)}, skipped={len(skipped)}, failed={len(failed)}"
+        )
+        messagebox.showinfo(summary_title, "\n".join(summary_lines), parent=self)
+
     def _source_text_row_has_content(self, row: sqlite3.Row) -> bool:
         for key in (
             "title_markup",
@@ -7505,17 +7639,25 @@ class TopicContentTool(tk.Tk):
         webbrowser.open(path.resolve().as_uri())
 
     def _download_selected_primary_source_page(self) -> None:
-        messagebox.showinfo(
-            "Следующий этап",
-            "Кнопка скачивания страниц будет реализована в следующей фазе миграции.",
-            parent=self,
+        page_row = self._selected_primary_source_page_row()
+        if page_row is None:
+            messagebox.showinfo("Нет страницы", "Сначала выберите страницу.", parent=self)
+            return
+        self._download_primary_source_page_rows(
+            [page_row],
+            force=self.primary_source_force_download_var.get(),
+            summary_title=f"Скачивание страницы {page_row.page_name}",
         )
 
     def _download_selected_primary_source_pages(self) -> None:
-        messagebox.showinfo(
-            "Следующий этап",
-            "Массовое скачивание страниц будет реализовано в следующей фазе миграции.",
-            parent=self,
+        source_id = self.selected_primary_source_id
+        if not source_id:
+            messagebox.showinfo("Нет источника", "Сначала выберите первоисточник.", parent=self)
+            return
+        self._download_primary_source_page_rows(
+            list(self.primary_source_pages),
+            force=self.primary_source_force_download_var.get(),
+            summary_title=f"Скачивание страниц {source_id}",
         )
 
     def _open_selected_primary_source_contour_editor(self) -> None:
@@ -7546,7 +7688,7 @@ class TopicContentTool(tk.Tk):
                     "Нет изображения",
                     (
                         "Локальный image_path страницы не найден.\n"
-                        "Откройте файл вручную или скачайте страницу на следующей фазе."
+                        "Откройте файл вручную или скачайте страницу кнопкой из раздела первоисточников."
                     ),
                     parent=self,
                 )
