@@ -823,6 +823,37 @@ class PrimarySourcesMixin:
                 return {}
             return {row["link_id"]: row["title"] or "" for row in rows}
 
+        def _link_localized_titles_by_lang(self, link_id: str) -> dict[str, str]:
+            source_id = self.selected_primary_source_id
+            if not source_id or not link_id:
+                return {}
+            titles: dict[str, str] = {}
+            for lang, db_path in self._localized_db_entries():
+                if not db_path.exists():
+                    continue
+                con: sqlite3.Connection | None = None
+                try:
+                    con = sqlite3.connect(str(db_path))
+                    con.row_factory = sqlite3.Row
+                    row = con.execute(
+                        """
+                        SELECT title
+                        FROM primary_source_link_texts
+                        WHERE source_id = ?
+                          AND link_id = ?
+                        LIMIT 1
+                        """,
+                        (source_id, link_id),
+                    ).fetchone()
+                except sqlite3.DatabaseError:
+                    row = None
+                finally:
+                    if con is not None:
+                        con.close()
+                if row is not None:
+                    titles[lang] = str(row["title"] or "")
+            return titles
+
         def _refresh_primary_source_links_tree(self) -> None:
             if not hasattr(self, "primary_source_links_tree"):
                 return
@@ -1638,25 +1669,89 @@ class PrimarySourcesMixin:
             webbrowser.open(root.resolve().as_uri())
 
         def _link_dialog_payload(self, initial: dict[str, object] | None = None) -> dict[str, object] | None:
-            return self._show_form_dialog(
-                "Ссылка первоисточника",
-                [
-                    FormFieldSpec("link_id", "Link ID"),
-                    FormFieldSpec("sort_order", "Sort order"),
-                    FormFieldSpec(
-                        "link_role",
-                        "Role",
-                        kind="combo",
-                        options=("wikipedia", "intf", "image_source", "external"),
-                    ),
-                    FormFieldSpec("url", "URL", width=70),
-                    FormFieldSpec(
-                        "localized_title",
-                        f"Локализованный title ({self._current_primary_source_lang() or '-'})",
-                    ),
-                ],
-                initial=initial,
+            initial = initial or {}
+
+            dialog = tk.Toplevel(self)
+            dialog.title("Ссылка первоисточника")
+            dialog.transient(self)
+            dialog.grab_set()
+            dialog.resizable(True, True)
+            dialog.minsize(620, 420)
+
+            root = ttk.Frame(dialog, padding=12)
+            root.grid(row=0, column=0, sticky="nsew")
+            dialog.columnconfigure(0, weight=1)
+            dialog.rowconfigure(0, weight=1)
+            root.columnconfigure(1, weight=1)
+
+            link_id_var = tk.StringVar(value=str(initial.get("link_id", "")))
+            sort_order_var = tk.StringVar(value=str(initial.get("sort_order", "")))
+            link_role_var = tk.StringVar(value=str(initial.get("link_role", "external")))
+            url_var = tk.StringVar(value=str(initial.get("url", "")))
+
+            ttk.Label(root, text="ID ссылки:").grid(row=0, column=0, sticky="w", padx=(0, 10), pady=4)
+            ttk.Entry(root, textvariable=link_id_var).grid(row=0, column=1, sticky="ew", pady=4)
+
+            ttk.Label(root, text="Порядок:").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=4)
+            ttk.Entry(root, textvariable=sort_order_var).grid(row=1, column=1, sticky="ew", pady=4)
+
+            ttk.Label(root, text="Роль:").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=4)
+            role_combo = ttk.Combobox(
+                root,
+                textvariable=link_role_var,
+                values=("wikipedia", "intf", "image_source", "external"),
+                state="readonly",
             )
+            role_combo.grid(row=2, column=1, sticky="ew", pady=4)
+
+            ttk.Label(root, text="URL:").grid(row=3, column=0, sticky="w", padx=(0, 10), pady=4)
+            ttk.Entry(root, textvariable=url_var).grid(row=3, column=1, sticky="ew", pady=4)
+
+            localized_titles_initial = initial.get("localized_titles")
+            localized_titles = localized_titles_initial if isinstance(localized_titles_initial, dict) else {}
+
+            titles_box = ttk.LabelFrame(root, text="Текст ссылки")
+            titles_box.grid(row=4, column=0, columnspan=2, sticky="nsew", pady=(10, 0))
+            titles_box.columnconfigure(1, weight=1)
+            root.rowconfigure(4, weight=1)
+
+            title_vars: dict[str, tk.StringVar] = {}
+            localized_entries = [(lang, db_path) for lang, db_path in self._localized_db_entries() if db_path.exists()]
+            if localized_entries:
+                for idx, (lang, _db_path) in enumerate(localized_entries):
+                    ttk.Label(titles_box, text=f"{lang}:").grid(row=idx, column=0, sticky="w", padx=(0, 8), pady=3)
+                    title_var = tk.StringVar(value=str(localized_titles.get(lang, "")))
+                    ttk.Entry(titles_box, textvariable=title_var).grid(row=idx, column=1, sticky="ew", pady=3)
+                    title_vars[lang] = title_var
+            else:
+                ttk.Label(
+                    titles_box,
+                    text="Локализованные БД не найдены.",
+                    foreground="#5f5f5f",
+                ).grid(row=0, column=0, columnspan=2, sticky="w", padx=4, pady=4)
+
+            result: dict[str, object] | None = None
+
+            def submit() -> None:
+                nonlocal result
+                result = {
+                    "link_id": link_id_var.get().strip(),
+                    "sort_order": sort_order_var.get().strip(),
+                    "link_role": link_role_var.get().strip(),
+                    "url": url_var.get().strip(),
+                    "localized_titles": {lang: var.get().strip() for lang, var in title_vars.items()},
+                }
+                dialog.destroy()
+
+            actions = ttk.Frame(root)
+            actions.grid(row=5, column=0, columnspan=2, sticky="e", pady=(12, 0))
+            ttk.Button(actions, text="Сохранить", command=submit).pack(side="left")
+            ttk.Button(actions, text="Отмена", command=dialog.destroy).pack(side="left", padx=(8, 0))
+
+            dialog.bind("<Escape>", lambda _event: dialog.destroy())
+            dialog.bind("<Control-Return>", lambda _event: submit())
+            self.wait_window(dialog)
+            return result
 
         def _add_primary_source_link(self) -> None:
             if not self._ensure_primary_source_section_ready():
@@ -1667,7 +1762,7 @@ class PrimarySourcesMixin:
                 return
             payload = self._link_dialog_payload(
                 {
-                    "sort_order": str((max((int(row["sort_order"] or 0) for row in self.primary_source_link_rows), default=-10) + 10)),
+                    "sort_order": str(len(self.primary_source_link_rows)),
                     "link_role": "external",
                 }
             )
@@ -1679,14 +1774,14 @@ class PrimarySourcesMixin:
             row = self._selected_primary_source_link_row()
             if row is None:
                 return
-            localized_titles = self._current_primary_source_link_titles()
+            localized_titles = self._link_localized_titles_by_lang(str(row["link_id"]))
             payload = self._link_dialog_payload(
                 {
                     "link_id": row["link_id"],
                     "sort_order": str(int(row["sort_order"] or 0)),
                     "link_role": row["link_role"],
                     "url": row["url"],
-                    "localized_title": localized_titles.get(row["link_id"], ""),
+                    "localized_titles": localized_titles,
                 }
             )
             if payload is None:
@@ -1705,11 +1800,19 @@ class PrimarySourcesMixin:
             link_id = str(payload["link_id"]).strip()
             url = str(payload["url"]).strip()
             link_role = str(payload["link_role"]).strip()
+            allowed_roles = ("wikipedia", "intf", "image_source", "external")
             if not link_id or not url:
                 messagebox.showwarning("Ошибка", "Link ID и URL обязательны.", parent=self)
                 return
+            if link_role not in allowed_roles:
+                messagebox.showwarning(
+                    "Ошибка данных",
+                    f"Недопустимая роль. Разрешено: {', '.join(allowed_roles)}.",
+                    parent=self,
+                )
+                return
             try:
-                sort_order = self._parse_required_int(payload["sort_order"], "Sort order")
+                sort_order = self._parse_required_int(payload["sort_order"], "Порядок")
             except ValueError as exc:
                 messagebox.showwarning("Ошибка данных", str(exc), parent=self)
                 return
@@ -1758,21 +1861,47 @@ class PrimarySourcesMixin:
                                 """,
                                 (link_id, source_id, previous_link_id),
                             )
-                localized_title = str(payload.get("localized_title", "")).strip()
-                with self.connection:
-                    if localized_title:
-                        self.connection.execute(
+                localized_titles_payload = payload.get("localized_titles")
+                localized_titles = localized_titles_payload if isinstance(localized_titles_payload, dict) else {}
+                for lang, db_path in self._localized_db_entries():
+                    if not db_path.exists():
+                        continue
+                    new_title = str(localized_titles.get(lang, "")).strip()
+                    localized_con: sqlite3.Connection | None = None
+                    try:
+                        localized_con = sqlite3.connect(str(db_path))
+                        localized_con.row_factory = sqlite3.Row
+                        self._ensure_primary_source_localized_schema_on_connection(localized_con)
+                        existing_row = localized_con.execute(
                             """
-                            INSERT OR REPLACE INTO primary_source_link_texts(source_id, link_id, title)
-                            VALUES(?, ?, ?)
+                            SELECT title
+                            FROM primary_source_link_texts
+                            WHERE source_id = ?
+                              AND link_id = ?
+                            LIMIT 1
                             """,
-                            (source_id, link_id, localized_title),
-                        )
-                    else:
-                        self.connection.execute(
-                            "DELETE FROM primary_source_link_texts WHERE source_id = ? AND link_id = ?",
                             (source_id, link_id),
-                        )
+                        ).fetchone()
+                        existing_title = str(existing_row["title"] or "").strip() if existing_row is not None else ""
+                        if not existing_title and not new_title:
+                            continue
+                        with localized_con:
+                            if new_title:
+                                localized_con.execute(
+                                    """
+                                    INSERT OR REPLACE INTO primary_source_link_texts(source_id, link_id, title)
+                                    VALUES(?, ?, ?)
+                                    """,
+                                    (source_id, link_id, new_title),
+                                )
+                            else:
+                                localized_con.execute(
+                                    "DELETE FROM primary_source_link_texts WHERE source_id = ? AND link_id = ?",
+                                    (source_id, link_id),
+                                )
+                    finally:
+                        if localized_con is not None:
+                            localized_con.close()
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить ссылку:\n{exc}", parent=self)
                 return
