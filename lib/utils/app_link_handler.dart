@@ -300,7 +300,7 @@ Future<bool> _openPrimarySourceFromWordLink(
   int? wordIndex,
   required bool popBeforeScreenPush,
 }) async {
-  final source = _referenceResolver.findSourceById(context, sourceId);
+  final source = _referenceResolver.findSourceById(sourceId);
   if (source == null) {
     log.warning("Primary source '$sourceId' was not found for word link.");
     return false;

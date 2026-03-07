@@ -9,6 +9,7 @@ import 'package:revelation/utils/common.dart';
 
 class SourceItemWidget extends StatefulWidget {
   final PrimarySource source;
+
   const SourceItemWidget({super.key, required this.source});
 
   @override
@@ -30,7 +31,6 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
-
     final bodyTextStyle = textTheme.bodyMedium;
 
     return Card(
@@ -44,21 +44,23 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
             children: [
               Text.rich(
                 textAlign: TextAlign.center,
-                TextSpan(children: [
-                  WidgetSpan(
-                    child: Floatable(
-                      float: FCFloat.none,
-                      padding: const EdgeInsets.only(right: 0),
-                      child: getStyledText(
-                        widget.source.title,
-                        textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.onSurface,
+                TextSpan(
+                  children: [
+                    WidgetSpan(
+                      child: Floatable(
+                        float: FCFloat.none,
+                        padding: const EdgeInsets.only(right: 0),
+                        child: getStyledText(
+                          widget.source.title,
+                          textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSurface,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ]),
+                  ],
+                ),
               ),
               Floatable(
                 float: FCFloat.start,
@@ -82,10 +84,7 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        widget.source.preview,
-                        fit: BoxFit.cover,
-                      ),
+                      child: _buildPreviewImage(context),
                     ),
                   ),
                 ),
@@ -108,8 +107,9 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                   text: !_showMore
                       ? "(${AppLocalizations.of(context)!.show_more})"
                       : "(${AppLocalizations.of(context)!.hide})",
-                  style: textTheme.bodyMedium
-                      ?.copyWith(color: colorScheme.primary),
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.primary,
+                  ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       aud.playSound("click");
@@ -160,44 +160,7 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                   TextSpan(
                     text: "🌐 ",
                     style: bodyTextStyle,
-                    children: [
-                      if (widget.source.link1Title.isNotEmpty)
-                        TextSpan(
-                          text: "[${widget.source.link1Title}]",
-                          style: textTheme.bodyMedium
-                              ?.copyWith(color: colorScheme.primary),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              if (widget.source.link1Url.isNotEmpty) {
-                                launchLink(widget.source.link1Url);
-                              }
-                            },
-                        ),
-                      if (widget.source.link2Title.isNotEmpty)
-                        TextSpan(
-                          text: ", [${widget.source.link2Title}]",
-                          style: textTheme.bodyMedium
-                              ?.copyWith(color: colorScheme.primary),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              if (widget.source.link2Url.isNotEmpty) {
-                                launchLink(widget.source.link2Url);
-                              }
-                            },
-                        ),
-                      if (widget.source.link3Title.isNotEmpty)
-                        TextSpan(
-                          text: ", [${widget.source.link3Title}]",
-                          style: textTheme.bodyMedium
-                              ?.copyWith(color: colorScheme.primary),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              if (widget.source.link3Url.isNotEmpty) {
-                                launchLink(widget.source.link3Url);
-                              }
-                            },
-                        ),
-                    ],
+                    children: _buildSourceLinkSpans(context),
                   ),
                 ),
             ],
@@ -205,5 +168,105 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
         ),
       ),
     );
+  }
+
+  Widget _buildPreviewImage(BuildContext context) {
+    if (widget.source.previewBytes != null) {
+      return Image.memory(widget.source.previewBytes!, fit: BoxFit.cover);
+    }
+
+    if (widget.source.preview.startsWith('assets/')) {
+      return Image.asset(widget.source.preview, fit: BoxFit.cover);
+    }
+
+    return Container(
+      width: 168,
+      height: 230,
+      color: Theme.of(context).colorScheme.surfaceContainer,
+      alignment: Alignment.center,
+      child: Icon(
+        Icons.image_not_supported_outlined,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+    );
+  }
+
+  List<InlineSpan> _buildSourceLinkSpans(BuildContext context) {
+    final linkStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color: Theme.of(context).colorScheme.primary,
+    );
+
+    if (widget.source.links.isNotEmpty) {
+      final spans = <InlineSpan>[];
+      for (final link in widget.source.links) {
+        final title = _resolveLinkTitle(context, link.role, link.titleOverride);
+        if (title.isEmpty || link.url.isEmpty) {
+          continue;
+        }
+        spans.add(
+          TextSpan(
+            text: '${spans.isEmpty ? '' : ', '}[$title]',
+            style: linkStyle,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => launchLink(link.url),
+          ),
+        );
+      }
+      return spans;
+    }
+
+    return [
+      if (widget.source.link1Title.isNotEmpty)
+        TextSpan(
+          text: "[${widget.source.link1Title}]",
+          style: linkStyle,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              if (widget.source.link1Url.isNotEmpty) {
+                launchLink(widget.source.link1Url);
+              }
+            },
+        ),
+      if (widget.source.link2Title.isNotEmpty)
+        TextSpan(
+          text: ", [${widget.source.link2Title}]",
+          style: linkStyle,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              if (widget.source.link2Url.isNotEmpty) {
+                launchLink(widget.source.link2Url);
+              }
+            },
+        ),
+      if (widget.source.link3Title.isNotEmpty)
+        TextSpan(
+          text: ", [${widget.source.link3Title}]",
+          style: linkStyle,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              if (widget.source.link3Url.isNotEmpty) {
+                launchLink(widget.source.link3Url);
+              }
+            },
+        ),
+    ];
+  }
+
+  String _resolveLinkTitle(
+    BuildContext context,
+    String role,
+    String titleOverride,
+  ) {
+    if (titleOverride.trim().isNotEmpty) {
+      return titleOverride;
+    }
+
+    final localizations = AppLocalizations.of(context)!;
+    return switch (role) {
+      'wikipedia' => localizations.wikipedia,
+      'intf' => localizations.intf,
+      'image_source' => localizations.image_source,
+      _ => role,
+    };
   }
 }

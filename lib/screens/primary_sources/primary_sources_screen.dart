@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
@@ -23,9 +25,11 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel =
-          Provider.of<PrimarySourcesViewModel>(context, listen: false);
-      viewModel.loadPrimarySources(context);
+      final viewModel = Provider.of<PrimarySourcesViewModel>(
+        context,
+        listen: false,
+      );
+      unawaited(viewModel.loadPrimarySources());
     });
   }
 
@@ -40,14 +44,31 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-    final primarySourcesViewModel =
-        Provider.of<PrimarySourcesViewModel>(context);
+    final primarySourcesViewModel = Provider.of<PrimarySourcesViewModel>(
+      context,
+    );
     List<PrimarySource> fullSources =
         primarySourcesViewModel.fullPrimarySources;
     List<PrimarySource> significantSources =
         primarySourcesViewModel.significantPrimarySources;
     List<PrimarySource> fragmentsSources =
         primarySourcesViewModel.fragmentsPrimarySources;
+    final isLoading = primarySourcesViewModel.isLoading;
+
+    if (isLoading &&
+        fullSources.isEmpty &&
+        significantSources.isEmpty &&
+        fragmentsSources.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.primary_sources_screen),
+          foregroundColor: colorScheme.primary,
+        ),
+        body: Center(
+          child: CircularProgressIndicator(color: colorScheme.primary),
+        ),
+      );
+    }
 
     Widget content = CustomScrollView(
       controller: _scrollController,
@@ -67,8 +88,9 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
               ),
               Text(
                 AppLocalizations.of(context)!.primary_sources_header,
-                style: textTheme.labelSmall
-                    ?.copyWith(fontWeight: FontWeight.normal),
+                style: textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ],
           ),
@@ -99,12 +121,16 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
                     "${AppLocalizations.of(context)!.fragments_primary_sources} (${fragmentsSources.length})";
                 return _buildSourceHeader(context, fragmentsHeader);
               } else {
-                final fragmentsSource = fragmentsSources[
-                    index - 3 - fullSources.length - significantSources.length];
+                final fragmentsSource =
+                    fragmentsSources[index -
+                        3 -
+                        fullSources.length -
+                        significantSources.length];
                 return _buildSourceItem(context, fragmentsSource);
               }
             },
-            childCount: 3 +
+            childCount:
+                3 +
                 fullSources.length +
                 significantSources.length +
                 fragmentsSources.length,
@@ -130,10 +156,7 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
             final newOffset = oldOffset - dy;
 
             _scrollController.jumpTo(
-              newOffset.clamp(
-                0.0,
-                _scrollController.position.maxScrollExtent,
-              ),
+              newOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
             );
             setState(() {
               _lastOffset = event.position;
@@ -151,11 +174,7 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
       );
     }
 
-    return Scaffold(
-      body: SizedBox.expand(
-        child: content,
-      ),
-    );
+    return Scaffold(body: SizedBox.expand(child: content));
   }
 
   Widget _buildSourceHeader(BuildContext context, String header) {

@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:revelation/models/page.dart';
+import 'package:revelation/models/primary_source_link_info.dart';
 
 class PrimarySource {
   final String id;
@@ -18,34 +21,39 @@ class PrimarySource {
   final String link3Title;
   final String link3Url;
   final String preview;
+  final Uint8List? previewBytes;
   final double maxScale;
   final bool isMonochrome;
   final List<Page> pages;
+  final List<PrimarySourceLinkInfo> links;
   final List<Map<String, String>>? attributes;
   final bool permissionsReceived;
   bool showMore = false;
 
-  PrimarySource(
-      {required this.id,
-      required this.title,
-      required this.date,
-      required this.content,
-      required this.quantity,
-      required this.material,
-      required this.textStyle,
-      required this.found,
-      required this.classification,
-      required this.currentLocation,
-      required this.link1Title,
-      required this.link1Url,
-      required this.link2Title,
-      required this.link2Url,
-      required this.link3Title,
-      required this.link3Url,
-      required this.preview,
-      required this.maxScale,
-      required this.isMonochrome,
-      required this.pages,
-      required this.attributes,
-      required this.permissionsReceived});
+  PrimarySource({
+    required this.id,
+    required this.title,
+    required this.date,
+    required this.content,
+    required this.quantity,
+    required this.material,
+    required this.textStyle,
+    required this.found,
+    required this.classification,
+    required this.currentLocation,
+    required this.link1Title,
+    required this.link1Url,
+    required this.link2Title,
+    required this.link2Url,
+    required this.link3Title,
+    required this.link3Url,
+    required this.preview,
+    this.previewBytes,
+    required this.maxScale,
+    required this.isMonochrome,
+    required this.pages,
+    this.links = const [],
+    required this.attributes,
+    required this.permissionsReceived,
+  });
 }

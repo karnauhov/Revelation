@@ -634,10 +634,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       return;
     }
 
-    final targetSource = _findPrimarySourceById(
-      linkContext,
-      normalizedSourceId,
-    );
+    final targetSource = _findPrimarySourceById(normalizedSourceId);
     if (targetSource == null) {
       log.warning("Primary source '$normalizedSourceId' was not found.");
       return;
@@ -704,8 +701,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     viewModel.showInfoForWord(wordIndex, linkContext);
   }
 
-  PrimarySource? _findPrimarySourceById(BuildContext context, String sourceId) {
-    return _referenceResolver.findSourceById(context, sourceId);
+  PrimarySource? _findPrimarySourceById(String sourceId) {
+    return _referenceResolver.findSourceById(sourceId);
   }
 
   Widget _buildSplitView(

@@ -1,7 +1,7 @@
 # Миграция Primary Sources в БД
 
 Последнее обновление: 2026-03-07
-Статус: Фаза 2 завершена
+Статус: Фаза 3 завершена
 
 ## Цель
 
@@ -373,17 +373,17 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
 
 ### Фаза 3. Переключение приложения на БД
 
-- [ ] Ввести DB-backed репозиторий первоисточников
-- [ ] Убрать зависимость загрузки данных от `BuildContext`
-- [ ] Переделать `PrimarySourceReferenceResolver`, чтобы он резолвил данные из БД
-- [ ] Сделать `PrimarySourcesViewModel.loadPrimarySources()` асинхронным
-- [ ] Оставить старый репозиторий только как временный fallback до завершения
+- [x] Ввести DB-backed репозиторий первоисточников
+- [x] Убрать зависимость загрузки данных от `BuildContext`
+- [x] Переделать `PrimarySourceReferenceResolver`, чтобы он резолвил данные из БД
+- [x] Сделать `PrimarySourcesViewModel.loadPrimarySources()` асинхронным
+- [x] Оставить старый репозиторий только как временный fallback до завершения
       валидации
 - [ ] Удалить старые hardcoded данные после финальной проверки
 
 ### Фаза 4. Раздел первоисточников в `content_tool.py`
 
-- [ ] Добавить новый верхнеуровневый раздел/вкладку `Первоисточники`
+- [ ] Добавить новый верхнеуровневый раздел/вкладку `Первоисточники` (проверить если она уже есть)
 - [ ] Добавить список источников с поиском и фильтрами по `group_kind`
 - [ ] Добавить индикаторы полноты локализаций для `en`, `es`, `uk`, `ru`
 - [ ] Добавить редактор common metadata источника
@@ -499,3 +499,19 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
     - overlay sources: `U001`, `U002`, `U004`
   - `PRAGMA user_version` обновлен до `3` для `revelation.sqlite` и до `5`
     для всех `revelation_<lang>.sqlite`
+- Выполнена Фаза 3:
+  - добавлен DB-backed runtime-репозиторий
+    `lib/repositories/primary_sources_db_repository.dart`
+  - `DBManager` теперь кэширует `primary_source_*` таблицы из common и localized БД
+  - `PrimarySourcesViewModel` переведен на асинхронную загрузку без
+    `BuildContext`
+  - `PrimarySourceReferenceResolver` больше не зависит от `BuildContext` и
+    резолвит данные через БД
+  - `main.dart` переключен на новый DB-backed репозиторий
+  - список первоисточников теперь использует preview bytes из DB resources
+    вместо `Image.asset(...)` для migrated sources
+  - роли ссылок (`wikipedia`, `intf`, `image_source`) локализуются в UI, а не в
+    data-layer
+  - старый `lib/repositories/primary_sources_repository.dart` оставлен в проекте
+    как временный fallback-артефакт до финальной cleanup-фазы
+  - `flutter analyze` и `flutter test` прошли успешно после переключения

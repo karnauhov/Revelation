@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:revelation/common_widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/managers/db_manager.dart';
-import 'package:revelation/repositories/primary_sources_repository.dart';
+import 'package:revelation/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/theme.dart';
 import 'package:revelation/managers/server_manager.dart';
 import 'package:revelation/utils/app_logger_formatter.dart';
@@ -105,7 +105,7 @@ void main() async {
             ),
             ChangeNotifierProvider<PrimarySourcesViewModel>(
               create: (_) =>
-                  PrimarySourcesViewModel(PrimarySourcesRepository()),
+                  PrimarySourcesViewModel(PrimarySourcesDbRepository()),
             ),
           ],
           child: const RevelationApp(),

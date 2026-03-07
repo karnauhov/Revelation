@@ -224,7 +224,6 @@ class DescriptionContentService {
     model.Page? fallbackPage,
   }) {
     final resolved = _referenceResolver.resolveWord(
-      context,
       sourceId: request.sourceId,
       pageName: request.pageName,
       wordIndex: request.wordIndex,
@@ -300,7 +299,6 @@ class DescriptionContentService {
     model.Page? fallbackPage,
   }) {
     final resolvedVerses = _referenceResolver.resolveVerse(
-      context,
       sourceId: request.sourceId,
       pageName: request.pageName,
       chapterNumber: request.chapterNumber,

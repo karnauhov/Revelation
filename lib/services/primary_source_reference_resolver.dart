@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/page_word.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/models/verse.dart';
-import 'package:revelation/repositories/primary_sources_repository.dart';
+import 'package:revelation/repositories/primary_sources_db_repository.dart';
 
 class ResolvedWordReference {
   final PrimarySource source;
@@ -34,18 +33,18 @@ class ResolvedVerseReference {
 }
 
 class PrimarySourceReferenceResolver {
-  final PrimarySourcesRepository _repository;
+  final PrimarySourcesDbRepository _repository;
 
-  PrimarySourceReferenceResolver({PrimarySourcesRepository? repository})
-    : _repository = repository ?? PrimarySourcesRepository();
+  PrimarySourceReferenceResolver({PrimarySourcesDbRepository? repository})
+    : _repository = repository ?? PrimarySourcesDbRepository();
 
-  PrimarySource? findSourceById(BuildContext context, String sourceId) {
+  PrimarySource? findSourceById(String sourceId) {
     final normalizedId = sourceId.trim();
     if (normalizedId.isEmpty) {
       return null;
     }
 
-    for (final source in _getAllSources(context)) {
+    for (final source in _getAllSources()) {
       if (source.id == normalizedId) {
         return source;
       }
@@ -67,8 +66,7 @@ class PrimarySourceReferenceResolver {
     return null;
   }
 
-  ResolvedWordReference? resolveWord(
-    BuildContext context, {
+  ResolvedWordReference? resolveWord({
     required int wordIndex,
     String? sourceId,
     String? pageName,
@@ -80,7 +78,6 @@ class PrimarySourceReferenceResolver {
     }
 
     final source = _resolveSource(
-      context,
       sourceId: sourceId,
       fallbackSource: fallbackSource,
     );
@@ -107,8 +104,7 @@ class PrimarySourceReferenceResolver {
     );
   }
 
-  List<ResolvedVerseReference> resolveVerse(
-    BuildContext context, {
+  List<ResolvedVerseReference> resolveVerse({
     required int chapterNumber,
     required int verseNumber,
     String? sourceId,
@@ -122,7 +118,6 @@ class PrimarySourceReferenceResolver {
     }
 
     final source = _resolveSource(
-      context,
       sourceId: sourceId,
       fallbackSource: fallbackSource,
     );
@@ -165,8 +160,7 @@ class PrimarySourceReferenceResolver {
     return result;
   }
 
-  PrimarySource? _resolveSource(
-    BuildContext context, {
+  PrimarySource? _resolveSource({
     String? sourceId,
     PrimarySource? fallbackSource,
   }) {
@@ -180,7 +174,7 @@ class PrimarySourceReferenceResolver {
       return fallbackSource;
     }
 
-    return findSourceById(context, normalizedSourceId);
+    return findSourceById(normalizedSourceId);
   }
 
   model.Page? _resolvePageForWord(
@@ -275,11 +269,7 @@ class PrimarySourceReferenceResolver {
     return false;
   }
 
-  List<PrimarySource> _getAllSources(BuildContext context) {
-    return <PrimarySource>[
-      ..._repository.getFullPrimarySources(context),
-      ..._repository.getSignificantPrimarySources(context),
-      ..._repository.getFragmentsPrimarySources(context),
-    ];
+  List<PrimarySource> _getAllSources() {
+    return _repository.getAllSourcesSync();
   }
 }
