@@ -76,6 +76,261 @@ class StrongRow:
     localized_search: str
 
 
+@dataclass(frozen=True)
+class MarkdownTemplateSpec:
+    key: str
+    label: str
+    icon_name: str
+    template: str
+    title: str
+    example: str
+    note: str = ""
+
+
+def revelation_markdown_template_sections() -> list[tuple[str, tuple[MarkdownTemplateSpec, ...]]]:
+    return [
+        (
+            "Ссылки",
+            (
+                MarkdownTemplateSpec(
+                    key="external_link",
+                    label="URL",
+                    icon_name="open_in_new",
+                    template="[Текст ссылки](https://example.com)",
+                    title="Внешняя markdown-ссылка",
+                    example="[Apache Licenses](https://www.apache.org/licenses/)",
+                    note=(
+                        "Подходит для обычных http/https ссылок и прямых ссылок на "
+                        "скачиваемые файлы из интернета."
+                    ),
+                ),
+                MarkdownTemplateSpec(
+                    key="db_file_link",
+                    label="DB файл",
+                    icon_name="download",
+                    template="[Файл из БД](dbfile:topic-media/sample.pdf)",
+                    title="Скачивание файла из общей БД ресурсов",
+                    example="[From our DB](dbfile:topic-media/sample.pdf)",
+                    note="Формат: dbfile:<resource_key>.",
+                ),
+                MarkdownTemplateSpec(
+                    key="asset_file_link",
+                    label="Asset файл",
+                    icon_name="file_download",
+                    template="[Файл из assets](resource:assets/images/UI/app_icon.png)",
+                    title="Скачивание файла из assets проекта",
+                    example="[Иконка приложения](resource:assets/images/UI/app_icon.png)",
+                    note="Формат: resource:assets/<path/to/file>.",
+                ),
+                MarkdownTemplateSpec(
+                    key="screen_link",
+                    label="Экран",
+                    icon_name="open_in_app",
+                    template='[Экран "О программе"](screen:about)',
+                    title="Переход на экран приложения",
+                    example='["About" screen](screen:about)',
+                    note="Формат: screen:<route_without_leading_slash>.",
+                ),
+                MarkdownTemplateSpec(
+                    key="topic_link",
+                    label="Статья",
+                    icon_name="article",
+                    template='[Статья "Лицензия"](topic:license)',
+                    title="Переход на markdown-статью приложения",
+                    example='[Page "License"](topic:license)',
+                    note="Формат: topic:<article_route>.",
+                ),
+                MarkdownTemplateSpec(
+                    key="bible_link",
+                    label="Библия",
+                    icon_name="menu_book",
+                    template="[Откр. 9:11](bible:Rev9:11)",
+                    title="Ссылка на стих в онлайн-Библии",
+                    example="[Rev 9:11](bible:Rev9:11)",
+                    note="Формат: bible:<BookCode><Chapter>[:Verse].",
+                ),
+                MarkdownTemplateSpec(
+                    key="word_link",
+                    label="Word",
+                    icon_name="auto_stories",
+                    template="[Первоисточник](word:U001:325v:2)",
+                    title="Переход к слову/странице первоисточника",
+                    example="[Codex Sinaiticus](word:U001:325v:2)",
+                    note="Формат: word:<sourceId>[:pageName[:wordIndex]].",
+                ),
+                MarkdownTemplateSpec(
+                    key="strong_link",
+                    label="Strong",
+                    icon_name="tag",
+                    template="[Словарь G602](strong:G602)",
+                    title="Ссылка на номер Стронга",
+                    example="[Dictionary entry H87](strong:H87)",
+                    note="Поддерживаются Greek G### и Hebrew H###.",
+                ),
+                MarkdownTemplateSpec(
+                    key="strong_picker_link",
+                    label="Пикер Strong",
+                    icon_name="numbers",
+                    template="[Пикер G333](strong_picker:G333)",
+                    title="Открытие пикера по номеру Стронга",
+                    example="[Strong’s number picker dialog G333](strong_picker:G333)",
+                    note="Формат: strong_picker:G###.",
+                ),
+            ),
+        ),
+        (
+            "Изображения",
+            (
+                MarkdownTemplateSpec(
+                    key="external_image",
+                    label="URL img",
+                    icon_name="image",
+                    template="![alt](https://images.unsplash.com/2/03.jpg)",
+                    title="Изображение по внешнему URL",
+                    example="![road](https://images.unsplash.com/2/03.jpg)",
+                    note="Рендерится как обычная markdown-картинка из сети.",
+                ),
+                MarkdownTemplateSpec(
+                    key="asset_image",
+                    label="Asset img",
+                    icon_name="photo",
+                    template="![icon](resource:assets/images/UI/app_icon.png)",
+                    title="Изображение из assets проекта",
+                    example="![icon](resource:assets/images/UI/app_icon.png)",
+                    note="Формат: resource:assets/<path/to/image>.",
+                ),
+                MarkdownTemplateSpec(
+                    key="db_image",
+                    label="DB img",
+                    icon_name="collections",
+                    template="![codex](dbres:topic-media/preface01.png)",
+                    title="Изображение из общей БД ресурсов",
+                    example="![codex](dbres:topic-media/preface01.png)",
+                    note="Формат: dbres:<resource_key>.",
+                ),
+            ),
+        ),
+    ]
+
+
+class _ToolTip:
+    def __init__(self, widget: tk.Widget, text: str) -> None:
+        self._widget = widget
+        self._text = text
+        self._after_id: str | None = None
+        self._window: tk.Toplevel | None = None
+        widget.bind("<Enter>", self._on_enter, add="+")
+        widget.bind("<Leave>", self._on_leave, add="+")
+        widget.bind("<ButtonPress>", self._on_leave, add="+")
+        widget.bind("<Destroy>", self._on_leave, add="+")
+
+    def _on_enter(self, _event: tk.Event[tk.Misc]) -> None:
+        self._cancel_scheduled_show()
+        self._after_id = self._widget.after(350, self._show)
+
+    def _on_leave(self, _event: object | None = None) -> None:
+        self._cancel_scheduled_show()
+        if self._window is not None:
+            self._window.destroy()
+            self._window = None
+
+    def _cancel_scheduled_show(self) -> None:
+        if self._after_id is None:
+            return
+        try:
+            self._widget.after_cancel(self._after_id)
+        except tk.TclError:
+            pass
+        self._after_id = None
+
+    def _show(self) -> None:
+        self._after_id = None
+        if self._window is not None:
+            return
+        if not self._widget.winfo_exists():
+            return
+
+        window = tk.Toplevel(self._widget)
+        window.wm_overrideredirect(True)
+        try:
+            window.attributes("-topmost", True)
+        except tk.TclError:
+            pass
+        window.configure(background="#fff8db")
+
+        label = tk.Label(
+            window,
+            text=self._text,
+            justify="left",
+            background="#fff8db",
+            foreground="#202020",
+            relief="solid",
+            borderwidth=1,
+            padx=8,
+            pady=6,
+        )
+        label.pack()
+
+        x = self._widget.winfo_rootx() + 18
+        y = self._widget.winfo_rooty() + self._widget.winfo_height() + 6
+        window.geometry(f"+{x}+{y}")
+        self._window = window
+
+
+class MarkdownTemplateToolbar(ttk.Frame):
+    def __init__(
+        self,
+        parent: tk.Widget,
+        *,
+        sections: list[tuple[str, tuple[MarkdownTemplateSpec, ...]]],
+        icon_resolver: Any,
+        on_insert: Any,
+    ) -> None:
+        super().__init__(parent, borderwidth=1, relief="solid", padding=(4, 3))
+        self._buttons: list[ttk.Button] = []
+        self._tooltips: list[_ToolTip] = []
+        for section_index, (_section_title, items) in enumerate(sections):
+            if section_index > 0:
+                separator = ttk.Separator(self, orient="vertical")
+                separator.pack(side="left", fill="y", padx=4, pady=1)
+
+            section_frame = ttk.Frame(self)
+            section_frame.pack(side="left")
+
+            for item in items:
+                icon = icon_resolver(item.icon_name)
+                button_kwargs: dict[str, object] = {
+                    "command": lambda spec=item: on_insert(spec),
+                    "style": "Toolbutton",
+                    "padding": 1,
+                }
+                if icon is not None:
+                    button_kwargs["image"] = icon
+                    button_kwargs["compound"] = "image"
+                else:
+                    button_kwargs["text"] = item.label
+                button = ttk.Button(section_frame, **button_kwargs)
+                button.pack(side="left", padx=1, pady=0)
+                self._buttons.append(button)
+                self._tooltips.append(_ToolTip(button, self._tooltip_text_for_item(item)))
+
+    def _tooltip_text_for_item(self, item: MarkdownTemplateSpec) -> str:
+        lines = [
+            item.title,
+            "",
+            "Пример:",
+            item.example,
+        ]
+        if item.note:
+            lines.extend(["", item.note])
+        return "\n".join(lines)
+
+    def set_enabled(self, enabled: bool) -> None:
+        state = "!disabled" if enabled else "disabled"
+        for button in self._buttons:
+            button.state([state])
+
+
 GREEK_DESC_GROUP_RANGES: list[tuple[int, int]] = [
     (1, 158),
     (159, 381),
@@ -281,6 +536,18 @@ class TopicContentTool(tk.Tk):
         "save": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAXklEQVQ4y2NgGLTAk+Exw38csB6bhkc4lePQAhLGBnBqIaQBQwthDf+poIEQHEoafjKUM0gAYTmQRZSGMrhoGXEaJOGikjTSQLKTiPL0I4KB+oj4DASCjxk8Bm3mBwATwvSdhoWVegAAAABJRU5ErkJggg==",
         "publish": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAPElEQVQ4y2NgGDKgHghJUv4fCOtJU060FoRyorSgKieoBVM5Xi3YlRPhMGSlRIERqYF24D8eSB0NQxUAAMVCcIlDCOtfAAAAAElFTkSuQmCC",
         "open_resource": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAC7klEQVR42uVVz4tURxD+qqt7friRRVkSDQQkDEpGBKHdjW6E0V0IGySSHN7J/Af5FwLjevIi/gMieH54kSXmoIuTQxh/PE/JRIJsEsghGLNRZpM37/XrLg/OhJmd3WT0oAc/KHivu6jvq6ruauBNBo1YFHH/+9WreAk0VX321ts6K3WJctObcl4XlSOpV/fXkhtP+3EFANTEJehbFEVcq902gLooO6TryuoXLiq/MvNqVfkr9XpUGo47TtBsDtZkK4vj2D98+E3W2TfzRRC5yoqnAbxFpCDAz51OvWg0Gv9WRo+pXl4OADA/f3rnE/NUvHNjZSwppf2jRy54vqxYfaZIGRHxAnoMLIeNDctjBFEUcRzHoX50YY6hz3X9P/PkmJjUSJYk4ADKiSQopmkv/i8IviuVK6d8UYwVZCSDWm2pRD67wCV13OXFhgA8aNYgOIi6gMyQYhAICqIDufNZ3isJ8O5mgoE6iuPYY/d6WYBjWZ5t+Irb703vnRx/7/U62wOVvlffNzMVRL5kNpmEsB6Cv2nK5Z0QXvyhvesTkFwFgCRJ/JYZsNZCBVIAquvck9/a7XR4P7jqx8boKwCMhz9FwoeJ1CIJCiD2nTtYHbhue4qkv1YJwQAga60BgP2zjSVj+GsAunC9zx/cabUB2TPcnlptqbxdicbAWgsASZLEHfhw8UTFVK4LUSgKf7pz79traDaVArlhbdPTf4SJCYZ9pCi+D8GvhDw/8+O91evW2h2D4/x/0JM4/ZS0HgP4dDAmgBU36VDZloBDMNZak6YpVatVSdP3CQCq1RUBYKy1SBWpFycQKJD4Tru9PrqRDP84ADg4t9B9fi6EJicg9IjU1AezJ89uauKQBlEECgB9JMGTbOM3Mq4bjYZutVqhPrfwlTGlZWYN0H9PcwkeeZb+7nw41O8TDd/8rd4DZa3lHu8+qTTNeu88BeItZAkEJEARQJce3L3552t9V8cRRWzX1ia5I0iSpNhclleKZ9KpP8l/B+AQAAAAAElFTkSuQmCC",
+        "open_in_new": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABCklEQVR4nN3UPUoDQRjG8b8mB3nAIim00MbKyjoBQVHwAB7DvYYHEGIXKyshbWxsBLEQHs+QOqyFs7AZZ/YjWPk0s7sz72/fZZmBP85O/UbSBDiKnwPYLiSNgauEs7C9ABjWsCnw2PDyAhgDt5n5TRA4DOM58JEpegYOgAFwBxzHC+pg9Zmftt9Smu2VpHfgPmDLGN3NdJKMpEHALoEH4CZe0xlMYNfAeiswhdleA1/AGTCr1g6TQjcM2ytg3rnDJizM70sqJRWtYBuWS1OHJ8BFH6wRDFvptA8GLT+l2p99UgfLMI4kda3fi2o3wNcwzuifZXURH19Tfg6JX8dXJiXwYvtpiyb+S74Bv+xcUy0b9DMAAAAASUVORK5CYII=",
+        "download": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAvklEQVR4nO2UIQ4CMRBFHwS5h/gXIMEhEFQut+JWIBAgFoHBIBGTcATWg9lNNt12200IQfBV+6fz2mknhQ9rMhSUtAacZx/N7BTLmSU2dMDW87ZAFDhNAEfr94G9O5RUAstm6gI5TlI7vpjZrhvsvbKkAtgDq8RhzkBpZs+u2SvZzGqgBKqxsCAwA1rFYJBubL/8FlbHcgaBHvQFbIZg2ZJUNODvK9Q2V2CRmX8zs3nXCH0OB+CeCXxkrvtrhN751znTYmpUqAAAAABJRU5ErkJggg==",
+        "file_download": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAuUlEQVR4nO2UMQoCMRBFn2K5h5gDCLaChSnXU3ksBZu1WMHOxs7i4xW012bFJZtssiBi4e/yM/MmkwyBD2vUt2lmDnCeXUmqYjmTREEHrAN+FDhOAAfr94GdRzGzEpg3SwcsvZA97zs8StqkgAWwBRaJwxyAUtKtbXZalnQHSqAeCgsCM6B1DAbpwfbbf8HusZxeoAd9AKs+WLbMrGjA31dobE7ALDP/LGnaNkKfww64ZAKvmXF/DdAT4wU6bBr/ZL8AAAAASUVORK5CYII=",
+        "open_in_app": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAA40lEQVR4nO2TTQqBURSGHz9DLMDoXYCJicjYDiyAwg6MsRJKmRlTrMCEUiYmZwtkzsCVmz583RQDp27n9N7zPp3T7cKvR+JWSGoAw0BO08xGAElPVOhUvjcdcbkEDjFBOaDmC1HArpltYo0lFYCtryWf9D4aq5KqcXrfAiVVgBkwc3U4UFIJmANZd+aSykFASRmgAyy4PtLR1W1J2We+qEcBwMxOQMvBN0DazOqvpns5YWh8HOivbC6vJd20gZn1fYOkPtB74OyjgGMgDxS5//Gdywsg5WlTV5+BFTCJu8E/vhAXXpAusowL82gAAAAASUVORK5CYII=",
+        "article": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAyUlEQVR4nOWUPQ5BQRSFPyIRjVKUJxGhUGAfHqXdYBN2oWAhnkSjUNzaCpQKJM8zP0x0TjVzZs6XeyeZCz9WpbiRNAHGXzJyM9u9ASVlwDaxsOkTWi2Yo0TYS7bmuXAFThFID2iUTR/wbGbBiiXlwPBTYEvSIlJh22V6gcAyAnTK2zIwi2Q33N/xI2AlcBaUL9QBDr8EXoC1w+8D8ySgma3KpqRpKrAr6ejwmyFYCFgHBrGwS8W/nKcAHto/F+XxlfH9kHgZX3+oG7BAJYV1Brg1AAAAAElFTkSuQmCC",
+        "menu_book": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABUElEQVR4nO3TP0iVURjH8c+1m6B3iC6BxMV6gkgCKWpw0TVQaGtrjKagtRahtnBxkXAIGp11dmgLri6S3UWwDvSHqKDUIBrKhveE8nKL921q6Lec5/A853ueH885/OtqRMQAbuA2LpTyP/AUc3l/B5MYKNX1sIBHjYgYx2bFBnawiuc5buEUpvN6qVnDzS08Til9Kyci4j7uQWVgSmkxIoYjYgan0cZnPDtcVxkYEWfz4X28xUecwDq2agOxh+voYgTH8QmvFAOtDWxiFpfRwHccwQo2fhWVx/8nDeIJJhRWW/mSm+Vbq2oHw1hCJ8df8/713wBP4iIeIuE9jiqsX6kNTCn1MNUvFxH1gRHRVnzRqxjHMXzBdu60L/CdAzstnMNozr3IkA+Kr7qreNwdnDkMfIMHWE4prfXp7DzuYgjzKaVun5oxXMPLqo7/6/f6CedWSlkQlOv0AAAAAElFTkSuQmCC",
+        "auto_stories": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABFElEQVR4nO3UPyvGYRTG8Y+HDP7GYGE4MWBSFkkmg9cgBpkNJmUzKpNJsXgP8u8FsFFiFGeyGUQWwuAZ9OPR86AsrrqXc119z326uw8/UEQ0FGulH8DasVGsf+hQJawNB2j+Elju2osm3OEiMx8KmVbsYwTnH4ARUcIc5jFU8J8j4hCrmbkdES3Yw2ihyQwasdWAQWxWmK6E8fKpwwTGPsn1YRnH336USvoH1qzT3wRuYbZY/NZPwUpmLn1m1Ap8wUJmrlUK1ArczcynrwJVAyOiE1MRMYlhdOEBl6ivBLzBGW7Rin50l70rtOHe21I4QQd6EO+B11jBDo4y87lwswEseltV6zjMzMdCpgfTyGon/ju9AmCNP1bTpUJfAAAAAElFTkSuQmCC",
+        "tag": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAj0lEQVR4nO2RwQnCQBBFn5IyPPwmJCkjoMXYgtbh0UCsIodt4h8MlqGXDZhFV4QcFPMvM/MOnwcDPxtJtaSbpG2OpVlOLVIkVhWwiuc6zkoSGdbb7oZjkRSegM2HUmfb9VNDYA8c414CO+AAdBl2fSwYFdoOQIi2Aw6221cszfyUf3hKrrAHGuDyhs359twBWmNISVAdjoEAAAAASUVORK5CYII=",
+        "numbers": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAA8UlEQVR4nO2RoU6DMRRGD2wIMjDoiS88AIKEIGfHMCTwKgseiZvdAxAEmqBI+N0UAkcQn5tjAjK1MEyzbKO7RY6EY9qeJv3u7YV1ZyO6lFQHRkBl+3SVm2ezEHgI7ABVwc2oZ6pqA410bKe1Iek8cC+2X2GpZUm7wHsuqMCJ7YdchTXgIu23gFtgAFwHDuCpGCnpWNJUUjdyy0RDaaW1KrgFZi1L2gY6c3dnwBewL6kZuEfbox8PpvS7TOhN4CbAXrZC4C1VAHAAXAF94D5wY9sfmcBFJF2mzz+KXI5VQ2kBn8Bzwf36wSHQsz0puH/+At9C1U5v75qLzQAAAABJRU5ErkJggg==",
+        "image": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAA6klEQVR4nO2UPUpDQRRGj8GF3E34gyuIAasUKVNZZimxcROClQiKO/Cnik0q8eAGghC0sIjNGxlH8/LytBH8mpn55t7DN8Mw8MvayBcR0QV2Sr9GC+BavfoCjIh94KJlsG6CdjJzuyUMYDdNcmDTY36nj95OXVUb/QNX6gw4qivYrNmbAo9Ar1o/AEPgBdgjeypNEs6BPjAA7oFXoK8+q2+VP1sHeKhO1TlwAAzVSdpUn6q0jYDH6knerJ6WReo5MC79/A4X1TiKiNGS5MuUej8lvFsTkusmTcrvqwdslf6KZLfq5Q/C/HW9Ax5qRmONQ65xAAAAAElFTkSuQmCC",
+        "photo": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAA6klEQVR4nO2UPUpDQRRGj8GF3E34gyuIAasUKVNZZimxcROClQiKO/Cnik0q8eAGghC0sIjNGxlH8/LytBH8mpn55t7DN8Mw8MvayBcR0QV2Sr9GC+BavfoCjIh94KJlsG6CdjJzuyUMYDdNcmDTY36nj95OXVUb/QNX6gw4qivYrNmbAo9Ar1o/AEPgBdgjeypNEs6BPjAA7oFXoK8+q2+VP1sHeKhO1TlwAAzVSdpUn6q0jYDH6knerJ6WReo5MC79/A4X1TiKiNGS5MuUej8lvFsTkusmTcrvqwdslf6KZLfq5Q/C/HW9Ax5qRmONQ65xAAAAAElFTkSuQmCC",
+        "collections": "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAA+ElEQVR4nOWUPU5CQRSFP4QV0JOcGq0NhSsgJppITOgMvRUNJLQmbIDCPdhJQ2NlxSoOWhAbidHO8FMwz4Y38B5Y6WlmcubON+dOceGXVUgzJT0C5zk478CJ7elRpKCeM1gZqAHEgDF/m4o/FyVdSlpKauwBOjjJPwTOgLtDgGOgG/YLoGm7B9ynFZcypLkGXoAz4Nn2KJzdAsfBz5zwxvbE9jIk6ycHtr+BK+A1S8IvYA60JLUSU1Ja7QdQAT63ATtAH7jY0QGs/3UIPEWBtgfAIANsQwlwHtZapK1U2X6IAcesR1A7Z6CN8VcKL71JqgKnhKnxd7UC5TlAzewv++oAAAAASUVORK5CYII=",
         "replace_file": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAD/0lEQVR42p1W3WtcVRD/zTnnfuTDTZsoRBC0sH5k11RkmzTEyJKmq9XSah8WLCL42Ad9EEQkKupD++SbKOqLf0CgEsGYiqYGahq3BLTa5EGpCUqDtEnz0Wb33nvOjA+pMU12TdJ5OueeM/Ob+c2cmUuoLoTtiWCnks/nzQ5VaMeHmUy+0e1Kaipqz5PGcp0qlYaX1tmRLQHS6UOB3xy/ScArAOqlBgMk5JRW4lhGJ+9vPoaBgX8v8sa7aj0QN9lQEb2nlLp7C3INM6c8Y45kZ+ZOo1ikDfY2AQAAvGCFWXjRsbvJQZJ2JmqNcfNeZ6LW9WvrqTQgi9Ym8MO6o9mZuS9rgVRLqAcAN5Jk4a/x8XI19+/r6rJNqNcAFqLyyrDvBy9kZua/mCwWj2FgwK3PiarFQcjs5fN5k04fCjKZjJ/JZHygqAHATxp9CEJACFCX4yS+bow5kp2eG3y4u/uuWwBUKwJAQCBgdHTUArD/HUwil8t5i/eYCuai80FY/6SA+tlZWJvA84PDnOBVAKdyuZw3MTGRmBrGucm5cntX30EovZ+tFRE4XYk/m5g4dx2AynQdeN0l9tnERQwogtATIPTRBqdNlcIVInIVnfpKky4YLwC8AMwOTtEbbbnel6Ymzg5Njo+UAJTW3k5n72tKmwIhsjUBnE2RQZQQqEl7fsHG0bx19mMSVADZpz3/eQ0ebNvf+9zUj2eHHunoa9HEOV0xPzi4ujUGapXp2jNSSmwcD4r2Hpwsjbxz6cLIyZAbXnScHCWCVoLTmY6+k56myyLou3ixuyxEulo6bwPQZkkE4rFzlUW9cnxy/Jt5ANi7t9BQ0StXIDjunB1SygR+GPQzOx0HwQfA+0zMsiXAWggQaQmCAMWibtvX97hrtK0QBBAUFOEn0jpxSXyeRfp/Pzd8dVVH0XYBAAALCwAGBpxS/Aks3hbCVUAiAUwQ1nvO2u+mLnz/Yfdq3QuIb1TtKdU7IJmZn0cXsx0Hn/bDoDOulPdA0Gw8X1sbo7y8cAKKfgMgY2Njy0BRE64VmB0Eov4/AgEJJGnv6dkFso9Za9/SFb2HoA4zSwWkTwizRh2X2tt7dmc7e59q71r4WinzDFsLEKmtKEoIEOu8VOjMp7+MnTkFAJce2P2ttfHLBDSYIPwIZf23q/P+IFJnQCg458oEOIhwTYqSqF55RlJEBDj+tawdZToP+FaczU5fU1BqWYSNTWIopepXIxawcwAhVMYjWNd4W2Wu37Q0PARV5yxEHgXgA0SA8K3WJSQIASoDEgFSgUgEkViIyopUJMyjju3n165M/zk7OytY7YY7G5nOpjZ912ZJmlIpKg1vPULvZOhvkHfVdv4I6A6tb/L6H2+T3BgFT/QJAAAAAElFTkSuQmCC",
         "add": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAH0lEQVQ4y2NgGAVw8B8IRzXgUoQLUkfDaDyQqmFYAwDqLDPNE6CZygAAAABJRU5ErkJggg==",
         "delete": "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAOElEQVQ4y2NgGAJAgeE+w38ovA/k4QH/8UDqaCADkGz+qIZRDTjAI6zKH+HW4MHwGEP5Y6Do4AYAnknHV/9dX/AAAAAASUVORK5CYII=",
@@ -352,6 +619,7 @@ class TopicContentTool(tk.Tk):
         self.preview_unavailable_reason = ""
         self.preview_html: HtmlFrameType | None = None
         self.preview_text: tk.Text | None = None
+        self.md_template_toolbar: MarkdownTemplateToolbar | None = None
         self.ui_icons: dict[str, tk.PhotoImage] = {}
         self.status_indicator_image: tk.PhotoImage | None = None
         self.strong_category_labels_by_token: dict[str, str] = self._load_ru_strong_category_labels()
@@ -1979,6 +2247,8 @@ class TopicContentTool(tk.Tk):
             )
 
         self.markdown_text.configure(state="normal" if localized_enabled else "disabled")
+        if self.md_template_toolbar is not None:
+            self.md_template_toolbar.set_enabled(localized_enabled)
         if self.preview_text is not None:
             self.preview_text.configure(state="disabled")
 
@@ -2182,16 +2452,24 @@ class TopicContentTool(tk.Tk):
         edit_tab = ttk.Frame(self.md_tabs)
         preview_tab = ttk.Frame(self.md_tabs)
         edit_tab.columnconfigure(0, weight=1)
-        edit_tab.rowconfigure(0, weight=1)
+        edit_tab.rowconfigure(1, weight=1)
         preview_tab.columnconfigure(0, weight=1)
         preview_tab.rowconfigure(0, weight=1)
         self.md_tabs.add(edit_tab, text="Редактирование")
         self.md_tabs.add(preview_tab, text="MD просмотр")
 
+        self.md_template_toolbar = MarkdownTemplateToolbar(
+            edit_tab,
+            sections=revelation_markdown_template_sections(),
+            icon_resolver=lambda icon_name: self.ui_icons.get(icon_name),
+            on_insert=self._insert_markdown_template,
+        )
+        self.md_template_toolbar.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 6))
+
         self.markdown_text = tk.Text(edit_tab, wrap="word", undo=True)
-        self.markdown_text.grid(row=0, column=0, sticky="nsew")
+        self.markdown_text.grid(row=1, column=0, sticky="nsew")
         md_scroll = ttk.Scrollbar(edit_tab, orient="vertical", command=self.markdown_text.yview)
-        md_scroll.grid(row=0, column=1, sticky="ns")
+        md_scroll.grid(row=1, column=1, sticky="ns")
         self.markdown_text.configure(yscrollcommand=md_scroll.set)
         self.markdown_text.bind("<<Modified>>", self._on_markdown_modified)
 
@@ -2731,6 +3009,42 @@ class TopicContentTool(tk.Tk):
 
     def _text_widget_content(self, widget: tk.Text) -> str:
         return widget.get("1.0", "end-1c")
+
+    def _insert_markdown_template(self, spec: MarkdownTemplateSpec) -> None:
+        widget = self.markdown_text
+        if str(widget.cget("state")) == "disabled":
+            return
+
+        try:
+            selected_text = widget.get("sel.first", "sel.last")
+        except tk.TclError:
+            selected_text = ""
+
+        template = self._template_text_for_insertion(spec, selected_text)
+        widget.focus_set()
+        widget.edit_separator()
+        try:
+            widget.delete("sel.first", "sel.last")
+        except tk.TclError:
+            pass
+        widget.insert("insert", template)
+        widget.see("insert")
+        widget.edit_separator()
+
+    def _template_text_for_insertion(
+        self,
+        spec: MarkdownTemplateSpec,
+        selected_text: str,
+    ) -> str:
+        if not selected_text or "\n" in selected_text:
+            return spec.template
+
+        template = spec.template
+        open_bracket = template.find("[")
+        close_bracket = template.find("](")
+        if open_bracket == -1 or close_bracket == -1 or close_bracket <= open_bracket:
+            return template
+        return f"{template[: open_bracket + 1]}{selected_text}{template[close_bracket:]}"
 
     def _load_localized_desc_from_db(self, db_path: Path, strong_id: int) -> tuple[bool, str, str | None]:
         if not db_path.exists():
