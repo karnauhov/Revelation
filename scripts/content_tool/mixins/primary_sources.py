@@ -519,14 +519,17 @@ class PrimarySourcesMixin:
             self.primary_source_default_max_scale_var.set("3.0")
             self.primary_source_can_show_images_var.set(True)
             self.primary_source_images_are_monochrome_var.set(False)
-            self.primary_source_title_markup_var.set("")
-            self.primary_source_date_label_var.set("")
-            self.primary_source_content_label_var.set("")
-            self.primary_source_material_text_var.set("")
-            self.primary_source_text_style_text_var.set("")
-            self.primary_source_found_text_var.set("")
-            self.primary_source_classification_text_var.set("")
-            self.primary_source_current_location_text_var.set("")
+            for key in (
+                "title_markup",
+                "date_label",
+                "content_label",
+                "material_text",
+                "text_style_text",
+                "found_text",
+                "classification_text",
+                "current_location_text",
+            ):
+                self._set_primary_source_localized_field(key, "")
             if self.primary_source_notes_text is not None:
                 self._set_text_widget_content(self.primary_source_notes_text, "")
             self._refresh_primary_source_preview_options()
@@ -595,6 +598,24 @@ class PrimarySourcesMixin:
                 return None
             return path
 
+        def _set_primary_source_localized_field(self, key: str, value: str) -> None:
+            text_value = value or ""
+            variable = getattr(self, f"primary_source_{key}_var", None)
+            if variable is not None:
+                variable.set(text_value)
+            widget = self.primary_source_localized_text_widgets.get(key)
+            if widget is not None:
+                self._set_text_widget_content(widget, text_value)
+
+        def _primary_source_localized_field_value(self, key: str) -> str:
+            widget = self.primary_source_localized_text_widgets.get(key)
+            if widget is not None:
+                return self._text_widget_content(widget).strip()
+            variable = getattr(self, f"primary_source_{key}_var", None)
+            if variable is None:
+                return ""
+            return str(variable.get()).strip()
+
         def _load_primary_source_common_row(self, source_id: str) -> sqlite3.Row | None:
             if not source_id or self.common_connection is None:
                 return None
@@ -645,14 +666,17 @@ class PrimarySourcesMixin:
                     return ""
                 return str(localized_row[key] or "")
 
-            self.primary_source_title_markup_var.set(localized_value("title_markup"))
-            self.primary_source_date_label_var.set(localized_value("date_label"))
-            self.primary_source_content_label_var.set(localized_value("content_label"))
-            self.primary_source_material_text_var.set(localized_value("material_text"))
-            self.primary_source_text_style_text_var.set(localized_value("text_style_text"))
-            self.primary_source_found_text_var.set(localized_value("found_text"))
-            self.primary_source_classification_text_var.set(localized_value("classification_text"))
-            self.primary_source_current_location_text_var.set(localized_value("current_location_text"))
+            for key in (
+                "title_markup",
+                "date_label",
+                "content_label",
+                "material_text",
+                "text_style_text",
+                "found_text",
+                "classification_text",
+                "current_location_text",
+            ):
+                self._set_primary_source_localized_field(key, localized_value(key))
 
         def _reload_selected_primary_source_common_fields(self) -> None:
             source_id = self.selected_primary_source_id
@@ -916,6 +940,7 @@ class PrimarySourcesMixin:
                     "",
                     "end",
                     iid=row.page_name,
+                    tags=("local_exists" if row.local_exists else "local_missing",),
                     values=(
                         row.page_name,
                         row.sort_order,
@@ -1231,7 +1256,7 @@ class PrimarySourcesMixin:
                 sort_order = self._parse_required_int(self.primary_source_sort_order_var.get(), "Порядок")
                 verses_count = self._parse_required_int(self.primary_source_verses_count_var.get(), "Кол-во стихов")
                 default_max_scale = self._parse_required_float(
-                    self.primary_source_default_max_scale_var.get(),
+                    self.primary_source_default_max_scale_var.get().replace(",", "."),
                     "Max масштаб",
                 )
             except ValueError as exc:
@@ -1307,14 +1332,14 @@ class PrimarySourcesMixin:
                 return
 
             localized_values = {
-                "title_markup": self.primary_source_title_markup_var.get().strip(),
-                "date_label": self.primary_source_date_label_var.get().strip(),
-                "content_label": self.primary_source_content_label_var.get().strip(),
-                "material_text": self.primary_source_material_text_var.get().strip(),
-                "text_style_text": self.primary_source_text_style_text_var.get().strip(),
-                "found_text": self.primary_source_found_text_var.get().strip(),
-                "classification_text": self.primary_source_classification_text_var.get().strip(),
-                "current_location_text": self.primary_source_current_location_text_var.get().strip(),
+                "title_markup": self._primary_source_localized_field_value("title_markup"),
+                "date_label": self._primary_source_localized_field_value("date_label"),
+                "content_label": self._primary_source_localized_field_value("content_label"),
+                "material_text": self._primary_source_localized_field_value("material_text"),
+                "text_style_text": self._primary_source_localized_field_value("text_style_text"),
+                "found_text": self._primary_source_localized_field_value("found_text"),
+                "classification_text": self._primary_source_localized_field_value("classification_text"),
+                "current_location_text": self._primary_source_localized_field_value("current_location_text"),
             }
             con: sqlite3.Connection | None = None
             try:
