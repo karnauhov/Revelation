@@ -25,7 +25,11 @@ class InstitutionCard extends StatelessWidget {
         minTileHeight: 0,
         onTap: () => launchLink(institution.officialSite),
         leading: _buildIcon(
-            institution.idIcon, iconWidth, iconHeight, colorScheme.primary),
+          institution.idIcon,
+          iconWidth,
+          iconHeight,
+          colorScheme.primary,
+        ),
         title: Text(
           institution.name,
           style: theme.textTheme.titleMedium?.copyWith(
@@ -52,9 +56,10 @@ class InstitutionCard extends StatelessWidget {
           TextSpan(
             text: text,
             style: TextStyle(
-                color: colorScheme.primary,
-                decoration: TextDecoration.underline,
-                decorationColor: colorScheme.primary),
+              color: colorScheme.primary,
+              decoration: TextDecoration.underline,
+              decorationColor: colorScheme.primary,
+            ),
             recognizer: TapGestureRecognizer()..onTap = () => launchLink(url),
           ),
         );
@@ -92,7 +97,11 @@ class InstitutionCard extends StatelessWidget {
   }
 
   Widget _buildIcon(
-      String idIcon, double iconWidth, double iconHeight, Color color) {
+    String idIcon,
+    double iconWidth,
+    double iconHeight,
+    Color color,
+  ) {
     final iconPath = "assets/images/UI/${institution.idIcon}";
 
     if (idIcon.isNotEmpty && idIcon.toLowerCase().endsWith('.svg')) {

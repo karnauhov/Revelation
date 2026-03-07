@@ -44,10 +44,9 @@ class DrawerItem extends StatelessWidget {
               const SizedBox(width: 16.0),
               Text(
                 text,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: contentColor),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: contentColor),
               ),
             ],
           ),

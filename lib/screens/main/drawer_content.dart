@@ -76,8 +76,9 @@ class _DrawerContentState extends State<DrawerContent> {
                   children: [
                     DrawerItem(
                       assetPath: 'assets/images/UI/papyrus.svg',
-                      text:
-                          AppLocalizations.of(context)!.primary_sources_screen,
+                      text: AppLocalizations.of(
+                        context,
+                      )!.primary_sources_screen,
                       onClick: () {
                         widget.onItemClicked();
                         Navigator.pop(context);

@@ -58,10 +58,8 @@ class _MainScreenState extends State<MainScreen> {
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const TopicList(),
-                    ],
-                  )
+                    children: [const TopicList()],
+                  ),
                 ],
               ),
             ),
@@ -99,43 +97,46 @@ class _MainScreenState extends State<MainScreen> {
           }
 
           return Scaffold(
-              appBar: AppBar(
-                  title: const Text(''),
-                  leading: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
-                    child: Builder(
-                      builder: (context) => NewIconButton(
-                        assetPath: 'assets/images/UI/menu.svg',
-                        tooltip: AppLocalizations.of(context)!.menu,
-                        size: 24,
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                      ),
-                    ),
+            appBar: AppBar(
+              title: const Text(''),
+              leading: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
+                child: Builder(
+                  builder: (context) => NewIconButton(
+                    assetPath: 'assets/images/UI/menu.svg',
+                    tooltip: AppLocalizations.of(context)!.menu,
+                    size: 24,
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
                   ),
-                  foregroundColor: colorScheme.primary),
-              drawer: Drawer(
-                  backgroundColor: colorScheme.surface,
-                  child: DrawerContent(onItemClicked: () {
-                    setState(() {
-                      _closedByItem = true;
-                    });
-                  })),
-              onDrawerChanged: (isOpened) {
-                if (isOpened) {
-                  aud.playSound("stone");
-                } else {
-                  if (!_closedByItem) {
-                    aud.playSound("stone");
-                  }
-                  _closedByItem = false;
-                }
-              },
-              body: SizedBox.expand(
-                child: content,
+                ),
               ),
-              backgroundColor: colorScheme.surface);
+              foregroundColor: colorScheme.primary,
+            ),
+            drawer: Drawer(
+              backgroundColor: colorScheme.surface,
+              child: DrawerContent(
+                onItemClicked: () {
+                  setState(() {
+                    _closedByItem = true;
+                  });
+                },
+              ),
+            ),
+            onDrawerChanged: (isOpened) {
+              if (isOpened) {
+                aud.playSound("stone");
+              } else {
+                if (!_closedByItem) {
+                  aud.playSound("stone");
+                }
+                _closedByItem = false;
+              }
+            },
+            body: SizedBox.expand(child: content),
+            backgroundColor: colorScheme.surface,
+          );
         },
       ),
     );

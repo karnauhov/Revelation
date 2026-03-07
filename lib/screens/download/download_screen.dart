@@ -67,10 +67,7 @@ class DownloadScreen extends StatelessWidget {
           child: ListView.separated(
             itemCount: sections.length,
             itemBuilder: (context, index) {
-              return _buildPlatformSection(
-                context,
-                sections[index],
-              );
+              return _buildPlatformSection(context, sections[index]);
             },
             separatorBuilder: (context, index) => Column(
               children: [
@@ -84,10 +81,7 @@ class DownloadScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPlatformSection(
-    BuildContext context,
-    _DownloadSection section,
-  ) {
+  Widget _buildPlatformSection(BuildContext context, _DownloadSection section) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 

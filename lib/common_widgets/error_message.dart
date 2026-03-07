@@ -17,11 +17,7 @@ class ErrorMessage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Icon(
-              Icons.error_outline,
-              size: 64.0,
-              color: colorScheme.error,
-            ),
+            Icon(Icons.error_outline, size: 64.0, color: colorScheme.error),
             const SizedBox(height: 16.0),
             Text(
               errorMessage,

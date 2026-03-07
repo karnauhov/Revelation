@@ -20,8 +20,10 @@ class _LibraryListState extends State<LibraryList> {
   @override
   void initState() {
     super.initState();
-    _librariesFuture =
-        parseLibraries(rootBundle, 'assets/data/about_libraries.xml');
+    _librariesFuture = parseLibraries(
+      rootBundle,
+      'assets/data/about_libraries.xml',
+    );
   }
 
   @override
@@ -41,13 +43,11 @@ class _LibraryListState extends State<LibraryList> {
           );
         } else if (snapshot.hasError) {
           return ErrorMessage(
-              errorMessage:
-                  AppLocalizations.of(context)!.error_loading_libraries);
+            errorMessage: AppLocalizations.of(context)!.error_loading_libraries,
+          );
         } else {
           return Center(
-            child: CircularProgressIndicator(
-              color: colorScheme.primary,
-            ),
+            child: CircularProgressIndicator(color: colorScheme.primary),
           );
         }
       },

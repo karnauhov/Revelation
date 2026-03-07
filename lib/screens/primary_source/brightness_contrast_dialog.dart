@@ -105,9 +105,7 @@ class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
       ),
       actions: [
         TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: colorScheme.primary,
-          ),
+          style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
           onPressed: () {
             aud.playSound("click");
             widget.onCancel();
@@ -119,9 +117,7 @@ class BrightnessContrastDialogState extends State<BrightnessContrastDialog> {
           ),
         ),
         TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: colorScheme.primary,
-          ),
+          style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
           onPressed: () {
             aud.playSound("click");
             Navigator.of(context).pop();

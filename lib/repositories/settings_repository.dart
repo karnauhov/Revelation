@@ -11,10 +11,11 @@ class SettingsRepository {
     final String? jsonString = prefs.getString(_settingsKey);
     if (jsonString == null) {
       return AppSettings(
-          selectedLanguage: getSystemLanguage(),
-          selectedTheme: 'manuscript',
-          selectedFontSize: 'medium',
-          soundEnabled: true);
+        selectedLanguage: getSystemLanguage(),
+        selectedTheme: 'manuscript',
+        selectedFontSize: 'medium',
+        soundEnabled: true,
+      );
     }
     final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
     return AppSettings.fromMap(jsonMap);

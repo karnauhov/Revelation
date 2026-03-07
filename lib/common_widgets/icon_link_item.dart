@@ -42,10 +42,7 @@ class IconLinkItem extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       minTileHeight: 0,
       leading: iconWidget,
-      title: Text(
-        text,
-        style: TextStyle(color: colorScheme.primary),
-      ),
+      title: Text(text, style: TextStyle(color: colorScheme.primary)),
       onTap: onTap,
     );
   }

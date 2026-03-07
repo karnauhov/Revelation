@@ -73,11 +73,14 @@ class _TopicCardState extends State<TopicCard> {
       child: ListTile(
         visualDensity: VisualDensity.compact,
         minTileHeight: 0,
-        onTap: () => context.push('/topic', extra: {
-          'name': widget.topic.name,
-          'description': widget.topic.description,
-          'file': widget.topic.route,
-        }),
+        onTap: () => context.push(
+          '/topic',
+          extra: {
+            'name': widget.topic.name,
+            'description': widget.topic.description,
+            'file': widget.topic.route,
+          },
+        ),
         leading: SizedBox(
           width: iconWidth,
           height: iconHeight,
@@ -121,20 +124,17 @@ class _TopicCardState extends State<TopicCard> {
         title: Text(
           widget.topic.name,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: titleColor,
-              ),
+            fontWeight: FontWeight.bold,
+            color: titleColor,
+          ),
         ),
         subtitle: Text(
           widget.topic.description,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: titleColor,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: titleColor),
         ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: titleColor,
-        ),
+        trailing: Icon(Icons.chevron_right, color: titleColor),
       ),
     );
   }

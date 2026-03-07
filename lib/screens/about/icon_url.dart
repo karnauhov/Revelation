@@ -17,9 +17,10 @@ class IconUrl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NewIconButton(
-        assetPath: iconPath,
-        tooltip: tooltip,
-        size: 32,
-        onPressed: () => launchLink(url));
+      assetPath: iconPath,
+      tooltip: tooltip,
+      size: 32,
+      onPressed: () => launchLink(url),
+    );
   }
 }

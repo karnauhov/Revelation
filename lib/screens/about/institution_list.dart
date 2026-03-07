@@ -20,8 +20,10 @@ class _InstitutionListState extends State<InstitutionList> {
   @override
   void initState() {
     super.initState();
-    _institutionsFuture =
-        parseInstitutions(rootBundle, 'assets/data/about_institutions.xml');
+    _institutionsFuture = parseInstitutions(
+      rootBundle,
+      'assets/data/about_institutions.xml',
+    );
   }
 
   @override
@@ -41,13 +43,13 @@ class _InstitutionListState extends State<InstitutionList> {
           );
         } else if (snapshot.hasError) {
           return ErrorMessage(
-              errorMessage:
-                  AppLocalizations.of(context)!.error_loading_institutions);
+            errorMessage: AppLocalizations.of(
+              context,
+            )!.error_loading_institutions,
+          );
         } else {
           return Center(
-            child: CircularProgressIndicator(
-              color: colorScheme.primary,
-            ),
+            child: CircularProgressIndicator(color: colorScheme.primary),
           );
         }
       },
