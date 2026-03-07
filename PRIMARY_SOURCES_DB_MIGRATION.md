@@ -1,7 +1,7 @@
 # Миграция Primary Sources в БД
 
 Последнее обновление: 2026-03-07
-Статус: Фаза 1 в работе
+Статус: Фаза 2 завершена
 
 ## Цель
 
@@ -362,13 +362,14 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
 
 ### Фаза 2. Одноразовый импортёр
 
-- [ ] Создать отдельный скрипт миграции/импорта
-- [ ] Распарсить `primary_sources_repository.dart`
-- [ ] Распарсить `app_en.arb`, `app_es.arb`, `app_uk.arb`, `app_ru.arb`
-- [ ] Импортировать common rows в `revelation.sqlite`
-- [ ] Импортировать localized rows во все `revelation_<lang>.sqlite`
-- [ ] Импортировать preview images в `common_resources`
-- [ ] Сформировать validation report по source/page/word/verse counts
+- [x] Создать отдельный скрипт миграции/импорта
+- [x] Добавить dry-run/apply режимы и backup целевых БД перед записью
+- [x] Распарсить `primary_sources_repository.dart`
+- [x] Распарсить `app_en.arb`, `app_es.arb`, `app_uk.arb`, `app_ru.arb`
+- [x] Импортировать common rows в `revelation.sqlite`
+- [x] Импортировать localized rows во все `revelation_<lang>.sqlite`
+- [x] Импортировать preview images в `common_resources`
+- [x] Сформировать validation report по source/page/word/verse counts
 
 ### Фаза 3. Переключение приложения на БД
 
@@ -476,3 +477,25 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
   - добавлены Drift migrations
   - обновлен DDL в `content_tool.py`
   - точный SQL DDL зафиксирован в этом файле
+- Выполнена Фаза 2:
+  - добавлен одноразовый импортёр `scripts/migrate_primary_sources_to_db.py`
+  - скрипт поддерживает `dry-run`, `--apply`, backup и DB-level validation
+  - при `--apply` созданы backup-копии всех 5 SQLite-файлов в
+    `C:\Users\karna\OneDrive\Documents\revelation\db\backups\primary_sources_phase2_20260307_055906`
+  - импортированы common rows в `revelation.sqlite`
+  - импортированы localized rows в `revelation_en.sqlite`,
+    `revelation_es.sqlite`, `revelation_ru.sqlite`, `revelation_uk.sqlite`
+  - импортированы 19 preview resources в `common_resources`
+  - DB-level validation подтвердила baseline counts:
+    - 19 sources
+    - 3 full
+    - 4 significant
+    - 12 fragment
+    - 232 pages
+    - 156 words
+    - 172 rectangles
+    - 8 verses
+    - zero-page sources: `U025`, `U052`
+    - overlay sources: `U001`, `U002`, `U004`
+  - `PRAGMA user_version` обновлен до `3` для `revelation.sqlite` и до `5`
+    для всех `revelation_<lang>.sqlite`
