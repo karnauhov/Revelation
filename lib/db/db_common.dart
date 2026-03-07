@@ -75,8 +75,6 @@ class PrimarySourcePages extends Table {
       integer().named('sort_order').withDefault(const Constant(0))();
   TextColumn get contentRef => text().named('content_ref')();
   TextColumn get imagePath => text().named('image_path')();
-  TextColumn get mobileImagePath =>
-      text().named('mobile_image_path').nullable()();
 
   @override
   Set<Column> get primaryKey => {sourceId, pageName};
@@ -196,7 +194,6 @@ class CommonDB extends _$CommonDB {
             sort_order INTEGER NOT NULL DEFAULT 0,
             content_ref TEXT NOT NULL,
             image_path TEXT NOT NULL,
-            mobile_image_path TEXT,
             PRIMARY KEY (source_id, page_name)
           )
         """);

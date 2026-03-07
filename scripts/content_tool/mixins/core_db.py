@@ -295,7 +295,6 @@ class CoreDbMixin:
                   sort_order INTEGER NOT NULL DEFAULT 0,
                   content_ref TEXT NOT NULL,
                   image_path TEXT NOT NULL,
-                  mobile_image_path TEXT,
                   PRIMARY KEY (source_id, page_name)
                 );
 

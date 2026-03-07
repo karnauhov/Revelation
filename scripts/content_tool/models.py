@@ -56,7 +56,6 @@ class PrimarySourcePageSummary:
     sort_order: int
     content_ref: str
     image_path: str
-    mobile_image_path: str
     words_count: int
     verse_rows_count: int
     local_exists: bool

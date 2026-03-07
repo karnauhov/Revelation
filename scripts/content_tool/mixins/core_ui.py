@@ -1020,11 +1020,11 @@ class CoreUiMixin:
                 height=9,
             )
             for column, title, width, anchor in [
-                ("page_name", "Page", 120, "center"),
-                ("sort_order", "Sort", 60, "center"),
-                ("content_ref", "Content", 120, "center"),
-                ("image_path", "Image path", 430, "w"),
-                ("local", "Local", 60, "center"),
+                ("page_name", "Название", 140, "center"),
+                ("sort_order", "Порядок", 80, "center"),
+                ("content_ref", "Содержимое", 140, "center"),
+                ("image_path", "Путь на сервере и локально", 390, "w"),
+                ("local", "Скачано", 80, "center"),
             ]:
                 self.primary_source_pages_tree.heading(column, text=title)
                 self.primary_source_pages_tree.column(column, width=width, anchor=anchor)
@@ -1059,36 +1059,24 @@ class CoreUiMixin:
             self.btn_delete_primary_source_page.pack(side="left", padx=(8, 0))
             self.btn_download_primary_source_page = ttk.Button(
                 page_actions,
-                **self._button_kwargs("download", "Скачать страницу"),
+                **self._button_kwargs("download", "Скачать"),
                 command=self._download_selected_primary_source_page,
             )
             self.btn_download_primary_source_page.pack(side="left", padx=(8, 0))
             self.btn_open_primary_source_page = ttk.Button(
                 page_actions,
-                **self._button_kwargs("open_resource", "Открыть локальный файл"),
+                **self._button_kwargs("open_resource", "Открыть"),
                 command=self._open_selected_primary_source_page_file,
             )
             self.btn_open_primary_source_page.pack(side="left", padx=(8, 0))
-            self.btn_open_primary_source_contours = ttk.Button(
-                page_actions,
-                **self._button_kwargs("open_in_app", "Contour editor"),
-                command=self._open_selected_primary_source_contour_editor,
-            )
-            self.btn_open_primary_source_contours.pack(side="left", padx=(8, 0))
-
-            ttk.Label(
-                pages_box,
-                textvariable=self.primary_source_page_info_var,
-                foreground="#5f5f5f",
-            ).grid(row=2, column=0, columnspan=2, sticky="w", pady=(8, 0))
 
             lower_pane = self._new_split_pane(parent, orient=tk.HORIZONTAL)
             lower_pane.grid(row=1, column=0, sticky="nsew", pady=(10, 0))
 
-            words_box = ttk.LabelFrame(lower_pane, text="Слова страницы")
-            verses_box = ttk.LabelFrame(lower_pane, text="Verse / Contours")
-            lower_pane.add(words_box, stretch="always")
+            words_box = ttk.LabelFrame(lower_pane, text="Слова на странице")
+            verses_box = ttk.LabelFrame(lower_pane, text="Стихи на странице")
             lower_pane.add(verses_box, stretch="always")
+            lower_pane.add(words_box, stretch="always")
             self._set_initial_split(lower_pane, ratio=0.5)
 
             words_box.columnconfigure(0, weight=1)
@@ -1501,7 +1489,6 @@ class CoreUiMixin:
                 (self.btn_delete_primary_source_page, False),
                 (self.btn_download_primary_source_page, False),
                 (self.btn_open_primary_source_page, False),
-                (self.btn_open_primary_source_contours, False),
                 (self.primary_source_words_tree, False),
                 (self.btn_add_primary_source_word, False),
                 (self.btn_edit_primary_source_word, False),

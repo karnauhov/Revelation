@@ -2184,17 +2184,6 @@ class $PrimarySourcePagesTable extends PrimarySourcePages
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _mobileImagePathMeta = const VerificationMeta(
-    'mobileImagePath',
-  );
-  @override
-  late final GeneratedColumn<String> mobileImagePath = GeneratedColumn<String>(
-    'mobile_image_path',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
   @override
   List<GeneratedColumn> get $columns => [
     sourceId,
@@ -2202,7 +2191,6 @@ class $PrimarySourcePagesTable extends PrimarySourcePages
     sortOrder,
     contentRef,
     imagePath,
-    mobileImagePath,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2254,15 +2242,6 @@ class $PrimarySourcePagesTable extends PrimarySourcePages
     } else if (isInserting) {
       context.missing(_imagePathMeta);
     }
-    if (data.containsKey('mobile_image_path')) {
-      context.handle(
-        _mobileImagePathMeta,
-        mobileImagePath.isAcceptableOrUnknown(
-          data['mobile_image_path']!,
-          _mobileImagePathMeta,
-        ),
-      );
-    }
     return context;
   }
 
@@ -2292,10 +2271,6 @@ class $PrimarySourcePagesTable extends PrimarySourcePages
         DriftSqlType.string,
         data['${effectivePrefix}image_path'],
       )!,
-      mobileImagePath: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}mobile_image_path'],
-      ),
     );
   }
 
@@ -2312,14 +2287,12 @@ class PrimarySourcePage extends DataClass
   final int sortOrder;
   final String contentRef;
   final String imagePath;
-  final String? mobileImagePath;
   const PrimarySourcePage({
     required this.sourceId,
     required this.pageName,
     required this.sortOrder,
     required this.contentRef,
     required this.imagePath,
-    this.mobileImagePath,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2329,9 +2302,6 @@ class PrimarySourcePage extends DataClass
     map['sort_order'] = Variable<int>(sortOrder);
     map['content_ref'] = Variable<String>(contentRef);
     map['image_path'] = Variable<String>(imagePath);
-    if (!nullToAbsent || mobileImagePath != null) {
-      map['mobile_image_path'] = Variable<String>(mobileImagePath);
-    }
     return map;
   }
 
@@ -2342,9 +2312,6 @@ class PrimarySourcePage extends DataClass
       sortOrder: Value(sortOrder),
       contentRef: Value(contentRef),
       imagePath: Value(imagePath),
-      mobileImagePath: mobileImagePath == null && nullToAbsent
-          ? const Value.absent()
-          : Value(mobileImagePath),
     );
   }
 
@@ -2359,7 +2326,6 @@ class PrimarySourcePage extends DataClass
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
       contentRef: serializer.fromJson<String>(json['contentRef']),
       imagePath: serializer.fromJson<String>(json['imagePath']),
-      mobileImagePath: serializer.fromJson<String?>(json['mobileImagePath']),
     );
   }
   @override
@@ -2371,7 +2337,6 @@ class PrimarySourcePage extends DataClass
       'sortOrder': serializer.toJson<int>(sortOrder),
       'contentRef': serializer.toJson<String>(contentRef),
       'imagePath': serializer.toJson<String>(imagePath),
-      'mobileImagePath': serializer.toJson<String?>(mobileImagePath),
     };
   }
 
@@ -2381,16 +2346,12 @@ class PrimarySourcePage extends DataClass
     int? sortOrder,
     String? contentRef,
     String? imagePath,
-    Value<String?> mobileImagePath = const Value.absent(),
   }) => PrimarySourcePage(
     sourceId: sourceId ?? this.sourceId,
     pageName: pageName ?? this.pageName,
     sortOrder: sortOrder ?? this.sortOrder,
     contentRef: contentRef ?? this.contentRef,
     imagePath: imagePath ?? this.imagePath,
-    mobileImagePath: mobileImagePath.present
-        ? mobileImagePath.value
-        : this.mobileImagePath,
   );
   PrimarySourcePage copyWithCompanion(PrimarySourcePagesCompanion data) {
     return PrimarySourcePage(
@@ -2401,9 +2362,6 @@ class PrimarySourcePage extends DataClass
           ? data.contentRef.value
           : this.contentRef,
       imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
-      mobileImagePath: data.mobileImagePath.present
-          ? data.mobileImagePath.value
-          : this.mobileImagePath,
     );
   }
 
@@ -2414,21 +2372,14 @@ class PrimarySourcePage extends DataClass
           ..write('pageName: $pageName, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('contentRef: $contentRef, ')
-          ..write('imagePath: $imagePath, ')
-          ..write('mobileImagePath: $mobileImagePath')
+          ..write('imagePath: $imagePath')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-    sourceId,
-    pageName,
-    sortOrder,
-    contentRef,
-    imagePath,
-    mobileImagePath,
-  );
+  int get hashCode =>
+      Object.hash(sourceId, pageName, sortOrder, contentRef, imagePath);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2437,8 +2388,7 @@ class PrimarySourcePage extends DataClass
           other.pageName == this.pageName &&
           other.sortOrder == this.sortOrder &&
           other.contentRef == this.contentRef &&
-          other.imagePath == this.imagePath &&
-          other.mobileImagePath == this.mobileImagePath);
+          other.imagePath == this.imagePath);
 }
 
 class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
@@ -2447,7 +2397,6 @@ class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
   final Value<int> sortOrder;
   final Value<String> contentRef;
   final Value<String> imagePath;
-  final Value<String?> mobileImagePath;
   final Value<int> rowid;
   const PrimarySourcePagesCompanion({
     this.sourceId = const Value.absent(),
@@ -2455,7 +2404,6 @@ class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
     this.sortOrder = const Value.absent(),
     this.contentRef = const Value.absent(),
     this.imagePath = const Value.absent(),
-    this.mobileImagePath = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   PrimarySourcePagesCompanion.insert({
@@ -2464,7 +2412,6 @@ class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
     this.sortOrder = const Value.absent(),
     required String contentRef,
     required String imagePath,
-    this.mobileImagePath = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : sourceId = Value(sourceId),
        pageName = Value(pageName),
@@ -2476,7 +2423,6 @@ class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
     Expression<int>? sortOrder,
     Expression<String>? contentRef,
     Expression<String>? imagePath,
-    Expression<String>? mobileImagePath,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2485,7 +2431,6 @@ class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
       if (sortOrder != null) 'sort_order': sortOrder,
       if (contentRef != null) 'content_ref': contentRef,
       if (imagePath != null) 'image_path': imagePath,
-      if (mobileImagePath != null) 'mobile_image_path': mobileImagePath,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2496,7 +2441,6 @@ class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
     Value<int>? sortOrder,
     Value<String>? contentRef,
     Value<String>? imagePath,
-    Value<String?>? mobileImagePath,
     Value<int>? rowid,
   }) {
     return PrimarySourcePagesCompanion(
@@ -2505,7 +2449,6 @@ class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
       sortOrder: sortOrder ?? this.sortOrder,
       contentRef: contentRef ?? this.contentRef,
       imagePath: imagePath ?? this.imagePath,
-      mobileImagePath: mobileImagePath ?? this.mobileImagePath,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2528,9 +2471,6 @@ class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
     if (imagePath.present) {
       map['image_path'] = Variable<String>(imagePath.value);
     }
-    if (mobileImagePath.present) {
-      map['mobile_image_path'] = Variable<String>(mobileImagePath.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2545,7 +2485,6 @@ class PrimarySourcePagesCompanion extends UpdateCompanion<PrimarySourcePage> {
           ..write('sortOrder: $sortOrder, ')
           ..write('contentRef: $contentRef, ')
           ..write('imagePath: $imagePath, ')
-          ..write('mobileImagePath: $mobileImagePath, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4913,7 +4852,6 @@ typedef $$PrimarySourcePagesTableCreateCompanionBuilder =
       Value<int> sortOrder,
       required String contentRef,
       required String imagePath,
-      Value<String?> mobileImagePath,
       Value<int> rowid,
     });
 typedef $$PrimarySourcePagesTableUpdateCompanionBuilder =
@@ -4923,7 +4861,6 @@ typedef $$PrimarySourcePagesTableUpdateCompanionBuilder =
       Value<int> sortOrder,
       Value<String> contentRef,
       Value<String> imagePath,
-      Value<String?> mobileImagePath,
       Value<int> rowid,
     });
 
@@ -4958,11 +4895,6 @@ class $$PrimarySourcePagesTableFilterComposer
 
   ColumnFilters<String> get imagePath => $composableBuilder(
     column: $table.imagePath,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get mobileImagePath => $composableBuilder(
-    column: $table.mobileImagePath,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -5000,11 +4932,6 @@ class $$PrimarySourcePagesTableOrderingComposer
     column: $table.imagePath,
     builder: (column) => ColumnOrderings(column),
   );
-
-  ColumnOrderings<String> get mobileImagePath => $composableBuilder(
-    column: $table.mobileImagePath,
-    builder: (column) => ColumnOrderings(column),
-  );
 }
 
 class $$PrimarySourcePagesTableAnnotationComposer
@@ -5032,11 +4959,6 @@ class $$PrimarySourcePagesTableAnnotationComposer
 
   GeneratedColumn<String> get imagePath =>
       $composableBuilder(column: $table.imagePath, builder: (column) => column);
-
-  GeneratedColumn<String> get mobileImagePath => $composableBuilder(
-    column: $table.mobileImagePath,
-    builder: (column) => column,
-  );
 }
 
 class $$PrimarySourcePagesTableTableManager
@@ -5084,7 +5006,6 @@ class $$PrimarySourcePagesTableTableManager
                 Value<int> sortOrder = const Value.absent(),
                 Value<String> contentRef = const Value.absent(),
                 Value<String> imagePath = const Value.absent(),
-                Value<String?> mobileImagePath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PrimarySourcePagesCompanion(
                 sourceId: sourceId,
@@ -5092,7 +5013,6 @@ class $$PrimarySourcePagesTableTableManager
                 sortOrder: sortOrder,
                 contentRef: contentRef,
                 imagePath: imagePath,
-                mobileImagePath: mobileImagePath,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5102,7 +5022,6 @@ class $$PrimarySourcePagesTableTableManager
                 Value<int> sortOrder = const Value.absent(),
                 required String contentRef,
                 required String imagePath,
-                Value<String?> mobileImagePath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PrimarySourcePagesCompanion.insert(
                 sourceId: sourceId,
@@ -5110,7 +5029,6 @@ class $$PrimarySourcePagesTableTableManager
                 sortOrder: sortOrder,
                 contentRef: contentRef,
                 imagePath: imagePath,
-                mobileImagePath: mobileImagePath,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -923,7 +923,6 @@ class PrimarySourcesMixin:
                       p.sort_order,
                       p.content_ref,
                       p.image_path,
-                      COALESCE(p.mobile_image_path, '') AS mobile_image_path,
                       (
                         SELECT COUNT(*)
                         FROM primary_source_words w
@@ -951,7 +950,6 @@ class PrimarySourcesMixin:
                     sort_order=int(row["sort_order"] or 0),
                     content_ref=row["content_ref"] or "",
                     image_path=row["image_path"] or "",
-                    mobile_image_path=row["mobile_image_path"] or "",
                     words_count=int(row["words_count"] or 0),
                     verse_rows_count=int(row["verse_rows_count"] or 0),
                     local_exists=self._primary_source_page_exists_locally(row["image_path"] or ""),
@@ -1638,9 +1636,8 @@ class PrimarySourcesMixin:
 
             page_dirs: list[Path] = []
             for row in self.primary_source_pages:
-                for image_path in (row.image_path, row.mobile_image_path):
-                    if image_path.strip():
-                        page_dirs.append(self._primary_source_local_path(image_path).parent)
+                if row.image_path.strip():
+                    page_dirs.append(self._primary_source_local_path(row.image_path).parent)
 
             if page_dirs:
                 try:
@@ -2085,11 +2082,10 @@ class PrimarySourcesMixin:
             return self._show_form_dialog(
                 "Страница первоисточника",
                 [
-                    FormFieldSpec("page_name", "Page name"),
-                    FormFieldSpec("sort_order", "Sort order"),
-                    FormFieldSpec("content_ref", "Content ref"),
-                    FormFieldSpec("image_path", "Image path", width=70),
-                    FormFieldSpec("mobile_image_path", "Mobile image path", width=70),
+                    FormFieldSpec("page_name", "Название"),
+                    FormFieldSpec("sort_order", "Порядок"),
+                    FormFieldSpec("content_ref", "Содержимое"),
+                    FormFieldSpec("image_path", "Путь на сервере и локально", width=70),
                 ],
                 initial=initial,
             )
@@ -2119,7 +2115,6 @@ class PrimarySourcesMixin:
                     "sort_order": str(row.sort_order),
                     "content_ref": row.content_ref,
                     "image_path": row.image_path,
-                    "mobile_image_path": row.mobile_image_path,
                 }
             )
             if payload is None:
@@ -2138,12 +2133,11 @@ class PrimarySourcesMixin:
             page_name = str(payload["page_name"]).strip()
             content_ref = str(payload["content_ref"]).strip()
             image_path = str(payload["image_path"]).strip().replace("\\", "/")
-            mobile_image_path = str(payload["mobile_image_path"]).strip().replace("\\", "/")
             if not page_name or not content_ref:
-                messagebox.showwarning("Ошибка", "Page name и Content ref обязательны.", parent=self)
+                messagebox.showwarning("Ошибка", "Название и Содержимое обязательны.", parent=self)
                 return
             try:
-                sort_order = self._parse_required_int(payload["sort_order"], "Sort order")
+                sort_order = self._parse_required_int(payload["sort_order"], "Порядок")
             except ValueError as exc:
                 messagebox.showwarning("Ошибка данных", str(exc), parent=self)
                 return
@@ -2192,10 +2186,9 @@ class PrimarySourcesMixin:
                           page_name,
                           sort_order,
                           content_ref,
-                          image_path,
-                          mobile_image_path
+                          image_path
                         )
-                        VALUES(?, ?, ?, ?, ?, ?)
+                        VALUES(?, ?, ?, ?, ?)
                         """,
                         (
                             source_id,
@@ -2203,7 +2196,6 @@ class PrimarySourcesMixin:
                             sort_order,
                             content_ref,
                             image_path,
-                            mobile_image_path or None,
                         ),
                     )
             except sqlite3.DatabaseError as exc:
