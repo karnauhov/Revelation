@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate a baseline report for the hardcoded primary sources repository."""
+"""Generate a baseline report for the legacy primary sources snapshot."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ METHOD_NAMES = (
 
 
 def default_repository_path() -> Path:
-    return Path(__file__).resolve().parents[1] / "lib" / "repositories" / "primary_sources_repository.dart"
+    return Path(__file__).resolve().parent / "legacy" / "primary_sources_repository.dart.txt"
 
 
 def extract_method_source_ids(text: str) -> dict[str, list[str]]:
@@ -127,13 +127,13 @@ def print_summary(report: dict[str, object]) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate a baseline report for primary_sources_repository.dart."
+        description="Generate a baseline report for the legacy primary sources snapshot."
     )
     parser.add_argument(
         "--repository",
         type=Path,
         default=default_repository_path(),
-        help="Path to primary_sources_repository.dart",
+        help="Path to the legacy primary_sources_repository.dart.txt snapshot",
     )
     parser.add_argument(
         "--json",

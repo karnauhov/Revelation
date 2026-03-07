@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Migrate hardcoded primary sources into SQLite databases."""
+"""Migrate the legacy primary sources snapshot into SQLite databases."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ LOCALIZED_TEXT_FIELDS = (
 
 
 class ParseError(RuntimeError):
-    """Raised when the hardcoded repository cannot be parsed safely."""
+    """Raised when the legacy snapshot cannot be parsed safely."""
 
 
 @dataclass(frozen=True)
@@ -120,7 +120,7 @@ class ParsedDataset:
 
 
 def default_repository_path() -> Path:
-    return Path(__file__).resolve().parents[1] / "lib" / "repositories" / "primary_sources_repository.dart"
+    return Path(__file__).resolve().parent / "legacy" / "primary_sources_repository.dart.txt"
 
 
 def default_l10n_dir() -> Path:
@@ -1207,13 +1207,13 @@ def print_summary(report: dict[str, Any]) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Migrate hardcoded primary sources into revelation SQLite databases."
+        description="Migrate the legacy primary sources snapshot into revelation SQLite databases."
     )
     parser.add_argument(
         "--repository",
         type=Path,
         default=default_repository_path(),
-        help="Path to primary_sources_repository.dart",
+        help="Path to the legacy primary_sources_repository.dart.txt snapshot",
     )
     parser.add_argument(
         "--l10n-dir",

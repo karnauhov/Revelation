@@ -1,12 +1,12 @@
 # Миграция Primary Sources в БД
 
 Последнее обновление: 2026-03-07
-Статус: Фаза 7 завершена
+Статус: Миграция завершена
 
 ## Цель
 
-Перенести данные, которые сейчас захардкожены в
-`lib/repositories/primary_sources_repository.dart`, в существующую схему БД:
+Перенести данные, которые были захардкожены в legacy snapshot
+`scripts/legacy/primary_sources_repository.dart.txt`, в существующую схему БД:
 
 - общая БД: `revelation.sqlite`
 - локализованные БД: `revelation_<lang>.sqlite`
@@ -15,6 +15,10 @@
 поддержку первоисточников в `scripts/content_tool.py` и хранить прогресс работ
 в одном месте, чтобы миграцию можно было безопасно продолжить в следующем
 сеансе или из другого чата.
+
+Итог: все запланированные фазы выполнены, runtime переведен на БД, инструменты
+редактирования перенесены в `content_tool.py`, а итоговые проверки пройдены
+успешно.
 
 ## Зафиксированные решения
 
@@ -440,11 +444,37 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
 
 ### Фаза 8. Очистка
 
-- [ ] Удалить source-specific ARB keys после перехода на БД
-- [ ] Удалить obsolete код из `primary_sources_repository.dart`
-- [ ] Решить, оставлять ли standalone `contour_editor.py` или убрать его
-- [ ] Обновить `DEV_INFO.md`, если изменится maintenance workflow
-- [ ] Добавить финальные заметки по будущему добавлению новых источников
+- [x] Удалить source-specific ARB keys после перехода на БД
+- [x] Удалить obsolete код из `primary_sources_repository.dart`
+- [x] Убрать standalone `contour_editor.py`, оставив единый workflow в `content_tool.py`
+- [x] Обновить `DEV_INFO.md` под новый maintenance workflow
+- [x] Добавить финальные заметки по будущему добавлению новых источников
+
+## После миграции
+
+- Runtime-приложение больше не использует `lib/repositories/primary_sources_repository.dart`;
+  legacy snapshot перенесен в `scripts/legacy/primary_sources_repository.dart.txt`
+  только для исторического контекста, baseline-скрипта и одноразового импортёра.
+- Source-specific тексты удалены из `app_en.arb`, `app_es.arb`, `app_uk.arb`,
+  `app_ru.arb`. В ARB остаются только общие UI-строки (`wikipedia`, `intf`,
+  `image_source` и другие экранные тексты).
+- Новые первоисточники теперь добавляются через `scripts/content_tool.py` во
+  вкладке `Первоисточники` без правок в ARB и без новой версии приложения:
+  - common metadata, preview resource, links, attributions, pages, words и verses
+    редактируются в `revelation.sqlite`
+  - localized metadata и `primary_source_link_texts` редактируются в
+    `revelation_<lang>.sqlite`
+- Preview изображения добавляются через импорт в `common_resources`.
+  Изображения страниц хранятся по app-compatible путям в
+  `%Documents%/revelation/primary_sources/...` и могут скачиваться прямо из
+  `content_tool.py`.
+- Contour workflow теперь существует только внутри `content_tool.py` и пишет
+  напрямую в `primary_source_verses`.
+- При любом будущем изменении данных первоисточников нужно:
+  - обновить локальные БД
+  - загрузить новые DB-файлы в Supabase bucket
+  - скопировать актуальные DB-файлы в `web/db/`
+  - задеплоить обновление сайта в репозитории `Revelation.website`
 
 ## Журнал сессий
 
@@ -585,3 +615,20 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
       `U229`
     - zero-page sources: `U025`, `U052`
     - все 4 locale DB содержат полный и непустой `primary_source_texts`
+- Выполнена Фаза 8:
+  - source-specific ключи удалены из `app_en.arb`, `app_es.arb`, `app_ru.arb`,
+    `app_uk.arb`
+  - `flutter gen-l10n` пересобрал generated localization files без legacy
+    getter'ов `uncial_*` и `papyrus_*`
+  - obsolete runtime-файл `lib/repositories/primary_sources_repository.dart`
+    удален из `lib`, а legacy snapshot перенесен в
+    `scripts/legacy/primary_sources_repository.dart.txt`
+  - baseline и migration scripts обновлены на чтение из `scripts/legacy/...`
+  - standalone `scripts/contour_editor.py` удален; единый contour workflow
+    остался в `scripts/content_tool.py`
+  - обновлен `DEV_INFO.md` с новым workflow сопровождения первоисточников
+  - post-cleanup проверки прошли успешно:
+    - `python scripts/primary_sources_baseline_report.py`
+    - `python scripts/validate_primary_sources_phase7.py`
+    - `flutter analyze`
+    - `flutter test`

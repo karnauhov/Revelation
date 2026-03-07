@@ -8769,7 +8769,7 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         ttk.Label(
             container,
             text=(
-                "Paste Verse(...) block from PrimarySourcesRepository.\n"
+                "Paste Verse(...) block from the legacy primary sources snapshot.\n"
                 "Expected fields: chapterNumber, verseNumber, labelPosition, wordIndexes, contours."
             ),
             justify="left",
