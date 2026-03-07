@@ -931,7 +931,7 @@ class CoreUiMixin:
             self.btn_add_primary_source_link.pack(side="left")
             self.btn_edit_primary_source_link = ttk.Button(
                 actions,
-                **self._button_kwargs("save", "Изменить"),
+                **self._button_kwargs("edit", "Изменить"),
                 command=self._edit_primary_source_link,
             )
             self.btn_edit_primary_source_link.pack(side="left", padx=(8, 0))
@@ -986,7 +986,7 @@ class CoreUiMixin:
             self.btn_add_primary_source_attribution.pack(side="left")
             self.btn_edit_primary_source_attribution = ttk.Button(
                 actions,
-                **self._button_kwargs("save", "Изменить"),
+                **self._button_kwargs("edit", "Изменить"),
                 command=self._edit_primary_source_attribution,
             )
             self.btn_edit_primary_source_attribution.pack(side="left", padx=(8, 0))
@@ -1047,7 +1047,7 @@ class CoreUiMixin:
             self.btn_add_primary_source_page.pack(side="left")
             self.btn_edit_primary_source_page = ttk.Button(
                 page_actions,
-                **self._button_kwargs("save", "Изменить"),
+                **self._button_kwargs("edit", "Изменить"),
                 command=self._edit_primary_source_page,
             )
             self.btn_edit_primary_source_page.pack(side="left", padx=(8, 0))
@@ -1075,8 +1075,8 @@ class CoreUiMixin:
 
             words_box = ttk.LabelFrame(lower_pane, text="Слова на странице")
             verses_box = ttk.LabelFrame(lower_pane, text="Стихи на странице")
-            lower_pane.add(verses_box, stretch="always")
             lower_pane.add(words_box, stretch="always")
+            lower_pane.add(verses_box, stretch="always")
             self._set_initial_split(lower_pane, ratio=0.5)
 
             words_box.columnconfigure(0, weight=1)
@@ -1111,7 +1111,7 @@ class CoreUiMixin:
             self.btn_add_primary_source_word.pack(side="left")
             self.btn_edit_primary_source_word = ttk.Button(
                 word_actions,
-                **self._button_kwargs("save", "Изменить"),
+                **self._button_kwargs("edit", "Изменить"),
                 command=self._edit_primary_source_word,
             )
             self.btn_edit_primary_source_word.pack(side="left", padx=(8, 0))
@@ -1154,7 +1154,7 @@ class CoreUiMixin:
             self.btn_add_primary_source_verse.pack(side="left")
             self.btn_edit_primary_source_verse = ttk.Button(
                 verse_actions,
-                **self._button_kwargs("save", "Изменить"),
+                **self._button_kwargs("edit", "Изменить"),
                 command=self._edit_primary_source_verse,
             )
             self.btn_edit_primary_source_verse.pack(side="left", padx=(8, 0))

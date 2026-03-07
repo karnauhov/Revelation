@@ -18,6 +18,7 @@ from typing import Any
 
 from ..compat import Image, ImageTk
 from ..dialogs.primary_source_contour import PrimarySourceContourEditorDialog
+from ..dialogs.primary_source_word_editor import PrimarySourceWordEditorDialog
 from ..helpers import default_primary_sources_dir, parse_verse_snippet
 from ..models import FormFieldSpec, PrimarySourcePageSummary, PrimarySourceSummary
 
@@ -133,8 +134,10 @@ class PrimarySourcesMixin:
             return int(text)
 
         def _parse_optional_int(self, raw: object) -> int | None:
+            if raw is None:
+                return None
             text = str(raw).strip()
-            if not text:
+            if not text or text.lower() == "none":
                 return None
             return int(text)
 
@@ -142,7 +145,7 @@ class PrimarySourcesMixin:
             text = str(raw).strip()
             if not text:
                 raise ValueError(f"Поле '{field_label}' не может быть пустым.")
-            return float(text)
+            return float(text.replace(",", "."))
 
         def _parse_json_list(self, raw: object, field_label: str) -> list[object]:
             text = str(raw).strip() or "[]"
@@ -153,6 +156,36 @@ class PrimarySourcesMixin:
             if not isinstance(payload, list):
                 raise ValueError(f"Поле '{field_label}' должно содержать JSON-массив.")
             return payload
+
+        def _parse_int_list_payload(self, raw: object, field_label: str) -> list[int]:
+            if isinstance(raw, list):
+                payload = raw
+            else:
+                payload = self._parse_json_list(raw, field_label)
+            result: list[int] = []
+            for item in payload:
+                result.append(int(item))
+            return result
+
+        def _parse_word_rectangles_payload(self, raw: object) -> list[list[float]]:
+            if isinstance(raw, list):
+                payload = raw
+            else:
+                payload = self._parse_json_list(raw, "Rectangles")
+            rectangles: list[list[float]] = []
+            for idx, item in enumerate(payload):
+                if not isinstance(item, (list, tuple)) or len(item) != 4:
+                    raise ValueError(f"Rectangles: элемент #{idx} должен быть массивом из 4 чисел.")
+                try:
+                    x1, y1, x2, y2 = [float(value) for value in item]
+                except (TypeError, ValueError) as exc:
+                    raise ValueError(f"Rectangles: элемент #{idx} содержит нечисловые значения.") from exc
+                left, right = sorted((max(0.0, min(1.0, x1)), max(0.0, min(1.0, x2))))
+                top, bottom = sorted((max(0.0, min(1.0, y1)), max(0.0, min(1.0, y2))))
+                if right - left < 1e-6 or bottom - top < 1e-6:
+                    continue
+                rectangles.append([left, top, right, bottom])
+            return rectangles
 
         def _safe_json_loads(self, raw: str, fallback: object) -> object:
             try:
@@ -1098,6 +1131,20 @@ class PrimarySourcesMixin:
         def _on_primary_source_verse_selected(self, _event: object) -> None:
             selection = self.primary_source_verses_tree.selection()
             self.selected_primary_source_verse_index = int(selection[0]) if selection else None
+
+        def _select_primary_source_word_by_value(self, word_index: int) -> None:
+            if not hasattr(self, "primary_source_words_tree"):
+                return
+            for idx, row in enumerate(self.primary_source_word_rows):
+                if int(row["word_index"] or 0) != word_index:
+                    continue
+                iid = str(idx)
+                if self.primary_source_words_tree.exists(iid):
+                    self.primary_source_words_tree.selection_set(iid)
+                    self.primary_source_words_tree.focus(iid)
+                    self.primary_source_words_tree.see(iid)
+                    self.selected_primary_source_word_index = idx
+                return
 
         def _select_primary_source_verse_by_value(self, verse_index: int) -> None:
             if not hasattr(self, "primary_source_verses_tree"):
@@ -2344,19 +2391,46 @@ class PrimarySourcesMixin:
                 ),
             )
 
-        def _word_dialog_payload(self, initial: dict[str, object] | None = None) -> dict[str, object] | None:
-            return self._show_form_dialog(
-                "Слово страницы",
-                [
-                    FormFieldSpec("word_index", "Word index"),
-                    FormFieldSpec("text", "Text", width=50),
-                    FormFieldSpec("strong_number", "Strong number"),
-                    FormFieldSpec("strong_pronounce", "Strong pronounce", kind="check"),
-                    FormFieldSpec("strong_x_shift", "Strong X shift"),
-                    FormFieldSpec("missing_char_indexes_json", "Missing char indexes JSON", kind="text", height=3),
-                    FormFieldSpec("rectangles_json", "Rectangles JSON", kind="text", height=5),
-                ],
-                initial=initial,
+        def _strong_entries_for_word_editor(self) -> list[tuple[int, str]]:
+            return [(int(row.id), str(row.word or "")) for row in self.strong_rows]
+
+        def _open_primary_source_word_editor(
+            self,
+            *,
+            initial_payload: dict[str, object],
+            previous_word_index: int | None,
+        ) -> None:
+            page_row = self._selected_primary_source_page_row()
+            source_id = self.selected_primary_source_id
+            page_name = self.selected_primary_source_page_name
+            if page_row is None or not source_id or not page_name:
+                messagebox.showinfo("Нет страницы", "Сначала выберите страницу.", parent=self)
+                return
+
+            image_path = self._primary_source_local_path(page_row.image_path)
+            if not image_path.exists():
+                messagebox.showinfo(
+                    "Нет изображения",
+                    (
+                        "Локальный файл страницы не найден.\n"
+                        "Скачайте страницу кнопкой из раздела первоисточников."
+                    ),
+                    parent=self,
+                )
+                return
+
+            PrimarySourceWordEditorDialog(
+                parent=self,
+                image_path=image_path,
+                source_id=source_id,
+                page_name=page_name,
+                initial_payload=initial_payload,
+                previous_word_index=previous_word_index,
+                strong_entries=self._strong_entries_for_word_editor(),
+                on_save=lambda payload, previous: self._save_primary_source_word_record(
+                    payload,
+                    previous_word_index=previous,
+                ),
             )
 
         def _add_primary_source_word(self) -> None:
@@ -2365,40 +2439,34 @@ class PrimarySourcesMixin:
             if not self.selected_primary_source_page_name:
                 messagebox.showinfo("Нет страницы", "Сначала выберите страницу.", parent=self)
                 return
-            payload = self._word_dialog_payload(
-                {
-                    "word_index": str(
-                        max((int(row["word_index"] or 0) for row in self.primary_source_word_rows), default=-1) + 1
-                    ),
+            next_word_index = max((int(row["word_index"] or 0) for row in self.primary_source_word_rows), default=-1) + 1
+            self._open_primary_source_word_editor(
+                initial_payload={
+                    "word_index": next_word_index,
+                    "text": "",
+                    "strong_number": "",
                     "strong_pronounce": False,
                     "strong_x_shift": "0.0",
-                    "missing_char_indexes_json": "[]",
-                    "rectangles_json": "[]",
-                }
+                    "missing_char_indexes_json": [],
+                    "rectangles_json": [],
+                },
+                previous_word_index=None,
             )
-            if payload is None:
-                return
-            self._save_primary_source_word_record(payload, previous_word_index=None)
 
         def _edit_primary_source_word(self) -> None:
             row = self._selected_primary_source_word_row()
             if row is None:
                 return
-            payload = self._word_dialog_payload(
-                {
+            self._open_primary_source_word_editor(
+                initial_payload={
                     "word_index": str(int(row["word_index"] or 0)),
                     "text": row["text"] or "",
                     "strong_number": "" if row["strong_number"] is None else str(row["strong_number"]),
                     "strong_pronounce": bool(row["strong_pronounce"]),
                     "strong_x_shift": str(float(row["strong_x_shift"] or 0.0)),
-                    "missing_char_indexes_json": row["missing_char_indexes_json"] or "[]",
-                    "rectangles_json": row["rectangles_json"] or "[]",
-                }
-            )
-            if payload is None:
-                return
-            self._save_primary_source_word_record(
-                payload,
+                    "missing_char_indexes_json": self._safe_json_loads(row["missing_char_indexes_json"] or "[]", []),
+                    "rectangles_json": self._safe_json_loads(row["rectangles_json"] or "[]", []),
+                },
                 previous_word_index=int(row["word_index"] or 0),
             )
 
@@ -2407,24 +2475,27 @@ class PrimarySourcesMixin:
             payload: dict[str, object],
             *,
             previous_word_index: int | None,
-        ) -> None:
+        ) -> bool:
             source_id = self.selected_primary_source_id
             page_name = self.selected_primary_source_page_name
             if not source_id or not page_name or self.common_connection is None:
-                return
+                return False
             text = str(payload["text"]).strip()
             if not text:
-                messagebox.showwarning("Ошибка", "Text обязателен.", parent=self)
-                return
+                messagebox.showwarning("Ошибка", "Слово обязательно.", parent=self)
+                return False
             try:
                 word_index = self._parse_required_int(payload["word_index"], "Word index")
                 strong_number = self._parse_optional_int(payload["strong_number"])
                 strong_x_shift = self._parse_required_float(payload["strong_x_shift"], "Strong X shift")
-                self._parse_json_list(payload["missing_char_indexes_json"], "Missing char indexes JSON")
-                self._parse_json_list(payload["rectangles_json"], "Rectangles JSON")
+                missing_char_indexes = self._parse_int_list_payload(
+                    payload.get("missing_char_indexes_json", []),
+                    "Missing char indexes",
+                )
+                rectangles = self._parse_word_rectangles_payload(payload.get("rectangles_json", []))
             except ValueError as exc:
                 messagebox.showwarning("Ошибка данных", str(exc), parent=self)
-                return
+                return False
 
             duplicate = next(
                 (
@@ -2437,7 +2508,7 @@ class PrimarySourcesMixin:
             )
             if duplicate is not None:
                 messagebox.showwarning("Дубликат", f"Word index '{word_index}' уже существует.", parent=self)
-                return
+                return False
 
             try:
                 with self.common_connection:
@@ -2474,22 +2545,18 @@ class PrimarySourcesMixin:
                             strong_number,
                             1 if bool(payload["strong_pronounce"]) else 0,
                             strong_x_shift,
-                            json.dumps(
-                                self._parse_json_list(payload["missing_char_indexes_json"], "Missing char indexes JSON"),
-                                ensure_ascii=False,
-                            ),
-                            json.dumps(
-                                self._parse_json_list(payload["rectangles_json"], "Rectangles JSON"),
-                                ensure_ascii=False,
-                            ),
+                            json.dumps(missing_char_indexes, ensure_ascii=False),
+                            json.dumps(rectangles, ensure_ascii=False),
                         ),
                     )
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить слово:\n{exc}", parent=self)
-                return
+                return False
             self._load_primary_source_page_children()
+            self._select_primary_source_word_by_value(word_index)
             self._refresh_primary_source_validation()
             self._set_status(f"Слово #{word_index} сохранено.")
+            return True
 
         def _delete_primary_source_word(self) -> None:
             row = self._selected_primary_source_word_row()
