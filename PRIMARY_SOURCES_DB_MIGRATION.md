@@ -1,7 +1,7 @@
 # Миграция Primary Sources в БД
 
 Последнее обновление: 2026-03-07
-Статус: Фаза 4 завершена
+Статус: Фаза 5 завершена
 
 ## Цель
 
@@ -401,14 +401,14 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
 
 ### Фаза 5. Интеграция contour editor
 
-- [ ] Перенести workflow contour editor внутрь `content_tool.py`
-- [ ] Убрать зависимость от вставки `Verse(...)` snippets как основного сценария
+- [x] Перенести workflow contour editor внутрь `content_tool.py`
+- [x] Убрать зависимость от вставки `Verse(...)` snippets как основного сценария
       редактирования
-- [ ] Загружать verse contour data напрямую из `primary_source_verses`
-- [ ] Сохранять изменения contours напрямую обратно в БД
-- [ ] Оставить import/export helper для `Verse(...)` текста только как
+- [x] Загружать verse contour data напрямую из `primary_source_verses`
+- [x] Сохранять изменения contours напрямую обратно в БД
+- [x] Оставить import/export helper для `Verse(...)` текста только как
       дополнительную утилиту
-- [ ] Добавить точки входа из выбранных source/page/verse строк в contour UI
+- [x] Добавить точки входа из выбранных source/page/verse строк в contour UI
 
 ### Фаза 6. Кнопки скачивания изображений в `content_tool.py`
 
@@ -532,3 +532,14 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
   - smoke-test `TopicContentTool(...)` на реальных БД успешно поднимает UI и
     читает 19 imported sources
   - `python -m py_compile scripts/content_tool.py` прошел успешно
+- Выполнена Фаза 5:
+  - standalone-логика из `scripts/contour_editor.py` перенесена в
+    `PrimarySourceContourEditorDialog` внутри `scripts/content_tool.py`
+  - editor теперь открывается из выбранной page/verse строки раздела
+    `Первоисточники`
+  - verse contour data загружаются напрямую из `primary_source_verses`
+  - `Save to DB` пишет изменения обратно в `primary_source_verses` без
+    промежуточного `Verse(...)` snippet workflow
+  - import/export `Verse(...)` сохранен как вспомогательный инструмент внутри
+    самого editor dialog
+  - smoke-test на `U001` подтвердил открытие dialog и direct-save обратно в БД
