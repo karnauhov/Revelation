@@ -683,6 +683,7 @@ class CoreUiMixin:
             common_content = self._create_scrollable_frame(common_tab)
             common_content.columnconfigure(0, weight=1)
             common_content.columnconfigure(1, weight=1)
+            common_content.columnconfigure(1, minsize=300)
 
             common_form = ttk.Frame(common_content)
             common_form.grid(row=0, column=0, sticky="nsew", padx=(0, 6))
@@ -814,6 +815,7 @@ class CoreUiMixin:
             preview_panel = ttk.Frame(common_content)
             preview_panel.grid(row=0, column=1, sticky="nsew", padx=(6, 0))
             preview_panel.columnconfigure(0, weight=1)
+            preview_panel.columnconfigure(0, minsize=300)
             preview_panel.rowconfigure(1, weight=1)
             ttk.Label(preview_panel, text="Предпросмотр").grid(row=0, column=0, sticky="w", pady=(0, 8))
             self.primary_source_preview_label = tk.Label(
@@ -855,30 +857,26 @@ class CoreUiMixin:
                 ("Классификация:", self.primary_source_classification_text_var),
                 ("Где находиться:", self.primary_source_current_location_text_var),
             ]
-            for idx, (label, variable) in enumerate(localized_fields, start=1):
-                ttk.Label(localized_content, text=label).grid(row=idx, column=0, sticky="w", padx=(0, 8), pady=3)
-                entry = ttk.Entry(localized_content, textvariable=variable)
-                entry.grid(row=idx, column=1, sticky="ew", pady=3)
-                self.primary_source_localized_input_widgets.append(entry)
-            for widget in self.primary_source_localized_input_widgets:
-                widget.destroy()
-            self.primary_source_localized_input_widgets = []
-            for idx, (field_key, variable) in enumerate(
-                [
-                    ("title_markup", self.primary_source_title_markup_var),
-                    ("date_label", self.primary_source_date_label_var),
-                    ("content_label", self.primary_source_content_label_var),
-                    ("material_text", self.primary_source_material_text_var),
-                    ("text_style_text", self.primary_source_text_style_text_var),
-                    ("found_text", self.primary_source_found_text_var),
-                    ("classification_text", self.primary_source_classification_text_var),
-                    ("current_location_text", self.primary_source_current_location_text_var),
-                ],
+            localized_field_specs = [
+                ("title_markup", 1),
+                ("date_label", 1),
+                ("content_label", 2),
+                ("material_text", 4),
+                ("text_style_text", 4),
+                ("found_text", 4),
+                ("classification_text", 4),
+                ("current_location_text", 3),
+            ]
+            for idx, ((label, variable), (field_key, field_height)) in enumerate(
+                zip(localized_fields, localized_field_specs),
                 start=1,
             ):
-                text_widget = tk.Text(localized_content, wrap="word", height=2)
+                ttk.Label(localized_content, text=label).grid(row=idx, column=0, sticky="w", padx=(0, 8), pady=3)
+                text_widget = tk.Text(localized_content, wrap="word", height=field_height)
                 text_widget.grid(row=idx, column=1, sticky="ew", pady=3)
-                text_widget.insert("1.0", variable.get())
+                current_value = variable.get()
+                if current_value:
+                    text_widget.insert("1.0", current_value)
                 self.primary_source_localized_input_widgets.append(text_widget)
                 self.primary_source_localized_text_widgets[field_key] = text_widget
 
@@ -897,23 +895,6 @@ class CoreUiMixin:
             )
             self.btn_reload_primary_source_localized.pack(side="left", padx=(8, 0))
 
-            validation_box = ttk.Frame(parent)
-            validation_box.grid(row=1, column=0, sticky="ew", pady=(10, 0))
-            validation_box.columnconfigure(0, weight=1)
-            ttk.Label(
-                validation_box,
-                textvariable=self.primary_source_validation_var,
-                foreground="#7a4c00",
-                justify="left",
-                wraplength=760,
-            ).grid(row=0, column=0, sticky="ew")
-            ttk.Label(
-                validation_box,
-                text="Проверяются превью, конфликты порядка, страницы и JSON OCR/контуров. Обновляется при выборе, перечитке и сохранении.",
-                foreground="#5f5f5f",
-                justify="left",
-                wraplength=760,
-            ).grid(row=1, column=0, sticky="ew", pady=(4, 0))
 
         def _build_primary_source_links_tab(self, parent: ttk.Frame) -> None:
             parent.columnconfigure(0, weight=1)

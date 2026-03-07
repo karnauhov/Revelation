@@ -549,7 +549,7 @@ class PrimarySourcesMixin:
             self._refresh_primary_source_pages_tree()
             self._refresh_primary_source_words_tree()
             self._refresh_primary_source_verses_tree()
-            self.primary_source_validation_var.set("Выберите первоисточник.")
+            self._primary_source_last_validation_log = ""
             self.primary_source_page_info_var.set("Страница не выбрана.")
 
         def _refresh_primary_source_preview_options(self) -> None:
@@ -1089,7 +1089,7 @@ class PrimarySourcesMixin:
         def _refresh_primary_source_validation(self) -> None:
             source_id = self.selected_primary_source_id
             if not source_id:
-                self.primary_source_validation_var.set("Выберите первоисточник.")
+                self._primary_source_last_validation_log = ""
                 return
 
             warnings: list[str] = []
@@ -1164,10 +1164,15 @@ class PrimarySourcesMixin:
                             f"{label} должен быть JSON-массивом."
                         )
 
-            if warnings:
-                self.primary_source_validation_var.set("\n".join(f"• {item}" for item in warnings))
-            else:
-                self.primary_source_validation_var.set("Валидация: явных проблем не найдено.")
+            if not warnings:
+                self._primary_source_last_validation_log = ""
+                return
+
+            message = f"Валидация '{source_id}': " + "; ".join(warnings)
+            if getattr(self, "_primary_source_last_validation_log", "") == message:
+                return
+            self._primary_source_last_validation_log = message
+            self._set_status(message)
 
         def _ensure_primary_source_section_ready(self) -> bool:
             if self.common_connection is None or self.common_db_path is None:
