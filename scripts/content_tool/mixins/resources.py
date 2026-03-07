@@ -159,6 +159,7 @@ class ResourcesMixin:
             if self.common_connection is None:
                 self._refresh_resources_tree()
                 self._refresh_topic_icon_options()
+                self._refresh_primary_source_preview_options()
                 self._update_section_db_labels()
                 return
             try:
@@ -182,6 +183,7 @@ class ResourcesMixin:
             ]
             self._refresh_resources_tree()
             self._refresh_topic_icon_options()
+            self._refresh_primary_source_preview_options()
             self._update_section_db_labels()
 
         def _refresh_resources_tree(self) -> None:

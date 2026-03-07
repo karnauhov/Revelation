@@ -126,7 +126,8 @@ class CoreUiMixin:
             self.selected_primary_source_word_index: int | None = None
             self.selected_primary_source_verse_index: int | None = None
             self.primary_source_validation_var = tk.StringVar(value="Выберите первоисточник.")
-            self.primary_source_locale_info_var = tk.StringVar(value="Локализованная БД: -")
+            self.primary_source_locale_db_var = tk.StringVar()
+            self.primary_source_locale_db_paths_by_lang: dict[str, Path] = {}
             self.primary_source_force_download_var = tk.BooleanVar(value=False)
             self.primary_source_page_info_var = tk.StringVar(value="Страница не выбрана.")
             self.primary_source_id_var = tk.StringVar()
@@ -149,6 +150,7 @@ class CoreUiMixin:
             self.primary_source_found_text_var = tk.StringVar()
             self.primary_source_classification_text_var = tk.StringVar()
             self.primary_source_current_location_text_var = tk.StringVar()
+            self.primary_source_localized_input_widgets: list[tk.Widget] = []
 
             self._build_ui()
             self._install_global_text_shortcuts()
@@ -534,8 +536,9 @@ class CoreUiMixin:
 
             ttk.Label(top, text="Общая БД:").grid(row=0, column=0, sticky="w", padx=(0, 8))
             ttk.Label(top, textvariable=self.sources_common_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
-            ttk.Label(top, text="Локализованная БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
-            ttk.Label(top, textvariable=self.sources_local_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
+            ttk.Label(top, text="Локализованные БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
+            self.entry_sources_langs = ttk.Entry(top, textvariable=self.sources_local_db_var, state="readonly")
+            self.entry_sources_langs.grid(row=0, column=3, sticky="ew")
 
             body = ttk.Frame(parent)
             body.grid(row=1, column=0, sticky="nsew")
@@ -566,7 +569,7 @@ class CoreUiMixin:
                 ("group", "Группа", 110, "center"),
                 ("pages", "Стр.", 55, "center"),
                 ("words", "Слова", 64, "center"),
-                ("verses", "Verse", 64, "center"),
+                ("verses", "Стих", 64, "center"),
                 ("en", "EN", 40, "center"),
                 ("es", "ES", 40, "center"),
                 ("uk", "UK", 40, "center"),
@@ -634,113 +637,163 @@ class CoreUiMixin:
             self._build_primary_source_attributions_tab(attribution_tab)
             self._build_primary_source_pages_tab(pages_tab)
 
+        def _create_scrollable_frame(
+            self,
+            parent: ttk.Frame,
+            *,
+            padding: tuple[int, int, int, int] = (8, 8, 8, 8),
+        ) -> ttk.Frame:
+            parent.columnconfigure(0, weight=1)
+            parent.rowconfigure(0, weight=1)
+
+            canvas = tk.Canvas(parent, highlightthickness=0, borderwidth=0)
+            canvas.grid(row=0, column=0, sticky="nsew")
+            scroll = ttk.Scrollbar(parent, orient="vertical", command=canvas.yview)
+            scroll.grid(row=0, column=1, sticky="ns")
+            canvas.configure(yscrollcommand=scroll.set)
+
+            content = ttk.Frame(canvas, padding=padding)
+            window_id = canvas.create_window((0, 0), window=content, anchor="nw")
+            content.bind(
+                "<Configure>",
+                lambda _event, current_canvas=canvas: current_canvas.configure(scrollregion=current_canvas.bbox("all")),
+            )
+            canvas.bind(
+                "<Configure>",
+                lambda event, current_canvas=canvas, current_window_id=window_id: current_canvas.itemconfigure(
+                    current_window_id,
+                    width=event.width,
+                ),
+            )
+            return content
+
         def _build_primary_source_metadata_tab(self, parent: ttk.Frame) -> None:
-            parent.columnconfigure(0, weight=3)
-            parent.columnconfigure(1, weight=2)
-            parent.rowconfigure(4, weight=1)
+            parent.columnconfigure(0, weight=1)
+            parent.rowconfigure(0, weight=1)
 
-            meta_frame = ttk.LabelFrame(parent, text="Общие данные")
-            meta_frame.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
-            meta_frame.columnconfigure(1, weight=1)
+            self.primary_source_metadata_tabs = ttk.Notebook(parent)
+            self.primary_source_metadata_tabs.grid(row=0, column=0, sticky="nsew")
 
-            ttk.Label(meta_frame, text="ID:").grid(row=0, column=0, sticky="w", padx=(0, 8), pady=4)
-            self.entry_primary_source_id = ttk.Entry(meta_frame, textvariable=self.primary_source_id_var, state="readonly")
+            common_tab = ttk.Frame(self.primary_source_metadata_tabs)
+            localized_tab = ttk.Frame(self.primary_source_metadata_tabs)
+            self.primary_source_metadata_tabs.add(common_tab, text="Общие данные")
+            self.primary_source_metadata_tabs.add(localized_tab, text="Локализованные поля")
+
+            common_content = self._create_scrollable_frame(common_tab)
+            common_content.columnconfigure(0, weight=3)
+            common_content.columnconfigure(1, weight=2)
+
+            common_form = ttk.Frame(common_content)
+            common_form.grid(row=0, column=0, sticky="nsew", padx=(0, 12))
+            common_form.columnconfigure(1, weight=1)
+
+            ttk.Label(common_form, text="ID:").grid(row=0, column=0, sticky="w", padx=(0, 8), pady=4)
+            self.entry_primary_source_id = ttk.Entry(common_form, textvariable=self.primary_source_id_var, state="readonly")
             self.entry_primary_source_id.grid(row=0, column=1, sticky="ew", pady=4)
 
-            ttk.Label(meta_frame, text="Family:").grid(row=1, column=0, sticky="w", padx=(0, 8), pady=4)
+            ttk.Label(common_form, text="Тип:").grid(row=1, column=0, sticky="w", padx=(0, 8), pady=4)
             self.combo_primary_source_family = ttk.Combobox(
-                meta_frame,
+                common_form,
                 textvariable=self.primary_source_family_var,
                 state="readonly",
                 values=("uncial", "papyrus", "other"),
             )
             self.combo_primary_source_family.grid(row=1, column=1, sticky="ew", pady=4)
 
-            ttk.Label(meta_frame, text="Number:").grid(row=2, column=0, sticky="w", padx=(0, 8), pady=4)
-            self.entry_primary_source_number = ttk.Entry(meta_frame, textvariable=self.primary_source_number_var)
+            ttk.Label(common_form, text="Индекс:").grid(row=2, column=0, sticky="w", padx=(0, 8), pady=4)
+            self.entry_primary_source_number = ttk.Entry(common_form, textvariable=self.primary_source_number_var)
             self.entry_primary_source_number.grid(row=2, column=1, sticky="ew", pady=4)
 
-            ttk.Label(meta_frame, text="Group:").grid(row=3, column=0, sticky="w", padx=(0, 8), pady=4)
+            ttk.Label(common_form, text="Группа:").grid(row=3, column=0, sticky="w", padx=(0, 8), pady=4)
             self.combo_primary_source_group_kind = ttk.Combobox(
-                meta_frame,
+                common_form,
                 textvariable=self.primary_source_group_kind_var,
                 state="readonly",
                 values=("full", "significant", "fragment"),
             )
             self.combo_primary_source_group_kind.grid(row=3, column=1, sticky="ew", pady=4)
 
-            ttk.Label(meta_frame, text="Sort order:").grid(row=4, column=0, sticky="w", padx=(0, 8), pady=4)
-            self.entry_primary_source_sort_order = ttk.Entry(meta_frame, textvariable=self.primary_source_sort_order_var)
+            ttk.Label(common_form, text="Порядок:").grid(row=4, column=0, sticky="w", padx=(0, 8), pady=4)
+            self.entry_primary_source_sort_order = ttk.Entry(common_form, textvariable=self.primary_source_sort_order_var)
             self.entry_primary_source_sort_order.grid(row=4, column=1, sticky="ew", pady=4)
 
-            ttk.Label(meta_frame, text="Verses count:").grid(row=5, column=0, sticky="w", padx=(0, 8), pady=4)
-            self.entry_primary_source_verses_count = ttk.Entry(meta_frame, textvariable=self.primary_source_verses_count_var)
+            ttk.Label(common_form, text="Кол-во стихов:").grid(row=5, column=0, sticky="w", padx=(0, 8), pady=4)
+            self.entry_primary_source_verses_count = ttk.Entry(common_form, textvariable=self.primary_source_verses_count_var)
             self.entry_primary_source_verses_count.grid(row=5, column=1, sticky="ew", pady=4)
 
-            ttk.Label(meta_frame, text="Preview key:").grid(row=6, column=0, sticky="w", padx=(0, 8), pady=4)
-            self.entry_primary_source_preview_key = ttk.Entry(meta_frame, textvariable=self.primary_source_preview_key_var)
-            self.entry_primary_source_preview_key.grid(row=6, column=1, sticky="ew", pady=4)
+            ttk.Label(common_form, text="Предпросмотр:").grid(row=6, column=0, sticky="w", padx=(0, 8), pady=4)
+            self.combo_primary_source_preview_key = ttk.Combobox(
+                common_form,
+                textvariable=self.primary_source_preview_key_var,
+                state="readonly",
+            )
+            self.combo_primary_source_preview_key.grid(row=6, column=1, sticky="ew", pady=4)
+            self.combo_primary_source_preview_key.bind(
+                "<<ComboboxSelected>>",
+                self._on_primary_source_preview_selected,
+            )
 
-            ttk.Label(meta_frame, text="Max scale:").grid(row=7, column=0, sticky="w", padx=(0, 8), pady=4)
+            ttk.Label(common_form, text="Max масштаб:").grid(row=7, column=0, sticky="w", padx=(0, 8), pady=4)
             self.entry_primary_source_default_scale = ttk.Entry(
-                meta_frame,
+                common_form,
                 textvariable=self.primary_source_default_max_scale_var,
             )
             self.entry_primary_source_default_scale.grid(row=7, column=1, sticky="ew", pady=4)
 
             self.check_primary_source_can_show_images = ttk.Checkbutton(
-                meta_frame,
-                text="Можно показывать изображения",
+                common_form,
+                text="Разрешены к публикации",
                 variable=self.primary_source_can_show_images_var,
             )
             self.check_primary_source_can_show_images.grid(row=8, column=1, sticky="w", pady=4)
 
             self.check_primary_source_images_are_monochrome = ttk.Checkbutton(
-                meta_frame,
+                common_form,
                 text="Изображения монохромные",
                 variable=self.primary_source_images_are_monochrome_var,
             )
             self.check_primary_source_images_are_monochrome.grid(row=9, column=1, sticky="w", pady=4)
 
-            ttk.Label(meta_frame, text="Notes:").grid(row=10, column=0, sticky="nw", padx=(0, 8), pady=4)
-            self.primary_source_notes_text = tk.Text(meta_frame, wrap="word", height=4)
+            ttk.Label(common_form, text="Заметки:").grid(row=10, column=0, sticky="nw", padx=(0, 8), pady=4)
+            self.primary_source_notes_text = tk.Text(common_form, wrap="word", height=6)
             self.primary_source_notes_text.grid(row=10, column=1, sticky="nsew", pady=4)
-            meta_frame.rowconfigure(10, weight=1)
+            common_form.rowconfigure(10, weight=1)
 
-            meta_actions = ttk.Frame(meta_frame)
+            meta_actions = ttk.Frame(common_form)
             meta_actions.grid(row=11, column=1, sticky="w", pady=(8, 0))
             self.btn_save_primary_source_metadata = ttk.Button(
                 meta_actions,
-                **self._button_kwargs("save", "Сохранить источник"),
-                command=self._save_primary_source_metadata,
+                **self._button_kwargs("save", "Сохранить"),
+                command=self._save_primary_source_common_metadata,
             )
             self.btn_save_primary_source_metadata.pack(side="left")
             self.btn_reload_primary_source_metadata = ttk.Button(
                 meta_actions,
-                **self._button_kwargs("cancel", "Перечитать из БД"),
-                command=self._reload_selected_primary_source,
+                **self._button_kwargs("cancel", "Отмена"),
+                command=self._reload_selected_primary_source_common_fields,
             )
             self.btn_reload_primary_source_metadata.pack(side="left", padx=(8, 0))
             self.btn_import_primary_source_preview = ttk.Button(
                 meta_actions,
-                **self._button_kwargs("replace_file", "Импорт preview"),
+                **self._button_kwargs("replace_file", "Импорт превью"),
                 command=self._import_primary_source_preview_resource,
             )
             self.btn_import_primary_source_preview.pack(side="left", padx=(8, 0))
             self.btn_open_primary_source_preview = ttk.Button(
                 meta_actions,
-                **self._button_kwargs("open_resource", "Открыть preview"),
+                **self._button_kwargs("open_resource", "Открыть превью"),
                 command=self._open_primary_source_preview_resource,
             )
             self.btn_open_primary_source_preview.pack(side="left", padx=(8, 0))
 
-            preview_frame = ttk.LabelFrame(parent, text="Preview")
-            preview_frame.grid(row=0, column=1, sticky="nsew")
-            preview_frame.columnconfigure(0, weight=1)
-            preview_frame.rowconfigure(0, weight=1)
+            preview_panel = ttk.Frame(common_content)
+            preview_panel.grid(row=0, column=1, sticky="nsew")
+            preview_panel.columnconfigure(0, weight=1)
+            preview_panel.rowconfigure(1, weight=1)
+            ttk.Label(preview_panel, text="Предпросмотр").grid(row=0, column=0, sticky="w", pady=(0, 8))
             self.primary_source_preview_label = tk.Label(
-                preview_frame,
-                text="Preview ресурса пока недоступен.",
+                preview_panel,
+                text="Предпросмотр пока недоступен.",
                 justify="center",
                 anchor="center",
                 relief="solid",
@@ -748,33 +801,54 @@ class CoreUiMixin:
                 padx=8,
                 pady=8,
             )
-            self.primary_source_preview_label.grid(row=0, column=0, sticky="nsew", padx=6, pady=6)
+            self.primary_source_preview_label.grid(row=1, column=0, sticky="nsew")
 
-            localized_box = ttk.LabelFrame(parent, text="Локализованные поля")
-            localized_box.grid(row=1, column=0, columnspan=2, sticky="nsew", pady=(8, 0))
-            localized_box.columnconfigure(1, weight=1)
+            localized_content = self._create_scrollable_frame(localized_tab)
+            localized_content.columnconfigure(1, weight=1)
+            self.primary_source_localized_input_widgets = []
 
-            ttk.Label(localized_box, textvariable=self.primary_source_locale_info_var).grid(
-                row=0,
-                column=0,
-                columnspan=2,
-                sticky="w",
-                pady=(0, 8),
+            ttk.Label(localized_content, text="Локализованная БД:").grid(row=0, column=0, sticky="w", padx=(0, 8), pady=(0, 8))
+            self.combo_primary_source_locale_db = ttk.Combobox(
+                localized_content,
+                textvariable=self.primary_source_locale_db_var,
+                state="readonly",
+            )
+            self.combo_primary_source_locale_db.grid(row=0, column=1, sticky="ew", pady=(0, 8))
+            self.combo_primary_source_locale_db.bind(
+                "<<ComboboxSelected>>",
+                self._on_primary_source_locale_db_selected,
             )
 
             localized_fields = [
-                ("Title markup:", self.primary_source_title_markup_var),
-                ("Date label:", self.primary_source_date_label_var),
-                ("Content label:", self.primary_source_content_label_var),
-                ("Material text:", self.primary_source_material_text_var),
-                ("Text style text:", self.primary_source_text_style_text_var),
-                ("Found text:", self.primary_source_found_text_var),
-                ("Classification text:", self.primary_source_classification_text_var),
-                ("Current location text:", self.primary_source_current_location_text_var),
+                ("Название:", self.primary_source_title_markup_var),
+                ("Время создания:", self.primary_source_date_label_var),
+                ("Содержание:", self.primary_source_content_label_var),
+                ("Материал:", self.primary_source_material_text_var),
+                ("Как написано:", self.primary_source_text_style_text_var),
+                ("Обнаружено:", self.primary_source_found_text_var),
+                ("Классификация:", self.primary_source_classification_text_var),
+                ("Где находиться:", self.primary_source_current_location_text_var),
             ]
             for idx, (label, variable) in enumerate(localized_fields, start=1):
-                ttk.Label(localized_box, text=label).grid(row=idx, column=0, sticky="w", padx=(0, 8), pady=3)
-                ttk.Entry(localized_box, textvariable=variable).grid(row=idx, column=1, sticky="ew", pady=3)
+                ttk.Label(localized_content, text=label).grid(row=idx, column=0, sticky="w", padx=(0, 8), pady=3)
+                entry = ttk.Entry(localized_content, textvariable=variable)
+                entry.grid(row=idx, column=1, sticky="ew", pady=3)
+                self.primary_source_localized_input_widgets.append(entry)
+
+            localized_actions = ttk.Frame(localized_content)
+            localized_actions.grid(row=len(localized_fields) + 1, column=1, sticky="w", pady=(10, 0))
+            self.btn_save_primary_source_localized = ttk.Button(
+                localized_actions,
+                **self._button_kwargs("save", "Сохранить"),
+                command=self._save_primary_source_localized_fields,
+            )
+            self.btn_save_primary_source_localized.pack(side="left")
+            self.btn_reload_primary_source_localized = ttk.Button(
+                localized_actions,
+                **self._button_kwargs("cancel", "Отмена"),
+                command=self._reload_selected_primary_source_localized_fields,
+            )
+            self.btn_reload_primary_source_localized.pack(side="left", padx=(8, 0))
 
             ttk.Label(
                 parent,
@@ -782,7 +856,7 @@ class CoreUiMixin:
                 foreground="#7a4c00",
                 justify="left",
                 wraplength=760,
-            ).grid(row=2, column=0, columnspan=2, sticky="ew", pady=(10, 0))
+            ).grid(row=1, column=0, sticky="ew", pady=(10, 0))
 
         def _build_primary_source_links_tab(self, parent: ttk.Frame) -> None:
             parent.columnconfigure(0, weight=1)
@@ -1126,9 +1200,7 @@ class CoreUiMixin:
             if self.current_db_path is not None:
                 local_text = self.current_db_path.stem
             self.strong_local_db_var.set(local_text)
-            self.sources_local_db_var.set(local_text)
             self.bibles_local_db_var.set(local_text)
-            self.primary_source_locale_info_var.set(f"Локализованная БД: {local_text}")
 
             common_text = "-"
             if self.common_db_path is not None:
@@ -1139,6 +1211,8 @@ class CoreUiMixin:
             self.bibles_common_db_var.set(common_text)
             languages = [lang for lang, _ in self._localized_db_entries()]
             self.strong_languages_var.set(", ".join(languages) if languages else "-")
+            self.sources_local_db_var.set(", ".join(languages) if languages else "-")
+            self._refresh_primary_source_locale_db_options()
         def _maximize_window(self) -> None:
             try:
                 self.state("zoomed")
@@ -1353,7 +1427,7 @@ class CoreUiMixin:
                 (self.combo_primary_source_group_kind, True),
                 (self.entry_primary_source_sort_order, False),
                 (self.entry_primary_source_verses_count, False),
-                (self.entry_primary_source_preview_key, False),
+                (self.combo_primary_source_preview_key, True),
                 (self.entry_primary_source_default_scale, False),
                 (self.check_primary_source_can_show_images, False),
                 (self.check_primary_source_images_are_monochrome, False),
@@ -1361,6 +1435,9 @@ class CoreUiMixin:
                 (self.btn_reload_primary_source_metadata, False),
                 (self.btn_import_primary_source_preview, False),
                 (self.btn_open_primary_source_preview, False),
+                (self.combo_primary_source_locale_db, True),
+                (self.btn_save_primary_source_localized, False),
+                (self.btn_reload_primary_source_localized, False),
                 (self.primary_source_links_tree, False),
                 (self.btn_add_primary_source_link, False),
                 (self.btn_edit_primary_source_link, False),
@@ -1395,6 +1472,8 @@ class CoreUiMixin:
                     sources_enabled,
                     readonly_when_enabled=readonly_when_enabled,
                 )
+            for widget in self.primary_source_localized_input_widgets:
+                self._set_ttk_widget_enabled(widget, sources_enabled)
             if self.primary_source_notes_text is not None:
                 self.primary_source_notes_text.configure(state="normal" if sources_enabled else "disabled")
             if not sources_enabled:
@@ -1595,12 +1674,12 @@ class CoreUiMixin:
                 )
                 return
 
-            self._set_status_indicator(dirty_like=not (has_local and has_common))
+            self._set_status_indicator(dirty_like=not (has_common and bool(localized_paths)))
             self._set_file_info(
                 self._compose_db_info_line(
                     [
-                        self.current_db_path,
                         self.common_db_path,
+                        *localized_paths,
                     ]
                 )
             )

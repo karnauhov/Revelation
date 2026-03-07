@@ -529,11 +529,12 @@ class PrimarySourcesMixin:
             self.primary_source_current_location_text_var.set("")
             if self.primary_source_notes_text is not None:
                 self._set_text_widget_content(self.primary_source_notes_text, "")
+            self._refresh_primary_source_preview_options()
             self.primary_source_preview_image = None
             if hasattr(self, "primary_source_preview_label"):
                 self.primary_source_preview_label.configure(
                     image="",
-                    text="Preview ресурса пока недоступен.",
+                    text="Предпросмотр пока недоступен.",
                 )
             self.primary_source_link_rows.clear()
             self.primary_source_attribution_rows.clear()
@@ -548,30 +549,64 @@ class PrimarySourcesMixin:
             self.primary_source_validation_var.set("Выберите первоисточник.")
             self.primary_source_page_info_var.set("Страница не выбрана.")
 
-        def _reload_selected_primary_source(self) -> None:
-            source_id = self.selected_primary_source_id
+        def _refresh_primary_source_preview_options(self) -> None:
+            if not hasattr(self, "combo_primary_source_preview_key"):
+                return
+            image_keys = sorted(
+                {
+                    row.key
+                    for row in self.common_resources
+                    if self._is_graphic_resource(row.mime_type, row.file_name)
+                }
+            )
+            current = self.primary_source_preview_key_var.get().strip()
+            if current and current not in image_keys:
+                image_keys.append(current)
+                image_keys.sort()
+            self.combo_primary_source_preview_key["values"] = ["", *image_keys]
+
+        def _on_primary_source_preview_selected(self, _event: object | None = None) -> None:
+            self._render_primary_source_preview()
+            self._refresh_primary_source_validation()
+
+        def _refresh_primary_source_locale_db_options(self) -> None:
+            entries = [(lang, path) for lang, path in self._localized_db_entries() if path.exists()]
+            self.primary_source_locale_db_paths_by_lang = {lang: path for lang, path in entries}
+            values = [lang for lang, _path in entries]
+            if hasattr(self, "combo_primary_source_locale_db"):
+                self.combo_primary_source_locale_db["values"] = values
+
+            current_lang = self.primary_source_locale_db_var.get().strip().lower()
+            if current_lang in self.primary_source_locale_db_paths_by_lang:
+                return
+
+            preferred_lang = self._current_primary_source_lang()
+            if preferred_lang and preferred_lang in self.primary_source_locale_db_paths_by_lang:
+                self.primary_source_locale_db_var.set(preferred_lang)
+            elif values:
+                self.primary_source_locale_db_var.set(values[0])
+            else:
+                self.primary_source_locale_db_var.set("")
+
+        def _selected_primary_source_locale_db_path(self) -> Path | None:
+            lang = self.primary_source_locale_db_var.get().strip().lower()
+            path = self.primary_source_locale_db_paths_by_lang.get(lang)
+            if path is None or not path.exists():
+                return None
+            return path
+
+        def _load_primary_source_common_row(self, source_id: str) -> sqlite3.Row | None:
             if not source_id or self.common_connection is None:
-                self._clear_primary_source_editor()
-                return
+                return None
+            try:
+                return self.common_connection.execute(
+                    "SELECT * FROM primary_sources WHERE id = ? LIMIT 1",
+                    (source_id,),
+                ).fetchone()
+            except sqlite3.DatabaseError:
+                return None
 
-            common_row = self.common_connection.execute(
-                "SELECT * FROM primary_sources WHERE id = ? LIMIT 1",
-                (source_id,),
-            ).fetchone()
-            if common_row is None:
-                self._clear_primary_source_editor()
-                return
-
-            localized_row: sqlite3.Row | None = None
-            if self.connection is not None:
-                try:
-                    localized_row = self.connection.execute(
-                        "SELECT * FROM primary_source_texts WHERE source_id = ? LIMIT 1",
-                        (source_id,),
-                    ).fetchone()
-                except sqlite3.DatabaseError:
-                    localized_row = None
-
+        def _apply_primary_source_common_row(self, common_row: sqlite3.Row) -> None:
             self.primary_source_id_var.set(common_row["id"])
             self.primary_source_family_var.set(common_row["family"] or "")
             self.primary_source_number_var.set(str(int(common_row["number"] or 0)))
@@ -584,7 +619,27 @@ class PrimarySourcesMixin:
             self.primary_source_images_are_monochrome_var.set(bool(common_row["images_are_monochrome"]))
             if self.primary_source_notes_text is not None:
                 self._set_text_widget_content(self.primary_source_notes_text, common_row["notes"] or "")
+            self._refresh_primary_source_preview_options()
+            self._render_primary_source_preview()
 
+        def _load_primary_source_localized_row(self, source_id: str, db_path: Path | None) -> sqlite3.Row | None:
+            if not source_id or db_path is None:
+                return None
+            con: sqlite3.Connection | None = None
+            try:
+                con = sqlite3.connect(str(db_path))
+                con.row_factory = sqlite3.Row
+                return con.execute(
+                    "SELECT * FROM primary_source_texts WHERE source_id = ? LIMIT 1",
+                    (source_id,),
+                ).fetchone()
+            except sqlite3.DatabaseError:
+                return None
+            finally:
+                if con is not None:
+                    con.close()
+
+        def _apply_primary_source_localized_row(self, localized_row: sqlite3.Row | None) -> None:
             def localized_value(key: str) -> str:
                 if localized_row is None:
                     return ""
@@ -599,7 +654,38 @@ class PrimarySourcesMixin:
             self.primary_source_classification_text_var.set(localized_value("classification_text"))
             self.primary_source_current_location_text_var.set(localized_value("current_location_text"))
 
-            self._render_primary_source_preview()
+        def _reload_selected_primary_source_common_fields(self) -> None:
+            source_id = self.selected_primary_source_id
+            common_row = self._load_primary_source_common_row(source_id or "")
+            if common_row is None:
+                if source_id is None:
+                    self._clear_primary_source_editor()
+                return
+            self._apply_primary_source_common_row(common_row)
+            self._refresh_primary_source_validation()
+
+        def _reload_selected_primary_source_localized_fields(self) -> None:
+            source_id = self.selected_primary_source_id
+            db_path = self._selected_primary_source_locale_db_path()
+            localized_row = self._load_primary_source_localized_row(source_id or "", db_path)
+            self._apply_primary_source_localized_row(localized_row)
+
+        def _on_primary_source_locale_db_selected(self, _event: object | None = None) -> None:
+            self._reload_selected_primary_source_localized_fields()
+
+        def _reload_selected_primary_source(self) -> None:
+            source_id = self.selected_primary_source_id
+            if not source_id or self.common_connection is None:
+                self._clear_primary_source_editor()
+                return
+
+            common_row = self._load_primary_source_common_row(source_id)
+            if common_row is None:
+                self._clear_primary_source_editor()
+                return
+
+            self._apply_primary_source_common_row(common_row)
+            self._reload_selected_primary_source_localized_fields()
             self._load_primary_source_links()
             self._load_primary_source_attributions()
             previous_page_name = self.selected_primary_source_page_name
@@ -626,7 +712,7 @@ class PrimarySourcesMixin:
             self.primary_source_preview_label.configure(image="")
             if payload is None:
                 self.primary_source_preview_label.configure(
-                    text="Preview ресурс не найден в common_resources.",
+                    text="Ресурс предпросмотра не найден.",
                 )
                 return
             data, mime, file_name = payload
@@ -668,11 +754,11 @@ class PrimarySourcesMixin:
                     self.primary_source_preview_label.configure(text=error_message)
                 else:
                     self.primary_source_preview_label.configure(
-                        text="Не удалось отрисовать preview ресурс.",
+                        text="Не удалось показать предпросмотр.",
                     )
                 return
             self.primary_source_preview_label.configure(
-                text=f"Preview ресурс найден, но не является изображением: {mime or file_name}",
+                text=f"Ресурс найден, но это не изображение: {mime or file_name}",
             )
 
         def _load_primary_source_links(self) -> None:
@@ -1067,6 +1153,40 @@ class PrimarySourcesMixin:
                 return False
             return True
 
+        def _ensure_primary_source_common_ready(self) -> bool:
+            if self.common_connection is None or self.common_db_path is None:
+                messagebox.showwarning("Нет общей БД", "Общая БД недоступна.", parent=self)
+                return False
+            return True
+
+        def _ensure_selected_primary_source_locale_db_ready(self) -> Path | None:
+            db_path = self._selected_primary_source_locale_db_path()
+            if db_path is None:
+                messagebox.showwarning(
+                    "Нет локализованной БД",
+                    "Выберите локализованную БД из списка.",
+                    parent=self,
+                )
+                return None
+            return db_path
+
+        def _ensure_primary_source_localized_schema_on_connection(self, connection: sqlite3.Connection) -> None:
+            connection.executescript(
+                """
+                CREATE TABLE IF NOT EXISTS primary_source_texts (
+                  source_id TEXT NOT NULL PRIMARY KEY,
+                  title_markup TEXT NOT NULL,
+                  date_label TEXT NOT NULL,
+                  content_label TEXT NOT NULL,
+                  material_text TEXT NOT NULL,
+                  text_style_text TEXT NOT NULL,
+                  found_text TEXT NOT NULL,
+                  classification_text TEXT NOT NULL,
+                  current_location_text TEXT NOT NULL
+                );
+                """
+            )
+
         def _selected_primary_source_link_row(self) -> sqlite3.Row | None:
             index = self.selected_primary_source_link_index
             if index is None or index < 0 or index >= len(self.primary_source_link_rows):
@@ -1097,8 +1217,8 @@ class PrimarySourcesMixin:
                 return None
             return self.primary_source_verse_rows[index]
 
-        def _save_primary_source_metadata(self) -> None:
-            if not self._ensure_primary_source_section_ready():
+        def _save_primary_source_common_metadata(self) -> None:
+            if not self._ensure_primary_source_common_ready():
                 return
 
             source_id = self.primary_source_id_var.get().strip()
@@ -1107,12 +1227,12 @@ class PrimarySourcesMixin:
                 return
 
             try:
-                number = self._parse_required_int(self.primary_source_number_var.get(), "Number")
-                sort_order = self._parse_required_int(self.primary_source_sort_order_var.get(), "Sort order")
-                verses_count = self._parse_required_int(self.primary_source_verses_count_var.get(), "Verses count")
+                number = self._parse_required_int(self.primary_source_number_var.get(), "Индекс")
+                sort_order = self._parse_required_int(self.primary_source_sort_order_var.get(), "Порядок")
+                verses_count = self._parse_required_int(self.primary_source_verses_count_var.get(), "Кол-во стихов")
                 default_max_scale = self._parse_required_float(
                     self.primary_source_default_max_scale_var.get(),
-                    "Max scale",
+                    "Max масштаб",
                 )
             except ValueError as exc:
                 messagebox.showwarning("Ошибка данных", str(exc), parent=self)
@@ -1172,6 +1292,20 @@ class PrimarySourcesMixin:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить источник:\n{exc}", parent=self)
                 return
 
+            self._load_primary_sources()
+            self._select_primary_source_by_id(source_id)
+            self._set_status(f"Первоисточник '{source_id}' сохранен.")
+
+        def _save_primary_source_localized_fields(self) -> None:
+            source_id = self.primary_source_id_var.get().strip()
+            if not source_id:
+                messagebox.showwarning("Нет источника", "Сначала выберите первоисточник.", parent=self)
+                return
+
+            db_path = self._ensure_selected_primary_source_locale_db_ready()
+            if db_path is None:
+                return
+
             localized_values = {
                 "title_markup": self.primary_source_title_markup_var.get().strip(),
                 "date_label": self.primary_source_date_label_var.get().strip(),
@@ -1182,10 +1316,13 @@ class PrimarySourcesMixin:
                 "classification_text": self.primary_source_classification_text_var.get().strip(),
                 "current_location_text": self.primary_source_current_location_text_var.get().strip(),
             }
+            con: sqlite3.Connection | None = None
             try:
-                with self.connection:
+                con = sqlite3.connect(str(db_path))
+                self._ensure_primary_source_localized_schema_on_connection(con)
+                with con:
                     if any(localized_values.values()):
-                        self.connection.execute(
+                        con.execute(
                             """
                             INSERT INTO primary_source_texts(
                               source_id,
@@ -1222,7 +1359,7 @@ class PrimarySourcesMixin:
                             ),
                         )
                     else:
-                        self.connection.execute(
+                        con.execute(
                             "DELETE FROM primary_source_texts WHERE source_id = ?",
                             (source_id,),
                         )
@@ -1233,10 +1370,15 @@ class PrimarySourcesMixin:
                     parent=self,
                 )
                 return
+            finally:
+                if con is not None:
+                    con.close()
 
             self._load_primary_sources()
             self._select_primary_source_by_id(source_id)
-            self._set_status(f"Первоисточник '{source_id}' сохранен.")
+            self._set_status(
+                f"Локализованные поля '{source_id}' сохранены в {self.primary_source_locale_db_var.get() or '-'}."
+            )
 
         def _add_primary_source(self) -> None:
             if not self._ensure_primary_source_section_ready():
@@ -1406,6 +1548,7 @@ class PrimarySourcesMixin:
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка записи", f"Не удалось сохранить preview:\n{exc}", parent=self)
                 return
+            self._load_common_resources()
             self._render_primary_source_preview()
             self._refresh_primary_source_validation()
             self._set_status(f"Preview ресурс '{preview_key}' обновлен.")
