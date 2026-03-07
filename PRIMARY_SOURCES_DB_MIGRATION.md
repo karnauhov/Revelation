@@ -1,7 +1,7 @@
 # Миграция Primary Sources в БД
 
 Последнее обновление: 2026-03-07
-Статус: Фаза 6 завершена
+Статус: Фаза 7 завершена
 
 ## Цель
 
@@ -425,18 +425,18 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
 
 ### Фаза 7. Валидация
 
-- [ ] Проверить количество источников
-- [ ] Проверить количества по группам
-- [ ] Проверить количество страниц
-- [ ] Проверить количество слов
-- [ ] Проверить количество прямоугольников
-- [ ] Проверить количество verse overlays
-- [ ] Проверить, что preview resources существуют для всех источников
-- [ ] Проверить word/verse navigation для `U001`, `U002`, `U004`
-- [ ] Проверить, что источники с `can_show_images = false` ведут себя так же,
+- [x] Проверить количество источников
+- [x] Проверить количества по группам
+- [x] Проверить количество страниц
+- [x] Проверить количество слов
+- [x] Проверить количество прямоугольников
+- [x] Проверить количество verse overlays
+- [x] Проверить, что preview resources существуют для всех источников
+- [x] Проверить word/verse navigation для `U001`, `U002`, `U004`
+- [x] Проверить, что источники с `can_show_images = false` ведут себя так же,
       как раньше
-- [ ] Проверить, что источники без страниц по-прежнему корректно отображаются
-- [ ] Проверить, что все 4 локали загружают корректные source metadata
+- [x] Проверить, что источники без страниц по-прежнему корректно отображаются
+- [x] Проверить, что все 4 локали загружают корректные source metadata
 
 ### Фаза 8. Очистка
 
@@ -559,3 +559,29 @@ CREATE TABLE IF NOT EXISTS primary_source_link_texts (
     - source-level bulk download для `U002`
     - корректную работу `force=false` и `force=true` на уже существующей
       странице
+- Выполнена Фаза 7:
+  - добавлен отдельный validator `scripts/validate_primary_sources_phase7.py`
+  - validator автоматизирует:
+    - baseline counts по sources/groups/pages/words/rectangles/verses
+    - preview coverage в `common_resources`
+    - overlay integrity и data-level word/verse navigation для `U001`, `U002`,
+      `U004`
+    - locale coverage для `en`, `es`, `uk`, `ru`
+    - runtime guard checks для `can_show_images = false` и zero-page sources
+      через текущие code paths
+  - запуск validator на `%Documents%/revelation/db` завершился `Overall: OK`
+  - подтверждены exact результаты:
+    - 19 sources
+    - 3 full
+    - 4 significant
+    - 12 fragment
+    - 232 pages
+    - 156 words
+    - 172 rectangles
+    - 8 verse overlays
+    - preview resources есть для всех 19 sources
+    - overlay sources: `U001`, `U002`, `U004`
+    - `can_show_images = false`: `P098`, `U025`, `U046`, `U052`, `U207`,
+      `U229`
+    - zero-page sources: `U025`, `U052`
+    - все 4 locale DB содержат полный и непустой `primary_source_texts`
