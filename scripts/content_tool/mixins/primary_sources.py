@@ -858,7 +858,6 @@ class PrimarySourcesMixin:
             if not hasattr(self, "primary_source_links_tree"):
                 return
             self.primary_source_links_tree.delete(*self.primary_source_links_tree.get_children())
-            localized_titles = self._current_primary_source_link_titles()
             for idx, row in enumerate(self.primary_source_link_rows):
                 self.primary_source_links_tree.insert(
                     "",
@@ -868,7 +867,6 @@ class PrimarySourcesMixin:
                         row["link_id"],
                         int(row["sort_order"] or 0),
                         row["link_role"],
-                        localized_titles.get(row["link_id"], ""),
                         row["url"],
                     ),
                 )
@@ -1695,7 +1693,7 @@ class PrimarySourcesMixin:
             ttk.Label(root, text="Порядок:").grid(row=1, column=0, sticky="w", padx=(0, 10), pady=4)
             ttk.Entry(root, textvariable=sort_order_var).grid(row=1, column=1, sticky="ew", pady=4)
 
-            ttk.Label(root, text="Роль:").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=4)
+            ttk.Label(root, text="Тип:").grid(row=2, column=0, sticky="w", padx=(0, 10), pady=4)
             role_combo = ttk.Combobox(
                 root,
                 textvariable=link_role_var,
@@ -1807,7 +1805,7 @@ class PrimarySourcesMixin:
             if link_role not in allowed_roles:
                 messagebox.showwarning(
                     "Ошибка данных",
-                    f"Недопустимая роль. Разрешено: {', '.join(allowed_roles)}.",
+                    f"Недопустимый тип. Разрешено: {', '.join(allowed_roles)}.",
                     parent=self,
                 )
                 return
@@ -1949,9 +1947,9 @@ class PrimarySourcesMixin:
             return self._show_form_dialog(
                 "Атрибуция / права",
                 [
-                    FormFieldSpec("attribution_id", "Attribution ID"),
-                    FormFieldSpec("sort_order", "Sort order"),
-                    FormFieldSpec("text", "Text", width=70),
+                    FormFieldSpec("attribution_id", "ID"),
+                    FormFieldSpec("sort_order", "Порядок"),
+                    FormFieldSpec("text", "Текст", width=70),
                     FormFieldSpec("url", "URL", width=70),
                 ],
                 initial=initial,
@@ -1965,9 +1963,8 @@ class PrimarySourcesMixin:
                 return
             payload = self._attribution_dialog_payload(
                 {
-                    "sort_order": str(
-                        max((int(row["sort_order"] or 0) for row in self.primary_source_attribution_rows), default=-10) + 10
-                    ),
+                    "attribution_id": f"attr_{len(self.primary_source_attribution_rows) + 1}",
+                    "sort_order": str(len(self.primary_source_attribution_rows)),
                 }
             )
             if payload is None:
@@ -2006,10 +2003,10 @@ class PrimarySourcesMixin:
             text = str(payload["text"]).strip()
             url = str(payload["url"]).strip()
             if not attribution_id or not text:
-                messagebox.showwarning("Ошибка", "Attribution ID и Text обязательны.", parent=self)
+                messagebox.showwarning("Ошибка", "ID и Текст обязательны.", parent=self)
                 return
             try:
-                sort_order = self._parse_required_int(payload["sort_order"], "Sort order")
+                sort_order = self._parse_required_int(payload["sort_order"], "Порядок")
             except ValueError as exc:
                 messagebox.showwarning("Ошибка данных", str(exc), parent=self)
                 return
@@ -2023,7 +2020,7 @@ class PrimarySourcesMixin:
                 None,
             )
             if duplicate is not None:
-                messagebox.showwarning("Дубликат", f"Attribution ID '{attribution_id}' уже существует.", parent=self)
+                messagebox.showwarning("Дубликат", f"ID '{attribution_id}' уже существует.", parent=self)
                 return
 
             try:

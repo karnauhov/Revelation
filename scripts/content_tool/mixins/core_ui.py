@@ -902,16 +902,15 @@ class CoreUiMixin:
 
             self.primary_source_links_tree = ttk.Treeview(
                 parent,
-                columns=("link_id", "sort_order", "role", "title", "url"),
+                columns=("link_id", "sort_order", "role", "url"),
                 show="headings",
                 selectmode="browse",
             )
             for column, title, width, anchor in [
                 ("link_id", "Link ID", 120, "center"),
-                ("sort_order", "Sort", 60, "center"),
-                ("role", "Role", 110, "center"),
-                ("title", "Title", 180, "w"),
-                ("url", "URL", 520, "w"),
+                ("sort_order", "Порядок", 80, "center"),
+                ("role", "Тип", 120, "center"),
+                ("url", "URL", 640, "w"),
             ]:
                 self.primary_source_links_tree.heading(column, text=title)
                 self.primary_source_links_tree.column(column, width=width, anchor=anchor)
@@ -961,8 +960,8 @@ class CoreUiMixin:
             )
             for column, title, width, anchor in [
                 ("attribution_id", "ID", 120, "center"),
-                ("sort_order", "Sort", 60, "center"),
-                ("text", "Text", 260, "w"),
+                ("sort_order", "Порядок", 80, "center"),
+                ("text", "Текст", 260, "w"),
                 ("url", "URL", 520, "w"),
             ]:
                 self.primary_source_attributions_tree.heading(column, text=title)
