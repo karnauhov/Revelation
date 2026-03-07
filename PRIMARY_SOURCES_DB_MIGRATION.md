@@ -1,7 +1,7 @@
 # Миграция Primary Sources в БД
 
 Последнее обновление: 2026-03-07
-Статус: подготовка начата
+Статус: Фаза 1 в работе
 
 ## Цель
 
@@ -29,6 +29,10 @@
   таблицы БД.
 - Добавить в `content_tool.py` кнопки скачивания page images в ту же локальную
   папку, которую ожидает приложение.
+- Для ссылок использовать стабильный `link_id`, а не `sort_order`, чтобы можно
+  было безопасно менять порядок ссылок без поломки локализованных заголовков.
+- Для строк атрибуции использовать стабильный `attribution_id`, чтобы можно
+  было безопасно менять порядок и редактировать записи в UI.
 
 ## Инварианты путей
 
@@ -121,17 +125,22 @@ DB-backed репозиторий.
 - `id` это стабильный код рукописи, например `U001`, `P115`
 - `group_kind` заменяет текущее деление на три метода репозитория
 - `preview_resource_key` указывает на `common_resources`
+- `can_show_images` это будущий DB-аналог `permissionsReceived`
 
 #### `primary_source_links`
 
 - `source_id TEXT NOT NULL`
+- `link_id TEXT NOT NULL`
 - `sort_order INTEGER NOT NULL`
 - `link_role TEXT NOT NULL`
 - `url TEXT NOT NULL`
-- primary key: `(source_id, sort_order)`
+- primary key: `(source_id, link_id)`
 
 Примечания:
 
+- `link_id` это стабильный идентификатор строки ссылки внутри источника,
+  например `wiki`, `intf`, `image`, `link_1`
+- `sort_order` отвечает только за порядок отображения
 - `link_role` ожидается одним из: `wikipedia`, `intf`, `image_source`,
   `external`
 - общие заголовки ссылок берутся из ARB, если нет явного override в
@@ -140,10 +149,17 @@ DB-backed репозиторий.
 #### `primary_source_attributions`
 
 - `source_id TEXT NOT NULL`
+- `attribution_id TEXT NOT NULL`
 - `sort_order INTEGER NOT NULL`
 - `text TEXT NOT NULL`
 - `url TEXT NOT NULL`
-- primary key: `(source_id, sort_order)`
+- primary key: `(source_id, attribution_id)`
+
+Примечания:
+
+- `attribution_id` это стабильный идентификатор строки атрибуции внутри
+  источника
+- `sort_order` отвечает только за порядок отображения
 
 #### `primary_source_pages`
 
@@ -218,15 +234,112 @@ DB-backed репозиторий.
 #### `primary_source_link_texts`
 
 - `source_id TEXT NOT NULL`
-- `sort_order INTEGER NOT NULL`
+- `link_id TEXT NOT NULL`
 - `title TEXT NOT NULL`
-- primary key: `(source_id, sort_order)`
+- primary key: `(source_id, link_id)`
 
 Примечания:
 
 - эта таблица обязательна по принятому решению
 - для текущего датасета она может оставаться пустой для стандартных ролей и
   использоваться как override-таблица там, где это понадобится
+
+## Точный SQL DDL Фазы 1
+
+### `revelation.sqlite`
+
+```sql
+CREATE TABLE IF NOT EXISTS primary_sources (
+  id TEXT NOT NULL PRIMARY KEY,
+  family TEXT NOT NULL,
+  number INTEGER NOT NULL,
+  group_kind TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  verses_count INTEGER NOT NULL DEFAULT 0,
+  preview_resource_key TEXT NOT NULL,
+  default_max_scale REAL NOT NULL DEFAULT 3.0,
+  can_show_images INTEGER NOT NULL DEFAULT 1,
+  images_are_monochrome INTEGER NOT NULL DEFAULT 0,
+  notes TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS primary_source_links (
+  source_id TEXT NOT NULL,
+  link_id TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  link_role TEXT NOT NULL,
+  url TEXT NOT NULL,
+  PRIMARY KEY (source_id, link_id)
+);
+
+CREATE TABLE IF NOT EXISTS primary_source_attributions (
+  source_id TEXT NOT NULL,
+  attribution_id TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  text TEXT NOT NULL,
+  url TEXT NOT NULL,
+  PRIMARY KEY (source_id, attribution_id)
+);
+
+CREATE TABLE IF NOT EXISTS primary_source_pages (
+  source_id TEXT NOT NULL,
+  page_name TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  content_ref TEXT NOT NULL,
+  image_path TEXT NOT NULL,
+  mobile_image_path TEXT,
+  PRIMARY KEY (source_id, page_name)
+);
+
+CREATE TABLE IF NOT EXISTS primary_source_words (
+  source_id TEXT NOT NULL,
+  page_name TEXT NOT NULL,
+  word_index INTEGER NOT NULL,
+  text TEXT NOT NULL,
+  strong_number INTEGER,
+  strong_pronounce INTEGER NOT NULL DEFAULT 0,
+  strong_x_shift REAL NOT NULL DEFAULT 0.0,
+  missing_char_indexes_json TEXT NOT NULL DEFAULT '[]',
+  rectangles_json TEXT NOT NULL DEFAULT '[]',
+  PRIMARY KEY (source_id, page_name, word_index)
+);
+
+CREATE TABLE IF NOT EXISTS primary_source_verses (
+  source_id TEXT NOT NULL,
+  page_name TEXT NOT NULL,
+  verse_index INTEGER NOT NULL,
+  chapter_number INTEGER NOT NULL,
+  verse_number INTEGER NOT NULL,
+  label_x REAL NOT NULL,
+  label_y REAL NOT NULL,
+  word_indexes_json TEXT NOT NULL DEFAULT '[]',
+  contours_json TEXT NOT NULL DEFAULT '[]',
+  PRIMARY KEY (source_id, page_name, verse_index)
+);
+```
+
+### `revelation_<lang>.sqlite`
+
+```sql
+CREATE TABLE IF NOT EXISTS primary_source_texts (
+  source_id TEXT NOT NULL PRIMARY KEY,
+  title_markup TEXT NOT NULL,
+  date_label TEXT NOT NULL,
+  content_label TEXT NOT NULL,
+  material_text TEXT NOT NULL,
+  text_style_text TEXT NOT NULL,
+  found_text TEXT NOT NULL,
+  classification_text TEXT NOT NULL,
+  current_location_text TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS primary_source_link_texts (
+  source_id TEXT NOT NULL,
+  link_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  PRIMARY KEY (source_id, link_id)
+);
+```
 
 ## План работ по фазам
 
@@ -240,12 +353,12 @@ DB-backed репозиторий.
 
 ### Фаза 1. Схема БД
 
-- [ ] Добавить новые common tables в `lib/db/db_common.dart`
-- [ ] Добавить новые localized tables в `lib/db/db_localized.dart`
-- [ ] Поднять версии схем
-- [ ] Добавить Drift migrations для существующих файлов БД
-- [ ] Расширить DDL-хелперы в `content_tool.py` для common и localized БД
-- [ ] Записать финальный SQL DDL в этот файл для справки
+- [x] Добавить новые common tables в `lib/db/db_common.dart`
+- [x] Добавить новые localized tables в `lib/db/db_localized.dart`
+- [x] Поднять версии схем
+- [x] Добавить Drift migrations для существующих файлов БД
+- [x] Расширить DDL-хелперы в `content_tool.py` для common и localized БД
+- [x] Записать финальный SQL DDL в этот файл для справки
 
 ### Фаза 2. Одноразовый импортёр
 
@@ -338,6 +451,17 @@ DB-backed репозиторий.
 
 - Создан initial migration ledger
 - Добавлен baseline-скрипт: `scripts/primary_sources_baseline_report.py`
+- Зафиксированы baseline counts:
+  - 19 sources
+  - 3 full
+  - 4 significant
+  - 12 fragment
+  - 232 pages
+  - 156 words
+  - 172 rectangles
+  - 8 verses
+  - zero-page sources: `U025`, `U052`
+  - overlay sources: `U001`, `U002`, `U004`
 - Зафиксированы решения:
   - `primary_source_link_texts`
   - preview images в БД
@@ -345,4 +469,10 @@ DB-backed репозиторий.
   - прямое чтение/запись contour data через БД
   - кнопки скачивания изображений в app-compatible папку
     `%Documents%/revelation/primary_sources`
-- Код схемы БД и runtime-логика приложения пока не изменялись
+- Выполнена Фаза 1 на уровне схем:
+  - добавлены новые таблицы в `db_common.dart`
+  - добавлены новые таблицы в `db_localized.dart`
+  - подняты schema versions
+  - добавлены Drift migrations
+  - обновлен DDL в `content_tool.py`
+  - точный SQL DDL зафиксирован в этом файле

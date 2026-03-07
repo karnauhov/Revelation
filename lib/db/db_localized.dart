@@ -22,12 +22,38 @@ class Articles extends Table {
   Set<Column> get primaryKey => {route};
 }
 
-@DriftDatabase(tables: [GreekDescs, Articles])
+class PrimarySourceTexts extends Table {
+  TextColumn get sourceId => text().named('source_id')();
+  TextColumn get titleMarkup => text().named('title_markup')();
+  TextColumn get dateLabel => text().named('date_label')();
+  TextColumn get contentLabel => text().named('content_label')();
+  TextColumn get materialText => text().named('material_text')();
+  TextColumn get textStyleText => text().named('text_style_text')();
+  TextColumn get foundText => text().named('found_text')();
+  TextColumn get classificationText => text().named('classification_text')();
+  TextColumn get currentLocationText => text().named('current_location_text')();
+
+  @override
+  Set<Column> get primaryKey => {sourceId};
+}
+
+class PrimarySourceLinkTexts extends Table {
+  TextColumn get sourceId => text().named('source_id')();
+  TextColumn get linkId => text().named('link_id')();
+  TextColumn get title => text().named('title')();
+
+  @override
+  Set<Column> get primaryKey => {sourceId, linkId};
+}
+
+@DriftDatabase(
+  tables: [GreekDescs, Articles, PrimarySourceTexts, PrimarySourceLinkTexts],
+)
 class LocalizedDB extends _$LocalizedDB {
   LocalizedDB(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -107,6 +133,29 @@ class LocalizedDB extends _$LocalizedDB {
 
         await customStatement('DROP TABLE IF EXISTS topics');
         await customStatement('DROP TABLE IF EXISTS topic_texts');
+      }
+      if (from < 5) {
+        await customStatement("""
+          CREATE TABLE IF NOT EXISTS primary_source_texts (
+            source_id TEXT NOT NULL PRIMARY KEY,
+            title_markup TEXT NOT NULL,
+            date_label TEXT NOT NULL,
+            content_label TEXT NOT NULL,
+            material_text TEXT NOT NULL,
+            text_style_text TEXT NOT NULL,
+            found_text TEXT NOT NULL,
+            classification_text TEXT NOT NULL,
+            current_location_text TEXT NOT NULL
+          )
+        """);
+        await customStatement("""
+          CREATE TABLE IF NOT EXISTS primary_source_link_texts (
+            source_id TEXT NOT NULL,
+            link_id TEXT NOT NULL,
+            title TEXT NOT NULL,
+            PRIMARY KEY (source_id, link_id)
+          )
+        """);
       }
     },
   );

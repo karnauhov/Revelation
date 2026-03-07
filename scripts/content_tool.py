@@ -2782,6 +2782,25 @@ class TopicContentTool(tk.Tk):
               id INTEGER NOT NULL PRIMARY KEY,
               "desc" TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS primary_source_texts (
+              source_id TEXT NOT NULL PRIMARY KEY,
+              title_markup TEXT NOT NULL,
+              date_label TEXT NOT NULL,
+              content_label TEXT NOT NULL,
+              material_text TEXT NOT NULL,
+              text_style_text TEXT NOT NULL,
+              found_text TEXT NOT NULL,
+              classification_text TEXT NOT NULL,
+              current_location_text TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS primary_source_link_texts (
+              source_id TEXT NOT NULL,
+              link_id TEXT NOT NULL,
+              title TEXT NOT NULL,
+              PRIMARY KEY (source_id, link_id)
+            );
             """
         )
         self.connection.executescript(
@@ -2845,6 +2864,74 @@ class TopicContentTool(tk.Tk):
               file_name TEXT NOT NULL,
               mime_type TEXT NOT NULL,
               data BLOB NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS primary_sources (
+              id TEXT NOT NULL PRIMARY KEY,
+              family TEXT NOT NULL,
+              number INTEGER NOT NULL,
+              group_kind TEXT NOT NULL,
+              sort_order INTEGER NOT NULL DEFAULT 0,
+              verses_count INTEGER NOT NULL DEFAULT 0,
+              preview_resource_key TEXT NOT NULL,
+              default_max_scale REAL NOT NULL DEFAULT 3.0,
+              can_show_images INTEGER NOT NULL DEFAULT 1,
+              images_are_monochrome INTEGER NOT NULL DEFAULT 0,
+              notes TEXT NOT NULL DEFAULT ''
+            );
+
+            CREATE TABLE IF NOT EXISTS primary_source_links (
+              source_id TEXT NOT NULL,
+              link_id TEXT NOT NULL,
+              sort_order INTEGER NOT NULL DEFAULT 0,
+              link_role TEXT NOT NULL,
+              url TEXT NOT NULL,
+              PRIMARY KEY (source_id, link_id)
+            );
+
+            CREATE TABLE IF NOT EXISTS primary_source_attributions (
+              source_id TEXT NOT NULL,
+              attribution_id TEXT NOT NULL,
+              sort_order INTEGER NOT NULL DEFAULT 0,
+              text TEXT NOT NULL,
+              url TEXT NOT NULL,
+              PRIMARY KEY (source_id, attribution_id)
+            );
+
+            CREATE TABLE IF NOT EXISTS primary_source_pages (
+              source_id TEXT NOT NULL,
+              page_name TEXT NOT NULL,
+              sort_order INTEGER NOT NULL DEFAULT 0,
+              content_ref TEXT NOT NULL,
+              image_path TEXT NOT NULL,
+              mobile_image_path TEXT,
+              PRIMARY KEY (source_id, page_name)
+            );
+
+            CREATE TABLE IF NOT EXISTS primary_source_words (
+              source_id TEXT NOT NULL,
+              page_name TEXT NOT NULL,
+              word_index INTEGER NOT NULL,
+              text TEXT NOT NULL,
+              strong_number INTEGER,
+              strong_pronounce INTEGER NOT NULL DEFAULT 0,
+              strong_x_shift REAL NOT NULL DEFAULT 0.0,
+              missing_char_indexes_json TEXT NOT NULL DEFAULT '[]',
+              rectangles_json TEXT NOT NULL DEFAULT '[]',
+              PRIMARY KEY (source_id, page_name, word_index)
+            );
+
+            CREATE TABLE IF NOT EXISTS primary_source_verses (
+              source_id TEXT NOT NULL,
+              page_name TEXT NOT NULL,
+              verse_index INTEGER NOT NULL,
+              chapter_number INTEGER NOT NULL,
+              verse_number INTEGER NOT NULL,
+              label_x REAL NOT NULL,
+              label_y REAL NOT NULL,
+              word_indexes_json TEXT NOT NULL DEFAULT '[]',
+              contours_json TEXT NOT NULL DEFAULT '[]',
+              PRIMARY KEY (source_id, page_name, verse_index)
             );
             """
         )
