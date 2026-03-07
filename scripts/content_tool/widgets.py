@@ -66,7 +66,7 @@ def revelation_markdown_template_sections() -> list[tuple[str, tuple[MarkdownTem
                     template="[Откр. 9:11](bible:Rev9:11)",
                     title="Ссылка на стих в онлайн-Библии",
                     example="[Rev 9:11](bible:Rev9:11)",
-                    note="Формат: bible:<BookCode><Chapter>[:Verse].",
+                    note="Формат: bible:<BookCode><Chapter>[:Стих].",
                 ),
                 MarkdownTemplateSpec(
                     key="word_link",

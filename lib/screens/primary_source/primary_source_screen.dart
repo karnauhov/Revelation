@@ -22,11 +22,6 @@ class ExitChooseModeIntent extends Intent {
   const ExitChooseModeIntent();
 }
 
-// Define the intent for select rectangle
-class SelectRectangleIntent extends Intent {
-  const SelectRectangleIntent();
-}
-
 // Define the intent for moving to the next/previous selected description
 class NavigateSelectedDescriptionIntent extends Intent {
   final bool forward;
@@ -119,8 +114,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                 const ExitChooseModeIntent(),
             const SingleActivator(LogicalKeyboardKey.backspace):
                 const ExitChooseModeIntent(),
-            const SingleActivator(LogicalKeyboardKey.keyR, alt: true):
-                const SelectRectangleIntent(),
           };
 
           if (allowDescriptionNavigationByArrows) {
@@ -157,28 +150,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                       } else if (viewModel.selectAreaMode) {
                         viewModel.finishSelectAreaMode(null);
                       }
-                      return null;
-                    },
-                  ),
-                  SelectRectangleIntent: CallbackAction<SelectRectangleIntent>(
-                    onInvoke: (intent) {
-                      viewModel.startGettingServiceRectangle((rect) {
-                        if (rect != null &&
-                            viewModel.imageController.imageSize != null &&
-                            viewModel.imageController.imageSize!.width != 0 &&
-                            viewModel.imageController.imageSize!.height != 0) {
-                          final w = viewModel.imageController.imageSize!.width;
-                          final h = viewModel.imageController.imageSize!.height;
-                          double left = roundTo(rect.left / w, 3);
-                          double top = roundTo(rect.top / h, 3);
-                          double right = roundTo(rect.right / w, 3);
-                          double bottom = roundTo(rect.bottom / h, 3);
-                          String result =
-                              "PageRect(${left}, ${top}, ${right}, ${bottom}),";
-                          Clipboard.setData(ClipboardData(text: result));
-                          log.debug(result);
-                        }
-                      });
                       return null;
                     },
                   ),

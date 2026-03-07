@@ -1226,13 +1226,13 @@ class PrimarySourcesMixin:
                         payload = json.loads(verse_row[key] or "[]")
                     except json.JSONDecodeError as exc:
                         warnings.append(
-                            f"Страница {verse_row['page_name']}, verse {verse_row['verse_index']}: "
+                            f"Страница {verse_row['page_name']}, стих {verse_row['verse_index']}: "
                             f"некорректный JSON в {label} ({exc.msg})."
                         )
                         continue
                     if not isinstance(payload, list):
                         warnings.append(
-                            f"Страница {verse_row['page_name']}, verse {verse_row['verse_index']}: "
+                            f"Страница {verse_row['page_name']}, стих {verse_row['verse_index']}: "
                             f"{label} должен быть JSON-массивом."
                         )
 
@@ -1573,7 +1573,7 @@ class PrimarySourcesMixin:
                 "Удаление первоисточника",
                 (
                     f"Удалить '{source_id}' из общей БД и всех localized DB?\n\n"
-                    "Будут удалены source metadata, links, attributions, pages, words, verses и localized texts."
+                    "Будут удалены source metadata, links, attributions, pages, words, стихи и localized texts."
                 ),
                 parent=self,
             ):
@@ -2259,7 +2259,7 @@ class PrimarySourcesMixin:
                 "Удаление страницы",
                 (
                     f"Удалить страницу '{row.page_name}'?\n\n"
-                    "Будут также удалены все слова и verse-разметка этой страницы."
+                    "Будут также удалены все слова и стихи этой страницы."
                 ),
                 parent=self,
             ):
@@ -2613,9 +2613,9 @@ class PrimarySourcesMixin:
             if not source_id or not page_name or self.common_connection is None:
                 return False
             try:
-                verse_index = self._parse_required_int(payload["verse_index"], "Verse index")
+                verse_index = self._parse_required_int(payload["verse_index"], "Индекс стиха")
                 chapter_number = self._parse_required_int(payload["chapter_number"], "Chapter number")
-                verse_number = self._parse_required_int(payload["verse_number"], "Verse number")
+                verse_number = self._parse_required_int(payload["verse_number"], "Номер стиха")
                 label_x = self._parse_required_float(payload["label_x"], "Label X")
                 label_y = self._parse_required_float(payload["label_y"], "Label Y")
                 word_indexes = self._parse_json_list(payload["word_indexes_json"], "Word indexes JSON")
@@ -2634,7 +2634,7 @@ class PrimarySourcesMixin:
                 None,
             )
             if duplicate is not None:
-                messagebox.showwarning("Дубликат", f"Verse index '{verse_index}' уже существует.", parent=self)
+                messagebox.showwarning("Дубликат", f"Индекс стиха '{verse_index}' уже существует.", parent=self)
                 return False
 
             try:
@@ -2677,12 +2677,12 @@ class PrimarySourcesMixin:
                         ),
                     )
             except sqlite3.DatabaseError as exc:
-                messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить verse:\n{exc}", parent=self)
+                messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить стих:\n{exc}", parent=self)
                 return False
             self._load_primary_source_page_children()
             self._select_primary_source_verse_by_value(verse_index)
             self._refresh_primary_source_validation()
-            self._set_status(f"Verse #{verse_index} сохранен.")
+            self._set_status(f"Стих #{verse_index} сохранен.")
             return True
 
         def _delete_primary_source_verse(self) -> None:
@@ -2693,8 +2693,8 @@ class PrimarySourcesMixin:
                 return
             verse_index = int(row["verse_index"] or 0)
             if not messagebox.askyesno(
-                "Удаление verse",
-                f"Удалить verse #{verse_index} со страницы '{page_name}'?",
+                "Удаление стиха",
+                f"Удалить стих #{verse_index} со страницы '{page_name}'?",
                 parent=self,
             ):
                 return
@@ -2710,20 +2710,20 @@ class PrimarySourcesMixin:
                         (source_id, page_name, verse_index),
                     )
             except sqlite3.DatabaseError as exc:
-                messagebox.showerror("Ошибка удаления", f"Не удалось удалить verse:\n{exc}", parent=self)
+                messagebox.showerror("Ошибка удаления", f"Не удалось удалить стих:\n{exc}", parent=self)
                 return
             self._load_primary_source_page_children()
             self._refresh_primary_source_validation()
-            self._set_status(f"Verse #{verse_index} удален.")
+            self._set_status(f"Стих #{verse_index} удален.")
 
         def _import_primary_source_verse_snippet(self) -> None:
             if not self.selected_primary_source_page_name:
                 messagebox.showinfo("Нет страницы", "Сначала выберите страницу.", parent=self)
                 return
             payload = self._show_form_dialog(
-                "Import Verse(...) snippet",
-                [FormFieldSpec("snippet", "Verse snippet", kind="text", height=12)],
-                message="Вставьте блок Verse(...). Данные будут разобраны и записаны в primary_source_verses.",
+                "Импорт фрагмента стиха",
+                [FormFieldSpec("snippet", "Фрагмент стиха", kind="text", height=12)],
+                message="Вставьте фрагмент стиха. Данные будут разобраны и записаны в таблицу стихов.",
             )
             if payload is None:
                 return

@@ -16,6 +16,7 @@ All notable changes to this application will be documented here.
 - Primary Source description info icon is now shown only for word and Strong's number modes
 - Topic list and topic header text now come from localized databases instead of bundled localization keys
 - Topic content and media references are now DB-oriented to allow content updates without app recompilation
+- Primary Sources are now fully DB-driven (metadata, localized fields, links, pages, words, verses, preview resources) with editing workflow in Content Tool
 
 ## [1.0.4](https://github.com/karnauhov/Revelation/releases/tag/v1.0.4%2B134) - 22.02.26
 
@@ -26,7 +27,6 @@ All notable changes to this application will be documented here.
 - Support local DB SQLite
 - Tables for Strong Dictionary (common, translations: en, es, ru, uk)
 - Layers "Words", "Strong's numbers" and "Word separators" on Primary Source Screen
-- Service command to copy to the clipboard the coordinates of a rectangular area (Alt + R)
 
 ### Changed
 
