@@ -22,10 +22,11 @@
 # Primary sources maintenance
 
 - Primary sources are now maintained in SQLite, not in ARB files and not in `lib/repositories/primary_sources_repository.dart`
-- Use `scripts/content_tool.py` and the `Первоисточники` section for create/edit/delete operations
+- The content tool is now a package in `scripts/content_tool/`
+- Run it with `python -m scripts.content_tool`
+- Use the `Первоисточники` section for create/edit/delete operations
 - Preview images are stored as `common_resources` records in `revelation.sqlite`
 - Localized metadata and localized link titles are stored in `revelation_<lang>.sqlite`
 - Page images are expected under `%Documents%/revelation/primary_sources/...` with the same relative path as `page.image`
-- Download page images and edit verse contours directly from `scripts/content_tool.py`
+- Download page images and edit verse contours directly from the content tool package
 - After changing primary source DB content, upload the updated DB files to Supabase, copy them into `web/db/`, and deploy the website
-- `scripts/legacy/primary_sources_repository.dart.txt` is kept only as a historical migration snapshot for the baseline/import scripts
