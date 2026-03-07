@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sqlite3
 import tkinter as tk
+import unicodedata
 from tkinter import messagebox, ttk
 from typing import TYPE_CHECKING, Callable
 
@@ -17,6 +19,19 @@ RectRel = tuple[float, float, float, float]
 
 
 class PrimarySourceWordEditorDialog(tk.Toplevel):
+    STRONG_SEARCH_CHAR_TRANSLATION = str.maketrans(
+        {
+            "ς": "σ",
+            "ϲ": "σ",
+            "ϐ": "β",
+            "ϑ": "θ",
+            "ϕ": "φ",
+            "ϰ": "κ",
+            "ϱ": "ρ",
+            "ϖ": "π",
+        }
+    )
+
     MODE_LABEL_TO_KEY: dict[str, str] = {
         "Рисование": "draw",
         "Перемещение": "move",
@@ -69,6 +84,7 @@ class PrimarySourceWordEditorDialog(tk.Toplevel):
         self.on_save = on_save
         self.previous_word_index = previous_word_index
         self.greek_keyboard_window: tk.Toplevel | None = None
+        self._normalized_strong_rows_cache: list[tuple[int, str, str, tuple[str, ...]]] | None = None
 
         self.title(f"Редактор слова - {source_id} / {page_name}")
         screen_w = self.winfo_screenwidth()
@@ -308,7 +324,7 @@ class PrimarySourceWordEditorDialog(tk.Toplevel):
         self.btn_greek_keyboard = ttk.Button(controls, text="ΑΒΓ", command=self._toggle_greek_keyboard)
         self.btn_greek_keyboard.grid(row=0, column=3, padx=(2, 2))
 
-        btn_find_strong = ttk.Button(controls, text="Найти # Стронга", command=self._find_strong_placeholder)
+        btn_find_strong = ttk.Button(controls, text="Найти # Стронга", command=self._find_strong_for_word)
         btn_find_strong.grid(row=0, column=4, padx=(2, 8))
 
         ttk.Label(controls, text="Режим:").grid(row=0, column=5, padx=(0, 4))
@@ -386,7 +402,7 @@ class PrimarySourceWordEditorDialog(tk.Toplevel):
                 (btn_save_close, "Сохранить слово в БД и закрыть окно."),
                 (btn_save_new, "Сохранить текущее слово и сразу подготовить форму для нового."),
                 (btn_ocr, "Заглушка OCR. Функционал будет добавлен позже."),
-                (btn_find_strong, "Заглушка поиска Стронга. Функционал будет добавлен позже."),
+                (btn_find_strong, "Найти номер Стронга по слову из поля 'Слово'."),
                 (self.btn_greek_keyboard, "Показать/скрыть экранную клавиатуру с греческими буквами."),
                 (self.mode_combo, "Режим работы с прямоугольниками: рисование, перемещение или удаление."),
                 (self.missing_button, "Выбор букв, которых нет в исходнике (индексы будут сохранены в БД)."),
@@ -414,8 +430,124 @@ class PrimarySourceWordEditorDialog(tk.Toplevel):
     def _ocr_placeholder(self) -> None:
         messagebox.showinfo("OCR", "Функция OCR пока не реализована.", parent=self)
 
-    def _find_strong_placeholder(self) -> None:
-        messagebox.showinfo("Найти # Стронга", "Поиск Стронга пока не реализован.", parent=self)
+    def _find_strong_for_word(self) -> None:
+        word = self.word_text_var.get().strip()
+        if not word:
+            messagebox.showinfo("Найти # Стронга", "Сначала введите слово.", parent=self)
+            return
+        normalized_word = self._normalize_strong_lookup_text(word)
+        if not normalized_word:
+            messagebox.showinfo(
+                "Найти # Стронга",
+                "В слове не осталось букв после нормализации. Уточните запрос.",
+                parent=self,
+            )
+            return
+
+        common_connection = getattr(self.parent_tool, "common_connection", None)
+        if common_connection is None:
+            messagebox.showwarning(
+                "Найти # Стронга",
+                "Общая БД не подключена. Поиск по словарю Стронга недоступен.",
+                parent=self,
+            )
+            return
+
+        strong_id = self._lookup_strong_id_by_usage(common_connection, normalized_word)
+        if strong_id is None:
+            messagebox.showinfo("Найти # Стронга", f"Слово '{word}' не найдено в словаре Стронга.", parent=self)
+            return
+
+        display = self.strong_display_by_id.get(strong_id)
+        if display is None:
+            display = f"{strong_id} | ?"
+            self.strong_display_by_id[strong_id] = display
+            self.strong_id_by_display[display] = strong_id
+            if display not in self.strong_combo_values:
+                self.strong_combo_values.append(display)
+                self.strong_combo.configure(values=self.strong_combo_values)
+
+        self.strong_value_var.set(display)
+        self._set_status_note(f"Найден Strong #{strong_id} для слова '{word}'.")
+        self.redraw()
+
+    def _normalize_strong_lookup_text(self, text: str) -> str:
+        normalized = unicodedata.normalize("NFD", text or "")
+        without_marks = "".join(char for char in normalized if unicodedata.category(char) != "Mn")
+        folded = without_marks.casefold().translate(self.STRONG_SEARCH_CHAR_TRANSLATION)
+        cleaned = "".join(char if char.isalnum() else " " for char in folded)
+        return " ".join(cleaned.split())
+
+    def _lookup_strong_id_by_usage(self, connection: sqlite3.Connection, normalized_word: str) -> int | None:
+        if not normalized_word:
+            return None
+        normalized_rows = self._normalized_strong_rows(connection)
+        if not normalized_rows:
+            return None
+
+        # 1) Highest priority: exact match in greek_words.word
+        for strong_id, normalized_db_word, _normalized_usage, _usage_tokens in normalized_rows:
+            if normalized_db_word and normalized_db_word == normalized_word:
+                return strong_id
+
+        # 2) Next priority: exact standalone word in greek_words.usage
+        for strong_id, _normalized_db_word, _normalized_usage, usage_tokens in normalized_rows:
+            if normalized_word in usage_tokens:
+                return strong_id
+
+        # 3) Last priority: query is only a part of found words
+        best_partial: tuple[int, int, int] | None = None
+        for strong_id, normalized_db_word, normalized_usage, usage_tokens in normalized_rows:
+            if normalized_db_word and normalized_word in normalized_db_word and normalized_db_word != normalized_word:
+                candidate = (0, len(normalized_db_word), strong_id)
+                if best_partial is None or candidate < best_partial:
+                    best_partial = candidate
+
+            usage_token_matches = [
+                token
+                for token in usage_tokens
+                if normalized_word in token and token != normalized_word
+            ]
+            if usage_token_matches:
+                candidate = (1, min(len(token) for token in usage_token_matches), strong_id)
+                if best_partial is None or candidate < best_partial:
+                    best_partial = candidate
+                continue
+
+            if normalized_usage and normalized_word in normalized_usage and normalized_usage != normalized_word:
+                candidate = (2, len(normalized_usage), strong_id)
+                if best_partial is None or candidate < best_partial:
+                    best_partial = candidate
+
+        if best_partial is None:
+            return None
+        return best_partial[2]
+
+    def _normalized_strong_rows(self, connection: sqlite3.Connection) -> list[tuple[int, str, str, tuple[str, ...]]]:
+        if self._normalized_strong_rows_cache is not None:
+            return self._normalized_strong_rows_cache
+
+        try:
+            rows = connection.execute(
+                """
+                SELECT id, word, usage
+                FROM greek_words
+                ORDER BY id ASC
+                """
+            ).fetchall()
+        except sqlite3.DatabaseError:
+            return []
+
+        payload: list[tuple[int, str, str, tuple[str, ...]]] = []
+        for row in rows:
+            strong_id = int(row[0])
+            normalized_db_word = self._normalize_strong_lookup_text(str(row[1] or ""))
+            normalized_usage = self._normalize_strong_lookup_text(str(row[2] or ""))
+            usage_tokens = tuple(normalized_usage.split()) if normalized_usage else tuple()
+            payload.append((strong_id, normalized_db_word, normalized_usage, usage_tokens))
+
+        self._normalized_strong_rows_cache = payload
+        return payload
 
     def edit_missing_letters(self) -> None:
         word = self.word_text_var.get()
