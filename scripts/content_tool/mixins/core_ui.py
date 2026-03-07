@@ -1088,10 +1088,10 @@ class CoreUiMixin:
                 selectmode="browse",
             )
             for column, title, width, anchor in [
-                ("word_index", "#", 56, "center"),
-                ("text", "Text", 180, "w"),
-                ("strong_number", "Strong", 80, "center"),
-                ("rectangles", "Rects", 70, "center"),
+                ("word_index", "Индекс", 64, "center"),
+                ("text", "Слово", 200, "w"),
+                ("strong_number", "# Стронга", 90, "center"),
+                ("rectangles", "Прям.", 70, "center"),
             ]:
                 self.primary_source_words_tree.heading(column, text=title)
                 self.primary_source_words_tree.column(column, width=width, anchor=anchor)
@@ -1126,15 +1126,14 @@ class CoreUiMixin:
             verses_box.rowconfigure(0, weight=1)
             self.primary_source_verses_tree = ttk.Treeview(
                 verses_box,
-                columns=("verse_index", "reference", "word_indexes", "contours"),
+                columns=("verse_index", "reference", "word_indexes"),
                 show="headings",
                 selectmode="browse",
             )
             for column, title, width, anchor in [
-                ("verse_index", "#", 56, "center"),
-                ("reference", "Ref", 110, "center"),
-                ("word_indexes", "Words", 120, "center"),
-                ("contours", "Contours", 70, "center"),
+                ("verse_index", "Индекс", 64, "center"),
+                ("reference", "# Стиха", 120, "center"),
+                ("word_indexes", "Слова", 90, "center"),
             ]:
                 self.primary_source_verses_tree.heading(column, text=title)
                 self.primary_source_verses_tree.column(column, width=width, anchor=anchor)
@@ -1148,7 +1147,7 @@ class CoreUiMixin:
             verse_actions.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(8, 0))
             self.btn_add_primary_source_verse = ttk.Button(
                 verse_actions,
-                **self._button_kwargs("add", "Добавить verse"),
+                **self._button_kwargs("add", "Добавить стих"),
                 command=self._add_primary_source_verse,
             )
             self.btn_add_primary_source_verse.pack(side="left")
@@ -1164,18 +1163,6 @@ class CoreUiMixin:
                 command=self._delete_primary_source_verse,
             )
             self.btn_delete_primary_source_verse.pack(side="left", padx=(8, 0))
-            self.btn_edit_primary_source_verse_contours = ttk.Button(
-                verse_actions,
-                **self._button_kwargs("open_in_app", "Contour editor"),
-                command=self._open_selected_primary_source_contour_editor,
-            )
-            self.btn_edit_primary_source_verse_contours.pack(side="left", padx=(8, 0))
-            self.btn_import_primary_source_verse_snippet = ttk.Button(
-                verse_actions,
-                **self._button_kwargs("publish", "Import Verse(...)"),
-                command=self._import_primary_source_verse_snippet,
-            )
-            self.btn_import_primary_source_verse_snippet.pack(side="left", padx=(8, 0))
 
         def _on_main_section_changed(self, _event: object | None = None) -> None:
             self._update_file_info()
@@ -1497,8 +1484,6 @@ class CoreUiMixin:
                 (self.btn_add_primary_source_verse, False),
                 (self.btn_edit_primary_source_verse, False),
                 (self.btn_delete_primary_source_verse, False),
-                (self.btn_edit_primary_source_verse_contours, False),
-                (self.btn_import_primary_source_verse_snippet, False),
             ]
             for widget, readonly_when_enabled in source_widgets:
                 self._set_ttk_widget_enabled(

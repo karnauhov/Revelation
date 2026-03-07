@@ -17,7 +17,7 @@ from tkinter import filedialog, messagebox, ttk
 from typing import Any
 
 from ..compat import Image, ImageTk
-from ..dialogs.primary_source_contour import PrimarySourceContourEditorDialog
+from ..dialogs.primary_source_verse_editor import PrimarySourceVerseEditorDialog
 from ..dialogs.primary_source_word_editor import PrimarySourceWordEditorDialog
 from ..helpers import default_primary_sources_dir, parse_verse_snippet
 from ..models import FormFieldSpec, PrimarySourcePageSummary, PrimarySourceSummary
@@ -1103,7 +1103,6 @@ class PrimarySourcesMixin:
             self.primary_source_verses_tree.delete(*self.primary_source_verses_tree.get_children())
             for idx, row in enumerate(self.primary_source_verse_rows):
                 word_indexes = self._safe_json_loads(row["word_indexes_json"] or "[]", [])
-                contours = self._safe_json_loads(row["contours_json"] or "[]", [])
                 self.primary_source_verses_tree.insert(
                     "",
                     "end",
@@ -1112,7 +1111,6 @@ class PrimarySourcesMixin:
                         int(row["verse_index"] or 0),
                         f"{int(row['chapter_number'] or 0)}:{int(row['verse_number'] or 0)}",
                         len(word_indexes) if isinstance(word_indexes, list) else 0,
-                        len(contours) if isinstance(contours, list) else 0,
                     ),
                 )
 
@@ -2318,11 +2316,16 @@ class PrimarySourcesMixin:
                 summary_title=f"Скачивание страниц {source_id}",
             )
 
-        def _open_selected_primary_source_contour_editor(self) -> None:
+        def _open_primary_source_verse_editor(
+            self,
+            *,
+            initial_payload: dict[str, object],
+            previous_verse_index: int | None,
+        ) -> None:
             if Image is None or ImageTk is None:
                 messagebox.showwarning(
                     "Нет Pillow",
-                    "Для contour editor нужен Pillow: pip install pillow",
+                    "Для редактора стиха нужен Pillow: pip install pillow",
                     parent=self,
                 )
                 return
@@ -2335,50 +2338,17 @@ class PrimarySourcesMixin:
 
             image_path = self._primary_source_local_path(page_row.image_path)
             if not image_path.exists():
-                selected = filedialog.askopenfilename(
+                messagebox.showinfo(
+                    "Нет изображения",
+                    (
+                        "Локальный файл страницы не найден.\n"
+                        "Скачайте страницу кнопкой из раздела первоисточников."
+                    ),
                     parent=self,
-                    title="Выберите локальный файл страницы для contour editor",
-                    initialdir=str(image_path.parent if image_path.parent.exists() else self._primary_sources_root_dir()),
-                    filetypes=[("Images", "*.jpg *.jpeg *.png *.webp *.bmp *.tif *.tiff"), ("All files", "*.*")],
                 )
-                if not selected:
-                    messagebox.showinfo(
-                        "Нет изображения",
-                        (
-                            "Локальный image_path страницы не найден.\n"
-                            "Откройте файл вручную или скачайте страницу кнопкой из раздела первоисточников."
-                        ),
-                        parent=self,
-                    )
-                    return
-                image_path = Path(selected)
+                return
 
-            verse_row = self._selected_primary_source_verse_row()
-            if verse_row is None:
-                next_verse_index = max((int(row["verse_index"] or 0) for row in self.primary_source_verse_rows), default=-1) + 1
-                initial_payload = {
-                    "verse_index": next_verse_index,
-                    "chapter_number": 1,
-                    "verse_number": 1,
-                    "label_x": 0.0,
-                    "label_y": 0.0,
-                    "word_indexes": [],
-                    "contours": [],
-                }
-                previous_verse_index = None
-            else:
-                initial_payload = {
-                    "verse_index": int(verse_row["verse_index"] or 0),
-                    "chapter_number": int(verse_row["chapter_number"] or 0),
-                    "verse_number": int(verse_row["verse_number"] or 0),
-                    "label_x": float(verse_row["label_x"] or 0.0),
-                    "label_y": float(verse_row["label_y"] or 0.0),
-                    "word_indexes": self._safe_json_loads(verse_row["word_indexes_json"] or "[]", []),
-                    "contours": self._safe_json_loads(verse_row["contours_json"] or "[]", []),
-                }
-                previous_verse_index = int(verse_row["verse_index"] or 0)
-
-            PrimarySourceContourEditorDialog(
+            PrimarySourceVerseEditorDialog(
                 parent=self,
                 image_path=image_path,
                 source_id=source_id,
@@ -2589,63 +2559,46 @@ class PrimarySourcesMixin:
             self._refresh_primary_source_validation()
             self._set_status(f"Слово #{word_index} удалено.")
 
-        def _verse_dialog_payload(self, initial: dict[str, object] | None = None) -> dict[str, object] | None:
-            return self._show_form_dialog(
-                "Verse / contour row",
-                [
-                    FormFieldSpec("verse_index", "Verse index"),
-                    FormFieldSpec("chapter_number", "Chapter number"),
-                    FormFieldSpec("verse_number", "Verse number"),
-                    FormFieldSpec("label_x", "Label X"),
-                    FormFieldSpec("label_y", "Label Y"),
-                    FormFieldSpec("word_indexes_json", "Word indexes JSON", kind="text", height=3),
-                    FormFieldSpec("contours_json", "Contours JSON", kind="text", height=6),
-                ],
-                initial=initial,
-            )
-
         def _add_primary_source_verse(self) -> None:
             if not self._ensure_primary_source_section_ready():
                 return
             if not self.selected_primary_source_page_name:
                 messagebox.showinfo("Нет страницы", "Сначала выберите страницу.", parent=self)
                 return
-            payload = self._verse_dialog_payload(
-                {
-                    "verse_index": str(
-                        max((int(row["verse_index"] or 0) for row in self.primary_source_verse_rows), default=-1) + 1
-                    ),
-                    "chapter_number": "1",
-                    "verse_number": "1",
-                    "label_x": "0.0",
-                    "label_y": "0.0",
-                    "word_indexes_json": "[]",
-                    "contours_json": "[]",
-                }
+            next_verse_index = max((int(row["verse_index"] or 0) for row in self.primary_source_verse_rows), default=-1) + 1
+            chapter_number = 1
+            verse_number = 1
+            if self.primary_source_verse_rows:
+                last_row = max(self.primary_source_verse_rows, key=lambda row: int(row["verse_index"] or 0))
+                chapter_number = int(last_row["chapter_number"] or 1)
+                verse_number = int(last_row["verse_number"] or 0) + 1
+            self._open_primary_source_verse_editor(
+                initial_payload={
+                    "verse_index": next_verse_index,
+                    "chapter_number": chapter_number,
+                    "verse_number": verse_number,
+                    "label_x": 0.0,
+                    "label_y": 0.0,
+                    "word_indexes": [],
+                    "contours": [],
+                },
+                previous_verse_index=None,
             )
-            if payload is None:
-                return
-            self._save_primary_source_verse_record(payload, previous_verse_index=None)
 
         def _edit_primary_source_verse(self) -> None:
             row = self._selected_primary_source_verse_row()
             if row is None:
                 return
-            payload = self._verse_dialog_payload(
-                {
+            self._open_primary_source_verse_editor(
+                initial_payload={
                     "verse_index": str(int(row["verse_index"] or 0)),
                     "chapter_number": str(int(row["chapter_number"] or 0)),
                     "verse_number": str(int(row["verse_number"] or 0)),
                     "label_x": str(float(row["label_x"] or 0.0)),
                     "label_y": str(float(row["label_y"] or 0.0)),
-                    "word_indexes_json": row["word_indexes_json"] or "[]",
-                    "contours_json": row["contours_json"] or "[]",
-                }
-            )
-            if payload is None:
-                return
-            self._save_primary_source_verse_record(
-                payload,
+                    "word_indexes": self._safe_json_loads(row["word_indexes_json"] or "[]", []),
+                    "contours": self._safe_json_loads(row["contours_json"] or "[]", []),
+                },
                 previous_verse_index=int(row["verse_index"] or 0),
             )
 
