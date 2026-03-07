@@ -372,7 +372,6 @@ class PrimarySourcesMixin:
 
         def _load_primary_sources(self) -> None:
             self.primary_sources.clear()
-            self.primary_source_filtered_ids.clear()
 
             if self.common_connection is None:
                 self._refresh_primary_sources_tree()
@@ -421,7 +420,7 @@ class PrimarySourcesMixin:
                         WHERE v.source_id = ps.id
                       ) AS verse_rows_count
                     FROM primary_sources ps
-                    ORDER BY ps.sort_order ASC, ps.id ASC
+                    ORDER BY ps.id COLLATE NOCASE ASC
                     """
                 ).fetchall()
             except sqlite3.DatabaseError:
@@ -460,25 +459,8 @@ class PrimarySourcesMixin:
         def _refresh_primary_sources_tree(self) -> None:
             if not hasattr(self, "primary_sources_tree"):
                 return
-            search = self.primary_source_filter_var.get().strip().lower()
-            group_filter = self.primary_source_group_var.get().strip().lower()
-            self.primary_source_filtered_ids.clear()
             self.primary_sources_tree.delete(*self.primary_sources_tree.get_children())
             for row in self.primary_sources:
-                haystack = " ".join(
-                    [
-                        row.id,
-                        row.family,
-                        row.group_kind,
-                        row.title_preview,
-                        str(row.number),
-                    ]
-                ).lower()
-                if group_filter and group_filter != "all" and row.group_kind != group_filter:
-                    continue
-                if search and search not in haystack:
-                    continue
-                self.primary_source_filtered_ids.append(row.id)
                 locale = row.locale_flags
                 self.primary_sources_tree.insert(
                     "",
@@ -497,15 +479,6 @@ class PrimarySourcesMixin:
                         "✓" if locale.get("ru") else "",
                     ),
                 )
-
-        def _on_primary_source_filter_changed(self, *_args: object) -> None:
-            selected_id = self.selected_primary_source_id
-            self._refresh_primary_sources_tree()
-            if selected_id:
-                self._select_primary_source_by_id(selected_id, reload=False)
-
-        def _on_primary_source_filter_combo_changed(self, _event: object) -> None:
-            self._on_primary_source_filter_changed()
 
         def _select_primary_source_by_id(self, source_id: str, *, reload: bool = True) -> None:
             if not hasattr(self, "primary_sources_tree"):
@@ -527,24 +500,6 @@ class PrimarySourcesMixin:
                 return
             self.selected_primary_source_id = str(selection[0])
             self._reload_selected_primary_source()
-
-        def _reload_primary_sources_section(self) -> None:
-            self._open_common_connection()
-            self._ensure_schema()
-            if self.common_connection is not None:
-                self._ensure_common_schema_on_connection(self.common_connection)
-            self._load_primary_sources()
-            self._update_ui_availability()
-            self._update_file_info()
-            if self.common_db_path is None:
-                self._set_status("Общая БД не найдена. Раздел первоисточников недоступен.")
-                return
-            if self.current_db_path is None:
-                self._set_status("Локализованная БД не найдена. Локализованные поля первоисточников недоступны.")
-                return
-            self._set_status(
-                f"Первоисточники перечитаны: {self.common_db_path.stem} + {self.current_db_path.stem}."
-            )
 
         def _clear_primary_source_editor(self) -> None:
             self.selected_primary_source_id = None
@@ -1474,8 +1429,34 @@ class PrimarySourcesMixin:
             webbrowser.open(temp_path.resolve().as_uri())
             self._set_status(f"Preview ресурс '{key}' открыт: {temp_path}")
 
-        def _open_primary_sources_root_dir(self) -> None:
-            root = self._primary_sources_root_dir()
+        def _selected_primary_source_dir(self) -> Path | None:
+            source_id = self.selected_primary_source_id
+            if not source_id:
+                return None
+
+            page_dirs: list[Path] = []
+            for row in self.primary_source_pages:
+                for image_path in (row.image_path, row.mobile_image_path):
+                    if image_path.strip():
+                        page_dirs.append(self._primary_source_local_path(image_path).parent)
+
+            if page_dirs:
+                try:
+                    return Path(os.path.commonpath([str(path.resolve()) for path in page_dirs]))
+                except ValueError:
+                    return page_dirs[0]
+
+            return self._primary_sources_root_dir() / source_id
+
+        def _open_selected_primary_source_dir(self) -> None:
+            root = self._selected_primary_source_dir()
+            if root is None:
+                messagebox.showinfo(
+                    "Нет первоисточника",
+                    "Сначала выберите первоисточник.",
+                    parent=self,
+                )
+                return
             try:
                 root.mkdir(parents=True, exist_ok=True)
             except OSError as exc:

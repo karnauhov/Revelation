@@ -23,7 +23,6 @@ from tkinter import filedialog, messagebox, simpledialog, ttk
 from typing import Any
 
 from ..compat import HtmlFrameType, HtmlFrameWidget
-from ..helpers import default_primary_sources_dir
 from ..models import ArticleRow, PrimarySourcePageSummary, PrimarySourceSummary, ResourceRow, StrongRow
 from ..widgets import MarkdownTemplateToolbar, revelation_markdown_template_sections
 
@@ -113,7 +112,6 @@ class CoreUiMixin:
             self.strong_group_response_text: tk.Text | None = None
             self.strong_group_current_index: int | None = None
             self.primary_sources: list[PrimarySourceSummary] = []
-            self.primary_source_filtered_ids: list[str] = []
             self.primary_source_pages: list[PrimarySourcePageSummary] = []
             self.primary_source_link_rows: list[sqlite3.Row] = []
             self.primary_source_attribution_rows: list[sqlite3.Row] = []
@@ -127,11 +125,8 @@ class CoreUiMixin:
             self.selected_primary_source_page_index: int | None = None
             self.selected_primary_source_word_index: int | None = None
             self.selected_primary_source_verse_index: int | None = None
-            self.primary_source_filter_var = tk.StringVar()
-            self.primary_source_group_var = tk.StringVar(value="all")
             self.primary_source_validation_var = tk.StringVar(value="Выберите первоисточник.")
             self.primary_source_locale_info_var = tk.StringVar(value="Локализованная БД: -")
-            self.primary_source_images_root_var = tk.StringVar(value=str(default_primary_sources_dir()))
             self.primary_source_force_download_var = tk.BooleanVar(value=False)
             self.primary_source_page_info_var = tk.StringVar(value="Страница не выбрана.")
             self.primary_source_id_var = tk.StringVar()
@@ -158,7 +153,6 @@ class CoreUiMixin:
             self._build_ui()
             self._install_global_text_shortcuts()
             self.strong_filter_var.trace_add("write", self._on_strong_filter_changed)
-            self.primary_source_filter_var.trace_add("write", self._on_primary_source_filter_changed)
             self._refresh_db_list(initial_select=True)
             self.after(0, self._maximize_window)
 
@@ -206,8 +200,8 @@ class CoreUiMixin:
 
             self.sections.add(self.articles_section, text="Статьи")
             self.sections.add(self.resources_section, text="Ресурсы")
-            self.sections.add(self.strong_section, text="Словарь Стронга")
             self.sections.add(self.sources_section, text="Первоисточники")
+            self.sections.add(self.strong_section, text="Словарь Стронга")
             self.sections.add(self.bibles_section, text="Библии")
 
             self._build_articles_section(self.articles_section)
@@ -538,10 +532,10 @@ class CoreUiMixin:
             top.columnconfigure(1, weight=1)
             top.columnconfigure(3, weight=1)
 
-            ttk.Label(top, text="Локализованная БД:").grid(row=0, column=0, sticky="w", padx=(0, 8))
-            ttk.Label(top, textvariable=self.sources_local_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
-            ttk.Label(top, text="Общая БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
-            ttk.Label(top, textvariable=self.sources_common_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
+            ttk.Label(top, text="Общая БД:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+            ttk.Label(top, textvariable=self.sources_common_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
+            ttk.Label(top, text="Локализованная БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
+            ttk.Label(top, textvariable=self.sources_local_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
 
             body = ttk.Frame(parent)
             body.grid(row=1, column=0, sticky="nsew")
@@ -555,27 +549,10 @@ class CoreUiMixin:
             right = ttk.Frame(pane, padding=8)
             pane.add(left, stretch="always")
             pane.add(right, stretch="always")
-            self._set_initial_split(pane, ratio=0.36)
+            self._set_initial_split(pane, ratio=0.5)
 
             left.columnconfigure(0, weight=1)
-            left.rowconfigure(1, weight=1)
-
-            filter_row = ttk.Frame(left)
-            filter_row.grid(row=0, column=0, sticky="ew", pady=(0, 8))
-            filter_row.columnconfigure(1, weight=1)
-            ttk.Label(filter_row, text="Поиск:").grid(row=0, column=0, sticky="w", padx=(0, 6))
-            self.entry_primary_source_filter = ttk.Entry(filter_row, textvariable=self.primary_source_filter_var)
-            self.entry_primary_source_filter.grid(row=0, column=1, sticky="ew", padx=(0, 10))
-            ttk.Label(filter_row, text="Группа:").grid(row=0, column=2, sticky="w", padx=(0, 6))
-            self.combo_primary_source_group = ttk.Combobox(
-                filter_row,
-                textvariable=self.primary_source_group_var,
-                state="readonly",
-                width=14,
-                values=("all", "full", "significant", "fragment"),
-            )
-            self.combo_primary_source_group.grid(row=0, column=3, sticky="w")
-            self.combo_primary_source_group.bind("<<ComboboxSelected>>", self._on_primary_source_filter_combo_changed)
+            left.rowconfigure(0, weight=1)
 
             self.primary_sources_tree = ttk.Treeview(
                 left,
@@ -597,59 +574,45 @@ class CoreUiMixin:
             ]:
                 self.primary_sources_tree.heading(column, text=title)
                 self.primary_sources_tree.column(column, width=width, anchor=anchor)
-            self.primary_sources_tree.grid(row=1, column=0, sticky="nsew")
+            self.primary_sources_tree.grid(row=0, column=0, sticky="nsew")
             self.primary_sources_tree.bind("<<TreeviewSelect>>", self._on_primary_source_selected)
 
             sources_scroll = ttk.Scrollbar(left, orient="vertical", command=self.primary_sources_tree.yview)
-            sources_scroll.grid(row=1, column=1, sticky="ns")
+            sources_scroll.grid(row=0, column=1, sticky="ns")
             self.primary_sources_tree.configure(yscrollcommand=sources_scroll.set)
 
             source_buttons = ttk.Frame(left)
-            source_buttons.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(8, 0))
-            self.btn_reload_primary_sources = ttk.Button(
-                source_buttons,
-                **self._button_kwargs("refresh", "Перечитать"),
-                command=self._reload_primary_sources_section,
-            )
-            self.btn_reload_primary_sources.pack(side="left")
+            source_buttons.grid(row=1, column=0, columnspan=2, sticky="w", pady=(8, 0))
             self.btn_add_primary_source = ttk.Button(
                 source_buttons,
                 **self._button_kwargs("add", "Добавить"),
                 command=self._add_primary_source,
             )
-            self.btn_add_primary_source.pack(side="left", padx=(8, 0))
+            self.btn_add_primary_source.pack(side="left")
             self.btn_delete_primary_source = ttk.Button(
                 source_buttons,
                 **self._button_kwargs("delete", "Удалить"),
                 command=self._delete_primary_source,
             )
             self.btn_delete_primary_source.pack(side="left", padx=(8, 0))
-
-            secondary_buttons = ttk.Frame(left)
-            secondary_buttons.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(8, 0))
             self.btn_download_source_pages = ttk.Button(
-                secondary_buttons,
+                source_buttons,
                 **self._button_kwargs("download", "Скачать страницы"),
                 command=self._download_selected_primary_source_pages,
             )
-            self.btn_download_source_pages.pack(side="left")
-            ttk.Checkbutton(
-                secondary_buttons,
-                text="Перекачать",
+            self.btn_download_source_pages.pack(side="left", padx=(8, 0))
+            self.check_primary_source_force_download = ttk.Checkbutton(
+                source_buttons,
+                text="Перезалить",
                 variable=self.primary_source_force_download_var,
-            ).pack(side="left", padx=(10, 0))
-            self.btn_open_primary_sources_root = ttk.Button(
-                secondary_buttons,
-                **self._button_kwargs("open_resource", "Открыть папку"),
-                command=self._open_primary_sources_root_dir,
             )
-            self.btn_open_primary_sources_root.pack(side="left", padx=(10, 0))
-
-            ttk.Label(
-                left,
-                textvariable=self.primary_source_images_root_var,
-                foreground="#5f5f5f",
-            ).grid(row=4, column=0, columnspan=2, sticky="w", pady=(8, 0))
+            self.check_primary_source_force_download.pack(side="left", padx=(8, 0))
+            self.btn_open_primary_source_dir = ttk.Button(
+                source_buttons,
+                **self._button_kwargs("open_resource", "Открыть папку"),
+                command=self._open_selected_primary_source_dir,
+            )
+            self.btn_open_primary_source_dir.pack(side="left", padx=(8, 0))
 
             right.columnconfigure(0, weight=1)
             right.rowconfigure(0, weight=1)
@@ -1176,9 +1139,6 @@ class CoreUiMixin:
             self.bibles_common_db_var.set(common_text)
             languages = [lang for lang, _ in self._localized_db_entries()]
             self.strong_languages_var.set(", ".join(languages) if languages else "-")
-            self.primary_source_images_root_var.set(str(self._primary_sources_root_dir()))
-
-
         def _maximize_window(self) -> None:
             try:
                 self.state("zoomed")
@@ -1380,14 +1340,12 @@ class CoreUiMixin:
                 self._clear_strong_editor()
 
             source_widgets: list[tuple[tk.Widget, bool]] = [
-                (self.entry_primary_source_filter, False),
-                (self.combo_primary_source_group, True),
                 (self.primary_sources_tree, False),
-                (self.btn_reload_primary_sources, False),
                 (self.btn_add_primary_source, False),
                 (self.btn_delete_primary_source, False),
                 (self.btn_download_source_pages, False),
-                (self.btn_open_primary_sources_root, False),
+                (self.check_primary_source_force_download, False),
+                (self.btn_open_primary_source_dir, False),
                 (self.primary_source_tabs, False),
                 (self.entry_primary_source_id, True),
                 (self.combo_primary_source_family, True),

@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, Callable
 from ..compat import Image, ImageTk
 from ..helpers import clamp01, format_indexes_for_ui, parse_indexes, parse_verse_snippet
 from ..models import Point
+from ..widgets import _ToolTip
 
 if TYPE_CHECKING:
     from ..app import TopicContentTool
@@ -34,7 +35,7 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         self.on_save = on_save
         self.previous_verse_index = previous_verse_index
 
-        self.title(f"Contour Editor - {source_id} / {page_name}")
+        self.title(f"Редактор контуров - {source_id} / {page_name}")
         self.geometry("1380x900")
         self.minsize(1040, 720)
         self.transient(parent)
@@ -48,8 +49,9 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         self.word_indexes = tk.StringVar(
             value=format_indexes_for_ui([int(v) for v in initial_payload.get("word_indexes", [])])
         )
-        self.label_text = tk.StringVar(value="label: not set")
-        self.status = tk.StringVar(value="Open image and draw contours.")
+        self.label_text = tk.StringVar(value="Метка: -")
+        self.status = tk.StringVar(value="Откройте изображение и размечайте.")
+        self._tooltips: list[_ToolTip] = []
 
         self.image_path: Path | None = None
         self.image: Image.Image | None = None
@@ -110,37 +112,51 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
             text=f"{self.source_id} / {self.page_name}",
             font=("Segoe UI", 10, "bold"),
         ).grid(row=0, column=0, sticky="w", padx=(0, 10))
-        ttk.Button(top, text="Open Image", command=self.open_image).grid(row=0, column=1, padx=2)
-        ttk.Button(top, text="Save to DB", command=self.save_to_db).grid(row=0, column=2, padx=(10, 2))
-        ttk.Button(top, text="Close", command=self.destroy).grid(row=0, column=3, padx=(2, 10))
-        ttk.Button(top, text="New Contour", command=self.new_contour).grid(row=0, column=4, padx=2)
-        ttk.Button(top, text="Clear Contour", command=self.clear_contour).grid(row=0, column=5, padx=2)
-        ttk.Button(top, text="Delete Contour", command=self.delete_contour).grid(row=0, column=6, padx=2)
-        ttk.Button(top, text="Pick Label", command=self.pick_label).grid(row=0, column=7, padx=8)
-        ttk.Button(top, text="Copy Contours", command=self.copy_contours).grid(row=0, column=8, padx=2)
-        ttk.Button(top, text="Copy Verse", command=self.copy_verse).grid(row=0, column=9, padx=2)
-        ttk.Button(top, text="Import Verse", command=self.import_verse_dialog).grid(row=0, column=10, padx=2)
-        ttk.Checkbutton(top, text="Snap axis", variable=self.snap_axis).grid(row=0, column=11, padx=8)
+        btn_open = ttk.Button(top, text="Открыть", command=self.open_image)
+        btn_open.grid(row=0, column=1, padx=2)
+        btn_save = ttk.Button(top, text="В БД", command=self.save_to_db)
+        btn_save.grid(row=0, column=2, padx=(6, 2))
+        btn_close = ttk.Button(top, text="Закрыть", command=self.destroy)
+        btn_close.grid(row=0, column=3, padx=(2, 6))
+        btn_new = ttk.Button(top, text="Новый", command=self.new_contour)
+        btn_new.grid(row=0, column=4, padx=2)
+        btn_clear = ttk.Button(top, text="Очистить", command=self.clear_contour)
+        btn_clear.grid(row=0, column=5, padx=2)
+        btn_delete = ttk.Button(top, text="Удалить", command=self.delete_contour)
+        btn_delete.grid(row=0, column=6, padx=2)
+        btn_label = ttk.Button(top, text="Метка", command=self.pick_label)
+        btn_label.grid(row=0, column=7, padx=4)
+        btn_copy_contours = ttk.Button(top, text="Коп. конт.", command=self.copy_contours)
+        btn_copy_contours.grid(row=0, column=8, padx=2)
+        btn_copy_verse = ttk.Button(top, text="Коп. стих", command=self.copy_verse)
+        btn_copy_verse.grid(row=0, column=9, padx=2)
+        btn_import_verse = ttk.Button(top, text="Имп. стих", command=self.import_verse_dialog)
+        btn_import_verse.grid(row=0, column=10, padx=2)
+        check_snap_axis = ttk.Checkbutton(top, text="Ось", variable=self.snap_axis)
+        check_snap_axis.grid(row=0, column=11, padx=6)
 
         mode_frame = ttk.Frame(top)
-        mode_frame.grid(row=0, column=12, padx=8)
-        ttk.Label(mode_frame, text="Mode:").grid(row=0, column=0, padx=(0, 4))
-        for col, (title, value) in enumerate([("Add", "add"), ("Move", "move"), ("Delete", "delete")], start=1):
-            ttk.Radiobutton(mode_frame, text=title, value=value, variable=self.mode).grid(
+        mode_frame.grid(row=0, column=12, padx=6)
+        ttk.Label(mode_frame, text="Режим:").grid(row=0, column=0, padx=(0, 4))
+        mode_buttons: dict[str, ttk.Radiobutton] = {}
+        for col, (title, value) in enumerate([("Доб.", "add"), ("Сдв.", "move"), ("Удал.", "delete")], start=1):
+            button = ttk.Radiobutton(mode_frame, text=title, value=value, variable=self.mode)
+            button.grid(
                 row=0,
                 column=col,
                 padx=2,
             )
+            mode_buttons[value] = button
 
         meta = ttk.Frame(top)
         meta.grid(row=1, column=0, columnspan=13, sticky="ew", pady=(8, 0))
-        ttk.Label(meta, text="Verse index").grid(row=0, column=0, padx=(0, 4))
+        ttk.Label(meta, text="Индекс").grid(row=0, column=0, padx=(0, 4))
         ttk.Spinbox(meta, from_=0, to=9999, textvariable=self.verse_index_var, width=6).grid(row=0, column=1)
-        ttk.Label(meta, text="Chapter").grid(row=0, column=2, padx=(10, 4))
+        ttk.Label(meta, text="Гл.").grid(row=0, column=2, padx=(10, 4))
         ttk.Spinbox(meta, from_=1, to=999, textvariable=self.chapter, width=5).grid(row=0, column=3)
-        ttk.Label(meta, text="Verse").grid(row=0, column=4, padx=(8, 4))
+        ttk.Label(meta, text="Стих").grid(row=0, column=4, padx=(8, 4))
         ttk.Spinbox(meta, from_=1, to=999, textvariable=self.verse, width=5).grid(row=0, column=5)
-        ttk.Label(meta, text="Indexes").grid(row=0, column=6, padx=(8, 4))
+        ttk.Label(meta, text="Слова").grid(row=0, column=6, padx=(8, 4))
         ttk.Entry(meta, textvariable=self.word_indexes, width=56).grid(row=0, column=7, sticky="ew")
         ttk.Label(meta, textvariable=self.label_text).grid(row=0, column=8, padx=(10, 0), sticky="w")
 
@@ -148,6 +164,25 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         self.canvas.grid(row=1, column=0, sticky="nsew")
 
         ttk.Label(self, textvariable=self.status, anchor="w", padding=(8, 4)).grid(row=2, column=0, sticky="ew")
+
+        self._install_tooltips(
+            [
+                (btn_open, "Открыть другое изображение."),
+                (btn_save, "Сохранить стих и контуры в БД."),
+                (btn_close, "Закрыть редактор."),
+                (btn_new, "Создать новый контур."),
+                (btn_clear, "Очистить точки активного контура."),
+                (btn_delete, "Удалить активный контур."),
+                (btn_label, "Поставить метку стиха на изображении."),
+                (btn_copy_contours, "Скопировать только контуры."),
+                (btn_copy_verse, "Скопировать готовый стих."),
+                (btn_import_verse, "Импортировать Verse(...) из старых данных."),
+                (check_snap_axis, "Выравнивать новую точку по оси X или Y."),
+                (mode_buttons["add"], "Добавлять точки в активный контур."),
+                (mode_buttons["move"], "Перетаскивать существующие точки."),
+                (mode_buttons["delete"], "Удалять точки щелчком."),
+            ]
+        )
 
     def _bind_events(self) -> None:
         self.canvas.bind("<Configure>", lambda _e: self.redraw())
@@ -171,8 +206,8 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         file_path = filedialog.askopenfilename(
             parent=self,
             initialdir=str(init),
-            title="Open image",
-            filetypes=[("Images", "*.jpg *.jpeg *.png *.webp *.bmp *.tif *.tiff"), ("All files", "*.*")],
+            title="Открыть изображение",
+            filetypes=[("Изображения", "*.jpg *.jpeg *.png *.webp *.bmp *.tif *.tiff"), ("Все файлы", "*.*")],
         )
         if file_path:
             self.load_image(Path(file_path))
@@ -183,7 +218,7 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         self.image_size = self.image.size
         self.image_cache_key = None
         self.start_dir = path.parent
-        self.status.set(f"Loaded: {path.name}")
+        self.status.set(f"Загружено: {path.name}")
         self.after(40, self.fit_view)
 
     def fit_view(self) -> None:
@@ -301,9 +336,11 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
     def on_motion(self, event: tk.Event[tk.Misc]) -> None:
         rel = self.canvas_to_rel(event.x, event.y)
         if rel is None:
-            self.status.set(f"mode={self.mode.get()}  zoom={self.zoom:.2f}x  outside image")
+            self.status.set(f"Режим={self._mode_label()}  Масштаб={self.zoom:.2f}x  вне изображения")
             return
-        self.status.set(f"mode={self.mode.get()}  zoom={self.zoom:.2f}x  rel=({rel[0]:.4f}, {rel[1]:.4f})")
+        self.status.set(
+            f"Режим={self._mode_label()}  Масштаб={self.zoom:.2f}x  Точка=({rel[0]:.4f}, {rel[1]:.4f})"
+        )
 
     def new_contour(self) -> None:
         self.contours.append([])
@@ -327,11 +364,11 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
 
     def pick_label(self) -> None:
         self.wait_label_pick = True
-        self.status.set("Click image to place verse label.")
+        self.status.set("Щёлкните по изображению, чтобы поставить метку.")
 
     def import_verse_dialog(self) -> None:
         dialog = tk.Toplevel(self)
-        dialog.title("Import Verse(...)")
+        dialog.title("Импорт стиха")
         dialog.geometry("900x560")
         dialog.minsize(700, 420)
         dialog.transient(self)
@@ -345,8 +382,8 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         ttk.Label(
             container,
             text=(
-                "Paste Verse(...) block from the legacy primary sources snapshot.\n"
-                "Expected fields: chapterNumber, verseNumber, labelPosition, wordIndexes, contours."
+                "Вставьте блок Verse(...) из старого снимка первоисточников.\n"
+                "Нужны поля: chapterNumber, verseNumber, labelPosition, wordIndexes, contours."
             ),
             justify="left",
         ).grid(row=0, column=0, sticky="w")
@@ -371,18 +408,18 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         def do_import() -> None:
             raw = text.get("1.0", "end").strip()
             if not raw:
-                messagebox.showwarning("Import Verse", "Paste Verse(...) first.", parent=dialog)
+                messagebox.showwarning("Импорт", "Сначала вставьте Verse(...).", parent=dialog)
                 return
             try:
                 payload = parse_verse_snippet(raw)
                 self.apply_imported_verse(payload)
             except Exception as exc:
-                messagebox.showerror("Import Verse", f"Failed to parse snippet:\n{exc}", parent=dialog)
+                messagebox.showerror("Импорт", f"Не удалось разобрать фрагмент:\n{exc}", parent=dialog)
                 return
             dialog.destroy()
 
-        ttk.Button(buttons, text="Import", command=do_import).grid(row=0, column=0, padx=(0, 8))
-        ttk.Button(buttons, text="Cancel", command=dialog.destroy).grid(row=0, column=1)
+        ttk.Button(buttons, text="Импорт", command=do_import).grid(row=0, column=0, padx=(0, 8))
+        ttk.Button(buttons, text="Отмена", command=dialog.destroy).grid(row=0, column=1)
 
         text.focus_set()
         self.wait_window(dialog)
@@ -402,7 +439,7 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
             if points:
                 contours.append(points)
         if not contours:
-            raise ValueError("Imported verse has no contours.")
+            raise ValueError("У импортированного стиха нет контуров.")
 
         self.chapter.set(chapter)
         self.verse.set(verse)
@@ -418,20 +455,20 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         self._refresh_label_text()
         self._refresh_contour_info()
         self.redraw()
-        self.status.set(f"Imported Verse {chapter}:{verse} with {len(contours)} contour(s).")
+        self.status.set(f"Импортирован стих {chapter}:{verse}, контуров: {len(contours)}.")
 
     def _refresh_label_text(self) -> None:
         if self.label_position is None:
-            self.label_text.set("label: not set")
+            self.label_text.set("Метка: -")
             return
-        self.label_text.set(f"label: Offset({self.label_position[0]:.4f}, {self.label_position[1]:.4f})")
+        self.label_text.set(f"Метка: ({self.label_position[0]:.4f}, {self.label_position[1]:.4f})")
 
     def _refresh_contour_info(self) -> None:
         if not self.contours:
             self.contours = [[]]
             self.active_contour = 0
         summary = ", ".join(f"{index + 1}:{len(contour)}" for index, contour in enumerate(self.contours))
-        self.status.set(f"Contours points count [{summary}] | active={self.active_contour + 1}")
+        self.status.set(f"Контуры [{summary}] | активный={self.active_contour + 1}")
 
     def redraw(self) -> None:
         self.canvas.delete("all")
@@ -439,7 +476,7 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
             self.canvas.create_text(
                 self.canvas.winfo_width() / 2,
                 self.canvas.winfo_height() / 2,
-                text="Open image",
+                text="Откройте изображение",
                 fill="#ccc",
             )
             return
@@ -503,7 +540,7 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
     def copy_contours(self) -> None:
         contours = self.filtered_contours()
         if not contours:
-            messagebox.showwarning("Copy", "Need at least one contour with 3+ points.", parent=self)
+            messagebox.showwarning("Копирование", "Нужен хотя бы один контур с 3+ точками.", parent=self)
             return
         lines = ["contours: const ["]
         for contour in contours:
@@ -514,17 +551,17 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         lines.append("],")
         self.clipboard_clear()
         self.clipboard_append("\n".join(lines))
-        self.status.set("Copied contours to clipboard.")
+        self.status.set("Контуры скопированы.")
 
     def copy_verse(self) -> None:
         contours = self.filtered_contours()
         if not contours:
-            messagebox.showwarning("Copy", "Need at least one contour with 3+ points.", parent=self)
+            messagebox.showwarning("Копирование", "Нужен хотя бы один контур с 3+ точками.", parent=self)
             return
         try:
             indexes = parse_indexes(self.word_indexes.get())
         except Exception as exc:
-            messagebox.showerror("Indexes", str(exc), parent=self)
+            messagebox.showerror("Индексы", str(exc), parent=self)
             return
         label = self.label_position or contours[0][0]
         lines = [
@@ -545,17 +582,17 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         lines.extend(["  ],", "),"])
         self.clipboard_clear()
         self.clipboard_append("\n".join(lines))
-        self.status.set("Copied Verse(...) to clipboard.")
+        self.status.set("Стих скопирован.")
 
     def save_to_db(self) -> None:
         contours = self.filtered_contours()
         if not contours:
-            messagebox.showwarning("Save", "Need at least one contour with 3+ points.", parent=self)
+            messagebox.showwarning("Сохранение", "Нужен хотя бы один контур с 3+ точками.", parent=self)
             return
         try:
             word_indexes = parse_indexes(self.word_indexes.get())
         except Exception as exc:
-            messagebox.showerror("Indexes", str(exc), parent=self)
+            messagebox.showerror("Индексы", str(exc), parent=self)
             return
         label = self.label_position or contours[0][0]
         payload = {
@@ -569,8 +606,16 @@ class PrimarySourceContourEditorDialog(tk.Toplevel):
         }
         if self.on_save(payload, self.previous_verse_index):
             self.previous_verse_index = int(self.verse_index_var.get())
-            self.status.set(
-                f"Saved to DB: verse_index={self.previous_verse_index} for {self.source_id}/{self.page_name}"
-            )
+            self.status.set(f"Сохранено в БД: индекс={self.previous_verse_index} для {self.source_id}/{self.page_name}")
+
+    def _mode_label(self) -> str:
+        return {
+            "add": "доб.",
+            "move": "сдв.",
+            "delete": "удал.",
+        }.get(self.mode.get(), self.mode.get())
+
+    def _install_tooltips(self, items: list[tuple[tk.Widget, str]]) -> None:
+        self._tooltips = [_ToolTip(widget, text) for widget, text in items]
 
 
