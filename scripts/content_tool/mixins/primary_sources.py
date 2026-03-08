@@ -2092,13 +2092,18 @@ class PrimarySourcesMixin:
                 "pending_metric_name": "",
                 "process": None,
                 "cancel_requested": False,
+                "last_log_blank": False,
             }
 
             def append_log(message: str) -> None:
+                is_blank = not message.strip()
+                if is_blank and bool(state.get("last_log_blank", False)):
+                    return
                 log_text.configure(state="normal")
                 log_text.insert("end", message + "\n")
                 log_text.see("end")
                 log_text.configure(state="disabled")
+                state["last_log_blank"] = is_blank
 
             def render_progress() -> None:
                 slots = state.get("progress_slots", {})
