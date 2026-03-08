@@ -1,1 +1,1 @@
-﻿export 'package:revelation/features/about/presentation/screens/library_list.dart';
+export 'package:revelation/features/about/about.dart' show LibraryList;

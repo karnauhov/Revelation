@@ -1,1 +1,1 @@
-﻿export 'package:revelation/features/about/presentation/screens/institution_list.dart';
+export 'package:revelation/features/about/about.dart' show InstitutionList;

@@ -1,1 +1,1 @@
-﻿export 'package:revelation/features/about/presentation/screens/recommended_card.dart';
+export 'package:revelation/features/about/about.dart' show RecommendedCard;

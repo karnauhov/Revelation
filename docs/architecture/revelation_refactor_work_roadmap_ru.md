@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1 завершены, Phase 2 в работе (P0/P1 completed, P2 in progress)`  
+Статус: `Phase 0/1/2 завершены, Phase 3 ready`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -64,15 +64,15 @@
 - [x] Подшаг [P2.2]: миграция `about`.
 - [x] Задача [P1]: мигрировать `topics` presentation/data поэтапно.
 - [x] Задача [P1]: ввести boundary import rules (lint/grep).
-- [ ] Задача [P2]: добавить временные barrel exports для мягкого перехода import-путей.
-- [ ] Affected areas верифицированы: `lib/screens/*`, `lib/viewmodels/*`, `lib/repositories/*`, `lib/utils/*`, `lib/common_widgets/*`.
-- [ ] Риски проверены и записаны.
+- [x] Задача [P2]: добавить временные barrel exports для мягкого перехода import-путей.
+- [x] Affected areas верифицированы: `lib/screens/*`, `lib/viewmodels/*`, `lib/repositories/*`, `lib/utils/*`, `lib/common_widgets/*`.
+- [x] Риски проверены и записаны.
 - [x] Dependencies/prerequisites подтверждены (`Phase 1 completed`).
 - [x] Relevant skills назначены.
-- [ ] Test expectations выполнены.
-- [ ] Docs update expectations выполнены.
-- [ ] Quality gates пройдены.
-- [ ] Criteria of done выполнен.
+- [x] Test expectations выполнены.
+- [x] Docs update expectations выполнены.
+- [x] Quality gates пройдены.
+- [x] Criteria of done выполнен.
 
 ### Phase 3 — State/data/navigation refactors
 - [ ] Цель фазы зафиксирована: устранить ключевой долг в state/data/router.
@@ -575,3 +575,56 @@
   - New risks: временные compatibility wrappers могут задержать финальный переход на feature imports.
   - Mitigations: на следующем шаге Phase 2 / P2 сузить и документировать lifecycle временных wrappers.
   - Next task: Phase 2 / P2 — добавить/нормализовать временные barrel exports для мягкого перехода import-путей.
+
+#### [2026-03-08 20:23] Phase 2 / Task P2 / Normalize temporary barrel exports for transition imports
+- Статус: done
+- Priority: P2
+- What changed:
+  - Добавлены публичные barrel-exports для migrated features:
+    - `lib/features/about/about.dart`
+    - `lib/features/settings/settings.dart`
+    - `lib/features/topics/topics.dart`
+  - Legacy wrappers переведены на `show`-экспорт из feature barrels вместо deep-path exports:
+    - `lib/screens/about/*`, `lib/screens/settings/settings_screen.dart`, `lib/screens/main/*`, `lib/screens/topic/topic_screen.dart`
+    - `lib/viewmodels/{about,settings,main}_view_model.dart`
+    - `lib/repositories/settings_repository.dart`
+    - `lib/models/topic_info.dart`
+  - Обновлены composition imports на публичные feature API в:
+    - `lib/main.dart`
+    - `lib/app/bootstrap/app_bootstrap.dart`
+    - `lib/app/di/app_di.dart`
+    - `lib/app_router.dart`
+    - `lib/controllers/audio_controller.dart`
+- Why changed:
+  - Закрыть шаг Phase 2 / P2 и зафиксировать единый transition layer для мягкой миграции import-путей с минимальным churn.
+- Scope (files/modules):
+  - `lib/features/about/about.dart`
+  - `lib/features/settings/settings.dart`
+  - `lib/features/topics/topics.dart`
+  - `lib/screens/about/*`
+  - `lib/screens/settings/settings_screen.dart`
+  - `lib/screens/main/*`
+  - `lib/screens/topic/topic_screen.dart`
+  - `lib/viewmodels/{about,settings,main}_view_model.dart`
+  - `lib/repositories/settings_repository.dart`
+  - `lib/models/topic_info.dart`
+  - `lib/main.dart`
+  - `lib/app/bootstrap/app_bootstrap.dart`
+  - `lib/app/di/app_di.dart`
+  - `lib/app_router.dart`
+  - `lib/controllers/audio_controller.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: расширение public surface через barrels может скрывать избыточные зависимости.
+  - Mitigations: на Phase 3/5 сократить public exports до минимального API после стабилизации миграции.
+  - Next task: Phase 3 / P0 — декомпозировать `DBManager` на data sources/repositories/cache policy.

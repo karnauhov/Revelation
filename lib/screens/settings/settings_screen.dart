@@ -1,1 +1,1 @@
-﻿export 'package:revelation/features/settings/presentation/screens/settings_screen.dart';
+export 'package:revelation/features/settings/settings.dart' show SettingsScreen;

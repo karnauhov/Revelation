@@ -1,1 +1,1 @@
-﻿export 'package:revelation/features/about/presentation/screens/icon_url.dart';
+export 'package:revelation/features/about/about.dart' show IconUrl;

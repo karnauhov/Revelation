@@ -1,8 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
-import 'package:revelation/features/topics/presentation/viewmodels/main_view_model.dart';
+import 'package:revelation/features/settings/settings.dart'
+    show SettingsViewModel;
+import 'package:revelation/features/topics/topics.dart' show MainViewModel;
 import 'package:revelation/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/viewmodels/primary_sources_view_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';

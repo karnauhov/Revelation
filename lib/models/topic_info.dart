@@ -1,1 +1,1 @@
-export 'package:revelation/features/topics/data/models/topic_info.dart';
+export 'package:revelation/features/topics/topics.dart' show TopicInfo;

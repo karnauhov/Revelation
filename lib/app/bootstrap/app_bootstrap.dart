@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:revelation/common_widgets/strong_dictionary_dialog.dart';
-import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
-import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
+import 'package:revelation/features/settings/settings.dart'
+    show SettingsRepository, SettingsViewModel;
 import 'package:revelation/managers/db_manager.dart';
 import 'package:revelation/managers/server_manager.dart';
 import 'package:revelation/utils/app_link_handler.dart';

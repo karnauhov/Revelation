@@ -1,1 +1,1 @@
-export 'package:revelation/features/topics/presentation/widgets/topic_list.dart';
+export 'package:revelation/features/topics/topics.dart' show TopicList;

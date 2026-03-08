@@ -1,1 +1,1 @@
-export 'package:revelation/features/topics/presentation/widgets/drawer_item.dart';
+export 'package:revelation/features/topics/topics.dart' show DrawerItem;

@@ -1,1 +1,1 @@
-export 'package:revelation/features/topics/presentation/viewmodels/main_view_model.dart';
+export 'package:revelation/features/topics/topics.dart' show MainViewModel;

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
-import 'package:revelation/features/about/presentation/screens/about_screen.dart';
-import 'package:revelation/features/settings/presentation/screens/settings_screen.dart';
-import 'package:revelation/features/topics/presentation/screens/main_screen.dart';
-import 'package:revelation/features/topics/presentation/screens/topic_screen.dart';
+import 'package:revelation/features/about/about.dart' show AboutScreen;
+import 'package:revelation/features/settings/settings.dart' show SettingsScreen;
+import 'package:revelation/features/topics/topics.dart'
+    show MainScreen, TopicScreen;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/audio_controller.dart';

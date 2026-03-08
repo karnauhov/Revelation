@@ -1,1 +1,2 @@
-﻿export 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
+export 'package:revelation/features/settings/settings.dart'
+    show SettingsViewModel;

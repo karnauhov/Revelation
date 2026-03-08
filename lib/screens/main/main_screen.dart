@@ -1,1 +1,1 @@
-export 'package:revelation/features/topics/presentation/screens/main_screen.dart';
+export 'package:revelation/features/topics/topics.dart' show MainScreen;

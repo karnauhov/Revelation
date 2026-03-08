@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
+import 'package:revelation/features/settings/settings.dart'
+    show SettingsViewModel;
 import 'package:revelation/utils/common.dart';
 
 class AudioController {

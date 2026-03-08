@@ -5,12 +5,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/features/settings/settings.dart'
+    show SettingsViewModel;
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/theme.dart';
 import 'package:revelation/utils/app_logger_formatter.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 import 'utils/common.dart';
 import 'app_router.dart';
 

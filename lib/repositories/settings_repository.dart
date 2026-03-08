@@ -1,1 +1,2 @@
-﻿export 'package:revelation/features/settings/data/repositories/settings_repository.dart';
+export 'package:revelation/features/settings/settings.dart'
+    show SettingsRepository;
