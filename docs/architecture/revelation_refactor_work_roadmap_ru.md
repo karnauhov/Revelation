@@ -79,10 +79,10 @@
 - [x] Обоснование фазы зафиксировано: здесь максимальный architectural risk.
 - [x] Задача [P0]: декомпозировать `DBManager` на data sources/repositories/cache policy.
 - [x] Задача [P0]: перенести direct DB access из `TopicList/TopicCard/TopicScreen` в feature controllers/services.
-- [ ] Задача [P0]: разделить `PrimarySourceViewModel` на orchestrators.
-- [ ] Подшаг [P3.1]: image loading orchestration.
-- [ ] Подшаг [P3.2]: page settings orchestration.
-- [ ] Подшаг [P3.3]: description panel orchestration.
+- [x] Задача [P0]: разделить `PrimarySourceViewModel` на orchestrators.
+- [x] Подшаг [P3.1]: image loading orchestration.
+- [x] Подшаг [P3.2]: page settings orchestration.
+- [x] Подшаг [P3.3]: description panel orchestration.
 - [ ] Задача [P0]: убрать untyped `Map extra` contracts для critical routes.
 - [ ] Задача [P1]: ввести error/result model и user-facing fallback states.
 - [ ] Задача [P1]: стандартизировать async patterns (request token/cancel/ignore stale result).
@@ -776,3 +776,100 @@
   - New risks: `DBManager` пока остается legacy internal store/cache hub, поэтому финальная внутренняя декомпозиция может потребоваться в следующих фазах.
   - Mitigations: в следующих шагах рефакторить orchestration (`PrimarySourceViewModel`) и сужать surface gateway по мере стабилизации.
   - Next task: Phase 3 / P0 — разделить `PrimarySourceViewModel` на orchestrators (P3.1/P3.2/P3.3).
+
+#### [2026-03-08 22:16] Phase 3 / Task P0 (partial, P3.1 done) / Extract image loading orchestration from PrimarySourceViewModel
+- Статус: partial
+- Priority: P0
+- What changed:
+  - Добавлен orchestrator: `lib/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart`.
+  - Вынесены из `PrimarySourceViewModel` image-loading responsibilities:
+    - загрузка image bytes (web/local),
+    - проверка локального наличия страниц,
+    - refresh fallback поведение.
+  - `lib/viewmodels/primary_source_view_model.dart` переключен на orchestrator (`PrimarySourceImageLoadingOrchestrator`) вместо локальных методов `_downloadImage/_saveImage/_getLocalFilePath`.
+  - Для соблюдения boundary rule добавлен infra download client:
+    - `lib/infra/remote/image/image_download_client.dart`
+    - orchestrator использует `ImageDownloadClient`, а не прямой `ServerManager()`.
+- Why changed:
+  - Закрыть подшаг `P3.1` и уменьшить размер/ответственность `PrimarySourceViewModel`, отделив image loading orchestration.
+- Scope (files/modules):
+  - `lib/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart`
+  - `lib/infra/remote/image/image_download_client.dart`
+  - `lib/viewmodels/primary_source_view_model.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: пока не вынесены page settings и description orchestration, `PrimarySourceViewModel` остается перегруженным.
+  - Mitigations: следующими шагами вынести `P3.2` (page settings) и `P3.3` (description panel) в отдельные orchestrators.
+  - Next task: Phase 3 / P0 — `P3.2` page settings orchestration.
+
+#### [2026-03-08 22:20] Phase 3 / Task P0 (partial, P3.2 done) / Extract page settings orchestration from PrimarySourceViewModel
+- Статус: partial
+- Priority: P0
+- What changed:
+  - Добавлен orchestrator: `lib/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart`.
+  - Вынесены из `PrimarySourceViewModel` page settings responsibilities:
+    - чтение сохраненных page settings,
+    - сериализация/сохранение page settings,
+    - очистка page settings для выбранной страницы.
+  - `lib/viewmodels/primary_source_view_model.dart` переключен на `PrimarySourcePageSettingsOrchestrator`.
+- Why changed:
+  - Закрыть подшаг `P3.2` и уменьшить объем state orchestration в `PrimarySourceViewModel` перед финальным подшагом `P3.3`.
+- Scope (files/modules):
+  - `lib/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart`
+  - `lib/viewmodels/primary_source_view_model.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: описание/навигация description panel пока остаются в `PrimarySourceViewModel`, поэтому задача split на orchestrators еще не закрыта полностью.
+  - Mitigations: следующий шаг — вынести `P3.3` description panel orchestration.
+  - Next task: Phase 3 / P0 — `P3.3` description panel orchestration.
+
+#### [2026-03-08 22:25] Phase 3 / Task P0 (P3.3 done) / Extract description panel orchestration from PrimarySourceViewModel
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен orchestrator: `lib/features/primary_sources/application/orchestrators/description_panel_orchestrator.dart`.
+  - Вынесены из `PrimarySourceViewModel` description panel responsibilities:
+    - хранение состояния панели (visibility/content/current selection),
+    - обработка word/verse/strong info запросов,
+    - навигация по выбранному description (word/strong/verse).
+  - `lib/viewmodels/primary_source_view_model.dart` переключен на `PrimarySourceDescriptionPanelOrchestrator`; публичный API VM для `PrimarySourceScreen` сохранен.
+- Why changed:
+  - Закрыть подшаг `P3.3` и завершить `P0`-задачу разделения `PrimarySourceViewModel` на orchestrators (`P3.1/P3.2/P3.3`).
+- Scope (files/modules):
+  - `lib/features/primary_sources/application/orchestrators/description_panel_orchestrator.dart`
+  - `lib/viewmodels/primary_source_view_model.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: orchestration вынесена, но в VM по-прежнему остается значимый UI-state (zoom/color/selection), возможна дальнейшая декомпозиция в следующих P1 шагах.
+  - Mitigations: следующий P0 шаг Phase 3 — убрать untyped `Map extra` contracts для critical routes.
+  - Next task: Phase 3 / P0 — убрать untyped `Map extra` contracts для critical routes.
