@@ -139,6 +139,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_loading_topics => 'Error al cargar temas';
 
   @override
+  String get error_loading_primary_sources =>
+      'Error al cargar fuentes primarias';
+
+  @override
   String get changelog => 'Registro de cambios (en)';
 
   @override

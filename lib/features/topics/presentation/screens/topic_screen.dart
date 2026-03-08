@@ -4,6 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
+import 'package:revelation/common_widgets/error_message.dart';
+import 'package:revelation/core/errors/app_result.dart';
+import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -64,23 +67,30 @@ class _TopicScreenState extends State<TopicScreen> {
               name: widget.name ?? '',
               description: widget.description ?? '',
               markdown: '',
+              hasLoadingError: snapshot.hasError,
             );
 
-        Widget content = SizedBox.expand(
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(8.0),
-            child: MarkdownBody(
-              data: topicData.markdown,
-              styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-              imageBuilder: (uri, title, alt) =>
-                  _buildMarkdownImage(context, uri, alt),
-              onTapLink: (text, href, title) async {
-                await _handleTopicLink(context, href);
-              },
+        final hasLoadingError = snapshot.hasError || topicData.hasLoadingError;
+        Widget content;
+        if (hasLoadingError) {
+          content = ErrorMessage(errorMessage: l10n.error_loading_topics);
+        } else {
+          content = SizedBox.expand(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(8.0),
+              child: MarkdownBody(
+                data: topicData.markdown,
+                styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+                imageBuilder: (uri, title, alt) =>
+                    _buildMarkdownImage(context, uri, alt),
+                onTapLink: (text, href, title) async {
+                  await _handleTopicLink(context, href);
+                },
+              ),
             ),
-          ),
-        );
+          );
+        }
 
         if (isDesktop() || isWeb()) {
           content = Listener(
@@ -156,29 +166,43 @@ class _TopicScreenState extends State<TopicScreen> {
         name: widget.name ?? '',
         description: widget.description ?? '',
         markdown: '',
+        hasLoadingError: false,
       );
     }
 
-    final markdown = await _topicsRepository.getArticleMarkdown(
+    final markdownResult = await _topicsRepository.getArticleMarkdown(
       route: route,
       language: language,
     );
+    if (markdownResult is! AppSuccess<String>) {
+      return _TopicContentData(
+        name: widget.name ?? '',
+        description: widget.description ?? '',
+        markdown: '',
+        hasLoadingError: true,
+      );
+    }
+    final markdown = markdownResult.data;
 
     var name = widget.name ?? '';
     var description = widget.description ?? '';
     if (name.isEmpty || description.isEmpty) {
-      final article = await _topicsRepository.getTopicByRoute(
+      final articleResult = await _topicsRepository.getTopicByRoute(
         route: route,
         language: language,
       );
-      name = _firstNonEmpty(name, article?.name);
-      description = _firstNonEmpty(description, article?.description);
+      if (articleResult is AppSuccess<TopicInfo?>) {
+        final article = articleResult.data;
+        name = _firstNonEmpty(name, article?.name);
+        description = _firstNonEmpty(description, article?.description);
+      }
     }
 
     return _TopicContentData(
       name: name,
       description: description,
       markdown: markdown,
+      hasLoadingError: false,
     );
   }
 
@@ -264,13 +288,17 @@ class _TopicScreenState extends State<TopicScreen> {
   Widget _buildDbResourceImage(BuildContext context, String key, String? alt) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: FutureBuilder<CommonResource?>(
+      child: FutureBuilder<AppResult<CommonResource?>>(
         future: _topicsRepository.getCommonResource(key),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return const Center(child: CircularProgressIndicator());
           }
-          final resource = snapshot.data;
+          final result = snapshot.data;
+          if (snapshot.hasError || result is! AppSuccess<CommonResource?>) {
+            return _buildImageErrorWidget(context, key, alt);
+          }
+          final resource = result.data;
           if (resource == null) {
             return _buildImageErrorWidget(context, key, alt);
           }
@@ -303,7 +331,16 @@ class _TopicScreenState extends State<TopicScreen> {
       return false;
     }
 
-    final resource = await _topicsRepository.getCommonResource(key);
+    final resourceResult = await _topicsRepository.getCommonResource(key);
+    if (resourceResult is! AppSuccess<CommonResource?>) {
+      showCustomDialog(
+        MessageType.errorCommon,
+        param: 'Resource not found in DB: $key',
+      );
+      return false;
+    }
+
+    final resource = resourceResult.data;
     if (resource == null) {
       showCustomDialog(
         MessageType.errorCommon,
@@ -412,10 +449,12 @@ class _TopicContentData {
   final String name;
   final String description;
   final String markdown;
+  final bool hasLoadingError;
 
   const _TopicContentData({
     required this.name,
     required this.description,
     required this.markdown,
+    required this.hasLoadingError,
   });
 }

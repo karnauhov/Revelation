@@ -140,6 +140,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get error_loading_topics => 'Помилка завантаження тем';
 
   @override
+  String get error_loading_primary_sources =>
+      'Помилка завантаження першоджерел';
+
+  @override
   String get changelog => 'Журнал змін (en)';
 
   @override

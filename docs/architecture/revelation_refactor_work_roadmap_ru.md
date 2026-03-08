@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1/2 завершены, Phase 3 в работе (P0 started)`  
+Статус: `Phase 0/1/2 завершены, Phase 3 в работе (P0 completed, P1 started)`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -84,7 +84,7 @@
 - [x] Подшаг [P3.2]: page settings orchestration.
 - [x] Подшаг [P3.3]: description panel orchestration.
 - [x] Задача [P0]: убрать untyped `Map extra` contracts для critical routes.
-- [ ] Задача [P1]: ввести error/result model и user-facing fallback states.
+- [x] Задача [P1]: ввести error/result model и user-facing fallback states.
 - [ ] Задача [P1]: стандартизировать async patterns (request token/cancel/ignore stale result).
 - [ ] Affected areas верифицированы: `lib/managers/db_manager.dart`, `lib/repositories/primary_sources_db_repository.dart`, `lib/screens/topic/*`, `lib/screens/primary_source/*`, `lib/viewmodels/primary_source_view_model.dart`, `lib/app_router.dart`.
 - [ ] Риски проверены и записаны.
@@ -904,3 +904,56 @@
   - New risks: legacy deeplink/code paths, которые могли передавать map в `extra`, теперь будут отклоняться.
   - Mitigations: сохранить query fallback для `/topic`, а для `/primary_source` использовать только `PrimarySourceRouteArgs`/`PrimarySource`.
   - Next task: Phase 3 / P1 — ввести error/result model и user-facing fallback states.
+
+#### [2026-03-08 22:40] Phase 3 / Task P1 / Introduce AppResult model and user-facing fallback states
+- Статус: done
+- Priority: P1
+- What changed:
+  - Введена общая error/result модель:
+    - `lib/core/errors/app_failure.dart`
+    - `lib/core/errors/app_result.dart`
+  - `TopicsRepository` переведен с null/empty fallback на `AppResult<T>`:
+    - `getTopics`
+    - `getArticleMarkdown`
+    - `getTopicByRoute`
+    - `getCommonResource`
+  - Добавлены user-facing fallback states в topics presentation:
+    - `TopicList` показывает `ErrorMessage` при `AppFailureResult`.
+    - `TopicScreen` показывает `ErrorMessage` при ошибке загрузки markdown.
+    - `TopicCard` откатывается на default icon при ошибке загрузки ресурса.
+  - `PrimarySourcesDbRepository` дополнен `loadGroupedSourcesResult()` на `AppResult`.
+  - `PrimarySourcesViewModel` теперь хранит `lastFailure/hasError`.
+  - `PrimarySourcesScreen` показывает явный fallback экран ошибки при пустых данных и ошибке загрузки.
+  - Добавлен l10n ключ `error_loading_primary_sources` во все поддерживаемые локали (`en/es/uk/ru`) и обновлена генерация l10n.
+- Why changed:
+  - Закрыть `Phase 3 / P1` задачу стандартизации обработки ошибок через типизированный результат и дать пользователю предсказуемые fallback состояния вместо silent failures.
+- Scope (files/modules):
+  - `lib/core/errors/app_failure.dart`
+  - `lib/core/errors/app_result.dart`
+  - `lib/features/topics/data/repositories/topics_repository.dart`
+  - `lib/features/topics/presentation/widgets/topic_list.dart`
+  - `lib/features/topics/presentation/widgets/topic_card.dart`
+  - `lib/features/topics/presentation/screens/topic_screen.dart`
+  - `lib/repositories/primary_sources_db_repository.dart`
+  - `lib/viewmodels/primary_sources_view_model.dart`
+  - `lib/screens/primary_sources/primary_sources_screen.dart`
+  - `lib/l10n/app_en.arb`
+  - `lib/l10n/app_es.arb`
+  - `lib/l10n/app_uk.arb`
+  - `lib/l10n/app_ru.arb`
+  - `lib/l10n/app_localizations*.dart` (generated)
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: часть legacy слоев все еще использует null/exception-based contracts, поэтому error/result модель пока внедрена не во всех feature потоках.
+  - Mitigations: на следующем шаге P1 стандартизировать async patterns (request token/cancel/ignore stale result) и продолжить выравнивание контрактов.
+  - Next task: Phase 3 / P1 — стандартизировать async patterns (request token/cancel/ignore stale result).

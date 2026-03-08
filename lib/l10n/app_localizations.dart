@@ -348,6 +348,12 @@ abstract class AppLocalizations {
   /// **'Error loading topics'**
   String get error_loading_topics;
 
+  /// No description provided for @error_loading_primary_sources.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading primary sources'**
+  String get error_loading_primary_sources;
+
   /// No description provided for @changelog.
   ///
   /// In en, this message translates to:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
+import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/db/db_common.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
@@ -18,7 +19,7 @@ class TopicCard extends StatefulWidget {
 class _TopicCardState extends State<TopicCard> {
   final TopicsRepository _topicsRepository = TopicsRepository();
 
-  late Future<CommonResource?> _iconFuture;
+  late Future<AppResult<CommonResource?>> _iconFuture;
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _TopicCardState extends State<TopicCard> {
     }
   }
 
-  Future<CommonResource?> _loadIcon() async {
+  Future<AppResult<CommonResource?>> _loadIcon() async {
     final key = widget.topic.idIcon.trim();
     return _topicsRepository.getCommonResource(key);
   }
@@ -84,13 +85,17 @@ class _TopicCardState extends State<TopicCard> {
         leading: SizedBox(
           width: iconWidth,
           height: iconHeight,
-          child: FutureBuilder<CommonResource?>(
+          child: FutureBuilder<AppResult<CommonResource?>>(
             future: _iconFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 return _buildLoadingIcon(colorScheme.primary);
               }
-              final resource = snapshot.data;
+              final result = snapshot.data;
+              if (result is! AppSuccess<CommonResource?>) {
+                return _buildDefaultIcon(titleColor);
+              }
+              final resource = result.data;
               if (resource == null) {
                 return _buildDefaultIcon(titleColor);
               }

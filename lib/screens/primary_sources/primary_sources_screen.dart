@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/common_widgets/error_message.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/viewmodels/primary_sources_view_model.dart';
 import 'package:revelation/screens/primary_sources/source_item.dart';
@@ -54,6 +55,7 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
     List<PrimarySource> fragmentsSources =
         primarySourcesViewModel.fragmentsPrimarySources;
     final isLoading = primarySourcesViewModel.isLoading;
+    final hasError = primarySourcesViewModel.hasError;
 
     if (isLoading &&
         fullSources.isEmpty &&
@@ -66,6 +68,25 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
         ),
         body: Center(
           child: CircularProgressIndicator(color: colorScheme.primary),
+        ),
+      );
+    }
+    if (!isLoading &&
+        hasError &&
+        fullSources.isEmpty &&
+        significantSources.isEmpty &&
+        fragmentsSources.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.primary_sources_screen),
+          foregroundColor: colorScheme.primary,
+        ),
+        body: Center(
+          child: ErrorMessage(
+            errorMessage: AppLocalizations.of(
+              context,
+            )!.error_loading_primary_sources,
+          ),
         ),
       );
     }

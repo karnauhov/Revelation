@@ -41,6 +41,7 @@
   "error_loading_institutions": "Ошибка загрузки учреждений",
   "error_loading_recommendations": "Ошибка загрузки рекомендаций",
   "error_loading_topics": "Ошибка загрузки тем",
+  "error_loading_primary_sources": "Ошибка загрузки первоисточников",
   "changelog": "Журнал изменений (en)",
   "close": "Закрыть",
   "error": "Ошибка",

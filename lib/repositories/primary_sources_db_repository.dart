@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:revelation/core/errors/app_failure.dart';
+import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/infra/db/data_sources/primary_sources_data_source.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/page_rect.dart';
@@ -28,22 +30,50 @@ class PrimarySourcesDbRepository {
   PrimarySourcesDbRepository({PrimarySourcesDataSource? dataSource})
     : _dataSource = dataSource ?? DbManagerPrimarySourcesDataSource();
 
-  Future<PrimarySourcesLoadResult> loadGroupedSources() async {
-    final sources = await getAllSources(includePreviewBytes: true);
-    final groupKindById = {
-      for (final row in _dataSource.primarySourceRows) row.id: row.groupKind,
-    };
+  Future<AppResult<PrimarySourcesLoadResult>> loadGroupedSourcesResult() async {
+    if (!_dataSource.isInitialized) {
+      return const AppFailureResult<PrimarySourcesLoadResult>(
+        AppFailure.dataSource(
+          'Primary sources data is not initialized in local database.',
+        ),
+      );
+    }
 
-    return PrimarySourcesLoadResult(
-      fullPrimarySources: sources
-          .where((source) => groupKindById[source.id] == 'full')
-          .toList(growable: false),
-      significantPrimarySources: sources
-          .where((source) => groupKindById[source.id] == 'significant')
-          .toList(growable: false),
-      fragmentsPrimarySources: sources
-          .where((source) => groupKindById[source.id] == 'fragment')
-          .toList(growable: false),
+    try {
+      final sources = await getAllSources(includePreviewBytes: true);
+      final groupKindById = {
+        for (final row in _dataSource.primarySourceRows) row.id: row.groupKind,
+      };
+
+      return AppSuccess<PrimarySourcesLoadResult>(
+        PrimarySourcesLoadResult(
+          fullPrimarySources: sources
+              .where((source) => groupKindById[source.id] == 'full')
+              .toList(growable: false),
+          significantPrimarySources: sources
+              .where((source) => groupKindById[source.id] == 'significant')
+              .toList(growable: false),
+          fragmentsPrimarySources: sources
+              .where((source) => groupKindById[source.id] == 'fragment')
+              .toList(growable: false),
+        ),
+      );
+    } catch (error, stackTrace) {
+      return AppFailureResult<PrimarySourcesLoadResult>(
+        AppFailure.dataSource(
+          'Unable to load primary sources from local database.',
+          cause: error,
+          stackTrace: stackTrace,
+        ),
+      );
+    }
+  }
+
+  Future<PrimarySourcesLoadResult> loadGroupedSources() async {
+    final result = await loadGroupedSourcesResult();
+    return result.when(
+      success: (data) => data,
+      failure: (error) => throw error,
     );
   }
 

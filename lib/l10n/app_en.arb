@@ -41,6 +41,7 @@
   "error_loading_institutions": "Error loading institutions",
   "error_loading_recommendations": "Error loading recommendations",
   "error_loading_topics": "Error loading topics",
+  "error_loading_primary_sources": "Error loading primary sources",
   "changelog": "Changelog",
   "close": "Close",
   "error": "Error",

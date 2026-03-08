@@ -41,6 +41,7 @@
   "error_loading_institutions": "Error al cargar instituciones",
   "error_loading_recommendations": "Error al cargar recomendaciones",
   "error_loading_topics": "Error al cargar temas",
+  "error_loading_primary_sources": "Error al cargar fuentes primarias",
   "changelog": "Registro de cambios (en)",
   "close": "Cerrar",
   "error": "Error",

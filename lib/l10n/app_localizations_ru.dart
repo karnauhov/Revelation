@@ -139,6 +139,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get error_loading_topics => 'Ошибка загрузки тем';
 
   @override
+  String get error_loading_primary_sources => 'Ошибка загрузки первоисточников';
+
+  @override
   String get changelog => 'Журнал изменений (en)';
 
   @override

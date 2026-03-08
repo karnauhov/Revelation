@@ -41,6 +41,7 @@
   "error_loading_institutions": "Помилка завантаження установ",
   "error_loading_recommendations": "Помилка завантаження рекомендацій",
   "error_loading_topics": "Помилка завантаження тем",
+  "error_loading_primary_sources": "Помилка завантаження першоджерел",
   "changelog": "Журнал змін (en)",
   "close": "Закрити",
   "error": "Помилка",

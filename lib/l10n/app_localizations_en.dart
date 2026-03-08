@@ -139,6 +139,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_loading_topics => 'Error loading topics';
 
   @override
+  String get error_loading_primary_sources => 'Error loading primary sources';
+
+  @override
   String get changelog => 'Changelog';
 
   @override
