@@ -1,9 +1,1 @@
-import 'package:flutter/material.dart';
-
-class MainViewModel extends ChangeNotifier {
-  MainViewModel();
-
-  Future<void> initializeData() async {
-    notifyListeners();
-  }
-}
+export 'package:revelation/features/topics/presentation/viewmodels/main_view_model.dart';

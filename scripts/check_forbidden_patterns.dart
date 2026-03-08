@@ -34,11 +34,6 @@ void main() {
       name: 'UI should not call DBManager() directly',
       pattern: RegExp(r'\bDBManager\(\)'),
       roots: <String>['lib/screens', 'lib/common_widgets'],
-      allowedFiles: <String>{
-        'lib/screens/main/topic_card.dart',
-        'lib/screens/main/topic_list.dart',
-        'lib/screens/topic/topic_screen.dart',
-      },
     ),
     PatternCheck(
       name: 'UI should not call ServerManager() directly',

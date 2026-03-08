@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/features/about/presentation/screens/about_screen.dart';
 import 'package:revelation/features/settings/presentation/screens/settings_screen.dart';
+import 'package:revelation/features/topics/presentation/screens/main_screen.dart';
+import 'package:revelation/features/topics/presentation/screens/topic_screen.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/audio_controller.dart';
@@ -11,8 +13,6 @@ import 'package:revelation/screens/primary_source/primary_source_screen.dart';
 import 'package:revelation/screens/primary_sources/primary_sources_screen.dart';
 import 'package:revelation/screens/download/download_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'screens/main/main_screen.dart';
-import 'screens/topic/topic_screen.dart';
 
 class AppRouter {
   static final AppRouter _instance = AppRouter._internal();

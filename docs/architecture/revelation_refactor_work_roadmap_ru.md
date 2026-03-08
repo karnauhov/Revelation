@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1 завершены, Phase 2 в работе (P0 completed, P1 in progress)`  
+Статус: `Phase 0/1 завершены, Phase 2 в работе (P0/P1 completed, P2 in progress)`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -62,7 +62,7 @@
 - [x] Задача [P0]: мигрировать `settings` и `about` как pilot features.
 - [x] Подшаг [P2.1]: миграция `settings`.
 - [x] Подшаг [P2.2]: миграция `about`.
-- [ ] Задача [P1]: мигрировать `topics` presentation/data поэтапно.
+- [x] Задача [P1]: мигрировать `topics` presentation/data поэтапно.
 - [x] Задача [P1]: ввести boundary import rules (lint/grep).
 - [ ] Задача [P2]: добавить временные barrel exports для мягкого перехода import-путей.
 - [ ] Affected areas верифицированы: `lib/screens/*`, `lib/viewmodels/*`, `lib/repositories/*`, `lib/utils/*`, `lib/common_widgets/*`.
@@ -525,3 +525,53 @@
   - New risks: regex-based проверки могут потребовать уточнения по мере расширения `features/*`.
   - Mitigations: держать правила узкими по path scope и корректировать вместе с миграцией `topics`.
   - Next task: Phase 2 / P1 — мигрировать `topics` presentation/data поэтапно.
+
+#### [2026-03-08 20:14] Phase 2 / Task P1 / Migrate topics presentation and data to feature module
+- Статус: done
+- Priority: P1
+- What changed:
+  - Перенесены `main/topic` presentation-модули в `lib/features/topics/presentation/*`:
+    - `screens`: `main_screen.dart`, `topic_screen.dart`
+    - `widgets`: `topic_list.dart`, `topic_card.dart`, `drawer_content.dart`, `drawer_item.dart`
+    - `viewmodels`: `main_view_model.dart`
+  - Перенесен `TopicInfo` в `lib/features/topics/data/models/topic_info.dart`.
+  - Добавлен `lib/features/topics/data/repositories/topics_repository.dart` как data-adapter над `DBManager` для:
+    - списка тем,
+    - markdown/метаданных темы,
+    - загрузки `CommonResource`.
+  - `TopicList/TopicCard/TopicScreen` переключены на `TopicsRepository` (без прямого доступа к `DBManager` в feature presentation).
+  - В `scripts/check_forbidden_patterns.dart` удален legacy allowlist для `DBManager()` в `lib/screens/*`, так как прежние исключения больше не нужны после migration.
+  - Добавлены compatibility wrappers на legacy путях:
+    - `lib/screens/main/*`
+    - `lib/screens/topic/topic_screen.dart`
+    - `lib/viewmodels/main_view_model.dart`
+    - `lib/models/topic_info.dart`
+  - Обновлены composition imports на новые feature-пути:
+    - `lib/app_router.dart`
+    - `lib/app/di/app_di.dart`
+- Why changed:
+  - Выполнить следующий шаг Phase 2 / P1 и закрепить topics в hybrid feature-first структуре без ломки существующих импортов.
+- Scope (files/modules):
+  - `lib/features/topics/*`
+  - `lib/screens/main/*` (compat wrappers)
+  - `lib/screens/topic/topic_screen.dart` (compat wrapper)
+  - `lib/viewmodels/main_view_model.dart` (compat wrapper)
+  - `lib/models/topic_info.dart` (compat wrapper)
+  - `lib/app_router.dart`
+  - `lib/app/di/app_di.dart`
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: временные compatibility wrappers могут задержать финальный переход на feature imports.
+  - Mitigations: на следующем шаге Phase 2 / P2 сузить и документировать lifecycle временных wrappers.
+  - Next task: Phase 2 / P2 — добавить/нормализовать временные barrel exports для мягкого перехода import-путей.
