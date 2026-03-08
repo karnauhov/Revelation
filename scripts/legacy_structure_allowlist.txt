@@ -32,8 +32,6 @@ lib/models/recommended_info.dart
 lib/models/topic_info.dart
 lib/models/verse.dart
 lib/models/zoom_status.dart
-lib/repositories/pages_repository.dart
-lib/repositories/primary_sources_db_repository.dart
 lib/repositories/settings_repository.dart
 lib/screens/about/about_screen.dart
 lib/screens/about/icon_url.dart
@@ -49,18 +47,8 @@ lib/screens/main/drawer_item.dart
 lib/screens/main/main_screen.dart
 lib/screens/main/topic_card.dart
 lib/screens/main/topic_list.dart
-lib/screens/primary_source/brightness_contrast_dialog.dart
-lib/screens/primary_source/image_preview.dart
-lib/screens/primary_source/primary_source_screen.dart
-lib/screens/primary_source/primary_source_toolbar.dart
-lib/screens/primary_source/replace_color_dialog.dart
-lib/screens/primary_source/strong_number_picker_dialog.dart
-lib/screens/primary_sources/primary_sources_screen.dart
-lib/screens/primary_sources/source_item.dart
 lib/screens/settings/settings_screen.dart
 lib/screens/topic/topic_screen.dart
-lib/services/description_content_service.dart
-lib/services/primary_source_reference_resolver.dart
 lib/utils/app_constants.dart
 lib/utils/app_link_handler.dart
 lib/utils/app_logger_formatter.dart
@@ -85,6 +73,4 @@ lib/utils/web.dart
 lib/utils/webgl_interop.dart
 lib/viewmodels/about_view_model.dart
 lib/viewmodels/main_view_model.dart
-lib/viewmodels/primary_source_view_model.dart
-lib/viewmodels/primary_sources_view_model.dart
 lib/viewmodels/settings_view_model.dart

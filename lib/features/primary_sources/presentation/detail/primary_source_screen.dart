@@ -9,14 +9,14 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/description_kind.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
-import 'package:revelation/repositories/pages_repository.dart';
-import 'package:revelation/screens/primary_source/image_preview.dart';
-import 'package:revelation/screens/primary_source/primary_source_toolbar.dart';
-import 'package:revelation/screens/primary_source/strong_number_picker_dialog.dart';
-import 'package:revelation/services/primary_source_reference_resolver.dart';
+import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/image_preview.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/primary_source_toolbar.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/strong_number_picker_dialog.dart';
+import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
 import 'package:revelation/utils/app_link_handler.dart';
 import 'package:revelation/utils/common.dart';
-import 'package:revelation/viewmodels/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
 
 // Define the intent for exiting pipette or selectArea mode
 class ExitChooseModeIntent extends Intent {
@@ -305,7 +305,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                           if (viewModel.isMobileWeb)
                                             TextSpan(
                                               text:
-                                                  '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
+                                                  'вљ пёЏ ${AppLocalizations.of(context)!.low_quality}; ',
                                               style: textTheme.bodySmall
                                                   ?.copyWith(
                                                     fontSize: 10,

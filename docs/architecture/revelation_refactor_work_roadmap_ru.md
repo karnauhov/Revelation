@@ -102,6 +102,7 @@
 - [x] Задача [P0]: зафиксировать mandatory file placement rule как отдельное правило архитектуры.
 - [x] Задача [P0]: добавить automated enforcement для запрета новых файлов в legacy-каталогах.
 - [x] Задача [P0]: зафиксировать zero-legacy migration plan по всем legacy-каталогам.
+- [x] Подшаг [P3.5.A]: выполнить `Wave A` миграцию `primary_sources` (screens/viewmodels/repositories/services).
 - [ ] Задача [P1]: мигрировать `lib/screens/*` в `features/*/presentation/*` и `shared/ui/*`.
 - [ ] Задача [P1]: мигрировать `lib/viewmodels/*` в `features/*/presentation/controllers/*` (или orchestrators).
 - [ ] Задача [P1]: мигрировать `lib/repositories/*` в `features/*/data/repositories/*`.
@@ -191,10 +192,10 @@
 
 | Legacy каталог | Dart files | Target location |
 |---|---:|---|
-| `lib/screens` | 24 | `lib/features/*/presentation/*`, `lib/shared/ui/*` |
-| `lib/viewmodels` | 5 | `lib/features/*/presentation/controllers/*` |
-| `lib/repositories` | 3 | `lib/features/*/data/repositories/*` |
-| `lib/services` | 2 | `lib/features/*/application/*`, `lib/infra/*` |
+| `lib/screens` | 16 | `lib/features/*/presentation/*`, `lib/shared/ui/*` |
+| `lib/viewmodels` | 3 | `lib/features/*/presentation/controllers/*` |
+| `lib/repositories` | 1 | `lib/features/*/data/repositories/*` |
+| `lib/services` | 0 (removed) | `lib/features/*/application/*`, `lib/infra/*` |
 | `lib/common_widgets` | 5 | `lib/shared/ui/widgets/*` |
 | `lib/controllers` | 2 | `lib/core/*`, `lib/features/*/presentation/controllers/*` |
 | `lib/models` | 17 | `lib/features/*/data/models/*`, `lib/shared/*` |
@@ -1187,3 +1188,45 @@
   - New risks: объем migration waves высокий, возможны большие PR и конфликты import-path.
   - Mitigations: выполнять волнами по вертикальным срезам (сначала `primary_sources`), фиксируя compile-ready состояние после каждой волны.
   - Next task: Phase 3.5 / P1 — Wave A (`primary_sources`) migration с удалением соответствующих legacy-путей.
+
+#### [2026-03-08 23:27] Phase 3.5 / Task P1 (Wave A done) / Migrate primary_sources legacy slice to feature-first structure
+- Статус: done
+- Priority: P1
+- What changed:
+  - `primary_sources` legacy файлы перенесены в `features/primary_sources/*`:
+    - presentation: `list/*`, `detail/*`, `controllers/*`
+    - data: `data/repositories/*`
+    - application: `application/services/*`
+  - Обновлены все импорты в `app_router`, `app_di`, `common_widgets`, `utils`, тестах и feature слоях на новые пути.
+  - Добавлен feature barrel: `lib/features/primary_sources/primary_sources.dart`.
+  - Legacy директории/пути для этого среза очищены:
+    - `lib/screens/primary_source/*` удален,
+    - `lib/screens/primary_sources/*` удален,
+    - `lib/services/*` удален.
+  - Обновлен `scripts/legacy_structure_allowlist.txt` под новый baseline после Wave A.
+- Why changed:
+  - Выполнить первый обязательный zero-legacy migration slice и сократить legacy footprint без перехода к следующей волне до compile-ready состояния.
+- Scope (files/modules):
+  - `lib/features/primary_sources/*`
+  - `lib/app_router.dart`
+  - `lib/app/di/app_di.dart`
+  - `lib/common_widgets/strong_dictionary_dialog.dart`
+  - `lib/utils/app_link_handler.dart`
+  - `test/viewmodels/primary_sources_view_model_test.dart`
+  - `test/widget/primary_sources/primary_sources_screen_test.dart`
+  - `scripts/legacy_structure_allowlist.txt`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: remaining legacy imports остаются в `screens/main|topic|about|settings|download`, `viewmodels`, `repositories`, `utils` и др.
+  - Mitigations: перейти к `Wave B` (topics/main/download) с тем же подходом и валидацией после каждого шага.
+  - Next task: Phase 3.5 / P1 — Wave B (`topics + main + download`) migration.

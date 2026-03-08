@@ -5,7 +5,7 @@ import 'package:revelation/models/description_request.dart';
 import 'package:revelation/models/greek_strong_picker_entry.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
-import 'package:revelation/services/description_content_service.dart';
+import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 
 class DescriptionPanelState {
   const DescriptionPanelState({

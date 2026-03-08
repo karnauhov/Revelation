@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
-import 'package:revelation/repositories/primary_sources_db_repository.dart';
+import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
+import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
-import '../models/primary_source.dart';
 
 class PrimarySourcesViewModel extends ChangeNotifier {
   final PrimarySourcesDbRepository _primarySourcesRepository;

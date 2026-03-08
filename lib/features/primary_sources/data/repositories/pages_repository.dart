@@ -1,6 +1,7 @@
 import 'dart:convert';
+
+import 'package:revelation/models/pages_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/pages_settings.dart';
 
 class PagesRepository {
   static const String _pagesKey = 'revelation_pages';

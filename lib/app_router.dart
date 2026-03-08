@@ -9,8 +9,8 @@ import 'package:revelation/features/topics/topics.dart'
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/audio_controller.dart';
-import 'package:revelation/screens/primary_source/primary_source_screen.dart';
-import 'package:revelation/screens/primary_sources/primary_sources_screen.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/primary_source_screen.dart';
+import 'package:revelation/features/primary_sources/presentation/list/primary_sources_screen.dart';
 import 'package:revelation/screens/download/download_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
-import 'package:revelation/services/primary_source_reference_resolver.dart';
+import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
 import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/utils/common.dart';
 

@@ -9,7 +9,7 @@ import 'package:revelation/models/page_rect.dart';
 import 'package:revelation/models/page_word.dart';
 import 'package:revelation/models/verse.dart';
 import 'package:revelation/utils/common.dart';
-import 'package:revelation/viewmodels/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 
 const invertMatrix = <double>[

@@ -4,10 +4,10 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/models/zoom_status.dart';
-import 'package:revelation/screens/primary_source/brightness_contrast_dialog.dart';
-import 'package:revelation/screens/primary_source/primary_source_screen.dart';
-import 'package:revelation/screens/primary_source/replace_color_dialog.dart';
-import 'package:revelation/viewmodels/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/brightness_contrast_dialog.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/primary_source_screen.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/replace_color_dialog.dart';
+import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
 
 class PrimarySourceToolbar extends StatelessWidget {
   final PrimarySourceViewModel viewModel;

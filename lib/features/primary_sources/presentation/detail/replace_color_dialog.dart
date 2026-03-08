@@ -3,7 +3,7 @@ import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:revelation/utils/common.dart';
-import 'package:revelation/viewmodels/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
 
 class ReplaceColorDialog extends StatefulWidget {
   final PrimarySourceViewModel viewModel;
@@ -497,7 +497,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                     textAlign: TextAlign.center,
                     TextSpan(
                       text:
-                          "⚠️ ${AppLocalizations.of(context)!.replace_color_message}",
+                          "вљ пёЏ ${AppLocalizations.of(context)!.replace_color_message}",
                       style: TextStyle(
                         fontSize: 10,
                         color: colorScheme.onSurface,

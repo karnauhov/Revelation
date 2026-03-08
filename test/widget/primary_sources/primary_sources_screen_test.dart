@@ -12,9 +12,9 @@ import 'package:revelation/db/db_common.dart' as common_db;
 import 'package:revelation/db/db_localized.dart' as localized_db;
 import 'package:revelation/infra/db/data_sources/primary_sources_data_source.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/repositories/primary_sources_db_repository.dart';
-import 'package:revelation/screens/primary_sources/primary_sources_screen.dart';
-import 'package:revelation/viewmodels/primary_sources_view_model.dart';
+import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
+import 'package:revelation/features/primary_sources/presentation/list/primary_sources_screen.dart';
+import 'package:revelation/features/primary_sources/presentation/controllers/primary_sources_view_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 void main() {
