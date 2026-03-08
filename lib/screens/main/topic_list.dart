@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/common_widgets/error_message.dart';
 import 'package:revelation/managers/db_manager.dart';
-import 'package:revelation/viewmodels/settings_view_model.dart';
 import 'topic_card.dart';
 import '../../models/topic_info.dart';
 

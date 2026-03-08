@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:revelation/common_widgets/strong_dictionary_dialog.dart';
+import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
+import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:revelation/managers/db_manager.dart';
 import 'package:revelation/managers/server_manager.dart';
-import 'package:revelation/repositories/settings_repository.dart';
 import 'package:revelation/utils/app_link_handler.dart';
 import 'package:revelation/utils/common.dart';
-import 'package:revelation/viewmodels/settings_view_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 

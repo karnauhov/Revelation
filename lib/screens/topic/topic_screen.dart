@@ -4,13 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
+import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import '../../db/db_common.dart';
 import '../../managers/db_manager.dart';
 import '../../utils/app_link_handler.dart';
 import '../../utils/common.dart';
 import '../../utils/file_downloader.dart';
-import '../../viewmodels/settings_view_model.dart';
 
 class TopicScreen extends StatefulWidget {
   final String? name;

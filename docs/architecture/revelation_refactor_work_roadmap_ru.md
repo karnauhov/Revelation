@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0 и Phase 1 завершены, Phase 2 не начата`  
+Статус: `Phase 0/1 завершены, Phase 2 в работе (P0 completed)`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -56,19 +56,19 @@
 - [x] Criteria of done выполнен.
 
 ### Phase 2 — Architectural boundaries and folder/module migration
-- [ ] Цель фазы зафиксирована: перейти к hybrid feature-first структуре без массовой ломки.
-- [ ] Обоснование фазы зафиксировано: текущая структура мешает масштабированию/онбордингу.
-- [ ] Задача [P0]: создать target folders `app/core/infra/shared/features`.
-- [ ] Задача [P0]: мигрировать `settings` и `about` как pilot features.
-- [ ] Подшаг [P2.1]: миграция `settings`.
-- [ ] Подшаг [P2.2]: миграция `about`.
+- [x] Цель фазы зафиксирована: перейти к hybrid feature-first структуре без массовой ломки.
+- [x] Обоснование фазы зафиксировано: текущая структура мешает масштабированию/онбордингу.
+- [x] Задача [P0]: создать target folders `app/core/infra/shared/features`.
+- [x] Задача [P0]: мигрировать `settings` и `about` как pilot features.
+- [x] Подшаг [P2.1]: миграция `settings`.
+- [x] Подшаг [P2.2]: миграция `about`.
 - [ ] Задача [P1]: мигрировать `topics` presentation/data поэтапно.
 - [ ] Задача [P1]: ввести boundary import rules (lint/grep).
 - [ ] Задача [P2]: добавить временные barrel exports для мягкого перехода import-путей.
 - [ ] Affected areas верифицированы: `lib/screens/*`, `lib/viewmodels/*`, `lib/repositories/*`, `lib/utils/*`, `lib/common_widgets/*`.
 - [ ] Риски проверены и записаны.
-- [ ] Dependencies/prerequisites подтверждены (`Phase 1 completed`).
-- [ ] Relevant skills назначены.
+- [x] Dependencies/prerequisites подтверждены (`Phase 1 completed`).
+- [x] Relevant skills назначены.
 - [ ] Test expectations выполнены.
 - [ ] Docs update expectations выполнены.
 - [ ] Quality gates пройдены.
@@ -425,3 +425,76 @@
   - New risks: пока сохранен compatibility barrel, часть границ остается "мягкой" до Phase 2/3.
   - Mitigations: новые утилиты добавлять в модульные файлы, а не обратно в barrel.
   - Next task: Phase 2 / P0 — создать target folders `app/core/infra/shared/features`.
+
+#### [2026-03-08 19:56] Phase 2 / Task P0 / Create target folders app/core/infra/shared/features
+- Статус: done
+- Priority: P0
+- What changed:
+  - Создана целевая структура верхнего уровня: `lib/core`, `lib/infra`, `lib/shared`, `lib/features`.
+  - Добавлены feature-папки для pilot migration: `lib/features/settings/*`, `lib/features/about/*`.
+- Why changed:
+  - Зафиксировать базовые structural boundaries перед переносом pilot фич.
+- Scope (files/modules):
+  - `lib/core/.gitkeep`
+  - `lib/infra/.gitkeep`
+  - `lib/shared/.gitkeep`
+  - `lib/features/*`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: новые папки пока не защищены import boundary rules (планируется отдельным шагом Phase 2 / P1).
+  - Mitigations: для мигрируемых фич добавлены compatibility adapters на старых путях.
+  - Next task: Phase 2 / P0 — pilot migration `settings` и `about`.
+
+#### [2026-03-08 19:56] Phase 2 / Task P0 (P2.1 + P2.2) / Pilot migration for settings and about
+- Статус: done
+- Priority: P0
+- What changed:
+  - Перенесены `settings` и `about` в `lib/features/*` (presentation + data для settings).
+  - Обновлены composition imports на новые feature-пути (`main`, `bootstrap`, `di`, `router`, связанные экраны/контроллеры).
+  - Добавлены compatibility wrappers на legacy-путях (`lib/screens/about/*`, `lib/screens/settings/settings_screen.dart`, `lib/viewmodels/{settings,about}_view_model.dart`, `lib/repositories/settings_repository.dart`) через `export` из новых модулей.
+- Why changed:
+  - Выполнить безопасную pilot-миграцию feature-first без массового import-breakage.
+- Scope (files/modules):
+  - `lib/features/settings/data/repositories/settings_repository.dart`
+  - `lib/features/settings/presentation/viewmodels/settings_view_model.dart`
+  - `lib/features/settings/presentation/screens/settings_screen.dart`
+  - `lib/features/about/presentation/viewmodels/about_view_model.dart`
+  - `lib/features/about/presentation/screens/*.dart`
+  - `lib/main.dart`
+  - `lib/app/bootstrap/app_bootstrap.dart`
+  - `lib/app/di/app_di.dart`
+  - `lib/app_router.dart`
+  - `lib/controllers/audio_controller.dart`
+  - `lib/screens/main/main_screen.dart`
+  - `lib/screens/main/topic_list.dart`
+  - `lib/screens/topic/topic_screen.dart`
+  - `lib/screens/about/*.dart` (compat wrappers)
+  - `lib/screens/settings/settings_screen.dart` (compat wrapper)
+  - `lib/viewmodels/settings_view_model.dart` (compat wrapper)
+  - `lib/viewmodels/about_view_model.dart` (compat wrapper)
+  - `lib/repositories/settings_repository.dart` (compat wrapper)
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: временные wrappers сохраняют старые import-пути и могут затянуть полный переход.
+  - Mitigations: на следующем шаге Phase 2 добавить boundary import checks и постепенно сужать legacy imports.
+  - Next task: Phase 2 / P1 — ввести boundary import rules (lint/grep).

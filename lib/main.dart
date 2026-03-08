@@ -10,7 +10,7 @@ import 'package:revelation/theme.dart';
 import 'package:revelation/utils/app_logger_formatter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:window_manager/window_manager.dart';
-import 'viewmodels/settings_view_model.dart';
+import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'utils/common.dart';
 import 'app_router.dart';
 
