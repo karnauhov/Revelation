@@ -47,6 +47,7 @@ class PrimarySourceSummary:
     preview_resource_key: str
     title_preview: str
     locale_flags: dict[str, bool]
+    ocr_metric: int = 0
 
 
 @dataclass

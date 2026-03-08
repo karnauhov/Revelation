@@ -560,17 +560,18 @@ class CoreUiMixin:
 
             self.primary_sources_tree = ttk.Treeview(
                 left,
-                columns=("id", "title", "group", "pages", "words", "verses", "en", "es", "uk", "ru"),
+                columns=("id", "title", "group", "pages", "words", "verses", "ocr", "en", "es", "uk", "ru"),
                 show="headings",
                 selectmode="browse",
             )
             for column, title, width, anchor in [
                 ("id", "ID", 78, "center"),
-                ("title", "Заголовок", 220, "w"),
+                ("title", "Заголовок", 120, "w"),
                 ("group", "Группа", 110, "center"),
                 ("pages", "Стр.", 55, "center"),
                 ("words", "Слова", 64, "center"),
                 ("verses", "Стих", 64, "center"),
+                ("ocr", "OCR", 72, "center"),
                 ("en", "EN", 40, "center"),
                 ("es", "ES", 40, "center"),
                 ("uk", "UK", 40, "center"),
@@ -587,45 +588,49 @@ class CoreUiMixin:
 
             source_buttons = ttk.Frame(left)
             source_buttons.grid(row=1, column=0, columnspan=2, sticky="w", pady=(8, 0))
+            source_buttons_top = ttk.Frame(source_buttons)
+            source_buttons_top.grid(row=0, column=0, sticky="w")
+            source_buttons_bottom = ttk.Frame(source_buttons)
+            source_buttons_bottom.grid(row=1, column=0, sticky="w", pady=(6, 0))
             self.btn_add_primary_source = ttk.Button(
-                source_buttons,
+                source_buttons_top,
                 **self._button_kwargs("add", "Добавить"),
                 command=self._add_primary_source,
             )
             self.btn_add_primary_source.pack(side="left")
             self.btn_delete_primary_source = ttk.Button(
-                source_buttons,
+                source_buttons_top,
                 **self._button_kwargs("delete", "Удалить"),
                 command=self._delete_primary_source,
             )
             self.btn_delete_primary_source.pack(side="left", padx=(8, 0))
             self.btn_download_source_pages = ttk.Button(
-                source_buttons,
+                source_buttons_top,
                 **self._button_kwargs("download", "Скачать страницы"),
                 command=self._download_selected_primary_source_pages,
             )
             self.btn_download_source_pages.pack(side="left", padx=(8, 0))
             self.check_primary_source_force_download = ttk.Checkbutton(
-                source_buttons,
+                source_buttons_top,
                 text="Перезалить",
                 variable=self.primary_source_force_download_var,
             )
             self.check_primary_source_force_download.pack(side="left", padx=(8, 0))
             self.btn_open_primary_source_dir = ttk.Button(
-                source_buttons,
+                source_buttons_top,
                 **self._button_kwargs("open_resource", "Открыть папку"),
                 command=self._open_selected_primary_source_dir,
             )
             self.btn_open_primary_source_dir.pack(side="left", padx=(8, 0))
             self.btn_train_primary_source_ocr = ttk.Button(
-                source_buttons,
-                **self._button_kwargs("refresh", "Обучить OCR"),
+                source_buttons_bottom,
+                **self._button_kwargs("model_training", "Обучить OCR"),
                 command=self._train_selected_primary_source_ocr_model,
             )
-            self.btn_train_primary_source_ocr.pack(side="left", padx=(8, 0))
+            self.btn_train_primary_source_ocr.pack(side="left")
             self.btn_view_primary_source_ocr_stats = ttk.Button(
-                source_buttons,
-                **self._button_kwargs("status", "Данные OCR"),
+                source_buttons_bottom,
+                **self._button_kwargs("analytics", "Данные OCR"),
                 command=self._show_selected_primary_source_ocr_model_info,
             )
             self.btn_view_primary_source_ocr_stats.pack(side="left", padx=(8, 0))

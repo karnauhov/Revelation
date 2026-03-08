@@ -484,6 +484,7 @@ class PrimarySourcesMixin:
                             lang: source_id in ids
                             for lang, ids in self.primary_source_locale_presence_by_lang.items()
                         },
+                        ocr_metric=self._source_ocr_metric(source_id),
                     )
                 )
 
@@ -512,6 +513,7 @@ class PrimarySourcesMixin:
                         row.pages_count,
                         row.words_count,
                         row.verse_rows_count,
+                        row.ocr_metric,
                         "✓" if locale.get("en") else "",
                         "✓" if locale.get("es") else "",
                         "✓" if locale.get("uk") else "",
@@ -1740,6 +1742,51 @@ class PrimarySourcesMixin:
             except (TypeError, ValueError):
                 return 0
 
+        def _source_ocr_metric(self, source_id: str) -> int:
+            model_dir = self._source_ocr_model_dir(source_id)
+            state_path = model_dir / "model_state.json"
+            report_path = model_dir / "last_training_report.json"
+
+            payloads: list[dict[str, Any]] = []
+            for path in (state_path, report_path):
+                if not path.exists():
+                    continue
+                try:
+                    parsed = json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    continue
+                if isinstance(parsed, dict):
+                    payloads.append(parsed)
+
+            def _as_positive_int(value: Any) -> int:
+                try:
+                    number = int(value)
+                except (TypeError, ValueError):
+                    return 0
+                return number if number > 0 else 0
+
+            for payload in payloads:
+                last_run = payload.get("last_run")
+                if isinstance(last_run, dict):
+                    unique = _as_positive_int(last_run.get("unique_word_forms"))
+                    if unique > 0:
+                        return unique
+                    exported = _as_positive_int(last_run.get("exported_samples"))
+                    if exported > 0:
+                        return exported
+
+            for payload in payloads:
+                unique = _as_positive_int(payload.get("unique_word_forms"))
+                if unique > 0:
+                    return unique
+                exported = _as_positive_int(payload.get("exported_samples"))
+                if exported > 0:
+                    return exported
+
+            if model_dir.exists() and any(model_dir.glob("*.mlmodel")):
+                return 1
+            return 0
+
         def _content_tool_python_executable(self) -> Path:
             current = Path(sys.executable).resolve()
             if current.name.lower() == "pythonw.exe":
@@ -1753,7 +1800,7 @@ class PrimarySourcesMixin:
                 return
             source_id = (self.selected_primary_source_id or "").strip()
             if not source_id:
-                messagebox.showinfo("OCR data", "Select a primary source first.", parent=self)
+                messagebox.showinfo("Данные OCR", "Сначала выберите первоисточник.", parent=self)
                 return
 
             model_dir = self._source_ocr_model_dir(source_id)
@@ -1780,7 +1827,7 @@ class PrimarySourcesMixin:
                     report_payload = {}
 
             dialog = tk.Toplevel(self)
-            dialog.title(f"OCR Data: {source_id}")
+            dialog.title(f"Данные OCR: {source_id}")
             dialog.transient(self)
             dialog.resizable(True, True)
             dialog.minsize(900, 620)
@@ -1794,16 +1841,17 @@ class PrimarySourcesMixin:
             root.rowconfigure(1, weight=1)
 
             summary_lines: list[str] = [
-                f"Source: {source_id}",
-                f"Words in DB: {self._source_ocr_word_count(source_id)}",
-                f"Model dir: {model_dir}",
-                f"State file: {model_state_path} ({'OK' if model_state_path.exists() else 'missing'})",
-                f"Last report: {model_report_path} ({'OK' if model_report_path.exists() else 'missing'})",
+                f"Первоисточник: {source_id}",
+                f"Слов в БД: {self._source_ocr_word_count(source_id)}",
+                f"Показатель OCR: {self._source_ocr_metric(source_id)}",
+                f"Папка модели: {model_dir}",
+                f"Файл состояния: {model_state_path} ({'OK' if model_state_path.exists() else 'нет'})",
+                f"Последний отчет: {model_report_path} ({'OK' if model_report_path.exists() else 'нет'})",
                 "",
             ]
 
             if model_files:
-                summary_lines.append("Model files:")
+                summary_lines.append("Файлы модели:")
                 for model_path in model_files:
                     try:
                         stat = model_path.stat()
@@ -1813,17 +1861,17 @@ class PrimarySourcesMixin:
                     except OSError:
                         summary_lines.append(f"- {model_path.name}")
             else:
-                summary_lines.append("Model files: none")
+                summary_lines.append("Файлы модели: отсутствуют")
 
             summary_lines.append("")
-            summary_lines.append("model_state.json:")
+            summary_lines.append("Содержимое model_state.json:")
             summary_lines.append(
-                json.dumps(state_payload, ensure_ascii=False, indent=2) if state_payload else "(empty or missing)"
+                json.dumps(state_payload, ensure_ascii=False, indent=2) if state_payload else "(пусто или отсутствует)"
             )
             summary_lines.append("")
-            summary_lines.append("last_training_report.json:")
+            summary_lines.append("Содержимое last_training_report.json:")
             summary_lines.append(
-                json.dumps(report_payload, ensure_ascii=False, indent=2) if report_payload else "(empty or missing)"
+                json.dumps(report_payload, ensure_ascii=False, indent=2) if report_payload else "(пусто или отсутствует)"
             )
 
             info_text = tk.Text(root, wrap="word")
@@ -1841,33 +1889,33 @@ class PrimarySourcesMixin:
                 try:
                     model_dir.mkdir(parents=True, exist_ok=True)
                 except OSError as exc:
-                    messagebox.showerror("OCR data", f"Failed to create/open model dir:\n{exc}", parent=dialog)
+                    messagebox.showerror("Данные OCR", f"Не удалось открыть папку модели:\n{exc}", parent=dialog)
                     return
                 webbrowser.open(model_dir.resolve().as_uri())
 
-            ttk.Button(controls, text="Open Model Dir", command=open_model_dir).pack(side="left")
-            ttk.Button(controls, text="Close", command=dialog.destroy).pack(side="left", padx=(8, 0))
+            ttk.Button(controls, text="Открыть папку модели", command=open_model_dir).pack(side="left")
+            ttk.Button(controls, text="Закрыть", command=dialog.destroy).pack(side="left", padx=(8, 0))
 
         def _train_selected_primary_source_ocr_model(self) -> None:
             if not self._ensure_primary_source_common_ready():
                 return
             source_id = (self.selected_primary_source_id or "").strip()
             if not source_id:
-                messagebox.showinfo("OCR Training", "Select a primary source first.", parent=self)
+                messagebox.showinfo("OCR обучение", "Сначала выберите первоисточник.", parent=self)
                 return
 
             words_count = self._source_ocr_word_count(source_id)
             if words_count <= 0:
                 messagebox.showinfo(
-                    "OCR Training",
-                    f"No words found in DB for source {source_id}.",
+                    "OCR обучение",
+                    f"В БД не найдено слов для первоисточника {source_id}.",
                     parent=self,
                 )
                 return
 
             db_path = self.common_db_path
             if db_path is None or not db_path.exists():
-                messagebox.showerror("OCR Training", "Common DB is not available.", parent=self)
+                messagebox.showerror("OCR обучение", "Общая БД недоступна.", parent=self)
                 return
 
             model_root = self._ocr_models_root_dir()
@@ -1887,11 +1935,11 @@ class PrimarySourcesMixin:
             ]
 
             dialog = tk.Toplevel(self)
-            dialog.title(f"OCR Training: {source_id}")
+            dialog.title("OCR обучение модели")
             dialog.transient(self)
             dialog.grab_set()
             dialog.resizable(True, True)
-            dialog.minsize(920, 620)
+            dialog.minsize(960, 680)
             self._center_toplevel(dialog, width=1040, height=760)
 
             root = ttk.Frame(dialog, padding=10)
@@ -1899,31 +1947,71 @@ class PrimarySourcesMixin:
             dialog.columnconfigure(0, weight=1)
             dialog.rowconfigure(0, weight=1)
             root.columnconfigure(0, weight=1)
-            root.rowconfigure(2, weight=1)
+            root.rowconfigure(3, weight=1)
 
-            stage_var = tk.StringVar(value="Preparing training process...")
+            stage_var = tk.StringVar(value="Подготовка процесса обучения...")
             ttk.Label(
                 root,
-                text="Do not close this window until training is complete.",
+                text="Не закрывайте это окно до завершения обучения.",
                 foreground="#7a1f1f",
             ).grid(row=0, column=0, sticky="w")
-            ttk.Label(root, textvariable=stage_var, foreground="#0a4f93").grid(row=1, column=0, sticky="w", pady=(6, 6))
+            ttk.Label(
+                root,
+                text=f"Первоисточник: {source_id} | слов в БД: {words_count}",
+                foreground="#3b3b3b",
+            ).grid(row=1, column=0, sticky="w", pady=(4, 2))
+            ttk.Label(root, textvariable=stage_var, foreground="#0a4f93").grid(row=2, column=0, sticky="w", pady=(0, 6))
 
-            log_text = tk.Text(root, wrap="word")
-            log_text.grid(row=2, column=0, sticky="nsew")
-            scroll = ttk.Scrollbar(root, orient="vertical", command=log_text.yview)
-            scroll.grid(row=2, column=1, sticky="ns")
-            log_text.configure(yscrollcommand=scroll.set)
+            logs_wrap = ttk.Frame(root)
+            logs_wrap.grid(row=3, column=0, sticky="nsew")
+            logs_wrap.columnconfigure(0, weight=1)
+            logs_wrap.rowconfigure(1, weight=3)
+            logs_wrap.rowconfigure(3, weight=2)
+
+            ttk.Label(logs_wrap, text="Журнал обучения").grid(row=0, column=0, sticky="w", pady=(0, 2))
+            log_text = tk.Text(
+                logs_wrap,
+                wrap="word",
+                bg="#000000",
+                fg="#39ff14",
+                insertbackground="#39ff14",
+                selectbackground="#145214",
+                selectforeground="#a4ff9e",
+                font=("Consolas", 10),
+            )
+            log_text.grid(row=1, column=0, sticky="nsew")
+            log_scroll = ttk.Scrollbar(logs_wrap, orient="vertical", command=log_text.yview)
+            log_scroll.grid(row=1, column=1, sticky="ns")
+            log_text.configure(yscrollcommand=log_scroll.set, state="disabled")
+
+            ttk.Label(
+                logs_wrap,
+                text="Прогресс (компактный вид, без роста «простыни»)",
+            ).grid(row=2, column=0, sticky="w", pady=(8, 2))
+            progress_text = tk.Text(
+                logs_wrap,
+                wrap="word",
+                bg="#000000",
+                fg="#39ff14",
+                insertbackground="#39ff14",
+                selectbackground="#145214",
+                selectforeground="#a4ff9e",
+                font=("Consolas", 10),
+            )
+            progress_text.grid(row=3, column=0, sticky="nsew")
+            progress_scroll = ttk.Scrollbar(logs_wrap, orient="vertical", command=progress_text.yview)
+            progress_scroll.grid(row=3, column=1, sticky="ns")
+            progress_text.configure(yscrollcommand=progress_scroll.set, state="disabled")
 
             progress = ttk.Progressbar(root, mode="indeterminate")
-            progress.grid(row=3, column=0, sticky="ew", pady=(8, 0))
+            progress.grid(row=4, column=0, sticky="ew", pady=(8, 0))
             progress.start(12)
 
             controls = ttk.Frame(root)
-            controls.grid(row=4, column=0, columnspan=2, sticky="e", pady=(8, 0))
-            btn_open_report = ttk.Button(controls, text="Open Training Report", state="disabled")
+            controls.grid(row=5, column=0, sticky="e", pady=(8, 0))
+            btn_open_report = ttk.Button(controls, text="Открыть training_report", state="disabled")
             btn_open_report.pack(side="left")
-            btn_close = ttk.Button(controls, text="Close", state="disabled", command=dialog.destroy)
+            btn_close = ttk.Button(controls, text="Закрыть", state="disabled", command=dialog.destroy)
             btn_close.pack(side="left", padx=(8, 0))
 
             events: queue.Queue[tuple[str, str]] = queue.Queue()
@@ -1931,20 +2019,128 @@ class PrimarySourcesMixin:
                 "running": True,
                 "exit_code": None,
                 "report_path": "",
+                "progress_slots": {
+                    "sanity": "-",
+                    "stage": "-",
+                    "validation": "-",
+                    "metrics": "-",
+                },
+                "progress_slot_raw": {},
+                "progress_slot_repeat": {},
+                "progress_recent": [],
+                "progress_recent_last": "",
+                "progress_recent_repeat": 1,
+                "last_line_was_progress": False,
             }
 
             def append_log(message: str) -> None:
+                log_text.configure(state="normal")
                 log_text.insert("end", message + "\n")
                 log_text.see("end")
+                log_text.configure(state="disabled")
+
+            def render_progress() -> None:
+                slots = state.get("progress_slots", {})
+                if not isinstance(slots, dict):
+                    slots = {}
+                lines = [
+                    "Текущее состояние прогресса:",
+                    f"Sanity check : {slots.get('sanity', '-')}",
+                    f"Этап train  : {slots.get('stage', '-')}",
+                    f"Validation  : {slots.get('validation', '-')}",
+                    f"Метрики     : {slots.get('metrics', '-')}",
+                ]
+                recent = state.get("progress_recent", [])
+                if isinstance(recent, list) and recent:
+                    lines.append("")
+                    lines.append("Последние нестандартные обновления:")
+                    for item in recent:
+                        lines.append(f"- {item}")
+                progress_text.configure(state="normal")
+                progress_text.delete("1.0", "end")
+                progress_text.insert("1.0", "\n".join(lines))
+                progress_text.see("end")
+                progress_text.configure(state="disabled")
+
+            def progress_slot_for_line(message: str) -> str | None:
+                line = message.strip()
+                lower = line.lower()
+                if not line:
+                    return None
+                if lower.startswith("sanity checking"):
+                    return "sanity"
+                if lower.startswith("validation"):
+                    return "validation"
+                if re.match(r"^stage\s+\d+/\d+", line, flags=re.IGNORECASE):
+                    return "stage"
+                if lower.startswith("metric:"):
+                    return "metrics"
+                if any(token in lower for token in ("train_loss", "val_accuracy", "val_word_accuracy", "loss", "accuracy")):
+                    return "metrics"
+                if "it/s" in lower and ("-:--:--" in lower or "0:00:" in lower):
+                    return "stage"
+                return None
+
+            def is_progress_line(message: str) -> bool:
+                line = message.strip()
+                if not line:
+                    return False
+                if progress_slot_for_line(line) is not None:
+                    return True
+                if line.startswith("━") or line.startswith("─"):
+                    return True
+                return False
+
+            def update_compact_progress(message: str) -> None:
+                line = message.strip()
+                if not line:
+                    return
+
+                slot = progress_slot_for_line(line)
+                if slot is not None:
+                    slot_raw = state.get("progress_slot_raw")
+                    slot_repeat = state.get("progress_slot_repeat")
+                    slot_values = state.get("progress_slots")
+                    if not isinstance(slot_raw, dict) or not isinstance(slot_repeat, dict) or not isinstance(slot_values, dict):
+                        return
+                    previous = str(slot_raw.get(slot, ""))
+                    if previous == line:
+                        count = int(slot_repeat.get(slot, 1)) + 1
+                    else:
+                        count = 1
+                        slot_raw[slot] = line
+                    slot_repeat[slot] = count
+                    slot_values[slot] = line if count == 1 else f"{line} (x{count})"
+                    render_progress()
+                    return
+
+                recent = state.get("progress_recent")
+                if not isinstance(recent, list):
+                    return
+                previous_recent = str(state.get("progress_recent_last", ""))
+                if previous_recent == line:
+                    count = int(state.get("progress_recent_repeat", 1)) + 1
+                    state["progress_recent_repeat"] = count
+                    if recent:
+                        recent[-1] = f"{line} (x{count})"
+                    else:
+                        recent.append(f"{line} (x{count})")
+                else:
+                    state["progress_recent_last"] = line
+                    state["progress_recent_repeat"] = 1
+                    recent.append(line)
+                    if len(recent) > 10:
+                        del recent[0]
+                render_progress()
 
             def open_report() -> None:
                 report_raw = str(state.get("report_path") or "").strip()
                 if not report_raw:
-                    messagebox.showinfo("OCR Training", "Training report is not available yet.", parent=dialog)
+                    messagebox.showinfo("OCR обучение", "Файл отчета пока недоступен.", parent=dialog)
                     return
                 report_path = Path(report_raw)
                 if not report_path.exists():
-                    messagebox.showwarning("OCR Training", f"Report file not found:\n{report_path}", parent=dialog)
+                    messagebox.showwarning("OCR обучение", f"Файл отчета не найден:\n{report_path}", parent=dialog)
                     return
                 webbrowser.open(report_path.resolve().as_uri())
 
@@ -1953,8 +2149,8 @@ class PrimarySourcesMixin:
             def on_close_requested() -> None:
                 if bool(state.get("running", False)):
                     messagebox.showinfo(
-                        "OCR Training",
-                        "Training is still running. Wait until completion.",
+                        "OCR обучение",
+                        "Обучение еще выполняется. Дождитесь завершения.",
                         parent=dialog,
                     )
                     return
@@ -1995,12 +2191,28 @@ class PrimarySourcesMixin:
                         break
 
                     if kind == "line":
-                        append_log(payload)
                         if payload.startswith("STAGE:"):
-                            stage_var.set(payload.removeprefix("STAGE:").strip() or "...")
+                            stage_name = payload.removeprefix("STAGE:").strip() or "..."
+                            stage_var.set(stage_name)
+                            append_log(f"[ЭТАП] {stage_name}")
+                            state["last_line_was_progress"] = False
                         elif payload.startswith("Training report:"):
                             state["report_path"] = payload.removeprefix("Training report:").strip()
                             btn_open_report.state(["!disabled"])
+                            append_log(payload)
+                            state["last_line_was_progress"] = False
+                        elif is_progress_line(payload):
+                            update_compact_progress(payload)
+                            state["last_line_was_progress"] = True
+                        elif bool(state.get("last_line_was_progress", False)) and re.match(
+                            r"^[+-]?\d+(?:\.\d+)?$",
+                            payload.strip(),
+                        ):
+                            update_compact_progress(f"metric: {payload.strip()}")
+                            state["last_line_was_progress"] = True
+                        else:
+                            append_log(payload)
+                            state["last_line_was_progress"] = False
                         continue
 
                     if kind == "error":
@@ -2008,9 +2220,9 @@ class PrimarySourcesMixin:
                         state["running"] = False
                         state["exit_code"] = 1
                         progress.stop()
-                        stage_var.set("Training launcher error")
+                        stage_var.set("Ошибка запуска обучения")
                         btn_close.state(["!disabled"])
-                        self._set_status(f"OCR training '{source_id}': launcher error.")
+                        self._set_status(f"OCR обучение '{source_id}': ошибка запуска.")
                         continue
 
                     if kind == "done":
@@ -2019,20 +2231,22 @@ class PrimarySourcesMixin:
                         state["exit_code"] = exit_code
                         progress.stop()
                         if exit_code == 0:
-                            stage_var.set("Training complete")
+                            stage_var.set("Обучение завершено")
                             self._set_status(
-                                f"OCR model '{source_id}' updated (words in DB: {words_count})."
+                                f"OCR модель '{source_id}' обновлена (слов в БД: {words_count})."
                             )
+                            self._load_primary_sources()
                         else:
-                            stage_var.set(f"Training failed (code {exit_code})")
-                            self._set_status(f"OCR training '{source_id}' failed.")
+                            stage_var.set(f"Обучение завершилось с ошибкой (код {exit_code})")
+                            self._set_status(f"OCR обучение '{source_id}' завершилось с ошибкой.")
                         btn_close.state(["!disabled"])
 
                 if bool(state.get("running", False)):
                     dialog.after(120, poll_events)
 
-            append_log("Starting OCR training process...")
-            append_log("Command: " + " ".join(command))
+            render_progress()
+            append_log("Запуск OCR-обучения...")
+            append_log("Команда: " + " ".join(command))
             append_log("")
             threading.Thread(target=worker, daemon=True).start()
             poll_events()
