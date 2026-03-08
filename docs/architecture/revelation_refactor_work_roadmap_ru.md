@@ -83,7 +83,7 @@
 - [x] Подшаг [P3.1]: image loading orchestration.
 - [x] Подшаг [P3.2]: page settings orchestration.
 - [x] Подшаг [P3.3]: description panel orchestration.
-- [ ] Задача [P0]: убрать untyped `Map extra` contracts для critical routes.
+- [x] Задача [P0]: убрать untyped `Map extra` contracts для critical routes.
 - [ ] Задача [P1]: ввести error/result model и user-facing fallback states.
 - [ ] Задача [P1]: стандартизировать async patterns (request token/cancel/ignore stale result).
 - [ ] Affected areas верифицированы: `lib/managers/db_manager.dart`, `lib/repositories/primary_sources_db_repository.dart`, `lib/screens/topic/*`, `lib/screens/primary_source/*`, `lib/viewmodels/primary_source_view_model.dart`, `lib/app_router.dart`.
@@ -873,3 +873,34 @@
   - New risks: orchestration вынесена, но в VM по-прежнему остается значимый UI-state (zoom/color/selection), возможна дальнейшая декомпозиция в следующих P1 шагах.
   - Mitigations: следующий P0 шаг Phase 3 — убрать untyped `Map extra` contracts для critical routes.
   - Next task: Phase 3 / P0 — убрать untyped `Map extra` contracts для critical routes.
+
+#### [2026-03-08 22:30] Phase 3 / Task P0 / Remove untyped map-based contracts for critical routes
+- Статус: done
+- Priority: P0
+- What changed:
+  - Удален legacy map parsing из `TopicRouteArgs.tryParse` и `PrimarySourceRouteArgs.tryParse` в `lib/app/router/route_args.dart`.
+  - Удалена map-based ветка из `_getRouteArgs` в `lib/app_router.dart`.
+  - Усилен guardrail в `scripts/check_forbidden_patterns.dart`: для проверки `Critical routes should avoid map-based state.extra contracts` убрано исключение `lib/app_router.dart`.
+  - Обновлены тесты `test/app/router/route_args_test.dart` под новый контракт (legacy map now rejected).
+- Why changed:
+  - Закрыть `Phase 3 / P0` задачу удаления untyped `Map extra` контрактов для критичных роутов и завершить переход к typed route args.
+- Scope (files/modules):
+  - `lib/app/router/route_args.dart`
+  - `lib/app_router.dart`
+  - `scripts/check_forbidden_patterns.dart`
+  - `test/app/router/route_args_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: legacy deeplink/code paths, которые могли передавать map в `extra`, теперь будут отклоняться.
+  - Mitigations: сохранить query fallback для `/topic`, а для `/primary_source` использовать только `PrimarySourceRouteArgs`/`PrimarySource`.
+  - Next task: Phase 3 / P1 — ввести error/result model и user-facing fallback states.

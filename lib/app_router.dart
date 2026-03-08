@@ -186,13 +186,7 @@ String? _getRouteArgs(GoRouterState state) {
   if (state.extra is PrimarySourceRouteArgs) {
     return (state.extra as PrimarySourceRouteArgs).primarySource.id;
   }
-  if (state.extra is Map<String, dynamic>) {
-    final extra = state.extra as Map<String, dynamic>;
-    if (extra['primarySource'] is PrimarySource) {
-      return (extra['primarySource'] as PrimarySource).id;
-    }
-    return extra['file'];
-  } else if (state.extra is PrimarySource) {
+  if (state.extra is PrimarySource) {
     return (state.extra as PrimarySource).id;
   }
   return null;

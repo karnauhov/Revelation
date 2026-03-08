@@ -76,7 +76,6 @@ void main() {
         r'state\.extra is Map<String,\s*dynamic>|as Map<String,\s*dynamic>',
       ),
       roots: <String>['lib'],
-      allowedFiles: <String>{'lib/app_router.dart'},
     ),
     PatternCheck(
       name: 'Feature presentation should not import legacy layer-first modules',

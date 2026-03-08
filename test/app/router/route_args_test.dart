@@ -19,17 +19,14 @@ void main() {
       expect(parsed.description, 'Intro');
     });
 
-    test('parses legacy map extra', () {
+    test('rejects legacy map extra contract', () {
       final parsed = TopicRouteArgs.tryParse(<String, dynamic>{
         'file': 'rev-2',
         'name': 'Revelation 2',
         'description': 'Legacy',
       }, const <String, String>{});
 
-      expect(parsed, isNotNull);
-      expect(parsed!.file, 'rev-2');
-      expect(parsed.name, 'Revelation 2');
-      expect(parsed.description, 'Legacy');
+      expect(parsed, isNull);
     });
 
     test('parses query parameters fallback', () {
@@ -78,23 +75,11 @@ void main() {
       expect(parsed.wordIndex, isNull);
     });
 
-    test('parses legacy map and converts string word index', () {
-      final source = _buildSource('ps-3');
+    test('returns null for any legacy map contract', () {
       final parsed = PrimarySourceRouteArgs.tryParse(<String, dynamic>{
-        'primarySource': source,
+        'primarySource': _buildSource('ps-3'),
         'pageName': 'A-01',
         'wordIndex': '7',
-      });
-
-      expect(parsed, isNotNull);
-      expect(parsed!.primarySource, source);
-      expect(parsed.pageName, 'A-01');
-      expect(parsed.wordIndex, 7);
-    });
-
-    test('returns null for malformed legacy map', () {
-      final parsed = PrimarySourceRouteArgs.tryParse(<String, dynamic>{
-        'primarySource': 'wrong-type',
       });
       expect(parsed, isNull);
     });
