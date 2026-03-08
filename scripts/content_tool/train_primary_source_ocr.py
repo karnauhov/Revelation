@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 import argparse
+from collections import Counter
 import json
 import os
 import random
@@ -239,6 +240,105 @@ def split_samples(samples: list[Sample], train_split: float, seed: int) -> tuple
     return train_samples, eval_samples
 
 
+def _coverage_bucket(train_count: int) -> str:
+    if train_count <= 0:
+        return "missing_in_train"
+    if train_count < 5:
+        return "rare"
+    if train_count < 15:
+        return "limited"
+    if train_count < 40:
+        return "good"
+    return "strong"
+
+
+def empty_char_coverage() -> dict[str, Any]:
+    bucket_names = ("strong", "good", "limited", "rare", "missing_in_train")
+    return {
+        "version": 1,
+        "bucket_thresholds": {
+            "strong": ">= 40 (train)",
+            "good": "15-39 (train)",
+            "limited": "5-14 (train)",
+            "rare": "1-4 (train)",
+            "missing_in_train": "0 (train)",
+        },
+        "bucket_labels_ru": {
+            "strong": "сильное покрытие",
+            "good": "хорошее покрытие",
+            "limited": "ограниченное покрытие",
+            "rare": "редкое покрытие",
+            "missing_in_train": "нет в train",
+        },
+        "total_unique_chars": 0,
+        "chars": [],
+        "bucket_counts": {name: 0 for name in bucket_names},
+        "bucket_chars": {name: [] for name in bucket_names},
+        "train_chars_with_at_least_5": 0,
+        "train_chars_with_at_least_15": 0,
+        "train_chars_with_at_least_40": 0,
+    }
+
+
+def build_char_coverage(
+    exported: list[Sample],
+    train_samples: list[Sample],
+    eval_samples: list[Sample],
+) -> dict[str, Any]:
+    coverage = empty_char_coverage()
+    total_counts: Counter[str] = Counter()
+    train_counts: Counter[str] = Counter()
+    eval_counts: Counter[str] = Counter()
+
+    for sample in exported:
+        total_counts.update(sample.text)
+    for sample in train_samples:
+        train_counts.update(sample.text)
+    for sample in eval_samples:
+        eval_counts.update(sample.text)
+
+    if not total_counts:
+        return coverage
+
+    chars = sorted(
+        total_counts.keys(),
+        key=lambda ch: (-int(train_counts.get(ch, 0)), -int(total_counts.get(ch, 0)), ch),
+    )
+
+    char_rows: list[dict[str, Any]] = []
+    bucket_counts = coverage["bucket_counts"]
+    bucket_chars = coverage["bucket_chars"]
+    assert isinstance(bucket_counts, dict)
+    assert isinstance(bucket_chars, dict)
+
+    for char in chars:
+        total_count = int(total_counts.get(char, 0))
+        train_count = int(train_counts.get(char, 0))
+        eval_count = int(eval_counts.get(char, 0))
+        bucket = _coverage_bucket(train_count)
+        bucket_counts[bucket] = int(bucket_counts.get(bucket, 0)) + 1
+        bucket_list = bucket_chars.get(bucket)
+        if isinstance(bucket_list, list):
+            bucket_list.append(char)
+        char_rows.append(
+            {
+                "char": char,
+                "codepoint": f"U+{ord(char):04X}",
+                "total_count": total_count,
+                "train_count": train_count,
+                "eval_count": eval_count,
+                "bucket": bucket,
+            }
+        )
+
+    coverage["total_unique_chars"] = len(char_rows)
+    coverage["chars"] = char_rows
+    coverage["train_chars_with_at_least_5"] = sum(1 for row in char_rows if int(row["train_count"]) >= 5)
+    coverage["train_chars_with_at_least_15"] = sum(1 for row in char_rows if int(row["train_count"]) >= 15)
+    coverage["train_chars_with_at_least_40"] = sum(1 for row in char_rows if int(row["train_count"]) >= 40)
+    return coverage
+
+
 def write_path_list(path: Path, samples: list[Sample]) -> None:
     lines = [str(sample.image_path.resolve()) for sample in samples]
     path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
@@ -328,6 +428,60 @@ def save_json(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def status_label_ru(status: str) -> str:
+    labels = {
+        "ok": "успешно",
+        "prepared_only": "подготовлено (без запуска обучения)",
+        "export_failed": "ошибка экспорта датасета",
+        "split_failed": "ошибка разделения train/eval",
+        "train_failed": "ошибка обучения",
+        "model_missing_after_train": "обучение завершено, но модель не найдена",
+        "test_failed": "ошибка проверки модели",
+    }
+    return labels.get(status, status)
+
+
+def build_report_ru(payload: dict[str, Any]) -> dict[str, Any]:
+    char_coverage = payload.get("char_coverage")
+    if not isinstance(char_coverage, dict):
+        char_coverage = empty_char_coverage()
+    skipped = payload.get("skipped")
+    if not isinstance(skipped, dict):
+        skipped = {}
+    bucket_counts = char_coverage.get("bucket_counts")
+    if not isinstance(bucket_counts, dict):
+        bucket_counts = {}
+    return {
+        "статус": status_label_ru(str(payload.get("status", ""))),
+        "кратко": {
+            "первоисточник": payload.get("source_id"),
+            "страницы": payload.get("pages"),
+            "слов_из_БД": payload.get("rows_fetched"),
+            "экспортировано_примеров": payload.get("exported_samples"),
+            "train_примеров": payload.get("train_samples"),
+            "eval_примеров": payload.get("eval_samples"),
+            "уникальных_словоформ": payload.get("unique_word_forms"),
+            "пропуски": {
+                "пустой_текст": skipped.get("empty"),
+                "нет_прямоугольников": skipped.get("rectangles"),
+                "нет_изображения": skipped.get("missing_image"),
+                "ошибка_crop": skipped.get("crop"),
+            },
+        },
+        "покрытие_букв": {
+            "уникальных_букв": char_coverage.get("total_unique_chars"),
+            "сильное_покрытие": bucket_counts.get("strong"),
+            "хорошее_покрытие": bucket_counts.get("good"),
+            "ограниченное_покрытие": bucket_counts.get("limited"),
+            "редкое_покрытие": bucket_counts.get("rare"),
+            "нет_в_train": bucket_counts.get("missing_in_train"),
+            "букв_в_train_>=5": char_coverage.get("train_chars_with_at_least_5"),
+            "букв_в_train_>=15": char_coverage.get("train_chars_with_at_least_15"),
+            "букв_в_train_>=40": char_coverage.get("train_chars_with_at_least_40"),
+        },
+    }
+
+
 def update_model_state(
     *,
     state_path: Path,
@@ -343,6 +497,7 @@ def update_model_state(
     run_item = {
         "finished_at": report_payload.get("run_finished_at"),
         "status": report_payload.get("status"),
+        "status_ru": report_payload.get("status_ru"),
         "exported_samples": report_payload.get("exported_samples"),
         "train_samples": report_payload.get("train_samples"),
         "eval_samples": report_payload.get("eval_samples"),
@@ -361,6 +516,7 @@ def update_model_state(
         "model_path": model_path,
         "model_exists": bool(copy_to_model is not None and copy_to_model.exists()),
         "last_status": report_payload.get("status"),
+        "last_status_ru": report_payload.get("status_ru"),
         "last_updated_at": report_payload.get("run_finished_at"),
         "last_report_path": report_payload.get("report_path"),
         "last_run": run_item,
@@ -378,18 +534,18 @@ def main() -> int:
     run_started_at = now_utc_iso()
 
     if Image is None:
-        log("Pillow is not available in current Python environment.")
+        log("Pillow недоступен в текущем Python-окружении.")
         return 1
 
     db_path = resolve_path(args.db)
     if not db_path.exists():
-        log(f"DB file not found: {db_path}")
+        log(f"Файл БД не найден: {db_path}")
         return 1
 
     if args.base_model is not None:
         base_model = resolve_path(args.base_model)
         if not base_model.exists():
-            log(f"Base model not found: {base_model}")
+            log(f"Базовая модель не найдена: {base_model}")
             return 1
     else:
         base_model = None
@@ -401,13 +557,13 @@ def main() -> int:
     model_state_path = model_dir / "model_state.json"
     model_last_report_path = model_dir / "last_training_report.json"
 
-    log("STAGE: Loading source data")
+    log("STAGE: Загрузка данных источника")
     with sqlite3.connect(db_path) as connection:
         connection.row_factory = sqlite3.Row
         rows = fetch_rows(connection, args.source_id, args.page_name)
 
     if not rows:
-        log(f"No words found for source_id={args.source_id!r} and selected pages.")
+        log(f"Для source_id={args.source_id!r} и выбранных страниц слова не найдены.")
         return 1
 
     actual_pages = sorted({str(row["page_name"] or "") for row in rows})
@@ -423,21 +579,21 @@ def main() -> int:
         shutil.rmtree(run_dir)
     samples_dir.mkdir(parents=True, exist_ok=True)
 
-    log(f"DB: {db_path}")
-    log(f"Source: {args.source_id} | pages: {', '.join(actual_pages)}")
-    log(f"Rows fetched from DB: {len(rows)}")
-    log(f"Primary source root: {primary_sources_root}")
-    log(f"Dataset directory: {run_dir}")
-    log(f"Normalize target: {args.normalize_target}")
-    log(f"Output stem: {output_stem}")
+    log(f"БД: {db_path}")
+    log(f"Источник: {args.source_id} | страницы: {', '.join(actual_pages)}")
+    log(f"Строк получено из БД: {len(rows)}")
+    log(f"Корень primary_sources: {primary_sources_root}")
+    log(f"Папка датасета: {run_dir}")
+    log(f"Нормализация target: {args.normalize_target}")
+    log(f"Выходной stem модели: {output_stem}")
     if copy_to_model is not None:
-        log(f"Stable model path: {copy_to_model}")
+        log(f"Стабильный путь модели: {copy_to_model}")
 
     if args.augment:
         try:
             import albumentations  # type: ignore  # noqa: F401
         except Exception:
-            log("Augmentation requested, but `albumentations` is not installed. Continuing with --no-augment.")
+            log("Запрошены аугментации, но `albumentations` не установлен. Продолжаю с --no-augment.")
             args.augment = False
 
     base_report: dict[str, Any] = {
@@ -462,6 +618,9 @@ def main() -> int:
         "base_model": None if base_model is None else str(base_model),
         "output_stem": str(output_stem),
         "copy_to_model": None if copy_to_model is None else str(copy_to_model),
+        "char_coverage": empty_char_coverage(),
+        "status_ru": "",
+        "report_ru": {},
         "run_dir": str(run_dir),
         "run_started_at": run_started_at,
     }
@@ -471,9 +630,11 @@ def main() -> int:
             **base_report,
             **extra,
             "status": status,
+            "status_ru": status_label_ru(status),
             "report_path": str(report_path),
             "run_finished_at": now_utc_iso(),
         }
+        payload["report_ru"] = build_report_ru(payload)
         save_json(report_path, payload)
         save_json(model_last_report_path, payload)
         update_model_state(
@@ -489,7 +650,7 @@ def main() -> int:
         log(f"Model state: {model_state_path}")
         return payload
 
-    log("STAGE: Exporting training dataset")
+    log("STAGE: Экспорт обучающего датасета")
     image_cache: dict[Path, Image.Image] = {}
     exported: list[Sample] = []
     skipped_empty = 0
@@ -554,7 +715,7 @@ def main() -> int:
             image.close()
 
     if not exported:
-        log("No samples were exported. Check words, rectangles, and image paths.")
+        log("Не удалось выгрузить ни одного примера. Проверьте слова, прямоугольники и пути изображений.")
         finalize(
             "export_failed",
             skipped={
@@ -568,7 +729,7 @@ def main() -> int:
 
     train_samples, eval_samples = split_samples(exported, args.train_split, args.seed)
     if not train_samples:
-        log("Train split is empty. Increase train_split or provide more data.")
+        log("Train-выборка получилась пустой. Увеличьте train_split или добавьте данные.")
         finalize("split_failed")
         return 1
 
@@ -595,11 +756,13 @@ def main() -> int:
 
     unique_word_forms = len({sample.text for sample in exported})
     top_pages = sorted(page_sample_counts.items(), key=lambda item: (-item[1], item[0]))[:10]
+    char_coverage = build_char_coverage(exported, train_samples, eval_samples)
 
     base_report["exported_samples"] = len(exported)
     base_report["train_samples"] = len(train_samples)
     base_report["eval_samples"] = len(eval_samples)
     base_report["unique_word_forms"] = unique_word_forms
+    base_report["char_coverage"] = char_coverage
     base_report["skipped"] = {
         "empty": skipped_empty,
         "rectangles": skipped_rectangles,
@@ -608,24 +771,31 @@ def main() -> int:
     }
 
     log(
-        f"Exported samples: {len(exported)} (train={len(train_samples)}, eval={len(eval_samples)}). "
-        f"Unique word forms: {unique_word_forms}."
+        f"Экспортировано примеров: {len(exported)} (train={len(train_samples)}, eval={len(eval_samples)}). "
+        f"Уникальных словоформ: {unique_word_forms}."
     )
     log(
-        "Skipped: "
+        "Покрытие букв (train): "
+        f"unique={char_coverage['total_unique_chars']}, "
+        f">=40={char_coverage['train_chars_with_at_least_40']}, "
+        f">=15={char_coverage['train_chars_with_at_least_15']}, "
+        f">=5={char_coverage['train_chars_with_at_least_5']}."
+    )
+    log(
+        "Пропущено: "
         f"empty={skipped_empty}, rectangles={skipped_rectangles}, "
         f"missing_image={skipped_missing_image}, crop={skipped_crop}."
     )
     if top_pages:
-        log("Top pages by exported samples:")
+        log("Топ страниц по числу экспортированных примеров:")
         for page_name, count in top_pages:
             log(f"  - {page_name}: {count}")
-    log(f"Train list: {train_list}")
-    log(f"Eval list: {eval_list}")
-    log(f"Manifest: {manifest}")
+    log(f"Файл train-списка: {train_list}")
+    log(f"Файл eval-списка: {eval_list}")
+    log(f"Манифест: {manifest}")
 
     if args.prepare_only:
-        log("Dataset preparation done (--prepare-only).")
+        log("Подготовка датасета завершена (--prepare-only).")
         finalize("prepared_only")
         return 0
 
@@ -656,12 +826,12 @@ def main() -> int:
 
     train_log = run_dir / "ketos_train.log"
     best_model: Path | None = None
-    log("STAGE: Training model")
+    log("STAGE: Обучение модели")
     try:
         run_command(train_cmd, log_path=train_log, logger=log)
     except subprocess.CalledProcessError as exc:
-        log(f"ketos train exited with code {exc.returncode}.")
-        log(f"See full train log: {train_log}")
+        log(f"ketos train завершился с кодом {exc.returncode}.")
+        log(f"Полный лог обучения: {train_log}")
         checkpoint_candidates = sorted(
             output_stem.parent.glob(f"{output_stem.name}_*.mlmodel"),
             key=lambda path: path.stat().st_mtime,
@@ -669,9 +839,9 @@ def main() -> int:
         )
         if checkpoint_candidates:
             best_model = checkpoint_candidates[0]
-            log(f"Using latest checkpoint as model: {best_model}")
+            log(f"Используется последний checkpoint как модель: {best_model}")
         else:
-            log("Tip: if failure mentions augmentation, install `albumentations` or rerun with --no-augment.")
+            log("Подсказка: если ошибка связана с augmentation, установите `albumentations` или запустите с --no-augment.")
             finalize("train_failed", train_log=str(train_log))
             return 1
 
@@ -687,17 +857,17 @@ def main() -> int:
             )
             if checkpoint_candidates:
                 best_model = checkpoint_candidates[0]
-                log(f"Best checkpoint is unavailable, using latest checkpoint: {best_model}")
+                log(f"Файл best недоступен, используется последний checkpoint: {best_model}")
             else:
-                log(f"Training finished, but no output model was found for stem: {output_stem}")
+                log(f"Обучение завершено, но выходная модель для stem не найдена: {output_stem}")
                 finalize("model_missing_after_train", train_log=str(train_log))
                 return 1
 
-    log(f"Best model: {best_model}")
+    log(f"Лучшая модель: {best_model}")
     if copy_to_model is not None:
         copy_to_model.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(best_model, copy_to_model)
-        log(f"Copied best model to: {copy_to_model}")
+        log(f"Лучшая модель скопирована в: {copy_to_model}")
 
     test_log: Path | None = None
     if eval_samples:
@@ -714,12 +884,12 @@ def main() -> int:
             str(eval_list),
         ]
         test_log = run_dir / "ketos_test.log"
-        log("STAGE: Evaluating model")
+        log("STAGE: Оценка модели")
         try:
             run_command(test_cmd, log_path=test_log, logger=log)
         except subprocess.CalledProcessError as exc:
-            log(f"ketos test failed with exit code {exc.returncode}.")
-            log(f"See full test log: {test_log}")
+            log(f"ketos test завершился с ошибкой, код {exc.returncode}.")
+            log(f"Полный лог проверки: {test_log}")
             finalize(
                 "test_failed",
                 best_model=str(best_model),
@@ -729,7 +899,7 @@ def main() -> int:
             )
             return 1
 
-    log("STAGE: Finalizing")
+    log("STAGE: Финализация")
     finalize(
         "ok",
         best_model=str(best_model),
@@ -738,12 +908,12 @@ def main() -> int:
         test_log=None if test_log is None else str(test_log),
     )
 
-    log("Done.")
+    log("Готово.")
     log(
-        "Learning summary: "
-        f"trained on {len(train_samples)} samples "
-        f"(+ eval {len(eval_samples)}), total exported {len(exported)}, "
-        f"unique transcriptions {unique_word_forms}."
+        "Итог обучения: "
+        f"обучено на {len(train_samples)} примерах "
+        f"(+ eval {len(eval_samples)}), всего экспортировано {len(exported)}, "
+        f"уникальных транскрипций {unique_word_forms}."
     )
     return 0
 

@@ -1863,6 +1863,60 @@ class PrimarySourcesMixin:
             else:
                 summary_lines.append("Файлы модели: отсутствуют")
 
+            def _as_int(value: Any) -> int:
+                try:
+                    return int(value)
+                except (TypeError, ValueError):
+                    return 0
+
+            char_coverage = report_payload.get("char_coverage")
+            if isinstance(char_coverage, dict):
+                char_rows_raw = char_coverage.get("chars")
+                bucket_counts_raw = char_coverage.get("bucket_counts")
+                if isinstance(char_rows_raw, list) and char_rows_raw:
+                    summary_lines.append("")
+                    summary_lines.append("Покрытие букв (train/eval/total):")
+                    if isinstance(bucket_counts_raw, dict):
+                        summary_lines.append(
+                            "Сводка: "
+                            f"сильные={_as_int(bucket_counts_raw.get('strong'))}, "
+                            f"хорошие={_as_int(bucket_counts_raw.get('good'))}, "
+                            f"ограниченные={_as_int(bucket_counts_raw.get('limited'))}, "
+                            f"редкие={_as_int(bucket_counts_raw.get('rare'))}, "
+                            f"нет в train={_as_int(bucket_counts_raw.get('missing_in_train'))}."
+                        )
+                    bucket_labels = {
+                        "strong": "сильное покрытие",
+                        "good": "хорошее покрытие",
+                        "limited": "ограниченное покрытие",
+                        "rare": "редкое покрытие",
+                        "missing_in_train": "нет в train",
+                    }
+                    max_rows = 160
+                    shown = 0
+                    for row in char_rows_raw:
+                        if shown >= max_rows:
+                            break
+                        if not isinstance(row, dict):
+                            continue
+                        char = str(row.get("char", "?"))
+                        codepoint = str(row.get("codepoint", ""))
+                        train_count = _as_int(row.get("train_count"))
+                        eval_count = _as_int(row.get("eval_count"))
+                        total_count = _as_int(row.get("total_count"))
+                        bucket = str(row.get("bucket", "")).strip().lower()
+                        bucket_label = bucket_labels.get(bucket, bucket or "unknown")
+                        summary_lines.append(
+                            f"- {char} ({codepoint}): train={train_count}, eval={eval_count}, "
+                            f"total={total_count} | {bucket_label}"
+                        )
+                        shown += 1
+                    if shown < len(char_rows_raw):
+                        summary_lines.append(f"... и еще {len(char_rows_raw) - shown} символов")
+                else:
+                    summary_lines.append("")
+                    summary_lines.append("Покрытие букв: пока нет данных.")
+
             summary_lines.append("")
             summary_lines.append("Содержимое model_state.json:")
             summary_lines.append(
