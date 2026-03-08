@@ -3,42 +3,42 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `готов к старту, миграция не начата`  
+Статус: `Phase 0 завершена, Phase 1 в работе (P0 started)`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
 ## 1. Глобальный чеклист по фазам (пустые чекбоксы)
 
 ### Phase 0 — Audit stabilization / safety net / baseline
-- [ ] Цель фазы зафиксирована: безопасная точка старта и baseline.
-- [ ] Обоснование фазы зафиксировано: без baseline нельзя управлять регрессиями.
-- [ ] Задача [P0]: зафиксировать baseline docs (RU/EN).
-- [ ] Подшаг [P0.1]: создать `overview.ru`.
-- [ ] Подшаг [P0.2]: создать `overview.en` (можно отложить контент до финала, но файл/план должны быть).
-- [ ] Подшаг [P0.3]: создать `testing.strategy.ru`.
-- [ ] Подшаг [P0.4]: создать `testing.strategy.en` (как минимум каркас).
-- [ ] Задача [P0]: добавить PR workflow c `format + analyze + test`.
-- [ ] Подшаг [P0.5]: включить `dart format --output=none --set-exit-if-changed .`.
-- [ ] Подшаг [P0.6]: включить `flutter analyze`.
-- [ ] Подшаг [P0.7]: включить `flutter test`.
-- [ ] Задача [P0]: создать test harness skeleton (fake logger, fake env, fake remote).
-- [ ] Подшаг [P0.8]: подготовить test utilities/fakes.
-- [ ] Задача [P1]: ввести initial grep checks для forbidden patterns.
-- [ ] Подшаг [P0.9]: добавить быстрые проверки на `DBManager()/ServerManager()` в UI.
-- [ ] Подшаг [P0.10]: добавить проверку на map-based route contracts в критичных местах.
-- [ ] Affected areas верифицированы: `.github/workflows/*`, `test/*`, `docs/*`.
-- [ ] Риски проверены и записаны.
-- [ ] Dependencies/prerequisites подтверждены (`нет`).
-- [ ] Relevant skills назначены.
-- [ ] Test expectations выполнены.
-- [ ] Docs update expectations выполнены (RU + EN plan).
-- [ ] Quality gates пройдены.
-- [ ] Criteria of done выполнен.
+- [x] Цель фазы зафиксирована: безопасная точка старта и baseline.
+- [x] Обоснование фазы зафиксировано: без baseline нельзя управлять регрессиями.
+- [x] Задача [P0]: зафиксировать baseline docs (RU/EN).
+- [x] Подшаг [P0.1]: создать `overview.ru`.
+- [x] Подшаг [P0.2]: создать `overview.en` (можно отложить контент до финала, но файл/план должны быть).
+- [x] Подшаг [P0.3]: создать `testing.strategy.ru`.
+- [x] Подшаг [P0.4]: создать `testing.strategy.en` (как минимум каркас).
+- [x] Задача [P0]: добавить PR workflow c `format + analyze + test`.
+- [x] Подшаг [P0.5]: включить `dart format --output=none --set-exit-if-changed .`.
+- [x] Подшаг [P0.6]: включить `flutter analyze`.
+- [x] Подшаг [P0.7]: включить `flutter test`.
+- [x] Задача [P0]: создать test harness skeleton (fake logger, fake env, fake remote).
+- [x] Подшаг [P0.8]: подготовить test utilities/fakes.
+- [x] Задача [P1]: ввести initial grep checks для forbidden patterns.
+- [x] Подшаг [P0.9]: добавить быстрые проверки на `DBManager()/ServerManager()` в UI.
+- [x] Подшаг [P0.10]: добавить проверку на map-based route contracts в критичных местах.
+- [x] Affected areas верифицированы: `.github/workflows/*`, `test/*`, `docs/*`.
+- [x] Риски проверены и записаны.
+- [x] Dependencies/prerequisites подтверждены (`нет`).
+- [x] Relevant skills назначены.
+- [x] Test expectations выполнены.
+- [x] Docs update expectations выполнены (RU + EN plan).
+- [x] Quality gates пройдены.
+- [x] Criteria of done выполнен.
 
 ### Phase 1 — Quick wins / high-impact low-risk improvements
-- [ ] Цель фазы зафиксирована: убрать high-impact structural anti-patterns без функциональной ломки.
-- [ ] Обоснование фазы зафиксировано: быстрый и безопасный выигрыш перед большими миграциями.
-- [ ] Задача [P0]: убрать дублирование `MainViewModel` provider registration.
+- [x] Цель фазы зафиксирована: убрать high-impact structural anti-patterns без функциональной ломки.
+- [x] Обоснование фазы зафиксировано: быстрый и безопасный выигрыш перед большими миграциями.
+- [x] Задача [P0]: убрать дублирование `MainViewModel` provider registration.
 - [ ] Задача [P0]: выделить bootstrap/DI из `main.dart` в `app/bootstrap` и `app/di`.
 - [ ] Подшаг [P1.1]: вынести bootstrap sequence.
 - [ ] Подшаг [P1.2]: вынести DI registration.
@@ -48,8 +48,8 @@
 - [ ] Задача [P1]: убрать или обосновать неиспользуемые DI регистрации/dependencies.
 - [ ] Affected areas верифицированы: `lib/main.dart`, `lib/app_router.dart`, `lib/utils/common.dart`, `lib/viewmodels/primary_source_view_model.dart`, `lib/screens/main/main_screen.dart`.
 - [ ] Риски проверены и записаны.
-- [ ] Dependencies/prerequisites подтверждены (`Phase 0 completed`).
-- [ ] Relevant skills назначены.
+- [x] Dependencies/prerequisites подтверждены (`Phase 0 completed`).
+- [x] Relevant skills назначены.
 - [ ] Test expectations выполнены.
 - [ ] Docs update expectations выполнены.
 - [ ] Quality gates пройдены.
@@ -209,3 +209,62 @@
   - Mitigations: n/a
   - Next task: старт миграции в отдельном чате (по решению владельца проекта).
 
+#### [2026-03-08 15:49] Phase 0 / Task P0-P0.10 / Baseline docs + PR gates + harness + grep checks
+- Статус: done
+- Priority: P0/P1
+- What changed:
+  - Созданы baseline docs: `overview` и `testing strategy` в RU/EN.
+  - Добавлен PR workflow `.github/workflows/pr_quality.yml` с `format + analyze + test`.
+  - Добавлен test harness skeleton: fake logger/env/remote + базовый тест на harness.
+  - Добавлен `scripts/check_forbidden_patterns.dart` с baseline-allowlist для legacy в UI/router.
+- Why changed:
+  - Phase 0 требует зафиксировать стартовый baseline, сделать quality gates воспроизводимыми и начать enforce архитектурных ограничений.
+- Scope (files/modules):
+  - `docs/architecture/overview.ru.md`
+  - `docs/architecture/overview.en.md`
+  - `docs/testing/strategy.ru.md`
+  - `docs/testing/strategy.en.md`
+  - `.github/workflows/pr_quality.yml`
+  - `scripts/check_forbidden_patterns.dart`
+  - `test/test_harness/*`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/overview.ru.md`, `docs/testing/strategy.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/architecture/overview.en.md`, `docs/testing/strategy.en.md`)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: baseline allowlist фиксирует существующий legacy (`DBManager()` в части UI, map-based route contracts в `app_router`).
+  - Mitigations: allowlist должен уменьшаться в следующих фазах; новые нарушения блокируются сразу.
+  - Next task: Phase 1 / P0 — убрать дублирование `MainViewModel` provider registration.
+
+#### [2026-03-08 15:52] Phase 1 / Task P0 / Remove duplicated MainViewModel provider registration
+- Статус: done
+- Priority: P0
+- What changed:
+  - Удален локальный `ChangeNotifierProvider<MainViewModel>` из `MainScreen`.
+  - `MainScreen` теперь использует уже зарегистрированный глобальный `MainViewModel` из `main.dart`.
+- Why changed:
+  - Убрать дублированную регистрацию и избежать двух разных экземпляров одного view model в одном потоке UI.
+- Scope (files/modules):
+  - `lib/screens/main/main_screen.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: возможна смена жизненного цикла `MainViewModel` (теперь строго app-scoped).
+  - Mitigations: следующий шаг Phase 1 проверяет bootstrap/DI и lifecycle cleanup централизованно.
+  - Next task: Phase 1 / P0 — выделить bootstrap/DI из `main.dart` в `app/bootstrap` и `app/di`.
