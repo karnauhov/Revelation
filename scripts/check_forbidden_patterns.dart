@@ -41,6 +41,36 @@ void main() {
       roots: <String>['lib/screens', 'lib/common_widgets', 'lib/features'],
     ),
     PatternCheck(
+      name: 'Feature modules should not call DBManager() directly',
+      pattern: RegExp(r'\bDBManager\(\)'),
+      roots: <String>['lib/features'],
+    ),
+    PatternCheck(
+      name: 'Primary sources repository should not call DBManager() directly',
+      pattern: RegExp(r'\bDBManager\(\)'),
+      roots: <String>['lib/repositories'],
+      filePathPattern: RegExp(
+        r'^lib/repositories/primary_sources_db_repository\.dart$',
+      ),
+    ),
+    PatternCheck(
+      name: 'Services should not call DBManager() directly',
+      pattern: RegExp(r'\bDBManager\(\)'),
+      roots: <String>['lib/services'],
+    ),
+    PatternCheck(
+      name: 'App bootstrap should not call DBManager() directly',
+      pattern: RegExp(r'\bDBManager\(\)'),
+      roots: <String>['lib/app/bootstrap'],
+      filePathPattern: RegExp(r'^lib/app/bootstrap/app_bootstrap\.dart$'),
+    ),
+    PatternCheck(
+      name: 'Infra layers should instantiate DBManager() only via gateway',
+      pattern: RegExp(r'\bDBManager\(\)'),
+      roots: <String>['lib/infra'],
+      allowedFiles: <String>{'lib/infra/db/runtime/db_manager_gateway.dart'},
+    ),
+    PatternCheck(
       name: 'Critical routes should avoid map-based state.extra contracts',
       pattern: RegExp(
         r'state\.extra is Map<String,\s*dynamic>|as Map<String,\s*dynamic>',

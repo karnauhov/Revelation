@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1/2 завершены, Phase 3 ready`  
+Статус: `Phase 0/1/2 завершены, Phase 3 в работе (P0 started)`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -75,10 +75,10 @@
 - [x] Criteria of done выполнен.
 
 ### Phase 3 — State/data/navigation refactors
-- [ ] Цель фазы зафиксирована: устранить ключевой долг в state/data/router.
-- [ ] Обоснование фазы зафиксировано: здесь максимальный architectural risk.
-- [ ] Задача [P0]: декомпозировать `DBManager` на data sources/repositories/cache policy.
-- [ ] Задача [P0]: перенести direct DB access из `TopicList/TopicCard/TopicScreen` в feature controllers/services.
+- [x] Цель фазы зафиксирована: устранить ключевой долг в state/data/router.
+- [x] Обоснование фазы зафиксировано: здесь максимальный architectural risk.
+- [x] Задача [P0]: декомпозировать `DBManager` на data sources/repositories/cache policy.
+- [x] Задача [P0]: перенести direct DB access из `TopicList/TopicCard/TopicScreen` в feature controllers/services.
 - [ ] Задача [P0]: разделить `PrimarySourceViewModel` на orchestrators.
 - [ ] Подшаг [P3.1]: image loading orchestration.
 - [ ] Подшаг [P3.2]: page settings orchestration.
@@ -88,8 +88,8 @@
 - [ ] Задача [P1]: стандартизировать async patterns (request token/cancel/ignore stale result).
 - [ ] Affected areas верифицированы: `lib/managers/db_manager.dart`, `lib/repositories/primary_sources_db_repository.dart`, `lib/screens/topic/*`, `lib/screens/primary_source/*`, `lib/viewmodels/primary_source_view_model.dart`, `lib/app_router.dart`.
 - [ ] Риски проверены и записаны.
-- [ ] Dependencies/prerequisites подтверждены (`Phase 2 completed`).
-- [ ] Relevant skills назначены.
+- [x] Dependencies/prerequisites подтверждены (`Phase 2 completed`).
+- [x] Relevant skills назначены.
 - [ ] Test expectations выполнены.
 - [ ] Docs update expectations выполнены.
 - [ ] Quality gates пройдены.
@@ -628,3 +628,151 @@
   - New risks: расширение public surface через barrels может скрывать избыточные зависимости.
   - Mitigations: на Phase 3/5 сократить public exports до минимального API после стабилизации миграции.
   - Next task: Phase 3 / P0 — декомпозировать `DBManager` на data sources/repositories/cache policy.
+
+#### [2026-03-08 20:28] Phase 3 / Task P0 (partial) / Start DBManager decomposition for topics slice
+- Статус: partial
+- Priority: P0
+- What changed:
+  - Добавлен infra data source для topics-среза: `lib/infra/db/data_sources/topics_data_source.dart` (`TopicsDataSource` + `DbManagerTopicsDataSource`).
+  - `lib/features/topics/data/repositories/topics_repository.dart` переведен с прямого `DBManager` на `TopicsDataSource` (инверсия зависимости через `infra`).
+  - В `scripts/check_forbidden_patterns.dart` добавлен guardrail: `Feature modules should not call DBManager() directly`.
+- Why changed:
+  - Начать Phase 3 без big-bang: вынести доступ к DB для topics из feature data в infra-слой и зафиксировать правило против возврата к singleton-вызовам в features.
+- Scope (files/modules):
+  - `lib/infra/db/data_sources/topics_data_source.dart`
+  - `lib/features/topics/data/repositories/topics_repository.dart`
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `DBManager` остается источником данных для `primary_sources` и части сервисов, поэтому декомпозиция пока неполная.
+  - Mitigations: следующим шагом вынести `primary_sources` read paths в отдельные infra data sources и сократить surface `DBManager`.
+  - Next task: Phase 3 / P0 — продолжить декомпозицию `DBManager` (primary sources slice).
+
+#### [2026-03-08 20:34] Phase 3 / Task P0 (partial) / Continue DBManager decomposition for primary sources slice
+- Статус: partial
+- Priority: P0
+- What changed:
+  - Добавлен infra data source для `primary_sources`: `lib/infra/db/data_sources/primary_sources_data_source.dart` (`PrimarySourcesDataSource` + `DbManagerPrimarySourcesDataSource`).
+  - `lib/repositories/primary_sources_db_repository.dart` переведен с прямой зависимости от `DBManager` на `PrimarySourcesDataSource`.
+  - В `scripts/check_forbidden_patterns.dart` добавлен целевой guardrail: `Primary sources repository should not call DBManager() directly`.
+- Why changed:
+  - Продолжить декомпозицию `DBManager` по вертикальным срезам и вынести доступ к cached DB rows из repository в infra-слой без изменения внешнего поведения `PrimarySourcesDbRepository`.
+- Scope (files/modules):
+  - `lib/infra/db/data_sources/primary_sources_data_source.dart`
+  - `lib/repositories/primary_sources_db_repository.dart`
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `DescriptionContentService` и bootstrap все еще завязаны на `DBManager`, поэтому полная декомпозиция P0 пока не завершена.
+  - Mitigations: следующим шагом выделить отдельный data source для strong/greek data и поэтапно сократить прямой доступ сервисов к `DBManager`.
+  - Next task: Phase 3 / P0 — продолжить декомпозицию `DBManager` (description/strong slice).
+
+#### [2026-03-08 20:38] Phase 3 / Task P0 (partial) / Continue DBManager decomposition for description/strong slice
+- Статус: partial
+- Priority: P0
+- What changed:
+  - Добавлен infra data source для strong/greek данных: `lib/infra/db/data_sources/description_data_source.dart` (`DescriptionDataSource` + `DbManagerDescriptionDataSource`).
+  - `lib/services/description_content_service.dart` переведен с прямой зависимости `DBManager` на `DescriptionDataSource`.
+  - В `scripts/check_forbidden_patterns.dart` добавлен guardrail: `Services should not call DBManager() directly`.
+- Why changed:
+  - Продолжить декомпозицию `DBManager` по вертикальным срезам и убрать прямой singleton-доступ к БД из service-слоя.
+- Scope (files/modules):
+  - `lib/infra/db/data_sources/description_data_source.dart`
+  - `lib/services/description_content_service.dart`
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `DBManager` все еще используется в bootstrap и как адаптер за infra data sources, поэтому декомпозиция P0 пока неполная.
+  - Mitigations: следующим шагом выделить bootstrap-facing database facade (или infra coordinator) и сократить роль `DBManager` до thin compatibility adapter.
+  - Next task: Phase 3 / P0 — продолжить декомпозицию `DBManager` (bootstrap/init slice).
+
+#### [2026-03-08 22:02] Phase 3 / Task P0 (partial) / Continue DBManager decomposition for bootstrap/init slice
+- Статус: partial
+- Priority: P0
+- What changed:
+  - Добавлен bootstrap-facing runtime adapter: `lib/infra/db/runtime/database_runtime.dart` (`DatabaseRuntime` + `DbManagerDatabaseRuntime`).
+  - `lib/app/bootstrap/app_bootstrap.dart` переведен с прямого `DBManager()` на `DatabaseRuntime` abstraction.
+  - В `scripts/check_forbidden_patterns.dart` добавлен guardrail: `App bootstrap should not call DBManager() directly`.
+- Why changed:
+  - Снять прямую singleton-зависимость из app bootstrap и продолжить перенос доступа к БД в infra-слой.
+- Scope (files/modules):
+  - `lib/infra/db/runtime/database_runtime.dart`
+  - `lib/app/bootstrap/app_bootstrap.dart`
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `DBManager` остается внутренним адаптером для нескольких infra data sources, поэтому P0-деcomposition формально еще не завершен.
+  - Mitigations: следующим шагом определить target facade/contract для чтения cached DB rows и подготовить поэтапное сужение публичной поверхности `DBManager`.
+  - Next task: Phase 3 / P0 — завершить декомпозицию `DBManager` (final facade/policy slice).
+
+#### [2026-03-08 22:06] Phase 3 / Task P0 / Finalize DBManager decomposition via infra gateway contract
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен единый infra gateway contract: `lib/infra/db/runtime/db_manager_gateway.dart` (`DatabaseGateway` + `DbManagerDatabaseGateway`).
+  - `topics/primary_sources/description` data sources и bootstrap runtime (`database_runtime.dart`) переведены с прямого `DBManager` на `DatabaseGateway`.
+  - В `scripts/check_forbidden_patterns.dart` добавлен guardrail: `Infra layers should instantiate DBManager() only via gateway`.
+- Why changed:
+  - Закрыть `Phase 3 / P0` задачу декомпозиции `DBManager` на уровне контракта: оставить `DBManager` только как thin compatibility adapter за infra gateway, а использование в слоях приложения и feature/data ограничить abstraction-слоями.
+- Scope (files/modules):
+  - `lib/infra/db/runtime/db_manager_gateway.dart`
+  - `lib/infra/db/runtime/database_runtime.dart`
+  - `lib/infra/db/data_sources/topics_data_source.dart`
+  - `lib/infra/db/data_sources/primary_sources_data_source.dart`
+  - `lib/infra/db/data_sources/description_data_source.dart`
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `DBManager` пока остается legacy internal store/cache hub, поэтому финальная внутренняя декомпозиция может потребоваться в следующих фазах.
+  - Mitigations: в следующих шагах рефакторить orchestration (`PrimarySourceViewModel`) и сужать surface gateway по мере стабилизации.
+  - Next task: Phase 3 / P0 — разделить `PrimarySourceViewModel` на orchestrators (P3.1/P3.2/P3.3).

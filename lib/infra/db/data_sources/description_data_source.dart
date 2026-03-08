@@ -1,0 +1,32 @@
+import 'package:revelation/db/db_common.dart' as common_db;
+import 'package:revelation/db/db_localized.dart' as localized_db;
+import 'package:revelation/infra/db/runtime/db_manager_gateway.dart';
+
+abstract class DescriptionDataSource {
+  bool get isInitialized;
+
+  String get languageCode;
+
+  List<common_db.GreekWord> get greekWords;
+
+  List<localized_db.GreekDesc> get greekDescs;
+}
+
+class DbManagerDescriptionDataSource implements DescriptionDataSource {
+  DbManagerDescriptionDataSource({DatabaseGateway? databaseGateway})
+    : _databaseGateway = databaseGateway ?? DbManagerDatabaseGateway();
+
+  final DatabaseGateway _databaseGateway;
+
+  @override
+  bool get isInitialized => _databaseGateway.isInitialized;
+
+  @override
+  String get languageCode => _databaseGateway.languageCode;
+
+  @override
+  List<common_db.GreekWord> get greekWords => _databaseGateway.greekWords;
+
+  @override
+  List<localized_db.GreekDesc> get greekDescs => _databaseGateway.greekDescs;
+}

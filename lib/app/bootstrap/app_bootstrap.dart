@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:revelation/common_widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/features/settings/settings.dart'
     show SettingsRepository, SettingsViewModel;
-import 'package:revelation/managers/db_manager.dart';
+import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/managers/server_manager.dart';
 import 'package:revelation/utils/app_link_handler.dart';
 import 'package:revelation/utils/common.dart';
@@ -12,9 +12,12 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppBootstrap {
-  AppBootstrap({required Talker talker}) : _talker = talker;
+  AppBootstrap({required Talker talker, DatabaseRuntime? databaseRuntime})
+    : _talker = talker,
+      _databaseRuntime = databaseRuntime ?? DbManagerDatabaseRuntime();
 
   final Talker _talker;
+  final DatabaseRuntime _databaseRuntime;
 
   Future<SettingsViewModel> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -75,9 +78,13 @@ class AppBootstrap {
 
   Future<void> _initializeDatabases(SettingsViewModel settingsViewModel) async {
     try {
-      await DBManager().init(settingsViewModel.settings.selectedLanguage);
+      await _databaseRuntime.initialize(
+        settingsViewModel.settings.selectedLanguage,
+      );
       settingsViewModel.addListener(() {
-        DBManager().updateLanguage(settingsViewModel.settings.selectedLanguage);
+        _databaseRuntime.updateLanguage(
+          settingsViewModel.settings.selectedLanguage,
+        );
       });
     } catch (error, stackTrace) {
       _talker.handle(error, stackTrace, 'Failed to initialize local databases');

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:revelation/infra/db/data_sources/description_data_source.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/managers/db_manager.dart';
 import 'package:revelation/models/description_content.dart';
 import 'package:revelation/models/description_kind.dart';
 import 'package:revelation/models/description_request.dart';
@@ -12,17 +12,17 @@ import 'package:revelation/utils/common.dart';
 import 'package:revelation/utils/pronunciation.dart';
 
 class DescriptionContentService {
-  final DBManager _dbManager;
+  final DescriptionDataSource _dataSource;
   final Pronunciation _pronunciation;
   final PrimarySourceReferenceResolver _referenceResolver;
 
   List<GreekStrongPickerEntry>? _strongPickerEntriesCache;
 
   DescriptionContentService({
-    DBManager? dbManager,
+    DescriptionDataSource? dataSource,
     Pronunciation? pronunciation,
     PrimarySourceReferenceResolver? referenceResolver,
-  }) : _dbManager = dbManager ?? DBManager(),
+  }) : _dataSource = dataSource ?? DbManagerDescriptionDataSource(),
        _pronunciation = pronunciation ?? Pronunciation(),
        _referenceResolver =
            referenceResolver ?? PrimarySourceReferenceResolver();
@@ -33,7 +33,7 @@ class DescriptionContentService {
     PrimarySource? fallbackSource,
     model.Page? fallbackPage,
   }) {
-    if (!_dbManager.isInitialized) {
+    if (!_dataSource.isInitialized) {
       return null;
     }
 
@@ -68,12 +68,12 @@ class DescriptionContentService {
   }
 
   List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
-    if (!_dbManager.isInitialized) {
+    if (!_dataSource.isInitialized) {
       return const [];
     }
 
     _strongPickerEntriesCache ??= List<GreekStrongPickerEntry>.unmodifiable(
-      _dbManager.greekWords
+      _dataSource.greekWords
           .where((word) => doesStrongNumberExist(word.id))
           .map(
             (word) =>
@@ -123,14 +123,14 @@ class DescriptionContentService {
     StrongDescriptionRequest request,
   ) {
     final strongNumber = request.strongNumber;
-    final wordIndex = _dbManager.greekWords.indexWhere(
+    final wordIndex = _dataSource.greekWords.indexWhere(
       (word) => word.id == strongNumber,
     );
     if (wordIndex == -1) {
       return null;
     }
 
-    final word = _dbManager.greekWords[wordIndex].word.trim();
+    final word = _dataSource.greekWords[wordIndex].word.trim();
     if (word.isEmpty) {
       return null;
     }
@@ -143,16 +143,16 @@ class DescriptionContentService {
 
     buffer.write(AppLocalizations.of(context)!.strong_number);
     final prevId = getNeighborStrongNumber(
-      _dbManager.greekWords[wordIndex].id,
+      _dataSource.greekWords[wordIndex].id,
       forward: false,
     );
     buffer.write(': [<-](strong:G$prevId) **');
     buffer.write(
-      '[${_dbManager.greekWords[wordIndex].id}]'
-      '(strong_picker:G${_dbManager.greekWords[wordIndex].id})',
+      '[${_dataSource.greekWords[wordIndex].id}]'
+      '(strong_picker:G${_dataSource.greekWords[wordIndex].id})',
     );
     final nextId = getNeighborStrongNumber(
-      _dbManager.greekWords[wordIndex].id,
+      _dataSource.greekWords[wordIndex].id,
       forward: true,
     );
     buffer.write('** [->](strong:G$nextId)\n\r');
@@ -161,23 +161,23 @@ class DescriptionContentService {
     buffer.write(': **');
     buffer.write(
       _pronunciation
-          .convert(word.toLowerCase(), _dbManager.langDB)
+          .convert(word.toLowerCase(), _dataSource.languageCode)
           .toLowerCase(),
     );
     buffer.write('**\n\r');
 
-    final descIndex = _dbManager.greekDescs.indexWhere(
+    final descIndex = _dataSource.greekDescs.indexWhere(
       (desc) => desc.id == strongNumber,
     );
     if (descIndex != -1) {
-      final desc = _dbManager.greekDescs[descIndex].desc.trim();
+      final desc = _dataSource.greekDescs[descIndex].desc.trim();
       if (desc.isNotEmpty) {
         buffer.write(_getTranslation(desc));
         buffer.write('\n\r');
       }
     }
 
-    final category = _dbManager.greekWords[wordIndex].category.trim();
+    final category = _dataSource.greekWords[wordIndex].category.trim();
     if (category.isNotEmpty) {
       buffer.write(AppLocalizations.of(context)!.strong_part_of_speech);
       buffer.write(': **');
@@ -185,7 +185,7 @@ class DescriptionContentService {
       buffer.write('**\n\r');
     }
 
-    final origin = _dbManager.greekWords[wordIndex].origin.trim();
+    final origin = _dataSource.greekWords[wordIndex].origin.trim();
     if (origin.isNotEmpty) {
       buffer.write('\n\r');
       buffer.write(AppLocalizations.of(context)!.strong_origin);
@@ -194,7 +194,7 @@ class DescriptionContentService {
       buffer.write('\n\r');
     }
 
-    final synonyms = _dbManager.greekWords[wordIndex].synonyms.trim();
+    final synonyms = _dataSource.greekWords[wordIndex].synonyms.trim();
     if (synonyms.isNotEmpty) {
       buffer.write('\n\r');
       buffer.write(AppLocalizations.of(context)!.strong_synonyms);
@@ -203,7 +203,7 @@ class DescriptionContentService {
       buffer.write('\n\r');
     }
 
-    final usage = _dbManager.greekWords[wordIndex].usage.trim();
+    final usage = _dataSource.greekWords[wordIndex].usage.trim();
     if (usage.isNotEmpty) {
       buffer.write(AppLocalizations.of(context)!.strong_usage);
       buffer.write(': ');
@@ -252,13 +252,13 @@ class DescriptionContentService {
       buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
       buffer.write(': **');
       if (word.snPronounce && word.sn != null) {
-        final index = _dbManager.greekWords.indexWhere((w) => w.id == word.sn);
+        final index = _dataSource.greekWords.indexWhere((w) => w.id == word.sn);
         if (index != -1) {
           buffer.write(
             _pronunciation
                 .convert(
-                  _dbManager.greekWords[index].word.toLowerCase().trim(),
-                  _dbManager.langDB,
+                  _dataSource.greekWords[index].word.toLowerCase().trim(),
+                  _dataSource.languageCode,
                 )
                 .toLowerCase(),
           );
@@ -266,7 +266,7 @@ class DescriptionContentService {
       } else {
         buffer.write(
           _pronunciation
-              .convert(word.text.toLowerCase().trim(), _dbManager.langDB)
+              .convert(word.text.toLowerCase().trim(), _dataSource.languageCode)
               .toLowerCase(),
         );
       }
@@ -274,11 +274,11 @@ class DescriptionContentService {
     }
 
     if (word.sn != null) {
-      final descIndex = _dbManager.greekDescs.indexWhere(
+      final descIndex = _dataSource.greekDescs.indexWhere(
         (desc) => desc.id == word.sn,
       );
       if (descIndex != -1) {
-        final desc = _dbManager.greekDescs[descIndex].desc.trim();
+        final desc = _dataSource.greekDescs[descIndex].desc.trim();
         if (desc.isNotEmpty) {
           buffer.write('\n\r');
           buffer.write(_getTranslation(desc));
@@ -467,14 +467,14 @@ class DescriptionContentService {
   }
 
   String? _getGreekWordByStrongNumber(int strongNumber) {
-    final wordIndex = _dbManager.greekWords.indexWhere(
+    final wordIndex = _dataSource.greekWords.indexWhere(
       (word) => word.id == strongNumber,
     );
     if (wordIndex == -1) {
       return null;
     }
 
-    final greekWord = _dbManager.greekWords[wordIndex].word.trim();
+    final greekWord = _dataSource.greekWords[wordIndex].word.trim();
     return greekWord.isEmpty ? null : greekWord;
   }
 

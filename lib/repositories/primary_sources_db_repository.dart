@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:revelation/managers/db_manager.dart';
+import 'package:revelation/infra/db/data_sources/primary_sources_data_source.dart';
 import 'package:revelation/models/page.dart' as model;
 import 'package:revelation/models/page_rect.dart';
 import 'package:revelation/models/page_word.dart';
@@ -23,15 +23,15 @@ class PrimarySourcesLoadResult {
 }
 
 class PrimarySourcesDbRepository {
-  final DBManager _dbManager;
+  final PrimarySourcesDataSource _dataSource;
 
-  PrimarySourcesDbRepository({DBManager? dbManager})
-    : _dbManager = dbManager ?? DBManager();
+  PrimarySourcesDbRepository({PrimarySourcesDataSource? dataSource})
+    : _dataSource = dataSource ?? DbManagerPrimarySourcesDataSource();
 
   Future<PrimarySourcesLoadResult> loadGroupedSources() async {
     final sources = await getAllSources(includePreviewBytes: true);
     final groupKindById = {
-      for (final row in _dbManager.primarySourceRows) row.id: row.groupKind,
+      for (final row in _dataSource.primarySourceRows) row.id: row.groupKind,
     };
 
     return PrimarySourcesLoadResult(
@@ -64,40 +64,40 @@ class PrimarySourcesDbRepository {
   }
 
   List<PrimarySource> getAllSourcesSync() {
-    if (!_dbManager.isInitialized) {
+    if (!_dataSource.isInitialized) {
       return const [];
     }
 
     final localizedRowsBySource = {
-      for (final row in _dbManager.primarySourceTextRows) row.sourceId: row,
+      for (final row in _dataSource.primarySourceTextRows) row.sourceId: row,
     };
     final linkTitleOverrides = {
-      for (final row in _dbManager.primarySourceLinkTextRows)
+      for (final row in _dataSource.primarySourceLinkTextRows)
         '${row.sourceId}|${row.linkId}': row.title,
     };
 
     final linksBySource = _groupBy(
-      _dbManager.primarySourceLinkRows,
+      _dataSource.primarySourceLinkRows,
       (row) => row.sourceId,
     );
     final attributionsBySource = _groupBy(
-      _dbManager.primarySourceAttributionRows,
+      _dataSource.primarySourceAttributionRows,
       (row) => row.sourceId,
     );
     final pagesBySource = _groupBy(
-      _dbManager.primarySourcePageRows,
+      _dataSource.primarySourcePageRows,
       (row) => row.sourceId,
     );
     final wordsByPage = _groupBy(
-      _dbManager.primarySourceWordRows,
+      _dataSource.primarySourceWordRows,
       (row) => '${row.sourceId}|${row.pageName}',
     );
     final versesByPage = _groupBy(
-      _dbManager.primarySourceVerseRows,
+      _dataSource.primarySourceVerseRows,
       (row) => '${row.sourceId}|${row.pageName}',
     );
 
-    final sourceRows = [..._dbManager.primarySourceRows]
+    final sourceRows = [..._dataSource.primarySourceRows]
       ..sort(
         (a, b) => _compareSourceRows(
           a.groupKind,
@@ -205,7 +205,7 @@ class PrimarySourcesDbRepository {
     if (previewKey.isEmpty || previewKey.startsWith('assets/')) {
       return null;
     }
-    return _dbManager.getCommonResourceData(previewKey);
+    return _dataSource.getCommonResourceData(previewKey);
   }
 
   PrimarySource _copyWithPreviewBytes(
