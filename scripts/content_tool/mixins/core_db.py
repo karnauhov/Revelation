@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import sqlite3
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 from typing import Any
 
+from ..helpers import LANGUAGE_NAME_RU_BY_CODE
 from ..models import ArticleRow, PrimarySourceSummary, ResourceRow, StrongRow
 
 
@@ -500,6 +505,306 @@ class CoreDbMixin:
             if not silent:
                 self._set_status(status_text or f"Сохранено: {self.current_db_path.stem}")
             return True
+
+        def _add_localized_language_db(self) -> None:
+            source_dir = self.work_dir
+            if not source_dir.exists():
+                messagebox.showwarning("Нет папки", "Рабочая папка не существует.", parent=self)
+                return
+
+            source_db = self._english_localized_db_path()
+            if source_db is None:
+                messagebox.showwarning(
+                    "Нет английской БД",
+                    "Не найден файл revelation_en.sqlite. Сначала добавьте или скопируйте английскую локализованную БД.",
+                    parent=self,
+                )
+                return
+
+            selected_code = self._prompt_new_language_code()
+            if selected_code is None:
+                return
+
+            target_code = selected_code.strip().lower()
+            if target_code == "en":
+                messagebox.showwarning(
+                    "Недопустимый код",
+                    "Код 'en' уже используется как исходная английская БД.",
+                    parent=self,
+                )
+                return
+
+            if not re.fullmatch(r"[a-z]{2}", target_code):
+                messagebox.showwarning(
+                    "Некорректный код",
+                    "Используйте двухбуквенный код языка (только латиница), например: es, ru, uk.",
+                    parent=self,
+                )
+                return
+
+            target_db = source_dir / f"revelation_{target_code}.sqlite"
+            if target_db.exists():
+                replace_existing = messagebox.askyesno(
+                    "Файл уже существует",
+                    (
+                        f"Файл {target_db.name} уже существует.\n"
+                        "Пересоздать его из английской БД и очистить переводимые поля?"
+                    ),
+                    parent=self,
+                )
+                if not replace_existing:
+                    return
+
+            if (
+                self.dirty
+                and self.current_db_path is not None
+                and self.current_db_path.resolve() == source_db.resolve()
+            ):
+                answer = messagebox.askyesnocancel(
+                    "Несохраненные изменения",
+                    (
+                        "В английской БД есть несохраненные изменения.\n"
+                        "Сохранить их перед созданием новой локализованной БД?"
+                    ),
+                    parent=self,
+                )
+                if answer is None:
+                    return
+                if answer and not self._save_all(silent=True):
+                    return
+
+            try:
+                target_db.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source_db, target_db)
+                translated_tests = self._initialize_new_localized_db(target_db, target_code=target_code)
+            except (sqlite3.DatabaseError, OSError) as exc:
+                messagebox.showerror(
+                    "Ошибка создания БД",
+                    f"Не удалось создать '{target_db.name}':\n{exc}",
+                    parent=self,
+                )
+                return
+
+            self._refresh_db_list(initial_select=False)
+            self._set_status(
+                (
+                    f"Создана локализованная БД: {target_db.name}. "
+                    f"Переводимые поля очищены, тестовых страниц переведено: {translated_tests}."
+                )
+            )
+
+        def _english_localized_db_path(self) -> Path | None:
+            preferred = self.work_dir / "revelation_en.sqlite"
+            if preferred.exists():
+                return preferred.resolve()
+
+            for db_path in sorted(self.work_dir.glob("revelation_*.sqlite")):
+                stem = db_path.stem
+                lang = stem.split("_", maxsplit=1)[1] if "_" in stem else ""
+                if lang.strip().lower().startswith("en"):
+                    return db_path.resolve()
+            return None
+
+        def _prompt_new_language_code(self) -> str | None:
+            existing_codes = {lang for lang, _ in self._localized_db_entries()}
+            options = sorted(
+                (
+                    code,
+                    name,
+                )
+                for code, name in LANGUAGE_NAME_RU_BY_CODE.items()
+                if code != "en" and code not in existing_codes
+            )
+            labels = [f"{code.upper()} - {name}" for code, name in options]
+            code_by_label = {label: code for label, (code, _name) in zip(labels, options)}
+
+            dialog = tk.Toplevel(self)
+            dialog.title("Добавить язык")
+            dialog.transient(self)
+            dialog.grab_set()
+            dialog.resizable(False, False)
+
+            frame = ttk.Frame(dialog, padding=12)
+            frame.grid(row=0, column=0, sticky="nsew")
+            frame.columnconfigure(1, weight=1)
+
+            selection_var = tk.StringVar(value=labels[0] if labels else "")
+            custom_code_var = tk.StringVar(value="")
+            result: dict[str, str | None] = {"code": None}
+
+            ttk.Label(
+                frame,
+                text="Выберите язык из списка или введите свой двухбуквенный код.",
+            ).grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, 8))
+
+            ttk.Label(frame, text="Язык:").grid(row=1, column=0, sticky="w", padx=(0, 8))
+            combo = ttk.Combobox(
+                frame,
+                state="readonly",
+                textvariable=selection_var,
+                values=labels,
+                width=42,
+            )
+            combo.grid(row=1, column=1, sticky="ew")
+
+            ttk.Label(frame, text="Код вручную:").grid(row=2, column=0, sticky="w", padx=(0, 8), pady=(8, 0))
+            code_entry = ttk.Entry(frame, textvariable=custom_code_var, width=10)
+            code_entry.grid(row=2, column=1, sticky="w", pady=(8, 0))
+            ttk.Label(frame, text="Например: fr, de, it").grid(
+                row=3,
+                column=1,
+                sticky="w",
+                pady=(4, 0),
+            )
+
+            buttons = ttk.Frame(frame)
+            buttons.grid(row=4, column=0, columnspan=2, sticky="e", pady=(12, 0))
+
+            def submit() -> None:
+                manual_code = custom_code_var.get().strip().lower()
+                selected_code = code_by_label.get(selection_var.get().strip(), "")
+                code = manual_code or selected_code
+                if not re.fullmatch(r"[a-z]{2}", code):
+                    messagebox.showwarning(
+                        "Некорректный код",
+                        "Укажите двухбуквенный код языка (латиница), например: es, ru, uk.",
+                        parent=dialog,
+                    )
+                    return
+                result["code"] = code
+                dialog.destroy()
+
+            ttk.Button(buttons, text="Создать", command=submit).pack(side="left")
+            ttk.Button(buttons, text="Отмена", command=dialog.destroy).pack(side="left", padx=(8, 0))
+
+            dialog.bind("<Return>", lambda _event: submit())
+            dialog.bind("<Escape>", lambda _event: dialog.destroy())
+
+            self._fit_and_center_toplevel(
+                dialog,
+                min_width=560,
+                max_width=720,
+                min_height=220,
+                max_height=280,
+            )
+            if labels:
+                combo.focus_set()
+            else:
+                code_entry.focus_set()
+
+            self.wait_window(dialog)
+            return result["code"]
+
+        def _initialize_new_localized_db(self, db_path: Path, *, target_code: str) -> int:
+            translated_test_rows = 0
+            with sqlite3.connect(str(db_path)) as con:
+                con.row_factory = sqlite3.Row
+
+                if self._table_exists(con, "articles"):
+                    test_rows = con.execute(
+                        """
+                        SELECT route, name, description, markdown
+                        FROM articles
+                        WHERE lower(route) LIKE '%test%'
+                        ORDER BY sort_order ASC, route ASC
+                        """
+                    ).fetchall()
+                    con.execute("UPDATE articles SET name = '', description = '', markdown = ''")
+
+                    for row in test_rows:
+                        translated_name = self._translate_with_google(str(row["name"] or ""), target_code=target_code)
+                        translated_description = self._translate_with_google(
+                            str(row["description"] or ""),
+                            target_code=target_code,
+                        )
+                        translated_markdown = self._translate_with_google(
+                            str(row["markdown"] or ""),
+                            target_code=target_code,
+                        )
+                        con.execute(
+                            """
+                            UPDATE articles
+                            SET name = ?, description = ?, markdown = ?
+                            WHERE route = ?
+                            """,
+                            (
+                                translated_name,
+                                translated_description,
+                                translated_markdown,
+                                str(row["route"]),
+                            ),
+                        )
+                        translated_test_rows += 1
+
+                if self._table_exists(con, "topic_texts"):
+                    con.execute("UPDATE topic_texts SET markdown = ''")
+                if self._table_exists(con, "topics"):
+                    con.execute("UPDATE topics SET name = '', description = ''")
+                if self._table_exists(con, "greek_descs"):
+                    con.execute('UPDATE greek_descs SET "desc" = ""')
+                if self._table_exists(con, "primary_source_texts"):
+                    con.execute(
+                        """
+                        UPDATE primary_source_texts
+                        SET
+                            title_markup = '',
+                            date_label = '',
+                            content_label = '',
+                            material_text = '',
+                            text_style_text = '',
+                            found_text = '',
+                            classification_text = '',
+                            current_location_text = ''
+                        """
+                    )
+                if self._table_exists(con, "primary_source_link_texts"):
+                    con.execute("UPDATE primary_source_link_texts SET title = ''")
+
+                con.commit()
+
+            return translated_test_rows
+
+        def _table_exists(self, connection: sqlite3.Connection, table_name: str) -> bool:
+            row = connection.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name = ? LIMIT 1",
+                (table_name,),
+            ).fetchone()
+            return row is not None
+
+        def _translate_with_google(self, text: str, *, target_code: str) -> str:
+            source_text = text.strip()
+            if not source_text:
+                return ""
+            query = urllib.parse.urlencode(
+                {
+                    "client": "gtx",
+                    "sl": "en",
+                    "tl": target_code,
+                    "dt": "t",
+                    "q": source_text,
+                }
+            )
+            request = urllib.request.Request(
+                f"https://translate.googleapis.com/translate_a/single?{query}",
+                headers={"User-Agent": "Mozilla/5.0"},
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=15) as response:
+                    payload = json.loads(response.read().decode("utf-8"))
+            except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError, ValueError):
+                return source_text
+
+            if not isinstance(payload, list) or not payload:
+                return source_text
+            segments = payload[0]
+            if not isinstance(segments, list):
+                return source_text
+            translated = "".join(
+                segment[0]
+                for segment in segments
+                if isinstance(segment, list) and segment and isinstance(segment[0], str)
+            ).strip()
+            return translated or source_text
 
         def _copy_to_web_db(self) -> None:
             source_dir = self.work_dir

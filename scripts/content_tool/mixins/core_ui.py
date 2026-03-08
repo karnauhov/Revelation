@@ -190,6 +190,12 @@ class CoreUiMixin:
                 command=self._copy_to_web_db,
             )
             self.btn_publish.grid(row=0, column=4, padx=(8, 0))
+            self.btn_add_language = ttk.Button(
+                header,
+                **self._button_kwargs("add", "Добавить язык"),
+                command=self._add_localized_language_db,
+            )
+            self.btn_add_language.grid(row=0, column=5, padx=(8, 0))
 
             self.sections = ttk.Notebook(self)
             self.sections.grid(row=1, column=0, sticky="nsew", padx=10, pady=(0, 6))
@@ -1522,6 +1528,7 @@ class CoreUiMixin:
             has_common_db = self.common_connection is not None and self.common_db_path is not None
             self.db_combo.configure(state="readonly" if self.db_files else "disabled")
             self.btn_publish.state(["!disabled"])
+            self.btn_add_language.state(["!disabled"])
             self._set_editor_controls_enabled(
                 localized_enabled=has_loaded_db,
                 resources_enabled=has_common_db,
