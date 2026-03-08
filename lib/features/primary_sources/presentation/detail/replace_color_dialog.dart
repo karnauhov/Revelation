@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:revelation/controllers/audio_controller.dart';
+import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:revelation/utils/common.dart';
@@ -497,7 +497,7 @@ class ReplaceColorDialogState extends State<ReplaceColorDialog> {
                     textAlign: TextAlign.center,
                     TextSpan(
                       text:
-                          "вљ пёЏ ${AppLocalizations.of(context)!.replace_color_message}",
+                          "⚠️ ${AppLocalizations.of(context)!.replace_color_message}",
                       style: TextStyle(
                         fontSize: 10,
                         color: colorScheme.onSurface,

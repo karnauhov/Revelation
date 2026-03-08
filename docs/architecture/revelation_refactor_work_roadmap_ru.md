@@ -104,13 +104,16 @@
 - [x] Задача [P0]: зафиксировать zero-legacy migration plan по всем legacy-каталогам.
 - [x] Подшаг [P3.5.A]: выполнить `Wave A` миграцию `primary_sources` (screens/viewmodels/repositories/services).
 - [x] Подшаг [P3.5.B]: выполнить `Wave B` миграцию `topics + main + download`.
-- [ ] Задача [P1]: мигрировать `lib/screens/*` в `features/*/presentation/*` и `shared/ui/*`.
-- [ ] Задача [P1]: мигрировать `lib/viewmodels/*` в `features/*/presentation/controllers/*` (или orchestrators).
-- [ ] Задача [P1]: мигрировать `lib/repositories/*` в `features/*/data/repositories/*`.
-- [ ] Задача [P1]: мигрировать `lib/services/*` в `features/*/application/*` или `infra/*`.
-- [ ] Задача [P1]: мигрировать `lib/common_widgets/*` в `shared/ui/widgets/*`.
-- [ ] Задача [P1]: мигрировать `lib/controllers/*` в `core/*` или `features/*/presentation/controllers/*`.
-- [ ] Задача [P1]: мигрировать `lib/models/*` в `features/*/data/models/*` и `shared/*`.
+- [x] Подшаг [P3.5.C]: выполнить `Wave C` cleanup `about + settings` legacy wrappers.
+- [x] Подшаг [P3.5.D]: выполнить `Wave D` миграцию `common_widgets + controllers`.
+- [x] Подшаг [P3.5.E]: выполнить `Wave E` migration `models` в `shared/models`.
+- [x] Задача [P1]: мигрировать `lib/screens/*` в `features/*/presentation/*` и `shared/ui/*`.
+- [x] Задача [P1]: мигрировать `lib/viewmodels/*` в `features/*/presentation/controllers/*` (или orchestrators).
+- [x] Задача [P1]: мигрировать `lib/repositories/*` в `features/*/data/repositories/*`.
+- [x] Задача [P1]: мигрировать `lib/services/*` в `features/*/application/*` или `infra/*`.
+- [x] Задача [P1]: мигрировать `lib/common_widgets/*` в `shared/ui/widgets/*`.
+- [x] Задача [P1]: мигрировать `lib/controllers/*` в `core/*` или `features/*/presentation/controllers/*`.
+- [x] Задача [P1]: мигрировать `lib/models/*` в `features/*/data/models/*` и `shared/*`.
 - [ ] Задача [P1]: мигрировать `lib/db/*` в `infra/db/{common,localized,connectors}/*`.
 - [ ] Задача [P1]: мигрировать `lib/managers/*` в `infra/*` adapters (legacy wrappers удалить).
 - [ ] Задача [P1]: мигрировать `lib/utils/*` в `core/*`, `shared/utils/*`, `infra/*`.
@@ -193,13 +196,13 @@
 
 | Legacy каталог | Dart files | Target location |
 |---|---:|---|
-| `lib/screens` | 9 | `lib/features/*/presentation/*`, `lib/shared/ui/*` |
-| `lib/viewmodels` | 3 | `lib/features/*/presentation/controllers/*` |
-| `lib/repositories` | 1 | `lib/features/*/data/repositories/*` |
+| `lib/screens` | 0 (removed) | `lib/features/*/presentation/*`, `lib/shared/ui/*` |
+| `lib/viewmodels` | 0 (removed) | `lib/features/*/presentation/controllers/*` |
+| `lib/repositories` | 0 (removed) | `lib/features/*/data/repositories/*` |
 | `lib/services` | 0 (removed) | `lib/features/*/application/*`, `lib/infra/*` |
-| `lib/common_widgets` | 5 | `lib/shared/ui/widgets/*` |
-| `lib/controllers` | 2 | `lib/core/*`, `lib/features/*/presentation/controllers/*` |
-| `lib/models` | 17 | `lib/features/*/data/models/*`, `lib/shared/*` |
+| `lib/common_widgets` | 0 (removed) | `lib/shared/ui/widgets/*` |
+| `lib/controllers` | 0 (removed) | `lib/core/*`, `lib/features/*/presentation/controllers/*` |
+| `lib/models` | 0 (removed) | `lib/features/*/data/models/*`, `lib/shared/*` |
 | `lib/db` | 8 | `lib/infra/db/{common,localized,connectors}/*` |
 | `lib/managers` | 2 | `lib/infra/*` (adapter implementations) |
 | `lib/utils` | 22 | `lib/core/*`, `lib/shared/utils/*`, `lib/infra/*` |
@@ -1267,3 +1270,108 @@
   - New risks: в `lib/screens` остаются legacy папки `about` и `settings`; также остаются `viewmodels/repositories/common_widgets/controllers/models/db/managers/utils`.
   - Mitigations: следующий шаг `Wave C` закрывает `about + settings` legacy cleanup.
   - Next task: Phase 3.5 / P1 — Wave C (`about + settings`) migration.
+
+#### [2026-03-08 23:36] Phase 3.5 / Task P1 (Wave C done) / Remove about-settings wrappers and finalize screen/viewmodel/repository cleanup
+- Статус: done
+- Priority: P1
+- What changed:
+  - Удалены неиспользуемые legacy wrappers:
+    - `lib/screens/about/*`
+    - `lib/screens/settings/settings_screen.dart`
+    - `lib/viewmodels/*` (about/main/settings wrappers)
+    - `lib/repositories/settings_repository.dart`
+  - После удаления wrappers очищены соответствующие legacy директории:
+    - `lib/screens` (полностью удален),
+    - `lib/viewmodels` (полностью удален),
+    - `lib/repositories` (полностью удален).
+  - Обновлен `scripts/legacy_structure_allowlist.txt` под новый baseline.
+- Why changed:
+  - Закрыть `Wave C` и завершить миграцию legacy слоев `screens/viewmodels/repositories/services` в пользу feature-first структуры.
+- Scope (files/modules):
+  - `lib/features/about/*` (используются как canonical target)
+  - `lib/features/settings/*` (используются как canonical target)
+  - `scripts/legacy_structure_allowlist.txt`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: основные remaining legacy узлы теперь сосредоточены в `common_widgets/controllers/models/db/managers/utils`.
+  - Mitigations: следующий шаг `Wave D` — shared UI/controllers migration.
+  - Next task: Phase 3.5 / P1 — Wave D (`common_widgets + controllers`) migration.
+
+#### [2026-03-08 23:39] Phase 3.5 / Task P1 (Wave D done) / Migrate common_widgets and controllers to shared/core/feature modules
+- Статус: done
+- Priority: P1
+- What changed:
+  - Legacy `common_widgets/*` перенесены:
+    - в `lib/shared/ui/widgets/*` (`description_markdown_view`, `error_message`, `icon_link_item`, `new_icon_button`),
+    - `strong_dictionary_dialog` перенесен в `features/primary_sources/presentation/detail`.
+  - Legacy `controllers/*` перенесены:
+    - `audio_controller.dart` -> `lib/core/audio/audio_controller.dart`,
+    - `image_preview_controller.dart` -> `features/primary_sources/presentation/controllers/image_preview_controller.dart`.
+  - Обновлены все импорты в `app/*`, `features/*`, `utils/*`, тестах на новые пути.
+  - Legacy директории `lib/common_widgets` и `lib/controllers` удалены.
+  - Обновлен `scripts/legacy_structure_allowlist.txt` под новый baseline.
+- Why changed:
+  - Закрыть `Wave D` и ликвидировать еще два крупных legacy-каталога, сохранив compile-ready состояние.
+- Scope (files/modules):
+  - `lib/shared/ui/widgets/*`
+  - `lib/core/audio/audio_controller.dart`
+  - `lib/features/primary_sources/presentation/detail/strong_dictionary_dialog.dart`
+  - `lib/features/primary_sources/presentation/controllers/image_preview_controller.dart`
+  - `lib/app/bootstrap/app_bootstrap.dart`
+  - `lib/app_router.dart`
+  - `scripts/legacy_structure_allowlist.txt`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: remaining legacy ядро сосредоточено в `models/db/managers/utils`.
+  - Mitigations: следующий шаг `Wave E` закрывает `models` migration strategy и перенос shared domain contracts.
+  - Next task: Phase 3.5 / P1 — Wave E (`models` consolidation) migration.
+
+#### [2026-03-08 23:41] Phase 3.5 / Task P1 (Wave E done) / Migrate legacy models to shared/models
+- Статус: done
+- Priority: P1
+- What changed:
+  - Все legacy модели из `lib/models/*` перенесены в `lib/shared/models/*`.
+  - Обновлены импорты во всем проекте и тестах:
+    - `package:revelation/models/...` -> `package:revelation/shared/models/...`.
+  - Удалена legacy директория `lib/models`.
+  - Обновлен `scripts/legacy_structure_allowlist.txt`.
+- Why changed:
+  - Закрыть `Wave E` и убрать центральный legacy-каталог domain/data contracts перед финальной infra-волной.
+- Scope (files/modules):
+  - `lib/shared/models/*`
+  - `scripts/legacy_structure_allowlist.txt`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: remaining legacy ограничен `db/managers/utils`; перенос этих слоев затронет infra/platform contracts и может быть более инвазивным.
+  - Mitigations: выполнить `Wave F` поэтапно (сначала `db + managers`, затем `utils`) с обязательным compile-ready checkpoint после каждого substep.
+  - Next task: Phase 3.5 / P1 — Wave F (`db + managers + utils`) migration.

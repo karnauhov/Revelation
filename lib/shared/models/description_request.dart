@@ -1,4 +1,4 @@
-import 'package:revelation/models/description_kind.dart';
+import 'package:revelation/shared/models/description_kind.dart';
 
 sealed class DescriptionRequest {
   const DescriptionRequest();

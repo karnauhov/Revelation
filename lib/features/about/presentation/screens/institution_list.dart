@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:revelation/common_widgets/error_message.dart';
+import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/models/institution_info.dart';
+import 'package:revelation/shared/models/institution_info.dart';
 import 'package:revelation/utils/common.dart';
 import 'institution_card.dart';
 

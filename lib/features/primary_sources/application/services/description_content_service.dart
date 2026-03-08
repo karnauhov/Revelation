@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/infra/db/data_sources/description_data_source.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/models/description_content.dart';
-import 'package:revelation/models/description_kind.dart';
-import 'package:revelation/models/description_request.dart';
-import 'package:revelation/models/greek_strong_picker_entry.dart';
-import 'package:revelation/models/page.dart' as model;
-import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/shared/models/description_content.dart';
+import 'package:revelation/shared/models/description_kind.dart';
+import 'package:revelation/shared/models/description_request.dart';
+import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
+import 'package:revelation/shared/models/page.dart' as model;
+import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/utils/pronunciation.dart';

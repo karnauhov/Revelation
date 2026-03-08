@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
-import 'package:revelation/common_widgets/error_message.dart';
+import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/primary_sources_view_model.dart';
 import 'package:revelation/features/primary_sources/presentation/list/source_item.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
 
 class PrimarySourcesScreen extends StatefulWidget {

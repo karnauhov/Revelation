@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:revelation/infra/remote/image/image_download_client.dart';
-import 'package:revelation/models/page.dart' as model;
+import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/utils/common.dart';
 
 enum ImageContentAction { replace, clear, keep }

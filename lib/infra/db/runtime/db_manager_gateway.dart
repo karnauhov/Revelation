@@ -1,8 +1,8 @@
-import 'dart:typed_data';
+﻿import 'dart:typed_data';
 
-import 'package:revelation/db/db_common.dart' as common_db;
-import 'package:revelation/db/db_localized.dart' as localized_db;
-import 'package:revelation/managers/db_manager.dart';
+import 'package:revelation/infra/db/common/db_common.dart' as common_db;
+import 'package:revelation/infra/db/localized/db_localized.dart' as localized_db;
+import 'package:revelation/infra/db/runtime/db_manager.dart';
 
 abstract class DatabaseGateway {
   bool get isInitialized;
@@ -129,3 +129,5 @@ class DbManagerDatabaseGateway implements DatabaseGateway {
     return _dbManager.getCommonResourceData(key);
   }
 }
+
+

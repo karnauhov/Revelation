@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/models/greek_strong_picker_entry.dart';
+import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 
 class StrongNumberPickerDialog extends StatefulWidget {
   final List<GreekStrongPickerEntry> entries;

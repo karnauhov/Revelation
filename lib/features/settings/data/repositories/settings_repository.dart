@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:revelation/models/app_settings.dart';
+import 'package:revelation/shared/models/app_settings.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

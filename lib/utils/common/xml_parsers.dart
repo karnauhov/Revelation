@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
-import 'package:revelation/models/institution_info.dart';
-import 'package:revelation/models/library_info.dart';
-import 'package:revelation/models/recommended_info.dart';
+import 'package:revelation/shared/models/institution_info.dart';
+import 'package:revelation/shared/models/library_info.dart';
+import 'package:revelation/shared/models/recommended_info.dart';
 import 'package:xml/xml.dart';
 
 Future<List<LibraryInfo>> parseLibraries(

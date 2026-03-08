@@ -68,7 +68,10 @@ void main() {
       name: 'Infra layers should instantiate DBManager() only via gateway',
       pattern: RegExp(r'\bDBManager\(\)'),
       roots: <String>['lib/infra'],
-      allowedFiles: <String>{'lib/infra/db/runtime/db_manager_gateway.dart'},
+      allowedFiles: <String>{
+        'lib/infra/db/runtime/db_manager.dart',
+        'lib/infra/db/runtime/db_manager_gateway.dart',
+      },
     ),
     PatternCheck(
       name: 'Critical routes should avoid map-based state.extra contracts',

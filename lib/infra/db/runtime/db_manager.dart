@@ -1,7 +1,7 @@
-import 'package:drift/drift.dart';
-import 'package:revelation/db/db_common.dart' as common_db;
-import 'package:revelation/db/db_localized.dart' as localized_db;
-import 'package:revelation/db/connect/shared.dart';
+﻿import 'package:drift/drift.dart';
+import 'package:revelation/infra/db/common/db_common.dart' as common_db;
+import 'package:revelation/infra/db/localized/db_localized.dart' as localized_db;
+import 'package:revelation/infra/db/connectors/shared.dart';
 import 'package:revelation/utils/common.dart';
 
 class DBManager {
@@ -154,3 +154,4 @@ class DBManager {
     return resource?.data;
   }
 }
+

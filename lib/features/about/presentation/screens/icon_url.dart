@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:revelation/common_widgets/new_icon_button.dart';
+import 'package:revelation/shared/ui/widgets/new_icon_button.dart';
 import 'package:revelation/utils/common.dart';
 
 class IconUrl extends StatelessWidget {

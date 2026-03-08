@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/core/errors/app_result.dart';
-import 'package:revelation/db/db_common.dart';
+import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 
@@ -144,3 +144,4 @@ class _TopicCardState extends State<TopicCard> {
     );
   }
 }
+

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
-import 'package:revelation/common_widgets/new_icon_button.dart';
-import 'package:revelation/controllers/audio_controller.dart';
+import 'package:revelation/shared/ui/widgets/new_icon_button.dart';
+import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:revelation/features/topics/presentation/viewmodels/main_view_model.dart';
 import 'package:revelation/features/topics/presentation/widgets/drawer_content.dart';

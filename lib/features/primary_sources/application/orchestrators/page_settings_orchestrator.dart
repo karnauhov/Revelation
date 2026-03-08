@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:revelation/models/page.dart' as model;
-import 'package:revelation/models/pages_settings.dart';
-import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/shared/models/page.dart' as model;
+import 'package:revelation/shared/models/pages_settings.dart';
+import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 
 class PageSettingsState {

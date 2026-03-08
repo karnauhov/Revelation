@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:revelation/controllers/audio_controller.dart';
+import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 
 class BrightnessContrastDialog extends StatefulWidget {

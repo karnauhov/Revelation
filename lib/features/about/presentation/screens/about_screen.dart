@@ -3,10 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:revelation/common_widgets/icon_link_item.dart';
+import 'package:revelation/shared/ui/widgets/icon_link_item.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-import 'package:revelation/controllers/audio_controller.dart';
+import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/about/presentation/screens/icon_url.dart';
 import 'package:revelation/features/about/presentation/screens/institution_list.dart';
 import 'package:revelation/features/about/presentation/screens/library_list.dart';
@@ -115,7 +115,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   // Copyright
                   Center(
                     child: Text(
-                      "© ${DateTime.now().year} ${AppConstants.author}. ${AppLocalizations.of(context)!.all_rights_reserved}.",
+                      "В© ${DateTime.now().year} ${AppConstants.author}. ${AppLocalizations.of(context)!.all_rights_reserved}.",
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.outline,
                       ),

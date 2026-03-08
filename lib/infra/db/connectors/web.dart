@@ -1,11 +1,11 @@
-import 'package:http/http.dart' as http;
+﻿import 'package:http/http.dart' as http;
 import 'package:drift/drift.dart';
 import 'package:drift/wasm.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:revelation/db/db_common.dart';
-import 'package:revelation/db/db_localized.dart';
+import 'package:revelation/infra/db/common/db_common.dart';
+import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/utils/common.dart';
 
@@ -218,3 +218,4 @@ String _fnv1a32(List<int> bytes) {
 
   return hash.toRadixString(16).padLeft(8, '0');
 }
+

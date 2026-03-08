@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/app/router/route_args.dart';
-import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/shared/models/primary_source.dart';
 
 void main() {
   group('TopicRouteArgs.tryParse', () {

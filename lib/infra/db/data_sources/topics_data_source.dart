@@ -1,5 +1,5 @@
-import 'package:revelation/db/db_common.dart';
-import 'package:revelation/db/db_localized.dart';
+﻿import 'package:revelation/infra/db/common/db_common.dart';
+import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/infra/db/runtime/db_manager_gateway.dart';
 
 abstract class TopicsDataSource {
@@ -45,3 +45,4 @@ class DbManagerTopicsDataSource implements TopicsDataSource {
     return _databaseGateway.getCommonResource(key);
   }
 }
+

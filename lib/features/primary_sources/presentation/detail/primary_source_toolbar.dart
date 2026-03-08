@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:revelation/controllers/audio_controller.dart';
+import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/models/page.dart' as model;
-import 'package:revelation/models/primary_source.dart';
-import 'package:revelation/models/zoom_status.dart';
+import 'package:revelation/shared/models/page.dart' as model;
+import 'package:revelation/shared/models/primary_source.dart';
+import 'package:revelation/shared/models/zoom_status.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/brightness_contrast_dialog.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/primary_source_screen.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/replace_color_dialog.dart';

@@ -1,4 +1,4 @@
-import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/shared/models/primary_source.dart';
 
 class TopicRouteArgs {
   const TopicRouteArgs({required this.file, this.name, this.description});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:revelation/models/institution_info.dart';
+import 'package:revelation/shared/models/institution_info.dart';
 import 'package:revelation/utils/common.dart';
 
 class InstitutionCard extends StatelessWidget {

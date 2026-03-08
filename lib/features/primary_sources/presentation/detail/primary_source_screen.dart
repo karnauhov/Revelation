@@ -4,11 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/app/router/route_args.dart';
-import 'package:revelation/common_widgets/description_markdown_view.dart';
+import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/models/description_kind.dart';
-import 'package:revelation/models/page.dart' as model;
-import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/shared/models/description_kind.dart';
+import 'package:revelation/shared/models/page.dart' as model;
+import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/image_preview.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/primary_source_toolbar.dart';
@@ -305,7 +305,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                           if (viewModel.isMobileWeb)
                                             TextSpan(
                                               text:
-                                                  'вљ пёЏ ${AppLocalizations.of(context)!.low_quality}; ',
+                                                  '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
                                               style: textTheme.bodySmall
                                                   ?.copyWith(
                                                     fontSize: 10,

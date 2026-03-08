@@ -3,9 +3,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
-import 'package:revelation/controllers/audio_controller.dart';
+import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/models/primary_source.dart';
+import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
 
 class SourceItemWidget extends StatefulWidget {

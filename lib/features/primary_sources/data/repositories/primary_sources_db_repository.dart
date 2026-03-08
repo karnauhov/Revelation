@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/infra/db/data_sources/primary_sources_data_source.dart';
-import 'package:revelation/models/page.dart' as model;
-import 'package:revelation/models/page_rect.dart';
-import 'package:revelation/models/page_word.dart';
-import 'package:revelation/models/primary_source.dart';
-import 'package:revelation/models/primary_source_link_info.dart';
-import 'package:revelation/models/verse.dart';
+import 'package:revelation/shared/models/page.dart' as model;
+import 'package:revelation/shared/models/page_rect.dart';
+import 'package:revelation/shared/models/page_word.dart';
+import 'package:revelation/shared/models/primary_source.dart';
+import 'package:revelation/shared/models/primary_source_link_info.dart';
+import 'package:revelation/shared/models/verse.dart';
 
 class PrimarySourcesLoadResult {
   final List<PrimarySource> fullPrimarySources;

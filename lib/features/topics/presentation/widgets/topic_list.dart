@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:revelation/common_widgets/error_message.dart';
+import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';

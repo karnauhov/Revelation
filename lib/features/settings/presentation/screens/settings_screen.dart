@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:revelation/controllers/audio_controller.dart';
+import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/theme.dart';

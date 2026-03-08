@@ -1,5 +1,5 @@
-import 'package:revelation/db/db_common.dart' as common_db;
-import 'package:revelation/db/db_localized.dart' as localized_db;
+﻿import 'package:revelation/infra/db/common/db_common.dart' as common_db;
+import 'package:revelation/infra/db/localized/db_localized.dart' as localized_db;
 import 'package:revelation/infra/db/runtime/db_manager_gateway.dart';
 
 abstract class DescriptionDataSource {
@@ -30,3 +30,4 @@ class DbManagerDescriptionDataSource implements DescriptionDataSource {
   @override
   List<localized_db.GreekDesc> get greekDescs => _databaseGateway.greekDescs;
 }
+

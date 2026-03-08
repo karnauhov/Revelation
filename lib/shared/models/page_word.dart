@@ -1,4 +1,4 @@
-import 'package:revelation/models/page_rect.dart';
+import 'package:revelation/shared/models/page_rect.dart';
 
 class PageWord {
   final String text;

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:revelation/models/page.dart';
-import 'package:revelation/models/primary_source_link_info.dart';
+import 'package:revelation/shared/models/page.dart';
+import 'package:revelation/shared/models/primary_source_link_info.dart';
 
 class PrimarySource {
   final String id;

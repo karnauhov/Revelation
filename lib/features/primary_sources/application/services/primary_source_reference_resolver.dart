@@ -1,7 +1,7 @@
-import 'package:revelation/models/page.dart' as model;
-import 'package:revelation/models/page_word.dart';
-import 'package:revelation/models/primary_source.dart';
-import 'package:revelation/models/verse.dart';
+import 'package:revelation/shared/models/page.dart' as model;
+import 'package:revelation/shared/models/page_word.dart';
+import 'package:revelation/shared/models/primary_source.dart';
+import 'package:revelation/shared/models/verse.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 
 class ResolvedWordReference {

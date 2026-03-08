@@ -1,16 +1,16 @@
-import 'package:flutter/gestures.dart';
+﻿import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
-import 'package:revelation/common_widgets/error_message.dart';
+import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/db/db_common.dart';
+import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/utils/app_link_handler.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/utils/file_downloader.dart';
@@ -458,3 +458,4 @@ class _TopicContentData {
     required this.hasLoadingError,
   });
 }
+

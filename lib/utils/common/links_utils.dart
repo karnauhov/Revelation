@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:revelation/controllers/audio_controller.dart';
+import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 
 import 'dialogs_utils.dart';

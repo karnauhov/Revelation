@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:revelation/models/pages_settings.dart';
+import 'package:revelation/shared/models/pages_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PagesRepository {

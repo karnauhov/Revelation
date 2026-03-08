@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
-import 'package:revelation/models/app_settings.dart';
+import 'package:revelation/shared/models/app_settings.dart';
 import 'package:revelation/utils/common.dart';
 
 class SettingsViewModel extends ChangeNotifier {

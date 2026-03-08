@@ -1,6 +1,6 @@
-import 'dart:typed_data';
+﻿import 'dart:typed_data';
 
-import 'package:revelation/managers/server_manager.dart';
+import 'package:revelation/infra/remote/supabase/server_manager.dart';
 
 abstract class ImageDownloadClient {
   Future<Uint8List?> downloadImage({
@@ -23,3 +23,4 @@ class ServerManagerImageDownloadClient implements ImageDownloadClient {
     return _serverManager.downloadImage(page, isMobileWeb);
   }
 }
+

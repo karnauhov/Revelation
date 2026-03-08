@@ -5,15 +5,15 @@ import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/description_panel_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
-import 'package:revelation/models/description_kind.dart';
-import 'package:revelation/models/greek_strong_picker_entry.dart';
-import 'package:revelation/models/page.dart' as model;
-import 'package:revelation/models/primary_source.dart';
-import 'package:revelation/models/zoom_status.dart';
+import 'package:revelation/shared/models/description_kind.dart';
+import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
+import 'package:revelation/shared/models/page.dart' as model;
+import 'package:revelation/shared/models/primary_source.dart';
+import 'package:revelation/shared/models/zoom_status.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/utils/common.dart';
-import 'package:revelation/controllers/image_preview_controller.dart';
+import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
 
 class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySource primarySource;
