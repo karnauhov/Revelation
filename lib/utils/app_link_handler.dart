@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/services/primary_source_reference_resolver.dart';
 import 'package:revelation/utils/app_constants.dart';
 import 'package:revelation/utils/common.dart';
@@ -316,15 +317,14 @@ Future<bool> _openPrimarySourceFromWordLink(
     Navigator.pop(context);
   }
 
-  final extra = <String, dynamic>{'primarySource': source};
-  if (pageName != null) {
-    extra['pageName'] = pageName;
-  }
-  if (wordIndex != null) {
-    extra['wordIndex'] = wordIndex;
-  }
-
-  context.push('/primary_source', extra: extra);
+  context.push(
+    '/primary_source',
+    extra: PrimarySourceRouteArgs(
+      primarySource: source,
+      pageName: pageName,
+      wordIndex: wordIndex,
+    ),
+  );
   return true;
 }
 

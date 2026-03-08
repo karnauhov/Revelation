@@ -25,7 +25,6 @@ dependencies:
 
   # 3d party packages
   window_manager: ^0.5.1
-  flutter_cache_manager: ^3.4.1
   get_it: ^8.3.0
   provider: ^6.1.5
   package_info_plus: ^9.0.0

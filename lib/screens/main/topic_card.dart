@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/db/db_common.dart';
 import 'package:revelation/managers/db_manager.dart';
 import 'package:revelation/models/topic_info.dart';
@@ -75,11 +76,11 @@ class _TopicCardState extends State<TopicCard> {
         minTileHeight: 0,
         onTap: () => context.push(
           '/topic',
-          extra: {
-            'name': widget.topic.name,
-            'description': widget.topic.description,
-            'file': widget.topic.route,
-          },
+          extra: TopicRouteArgs(
+            name: widget.topic.name,
+            description: widget.topic.description,
+            file: widget.topic.route,
+          ),
         ),
         leading: SizedBox(
           width: iconWidth,

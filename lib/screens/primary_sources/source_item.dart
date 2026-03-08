@@ -2,6 +2,7 @@ import 'package:float_column/float_column.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/primary_source.dart';
@@ -67,7 +68,12 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                 padding: const EdgeInsets.only(right: 8, bottom: 8),
                 child: ElevatedButton(
                   onPressed: () {
-                    context.push('/primary_source', extra: widget.source);
+                    context.push(
+                      '/primary_source',
+                      extra: PrimarySourceRouteArgs(
+                        primarySource: widget.source,
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.surface,

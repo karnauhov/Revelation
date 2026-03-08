@@ -1,23 +1,15 @@
 import 'dart:async';
-import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:revelation/common_widgets/strong_dictionary_dialog.dart';
+import 'package:revelation/app/bootstrap/app_bootstrap.dart';
+import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/managers/db_manager.dart';
-import 'package:revelation/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/theme.dart';
-import 'package:revelation/managers/server_manager.dart';
 import 'package:revelation/utils/app_logger_formatter.dart';
-import 'package:revelation/utils/app_link_handler.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:get_it/get_it.dart';
-import 'repositories/settings_repository.dart';
-import 'viewmodels/main_view_model.dart';
-import 'viewmodels/primary_sources_view_model.dart';
 import 'viewmodels/settings_view_model.dart';
 import 'utils/common.dart';
 import 'app_router.dart';
@@ -26,88 +18,17 @@ void main() async {
   final talker = TalkerFlutter.init(
     logger: TalkerLogger(formatter: AppLoggerFormatter()),
   );
-  final getIt = GetIt.instance;
-  getIt.registerSingleton<Talker>(talker);
+  AppDi.registerCore(talker: talker);
 
   runZonedGuarded(
     () async {
-      WidgetsFlutterBinding.ensureInitialized();
-
-      FlutterError.onError = (FlutterErrorDetails details) {
-        talker.handle(
-          details.exception,
-          details.stack ?? StackTrace.current,
-          'Flutter framework error',
-        );
-        FlutterError.presentError(details);
-      };
-
-      PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
-        talker.handle(error, stack, 'PlatformDispatcher uncaught error');
-        return true;
-      };
-
-      if (isWeb()) {
-        final userAgent = getUserAgent();
-        final mobileBrowser = isMobileBrowser() ? " (mobile browser)" : "";
-        log.info("Started on web '$userAgent'$mobileBrowser");
-      } else {
-        log.info("Started on ${getPlatform()}");
-      }
-
-      if (isDesktop()) {
-        await windowManager.ensureInitialized();
-        WindowOptions windowOptions = const WindowOptions(
-          size: Size(800, 650),
-          minimumSize: Size(800, 650),
-          center: true,
-        );
-        windowManager.waitUntilReadyToShow(windowOptions, () async {
-          await windowManager.setIcon('assets/images/UI/app_icon.png');
-          await windowManager.show();
-          await windowManager.focus();
-        });
-      }
-
-      getIt.registerLazySingleton<BaseCacheManager>(
-        () => DefaultCacheManager(),
-      );
-      final settingsViewModel = SettingsViewModel(SettingsRepository());
-      await settingsViewModel.loadSettings();
-
-      await ServerManager().init();
-      try {
-        await DBManager().init(settingsViewModel.settings.selectedLanguage);
-        settingsViewModel.addListener(() {
-          DBManager().updateLanguage(
-            settingsViewModel.settings.selectedLanguage,
-          );
-        });
-      } catch (e, st) {
-        talker.handle(e, st, 'Failed to initialize local databases');
-      }
-
-      setDefaultGreekStrongTapHandler((strongNumber, context) {
-        showStrongDictionaryDialog(context, strongNumber);
-      });
-      setDefaultGreekStrongPickerTapHandler((strongNumber, context) {
-        showStrongDictionaryDialog(context, strongNumber);
-      });
+      final appBootstrap = AppBootstrap(talker: talker);
+      final SettingsViewModel settingsViewModel = await appBootstrap
+          .initialize();
 
       runApp(
         MultiProvider(
-          providers: [
-            ChangeNotifierProvider<MainViewModel>(
-              create: (_) => MainViewModel(),
-            ),
-            ChangeNotifierProvider<SettingsViewModel>(
-              create: (_) => settingsViewModel,
-            ),
-            ChangeNotifierProvider<PrimarySourcesViewModel>(
-              create: (_) =>
-                  PrimarySourcesViewModel(PrimarySourcesDbRepository()),
-            ),
-          ],
+          providers: AppDi.appProviders(settingsViewModel: settingsViewModel),
           child: const RevelationApp(),
         ),
       );

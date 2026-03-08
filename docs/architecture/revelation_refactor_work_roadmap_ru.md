@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0 завершена, Phase 1 в работе (P0 started)`  
+Статус: `Phase 0 и Phase 1 завершены, Phase 2 не начата`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -39,21 +39,21 @@
 - [x] Цель фазы зафиксирована: убрать high-impact structural anti-patterns без функциональной ломки.
 - [x] Обоснование фазы зафиксировано: быстрый и безопасный выигрыш перед большими миграциями.
 - [x] Задача [P0]: убрать дублирование `MainViewModel` provider registration.
-- [ ] Задача [P0]: выделить bootstrap/DI из `main.dart` в `app/bootstrap` и `app/di`.
-- [ ] Подшаг [P1.1]: вынести bootstrap sequence.
-- [ ] Подшаг [P1.2]: вынести DI registration.
-- [ ] Задача [P0]: ввести typed route args wrappers (с временной backward-compatible адаптацией).
-- [ ] Задача [P0]: добавить `dispose`/lifecycle cleanup в длинные state holders.
-- [ ] Задача [P1]: разбить `utils/common.dart` на логические модули (links/dialogs/platform/markdown/file-sync).
-- [ ] Задача [P1]: убрать или обосновать неиспользуемые DI регистрации/dependencies.
-- [ ] Affected areas верифицированы: `lib/main.dart`, `lib/app_router.dart`, `lib/utils/common.dart`, `lib/viewmodels/primary_source_view_model.dart`, `lib/screens/main/main_screen.dart`.
-- [ ] Риски проверены и записаны.
+- [x] Задача [P0]: выделить bootstrap/DI из `main.dart` в `app/bootstrap` и `app/di`.
+- [x] Подшаг [P1.1]: вынести bootstrap sequence.
+- [x] Подшаг [P1.2]: вынести DI registration.
+- [x] Задача [P0]: ввести typed route args wrappers (с временной backward-compatible адаптацией).
+- [x] Задача [P0]: добавить `dispose`/lifecycle cleanup в длинные state holders.
+- [x] Задача [P1]: разбить `utils/common.dart` на логические модули (links/dialogs/platform/markdown/file-sync).
+- [x] Задача [P1]: убрать или обосновать неиспользуемые DI регистрации/dependencies.
+- [x] Affected areas верифицированы: `lib/main.dart`, `lib/app_router.dart`, `lib/utils/common.dart`, `lib/viewmodels/primary_source_view_model.dart`, `lib/screens/main/main_screen.dart`.
+- [x] Риски проверены и записаны.
 - [x] Dependencies/prerequisites подтверждены (`Phase 0 completed`).
 - [x] Relevant skills назначены.
-- [ ] Test expectations выполнены.
-- [ ] Docs update expectations выполнены.
-- [ ] Quality gates пройдены.
-- [ ] Criteria of done выполнен.
+- [x] Test expectations выполнены.
+- [x] Docs update expectations выполнены.
+- [x] Quality gates пройдены.
+- [x] Criteria of done выполнен.
 
 ### Phase 2 — Architectural boundaries and folder/module migration
 - [ ] Цель фазы зафиксирована: перейти к hybrid feature-first структуре без массовой ломки.
@@ -268,3 +268,160 @@
   - New risks: возможна смена жизненного цикла `MainViewModel` (теперь строго app-scoped).
   - Mitigations: следующий шаг Phase 1 проверяет bootstrap/DI и lifecycle cleanup централизованно.
   - Next task: Phase 1 / P0 — выделить bootstrap/DI из `main.dart` в `app/bootstrap` и `app/di`.
+
+#### [2026-03-08 19:18] Phase 1 / Task P0 (P1.1 + P1.2) / Bootstrap and DI extracted from main.dart
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен `AppBootstrap` с startup sequence: error hooks, platform/window init, settings load, server/db init, strong handlers.
+  - Добавлен `AppDi` с регистрацией core зависимостей (`Talker`, `BaseCacheManager`) и app-level provider wiring.
+  - `main.dart` приведен к роли composition root: `runZonedGuarded` + bootstrap + `runApp`.
+- Why changed:
+  - Снизить связность `main.dart` и подготовить кодовую базу к дальнейшей миграции по слоям `app/bootstrap` и `app/di`.
+- Scope (files/modules):
+  - `lib/app/bootstrap/app_bootstrap.dart`
+  - `lib/app/di/app_di.dart`
+  - `lib/main.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `AppBootstrap` пока использует текущие singleton manager’ы (`DBManager`, `ServerManager`), их декомпозиция запланирована на Phase 3.
+  - Mitigations: сохранить API менеджеров неизменным до фазы state/data refactors; покрывать шаги analyze/test.
+  - Next task: Phase 1 / P0 — ввести typed route args wrappers с backward-compatible адаптацией.
+
+#### [2026-03-08 19:22] Phase 1 / Task P0 / Typed route args wrappers with backward compatibility
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлены typed route wrappers: `TopicRouteArgs`, `PrimarySourceRouteArgs`.
+  - `app_router.dart` переведен на typed parsing с fallback к legacy форматам (`PrimarySource`, `Map<String, dynamic>`, query params).
+  - Обновлены места навигации на typed `extra` (`TopicCard`, `SourceItemWidget`, word-link navigation, cross-source navigation).
+  - Добавлены unit tests на parser/adapters route args.
+- Why changed:
+  - Уменьшить риск невалидных map-контрактов в router и подготовить переход к полностью типизированной навигации.
+- Scope (files/modules):
+  - `lib/app/router/route_args.dart`
+  - `lib/app_router.dart`
+  - `lib/screens/main/topic_card.dart`
+  - `lib/screens/primary_sources/source_item.dart`
+  - `lib/screens/primary_source/primary_source_screen.dart`
+  - `lib/utils/app_link_handler.dart`
+  - `test/app/router/route_args_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: в router сохранен legacy fallback для совместимости; полное удаление map-путей отложено до последующих фаз.
+  - Mitigations: новые переходы использовать только typed args; legacy fallback удалять по мере миграции фич.
+  - Next task: Phase 1 / P0 — добавить `dispose`/lifecycle cleanup в длинные state holders.
+
+#### [2026-03-08 19:25] Phase 1 / Task P0 / Dispose and lifecycle cleanup for long-lived state holder
+- Статус: done
+- Priority: P0
+- What changed:
+  - В `PrimarySourceViewModel` добавлен явный lifecycle cleanup: отмена debounce timers, снятие listener’а, dispose внутренних notifier/controller.
+  - Добавлена защита от уведомлений после dispose (`_isDisposed` guard + safe `notifyListeners`).
+  - В `ImagePreviewController` добавлен `dispose` для `TransformationController`.
+- Why changed:
+  - Исключить утечки и гонки уведомлений после уничтожения экрана/VM в сложном primary source flow.
+- Scope (files/modules):
+  - `lib/viewmodels/primary_source_view_model.dart`
+  - `lib/controllers/image_preview_controller.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: защитный override `notifyListeners` скрывает late-уведомления после dispose, поэтому важно держать async-потоки под контролем в будущей декомпозиции.
+  - Mitigations: при разбиении `PrimarySourceViewModel` (Phase 3) вынести async orchestration в отдельные сервисы с cancel tokens.
+  - Next task: Phase 1 / P1 — разбить `utils/common.dart` на логические модули и/или закрыть задачу по неиспользуемым DI регистрациям.
+
+#### [2026-03-08 19:29] Phase 1 / Task P1 / Remove unused DI registration and dependency (cache manager)
+- Статус: done
+- Priority: P1
+- What changed:
+  - Удалена неиспользуемая DI регистрация `BaseCacheManager` из `AppDi`.
+  - Удалена зависимость `flutter_cache_manager` из `pubspec.yaml`.
+  - Обновлен `pubspec.lock`.
+- Why changed:
+  - Закрыть архитектурный долг по неиспользуемым DI/dependencies и убрать шум из composition слоя.
+- Scope (files/modules):
+  - `lib/app/di/app_di.dart`
+  - `pubspec.yaml`
+  - `pubspec.lock`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `flutter pub get` временно падал из-за locked `.plugin_symlinks` на Windows.
+  - Mitigations: удален `windows/flutter/ephemeral/.plugin_symlinks`, после чего `flutter pub get` завершился успешно.
+  - Next task: Phase 1 / P1 — разбить `utils/common.dart` на логические модули.
+
+#### [2026-03-08 19:34] Phase 1 / Task P1 / Split utils/common.dart into logical modules
+- Статус: done
+- Priority: P1
+- What changed:
+  - `utils/common.dart` преобразован в barrel-экспорт.
+  - Вынесены модули `links/dialogs/platform/markdown/file-sync` и сопутствующие утилиты в `lib/utils/common/*`.
+  - Сохранена обратная совместимость импортов через `import 'package:revelation/utils/common.dart';`.
+- Why changed:
+  - Снизить связность "utility sink" и подготовить кодовую базу к feature-first границам без массового импорт-чёрна.
+- Scope (files/modules):
+  - `lib/utils/common.dart`
+  - `lib/utils/common/common_logger.dart`
+  - `lib/utils/common/platform_utils.dart`
+  - `lib/utils/common/links_utils.dart`
+  - `lib/utils/common/dialogs_utils.dart`
+  - `lib/utils/common/markdown_utils.dart`
+  - `lib/utils/common/file_sync_utils.dart`
+  - `lib/utils/common/localization_utils.dart`
+  - `lib/utils/common/styled_text_utils.dart`
+  - `lib/utils/common/xml_parsers.dart`
+  - `lib/utils/common/diagnostics_utils.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: пока сохранен compatibility barrel, часть границ остается "мягкой" до Phase 2/3.
+  - Mitigations: новые утилиты добавлять в модульные файлы, а не обратно в barrel.
+  - Next task: Phase 2 / P0 — создать target folders `app/core/infra/shared/features`.

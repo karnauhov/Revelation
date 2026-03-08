@@ -66,6 +66,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool _isMenuOpen = false;
   Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
+  bool _isDisposed = false;
   DescriptionKind _currentDescriptionType = DescriptionKind.info;
   int? _currentDescriptionNumber = null;
 
@@ -113,6 +114,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
       loadImage(selectedPage!.image);
     }
     _checkLocalPages();
+  }
+
+  @override
+  void notifyListeners() {
+    if (_isDisposed) {
+      return;
+    }
+    super.notifyListeners();
   }
 
   Future<void> loadImage(String page, {bool isReload = false}) async {
@@ -582,8 +591,15 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void _updateTransformStatus() {
+    if (_isDisposed) {
+      return;
+    }
+
     if (imageData == null) {
       Future.microtask(() {
+        if (_isDisposed) {
+          return;
+        }
         zoomStatusNotifier.value = const ZoomStatus(
           canZoomIn: false,
           canZoomOut: false,
@@ -596,6 +612,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
       dy = matrix.storage[13];
       scale = matrix.getMaxScaleOnAxis();
       Future.microtask(() {
+        if (_isDisposed) {
+          return;
+        }
         zoomStatusNotifier.value = ZoomStatus(
           canZoomIn: scale < imageController.maxScale,
           canZoomOut: scale > imageController.minScale,
@@ -610,6 +629,21 @@ class PrimarySourceViewModel extends ChangeNotifier {
         );
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _restoreDebounceTimer?.cancel();
+    _saveDebounceTimer?.cancel();
+    imageController.transformationController.removeListener(
+      _updateTransformStatus,
+    );
+    imageController.dispose();
+    zoomStatusNotifier.dispose();
+    _onPipettePicked = null;
+    _onAreaSelected = null;
+    _isDisposed = true;
+    super.dispose();
   }
 
   int _getNeighborStrongNumber(int current, {bool forward = true}) {

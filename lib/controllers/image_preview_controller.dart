@@ -141,4 +141,8 @@ class ImagePreviewController {
         ..scaleByDouble(minScale, minScale, minScale, 1.0);
     }
   }
+
+  void dispose() {
+    _transformationController.dispose();
+  }
 }

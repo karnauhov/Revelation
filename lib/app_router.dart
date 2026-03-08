@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/models/primary_source.dart';
 import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/audio_controller.dart';
@@ -44,20 +45,30 @@ class AppRouter {
         path: '/topic',
         name: 'topic',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          final extra = state.extra is Map<String, dynamic>
-              ? state.extra as Map<String, dynamic>
-              : null;
-          final query = state.uri.queryParameters;
+          final topicArgs = TopicRouteArgs.tryParse(
+            state.extra,
+            state.uri.queryParameters,
+          );
+          if (topicArgs == null) {
+            log.error('Please, send it with correct topic route parameters');
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.go('/');
+            });
+            return buildPageWithDefaultTransition<void>(
+              context: context,
+              state: state,
+              child: const SizedBox.shrink(),
+            );
+          }
 
           aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
             child: TopicScreen(
-              name: (extra?['name'] as String?) ?? query['name'],
-              description:
-                  (extra?['description'] as String?) ?? query['description'],
-              file: (extra?['file'] as String?) ?? query['file'],
+              name: topicArgs.name,
+              description: topicArgs.description,
+              file: topicArgs.file,
             ),
           );
         },
@@ -78,29 +89,10 @@ class AppRouter {
         path: '/primary_source',
         name: 'primary_source',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          PrimarySource? primarySource;
-          String? initialPageName;
-          int? initialWordIndex;
-
-          if (state.extra is PrimarySource) {
-            primarySource = state.extra as PrimarySource;
-          } else if (state.extra is Map<String, dynamic>) {
-            final extra = state.extra as Map<String, dynamic>;
-            if (extra['primarySource'] is PrimarySource) {
-              primarySource = extra['primarySource'] as PrimarySource;
-            }
-            if (extra['pageName'] is String) {
-              initialPageName = extra['pageName'] as String;
-            }
-            final rawWordIndex = extra['wordIndex'];
-            if (rawWordIndex is int) {
-              initialWordIndex = rawWordIndex;
-            } else if (rawWordIndex is String) {
-              initialWordIndex = int.tryParse(rawWordIndex);
-            }
-          }
-
-          if (primarySource == null) {
+          final primarySourceArgs = PrimarySourceRouteArgs.tryParse(
+            state.extra,
+          );
+          if (primarySourceArgs == null) {
             log.error('Please, send it with correct primary source parameter');
             WidgetsBinding.instance.addPostFrameCallback((_) {
               context.go('/');
@@ -116,9 +108,9 @@ class AppRouter {
             context: context,
             state: state,
             child: PrimarySourceScreen(
-              primarySource: primarySource,
-              initialPageName: initialPageName,
-              initialWordIndex: initialWordIndex,
+              primarySource: primarySourceArgs.primarySource,
+              initialPageName: primarySourceArgs.pageName,
+              initialWordIndex: primarySourceArgs.wordIndex,
             ),
           );
         },
@@ -188,6 +180,12 @@ CustomTransitionPage buildPageWithDefaultTransition<T>({
 }
 
 String? _getRouteArgs(GoRouterState state) {
+  if (state.extra is TopicRouteArgs) {
+    return (state.extra as TopicRouteArgs).file;
+  }
+  if (state.extra is PrimarySourceRouteArgs) {
+    return (state.extra as PrimarySourceRouteArgs).primarySource.id;
+  }
   if (state.extra is Map<String, dynamic>) {
     final extra = state.extra as Map<String, dynamic>;
     if (extra['primarySource'] is PrimarySource) {

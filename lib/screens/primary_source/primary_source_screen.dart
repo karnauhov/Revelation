@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/common_widgets/description_markdown_view.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/models/description_kind.dart';
@@ -616,12 +617,11 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     }
     linkContext.push(
       '/primary_source',
-      extra: {
-        'primarySource': targetSource,
-        if (normalizedPageName != null && normalizedPageName.isNotEmpty)
-          'pageName': normalizedPageName,
-        if (wordIndex != null) 'wordIndex': wordIndex,
-      },
+      extra: PrimarySourceRouteArgs(
+        primarySource: targetSource,
+        pageName: normalizedPageName,
+        wordIndex: wordIndex,
+      ),
     );
   }
 
