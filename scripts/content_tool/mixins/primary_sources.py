@@ -2082,6 +2082,8 @@ class PrimarySourcesMixin:
                     return "stage"
                 if lower.startswith("metric:"):
                     return "metrics"
+                if "seed set to" in lower:
+                    return "metrics"
                 if "val_word_accurac" in lower:
                     return "metrics"
                 if "val_accuracy" in lower:
