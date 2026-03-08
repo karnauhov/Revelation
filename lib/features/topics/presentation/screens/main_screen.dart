@@ -8,7 +8,7 @@ import 'package:revelation/features/topics/presentation/viewmodels/main_view_mod
 import 'package:revelation/features/topics/presentation/widgets/drawer_content.dart';
 import 'package:revelation/features/topics/presentation/widgets/topic_list.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/utils/common.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

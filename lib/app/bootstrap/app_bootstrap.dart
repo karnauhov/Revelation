@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/strong_dictionary_dialog.dart';
@@ -6,8 +6,8 @@ import 'package:revelation/features/settings/settings.dart'
     show SettingsRepository, SettingsViewModel;
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/infra/remote/supabase/server_manager.dart';
-import 'package:revelation/utils/app_link_handler.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/utils/common.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -100,4 +100,3 @@ class AppBootstrap {
     });
   }
 }
-

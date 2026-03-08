@@ -8,7 +8,7 @@ import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page_rect.dart';
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/verse.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/utils/common.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 

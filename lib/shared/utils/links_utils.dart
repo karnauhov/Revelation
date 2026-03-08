@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 
-import 'dialogs_utils.dart';
-import 'common_logger.dart';
-import 'platform_utils.dart';
+import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
+import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 
 Future<bool> launchLink(String url) async {
   try {

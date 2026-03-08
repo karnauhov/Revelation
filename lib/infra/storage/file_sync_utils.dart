@@ -1,12 +1,12 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:revelation/infra/remote/supabase/server_manager.dart';
-import 'package:revelation/utils/app_constants.dart';
+import 'package:revelation/shared/config/app_constants.dart';
 
-import 'common_logger.dart';
+import 'package:revelation/core/logging/common_logger.dart';
 
 Future<String> getAppFolder() async {
   final directory = await getApplicationDocumentsDirectory();
@@ -65,4 +65,3 @@ Future<DateTime?> getLastUpdateFileLocal(String folder, String filePath) async {
     return null;
   }
 }
-

@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1/2/3 завершены, Phase 3.5 в работе (P0 started), Phase 4 paused`  
+Статус: `Phase 0/1/2/3/3.5 завершены, Phase 4 paused`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -114,11 +114,11 @@
 - [x] Задача [P1]: мигрировать `lib/common_widgets/*` в `shared/ui/widgets/*`.
 - [x] Задача [P1]: мигрировать `lib/controllers/*` в `core/*` или `features/*/presentation/controllers/*`.
 - [x] Задача [P1]: мигрировать `lib/models/*` в `features/*/data/models/*` и `shared/*`.
-- [ ] Задача [P1]: мигрировать `lib/db/*` в `infra/db/{common,localized,connectors}/*`.
-- [ ] Задача [P1]: мигрировать `lib/managers/*` в `infra/*` adapters (legacy wrappers удалить).
-- [ ] Задача [P1]: мигрировать `lib/utils/*` в `core/*`, `shared/utils/*`, `infra/*`.
-- [ ] Задача [P0]: удалить пустые legacy-каталоги из `lib/` и ужесточить checks до `zero legacy`.
-- [ ] Задача [P0]: сузить top-level `lib` до canonical набора (`app/core/infra/shared/features/l10n`).
+- [x] Задача [P1]: мигрировать `lib/db/*` в `infra/db/{common,localized,connectors}/*`.
+- [x] Задача [P1]: мигрировать `lib/managers/*` в `infra/*` adapters (legacy wrappers удалить).
+- [x] Задача [P1]: мигрировать `lib/utils/*` в `core/*`, `shared/utils/*`, `infra/*`.
+- [x] Задача [P0]: удалить пустые legacy-каталоги из `lib/` и ужесточить checks до `zero legacy`.
+- [x] Задача [P0]: сузить top-level `lib` до canonical набора (`app/core/infra/shared/features/l10n`).
 - [x] Affected areas верифицированы: `lib/*`, `scripts/check_forbidden_patterns.dart`, `docs/architecture/*`.
 - [x] Риски проверены и записаны.
 - [x] Dependencies/prerequisites подтверждены (`Phase 3 completed`).
@@ -126,7 +126,7 @@
 - [x] Test expectations выполнены.
 - [x] Docs update expectations выполнены.
 - [x] Quality gates пройдены.
-- [ ] Criteria of done выполнен.
+- [x] Criteria of done выполнен.
 
 ### Phase 4 — Testing hardening and CI enforcement
 - [x] Цель фазы зафиксирована: сделать качество воспроизводимым и enforceable.
@@ -203,9 +203,9 @@
 | `lib/common_widgets` | 0 (removed) | `lib/shared/ui/widgets/*` |
 | `lib/controllers` | 0 (removed) | `lib/core/*`, `lib/features/*/presentation/controllers/*` |
 | `lib/models` | 0 (removed) | `lib/features/*/data/models/*`, `lib/shared/*` |
-| `lib/db` | 8 | `lib/infra/db/{common,localized,connectors}/*` |
-| `lib/managers` | 2 | `lib/infra/*` (adapter implementations) |
-| `lib/utils` | 22 | `lib/core/*`, `lib/shared/utils/*`, `lib/infra/*` |
+| `lib/db` | 0 (removed) | `lib/infra/db/{common,localized,connectors}/*` |
+| `lib/managers` | 0 (removed) | `lib/infra/*` (adapter implementations) |
+| `lib/utils` | 0 (removed) | `lib/core/*`, `lib/shared/utils/*`, `lib/infra/*` |
 
 ### 4.1.2 Волны миграции (без legacy остатка)
 
@@ -1375,3 +1375,105 @@
   - New risks: remaining legacy ограничен `db/managers/utils`; перенос этих слоев затронет infra/platform contracts и может быть более инвазивным.
   - Mitigations: выполнить `Wave F` поэтапно (сначала `db + managers`, затем `utils`) с обязательным compile-ready checkpoint после каждого substep.
   - Next task: Phase 3.5 / P1 — Wave F (`db + managers + utils`) migration.
+
+#### [2026-03-08 23:58] Phase 3.5 / Task P1 (Wave F done) / Finalize db-managers-utils migration to canonical modules
+- Статус: done
+- Priority: P1
+- What changed:
+  - Завершена миграция legacy `db/managers` в canonical infra-модули:
+    - `lib/infra/db/{common,localized,connectors,runtime}/*`
+    - `lib/infra/remote/supabase/server_manager.dart`.
+  - Выполнен полный перенос `lib/utils/*`:
+    - `app_constants` -> `lib/shared/config/*`
+    - `app_link_handler` -> `lib/shared/navigation/*`
+    - `common.dart` и утилиты -> `lib/shared/utils/*`, `lib/shared/ui/*`, `lib/shared/localization/*`, `lib/shared/xml/*`
+    - platform/download helpers -> `lib/core/platform/*`
+    - logger/diagnostics -> `lib/core/logging/*`, `lib/core/diagnostics/*`
+    - `pronunciation.dart` -> `lib/features/primary_sources/application/services/*`.
+  - Все импорты в `lib/` и `test/` обновлены на новые canonical пути.
+  - Legacy директория `lib/utils` удалена.
+- Why changed:
+  - Закрыть `Wave F` и завершить миграцию последних функциональных legacy-каталогов (`db`, `managers`, `utils`) без перехода к policy-lock шагу до compile-ready состояния.
+- Scope (files/modules):
+  - `lib/core/{platform,logging,diagnostics}/*`
+  - `lib/shared/{config,navigation,utils,ui,localization,xml}/*`
+  - `lib/infra/{db,remote,storage}/*`
+  - `lib/features/primary_sources/application/services/pronunciation.dart`
+  - `lib/main.dart`
+  - `test/utils/pronunciation_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: после удаления `utils` повышается требование к стабильности новых import-путей в downstream изменениях.
+  - Mitigations: зафиксировать hard policy-check на отсутствие legacy-каталогов и canonical top-level структуру (`Wave G`).
+  - Next task: Phase 3.5 / P0 — Wave G (`hard cleanup and policy lock`).
+
+#### [2026-03-08 23:59] Phase 3.5 / Task P0 (Wave G done) / Zero-legacy policy lock and canonical top-level enforcement
+- Статус: done
+- Priority: P0
+- What changed:
+  - Удален stop-gap allowlist `scripts/legacy_structure_allowlist.txt`.
+  - `scripts/check_forbidden_patterns.dart` ужесточен:
+    - проверка на отсутствие legacy-каталогов в `lib/` как таковых;
+    - approved top-level set сужен до canonical набора: `app/core/infra/shared/features/l10n`.
+  - Обновлены архитектурные boundary docs (RU/EN) под новую zero-legacy policy.
+- Why changed:
+  - Закрыть `Wave G` и перевести structural governance из временной allowlist-модели в финальный enforceable zero-legacy режим.
+- Scope (files/modules):
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/architecture/module-boundaries.ru.md`
+  - `docs/architecture/module-boundaries.en.md`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/module-boundaries.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/architecture/module-boundaries.en.md`)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: любые новые legacy-папки/пути теперь будут immediately fail в quality checks.
+  - Mitigations: использовать только canonical структуру и feature-first placement правила при добавлении новых файлов.
+  - Next task: продолжение по приоритетам следующей фазы (Phase 4/5), без возврата legacy-каталогов.
+
+#### [2026-03-09 00:08] Phase 3.5 / Post-step (done) / Move root-level app_router and theme to canonical modules
+- Статус: done
+- Priority: P1
+- What changed:
+  - `lib/app_router.dart` перенесен в `lib/app/router/app_router.dart`.
+  - `lib/theme.dart` перенесен в `lib/shared/ui/theme/material_theme.dart`.
+  - Обновлены импорты:
+    - `package:revelation/app_router.dart` -> `package:revelation/app/router/app_router.dart`
+    - `package:revelation/theme.dart` -> `package:revelation/shared/ui/theme/material_theme.dart`
+  - Обновлены использования в `main.dart`, `settings_screen.dart`, `dialogs_utils.dart`.
+- Why changed:
+  - Убрать оставшиеся root-level архитектурные артефакты и выровнять размещение файлов с canonical структурой `app/core/infra/shared/features/l10n`.
+- Scope (files/modules):
+  - `lib/app/router/app_router.dart`
+  - `lib/shared/ui/theme/material_theme.dart`
+  - `lib/main.dart`
+  - `lib/features/settings/presentation/screens/settings_screen.dart`
+  - `lib/shared/ui/dialogs/dialogs_utils.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no

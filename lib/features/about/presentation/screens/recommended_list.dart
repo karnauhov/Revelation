@@ -3,7 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/recommended_info.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/utils/common.dart';
 import 'recommended_card.dart';
 
 class RecommendedList extends StatefulWidget {

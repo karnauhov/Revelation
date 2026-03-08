@@ -8,12 +8,12 @@ import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/features/settings/settings.dart'
     show SettingsViewModel;
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/theme.dart';
-import 'package:revelation/utils/app_logger_formatter.dart';
+import 'package:revelation/shared/ui/theme/material_theme.dart';
+import 'package:revelation/core/logging/app_logger_formatter.dart';
+import 'package:revelation/shared/utils/common.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'utils/common.dart';
-import 'app_router.dart';
+import 'package:revelation/app/router/app_router.dart';
 
 void main() async {
   final talker = TalkerFlutter.init(

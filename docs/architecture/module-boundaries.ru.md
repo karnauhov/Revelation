@@ -59,7 +59,5 @@ Source-Commit: `working-tree`
 ## 7. Enforcement
 - `scripts/check_forbidden_patterns.dart` выполняет:
   - запрет ключевых anti-pattern imports/calls;
-  - запрет появления новых `.dart` файлов в legacy-каталогах;
+  - запрет существования legacy-каталогов в `lib/`;
   - контроль набора top-level директорий `lib/`.
-- Baseline legacy-файлов хранится в:
-  - `scripts/legacy_structure_allowlist.txt`.

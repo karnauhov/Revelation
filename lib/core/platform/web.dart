@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:web/web.dart';
-import 'package:revelation/utils/webgl_interop.dart';
+import 'package:revelation/core/platform/webgl_interop.dart';
 
 String getPlatformLanguage() {
   return Intl.shortLocale(document.defaultView!.navigator.language);

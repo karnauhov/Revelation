@@ -115,9 +115,8 @@ void main() {
 
   final structureChecks = <MapEntry<String, List<String>>>[
     MapEntry(
-      'Legacy folders should not gain new Dart files',
-      _checkLegacyFolderGrowth(
-        allowlistPath: 'scripts/legacy_structure_allowlist.txt',
+      'Legacy folders should not exist in lib/',
+      _checkLegacyFoldersAbsent(
         legacyRoots: const <String>[
           'lib/screens',
           'lib/viewmodels',
@@ -142,16 +141,6 @@ void main() {
           'shared',
           'features',
           'l10n',
-          'common_widgets',
-          'controllers',
-          'db',
-          'managers',
-          'models',
-          'repositories',
-          'screens',
-          'services',
-          'utils',
-          'viewmodels',
         },
       ),
     ),
@@ -240,43 +229,17 @@ String _lineAtOffset(String content, int offset) {
   return content.substring(normalizedStart, normalizedEnd).trim();
 }
 
-List<String> _checkLegacyFolderGrowth({
-  required String allowlistPath,
-  required List<String> legacyRoots,
-}) {
-  final allowlistFile = File(allowlistPath);
-  if (!allowlistFile.existsSync()) {
-    return <String>['Missing allowlist file: $allowlistPath'];
-  }
-
-  final allowedLegacyFiles = allowlistFile
-      .readAsLinesSync()
-      .map((line) => line.trim())
-      .where((line) => line.isNotEmpty && !line.startsWith('#'))
-      .map((line) => line.replaceAll('\\', '/'))
-      .toSet();
-
-  final currentLegacyFiles = <String>{};
+List<String> _checkLegacyFoldersAbsent({required List<String> legacyRoots}) {
+  final violations = <String>[];
   for (final root in legacyRoots) {
     final directory = Directory(root);
-    if (!directory.existsSync()) {
-      continue;
-    }
-
-    for (final entity in directory.listSync(recursive: true)) {
-      if (entity is! File || !entity.path.endsWith('.dart')) {
-        continue;
-      }
-      currentLegacyFiles.add(_normalizePath(entity.path));
+    if (directory.existsSync()) {
+      violations.add(
+        'Legacy folder should be removed: ${_normalizePath(root)}',
+      );
     }
   }
-
-  final unexpectedFiles =
-      currentLegacyFiles.difference(allowedLegacyFiles).toList()..sort();
-
-  return unexpectedFiles
-      .map((path) => 'New file in legacy folders: $path')
-      .toList(growable: false);
+  return violations;
 }
 
 List<String> _checkUnexpectedTopLevelFolders({

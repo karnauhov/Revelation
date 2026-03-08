@@ -1,4 +1,4 @@
-﻿import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -11,9 +11,9 @@ import 'package:revelation/features/settings/presentation/viewmodels/settings_vi
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
-import 'package:revelation/utils/app_link_handler.dart';
-import 'package:revelation/utils/common.dart';
-import 'package:revelation/utils/file_downloader.dart';
+import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/platform/file_downloader.dart';
 
 class TopicScreen extends StatefulWidget {
   final String? name;
@@ -458,4 +458,3 @@ class _TopicContentData {
     required this.hasLoadingError,
   });
 }
-

@@ -59,7 +59,5 @@ If none applies, update architecture docs/roadmap first, then add the file.
 ## 7. Enforcement
 - `scripts/check_forbidden_patterns.dart` enforces:
   - critical anti-pattern imports/calls;
-  - no new `.dart` files in legacy directories;
+  - no legacy directories in `lib/`;
   - approved top-level `lib/` directory set.
-- Legacy file baseline lives in:
-  - `scripts/legacy_structure_allowlist.txt`.

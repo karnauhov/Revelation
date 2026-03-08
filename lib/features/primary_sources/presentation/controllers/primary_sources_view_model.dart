@@ -4,7 +4,7 @@ import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/shared/models/primary_source.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/utils/common.dart';
 
 class PrimarySourcesViewModel extends ChangeNotifier {
   final PrimarySourcesDbRepository _primarySourcesRepository;

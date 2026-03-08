@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/theme.dart';
-import 'package:revelation/utils/app_constants.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/ui/theme/material_theme.dart';
+import 'package:revelation/shared/config/app_constants.dart';
+import 'package:revelation/shared/utils/common.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

@@ -1,4 +1,4 @@
-﻿import 'dart:typed_data';
+import 'dart:typed_data';
 
 import 'package:revelation/infra/remote/supabase/server_manager.dart';
 
@@ -23,4 +23,3 @@ class ServerManagerImageDownloadClient implements ImageDownloadClient {
     return _serverManager.downloadImage(page, isMobileWeb);
   }
 }
-

@@ -1,5 +1,5 @@
 import 'dart:js_interop';
-import 'common.dart';
+import 'package:flutter/foundation.dart';
 
 @JS('globalThis')
 external GlobalThis get globalThis;
@@ -42,7 +42,7 @@ extension WebGLExt on WebGLRenderingContext {
 
 class WebGLInterop {
   static Future<int> fetchMaxTextureSize() async {
-    if (!isWeb()) {
+    if (!kIsWeb) {
       return 0;
     }
     final doc = globalThis.document;

@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
@@ -6,8 +6,8 @@ import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
-import 'package:revelation/utils/app_constants.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/config/app_constants.dart';
+import 'package:revelation/shared/utils/common.dart';
 
 CommonDB getCommonDB() {
   return CommonDB(getLazyDatabase(AppConstants.commonDB));
@@ -42,4 +42,3 @@ LazyDatabase getLazyDatabase(dbFile) {
   });
   return db;
 }
-

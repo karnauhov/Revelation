@@ -4,8 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 
-import '../../app_router.dart';
-import 'common_logger.dart';
+import 'package:revelation/app/router/app_router.dart';
+import 'package:revelation/core/logging/common_logger.dart';
 
 enum MessageType { errorCommon, errorBrokenLink, warningCommon, infoCommon }
 

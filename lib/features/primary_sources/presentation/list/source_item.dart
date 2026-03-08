@@ -6,7 +6,7 @@ import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/primary_source.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/utils/common.dart';
 
 class SourceItemWidget extends StatefulWidget {
   final PrimarySource source;

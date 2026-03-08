@@ -14,9 +14,9 @@ import 'package:revelation/features/about/presentation/screens/recommended_list.
 import 'package:revelation/features/about/presentation/viewmodels/about_view_model.dart';
 import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/utils/app_constants.dart';
-import 'package:revelation/utils/app_link_handler.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/config/app_constants.dart';
+import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/utils/common.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class AboutScreen extends StatefulWidget {

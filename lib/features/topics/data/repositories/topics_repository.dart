@@ -1,9 +1,9 @@
-﻿import 'package:revelation/core/errors/app_failure.dart';
+import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/utils/common.dart';
 
 class TopicsRepository {
   TopicsRepository({TopicsDataSource? dataSource})
@@ -143,4 +143,3 @@ class TopicsRepository {
     }
   }
 }
-

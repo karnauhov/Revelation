@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../dependent.dart' as dep;
-import 'common_logger.dart';
+import 'dependent.dart' as dep;
+import 'package:revelation/core/logging/common_logger.dart';
 
 bool isDesktop() {
   return [

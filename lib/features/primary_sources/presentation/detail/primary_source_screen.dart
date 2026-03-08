@@ -14,8 +14,8 @@ import 'package:revelation/features/primary_sources/presentation/detail/image_pr
 import 'package:revelation/features/primary_sources/presentation/detail/primary_source_toolbar.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/strong_number_picker_dialog.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
-import 'package:revelation/utils/app_link_handler.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/utils/common.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
 
 // Define the intent for exiting pipette or selectArea mode

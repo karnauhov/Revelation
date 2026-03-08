@@ -1,4 +1,4 @@
-﻿@Tags(['widget'])
+@Tags(['widget'])
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -9,7 +9,8 @@ import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/infra/db/common/db_common.dart' as common_db;
-import 'package:revelation/infra/db/localized/db_localized.dart' as localized_db;
+import 'package:revelation/infra/db/localized/db_localized.dart'
+    as localized_db;
 import 'package:revelation/infra/db/data_sources/primary_sources_data_source.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
@@ -101,4 +102,3 @@ class _EmptyPrimarySourcesDataSource implements PrimarySourcesDataSource {
     return null;
   }
 }
-

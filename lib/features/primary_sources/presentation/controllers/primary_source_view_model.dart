@@ -12,7 +12,7 @@ import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/zoom_status.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
-import 'package:revelation/utils/common.dart';
+import 'package:revelation/shared/utils/common.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
 
 class PrimarySourceViewModel extends ChangeNotifier {
