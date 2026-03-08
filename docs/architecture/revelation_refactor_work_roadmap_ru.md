@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1 завершены, Phase 2 в работе (P0 completed)`  
+Статус: `Phase 0/1 завершены, Phase 2 в работе (P0 completed, P1 in progress)`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -63,7 +63,7 @@
 - [x] Подшаг [P2.1]: миграция `settings`.
 - [x] Подшаг [P2.2]: миграция `about`.
 - [ ] Задача [P1]: мигрировать `topics` presentation/data поэтапно.
-- [ ] Задача [P1]: ввести boundary import rules (lint/grep).
+- [x] Задача [P1]: ввести boundary import rules (lint/grep).
 - [ ] Задача [P2]: добавить временные barrel exports для мягкого перехода import-путей.
 - [ ] Affected areas верифицированы: `lib/screens/*`, `lib/viewmodels/*`, `lib/repositories/*`, `lib/utils/*`, `lib/common_widgets/*`.
 - [ ] Риски проверены и записаны.
@@ -498,3 +498,30 @@
   - New risks: временные wrappers сохраняют старые import-пути и могут затянуть полный переход.
   - Mitigations: на следующем шаге Phase 2 добавить boundary import checks и постепенно сужать legacy imports.
   - Next task: Phase 2 / P1 — ввести boundary import rules (lint/grep).
+
+#### [2026-03-08 20:04] Phase 2 / Task P1 / Introduce boundary import rules for feature layers
+- Статус: done
+- Priority: P1
+- What changed:
+  - Расширен `scripts/check_forbidden_patterns.dart`: добавлен path-scoped фильтр (`filePathPattern`) для проверок в конкретных частях `lib/features/*`.
+  - Добавлено правило: `lib/features/*/presentation/*` не должен импортировать legacy layer-first модули (`screens`, `viewmodels`, `repositories`, `managers`).
+  - Добавлено правило: `lib/features/*/data/*` не должен импортировать `lib/features/*/presentation/*`.
+- Why changed:
+  - Зафиксировать минимально enforceable boundary rules на этапе Phase 2, чтобы новая feature-first структура не деградировала обратно в legacy import-пути.
+- Scope (files/modules):
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: regex-based проверки могут потребовать уточнения по мере расширения `features/*`.
+  - Mitigations: держать правила узкими по path scope и корректировать вместе с миграцией `topics`.
+  - Next task: Phase 2 / P1 — мигрировать `topics` presentation/data поэтапно.

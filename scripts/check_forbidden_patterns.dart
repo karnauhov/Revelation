@@ -6,12 +6,14 @@ class PatternCheck {
     required this.pattern,
     required this.roots,
     this.allowedFiles = const <String>{},
+    this.filePathPattern,
   });
 
   final String name;
   final RegExp pattern;
   final List<String> roots;
   final Set<String> allowedFiles;
+  final RegExp? filePathPattern;
 }
 
 class PatternHit {
@@ -50,6 +52,22 @@ void main() {
       ),
       roots: <String>['lib'],
       allowedFiles: <String>{'lib/app_router.dart'},
+    ),
+    PatternCheck(
+      name: 'Feature presentation should not import legacy layer-first modules',
+      pattern: RegExp(
+        "import\\s+['\"]package:revelation/(screens|viewmodels|repositories|managers)/",
+      ),
+      roots: <String>['lib/features'],
+      filePathPattern: RegExp(r'^lib/features/[^/]+/presentation/'),
+    ),
+    PatternCheck(
+      name: 'Feature data should not import feature presentation modules',
+      pattern: RegExp(
+        "import\\s+['\"]package:revelation/features/[^/]+/presentation/",
+      ),
+      roots: <String>['lib/features'],
+      filePathPattern: RegExp(r'^lib/features/[^/]+/data/'),
     ),
   ];
 
@@ -92,6 +110,10 @@ List<PatternHit> _collectHits(PatternCheck check) {
 
       final relativePath = _normalizePath(entity.path);
       if (check.allowedFiles.contains(relativePath)) {
+        continue;
+      }
+      if (check.filePathPattern != null &&
+          !check.filePathPattern!.hasMatch(relativePath)) {
         continue;
       }
 
