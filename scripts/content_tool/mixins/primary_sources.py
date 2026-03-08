@@ -5,12 +5,18 @@ import io
 import json
 import mimetypes
 import os
+import queue
 import re
 import sqlite3
+import subprocess
+import sys
 import tempfile
+import threading
+import traceback
 import urllib.parse
 import urllib.request
 import webbrowser
+from datetime import datetime
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
@@ -1707,6 +1713,329 @@ class PrimarySourcesMixin:
                 messagebox.showerror("Ошибка", f"Не удалось создать папку:\n{exc}", parent=self)
                 return
             webbrowser.open(root.resolve().as_uri())
+
+        def _project_root_dir(self) -> Path:
+            return Path(__file__).resolve().parents[3]
+
+        def _ocr_models_root_dir(self) -> Path:
+            return self._project_root_dir() / "scripts" / "content_tool" / "models" / "ocr"
+
+        def _source_ocr_model_dir(self, source_id: str) -> Path:
+            return self._ocr_models_root_dir() / "sources" / source_id.strip().upper()
+
+        def _source_ocr_word_count(self, source_id: str) -> int:
+            if self.common_connection is None:
+                return 0
+            try:
+                row = self.common_connection.execute(
+                    "SELECT COUNT(*) FROM primary_source_words WHERE source_id = ?",
+                    (source_id,),
+                ).fetchone()
+            except sqlite3.DatabaseError:
+                return 0
+            if row is None:
+                return 0
+            try:
+                return int(row[0] or 0)
+            except (TypeError, ValueError):
+                return 0
+
+        def _content_tool_python_executable(self) -> Path:
+            current = Path(sys.executable).resolve()
+            if current.name.lower() == "pythonw.exe":
+                console_python = current.with_name("python.exe")
+                if console_python.exists():
+                    return console_python
+            return current
+
+        def _show_selected_primary_source_ocr_model_info(self) -> None:
+            if not self._ensure_primary_source_common_ready():
+                return
+            source_id = (self.selected_primary_source_id or "").strip()
+            if not source_id:
+                messagebox.showinfo("OCR data", "Select a primary source first.", parent=self)
+                return
+
+            model_dir = self._source_ocr_model_dir(source_id)
+            model_state_path = model_dir / "model_state.json"
+            model_report_path = model_dir / "last_training_report.json"
+            model_files = sorted(model_dir.glob("*.mlmodel")) if model_dir.exists() else []
+
+            state_payload: dict[str, Any] = {}
+            if model_state_path.exists():
+                try:
+                    parsed = json.loads(model_state_path.read_text(encoding="utf-8"))
+                    if isinstance(parsed, dict):
+                        state_payload = parsed
+                except (OSError, json.JSONDecodeError):
+                    state_payload = {}
+
+            report_payload: dict[str, Any] = {}
+            if model_report_path.exists():
+                try:
+                    parsed = json.loads(model_report_path.read_text(encoding="utf-8"))
+                    if isinstance(parsed, dict):
+                        report_payload = parsed
+                except (OSError, json.JSONDecodeError):
+                    report_payload = {}
+
+            dialog = tk.Toplevel(self)
+            dialog.title(f"OCR Data: {source_id}")
+            dialog.transient(self)
+            dialog.resizable(True, True)
+            dialog.minsize(900, 620)
+            self._center_toplevel(dialog, width=980, height=700)
+
+            root = ttk.Frame(dialog, padding=10)
+            root.grid(row=0, column=0, sticky="nsew")
+            dialog.columnconfigure(0, weight=1)
+            dialog.rowconfigure(0, weight=1)
+            root.columnconfigure(0, weight=1)
+            root.rowconfigure(1, weight=1)
+
+            summary_lines: list[str] = [
+                f"Source: {source_id}",
+                f"Words in DB: {self._source_ocr_word_count(source_id)}",
+                f"Model dir: {model_dir}",
+                f"State file: {model_state_path} ({'OK' if model_state_path.exists() else 'missing'})",
+                f"Last report: {model_report_path} ({'OK' if model_report_path.exists() else 'missing'})",
+                "",
+            ]
+
+            if model_files:
+                summary_lines.append("Model files:")
+                for model_path in model_files:
+                    try:
+                        stat = model_path.stat()
+                        modified = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+                        size_kb = stat.st_size / 1024
+                        summary_lines.append(f"- {model_path.name} | {size_kb:.1f} KB | {modified}")
+                    except OSError:
+                        summary_lines.append(f"- {model_path.name}")
+            else:
+                summary_lines.append("Model files: none")
+
+            summary_lines.append("")
+            summary_lines.append("model_state.json:")
+            summary_lines.append(
+                json.dumps(state_payload, ensure_ascii=False, indent=2) if state_payload else "(empty or missing)"
+            )
+            summary_lines.append("")
+            summary_lines.append("last_training_report.json:")
+            summary_lines.append(
+                json.dumps(report_payload, ensure_ascii=False, indent=2) if report_payload else "(empty or missing)"
+            )
+
+            info_text = tk.Text(root, wrap="word")
+            info_text.grid(row=1, column=0, sticky="nsew")
+            info_scroll = ttk.Scrollbar(root, orient="vertical", command=info_text.yview)
+            info_scroll.grid(row=1, column=1, sticky="ns")
+            info_text.configure(yscrollcommand=info_scroll.set)
+            info_text.insert("1.0", "\n".join(summary_lines))
+            info_text.configure(state="disabled")
+
+            controls = ttk.Frame(root)
+            controls.grid(row=2, column=0, columnspan=2, sticky="e", pady=(8, 0))
+
+            def open_model_dir() -> None:
+                try:
+                    model_dir.mkdir(parents=True, exist_ok=True)
+                except OSError as exc:
+                    messagebox.showerror("OCR data", f"Failed to create/open model dir:\n{exc}", parent=dialog)
+                    return
+                webbrowser.open(model_dir.resolve().as_uri())
+
+            ttk.Button(controls, text="Open Model Dir", command=open_model_dir).pack(side="left")
+            ttk.Button(controls, text="Close", command=dialog.destroy).pack(side="left", padx=(8, 0))
+
+        def _train_selected_primary_source_ocr_model(self) -> None:
+            if not self._ensure_primary_source_common_ready():
+                return
+            source_id = (self.selected_primary_source_id or "").strip()
+            if not source_id:
+                messagebox.showinfo("OCR Training", "Select a primary source first.", parent=self)
+                return
+
+            words_count = self._source_ocr_word_count(source_id)
+            if words_count <= 0:
+                messagebox.showinfo(
+                    "OCR Training",
+                    f"No words found in DB for source {source_id}.",
+                    parent=self,
+                )
+                return
+
+            db_path = self.common_db_path
+            if db_path is None or not db_path.exists():
+                messagebox.showerror("OCR Training", "Common DB is not available.", parent=self)
+                return
+
+            model_root = self._ocr_models_root_dir()
+            python_exe = self._content_tool_python_executable()
+            command = [
+                str(python_exe),
+                "-m",
+                "scripts.content_tool.train_primary_source_ocr",
+                "--db",
+                str(db_path),
+                "--source-id",
+                source_id,
+                "--primary-sources-root",
+                str(self._primary_sources_root_dir()),
+                "--model-root",
+                str(model_root),
+            ]
+
+            dialog = tk.Toplevel(self)
+            dialog.title(f"OCR Training: {source_id}")
+            dialog.transient(self)
+            dialog.grab_set()
+            dialog.resizable(True, True)
+            dialog.minsize(920, 620)
+            self._center_toplevel(dialog, width=1040, height=760)
+
+            root = ttk.Frame(dialog, padding=10)
+            root.grid(row=0, column=0, sticky="nsew")
+            dialog.columnconfigure(0, weight=1)
+            dialog.rowconfigure(0, weight=1)
+            root.columnconfigure(0, weight=1)
+            root.rowconfigure(2, weight=1)
+
+            stage_var = tk.StringVar(value="Preparing training process...")
+            ttk.Label(
+                root,
+                text="Do not close this window until training is complete.",
+                foreground="#7a1f1f",
+            ).grid(row=0, column=0, sticky="w")
+            ttk.Label(root, textvariable=stage_var, foreground="#0a4f93").grid(row=1, column=0, sticky="w", pady=(6, 6))
+
+            log_text = tk.Text(root, wrap="word")
+            log_text.grid(row=2, column=0, sticky="nsew")
+            scroll = ttk.Scrollbar(root, orient="vertical", command=log_text.yview)
+            scroll.grid(row=2, column=1, sticky="ns")
+            log_text.configure(yscrollcommand=scroll.set)
+
+            progress = ttk.Progressbar(root, mode="indeterminate")
+            progress.grid(row=3, column=0, sticky="ew", pady=(8, 0))
+            progress.start(12)
+
+            controls = ttk.Frame(root)
+            controls.grid(row=4, column=0, columnspan=2, sticky="e", pady=(8, 0))
+            btn_open_report = ttk.Button(controls, text="Open Training Report", state="disabled")
+            btn_open_report.pack(side="left")
+            btn_close = ttk.Button(controls, text="Close", state="disabled", command=dialog.destroy)
+            btn_close.pack(side="left", padx=(8, 0))
+
+            events: queue.Queue[tuple[str, str]] = queue.Queue()
+            state: dict[str, object] = {
+                "running": True,
+                "exit_code": None,
+                "report_path": "",
+            }
+
+            def append_log(message: str) -> None:
+                log_text.insert("end", message + "\n")
+                log_text.see("end")
+
+            def open_report() -> None:
+                report_raw = str(state.get("report_path") or "").strip()
+                if not report_raw:
+                    messagebox.showinfo("OCR Training", "Training report is not available yet.", parent=dialog)
+                    return
+                report_path = Path(report_raw)
+                if not report_path.exists():
+                    messagebox.showwarning("OCR Training", f"Report file not found:\n{report_path}", parent=dialog)
+                    return
+                webbrowser.open(report_path.resolve().as_uri())
+
+            btn_open_report.configure(command=open_report)
+
+            def on_close_requested() -> None:
+                if bool(state.get("running", False)):
+                    messagebox.showinfo(
+                        "OCR Training",
+                        "Training is still running. Wait until completion.",
+                        parent=dialog,
+                    )
+                    return
+                dialog.destroy()
+
+            dialog.protocol("WM_DELETE_WINDOW", on_close_requested)
+
+            def worker() -> None:
+                try:
+                    env = dict(os.environ)
+                    env["PYTHONIOENCODING"] = "utf-8"
+                    env["PYTHONUTF8"] = "1"
+                    env["REVELATION_KRAKEN_MODELS_ROOT"] = str(model_root)
+
+                    process = subprocess.Popen(
+                        command,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        text=True,
+                        encoding="utf-8",
+                        errors="replace",
+                        cwd=str(self._project_root_dir()),
+                        env=env,
+                    )
+                    assert process.stdout is not None
+                    for line in process.stdout:
+                        events.put(("line", line.rstrip("\n")))
+                    exit_code = process.wait()
+                    events.put(("done", str(exit_code)))
+                except Exception:
+                    events.put(("error", traceback.format_exc()))
+
+            def poll_events() -> None:
+                while True:
+                    try:
+                        kind, payload = events.get_nowait()
+                    except queue.Empty:
+                        break
+
+                    if kind == "line":
+                        append_log(payload)
+                        if payload.startswith("STAGE:"):
+                            stage_var.set(payload.removeprefix("STAGE:").strip() or "...")
+                        elif payload.startswith("Training report:"):
+                            state["report_path"] = payload.removeprefix("Training report:").strip()
+                            btn_open_report.state(["!disabled"])
+                        continue
+
+                    if kind == "error":
+                        append_log(payload)
+                        state["running"] = False
+                        state["exit_code"] = 1
+                        progress.stop()
+                        stage_var.set("Training launcher error")
+                        btn_close.state(["!disabled"])
+                        self._set_status(f"OCR training '{source_id}': launcher error.")
+                        continue
+
+                    if kind == "done":
+                        exit_code = int(payload)
+                        state["running"] = False
+                        state["exit_code"] = exit_code
+                        progress.stop()
+                        if exit_code == 0:
+                            stage_var.set("Training complete")
+                            self._set_status(
+                                f"OCR model '{source_id}' updated (words in DB: {words_count})."
+                            )
+                        else:
+                            stage_var.set(f"Training failed (code {exit_code})")
+                            self._set_status(f"OCR training '{source_id}' failed.")
+                        btn_close.state(["!disabled"])
+
+                if bool(state.get("running", False)):
+                    dialog.after(120, poll_events)
+
+            append_log("Starting OCR training process...")
+            append_log("Command: " + " ".join(command))
+            append_log("")
+            threading.Thread(target=worker, daemon=True).start()
+            poll_events()
 
         def _link_dialog_payload(self, initial: dict[str, object] | None = None) -> dict[str, object] | None:
             initial = initial or {}

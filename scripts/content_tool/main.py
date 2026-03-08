@@ -21,4 +21,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     app = TopicContentTool(args.work_dir)
-    app.mainloop()
+    try:
+        app.mainloop()
+    except KeyboardInterrupt:
+        # Gracefully exit when launched from a console and interrupted with Ctrl+C.
+        return

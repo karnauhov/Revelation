@@ -46,3 +46,12 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/app/.cxx
+
+# Local virtual environment for content tool
+.venv-content-tool/
+
+# Local OCR training artifacts and models for content tool
+scripts/content_tool/models/ocr/**/*.mlmodel
+scripts/content_tool/models/ocr/datasets/
+scripts/content_tool/models/ocr/**/model_state.json
+scripts/content_tool/models/ocr/**/last_training_report.json

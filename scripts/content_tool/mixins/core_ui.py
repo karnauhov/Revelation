@@ -617,6 +617,18 @@ class CoreUiMixin:
                 command=self._open_selected_primary_source_dir,
             )
             self.btn_open_primary_source_dir.pack(side="left", padx=(8, 0))
+            self.btn_train_primary_source_ocr = ttk.Button(
+                source_buttons,
+                **self._button_kwargs("refresh", "Обучить OCR"),
+                command=self._train_selected_primary_source_ocr_model,
+            )
+            self.btn_train_primary_source_ocr.pack(side="left", padx=(8, 0))
+            self.btn_view_primary_source_ocr_stats = ttk.Button(
+                source_buttons,
+                **self._button_kwargs("status", "Данные OCR"),
+                command=self._show_selected_primary_source_ocr_model_info,
+            )
+            self.btn_view_primary_source_ocr_stats.pack(side="left", padx=(8, 0))
 
             right.columnconfigure(0, weight=1)
             right.rowconfigure(0, weight=1)
@@ -1444,6 +1456,8 @@ class CoreUiMixin:
                 (self.btn_download_source_pages, False),
                 (self.check_primary_source_force_download, False),
                 (self.btn_open_primary_source_dir, False),
+                (self.btn_train_primary_source_ocr, False),
+                (self.btn_view_primary_source_ocr_stats, False),
                 (self.primary_source_tabs, False),
                 (self.entry_primary_source_id, True),
                 (self.combo_primary_source_family, True),

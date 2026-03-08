@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Callable
 
 from ..compat import Image, ImageTk
 from ..helpers import clamp01
+from ..ocr import OcrSetupError, recognize_greek_word_from_fragments
 from ..widgets import _ToolTip
 
 if TYPE_CHECKING:
@@ -318,7 +319,7 @@ class PrimarySourceWordEditorDialog(tk.Toplevel):
         btn_save_new = ttk.Button(controls, text="Сохранить + новое слово", command=self.save_to_db_and_prepare_new)
         btn_save_new.grid(row=0, column=1, padx=(2, 2))
 
-        btn_ocr = ttk.Button(controls, text="OCR", command=self._ocr_placeholder)
+        btn_ocr = ttk.Button(controls, text="OCR", command=self._run_ocr)
         btn_ocr.grid(row=0, column=2, padx=(2, 2))
 
         self.btn_greek_keyboard = ttk.Button(controls, text="ΑΒΓ", command=self._toggle_greek_keyboard)
@@ -401,7 +402,7 @@ class PrimarySourceWordEditorDialog(tk.Toplevel):
             [
                 (btn_save_close, "Сохранить слово в БД и закрыть окно."),
                 (btn_save_new, "Сохранить текущее слово и сразу подготовить форму для нового."),
-                (btn_ocr, "Заглушка OCR. Функционал будет добавлен позже."),
+                (btn_ocr, "Распознать слово по выделенным прямоугольникам."),
                 (btn_find_strong, "Найти номер Стронга по слову из поля 'Слово'."),
                 (self.btn_greek_keyboard, "Показать/скрыть экранную клавиатуру с греческими буквами."),
                 (self.mode_combo, "Режим работы с прямоугольниками: рисование, перемещение или удаление."),
@@ -427,8 +428,42 @@ class PrimarySourceWordEditorDialog(tk.Toplevel):
         for widget, text in items:
             self._tooltips.append(_ToolTip(widget, text))
 
-    def _ocr_placeholder(self) -> None:
-        messagebox.showinfo("OCR", "Функция OCR пока не реализована.", parent=self)
+    def _run_ocr(self) -> None:
+        if self.image is None:
+            messagebox.showwarning("OCR", "Изображение не загружено.", parent=self)
+            return
+        if not self.rectangles:
+            messagebox.showinfo("OCR", "Сначала разметьте прямоугольники слова.", parent=self)
+            return
+
+        try:
+            recognized = recognize_greek_word_from_fragments(
+                self.image,
+                self.rectangles,
+                source_id=self.source_id,
+            )
+        except OcrSetupError as exc:
+            messagebox.showwarning("OCR", str(exc), parent=self)
+            self._set_status_note("OCR не настроен.")
+            return
+        except Exception as exc:
+            messagebox.showerror("OCR", f"Ошибка OCR: {exc}", parent=self)
+            self._set_status_note("OCR завершился с ошибкой.")
+            return
+
+        if not recognized:
+            messagebox.showinfo(
+                "OCR",
+                "По заданным прямоугольникам не удалось распознать слово.",
+                parent=self,
+            )
+            self._set_status_note("OCR ничего не нашел.")
+            return
+
+        self.word_text_var.set(recognized)
+        self.word_entry.focus_set()
+        self.word_entry.icursor(tk.END)
+        self._set_status_note(f"OCR: {recognized}")
 
     def _find_strong_for_word(self) -> None:
         word = self.word_text_var.get().strip()
