@@ -103,6 +103,7 @@
 - [x] Задача [P0]: добавить automated enforcement для запрета новых файлов в legacy-каталогах.
 - [x] Задача [P0]: зафиксировать zero-legacy migration plan по всем legacy-каталогам.
 - [x] Подшаг [P3.5.A]: выполнить `Wave A` миграцию `primary_sources` (screens/viewmodels/repositories/services).
+- [x] Подшаг [P3.5.B]: выполнить `Wave B` миграцию `topics + main + download`.
 - [ ] Задача [P1]: мигрировать `lib/screens/*` в `features/*/presentation/*` и `shared/ui/*`.
 - [ ] Задача [P1]: мигрировать `lib/viewmodels/*` в `features/*/presentation/controllers/*` (или orchestrators).
 - [ ] Задача [P1]: мигрировать `lib/repositories/*` в `features/*/data/repositories/*`.
@@ -192,7 +193,7 @@
 
 | Legacy каталог | Dart files | Target location |
 |---|---:|---|
-| `lib/screens` | 16 | `lib/features/*/presentation/*`, `lib/shared/ui/*` |
+| `lib/screens` | 9 | `lib/features/*/presentation/*`, `lib/shared/ui/*` |
 | `lib/viewmodels` | 3 | `lib/features/*/presentation/controllers/*` |
 | `lib/repositories` | 1 | `lib/features/*/data/repositories/*` |
 | `lib/services` | 0 (removed) | `lib/features/*/application/*`, `lib/infra/*` |
@@ -1230,3 +1231,39 @@
   - New risks: remaining legacy imports остаются в `screens/main|topic|about|settings|download`, `viewmodels`, `repositories`, `utils` и др.
   - Mitigations: перейти к `Wave B` (topics/main/download) с тем же подходом и валидацией после каждого шага.
   - Next task: Phase 3.5 / P1 — Wave B (`topics + main + download`) migration.
+
+#### [2026-03-08 23:34] Phase 3.5 / Task P1 (Wave B done) / Migrate topics-main-download legacy slice
+- Статус: done
+- Priority: P1
+- What changed:
+  - Legacy `screens/download/download_screen.dart` перенесен в feature module:
+    - `lib/features/download/presentation/screens/download_screen.dart`
+    - добавлен barrel `lib/features/download/download.dart`.
+  - `app_router.dart` переведен с legacy import на feature import для `DownloadScreen`.
+  - Legacy compatibility wrappers удалены:
+    - `lib/screens/main/*`
+    - `lib/screens/topic/*`
+    - `lib/screens/download/*`
+  - Обновлен `scripts/legacy_structure_allowlist.txt` после удаления legacy файлов Wave B.
+- Why changed:
+  - Закрыть второй zero-legacy migration slice и сократить остаток legacy-каталогов без перехода к следующему шагу до compile-ready состояния.
+- Scope (files/modules):
+  - `lib/features/download/download.dart`
+  - `lib/features/download/presentation/screens/download_screen.dart`
+  - `lib/app_router.dart`
+  - `scripts/legacy_structure_allowlist.txt`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: в `lib/screens` остаются legacy папки `about` и `settings`; также остаются `viewmodels/repositories/common_widgets/controllers/models/db/managers/utils`.
+  - Mitigations: следующий шаг `Wave C` закрывает `about + settings` legacy cleanup.
+  - Next task: Phase 3.5 / P1 — Wave C (`about + settings`) migration.

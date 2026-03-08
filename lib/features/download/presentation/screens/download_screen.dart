@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:revelation/common_widgets/icon_link_item.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import '../../common_widgets/icon_link_item.dart';
-import '../../utils/app_constants.dart';
-import '../../utils/common.dart';
+import 'package:revelation/utils/app_constants.dart';
+import 'package:revelation/utils/common.dart';
 
 class DownloadScreen extends StatelessWidget {
   const DownloadScreen({super.key});

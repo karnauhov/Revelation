@@ -41,14 +41,7 @@ lib/screens/about/library_card.dart
 lib/screens/about/library_list.dart
 lib/screens/about/recommended_card.dart
 lib/screens/about/recommended_list.dart
-lib/screens/download/download_screen.dart
-lib/screens/main/drawer_content.dart
-lib/screens/main/drawer_item.dart
-lib/screens/main/main_screen.dart
-lib/screens/main/topic_card.dart
-lib/screens/main/topic_list.dart
 lib/screens/settings/settings_screen.dart
-lib/screens/topic/topic_screen.dart
 lib/utils/app_constants.dart
 lib/utils/app_link_handler.dart
 lib/utils/app_logger_formatter.dart

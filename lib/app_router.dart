@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/features/about/about.dart' show AboutScreen;
+import 'package:revelation/features/download/download.dart' show DownloadScreen;
 import 'package:revelation/features/settings/settings.dart' show SettingsScreen;
 import 'package:revelation/features/topics/topics.dart'
     show MainScreen, TopicScreen;
@@ -11,7 +12,6 @@ import 'package:revelation/utils/common.dart';
 import 'package:revelation/controllers/audio_controller.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/primary_source_screen.dart';
 import 'package:revelation/features/primary_sources/presentation/list/primary_sources_screen.dart';
-import 'package:revelation/screens/download/download_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class AppRouter {
