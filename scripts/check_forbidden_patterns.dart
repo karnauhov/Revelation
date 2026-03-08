@@ -110,6 +110,63 @@ void main() {
     }
   }
 
+  final structureChecks = <MapEntry<String, List<String>>>[
+    MapEntry(
+      'Legacy folders should not gain new Dart files',
+      _checkLegacyFolderGrowth(
+        allowlistPath: 'scripts/legacy_structure_allowlist.txt',
+        legacyRoots: const <String>[
+          'lib/screens',
+          'lib/viewmodels',
+          'lib/repositories',
+          'lib/services',
+          'lib/common_widgets',
+          'lib/managers',
+          'lib/controllers',
+          'lib/models',
+          'lib/db',
+          'lib/utils',
+        ],
+      ),
+    ),
+    MapEntry(
+      'lib top-level folders should match approved architecture set',
+      _checkUnexpectedTopLevelFolders(
+        approvedFolders: const <String>{
+          'app',
+          'core',
+          'infra',
+          'shared',
+          'features',
+          'l10n',
+          'common_widgets',
+          'controllers',
+          'db',
+          'managers',
+          'models',
+          'repositories',
+          'screens',
+          'services',
+          'utils',
+          'viewmodels',
+        },
+      ),
+    ),
+  ];
+
+  for (final check in structureChecks) {
+    if (check.value.isEmpty) {
+      stdout.writeln('PASS: ${check.key}');
+      continue;
+    }
+
+    hasViolations = true;
+    stdout.writeln('FAIL: ${check.key}');
+    for (final violation in check.value) {
+      stdout.writeln('  - $violation');
+    }
+  }
+
   if (hasViolations) {
     stderr.writeln('Forbidden pattern checks failed.');
     exitCode = 1;
@@ -178,4 +235,68 @@ String _lineAtOffset(String content, int offset) {
   final normalizedStart = start == -1 ? 0 : start + 1;
   final normalizedEnd = end == -1 ? content.length : end;
   return content.substring(normalizedStart, normalizedEnd).trim();
+}
+
+List<String> _checkLegacyFolderGrowth({
+  required String allowlistPath,
+  required List<String> legacyRoots,
+}) {
+  final allowlistFile = File(allowlistPath);
+  if (!allowlistFile.existsSync()) {
+    return <String>['Missing allowlist file: $allowlistPath'];
+  }
+
+  final allowedLegacyFiles = allowlistFile
+      .readAsLinesSync()
+      .map((line) => line.trim())
+      .where((line) => line.isNotEmpty && !line.startsWith('#'))
+      .map((line) => line.replaceAll('\\', '/'))
+      .toSet();
+
+  final currentLegacyFiles = <String>{};
+  for (final root in legacyRoots) {
+    final directory = Directory(root);
+    if (!directory.existsSync()) {
+      continue;
+    }
+
+    for (final entity in directory.listSync(recursive: true)) {
+      if (entity is! File || !entity.path.endsWith('.dart')) {
+        continue;
+      }
+      currentLegacyFiles.add(_normalizePath(entity.path));
+    }
+  }
+
+  final unexpectedFiles =
+      currentLegacyFiles.difference(allowedLegacyFiles).toList()..sort();
+
+  return unexpectedFiles
+      .map((path) => 'New file in legacy folders: $path')
+      .toList(growable: false);
+}
+
+List<String> _checkUnexpectedTopLevelFolders({
+  required Set<String> approvedFolders,
+}) {
+  final libDirectory = Directory('lib');
+  if (!libDirectory.existsSync()) {
+    return <String>['Missing lib directory.'];
+  }
+
+  final currentFolders = libDirectory
+      .listSync()
+      .whereType<Directory>()
+      .map(
+        (dir) =>
+            dir.uri.pathSegments.lastWhere((segment) => segment.isNotEmpty),
+      )
+      .toSet();
+
+  final unexpectedFolders = currentFolders.difference(approvedFolders).toList()
+    ..sort();
+
+  return unexpectedFolders
+      .map((folder) => 'Unexpected top-level lib folder: lib/$folder')
+      .toList(growable: false);
 }

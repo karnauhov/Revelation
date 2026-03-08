@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1/2/3 завершены, Phase 4 в работе (P0 started)`  
+Статус: `Phase 0/1/2/3 завершены, Phase 3.5 в работе (P0 started), Phase 4 paused`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -95,6 +95,34 @@
 - [x] Quality gates пройдены.
 - [x] Criteria of done выполнен.
 
+### Phase 3.5 — Folder/module structure governance
+- [x] Цель фазы зафиксирована: привести структуру каталогов к feature-first target и предотвратить разрастание legacy.
+- [x] Обоснование фазы зафиксировано: расположение файлов является архитектурным контрактом, а не косметикой.
+- [x] Задача [P0]: выполнить фактический аудит `lib/*` против `section 10` target-structure.
+- [x] Задача [P0]: зафиксировать mandatory file placement rule как отдельное правило архитектуры.
+- [x] Задача [P0]: добавить automated enforcement для запрета новых файлов в legacy-каталогах.
+- [x] Задача [P0]: зафиксировать zero-legacy migration plan по всем legacy-каталогам.
+- [ ] Задача [P1]: мигрировать `lib/screens/*` в `features/*/presentation/*` и `shared/ui/*`.
+- [ ] Задача [P1]: мигрировать `lib/viewmodels/*` в `features/*/presentation/controllers/*` (или orchestrators).
+- [ ] Задача [P1]: мигрировать `lib/repositories/*` в `features/*/data/repositories/*`.
+- [ ] Задача [P1]: мигрировать `lib/services/*` в `features/*/application/*` или `infra/*`.
+- [ ] Задача [P1]: мигрировать `lib/common_widgets/*` в `shared/ui/widgets/*`.
+- [ ] Задача [P1]: мигрировать `lib/controllers/*` в `core/*` или `features/*/presentation/controllers/*`.
+- [ ] Задача [P1]: мигрировать `lib/models/*` в `features/*/data/models/*` и `shared/*`.
+- [ ] Задача [P1]: мигрировать `lib/db/*` в `infra/db/{common,localized,connectors}/*`.
+- [ ] Задача [P1]: мигрировать `lib/managers/*` в `infra/*` adapters (legacy wrappers удалить).
+- [ ] Задача [P1]: мигрировать `lib/utils/*` в `core/*`, `shared/utils/*`, `infra/*`.
+- [ ] Задача [P0]: удалить пустые legacy-каталоги из `lib/` и ужесточить checks до `zero legacy`.
+- [ ] Задача [P0]: сузить top-level `lib` до canonical набора (`app/core/infra/shared/features/l10n`).
+- [x] Affected areas верифицированы: `lib/*`, `scripts/check_forbidden_patterns.dart`, `docs/architecture/*`.
+- [x] Риски проверены и записаны.
+- [x] Dependencies/prerequisites подтверждены (`Phase 3 completed`).
+- [x] Relevant skills назначены.
+- [x] Test expectations выполнены.
+- [x] Docs update expectations выполнены.
+- [x] Quality gates пройдены.
+- [ ] Criteria of done выполнен.
+
 ### Phase 4 — Testing hardening and CI enforcement
 - [x] Цель фазы зафиксирована: сделать качество воспроизводимым и enforceable.
 - [x] Обоснование фазы зафиксировано: без этого архитектура деградирует обратно.
@@ -156,6 +184,60 @@
 - Любое завершение задачи фиксировать записью в логе ниже.
 - Любой `P0` шаг без тестов/валидации не считается завершенным.
 - Этот файл пока ведется на русском; перевод на английский делаем при закрытии миграции.
+
+## 4.1 Zero-Legacy План Миграции Каталогов
+
+### 4.1.1 Текущий legacy inventory (на 2026-03-08)
+
+| Legacy каталог | Dart files | Target location |
+|---|---:|---|
+| `lib/screens` | 24 | `lib/features/*/presentation/*`, `lib/shared/ui/*` |
+| `lib/viewmodels` | 5 | `lib/features/*/presentation/controllers/*` |
+| `lib/repositories` | 3 | `lib/features/*/data/repositories/*` |
+| `lib/services` | 2 | `lib/features/*/application/*`, `lib/infra/*` |
+| `lib/common_widgets` | 5 | `lib/shared/ui/widgets/*` |
+| `lib/controllers` | 2 | `lib/core/*`, `lib/features/*/presentation/controllers/*` |
+| `lib/models` | 17 | `lib/features/*/data/models/*`, `lib/shared/*` |
+| `lib/db` | 8 | `lib/infra/db/{common,localized,connectors}/*` |
+| `lib/managers` | 2 | `lib/infra/*` (adapter implementations) |
+| `lib/utils` | 22 | `lib/core/*`, `lib/shared/utils/*`, `lib/infra/*` |
+
+### 4.1.2 Волны миграции (без legacy остатка)
+
+1. `Wave A (P0)`: `primary_sources` вертикальный срез
+   - `screens/primary_source/*`, `screens/primary_sources/*`, `viewmodels/primary_source*`, `repositories/pages_repository.dart`, `repositories/primary_sources_db_repository.dart`, `services/description_*`.
+   - Target: `features/primary_sources/{presentation,application,data}` + `shared/ui/widgets`.
+   - Exit: нет imports из `screens/viewmodels/repositories/services` в primary_sources feature.
+2. `Wave B (P0)`: `topics + main + download`
+   - `screens/main/*`, `screens/topic/*`, `screens/download/*`, `viewmodels/main_view_model.dart`.
+   - Target: `features/topics/*`, `features/download/presentation/*`.
+   - Exit: роуты используют только feature-пути.
+3. `Wave C (P1)`: `about + settings` legacy cleanup
+   - удалить оставшиеся adapters и imports на `screens/about/*`, `screens/settings/*`.
+   - Target: `features/about/*`, `features/settings/*` already canonical.
+   - Exit: `lib/screens/about` и `lib/screens/settings` удалены.
+4. `Wave D (P1)`: shared UI и контроллеры
+   - `common_widgets/*`, `controllers/*`.
+   - Target: `shared/ui/widgets/*`, `core/*` или feature controllers.
+   - Exit: `lib/common_widgets` и `lib/controllers` удалены.
+5. `Wave E (P1)`: data contracts/models consolidation
+   - `models/*`, `repositories/*`, `services/*` остатки.
+   - Target: feature-local `data/models`, `data/repositories`, `application/*`, plus minimal `shared/*`.
+   - Exit: `lib/models`, `lib/repositories`, `lib/services` удалены.
+6. `Wave F (P0)`: infra finalization
+   - `db/*`, `managers/*`, `utils/*` остатки.
+   - Target: `infra/db/*`, `infra/remote/*`, `core/*`, `shared/utils/*`.
+   - Exit: `lib/db`, `lib/managers`, `lib/utils` удалены.
+7. `Wave G (P0)`: hard cleanup and policy lock
+   - удалить legacy allowlist, ужесточить checks до запрета legacy каталогов как таковых.
+   - итоговый top-level `lib`: только `app/core/infra/shared/features/l10n`.
+
+### 4.1.3 Definition of Done (Zero Legacy)
+
+- В `lib/` отсутствуют legacy-каталоги: `screens`, `viewmodels`, `repositories`, `services`, `common_widgets`, `controllers`, `models`, `db`, `managers`, `utils`.
+- Все imports переведены на canonical target-пути.
+- `scripts/check_forbidden_patterns.dart` падает при появлении любого legacy каталога/файла.
+- После каждой волны обязательны: `dart run scripts/check_forbidden_patterns.dart`, `flutter analyze`, `flutter test`.
 
 ---
 
@@ -1032,4 +1114,76 @@
 - Risks / follow-ups:
   - New risks: widget coverage пока минимальное (1 smoke test), что недостаточно для матрицы критичных модулей.
   - Mitigations: следующим шагом покрыть матрицей critical modules (`topics`, `settings`, `primary_sources`) и закрепить это в CI.
-  - Next task: Phase 4 / P0 — тестовые матрицы по critical feature modules.
+  - Next task: Phase 3.5 / P0 — структурный аудит и file placement governance (по запросу владельца проекта).
+
+#### [2026-03-08 23:10] Phase 3.5 / Task P0 (partial) / Structure audit and mandatory file placement governance
+- Статус: partial
+- Priority: P0
+- What changed:
+  - Проведен полный аудит текущей структуры `lib/*` против `section 10` target-structure.
+  - Добавлены отдельные docs по границам и размещению файлов:
+    - `docs/architecture/module-boundaries.ru.md`
+    - `docs/architecture/module-boundaries.en.md`
+  - Зафиксировано обязательное правило размещения новых файлов:
+    - новые файлы допускаются только в `app/core/infra/shared/features/l10n`,
+    - новые файлы в legacy-папках запрещены (кроме явно задокументированных compatibility adapters).
+  - Усилен автоматический контроль структуры:
+    - `scripts/check_forbidden_patterns.dart` теперь проверяет появление новых `.dart` файлов в legacy-папках;
+    - добавлен baseline allowlist: `scripts/legacy_structure_allowlist.txt`;
+    - добавлена проверка approved top-level папок `lib/`.
+- Why changed:
+  - Вынести контроль структуры каталогов в отдельный архитектурный этап и сделать размещение файлов enforceable, а не только “рекомендованным”.
+- Scope (files/modules):
+  - `docs/architecture/module-boundaries.ru.md`
+  - `docs/architecture/module-boundaries.en.md`
+  - `scripts/check_forbidden_patterns.dart`
+  - `scripts/legacy_structure_allowlist.txt`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/module-boundaries.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/architecture/module-boundaries.en.md`)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: миграция legacy к canonical структуре остается объемной и требует поэтапного переноса модулей.
+  - Mitigations: использовать allowlist как анти-регрессионный stop-gap и дальше переносить legacy срезами (`primary_sources`, затем `shared widgets`, затем `services/repositories`).
+  - Next task: Phase 3.5 / P1 — выполнить первый structural migration slice и сократить legacy footprint.
+
+#### [2026-03-08 23:18] Phase 3.5 / Task P0 (done) / Add zero-legacy migration plan for all legacy folders
+- Статус: done
+- Priority: P0
+- What changed:
+  - Выполнен полный inventory legacy-каталогов и зафиксирован в roadmap (`screens/viewmodels/repositories/services/common_widgets/controllers/models/db/managers/utils`).
+  - В `Phase 3.5` добавлен детальный zero-legacy чеклист по каждому legacy-каталогу.
+  - Добавлена отдельная секция `4.1 Zero-Legacy План Миграции Каталогов`:
+    - таблица текущего inventory с количеством файлов,
+    - волны миграции `Wave A..G`,
+    - финальные criteria/definition of done без legacy-каталогов.
+  - Обновлены правила module boundaries (RU/EN):
+    - legacy-каталоги обозначены как временное состояние,
+    - конечный статус зафиксирован как canonical `app/core/infra/shared/features/l10n`.
+- Why changed:
+  - По запросу владельца проекта приоритизирована полная ликвидация legacy-каталогов как отдельная архитектурная цель до продолжения дальнейших этапов.
+- Scope (files/modules):
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/architecture/module-boundaries.ru.md`
+  - `docs/architecture/module-boundaries.en.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/architecture/module-boundaries.ru.md`)
+  - EN updated: yes (`docs/architecture/module-boundaries.en.md`)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: объем migration waves высокий, возможны большие PR и конфликты import-path.
+  - Mitigations: выполнять волнами по вертикальным срезам (сначала `primary_sources`), фиксируя compile-ready состояние после каждой волны.
+  - Next task: Phase 3.5 / P1 — Wave A (`primary_sources`) migration с удалением соответствующих legacy-путей.
