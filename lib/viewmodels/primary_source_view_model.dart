@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/description_panel_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
@@ -62,6 +63,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool _isMenuOpen = false;
   Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
+  final LatestRequestGuard _imageLoadRequestGuard = LatestRequestGuard();
+  final LatestRequestGuard _localPagesRequestGuard = LatestRequestGuard();
   bool _isDisposed = false;
 
   bool get isMobileWeb => _isMobileWeb;
@@ -136,11 +139,22 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   Future<void> loadImage(String page, {bool isReload = false}) async {
+    final requestToken = _imageLoadRequestGuard.start();
     try {
       isLoading = true;
       imageShown = false;
       scaleAndPositionRestored = false;
-      await _getPagesSettings();
+      notifyListeners();
+
+      final pageSettings = await _getPagesSettings();
+      if (!_canApplyImageRequest(requestToken)) {
+        return;
+      }
+      _applyPageSettings(pageSettings);
+
+      if (!_canApplyImageRequest(requestToken)) {
+        return;
+      }
       notifyListeners();
 
       final loadResult = await _imageLoadingOrchestrator.loadPageImage(
@@ -151,6 +165,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
         isReload: _isWeb ? false : isReload,
         previousPageLoaded: localPageLoaded[page],
       );
+      if (!_canApplyImageRequest(requestToken)) {
+        return;
+      }
 
       localPageLoaded[page] = loadResult.pageLoaded;
       refreshError = loadResult.refreshError;
@@ -166,8 +183,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
         case ImageContentAction.keep:
           break;
       }
-    } catch (e) {
-      log.error('Image loading error: $e');
+    } catch (error, stackTrace) {
+      if (_canApplyImageRequest(requestToken)) {
+        log.error('Image loading error: $error', stackTrace);
+      }
+    }
+    if (!_canApplyImageRequest(requestToken)) {
+      return;
     }
     _updateTransformStatus();
     isLoading = false;
@@ -181,7 +203,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     resetColorReplacement();
     notifyListeners();
     if (newPage != null) {
-      loadImage(newPage.image);
+      await loadImage(newPage.image);
     } else {
       scaleAndPositionRestored = true;
       savedX = dx = 0;
@@ -434,11 +456,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _getPagesSettings() async {
-    final settings = await _pageSettingsOrchestrator.loadSettingsForPage(
+  Future<PageSettingsState> _getPagesSettings() {
+    return _pageSettingsOrchestrator.loadSettingsForPage(
       source: primarySource,
       selectedPage: selectedPage,
     );
+  }
+
+  void _applyPageSettings(PageSettingsState settings) {
     _pageSettings = settings.rawSettings;
     savedX = dx = settings.posX;
     savedY = dy = settings.posY;
@@ -453,12 +478,24 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   Future<void> _checkLocalPages() async {
+    final requestToken = _localPagesRequestGuard.start();
     final availability = await _imageLoadingOrchestrator
         .detectLocalPageAvailability(pages: primarySource.pages, isWeb: _isWeb);
+    if (!_canApplyLocalPagesRequest(requestToken)) {
+      return;
+    }
     localPageLoaded
       ..clear()
       ..addAll(availability);
     notifyListeners();
+  }
+
+  bool _canApplyImageRequest(RequestToken token) {
+    return !_isDisposed && _imageLoadRequestGuard.isActive(token);
+  }
+
+  bool _canApplyLocalPagesRequest(RequestToken token) {
+    return !_isDisposed && _localPagesRequestGuard.isActive(token);
   }
 
   void _updateTransformStatus() {
@@ -504,6 +541,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _imageLoadRequestGuard.cancelActive();
+    _localPagesRequestGuard.cancelActive();
     _restoreDebounceTimer?.cancel();
     _saveDebounceTimer?.cancel();
     imageController.transformationController.removeListener(
