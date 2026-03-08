@@ -9,9 +9,9 @@ Source-Commit: `working-tree`
 
 ## 2. Current Baseline
 - Unit tests: минимальный baseline (существующий набор smoke/unit).
-- Widget tests: отсутствуют как обязательный слой.
+- Widget tests: минимальный smoke baseline присутствует и запускается отдельно в PR CI.
 - Integration tests: отсутствуют в регулярном цикле.
-- PR quality gates: до Phase 0 не покрывали полный цикл `format + analyze + test`.
+- PR quality gates: `format + analyze + unit + widget + forbidden patterns` на PR в `main`.
 
 ## 3. Target Test Pyramid
 - Unit tests: 60-70%.
@@ -21,7 +21,8 @@ Source-Commit: `working-tree`
 ## 4. Phase 0 Mandatory Gates
 - Проверка форматирования: `dart format --output=none --set-exit-if-changed .`
 - Статический анализ: `flutter analyze`
-- Тесты: `flutter test`
+- Unit tests: `flutter test --exclude-tags widget`
+- Widget tests: `flutter test --tags widget`
 - Быстрые архитектурные grep-checks для forbidden patterns.
 
 ## 5. Test Harness Baseline
@@ -38,6 +39,8 @@ Source-Commit: `working-tree`
 ```bash
 dart format .
 flutter analyze
+flutter test --exclude-tags widget
+flutter test --tags widget
 flutter test
 dart run scripts/check_forbidden_patterns.dart
 ```

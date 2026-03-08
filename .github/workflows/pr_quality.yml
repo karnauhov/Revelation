@@ -28,8 +28,11 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-      - name: Unit and widget tests
-        run: flutter test
+      - name: Unit tests
+        run: flutter test --exclude-tags widget
+
+      - name: Widget tests
+        run: flutter test --tags widget
 
       - name: Forbidden pattern checks
         run: dart run scripts/check_forbidden_patterns.dart

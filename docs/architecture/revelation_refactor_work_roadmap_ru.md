@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1/2 завершены, Phase 3 в работе (P0 completed, P1 started)`  
+Статус: `Phase 0/1/2/3 завершены, Phase 4 в работе (P0 started)`  
 Версия roadmap: `v1`  
 Дата создания: `2026-03-08`
 
@@ -85,20 +85,20 @@
 - [x] Подшаг [P3.3]: description panel orchestration.
 - [x] Задача [P0]: убрать untyped `Map extra` contracts для critical routes.
 - [x] Задача [P1]: ввести error/result model и user-facing fallback states.
-- [ ] Задача [P1]: стандартизировать async patterns (request token/cancel/ignore stale result).
-- [ ] Affected areas верифицированы: `lib/managers/db_manager.dart`, `lib/repositories/primary_sources_db_repository.dart`, `lib/screens/topic/*`, `lib/screens/primary_source/*`, `lib/viewmodels/primary_source_view_model.dart`, `lib/app_router.dart`.
-- [ ] Риски проверены и записаны.
+- [x] Задача [P1]: стандартизировать async patterns (request token/cancel/ignore stale result).
+- [x] Affected areas верифицированы: `lib/managers/db_manager.dart`, `lib/repositories/primary_sources_db_repository.dart`, `lib/screens/topic/*`, `lib/screens/primary_source/*`, `lib/viewmodels/primary_source_view_model.dart`, `lib/app_router.dart`.
+- [x] Риски проверены и записаны.
 - [x] Dependencies/prerequisites подтверждены (`Phase 2 completed`).
 - [x] Relevant skills назначены.
-- [ ] Test expectations выполнены.
-- [ ] Docs update expectations выполнены.
-- [ ] Quality gates пройдены.
-- [ ] Criteria of done выполнен.
+- [x] Test expectations выполнены.
+- [x] Docs update expectations выполнены.
+- [x] Quality gates пройдены.
+- [x] Criteria of done выполнен.
 
 ### Phase 4 — Testing hardening and CI enforcement
-- [ ] Цель фазы зафиксирована: сделать качество воспроизводимым и enforceable.
-- [ ] Обоснование фазы зафиксировано: без этого архитектура деградирует обратно.
-- [ ] Задача [P0]: unit+widget tests обязательны в PR CI.
+- [x] Цель фазы зафиксирована: сделать качество воспроизводимым и enforceable.
+- [x] Обоснование фазы зафиксировано: без этого архитектура деградирует обратно.
+- [x] Задача [P0]: unit+widget tests обязательны в PR CI.
 - [ ] Задача [P0]: тестовые матрицы по critical feature modules.
 - [ ] Задача [P1]: selective integration smoke tests (nightly/manual/label-based).
 - [ ] Задача [P1]: coverage trend tracking.
@@ -106,7 +106,7 @@
 - [ ] Affected areas верифицированы: `.github/workflows/*`, `test/*`, `integration_test/*`.
 - [ ] Риски проверены и записаны.
 - [ ] Dependencies/prerequisites подтверждены (`Phase 3 key refactors merged`).
-- [ ] Relevant skills назначены.
+- [x] Relevant skills назначены.
 - [ ] Test expectations выполнены.
 - [ ] Docs update expectations выполнены.
 - [ ] Quality gates пройдены.
@@ -957,3 +957,79 @@
   - New risks: часть legacy слоев все еще использует null/exception-based contracts, поэтому error/result модель пока внедрена не во всех feature потоках.
   - Mitigations: на следующем шаге P1 стандартизировать async patterns (request token/cancel/ignore stale result) и продолжить выравнивание контрактов.
   - Next task: Phase 3 / P1 — стандартизировать async patterns (request token/cancel/ignore stale result).
+
+#### [2026-03-08 22:53] Phase 3 / Task P1 / Standardize async patterns with latest-request guard
+- Статус: done
+- Priority: P1
+- What changed:
+  - Добавлен общий async guard `LatestRequestGuard` (`lib/core/async/latest_request_guard.dart`) для паттерна request-token/latest-only.
+  - `PrimarySourceViewModel` переведен на latest-request semantics для `loadImage` и `_checkLocalPages`:
+    - устаревшие async ответы игнорируются;
+    - состояние применяется только для активного request token;
+    - на `dispose` активные токены инвалидируются.
+  - `PrimarySourcesViewModel.loadPrimarySources()` переведен с `isLoading-return` на latest-request semantics:
+    - конкурентные вызовы допускаются;
+    - stale результат не перезаписывает состояние более нового запроса;
+    - добавлена безопасная логика `dispose`/`notifyListeners`.
+  - Добавлены unit tests:
+    - `test/core/async/latest_request_guard_test.dart`
+    - `test/viewmodels/primary_sources_view_model_test.dart`
+- Why changed:
+  - Закрыть `Phase 3 / P1` задачу стандартизации async поведения (request token/cancel/ignore stale result) и убрать race-риск перезаписи актуального UI-состояния устаревшими результатами.
+- Scope (files/modules):
+  - `lib/core/async/latest_request_guard.dart`
+  - `lib/viewmodels/primary_source_view_model.dart`
+  - `lib/viewmodels/primary_sources_view_model.dart`
+  - `test/core/async/latest_request_guard_test.dart`
+  - `test/viewmodels/primary_sources_view_model_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass
+  - Widget tests: pass (текущий `flutter test` suite)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: часть non-critical VM (например, `about/settings`) пока использует базовый async pattern без request-token.
+  - Mitigations: при Phase 4 тестовом усилении добавить целевые unit tests на async/dispose сценарии и при необходимости расширить guard pattern.
+  - Next task: Phase 4 / P0 — усиление CI test enforcement (unit+widget matrices).
+
+#### [2026-03-08 22:59] Phase 4 / Task P0 (partial) / Enforce separate unit and widget PR gates
+- Статус: partial
+- Priority: P0
+- What changed:
+  - PR workflow `pr_quality.yml` разделен на отдельные шаги:
+    - `flutter test --exclude-tags widget` (unit suite),
+    - `flutter test --tags widget` (widget suite).
+  - Добавлен первый tagged widget smoke test для critical flow:
+    - `test/widget/primary_sources/primary_sources_screen_test.dart`
+    - проверка user-facing error fallback состояния.
+  - Добавлен `dart_test.yaml` с тегом `widget`.
+  - Обновлены testing strategy docs (RU/EN) под новый CI-паттерн (`unit + widget` отдельно).
+- Why changed:
+  - Начать `Phase 4 / P0` с enforceable разделения unit/widget тестов в PR CI и зафиксировать минимальный widget baseline.
+- Scope (files/modules):
+  - `.github/workflows/pr_quality.yml`
+  - `test/widget/primary_sources/primary_sources_screen_test.dart`
+  - `dart_test.yaml`
+  - `docs/testing/strategy.ru.md`
+  - `docs/testing/strategy.en.md`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass
+  - Unit tests: pass (`flutter test --exclude-tags widget`)
+  - Widget tests: pass (`flutter test --tags widget`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+- Docs:
+  - RU updated: yes (`docs/testing/strategy.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/testing/strategy.en.md`)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: widget coverage пока минимальное (1 smoke test), что недостаточно для матрицы критичных модулей.
+  - Mitigations: следующим шагом покрыть матрицей critical modules (`topics`, `settings`, `primary_sources`) и закрепить это в CI.
+  - Next task: Phase 4 / P0 — тестовые матрицы по critical feature modules.

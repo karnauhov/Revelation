@@ -9,9 +9,9 @@ Define a verifiable testing strategy to support safe architectural refactoring.
 
 ## 2. Current Baseline
 - Unit tests: minimal baseline (existing smoke/unit set).
-- Widget tests: not established as a mandatory layer.
+- Widget tests: minimal smoke baseline exists and runs as a separate mandatory PR gate.
 - Integration tests: not part of the regular cycle yet.
-- PR quality gates: before Phase 0 there was no complete `format + analyze + test` gate.
+- PR quality gates: `format + analyze + unit + widget + forbidden patterns` on PR to `main`.
 
 ## 3. Target Test Pyramid
 - Unit tests: 60-70%.
@@ -21,7 +21,8 @@ Define a verifiable testing strategy to support safe architectural refactoring.
 ## 4. Phase 0 Mandatory Gates
 - Format check: `dart format --output=none --set-exit-if-changed .`
 - Static analysis: `flutter analyze`
-- Tests: `flutter test`
+- Unit tests: `flutter test --exclude-tags widget`
+- Widget tests: `flutter test --tags widget`
 - Fast architectural grep checks for forbidden patterns.
 
 ## 5. Test Harness Baseline
@@ -38,6 +39,8 @@ Define a verifiable testing strategy to support safe architectural refactoring.
 ```bash
 dart format .
 flutter analyze
+flutter test --exclude-tags widget
+flutter test --tags widget
 flutter test
 dart run scripts/check_forbidden_patterns.dart
 ```
