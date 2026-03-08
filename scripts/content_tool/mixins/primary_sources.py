@@ -1966,12 +1966,13 @@ class PrimarySourcesMixin:
             logs_wrap.grid(row=3, column=0, sticky="nsew")
             logs_wrap.columnconfigure(0, weight=1)
             logs_wrap.rowconfigure(1, weight=3)
-            logs_wrap.rowconfigure(3, weight=2)
+            logs_wrap.rowconfigure(3, weight=1)
 
             ttk.Label(logs_wrap, text="Журнал обучения").grid(row=0, column=0, sticky="w", pady=(0, 2))
             log_text = tk.Text(
                 logs_wrap,
                 wrap="word",
+                height=24,
                 bg="#000000",
                 fg="#39ff14",
                 insertbackground="#39ff14",
@@ -1986,11 +1987,12 @@ class PrimarySourcesMixin:
 
             ttk.Label(
                 logs_wrap,
-                text="Прогресс (компактный вид, без роста «простыни»)",
+                text="Прогресс",
             ).grid(row=2, column=0, sticky="w", pady=(8, 2))
             progress_text = tk.Text(
                 logs_wrap,
                 wrap="word",
+                height=8,
                 bg="#000000",
                 fg="#39ff14",
                 insertbackground="#39ff14",
@@ -2009,6 +2011,8 @@ class PrimarySourcesMixin:
 
             controls = ttk.Frame(root)
             controls.grid(row=5, column=0, sticky="e", pady=(8, 0))
+            btn_abort = ttk.Button(controls, text="Прервать обучение")
+            btn_abort.pack(side="left", padx=(0, 8))
             btn_open_report = ttk.Button(controls, text="Открыть training_report", state="disabled")
             btn_open_report.pack(side="left")
             btn_close = ttk.Button(controls, text="Закрыть", state="disabled", command=dialog.destroy)
@@ -2031,6 +2035,9 @@ class PrimarySourcesMixin:
                 "progress_recent_last": "",
                 "progress_recent_repeat": 1,
                 "last_line_was_progress": False,
+                "pending_metric_name": "",
+                "process": None,
+                "cancel_requested": False,
             }
 
             def append_log(message: str) -> None:
@@ -2074,6 +2081,14 @@ class PrimarySourcesMixin:
                 if re.match(r"^stage\s+\d+/\d+", line, flags=re.IGNORECASE):
                     return "stage"
                 if lower.startswith("metric:"):
+                    return "metrics"
+                if "val_word_accurac" in lower:
+                    return "metrics"
+                if "val_accuracy" in lower:
+                    return "metrics"
+                if "val_wer" in lower or "val_cer" in lower:
+                    return "metrics"
+                if re.match(r"^val[_\s-]*[a-z0-9_ .:\-…]+$", lower):
                     return "metrics"
                 if any(token in lower for token in ("train_loss", "val_accuracy", "val_word_accuracy", "loss", "accuracy")):
                     return "metrics"
@@ -2146,6 +2161,51 @@ class PrimarySourcesMixin:
 
             btn_open_report.configure(command=open_report)
 
+            def terminate_training_process() -> None:
+                process_obj = state.get("process")
+                if not isinstance(process_obj, subprocess.Popen):
+                    return
+                if process_obj.poll() is not None:
+                    return
+                try:
+                    if os.name == "nt":
+                        subprocess.run(
+                            ["taskkill", "/PID", str(process_obj.pid), "/T", "/F"],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL,
+                            check=False,
+                        )
+                    else:
+                        process_obj.terminate()
+                        try:
+                            process_obj.wait(timeout=5)
+                        except subprocess.TimeoutExpired:
+                            process_obj.kill()
+                except Exception:
+                    pass
+
+            def abort_training() -> None:
+                if not bool(state.get("running", False)):
+                    return
+                confirmed = messagebox.askyesno(
+                    "Прервать обучение?",
+                    (
+                        "Прервать текущее OCR-обучение?\n\n"
+                        "Внимание: прогресс текущего запуска не сохраняется. "
+                        "После прерывания обучение нужно запускать заново."
+                    ),
+                    parent=dialog,
+                )
+                if not confirmed:
+                    return
+                state["cancel_requested"] = True
+                stage_var.set("Остановка обучения...")
+                append_log("Остановка обучения по запросу пользователя...")
+                btn_abort.state(["disabled"])
+                terminate_training_process()
+
+            btn_abort.configure(command=abort_training)
+
             def on_close_requested() -> None:
                 if bool(state.get("running", False)):
                     messagebox.showinfo(
@@ -2175,12 +2235,17 @@ class PrimarySourcesMixin:
                         cwd=str(self._project_root_dir()),
                         env=env,
                     )
+                    state["process"] = process
+                    if bool(state.get("cancel_requested", False)):
+                        terminate_training_process()
                     assert process.stdout is not None
                     for line in process.stdout:
                         events.put(("line", line.rstrip("\n")))
                     exit_code = process.wait()
+                    state["process"] = None
                     events.put(("done", str(exit_code)))
                 except Exception:
+                    state["process"] = None
                     events.put(("error", traceback.format_exc()))
 
             def poll_events() -> None:
@@ -2204,25 +2269,44 @@ class PrimarySourcesMixin:
                         elif is_progress_line(payload):
                             update_compact_progress(payload)
                             state["last_line_was_progress"] = True
+                            stripped = payload.strip()
+                            if re.search(r"[A-Za-zА-Яа-я]", stripped) and not re.search(r"[-+]?\d+(?:\.\d+)?", stripped):
+                                state["pending_metric_name"] = stripped
+                            else:
+                                state["pending_metric_name"] = ""
                         elif bool(state.get("last_line_was_progress", False)) and re.match(
                             r"^[+-]?\d+(?:\.\d+)?$",
                             payload.strip(),
                         ):
-                            update_compact_progress(f"metric: {payload.strip()}")
+                            metric_name = str(state.get("pending_metric_name") or "").strip()
+                            if metric_name:
+                                update_compact_progress(f"metric: {metric_name} = {payload.strip()}")
+                            else:
+                                update_compact_progress(f"metric: {payload.strip()}")
                             state["last_line_was_progress"] = True
+                            state["pending_metric_name"] = ""
                         else:
                             append_log(payload)
                             state["last_line_was_progress"] = False
+                            state["pending_metric_name"] = ""
                         continue
 
                     if kind == "error":
-                        append_log(payload)
+                        if bool(state.get("cancel_requested", False)):
+                            append_log("Обучение прервано пользователем.")
+                        else:
+                            append_log(payload)
                         state["running"] = False
                         state["exit_code"] = 1
                         progress.stop()
-                        stage_var.set("Ошибка запуска обучения")
+                        if bool(state.get("cancel_requested", False)):
+                            stage_var.set("Обучение прервано пользователем")
+                            self._set_status(f"OCR обучение '{source_id}' прервано пользователем.")
+                        else:
+                            stage_var.set("Ошибка запуска обучения")
+                            self._set_status(f"OCR обучение '{source_id}': ошибка запуска.")
                         btn_close.state(["!disabled"])
-                        self._set_status(f"OCR обучение '{source_id}': ошибка запуска.")
+                        btn_abort.state(["disabled"])
                         continue
 
                     if kind == "done":
@@ -2236,10 +2320,14 @@ class PrimarySourcesMixin:
                                 f"OCR модель '{source_id}' обновлена (слов в БД: {words_count})."
                             )
                             self._load_primary_sources()
+                        elif bool(state.get("cancel_requested", False)):
+                            stage_var.set("Обучение прервано пользователем")
+                            self._set_status(f"OCR обучение '{source_id}' прервано пользователем.")
                         else:
                             stage_var.set(f"Обучение завершилось с ошибкой (код {exit_code})")
                             self._set_status(f"OCR обучение '{source_id}' завершилось с ошибкой.")
                         btn_close.state(["!disabled"])
+                        btn_abort.state(["disabled"])
 
                 if bool(state.get("running", False)):
                     dialog.after(120, poll_events)
