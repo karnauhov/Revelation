@@ -18,8 +18,11 @@ import 'package:revelation/features/primary_sources/application/services/primary
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/utils/common.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 
 // Define the intent for exiting pipette or selectArea mode
 class ExitChooseModeIntent extends Intent {
@@ -101,12 +104,22 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
             isMobileWeb: currentIsWeb && isMobileBrowser(),
           ),
         ),
+        BlocProvider<PrimarySourcePageSettingsCubit>(
+          create: (_) => PrimarySourcePageSettingsCubit(
+            PrimarySourcePageSettingsOrchestrator(PagesRepository()),
+          ),
+        ),
+        BlocProvider<PrimarySourceSelectionCubit>(
+          create: (_) => PrimarySourceSelectionCubit(),
+        ),
       ],
       child: ChangeNotifierProvider<PrimarySourceViewModel>(
         create: (context) => PrimarySourceViewModel(
           PagesRepository(),
           primarySource: widget.primarySource,
           imageCubit: context.read<PrimarySourceImageCubit>(),
+          pageSettingsCubit: context.read<PrimarySourcePageSettingsCubit>(),
+          selectionCubit: context.read<PrimarySourceSelectionCubit>(),
           sessionCubit: context.read<PrimarySourceSessionCubit>(),
         ),
         child: Consumer<PrimarySourceViewModel>(

@@ -149,8 +149,8 @@
 - [ ] Задача [P0]: выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы.
 - [x] Подшаг [P3.7.1]: source/session/page context cubit.
 - [x] Подшаг [P3.7.2]: image loading/cache/local availability cubit.
-- [ ] Подшаг [P3.7.3]: page settings persistence cubit.
-- [ ] Подшаг [P3.7.4]: selection cubit (`word/verse/strong`).
+- [x] Подшаг [P3.7.3]: page settings persistence cubit.
+- [x] Подшаг [P3.7.4]: selection cubit (`word/verse/strong`).
 - [ ] Подшаг [P3.7.5]: description panel cubit (content + navigation).
 - [ ] Подшаг [P3.7.6]: viewport/render controls cubit (zoom/layers/tool mode/colors).
 - [ ] Задача [P0]: заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.
@@ -1786,3 +1786,87 @@
   - New risks: `PrimarySourceViewModel` пока остается промежуточным orchestration-слоем для page-settings/selection/description/viewport.
   - Mitigations: следующий подшаг — выделить persistence state page settings в `PrimarySourcePageSettingsCubit`.
   - Next task: Phase 3.7 / Substep `P3.7.3` — page settings persistence cubit.
+
+#### [2026-03-14 16:20] Phase 3.7 / Substep P3.7.3 / Introduce `PrimarySourcePageSettingsCubit` (page settings persistence)
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен новый granular state-slice:
+    - `PrimarySourcePageSettingsState { rawSettings, isNegative, isMonochrome, brightness, contrast, showWordSeparators, showStrongNumbers, showVerseNumbers }`.
+    - `PrimarySourcePageSettingsCubit` с ответственностью за:
+      - загрузку/применение настроек страницы через `PrimarySourcePageSettingsOrchestrator`,
+      - toggle/apply/reset операций page settings,
+      - сохранение/очистку page settings persistence.
+  - `PrimarySourceScreen` расширен до трех cubit-срезов (`session/image/page-settings`) через `MultiBlocProvider`.
+  - `PrimarySourceViewModel` переведен на page-settings cubit как source-of-truth для:
+    - `isNegative/isMonochrome/brightness/contrast`,
+    - `showWordSeparators/showStrongNumbers/showVerseNumbers`,
+    - `pageSettings` persistence операций (`save/remove/reset`).
+  - Добавлен unit-тест suite для page settings cubit:
+    - `test/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit_test.dart`.
+- Why changed:
+  - Закрыть обязательный подшаг `P3.7.3` и отделить persistence/flags state page settings от монолитного VM перед выделением selection (`P3.7.4`) и description (`P3.7.5`).
+- Scope (files/modules):
+  - `lib/features/primary_sources/presentation/bloc/primary_source_page_settings_state.dart`
+  - `lib/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart`
+  - `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`
+  - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
+  - `lib/features/primary_sources/primary_sources.dart`
+  - `test/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass (page settings persistence выделен в отдельный cubit)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого подшага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `PrimarySourceViewModel` пока сохраняет selection/content orchestration и state binding для description flow.
+  - Mitigations: следующий подшаг — выделить selection state (`word/verse/strong`) в `PrimarySourceSelectionCubit`.
+  - Next task: Phase 3.7 / Substep `P3.7.4` — selection cubit (`word/verse/strong`).
+
+#### [2026-03-14 16:40] Phase 3.7 / Substep P3.7.4 / Introduce `PrimarySourceSelectionCubit` (`word/verse/strong`)
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен новый granular state-slice:
+    - `PrimarySourceSelectionState { currentType, currentNumber }`.
+    - `PrimarySourceSelectionCubit` с командами:
+      - `setSelection`, `selectWord`, `selectVerse`, `selectStrongNumber`, `clearSelection`.
+  - `PrimarySourceScreen` обновлен на `MultiBlocProvider` с новым `PrimarySourceSelectionCubit`.
+  - `PrimarySourceViewModel` переведен на selection cubit как source-of-truth для:
+    - `currentDescriptionType`,
+    - `currentDescriptionNumber`.
+  - В `PrimarySourceViewModel` добавлена синхронизация selection-cubit с текущим description flow (`showInfoForWord/Verse/Strong`, navigation, common info/content update) через existing orchestrator до следующего шага `P3.7.5`.
+  - Обновлены feature exports:
+    - `lib/features/primary_sources/primary_sources.dart`.
+  - Добавлен unit-тест suite для selection cubit:
+    - `test/features/primary_sources/presentation/bloc/primary_source_selection_cubit_test.dart`.
+- Why changed:
+  - Закрыть обязательный подшаг `P3.7.4` и отделить selection state (`word/verse/strong`) от `PrimarySourceViewModel`, сохраняя поведение description navigation до полного перехода на description cubit в `P3.7.5`.
+- Scope (files/modules):
+  - `lib/features/primary_sources/presentation/bloc/primary_source_selection_state.dart`
+  - `lib/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart`
+  - `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`
+  - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
+  - `lib/features/primary_sources/primary_sources.dart`
+  - `test/features/primary_sources/presentation/bloc/primary_source_selection_cubit_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass (selection state `word/verse/strong` выделен в отдельный cubit)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого подшага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: description content/navigation по-прежнему управляется orchestrator-слоем; пока сохранена временная синхронизация selection между VM и orchestrator.
+  - Mitigations: следующий подшаг — вынести description panel (content + navigation) в отдельный cubit и убрать transitional sync.
+  - Next task: Phase 3.7 / Substep `P3.7.5` — description panel cubit (content + navigation).

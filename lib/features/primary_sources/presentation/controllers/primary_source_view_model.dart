@@ -6,6 +6,10 @@ import 'package:revelation/features/primary_sources/application/orchestrators/de
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_state.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_state.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
@@ -19,10 +23,16 @@ import 'package:revelation/features/primary_sources/presentation/controllers/ima
 
 class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySourceDescriptionPanelOrchestrator _descriptionPanelOrchestrator;
-  final PrimarySourcePageSettingsOrchestrator _pageSettingsOrchestrator;
   late final PrimarySourceImageCubit _imageCubit;
   late final bool _ownsImageCubit;
   StreamSubscription<PrimarySourceImageState>? _imageStateSubscription;
+  late final PrimarySourcePageSettingsCubit _pageSettingsCubit;
+  late final bool _ownsPageSettingsCubit;
+  StreamSubscription<PrimarySourcePageSettingsState>?
+  _pageSettingsStateSubscription;
+  late final PrimarySourceSelectionCubit _selectionCubit;
+  late final bool _ownsSelectionCubit;
+  StreamSubscription<PrimarySourceSelectionState>? _selectionStateSubscription;
   final PrimarySourceSessionCubit _sessionCubit;
   final bool _ownsSessionCubit;
   bool scaleAndPositionRestored = false;
@@ -32,24 +42,16 @@ class PrimarySourceViewModel extends ChangeNotifier {
   double savedX = 0;
   double savedY = 0;
   double savedScale = 0;
-  bool isNegative = false;
-  bool isMonochrome = false;
-  double brightness = 0;
-  double contrast = 100;
   Rect? selectedArea;
   Color colorToReplace = const Color(0xFFFFFFFF);
   Color newColor = const Color(0xFFFFFFFF);
   double tolerance = 0;
-  bool showWordSeparators = false;
-  bool showStrongNumbers = false;
-  bool showVerseNumbers = true;
 
   late ImagePreviewController imageController;
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
     const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false),
   );
 
-  late String _pageSettings;
   late final bool _isWeb;
   late final bool _isMobileWeb;
   bool _pipetteMode = false;
@@ -68,6 +70,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool get refreshError => _imageCubit.state.refreshError;
   bool get imageShown => _imageCubit.state.imageShown;
   Map<String, bool?> get localPageLoaded => _imageCubit.state.localPageLoaded;
+  bool get isNegative => _pageSettingsCubit.state.isNegative;
+  bool get isMonochrome => _pageSettingsCubit.state.isMonochrome;
+  double get brightness => _pageSettingsCubit.state.brightness;
+  double get contrast => _pageSettingsCubit.state.contrast;
+  bool get showWordSeparators => _pageSettingsCubit.state.showWordSeparators;
+  bool get showStrongNumbers => _pageSettingsCubit.state.showStrongNumbers;
+  bool get showVerseNumbers => _pageSettingsCubit.state.showVerseNumbers;
   int get maxTextureSize => _imageCubit.state.maxTextureSize;
   bool get pipetteMode => _pipetteMode;
   bool get selectAreaMode => _selectAreaMode;
@@ -75,19 +84,20 @@ class PrimarySourceViewModel extends ChangeNotifier {
   model.Page? get selectedPage => _sessionCubit.state.selectedPage;
   String get imageName => _sessionCubit.state.imageName;
   bool get isMenuOpen => _sessionCubit.state.isMenuOpen;
-  String get pageSettings => _pageSettings;
+  String get pageSettings => _pageSettingsCubit.state.rawSettings;
   bool get showDescription =>
       _descriptionPanelOrchestrator.state.showDescription;
   String? get descriptionContent => _descriptionPanelOrchestrator.state.content;
   DescriptionKind get currentDescriptionType =>
-      _descriptionPanelOrchestrator.state.currentType;
-  int? get currentDescriptionNumber =>
-      _descriptionPanelOrchestrator.state.currentNumber;
+      _selectionCubit.state.currentType;
+  int? get currentDescriptionNumber => _selectionCubit.state.currentNumber;
 
   PrimarySourceViewModel(
     PagesRepository pagesRepository, {
     required PrimarySource primarySource,
     PrimarySourceImageCubit? imageCubit,
+    PrimarySourcePageSettingsCubit? pageSettingsCubit,
+    PrimarySourceSelectionCubit? selectionCubit,
     PrimarySourceSessionCubit? sessionCubit,
     DescriptionContentService? descriptionService,
     PrimarySourcePageSettingsOrchestrator? pageSettingsOrchestrator,
@@ -97,9 +107,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
            PrimarySourceDescriptionPanelOrchestrator(
              descriptionService: descriptionService,
            ),
-       _pageSettingsOrchestrator =
-           pageSettingsOrchestrator ??
-           PrimarySourcePageSettingsOrchestrator(pagesRepository),
        _sessionCubit =
            sessionCubit ?? PrimarySourceSessionCubit(source: primarySource),
        _ownsSessionCubit = sessionCubit == null {
@@ -122,6 +129,22 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _imageStateSubscription = _imageCubit.stream.listen(
       (_) => notifyListeners(),
     );
+    _ownsPageSettingsCubit = pageSettingsCubit == null;
+    _pageSettingsCubit =
+        pageSettingsCubit ??
+        PrimarySourcePageSettingsCubit(
+          pageSettingsOrchestrator ??
+              PrimarySourcePageSettingsOrchestrator(pagesRepository),
+        );
+    _pageSettingsStateSubscription = _pageSettingsCubit.stream.listen(
+      (_) => notifyListeners(),
+    );
+    _ownsSelectionCubit = selectionCubit == null;
+    _selectionCubit = selectionCubit ?? PrimarySourceSelectionCubit();
+    _selectionStateSubscription = _selectionCubit.stream.listen(
+      (_) => notifyListeners(),
+    );
+    _syncSelectionFromDescriptionState();
 
     if (selectedPage != null) {
       unawaited(loadImage(selectedPage!.image));
@@ -143,11 +166,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
       scaleAndPositionRestored = false;
       notifyListeners();
 
-      final pageSettings = await _getPagesSettings();
+      final pageSettings = await _pageSettingsCubit.loadSettingsForPage(
+        source: primarySource,
+        selectedPage: selectedPage,
+      );
       if (!_canApplyImageRequest(requestToken)) {
         return;
       }
-      _applyPageSettings(pageSettings);
+      _applyViewportSettings(pageSettings);
 
       if (!_canApplyImageRequest(requestToken)) {
         return;
@@ -192,39 +218,31 @@ class PrimarySourceViewModel extends ChangeNotifier {
       savedX = dx = 0;
       savedY = dy = 0;
       savedScale = scale = 0;
-      isNegative = false;
-      isMonochrome = false;
-      brightness = 0;
-      contrast = 100;
-      showWordSeparators = false;
-      showStrongNumbers = false;
-      showVerseNumbers = true;
+      _pageSettingsCubit.resetToDefaults();
       notifyListeners();
     }
   }
 
   void toggleNegative() {
-    isNegative = !isNegative;
+    _pageSettingsCubit.toggleNegative();
     savePageSettings();
     notifyListeners();
   }
 
   void toggleMonochrome() {
-    isMonochrome = !isMonochrome;
+    _pageSettingsCubit.toggleMonochrome();
     savePageSettings();
     notifyListeners();
   }
 
   void applyBrightnessContrast(double brightness, double contrast) {
-    this.brightness = brightness;
-    this.contrast = contrast;
+    _pageSettingsCubit.applyBrightnessContrast(brightness, contrast);
     savePageSettings();
     notifyListeners();
   }
 
   void resetBrightnessContrast() {
-    brightness = 0;
-    contrast = 100;
+    _pageSettingsCubit.resetBrightnessContrast();
     savePageSettings();
     notifyListeners();
   }
@@ -290,19 +308,19 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void toggleShowWordSeparators() {
-    showWordSeparators = !showWordSeparators;
+    _pageSettingsCubit.toggleShowWordSeparators();
     savePageSettings();
     notifyListeners();
   }
 
   void toggleShowStrongNumbers() {
-    showStrongNumbers = !showStrongNumbers;
+    _pageSettingsCubit.toggleShowStrongNumbers();
     savePageSettings();
     notifyListeners();
   }
 
   void toggleShowVerseNumbers() {
-    showVerseNumbers = !showVerseNumbers;
+    _pageSettingsCubit.toggleShowVerseNumbers();
     savePageSettings();
     notifyListeners();
   }
@@ -313,40 +331,27 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void savePageSettings() {
-    _pageSettings = _pageSettingsOrchestrator.saveSettingsForPage(
+    _pageSettingsCubit.saveSettingsForPage(
       source: primarySource,
       selectedPage: selectedPage,
       scaleAndPositionRestored: scaleAndPositionRestored,
       posX: dx,
       posY: dy,
       scale: scale,
-      isNegative: isNegative,
-      isMonochrome: isMonochrome,
-      brightness: brightness,
-      contrast: contrast,
-      showWordSeparators: showWordSeparators,
-      showStrongNumbers: showStrongNumbers,
-      showVerseNumbers: showVerseNumbers,
     );
   }
 
   void removePageSettings() {
-    _pageSettings = _pageSettingsOrchestrator.clearSettingsForPage(
+    _pageSettingsCubit.clearSettingsForPage(
       source: primarySource,
       selectedPage: selectedPage,
     );
     savedX = dx = 0;
     savedY = dy = 0;
     savedScale = scale = 0;
-    isNegative = false;
-    isMonochrome = false;
-    brightness = 0;
-    contrast = 100;
-    showWordSeparators = false;
-    showStrongNumbers = false;
-    showVerseNumbers = true;
     imageController.backToMinScale();
     resetColorReplacement();
+    notifyListeners();
   }
 
   void restorePositionAndScale() {
@@ -374,11 +379,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
       type: type,
       number: number,
     );
+    _syncSelectionFromDescriptionState();
     notifyListeners();
   }
 
   void showCommonInfo(BuildContext context) {
     _descriptionPanelOrchestrator.showCommonInfo(context);
+    _syncSelectionFromDescriptionState();
     notifyListeners();
   }
 
@@ -393,6 +400,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       selectedPage: selectedPage,
     );
     if (navigated) {
+      _syncSelectionFromDescriptionState();
       notifyListeners();
     }
     return navigated;
@@ -410,6 +418,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (!shown) {
       return;
     }
+    _syncSelectionFromDescriptionState();
     notifyListeners();
   }
 
@@ -423,6 +432,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (!shown) {
       return;
     }
+    _syncSelectionFromDescriptionState();
     notifyListeners();
   }
 
@@ -436,28 +446,22 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (!shown) {
       return;
     }
+    _syncSelectionFromDescriptionState();
     notifyListeners();
   }
 
-  Future<PageSettingsState> _getPagesSettings() {
-    return _pageSettingsOrchestrator.loadSettingsForPage(
-      source: primarySource,
-      selectedPage: selectedPage,
-    );
-  }
-
-  void _applyPageSettings(PageSettingsState settings) {
-    _pageSettings = settings.rawSettings;
+  void _applyViewportSettings(PageSettingsState settings) {
     savedX = dx = settings.posX;
     savedY = dy = settings.posY;
     savedScale = scale = settings.scale;
-    isNegative = settings.isNegative;
-    isMonochrome = settings.isMonochrome;
-    brightness = settings.brightness;
-    contrast = settings.contrast;
-    showWordSeparators = settings.showWordSeparators;
-    showStrongNumbers = settings.showStrongNumbers;
-    showVerseNumbers = settings.showVerseNumbers;
+  }
+
+  void _syncSelectionFromDescriptionState() {
+    final descriptionState = _descriptionPanelOrchestrator.state;
+    _selectionCubit.setSelection(
+      type: descriptionState.currentType,
+      number: descriptionState.currentNumber,
+    );
   }
 
   bool _canApplyImageRequest(RequestToken token) {
@@ -509,6 +513,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   void dispose() {
     _imageLoadRequestGuard.cancelActive();
     _imageStateSubscription?.cancel();
+    _pageSettingsStateSubscription?.cancel();
+    _selectionStateSubscription?.cancel();
     _restoreDebounceTimer?.cancel();
     _saveDebounceTimer?.cancel();
     imageController.transformationController.removeListener(
@@ -521,6 +527,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _isDisposed = true;
     if (_ownsImageCubit) {
       unawaited(_imageCubit.close());
+    }
+    if (_ownsPageSettingsCubit) {
+      unawaited(_pageSettingsCubit.close());
+    }
+    if (_ownsSelectionCubit) {
+      unawaited(_selectionCubit.close());
     }
     if (_ownsSessionCubit) {
       unawaited(_sessionCubit.close());
