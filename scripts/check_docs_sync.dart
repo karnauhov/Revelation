@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 class DocsPair {
   const DocsPair({
@@ -25,29 +25,14 @@ void main() {
       enPath: 'docs/en/architecture/module-boundaries.en.md',
     ),
     DocsPair(
-      name: 'State migration matrix phase 3.7',
-      ruPath: 'docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md',
-      enPath: 'docs/en/architecture/state_migration_matrix_phase_3_7.en.md',
+      name: 'State management matrix',
+      ruPath: 'docs/ru/architecture/state_management_matrix.ru.md',
+      enPath: 'docs/en/architecture/state_management_matrix.en.md',
     ),
     DocsPair(
       name: 'Testing strategy',
       ruPath: 'docs/ru/testing/strategy.ru.md',
       enPath: 'docs/en/testing/strategy.en.md',
-    ),
-    DocsPair(
-      name: 'Docs sync policy',
-      ruPath: 'docs/ru/architecture/docs_sync_policy.ru.md',
-      enPath: 'docs/en/architecture/docs_sync_policy.en.md',
-    ),
-    DocsPair(
-      name: 'Docs sync workflow',
-      ruPath: 'docs/ru/architecture/docs_sync_instruction_workflow.ru.md',
-      enPath: 'docs/en/architecture/docs_sync_instruction_workflow.en.md',
-    ),
-    DocsPair(
-      name: 'Residual architecture debt backlog',
-      ruPath: 'docs/ru/architecture/residual_debt_backlog.ru.md',
-      enPath: 'docs/en/architecture/residual_debt_backlog.en.md',
     ),
   ];
 
@@ -129,4 +114,3 @@ String? _headerValue(String content, String headerName) {
   );
   return pattern.firstMatch(content)?.group(1)?.trim();
 }
-

@@ -19,6 +19,20 @@ Linux: [Snapcraft](https://snapcraft.io/revelation-x)
 [Changelog](./CHANGELOG.md)  
 [Dev Info](./DEV_INFO.md)
 
+## Documentation Index
+
+### English
+- [Architecture Overview](./docs/en/architecture/overview.en.md)
+- [Module Boundaries](./docs/en/architecture/module-boundaries.en.md)
+- [State Management Matrix](./docs/en/architecture/state_management_matrix.en.md)
+- [Testing Strategy](./docs/en/testing/strategy.en.md)
+
+### Русский
+- [Обзор архитектуры](./docs/ru/architecture/overview.ru.md)
+- [Границы модулей](./docs/ru/architecture/module-boundaries.ru.md)
+- [Матрица управления состоянием](./docs/ru/architecture/state_management_matrix.ru.md)
+- [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
+
 ---
 
 <a href="https://www.revelation.website" target="_blank"><img src=".\_art\Sticker.jpg" width="512" height="256" /></a>

@@ -1,4 +1,4 @@
-﻿# AGENTS.md
+# AGENTS.md
 
 ## Project Overview
 - Revelation is a Flutter app for studying the Book of Revelation.
@@ -34,22 +34,24 @@
 - Keep changes aligned with the current folder responsibilities in the repository layout above.
 - State management policy is strict:
   - New or modified stateful presentation logic must use `BLoC/Cubit`.
-  - Do not introduce new `provider`/`ChangeNotifier` usages.
-  - When touching legacy `ChangeNotifier` flows, migrate the touched scope to `Cubit`/`Bloc` instead of extending legacy patterns.
+  - Do not introduce `provider`/`ChangeNotifier`/`notifyListeners` in runtime or test code.
+  - When touching non-cubit stateful flows, migrate the touched scope to `Cubit`/`Bloc`.
 - Any state-management contract change must be synchronized in:
-  - `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`
-  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
-  - `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md` and `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`
+  - `docs/ru/architecture/state_management_matrix.ru.md` and `docs/en/architecture/state_management_matrix.en.md`
   - `docs/ru/architecture/overview.ru.md` and `docs/en/architecture/overview.en.md`
   - `docs/ru/architecture/module-boundaries.ru.md` and `docs/en/architecture/module-boundaries.en.md`
-- RU/EN docs sync policy is mandatory for approved pairs:
+- RU/EN docs sync rules are mandatory for approved pairs:
   - `docs/ru/architecture/overview.ru.md` <-> `docs/en/architecture/overview.en.md`
   - `docs/ru/architecture/module-boundaries.ru.md` <-> `docs/en/architecture/module-boundaries.en.md`
-  - `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md` <-> `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`
+  - `docs/ru/architecture/state_management_matrix.ru.md` <-> `docs/en/architecture/state_management_matrix.en.md`
   - `docs/ru/testing/strategy.ru.md` <-> `docs/en/testing/strategy.en.md`
-  - `docs/ru/architecture/residual_debt_backlog.ru.md` <-> `docs/en/architecture/residual_debt_backlog.en.md`
-  - Policy source: `docs/ru/architecture/docs_sync_policy.ru.md` and `docs/en/architecture/docs_sync_policy.en.md`
-  - Instruction workflow: `docs/ru/architecture/docs_sync_instruction_workflow.ru.md` and `.en.md`
+- Sync rules:
+  - Any semantic change in an RU document must include the EN twin update in the same change set.
+  - Any semantic change in an EN document must include the RU twin update in the same change set.
+  - For each RU/EN pair, `Doc-Version`, `Last-Updated`, and `Source-Commit` must match.
+- Documentation navigation rule:
+  - Every documentation file must be reachable either by a direct link from `README.md` or by links from another document when it is a 2nd+ level nested document.
+  - When adding, renaming, or deleting docs, update navigation links in `README.md` and in related parent docs in the same change set.
 - Keep package metadata synchronized between `pubspec.yaml` and `assets/data/about_libraries.xml`: when adding/removing a package in `dependencies` or `dev_dependencies`, add/remove the corresponding `@Package` entry in `about_libraries.xml` in the same change, and take license name plus links from the package page.
 - Use change checklist from `.github/change_checklist.md` for every change set (code + tests + docs RU/EN).
 - Keep localization in sync for supported locales: `en`, `es`, `uk`, `ru`.
@@ -78,7 +80,7 @@
 - Run `flutter analyze` before finishing non-trivial code changes.
 - Run `flutter test` before finishing non-trivial code changes.
 - When docs from approved RU/EN pairs are changed, run `dart run scripts/check_docs_sync.dart`.
-- For state-architecture changes, run `rg "package:provider|ChangeNotifier|notifyListeners" lib test` and treat new matches as migration regressions.
+- For state-architecture changes, run `rg "package:provider|ChangeNotifier|notifyListeners" lib test` and treat new matches as architecture regressions.
 - `flutter analyze` and `flutter test` pass in the repository state verified on March 7, 2026.
 
 ## Release Versioning
@@ -109,4 +111,3 @@
 ## References
 - `README.md`: project overview and platform links
 - `DEV_INFO.md`: release and DB deployment notes
-

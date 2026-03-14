@@ -1,68 +1,49 @@
 # Module Boundaries (RU)
 
-Doc-Version: `0.2.0`  
+Doc-Version: `1.0.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
-Зафиксировать обязательные границы модулей и правило размещения файлов для `lib/`.
+Определить обязательные границы модулей и правила размещения файлов в `lib/`.
 
 ## 2. Canonical Top-Level Structure
-Целевая структура верхнего уровня:
-- `lib/app` — composition root, bootstrap, DI, router.
-- `lib/core` — общие platform/env/errors/async/logging контракты.
-- `lib/infra` — реализации доступа к БД/remote/storage.
-- `lib/shared` — переиспользуемый UI и утилиты без feature-бизнес логики.
-- `lib/features` — feature-first модули (presentation/application/data).
-- `lib/l10n` — локализации.
+- `lib/app` - bootstrap, DI, router, composition root.
+- `lib/core` - платформенные и кросс-функциональные контракты (`errors`, `async`, `logging`, `platform`, `audio`, `diagnostics`).
+- `lib/infra` - реализации доступа к БД/remote/storage.
+- `lib/shared` - переиспользуемый UI и общие модели/утилиты без feature-бизнес-логики.
+- `lib/features` - feature-first модули.
+- `lib/l10n` - ARB и generated localization-код.
 
-Запрещенные legacy-каталоги (не допускаются к повторному появлению):
-- `lib/screens`, `lib/viewmodels`, `lib/repositories`, `lib/services`,
-- `lib/common_widgets`, `lib/managers`, `lib/controllers`,
-- `lib/models`, `lib/db`, `lib/utils`.
+## 3. Feature Module Layout
+Для каждого feature используется схема:
+- `presentation` - экраны, виджеты, cubit/bloc и UI-coordination.
+- `application` - orchestration/use-case/service логика.
+- `data` - repositories, data contracts и маппинг.
 
-## 3. Mandatory File Placement Rule
-Критичное правило:
-- Новый файл должен создаваться в `app/core/infra/shared/features/l10n`.
-- Создание нового файла в legacy-каталогах запрещено.
-- Исключение допускается только как временный compatibility adapter и должно быть зафиксировано в migration log.
-
-Это правило равноценно по важности корректности функционала слоя.
-
-## 4. Placement Decision Tree
-При добавлении файла:
-1. Это бизнес-функция конкретной фичи?  
-`-> lib/features/<feature>/(presentation|application|data)/...`
-2. Это инфраструктурная реализация (db/remote/storage)?  
-`-> lib/infra/...`
-3. Это app composition/bootstrap/router/di?  
-`-> lib/app/...`
-4. Это переиспользуемый UI без feature-логики?  
-`-> lib/shared/ui/...`
-5. Это общая platform/env/errors/async/logging абстракция?  
-`-> lib/core/...`
-
-Если ни один пункт не подходит, сначала обновить architecture docs/roadmap, потом добавлять файл.
-
-## 5. Boundary Rules
+## 4. Dependency Rules
 - `presentation` не импортирует `infra` напрямую.
-- `presentation` общается через `application/controller/orchestrator`.
-- `presentation` state management выполняется только через `BLoC/Cubit`.
-- `provider`/`ChangeNotifier` запрещены для нового и модифицируемого runtime-кода.
-- ownership state-контрактов определяется matrix: `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md`.
-- `data` знает про raw db/json; UI не знает.
-- `shared` не содержит feature-бизнес логики.
-- `core` не зависит от feature-кода.
+- `presentation` работает через feature repositories/services/cubit contracts.
+- `application` не содержит UI-виджеты.
+- `data` может зависеть от `infra` data source/gateway контрактов.
+- `infra` не импортирует feature `presentation`.
+- `shared` не содержит feature-специфичную orchestration-логику.
+- `core` не зависит от feature-модулей.
 
-## 6. Zero-Legacy Target
-- Legacy-каталоги являются только временным состоянием.
-- Конечный статус архитектуры: в `lib` остаются только `app/core/infra/shared/features/l10n`.
-- Любой новый код в legacy-пути считается архитектурным дефектом.
+## 5. File Placement Rules
+1. App bootstrap/router/DI -> `lib/app/...`
+2. Платформенные и кросс-функциональные контракты -> `lib/core/...`
+3. Инфраструктурные реализации -> `lib/infra/...`
+4. Переиспользуемый UI и общие модели -> `lib/shared/...`
+5. Feature-логика -> `lib/features/<feature>/...`
+
+## 6. Forbidden Paths
+В `lib/` не допускается появление каталогов:
+- `screens`, `viewmodels`, `repositories`, `services`
+- `common_widgets`, `managers`, `controllers`
+- `models`, `db`, `utils`
 
 ## 7. Enforcement
-- `scripts/check_forbidden_patterns.dart` выполняет:
-  - запрет ключевых anti-pattern imports/calls;
-  - запрет существования legacy-каталогов в `lib/`;
-  - запрет использования `provider`/`ChangeNotifier` после завершения Phase 3.7;
-  - контроль набора top-level директорий `lib/`.
-
+- Автоматическая проверка архитектурных ограничений: `dart run scripts/check_forbidden_patterns.dart`.
+- Запрет `provider`/`ChangeNotifier` контролируется в CI и локальных проверках.
+- Перед merge обязательны `flutter analyze` и `flutter test`.

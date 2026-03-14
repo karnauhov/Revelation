@@ -1,6 +1,6 @@
-﻿# Module Boundaries (EN)
+# Module Boundaries (EN)
 
-Doc-Version: `0.2.0`  
+Doc-Version: `1.0.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -8,61 +8,42 @@ Source-Commit: `working-tree`
 Define mandatory module boundaries and file placement rules for `lib/`.
 
 ## 2. Canonical Top-Level Structure
-Target top-level layout:
-- `lib/app` - composition root, bootstrap, DI, router.
-- `lib/core` - shared platform/env/errors/async/logging contracts.
+- `lib/app` - bootstrap, DI, router, composition root.
+- `lib/core` - platform and cross-cutting contracts (`errors`, `async`, `logging`, `platform`, `audio`, `diagnostics`).
 - `lib/infra` - database/remote/storage implementations.
-- `lib/shared` - reusable UI and utilities without feature business logic.
-- `lib/features` - feature-first modules (presentation/application/data).
-- `lib/l10n` - localization assets/code.
+- `lib/shared` - reusable UI and shared models/utils without feature business logic.
+- `lib/features` - feature-first modules.
+- `lib/l10n` - ARB assets and generated localization code.
 
-Forbidden legacy directories (must not be reintroduced):
-- `lib/screens`, `lib/viewmodels`, `lib/repositories`, `lib/services`,
-- `lib/common_widgets`, `lib/managers`, `lib/controllers`,
-- `lib/models`, `lib/db`, `lib/utils`.
+## 3. Feature Module Layout
+Each feature follows:
+- `presentation` - screens, widgets, cubit/bloc, and UI coordination.
+- `application` - orchestration/use-case/service logic.
+- `data` - repositories, data contracts, and mapping.
 
-## 3. Mandatory File Placement Rule
-Critical rule:
-- New files must be created under `app/core/infra/shared/features/l10n`.
-- New files in legacy directories are forbidden.
-- Exceptions are allowed only for temporary compatibility adapters and must be logged in the migration journal.
-
-This rule is considered as important as correct layer behavior.
-
-## 4. Placement Decision Tree
-When adding a file:
-1. Feature-specific business behavior?  
-`-> lib/features/<feature>/(presentation|application|data)/...`
-2. Infra implementation (db/remote/storage)?  
-`-> lib/infra/...`
-3. App composition/bootstrap/router/di?  
-`-> lib/app/...`
-4. Reusable UI without feature business logic?  
-`-> lib/shared/ui/...`
-5. Shared platform/env/errors/async/logging abstraction?  
-`-> lib/core/...`
-
-If none applies, update architecture docs/roadmap first, then add the file.
-
-## 5. Boundary Rules
+## 4. Dependency Rules
 - `presentation` must not import `infra` directly.
-- `presentation` communicates via `application/controller/orchestrator`.
-- `presentation` state management must use `BLoC/Cubit` only.
-- `provider`/`ChangeNotifier` are forbidden for new or modified runtime code.
-- state ownership contracts must follow the matrix: `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`.
-- `data` owns raw db/json knowledge; UI does not.
-- `shared` must not contain feature business logic.
+- `presentation` works through feature repositories/services/cubit contracts.
+- `application` must not contain UI widgets.
+- `data` may depend on `infra` data source/gateway contracts.
+- `infra` must not import feature `presentation`.
+- `shared` must not contain feature-specific orchestration logic.
 - `core` must not depend on feature modules.
 
-## 6. Zero-Legacy Target
-- Legacy directories are a temporary transition state only.
-- Final architecture state: `lib` contains only `app/core/infra/shared/features/l10n`.
-- Any new code in legacy paths is treated as an architectural defect.
+## 5. File Placement Rules
+1. App bootstrap/router/DI -> `lib/app/...`
+2. Platform and cross-cutting contracts -> `lib/core/...`
+3. Infrastructure implementations -> `lib/infra/...`
+4. Reusable UI and shared models -> `lib/shared/...`
+5. Feature logic -> `lib/features/<feature>/...`
+
+## 6. Forbidden Paths
+These folders must not exist in `lib/`:
+- `screens`, `viewmodels`, `repositories`, `services`
+- `common_widgets`, `managers`, `controllers`
+- `models`, `db`, `utils`
 
 ## 7. Enforcement
-- `scripts/check_forbidden_patterns.dart` enforces:
-  - critical anti-pattern imports/calls;
-  - no legacy directories in `lib/`;
-  - no `provider`/`ChangeNotifier` usage after Phase 3.7;
-  - approved top-level `lib/` directory set.
-
+- Automated architecture checks: `dart run scripts/check_forbidden_patterns.dart`.
+- `provider`/`ChangeNotifier` ban is enforced in CI and local checks.
+- `flutter analyze` and `flutter test` are required before merge.

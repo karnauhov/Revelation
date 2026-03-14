@@ -1,58 +1,37 @@
 # Architecture Overview (RU)
 
-Doc-Version: `0.3.0`  
+Doc-Version: `1.0.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
-Зафиксировать архитектурный baseline проекта Revelation перед глубокой миграцией.
+Зафиксировать текущее архитектурное устройство Revelation.
 
-## 2. Current Architecture Baseline
-- Composition root перегружен: `lib/main.dart` одновременно инициализирует логирование, платформу, DI, БД и UI.
-- Критические singleton-узлы: `DBManager`, `ServerManager`, `AppRouter`.
-- Навигационные контракты частично не типизированы (`Map<String, dynamic>` в `state.extra`).
-- Структура каталогов уже выровнена в canonical layout (`app/core/infra/shared/features/l10n`), а runtime state-слой уже мигрирован на `BLoC/Cubit` (в рамках Phase 3.7, hardening-этап остается).
+## 2. Runtime Architecture Snapshot
+- Точка входа: `lib/main.dart` настраивает `Talker`, регистрирует core-зависимости, подключает `AppBlocObserver`, инициализирует `AppBootstrap` и запускает `MaterialApp.router`.
+- Bootstrap: `AppBootstrap` выполняет `WidgetsFlutterBinding.ensureInitialized`, глобальные error hooks, инициализацию платформы, загрузку настроек, инициализацию Supabase и локальных БД.
+- Навигация: `go_router` в `AppRouter`, для критичных переходов используются typed route args (`TopicRouteArgs`, `PrimarySourceRouteArgs`).
+- Глобальный state scope: `AppDi.appBlocProviders` предоставляет `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
+- Detail state для primary source: в `PrimarySourceScreen` создается `MultiBlocProvider` с cubit-срезами `session/image/page-settings/selection/description/viewport`.
+- Поток данных: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
+- Remote-слой: `ServerManager` работает с Supabase Storage для загрузки БД и файлов.
+- Логирование и диагностика: `Talker`, `TalkerRouteObserver`, `AppBlocObserver`.
+- Локализация: поддерживаются `en`, `es`, `uk`, `ru`.
 
-## 3. Main Strengths To Preserve
-- Рабочий multi-platform стек Flutter + Drift + Supabase.
-- Стабильный runtime logging через Talker и глобальные error hooks.
-- Синхронные локализации `en`, `es`, `uk`, `ru`.
-- Рабочий релизный pipeline для desktop/mobile/web артефактов.
+## 3. Architectural Invariants
+- В `lib/` используются только верхнеуровневые каталоги: `app`, `core`, `infra`, `shared`, `features`, `l10n`.
+- Stateful presentation реализуется только на `BLoC/Cubit`.
+- `provider`/`ChangeNotifier`/`notifyListeners` запрещены в runtime/test коде.
+- Presentation-слой не обращается напрямую к `DBManager()`/`ServerManager()`.
+- Изменения архитектурных документов в RU/EN выполняются синхронно.
 
-## 4. Critical Architectural Debt
-- Крупные файлы с высокой концентрацией ответственности.
-- Прямой доступ UI-слоя к data/singleton зависимостям.
-- Неполные quality gates в CI для change (до Phase 0).
-- Минимальное тестовое покрытие.
+## 4. Core Cross-Cutting Contracts
+- Ошибки и результаты операций: `AppFailure` и `AppResult`.
+- Защита от устаревших async-ответов: `LatestRequestGuard`.
+- Платформенные различия инкапсулированы в `core/platform`.
 
-## 5. Target Direction
-- Эволюционная миграция без rewrite.
-- Hybrid feature-first структура (`features/`, `shared/`, `core/`, `infra/`).
-- Явные границы между presentation/application/data/infra.
-- Runtime state management в режиме `BLoC/Cubit`-only (Phase 3.7 target достигнут) и последующий hardening через guardrails/regression suites.
-- Детальный ownership state-контрактов зафиксирован в `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md` (EN twin: `.en.md`).
-- Типизированные route args для критичных переходов.
-
-## 6. Boundary Rules (Migration Baseline)
-- Presentation не обращается напрямую к `DBManager()/ServerManager()`.
-- Router-контракты постепенно уходят от untyped map-передачи.
-- Новый или изменяемый stateful presentation код реализуется только через `BLoC/Cubit`.
-- Все структурные изменения сопровождаются тестами и обновлением RU/EN docs.
-
-## 7. Phase 0 Exit Criteria
-- Созданы baseline docs RU/EN.
-- Добавлен CI workflow с `format + analyze + test`.
-- Добавлен skeleton test harness (fake logger/env/remote).
-- Добавлены fast grep-проверки для запрещенных паттернов с baseline-allowlist.
-
-## 8. Out Of Scope
-- Big-bang rewrite без фазовой миграции.
-- Сохранение mixed state frameworks после завершения Phase 3.7.
-- Ослабление архитектурных quality gates ради ускорения миграции.
-
-## 9. Residual Debt Backlog
-- Актуальный список остаточного архитектурного долга зафиксирован в:
-  - `docs/ru/architecture/residual_debt_backlog.ru.md`
-  - `docs/en/architecture/residual_debt_backlog.en.md`
-- Backlog поддерживается как живой артефакт governance и обновляется по итогам architecture review.
-
+## 5. Related Docs
+- Границы модулей: `docs/ru/architecture/module-boundaries.ru.md` и EN twin.
+- Контракты state ownership: `docs/ru/architecture/state_management_matrix.ru.md` и EN twin.
+- Стратегия тестирования: `docs/ru/testing/strategy.ru.md` и EN twin.
+- Правила RU/EN синхронизации зафиксированы в `AGENTS.md`.
