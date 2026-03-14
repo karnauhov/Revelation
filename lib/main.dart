@@ -7,8 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/core/logging/app_bloc_observer.dart';
-import 'package:revelation/features/settings/settings.dart'
-    show SettingsViewModel;
+import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/theme/material_theme.dart';
 import 'package:revelation/core/logging/app_logger_formatter.dart';
@@ -26,22 +25,17 @@ void main() async {
   runZonedGuarded(
     () async {
       final appBootstrap = AppBootstrap(talker: talker);
-      final SettingsViewModel settingsViewModel = await appBootstrap
-          .initialize();
-      final mainViewModel = AppDi.createMainViewModel();
+      final SettingsCubit settingsCubit = await appBootstrap.initialize();
       final primarySourcesViewModel = AppDi.createPrimarySourcesViewModel();
 
       runApp(
         MultiBlocProvider(
           providers: AppDi.appBlocProviders(
-            settingsViewModel: settingsViewModel,
-            mainViewModel: mainViewModel,
+            settingsCubit: settingsCubit,
             primarySourcesViewModel: primarySourcesViewModel,
           ),
           child: MultiProvider(
             providers: AppDi.appProviders(
-              settingsViewModel: settingsViewModel,
-              mainViewModel: mainViewModel,
               primarySourcesViewModel: primarySourcesViewModel,
             ),
             child: const RevelationApp(),
@@ -60,14 +54,14 @@ class RevelationApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsViewModel = context.watch<SettingsViewModel>();
-    final currentLocale = Locale(settingsViewModel.settings.selectedLanguage);
-    final colorScheme = MaterialTheme.getColorTheme(
-      settingsViewModel.settings.selectedTheme,
+    final settings = context.select(
+      (SettingsCubit cubit) => cubit.state.settings,
     );
+    final currentLocale = Locale(settings.selectedLanguage);
+    final colorScheme = MaterialTheme.getColorTheme(settings.selectedTheme);
     final textTheme = MaterialTheme.getTextTheme(
       context,
-      settingsViewModel.settings.selectedFontSize,
+      settings.selectedFontSize,
     );
     final appRouter = AppRouter();
     final materialApp = MaterialApp.router(

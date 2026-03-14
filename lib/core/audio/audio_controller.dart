@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:revelation/features/settings/settings.dart'
-    show SettingsViewModel;
+import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
 import 'package:revelation/shared/utils/common.dart';
 
 class AudioController {
@@ -11,11 +10,11 @@ class AudioController {
 
   final AudioPlayer _soundPlayer = AudioPlayer();
   final _sources = <String, Source>{};
-  late SettingsViewModel _settingsVM;
+  late SettingsCubit _settingsCubit;
 
-  Future<void> init(SettingsViewModel settings) async {
+  Future<void> init(SettingsCubit settingsCubit) async {
     _soundPlayer.audioCache = AudioCache(prefix: "");
-    _settingsVM = settings;
+    _settingsCubit = settingsCubit;
 
     await _soundPlayer.setAudioContext(
       AudioContext(
@@ -50,7 +49,7 @@ class AudioController {
   void playSound(String sourceName) {
     try {
       if (_sources.containsKey(sourceName) &&
-          _settingsVM.settings.soundEnabled) {
+          _settingsCubit.state.settings.soundEnabled) {
         _soundPlayer.play(_sources[sourceName]!);
       }
     } catch (e) {

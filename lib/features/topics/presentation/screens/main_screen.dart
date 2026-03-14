@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/shared/ui/widgets/new_icon_button.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
-import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
-import 'package:revelation/features/topics/presentation/viewmodels/main_view_model.dart';
+import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/presentation/widgets/drawer_content.dart';
 import 'package:revelation/features/topics/presentation/widgets/topic_list.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -28,9 +29,9 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel = Provider.of<SettingsViewModel>(context, listen: false);
+      final settingsCubit = context.read<SettingsCubit>();
       AudioController aud = AudioController();
-      aud.init(viewModel);
+      unawaited(aud.init(settingsCubit));
     });
   }
 
@@ -45,97 +46,93 @@ class _MainScreenState extends State<MainScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Consumer<MainViewModel>(
-      builder: (context, viewModel, child) {
-        Widget content = SafeArea(
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-            child: Column(
+    Widget content = SafeArea(
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [const TopicList()],
-                ),
-              ],
+              children: [const TopicList()],
             ),
-          ),
-        );
+          ],
+        ),
+      ),
+    );
 
-        // Scroll Handling for Desktop and Web
-        if (isDesktop() || isWeb()) {
-          content = Listener(
-            onPointerDown: (event) {
-              if (event.buttons == kPrimaryMouseButton) {
-                setState(() {
-                  _isDragging = true;
-                  _lastOffset = event.position;
-                });
-              }
-            },
-            onPointerMove: (event) {
-              if (_isDragging) {
-                final dy = event.position.dy - _lastOffset.dy;
-                _scrollController.jumpTo(_scrollController.offset - dy);
-                setState(() {
-                  _lastOffset = event.position;
-                });
-              }
-            },
-            onPointerUp: (event) {
-              if (event.buttons == 0) {
-                setState(() {
-                  _isDragging = false;
-                });
-              }
-            },
-            child: content,
-          );
-        }
+    // Scroll Handling for Desktop and Web
+    if (isDesktop() || isWeb()) {
+      content = Listener(
+        onPointerDown: (event) {
+          if (event.buttons == kPrimaryMouseButton) {
+            setState(() {
+              _isDragging = true;
+              _lastOffset = event.position;
+            });
+          }
+        },
+        onPointerMove: (event) {
+          if (_isDragging) {
+            final dy = event.position.dy - _lastOffset.dy;
+            _scrollController.jumpTo(_scrollController.offset - dy);
+            setState(() {
+              _lastOffset = event.position;
+            });
+          }
+        },
+        onPointerUp: (event) {
+          if (event.buttons == 0) {
+            setState(() {
+              _isDragging = false;
+            });
+          }
+        },
+        child: content,
+      );
+    }
 
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text(''),
-            leading: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
-              child: Builder(
-                builder: (context) => NewIconButton(
-                  assetPath: 'assets/images/UI/menu.svg',
-                  tooltip: AppLocalizations.of(context)!.menu,
-                  size: 24,
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                ),
-              ),
-            ),
-            foregroundColor: colorScheme.primary,
-          ),
-          drawer: Drawer(
-            backgroundColor: colorScheme.surface,
-            child: DrawerContent(
-              onItemClicked: () {
-                setState(() {
-                  _closedByItem = true;
-                });
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(''),
+        leading: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
+          child: Builder(
+            builder: (context) => NewIconButton(
+              assetPath: 'assets/images/UI/menu.svg',
+              tooltip: AppLocalizations.of(context)!.menu,
+              size: 24,
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
               },
             ),
           ),
-          onDrawerChanged: (isOpened) {
-            if (isOpened) {
-              aud.playSound("stone");
-            } else {
-              if (!_closedByItem) {
-                aud.playSound("stone");
-              }
-              _closedByItem = false;
-            }
+        ),
+        foregroundColor: colorScheme.primary,
+      ),
+      drawer: Drawer(
+        backgroundColor: colorScheme.surface,
+        child: DrawerContent(
+          onItemClicked: () {
+            setState(() {
+              _closedByItem = true;
+            });
           },
-          body: SizedBox.expand(child: content),
-          backgroundColor: colorScheme.surface,
-        );
+        ),
+      ),
+      onDrawerChanged: (isOpened) {
+        if (isOpened) {
+          aud.playSound("stone");
+        } else {
+          if (!_closedByItem) {
+            aud.playSound("stone");
+          }
+          _closedByItem = false;
+        }
       },
+      body: SizedBox.expand(child: content),
+      backgroundColor: colorScheme.surface,
     );
   }
 }

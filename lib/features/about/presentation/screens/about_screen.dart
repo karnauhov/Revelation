@@ -1,18 +1,19 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:revelation/shared/ui/widgets/icon_link_item.dart';
 import 'package:get_it/get_it.dart';
-import 'package:provider/provider.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
+import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
+import 'package:revelation/features/about/presentation/bloc/about_state.dart';
 import 'package:revelation/features/about/presentation/screens/icon_url.dart';
 import 'package:revelation/features/about/presentation/screens/institution_list.dart';
 import 'package:revelation/features/about/presentation/screens/library_list.dart';
 import 'package:revelation/features/about/presentation/screens/recommended_list.dart';
-import 'package:revelation/features/about/presentation/viewmodels/about_view_model.dart';
-import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
+import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
@@ -28,6 +29,7 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen> {
   final ScrollController _scrollController = ScrollController();
+  late final AboutCubit _aboutCubit;
   final aud = AudioController();
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
@@ -35,10 +37,12 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   void initState() {
     super.initState();
+    _aboutCubit = AboutCubit();
   }
 
   @override
   void dispose() {
+    _aboutCubit.close();
     _scrollController.dispose();
     super.dispose();
   }
@@ -47,14 +51,18 @@ class _AboutScreenState extends State<AboutScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final settingsViewModel = context.watch<SettingsViewModel>();
-    final currentLocale = settingsViewModel.settings.selectedLanguage;
+    final currentLocale = context.select(
+      (SettingsCubit cubit) => cubit.state.settings.selectedLanguage,
+    );
+    final appSettings = context.select(
+      (SettingsCubit cubit) => cubit.state.settings.toMap(),
+    );
 
-    return ChangeNotifierProvider(
-      create: (_) => AboutViewModel(),
-      child: Consumer<AboutViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.isLoading) {
+    return BlocProvider.value(
+      value: _aboutCubit,
+      child: BlocBuilder<AboutCubit, AboutState>(
+        builder: (context, state) {
+          if (state.isLoading) {
             return Scaffold(
               body: Center(
                 child: CircularProgressIndicator(color: colorScheme.primary),
@@ -70,7 +78,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // About the application
-                  _buildAppInfo(context, viewModel),
+                  _buildAppInfo(context, state),
                   const SizedBox(height: 8),
                   Text(
                     AppLocalizations.of(context)!.app_description,
@@ -89,24 +97,24 @@ class _AboutScreenState extends State<AboutScreen> {
                   Divider(height: 1, color: colorScheme.outlineVariant),
                   // Legal Links
                   _buildLegalLinks(context, currentLocale),
-                  if (!viewModel.isAcknowledgementsExpanded)
+                  if (!state.isAcknowledgementsExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Acknowledgments
-                  _buildAcknowledgements(context, viewModel),
-                  if (!viewModel.isRecommendedExpanded ||
-                      !viewModel.isAcknowledgementsExpanded)
+                  _buildAcknowledgements(context, state),
+                  if (!state.isRecommendedExpanded ||
+                      !state.isAcknowledgementsExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Recommended
-                  _buildRecommended(context, viewModel),
-                  if (!viewModel.isChangelogExpanded ||
-                      !viewModel.isRecommendedExpanded)
+                  _buildRecommended(context, state),
+                  if (!state.isChangelogExpanded ||
+                      !state.isRecommendedExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Changelog
-                  _buildChangelog(context, viewModel),
-                  if (!viewModel.isChangelogExpanded)
+                  _buildChangelog(context, state),
+                  if (!state.isChangelogExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Bugs report
-                  _buildBugsReport(context, settingsViewModel.settings.toMap()),
+                  _buildBugsReport(context, appSettings),
                   Divider(height: 1, color: colorScheme.outlineVariant),
                   // Marketplaces (Desktop & Mobile)
                   if (!isWeb()) _buildMarketplaces(context),
@@ -188,7 +196,7 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  Widget _buildAppInfo(BuildContext context, AboutViewModel viewModel) {
+  Widget _buildAppInfo(BuildContext context, AboutState state) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -211,7 +219,7 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
             ),
             Text(
-              "${AppLocalizations.of(context)!.version} ${viewModel.appVersion} (${viewModel.buildNumber})",
+              "${AppLocalizations.of(context)!.version} ${state.appVersion} (${state.buildNumber})",
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.normal,
                 color: colorScheme.onSurfaceVariant,
@@ -308,18 +316,15 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  Widget _buildAcknowledgements(
-    BuildContext context,
-    AboutViewModel viewModel,
-  ) {
+  Widget _buildAcknowledgements(BuildContext context, AboutState state) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return ExpansionTile(
-      initiallyExpanded: viewModel.isAcknowledgementsExpanded,
+      initiallyExpanded: state.isAcknowledgementsExpanded,
       onExpansionChanged: (expanded) {
         aud.playSound("click");
-        viewModel.toggleAcknowledgements();
+        context.read<AboutCubit>().setAcknowledgementsExpanded(expanded);
       },
       tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
       minTileHeight: 30,
@@ -363,15 +368,15 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  Widget _buildRecommended(BuildContext context, AboutViewModel viewModel) {
+  Widget _buildRecommended(BuildContext context, AboutState state) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return ExpansionTile(
-      initiallyExpanded: viewModel.isRecommendedExpanded,
+      initiallyExpanded: state.isRecommendedExpanded,
       onExpansionChanged: (expanded) {
         aud.playSound("click");
-        viewModel.toggleRecommended();
+        context.read<AboutCubit>().setRecommendedExpanded(expanded);
       },
       tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
       minTileHeight: 30,
@@ -407,17 +412,17 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  Widget _buildChangelog(BuildContext context, AboutViewModel viewModel) {
+  Widget _buildChangelog(BuildContext context, AboutState state) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return ExpansionTile(
       minTileHeight: 30,
       tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
-      initiallyExpanded: viewModel.isChangelogExpanded,
+      initiallyExpanded: state.isChangelogExpanded,
       onExpansionChanged: (expanded) {
         aud.playSound("click");
-        viewModel.toggleChangelogExpanded();
+        context.read<AboutCubit>().setChangelogExpanded(expanded);
       },
       title: Row(
         children: [
@@ -438,11 +443,11 @@ class _AboutScreenState extends State<AboutScreen> {
         ],
       ),
       children: [
-        viewModel.changelog.isNotEmpty
+        state.changelog.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: MarkdownBody(
-                  data: viewModel.changelog,
+                  data: state.changelog,
                   styleSheet: getMarkdownStyleSheet(theme, colorScheme),
                   onTapLink: (text, href, title) {
                     handleAppLink(context, href);

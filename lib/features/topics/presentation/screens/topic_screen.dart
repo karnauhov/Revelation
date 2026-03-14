@@ -1,14 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:path/path.dart' as p;
-import 'package:provider/provider.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/errors/app_result.dart';
-import 'package:revelation/features/topics/data/models/topic_info.dart';
-import 'package:revelation/features/settings/presentation/viewmodels/settings_view_model.dart';
+import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
+import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
+import 'package:revelation/features/topics/presentation/bloc/topic_content_state.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
@@ -33,18 +34,26 @@ class _TopicScreenState extends State<TopicScreen> {
 
   final ScrollController _scrollController = ScrollController();
   final TopicsRepository _topicsRepository = TopicsRepository();
-
-  Future<_TopicContentData>? _topicFuture;
-  String? _loadedLanguage;
-  String? _loadedRoute;
-  String? _loadedName;
-  String? _loadedDescription;
+  late final TopicContentCubit _topicContentCubit;
 
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
 
   @override
+  void initState() {
+    super.initState();
+    _topicContentCubit = TopicContentCubit(
+      topicsRepository: _topicsRepository,
+      settingsCubit: context.read<SettingsCubit>(),
+      route: widget.file ?? '',
+      name: widget.name,
+      description: widget.description,
+    );
+  }
+
+  @override
   void dispose() {
+    _topicContentCubit.close();
     _scrollController.dispose();
     super.dispose();
   }
@@ -54,175 +63,98 @@ class _TopicScreenState extends State<TopicScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final settingsViewModel = Provider.of<SettingsViewModel>(context);
-    _ensureTopicFuture(settingsViewModel.settings.selectedLanguage);
-    final futureTopicData = _topicFuture!;
 
-    return FutureBuilder<_TopicContentData>(
-      future: futureTopicData,
-      builder: (context, snapshot) {
-        final topicData =
-            snapshot.data ??
-            _TopicContentData(
-              name: widget.name ?? '',
-              description: widget.description ?? '',
-              markdown: '',
-              hasLoadingError: snapshot.hasError,
-            );
-
-        final hasLoadingError = snapshot.hasError || topicData.hasLoadingError;
-        Widget content;
-        if (hasLoadingError) {
-          content = ErrorMessage(errorMessage: l10n.error_loading_topics);
-        } else {
-          content = SizedBox.expand(
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(8.0),
-              child: MarkdownBody(
-                data: topicData.markdown,
-                styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-                imageBuilder: (uri, title, alt) =>
-                    _buildMarkdownImage(context, uri, alt),
-                onTapLink: (text, href, title) async {
-                  await _handleTopicLink(context, href);
-                },
+    return BlocProvider.value(
+      value: _topicContentCubit,
+      child: BlocBuilder<TopicContentCubit, TopicContentState>(
+        builder: (context, state) {
+          Widget content;
+          if (state.isLoading) {
+            content = const Center(child: CircularProgressIndicator());
+          } else if (state.failure != null) {
+            content = ErrorMessage(errorMessage: l10n.error_loading_topics);
+          } else {
+            content = SizedBox.expand(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(8.0),
+                child: MarkdownBody(
+                  data: state.markdown,
+                  styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+                  imageBuilder: (uri, title, alt) =>
+                      _buildMarkdownImage(context, uri, alt),
+                  onTapLink: (text, href, title) async {
+                    await _handleTopicLink(context, href);
+                  },
+                ),
               ),
-            ),
+            );
+          }
+
+          if (isDesktop() || isWeb()) {
+            content = Listener(
+              onPointerDown: (event) {
+                if (event.buttons == kPrimaryMouseButton) {
+                  setState(() {
+                    _isDragging = true;
+                    _lastOffset = event.position;
+                  });
+                }
+              },
+              onPointerMove: (event) {
+                if (_isDragging) {
+                  final dy = event.position.dy - _lastOffset.dy;
+                  _scrollController.jumpTo(_scrollController.offset - dy);
+                  setState(() {
+                    _lastOffset = event.position;
+                  });
+                }
+              },
+              onPointerUp: (event) {
+                if (event.buttons == 0) {
+                  setState(() {
+                    _isDragging = false;
+                  });
+                }
+              },
+              child: content,
+            );
+          }
+
+          final title = _firstNonEmpty(widget.name, state.name, l10n.topic);
+          final subtitle = _firstNonEmpty(
+            widget.description,
+            state.description,
+            '',
           );
-        }
 
-        if (isDesktop() || isWeb()) {
-          content = Listener(
-            onPointerDown: (event) {
-              if (event.buttons == kPrimaryMouseButton) {
-                setState(() {
-                  _isDragging = true;
-                  _lastOffset = event.position;
-                });
-              }
-            },
-            onPointerMove: (event) {
-              if (_isDragging) {
-                final dy = event.position.dy - _lastOffset.dy;
-                _scrollController.jumpTo(_scrollController.offset - dy);
-                setState(() {
-                  _lastOffset = event.position;
-                });
-              }
-            },
-            onPointerUp: (event) {
-              if (event.buttons == 0) {
-                setState(() {
-                  _isDragging = false;
-                });
-              }
-            },
-            child: content,
-          );
-        }
-
-        final title = _firstNonEmpty(widget.name, topicData.name, l10n.topic);
-        final subtitle = _firstNonEmpty(
-          widget.description,
-          topicData.description,
-          '',
-        );
-
-        return Scaffold(
-          appBar: AppBar(
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    height: 0.9,
+          return Scaffold(
+            appBar: AppBar(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      height: 0.9,
+                    ),
                   ),
-                ),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.normal,
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              foregroundColor: colorScheme.primary,
             ),
-            foregroundColor: colorScheme.primary,
-          ),
-          body: content,
-        );
-      },
+            body: content,
+          );
+        },
+      ),
     );
-  }
-
-  Future<_TopicContentData> _loadTopicContent(
-    String? route,
-    String language,
-  ) async {
-    if (route == null) {
-      return _TopicContentData(
-        name: widget.name ?? '',
-        description: widget.description ?? '',
-        markdown: '',
-        hasLoadingError: false,
-      );
-    }
-
-    final markdownResult = await _topicsRepository.getArticleMarkdown(
-      route: route,
-      language: language,
-    );
-    if (markdownResult is! AppSuccess<String>) {
-      return _TopicContentData(
-        name: widget.name ?? '',
-        description: widget.description ?? '',
-        markdown: '',
-        hasLoadingError: true,
-      );
-    }
-    final markdown = markdownResult.data;
-
-    var name = widget.name ?? '';
-    var description = widget.description ?? '';
-    if (name.isEmpty || description.isEmpty) {
-      final articleResult = await _topicsRepository.getTopicByRoute(
-        route: route,
-        language: language,
-      );
-      if (articleResult is AppSuccess<TopicInfo?>) {
-        final article = articleResult.data;
-        name = _firstNonEmpty(name, article?.name);
-        description = _firstNonEmpty(description, article?.description);
-      }
-    }
-
-    return _TopicContentData(
-      name: name,
-      description: description,
-      markdown: markdown,
-      hasLoadingError: false,
-    );
-  }
-
-  void _ensureTopicFuture(String language) {
-    final route = widget.file ?? '';
-    final name = widget.name ?? '';
-    final description = widget.description ?? '';
-    final needsReload =
-        _topicFuture == null ||
-        _loadedLanguage != language ||
-        _loadedRoute != route ||
-        _loadedName != name ||
-        _loadedDescription != description;
-    if (needsReload) {
-      _loadedLanguage = language;
-      _loadedRoute = route;
-      _loadedName = name;
-      _loadedDescription = description;
-      _topicFuture = _loadTopicContent(widget.file, language);
-    }
   }
 
   String _firstNonEmpty(String? first, String? second, [String fallback = '']) {
@@ -443,18 +375,4 @@ class _TopicScreenState extends State<TopicScreen> {
         return 'application/octet-stream';
     }
   }
-}
-
-class _TopicContentData {
-  final String name;
-  final String description;
-  final String markdown;
-  final bool hasLoadingError;
-
-  const _TopicContentData({
-    required this.name,
-    required this.description,
-    required this.markdown,
-    required this.hasLoadingError,
-  });
 }

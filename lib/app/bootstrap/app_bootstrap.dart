@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/strong_dictionary_dialog.dart';
 import 'package:revelation/features/settings/settings.dart'
-    show SettingsRepository, SettingsViewModel;
+    show SettingsCubit, SettingsRepository;
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/infra/remote/supabase/server_manager.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
@@ -17,20 +18,21 @@ class AppBootstrap {
 
   final Talker _talker;
   final DatabaseRuntime _databaseRuntime;
+  StreamSubscription<String>? _languageSubscription;
 
-  Future<SettingsViewModel> initialize() async {
+  Future<SettingsCubit> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
     _configureGlobalErrorHandling();
     await _initializePlatform();
 
-    final settingsViewModel = SettingsViewModel(SettingsRepository());
-    await settingsViewModel.loadSettings();
+    final settingsCubit = SettingsCubit(SettingsRepository());
+    await settingsCubit.loadSettings();
 
     await ServerManager().init();
-    await _initializeDatabases(settingsViewModel);
+    await _initializeDatabases(settingsCubit);
     _configureStrongHandlers();
 
-    return settingsViewModel;
+    return settingsCubit;
   }
 
   void _configureGlobalErrorHandling() {
@@ -63,16 +65,18 @@ class AppBootstrap {
     }
   }
 
-  Future<void> _initializeDatabases(SettingsViewModel settingsViewModel) async {
+  Future<void> _initializeDatabases(SettingsCubit settingsCubit) async {
     try {
       await _databaseRuntime.initialize(
-        settingsViewModel.settings.selectedLanguage,
+        settingsCubit.state.settings.selectedLanguage,
       );
-      settingsViewModel.addListener(() {
-        _databaseRuntime.updateLanguage(
-          settingsViewModel.settings.selectedLanguage,
-        );
-      });
+      await _languageSubscription?.cancel();
+      _languageSubscription = settingsCubit.stream
+          .map((state) => state.settings.selectedLanguage)
+          .distinct()
+          .listen((language) {
+            unawaited(_databaseRuntime.updateLanguage(language));
+          });
     } catch (error, stackTrace) {
       _talker.handle(error, stackTrace, 'Failed to initialize local databases');
     }

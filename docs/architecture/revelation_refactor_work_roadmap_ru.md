@@ -145,7 +145,7 @@
   - `lib/app/di/app_di.dart`
   - `lib/core/state/change_notifier_bridge_cubit.dart`
   - `lib/main.dart`
-- [ ] Задача [P0]: мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
+- [x] Задача [P0]: мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
 - [ ] Задача [P0]: выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы.
 - [ ] Подшаг [P3.7.1]: source/session/page context cubit.
 - [ ] Подшаг [P3.7.2]: image loading/cache/local availability cubit.
@@ -1649,3 +1649,52 @@
   - New risks: сохранен transitional `MultiProvider` слой для совместимости до миграции feature-срезов; это временно поддерживает mixed runtime path.
   - Mitigations: следующий шаг Phase 3.7 — мигрировать `settings/about/topics/download` на `Cubit/Bloc` и начать вытеснение legacy provider consumers.
   - Next task: Phase 3.7 / P0 — мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
+
+#### [2026-03-14 15:10] Phase 3.7 / Task P0 / Migrate `settings/about/topics/download` from `ChangeNotifier` to `Cubit/Bloc`
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлены новые state-owner слои на `Cubit`:
+    - `SettingsCubit/SettingsState` для глобальных app settings.
+    - `AboutCubit/AboutState` для screen-local состояния `About`.
+    - `TopicsCatalogCubit/TopicsCatalogState` для каталога тем и иконок.
+    - `TopicContentCubit/TopicContentState` для контента `TopicScreen`.
+  - UI bindings переведены c `provider + ChangeNotifier` на `BlocBuilder/BlocProvider`:
+    - `lib/features/settings/presentation/screens/settings_screen.dart`
+    - `lib/features/about/presentation/screens/about_screen.dart`
+    - `lib/features/topics/presentation/screens/main_screen.dart`
+    - `lib/features/topics/presentation/screens/topic_screen.dart`
+    - `lib/features/topics/presentation/widgets/topic_list.dart`
+    - `lib/features/topics/presentation/widgets/topic_card.dart`
+  - Composition root и bootstrap обновлены под новый global settings owner:
+    - `main.dart` использует `SettingsCubit` для `locale/theme/textTheme`.
+    - `AppBootstrap` и `AudioController` переключены на `SettingsCubit`.
+    - `AppDi` удалил wiring для `SettingsViewModel/MainViewModel`, добавил `TopicsCatalogCubit` provider.
+  - Legacy state-holders удалены из мигрируемого scope:
+    - `SettingsViewModel`, `AboutViewModel`, `MainViewModel` удалены.
+  - `download` подтвержден как stateless scope: отдельный cubit/bloc не требуется по матрице Phase 3.7.
+- Why changed:
+  - Закрыть следующий обязательный P0 шаг Phase 3.7 и убрать `ChangeNotifier`-контракты из `settings/about/topics`, сохранив runtime-совместимость с еще не мигрированным `primary_sources` scope.
+- Scope (files/modules):
+  - `lib/features/settings/{settings.dart,presentation/bloc/*,presentation/screens/settings_screen.dart}`
+  - `lib/features/about/{about.dart,presentation/bloc/*,presentation/screens/about_screen.dart}`
+  - `lib/features/topics/{topics.dart,presentation/bloc/*,presentation/screens/*,presentation/widgets/*}`
+  - `lib/app/bootstrap/app_bootstrap.dart`
+  - `lib/app/di/app_di.dart`
+  - `lib/core/audio/audio_controller.dart`
+  - `lib/main.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass (в runtime-коде `settings/about/topics` не осталось `ChangeNotifier` usage)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `primary_sources` по-прежнему работает через transitional provider bridge до завершения granular split.
+  - Mitigations: следующий шаг — выполнить `PrimarySource` granular slicing (`P3.7.1`–`P3.7.6`) и заменить remaining VM bindings.
+  - Next task: Phase 3.7 / P0 — выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы (`P3.7.1` в первую очередь).
