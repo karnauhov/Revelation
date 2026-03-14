@@ -43,6 +43,7 @@
   - `docs/architecture/state_migration_matrix_phase_3_7.ru.md` and `docs/architecture/state_migration_matrix_phase_3_7.en.md`
   - `docs/architecture/overview.ru.md` and `docs/architecture/overview.en.md`
   - `docs/architecture/module-boundaries.ru.md` and `docs/architecture/module-boundaries.en.md`
+- Keep package metadata synchronized between `pubspec.yaml` and `assets/data/about_libraries.xml`: when adding/removing a package in `dependencies` or `dev_dependencies`, add/remove the corresponding `@Package` entry in `about_libraries.xml` in the same change, and take license name plus links from the package page.
 - Keep localization in sync for supported locales: `en`, `es`, `uk`, `ru`.
 - Do not commit secrets. `api-keys.json` is gitignored.
 - `ServerManager` expects compile-time defines `SUPABASE_URL` and `SUPABASE_KEY`.
