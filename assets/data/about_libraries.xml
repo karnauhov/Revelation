@@ -246,6 +246,13 @@
         <licenseLink>https://pub.dev/packages/flutter_lints/license</licenseLink>
     </library>
     <library>
+        <name>@Package 'integration_test'</name>
+        <idIcon></idIcon>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/integration_test</officialSite>
+        <licenseLink>https://pub.dev/packages/integration_test/license</licenseLink>
+    </library>
+    <library>
         <name>@Package 'build_runner'</name>
         <idIcon></idIcon>
         <license>BSD-3-Clause</license>

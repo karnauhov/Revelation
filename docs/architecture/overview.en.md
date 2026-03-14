@@ -22,7 +22,7 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 ## 4. Critical Architectural Debt
 - Large files with concentrated responsibilities.
 - Direct UI access to data/singleton dependencies.
-- Missing PR quality gates in CI (before Phase 0).
+- Missing enforceable PR CI gates (before Phase 0).
 - Minimal automated test coverage.
 
 ## 5. Target Direction

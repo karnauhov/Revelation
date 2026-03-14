@@ -333,7 +333,6 @@ lib/
 - Fake `ServerManager`/remote downloader.
 - Fake logger/talker adapter.
 - Test harness for router + bloc/cubit state holders.
-- Optional golden tests for top screens after stabilization.
 
 ### Regression safety strategy
 - Branch-by-abstraction migration.
@@ -342,9 +341,9 @@ lib/
 - “No behavior change” commits отдельно от structural moves.
 
 ## 14. CI / quality gates strategy
-### Current gap
-- CI workflow только на push в `main`, с `analyze`, без unit/widget gate.
-- PR quality gates отсутствуют.
+### Initial gap (before rollout)
+- CI workflow был только на push в `main`, с `analyze`, без unit/widget gate.
+- Enforceable PR CI gates отсутствовали.
 
 ### CI rollout plan for tests
 - Step 1 (P0): добавить PR workflow:
@@ -353,7 +352,7 @@ lib/
   - `flutter test --coverage`
 - Step 2 (P1): разделить тесты по tags/suites:
   - `unit+widget` обязательно на PR.
-  - integration smoke по label/manual/nightly.
+  - integration smoke только через manual workflow (`workflow_dispatch`).
 - Step 3 (P2): добавить threshold policy:
   - стартовый coverage gate мягкий,
   - постепенное повышение.
@@ -569,10 +568,7 @@ lib/
 - Почему нужна: без этого архитектура деградирует обратно.
 - Concrete tasks:
   - [P0] Обязательные unit+widget tests в PR CI.
-  - [P0] Тестовые матрицы по critical feature modules.
-  - [P1] Integration smoke tests (selective/nightly).
-  - [P1] Coverage trend tracking.
-  - [P2] Golden tests для наиболее стабильных экранов.
+  - [P1] Integration smoke tests (manual workflow).
 - Affected files/modules/areas:
   - `.github/workflows/*`, `test/`, `integration_test/`.
 - Риски:
@@ -589,6 +585,9 @@ lib/
   - PR blocked if analyze/unit/widget fail.
 - Criteria of done:
   - CI реально защищает архитектуру, не декоративно.
+- Execution status (2026-03-14):
+  - `P1 task "selective integration smoke"` completed:
+    добавлен `integration_test/smoke` suite и отдельный workflow с ручным запуском (`workflow_dispatch`) + Android emulator runner.
 
 ### Phase 5 — Docs hardening / final cleanup / governance
 - Цель: закрепить архитектуру как процесс, а не разовый refactor.
