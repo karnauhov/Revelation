@@ -863,7 +863,7 @@
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
-  - New risks: `DBManager` остается внутренним адаптером для нескольких infra data sources, поэтому P0-деcomposition формально еще не завершен.
+  - New risks: `DBManager` остается внутренним адаптером для нескольких infra data sources, поэтому P0-декомпозиция формально еще не завершена.
   - Mitigations: следующим шагом определить target facade/contract для чтения cached DB rows и подготовить поэтапное сужение публичной поверхности `DBManager`.
   - Next task: Phase 3 / P0 — завершить декомпозицию `DBManager` (final facade/policy slice).
 

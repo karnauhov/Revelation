@@ -1,6 +1,6 @@
 ﻿# Residual Architecture Debt Backlog (RU)
 
-Doc-Version: `0.1.3`  
+Doc-Version: `0.1.4`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -24,7 +24,6 @@ Source-Commit: `working-tree`
 | `RAD-01` | P1 | Декомпозировать UI-монолиты `primary_sources` detail | Крупные файлы: `primary_source_screen.dart`, `image_preview.dart`, `primary_source_toolbar.dart` | Разделить на меньшие widgets/flows по зонам ответственности (navigation shell, image canvas, description panel, toolbar actions) | Нет presentation-файлов detail-scope более `700` строк, ключевые поддеревья покрыты widget-тестами |
 | `RAD-02` | P1 | Убрать концентрацию orchestration в `PrimarySourceViewModel` | `primary_source_view_model.dart` совмещает lifecycle, routing callbacks и image/viewport orchestration | Перенести lifecycle и orchestration в выделенный coordinator/use-case слой и сократить surface VM | VM больше не владеет lifecycle-флагами cubit и ручной цепочкой dispose |
 | `RAD-03` | P1 | Удалить глобальный barrel `shared/utils/common.dart` | `36` импортов через разные слои (`app/core/infra/features/shared`) | Заменить использование barrel на точечные импорты (`core/logging`, `shared/ui/dialogs`, `core/platform` и т.д.), затем удалить barrel | `rg "shared/utils/common.dart" lib test` -> `0` matches |
-| `RAD-07` | P2 | Нормализовать терминологию в master architecture docs | После массовой терминологической замены были зафиксированы дефектные токены | Очистить master roadmap-документы от артефактов и зафиксировать единый glossary | Поиск по известным дефектным токенам в `docs/architecture` не возвращает совпадений |
 
 ## 4. Backlog Governance
 - Пересматривать backlog при каждом значимом архитектурном изменении (или минимум раз в релизный цикл).
@@ -35,6 +34,7 @@ Source-Commit: `working-tree`
 - Закрытые пункты фиксируются в migration journal соответствующей фазы.
 
 ## 5. Recently Closed
+- `2026-03-14`: закрыт `RAD-07` — в master roadmap-документах исправлены зафиксированные терминологические артефакты (латинско-кириллический mix и дефектный production-token); проверка по списку дефектных паттернов для roadmap-файлов возвращает `0` совпадений.
 - `2026-03-14`: закрыт `RAD-06` — suppressions `deprecated_member_use` удалены из runtime-кода; `file_downloader_web` переведен на `package:web`, `WidgetsBinding.instance.window` заменен на `PlatformDispatcher.instance.implicitView`, `rg "deprecated_member_use" lib` возвращает `0` совпадений.
 - `2026-03-14`: закрыт `RAD-05` — `integration_test/smoke` расширен до `5` сценариев (`about`, `download`, `settings -> about -> download`, `primary_sources` navigation, `settings -> topics` language sync), manual-triggered policy сохранена (`workflow_dispatch`).
 - `2026-03-14`: закрыт `RAD-04` — декомпозиция `DBManager` завершена, runtime слой оставлен composition-only, feature-level кэши перенесены в domain-specific gateways.

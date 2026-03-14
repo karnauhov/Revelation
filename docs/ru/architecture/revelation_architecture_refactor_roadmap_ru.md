@@ -121,7 +121,7 @@
 - Нужен **селективный application/domain слой** только для сложных сценариев (`primary_sources`, `topic content orchestration`, sync flows).
 
 ### Почему не giant rewrite
-- Риск регрессий в CIoduction multi-platform.
+- Риск регрессий в production multi-platform контуре.
 - Уже есть рабочие подсистемы, которые лучше эволюционно укреплять.
 
 ### Насколько строгий feature-first подходит Revelation
