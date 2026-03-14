@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1/2/3/3.5 завершены, Phase 3.7 in progress, Phase 4 paused`  
+Статус: `Phase 0/1/2/3/3.5/3.7 завершены, Phase 4 paused`  
 Версия roadmap: `v1.1`  
 Дата создания: `2026-03-08`
 
@@ -155,16 +155,16 @@
 - [x] Подшаг [P3.7.6]: viewport/render controls cubit (zoom/layers/tool mode/colors).
 - [x] Задача [P0]: заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.
 - [x] Задача [P0]: удалить legacy state слой (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts).
-- [ ] Задача [P1]: добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/` (кроме документации).
-- [ ] Задача [P1]: добавить unit/widget regression suite на cubit/bloc transitions и критичные user flows.
-- [ ] Affected areas верифицированы: `lib/main.dart`, `lib/app/di/*`, `lib/app/router/*`, `lib/features/*/presentation/*`, `lib/features/primary_sources/{presentation,application}/*`, `scripts/check_forbidden_patterns.dart`, `pubspec.yaml`.
-- [ ] Риски проверены и записаны.
-- [ ] Dependencies/prerequisites подтверждены (`Phase 3` и `Phase 3.5` completed).
-- [ ] Relevant skills назначены.
-- [ ] Test expectations выполнены.
-- [ ] Docs update expectations выполнены (`docs/architecture/revelation_architecture_refactor_roadmap_ru.md`, `docs/architecture/overview.ru.md`, `docs/architecture/overview.en.md`, `docs/architecture/module-boundaries.ru.md`, `docs/architecture/module-boundaries.en.md`, `AGENTS.md`).
-- [ ] Quality gates пройдены.
-- [ ] Criteria of done выполнен.
+- [x] Задача [P1]: добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/` (кроме документации).
+- [x] Задача [P1]: добавить unit/widget regression suite на cubit/bloc transitions и критичные user flows.
+- [x] Affected areas верифицированы: `lib/main.dart`, `lib/app/di/*`, `lib/app/router/*`, `lib/features/*/presentation/*`, `lib/features/primary_sources/{presentation,application}/*`, `scripts/check_forbidden_patterns.dart`, `pubspec.yaml`.
+- [x] Риски проверены и записаны.
+- [x] Dependencies/prerequisites подтверждены (`Phase 3` и `Phase 3.5` completed).
+- [x] Relevant skills назначены.
+- [x] Test expectations выполнены.
+- [x] Docs update expectations выполнены (`docs/architecture/revelation_architecture_refactor_roadmap_ru.md`, `docs/architecture/overview.ru.md`, `docs/architecture/overview.en.md`, `docs/architecture/module-boundaries.ru.md`, `docs/architecture/module-boundaries.en.md`, `AGENTS.md`).
+- [x] Quality gates пройдены.
+- [x] Criteria of done выполнен.
 
 ### Phase 4 — Testing hardening and CI enforcement
 - [x] Цель фазы зафиксирована: сделать качество воспроизводимым и enforceable.
@@ -2044,3 +2044,93 @@
   - New risks: без автоматизированного guardrail возможно повторное внесение `provider/ChangeNotifier` в будущих изменениях.
   - Mitigations: следующий шаг — добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/`.
   - Next task: Phase 3.7 / Task `P1` — добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/` (кроме документации).
+
+#### [2026-03-14 18:10] Phase 3.7 / Task P1 / Add automated enforcement for `provider/ChangeNotifier` ban in `lib/` and `test/`
+- Статус: done
+- Priority: P1
+- What changed:
+  - Усилен `scripts/check_forbidden_patterns.dart` новыми fail-fast правилами:
+    - запрет `import 'package:provider/...'` в `lib/` и `test/`;
+    - запрет `ChangeNotifier` в `lib/` и `test/`;
+    - запрет `notifyListeners()` в `lib/` и `test/`.
+  - Подтвержден CI wiring: `pr_quality.yml` уже выполняет `dart run scripts/check_forbidden_patterns.dart`, поэтому новые правила автоматически применяются в PR.
+- Why changed:
+  - Закрыть обязательный P1 шаг Phase 3.7 и исключить повторный drift обратно к legacy state patterns после завершенного runtime cutover на BLoC/Cubit.
+- Scope (files/modules):
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Forbidden checks: pass (`dart run scripts/check_forbidden_patterns.dart`)
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: coverage guardrail проверяет синтаксические паттерны, но не гарантирует поведенческую эквивалентность миграции.
+  - Mitigations: следующий шаг — расширить unit/widget regression suite на cubit/bloc transitions и критичные user flows.
+  - Next task: Phase 3.7 / Task `P1` — добавить unit/widget regression suite на cubit/bloc transitions и критичные user flows.
+
+#### [2026-03-14 18:30] Phase 3.7 / Task P1 / Add unit+widget regression suite for cubit/bloc transitions and critical user flows
+- Статус: done
+- Priority: P1
+- What changed:
+  - Расширен unit regression suite для `PrimarySourcesCubit`:
+    - добавлены transition-сценарии `loading -> success` с проверкой групп (`full/significant/fragments`);
+    - добавлен transition-сценарий `loading -> failure` для `AppFailureResult`;
+    - добавлен transition-сценарий `loading -> unknown failure` при exception в repository;
+    - сохранен и валидирован stale-request regression кейс.
+  - Расширен widget regression suite для `PrimarySourcesScreen` (critical user flows):
+    - сценарий `loading` UI при незавершенном запросе;
+    - сценарий успешной загрузки grouped sections (`full/significant/fragments`);
+    - существующий error fallback сценарий сохранен.
+- Why changed:
+  - Закрыть обязательный P1 шаг Phase 3.7 и зафиксировать поведение критичного list-flow после полного перехода state management на BLoC/Cubit.
+- Scope (files/modules):
+  - `test/features/primary_sources/presentation/bloc/primary_sources_cubit_test.dart`
+  - `test/widget/primary_sources/primary_sources_screen_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Targeted unit tests: pass (`flutter test test/features/primary_sources/presentation/bloc/primary_sources_cubit_test.dart`)
+  - Targeted widget tests: pass (`flutter test test/widget/primary_sources/primary_sources_screen_test.dart`)
+  - Forbidden checks: pass (`dart run scripts/check_forbidden_patterns.dart`)
+  - Analyze: pass (`flutter analyze`)
+  - Full test suite: pass (`flutter test`)
+  - Integration smoke: n/a
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: текущий regression suite покрывает `primary_sources/list` и state transitions, но не закрывает все cross-feature UI navigation сценарии.
+  - Mitigations: следующий шаг — закрыть remaining Phase 3.7 exit checklist (`Affected areas`, `risks`, `dependencies`, `quality gates`, `criteria of done`) и зафиксировать завершение фазы.
+  - Next task: Phase 3.7 / Finalization — закрыть phase-level checklist и зафиксировать `Phase 3.7 completed`.
+
+#### [2026-03-14 18:45] Phase 3.7 / Finalization / Close phase-level checklist and mark `Phase 3.7 completed`
+- Статус: done
+- Priority: P0
+- What changed:
+  - Закрыт phase-level checklist `Phase 3.7`:
+    - отмечены `Affected areas`, `риски`, `dependencies/prerequisites`, `relevant skills`, `test expectations`, `docs update expectations`, `quality gates`, `criteria of done`.
+  - Обновлен общий статус рабочего roadmap:
+    - `Phase 0/1/2/3/3.5/3.7 завершены, Phase 4 paused`.
+- Why changed:
+  - Формально зафиксировать завершение всей фазы state migration после выполнения всех P0/P1 шагов и validation gates.
+- Scope (files/modules):
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Forbidden checks: pass (`dart run scripts/check_forbidden_patterns.dart`)
+  - Analyze: pass (`flutter analyze`)
+  - Full tests: pass (`flutter test`)
+  - Additional checks: `rg "package:provider|ChangeNotifier|notifyListeners\(" lib test` -> no matches
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (не требуется для формального закрытия фазы)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: для дальнейшего роста качества нужен следующий слой CI/coverage hardening в рамках `Phase 4`.
+  - Mitigations: перейти к `Phase 4 / P0` test matrices по critical feature modules.
+  - Next task: Phase 4 / Task `P0` — тестовые матрицы по critical feature modules.

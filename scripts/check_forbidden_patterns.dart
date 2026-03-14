@@ -96,6 +96,21 @@ void main() {
       roots: <String>['lib/features'],
       filePathPattern: RegExp(r'^lib/features/[^/]+/data/'),
     ),
+    PatternCheck(
+      name: 'Runtime and tests must not import provider package',
+      pattern: RegExp("import\\s+['\"]package:provider/"),
+      roots: <String>['lib', 'test'],
+    ),
+    PatternCheck(
+      name: 'Runtime and tests must not use ChangeNotifier',
+      pattern: RegExp(r'\bChangeNotifier\b'),
+      roots: <String>['lib', 'test'],
+    ),
+    PatternCheck(
+      name: 'Runtime and tests must not call notifyListeners()',
+      pattern: RegExp(r'\bnotifyListeners\s*\('),
+      roots: <String>['lib', 'test'],
+    ),
   ];
 
   var hasViolations = false;

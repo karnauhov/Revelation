@@ -1,4 +1,5 @@
 @Tags(['widget'])
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/list/primary_sources_screen.dart';
+import 'package:revelation/features/primary_sources/presentation/list/source_item.dart';
+import 'package:revelation/shared/models/primary_source.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 void main() {
@@ -34,16 +37,7 @@ void main() {
       final cubit = PrimarySourcesCubit(_FailurePrimarySourcesRepository());
       addTearDown(cubit.close);
 
-      await tester.pumpWidget(
-        BlocProvider<PrimarySourcesCubit>.value(
-          value: cubit,
-          child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const PrimarySourcesScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
 
       await tester.pump();
       await tester.pump();
@@ -51,6 +45,77 @@ void main() {
       expect(find.byType(ErrorMessage), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
     },
+  );
+
+  testWidgets(
+    'PrimarySourcesScreen shows loading state while request is in progress',
+    (tester) async {
+      final repository = _ControlledPrimarySourcesRepository();
+      final cubit = PrimarySourcesCubit(repository);
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(ErrorMessage), findsNothing);
+
+      repository.completeRequest(
+        0,
+        AppSuccess<PrimarySourcesLoadResult>(
+          PrimarySourcesLoadResult(
+            fullPrimarySources: const <PrimarySource>[],
+            significantPrimarySources: const <PrimarySource>[],
+            fragmentsPrimarySources: const <PrimarySource>[],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'PrimarySourcesScreen renders grouped source sections after successful load',
+    (tester) async {
+      final cubit = PrimarySourcesCubit(_SuccessPrimarySourcesRepository());
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      final context = tester.element(find.byType(PrimarySourcesScreen));
+      final l10n = AppLocalizations.of(context)!;
+
+      expect(find.text('${l10n.full_primary_sources} (1)'), findsOneWidget);
+      expect(
+        find.text('${l10n.significant_primary_sources} (1)'),
+        findsOneWidget,
+      );
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -900));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('${l10n.fragments_primary_sources} (1)'),
+        findsOneWidget,
+      );
+      expect(find.byType(SourceItemWidget), findsWidgets);
+      expect(find.byType(ErrorMessage), findsNothing);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+    },
+  );
+}
+
+Widget _buildPrimarySourcesScreenApp(PrimarySourcesCubit cubit) {
+  return BlocProvider<PrimarySourcesCubit>.value(
+    value: cubit,
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const PrimarySourcesScreen(),
+    ),
   );
 }
 
@@ -64,6 +129,68 @@ class _FailurePrimarySourcesRepository extends PrimarySourcesDbRepository {
       AppFailure.dataSource('Widget test forced failure'),
     );
   }
+}
+
+class _SuccessPrimarySourcesRepository extends PrimarySourcesDbRepository {
+  _SuccessPrimarySourcesRepository()
+    : super(dataSource: _EmptyPrimarySourcesDataSource());
+
+  @override
+  Future<AppResult<PrimarySourcesLoadResult>> loadGroupedSourcesResult() async {
+    return AppSuccess<PrimarySourcesLoadResult>(
+      PrimarySourcesLoadResult(
+        fullPrimarySources: <PrimarySource>[_buildSource('full')],
+        significantPrimarySources: <PrimarySource>[_buildSource('significant')],
+        fragmentsPrimarySources: <PrimarySource>[_buildSource('fragment')],
+      ),
+    );
+  }
+}
+
+class _ControlledPrimarySourcesRepository extends PrimarySourcesDbRepository {
+  _ControlledPrimarySourcesRepository()
+    : super(dataSource: _EmptyPrimarySourcesDataSource());
+
+  final List<Completer<AppResult<PrimarySourcesLoadResult>>> _requests =
+      <Completer<AppResult<PrimarySourcesLoadResult>>>[];
+
+  @override
+  Future<AppResult<PrimarySourcesLoadResult>> loadGroupedSourcesResult() {
+    final completer = Completer<AppResult<PrimarySourcesLoadResult>>();
+    _requests.add(completer);
+    return completer.future;
+  }
+
+  void completeRequest(int index, AppResult<PrimarySourcesLoadResult> result) {
+    _requests[index].complete(result);
+  }
+}
+
+PrimarySource _buildSource(String id) {
+  return PrimarySource(
+    id: id,
+    title: id,
+    date: '',
+    content: '',
+    quantity: 0,
+    material: '',
+    textStyle: '',
+    found: '',
+    classification: '',
+    currentLocation: '',
+    link1Title: '',
+    link1Url: '',
+    link2Title: '',
+    link2Url: '',
+    link3Title: '',
+    link3Url: '',
+    preview: '',
+    maxScale: 1,
+    isMonochrome: false,
+    pages: const [],
+    attributes: const [],
+    permissionsReceived: false,
+  );
 }
 
 class _EmptyPrimarySourcesDataSource implements PrimarySourcesDataSource {

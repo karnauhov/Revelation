@@ -561,6 +561,8 @@ lib/
   - В runtime-коде нет `Provider/ChangeNotifier`.
   - Все feature state flows работают через `BLoC/Cubit`.
   - `PrimarySource` state декомпозирован на гранулярные cubit-срезы и покрыт тестами.
+- Execution status (2026-03-14):
+  - `Phase 3.7 completed` (все P0/P1 задачи закрыты, quality gates пройдены).
 
 ### Phase 4 — Testing hardening and CI enforcement
 - Цель: сделать качество воспроизводимым и enforceable.
