@@ -1,6 +1,6 @@
 # Architecture Overview (RU)
 
-Doc-Version: `1.1.3`  
+Doc-Version: `1.1.4`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -15,6 +15,7 @@ Source-Commit: `working-tree`
 - Глобальный state scope: `AppDi.appBlocProviders` предоставляет `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
 - UI-состояние раскрытия карточек списка первоисточников хранится в screen-scoped `PrimarySourcesExpansionCubit`; модель `PrimarySource` не содержит mutable UI-флагов.
 - Detail state для primary source: в `PrimarySourceScreen` создается `MultiBlocProvider` с cubit-срезами `session/image/page-settings/description/viewport`; selection-поля (`currentType/currentNumber`) входят в `PrimarySourceDescriptionState`.
+- В detail image/description state не хранятся дублирующие visibility-флаги (`imageShown`, `showDescription`): видимость выводится из фактических данных и режимов UI.
 - Detail orchestration для primary source: `PrimarySourceDetailOrchestrationCubit` координирует `loadImage`, `changeSelectedPage` и debounce-логику save/restore между detail cubit-срезами.
 - Поток данных: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
 - Remote-слой: `ServerManager` работает с Supabase Storage для загрузки БД и файлов.

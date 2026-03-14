@@ -3,7 +3,7 @@
 Дата аудита: `2026-03-14`  
 Область: весь Flutter-проект (`lib/`, `test/`, `integration_test/`, `docs/`, CI/scripts)  
 Фокус: только state management и связанные архитектурные аспекты  
-Статус выполнения плана: `в процессе (Step 1-7 частично выполнены)`  
+Статус выполнения плана: `в процессе (Step 1-8 частично выполнены)`  
 
 Как использовать документ:
 - Этот файл предназначен как пошаговый execution-plan.
@@ -578,19 +578,19 @@ Legacy/candidate cleanup:
 - [x] How to validate: State unit tests + widget rebuild assertions.
 
 ### Step 8 — Cleanup legacy state leftovers
-- [ ] Цель: Упростить модель detail-state без потери функциональности.
-- [ ] Почему приоритет: Уменьшает архитектурный шум и когнитивную нагрузку.
-- [ ] Конкретные действия:
-- [ ] Проверить runtime необходимость `imageShown/showDescription`.
-- [ ] Удалить неиспользуемые поля/методы или реально встроить в UI flow.
-- [ ] Затрагиваемые файлы/папки:
-- [ ] `lib/features/primary_sources/presentation/bloc/primary_source_image_state.dart`
-- [ ] `lib/features/primary_sources/presentation/bloc/primary_source_description_state.dart`
-- [ ] `lib/features/primary_sources/presentation/bloc/primary_source_detail_coordinator.dart`
-- [ ] Риск: Низкий/средний.
-- [ ] Ожидаемый результат: Более компактные и ясные state contracts.
-- [ ] Dependency on previous steps: Лучше после Step 1.
-- [ ] How to validate: Search no-unused + full test suite pass.
+- [x] Цель: Упростить модель detail-state без потери функциональности.
+- [x] Почему приоритет: Уменьшает архитектурный шум и когнитивную нагрузку.
+- [x] Конкретные действия:
+- [x] Проверить runtime необходимость `imageShown/showDescription`.
+- [x] Удалить неиспользуемые поля/методы или реально встроить в UI flow.
+- [x] Затрагиваемые файлы/папки:
+- [x] `lib/features/primary_sources/presentation/bloc/primary_source_image_state.dart`
+- [x] `lib/features/primary_sources/presentation/bloc/primary_source_description_state.dart`
+- [x] `lib/features/primary_sources/presentation/bloc/primary_source_detail_coordinator.dart`
+- [x] Риск: Низкий/средний.
+- [x] Ожидаемый результат: Более компактные и ясные state contracts.
+- [x] Dependency on previous steps: Лучше после Step 1.
+- [x] How to validate: Search no-unused + full test suite pass.
 
 ### Step 9 — Привести provisioning к единому стилю DI
 - [ ] Цель: Повысить консистентность создания зависимостей.
@@ -714,6 +714,6 @@ Legacy/candidate cleanup:
 - [x] Step 5: Добавить stale guard в `TopicsCatalogCubit`
 - [x] Step 6: Привести async lifecycle safety к единому стандарту
 - [x] Step 7: Стандартизовать equality и dedup state updates
-- [ ] Step 8: Очистить legacy state leftovers
+- [x] Step 8: Очистить legacy state leftovers
 - [ ] Step 9: Упорядочить DI/provisioning style
 - [ ] Step 10: Закрыть тесты + синхронизировать RU/EN docs

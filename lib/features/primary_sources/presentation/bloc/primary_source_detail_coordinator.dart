@@ -48,7 +48,6 @@ class PrimarySourceDetailCoordinator {
   Uint8List? get imageData => _imageCubit.state.imageData;
   bool get isLoading => _imageCubit.state.isLoading;
   bool get refreshError => _imageCubit.state.refreshError;
-  bool get imageShown => _imageCubit.state.imageShown;
   Map<String, bool?> get localPageLoaded => _imageCubit.state.localPageLoaded;
   bool get isNegative => _pageSettingsCubit.state.isNegative;
   bool get isMonochrome => _pageSettingsCubit.state.isMonochrome;
@@ -77,7 +76,6 @@ class PrimarySourceDetailCoordinator {
   String get imageName => _sessionCubit.state.imageName;
   bool get isMenuOpen => _sessionCubit.state.isMenuOpen;
   String get pageSettings => _pageSettingsCubit.state.rawSettings;
-  bool get showDescription => _descriptionCubit.state.showDescription;
   String? get descriptionContent => _descriptionCubit.state.content;
   DescriptionKind get currentDescriptionType =>
       _descriptionCubit.state.currentType;
@@ -228,10 +226,6 @@ class PrimarySourceDetailCoordinator {
 
   void restorePositionAndScale() {
     _orchestrationCubit.restorePositionAndScale();
-  }
-
-  void toggleDescription() {
-    _orchestrationCubit.toggleDescription();
   }
 
   void updateDescriptionContent(

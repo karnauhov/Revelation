@@ -1,6 +1,6 @@
 # Architecture Overview (EN)
 
-Doc-Version: `1.1.3`  
+Doc-Version: `1.1.4`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -15,6 +15,7 @@ Define the current Revelation architecture as-is.
 - Global state scope: `AppDi.appBlocProviders` provides `SettingsCubit`, `TopicsCatalogCubit`, and `PrimarySourcesCubit`.
 - Primary source list UI state: `PrimarySourcesScreen` owns expand/collapse state via screen-scoped `PrimarySourcesExpansionCubit`; `PrimarySource` model is kept free of mutable UI flags.
 - Primary source detail state: `PrimarySourceScreen` creates a `MultiBlocProvider` with `session/image/page-settings/description/viewport` cubit slices; selection fields (`currentType/currentNumber`) belong to `PrimarySourceDescriptionState`.
+- Primary source detail image/description state does not keep duplicate visibility flags (`imageShown`, `showDescription`): visibility is derived from actual data and active UI modes.
 - Primary source detail orchestration: `PrimarySourceDetailOrchestrationCubit` coordinates `loadImage`, `changeSelectedPage`, and debounced save/restore across detail cubit slices.
 - Data flow: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
 - Remote layer: `ServerManager` uses Supabase Storage for database and file downloads.

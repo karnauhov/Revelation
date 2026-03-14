@@ -82,7 +82,6 @@ class PrimarySourceDetailOrchestrationCubit
   Future<void> loadImage(String page, {bool isReload = false}) async {
     final requestToken = _imageLoadRequestGuard.start();
     try {
-      _imageCubit.setImageShown(false);
       _viewportCubit.markImageLoadingStarted();
 
       final pageSettings = await _pageSettingsCubit.loadSettingsForPage(
@@ -119,7 +118,6 @@ class PrimarySourceDetailOrchestrationCubit
   }
 
   Future<void> changeSelectedPage(model.Page? newPage) async {
-    _imageCubit.setImageShown(false);
     _viewportCubit.markImageLoadingStarted();
     _sessionCubit.setSelectedPage(newPage);
     _viewportCubit.resetColorReplacement();
@@ -212,10 +210,6 @@ class PrimarySourceDetailOrchestrationCubit
 
   void setMenuOpen(bool isMenuOpen) {
     _sessionCubit.setMenuOpen(isMenuOpen);
-  }
-
-  void toggleDescription() {
-    _descriptionCubit.toggleDescriptionVisibility();
   }
 
   void updateDescriptionContent({

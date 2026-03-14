@@ -44,7 +44,7 @@ class PrimarySourceImageCubit extends Cubit<PrimarySourceImageState> {
     bool isReload = false,
   }) async {
     final requestToken = _imageLoadRequestGuard.start();
-    emit(state.copyWith(isLoading: true, imageShown: false));
+    emit(state.copyWith(isLoading: true));
 
     try {
       final loadResult = await _imageLoadingOrchestrator.loadPageImage(
@@ -102,10 +102,6 @@ class PrimarySourceImageCubit extends Cubit<PrimarySourceImageState> {
         emit(state.copyWith(isLoading: false));
       }
     }
-  }
-
-  void setImageShown(bool shown) {
-    emit(state.copyWith(imageShown: shown));
   }
 
   Future<void> refreshLocalPageAvailability() async {

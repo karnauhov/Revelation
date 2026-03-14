@@ -1,6 +1,6 @@
 # Module Boundaries (RU)
 
-Doc-Version: `1.1.3`  
+Doc-Version: `1.1.4`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -29,6 +29,7 @@ Source-Commit: `working-tree`
 - Межсрезовая orchestration в presentation реализуется через `Cubit`/`Bloc` классы (например, `*OrchestrationCubit`), а не через mutable controller-singleton.
 - UI expand/collapse state для карточек первоисточников хранится в screen-scoped `PrimarySourcesExpansionCubit`, а не в mutable полях модели `PrimarySource`.
 - Если один state-срез уже содержит поля выбора и отображения (например, `PrimarySourceDescriptionState.currentType/currentNumber`), не вводится отдельный дублирующий cubit для того же источника истины.
+- Не добавлять дублирующие visibility-флаги (`imageShown`, `showDescription`) в detail state, если видимость однозначно выводится из существующих данных и UI-режимов.
 - `application` не содержит UI-виджеты.
 - `data` может зависеть от `infra` data source/gateway контрактов.
 - `infra` не импортирует feature `presentation`.

@@ -4,7 +4,6 @@ import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 
 class PrimarySourceDescriptionState {
   const PrimarySourceDescriptionState({
-    required this.showDescription,
     required this.content,
     required this.currentType,
     required this.currentNumber,
@@ -15,7 +14,6 @@ class PrimarySourceDescriptionState {
     required List<GreekStrongPickerEntry> pickerEntries,
   }) {
     return PrimarySourceDescriptionState(
-      showDescription: true,
       content: null,
       currentType: DescriptionKind.info,
       currentNumber: null,
@@ -23,14 +21,12 @@ class PrimarySourceDescriptionState {
     );
   }
 
-  final bool showDescription;
   final String? content;
   final DescriptionKind currentType;
   final int? currentNumber;
   final List<GreekStrongPickerEntry> pickerEntries;
 
   PrimarySourceDescriptionState copyWith({
-    bool? showDescription,
     String? content,
     bool contentSet = false,
     DescriptionKind? currentType,
@@ -39,7 +35,6 @@ class PrimarySourceDescriptionState {
     List<GreekStrongPickerEntry>? pickerEntries,
   }) {
     return PrimarySourceDescriptionState(
-      showDescription: showDescription ?? this.showDescription,
       content: contentSet ? content : this.content,
       currentType: currentType ?? this.currentType,
       currentNumber: currentNumberSet ? currentNumber : this.currentNumber,
@@ -52,7 +47,6 @@ class PrimarySourceDescriptionState {
     return identical(this, other) ||
         other is PrimarySourceDescriptionState &&
             runtimeType == other.runtimeType &&
-            showDescription == other.showDescription &&
             content == other.content &&
             currentType == other.currentType &&
             currentNumber == other.currentNumber &&
@@ -61,7 +55,6 @@ class PrimarySourceDescriptionState {
 
   @override
   int get hashCode => Object.hash(
-    showDescription,
     content,
     currentType,
     currentNumber,

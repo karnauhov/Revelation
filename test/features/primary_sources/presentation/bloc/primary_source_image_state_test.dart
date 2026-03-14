@@ -8,7 +8,6 @@ void main() {
     final state = PrimarySourceImageState(
       imageData: null,
       isLoading: false,
-      imageShown: false,
       refreshError: false,
       localPageLoaded: sourceMap,
       maxTextureSize: 4096,

@@ -23,10 +23,6 @@ class PrimarySourceDescriptionCubit
 
   final DescriptionContentService _descriptionService;
 
-  void toggleDescriptionVisibility() {
-    emit(state.copyWith(showDescription: !state.showDescription));
-  }
-
   void updateDescriptionContent({
     required String content,
     required DescriptionKind type,
