@@ -31,7 +31,11 @@ class _MainScreenState extends State<MainScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final settingsCubit = context.read<SettingsCubit>();
       AudioController aud = AudioController();
-      unawaited(aud.init(settingsCubit));
+      unawaited(
+        aud.init(
+          isSoundEnabled: () => settingsCubit.state.settings.soundEnabled,
+        ),
+      );
     });
   }
 

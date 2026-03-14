@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:revelation/app/router/route_args.dart';
+import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/strong_dictionary_dialog.dart';
 import 'package:revelation/features/settings/settings.dart'
     show SettingsCubit, SettingsRepository;
@@ -19,6 +22,8 @@ class AppBootstrap {
 
   final Talker _talker;
   final DatabaseRuntime _databaseRuntime;
+  final PrimarySourceReferenceResolver _referenceResolver =
+      PrimarySourceReferenceResolver();
   StreamSubscription<String>? _languageSubscription;
 
   Future<SettingsCubit> initialize() async {
@@ -89,6 +94,28 @@ class AppBootstrap {
     });
     setDefaultGreekStrongPickerTapHandler((strongNumber, context) {
       showStrongDictionaryDialog(context, strongNumber);
+    });
+    setDefaultWordTapHandler((sourceId, pageName, wordIndex, context) {
+      final source = _referenceResolver.findSourceById(sourceId);
+      if (source == null) {
+        log.warning("Primary source '$sourceId' was not found for word link.");
+        return;
+      }
+
+      if (pageName != null &&
+          _referenceResolver.findPageByName(source, pageName) == null) {
+        log.warning("Page '$pageName' was not found in source '$sourceId'.");
+        return;
+      }
+
+      context.push(
+        '/primary_source',
+        extra: PrimarySourceRouteArgs(
+          primarySource: source,
+          pageName: pageName,
+          wordIndex: wordIndex,
+        ),
+      );
     });
   }
 }

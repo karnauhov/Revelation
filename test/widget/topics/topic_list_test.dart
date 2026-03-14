@@ -11,6 +11,7 @@ import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
+import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/features/topics/presentation/bloc/topics_catalog_cubit.dart';
 import 'package:revelation/features/topics/presentation/widgets/topic_card.dart';
@@ -122,8 +123,8 @@ void main() {
             route: 'topic-en',
           ),
         ]),
-        iconByKey: <String, AppResult<CommonResource?>>{
-          'topic-icon': AppSuccess<CommonResource?>(_buildSvgResource()),
+        iconByKey: <String, AppResult<TopicResource?>>{
+          'topic-icon': AppSuccess<TopicResource?>(_buildSvgResource()),
         },
       ),
       settingsCubit: settingsCubit,
@@ -153,9 +154,8 @@ Widget _buildApp(TopicsCatalogCubit cubit) {
   );
 }
 
-CommonResource _buildSvgResource() {
-  return CommonResource(
-    key: 'topic-icon',
+TopicResource _buildSvgResource() {
+  return TopicResource(
     fileName: 'topic-icon.svg',
     mimeType: 'image/svg+xml',
     data: Uint8List.fromList(
@@ -183,11 +183,11 @@ class _FakeSettingsRepository extends SettingsRepository {
 class _FixedTopicsRepository extends TopicsRepository {
   _FixedTopicsRepository({
     required this.topicsResult,
-    this.iconByKey = const <String, AppResult<CommonResource?>>{},
+    this.iconByKey = const <String, AppResult<TopicResource?>>{},
   }) : super(dataSource: _NoopTopicsDataSource());
 
   final AppResult<List<TopicInfo>> topicsResult;
-  final Map<String, AppResult<CommonResource?>> iconByKey;
+  final Map<String, AppResult<TopicResource?>> iconByKey;
 
   @override
   Future<AppResult<List<TopicInfo>>> getTopics({
@@ -197,8 +197,8 @@ class _FixedTopicsRepository extends TopicsRepository {
   }
 
   @override
-  Future<AppResult<CommonResource?>> getCommonResource(String key) async {
-    return iconByKey[key] ?? const AppSuccess<CommonResource?>(null);
+  Future<AppResult<TopicResource?>> getCommonResource(String key) async {
+    return iconByKey[key] ?? const AppSuccess<TopicResource?>(null);
   }
 }
 
@@ -216,8 +216,8 @@ class _ControlledTopicsRepository extends TopicsRepository {
   }
 
   @override
-  Future<AppResult<CommonResource?>> getCommonResource(String key) async {
-    return const AppSuccess<CommonResource?>(null);
+  Future<AppResult<TopicResource?>> getCommonResource(String key) async {
+    return const AppSuccess<TopicResource?>(null);
   }
 
   void completeRequest(int index, AppResult<List<TopicInfo>> result) {

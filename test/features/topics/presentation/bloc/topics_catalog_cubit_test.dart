@@ -7,6 +7,7 @@ import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
+import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/features/topics/presentation/bloc/topics_catalog_cubit.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
@@ -33,8 +34,8 @@ void main() {
           ),
         ]),
       },
-      iconByKey: <String, AppResult<CommonResource?>>{
-        'icon-en': AppSuccess<CommonResource?>(_buildSvgResource('icon-en')),
+      iconByKey: <String, AppResult<TopicResource?>>{
+        'icon-en': AppSuccess<TopicResource?>(_buildSvgResource('icon-en')),
       },
     );
     final cubit = TopicsCatalogCubit(
@@ -173,9 +174,8 @@ AppSettings _buildSettings({
   );
 }
 
-CommonResource _buildSvgResource(String key) {
-  return CommonResource(
-    key: key,
+TopicResource _buildSvgResource(String key) {
+  return TopicResource(
     fileName: '$key.svg',
     mimeType: 'image/svg+xml',
     data: Uint8List.fromList(
@@ -203,11 +203,11 @@ class _FakeSettingsRepository extends SettingsRepository {
 class _FakeTopicsRepository extends TopicsRepository {
   _FakeTopicsRepository({
     required this.topicsByLanguage,
-    this.iconByKey = const <String, AppResult<CommonResource?>>{},
+    this.iconByKey = const <String, AppResult<TopicResource?>>{},
   }) : super(dataSource: _NoopTopicsDataSource());
 
   final Map<String, AppResult<List<TopicInfo>>> topicsByLanguage;
-  final Map<String, AppResult<CommonResource?>> iconByKey;
+  final Map<String, AppResult<TopicResource?>> iconByKey;
   final List<String> requestedLanguages = <String>[];
   final List<String> requestedIconKeys = <String>[];
 
@@ -223,9 +223,9 @@ class _FakeTopicsRepository extends TopicsRepository {
   }
 
   @override
-  Future<AppResult<CommonResource?>> getCommonResource(String key) async {
+  Future<AppResult<TopicResource?>> getCommonResource(String key) async {
     requestedIconKeys.add(key);
-    return iconByKey[key] ?? const AppSuccess<CommonResource?>(null);
+    return iconByKey[key] ?? const AppSuccess<TopicResource?>(null);
   }
 }
 

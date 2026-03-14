@@ -3,13 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
-import 'package:revelation/infra/db/common/db_common.dart';
+import 'package:revelation/features/topics/data/models/topic_resource.dart';
 
 class TopicCard extends StatelessWidget {
   const TopicCard({super.key, required this.topic, required this.iconResource});
 
   final TopicInfo topic;
-  final CommonResource? iconResource;
+  final TopicResource? iconResource;
 
   Widget _buildDefaultIcon(Color color) {
     return SvgPicture.asset(
@@ -67,7 +67,7 @@ class TopicCard extends StatelessWidget {
   }
 
   Widget _buildIcon(
-    CommonResource? resource,
+    TopicResource? resource,
     Color titleColor,
     double iconWidth,
     double iconHeight,

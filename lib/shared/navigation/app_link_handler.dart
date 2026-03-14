@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:revelation/app/router/route_args.dart';
-import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/shared/utils/links_utils.dart';
@@ -22,8 +20,7 @@ typedef WordTapHandler =
 
 GreekStrongTapHandler? _defaultGreekStrongTapHandler;
 GreekStrongPickerTapHandler? _defaultGreekStrongPickerTapHandler;
-final PrimarySourceReferenceResolver _referenceResolver =
-    PrimarySourceReferenceResolver();
+WordTapHandler? _defaultWordTapHandler;
 
 void setDefaultGreekStrongTapHandler(GreekStrongTapHandler? handler) {
   _defaultGreekStrongTapHandler = handler;
@@ -33,6 +30,10 @@ void setDefaultGreekStrongPickerTapHandler(
   GreekStrongPickerTapHandler? handler,
 ) {
   _defaultGreekStrongPickerTapHandler = handler;
+}
+
+void setDefaultWordTapHandler(WordTapHandler? handler) {
+  _defaultWordTapHandler = handler;
 }
 
 Future<bool> handleAppLink(
@@ -286,31 +287,9 @@ Future<bool> _handleWordLink(
     return true;
   }
 
-  return _openPrimarySourceFromWordLink(
-    context,
-    sourceId: sourceId,
-    pageName: pageName,
-    wordIndex: wordIndex,
-    popBeforeScreenPush: popBeforeScreenPush,
-  );
-}
-
-Future<bool> _openPrimarySourceFromWordLink(
-  BuildContext context, {
-  required String sourceId,
-  String? pageName,
-  int? wordIndex,
-  required bool popBeforeScreenPush,
-}) async {
-  final source = _referenceResolver.findSourceById(sourceId);
-  if (source == null) {
-    log.warning("Primary source '$sourceId' was not found for word link.");
-    return false;
-  }
-
-  if (pageName != null &&
-      _referenceResolver.findPageByName(source, pageName) == null) {
-    log.warning("Page '$pageName' was not found in source '$sourceId'.");
+  final defaultWordTapHandler = _defaultWordTapHandler;
+  if (defaultWordTapHandler == null) {
+    log.warning("Word callback is not set for link: '$href'");
     return false;
   }
 
@@ -318,14 +297,7 @@ Future<bool> _openPrimarySourceFromWordLink(
     Navigator.pop(context);
   }
 
-  context.push(
-    '/primary_source',
-    extra: PrimarySourceRouteArgs(
-      primarySource: source,
-      pageName: pageName,
-      wordIndex: wordIndex,
-    ),
-  );
+  await defaultWordTapHandler(sourceId, pageName, wordIndex, context);
   return true;
 }
 

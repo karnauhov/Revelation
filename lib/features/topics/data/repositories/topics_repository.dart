@@ -1,7 +1,8 @@
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
-import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
+import 'package:revelation/features/topics/data/models/topic_resource.dart';
+import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 
@@ -120,20 +121,21 @@ class TopicsRepository {
     }
   }
 
-  Future<AppResult<CommonResource?>> getCommonResource(String key) async {
+  Future<AppResult<TopicResource?>> getCommonResource(String key) async {
     if (key.isEmpty) {
-      return const AppFailureResult<CommonResource?>(
+      return const AppFailureResult<TopicResource?>(
         AppFailure.validation('Common resource key must not be empty.'),
       );
     }
 
     try {
-      return AppSuccess<CommonResource?>(
-        await _dataSource.fetchCommonResource(key),
+      final resource = await _dataSource.fetchCommonResource(key);
+      return AppSuccess<TopicResource?>(
+        resource == null ? null : _mapTopicResource(resource),
       );
     } catch (error, stackTrace) {
       log.error('Common resource loading error: $error', stackTrace);
-      return AppFailureResult<CommonResource?>(
+      return AppFailureResult<TopicResource?>(
         AppFailure.dataSource(
           'Unable to load common resource from local database.',
           cause: error,
@@ -141,5 +143,13 @@ class TopicsRepository {
         ),
       );
     }
+  }
+
+  TopicResource _mapTopicResource(CommonResource resource) {
+    return TopicResource(
+      fileName: resource.fileName,
+      mimeType: resource.mimeType,
+      data: resource.data,
+    );
   }
 }

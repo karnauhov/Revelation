@@ -1,6 +1,6 @@
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
-import 'package:revelation/infra/db/common/db_common.dart';
+import 'package:revelation/features/topics/data/models/topic_resource.dart';
 
 class TopicsCatalogState {
   const TopicsCatalogState({
@@ -15,21 +15,21 @@ class TopicsCatalogState {
     return const TopicsCatalogState(
       language: '',
       topics: <TopicInfo>[],
-      iconByKey: <String, CommonResource?>{},
+      iconByKey: <String, TopicResource?>{},
       isLoading: true,
     );
   }
 
   final String language;
   final List<TopicInfo> topics;
-  final Map<String, CommonResource?> iconByKey;
+  final Map<String, TopicResource?> iconByKey;
   final bool isLoading;
   final AppFailure? failure;
 
   TopicsCatalogState copyWith({
     String? language,
     List<TopicInfo>? topics,
-    Map<String, CommonResource?>? iconByKey,
+    Map<String, TopicResource?>? iconByKey,
     bool? isLoading,
     AppFailure? failure,
     bool clearFailure = false,

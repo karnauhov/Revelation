@@ -1,4 +1,5 @@
 export 'data/models/topic_info.dart';
+export 'data/models/topic_resource.dart';
 export 'data/repositories/topics_repository.dart';
 export 'presentation/bloc/topic_content_cubit.dart';
 export 'presentation/bloc/topic_content_state.dart';

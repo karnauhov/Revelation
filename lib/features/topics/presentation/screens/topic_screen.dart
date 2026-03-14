@@ -8,10 +8,10 @@ import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
+import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_state.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
 import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
@@ -222,14 +222,14 @@ class _TopicScreenState extends State<TopicScreen> {
   Widget _buildDbResourceImage(BuildContext context, String key, String? alt) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: FutureBuilder<AppResult<CommonResource?>>(
+      child: FutureBuilder<AppResult<TopicResource?>>(
         future: _topicsRepository.getCommonResource(key),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return const Center(child: CircularProgressIndicator());
           }
           final result = snapshot.data;
-          if (snapshot.hasError || result is! AppSuccess<CommonResource?>) {
+          if (snapshot.hasError || result is! AppSuccess<TopicResource?>) {
             return _buildImageErrorWidget(context, key, alt);
           }
           final resource = result.data;
@@ -266,7 +266,7 @@ class _TopicScreenState extends State<TopicScreen> {
     }
 
     final resourceResult = await _topicsRepository.getCommonResource(key);
-    if (resourceResult is! AppSuccess<CommonResource?>) {
+    if (resourceResult is! AppSuccess<TopicResource?>) {
       showCustomDialog(
         MessageType.errorCommon,
         param: 'Resource not found in DB: $key',

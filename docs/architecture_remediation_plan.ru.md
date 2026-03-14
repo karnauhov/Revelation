@@ -31,17 +31,17 @@
 
 ### Фаза A. Критичные нарушения зависимостей (сначала)
 
-- [ ] `A1` Развязать `core/audio` от `features/settings`.
+- [x] `A1` Развязать `core/audio` от `features/settings`.
 Файлы-кандидаты: `lib/core/audio/audio_controller.dart`, `lib/app/di/app_di.dart`, `lib/main.dart`, `lib/features/settings/...`.
 Ожидаемый результат: `lib/core/**` больше не импортирует `package:revelation/features/...`.
 Проверка: `rg -n "package:revelation/features/" lib/core`.
 
-- [ ] `A2` Убрать feature-specific orchestration из `shared/navigation`.
+- [x] `A2` Убрать feature-specific orchestration из `shared/navigation`.
 Файлы-кандидаты: `lib/shared/navigation/app_link_handler.dart`, `lib/features/primary_sources/application/services/primary_source_reference_resolver.dart`, `lib/app/router/...` или `lib/features/primary_sources/...`.
 Ожидаемый результат: `shared` не зависит от feature-логики.
 Проверка: `rg -n "package:revelation/features/" lib/shared`.
 
-- [ ] `A3` Убрать прямые импорты `infra` из `topics/presentation`.
+- [x] `A3` Убрать прямые импорты `infra` из `topics/presentation`.
 Файлы-кандидаты: `lib/features/topics/presentation/bloc/topics_catalog_cubit.dart`, `lib/features/topics/presentation/bloc/topics_catalog_state.dart`, `lib/features/topics/presentation/screens/topic_screen.dart`, `lib/features/topics/presentation/widgets/topic_card.dart`, `lib/features/topics/data/repositories/topics_repository.dart`.
 Ожидаемый результат: presentation опирается на feature-контракты/DTO, а не на `infra` типы.
 Проверка: `rg -n --glob "lib/features/**/presentation/**/*.dart" "package:revelation/infra/" lib/features`.
