@@ -140,7 +140,11 @@
   - `pubspec.yaml`
   - `lib/core/logging/app_bloc_observer.dart`
   - `lib/main.dart`
-- [ ] Задача [P0]: перевести composition root (`main/app/di`) c provider wiring на `MultiBlocProvider`/`BlocProvider`.
+- [x] Задача [P0]: перевести composition root (`main/app/di`) c provider wiring на `MultiBlocProvider`/`BlocProvider`.
+- [x] Артефакт [P0]: composition root state wiring:
+  - `lib/app/di/app_di.dart`
+  - `lib/core/state/change_notifier_bridge_cubit.dart`
+  - `lib/main.dart`
 - [ ] Задача [P0]: мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
 - [ ] Задача [P0]: выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы.
 - [ ] Подшаг [P3.7.1]: source/session/page context cubit.
@@ -1613,3 +1617,35 @@
   - New risks: до перехода на `MultiBlocProvider` observer будет фиксировать только будущие bloc/cubit, а текущий `Provider`-слой остается активным.
   - Mitigations: следующий шаг — миграция composition root с provider wiring на `MultiBlocProvider`/`BlocProvider`.
   - Next task: Phase 3.7 / P0 — перевести composition root (`main/app/di`) c provider wiring на `MultiBlocProvider`/`BlocProvider`.
+
+#### [2026-03-14 13:20] Phase 3.7 / Task P0 / Move composition root wiring to `MultiBlocProvider`/`BlocProvider`
+- Статус: done
+- Priority: P0
+- What changed:
+  - В `main.dart` composition root переключен на `MultiBlocProvider` как внешний runtime state container.
+  - `app/di` разделен на два явных wiring слоя:
+    - `appBlocProviders(...)` для bloc runtime providers,
+    - `appProviders(...)` как transitional legacy providers.
+  - Добавлен `ChangeNotifierBridgeCubit` для bridge-механизма между legacy `ChangeNotifier` и bloc runtime stream.
+  - Глобальные state-owner instances (`SettingsViewModel`, `MainViewModel`, `PrimarySourcesViewModel`) теперь создаются один раз и шарятся между bloc/provider wiring.
+- Why changed:
+  - Закрыть следующий обязательный P0 шаг Phase 3.7: перенести composition root с чисто provider wiring на `MultiBlocProvider`/`BlocProvider` без нарушения текущей работоспособности legacy экранов.
+- Scope (files/modules):
+  - `lib/main.dart`
+  - `lib/app/di/app_di.dart`
+  - `lib/core/state/change_notifier_bridge_cubit.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: n/a (на этом шаге не изменялись guardrail скрипты)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: сохранен transitional `MultiProvider` слой для совместимости до миграции feature-срезов; это временно поддерживает mixed runtime path.
+  - Mitigations: следующий шаг Phase 3.7 — мигрировать `settings/about/topics/download` на `Cubit/Bloc` и начать вытеснение legacy provider consumers.
+  - Next task: Phase 3.7 / P0 — мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.

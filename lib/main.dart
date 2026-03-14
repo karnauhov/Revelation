@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
@@ -28,11 +28,24 @@ void main() async {
       final appBootstrap = AppBootstrap(talker: talker);
       final SettingsViewModel settingsViewModel = await appBootstrap
           .initialize();
+      final mainViewModel = AppDi.createMainViewModel();
+      final primarySourcesViewModel = AppDi.createPrimarySourcesViewModel();
 
       runApp(
-        MultiProvider(
-          providers: AppDi.appProviders(settingsViewModel: settingsViewModel),
-          child: const RevelationApp(),
+        MultiBlocProvider(
+          providers: AppDi.appBlocProviders(
+            settingsViewModel: settingsViewModel,
+            mainViewModel: mainViewModel,
+            primarySourcesViewModel: primarySourcesViewModel,
+          ),
+          child: MultiProvider(
+            providers: AppDi.appProviders(
+              settingsViewModel: settingsViewModel,
+              mainViewModel: mainViewModel,
+              primarySourcesViewModel: primarySourcesViewModel,
+            ),
+            child: const RevelationApp(),
+          ),
         ),
       );
     },
