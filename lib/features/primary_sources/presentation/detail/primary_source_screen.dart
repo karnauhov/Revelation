@@ -1,20 +1,20 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
-import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/primary_source_attributes_footer.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/image_preview.dart';
+import 'package:revelation/features/primary_sources/presentation/detail/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/primary_source_toolbar.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/strong_number_picker_dialog.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
-import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/utils/common.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
@@ -308,79 +308,14 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                             ),
                           ),
                         ),
-                        if (widget.primarySource.attributes != null &&
-                            widget.primarySource.attributes!.isNotEmpty &&
-                            widget.primarySource.permissionsReceived)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                10.0,
-                                0,
-                                10.0,
-                                2.0,
-                              ),
-                              child: viewModel.selectAreaMode
-                                  ? Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.select_area_description,
-                                      style: textTheme.bodySmall?.copyWith(
-                                        fontSize: 10,
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
-                                    )
-                                  : viewModel.pipetteMode
-                                  ? Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.pick_color_description,
-                                      style: textTheme.bodySmall?.copyWith(
-                                        fontSize: 10,
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
-                                    )
-                                  : Text.rich(
-                                      TextSpan(
-                                        style: textTheme.bodySmall?.copyWith(
-                                          fontSize: 10,
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                        children: [
-                                          if (viewModel.isMobileWeb)
-                                            TextSpan(
-                                              text:
-                                                  '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
-                                              style: textTheme.bodySmall
-                                                  ?.copyWith(
-                                                    fontSize: 10,
-                                                    color: colorScheme.primary,
-                                                  ),
-                                              recognizer: TapGestureRecognizer()
-                                                ..onTap = () {
-                                                  showCustomDialog(
-                                                    MessageType.warningCommon,
-                                                    param: AppLocalizations.of(
-                                                      context,
-                                                    )!.low_quality_message,
-                                                  );
-                                                },
-                                            ),
-                                          ..._buildLinkSpans(
-                                            widget.primarySource.attributes!,
-                                          ),
-                                        ],
-                                      ),
-                                      maxLines: 5,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                            ),
-                          ),
-                        if (widget.primarySource.attributes == null ||
-                            widget.primarySource.attributes!.isEmpty ||
-                            !widget.primarySource.permissionsReceived)
-                          Text.rich(TextSpan(text: "")),
+                        PrimarySourceAttributesFooter(
+                          attributes: widget.primarySource.attributes,
+                          permissionsReceived:
+                              widget.primarySource.permissionsReceived,
+                          selectAreaMode: viewModel.selectAreaMode,
+                          pipetteMode: viewModel.pipetteMode,
+                          isMobileWeb: viewModel.isMobileWeb,
+                        ),
                       ],
                     ),
                   ),
@@ -427,151 +362,41 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     BuildContext context,
     PrimarySourceViewModel viewModel,
   ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final localizations = AppLocalizations.of(context)!;
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final tooltipMaxWidth = screenWidth > 432 ? 420.0 : screenWidth - 12.0;
     final bool showStrongInfoIcon =
         viewModel.currentDescriptionType == DescriptionKind.word ||
         viewModel.currentDescriptionType == DescriptionKind.strongNumber;
-
-    final descriptionView = Container(
-      color: colorScheme.surface,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: DescriptionMarkdownView(
-              data:
-                  viewModel.descriptionContent ?? localizations.click_for_info,
-              padding: const EdgeInsets.fromLTRB(8, 2, 8, 58),
-              onGreekStrongTap: viewModel.showInfoForStrongNumber,
-              onGreekStrongPickerTap: (strongNumber, linkContext) {
-                _openStrongNumberPickerDialog(
-                  linkContext,
-                  viewModel,
-                  strongNumber,
-                );
-              },
-              onWordTap: (sourceId, pageName, wordIndex, linkContext) {
-                return _handleWordLinkTap(
-                  sourceId: sourceId,
-                  pageName: pageName,
-                  wordIndex: wordIndex,
-                  linkContext: linkContext,
-                  viewModel: viewModel,
-                );
-              },
-            ),
-          ),
-          Positioned(
-            left: 4,
-            bottom: 4,
-            child: _buildDescriptionNavigationOverlayButton(
-              context,
-              viewModel,
-              forward: false,
-            ),
-          ),
-          Positioned(
-            right: 4,
-            bottom: 4,
-            child: _buildDescriptionNavigationOverlayButton(
-              context,
-              viewModel,
-              forward: true,
-            ),
-          ),
-          if (showStrongInfoIcon)
-            Positioned(
-              top: -8,
-              right: -8,
-              child: Tooltip(
-                key: _referenceTooltipKey,
-                message: localizations.strong_reference_commentary,
-                constraints: BoxConstraints(maxWidth: tooltipMaxWidth),
-                showDuration: const Duration(seconds: 12),
-                preferBelow: false,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    _referenceTooltipKey.currentState?.ensureTooltipVisible();
-                  },
-                  child: SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: Center(
-                      child: Icon(
-                        Icons.info_outline,
-                        size: 18,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-
-    if (!_isMobileSwipeNavigationEnabled(viewModel)) {
-      return descriptionView;
-    }
-
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onHorizontalDragEnd: (details) {
-        _handleDescriptionSwipe(details, viewModel);
-      },
-      child: descriptionView,
-    );
-  }
-
-  Widget _buildDescriptionNavigationOverlayButton(
-    BuildContext context,
-    PrimarySourceViewModel viewModel, {
-    required bool forward,
-  }) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final bool canNavigate =
         _canNavigateDescriptionByArrow(viewModel) &&
         !viewModel.selectAreaMode &&
         !viewModel.pipetteMode;
-
-    final Color bgColor = colorScheme.surface.withValues(
-      alpha: canNavigate ? 0.08 : 0.04,
-    );
-    final Color iconColor = colorScheme.primary.withValues(
-      alpha: canNavigate ? 0.35 : 0.18,
-    );
-
-    return IgnorePointer(
-      ignoring: !canNavigate,
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkResponse(
-          radius: 28,
-          highlightShape: BoxShape.circle,
-          onTap: () {
-            viewModel.navigateDescriptionSelection(context, forward: forward);
-          },
-          child: Container(
-            width: 54,
-            height: 54,
-            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-            alignment: Alignment.center,
-            child: Icon(
-              forward
-                  ? Icons.arrow_forward_ios_rounded
-                  : Icons.arrow_back_ios_new_rounded,
-              size: 22,
-              color: iconColor,
-            ),
-          ),
-        ),
-      ),
+    return PrimarySourceDescriptionPanel(
+      descriptionContent: viewModel.descriptionContent,
+      onGreekStrongTap: viewModel.showInfoForStrongNumber,
+      onGreekStrongPickerTap: (strongNumber, linkContext) {
+        _openStrongNumberPickerDialog(linkContext, viewModel, strongNumber);
+      },
+      onWordTap: (sourceId, pageName, wordIndex, linkContext) {
+        return _handleWordLinkTap(
+          sourceId: sourceId,
+          pageName: pageName,
+          wordIndex: wordIndex,
+          linkContext: linkContext,
+          viewModel: viewModel,
+        );
+      },
+      showStrongInfoIcon: showStrongInfoIcon,
+      canNavigate: canNavigate,
+      enableSwipeNavigation: _isMobileSwipeNavigationEnabled(viewModel),
+      referenceTooltipKey: _referenceTooltipKey,
+      onNavigateBackward: () {
+        viewModel.navigateDescriptionSelection(context, forward: false);
+      },
+      onNavigateForward: () {
+        viewModel.navigateDescriptionSelection(context, forward: true);
+      },
+      onHorizontalDragEnd: (details) {
+        _handleDescriptionSwipe(details, viewModel);
+      },
     );
   }
 
@@ -726,80 +551,12 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     BuildContext context,
     PrimarySourceViewModel viewModel,
   ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final totalWidth = constraints.maxWidth;
-        final totalHeight = constraints.maxHeight;
-        final isLandscape =
-            MediaQuery.of(context).orientation == Orientation.landscape;
-
-        if (isLandscape) {
-          final previewWidth = totalWidth * 2 / 3;
-          final descriptionWidth = totalWidth * 1 / 3 - 10;
-          return Row(
-            children: [
-              SizedBox(
-                width: previewWidth,
-                child: _buildImagePreview(viewModel),
-              ),
-              Container(width: 1, color: colorScheme.onSurface),
-              SizedBox(
-                width: descriptionWidth,
-                child: _buildDescriptionView(context, viewModel),
-              ),
-            ],
-          );
-        } else {
-          final previewHeight = totalHeight * 2 / 3;
-          final descriptionHeight = totalHeight * 1 / 3 - 10;
-          return Column(
-            children: [
-              SizedBox(
-                height: previewHeight,
-                child: _buildImagePreview(viewModel),
-              ),
-              Container(height: 1, color: colorScheme.onSurface),
-              SizedBox(
-                height: descriptionHeight,
-                child: _buildDescriptionView(context, viewModel),
-              ),
-            ],
-          );
-        }
-      },
+    final colorScheme = Theme.of(context).colorScheme;
+    return PrimarySourceSplitView(
+      imagePreview: _buildImagePreview(viewModel),
+      descriptionPanel: _buildDescriptionView(context, viewModel),
+      dividerColor: colorScheme.onSurface,
     );
-  }
-
-  List<InlineSpan> _buildLinkSpans(List<Map<String, String>> links) {
-    final theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
-    final TextStyle defaultStyle = Theme.of(context).textTheme.bodySmall!
-        .copyWith(fontSize: 10, color: colorScheme.onSurfaceVariant);
-    final List<InlineSpan> spans = [];
-    for (int i = 0; i < links.length; i++) {
-      final link = links[i];
-      if (link['url'] != null && link['url']!.isNotEmpty) {
-        spans.add(
-          TextSpan(
-            text: link['text'],
-            style: defaultStyle.copyWith(color: colorScheme.primary),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                handleAppLink(context, link['url']);
-              },
-          ),
-        );
-      } else {
-        spans.add(TextSpan(text: link['text'], style: defaultStyle));
-      }
-      if (i < links.length - 1) {
-        spans.add(TextSpan(text: '; ', style: defaultStyle));
-      }
-    }
-    return spans;
   }
 
   double calcPagesListWidth(BuildContext context) {
