@@ -17,7 +17,11 @@ import 'package:revelation/features/settings/presentation/bloc/settings_cubit.da
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/core/diagnostics/diagnostics_utils.dart';
+import 'package:revelation/shared/utils/links_utils.dart';
+import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class AboutScreen extends StatefulWidget {

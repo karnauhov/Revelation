@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:revelation/shared/models/recommended_info.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/utils/links_utils.dart';
 
 class RecommendedCard extends StatelessWidget {
   final RecommendedInfo recommended;

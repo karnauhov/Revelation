@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:revelation/shared/ui/widgets/icon_link_item.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/utils/links_utils.dart';
 
 class DownloadScreen extends StatelessWidget {
   const DownloadScreen({super.key});

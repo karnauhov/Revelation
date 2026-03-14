@@ -5,7 +5,8 @@ import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_state.dart';
 import 'package:revelation/shared/models/primary_source.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 
 class PrimarySourceImageCubit extends Cubit<PrimarySourceImageState> {
   PrimarySourceImageCubit({

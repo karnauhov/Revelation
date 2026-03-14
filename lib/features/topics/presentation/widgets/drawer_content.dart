@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'drawer_item.dart';
 
 class DrawerContent extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/shared/models/app_settings.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 
 class SettingsState {
   const SettingsState({

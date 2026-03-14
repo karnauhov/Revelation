@@ -9,7 +9,7 @@ import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/features/primary_sources/presentation/list/source_item.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/primary_source.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 
 class PrimarySourcesScreen extends StatefulWidget {
   const PrimarySourcesScreen({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
 
 class DescriptionMarkdownView extends StatelessWidget {
   final String data;

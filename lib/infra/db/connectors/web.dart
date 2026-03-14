@@ -7,7 +7,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/shared/config/app_constants.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
 
 CommonDB getCommonDB() {
   return CommonDB(connectOnWeb(AppConstants.commonDB));

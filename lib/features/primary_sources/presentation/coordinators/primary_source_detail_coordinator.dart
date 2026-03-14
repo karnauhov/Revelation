@@ -19,7 +19,8 @@ import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/zoom_status.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 
 class PrimarySourceDetailCoordinator {
   late final PrimarySourceDescriptionCubit _descriptionCubit;

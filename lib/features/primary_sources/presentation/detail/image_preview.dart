@@ -6,7 +6,7 @@ import 'package:revelation/features/primary_sources/presentation/controllers/ima
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/verse.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/utils/links_utils.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/image_preview_painters.dart';
 import 'package:vector_math/vector_math_64.dart' as math;

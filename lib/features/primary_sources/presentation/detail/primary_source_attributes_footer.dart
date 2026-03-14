@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
 
 class PrimarySourceAttributesFooter extends StatelessWidget {
   final List<Map<String, String>>? attributes;

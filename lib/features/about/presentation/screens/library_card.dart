@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/library_info.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/utils/links_utils.dart';
 
 class LibraryCard extends StatelessWidget {
   final LibraryInfo library;

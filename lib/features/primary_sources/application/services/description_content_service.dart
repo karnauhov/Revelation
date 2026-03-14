@@ -8,7 +8,7 @@ import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/localization/localization_utils.dart';
 import 'package:revelation/features/primary_sources/application/services/pronunciation.dart';
 
 class DescriptionContentService {

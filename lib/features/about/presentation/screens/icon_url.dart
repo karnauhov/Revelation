@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/shared/ui/widgets/new_icon_button.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/utils/links_utils.dart';
 
 class IconUrl extends StatelessWidget {
   final String iconPath;

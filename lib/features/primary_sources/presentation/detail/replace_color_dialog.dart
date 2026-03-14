@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
 
 class ReplaceColorDialog extends StatefulWidget {

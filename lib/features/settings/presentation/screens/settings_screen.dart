@@ -8,7 +8,7 @@ import 'package:revelation/features/settings/presentation/bloc/settings_state.da
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/theme/material_theme.dart';
 import 'package:revelation/shared/config/app_constants.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/localization/localization_utils.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

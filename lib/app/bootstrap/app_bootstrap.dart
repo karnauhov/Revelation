@@ -8,7 +8,8 @@ import 'package:revelation/features/settings/settings.dart'
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/infra/remote/supabase/server_manager.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class AppBootstrap {

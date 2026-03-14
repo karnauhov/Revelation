@@ -10,7 +10,7 @@ import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/theme/material_theme.dart';
 import 'package:revelation/core/logging/app_logger_formatter.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:revelation/app/router/app_router.dart';
 

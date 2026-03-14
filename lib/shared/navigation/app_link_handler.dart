@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
 import 'package:revelation/shared/config/app_constants.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/shared/utils/links_utils.dart';
 
 typedef GreekStrongTapHandler =
     void Function(int strongNumber, BuildContext context);

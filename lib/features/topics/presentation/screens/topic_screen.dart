@@ -13,7 +13,9 @@ import 'package:revelation/features/topics/presentation/bloc/topic_content_state
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
+import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/core/platform/file_downloader.dart';
 
 class TopicScreen extends StatefulWidget {

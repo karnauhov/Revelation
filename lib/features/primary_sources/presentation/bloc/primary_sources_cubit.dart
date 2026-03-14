@@ -5,7 +5,7 @@ import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_state.dart';
 import 'package:revelation/shared/models/primary_source.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
 
 class PrimarySourcesCubit extends Cubit<PrimarySourcesState> {
   PrimarySourcesCubit(this._repository) : super(PrimarySourcesState.initial());

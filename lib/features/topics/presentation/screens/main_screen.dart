@@ -9,7 +9,7 @@ import 'package:revelation/features/settings/presentation/bloc/settings_cubit.da
 import 'package:revelation/features/topics/presentation/widgets/drawer_content.dart';
 import 'package:revelation/features/topics/presentation/widgets/topic_list.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

@@ -15,7 +15,9 @@ import 'package:revelation/features/primary_sources/presentation/detail/primary_
 import 'package:revelation/features/primary_sources/presentation/detail/primary_source_toolbar.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/strong_number_picker_dialog.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
+import 'package:revelation/shared/ui/styled_text/styled_text_utils.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';

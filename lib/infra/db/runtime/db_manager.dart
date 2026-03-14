@@ -3,7 +3,7 @@ import 'package:revelation/infra/db/common/db_common.dart' as common_db;
 import 'package:revelation/infra/db/localized/db_localized.dart'
     as localized_db;
 import 'package:revelation/infra/db/connectors/shared.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
 
 class DBManager {
   static final DBManager _instance = DBManager._internal();

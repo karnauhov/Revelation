@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:revelation/shared/config/app_constants.dart';
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ServerManager {

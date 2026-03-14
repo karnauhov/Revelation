@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
-import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/core/logging/common_logger.dart';
 
 class AudioController {
   static final AudioController _instance = AudioController._internal();
