@@ -146,13 +146,13 @@
   - `lib/core/state/change_notifier_bridge_cubit.dart`
   - `lib/main.dart`
 - [x] Задача [P0]: мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
-- [ ] Задача [P0]: выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы.
+- [x] Задача [P0]: выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы.
 - [x] Подшаг [P3.7.1]: source/session/page context cubit.
 - [x] Подшаг [P3.7.2]: image loading/cache/local availability cubit.
 - [x] Подшаг [P3.7.3]: page settings persistence cubit.
 - [x] Подшаг [P3.7.4]: selection cubit (`word/verse/strong`).
 - [x] Подшаг [P3.7.5]: description panel cubit (content + navigation).
-- [ ] Подшаг [P3.7.6]: viewport/render controls cubit (zoom/layers/tool mode/colors).
+- [x] Подшаг [P3.7.6]: viewport/render controls cubit (zoom/layers/tool mode/colors).
 - [ ] Задача [P0]: заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.
 - [ ] Задача [P0]: удалить legacy state слой (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts).
 - [ ] Задача [P1]: добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/` (кроме документации).
@@ -1915,3 +1915,50 @@
   - New risks: `PrimarySourceViewModel` по-прежнему содержит viewport/render/tool-mode state и `notifyListeners`-binding слой.
   - Mitigations: следующий подшаг — вынести viewport/render controls (zoom/layers/tool mode/colors) в отдельный cubit.
   - Next task: Phase 3.7 / Substep `P3.7.6` — viewport/render controls cubit (zoom/layers/tool mode/colors).
+
+#### [2026-03-14 17:15] Phase 3.7 / Substep P3.7.6 / Introduce `PrimarySourceViewportCubit` (viewport/render controls: zoom/layers/tool mode/colors)
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен новый granular state-slice:
+    - `PrimarySourceViewportState { dx, dy, scale, savedX, savedY, savedScale, scaleAndPositionRestored, zoomStatus, selectedArea, colorToReplace, newColor, tolerance, pipetteMode, selectAreaMode, isColorToReplace }`.
+    - `PrimarySourceViewportCubit` с ответственностью за:
+      - viewport трансформации и zoom status,
+      - восстановление/сброс позиции и масштаба,
+      - tool modes (`pipette/select area`),
+      - color replacement render controls.
+  - `PrimarySourceScreen` расширен `BlocProvider<PrimarySourceViewportCubit>`.
+  - `PrimarySourceViewModel` переключен на viewport cubit как source-of-truth для:
+    - `dx/dy/scale/saved*/scaleAndPositionRestored`,
+    - `zoomStatus` (через sync в `zoomStatusNotifier`),
+    - `selectedArea/colorToReplace/newColor/tolerance`,
+    - `pipetteMode/selectAreaMode`.
+  - Локальные viewport/render/tool-mode поля удалены из `PrimarySourceViewModel`; команды (`start/finish pipette`, `start/finish selectArea`, `apply/reset color replacement`, viewport reset/restore) делегированы в cubit.
+  - Обновлены feature exports:
+    - `lib/features/primary_sources/primary_sources.dart`.
+  - Добавлен unit-тест suite для viewport cubit:
+    - `test/features/primary_sources/presentation/bloc/primary_source_viewport_cubit_test.dart`.
+- Why changed:
+  - Закрыть обязательный подшаг `P3.7.6` и завершить `P0` granular split состояния `PrimarySource` на отдельные cubit-срезы (`P3.7.1`–`P3.7.6`).
+- Scope (files/modules):
+  - `lib/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart`
+  - `lib/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart`
+  - `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`
+  - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
+  - `lib/features/primary_sources/primary_sources.dart`
+  - `test/features/primary_sources/presentation/bloc/primary_source_viewport_cubit_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass (viewport/render/tool-mode state выделены в отдельный cubit)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого подшага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `PrimarySourceViewModel` все еще используется как transitional binding слой (`ChangeNotifier` + `notifyListeners`), несмотря на завершенный granular split cubit-срезов.
+  - Mitigations: следующий обязательный P0 шаг — заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen` и убрать `notifyListeners`-based обновления.
+  - Next task: Phase 3.7 / Task `P0` — заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.

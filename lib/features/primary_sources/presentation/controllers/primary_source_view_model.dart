@@ -12,6 +12,8 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
@@ -37,19 +39,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
   late final PrimarySourceSelectionCubit _selectionCubit;
   late final bool _ownsSelectionCubit;
   StreamSubscription<PrimarySourceSelectionState>? _selectionStateSubscription;
+  late final PrimarySourceViewportCubit _viewportCubit;
+  late final bool _ownsViewportCubit;
+  StreamSubscription<PrimarySourceViewportState>? _viewportStateSubscription;
   final PrimarySourceSessionCubit _sessionCubit;
   final bool _ownsSessionCubit;
-  bool scaleAndPositionRestored = false;
-  double dx = 0;
-  double dy = 0;
-  double scale = 1;
-  double savedX = 0;
-  double savedY = 0;
-  double savedScale = 0;
-  Rect? selectedArea;
-  Color colorToReplace = const Color(0xFFFFFFFF);
-  Color newColor = const Color(0xFFFFFFFF);
-  double tolerance = 0;
 
   late ImagePreviewController imageController;
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
@@ -58,10 +52,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   late final bool _isWeb;
   late final bool _isMobileWeb;
-  bool _pipetteMode = false;
   void Function(Color?)? _onPipettePicked;
-  bool _isColorToReplace = true;
-  bool _selectAreaMode = false;
   void Function(Rect?)? _onAreaSelected;
   Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
@@ -82,8 +73,20 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool get showStrongNumbers => _pageSettingsCubit.state.showStrongNumbers;
   bool get showVerseNumbers => _pageSettingsCubit.state.showVerseNumbers;
   int get maxTextureSize => _imageCubit.state.maxTextureSize;
-  bool get pipetteMode => _pipetteMode;
-  bool get selectAreaMode => _selectAreaMode;
+  bool get pipetteMode => _viewportCubit.state.pipetteMode;
+  bool get selectAreaMode => _viewportCubit.state.selectAreaMode;
+  Rect? get selectedArea => _viewportCubit.state.selectedArea;
+  Color get colorToReplace => _viewportCubit.state.colorToReplace;
+  Color get newColor => _viewportCubit.state.newColor;
+  double get tolerance => _viewportCubit.state.tolerance;
+  bool get scaleAndPositionRestored =>
+      _viewportCubit.state.scaleAndPositionRestored;
+  double get dx => _viewportCubit.state.dx;
+  double get dy => _viewportCubit.state.dy;
+  double get scale => _viewportCubit.state.scale;
+  double get savedX => _viewportCubit.state.savedX;
+  double get savedY => _viewportCubit.state.savedY;
+  double get savedScale => _viewportCubit.state.savedScale;
   PrimarySource get primarySource => _sessionCubit.state.source;
   model.Page? get selectedPage => _sessionCubit.state.selectedPage;
   String get imageName => _sessionCubit.state.imageName;
@@ -102,6 +105,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     PrimarySourcePageSettingsCubit? pageSettingsCubit,
     PrimarySourceSelectionCubit? selectionCubit,
     PrimarySourceDescriptionCubit? descriptionCubit,
+    PrimarySourceViewportCubit? viewportCubit,
     PrimarySourceSessionCubit? sessionCubit,
     DescriptionContentService? descriptionService,
     PrimarySourcePageSettingsOrchestrator? pageSettingsOrchestrator,
@@ -145,6 +149,12 @@ class PrimarySourceViewModel extends ChangeNotifier {
       _syncSelectionFromDescriptionState();
       notifyListeners();
     });
+    _ownsViewportCubit = viewportCubit == null;
+    _viewportCubit = viewportCubit ?? PrimarySourceViewportCubit();
+    _viewportStateSubscription = _viewportCubit.stream.listen((state) {
+      zoomStatusNotifier.value = state.zoomStatus;
+      notifyListeners();
+    });
     _ownsSelectionCubit = selectionCubit == null;
     _selectionCubit = selectionCubit ?? PrimarySourceSelectionCubit();
     _selectionStateSubscription = _selectionCubit.stream.listen(
@@ -169,7 +179,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     final requestToken = _imageLoadRequestGuard.start();
     try {
       _imageCubit.setImageShown(false);
-      scaleAndPositionRestored = false;
+      _viewportCubit.markImageLoadingStarted();
       notifyListeners();
 
       final pageSettings = await _pageSettingsCubit.loadSettingsForPage(
@@ -213,17 +223,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   Future<void> changeSelectedPage(model.Page? newPage) async {
     _imageCubit.setImageShown(false);
-    scaleAndPositionRestored = false;
+    _viewportCubit.markImageLoadingStarted();
     _sessionCubit.setSelectedPage(newPage);
     resetColorReplacement();
     notifyListeners();
     if (newPage != null) {
       await loadImage(newPage.image);
     } else {
-      scaleAndPositionRestored = true;
-      savedX = dx = 0;
-      savedY = dy = 0;
-      savedScale = scale = 0;
+      _viewportCubit.resetViewportWithNoPage();
       _pageSettingsCubit.resetToDefaults();
       notifyListeners();
     }
@@ -254,42 +261,29 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void startSelectAreaMode(void Function(Rect?) onSelected) {
-    _selectAreaMode = true;
+    _viewportCubit.startSelectAreaMode();
     _onAreaSelected = onSelected;
-    notifyListeners();
   }
 
   void finishSelectAreaMode(Rect? selectRect) {
-    if (_selectAreaMode && _onAreaSelected != null) {
+    if (selectAreaMode && _onAreaSelected != null) {
       _onAreaSelected!(selectRect);
     }
-    selectedArea = selectRect;
-    _selectAreaMode = false;
+    _viewportCubit.finishSelectAreaMode(selectRect);
     _onAreaSelected = null;
-    notifyListeners();
   }
 
   void startPipetteMode(void Function(Color?) onPicked, bool isColorToReplace) {
-    _pipetteMode = true;
+    _viewportCubit.startPipetteMode(isColorToReplace: isColorToReplace);
     _onPipettePicked = onPicked;
-    _isColorToReplace = isColorToReplace;
-    notifyListeners();
   }
 
   void finishPipetteMode(Color? color) {
-    if (_pipetteMode && _onPipettePicked != null) {
+    if (pipetteMode && _onPipettePicked != null) {
       _onPipettePicked!(color);
     }
-    if (color != null) {
-      if (_isColorToReplace) {
-        colorToReplace = color;
-      } else {
-        newColor = color;
-      }
-    }
-    _pipetteMode = false;
+    _viewportCubit.finishPipetteMode(color);
     _onPipettePicked = null;
-    notifyListeners();
   }
 
   void applyColorReplacement(
@@ -298,19 +292,16 @@ class PrimarySourceViewModel extends ChangeNotifier {
     Color newColor,
     double tolerance,
   ) {
-    this.selectedArea = selectedArea;
-    this.colorToReplace = colorToReplace;
-    this.newColor = newColor;
-    this.tolerance = tolerance;
-    notifyListeners();
+    _viewportCubit.applyColorReplacement(
+      selectedArea: selectedArea,
+      colorToReplace: colorToReplace,
+      newColor: newColor,
+      tolerance: tolerance,
+    );
   }
 
   void resetColorReplacement() {
-    selectedArea = null;
-    colorToReplace = const Color(0xFFFFFFFF);
-    newColor = const Color(0xFFFFFFFF);
-    tolerance = 0;
-    notifyListeners();
+    _viewportCubit.resetColorReplacement();
   }
 
   void toggleShowWordSeparators() {
@@ -352,12 +343,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
       source: primarySource,
       selectedPage: selectedPage,
     );
-    savedX = dx = 0;
-    savedY = dy = 0;
-    savedScale = scale = 0;
+    _viewportCubit.resetViewportAndRenderControls();
     imageController.backToMinScale();
-    resetColorReplacement();
-    notifyListeners();
   }
 
   void restorePositionAndScale() {
@@ -365,7 +352,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       _restoreDebounceTimer?.cancel();
       _restoreDebounceTimer = Timer(const Duration(milliseconds: 1000), () {
         imageController.setTransformParams(savedX, savedY, savedScale);
-        scaleAndPositionRestored = true;
+        _viewportCubit.setScaleAndPositionRestored(true);
       });
     }
   }
@@ -441,9 +428,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void _applyViewportSettings(PageSettingsState settings) {
-    savedX = dx = settings.posX;
-    savedY = dy = settings.posY;
-    savedScale = scale = settings.scale;
+    _viewportCubit.applyViewportSettings(settings);
   }
 
   void _syncSelectionFromDescriptionState() {
@@ -464,31 +449,24 @@ class PrimarySourceViewModel extends ChangeNotifier {
     }
 
     if (imageData == null) {
-      Future.microtask(() {
-        if (_isDisposed) {
-          return;
-        }
-        zoomStatusNotifier.value = const ZoomStatus(
-          canZoomIn: false,
-          canZoomOut: false,
-          canReset: false,
-        );
-      });
+      _viewportCubit.setZoomStatus(
+        const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false),
+      );
     } else {
       final matrix = imageController.transformationController.value;
-      dx = matrix.storage[12];
-      dy = matrix.storage[13];
-      scale = matrix.getMaxScaleOnAxis();
-      Future.microtask(() {
-        if (_isDisposed) {
-          return;
-        }
-        zoomStatusNotifier.value = ZoomStatus(
-          canZoomIn: scale < imageController.maxScale,
-          canZoomOut: scale > imageController.minScale,
-          canReset: scale != imageController.minScale,
-        );
-      });
+      final currentDx = matrix.storage[12];
+      final currentDy = matrix.storage[13];
+      final currentScale = matrix.getMaxScaleOnAxis();
+      _viewportCubit.updateTransform(
+        dx: currentDx,
+        dy: currentDy,
+        scale: currentScale,
+        zoomStatus: ZoomStatus(
+          canZoomIn: currentScale < imageController.maxScale,
+          canZoomOut: currentScale > imageController.minScale,
+          canReset: currentScale != imageController.minScale,
+        ),
+      );
       if (scaleAndPositionRestored) {
         _saveDebounceTimer?.cancel();
         _saveDebounceTimer = Timer(
@@ -506,6 +484,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _imageStateSubscription?.cancel();
     _pageSettingsStateSubscription?.cancel();
     _selectionStateSubscription?.cancel();
+    _viewportStateSubscription?.cancel();
     _restoreDebounceTimer?.cancel();
     _saveDebounceTimer?.cancel();
     imageController.transformationController.removeListener(
@@ -527,6 +506,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
     }
     if (_ownsSelectionCubit) {
       unawaited(_selectionCubit.close());
+    }
+    if (_ownsViewportCubit) {
+      unawaited(_viewportCubit.close());
     }
     if (_ownsSessionCubit) {
       unawaited(_sessionCubit.close());

@@ -15,6 +15,8 @@ export 'presentation/bloc/primary_source_selection_cubit.dart';
 export 'presentation/bloc/primary_source_selection_state.dart';
 export 'presentation/bloc/primary_source_session_cubit.dart';
 export 'presentation/bloc/primary_source_session_state.dart';
+export 'presentation/bloc/primary_source_viewport_cubit.dart';
+export 'presentation/bloc/primary_source_viewport_state.dart';
 export 'presentation/controllers/primary_source_view_model.dart';
 export 'presentation/controllers/primary_sources_view_model.dart';
 export 'presentation/detail/brightness_contrast_dialog.dart';
