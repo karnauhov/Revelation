@@ -24,6 +24,7 @@ void main() {
             controller: controller,
             imageName: 'page_1',
             imageData: imageData,
+            onRestorePositionAndScale: () {},
           ),
         ),
       );
@@ -36,6 +37,7 @@ void main() {
             controller: controller,
             imageName: 'page_2',
             imageData: imageData,
+            onRestorePositionAndScale: () {},
           ),
         ),
       );
@@ -45,6 +47,60 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     },
   );
+
+  testWidgets('ImagePreview requests restore once per image lifecycle change', (
+    tester,
+  ) async {
+    final controller = ImagePreviewController(20.0);
+    addTearDown(controller.dispose);
+    final imageData = _loadPreviewBytes();
+    var restoreCalls = 0;
+
+    await tester.pumpWidget(
+      _buildHost(
+        child: _buildPreview(
+          controller: controller,
+          imageName: 'page_1',
+          imageData: imageData,
+          onRestorePositionAndScale: () {
+            restoreCalls++;
+          },
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(restoreCalls, 1);
+
+    await tester.pumpWidget(
+      _buildHost(
+        child: _buildPreview(
+          controller: controller,
+          imageName: 'page_1',
+          imageData: imageData,
+          onRestorePositionAndScale: () {
+            restoreCalls++;
+          },
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(restoreCalls, 1);
+
+    await tester.pumpWidget(
+      _buildHost(
+        child: _buildPreview(
+          controller: controller,
+          imageName: 'page_2',
+          imageData: imageData,
+          onRestorePositionAndScale: () {
+            restoreCalls++;
+          },
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(restoreCalls, 2);
+  });
 }
 
 Uint8List _loadPreviewBytes() {
@@ -65,6 +121,7 @@ Widget _buildPreview({
   required ImagePreviewController controller,
   required String imageName,
   required Uint8List imageData,
+  required VoidCallback onRestorePositionAndScale,
 }) {
   return ImagePreview(
     imageData: imageData,
@@ -93,6 +150,6 @@ Widget _buildPreview({
     onWordTap: (_) {},
     onVerseTap: (_) {},
     onStrongNumberTap: (_) {},
-    onRestorePositionAndScale: () {},
+    onRestorePositionAndScale: onRestorePositionAndScale,
   );
 }

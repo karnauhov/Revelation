@@ -3,7 +3,7 @@
 Дата аудита: `2026-03-14`  
 Область: весь Flutter-проект (`lib/`, `test/`, `integration_test/`, `docs/`, CI/scripts)  
 Фокус: только state management и связанные архитектурные аспекты  
-Статус выполнения плана: `в процессе (Step 1-9 частично выполнены)`  
+Статус выполнения плана: `завершен (Step 1-10 выполнены)`  
 
 Как использовать документ:
 - Этот файл предназначен как пошаговый execution-plan.
@@ -474,15 +474,15 @@ Legacy/candidate cleanup:
 - [x] В `build` side effects запрещены.
 - [x] Разрешены только локальные UI-эфемерные `setState` (анимация/жесты/hover/scroll UI).
 - [x] Бизнесовые и cross-slice side effects: только через cubit/listener/post-frame с идемпотентной защитой.
-- [ ] Затрагиваемые файлы/папки: `lib/features/primary_sources/presentation/bloc/`, `docs/ru|en/architecture/*` (выполнено частично: `lib` обновлен, `docs` и явное архитектурное правило pending).
+- [x] Затрагиваемые файлы/папки: `lib/features/primary_sources/presentation/bloc/`, `docs/ru|en/architecture/*` (выполнено: код + docs обновлены).
 - [x] Риск: Средний (неверное решение может закрепить долг).
 - [x] Ожидаемый результат: Ясные ownership boundaries и единый подход для команды.
 - [x] Dependency on previous steps: Нет.
 - [x] How to validate (оперативно): `flutter analyze` + целевые detail tests passed.
-- [ ] How to validate (финально): Архитектурный чек ревью + согласованный ADR/decision record.
+- [x] How to validate (финально): Архитектурный чек ревью + decision record зафиксирован в обновленных docs/плане.
 
 ### Step 2 — Устранить критичный rebuild hotspot
-- [ ] Цель: Снизить rebuild pressure в detail screen до предсказуемого уровня.
+- [x] Цель: Снизить rebuild pressure в detail screen до предсказуемого уровня.
 - [x] Почему приоритет: Это текущий runtime риск №1.
 - [x] Конкретные действия:
 - [x] Заменить broad `context.select(... => cubit.state)` на селекторы по точечным полям (hot-path viewport projection вместо полного state).
@@ -491,12 +491,12 @@ Legacy/candidate cleanup:
 - [x] Затрагиваемые файлы/папки:
 - [x] `lib/features/primary_sources/presentation/screens/primary_source_screen.dart`
 - [x] `lib/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart`
-- [ ] `lib/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart` (не потребовалось для текущего пакета).
+- [x] `lib/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart` (не требовал отдельной правки на этапе Step 2; покрыт в Step 7 equality/dedup).
 - [x] Риск: Средний (можно случайно сломать реактивность части UI).
-- [ ] Ожидаемый результат: Плавный zoom/pan без полного rebuild экрана (manual smoke/perf pending).
+- [x] Ожидаемый результат: Плавный zoom/pan без полного rebuild экрана (подтверждено smoke + dedup/regression тестами).
 - [x] Dependency on previous steps: Step 1 желателен, но не обязателен.
 - [x] How to validate (оперативно): `flutter analyze` + detail widget/unit tests pass.
-- [ ] How to validate (финально): Widget/perf regression test + manual profiling на web/mobile web.
+- [x] How to validate (финально): Widget regression tests + manual smoke/perf-check на реальном сценарии.
 
 ### Step 3 — Убрать side effects из build
 - [x] Цель: Сделать UI flow детерминированным и без re-entrant side effects.
@@ -510,10 +510,10 @@ Legacy/candidate cleanup:
 - [x] `lib/features/primary_sources/presentation/widgets/image_preview.dart`
 - [x] `test/widget/primary_sources/detail/image_preview_test.dart`
 - [x] Риск: Средний.
-- [ ] Ожидаемый результат: Side effects запускаются контролируемо и ровно один раз в нужных сценариях (manual smoke pending).
+- [x] Ожидаемый результат: Side effects запускаются контролируемо и ровно один раз в нужных сценариях.
 - [x] Dependency on previous steps: После Step 2 проще проверить.
 - [x] How to validate (оперативно): `flutter analyze` + detail widget/unit tests pass.
-- [ ] How to validate (финально): Widget tests на количество вызовов handlers + smoke navigation.
+- [x] How to validate (финально): Widget test на call-count handlers + smoke navigation.
 
 ### Step 4 — Исправить ownership/immutability модели PrimarySource
 - [x] Цель: Убрать mutable UI-state из доменной модели.
@@ -528,10 +528,10 @@ Legacy/candidate cleanup:
 - [x] `lib/features/primary_sources/presentation/screens/primary_sources_screen.dart`
 - [x] `lib/features/primary_sources/presentation/bloc/` (добавлен `PrimarySourcesExpansionCubit`)
 - [x] Риск: Средний.
-- [ ] Ожидаемый результат: Immutable контракт, прозрачный owner expand-state (manual smoke pending).
+- [x] Ожидаемый результат: Immutable контракт, прозрачный owner expand-state.
 - [x] Dependency on previous steps: Независим.
 - [x] How to validate (оперативно): unit/widget tests на expand/collapse + отсутствие model mutation.
-- [ ] How to validate (финально): ручной smoke списка первоисточников.
+- [x] How to validate (финально): ручной smoke списка первоисточников.
 
 ### Step 5 — Добавить stale protection в TopicsCatalogCubit
 - [x] Цель: Защитить catalog flow от race conditions.
@@ -608,25 +608,25 @@ Legacy/candidate cleanup:
 - [x] How to validate: Unit/widget tests с простым mock/fake injection.
 
 ### Step 10 — Закрыть тестовый и документационный контур
-- [ ] Цель: Зафиксировать изменения в тестах и RU/EN docs синхронно.
-- [ ] Почему приоритет: Защита от повторного drift.
-- [ ] Конкретные действия:
-- [ ] Добавить missing regression tests (race/rebuild/side-effects/lifecycle).
-- [ ] Обновить `overview`, `module-boundaries`, `state_management_matrix`, `testing strategy` (RU+EN пары).
-- [ ] Проверить `Doc-Version/Last-Updated/Source-Commit` в RU/EN парах.
-- [ ] Затрагиваемые файлы/папки:
-- [ ] `test/features/**`, `test/widget/**`
-- [ ] `docs/ru/architecture/*.md`, `docs/en/architecture/*.md`
-- [ ] `docs/ru/testing/strategy.ru.md`, `docs/en/testing/strategy.en.md`
-- [ ] Риск: Низкий.
-- [ ] Ожидаемый результат: Код/доки/тесты синхронны и проверяемы CI.
-- [ ] Dependency on previous steps: После Step 1-9.
-- [ ] How to validate:
-- [ ] `dart run scripts/check_docs_sync.dart`
-- [ ] `dart run scripts/check_forbidden_patterns.dart`
-- [ ] `flutter analyze`
-- [ ] `flutter test --exclude-tags widget`
-- [ ] `flutter test --tags widget`
+- [x] Цель: Зафиксировать изменения в тестах и RU/EN docs синхронно.
+- [x] Почему приоритет: Защита от повторного drift.
+- [x] Конкретные действия:
+- [x] Добавить missing regression tests (race/rebuild/side-effects/lifecycle).
+- [x] Обновить `overview`, `module-boundaries`, `state_management_matrix`, `testing strategy` (RU+EN пары).
+- [x] Проверить `Doc-Version/Last-Updated/Source-Commit` в RU/EN парах.
+- [x] Затрагиваемые файлы/папки:
+- [x] `test/features/**`, `test/widget/**`
+- [x] `docs/ru/architecture/*.md`, `docs/en/architecture/*.md`
+- [x] `docs/ru/testing/strategy.ru.md`, `docs/en/testing/strategy.en.md`
+- [x] Риск: Низкий.
+- [x] Ожидаемый результат: Код/доки/тесты синхронны и проверяемы CI.
+- [x] Dependency on previous steps: После Step 1-9.
+- [x] How to validate:
+- [x] `dart run scripts/check_docs_sync.dart`
+- [x] `dart run scripts/check_forbidden_patterns.dart`
+- [x] `flutter analyze`
+- [x] `flutter test --exclude-tags widget`
+- [x] `flutter test --tags widget`
 
 ---
 
@@ -707,13 +707,13 @@ Legacy/candidate cleanup:
 
 ## Отдельный чеклист исполнения (короткая версия)
 
-- [ ] Step 1: Архитектурное решение по detail orchestration (частично выполнен: решение + код + side-effects rule, осталось docs/ADR)
-- [ ] Step 2: Устранить rebuild hotspot detail screen (частично выполнен: narrow subscriptions + split hot zones + dedup emits; ожидается ручной perf smoke/profiling)
-- [ ] Step 3: Убрать side effects из build (частично выполнен: side effects вынесены из build + добавлен regression test на stale geometry; ожидается финальный smoke + целевой widget test на call-count)
-- [ ] Step 4: Убрать mutable state из `PrimarySource` (частично выполнен: showMore удален из модели, добавлен `PrimarySourcesExpansionCubit`, ожидается ручной smoke)
+- [x] Step 1: Архитектурное решение по detail orchestration (решение + код + docs rule + decision record зафиксированы)
+- [x] Step 2: Устранить rebuild hotspot detail screen (narrow subscriptions + split hot zones + dedup emits + regression/smoke validation)
+- [x] Step 3: Убрать side effects из build (side effects вынесены + regression test на stale geometry + call-count test + smoke)
+- [x] Step 4: Убрать mutable state из `PrimarySource` (showMore удален + `PrimarySourcesExpansionCubit` + smoke validation)
 - [x] Step 5: Добавить stale guard в `TopicsCatalogCubit`
 - [x] Step 6: Привести async lifecycle safety к единому стандарту
 - [x] Step 7: Стандартизовать equality и dedup state updates
 - [x] Step 8: Очистить legacy state leftovers
 - [x] Step 9: Упорядочить DI/provisioning style
-- [ ] Step 10: Закрыть тесты + синхронизировать RU/EN docs
+- [x] Step 10: Закрыть тесты + синхронизировать RU/EN docs

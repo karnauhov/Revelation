@@ -1,6 +1,6 @@
 # Testing Strategy (EN)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.0.1`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -38,6 +38,10 @@ dart run scripts/check_forbidden_patterns.dart
 - Bug fixes require regression tests.
 - Tests must not depend on external network or unstable runtime conditions.
 - UI scenarios should use deterministic fake/stub dependencies.
+- For state-management changes in high-risk flows, regression scenarios are required:
+  - stale async race (`latest request wins`);
+  - lifecycle safety (`close before async completes`);
+  - detail image-preview rapid-switch behavior (stale geometry and side-effect call-count).
 
 ## 6. Done Criteria
 - All mandatory checks from sections 3 and 4 pass.

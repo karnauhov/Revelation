@@ -1,6 +1,6 @@
 # Testing Strategy (RU)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.0.1`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -38,6 +38,10 @@ dart run scripts/check_forbidden_patterns.dart
 - Для исправлений дефектов добавляется regression-тест.
 - Тесты не должны зависеть от внешней сети или нестабильного времени выполнения.
 - Для UI-сценариев используются deterministic fake/stub зависимости.
+- Для state-management изменений в high-risk потоках обязательны regression-сценарии:
+  - stale async race (`latest request wins`);
+  - lifecycle safety (`close before async completes`);
+  - detail image-preview rapid-switch (stale geometry и call-count side effects).
 
 ## 6. Done Criteria
 - Все обязательные проверки из разделов 3 и 4 проходят.
