@@ -350,7 +350,7 @@ def target_language_name_ru(lang_code: str) -> str:
 
 
 def default_work_dir() -> Path:
-    preferred = Path(r"C:\Users\karna\OneDrive\Documents\revelation\db")
+    preferred = Path(r"C:\Users\karna\Documents\revelation\db")
     if preferred.exists():
         return preferred
-    return Path.home() / "OneDrive" / "Documents" / "revelation" / "db"
+    return Path.home() / "Documents" / "revelation" / "db"
