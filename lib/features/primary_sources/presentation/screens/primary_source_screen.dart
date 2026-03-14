@@ -285,24 +285,42 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                   width: 1.0,
                                 ),
                               ),
-                              child: viewModel.isLoading
-                                  ? Center(
+                              child: Builder(
+                                builder: (contentContext) {
+                                  final contentSlice = contentContext.select((
+                                    PrimarySourceImageCubit cubit,
+                                  ) {
+                                    final state = cubit.state;
+                                    return (
+                                      isLoading: state.isLoading,
+                                      hasImage: state.imageData != null,
+                                    );
+                                  });
+                                  if (contentSlice.isLoading) {
+                                    return Center(
                                       child: CircularProgressIndicator(
                                         color: colorScheme.primary,
                                       ),
-                                    )
-                                  : viewModel.imageData != null
-                                  ? _buildSplitView(context, viewModel)
-                                  : Center(
-                                      child: Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.image_not_loaded,
-                                        style: textTheme.bodyMedium?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
+                                    );
+                                  }
+                                  if (contentSlice.hasImage) {
+                                    return _buildSplitView(
+                                      contentContext,
+                                      viewModel,
+                                    );
+                                  }
+                                  return Center(
+                                    child: Text(
+                                      AppLocalizations.of(
+                                        contentContext,
+                                      )!.image_not_loaded,
+                                      style: textTheme.bodyMedium?.copyWith(
+                                        color: colorScheme.onSurfaceVariant,
                                       ),
                                     ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -327,50 +345,106 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   }
 
   Widget _buildImagePreview(PrimarySourceDetailCoordinator viewModel) {
-    return ImagePreview(
-      imageData: viewModel.imageData!,
-      imageName: viewModel.imageName,
-      controller: viewModel.imageController,
-      pipetteMode: viewModel.pipetteMode,
-      selectAreaMode: viewModel.selectAreaMode,
-      isNegative: viewModel.isNegative,
-      isMonochrome: viewModel.isMonochrome,
-      brightness: viewModel.brightness,
-      contrast: viewModel.contrast,
-      replaceRegion: viewModel.selectedArea,
-      colorToReplace: viewModel.colorToReplace,
-      newColor: viewModel.newColor,
-      tolerance: viewModel.tolerance,
-      showWordSeparators: viewModel.showWordSeparators,
-      showStrongNumbers: viewModel.showStrongNumbers,
-      showVerseNumbers: viewModel.showVerseNumbers,
-      currentDescriptionType: viewModel.currentDescriptionType,
-      currentDescriptionNumber: viewModel.currentDescriptionNumber,
-      onFinishSelectAreaMode: viewModel.finishSelectAreaMode,
-      onFinishPipetteMode: viewModel.finishPipetteMode,
-      onWordTap: (wordIndex) {
-        viewModel.showInfoForWord(wordIndex, AppLocalizations.of(context)!);
-      },
-      onVerseTap: (verseIndex) {
-        viewModel.showInfoForVerse(verseIndex, AppLocalizations.of(context)!);
-      },
-      onStrongNumberTap: (strongNumber) {
-        viewModel.showInfoForStrongNumber(
-          strongNumber,
-          AppLocalizations.of(context)!,
+    return Builder(
+      builder: (previewContext) {
+        final imageData = previewContext.select(
+          (PrimarySourceImageCubit cubit) => cubit.state.imageData,
+        );
+        if (imageData == null) {
+          return const SizedBox.shrink();
+        }
+
+        final imageName = previewContext.select(
+          (PrimarySourceSessionCubit cubit) => cubit.state.imageName,
+        );
+        final selectedPage = previewContext.select(
+          (PrimarySourceSessionCubit cubit) => cubit.state.selectedPage,
+        );
+        final pageSettingsSlice = previewContext.select((
+          PrimarySourcePageSettingsCubit cubit,
+        ) {
+          final state = cubit.state;
+          return (
+            isNegative: state.isNegative,
+            isMonochrome: state.isMonochrome,
+            brightness: state.brightness,
+            contrast: state.contrast,
+            showWordSeparators: state.showWordSeparators,
+            showStrongNumbers: state.showStrongNumbers,
+            showVerseNumbers: state.showVerseNumbers,
+          );
+        });
+        final viewportSlice = previewContext.select((
+          PrimarySourceViewportCubit cubit,
+        ) {
+          final state = cubit.state;
+          return (
+            pipetteMode: state.pipetteMode,
+            selectAreaMode: state.selectAreaMode,
+            selectedArea: state.selectedArea,
+            colorToReplace: state.colorToReplace,
+            newColor: state.newColor,
+            tolerance: state.tolerance,
+          );
+        });
+        final descriptionSlice = previewContext.select((
+          PrimarySourceDescriptionCubit cubit,
+        ) {
+          final state = cubit.state;
+          return (
+            currentType: state.currentType,
+            currentNumber: state.currentNumber,
+          );
+        });
+
+        return ImagePreview(
+          imageData: imageData,
+          imageName: imageName,
+          controller: viewModel.imageController,
+          pipetteMode: viewportSlice.pipetteMode,
+          selectAreaMode: viewportSlice.selectAreaMode,
+          isNegative: pageSettingsSlice.isNegative,
+          isMonochrome: pageSettingsSlice.isMonochrome,
+          brightness: pageSettingsSlice.brightness,
+          contrast: pageSettingsSlice.contrast,
+          replaceRegion: viewportSlice.selectedArea,
+          colorToReplace: viewportSlice.colorToReplace,
+          newColor: viewportSlice.newColor,
+          tolerance: viewportSlice.tolerance,
+          showWordSeparators: pageSettingsSlice.showWordSeparators,
+          showStrongNumbers: pageSettingsSlice.showStrongNumbers,
+          showVerseNumbers: pageSettingsSlice.showVerseNumbers,
+          currentDescriptionType: descriptionSlice.currentType,
+          currentDescriptionNumber: descriptionSlice.currentNumber,
+          onFinishSelectAreaMode: viewModel.finishSelectAreaMode,
+          onFinishPipetteMode: viewModel.finishPipetteMode,
+          onWordTap: (wordIndex) {
+            viewModel.showInfoForWord(
+              wordIndex,
+              AppLocalizations.of(previewContext)!,
+            );
+          },
+          onVerseTap: (verseIndex) {
+            viewModel.showInfoForVerse(
+              verseIndex,
+              AppLocalizations.of(previewContext)!,
+            );
+          },
+          onStrongNumberTap: (strongNumber) {
+            viewModel.showInfoForStrongNumber(
+              strongNumber,
+              AppLocalizations.of(previewContext)!,
+            );
+          },
+          onRestorePositionAndScale: viewModel.restorePositionAndScale,
+          words: selectedPage?.words ?? const [],
+          verses: selectedPage?.verses ?? const [],
+          selectedVerseIndex:
+              descriptionSlice.currentType == DescriptionKind.verse
+              ? descriptionSlice.currentNumber
+              : null,
         );
       },
-      onRestorePositionAndScale: viewModel.restorePositionAndScale,
-      words: viewModel.selectedPage != null
-          ? viewModel.selectedPage!.words
-          : [],
-      verses: viewModel.selectedPage != null
-          ? viewModel.selectedPage!.verses
-          : [],
-      selectedVerseIndex:
-          viewModel.currentDescriptionType == DescriptionKind.verse
-          ? viewModel.currentDescriptionNumber
-          : null,
     );
   }
 
@@ -378,51 +452,83 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     BuildContext context,
     PrimarySourceDetailCoordinator viewModel,
   ) {
-    final bool showStrongInfoIcon =
-        viewModel.currentDescriptionType == DescriptionKind.word ||
-        viewModel.currentDescriptionType == DescriptionKind.strongNumber;
-    final bool canNavigate =
-        _canNavigateDescriptionByArrow(viewModel) &&
-        !viewModel.selectAreaMode &&
-        !viewModel.pipetteMode;
-    return PrimarySourceDescriptionPanel(
-      descriptionContent: viewModel.descriptionContent,
-      onGreekStrongTap: (strongNumber, linkContext) {
-        viewModel.showInfoForStrongNumber(
-          strongNumber,
-          AppLocalizations.of(linkContext)!,
+    return Builder(
+      builder: (descriptionContext) {
+        final selectedPage = descriptionContext.select(
+          (PrimarySourceSessionCubit cubit) => cubit.state.selectedPage,
         );
-      },
-      onGreekStrongPickerTap: (strongNumber, linkContext) {
-        _openStrongNumberPickerDialog(linkContext, viewModel, strongNumber);
-      },
-      onWordTap: (sourceId, pageName, wordIndex, linkContext) {
-        return _handleWordLinkTap(
-          sourceId: sourceId,
-          pageName: pageName,
-          wordIndex: wordIndex,
-          linkContext: linkContext,
-          viewModel: viewModel,
+        final descriptionSlice = descriptionContext.select((
+          PrimarySourceDescriptionCubit cubit,
+        ) {
+          final state = cubit.state;
+          return (
+            content: state.content,
+            currentType: state.currentType,
+            currentNumber: state.currentNumber,
+          );
+        });
+        final modeSlice = descriptionContext.select((
+          PrimarySourceViewportCubit cubit,
+        ) {
+          final state = cubit.state;
+          return (
+            selectAreaMode: state.selectAreaMode,
+            pipetteMode: state.pipetteMode,
+          );
+        });
+
+        final bool showStrongInfoIcon =
+            descriptionSlice.currentType == DescriptionKind.word ||
+            descriptionSlice.currentType == DescriptionKind.strongNumber;
+        final bool canNavigate =
+            _canNavigateDescription(
+              currentType: descriptionSlice.currentType,
+              currentNumber: descriptionSlice.currentNumber,
+              selectedPage: selectedPage,
+            ) &&
+            !modeSlice.selectAreaMode &&
+            !modeSlice.pipetteMode;
+
+        return PrimarySourceDescriptionPanel(
+          descriptionContent: descriptionSlice.content,
+          onGreekStrongTap: (strongNumber, linkContext) {
+            viewModel.showInfoForStrongNumber(
+              strongNumber,
+              AppLocalizations.of(linkContext)!,
+            );
+          },
+          onGreekStrongPickerTap: (strongNumber, linkContext) {
+            _openStrongNumberPickerDialog(linkContext, viewModel, strongNumber);
+          },
+          onWordTap: (sourceId, pageName, wordIndex, linkContext) {
+            return _handleWordLinkTap(
+              sourceId: sourceId,
+              pageName: pageName,
+              wordIndex: wordIndex,
+              linkContext: linkContext,
+              viewModel: viewModel,
+            );
+          },
+          showStrongInfoIcon: showStrongInfoIcon,
+          canNavigate: canNavigate,
+          enableSwipeNavigation: _isMobileSwipeNavigationEnabled(viewModel),
+          referenceTooltipKey: _referenceTooltipKey,
+          onNavigateBackward: () {
+            viewModel.navigateDescriptionSelection(
+              AppLocalizations.of(descriptionContext)!,
+              forward: false,
+            );
+          },
+          onNavigateForward: () {
+            viewModel.navigateDescriptionSelection(
+              AppLocalizations.of(descriptionContext)!,
+              forward: true,
+            );
+          },
+          onHorizontalDragEnd: (details) {
+            _handleDescriptionSwipe(details, viewModel);
+          },
         );
-      },
-      showStrongInfoIcon: showStrongInfoIcon,
-      canNavigate: canNavigate,
-      enableSwipeNavigation: _isMobileSwipeNavigationEnabled(viewModel),
-      referenceTooltipKey: _referenceTooltipKey,
-      onNavigateBackward: () {
-        viewModel.navigateDescriptionSelection(
-          AppLocalizations.of(context)!,
-          forward: false,
-        );
-      },
-      onNavigateForward: () {
-        viewModel.navigateDescriptionSelection(
-          AppLocalizations.of(context)!,
-          forward: true,
-        );
-      },
-      onHorizontalDragEnd: (details) {
-        _handleDescriptionSwipe(details, viewModel);
       },
     );
   }
@@ -595,50 +701,84 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     required double dropdownWidth,
     required BuildContext screenContext,
   }) {
-    return PrimarySourceToolbar(
-      primarySource: widget.primarySource,
-      selectedPage: viewModel.selectedPage,
-      localPageLoaded: viewModel.localPageLoaded,
-      refreshError: viewModel.refreshError,
-      isNegative: viewModel.isNegative,
-      isMonochrome: viewModel.isMonochrome,
-      brightness: viewModel.brightness,
-      contrast: viewModel.contrast,
-      selectedArea: viewModel.selectedArea,
-      tolerance: viewModel.tolerance,
-      showWordSeparators: viewModel.showWordSeparators,
-      showStrongNumbers: viewModel.showStrongNumbers,
-      showVerseNumbers: viewModel.showVerseNumbers,
-      zoomStatusNotifier: viewModel.zoomStatusNotifier,
-      imageController: viewModel.imageController,
-      isBottom: isBottom,
-      dropdownWidth: dropdownWidth,
-      onChangeSelectedPage: viewModel.changeSelectedPage,
-      onShowCommonInfo: () {
-        viewModel.showCommonInfo(AppLocalizations.of(screenContext)!);
-      },
-      onReloadImage: () async {
-        if (viewModel.selectedPage == null) {
-          return;
-        }
-        await viewModel.loadImage(
-          viewModel.selectedPage!.image,
-          isReload: true,
+    return Builder(
+      builder: (toolbarContext) {
+        final selectedPage = toolbarContext.select(
+          (PrimarySourceSessionCubit cubit) => cubit.state.selectedPage,
+        );
+        final imageSlice = toolbarContext.select((
+          PrimarySourceImageCubit cubit,
+        ) {
+          final state = cubit.state;
+          return (
+            localPageLoaded: state.localPageLoaded,
+            refreshError: state.refreshError,
+          );
+        });
+        final settingsSlice = toolbarContext.select((
+          PrimarySourcePageSettingsCubit cubit,
+        ) {
+          final state = cubit.state;
+          return (
+            isNegative: state.isNegative,
+            isMonochrome: state.isMonochrome,
+            brightness: state.brightness,
+            contrast: state.contrast,
+            showWordSeparators: state.showWordSeparators,
+            showStrongNumbers: state.showStrongNumbers,
+            showVerseNumbers: state.showVerseNumbers,
+          );
+        });
+        final viewportSlice = toolbarContext.select((
+          PrimarySourceViewportCubit cubit,
+        ) {
+          final state = cubit.state;
+          return (selectedArea: state.selectedArea, tolerance: state.tolerance);
+        });
+
+        return PrimarySourceToolbar(
+          primarySource: widget.primarySource,
+          selectedPage: selectedPage,
+          localPageLoaded: imageSlice.localPageLoaded,
+          refreshError: imageSlice.refreshError,
+          isNegative: settingsSlice.isNegative,
+          isMonochrome: settingsSlice.isMonochrome,
+          brightness: settingsSlice.brightness,
+          contrast: settingsSlice.contrast,
+          selectedArea: viewportSlice.selectedArea,
+          tolerance: viewportSlice.tolerance,
+          showWordSeparators: settingsSlice.showWordSeparators,
+          showStrongNumbers: settingsSlice.showStrongNumbers,
+          showVerseNumbers: settingsSlice.showVerseNumbers,
+          zoomStatusNotifier: viewModel.zoomStatusNotifier,
+          imageController: viewModel.imageController,
+          isBottom: isBottom,
+          dropdownWidth: dropdownWidth,
+          onChangeSelectedPage: viewModel.changeSelectedPage,
+          onShowCommonInfo: () {
+            viewModel.showCommonInfo(AppLocalizations.of(screenContext)!);
+          },
+          onReloadImage: () async {
+            if (selectedPage == null) {
+              return;
+            }
+            await viewModel.loadImage(selectedPage.image, isReload: true);
+          },
+          onToggleNegative: viewModel.toggleNegative,
+          onToggleMonochrome: viewModel.toggleMonochrome,
+          onToggleShowWordSeparators: viewModel.toggleShowWordSeparators,
+          onToggleShowStrongNumbers: viewModel.toggleShowStrongNumbers,
+          onToggleShowVerseNumbers: viewModel.toggleShowVerseNumbers,
+          onRemovePageSettings: viewModel.removePageSettings,
+          onOpenBrightnessContrastDialog: () {
+            _openBrightnessContrastDialog(viewModel, screenContext);
+          },
+          onOpenReplaceColorDialog: () {
+            _openReplaceColorDialog(viewModel, screenContext);
+          },
+          onSetMenuOpen: viewModel.setMenuOpen,
         );
       },
-      onToggleNegative: viewModel.toggleNegative,
-      onToggleMonochrome: viewModel.toggleMonochrome,
-      onToggleShowWordSeparators: viewModel.toggleShowWordSeparators,
-      onToggleShowStrongNumbers: viewModel.toggleShowStrongNumbers,
-      onToggleShowVerseNumbers: viewModel.toggleShowVerseNumbers,
-      onRemovePageSettings: viewModel.removePageSettings,
-      onOpenBrightnessContrastDialog: () {
-        _openBrightnessContrastDialog(viewModel, screenContext);
-      },
-      onOpenReplaceColorDialog: () {
-        _openReplaceColorDialog(viewModel, screenContext);
-      },
-      onSetMenuOpen: viewModel.setMenuOpen,
     );
   }
 
@@ -789,20 +929,32 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   bool _canNavigateDescriptionByArrow(
     PrimarySourceDetailCoordinator viewModel,
   ) {
-    if (viewModel.currentDescriptionNumber == null) {
+    return _canNavigateDescription(
+      currentType: viewModel.currentDescriptionType,
+      currentNumber: viewModel.currentDescriptionNumber,
+      selectedPage: viewModel.selectedPage,
+    );
+  }
+
+  bool _canNavigateDescription({
+    required DescriptionKind currentType,
+    required int? currentNumber,
+    required model.Page? selectedPage,
+  }) {
+    if (currentNumber == null) {
       return false;
     }
 
-    if (viewModel.currentDescriptionType == DescriptionKind.word) {
-      return viewModel.selectedPage?.words.isNotEmpty ?? false;
+    if (currentType == DescriptionKind.word) {
+      return selectedPage?.words.isNotEmpty ?? false;
     }
 
-    if (viewModel.currentDescriptionType == DescriptionKind.strongNumber) {
+    if (currentType == DescriptionKind.strongNumber) {
       return true;
     }
 
-    if (viewModel.currentDescriptionType == DescriptionKind.verse) {
-      return viewModel.selectedPage?.verses.isNotEmpty ?? false;
+    if (currentType == DescriptionKind.verse) {
+      return selectedPage?.verses.isNotEmpty ?? false;
     }
 
     return false;
@@ -847,22 +999,19 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   }
 
   void _watchPrimarySourceBlocStates(BuildContext context) {
-    context.select((PrimarySourceSessionCubit cubit) => cubit.state);
-    context.select((PrimarySourceImageCubit cubit) => cubit.state);
-    context.select((PrimarySourcePageSettingsCubit cubit) => cubit.state);
-    context.select((PrimarySourceDescriptionCubit cubit) => cubit.state);
+    context.select(
+      (PrimarySourceSessionCubit cubit) => cubit.state.selectedPage,
+    );
+    context.select((PrimarySourceDescriptionCubit cubit) {
+      final state = cubit.state;
+      return (
+        currentType: state.currentType,
+        currentNumber: state.currentNumber,
+      );
+    });
     context.select((PrimarySourceViewportCubit cubit) {
       final state = cubit.state;
-      // Avoid full-screen rebuilds on high-frequency transform updates.
-      return (
-        state.pipetteMode,
-        state.selectAreaMode,
-        state.selectedArea,
-        state.colorToReplace,
-        state.newColor,
-        state.tolerance,
-        state.isColorToReplace,
-      );
+      return (state.pipetteMode, state.selectAreaMode);
     });
   }
 }

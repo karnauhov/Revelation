@@ -486,7 +486,7 @@ Legacy/candidate cleanup:
 - [x] Почему приоритет: Это текущий runtime риск №1.
 - [x] Конкретные действия:
 - [x] Заменить broad `context.select(... => cubit.state)` на селекторы по точечным полям (hot-path viewport projection вместо полного state).
-- [ ] Разделить build-дерево на мелкие `BlocSelector/BlocBuilder` горячих зон.
+- [x] Разделить build-дерево на мелкие `BlocSelector/BlocBuilder` горячих зон (локальные `Builder + context.select` для toolbar/body/image/description зон).
 - [x] В `updateTransform` добавить защиту от шумовых `emit` при отсутствии изменений.
 - [x] Затрагиваемые файлы/папки:
 - [x] `lib/features/primary_sources/presentation/screens/primary_source_screen.dart`
@@ -495,7 +495,8 @@ Legacy/candidate cleanup:
 - [x] Риск: Средний (можно случайно сломать реактивность части UI).
 - [ ] Ожидаемый результат: Плавный zoom/pan без полного rebuild экрана (manual smoke/perf pending).
 - [x] Dependency on previous steps: Step 1 желателен, но не обязателен.
-- [ ] How to validate: Widget/perf regression test + manual profiling на web/mobile web.
+- [x] How to validate (оперативно): `flutter analyze` + detail widget/unit tests pass.
+- [ ] How to validate (финально): Widget/perf regression test + manual profiling на web/mobile web.
 
 ### Step 3 — Убрать side effects из build
 - [ ] Цель: Сделать UI flow детерминированным и без re-entrant side effects.
@@ -703,7 +704,7 @@ Legacy/candidate cleanup:
 ## Отдельный чеклист исполнения (короткая версия)
 
 - [ ] Step 1: Архитектурное решение по detail orchestration (частично выполнен: решение + код + side-effects rule, осталось docs/ADR)
-- [ ] Step 2: Устранить rebuild hotspot detail screen (частично выполнен: narrow viewport watch + dedup transform emits)
+- [ ] Step 2: Устранить rebuild hotspot detail screen (частично выполнен: narrow subscriptions + split hot zones + dedup emits; ожидается ручной perf smoke/profiling)
 - [ ] Step 3: Убрать side effects из build
 - [ ] Step 4: Убрать mutable state из `PrimarySource`
 - [ ] Step 5: Добавить stale guard в `TopicsCatalogCubit`
