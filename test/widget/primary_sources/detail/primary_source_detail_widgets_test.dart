@@ -7,7 +7,6 @@ import 'package:revelation/features/primary_sources/data/repositories/pages_repo
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
@@ -243,7 +242,6 @@ _ToolbarVmBundle _createToolbarVmBundle() {
   final pageSettingsCubit = PrimarySourcePageSettingsCubit(
     PrimarySourcePageSettingsOrchestrator(PagesRepository()),
   );
-  final selectionCubit = PrimarySourceSelectionCubit();
   final descriptionCubit = PrimarySourceDescriptionCubit();
   final viewportCubit = PrimarySourceViewportCubit();
   final sessionCubit = PrimarySourceSessionCubit(source: source);
@@ -253,7 +251,6 @@ _ToolbarVmBundle _createToolbarVmBundle() {
     primarySource: source,
     imageCubit: imageCubit,
     pageSettingsCubit: pageSettingsCubit,
-    selectionCubit: selectionCubit,
     descriptionCubit: descriptionCubit,
     viewportCubit: viewportCubit,
     sessionCubit: sessionCubit,
@@ -265,7 +262,6 @@ _ToolbarVmBundle _createToolbarVmBundle() {
     cubits: [
       imageCubit,
       pageSettingsCubit,
-      selectionCubit,
       descriptionCubit,
       viewportCubit,
       sessionCubit,

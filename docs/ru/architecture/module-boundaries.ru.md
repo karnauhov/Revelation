@@ -1,6 +1,6 @@
 # Module Boundaries (RU)
 
-Doc-Version: `1.1.1`  
+Doc-Version: `1.1.2`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -27,6 +27,7 @@ Source-Commit: `working-tree`
 - `presentation` не импортирует `infra` напрямую.
 - `presentation` работает через feature repositories/services/cubit contracts.
 - Межсрезовая orchestration в presentation реализуется через `Cubit`/`Bloc` классы (например, `*OrchestrationCubit`), а не через mutable controller-singleton.
+- Если один state-срез уже содержит поля выбора и отображения (например, `PrimarySourceDescriptionState.currentType/currentNumber`), не вводится отдельный дублирующий cubit для того же источника истины.
 - `application` не содержит UI-виджеты.
 - `data` может зависеть от `infra` data source/gateway контрактов.
 - `infra` не импортирует feature `presentation`.

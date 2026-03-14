@@ -21,7 +21,6 @@ import 'package:revelation/shared/ui/styled_text/styled_text_utils.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
@@ -124,9 +123,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           create: (_) => PrimarySourcePageSettingsCubit(
             PrimarySourcePageSettingsOrchestrator(PagesRepository()),
           ),
-        ),
-        BlocProvider<PrimarySourceSelectionCubit>(
-          create: (_) => PrimarySourceSelectionCubit(),
         ),
         BlocProvider<PrimarySourceDescriptionCubit>(
           create: (_) => PrimarySourceDescriptionCubit(),
@@ -670,7 +666,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       primarySource: widget.primarySource,
       imageCubit: context.read<PrimarySourceImageCubit>(),
       pageSettingsCubit: context.read<PrimarySourcePageSettingsCubit>(),
-      selectionCubit: context.read<PrimarySourceSelectionCubit>(),
       descriptionCubit: context.read<PrimarySourceDescriptionCubit>(),
       viewportCubit: context.read<PrimarySourceViewportCubit>(),
       sessionCubit: context.read<PrimarySourceSessionCubit>(),
@@ -683,7 +678,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     context.select((PrimarySourceSessionCubit cubit) => cubit.state);
     context.select((PrimarySourceImageCubit cubit) => cubit.state);
     context.select((PrimarySourcePageSettingsCubit cubit) => cubit.state);
-    context.select((PrimarySourceSelectionCubit cubit) => cubit.state);
     context.select((PrimarySourceDescriptionCubit cubit) => cubit.state);
     context.select((PrimarySourceViewportCubit cubit) => cubit.state);
   }

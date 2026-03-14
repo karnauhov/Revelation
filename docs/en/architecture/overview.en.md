@@ -1,6 +1,6 @@
 # Architecture Overview (EN)
 
-Doc-Version: `1.1.1`  
+Doc-Version: `1.1.2`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -13,7 +13,7 @@ Define the current Revelation architecture as-is.
 - Navigation: `go_router` in `AppRouter`; critical routes use typed route args (`TopicRouteArgs`, `PrimarySourceRouteArgs`).
 - `word:` link handling: `shared/navigation` uses callback contracts; the default handler is registered at bootstrap level (`AppBootstrap`).
 - Global state scope: `AppDi.appBlocProviders` provides `SettingsCubit`, `TopicsCatalogCubit`, and `PrimarySourcesCubit`.
-- Primary source detail state: `PrimarySourceScreen` creates a `MultiBlocProvider` with `session/image/page-settings/selection/description/viewport` cubit slices.
+- Primary source detail state: `PrimarySourceScreen` creates a `MultiBlocProvider` with `session/image/page-settings/description/viewport` cubit slices; selection fields (`currentType/currentNumber`) belong to `PrimarySourceDescriptionState`.
 - Primary source detail orchestration: `PrimarySourceDetailOrchestrationCubit` coordinates `loadImage`, `changeSelectedPage`, and debounced save/restore across detail cubit slices.
 - Data flow: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
 - Remote layer: `ServerManager` uses Supabase Storage for database and file downloads.

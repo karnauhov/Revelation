@@ -1,6 +1,6 @@
 # State Management Matrix (EN)
 
-Doc-Version: `1.1.2`  
+Doc-Version: `1.1.3`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -26,7 +26,6 @@ Define the current runtime state ownership model in Revelation.
 | `primary_source/detail/session` | `PrimarySourceSessionCubit` | `PrimarySourceSessionState { PrimarySource source; model.Page? selectedPage; String imageName; bool isMenuOpen; }` |
 | `primary_source/detail/image` | `PrimarySourceImageCubit` | `PrimarySourceImageState { Uint8List? imageData; bool isLoading; bool imageShown; bool refreshError; Map<String, bool?> localPageLoaded; int maxTextureSize; }` |
 | `primary_source/detail/page-settings` | `PrimarySourcePageSettingsCubit` | `PrimarySourcePageSettingsState { String rawSettings; bool isNegative; bool isMonochrome; double brightness; double contrast; bool showWordSeparators; bool showStrongNumbers; bool showVerseNumbers; }` |
-| `primary_source/detail/selection` | `PrimarySourceSelectionCubit` | `PrimarySourceSelectionState { DescriptionKind currentType; int? currentNumber; }` |
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | `PrimarySourceDescriptionState { bool showDescription; String? content; DescriptionKind currentType; int? currentNumber; List<GreekStrongPickerEntry> pickerEntries; }` |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | `PrimarySourceViewportState { double dx; double dy; double scale; double savedX; double savedY; double savedScale; bool scaleAndPositionRestored; ZoomStatus zoomStatus; Rect? selectedArea; Color colorToReplace; Color newColor; double tolerance; bool pipetteMode; bool selectAreaMode; bool isColorToReplace; }` |
 | `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | `PrimarySourceDetailOrchestrationState {}` (coordinates `loadImage`, `changeSelectedPage`, and debounced save/restore over detail cubits) |
@@ -38,4 +37,5 @@ Define the current runtime state ownership model in Revelation.
 
 ## 5. Notes
 - `PrimarySourceDetailCoordinator` delegates image/page/save/restore flow to `PrimarySourceDetailOrchestrationCubit` and is not the source of truth for state contracts.
+- Selection (`currentType/currentNumber`) on the primary source detail screen is stored in `PrimarySourceDescriptionState`; there is no separate selection cubit.
 - Any state ownership change must be mirrored in both RU and EN versions of this document.

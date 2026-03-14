@@ -14,8 +14,6 @@ export 'presentation/bloc/primary_sources_cubit.dart';
 export 'presentation/bloc/primary_sources_state.dart';
 export 'presentation/bloc/primary_source_page_settings_cubit.dart';
 export 'presentation/bloc/primary_source_page_settings_state.dart';
-export 'presentation/bloc/primary_source_selection_cubit.dart';
-export 'presentation/bloc/primary_source_selection_state.dart';
 export 'presentation/bloc/primary_source_session_cubit.dart';
 export 'presentation/bloc/primary_source_session_state.dart';
 export 'presentation/bloc/primary_source_viewport_cubit.dart';

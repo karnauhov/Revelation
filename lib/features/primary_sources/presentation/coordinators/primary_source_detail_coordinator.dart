@@ -9,7 +9,6 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
@@ -27,8 +26,6 @@ class PrimarySourceDetailCoordinator {
   late final bool _ownsImageCubit;
   late final PrimarySourcePageSettingsCubit _pageSettingsCubit;
   late final bool _ownsPageSettingsCubit;
-  late final PrimarySourceSelectionCubit _selectionCubit;
-  late final bool _ownsSelectionCubit;
   late final PrimarySourceViewportCubit _viewportCubit;
   late final bool _ownsViewportCubit;
   final PrimarySourceSessionCubit _sessionCubit;
@@ -82,15 +79,14 @@ class PrimarySourceDetailCoordinator {
   bool get showDescription => _descriptionCubit.state.showDescription;
   String? get descriptionContent => _descriptionCubit.state.content;
   DescriptionKind get currentDescriptionType =>
-      _selectionCubit.state.currentType;
-  int? get currentDescriptionNumber => _selectionCubit.state.currentNumber;
+      _descriptionCubit.state.currentType;
+  int? get currentDescriptionNumber => _descriptionCubit.state.currentNumber;
 
   PrimarySourceDetailCoordinator(
     PagesRepository pagesRepository, {
     required PrimarySource primarySource,
     PrimarySourceImageCubit? imageCubit,
     PrimarySourcePageSettingsCubit? pageSettingsCubit,
-    PrimarySourceSelectionCubit? selectionCubit,
     PrimarySourceDescriptionCubit? descriptionCubit,
     PrimarySourceViewportCubit? viewportCubit,
     PrimarySourceSessionCubit? sessionCubit,
@@ -124,8 +120,6 @@ class PrimarySourceDetailCoordinator {
         PrimarySourceDescriptionCubit(descriptionService: descriptionService);
     _ownsViewportCubit = viewportCubit == null;
     _viewportCubit = viewportCubit ?? PrimarySourceViewportCubit();
-    _ownsSelectionCubit = selectionCubit == null;
-    _selectionCubit = selectionCubit ?? PrimarySourceSelectionCubit();
     _ownsOrchestrationCubit = orchestrationCubit == null;
     _orchestrationCubit =
         orchestrationCubit ??
@@ -136,7 +130,6 @@ class PrimarySourceDetailCoordinator {
           sessionCubit: _sessionCubit,
           viewportCubit: _viewportCubit,
         );
-    _syncSelectionFromDescriptionState();
   }
 
   Future<void> loadImage(String page, {bool isReload = false}) async {
@@ -261,12 +254,10 @@ class PrimarySourceDetailCoordinator {
       type: type,
       number: number,
     );
-    _syncSelectionFromDescriptionState();
   }
 
   void showCommonInfo(BuildContext context) {
     _descriptionCubit.showCommonInfo(context);
-    _syncSelectionFromDescriptionState();
   }
 
   bool navigateDescriptionSelection(
@@ -279,9 +270,6 @@ class PrimarySourceDetailCoordinator {
       source: primarySource,
       selectedPage: selectedPage,
     );
-    if (navigated) {
-      _syncSelectionFromDescriptionState();
-    }
     return navigated;
   }
 
@@ -297,7 +285,6 @@ class PrimarySourceDetailCoordinator {
     if (!shown) {
       return;
     }
-    _syncSelectionFromDescriptionState();
   }
 
   void showInfoForWord(int wordIndex, BuildContext context) {
@@ -310,7 +297,6 @@ class PrimarySourceDetailCoordinator {
     if (!shown) {
       return;
     }
-    _syncSelectionFromDescriptionState();
   }
 
   void showInfoForVerse(int verseIndex, BuildContext context) {
@@ -323,15 +309,6 @@ class PrimarySourceDetailCoordinator {
     if (!shown) {
       return;
     }
-    _syncSelectionFromDescriptionState();
-  }
-
-  void _syncSelectionFromDescriptionState() {
-    final descriptionState = _descriptionCubit.state;
-    _selectionCubit.setSelection(
-      type: descriptionState.currentType,
-      number: descriptionState.currentNumber,
-    );
   }
 
   void dispose() {
@@ -348,9 +325,6 @@ class PrimarySourceDetailCoordinator {
     }
     if (_ownsPageSettingsCubit) {
       unawaited(_pageSettingsCubit.close());
-    }
-    if (_ownsSelectionCubit) {
-      unawaited(_selectionCubit.close());
     }
     if (_ownsViewportCubit) {
       unawaited(_viewportCubit.close());
