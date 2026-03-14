@@ -94,4 +94,34 @@ void main() {
     expect(cubit.state.newColor, const Color(0xFFFFFFFF));
     expect(cubit.state.tolerance, 0);
   });
+
+  test('updateTransform ignores unchanged transform values', () async {
+    final cubit = PrimarySourceViewportCubit();
+    addTearDown(cubit.close);
+
+    var emissions = 0;
+    final subscription = cubit.stream.listen((_) {
+      emissions++;
+    });
+    addTearDown(subscription.cancel);
+
+    const status = ZoomStatus(
+      canZoomIn: true,
+      canZoomOut: true,
+      canReset: true,
+    );
+    cubit.updateTransform(dx: 12, dy: 24, scale: 2, zoomStatus: status);
+    await Future<void>.delayed(Duration.zero);
+    expect(emissions, 1);
+
+    cubit.updateTransform(dx: 12, dy: 24, scale: 2, zoomStatus: status);
+    await Future<void>.delayed(Duration.zero);
+    expect(emissions, 1);
+
+    cubit.setZoomStatus(
+      const ZoomStatus(canZoomIn: true, canZoomOut: true, canReset: true),
+    );
+    await Future<void>.delayed(Duration.zero);
+    expect(emissions, 1);
+  });
 }

@@ -6,6 +6,7 @@ import 'package:revelation/shared/models/zoom_status.dart';
 
 class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
   PrimarySourceViewportCubit() : super(PrimarySourceViewportState.initial);
+  static const double _transformEpsilon = 0.0001;
 
   void markImageLoadingStarted() {
     emit(state.copyWith(scaleAndPositionRestored: false));
@@ -66,10 +67,19 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
     required double scale,
     required ZoomStatus zoomStatus,
   }) {
+    if (_areClose(state.dx, dx) &&
+        _areClose(state.dy, dy) &&
+        _areClose(state.scale, scale) &&
+        state.zoomStatus == zoomStatus) {
+      return;
+    }
     emit(state.copyWith(dx: dx, dy: dy, scale: scale, zoomStatus: zoomStatus));
   }
 
   void setZoomStatus(ZoomStatus status) {
+    if (state.zoomStatus == status) {
+      return;
+    }
     emit(state.copyWith(zoomStatus: status));
   }
 
@@ -133,5 +143,9 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
         tolerance: 0,
       ),
     );
+  }
+
+  bool _areClose(double a, double b) {
+    return (a - b).abs() <= _transformEpsilon;
   }
 }

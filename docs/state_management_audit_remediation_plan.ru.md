@@ -469,7 +469,11 @@ Legacy/candidate cleanup:
 - [x] Почему приоритет: Без этого последующие правки будут фрагментированными.
 - [x] Конкретные действия:
 - [x] Зафиксировать решение: `single orchestration cubit` vs `coordinator as adapter`.
-- [ ] Определить, какие side effects разрешены вне cubit (если разрешены).
+- [x] Определить, какие side effects разрешены вне cubit (если разрешены).
+- [x] Принятое правило side effects:
+- [x] В `build` side effects запрещены.
+- [x] Разрешены только локальные UI-эфемерные `setState` (анимация/жесты/hover/scroll UI).
+- [x] Бизнесовые и cross-slice side effects: только через cubit/listener/post-frame с идемпотентной защитой.
 - [ ] Затрагиваемые файлы/папки: `lib/features/primary_sources/presentation/bloc/`, `docs/ru|en/architecture/*` (выполнено частично: `lib` обновлен, `docs` и явное архитектурное правило pending).
 - [x] Риск: Средний (неверное решение может закрепить долг).
 - [x] Ожидаемый результат: Ясные ownership boundaries и единый подход для команды.
@@ -479,18 +483,18 @@ Legacy/candidate cleanup:
 
 ### Step 2 — Устранить критичный rebuild hotspot
 - [ ] Цель: Снизить rebuild pressure в detail screen до предсказуемого уровня.
-- [ ] Почему приоритет: Это текущий runtime риск №1.
-- [ ] Конкретные действия:
-- [ ] Заменить broad `context.select(... => cubit.state)` на селекторы по точечным полям.
+- [x] Почему приоритет: Это текущий runtime риск №1.
+- [x] Конкретные действия:
+- [x] Заменить broad `context.select(... => cubit.state)` на селекторы по точечным полям (hot-path viewport projection вместо полного state).
 - [ ] Разделить build-дерево на мелкие `BlocSelector/BlocBuilder` горячих зон.
-- [ ] В `updateTransform` добавить защиту от шумовых `emit` при отсутствии изменений.
-- [ ] Затрагиваемые файлы/папки:
-- [ ] `lib/features/primary_sources/presentation/screens/primary_source_screen.dart`
-- [ ] `lib/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart`
-- [ ] `lib/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart`
-- [ ] Риск: Средний (можно случайно сломать реактивность части UI).
-- [ ] Ожидаемый результат: Плавный zoom/pan без полного rebuild экрана.
-- [ ] Dependency on previous steps: Step 1 желателен, но не обязателен.
+- [x] В `updateTransform` добавить защиту от шумовых `emit` при отсутствии изменений.
+- [x] Затрагиваемые файлы/папки:
+- [x] `lib/features/primary_sources/presentation/screens/primary_source_screen.dart`
+- [x] `lib/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart`
+- [ ] `lib/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart` (не потребовалось для текущего пакета).
+- [x] Риск: Средний (можно случайно сломать реактивность части UI).
+- [ ] Ожидаемый результат: Плавный zoom/pan без полного rebuild экрана (manual smoke/perf pending).
+- [x] Dependency on previous steps: Step 1 желателен, но не обязателен.
 - [ ] How to validate: Widget/perf regression test + manual profiling на web/mobile web.
 
 ### Step 3 — Убрать side effects из build
@@ -698,8 +702,8 @@ Legacy/candidate cleanup:
 
 ## Отдельный чеклист исполнения (короткая версия)
 
-- [ ] Step 1: Архитектурное решение по detail orchestration (частично выполнен: решение + код, остались formal side-effects rule и docs/ADR)
-- [ ] Step 2: Устранить rebuild hotspot detail screen
+- [ ] Step 1: Архитектурное решение по detail orchestration (частично выполнен: решение + код + side-effects rule, осталось docs/ADR)
+- [ ] Step 2: Устранить rebuild hotspot detail screen (частично выполнен: narrow viewport watch + dedup transform emits)
 - [ ] Step 3: Убрать side effects из build
 - [ ] Step 4: Убрать mutable state из `PrimarySource`
 - [ ] Step 5: Добавить stale guard в `TopicsCatalogCubit`

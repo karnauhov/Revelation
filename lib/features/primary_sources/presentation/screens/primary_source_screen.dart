@@ -851,6 +851,18 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     context.select((PrimarySourceImageCubit cubit) => cubit.state);
     context.select((PrimarySourcePageSettingsCubit cubit) => cubit.state);
     context.select((PrimarySourceDescriptionCubit cubit) => cubit.state);
-    context.select((PrimarySourceViewportCubit cubit) => cubit.state);
+    context.select((PrimarySourceViewportCubit cubit) {
+      final state = cubit.state;
+      // Avoid full-screen rebuilds on high-frequency transform updates.
+      return (
+        state.pipetteMode,
+        state.selectAreaMode,
+        state.selectedArea,
+        state.colorToReplace,
+        state.newColor,
+        state.tolerance,
+        state.isColorToReplace,
+      );
+    });
   }
 }
