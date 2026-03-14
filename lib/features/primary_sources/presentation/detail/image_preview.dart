@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page_rect.dart';
@@ -27,6 +26,7 @@ const grayscaleMatrix = <double>[
 ];
 
 class ImagePreview extends StatefulWidget {
+  final PrimarySourceViewModel viewModel;
   final Uint8List imageData;
   final String imageName;
   final ImagePreviewController controller;
@@ -46,6 +46,7 @@ class ImagePreview extends StatefulWidget {
   final int? selectedVerseIndex;
 
   const ImagePreview({
+    required this.viewModel,
     required this.imageData,
     required this.imageName,
     required this.controller,
@@ -119,7 +120,7 @@ class ImagePreviewState extends State<ImagePreview> {
           recalc: recalcAnyway,
         );
 
-        final vm = context.watch<PrimarySourceViewModel>();
+        final vm = widget.viewModel;
         Widget imageWidget;
         Widget wrapped;
 

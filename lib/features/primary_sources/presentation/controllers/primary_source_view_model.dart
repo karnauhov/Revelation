@@ -4,13 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart';
@@ -24,21 +20,15 @@ import 'package:revelation/features/primary_sources/application/services/descrip
 import 'package:revelation/shared/utils/common.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
 
-class PrimarySourceViewModel extends ChangeNotifier {
+class PrimarySourceViewModel {
   late final PrimarySourceDescriptionCubit _descriptionCubit;
   late final bool _ownsDescriptionCubit;
-  StreamSubscription<PrimarySourceDescriptionState>?
-  _descriptionStateSubscription;
   late final PrimarySourceImageCubit _imageCubit;
   late final bool _ownsImageCubit;
-  StreamSubscription<PrimarySourceImageState>? _imageStateSubscription;
   late final PrimarySourcePageSettingsCubit _pageSettingsCubit;
   late final bool _ownsPageSettingsCubit;
-  StreamSubscription<PrimarySourcePageSettingsState>?
-  _pageSettingsStateSubscription;
   late final PrimarySourceSelectionCubit _selectionCubit;
   late final bool _ownsSelectionCubit;
-  StreamSubscription<PrimarySourceSelectionState>? _selectionStateSubscription;
   late final PrimarySourceViewportCubit _viewportCubit;
   late final bool _ownsViewportCubit;
   StreamSubscription<PrimarySourceViewportState>? _viewportStateSubscription;
@@ -128,9 +118,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
           isWeb: _isWeb,
           isMobileWeb: _isMobileWeb,
         );
-    _imageStateSubscription = _imageCubit.stream.listen(
-      (_) => notifyListeners(),
-    );
     _ownsPageSettingsCubit = pageSettingsCubit == null;
     _pageSettingsCubit =
         pageSettingsCubit ??
@@ -138,28 +125,17 @@ class PrimarySourceViewModel extends ChangeNotifier {
           pageSettingsOrchestrator ??
               PrimarySourcePageSettingsOrchestrator(pagesRepository),
         );
-    _pageSettingsStateSubscription = _pageSettingsCubit.stream.listen(
-      (_) => notifyListeners(),
-    );
     _ownsDescriptionCubit = descriptionCubit == null;
     _descriptionCubit =
         descriptionCubit ??
         PrimarySourceDescriptionCubit(descriptionService: descriptionService);
-    _descriptionStateSubscription = _descriptionCubit.stream.listen((_) {
-      _syncSelectionFromDescriptionState();
-      notifyListeners();
-    });
     _ownsViewportCubit = viewportCubit == null;
     _viewportCubit = viewportCubit ?? PrimarySourceViewportCubit();
     _viewportStateSubscription = _viewportCubit.stream.listen((state) {
       zoomStatusNotifier.value = state.zoomStatus;
-      notifyListeners();
     });
     _ownsSelectionCubit = selectionCubit == null;
     _selectionCubit = selectionCubit ?? PrimarySourceSelectionCubit();
-    _selectionStateSubscription = _selectionCubit.stream.listen(
-      (_) => notifyListeners(),
-    );
     _syncSelectionFromDescriptionState();
 
     if (selectedPage != null) {
@@ -167,20 +143,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
     }
   }
 
-  @override
-  void notifyListeners() {
-    if (_isDisposed) {
-      return;
-    }
-    super.notifyListeners();
-  }
-
   Future<void> loadImage(String page, {bool isReload = false}) async {
     final requestToken = _imageLoadRequestGuard.start();
     try {
       _imageCubit.setImageShown(false);
       _viewportCubit.markImageLoadingStarted();
-      notifyListeners();
 
       final pageSettings = await _pageSettingsCubit.loadSettingsForPage(
         source: primarySource,
@@ -190,11 +157,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
         return;
       }
       _applyViewportSettings(pageSettings);
-
-      if (!_canApplyImageRequest(requestToken)) {
-        return;
-      }
-      notifyListeners();
 
       await _imageCubit.loadImage(
         page: page,
@@ -218,7 +180,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
       _sessionCubit.setImageName('');
     }
     _updateTransformStatus();
-    notifyListeners();
   }
 
   Future<void> changeSelectedPage(model.Page? newPage) async {
@@ -226,38 +187,32 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _viewportCubit.markImageLoadingStarted();
     _sessionCubit.setSelectedPage(newPage);
     resetColorReplacement();
-    notifyListeners();
     if (newPage != null) {
       await loadImage(newPage.image);
     } else {
       _viewportCubit.resetViewportWithNoPage();
       _pageSettingsCubit.resetToDefaults();
-      notifyListeners();
     }
   }
 
   void toggleNegative() {
     _pageSettingsCubit.toggleNegative();
     savePageSettings();
-    notifyListeners();
   }
 
   void toggleMonochrome() {
     _pageSettingsCubit.toggleMonochrome();
     savePageSettings();
-    notifyListeners();
   }
 
   void applyBrightnessContrast(double brightness, double contrast) {
     _pageSettingsCubit.applyBrightnessContrast(brightness, contrast);
     savePageSettings();
-    notifyListeners();
   }
 
   void resetBrightnessContrast() {
     _pageSettingsCubit.resetBrightnessContrast();
     savePageSettings();
-    notifyListeners();
   }
 
   void startSelectAreaMode(void Function(Rect?) onSelected) {
@@ -307,24 +262,20 @@ class PrimarySourceViewModel extends ChangeNotifier {
   void toggleShowWordSeparators() {
     _pageSettingsCubit.toggleShowWordSeparators();
     savePageSettings();
-    notifyListeners();
   }
 
   void toggleShowStrongNumbers() {
     _pageSettingsCubit.toggleShowStrongNumbers();
     savePageSettings();
-    notifyListeners();
   }
 
   void toggleShowVerseNumbers() {
     _pageSettingsCubit.toggleShowVerseNumbers();
     savePageSettings();
-    notifyListeners();
   }
 
   void setMenuOpen(bool value) {
     _sessionCubit.setMenuOpen(value);
-    notifyListeners();
   }
 
   void savePageSettings() {
@@ -371,22 +322,28 @@ class PrimarySourceViewModel extends ChangeNotifier {
       type: type,
       number: number,
     );
+    _syncSelectionFromDescriptionState();
   }
 
   void showCommonInfo(BuildContext context) {
     _descriptionCubit.showCommonInfo(context);
+    _syncSelectionFromDescriptionState();
   }
 
   bool navigateDescriptionSelection(
     BuildContext context, {
     required bool forward,
   }) {
-    return _descriptionCubit.navigateSelection(
+    final navigated = _descriptionCubit.navigateSelection(
       context,
       forward: forward,
       source: primarySource,
       selectedPage: selectedPage,
     );
+    if (navigated) {
+      _syncSelectionFromDescriptionState();
+    }
+    return navigated;
   }
 
   List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
@@ -401,6 +358,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (!shown) {
       return;
     }
+    _syncSelectionFromDescriptionState();
   }
 
   void showInfoForWord(int wordIndex, BuildContext context) {
@@ -413,6 +371,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (!shown) {
       return;
     }
+    _syncSelectionFromDescriptionState();
   }
 
   void showInfoForVerse(int verseIndex, BuildContext context) {
@@ -425,6 +384,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (!shown) {
       return;
     }
+    _syncSelectionFromDescriptionState();
   }
 
   void _applyViewportSettings(PageSettingsState settings) {
@@ -477,13 +437,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
     }
   }
 
-  @override
   void dispose() {
     _imageLoadRequestGuard.cancelActive();
-    _descriptionStateSubscription?.cancel();
-    _imageStateSubscription?.cancel();
-    _pageSettingsStateSubscription?.cancel();
-    _selectionStateSubscription?.cancel();
     _viewportStateSubscription?.cancel();
     _restoreDebounceTimer?.cancel();
     _saveDebounceTimer?.cancel();
@@ -513,6 +468,5 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (_ownsSessionCubit) {
       unawaited(_sessionCubit.close());
     }
-    super.dispose();
   }
 }

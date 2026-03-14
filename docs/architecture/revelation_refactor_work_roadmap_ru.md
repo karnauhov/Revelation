@@ -153,7 +153,7 @@
 - [x] Подшаг [P3.7.4]: selection cubit (`word/verse/strong`).
 - [x] Подшаг [P3.7.5]: description panel cubit (content + navigation).
 - [x] Подшаг [P3.7.6]: viewport/render controls cubit (zoom/layers/tool mode/colors).
-- [ ] Задача [P0]: заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.
+- [x] Задача [P0]: заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.
 - [ ] Задача [P0]: удалить legacy state слой (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts).
 - [ ] Задача [P1]: добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/` (кроме документации).
 - [ ] Задача [P1]: добавить unit/widget regression suite на cubit/bloc transitions и критичные user flows.
@@ -1962,3 +1962,38 @@
   - New risks: `PrimarySourceViewModel` все еще используется как transitional binding слой (`ChangeNotifier` + `notifyListeners`), несмотря на завершенный granular split cubit-срезов.
   - Mitigations: следующий обязательный P0 шаг — заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen` и убрать `notifyListeners`-based обновления.
   - Next task: Phase 3.7 / Task `P0` — заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.
+
+#### [2026-03-14 17:40] Phase 3.7 / Task P0 / Replace `PrimarySource` VM UI bindings with bloc-driven rebuilds and remove `notifyListeners` updates
+- Статус: done
+- Priority: P0
+- What changed:
+  - `PrimarySourceViewModel` переведен с `ChangeNotifier` на plain orchestrator:
+    - удалено наследование `ChangeNotifier`;
+    - удалены `notifyListeners`-based обновления и связанная transitional подписка;
+    - сохранены только необходимые cubit-синхронизации и lifecycle cleanup.
+  - `PrimarySourceScreen` переведен с `ChangeNotifierProvider + Consumer` на bloc-driven build flow:
+    - добавлены `context.select(...)`-привязки к `session/image/page-settings/selection/description/viewport` cubit state;
+    - добавлено ленивое создание `PrimarySourceViewModel` внутри `State` (`_ensureViewModel`) и безопасный reset при `didUpdateWidget`.
+  - `ImagePreview` больше не использует `provider/context.watch`:
+    - `PrimarySourceViewModel` теперь передается явно через параметр `viewModel`.
+- Why changed:
+  - Закрыть обязательный P0 шаг после `P3.7.1`–`P3.7.6`: убрать `notifyListeners`-binding слой в `PrimarySource` detail UI и перевести обновления на bloc state source-of-truth.
+- Scope (files/modules):
+  - `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`
+  - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
+  - `lib/features/primary_sources/presentation/detail/image_preview.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass (в scope `PrimarySource` detail не осталось `ChangeNotifierProvider<PrimarySourceViewModel>`, `Consumer<PrimarySourceViewModel>`, `context.watch<PrimarySourceViewModel>`, `notifyListeners`).
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: в runtime-коде еще остается legacy state слой вне detail scope (например `PrimarySourcesViewModel`/`Provider` в списке primary sources).
+  - Mitigations: следующий обязательный шаг — удалить legacy state слой полностью (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts) и завершить zero-legacy target для Phase 3.7.
+  - Next task: Phase 3.7 / Task `P0` — удалить legacy state слой (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts).

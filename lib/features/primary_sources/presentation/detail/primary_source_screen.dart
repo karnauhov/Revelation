@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -57,7 +56,7 @@ class PrimarySourceScreen extends StatefulWidget {
 
 class PrimarySourceScreenState extends State<PrimarySourceScreen>
     with WidgetsBindingObserver {
-  late PrimarySourceViewModel _viewModel;
+  PrimarySourceViewModel? _viewModel;
   final GlobalKey<TooltipState> _referenceTooltipKey =
       GlobalKey<TooltipState>();
   final PrimarySourceReferenceResolver _referenceResolver =
@@ -73,15 +72,28 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _viewModel?.dispose();
+    _viewModel = null;
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant PrimarySourceScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.primarySource != widget.primarySource) {
+      _viewModel?.dispose();
+      _viewModel = null;
+      _initialReferenceApplied = false;
+    }
   }
 
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    if (_viewModel.isMenuOpen) {
+    final viewModel = _viewModel;
+    if (viewModel != null && viewModel.isMenuOpen) {
       Navigator.of(context).pop();
-      _viewModel.setMenuOpen(false);
+      viewModel.setMenuOpen(false);
     }
   }
 
@@ -121,284 +133,269 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           create: (_) => PrimarySourceViewportCubit(),
         ),
       ],
-      child: ChangeNotifierProvider<PrimarySourceViewModel>(
-        create: (context) => PrimarySourceViewModel(
-          PagesRepository(),
-          primarySource: widget.primarySource,
-          imageCubit: context.read<PrimarySourceImageCubit>(),
-          pageSettingsCubit: context.read<PrimarySourcePageSettingsCubit>(),
-          selectionCubit: context.read<PrimarySourceSelectionCubit>(),
-          descriptionCubit: context.read<PrimarySourceDescriptionCubit>(),
-          viewportCubit: context.read<PrimarySourceViewportCubit>(),
-          sessionCubit: context.read<PrimarySourceSessionCubit>(),
-        ),
-        child: Consumer<PrimarySourceViewModel>(
-          builder: (context, viewModel, child) {
-            _viewModel = viewModel;
-            _tryApplyInitialReference(viewModel);
+      child: Builder(
+        builder: (context) {
+          _watchPrimarySourceBlocStates(context);
+          final viewModel = _ensureViewModel(context);
+          _tryApplyInitialReference(viewModel);
 
-            if (widget.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null &&
-                !widget.primarySource.pages.contains(viewModel.selectedPage)) {
-              viewModel.changeSelectedPage(
-                widget.primarySource.pages.isNotEmpty
-                    ? widget.primarySource.pages.first
-                    : null,
-              );
-              viewModel.showCommonInfo(context);
-            }
+          if (widget.primarySource.permissionsReceived &&
+              viewModel.selectedPage != null &&
+              !widget.primarySource.pages.contains(viewModel.selectedPage)) {
+            viewModel.changeSelectedPage(
+              widget.primarySource.pages.isNotEmpty
+                  ? widget.primarySource.pages.first
+                  : null,
+            );
+            viewModel.showCommonInfo(context);
+          }
 
-            final double screenWidth = MediaQuery.of(context).size.width;
-            final bool isBottom = _isBottomToolbar(screenWidth, dropdownWidth);
-            final bool allowDescriptionNavigationByArrows =
-                (isDesktop() || isWeb()) &&
-                _canNavigateDescriptionByArrow(viewModel);
-            final shortcuts = <ShortcutActivator, Intent>{
-              const SingleActivator(LogicalKeyboardKey.escape):
-                  const ExitChooseModeIntent(),
-              const SingleActivator(LogicalKeyboardKey.backspace):
-                  const ExitChooseModeIntent(),
-            };
+          final double screenWidth = MediaQuery.of(context).size.width;
+          final bool isBottom = _isBottomToolbar(screenWidth, dropdownWidth);
+          final bool allowDescriptionNavigationByArrows =
+              (isDesktop() || isWeb()) &&
+              _canNavigateDescriptionByArrow(viewModel);
+          final shortcuts = <ShortcutActivator, Intent>{
+            const SingleActivator(LogicalKeyboardKey.escape):
+                const ExitChooseModeIntent(),
+            const SingleActivator(LogicalKeyboardKey.backspace):
+                const ExitChooseModeIntent(),
+          };
 
-            if (allowDescriptionNavigationByArrows) {
-              shortcuts.addAll({
-                const SingleActivator(LogicalKeyboardKey.arrowLeft):
-                    const NavigateSelectedDescriptionIntent(forward: false),
-                const SingleActivator(LogicalKeyboardKey.arrowUp):
-                    const NavigateSelectedDescriptionIntent(forward: false),
-                const SingleActivator(LogicalKeyboardKey.arrowRight):
-                    const NavigateSelectedDescriptionIntent(forward: true),
-                const SingleActivator(LogicalKeyboardKey.arrowDown):
-                    const NavigateSelectedDescriptionIntent(forward: true),
-              });
-            }
+          if (allowDescriptionNavigationByArrows) {
+            shortcuts.addAll({
+              const SingleActivator(LogicalKeyboardKey.arrowLeft):
+                  const NavigateSelectedDescriptionIntent(forward: false),
+              const SingleActivator(LogicalKeyboardKey.arrowUp):
+                  const NavigateSelectedDescriptionIntent(forward: false),
+              const SingleActivator(LogicalKeyboardKey.arrowRight):
+                  const NavigateSelectedDescriptionIntent(forward: true),
+              const SingleActivator(LogicalKeyboardKey.arrowDown):
+                  const NavigateSelectedDescriptionIntent(forward: true),
+            });
+          }
 
-            return PopScope(
-              canPop: !viewModel.pipetteMode && !viewModel.selectAreaMode,
-              onPopInvokedWithResult: (didPop, result) {
-                if (!didPop && viewModel.pipetteMode) {
-                  viewModel.finishPipetteMode(null);
-                }
-                if (!didPop && viewModel.selectAreaMode) {
-                  viewModel.finishSelectAreaMode(null);
-                }
-              },
-              child: Shortcuts(
-                shortcuts: shortcuts,
-                child: Actions(
-                  actions: {
-                    ExitChooseModeIntent: CallbackAction<ExitChooseModeIntent>(
-                      onInvoke: (intent) {
-                        if (viewModel.pipetteMode) {
-                          viewModel.finishPipetteMode(null);
-                        } else if (viewModel.selectAreaMode) {
-                          viewModel.finishSelectAreaMode(null);
-                        }
-                        return null;
-                      },
-                    ),
-                    NavigateSelectedDescriptionIntent:
-                        CallbackAction<NavigateSelectedDescriptionIntent>(
-                          onInvoke: (intent) {
-                            _tryNavigateDescriptionByArrow(
-                              viewModel,
-                              forward: intent.forward,
-                            );
-                            return null;
-                          },
-                        ),
-                  },
-                  child: Focus(
-                    autofocus: true,
-                    child: Scaffold(
-                      appBar: viewModel.selectAreaMode
-                          ? AppBar(
-                              title: Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.select_area_header,
-                                style: textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+          return PopScope(
+            canPop: !viewModel.pipetteMode && !viewModel.selectAreaMode,
+            onPopInvokedWithResult: (didPop, result) {
+              if (!didPop && viewModel.pipetteMode) {
+                viewModel.finishPipetteMode(null);
+              }
+              if (!didPop && viewModel.selectAreaMode) {
+                viewModel.finishSelectAreaMode(null);
+              }
+            },
+            child: Shortcuts(
+              shortcuts: shortcuts,
+              child: Actions(
+                actions: {
+                  ExitChooseModeIntent: CallbackAction<ExitChooseModeIntent>(
+                    onInvoke: (intent) {
+                      if (viewModel.pipetteMode) {
+                        viewModel.finishPipetteMode(null);
+                      } else if (viewModel.selectAreaMode) {
+                        viewModel.finishSelectAreaMode(null);
+                      }
+                      return null;
+                    },
+                  ),
+                  NavigateSelectedDescriptionIntent:
+                      CallbackAction<NavigateSelectedDescriptionIntent>(
+                        onInvoke: (intent) {
+                          _tryNavigateDescriptionByArrow(
+                            viewModel,
+                            forward: intent.forward,
+                          );
+                          return null;
+                        },
+                      ),
+                },
+                child: Focus(
+                  autofocus: true,
+                  child: Scaffold(
+                    appBar: viewModel.selectAreaMode
+                        ? AppBar(
+                            title: Text(
+                              AppLocalizations.of(context)!.select_area_header,
+                              style: textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
                               ),
-                              foregroundColor: colorScheme.primary,
-                            )
-                          : viewModel.pipetteMode
-                          ? AppBar(
-                              title: Text(
-                                AppLocalizations.of(context)!.pick_color_header,
-                                style: textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            ),
+                            foregroundColor: colorScheme.primary,
+                          )
+                        : viewModel.pipetteMode
+                        ? AppBar(
+                            title: Text(
+                              AppLocalizations.of(context)!.pick_color_header,
+                              style: textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
                               ),
-                              foregroundColor: colorScheme.primary,
-                            )
-                          : AppBar(
-                              title: getStyledText(
-                                widget.primarySource.title,
-                                textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            ),
+                            foregroundColor: colorScheme.primary,
+                          )
+                        : AppBar(
+                            title: getStyledText(
+                              widget.primarySource.title,
+                              textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
                               ),
-                              actions: isBottom
-                                  ? null
-                                  : [
-                                      PrimarySourceToolbar(
+                            ),
+                            actions: isBottom
+                                ? null
+                                : [
+                                    PrimarySourceToolbar(
+                                      viewModel: viewModel,
+                                      primarySource: widget.primarySource,
+                                      isBottom: false,
+                                      dropdownWidth: dropdownWidth,
+                                      screenContext: context,
+                                    ),
+                                  ],
+                            bottom: isBottom
+                                ? PreferredSize(
+                                    preferredSize: const Size.fromHeight(32.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0,
+                                      ),
+                                      child: PrimarySourceToolbar(
                                         viewModel: viewModel,
                                         primarySource: widget.primarySource,
-                                        isBottom: false,
+                                        isBottom: true,
                                         dropdownWidth: dropdownWidth,
                                         screenContext: context,
                                       ),
-                                    ],
-                              bottom: isBottom
-                                  ? PreferredSize(
-                                      preferredSize: const Size.fromHeight(
-                                        32.0,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0,
-                                        ),
-                                        child: PrimarySourceToolbar(
-                                          viewModel: viewModel,
-                                          primarySource: widget.primarySource,
-                                          isBottom: true,
-                                          dropdownWidth: dropdownWidth,
-                                          screenContext: context,
-                                        ),
+                                    ),
+                                  )
+                                : null,
+                            foregroundColor: colorScheme.primary,
+                          ),
+                    body: Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                              10.0,
+                              0,
+                              10.0,
+                              0,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: colorScheme.onSurface,
+                                  width: 1.0,
+                                ),
+                              ),
+                              child: viewModel.isLoading
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                        color: colorScheme.primary,
                                       ),
                                     )
-                                  : null,
-                              foregroundColor: colorScheme.primary,
+                                  : viewModel.imageData != null
+                                  ? _buildSplitView(context, viewModel)
+                                  : Center(
+                                      child: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.image_not_loaded,
+                                        style: textTheme.bodyMedium?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ),
                             ),
-                      body: Column(
-                        children: [
-                          Expanded(
+                          ),
+                        ),
+                        if (widget.primarySource.attributes != null &&
+                            widget.primarySource.attributes!.isNotEmpty &&
+                            widget.primarySource.permissionsReceived)
+                          Align(
+                            alignment: Alignment.centerRight,
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(
                                 10.0,
                                 0,
                                 10.0,
-                                0,
+                                2.0,
                               ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: colorScheme.onSurface,
-                                    width: 1.0,
-                                  ),
-                                ),
-                                child: viewModel.isLoading
-                                    ? Center(
-                                        child: CircularProgressIndicator(
-                                          color: colorScheme.primary,
-                                        ),
-                                      )
-                                    : viewModel.imageData != null
-                                    ? _buildSplitView(context, viewModel)
-                                    : Center(
-                                        child: Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.image_not_loaded,
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colorScheme.onSurfaceVariant,
-                                          ),
-                                        ),
+                              child: viewModel.selectAreaMode
+                                  ? Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.select_area_description,
+                                      style: textTheme.bodySmall?.copyWith(
+                                        fontSize: 10,
+                                        color: colorScheme.onSurfaceVariant,
                                       ),
-                              ),
+                                    )
+                                  : viewModel.pipetteMode
+                                  ? Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.pick_color_description,
+                                      style: textTheme.bodySmall?.copyWith(
+                                        fontSize: 10,
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                    )
+                                  : Text.rich(
+                                      TextSpan(
+                                        style: textTheme.bodySmall?.copyWith(
+                                          fontSize: 10,
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                        children: [
+                                          if (viewModel.isMobileWeb)
+                                            TextSpan(
+                                              text:
+                                                  '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
+                                              style: textTheme.bodySmall
+                                                  ?.copyWith(
+                                                    fontSize: 10,
+                                                    color: colorScheme.primary,
+                                                  ),
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () {
+                                                  showCustomDialog(
+                                                    MessageType.warningCommon,
+                                                    param: AppLocalizations.of(
+                                                      context,
+                                                    )!.low_quality_message,
+                                                  );
+                                                },
+                                            ),
+                                          ..._buildLinkSpans(
+                                            widget.primarySource.attributes!,
+                                          ),
+                                        ],
+                                      ),
+                                      maxLines: 5,
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                             ),
                           ),
-                          if (widget.primarySource.attributes != null &&
-                              widget.primarySource.attributes!.isNotEmpty &&
-                              widget.primarySource.permissionsReceived)
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                  10.0,
-                                  0,
-                                  10.0,
-                                  2.0,
-                                ),
-                                child: viewModel.selectAreaMode
-                                    ? Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.select_area_description,
-                                        style: textTheme.bodySmall?.copyWith(
-                                          fontSize: 10,
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                      )
-                                    : viewModel.pipetteMode
-                                    ? Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.pick_color_description,
-                                        style: textTheme.bodySmall?.copyWith(
-                                          fontSize: 10,
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                      )
-                                    : Text.rich(
-                                        TextSpan(
-                                          style: textTheme.bodySmall?.copyWith(
-                                            fontSize: 10,
-                                            color: colorScheme.onSurfaceVariant,
-                                          ),
-                                          children: [
-                                            if (viewModel.isMobileWeb)
-                                              TextSpan(
-                                                text:
-                                                    '⚠️ ${AppLocalizations.of(context)!.low_quality}; ',
-                                                style: textTheme.bodySmall
-                                                    ?.copyWith(
-                                                      fontSize: 10,
-                                                      color:
-                                                          colorScheme.primary,
-                                                    ),
-                                                recognizer: TapGestureRecognizer()
-                                                  ..onTap = () {
-                                                    showCustomDialog(
-                                                      MessageType.warningCommon,
-                                                      param: AppLocalizations.of(
-                                                        context,
-                                                      )!.low_quality_message,
-                                                    );
-                                                  },
-                                              ),
-                                            ..._buildLinkSpans(
-                                              widget.primarySource.attributes!,
-                                            ),
-                                          ],
-                                        ),
-                                        maxLines: 5,
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                              ),
-                            ),
-                          if (widget.primarySource.attributes == null ||
-                              widget.primarySource.attributes!.isEmpty ||
-                              !widget.primarySource.permissionsReceived)
-                            Text.rich(TextSpan(text: "")),
-                        ],
-                      ),
+                        if (widget.primarySource.attributes == null ||
+                            widget.primarySource.attributes!.isEmpty ||
+                            !widget.primarySource.permissionsReceived)
+                          Text.rich(TextSpan(text: "")),
+                      ],
                     ),
                   ),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildImagePreview(PrimarySourceViewModel viewModel) {
     return ImagePreview(
+      viewModel: viewModel,
       imageData: viewModel.imageData!,
       imageName: viewModel.imageName,
       controller: viewModel.imageController,
@@ -897,5 +894,34 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       return;
     }
     viewModel.navigateDescriptionSelection(context, forward: forward);
+  }
+
+  PrimarySourceViewModel _ensureViewModel(BuildContext context) {
+    final current = _viewModel;
+    if (current != null) {
+      return current;
+    }
+
+    final created = PrimarySourceViewModel(
+      PagesRepository(),
+      primarySource: widget.primarySource,
+      imageCubit: context.read<PrimarySourceImageCubit>(),
+      pageSettingsCubit: context.read<PrimarySourcePageSettingsCubit>(),
+      selectionCubit: context.read<PrimarySourceSelectionCubit>(),
+      descriptionCubit: context.read<PrimarySourceDescriptionCubit>(),
+      viewportCubit: context.read<PrimarySourceViewportCubit>(),
+      sessionCubit: context.read<PrimarySourceSessionCubit>(),
+    );
+    _viewModel = created;
+    return created;
+  }
+
+  void _watchPrimarySourceBlocStates(BuildContext context) {
+    context.select((PrimarySourceSessionCubit cubit) => cubit.state);
+    context.select((PrimarySourceImageCubit cubit) => cubit.state);
+    context.select((PrimarySourcePageSettingsCubit cubit) => cubit.state);
+    context.select((PrimarySourceSelectionCubit cubit) => cubit.state);
+    context.select((PrimarySourceDescriptionCubit cubit) => cubit.state);
+    context.select((PrimarySourceViewportCubit cubit) => cubit.state);
   }
 }
