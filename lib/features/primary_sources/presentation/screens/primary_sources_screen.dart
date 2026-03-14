@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_state.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
-import 'package:revelation/features/primary_sources/presentation/list/source_item.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/source_item.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/core/platform/platform_utils.dart';

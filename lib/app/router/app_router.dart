@@ -9,8 +9,8 @@ import 'package:revelation/features/topics/topics.dart'
     show MainScreen, TopicScreen;
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
-import 'package:revelation/features/primary_sources/presentation/detail/primary_source_screen.dart';
-import 'package:revelation/features/primary_sources/presentation/list/primary_sources_screen.dart';
+import 'package:revelation/features/primary_sources/presentation/screens/primary_source_screen.dart';
+import 'package:revelation/features/primary_sources/presentation/screens/primary_sources_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class AppRouter {

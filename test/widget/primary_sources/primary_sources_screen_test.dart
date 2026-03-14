@@ -16,8 +16,8 @@ import 'package:revelation/infra/db/data_sources/primary_sources_data_source.dar
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/list/primary_sources_screen.dart';
-import 'package:revelation/features/primary_sources/presentation/list/source_item.dart';
+import 'package:revelation/features/primary_sources/presentation/screens/primary_sources_screen.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/source_item.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

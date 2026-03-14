@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
-import 'package:revelation/features/primary_sources/presentation/detail/strong_dictionary_dialog.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/features/settings/settings.dart'
     show SettingsCubit, SettingsRepository;
 import 'package:revelation/infra/db/runtime/database_runtime.dart';

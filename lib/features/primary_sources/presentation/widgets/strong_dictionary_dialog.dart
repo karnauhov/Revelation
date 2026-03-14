@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/features/primary_sources/presentation/detail/strong_number_picker_dialog.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/strong_number_picker_dialog.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 
 Future<void> showStrongDictionaryDialog(
