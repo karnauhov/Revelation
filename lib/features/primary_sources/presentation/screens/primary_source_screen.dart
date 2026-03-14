@@ -24,6 +24,7 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_detail_coordinator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
@@ -139,17 +140,6 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           final viewModel = _ensureViewModel(context);
           _tryApplyInitialReference(viewModel);
 
-          if (widget.primarySource.permissionsReceived &&
-              viewModel.selectedPage != null &&
-              !widget.primarySource.pages.contains(viewModel.selectedPage)) {
-            viewModel.changeSelectedPage(
-              widget.primarySource.pages.isNotEmpty
-                  ? widget.primarySource.pages.first
-                  : null,
-            );
-            viewModel.showCommonInfo(AppLocalizations.of(context)!);
-          }
-
           final double screenWidth = MediaQuery.of(context).size.width;
           final bool isBottom = _isBottomToolbar(screenWidth, dropdownWidth);
           final bool allowDescriptionNavigationByArrows =
@@ -175,164 +165,178 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
             });
           }
 
-          return PopScope(
-            canPop: !viewModel.pipetteMode && !viewModel.selectAreaMode,
-            onPopInvokedWithResult: (didPop, result) {
-              if (!didPop && viewModel.pipetteMode) {
-                viewModel.finishPipetteMode(null);
-              }
-              if (!didPop && viewModel.selectAreaMode) {
-                viewModel.finishSelectAreaMode(null);
-              }
+          return BlocListener<
+            PrimarySourceSessionCubit,
+            PrimarySourceSessionState
+          >(
+            listenWhen: (previous, current) =>
+                previous.selectedPage != current.selectedPage,
+            listener: (listenerContext, state) {
+              _ensureSelectedPageStillValid(listenerContext, viewModel);
             },
-            child: Shortcuts(
-              shortcuts: shortcuts,
-              child: Actions(
-                actions: {
-                  ExitChooseModeIntent: CallbackAction<ExitChooseModeIntent>(
-                    onInvoke: (intent) {
-                      if (viewModel.pipetteMode) {
-                        viewModel.finishPipetteMode(null);
-                      } else if (viewModel.selectAreaMode) {
-                        viewModel.finishSelectAreaMode(null);
-                      }
-                      return null;
-                    },
-                  ),
-                  NavigateSelectedDescriptionIntent:
-                      CallbackAction<NavigateSelectedDescriptionIntent>(
-                        onInvoke: (intent) {
-                          _tryNavigateDescriptionByArrow(
-                            viewModel,
-                            forward: intent.forward,
-                          );
-                          return null;
-                        },
-                      ),
-                },
-                child: Focus(
-                  autofocus: true,
-                  child: Scaffold(
-                    appBar: viewModel.selectAreaMode
-                        ? AppBar(
-                            title: Text(
-                              AppLocalizations.of(context)!.select_area_header,
-                              style: textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
+            child: PopScope(
+              canPop: !viewModel.pipetteMode && !viewModel.selectAreaMode,
+              onPopInvokedWithResult: (didPop, result) {
+                if (!didPop && viewModel.pipetteMode) {
+                  viewModel.finishPipetteMode(null);
+                }
+                if (!didPop && viewModel.selectAreaMode) {
+                  viewModel.finishSelectAreaMode(null);
+                }
+              },
+              child: Shortcuts(
+                shortcuts: shortcuts,
+                child: Actions(
+                  actions: {
+                    ExitChooseModeIntent: CallbackAction<ExitChooseModeIntent>(
+                      onInvoke: (intent) {
+                        if (viewModel.pipetteMode) {
+                          viewModel.finishPipetteMode(null);
+                        } else if (viewModel.selectAreaMode) {
+                          viewModel.finishSelectAreaMode(null);
+                        }
+                        return null;
+                      },
+                    ),
+                    NavigateSelectedDescriptionIntent:
+                        CallbackAction<NavigateSelectedDescriptionIntent>(
+                          onInvoke: (intent) {
+                            _tryNavigateDescriptionByArrow(
+                              viewModel,
+                              forward: intent.forward,
+                            );
+                            return null;
+                          },
+                        ),
+                  },
+                  child: Focus(
+                    autofocus: true,
+                    child: Scaffold(
+                      appBar: viewModel.selectAreaMode
+                          ? AppBar(
+                              title: Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.select_area_header,
+                                style: textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            foregroundColor: colorScheme.primary,
-                          )
-                        : viewModel.pipetteMode
-                        ? AppBar(
-                            title: Text(
-                              AppLocalizations.of(context)!.pick_color_header,
-                              style: textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
+                              foregroundColor: colorScheme.primary,
+                            )
+                          : viewModel.pipetteMode
+                          ? AppBar(
+                              title: Text(
+                                AppLocalizations.of(context)!.pick_color_header,
+                                style: textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            foregroundColor: colorScheme.primary,
-                          )
-                        : AppBar(
-                            title: getStyledText(
-                              widget.primarySource.title,
-                              textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
+                              foregroundColor: colorScheme.primary,
+                            )
+                          : AppBar(
+                              title: getStyledText(
+                                widget.primarySource.title,
+                                textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            actions: isBottom
-                                ? null
-                                : [
-                                    _buildToolbar(
-                                      viewModel: viewModel,
-                                      isBottom: false,
-                                      dropdownWidth: dropdownWidth,
-                                      screenContext: context,
-                                    ),
-                                  ],
-                            bottom: isBottom
-                                ? PreferredSize(
-                                    preferredSize: const Size.fromHeight(32.0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0,
-                                      ),
-                                      child: _buildToolbar(
+                              actions: isBottom
+                                  ? null
+                                  : [
+                                      _buildToolbar(
                                         viewModel: viewModel,
-                                        isBottom: true,
+                                        isBottom: false,
                                         dropdownWidth: dropdownWidth,
                                         screenContext: context,
                                       ),
-                                    ),
-                                  )
-                                : null,
-                            foregroundColor: colorScheme.primary,
-                          ),
-                    body: Column(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                              10.0,
-                              0,
-                              10.0,
-                              0,
+                                    ],
+                              bottom: isBottom
+                                  ? PreferredSize(
+                                      preferredSize: const Size.fromHeight(
+                                        32.0,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0,
+                                        ),
+                                        child: _buildToolbar(
+                                          viewModel: viewModel,
+                                          isBottom: true,
+                                          dropdownWidth: dropdownWidth,
+                                          screenContext: context,
+                                        ),
+                                      ),
+                                    )
+                                  : null,
+                              foregroundColor: colorScheme.primary,
                             ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: colorScheme.onSurface,
-                                  width: 1.0,
+                      body: Column(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                10.0,
+                                0,
+                                10.0,
+                                0,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: colorScheme.onSurface,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: Builder(
+                                  builder: (contentContext) {
+                                    final contentSlice = contentContext.select((
+                                      PrimarySourceImageCubit cubit,
+                                    ) {
+                                      final state = cubit.state;
+                                      return (
+                                        isLoading: state.isLoading,
+                                        hasImage: state.imageData != null,
+                                      );
+                                    });
+                                    if (contentSlice.isLoading) {
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: colorScheme.primary,
+                                        ),
+                                      );
+                                    }
+                                    if (contentSlice.hasImage) {
+                                      return _buildSplitView(
+                                        contentContext,
+                                        viewModel,
+                                      );
+                                    }
+                                    return Center(
+                                      child: Text(
+                                        AppLocalizations.of(
+                                          contentContext,
+                                        )!.image_not_loaded,
+                                        style: textTheme.bodyMedium?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
-                              child: Builder(
-                                builder: (contentContext) {
-                                  final contentSlice = contentContext.select((
-                                    PrimarySourceImageCubit cubit,
-                                  ) {
-                                    final state = cubit.state;
-                                    return (
-                                      isLoading: state.isLoading,
-                                      hasImage: state.imageData != null,
-                                    );
-                                  });
-                                  if (contentSlice.isLoading) {
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        color: colorScheme.primary,
-                                      ),
-                                    );
-                                  }
-                                  if (contentSlice.hasImage) {
-                                    return _buildSplitView(
-                                      contentContext,
-                                      viewModel,
-                                    );
-                                  }
-                                  return Center(
-                                    child: Text(
-                                      AppLocalizations.of(
-                                        contentContext,
-                                      )!.image_not_loaded,
-                                      style: textTheme.bodyMedium?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
                             ),
                           ),
-                        ),
-                        PrimarySourceAttributesFooter(
-                          attributes: widget.primarySource.attributes,
-                          permissionsReceived:
-                              widget.primarySource.permissionsReceived,
-                          selectAreaMode: viewModel.selectAreaMode,
-                          pipetteMode: viewModel.pipetteMode,
-                          isMobileWeb: viewModel.isMobileWeb,
-                        ),
-                      ],
+                          PrimarySourceAttributesFooter(
+                            attributes: widget.primarySource.attributes,
+                            permissionsReceived:
+                                widget.primarySource.permissionsReceived,
+                            selectAreaMode: viewModel.selectAreaMode,
+                            pipetteMode: viewModel.pipetteMode,
+                            isMobileWeb: viewModel.isMobileWeb,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -996,6 +1000,29 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     );
     _viewModel = created;
     return created;
+  }
+
+  void _ensureSelectedPageStillValid(
+    BuildContext context,
+    PrimarySourceDetailCoordinator viewModel,
+  ) {
+    if (!widget.primarySource.permissionsReceived) {
+      return;
+    }
+    final selectedPage = viewModel.selectedPage;
+    if (selectedPage == null) {
+      return;
+    }
+    if (widget.primarySource.pages.contains(selectedPage)) {
+      return;
+    }
+
+    viewModel.changeSelectedPage(
+      widget.primarySource.pages.isNotEmpty
+          ? widget.primarySource.pages.first
+          : null,
+    );
+    viewModel.showCommonInfo(AppLocalizations.of(context)!);
   }
 
   void _watchPrimarySourceBlocStates(BuildContext context) {

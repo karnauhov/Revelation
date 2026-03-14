@@ -105,6 +105,18 @@ class ImagePreviewState extends State<ImagePreview> {
     _imageName = null;
     _lines = _prepareWordSeparators(widget.words);
     _strongLabels = _preparStrongNumbers(widget.words);
+    _requestRestorePositionAndScale();
+  }
+
+  @override
+  void didUpdateWidget(covariant ImagePreview oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _lines = _prepareWordSeparators(widget.words);
+    _strongLabels = _preparStrongNumbers(widget.words);
+    if (oldWidget.imageName != widget.imageName ||
+        !identical(oldWidget.imageData, widget.imageData)) {
+      _requestRestorePositionAndScale();
+    }
   }
 
   @override
@@ -305,8 +317,6 @@ class ImagePreviewState extends State<ImagePreview> {
           wrapped = contentStack;
         }
 
-        widget.onRestorePositionAndScale();
-
         // Single GestureDetector
         final Widget gestureWrapped = GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -380,6 +390,15 @@ class ImagePreviewState extends State<ImagePreview> {
           );
         });
       }
+    });
+  }
+
+  void _requestRestorePositionAndScale() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      widget.onRestorePositionAndScale();
     });
   }
 

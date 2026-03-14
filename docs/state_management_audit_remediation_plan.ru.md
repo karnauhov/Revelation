@@ -499,18 +499,19 @@ Legacy/candidate cleanup:
 - [ ] How to validate (финально): Widget/perf regression test + manual profiling на web/mobile web.
 
 ### Step 3 — Убрать side effects из build
-- [ ] Цель: Сделать UI flow детерминированным и без re-entrant side effects.
-- [ ] Почему приоритет: Прямо влияет на предсказуемость и дебаг.
-- [ ] Конкретные действия:
-- [ ] Перенести `changeSelectedPage/showCommonInfo` из build в listener/init lifecycle.
-- [ ] Перенести `onRestorePositionAndScale` из `ImagePreview.build` в безопасный lifecycle trigger.
-- [ ] Затрагиваемые файлы/папки:
-- [ ] `lib/features/primary_sources/presentation/screens/primary_source_screen.dart`
-- [ ] `lib/features/primary_sources/presentation/widgets/image_preview.dart`
-- [ ] Риск: Средний.
-- [ ] Ожидаемый результат: Side effects запускаются контролируемо и ровно один раз в нужных сценариях.
-- [ ] Dependency on previous steps: После Step 2 проще проверить.
-- [ ] How to validate: Widget tests на количество вызовов handlers + smoke navigation.
+- [x] Цель: Сделать UI flow детерминированным и без re-entrant side effects.
+- [x] Почему приоритет: Прямо влияет на предсказуемость и дебаг.
+- [x] Конкретные действия:
+- [x] Перенести `changeSelectedPage/showCommonInfo` из build в listener/init lifecycle.
+- [x] Перенести `onRestorePositionAndScale` из `ImagePreview.build` в безопасный lifecycle trigger.
+- [x] Затрагиваемые файлы/папки:
+- [x] `lib/features/primary_sources/presentation/screens/primary_source_screen.dart`
+- [x] `lib/features/primary_sources/presentation/widgets/image_preview.dart`
+- [x] Риск: Средний.
+- [ ] Ожидаемый результат: Side effects запускаются контролируемо и ровно один раз в нужных сценариях (manual smoke pending).
+- [x] Dependency on previous steps: После Step 2 проще проверить.
+- [x] How to validate (оперативно): `flutter analyze` + detail widget/unit tests pass.
+- [ ] How to validate (финально): Widget tests на количество вызовов handlers + smoke navigation.
 
 ### Step 4 — Исправить ownership/immutability модели PrimarySource
 - [ ] Цель: Убрать mutable UI-state из доменной модели.
@@ -705,7 +706,7 @@ Legacy/candidate cleanup:
 
 - [ ] Step 1: Архитектурное решение по detail orchestration (частично выполнен: решение + код + side-effects rule, осталось docs/ADR)
 - [ ] Step 2: Устранить rebuild hotspot detail screen (частично выполнен: narrow subscriptions + split hot zones + dedup emits; ожидается ручной perf smoke/profiling)
-- [ ] Step 3: Убрать side effects из build
+- [ ] Step 3: Убрать side effects из build (частично выполнен: side effects вынесены из build; ожидается финальный smoke + целевой widget test на call-count)
 - [ ] Step 4: Убрать mutable state из `PrimarySource`
 - [ ] Step 5: Добавить stale guard в `TopicsCatalogCubit`
 - [ ] Step 6: Привести async lifecycle safety к единому стандарту
