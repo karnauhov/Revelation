@@ -1,4 +1,4 @@
-# AGENTS.md
+﻿# AGENTS.md
 
 ## Project Overview
 - Revelation is a Flutter app for studying the Book of Revelation.
@@ -37,12 +37,21 @@
   - Do not introduce new `provider`/`ChangeNotifier` usages.
   - When touching legacy `ChangeNotifier` flows, migrate the touched scope to `Cubit`/`Bloc` instead of extending legacy patterns.
 - Any state-management contract change must be synchronized in:
-  - `docs/architecture/revelation_architecture_refactor_roadmap_ru.md`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
-  - `docs/architecture/state_migration_matrix_phase_3_7.ru.md` and `docs/architecture/state_migration_matrix_phase_3_7.en.md`
-  - `docs/architecture/overview.ru.md` and `docs/architecture/overview.en.md`
-  - `docs/architecture/module-boundaries.ru.md` and `docs/architecture/module-boundaries.en.md`
+  - `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md` and `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`
+  - `docs/ru/architecture/overview.ru.md` and `docs/en/architecture/overview.en.md`
+  - `docs/ru/architecture/module-boundaries.ru.md` and `docs/en/architecture/module-boundaries.en.md`
+- RU/EN docs sync policy is mandatory for approved pairs:
+  - `docs/ru/architecture/overview.ru.md` <-> `docs/en/architecture/overview.en.md`
+  - `docs/ru/architecture/module-boundaries.ru.md` <-> `docs/en/architecture/module-boundaries.en.md`
+  - `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md` <-> `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`
+  - `docs/ru/testing/strategy.ru.md` <-> `docs/en/testing/strategy.en.md`
+  - `docs/ru/architecture/residual_debt_backlog.ru.md` <-> `docs/en/architecture/residual_debt_backlog.en.md`
+  - Policy source: `docs/ru/architecture/docs_sync_policy.ru.md` and `docs/en/architecture/docs_sync_policy.en.md`
+  - Instruction workflow: `docs/ru/architecture/docs_sync_instruction_workflow.ru.md` and `.en.md`
 - Keep package metadata synchronized between `pubspec.yaml` and `assets/data/about_libraries.xml`: when adding/removing a package in `dependencies` or `dev_dependencies`, add/remove the corresponding `@Package` entry in `about_libraries.xml` in the same change, and take license name plus links from the package page.
+- Use change checklist from `.github/change_checklist.md` for every change set (code + tests + docs RU/EN).
 - Keep localization in sync for supported locales: `en`, `es`, `uk`, `ru`.
 - Do not commit secrets. `api-keys.json` is gitignored.
 - `ServerManager` expects compile-time defines `SUPABASE_URL` and `SUPABASE_KEY`.
@@ -59,6 +68,7 @@
 - Format code: `dart format .`
 - Static analysis: `flutter analyze`
 - Tests: `flutter test`
+- Docs sync check: `dart run scripts/check_docs_sync.dart`
 - Generate Drift code: `dart run build_runner build --delete-conflicting-outputs`
 - Watch Drift codegen: `dart run build_runner watch --delete-conflicting-outputs`
 - Generate localization files: `flutter gen-l10n`
@@ -67,6 +77,7 @@
 - Run `dart format .` before finishing non-trivial code changes.
 - Run `flutter analyze` before finishing non-trivial code changes.
 - Run `flutter test` before finishing non-trivial code changes.
+- When docs from approved RU/EN pairs are changed, run `dart run scripts/check_docs_sync.dart`.
 - For state-architecture changes, run `rg "package:provider|ChangeNotifier|notifyListeners" lib test` and treat new matches as migration regressions.
 - `flutter analyze` and `flutter test` pass in the repository state verified on March 7, 2026.
 
@@ -98,3 +109,4 @@
 ## References
 - `README.md`: project overview and platform links
 - `DEV_INFO.md`: release and DB deployment notes
+

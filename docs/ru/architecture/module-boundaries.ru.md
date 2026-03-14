@@ -49,7 +49,7 @@ Source-Commit: `working-tree`
 - `presentation` общается через `application/controller/orchestrator`.
 - `presentation` state management выполняется только через `BLoC/Cubit`.
 - `provider`/`ChangeNotifier` запрещены для нового и модифицируемого runtime-кода.
-- ownership state-контрактов определяется matrix: `docs/architecture/state_migration_matrix_phase_3_7.ru.md`.
+- ownership state-контрактов определяется matrix: `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md`.
 - `data` знает про raw db/json; UI не знает.
 - `shared` не содержит feature-бизнес логики.
 - `core` не зависит от feature-кода.
@@ -65,3 +65,4 @@ Source-Commit: `working-tree`
   - запрет существования legacy-каталогов в `lib/`;
   - запрет использования `provider`/`ChangeNotifier` после завершения Phase 3.7;
   - контроль набора top-level директорий `lib/`.
+

@@ -1,9 +1,9 @@
 # Revelation — Рабочий Roadmap Миграции Архитектуры (RU)
 
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
-[revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
+[revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1/2/3/3.5/3.7/4 завершены, Phase 5 in progress`  
+Статус: `Phase 0/1/2/3/3.5/3.7/4/5 завершены`  
 Версия roadmap: `v1.1`  
 Дата создания: `2026-03-08`
 
@@ -17,7 +17,7 @@
 - [x] Подшаг [P0.2]: создать `overview.en` (можно отложить контент до финала, но файл/план должны быть).
 - [x] Подшаг [P0.3]: создать `testing.strategy.ru`.
 - [x] Подшаг [P0.4]: создать `testing.strategy.en` (как минимум каркас).
-- [x] Задача [P0]: добавить PR workflow c `format + analyze + test`.
+- [x] Задача [P0]: добавить CI workflow c `format + analyze + test`.
 - [x] Подшаг [P0.5]: включить `dart format --output=none --set-exit-if-changed .`.
 - [x] Подшаг [P0.6]: включить `flutter analyze`.
 - [x] Подшаг [P0.7]: включить `flutter test`.
@@ -119,7 +119,7 @@
 - [x] Задача [P1]: мигрировать `lib/utils/*` в `core/*`, `shared/utils/*`, `infra/*`.
 - [x] Задача [P0]: удалить пустые legacy-каталоги из `lib/` и ужесточить checks до `zero legacy`.
 - [x] Задача [P0]: сузить top-level `lib` до canonical набора (`app/core/infra/shared/features/l10n`).
-- [x] Affected areas верифицированы: `lib/*`, `scripts/check_forbidden_patterns.dart`, `docs/architecture/*`.
+- [x] Affected areas верифицированы: `lib/*`, `scripts/check_forbidden_patterns.dart`, `docs/{ru,en}/architecture/*`.
 - [x] Риски проверены и записаны.
 - [x] Dependencies/prerequisites подтверждены (`Phase 3 completed`).
 - [x] Relevant skills назначены.
@@ -133,8 +133,8 @@
 - [x] Обоснование фазы зафиксировано: без полного cutover останется смешанная архитектура и высокий риск регрессий/деградации состояния.
 - [x] Задача [P0]: утвердить migration matrix `feature -> cubit/bloc set -> state contracts`.
 - [x] Артефакт [P0]: зафиксированная матрица:
-  - `docs/architecture/state_migration_matrix_phase_3_7.ru.md`
-  - `docs/architecture/state_migration_matrix_phase_3_7.en.md`
+  - `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md`
+  - `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`
 - [x] Задача [P0]: добавить и настроить BLoC runtime (`flutter_bloc`, `BlocObserver`, logging/error policy для state transitions).
 - [x] Артефакт [P0]: runtime wiring и observer:
   - `pubspec.yaml`
@@ -162,14 +162,14 @@
 - [x] Dependencies/prerequisites подтверждены (`Phase 3` и `Phase 3.5` completed).
 - [x] Relevant skills назначены.
 - [x] Test expectations выполнены.
-- [x] Docs update expectations выполнены (`docs/architecture/revelation_architecture_refactor_roadmap_ru.md`, `docs/architecture/overview.ru.md`, `docs/architecture/overview.en.md`, `docs/architecture/module-boundaries.ru.md`, `docs/architecture/module-boundaries.en.md`, `AGENTS.md`).
+- [x] Docs update expectations выполнены (`docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`, `docs/ru/architecture/overview.ru.md`, `docs/en/architecture/overview.en.md`, `docs/ru/architecture/module-boundaries.ru.md`, `docs/en/architecture/module-boundaries.en.md`, `AGENTS.md`).
 - [x] Quality gates пройдены.
 - [x] Criteria of done выполнен.
 
 ### Phase 4 — Testing hardening and CI enforcement
 - [x] Цель фазы зафиксирована: сделать качество воспроизводимым и enforceable.
 - [x] Обоснование фазы зафиксировано: без этого архитектура деградирует обратно.
-- [x] Задача [P0]: unit+widget tests обязательны в PR CI.
+- [x] Задача [P0]: unit+widget tests обязательны в CI.
 - [x] Задача [P1]: selective integration smoke tests (manual workflow).
 - [x] Affected areas верифицированы: `.github/workflows/*`, `test/*`, `integration_test/*`.
 - [x] Риски проверены и записаны.
@@ -181,21 +181,21 @@
 - [x] Criteria of done выполнен.
 
 ### Phase 5 — Docs hardening / final cleanup / governance
-- [ ] Цель фазы зафиксирована: закрепить архитектуру как процесс.
-- [ ] Обоснование фазы зафиксировано: долгосрочная поддержка и онбординг.
-- [ ] Задача [P0]: утвердить RU/EN docs set и sync policy.
-- [ ] Задача [P0]: внедрить PR checklist `code + tests + docs RU/EN`.
-- [ ] Задача [P1]: добавить `revelation-docs-sync` skill (или instruction workflow).
-- [ ] Задача [P1]: удалить deprecated adapters и legacy paths после стабилизации.
-- [ ] Задача [P2]: финальный architecture review + residual debt backlog.
-- [ ] Affected areas верифицированы: `docs/*`, `.agents/skills/*`, `AGENTS.md`, CI checks.
-- [ ] Риски проверены и записаны.
-- [ ] Dependencies/prerequisites подтверждены (`Phase 4 completed`).
-- [ ] Relevant skills назначены.
-- [ ] Test expectations выполнены.
-- [ ] Docs update expectations выполнены.
-- [ ] Quality gates пройдены.
-- [ ] Criteria of done выполнен.
+- [x] Цель фазы зафиксирована: закрепить архитектуру как процесс.
+- [x] Обоснование фазы зафиксировано: долгосрочная поддержка и онбординг.
+- [x] Задача [P0]: утвердить RU/EN docs set и sync policy.
+- [x] Задача [P0]: внедрить change checklist `code + tests + docs RU/EN`.
+- [x] Задача [P1]: добавить `revelation-docs-sync` skill (или instruction workflow).
+- [x] Задача [P1]: удалить deprecated adapters и legacy paths после стабилизации.
+- [x] Задача [P2]: финальный architecture review + residual debt backlog.
+- [x] Affected areas верифицированы: `docs/*`, `.agents/skills/*`, `AGENTS.md`, CI checks.
+- [x] Риски проверены и записаны.
+- [x] Dependencies/prerequisites подтверждены (`Phase 4 completed`).
+- [x] Relevant skills назначены.
+- [x] Test expectations выполнены.
+- [x] Docs update expectations выполнены.
+- [x] Quality gates пройдены.
+- [x] Criteria of done выполнен.
 
 ## 2. Рабочая структура каждой фазы (для исполнения)
 
@@ -315,7 +315,7 @@
 - Priority: P0
 - What changed: создан отдельный рабочий roadmap документ на основе разделов 16 и 21 аудита.
 - Why changed: нужен управляемый чеклист исполнения миграции и единый рабочий журнал.
-- Scope (files/modules): `docs/architecture/revelation_refactor_work_roadmap_ru.md`.
+- Scope (files/modules): `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`.
 - Validation:
   - Analyze: n/a
   - Unit tests: n/a
@@ -323,7 +323,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: n/a
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (запланировано на закрытие миграции)
   - ADR updated: no
 - Risks / follow-ups:
@@ -331,7 +331,7 @@
   - Mitigations: n/a
   - Next task: старт миграции в отдельном чате (по решению владельца проекта).
 
-#### [2026-03-08 15:49] Phase 0 / Task P0-P0.10 / Baseline docs + PR gates + harness + grep checks
+#### [2026-03-08 15:49] Phase 0 / Task P0-P0.10 / Baseline docs + CI gates + harness + grep checks
 - Статус: done
 - Priority: P0/P1
 - What changed:
@@ -342,14 +342,14 @@
 - Why changed:
   - Phase 0 требует зафиксировать стартовый baseline, сделать quality gates воспроизводимыми и начать enforce архитектурных ограничений.
 - Scope (files/modules):
-  - `docs/architecture/overview.ru.md`
-  - `docs/architecture/overview.en.md`
-  - `docs/testing/strategy.ru.md`
-  - `docs/testing/strategy.en.md`
+  - `docs/ru/architecture/overview.ru.md`
+  - `docs/en/architecture/overview.en.md`
+  - `docs/ru/testing/strategy.ru.md`
+  - `docs/en/testing/strategy.en.md`
   - `.github/workflows/flutter_build.yml`
   - `scripts/check_forbidden_patterns.dart`
   - `test/test_harness/*`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -357,8 +357,8 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/overview.ru.md`, `docs/testing/strategy.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
-  - EN updated: yes (`docs/architecture/overview.en.md`, `docs/testing/strategy.en.md`)
+  - RU updated: yes (`docs/ru/architecture/overview.ru.md`, `docs/ru/testing/strategy.ru.md`, `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/en/architecture/overview.en.md`, `docs/en/testing/strategy.en.md`)
   - ADR updated: no
 - Risks / follow-ups:
   - New risks: baseline allowlist фиксирует существующий legacy (`DBManager()` в части UI, map-based route contracts в `app_router`).
@@ -375,7 +375,7 @@
   - Убрать дублированную регистрацию и избежать двух разных экземпляров одного view model в одном потоке UI.
 - Scope (files/modules):
   - `lib/screens/main/main_screen.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -383,7 +383,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -404,7 +404,7 @@
   - `lib/app/bootstrap/app_bootstrap.dart`
   - `lib/app/di/app_di.dart`
   - `lib/main.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -412,7 +412,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -438,7 +438,7 @@
   - `lib/screens/primary_source/primary_source_screen.dart`
   - `lib/utils/app_link_handler.dart`
   - `test/app/router/route_args_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -446,7 +446,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -466,7 +466,7 @@
 - Scope (files/modules):
   - `lib/viewmodels/primary_source_view_model.dart`
   - `lib/controllers/image_preview_controller.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -474,7 +474,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -495,7 +495,7 @@
   - `lib/app/di/app_di.dart`
   - `pubspec.yaml`
   - `pubspec.lock`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -503,7 +503,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -532,7 +532,7 @@
   - `lib/utils/common/styled_text_utils.dart`
   - `lib/utils/common/xml_parsers.dart`
   - `lib/utils/common/diagnostics_utils.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -540,7 +540,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -561,7 +561,7 @@
   - `lib/infra/.gitkeep`
   - `lib/shared/.gitkeep`
   - `lib/features/*`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -569,7 +569,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -605,7 +605,7 @@
   - `lib/viewmodels/settings_view_model.dart` (compat wrapper)
   - `lib/viewmodels/about_view_model.dart` (compat wrapper)
   - `lib/repositories/settings_repository.dart` (compat wrapper)
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -613,7 +613,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -632,7 +632,7 @@
   - Зафиксировать минимально enforceable boundary rules на этапе Phase 2, чтобы новая feature-first структура не деградировала обратно в legacy import-пути.
 - Scope (files/modules):
   - `scripts/check_forbidden_patterns.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -640,7 +640,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -682,7 +682,7 @@
   - `lib/app_router.dart`
   - `lib/app/di/app_di.dart`
   - `scripts/check_forbidden_patterns.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -690,7 +690,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -735,7 +735,7 @@
   - `lib/app/di/app_di.dart`
   - `lib/app_router.dart`
   - `lib/controllers/audio_controller.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -743,7 +743,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -764,7 +764,7 @@
   - `lib/infra/db/data_sources/topics_data_source.dart`
   - `lib/features/topics/data/repositories/topics_repository.dart`
   - `scripts/check_forbidden_patterns.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -772,7 +772,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -793,7 +793,7 @@
   - `lib/infra/db/data_sources/primary_sources_data_source.dart`
   - `lib/repositories/primary_sources_db_repository.dart`
   - `scripts/check_forbidden_patterns.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -801,7 +801,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -822,7 +822,7 @@
   - `lib/infra/db/data_sources/description_data_source.dart`
   - `lib/services/description_content_service.dart`
   - `scripts/check_forbidden_patterns.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -830,7 +830,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -851,7 +851,7 @@
   - `lib/infra/db/runtime/database_runtime.dart`
   - `lib/app/bootstrap/app_bootstrap.dart`
   - `scripts/check_forbidden_patterns.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -859,7 +859,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -883,7 +883,7 @@
   - `lib/infra/db/data_sources/primary_sources_data_source.dart`
   - `lib/infra/db/data_sources/description_data_source.dart`
   - `scripts/check_forbidden_patterns.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -891,7 +891,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -918,7 +918,7 @@
   - `lib/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart`
   - `lib/infra/remote/image/image_download_client.dart`
   - `lib/viewmodels/primary_source_view_model.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -926,7 +926,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -949,7 +949,7 @@
 - Scope (files/modules):
   - `lib/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart`
   - `lib/viewmodels/primary_source_view_model.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -957,7 +957,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -980,7 +980,7 @@
 - Scope (files/modules):
   - `lib/features/primary_sources/application/orchestrators/description_panel_orchestrator.dart`
   - `lib/viewmodels/primary_source_view_model.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -988,7 +988,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1011,7 +1011,7 @@
   - `lib/app_router.dart`
   - `scripts/check_forbidden_patterns.dart`
   - `test/app/router/route_args_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1019,7 +1019,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1064,7 +1064,7 @@
   - `lib/l10n/app_uk.arb`
   - `lib/l10n/app_ru.arb`
   - `lib/l10n/app_localizations*.dart` (generated)
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1072,7 +1072,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1104,7 +1104,7 @@
   - `lib/viewmodels/primary_sources_view_model.dart`
   - `test/core/async/latest_request_guard_test.dart`
   - `test/viewmodels/primary_sources_view_model_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1112,7 +1112,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1120,7 +1120,7 @@
   - Mitigations: при Phase 4 тестовом усилении добавить целевые unit tests на async/dispose сценарии и при необходимости расширить guard pattern.
   - Next task: Phase 4 / P0 — усиление CI test enforcement (unit+widget matrices).
 
-#### [2026-03-08 22:59] Phase 4 / Task P0 (partial) / Enforce separate unit and widget PR gates
+#### [2026-03-08 22:59] Phase 4 / Task P0 (partial) / Enforce separate unit and widget CI gates
 - Статус: partial
 - Priority: P0
 - What changed:
@@ -1133,14 +1133,14 @@
   - Добавлен `dart_test.yaml` с тегом `widget`.
   - Обновлены testing strategy docs (RU/EN) под новый CI-паттерн (`unit + widget` отдельно).
 - Why changed:
-  - Начать `Phase 4 / P0` с enforceable разделения unit/widget тестов в PR CI и зафиксировать минимальный widget baseline.
+  - Начать `Phase 4 / P0` с enforceable разделения unit/widget тестов в CI и зафиксировать минимальный widget baseline.
 - Scope (files/modules):
   - `.github/workflows/flutter_build.yml`
   - `test/widget/primary_sources/primary_sources_screen_test.dart`
   - `dart_test.yaml`
-  - `docs/testing/strategy.ru.md`
-  - `docs/testing/strategy.en.md`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/testing/strategy.ru.md`
+  - `docs/en/testing/strategy.en.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass (`flutter test --exclude-tags widget`)
@@ -1148,8 +1148,8 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/testing/strategy.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
-  - EN updated: yes (`docs/testing/strategy.en.md`)
+  - RU updated: yes (`docs/ru/testing/strategy.ru.md`, `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/en/testing/strategy.en.md`)
   - ADR updated: no
 - Risks / follow-ups:
   - New risks: widget coverage пока минимальное (1 smoke test), что недостаточно для матрицы критичных модулей.
@@ -1162,8 +1162,8 @@
 - What changed:
   - Проведен полный аудит текущей структуры `lib/*` против `section 10` target-structure.
   - Добавлены отдельные docs по границам и размещению файлов:
-    - `docs/architecture/module-boundaries.ru.md`
-    - `docs/architecture/module-boundaries.en.md`
+    - `docs/ru/architecture/module-boundaries.ru.md`
+    - `docs/en/architecture/module-boundaries.en.md`
   - Зафиксировано обязательное правило размещения новых файлов:
     - новые файлы допускаются только в `app/core/infra/shared/features/l10n`,
     - новые файлы в legacy-папках запрещены (кроме явно задокументированных compatibility adapters).
@@ -1174,11 +1174,11 @@
 - Why changed:
   - Вынести контроль структуры каталогов в отдельный архитектурный этап и сделать размещение файлов enforceable, а не только “рекомендованным”.
 - Scope (files/modules):
-  - `docs/architecture/module-boundaries.ru.md`
-  - `docs/architecture/module-boundaries.en.md`
+  - `docs/ru/architecture/module-boundaries.ru.md`
+  - `docs/en/architecture/module-boundaries.en.md`
   - `scripts/check_forbidden_patterns.dart`
   - `scripts/legacy_structure_allowlist.txt`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1186,8 +1186,8 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/module-boundaries.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
-  - EN updated: yes (`docs/architecture/module-boundaries.en.md`)
+  - RU updated: yes (`docs/ru/architecture/module-boundaries.ru.md`, `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/en/architecture/module-boundaries.en.md`)
   - ADR updated: no
 - Risks / follow-ups:
   - New risks: миграция legacy к canonical структуре остается объемной и требует поэтапного переноса модулей.
@@ -1210,9 +1210,9 @@
 - Why changed:
   - По запросу владельца проекта приоритизирована полная ликвидация legacy-каталогов как отдельная архитектурная цель до продолжения дальнейших этапов.
 - Scope (files/modules):
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
-  - `docs/architecture/module-boundaries.ru.md`
-  - `docs/architecture/module-boundaries.en.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/module-boundaries.ru.md`
+  - `docs/en/architecture/module-boundaries.en.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1220,11 +1220,11 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/architecture/module-boundaries.ru.md`)
-  - EN updated: yes (`docs/architecture/module-boundaries.en.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/ru/architecture/module-boundaries.ru.md`)
+  - EN updated: yes (`docs/en/architecture/module-boundaries.en.md`)
   - ADR updated: no
 - Risks / follow-ups:
-  - New risks: объем migration waves высокий, возможны большие PR и конфликты import-path.
+  - New risks: объем migration waves высокий, возможны большие change и конфликты import-path.
   - Mitigations: выполнять волнами по вертикальным срезам (сначала `primary_sources`), фиксируя compile-ready состояние после каждой волны.
   - Next task: Phase 3.5 / P1 — Wave A (`primary_sources`) migration с удалением соответствующих legacy-путей.
 
@@ -1254,7 +1254,7 @@
   - `test/viewmodels/primary_sources_view_model_test.dart`
   - `test/widget/primary_sources/primary_sources_screen_test.dart`
   - `scripts/legacy_structure_allowlist.txt`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1262,7 +1262,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1290,7 +1290,7 @@
   - `lib/features/download/presentation/screens/download_screen.dart`
   - `lib/app_router.dart`
   - `scripts/legacy_structure_allowlist.txt`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1298,7 +1298,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1326,7 +1326,7 @@
   - `lib/features/about/*` (используются как canonical target)
   - `lib/features/settings/*` (используются как canonical target)
   - `scripts/legacy_structure_allowlist.txt`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1334,7 +1334,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1365,7 +1365,7 @@
   - `lib/app/bootstrap/app_bootstrap.dart`
   - `lib/app_router.dart`
   - `scripts/legacy_structure_allowlist.txt`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1373,7 +1373,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1395,7 +1395,7 @@
 - Scope (files/modules):
   - `lib/shared/models/*`
   - `scripts/legacy_structure_allowlist.txt`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1403,7 +1403,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1436,7 +1436,7 @@
   - `lib/features/primary_sources/application/services/pronunciation.dart`
   - `lib/main.dart`
   - `test/utils/pronunciation_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1444,7 +1444,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1465,9 +1465,9 @@
   - Закрыть `Wave G` и перевести structural governance из временной allowlist-модели в финальный enforceable zero-legacy режим.
 - Scope (files/modules):
   - `scripts/check_forbidden_patterns.dart`
-  - `docs/architecture/module-boundaries.ru.md`
-  - `docs/architecture/module-boundaries.en.md`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/module-boundaries.ru.md`
+  - `docs/en/architecture/module-boundaries.en.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1475,8 +1475,8 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/module-boundaries.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
-  - EN updated: yes (`docs/architecture/module-boundaries.en.md`)
+  - RU updated: yes (`docs/ru/architecture/module-boundaries.ru.md`, `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/en/architecture/module-boundaries.en.md`)
   - ADR updated: no
 - Risks / follow-ups:
   - New risks: любые новые legacy-папки/пути теперь будут immediately fail в quality checks.
@@ -1501,7 +1501,7 @@
   - `lib/main.dart`
   - `lib/features/settings/presentation/screens/settings_screen.dart`
   - `lib/shared/ui/dialogs/dialogs_utils.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass
   - Unit tests: pass
@@ -1509,7 +1509,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1528,12 +1528,12 @@
 - Why changed:
   - По решению владельца проекта выбран строгий архитектурный курс: после миграции в коде не должно остаться legacy state-management подходов.
 - Scope (files/modules):
-  - `docs/architecture/revelation_architecture_refactor_roadmap_ru.md`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
-  - `docs/architecture/overview.ru.md`
-  - `docs/architecture/overview.en.md`
-  - `docs/architecture/module-boundaries.ru.md`
-  - `docs/architecture/module-boundaries.en.md`
+  - `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/overview.ru.md`
+  - `docs/en/architecture/overview.en.md`
+  - `docs/ru/architecture/module-boundaries.ru.md`
+  - `docs/en/architecture/module-boundaries.en.md`
   - `AGENTS.md`
 - Validation:
   - Analyze: n/a (docs-only change)
@@ -1542,8 +1542,8 @@
   - Integration smoke: n/a
   - Grep boundary checks: n/a (документационная задача)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_architecture_refactor_roadmap_ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/architecture/overview.ru.md`, `docs/architecture/module-boundaries.ru.md`, `AGENTS.md`)
-  - EN updated: yes (`docs/architecture/overview.en.md`, `docs/architecture/module-boundaries.en.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`, `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/ru/architecture/overview.ru.md`, `docs/ru/architecture/module-boundaries.ru.md`, `AGENTS.md`)
+  - EN updated: yes (`docs/en/architecture/overview.en.md`, `docs/en/architecture/module-boundaries.en.md`)
   - ADR updated: no (ожидается в рамках исполнения фазы 3.7)
 - Risks / follow-ups:
   - New risks: план Phase 4 зависим от фактического завершения state migration (Phase 3.7).
@@ -1556,15 +1556,15 @@
 - What changed:
   - Утверждена детальная migration matrix для всех целевых срезов Phase 3.7.
   - Добавлен отдельный RU/EN pair документов с source-of-truth контрактами:
-    - `docs/architecture/state_migration_matrix_phase_3_7.ru.md`
-    - `docs/architecture/state_migration_matrix_phase_3_7.en.md`
+    - `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md`
+    - `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`
   - В глобальном чеклисте Phase 3.7 задача `утвердить migration matrix` отмечена как выполненная.
 - Why changed:
   - Это первый обязательный технический шаг миграции: без зафиксированного ownership state-контрактов переход на `BLoC/Cubit` будет неконтролируемым и несогласованным между фичами.
 - Scope (files/modules):
-  - `docs/architecture/state_migration_matrix_phase_3_7.ru.md`
-  - `docs/architecture/state_migration_matrix_phase_3_7.en.md`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md`
+  - `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: n/a (docs-only change)
   - Unit tests: n/a (docs-only change)
@@ -1572,8 +1572,8 @@
   - Integration smoke: n/a
   - Grep boundary checks: n/a (документационная задача)
 - Docs:
-  - RU updated: yes (`docs/architecture/state_migration_matrix_phase_3_7.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
-  - EN updated: yes (`docs/architecture/state_migration_matrix_phase_3_7.en.md`)
+  - RU updated: yes (`docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md`, `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/en/architecture/state_migration_matrix_phase_3_7.en.md`)
   - ADR updated: no
 - Risks / follow-ups:
   - New risks: выбранный granular split `PrimarySource` добавляет количество state-holder'ов и связей.
@@ -1599,7 +1599,7 @@
   - `pubspec.lock`
   - `lib/core/logging/app_bloc_observer.dart`
   - `lib/main.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1607,7 +1607,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: n/a (на этом шаге не изменялись guardrail скрипты)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1631,7 +1631,7 @@
   - `lib/main.dart`
   - `lib/app/di/app_di.dart`
   - `lib/core/state/change_notifier_bridge_cubit.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1639,7 +1639,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: n/a (на этом шаге не изменялись guardrail скрипты)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1680,7 +1680,7 @@
   - `lib/app/di/app_di.dart`
   - `lib/core/audio/audio_controller.dart`
   - `lib/main.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1688,7 +1688,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass (в runtime-коде `settings/about/topics` не осталось `ChangeNotifier` usage)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1722,7 +1722,7 @@
   - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
   - `lib/features/primary_sources/primary_sources.dart`
   - `test/features/primary_sources/presentation/bloc/primary_source_session_cubit_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1730,7 +1730,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass (session поля выделены в отдельный cubit)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого подшага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1768,7 +1768,7 @@
   - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
   - `lib/features/primary_sources/primary_sources.dart`
   - `test/features/primary_sources/presentation/bloc/primary_source_image_cubit_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1776,7 +1776,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass (image loading/cache/local availability выделены в отдельный cubit)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого подшага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1810,7 +1810,7 @@
   - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
   - `lib/features/primary_sources/primary_sources.dart`
   - `test/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1818,7 +1818,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass (page settings persistence выделен в отдельный cubit)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого подшага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1852,7 +1852,7 @@
   - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
   - `lib/features/primary_sources/primary_sources.dart`
   - `test/features/primary_sources/presentation/bloc/primary_source_selection_cubit_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1860,7 +1860,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass (selection state `word/verse/strong` выделен в отдельный cubit)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого подшага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1897,7 +1897,7 @@
   - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
   - `lib/features/primary_sources/primary_sources.dart`
   - `test/features/primary_sources/presentation/bloc/primary_source_description_cubit_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1905,7 +1905,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass (description content/navigation выделены в отдельный cubit)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого подшага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1944,7 +1944,7 @@
   - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
   - `lib/features/primary_sources/primary_sources.dart`
   - `test/features/primary_sources/presentation/bloc/primary_source_viewport_cubit_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1952,7 +1952,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass (viewport/render/tool-mode state выделены в отдельный cubit)
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого подшага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -1979,7 +1979,7 @@
   - `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`
   - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
   - `lib/features/primary_sources/presentation/detail/image_preview.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -1987,7 +1987,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass (в scope `PrimarySource` detail не осталось `ChangeNotifierProvider<PrimarySourceViewModel>`, `Consumer<PrimarySourceViewModel>`, `context.watch<PrimarySourceViewModel>`, `notifyListeners`).
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -2026,7 +2026,7 @@
   - `AGENTS.md`
   - `test/features/primary_sources/presentation/bloc/primary_sources_cubit_test.dart`
   - `test/widget/primary_sources/primary_sources_screen_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Analyze: pass (`flutter analyze`)
   - Unit tests: pass (`flutter test`)
@@ -2034,7 +2034,7 @@
   - Integration smoke: n/a
   - Grep boundary checks: pass (`rg "package:provider|ChangeNotifier|notifyListeners\(" lib test` не находит вхождений).
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -2055,7 +2055,7 @@
   - Закрыть обязательный P1 шаг Phase 3.7 и исключить повторный drift обратно к legacy state patterns после завершенного runtime cutover на BLoC/Cubit.
 - Scope (files/modules):
   - `scripts/check_forbidden_patterns.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Forbidden checks: pass (`dart run scripts/check_forbidden_patterns.dart`)
   - Analyze: pass (`flutter analyze`)
@@ -2063,7 +2063,7 @@
   - Widget tests: pass (`flutter test`)
   - Integration smoke: n/a
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -2089,7 +2089,7 @@
 - Scope (files/modules):
   - `test/features/primary_sources/presentation/bloc/primary_sources_cubit_test.dart`
   - `test/widget/primary_sources/primary_sources_screen_test.dart`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Targeted unit tests: pass (`flutter test test/features/primary_sources/presentation/bloc/primary_sources_cubit_test.dart`)
   - Targeted widget tests: pass (`flutter test test/widget/primary_sources/primary_sources_screen_test.dart`)
@@ -2098,7 +2098,7 @@
   - Full test suite: pass (`flutter test`)
   - Integration smoke: n/a
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
 - Risks / follow-ups:
@@ -2117,14 +2117,14 @@
 - Why changed:
   - Формально зафиксировать завершение всей фазы state migration после выполнения всех P0/P1 шагов и validation gates.
 - Scope (files/modules):
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Forbidden checks: pass (`dart run scripts/check_forbidden_patterns.dart`)
   - Analyze: pass (`flutter analyze`)
   - Full tests: pass (`flutter test`)
   - Additional checks: `rg "package:provider|ChangeNotifier|notifyListeners\(" lib test` -> no matches
 - Docs:
-  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (не требуется для формального закрытия фазы)
   - ADR updated: no
 - Risks / follow-ups:
@@ -2148,16 +2148,16 @@
     - `pubspec.yaml`
     - `assets/data/about_libraries.xml`.
 - Why changed:
-  - Закрыть `Phase 4 / P1` шаг и внедрить управляемый integration smoke layer без удорожания каждого PR по умолчанию.
+  - Закрыть `Phase 4 / P1` шаг и внедрить управляемый integration smoke layer без удорожания каждого change по умолчанию.
 - Scope (files/modules):
   - `.github/workflows/integration_smoke.yml`
   - `integration_test/smoke/primary_sources_navigation_smoke_test.dart`
   - `integration_test/smoke/settings_topics_language_sync_smoke_test.dart`
-  - `docs/testing/strategy.ru.md`
-  - `docs/testing/strategy.en.md`
+  - `docs/ru/testing/strategy.ru.md`
+  - `docs/en/testing/strategy.en.md`
   - `pubspec.yaml`
   - `assets/data/about_libraries.xml`
-  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
 - Validation:
   - Dependencies: pass (`flutter pub get`)
   - Format: pass (`dart format .`)
@@ -2167,12 +2167,215 @@
   - Forbidden checks: pass (`dart run scripts/check_forbidden_patterns.dart`)
   - Additional checks: `rg "package:provider|ChangeNotifier|notifyListeners\(" lib test integration_test` -> no matches
 - Docs:
-  - RU updated: yes (`docs/testing/strategy.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
-  - EN updated: yes (`docs/testing/strategy.en.md`)
+  - RU updated: yes (`docs/ru/testing/strategy.ru.md`, `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/en/testing/strategy.en.md`)
   - ADR updated: no
 - Risks / follow-ups:
   - New risks: integration smoke на Android заметно увеличивает длительность полного validation и требует стабильной Android toolchain в CI.
-  - Mitigations: оставлять запуск integration smoke только ручным (workflow_dispatch), без автозапуска на PR и по расписанию.
+  - Mitigations: оставлять запуск integration smoke только ручным (workflow_dispatch), без автозапуска в CI и по расписанию.
   - Next task: Phase 5 / Task `P0` — утвердить RU/EN docs set и sync policy.
+
+#### [2026-03-14 09:27] Phase 5 / Task P0 / Approve RU/EN docs set and sync policy
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлены policy-документы для синхронизации RU/EN:
+    - `docs/ru/architecture/docs_sync_policy.ru.md`
+    - `docs/en/architecture/docs_sync_policy.en.md`
+  - Зафиксирован approved RU/EN docs set и правила синхронизации:
+    - обязательные RU/EN пары для architecture/testing docs;
+    - список разрешенных RU-only исключений;
+    - обязательные sync rules и минимальная валидация.
+  - Правила применения policy зафиксированы в `AGENTS.md` (mandatory working rule).
+  - Обновлены Phase 5 execution status блоки в архитектурных roadmap-документах.
+- Why changed:
+  - Закрыть первый обязательный P0 шаг Phase 5 и формально утвердить governance-политику синхронизации документации.
+- Scope (files/modules):
+  - `docs/ru/architecture/docs_sync_policy.ru.md`
+  - `docs/en/architecture/docs_sync_policy.en.md`
+  - `AGENTS.md`
+  - `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Pair presence: pass (`Test-Path docs/ru/architecture/docs_sync_policy.ru.md` + `docs/en/architecture/docs_sync_policy.en.md` -> `True/True`)
+  - Policy references: pass (`rg "docs_sync_policy|Approved RU/EN Docs Set" AGENTS.md docs/ru/architecture/docs_sync_policy.ru.md docs/en/architecture/docs_sync_policy.en.md`)
+  - Integration smoke policy consistency: pass (`workflow_dispatch` зафиксирован в roadmap/docs)
+  - Code/runtime tests: n/a (docs/governance-only change)
+- Docs:
+  - RU updated: yes (`docs/ru/architecture/docs_sync_policy.ru.md`, `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`)
+  - EN updated: yes (`docs/en/architecture/docs_sync_policy.en.md`)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: ручная дисциплина sync policy может деградировать без change checklist enforcement.
+  - Mitigations: следующий шаг Phase 5 / P0 — внедрить change checklist `code + tests + docs RU/EN`.
+  - Next task: Phase 5 / Task `P0` — внедрить change checklist `code + tests + docs RU/EN`.
+
+#### [2026-03-14 09:27] Phase 5 / Task P0 / Introduce change checklist `code + tests + docs RU/EN`
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен change template/checklist:
+    - `.github/change_checklist.md`
+  - В checklist зафиксированы обязательные проверки:
+    - `code` (module boundaries + state policy),
+    - `tests` (`format/analyze/test/forbidden-patterns`),
+    - `docs RU/EN` (обязательные пары согласно docs sync policy),
+    - синхронизация `pubspec.yaml` и `assets/data/about_libraries.xml`,
+    - manual запуск integration smoke при необходимости.
+  - В `AGENTS.md` добавлено обязательное правило использования change checklist.
+  - Обновлены Phase 5 execution status блоки в архитектурных roadmap-документах.
+- Why changed:
+  - Закрыть второй обязательный P0 шаг Phase 5 и сделать docs/testing governance enforceable в ежедневном change-потоке.
+- Scope (files/modules):
+  - `.github/change_checklist.md`
+  - `AGENTS.md`
+  - `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Checklist template presence: pass (`Test-Path .github/change_checklist.md` -> `True`)
+  - Policy linkage: pass (`rg "change checklist" AGENTS.md .github/change_checklist.md`)
+  - Code/runtime tests: n/a (governance/docs-only change)
+- Docs:
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: checklist может выполняться формально без фактической глубокой проверки.
+  - Mitigations: следующий шаг Phase 5 / P1 — добавить `revelation-docs-sync` skill или эквивалентный instruction workflow для автоматизации контроля.
+  - Next task: Phase 5 / Task `P1` — добавить `revelation-docs-sync` skill (или instruction workflow).
+
+#### [2026-03-14 09:58] Phase 5 / Task P1 / Add docs-sync instruction workflow and automated header consistency check
+- Статус: done
+- Priority: P1
+- What changed:
+  - Добавлен instruction workflow для docs sync:
+    - `docs/ru/architecture/docs_sync_instruction_workflow.ru.md`
+    - `docs/en/architecture/docs_sync_instruction_workflow.en.md`
+  - Добавлен automated docs sync check:
+    - `scripts/check_docs_sync.dart`
+    - проверка наличия RU/EN пар и консистентности заголовков `Doc-Version`, `Last-Updated`, `Source-Commit`.
+  - Обновлена docs sync policy:
+    - добавлен шаг запуска `dart run scripts/check_docs_sync.dart`;
+    - добавлена ссылка на instruction workflow.
+  - В `AGENTS.md` добавлена команда и правило запуска docs sync check при изменении approved RU/EN пар.
+- Why changed:
+  - Закрыть Phase 5 / P1 задачу по `revelation-docs-sync` через instruction workflow с минимальной автоматизацией контроля.
+- Scope (files/modules):
+  - `docs/ru/architecture/docs_sync_instruction_workflow.ru.md`
+  - `docs/en/architecture/docs_sync_instruction_workflow.en.md`
+  - `docs/ru/architecture/docs_sync_policy.ru.md`
+  - `docs/en/architecture/docs_sync_policy.en.md`
+  - `scripts/check_docs_sync.dart`
+  - `AGENTS.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Docs sync check: pass (`dart run scripts/check_docs_sync.dart`)
+  - Forbidden checks: pass (`dart run scripts/check_forbidden_patterns.dart`)
+  - Analyze: pass (`flutter analyze`)
+  - Code/runtime tests: n/a (docs/governance + script change)
+- Docs:
+  - RU updated: yes (`docs/ru/architecture/docs_sync_instruction_workflow.ru.md`, `docs/ru/architecture/docs_sync_policy.ru.md`, `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/en/architecture/docs_sync_instruction_workflow.en.md`, `docs/en/architecture/docs_sync_policy.en.md`)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: script проверяет header-consistency и pair presence, но не определяет смысловой drift автоматически.
+  - Mitigations: reviewer workflow из `docs_sync_instruction_workflow.*` сохраняется обязательным.
+  - Next task: Phase 5 / Task `P1` — удалить deprecated adapters и legacy paths после стабилизации.
+
+#### [2026-03-14 10:04] Phase 5 / Task P1 / Remove deprecated adapters and legacy paths after stabilization
+- Статус: done
+- Priority: P1
+- What changed:
+  - Удален deprecated adapter-файл:
+    - `lib/shared/models/topic_info.dart`
+  - Удален transitional route fallback для raw `PrimarySource` в `state.extra`:
+    - `lib/app/router/route_args.dart` (`PrimarySourceRouteArgs.tryParse`)
+    - `lib/app/router/app_router.dart` (`_getRouteArgs`)
+  - Обновлен regression test для route args:
+    - `test/app/router/route_args_test.dart` (удален кейс `parses raw PrimarySource extra`)
+  - Усилены guardrails:
+    - `scripts/check_forbidden_patterns.dart` теперь блокирует:
+      - fallback `if (extra is PrimarySource)` в route args parser,
+      - raw `PrimarySource` usage в route tracing (`state.extra`) в app router,
+      - импорт deprecated пути `package:revelation/shared/models/topic_info.dart`.
+- Why changed:
+  - Закрыть P1 cleanup-задачу Phase 5 и зафиксировать удаление оставшихся transitional adapters/legacy-path контрактов после стабилизации миграции.
+- Scope (files/modules):
+  - `lib/shared/models/topic_info.dart` (deleted)
+  - `lib/app/router/route_args.dart`
+  - `lib/app/router/app_router.dart`
+  - `test/app/router/route_args_test.dart`
+  - `scripts/check_forbidden_patterns.dart`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass
+    - `dart run scripts/check_forbidden_patterns.dart`
+    - `rg "package:revelation/shared/models/topic_info\\.dart|state\\.extra is PrimarySource\\b|as PrimarySource\\b|if\\s*\\(\\s*extra\\s+is\\s+PrimarySource\\s*\\)" lib test` -> no matches
+  - Docs sync checks: pass (`dart run scripts/check_docs_sync.dart`)
+- Docs:
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: legacy external callers, которые передавали raw `PrimarySource` в route extra, теперь будут отклоняться.
+  - Mitigations: в runtime коде оставить только `PrimarySourceRouteArgs` контракт (все текущие вызовы уже на typed args).
+  - Next task: Phase 5 / Task `P2` — финальный architecture review + residual debt backlog.
+
+#### [2026-03-14 10:25] Phase 5 / Task P2 / Final architecture review and residual debt backlog
+- Статус: done
+- Priority: P2
+- What changed:
+  - Проведен финальный architecture review по текущему состоянию codebase и governance-слоя.
+  - Зафиксирован residual architecture debt backlog (RU/EN):
+    - `docs/ru/architecture/residual_debt_backlog.ru.md`
+    - `docs/en/architecture/residual_debt_backlog.en.md`
+  - В backlog выделены приоритетные остаточные задачи `RAD-01..RAD-07` с evidence и exit criteria.
+  - Обновлены парные обзорные документы:
+    - `docs/ru/architecture/overview.ru.md`
+    - `docs/en/architecture/overview.en.md`
+    - добавлена ссылка на residual debt backlog как обязательный governance-артефакт.
+  - Обновлены docs sync governance артефакты:
+    - `docs/ru/architecture/docs_sync_policy.ru.md`
+    - `docs/en/architecture/docs_sync_policy.en.md`
+    - `scripts/check_docs_sync.dart`
+    - `AGENTS.md`
+    - добавлена новая обязательная RU/EN пара (`residual_debt_backlog`).
+  - Нормализованы дефектные термины в master roadmap-документах после массовой терминологической замены.
+- Why changed:
+  - Закрыть финальный P2 шаг Phase 5, формально завершить migration governance, и оставить измеримый residual backlog вместо неструктурированного debt.
+- Scope (files/modules):
+  - `docs/ru/architecture/residual_debt_backlog.ru.md`
+  - `docs/en/architecture/residual_debt_backlog.en.md`
+  - `docs/ru/architecture/overview.ru.md`
+  - `docs/en/architecture/overview.en.md`
+  - `docs/ru/architecture/docs_sync_policy.ru.md`
+  - `docs/en/architecture/docs_sync_policy.en.md`
+  - `scripts/check_docs_sync.dart`
+  - `AGENTS.md`
+  - `docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`
+- Validation:
+  - Docs sync check: pass (`dart run scripts/check_docs_sync.dart`)
+  - Forbidden checks: pass (`dart run scripts/check_forbidden_patterns.dart`)
+  - Analyze: pass (`flutter analyze`)
+  - Unit+Widget tests: pass (`flutter test`)
+  - Residual debt evidence checks: pass
+    - `rg "shared/utils/common.dart" lib test` -> `36` matches (baseline for `RAD-03`)
+    - line counts collected for `primary_sources` heavy files (`927/1142/1079/472`)
+    - `rg "deprecated_member_use" lib` -> `4` matches
+- Docs:
+  - RU updated: yes (`docs/ru/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/ru/architecture/revelation_architecture_refactor_roadmap_ru.md`, `docs/ru/architecture/overview.ru.md`, `docs/ru/architecture/docs_sync_policy.ru.md`, `docs/ru/architecture/residual_debt_backlog.ru.md`)
+  - EN updated: yes (`docs/en/architecture/overview.en.md`, `docs/en/architecture/docs_sync_policy.en.md`, `docs/en/architecture/residual_debt_backlog.en.md`)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: без регулярного пересмотра residual backlog может снова стать “архивом” без исполнения.
+  - Mitigations: считать backlog живым governance-документом и обновлять по release cycle/architecture review.
+  - Next task: все задачи текущего roadmap выполнены; дальнейшие изменения вести через residual backlog (`RAD-*`) и release priorities.
+
 
 

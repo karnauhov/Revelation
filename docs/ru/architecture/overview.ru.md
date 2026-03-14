@@ -1,6 +1,6 @@
 # Architecture Overview (RU)
 
-Doc-Version: `0.2.0`  
+Doc-Version: `0.3.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -22,7 +22,7 @@ Source-Commit: `working-tree`
 ## 4. Critical Architectural Debt
 - Крупные файлы с высокой концентрацией ответственности.
 - Прямой доступ UI-слоя к data/singleton зависимостям.
-- Неполные quality gates в CI для PR (до Phase 0).
+- Неполные quality gates в CI для change (до Phase 0).
 - Минимальное тестовое покрытие.
 
 ## 5. Target Direction
@@ -30,7 +30,7 @@ Source-Commit: `working-tree`
 - Hybrid feature-first структура (`features/`, `shared/`, `core/`, `infra/`).
 - Явные границы между presentation/application/data/infra.
 - Runtime state management в режиме `BLoC/Cubit`-only (Phase 3.7 target достигнут) и последующий hardening через guardrails/regression suites.
-- Детальный ownership state-контрактов зафиксирован в `docs/architecture/state_migration_matrix_phase_3_7.ru.md` (EN twin: `.en.md`).
+- Детальный ownership state-контрактов зафиксирован в `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md` (EN twin: `.en.md`).
 - Типизированные route args для критичных переходов.
 
 ## 6. Boundary Rules (Migration Baseline)
@@ -41,7 +41,7 @@ Source-Commit: `working-tree`
 
 ## 7. Phase 0 Exit Criteria
 - Созданы baseline docs RU/EN.
-- Добавлен PR workflow с `format + analyze + test`.
+- Добавлен CI workflow с `format + analyze + test`.
 - Добавлен skeleton test harness (fake logger/env/remote).
 - Добавлены fast grep-проверки для запрещенных паттернов с baseline-allowlist.
 
@@ -49,3 +49,10 @@ Source-Commit: `working-tree`
 - Big-bang rewrite без фазовой миграции.
 - Сохранение mixed state frameworks после завершения Phase 3.7.
 - Ослабление архитектурных quality gates ради ускорения миграции.
+
+## 9. Residual Debt Backlog
+- Актуальный список остаточного архитектурного долга зафиксирован в:
+  - `docs/ru/architecture/residual_debt_backlog.ru.md`
+  - `docs/en/architecture/residual_debt_backlog.en.md`
+- Backlog поддерживается как живой артефакт governance и обновляется по итогам architecture review.
+

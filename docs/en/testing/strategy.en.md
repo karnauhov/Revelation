@@ -9,7 +9,7 @@ Define a verifiable testing strategy to support safe architectural refactoring.
 
 ## 2. Current Baseline
 - Unit tests: minimal baseline (existing smoke/unit set).
-- Widget tests: minimal smoke baseline exists and runs as a separate mandatory PR gate.
+- Widget tests: minimal smoke baseline exists and runs as a separate mandatory CI gate.
 - Integration smoke tests: dedicated suite in `integration_test/smoke` with manual workflow execution.
 - Build quality gates (pre-build): `format + analyze + unit + widget + forbidden patterns` in `.github/workflows/flutter_build.yml`.
 

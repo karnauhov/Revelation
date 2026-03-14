@@ -46,10 +46,6 @@ class PrimarySourceRouteArgs {
     if (extra is PrimarySourceRouteArgs) {
       return extra;
     }
-
-    if (extra is PrimarySource) {
-      return PrimarySourceRouteArgs(primarySource: extra);
-    }
     return null;
   }
 }

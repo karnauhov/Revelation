@@ -81,6 +81,25 @@ void main() {
       roots: <String>['lib'],
     ),
     PatternCheck(
+      name: 'Primary source route args must not parse raw PrimarySource extra',
+      pattern: RegExp(r'if\s*\(\s*extra\s+is\s+PrimarySource\s*\)'),
+      roots: <String>['lib/app/router'],
+      filePathPattern: RegExp(r'^lib/app/router/route_args\.dart$'),
+    ),
+    PatternCheck(
+      name: 'Primary source route tracing should use only typed extra args',
+      pattern: RegExp(r'state\.extra is PrimarySource\b|as PrimarySource\b'),
+      roots: <String>['lib/app/router'],
+      filePathPattern: RegExp(r'^lib/app/router/app_router\.dart$'),
+    ),
+    PatternCheck(
+      name: 'Deprecated topic_info adapter path must not be imported',
+      pattern: RegExp(
+        "import\\s+['\"]package:revelation/shared/models/topic_info\\.dart['\"]",
+      ),
+      roots: <String>['lib', 'test'],
+    ),
+    PatternCheck(
       name: 'Feature presentation should not import legacy layer-first modules',
       pattern: RegExp(
         "import\\s+['\"]package:revelation/(screens|viewmodels|repositories|managers)/",

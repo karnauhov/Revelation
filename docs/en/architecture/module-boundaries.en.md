@@ -1,4 +1,4 @@
-# Module Boundaries (EN)
+﻿# Module Boundaries (EN)
 
 Doc-Version: `0.2.0`  
 Last-Updated: `2026-03-14`  
@@ -49,7 +49,7 @@ If none applies, update architecture docs/roadmap first, then add the file.
 - `presentation` communicates via `application/controller/orchestrator`.
 - `presentation` state management must use `BLoC/Cubit` only.
 - `provider`/`ChangeNotifier` are forbidden for new or modified runtime code.
-- state ownership contracts must follow the matrix: `docs/architecture/state_migration_matrix_phase_3_7.en.md`.
+- state ownership contracts must follow the matrix: `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`.
 - `data` owns raw db/json knowledge; UI does not.
 - `shared` must not contain feature business logic.
 - `core` must not depend on feature modules.
@@ -65,3 +65,4 @@ If none applies, update architecture docs/roadmap first, then add the file.
   - no legacy directories in `lib/`;
   - no `provider`/`ChangeNotifier` usage after Phase 3.7;
   - approved top-level `lib/` directory set.
+

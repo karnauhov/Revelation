@@ -1,6 +1,6 @@
-# Architecture Overview (EN)
+﻿# Architecture Overview (EN)
 
-Doc-Version: `0.2.0`  
+Doc-Version: `0.3.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -22,7 +22,7 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 ## 4. Critical Architectural Debt
 - Large files with concentrated responsibilities.
 - Direct UI access to data/singleton dependencies.
-- Missing enforceable PR CI gates (before Phase 0).
+- Missing enforceable CI gates (before Phase 0).
 - Minimal automated test coverage.
 
 ## 5. Target Direction
@@ -30,7 +30,7 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 - Hybrid feature-first structure (`features/`, `shared/`, `core/`, `infra/`).
 - Explicit boundaries between presentation/application/data/infra.
 - `BLoC/Cubit`-only runtime state layer (Phase 3.7 target achieved), plus follow-up hardening via guardrails and regression suites.
-- The detailed state-ownership contracts are defined in `docs/architecture/state_migration_matrix_phase_3_7.en.md` (RU twin: `.ru.md`).
+- The detailed state-ownership contracts are defined in `docs/en/architecture/state_migration_matrix_phase_3_7.en.md` (RU twin: `.ru.md`).
 - Typed route args for critical navigation flows.
 
 ## 6. Boundary Rules (Migration Baseline)
@@ -41,7 +41,7 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 
 ## 7. Phase 0 Exit Criteria
 - Baseline docs are created in RU/EN.
-- PR workflow includes `format + analyze + test`.
+- CI workflow includes `format + analyze + test`.
 - Test harness skeleton exists (fake logger/env/remote).
 - Fast grep checks exist for forbidden patterns with a baseline allowlist.
 
@@ -49,3 +49,10 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 - Big-bang rewrite without phased migration.
 - Keeping mixed state frameworks after Phase 3.7.
 - Weakening architecture quality gates just to speed up migration.
+
+## 9. Residual Debt Backlog
+- The current residual architecture debt list is maintained in:
+  - `docs/ru/architecture/residual_debt_backlog.ru.md`
+  - `docs/en/architecture/residual_debt_backlog.en.md`
+- The backlog is treated as a living governance artifact and updated after architecture reviews.
+

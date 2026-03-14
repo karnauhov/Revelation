@@ -13,6 +13,7 @@ All notable changes to this application will be documented here.
 
 ### Changed
 
+- Completed a deep architecture refactor: migration to canonical feature-first structure (`app/core/infra/shared/features`), full state-management cutover to `BLoC/Cubit`, and governance hardening
 - Primary Source description info icon is now shown only for word and Strong's number modes
 - Topic list and topic header text now come from localized databases instead of bundled localization keys
 - Topic content and media references are now DB-oriented to allow content updates without app recompilation

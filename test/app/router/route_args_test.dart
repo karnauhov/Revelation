@@ -64,17 +64,6 @@ void main() {
       expect(parsed.wordIndex, 5);
     });
 
-    test('parses raw PrimarySource extra', () {
-      final source = _buildSource('ps-2');
-
-      final parsed = PrimarySourceRouteArgs.tryParse(source);
-
-      expect(parsed, isNotNull);
-      expect(parsed!.primarySource, source);
-      expect(parsed.pageName, isNull);
-      expect(parsed.wordIndex, isNull);
-    });
-
     test('returns null for any legacy map contract', () {
       final parsed = PrimarySourceRouteArgs.tryParse(<String, dynamic>{
         'primarySource': _buildSource('ps-3'),

@@ -121,7 +121,7 @@
 - Нужен **селективный application/domain слой** только для сложных сценариев (`primary_sources`, `topic content orchestration`, sync flows).
 
 ### Почему не giant rewrite
-- Риск регрессий на production multi-platform.
+- Риск регрессий в CIoduction multi-platform.
 - Уже есть рабочие подсистемы, которые лучше эволюционно укреплять.
 
 ### Насколько строгий feature-first подходит Revelation
@@ -264,12 +264,12 @@ lib/
 Короткая, понятная, постоянно синхронизированная двуязычная документация.
 
 ### Proposed docs set
-- `docs/architecture/overview.ru.md`
-- `docs/architecture/overview.en.md`
-- `docs/architecture/module-boundaries.ru.md`
-- `docs/architecture/module-boundaries.en.md`
-- `docs/testing/strategy.ru.md`
-- `docs/testing/strategy.en.md`
+- `docs/ru/architecture/overview.ru.md`
+- `docs/en/architecture/overview.en.md`
+- `docs/ru/architecture/module-boundaries.ru.md`
+- `docs/en/architecture/module-boundaries.en.md`
+- `docs/ru/testing/strategy.ru.md`
+- `docs/en/testing/strategy.en.md`
 - `docs/adr/ADR-001-...md` ... `ADR-006-...md`
 - `docs/process/change-checklist.ru.md`
 - `docs/process/change-checklist.en.md`
@@ -280,7 +280,7 @@ lib/
   - `Doc-Version`,
   - `Last-Updated`,
   - `Source-Commit`.
-- Structural/code changes в PR **обязаны** обновлять RU+EN.
+- Structural/code changes в change set **обязаны** обновлять RU+EN.
 - Если изменен только один язык — CI warning/fail (поэтапно fail).
 
 ### Минимальный набор ADR
@@ -296,7 +296,7 @@ lib/
 Предложение: `revelation-architecture-governance` (или `revelation-docs-sync`) для recurring work:
 - RU/EN docs update checklist.
 - ADR template generation.
-- PR docs gate checklist.
+- change docs gate checklist.
 - Commands for docs parity checks.
 
 ## 13. Testing strategy
@@ -343,15 +343,15 @@ lib/
 ## 14. CI / quality gates strategy
 ### Initial gap (before rollout)
 - CI workflow был только на push в `main`, с `analyze`, без unit/widget gate.
-- Enforceable PR CI gates отсутствовали.
+- Enforceable CI gates отсутствовали.
 
 ### CI rollout plan for tests
-- Step 1 (P0): добавить PR workflow:
+- Step 1 (P0): добавить CI workflow:
   - `dart format --output=none --set-exit-if-changed .`
   - `flutter analyze`
   - `flutter test --coverage`
 - Step 2 (P1): разделить тесты по tags/suites:
-  - `unit+widget` обязательно на PR.
+  - `unit+widget` обязательно в CI.
   - integration smoke только через manual workflow (`workflow_dispatch`).
 - Step 3 (P2): добавить threshold policy:
   - стартовый coverage gate мягкий,
@@ -383,7 +383,7 @@ lib/
   - RU/EN docs twin enforcement,
   - ADR checklist,
   - mandatory docs update triggers,
-  - PR checklist automation snippets.
+  - change checklist automation snippets.
 
 ## 16. Phased migration roadmap
 
@@ -392,7 +392,7 @@ lib/
 - Почему нужна: без baseline невозможно управлять регрессиями при глубоком рефакторинге.
 - Concrete tasks:
   - [P0] Зафиксировать архитектурный baseline doc (RU/EN).
-  - [P0] Добавить PR workflow с `format + analyze + test`.
+  - [P0] Добавить CI workflow с `format + analyze + test`.
   - [P0] Создать test harness skeleton (fake logger, fake env, fake remote).
   - [P1] Ввести initial grep checks для forbidden patterns.
 - Affected files/modules/areas:
@@ -412,10 +412,10 @@ lib/
   - `overview.ru/en` created.
   - `testing.strategy.ru/en` created.
 - Quality gates:
-  - analyze/test mandatory on PR.
+  - analyze/test mandatory on change.
 - Criteria of done:
   - Baseline зафиксирован.
-  - PR без этих checks не merge.
+  - change без этих checks не merge.
 
 ### Phase 1 — Quick wins / high-impact low-risk improvements
 - Цель: убрать наиболее болезненные structural anti-patterns без изменения фич.
@@ -519,8 +519,8 @@ lib/
 - Цель: полностью перенести управление состоянием на BLoC/Cubit и убрать legacy state frameworks.
 - Почему нужна: без этого останется смешанная архитектура состояния и высокий риск повторной деградации в крупные state-monoliths.
 - Approved matrix artifact:
-  - `docs/architecture/state_migration_matrix_phase_3_7.ru.md`
-  - `docs/architecture/state_migration_matrix_phase_3_7.en.md`
+  - `docs/ru/architecture/state_migration_matrix_phase_3_7.ru.md`
+  - `docs/en/architecture/state_migration_matrix_phase_3_7.en.md`
 - Concrete tasks:
   - [P0] Утвердить migration matrix `feature -> target cubit/bloc set -> owner state contracts`.
   - [P0] Добавить и настроить BLoC runtime слой (`flutter_bloc`, `BlocObserver`, единые правила ошибок/логирования переходов).
@@ -567,7 +567,7 @@ lib/
 - Цель: сделать качество воспроизводимым и enforceable.
 - Почему нужна: без этого архитектура деградирует обратно.
 - Concrete tasks:
-  - [P0] Обязательные unit+widget tests в PR CI.
+  - [P0] Обязательные unit+widget tests в CI.
   - [P1] Integration smoke tests (manual workflow).
 - Affected files/modules/areas:
   - `.github/workflows/*`, `test/`, `integration_test/`.
@@ -582,7 +582,7 @@ lib/
 - Docs update expectations (RU + EN):
   - testing strategy + CI policy finalized.
 - Quality gates:
-  - PR blocked if analyze/unit/widget fail.
+  - change blocked if analyze/unit/widget fail.
 - Criteria of done:
   - CI реально защищает архитектуру, не декоративно.
 - Execution status (2026-03-14):
@@ -594,7 +594,7 @@ lib/
 - Почему нужна: долгосрочная поддержка и онбординг.
 - Concrete tasks:
   - [P0] Утвердить RU/EN docs set и sync policy.
-  - [P0] Внедрить PR checklist: code + tests + docs RU/EN.
+  - [P0] Внедрить change checklist: code + tests + docs RU/EN.
   - [P1] Добавить `revelation-docs-sync` skill (или instruction workflow).
   - [P1] Удалить deprecated adapters и старые пути после стабилизации.
   - [P2] Финальный architecture review + residual debt backlog.
@@ -614,6 +614,18 @@ lib/
   - docs sync check enabled.
 - Criteria of done:
   - архитектурные правила и docs обновляются по умолчанию при изменениях.
+- Execution status (2026-03-14):
+  - `P0 task "RU/EN docs set and sync policy"` completed:
+    утвержден approved docs set, добавлен policy документ (`docs_sync_policy.ru/en.md`) и зафиксировано применение policy в `AGENTS.md`.
+  - `P0 task "change checklist code + tests + docs RU/EN"` completed:
+    добавлен `.github/change_checklist.md` и зафиксировано обязательное использование checklist в `AGENTS.md`.
+  - `P1 task "docs-sync instruction workflow"` completed:
+    добавлены `docs_sync_instruction_workflow.ru/en.md` и скрипт `scripts/check_docs_sync.dart` для автоматической проверки RU/EN pair headers.
+  - `P1 task "remove deprecated adapters and legacy paths"` completed:
+    удален deprecated adapter `lib/shared/models/topic_info.dart`, удален transitional route fallback `PrimarySource` extra в `route_args/app_router`, и добавлены guardrails в `scripts/check_forbidden_patterns.dart` против повторного появления этих legacy-path patterns.
+  - `P2 task "final architecture review + residual debt backlog"` completed:
+    добавлены `residual_debt_backlog.ru/en.md`, обновлены overview/policy/AGENTS/docs-sync-check под новую RU/EN pair governance, и зафиксирован приоритизированный список `RAD-01..RAD-07`.
+  - `Phase 5 completed`.
 
 ## 17. Risk register
 | ID | Risk | Priority | Probability | Impact | Mitigation |
@@ -621,7 +633,7 @@ lib/
 | R1 | Регрессии в `primary_source` UX при декомпозиции | P0 | Medium | High | branch-by-abstraction + widget/integration smoke |
 | R2 | Затяжная миграция структуры папок | P1 | High | Medium | пилотные feature migrations + import adapters |
 | R3 | CI станет слишком долгим | P1 | Medium | Medium | split jobs, caching, selective integration |
-| R4 | Команда продолжит писать в legacy folders | P0 | Medium | High | boundary gates + PR checklist |
+| R4 | Команда продолжит писать в legacy folders | P0 | Medium | High | boundary gates + change checklist |
 | R5 | Доки RU/EN разойдутся | P0 | High | Medium | docs sync policy + CI check |
 | R6 | Singleton coupling останется скрытым | P0 | Medium | High | centralized DI + banned patterns grep checks |
 | R7 | Перегиб с абстракциями | P1 | Medium | Medium | add layers only for complex flows |
@@ -650,9 +662,9 @@ lib/
 - Нет прямого DB/remote access из presentation.
 - Typed route contracts заменили map-based critical navigation.
 - `primary_source` flow декомпозирован и покрыт тестами.
-- В production/test коде отсутствуют `provider`/`ChangeNotifier` state patterns.
+- в production/test коде отсутствуют `provider`/`ChangeNotifier` state patterns.
 - State management унифицирован на `BLoC/Cubit` с гранулярными state slices в `primary_sources`.
-- Unit+widget tests обязательны в CI на PR.
+- Unit+widget tests обязательны в CI.
 - Integration smoke для critical navigation/data flows есть и стабилен.
 - RU/EN docs синхронизированы и обновляются при structural changes.
 - ADR минимум из 6 ключевых решений зафиксирован.
@@ -697,8 +709,9 @@ lib/
 3. **P0** Декомпозировать `PrimarySourceViewModel` и `primary_source` UI-монолиты.
 4. **P0** Полностью мигрировать state слой на `BLoC/Cubit` и удалить `Provider/ChangeNotifier`.
 5. **P0** Вынести bootstrap/DI/router composition из `main.dart` в `app/*`.
-6. **P0** Сделать unit+widget tests обязательным PR gate в CI.
+6. **P0** Сделать unit+widget tests обязательным CI gate в CI.
 7. **P1** Разбить `utils/common.dart` на целевые модули и убрать cross-layer util-sink.
 8. **P1** Перевести `topics`/`settings`/`about` в hybrid feature-first structure.
 9. **P1** Ввести единый error/result model + user-facing fallback states.
 10. **P1** Внедрить RU/EN docs sync policy с CI checks и ADR набором.
+
