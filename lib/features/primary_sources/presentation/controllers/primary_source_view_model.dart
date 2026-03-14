@@ -5,6 +5,7 @@ import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/description_panel_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
@@ -16,13 +17,12 @@ import 'package:revelation/shared/utils/common.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
 
 class PrimarySourceViewModel extends ChangeNotifier {
-  final PrimarySource primarySource;
   final PrimarySourceDescriptionPanelOrchestrator _descriptionPanelOrchestrator;
   final PrimarySourceImageLoadingOrchestrator _imageLoadingOrchestrator;
   final PrimarySourcePageSettingsOrchestrator _pageSettingsOrchestrator;
-  model.Page? selectedPage;
+  final PrimarySourceSessionCubit _sessionCubit;
+  final bool _ownsSessionCubit;
   Uint8List? imageData;
-  String imageName = "";
   bool isLoading = false;
   bool refreshError = false;
   bool imageShown = false;
@@ -60,7 +60,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool _isColorToReplace = true;
   bool _selectAreaMode = false;
   void Function(Rect?)? _onAreaSelected;
-  bool _isMenuOpen = false;
   Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
   final LatestRequestGuard _imageLoadRequestGuard = LatestRequestGuard();
@@ -71,7 +70,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
   int get maxTextureSize => _maxTextureSize;
   bool get pipetteMode => _pipetteMode;
   bool get selectAreaMode => _selectAreaMode;
-  bool get isMenuOpen => _isMenuOpen;
+  PrimarySource get primarySource => _sessionCubit.state.source;
+  model.Page? get selectedPage => _sessionCubit.state.selectedPage;
+  String get imageName => _sessionCubit.state.imageName;
+  bool get isMenuOpen => _sessionCubit.state.isMenuOpen;
   String get pageSettings => _pageSettings;
   bool get showDescription =>
       _descriptionPanelOrchestrator.state.showDescription;
@@ -83,7 +85,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
 
   PrimarySourceViewModel(
     PagesRepository pagesRepository, {
-    required this.primarySource,
+    required PrimarySource primarySource,
+    PrimarySourceSessionCubit? sessionCubit,
     DescriptionContentService? descriptionService,
     PrimarySourceImageLoadingOrchestrator? imageLoadingOrchestrator,
     PrimarySourcePageSettingsOrchestrator? pageSettingsOrchestrator,
@@ -97,7 +100,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
            imageLoadingOrchestrator ?? PrimarySourceImageLoadingOrchestrator(),
        _pageSettingsOrchestrator =
            pageSettingsOrchestrator ??
-           PrimarySourcePageSettingsOrchestrator(pagesRepository) {
+           PrimarySourcePageSettingsOrchestrator(pagesRepository),
+       _sessionCubit =
+           sessionCubit ?? PrimarySourceSessionCubit(source: primarySource),
+       _ownsSessionCubit = sessionCubit == null {
     imageController = ImagePreviewController(primarySource.maxScale);
     imageController.transformationController.addListener(
       _updateTransformStatus,
@@ -123,8 +129,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
       _maxTextureSize = 0;
     }
 
-    if (primarySource.pages.isNotEmpty && primarySource.permissionsReceived) {
-      selectedPage = primarySource.pages.first;
+    if (selectedPage != null) {
       loadImage(selectedPage!.image);
     }
     _checkLocalPages();
@@ -174,11 +179,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
       switch (loadResult.contentAction) {
         case ImageContentAction.replace:
           imageData = loadResult.imageData;
-          imageName = loadResult.imageName;
+          _sessionCubit.setImageName(loadResult.imageName);
           break;
         case ImageContentAction.clear:
           imageData = null;
-          imageName = '';
+          _sessionCubit.setImageName('');
           break;
         case ImageContentAction.keep:
           break;
@@ -199,7 +204,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Future<void> changeSelectedPage(model.Page? newPage) async {
     imageShown = false;
     scaleAndPositionRestored = false;
-    selectedPage = newPage;
+    _sessionCubit.setSelectedPage(newPage);
     resetColorReplacement();
     notifyListeners();
     if (newPage != null) {
@@ -325,7 +330,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void setMenuOpen(bool value) {
-    _isMenuOpen = value;
+    _sessionCubit.setMenuOpen(value);
     notifyListeners();
   }
 
@@ -553,6 +558,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _onPipettePicked = null;
     _onAreaSelected = null;
     _isDisposed = true;
+    if (_ownsSessionCubit) {
+      unawaited(_sessionCubit.close());
+    }
     super.dispose();
   }
 }

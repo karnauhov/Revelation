@@ -147,7 +147,7 @@
   - `lib/main.dart`
 - [x] Задача [P0]: мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
 - [ ] Задача [P0]: выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы.
-- [ ] Подшаг [P3.7.1]: source/session/page context cubit.
+- [x] Подшаг [P3.7.1]: source/session/page context cubit.
 - [ ] Подшаг [P3.7.2]: image loading/cache/local availability cubit.
 - [ ] Подшаг [P3.7.3]: page settings persistence cubit.
 - [ ] Подшаг [P3.7.4]: selection cubit (`word/verse/strong`).
@@ -1698,3 +1698,45 @@
   - New risks: `primary_sources` по-прежнему работает через transitional provider bridge до завершения granular split.
   - Mitigations: следующий шаг — выполнить `PrimarySource` granular slicing (`P3.7.1`–`P3.7.6`) и заменить remaining VM bindings.
   - Next task: Phase 3.7 / P0 — выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы (`P3.7.1` в первую очередь).
+
+#### [2026-03-14 15:35] Phase 3.7 / Substep P3.7.1 / Introduce `PrimarySourceSessionCubit` (source/session/page context)
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен новый granular state-slice:
+    - `PrimarySourceSessionState { source, selectedPage, imageName, isMenuOpen }`
+    - `PrimarySourceSessionCubit` с командами `setSelectedPage`, `setImageName`, `setMenuOpen`.
+  - `PrimarySourceViewModel` переключен на session-срез как source-of-truth для session-полей:
+    - удалено локальное хранение `selectedPage`, `imageName`, `isMenuOpen`,
+    - чтение/обновление этих значений теперь идет через `PrimarySourceSessionCubit`.
+  - `PrimarySourceScreen` обновлен wiring:
+    - добавлен `BlocProvider<PrimarySourceSessionCubit>`,
+    - `PrimarySourceViewModel` получает `sessionCubit` через DI из build-context.
+  - Обновлены feature exports для нового session блока:
+    - `lib/features/primary_sources/primary_sources.dart`.
+  - Добавлен unit-тест suite для нового cubit:
+    - `test/features/primary_sources/presentation/bloc/primary_source_session_cubit_test.dart`.
+- Why changed:
+  - Закрыть обязательный подшаг `P3.7.1` и отделить базовый source/session/page-context state от перегруженного `PrimarySourceViewModel` перед миграцией следующих срезов (`image`, `page settings`, `selection`, `description`, `viewport`).
+- Scope (files/modules):
+  - `lib/features/primary_sources/presentation/bloc/primary_source_session_state.dart`
+  - `lib/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart`
+  - `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`
+  - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
+  - `lib/features/primary_sources/primary_sources.dart`
+  - `test/features/primary_sources/presentation/bloc/primary_source_session_cubit_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass (session поля выделены в отдельный cubit)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого подшага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `PrimarySourceViewModel` пока остается orchestrator-агрегатор для остальных state-срезов до завершения `P3.7.2`–`P3.7.6`.
+  - Mitigations: следующий подшаг — вынести image-loading/cache/local-availability в отдельный `PrimarySourceImageCubit`.
+  - Next task: Phase 3.7 / Substep `P3.7.2` — image loading/cache/local availability cubit.
