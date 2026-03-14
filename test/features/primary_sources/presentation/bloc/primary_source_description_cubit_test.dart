@@ -27,22 +27,24 @@ void main() {
 
   testWidgets('showCommonInfo switches state to info mode', (tester) async {
     final context = await _pumpAndGetContext(tester);
+    final localizations = AppLocalizations.of(context)!;
     final cubit = PrimarySourceDescriptionCubit(
       descriptionService: _FakeDescriptionContentService(),
     );
     addTearDown(cubit.close);
 
-    cubit.showCommonInfo(context);
+    cubit.showCommonInfo(localizations);
 
     expect(cubit.state.currentType, DescriptionKind.info);
     expect(cubit.state.currentNumber, isNull);
-    expect(cubit.state.content, AppLocalizations.of(context)!.click_for_info);
+    expect(cubit.state.content, localizations.click_for_info);
   });
 
   testWidgets(
     'showInfoForWord and navigateSelection move through word indexes',
     (tester) async {
       final context = await _pumpAndGetContext(tester);
+      final localizations = AppLocalizations.of(context)!;
       final source = _buildSource();
       final page = source.pages.first;
       final cubit = PrimarySourceDescriptionCubit(
@@ -52,12 +54,12 @@ void main() {
 
       final shown = cubit.showInfoForWord(
         wordIndex: 0,
-        context: context,
+        localizations: localizations,
         source: source,
         selectedPage: page,
       );
       final navigated = cubit.navigateSelection(
-        context,
+        localizations,
         forward: true,
         source: source,
         selectedPage: page,
@@ -75,6 +77,7 @@ void main() {
     'showInfoForStrongNumber and navigateSelection use strong neighbors',
     (tester) async {
       final context = await _pumpAndGetContext(tester);
+      final localizations = AppLocalizations.of(context)!;
       final source = _buildSource();
       final cubit = PrimarySourceDescriptionCubit(
         descriptionService: _FakeDescriptionContentService(),
@@ -83,10 +86,10 @@ void main() {
 
       final shown = cubit.showInfoForStrongNumber(
         strongNumber: 10,
-        context: context,
+        localizations: localizations,
       );
       final navigated = cubit.navigateSelection(
-        context,
+        localizations,
         forward: true,
         source: source,
         selectedPage: source.pages.first,
@@ -122,7 +125,7 @@ Future<BuildContext> _pumpAndGetContext(WidgetTester tester) async {
 class _FakeDescriptionContentService extends DescriptionContentService {
   @override
   DescriptionContent? buildStrongContent(
-    BuildContext context,
+    AppLocalizations localizations,
     int strongNumber,
   ) {
     return DescriptionContent(
@@ -133,7 +136,7 @@ class _FakeDescriptionContentService extends DescriptionContentService {
 
   @override
   DescriptionContent? buildContent(
-    BuildContext context,
+    AppLocalizations localizations,
     DescriptionRequest request, {
     PrimarySource? fallbackSource,
     model.Page? fallbackPage,

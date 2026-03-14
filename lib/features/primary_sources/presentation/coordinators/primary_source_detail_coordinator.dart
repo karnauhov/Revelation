@@ -18,6 +18,7 @@ import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/zoom_status.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
+import 'package:revelation/l10n/app_localizations.dart';
 
 class PrimarySourceDetailCoordinator {
   late final PrimarySourceDescriptionCubit _descriptionCubit;
@@ -256,16 +257,16 @@ class PrimarySourceDetailCoordinator {
     );
   }
 
-  void showCommonInfo(BuildContext context) {
-    _descriptionCubit.showCommonInfo(context);
+  void showCommonInfo(AppLocalizations localizations) {
+    _descriptionCubit.showCommonInfo(localizations);
   }
 
   bool navigateDescriptionSelection(
-    BuildContext context, {
+    AppLocalizations localizations, {
     required bool forward,
   }) {
     final navigated = _descriptionCubit.navigateSelection(
-      context,
+      localizations,
       forward: forward,
       source: primarySource,
       selectedPage: selectedPage,
@@ -277,20 +278,23 @@ class PrimarySourceDetailCoordinator {
     return _descriptionCubit.getGreekStrongPickerEntries();
   }
 
-  void showInfoForStrongNumber(int strongNumber, BuildContext context) {
+  void showInfoForStrongNumber(
+    int strongNumber,
+    AppLocalizations localizations,
+  ) {
     final shown = _descriptionCubit.showInfoForStrongNumber(
       strongNumber: strongNumber,
-      context: context,
+      localizations: localizations,
     );
     if (!shown) {
       return;
     }
   }
 
-  void showInfoForWord(int wordIndex, BuildContext context) {
+  void showInfoForWord(int wordIndex, AppLocalizations localizations) {
     final shown = _descriptionCubit.showInfoForWord(
       wordIndex: wordIndex,
-      context: context,
+      localizations: localizations,
       source: primarySource,
       selectedPage: selectedPage,
     );
@@ -299,10 +303,10 @@ class PrimarySourceDetailCoordinator {
     }
   }
 
-  void showInfoForVerse(int verseIndex, BuildContext context) {
+  void showInfoForVerse(int verseIndex, AppLocalizations localizations) {
     final shown = _descriptionCubit.showInfoForVerse(
       verseIndex: verseIndex,
-      context: context,
+      localizations: localizations,
       source: primarySource,
       selectedPage: selectedPage,
     );

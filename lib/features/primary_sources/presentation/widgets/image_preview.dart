@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
+import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page_word.dart';
@@ -539,7 +540,7 @@ class ImagePreviewState extends State<ImagePreview> {
       final verse = widget.verses[i];
       final labelRect = RelativeVersesPainter.getLabelRect(verse, imgSize);
       if (labelRect.contains(tapPoint)) {
-        vm.showInfoForVerse(i, context);
+        vm.showInfoForVerse(i, AppLocalizations.of(context)!);
         return true;
       }
     }
@@ -582,7 +583,7 @@ class ImagePreviewState extends State<ImagePreview> {
             coord.x <= hitRight &&
             coord.y >= hitTop &&
             coord.y <= hitBottom) {
-          vm.showInfoForWord(wi, context);
+          vm.showInfoForWord(wi, AppLocalizations.of(context)!);
           return true;
         }
       }
@@ -637,7 +638,7 @@ class ImagePreviewState extends State<ImagePreview> {
           coord.y <= hitBottom) {
         final int? number = int.tryParse(t.text);
         if (number != null) {
-          vm.showInfoForStrongNumber(number, context);
+          vm.showInfoForStrongNumber(number, AppLocalizations.of(context)!);
           return true;
         }
       }

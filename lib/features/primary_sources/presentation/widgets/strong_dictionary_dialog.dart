@@ -47,10 +47,7 @@ class _StrongDictionaryDialogState extends State<StrongDictionaryDialog> {
     final dialogWidth = (mediaSize.width - 20).clamp(320.0, 800.0).toDouble();
     final dialogHeight = (mediaSize.height - 36).clamp(220.0, 600.0).toDouble();
 
-    final content = _descriptionService.buildStrongContent(
-      context,
-      _strongNumber,
-    );
+    final content = _descriptionService.buildStrongContent(l10n, _strongNumber);
 
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

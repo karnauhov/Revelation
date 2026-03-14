@@ -3,6 +3,15 @@ import 'package:revelation/l10n/app_localizations.dart';
 
 String locLinks(BuildContext context, String key) {
   final localizations = AppLocalizations.of(context)!;
+  return locLinksByLocalizations(localizations, key);
+}
+
+String locLinksByLocalizations(AppLocalizations localizations, String key) {
+  final Map<String, String> translations = _linkTranslations(localizations);
+  return translations[key] ?? key;
+}
+
+Map<String, String> _linkTranslations(AppLocalizations localizations) {
   final Map<String, String> translations = {
     "@indeclNumAdj": localizations.strong_indeclNumAdj,
     "@indeclLetN": localizations.strong_indeclLetN,
@@ -55,7 +64,7 @@ String locLinks(BuildContext context, String key) {
     "@conj": localizations.strong_conj,
     "@or": localizations.strong_or,
   };
-  return translations[key] ?? key;
+  return translations;
 }
 
 String locColorThemes(BuildContext context, String key) {

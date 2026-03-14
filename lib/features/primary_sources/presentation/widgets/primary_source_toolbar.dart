@@ -74,7 +74,7 @@ class PrimarySourceToolbar extends StatelessWidget {
           aud.playSound("click");
           if (primarySource.permissionsReceived) {
             viewModel.changeSelectedPage(newPage);
-            viewModel.showCommonInfo(context);
+            viewModel.showCommonInfo(AppLocalizations.of(context)!);
           }
         },
         items: primarySource.permissionsReceived

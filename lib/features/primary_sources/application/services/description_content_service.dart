@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:revelation/infra/db/data_sources/description_data_source.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_content.dart';
@@ -28,7 +27,7 @@ class DescriptionContentService {
            referenceResolver ?? PrimarySourceReferenceService();
 
   DescriptionContent? buildContent(
-    BuildContext context,
+    AppLocalizations localizations,
     DescriptionRequest request, {
     PrimarySource? fallbackSource,
     model.Page? fallbackPage,
@@ -39,17 +38,17 @@ class DescriptionContentService {
 
     return switch (request) {
       StrongDescriptionRequest strongRequest => _buildStrongContent(
-        context,
+        localizations,
         strongRequest,
       ),
       WordDescriptionRequest wordRequest => _buildWordContent(
-        context,
+        localizations,
         wordRequest,
         fallbackSource: fallbackSource,
         fallbackPage: fallbackPage,
       ),
       VerseDescriptionRequest verseRequest => _buildVerseContent(
-        context,
+        localizations,
         verseRequest,
         fallbackSource: fallbackSource,
         fallbackPage: fallbackPage,
@@ -58,11 +57,11 @@ class DescriptionContentService {
   }
 
   DescriptionContent? buildStrongContent(
-    BuildContext context,
+    AppLocalizations localizations,
     int strongNumber,
   ) {
     return buildContent(
-      context,
+      localizations,
       StrongDescriptionRequest(strongNumber: strongNumber),
     );
   }
@@ -119,7 +118,7 @@ class DescriptionContentService {
   }
 
   DescriptionContent? _buildStrongContent(
-    BuildContext context,
+    AppLocalizations localizations,
     StrongDescriptionRequest request,
   ) {
     final strongNumber = request.strongNumber;
@@ -141,7 +140,7 @@ class DescriptionContentService {
     buffer.write(word);
     buffer.write('\n\r');
 
-    buffer.write(AppLocalizations.of(context)!.strong_number);
+    buffer.write(localizations.strong_number);
     final prevId = getNeighborStrongNumber(
       _dataSource.greekWords[wordIndex].id,
       forward: false,
@@ -157,7 +156,7 @@ class DescriptionContentService {
     );
     buffer.write('** [->](strong:G$nextId)\n\r');
 
-    buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
+    buffer.write(localizations.strong_pronunciation);
     buffer.write(': **');
     buffer.write(
       _pronunciation
@@ -179,16 +178,16 @@ class DescriptionContentService {
 
     final category = _dataSource.greekWords[wordIndex].category.trim();
     if (category.isNotEmpty) {
-      buffer.write(AppLocalizations.of(context)!.strong_part_of_speech);
+      buffer.write(localizations.strong_part_of_speech);
       buffer.write(': **');
-      buffer.write(_replaceKeys(context, category));
+      buffer.write(_replaceKeys(localizations, category));
       buffer.write('**\n\r');
     }
 
     final origin = _dataSource.greekWords[wordIndex].origin.trim();
     if (origin.isNotEmpty) {
       buffer.write('\n\r');
-      buffer.write(AppLocalizations.of(context)!.strong_origin);
+      buffer.write(localizations.strong_origin);
       buffer.write(': ');
       buffer.write(_getOrigins(origin));
       buffer.write('\n\r');
@@ -197,7 +196,7 @@ class DescriptionContentService {
     final synonyms = _dataSource.greekWords[wordIndex].synonyms.trim();
     if (synonyms.isNotEmpty) {
       buffer.write('\n\r');
-      buffer.write(AppLocalizations.of(context)!.strong_synonyms);
+      buffer.write(localizations.strong_synonyms);
       buffer.write(': ');
       buffer.write(_getSynonyms(synonyms));
       buffer.write('\n\r');
@@ -205,7 +204,7 @@ class DescriptionContentService {
 
     final usage = _dataSource.greekWords[wordIndex].usage.trim();
     if (usage.isNotEmpty) {
-      buffer.write(AppLocalizations.of(context)!.strong_usage);
+      buffer.write(localizations.strong_usage);
       buffer.write(': ');
       buffer.write(_getUsage(usage));
       buffer.write('\n\r');
@@ -218,7 +217,7 @@ class DescriptionContentService {
   }
 
   DescriptionContent? _buildWordContent(
-    BuildContext context,
+    AppLocalizations localizations,
     WordDescriptionRequest request, {
     PrimarySource? fallbackSource,
     model.Page? fallbackPage,
@@ -242,14 +241,14 @@ class DescriptionContentService {
     buffer.write('\n\r');
 
     if (word.sn != null) {
-      buffer.write(AppLocalizations.of(context)!.strong_number);
+      buffer.write(localizations.strong_number);
       buffer.write(': ');
       buffer.write('**[${word.sn!}](strong:G${word.sn!})**');
       buffer.write('\n\r');
     }
 
     if (_containsAnyLetter(word.text)) {
-      buffer.write(AppLocalizations.of(context)!.strong_pronunciation);
+      buffer.write(localizations.strong_pronunciation);
       buffer.write(': **');
       if (word.snPronounce && word.sn != null) {
         final index = _dataSource.greekWords.indexWhere((w) => w.id == word.sn);
@@ -293,7 +292,7 @@ class DescriptionContentService {
   }
 
   DescriptionContent? _buildVerseContent(
-    BuildContext context,
+    AppLocalizations localizations,
     VerseDescriptionRequest request, {
     PrimarySource? fallbackSource,
     model.Page? fallbackPage,
@@ -317,7 +316,7 @@ class DescriptionContentService {
     final buffer = StringBuffer();
 
     buffer.write('## ');
-    buffer.write(AppLocalizations.of(context)!.app_name);
+    buffer.write(localizations.app_name);
     buffer.write(' ');
     buffer.write(verseRef);
     buffer.write('\n\r');
@@ -338,7 +337,7 @@ class DescriptionContentService {
     if (parts.isNotEmpty) {
       buffer.write(parts.join(' '));
     } else {
-      buffer.write(AppLocalizations.of(context)!.click_for_info);
+      buffer.write(localizations.click_for_info);
     }
 
     return DescriptionContent(
@@ -351,11 +350,11 @@ class DescriptionContentService {
     return value == 2717 || (value >= 3203 && value <= 3302);
   }
 
-  String _replaceKeys(BuildContext context, String input) {
+  String _replaceKeys(AppLocalizations localizations, String input) {
     final regex = RegExp(r'@\w+');
     return input.replaceAllMapped(regex, (match) {
       final key = match.group(0)!;
-      return locLinks(context, key);
+      return locLinksByLocalizations(localizations, key);
     });
   }
 

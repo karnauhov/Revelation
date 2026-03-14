@@ -145,7 +145,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                   ? widget.primarySource.pages.first
                   : null,
             );
-            viewModel.showCommonInfo(context);
+            viewModel.showCommonInfo(AppLocalizations.of(context)!);
           }
 
           final double screenWidth = MediaQuery.of(context).size.width;
@@ -369,7 +369,12 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         !viewModel.pipetteMode;
     return PrimarySourceDescriptionPanel(
       descriptionContent: viewModel.descriptionContent,
-      onGreekStrongTap: viewModel.showInfoForStrongNumber,
+      onGreekStrongTap: (strongNumber, linkContext) {
+        viewModel.showInfoForStrongNumber(
+          strongNumber,
+          AppLocalizations.of(linkContext)!,
+        );
+      },
       onGreekStrongPickerTap: (strongNumber, linkContext) {
         _openStrongNumberPickerDialog(linkContext, viewModel, strongNumber);
       },
@@ -387,10 +392,16 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       enableSwipeNavigation: _isMobileSwipeNavigationEnabled(viewModel),
       referenceTooltipKey: _referenceTooltipKey,
       onNavigateBackward: () {
-        viewModel.navigateDescriptionSelection(context, forward: false);
+        viewModel.navigateDescriptionSelection(
+          AppLocalizations.of(context)!,
+          forward: false,
+        );
       },
       onNavigateForward: () {
-        viewModel.navigateDescriptionSelection(context, forward: true);
+        viewModel.navigateDescriptionSelection(
+          AppLocalizations.of(context)!,
+          forward: true,
+        );
       },
       onHorizontalDragEnd: (details) {
         _handleDescriptionSwipe(details, viewModel);
@@ -416,7 +427,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       return;
     }
 
-    viewModel.showInfoForStrongNumber(pickedStrongNumber, context);
+    viewModel.showInfoForStrongNumber(
+      pickedStrongNumber,
+      AppLocalizations.of(context)!,
+    );
   }
 
   void _tryApplyInitialReference(PrimarySourceDetailCoordinator viewModel) {
@@ -538,7 +552,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     if (!linkContext.mounted) {
       return;
     }
-    viewModel.showInfoForWord(wordIndex, linkContext);
+    viewModel.showInfoForWord(wordIndex, AppLocalizations.of(linkContext)!);
   }
 
   PrimarySource? _findPrimarySourceById(String sourceId) {
@@ -614,7 +628,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     }
 
     final bool forward = velocity < 0;
-    viewModel.navigateDescriptionSelection(context, forward: forward);
+    viewModel.navigateDescriptionSelection(
+      AppLocalizations.of(context)!,
+      forward: forward,
+    );
   }
 
   bool _canNavigateDescriptionByArrow(
@@ -652,7 +669,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     if (!_canNavigateDescriptionByArrow(viewModel)) {
       return;
     }
-    viewModel.navigateDescriptionSelection(context, forward: forward);
+    viewModel.navigateDescriptionSelection(
+      AppLocalizations.of(context)!,
+      forward: forward,
+    );
   }
 
   PrimarySourceDetailCoordinator _ensureViewModel(BuildContext context) {

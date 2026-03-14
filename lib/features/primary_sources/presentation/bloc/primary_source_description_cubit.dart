@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_state.dart';
@@ -44,16 +43,16 @@ class PrimarySourceDescriptionCubit
     );
   }
 
-  void showCommonInfo(BuildContext context) {
+  void showCommonInfo(AppLocalizations localizations) {
     updateDescriptionContent(
-      content: AppLocalizations.of(context)!.click_for_info,
+      content: localizations.click_for_info,
       type: DescriptionKind.info,
       number: null,
     );
   }
 
   bool navigateSelection(
-    BuildContext context, {
+    AppLocalizations localizations, {
     required bool forward,
     required PrimarySource source,
     required model.Page? selectedPage,
@@ -74,7 +73,7 @@ class PrimarySourceDescriptionCubit
           : (currentIndex - 1 + words.length) % words.length;
       return showInfoForWord(
         wordIndex: nextIndex,
-        context: context,
+        localizations: localizations,
         source: source,
         selectedPage: selectedPage,
       );
@@ -92,7 +91,7 @@ class PrimarySourceDescriptionCubit
       );
       return showInfoForStrongNumber(
         strongNumber: nextStrongNumber,
-        context: context,
+        localizations: localizations,
       );
     }
 
@@ -112,7 +111,7 @@ class PrimarySourceDescriptionCubit
           : (currentIndex - 1 + verses.length) % verses.length;
       return showInfoForVerse(
         verseIndex: nextIndex,
-        context: context,
+        localizations: localizations,
         source: source,
         selectedPage: selectedPage,
       );
@@ -137,10 +136,10 @@ class PrimarySourceDescriptionCubit
 
   bool showInfoForStrongNumber({
     required int strongNumber,
-    required BuildContext context,
+    required AppLocalizations localizations,
   }) {
     final content = _descriptionService.buildStrongContent(
-      context,
+      localizations,
       strongNumber,
     );
     if (content == null) {
@@ -157,7 +156,7 @@ class PrimarySourceDescriptionCubit
 
   bool showInfoForWord({
     required int wordIndex,
-    required BuildContext context,
+    required AppLocalizations localizations,
     required PrimarySource source,
     required model.Page? selectedPage,
   }) {
@@ -166,7 +165,7 @@ class PrimarySourceDescriptionCubit
     }
 
     final content = _descriptionService.buildContent(
-      context,
+      localizations,
       WordDescriptionRequest(
         sourceId: source.id,
         pageName: selectedPage.name,
@@ -189,7 +188,7 @@ class PrimarySourceDescriptionCubit
 
   bool showInfoForVerse({
     required int verseIndex,
-    required BuildContext context,
+    required AppLocalizations localizations,
     required PrimarySource source,
     required model.Page? selectedPage,
   }) {
@@ -202,7 +201,7 @@ class PrimarySourceDescriptionCubit
 
     final verse = selectedPage.verses[verseIndex];
     final content = _descriptionService.buildContent(
-      context,
+      localizations,
       VerseDescriptionRequest(
         sourceId: source.id,
         chapterNumber: verse.chapterNumber,
