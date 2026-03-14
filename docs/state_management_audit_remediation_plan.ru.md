@@ -3,7 +3,7 @@
 Дата аудита: `2026-03-14`  
 Область: весь Flutter-проект (`lib/`, `test/`, `integration_test/`, `docs/`, CI/scripts)  
 Фокус: только state management и связанные архитектурные аспекты  
-Статус выполнения плана: `в процессе (Step 1-6 частично выполнены)`  
+Статус выполнения плана: `в процессе (Step 1-7 частично выполнены)`  
 
 Как использовать документ:
 - Этот файл предназначен как пошаговый execution-plan.
@@ -563,19 +563,19 @@ Legacy/candidate cleanup:
 - [x] How to validate: Unit tests “close before async completes”.
 
 ### Step 7 — Усилить state contracts (equality + шум emit)
-- [ ] Цель: Снизить churn и сделать переходы состояния прозрачнее.
-- [ ] Почему приоритет: Основа для производительности и предсказуемости.
-- [ ] Конкретные действия:
-- [ ] Ввести единый policy equality для state/value-классов (`Equatable` или `==/hashCode`).
-- [ ] Добавить dedup checks в часто дергаемые обновления (viewport/zoom status).
-- [ ] Затрагиваемые файлы/папки:
-- [ ] `lib/features/**/presentation/bloc/*_state.dart`
-- [ ] `lib/shared/models/zoom_status.dart`
-- [ ] `lib/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart`
-- [ ] Риск: Средний (можно случайно поменять семантику сравнений).
-- [ ] Ожидаемый результат: Меньше лишних rebuild, лучше тестируемость state transitions.
-- [ ] Dependency on previous steps: Рекомендуется после Step 2.
-- [ ] How to validate: State unit tests + widget rebuild assertions.
+- [x] Цель: Снизить churn и сделать переходы состояния прозрачнее.
+- [x] Почему приоритет: Основа для производительности и предсказуемости.
+- [x] Конкретные действия:
+- [x] Ввести единый policy equality для state/value-классов (`==/hashCode`).
+- [x] Добавить dedup checks в часто дергаемые обновления (viewport/zoom status).
+- [x] Затрагиваемые файлы/папки:
+- [x] `lib/features/**/presentation/bloc/*_state.dart`
+- [x] `lib/shared/models/zoom_status.dart`
+- [x] `lib/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart`
+- [x] Риск: Средний (можно случайно поменять семантику сравнений).
+- [x] Ожидаемый результат: Меньше лишних rebuild, лучше тестируемость state transitions.
+- [x] Dependency on previous steps: Рекомендуется после Step 2.
+- [x] How to validate: State unit tests + widget rebuild assertions.
 
 ### Step 8 — Cleanup legacy state leftovers
 - [ ] Цель: Упростить модель detail-state без потери функциональности.
@@ -713,7 +713,7 @@ Legacy/candidate cleanup:
 - [ ] Step 4: Убрать mutable state из `PrimarySource` (частично выполнен: showMore удален из модели, добавлен `PrimarySourcesExpansionCubit`, ожидается ручной smoke)
 - [x] Step 5: Добавить stale guard в `TopicsCatalogCubit`
 - [x] Step 6: Привести async lifecycle safety к единому стандарту
-- [ ] Step 7: Стандартизовать equality и dedup state updates
+- [x] Step 7: Стандартизовать equality и dedup state updates
 - [ ] Step 8: Очистить legacy state leftovers
 - [ ] Step 9: Упорядочить DI/provisioning style
 - [ ] Step 10: Закрыть тесты + синхронизировать RU/EN docs

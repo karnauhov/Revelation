@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 
 class PrimarySourceImageState {
   PrimarySourceImageState({
@@ -46,4 +46,27 @@ class PrimarySourceImageState {
       maxTextureSize: maxTextureSize ?? this.maxTextureSize,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PrimarySourceImageState &&
+            runtimeType == other.runtimeType &&
+            identical(imageData, other.imageData) &&
+            isLoading == other.isLoading &&
+            imageShown == other.imageShown &&
+            refreshError == other.refreshError &&
+            mapEquals(localPageLoaded, other.localPageLoaded) &&
+            maxTextureSize == other.maxTextureSize;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    imageData,
+    isLoading,
+    imageShown,
+    refreshError,
+    Object.hashAllUnordered(localPageLoaded.entries),
+    maxTextureSize,
+  );
 }

@@ -28,4 +28,23 @@ class AppSettings {
       soundEnabled: map['soundEnabled'] ?? true,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is AppSettings &&
+            runtimeType == other.runtimeType &&
+            selectedLanguage == other.selectedLanguage &&
+            selectedTheme == other.selectedTheme &&
+            selectedFontSize == other.selectedFontSize &&
+            soundEnabled == other.soundEnabled;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    selectedLanguage,
+    selectedTheme,
+    selectedFontSize,
+    soundEnabled,
+  );
 }

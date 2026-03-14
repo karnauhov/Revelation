@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 
@@ -45,4 +46,25 @@ class PrimarySourceDescriptionState {
       pickerEntries: pickerEntries ?? this.pickerEntries,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PrimarySourceDescriptionState &&
+            runtimeType == other.runtimeType &&
+            showDescription == other.showDescription &&
+            content == other.content &&
+            currentType == other.currentType &&
+            currentNumber == other.currentNumber &&
+            listEquals(pickerEntries, other.pickerEntries);
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    showDescription,
+    content,
+    currentType,
+    currentNumber,
+    Object.hashAll(pickerEntries),
+  );
 }

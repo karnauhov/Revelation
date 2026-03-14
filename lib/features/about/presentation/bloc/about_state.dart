@@ -57,4 +57,31 @@ class AboutState {
       failure: clearFailure ? null : (failure ?? this.failure),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is AboutState &&
+            runtimeType == other.runtimeType &&
+            appVersion == other.appVersion &&
+            buildNumber == other.buildNumber &&
+            changelog == other.changelog &&
+            isLoading == other.isLoading &&
+            isChangelogExpanded == other.isChangelogExpanded &&
+            isAcknowledgementsExpanded == other.isAcknowledgementsExpanded &&
+            isRecommendedExpanded == other.isRecommendedExpanded &&
+            failure == other.failure;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    appVersion,
+    buildNumber,
+    changelog,
+    isLoading,
+    isChangelogExpanded,
+    isAcknowledgementsExpanded,
+    isRecommendedExpanded,
+    failure,
+  );
 }

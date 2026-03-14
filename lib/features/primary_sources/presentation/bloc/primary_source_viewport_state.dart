@@ -95,4 +95,45 @@ class PrimarySourceViewportState {
       isColorToReplace: isColorToReplace ?? this.isColorToReplace,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PrimarySourceViewportState &&
+            runtimeType == other.runtimeType &&
+            dx == other.dx &&
+            dy == other.dy &&
+            scale == other.scale &&
+            savedX == other.savedX &&
+            savedY == other.savedY &&
+            savedScale == other.savedScale &&
+            scaleAndPositionRestored == other.scaleAndPositionRestored &&
+            zoomStatus == other.zoomStatus &&
+            selectedArea == other.selectedArea &&
+            colorToReplace == other.colorToReplace &&
+            newColor == other.newColor &&
+            tolerance == other.tolerance &&
+            pipetteMode == other.pipetteMode &&
+            selectAreaMode == other.selectAreaMode &&
+            isColorToReplace == other.isColorToReplace;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    dx,
+    dy,
+    scale,
+    savedX,
+    savedY,
+    savedScale,
+    scaleAndPositionRestored,
+    zoomStatus,
+    selectedArea,
+    colorToReplace,
+    newColor,
+    tolerance,
+    pipetteMode,
+    selectAreaMode,
+    isColorToReplace,
+  );
 }

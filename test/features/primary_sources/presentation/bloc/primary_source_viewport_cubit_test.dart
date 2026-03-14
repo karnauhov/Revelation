@@ -124,4 +124,39 @@ void main() {
     await Future<void>.delayed(Duration.zero);
     expect(emissions, 1);
   });
+
+  test('dedups repeated non-transform updates', () async {
+    final cubit = PrimarySourceViewportCubit();
+    addTearDown(cubit.close);
+
+    var emissions = 0;
+    final subscription = cubit.stream.listen((_) {
+      emissions++;
+    });
+    addTearDown(subscription.cancel);
+
+    cubit.setScaleAndPositionRestored(false);
+    await Future<void>.delayed(Duration.zero);
+    expect(emissions, 0);
+
+    cubit.startSelectAreaMode();
+    await Future<void>.delayed(Duration.zero);
+    expect(emissions, 1);
+
+    cubit.startSelectAreaMode();
+    await Future<void>.delayed(Duration.zero);
+    expect(emissions, 1);
+
+    cubit.startPipetteMode(isColorToReplace: true);
+    await Future<void>.delayed(Duration.zero);
+    expect(emissions, 2);
+
+    cubit.startPipetteMode(isColorToReplace: true);
+    await Future<void>.delayed(Duration.zero);
+    expect(emissions, 2);
+
+    cubit.resetColorReplacement();
+    await Future<void>.delayed(Duration.zero);
+    expect(emissions, 2);
+  });
 }

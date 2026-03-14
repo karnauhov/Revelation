@@ -37,4 +37,17 @@ class SettingsState {
       failure: clearFailure ? null : (failure ?? this.failure),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is SettingsState &&
+            runtimeType == other.runtimeType &&
+            settings == other.settings &&
+            isLoading == other.isLoading &&
+            failure == other.failure;
+  }
+
+  @override
+  int get hashCode => Object.hash(settings, isLoading, failure);
 }

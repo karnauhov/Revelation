@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class PrimarySourcesExpansionState {
   PrimarySourcesExpansionState({required Set<String> expandedSourceIds})
     : expandedSourceIds = Set<String>.unmodifiable(expandedSourceIds);
@@ -17,4 +19,15 @@ class PrimarySourcesExpansionState {
       expandedSourceIds: expandedSourceIds ?? this.expandedSourceIds,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PrimarySourcesExpansionState &&
+            runtimeType == other.runtimeType &&
+            setEquals(expandedSourceIds, other.expandedSourceIds);
+  }
+
+  @override
+  int get hashCode => Object.hashAllUnordered(expandedSourceIds);
 }

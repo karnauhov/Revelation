@@ -61,4 +61,16 @@ class AppFailure implements Exception {
   String toString() {
     return 'AppFailure(type: $type, message: $message, cause: $cause)';
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is AppFailure &&
+            runtimeType == other.runtimeType &&
+            type == other.type &&
+            message == other.message;
+  }
+
+  @override
+  int get hashCode => Object.hash(type, message);
 }

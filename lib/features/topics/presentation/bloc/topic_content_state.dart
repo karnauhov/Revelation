@@ -50,4 +50,29 @@ class TopicContentState {
       failure: clearFailure ? null : (failure ?? this.failure),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is TopicContentState &&
+            runtimeType == other.runtimeType &&
+            route == other.route &&
+            language == other.language &&
+            name == other.name &&
+            description == other.description &&
+            markdown == other.markdown &&
+            isLoading == other.isLoading &&
+            failure == other.failure;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    route,
+    language,
+    name,
+    description,
+    markdown,
+    isLoading,
+    failure,
+  );
 }

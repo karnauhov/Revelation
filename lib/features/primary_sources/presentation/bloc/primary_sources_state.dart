@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 
@@ -45,4 +46,25 @@ class PrimarySourcesState {
       failure: clearFailure ? null : (failure ?? this.failure),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PrimarySourcesState &&
+            runtimeType == other.runtimeType &&
+            listEquals(full, other.full) &&
+            listEquals(significant, other.significant) &&
+            listEquals(fragments, other.fragments) &&
+            isLoading == other.isLoading &&
+            failure == other.failure;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    Object.hashAll(full),
+    Object.hashAll(significant),
+    Object.hashAll(fragments),
+    isLoading,
+    failure,
+  );
 }

@@ -41,4 +41,19 @@ class PrimarySourceSessionState {
       isMenuOpen: isMenuOpen ?? this.isMenuOpen,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PrimarySourceSessionState &&
+            runtimeType == other.runtimeType &&
+            (identical(source, other.source) || source.id == other.source.id) &&
+            selectedPage == other.selectedPage &&
+            imageName == other.imageName &&
+            isMenuOpen == other.isMenuOpen;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(source.id, selectedPage, imageName, isMenuOpen);
 }

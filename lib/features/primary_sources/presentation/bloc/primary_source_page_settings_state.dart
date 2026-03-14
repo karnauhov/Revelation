@@ -52,4 +52,31 @@ class PrimarySourcePageSettingsState {
       showVerseNumbers: showVerseNumbers ?? this.showVerseNumbers,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PrimarySourcePageSettingsState &&
+            runtimeType == other.runtimeType &&
+            rawSettings == other.rawSettings &&
+            isNegative == other.isNegative &&
+            isMonochrome == other.isMonochrome &&
+            brightness == other.brightness &&
+            contrast == other.contrast &&
+            showWordSeparators == other.showWordSeparators &&
+            showStrongNumbers == other.showStrongNumbers &&
+            showVerseNumbers == other.showVerseNumbers;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    rawSettings,
+    isNegative,
+    isMonochrome,
+    brightness,
+    contrast,
+    showWordSeparators,
+    showStrongNumbers,
+    showVerseNumbers,
+  );
 }

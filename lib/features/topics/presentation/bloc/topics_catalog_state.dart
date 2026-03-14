@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
@@ -43,4 +44,25 @@ class TopicsCatalogState {
       failure: clearFailure ? null : (failure ?? this.failure),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is TopicsCatalogState &&
+            runtimeType == other.runtimeType &&
+            language == other.language &&
+            listEquals(topics, other.topics) &&
+            mapEquals(iconByKey, other.iconByKey) &&
+            isLoading == other.isLoading &&
+            failure == other.failure;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    language,
+    Object.hashAll(topics),
+    Object.hashAllUnordered(iconByKey.entries),
+    isLoading,
+    failure,
+  );
 }

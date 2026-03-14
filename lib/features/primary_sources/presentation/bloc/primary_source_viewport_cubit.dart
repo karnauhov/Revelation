@@ -9,11 +9,11 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
   static const double _transformEpsilon = 0.0001;
 
   void markImageLoadingStarted() {
-    emit(state.copyWith(scaleAndPositionRestored: false));
+    _emitIfChanged(state.copyWith(scaleAndPositionRestored: false));
   }
 
   void applyViewportSettings(PageSettingsState settings) {
-    emit(
+    _emitIfChanged(
       state.copyWith(
         dx: settings.posX,
         dy: settings.posY,
@@ -26,7 +26,7 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
   }
 
   void resetViewportWithNoPage() {
-    emit(
+    _emitIfChanged(
       state.copyWith(
         dx: 0,
         dy: 0,
@@ -40,7 +40,7 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
   }
 
   void resetViewportAndRenderControls() {
-    emit(
+    _emitIfChanged(
       state.copyWith(
         dx: 0,
         dy: 0,
@@ -58,7 +58,7 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
   }
 
   void setScaleAndPositionRestored(bool value) {
-    emit(state.copyWith(scaleAndPositionRestored: value));
+    _emitIfChanged(state.copyWith(scaleAndPositionRestored: value));
   }
 
   void updateTransform({
@@ -73,22 +73,21 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
         state.zoomStatus == zoomStatus) {
       return;
     }
-    emit(state.copyWith(dx: dx, dy: dy, scale: scale, zoomStatus: zoomStatus));
+    _emitIfChanged(
+      state.copyWith(dx: dx, dy: dy, scale: scale, zoomStatus: zoomStatus),
+    );
   }
 
   void setZoomStatus(ZoomStatus status) {
-    if (state.zoomStatus == status) {
-      return;
-    }
-    emit(state.copyWith(zoomStatus: status));
+    _emitIfChanged(state.copyWith(zoomStatus: status));
   }
 
   void startSelectAreaMode() {
-    emit(state.copyWith(selectAreaMode: true));
+    _emitIfChanged(state.copyWith(selectAreaMode: true));
   }
 
   void finishSelectAreaMode(Rect? selectedArea) {
-    emit(
+    _emitIfChanged(
       state.copyWith(
         selectedArea: selectedArea,
         selectedAreaSet: true,
@@ -98,16 +97,18 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
   }
 
   void startPipetteMode({required bool isColorToReplace}) {
-    emit(state.copyWith(pipetteMode: true, isColorToReplace: isColorToReplace));
+    _emitIfChanged(
+      state.copyWith(pipetteMode: true, isColorToReplace: isColorToReplace),
+    );
   }
 
   void finishPipetteMode(Color? color) {
     if (color == null) {
-      emit(state.copyWith(pipetteMode: false));
+      _emitIfChanged(state.copyWith(pipetteMode: false));
       return;
     }
 
-    emit(
+    _emitIfChanged(
       state.copyWith(
         pipetteMode: false,
         colorToReplace: state.isColorToReplace ? color : state.colorToReplace,
@@ -122,7 +123,7 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
     required Color newColor,
     required double tolerance,
   }) {
-    emit(
+    _emitIfChanged(
       state.copyWith(
         selectedArea: selectedArea,
         selectedAreaSet: true,
@@ -134,7 +135,7 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
   }
 
   void resetColorReplacement() {
-    emit(
+    _emitIfChanged(
       state.copyWith(
         selectedArea: null,
         selectedAreaSet: true,
@@ -147,5 +148,12 @@ class PrimarySourceViewportCubit extends Cubit<PrimarySourceViewportState> {
 
   bool _areClose(double a, double b) {
     return (a - b).abs() <= _transformEpsilon;
+  }
+
+  void _emitIfChanged(PrimarySourceViewportState nextState) {
+    if (nextState == state) {
+      return;
+    }
+    emit(nextState);
   }
 }
