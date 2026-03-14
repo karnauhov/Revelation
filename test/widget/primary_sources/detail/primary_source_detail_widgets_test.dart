@@ -5,11 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_detail_coordinator.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
@@ -173,11 +173,38 @@ void main() {
               return SizedBox(
                 width: 800,
                 child: PrimarySourceToolbar(
-                  viewModel: bundle.viewModel,
                   primarySource: bundle.primarySource,
+                  selectedPage: bundle.viewModel.selectedPage,
+                  localPageLoaded: bundle.viewModel.localPageLoaded,
+                  refreshError: bundle.viewModel.refreshError,
+                  isNegative: bundle.viewModel.isNegative,
+                  isMonochrome: bundle.viewModel.isMonochrome,
+                  brightness: bundle.viewModel.brightness,
+                  contrast: bundle.viewModel.contrast,
+                  selectedArea: bundle.viewModel.selectedArea,
+                  tolerance: bundle.viewModel.tolerance,
+                  showWordSeparators: bundle.viewModel.showWordSeparators,
+                  showStrongNumbers: bundle.viewModel.showStrongNumbers,
+                  showVerseNumbers: bundle.viewModel.showVerseNumbers,
+                  zoomStatusNotifier: bundle.viewModel.zoomStatusNotifier,
+                  imageController: bundle.viewModel.imageController,
                   isBottom: true,
                   dropdownWidth: 760,
-                  screenContext: context,
+                  onChangeSelectedPage: bundle.viewModel.changeSelectedPage,
+                  onShowCommonInfo: () {},
+                  onReloadImage: () async {},
+                  onToggleNegative: bundle.viewModel.toggleNegative,
+                  onToggleMonochrome: bundle.viewModel.toggleMonochrome,
+                  onToggleShowWordSeparators:
+                      bundle.viewModel.toggleShowWordSeparators,
+                  onToggleShowStrongNumbers:
+                      bundle.viewModel.toggleShowStrongNumbers,
+                  onToggleShowVerseNumbers:
+                      bundle.viewModel.toggleShowVerseNumbers,
+                  onRemovePageSettings: bundle.viewModel.removePageSettings,
+                  onOpenBrightnessContrastDialog: () {},
+                  onOpenReplaceColorDialog: () {},
+                  onSetMenuOpen: bundle.viewModel.setMenuOpen,
                 ),
               );
             },

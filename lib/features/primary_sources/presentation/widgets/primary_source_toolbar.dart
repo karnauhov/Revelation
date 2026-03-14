@@ -1,29 +1,77 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/image_preview_controller.dart';
+import 'package:revelation/features/primary_sources/presentation/screens/primary_source_screen.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar_overflow_menu.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/zoom_status.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/brightness_contrast_dialog.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar_overflow_menu.dart';
-import 'package:revelation/features/primary_sources/presentation/screens/primary_source_screen.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/replace_color_dialog.dart';
-import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
 
 class PrimarySourceToolbar extends StatelessWidget {
-  final PrimarySourceDetailCoordinator viewModel;
   final PrimarySource primarySource;
+  final model.Page? selectedPage;
+  final Map<String, bool?> localPageLoaded;
+  final bool refreshError;
+  final bool isNegative;
+  final bool isMonochrome;
+  final double brightness;
+  final double contrast;
+  final Rect? selectedArea;
+  final double tolerance;
+  final bool showWordSeparators;
+  final bool showStrongNumbers;
+  final bool showVerseNumbers;
+  final ValueNotifier<ZoomStatus> zoomStatusNotifier;
+  final ImagePreviewController imageController;
   final bool isBottom;
   final double dropdownWidth;
-  final BuildContext screenContext;
+  final Future<void> Function(model.Page? newPage) onChangeSelectedPage;
+  final VoidCallback onShowCommonInfo;
+  final Future<void> Function() onReloadImage;
+  final VoidCallback onToggleNegative;
+  final VoidCallback onToggleMonochrome;
+  final VoidCallback onToggleShowWordSeparators;
+  final VoidCallback onToggleShowStrongNumbers;
+  final VoidCallback onToggleShowVerseNumbers;
+  final VoidCallback onRemovePageSettings;
+  final VoidCallback onOpenBrightnessContrastDialog;
+  final VoidCallback onOpenReplaceColorDialog;
+  final ValueChanged<bool> onSetMenuOpen;
   final aud = AudioController();
 
   PrimarySourceToolbar({
-    required this.viewModel,
     required this.primarySource,
+    required this.selectedPage,
+    required this.localPageLoaded,
+    required this.refreshError,
+    required this.isNegative,
+    required this.isMonochrome,
+    required this.brightness,
+    required this.contrast,
+    required this.selectedArea,
+    required this.tolerance,
+    required this.showWordSeparators,
+    required this.showStrongNumbers,
+    required this.showVerseNumbers,
+    required this.zoomStatusNotifier,
+    required this.imageController,
     required this.isBottom,
     required this.dropdownWidth,
-    required this.screenContext,
+    required this.onChangeSelectedPage,
+    required this.onShowCommonInfo,
+    required this.onReloadImage,
+    required this.onToggleNegative,
+    required this.onToggleMonochrome,
+    required this.onToggleShowWordSeparators,
+    required this.onToggleShowStrongNumbers,
+    required this.onToggleShowVerseNumbers,
+    required this.onRemovePageSettings,
+    required this.onOpenBrightnessContrastDialog,
+    required this.onOpenReplaceColorDialog,
+    required this.onSetMenuOpen,
     super.key,
   });
 
@@ -45,9 +93,9 @@ class PrimarySourceToolbar extends StatelessWidget {
           );
         },
       );
-    } else {
-      return Row(children: _buildFullActions(context));
     }
+
+    return Row(children: _buildFullActions(context));
   }
 
   int _calcFitButtons(double actionWidth) {
@@ -57,60 +105,58 @@ class PrimarySourceToolbar extends StatelessWidget {
     return fit.clamp(0, PrimarySourceScreen.numButtons);
   }
 
+  bool get _hasSelectedPageWithPermissions =>
+      selectedPage != null && primarySource.permissionsReceived;
+
+  bool get _selectedPageImageReady =>
+      selectedPage != null &&
+      primarySource.permissionsReceived &&
+      localPageLoaded[selectedPage!.image] == true;
+
   List<Widget> _buildFullActions(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return [
       DropdownButton<model.Page>(
-        value: viewModel.selectedPage,
+        value: selectedPage,
         hint: Text(
           primarySource.pages.isEmpty || !primarySource.permissionsReceived
               ? AppLocalizations.of(context)!.images_are_missing
-              : "",
+              : '',
           style: TextStyle(color: colorScheme.onSurfaceVariant),
         ),
         onChanged: (model.Page? newPage) {
-          aud.playSound("click");
+          aud.playSound('click');
           if (primarySource.permissionsReceived) {
-            viewModel.changeSelectedPage(newPage);
-            viewModel.showCommonInfo(AppLocalizations.of(context)!);
+            unawaited(onChangeSelectedPage(newPage));
+            onShowCommonInfo();
           }
         },
         items: primarySource.permissionsReceived
-            ? primarySource.pages.map<DropdownMenuItem<model.Page>>((
-                model.Page value,
-              ) {
+            ? primarySource.pages.map<DropdownMenuItem<model.Page>>((page) {
                 return DropdownMenuItem<model.Page>(
-                  value: value,
-                  child: _buildDropdownItem(context, viewModel, value),
+                  value: page,
+                  child: _buildDropdownItem(context, page),
                 );
               }).toList()
             : List.empty(),
         onTap: () {
-          aud.playSound("click");
+          aud.playSound('click');
         },
       ),
       IconButton(
-        icon: viewModel.refreshError
-            ? Icon(Icons.sync_problem)
-            : Icon(Icons.sync),
-        color: viewModel.refreshError ? colorScheme.error : colorScheme.primary,
+        icon: refreshError ? Icon(Icons.sync_problem) : Icon(Icons.sync),
+        color: refreshError ? colorScheme.error : colorScheme.primary,
         tooltip: AppLocalizations.of(context)!.reload_image,
-        onPressed:
-            viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null
+        onPressed: _hasSelectedPageWithPermissions
             ? () {
-                aud.playSound("click");
-                viewModel.loadImage(
-                  viewModel.selectedPage!.image,
-                  isReload: true,
-                );
+                aud.playSound('click');
+                unawaited(onReloadImage());
               }
             : null,
       ),
       ValueListenableBuilder<ZoomStatus>(
-        valueListenable: viewModel.zoomStatusNotifier,
+        valueListenable: zoomStatusNotifier,
         builder: (context, zoomStatus, child) {
           return IconButton(
             icon: const Icon(Icons.zoom_in),
@@ -118,19 +164,19 @@ class PrimarySourceToolbar extends StatelessWidget {
             tooltip: AppLocalizations.of(context)!.zoom_in,
             onPressed: zoomStatus.canZoomIn
                 ? () {
-                    aud.playSound("click");
+                    aud.playSound('click');
                     final viewportCenter = Offset(
                       MediaQuery.of(context).size.width / 2,
                       MediaQuery.of(context).size.height / 2,
                     );
-                    viewModel.imageController.zoomIn(viewportCenter);
+                    imageController.zoomIn(viewportCenter);
                   }
                 : null,
           );
         },
       ),
       ValueListenableBuilder<ZoomStatus>(
-        valueListenable: viewModel.zoomStatusNotifier,
+        valueListenable: zoomStatusNotifier,
         builder: (context, zoomStatus, child) {
           return IconButton(
             icon: const Icon(Icons.zoom_out),
@@ -138,7 +184,7 @@ class PrimarySourceToolbar extends StatelessWidget {
             tooltip: AppLocalizations.of(context)!.zoom_out,
             onPressed: zoomStatus.canZoomOut
                 ? () {
-                    aud.playSound("click");
+                    aud.playSound('click');
                     final viewportSize = Size(
                       MediaQuery.of(context).size.width,
                       MediaQuery.of(context).size.height,
@@ -147,17 +193,14 @@ class PrimarySourceToolbar extends StatelessWidget {
                       viewportSize.width / 2,
                       viewportSize.height / 2,
                     );
-                    viewModel.imageController.zoomOut(
-                      viewportCenter,
-                      viewportSize,
-                    );
+                    imageController.zoomOut(viewportCenter, viewportSize);
                   }
                 : null,
           );
         },
       ),
       ValueListenableBuilder<ZoomStatus>(
-        valueListenable: viewModel.zoomStatusNotifier,
+        valueListenable: zoomStatusNotifier,
         builder: (context, zoomStatus, child) {
           return IconButton(
             icon: const Icon(Icons.zoom_out_map),
@@ -165,8 +208,8 @@ class PrimarySourceToolbar extends StatelessWidget {
             tooltip: AppLocalizations.of(context)!.restore_original_scale,
             onPressed: zoomStatus.canReset
                 ? () {
-                    aud.playSound("click");
-                    viewModel.imageController.backToMinScale();
+                    aud.playSound('click');
+                    imageController.backToMinScale();
                   }
                 : null,
           );
@@ -176,19 +219,16 @@ class PrimarySourceToolbar extends StatelessWidget {
         icon: const Icon(Icons.invert_colors),
         color: colorScheme.primary,
         style: IconButton.styleFrom(
-          backgroundColor: viewModel.isNegative
+          backgroundColor: isNegative
               ? colorScheme.secondaryContainer
               : Colors.transparent,
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.toggle_negative,
-        onPressed:
-            viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null &&
-                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+        onPressed: _selectedPageImageReady
             ? () {
-                aud.playSound("click");
-                viewModel.toggleNegative();
+                aud.playSound('click');
+                onToggleNegative();
               }
             : null,
       ),
@@ -196,20 +236,16 @@ class PrimarySourceToolbar extends StatelessWidget {
         icon: const Icon(Icons.monochrome_photos),
         color: colorScheme.primary,
         style: IconButton.styleFrom(
-          backgroundColor: viewModel.isMonochrome
+          backgroundColor: isMonochrome
               ? colorScheme.secondaryContainer
               : Colors.transparent,
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.toggle_monochrome,
-        onPressed:
-            viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null &&
-                !viewModel.primarySource.isMonochrome &&
-                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+        onPressed: _selectedPageImageReady && !primarySource.isMonochrome
             ? () {
-                aud.playSound("click");
-                viewModel.toggleMonochrome();
+                aud.playSound('click');
+                onToggleMonochrome();
               }
             : null,
       ),
@@ -217,20 +253,16 @@ class PrimarySourceToolbar extends StatelessWidget {
         icon: const Icon(Icons.brightness_6),
         color: colorScheme.primary,
         style: IconButton.styleFrom(
-          backgroundColor:
-              viewModel.brightness != 0 || viewModel.contrast != 100
+          backgroundColor: brightness != 0 || contrast != 100
               ? colorScheme.secondaryContainer
               : Colors.transparent,
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.brightness_contrast,
-        onPressed:
-            viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null &&
-                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+        onPressed: _selectedPageImageReady
             ? () {
-                aud.playSound("click");
-                _showBrightnessContrastDialog();
+                aud.playSound('click');
+                onOpenBrightnessContrastDialog();
               }
             : null,
       ),
@@ -238,20 +270,16 @@ class PrimarySourceToolbar extends StatelessWidget {
         icon: const Icon(Icons.format_paint),
         color: colorScheme.primary,
         style: IconButton.styleFrom(
-          backgroundColor:
-              viewModel.selectedArea != null && viewModel.tolerance != 0
+          backgroundColor: selectedArea != null && tolerance != 0
               ? colorScheme.secondaryContainer
               : Colors.transparent,
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.color_replacement,
-        onPressed:
-            viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null &&
-                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+        onPressed: _selectedPageImageReady
             ? () {
-                aud.playSound("click");
-                _showReplaceColorDialog();
+                aud.playSound('click');
+                onOpenReplaceColorDialog();
               }
             : null,
       ),
@@ -259,19 +287,16 @@ class PrimarySourceToolbar extends StatelessWidget {
         icon: const Icon(Icons.horizontal_distribute),
         color: colorScheme.primary,
         style: IconButton.styleFrom(
-          backgroundColor: viewModel.showWordSeparators
+          backgroundColor: showWordSeparators
               ? colorScheme.secondaryContainer
               : Colors.transparent,
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.toggle_show_word_separators,
-        onPressed:
-            viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null &&
-                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+        onPressed: _selectedPageImageReady
             ? () {
-                aud.playSound("click");
-                viewModel.toggleShowWordSeparators();
+                aud.playSound('click');
+                onToggleShowWordSeparators();
               }
             : null,
       ),
@@ -279,19 +304,16 @@ class PrimarySourceToolbar extends StatelessWidget {
         icon: const Icon(Icons.local_offer),
         color: colorScheme.primary,
         style: IconButton.styleFrom(
-          backgroundColor: viewModel.showStrongNumbers
+          backgroundColor: showStrongNumbers
               ? colorScheme.secondaryContainer
               : Colors.transparent,
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.toggle_show_strong_numbers,
-        onPressed:
-            viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null &&
-                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+        onPressed: _selectedPageImageReady
             ? () {
-                aud.playSound("click");
-                viewModel.toggleShowStrongNumbers();
+                aud.playSound('click');
+                onToggleShowStrongNumbers();
               }
             : null,
       ),
@@ -299,19 +321,16 @@ class PrimarySourceToolbar extends StatelessWidget {
         icon: const Icon(Icons.format_list_numbered),
         color: colorScheme.primary,
         style: IconButton.styleFrom(
-          backgroundColor: viewModel.showVerseNumbers
+          backgroundColor: showVerseNumbers
               ? colorScheme.secondaryContainer
               : Colors.transparent,
           shape: const CircleBorder(),
         ),
         tooltip: AppLocalizations.of(context)!.toggle_show_verse_numbers,
-        onPressed:
-            viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null &&
-                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+        onPressed: _selectedPageImageReady
             ? () {
-                aud.playSound("click");
-                viewModel.toggleShowVerseNumbers();
+                aud.playSound('click');
+                onToggleShowVerseNumbers();
               }
             : null,
       ),
@@ -319,13 +338,10 @@ class PrimarySourceToolbar extends StatelessWidget {
         icon: const Icon(Icons.cleaning_services),
         color: colorScheme.primary,
         tooltip: AppLocalizations.of(context)!.page_settings_reset,
-        onPressed:
-            viewModel.primarySource.permissionsReceived &&
-                viewModel.selectedPage != null &&
-                viewModel.localPageLoaded[viewModel.selectedPage!.image] == true
+        onPressed: _selectedPageImageReady
             ? () {
-                aud.playSound("click");
-                viewModel.removePageSettings();
+                aud.playSound('click');
+                onRemovePageSettings();
               }
             : null,
       ),
@@ -344,28 +360,46 @@ class PrimarySourceToolbar extends StatelessWidget {
       ...visibleActions,
       if (hasOverflow)
         PrimarySourceToolbarOverflowMenuButton(
-          viewModel: viewModel,
+          primarySource: primarySource,
+          selectedPage: selectedPage,
+          localPageLoaded: localPageLoaded,
+          refreshError: refreshError,
+          isNegative: isNegative,
+          isMonochrome: isMonochrome,
+          brightness: brightness,
+          contrast: contrast,
+          selectedArea: selectedArea,
+          tolerance: tolerance,
+          showWordSeparators: showWordSeparators,
+          showStrongNumbers: showStrongNumbers,
+          showVerseNumbers: showVerseNumbers,
+          zoomStatusNotifier: zoomStatusNotifier,
+          imageController: imageController,
+          onSetMenuOpen: onSetMenuOpen,
+          onReloadImage: onReloadImage,
+          onToggleNegative: onToggleNegative,
+          onToggleMonochrome: onToggleMonochrome,
+          onToggleShowWordSeparators: onToggleShowWordSeparators,
+          onToggleShowStrongNumbers: onToggleShowStrongNumbers,
+          onToggleShowVerseNumbers: onToggleShowVerseNumbers,
+          onRemovePageSettings: onRemovePageSettings,
+          onOpenBrightnessContrastDialog: onOpenBrightnessContrastDialog,
+          onOpenReplaceColorDialog: onOpenReplaceColorDialog,
           audioController: aud,
           numButtons: numButtons,
-          onOpenBrightnessContrastDialog: _showBrightnessContrastDialog,
-          onOpenReplaceColorDialog: _showReplaceColorDialog,
         ),
     ];
   }
 
-  Widget _buildDropdownItem(
-    BuildContext context,
-    PrimarySourceDetailCoordinator viewModel,
-    model.Page page,
-  ) {
+  Widget _buildDropdownItem(BuildContext context, model.Page page) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final bool? loaded = viewModel.localPageLoaded[page.image];
+    final bool? loaded = localPageLoaded[page.image];
     final Color textColor = loaded == null
         ? colorScheme.onSurfaceVariant
         : (loaded ? colorScheme.primary : colorScheme.error);
 
-    final FontWeight weight = page == viewModel.selectedPage
+    final FontWeight weight = page == selectedPage
         ? FontWeight.bold
         : FontWeight.normal;
 
@@ -383,78 +417,6 @@ class PrimarySourceToolbar extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Future<void> _showBrightnessContrastDialog() {
-    return showDialog(
-      context: screenContext,
-      routeSettings: RouteSettings(name: "brightness_contrast_dialog"),
-      barrierColor: Colors.transparent,
-      builder: (context) {
-        return Stack(
-          children: [
-            Positioned(
-              right: -60,
-              top: 75,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 350, maxWidth: 500),
-                child: BrightnessContrastDialog(
-                  onApply: (brightness, contrast) {
-                    viewModel.applyBrightnessContrast(brightness, contrast);
-                  },
-                  onCancel: () {
-                    viewModel.resetBrightnessContrast();
-                  },
-                  brightness: viewModel.brightness,
-                  contrast: viewModel.contrast,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _showReplaceColorDialog() {
-    return showDialog(
-      context: screenContext,
-      routeSettings: RouteSettings(name: "replace_color_dialog"),
-      useRootNavigator: false,
-      barrierColor: Colors.transparent,
-      builder: (context) {
-        return Stack(
-          children: [
-            Positioned(
-              right: -35,
-              top: 75,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 350, maxWidth: 450),
-                child: ReplaceColorDialog(
-                  viewModel: viewModel,
-                  parentContext: screenContext,
-                  onApply: (selectedArea, colorToReplace, newColor, tolerance) {
-                    viewModel.applyColorReplacement(
-                      selectedArea,
-                      colorToReplace,
-                      newColor,
-                      tolerance,
-                    );
-                  },
-                  onCancel: () {
-                    viewModel.resetColorReplacement();
-                  },
-                  selectedArea: viewModel.selectedArea,
-                  colorToReplace: viewModel.colorToReplace,
-                  newColor: viewModel.newColor,
-                  tolerance: viewModel.tolerance,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }

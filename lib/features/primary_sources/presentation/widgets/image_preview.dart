@@ -2,13 +2,11 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
-import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/image_preview_controller.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/verse.dart';
 import 'package:revelation/shared/utils/links_utils.dart';
-import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/image_preview_painters.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 
@@ -27,10 +25,11 @@ const grayscaleMatrix = <double>[
 ];
 
 class ImagePreview extends StatefulWidget {
-  final PrimarySourceDetailCoordinator viewModel;
   final Uint8List imageData;
   final String imageName;
   final ImagePreviewController controller;
+  final bool pipetteMode;
+  final bool selectAreaMode;
   final bool isNegative;
   final bool isMonochrome;
   final double brightness;
@@ -44,13 +43,22 @@ class ImagePreview extends StatefulWidget {
   final bool showVerseNumbers;
   final List<PageWord> words;
   final List<Verse> verses;
+  final DescriptionKind currentDescriptionType;
+  final int? currentDescriptionNumber;
   final int? selectedVerseIndex;
+  final ValueChanged<Rect?> onFinishSelectAreaMode;
+  final ValueChanged<Color?> onFinishPipetteMode;
+  final ValueChanged<int> onWordTap;
+  final ValueChanged<int> onVerseTap;
+  final ValueChanged<int> onStrongNumberTap;
+  final VoidCallback onRestorePositionAndScale;
 
   const ImagePreview({
-    required this.viewModel,
     required this.imageData,
     required this.imageName,
     required this.controller,
+    required this.pipetteMode,
+    required this.selectAreaMode,
     required this.isNegative,
     required this.isMonochrome,
     required this.brightness,
@@ -64,6 +72,14 @@ class ImagePreview extends StatefulWidget {
     required this.showVerseNumbers,
     required this.words,
     required this.verses,
+    required this.currentDescriptionType,
+    required this.currentDescriptionNumber,
+    required this.onFinishSelectAreaMode,
+    required this.onFinishPipetteMode,
+    required this.onWordTap,
+    required this.onVerseTap,
+    required this.onStrongNumberTap,
+    required this.onRestorePositionAndScale,
     this.selectedVerseIndex,
     super.key,
   });
@@ -121,11 +137,10 @@ class ImagePreviewState extends State<ImagePreview> {
           recalc: recalcAnyway,
         );
 
-        final vm = widget.viewModel;
         Widget imageWidget;
         Widget wrapped;
 
-        if (vm.selectAreaMode) {
+        if (widget.selectAreaMode) {
           imageWidget = GestureDetector(
             onPanStart: (details) {
               final coord = _getCursorCoord(details.globalPosition);
@@ -143,7 +158,7 @@ class ImagePreviewState extends State<ImagePreview> {
             onPanEnd: (details) {
               if (_start != null && _end != null) {
                 final rect = createNonZeroRect(_start!, _end!);
-                vm.finishSelectAreaMode(rect);
+                widget.onFinishSelectAreaMode(rect);
                 setState(() {
                   _start = null;
                   _end = null;
@@ -173,7 +188,7 @@ class ImagePreviewState extends State<ImagePreview> {
             ),
           );
           wrapped = imageWidget;
-        } else if (vm.pipetteMode) {
+        } else if (widget.pipetteMode) {
           imageWidget = Image.memory(widget.imageData);
           wrapped = imageWidget;
         } else {
@@ -271,17 +286,17 @@ class ImagePreviewState extends State<ImagePreview> {
                         painter: RelativeTextsPainter(
                           texts: _strongLabels!,
                           selectedNumber:
-                              (vm.currentDescriptionType ==
+                              (widget.currentDescriptionType ==
                                       DescriptionKind.strongNumber &&
-                                  vm.currentDescriptionNumber != null)
-                              ? vm.currentDescriptionNumber
+                                  widget.currentDescriptionNumber != null)
+                              ? widget.currentDescriptionNumber
                               : null,
                         ),
                       ),
                     ),
 
                   // Draw rectangles for selected word
-                  _buildSelectedWordRects(vm),
+                  _buildSelectedWordRects(),
                 ],
               ),
             ),
@@ -290,25 +305,25 @@ class ImagePreviewState extends State<ImagePreview> {
           wrapped = contentStack;
         }
 
-        vm.restorePositionAndScale();
+        widget.onRestorePositionAndScale();
 
         // Single GestureDetector
         final Widget gestureWrapped = GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTapDown: (TapDownDetails details) async {
-            if (await _handlePipetteModeTap(details.globalPosition, vm)) {
+            if (await _handlePipetteModeTap(details.globalPosition)) {
               return;
             }
-            if (_handleSelectArea(vm)) {
+            if (_handleSelectArea()) {
               return;
             }
-            if (_handleTapOnVerseLabels(details.globalPosition, vm)) {
+            if (_handleTapOnVerseLabels(details.globalPosition)) {
               return;
             }
-            if (_handleTapOnStrongNumbers(details.globalPosition, vm)) {
+            if (_handleTapOnStrongNumbers(details.globalPosition)) {
               return;
             }
-            if (_handleTapOnWords(details.globalPosition, vm)) {
+            if (_handleTapOnWords(details.globalPosition)) {
               return;
             }
           },
@@ -318,9 +333,9 @@ class ImagePreviewState extends State<ImagePreview> {
         );
 
         return MouseRegion(
-          cursor: vm.selectAreaMode
+          cursor: widget.selectAreaMode
               ? SystemMouseCursors.precise
-              : vm.pipetteMode
+              : widget.pipetteMode
               ? SystemMouseCursors.precise
               : SystemMouseCursors.grab,
           child: InteractiveViewer(
@@ -434,14 +449,14 @@ class ImagePreviewState extends State<ImagePreview> {
     return result;
   }
 
-  Widget _buildSelectedWordRects(PrimarySourceDetailCoordinator vm) {
-    if (vm.currentDescriptionType != DescriptionKind.word ||
-        vm.currentDescriptionNumber == null ||
+  Widget _buildSelectedWordRects() {
+    if (widget.currentDescriptionType != DescriptionKind.word ||
+        widget.currentDescriptionNumber == null ||
         widget.words.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    final int idx = vm.currentDescriptionNumber!;
+    final int idx = widget.currentDescriptionNumber!;
     if (idx < 0 || idx >= widget.words.length) {
       return const SizedBox.shrink();
     }
@@ -487,11 +502,8 @@ class ImagePreviewState extends State<ImagePreview> {
     return Stack(children: layers);
   }
 
-  Future<bool> _handlePipetteModeTap(
-    Offset globalPosition,
-    PrimarySourceDetailCoordinator vm,
-  ) async {
-    if (vm.pipetteMode) {
+  Future<bool> _handlePipetteModeTap(Offset globalPosition) async {
+    if (widget.pipetteMode) {
       final coord = _getCursorCoord(globalPosition);
       final ui.Image decoded = await decodeImageFromList(widget.imageData);
       final byteData = await decoded.toByteData(
@@ -509,23 +521,20 @@ class ImagePreviewState extends State<ImagePreview> {
       final b = byteData.getUint8(offset + 2);
       final a = byteData.getUint8(offset + 3);
       final picked = Color.fromARGB(a, r, g, b);
-      vm.finishPipetteMode(picked);
+      widget.onFinishPipetteMode(picked);
       return true;
     }
     return false;
   }
 
-  bool _handleSelectArea(PrimarySourceDetailCoordinator vm) {
-    if (vm.selectAreaMode) {
+  bool _handleSelectArea() {
+    if (widget.selectAreaMode) {
       return true;
     }
     return false;
   }
 
-  bool _handleTapOnVerseLabels(
-    Offset globalPosition,
-    PrimarySourceDetailCoordinator vm,
-  ) {
+  bool _handleTapOnVerseLabels(Offset globalPosition) {
     if (!widget.showVerseNumbers ||
         widget.controller.imageSize == null ||
         widget.verses.isEmpty) {
@@ -540,7 +549,7 @@ class ImagePreviewState extends State<ImagePreview> {
       final verse = widget.verses[i];
       final labelRect = RelativeVersesPainter.getLabelRect(verse, imgSize);
       if (labelRect.contains(tapPoint)) {
-        vm.showInfoForVerse(i, AppLocalizations.of(context)!);
+        widget.onVerseTap(i);
         return true;
       }
     }
@@ -548,10 +557,7 @@ class ImagePreviewState extends State<ImagePreview> {
     return false;
   }
 
-  bool _handleTapOnWords(
-    Offset globalPosition,
-    PrimarySourceDetailCoordinator vm,
-  ) {
+  bool _handleTapOnWords(Offset globalPosition) {
     if (widget.controller.imageSize == null) {
       return false;
     }
@@ -583,7 +589,7 @@ class ImagePreviewState extends State<ImagePreview> {
             coord.x <= hitRight &&
             coord.y >= hitTop &&
             coord.y <= hitBottom) {
-          vm.showInfoForWord(wi, AppLocalizations.of(context)!);
+          widget.onWordTap(wi);
           return true;
         }
       }
@@ -591,17 +597,14 @@ class ImagePreviewState extends State<ImagePreview> {
     return false;
   }
 
-  bool _handleTapOnStrongNumbers(
-    Offset globalPosition,
-    PrimarySourceDetailCoordinator vm,
-  ) {
+  bool _handleTapOnStrongNumbers(Offset globalPosition) {
     if (widget.controller.imageSize == null) {
       return false;
     }
     if (_strongLabels == null) {
       return false;
     }
-    if (!vm.showStrongNumbers) {
+    if (!widget.showStrongNumbers) {
       return false;
     }
 
@@ -638,7 +641,7 @@ class ImagePreviewState extends State<ImagePreview> {
           coord.y <= hitBottom) {
         final int? number = int.tryParse(t.text);
         if (number != null) {
-          vm.showInfoForStrongNumber(number, AppLocalizations.of(context)!);
+          widget.onStrongNumberTap(number);
           return true;
         }
       }

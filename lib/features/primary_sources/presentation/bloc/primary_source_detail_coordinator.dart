@@ -8,10 +8,10 @@ import 'package:revelation/features/primary_sources/data/repositories/pages_repo
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_detail_orchestration_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/image_preview_controller.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;

@@ -13,6 +13,8 @@ import 'package:revelation/features/primary_sources/presentation/widgets/primary
 import 'package:revelation/features/primary_sources/presentation/widgets/image_preview.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/brightness_contrast_dialog.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/replace_color_dialog.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/strong_number_picker_dialog.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/core/logging/common_logger.dart';
@@ -23,7 +25,7 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_detail_coordinator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 
 // Define the intent for exiting pipette or selectArea mode
@@ -241,9 +243,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                             actions: isBottom
                                 ? null
                                 : [
-                                    PrimarySourceToolbar(
+                                    _buildToolbar(
                                       viewModel: viewModel,
-                                      primarySource: widget.primarySource,
                                       isBottom: false,
                                       dropdownWidth: dropdownWidth,
                                       screenContext: context,
@@ -256,9 +257,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 16.0,
                                       ),
-                                      child: PrimarySourceToolbar(
+                                      child: _buildToolbar(
                                         viewModel: viewModel,
-                                        primarySource: widget.primarySource,
                                         isBottom: true,
                                         dropdownWidth: dropdownWidth,
                                         screenContext: context,
@@ -328,10 +328,11 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
 
   Widget _buildImagePreview(PrimarySourceDetailCoordinator viewModel) {
     return ImagePreview(
-      viewModel: viewModel,
       imageData: viewModel.imageData!,
       imageName: viewModel.imageName,
       controller: viewModel.imageController,
+      pipetteMode: viewModel.pipetteMode,
+      selectAreaMode: viewModel.selectAreaMode,
       isNegative: viewModel.isNegative,
       isMonochrome: viewModel.isMonochrome,
       brightness: viewModel.brightness,
@@ -343,6 +344,23 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       showWordSeparators: viewModel.showWordSeparators,
       showStrongNumbers: viewModel.showStrongNumbers,
       showVerseNumbers: viewModel.showVerseNumbers,
+      currentDescriptionType: viewModel.currentDescriptionType,
+      currentDescriptionNumber: viewModel.currentDescriptionNumber,
+      onFinishSelectAreaMode: viewModel.finishSelectAreaMode,
+      onFinishPipetteMode: viewModel.finishPipetteMode,
+      onWordTap: (wordIndex) {
+        viewModel.showInfoForWord(wordIndex, AppLocalizations.of(context)!);
+      },
+      onVerseTap: (verseIndex) {
+        viewModel.showInfoForVerse(verseIndex, AppLocalizations.of(context)!);
+      },
+      onStrongNumberTap: (strongNumber) {
+        viewModel.showInfoForStrongNumber(
+          strongNumber,
+          AppLocalizations.of(context)!,
+        );
+      },
+      onRestorePositionAndScale: viewModel.restorePositionAndScale,
       words: viewModel.selectedPage != null
           ? viewModel.selectedPage!.words
           : [],
@@ -568,6 +586,140 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       imagePreview: _buildImagePreview(viewModel),
       descriptionPanel: _buildDescriptionView(context, viewModel),
       dividerColor: colorScheme.onSurface,
+    );
+  }
+
+  Widget _buildToolbar({
+    required PrimarySourceDetailCoordinator viewModel,
+    required bool isBottom,
+    required double dropdownWidth,
+    required BuildContext screenContext,
+  }) {
+    return PrimarySourceToolbar(
+      primarySource: widget.primarySource,
+      selectedPage: viewModel.selectedPage,
+      localPageLoaded: viewModel.localPageLoaded,
+      refreshError: viewModel.refreshError,
+      isNegative: viewModel.isNegative,
+      isMonochrome: viewModel.isMonochrome,
+      brightness: viewModel.brightness,
+      contrast: viewModel.contrast,
+      selectedArea: viewModel.selectedArea,
+      tolerance: viewModel.tolerance,
+      showWordSeparators: viewModel.showWordSeparators,
+      showStrongNumbers: viewModel.showStrongNumbers,
+      showVerseNumbers: viewModel.showVerseNumbers,
+      zoomStatusNotifier: viewModel.zoomStatusNotifier,
+      imageController: viewModel.imageController,
+      isBottom: isBottom,
+      dropdownWidth: dropdownWidth,
+      onChangeSelectedPage: viewModel.changeSelectedPage,
+      onShowCommonInfo: () {
+        viewModel.showCommonInfo(AppLocalizations.of(screenContext)!);
+      },
+      onReloadImage: () async {
+        if (viewModel.selectedPage == null) {
+          return;
+        }
+        await viewModel.loadImage(
+          viewModel.selectedPage!.image,
+          isReload: true,
+        );
+      },
+      onToggleNegative: viewModel.toggleNegative,
+      onToggleMonochrome: viewModel.toggleMonochrome,
+      onToggleShowWordSeparators: viewModel.toggleShowWordSeparators,
+      onToggleShowStrongNumbers: viewModel.toggleShowStrongNumbers,
+      onToggleShowVerseNumbers: viewModel.toggleShowVerseNumbers,
+      onRemovePageSettings: viewModel.removePageSettings,
+      onOpenBrightnessContrastDialog: () {
+        _openBrightnessContrastDialog(viewModel, screenContext);
+      },
+      onOpenReplaceColorDialog: () {
+        _openReplaceColorDialog(viewModel, screenContext);
+      },
+      onSetMenuOpen: viewModel.setMenuOpen,
+    );
+  }
+
+  Future<void> _openBrightnessContrastDialog(
+    PrimarySourceDetailCoordinator viewModel,
+    BuildContext screenContext,
+  ) {
+    return showDialog(
+      context: screenContext,
+      routeSettings: RouteSettings(name: 'brightness_contrast_dialog'),
+      barrierColor: Colors.transparent,
+      builder: (context) {
+        return Stack(
+          children: [
+            Positioned(
+              right: -60,
+              top: 75,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 350, maxWidth: 500),
+                child: BrightnessContrastDialog(
+                  onApply: (brightness, contrast) {
+                    viewModel.applyBrightnessContrast(brightness, contrast);
+                  },
+                  onCancel: () {
+                    viewModel.resetBrightnessContrast();
+                  },
+                  brightness: viewModel.brightness,
+                  contrast: viewModel.contrast,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _openReplaceColorDialog(
+    PrimarySourceDetailCoordinator viewModel,
+    BuildContext screenContext,
+  ) {
+    return showDialog(
+      context: screenContext,
+      routeSettings: RouteSettings(name: 'replace_color_dialog'),
+      useRootNavigator: false,
+      barrierColor: Colors.transparent,
+      builder: (context) {
+        return Stack(
+          children: [
+            Positioned(
+              right: -35,
+              top: 75,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 350, maxWidth: 450),
+                child: ReplaceColorDialog(
+                  parentContext: screenContext,
+                  onApply: (selectedArea, colorToReplace, newColor, tolerance) {
+                    viewModel.applyColorReplacement(
+                      selectedArea,
+                      colorToReplace,
+                      newColor,
+                      tolerance,
+                    );
+                  },
+                  onCancel: viewModel.resetColorReplacement,
+                  onStartSelectAreaMode: viewModel.startSelectAreaMode,
+                  onStartPipetteMode: viewModel.startPipetteMode,
+                  readSelectedArea: () => viewModel.selectedArea,
+                  readColorToReplace: () => viewModel.colorToReplace,
+                  readNewColor: () => viewModel.newColor,
+                  readTolerance: () => viewModel.tolerance,
+                  selectedArea: viewModel.selectedArea,
+                  colorToReplace: viewModel.colorToReplace,
+                  newColor: viewModel.newColor,
+                  tolerance: viewModel.tolerance,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
