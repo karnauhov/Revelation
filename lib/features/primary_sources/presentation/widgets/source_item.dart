@@ -9,24 +9,18 @@ import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/utils/links_utils.dart';
 import 'package:revelation/shared/ui/styled_text/styled_text_utils.dart';
 
-class SourceItemWidget extends StatefulWidget {
+class SourceItemWidget extends StatelessWidget {
   final PrimarySource source;
+  final bool showMore;
+  final VoidCallback onToggleShowMore;
+  static final AudioController _audioController = AudioController();
 
-  const SourceItemWidget({super.key, required this.source});
-
-  @override
-  State<SourceItemWidget> createState() => _SourceItemWidgetState();
-}
-
-class _SourceItemWidgetState extends State<SourceItemWidget> {
-  late bool _showMore;
-  final aud = AudioController();
-
-  @override
-  void initState() {
-    super.initState();
-    _showMore = widget.source.showMore;
-  }
+  const SourceItemWidget({
+    super.key,
+    required this.source,
+    required this.showMore,
+    required this.onToggleShowMore,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +47,7 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                         float: FCFloat.none,
                         padding: const EdgeInsets.only(right: 0),
                         child: getStyledText(
-                          widget.source.title,
+                          source.title,
                           textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: colorScheme.onSurface,
@@ -71,9 +65,7 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                   onPressed: () {
                     context.push(
                       '/primary_source',
-                      extra: PrimarySourceRouteArgs(
-                        primarySource: widget.source,
-                      ),
+                      extra: PrimarySourceRouteArgs(primarySource: source),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -97,21 +89,18 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                 ),
               ),
               WrappableText(
-                text: TextSpan(
-                  text: "✒ ${widget.source.date}",
-                  style: bodyTextStyle,
-                ),
+                text: TextSpan(text: "✒ ${source.date}", style: bodyTextStyle),
               ),
               WrappableText(
                 text: TextSpan(
                   text:
-                      "📖 ${widget.source.content} [${AppLocalizations.of(context)!.verses}: ${widget.source.quantity}]",
+                      "📖 ${source.content} [${AppLocalizations.of(context)!.verses}: ${source.quantity}]",
                   style: bodyTextStyle,
                 ),
               ),
               WrappableText(
                 text: TextSpan(
-                  text: !_showMore
+                  text: !showMore
                       ? "(${AppLocalizations.of(context)!.show_more})"
                       : "(${AppLocalizations.of(context)!.hide})",
                   style: textTheme.bodyMedium?.copyWith(
@@ -119,50 +108,47 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
                   ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      aud.playSound("click");
-                      setState(() {
-                        _showMore = !_showMore;
-                        widget.source.showMore = _showMore;
-                      });
+                      _audioController.playSound("click");
+                      onToggleShowMore();
                     },
                 ),
               ),
-              if (_showMore)
+              if (showMore)
                 WrappableText(
                   text: TextSpan(
-                    text: "📜 ${widget.source.material}",
+                    text: "📜 ${source.material}",
                     style: bodyTextStyle,
                   ),
                 ),
-              if (_showMore)
+              if (showMore)
                 WrappableText(
                   text: TextSpan(
-                    text: "🔎 ${widget.source.textStyle}",
+                    text: "🔎 ${source.textStyle}",
                     style: bodyTextStyle,
                   ),
                 ),
-              if (_showMore)
+              if (showMore)
                 WrappableText(
                   text: TextSpan(
-                    text: "🗂 ${widget.source.classification}",
+                    text: "🗂 ${source.classification}",
                     style: bodyTextStyle,
                   ),
                 ),
-              if (_showMore)
+              if (showMore)
                 WrappableText(
                   text: TextSpan(
-                    text: "🔓 ${widget.source.found}",
+                    text: "🔓 ${source.found}",
                     style: bodyTextStyle,
                   ),
                 ),
-              if (_showMore)
+              if (showMore)
                 WrappableText(
                   text: TextSpan(
-                    text: "📌 ${widget.source.currentLocation}",
+                    text: "📌 ${source.currentLocation}",
                     style: bodyTextStyle,
                   ),
                 ),
-              if (_showMore)
+              if (showMore)
                 Text.rich(
                   TextSpan(
                     text: "🌐 ",
@@ -178,12 +164,12 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
   }
 
   Widget _buildPreviewImage(BuildContext context) {
-    if (widget.source.previewBytes != null) {
-      return Image.memory(widget.source.previewBytes!, fit: BoxFit.cover);
+    if (source.previewBytes != null) {
+      return Image.memory(source.previewBytes!, fit: BoxFit.cover);
     }
 
-    if (widget.source.preview.startsWith('assets/')) {
-      return Image.asset(widget.source.preview, fit: BoxFit.cover);
+    if (source.preview.startsWith('assets/')) {
+      return Image.asset(source.preview, fit: BoxFit.cover);
     }
 
     return Container(
@@ -203,9 +189,9 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
       color: Theme.of(context).colorScheme.primary,
     );
 
-    if (widget.source.links.isNotEmpty) {
+    if (source.links.isNotEmpty) {
       final spans = <InlineSpan>[];
-      for (final link in widget.source.links) {
+      for (final link in source.links) {
         final title = _resolveLinkTitle(context, link.role, link.titleOverride);
         if (title.isEmpty || link.url.isEmpty) {
           continue;
@@ -223,36 +209,36 @@ class _SourceItemWidgetState extends State<SourceItemWidget> {
     }
 
     return [
-      if (widget.source.link1Title.isNotEmpty)
+      if (source.link1Title.isNotEmpty)
         TextSpan(
-          text: "[${widget.source.link1Title}]",
+          text: "[${source.link1Title}]",
           style: linkStyle,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              if (widget.source.link1Url.isNotEmpty) {
-                launchLink(widget.source.link1Url);
+              if (source.link1Url.isNotEmpty) {
+                launchLink(source.link1Url);
               }
             },
         ),
-      if (widget.source.link2Title.isNotEmpty)
+      if (source.link2Title.isNotEmpty)
         TextSpan(
-          text: ", [${widget.source.link2Title}]",
+          text: ", [${source.link2Title}]",
           style: linkStyle,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              if (widget.source.link2Url.isNotEmpty) {
-                launchLink(widget.source.link2Url);
+              if (source.link2Url.isNotEmpty) {
+                launchLink(source.link2Url);
               }
             },
         ),
-      if (widget.source.link3Title.isNotEmpty)
+      if (source.link3Title.isNotEmpty)
         TextSpan(
-          text: ", [${widget.source.link3Title}]",
+          text: ", [${source.link3Title}]",
           style: linkStyle,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              if (widget.source.link3Url.isNotEmpty) {
-                launchLink(widget.source.link3Url);
+              if (source.link3Url.isNotEmpty) {
+                launchLink(source.link3Url);
               }
             },
         ),

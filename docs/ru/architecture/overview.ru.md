@@ -1,6 +1,6 @@
 # Architecture Overview (RU)
 
-Doc-Version: `1.1.2`  
+Doc-Version: `1.1.3`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -13,6 +13,7 @@ Source-Commit: `working-tree`
 - Навигация: `go_router` в `AppRouter`, для критичных переходов используются typed route args (`TopicRouteArgs`, `PrimarySourceRouteArgs`).
 - Обработка `word:`-ссылок: `shared/navigation` использует callback-контракты; дефолтный обработчик регистрируется на bootstrap-уровне (`AppBootstrap`).
 - Глобальный state scope: `AppDi.appBlocProviders` предоставляет `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
+- UI-состояние раскрытия карточек списка первоисточников хранится в screen-scoped `PrimarySourcesExpansionCubit`; модель `PrimarySource` не содержит mutable UI-флагов.
 - Detail state для primary source: в `PrimarySourceScreen` создается `MultiBlocProvider` с cubit-срезами `session/image/page-settings/description/viewport`; selection-поля (`currentType/currentNumber`) входят в `PrimarySourceDescriptionState`.
 - Detail orchestration для primary source: `PrimarySourceDetailOrchestrationCubit` координирует `loadImage`, `changeSelectedPage` и debounce-логику save/restore между detail cubit-срезами.
 - Поток данных: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.

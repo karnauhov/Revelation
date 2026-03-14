@@ -28,7 +28,6 @@ class PrimarySource {
   final List<PrimarySourceLinkInfo> links;
   final List<Map<String, String>>? attributes;
   final bool permissionsReceived;
-  bool showMore = false;
 
   PrimarySource({
     required this.id,

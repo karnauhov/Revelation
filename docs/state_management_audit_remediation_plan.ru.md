@@ -3,7 +3,7 @@
 Дата аудита: `2026-03-14`  
 Область: весь Flutter-проект (`lib/`, `test/`, `integration_test/`, `docs/`, CI/scripts)  
 Фокус: только state management и связанные архитектурные аспекты  
-Статус выполнения плана: `в процессе (Step 1-3 частично выполнены)`  
+Статус выполнения плана: `в процессе (Step 1-4 частично выполнены)`  
 
 Как использовать документ:
 - Этот файл предназначен как пошаговый execution-plan.
@@ -516,21 +516,22 @@ Legacy/candidate cleanup:
 - [ ] How to validate (финально): Widget tests на количество вызовов handlers + smoke navigation.
 
 ### Step 4 — Исправить ownership/immutability модели PrimarySource
-- [ ] Цель: Убрать mutable UI-state из доменной модели.
-- [ ] Почему приоритет: Это архитектурная гигиена source-of-truth.
-- [ ] Конкретные действия:
-- [ ] Удалить `showMore` из `PrimarySource`.
-- [ ] Перенести expand/collapse состояние в отдельный UI owner (предпочтительно cubit-срез списка).
-- [ ] Убрать мутацию `widget.source.showMore = ...` из `SourceItemWidget`.
-- [ ] Затрагиваемые файлы/папки:
-- [ ] `lib/shared/models/primary_source.dart`
-- [ ] `lib/features/primary_sources/presentation/widgets/source_item.dart`
-- [ ] `lib/features/primary_sources/presentation/screens/primary_sources_screen.dart`
-- [ ] `lib/features/primary_sources/presentation/bloc/` (если вводится UI cubit)
-- [ ] Риск: Средний.
-- [ ] Ожидаемый результат: Immutable контракт, прозрачный owner expand-state.
-- [ ] Dependency on previous steps: Независим.
-- [ ] How to validate: Unit/widget tests на expand/collapse + отсутствие model mutation.
+- [x] Цель: Убрать mutable UI-state из доменной модели.
+- [x] Почему приоритет: Это архитектурная гигиена source-of-truth.
+- [x] Конкретные действия:
+- [x] Удалить `showMore` из `PrimarySource`.
+- [x] Перенести expand/collapse состояние в отдельный UI owner (предпочтительно cubit-срез списка).
+- [x] Убрать мутацию `widget.source.showMore = ...` из `SourceItemWidget`.
+- [x] Затрагиваемые файлы/папки:
+- [x] `lib/shared/models/primary_source.dart`
+- [x] `lib/features/primary_sources/presentation/widgets/source_item.dart`
+- [x] `lib/features/primary_sources/presentation/screens/primary_sources_screen.dart`
+- [x] `lib/features/primary_sources/presentation/bloc/` (добавлен `PrimarySourcesExpansionCubit`)
+- [x] Риск: Средний.
+- [ ] Ожидаемый результат: Immutable контракт, прозрачный owner expand-state (manual smoke pending).
+- [x] Dependency on previous steps: Независим.
+- [x] How to validate (оперативно): unit/widget tests на expand/collapse + отсутствие model mutation.
+- [ ] How to validate (финально): ручной smoke списка первоисточников.
 
 ### Step 5 — Добавить stale protection в TopicsCatalogCubit
 - [ ] Цель: Защитить catalog flow от race conditions.
@@ -709,7 +710,7 @@ Legacy/candidate cleanup:
 - [ ] Step 1: Архитектурное решение по detail orchestration (частично выполнен: решение + код + side-effects rule, осталось docs/ADR)
 - [ ] Step 2: Устранить rebuild hotspot detail screen (частично выполнен: narrow subscriptions + split hot zones + dedup emits; ожидается ручной perf smoke/profiling)
 - [ ] Step 3: Убрать side effects из build (частично выполнен: side effects вынесены из build + добавлен regression test на stale geometry; ожидается финальный smoke + целевой widget test на call-count)
-- [ ] Step 4: Убрать mutable state из `PrimarySource`
+- [ ] Step 4: Убрать mutable state из `PrimarySource` (частично выполнен: showMore удален из модели, добавлен `PrimarySourcesExpansionCubit`, ожидается ручной smoke)
 - [ ] Step 5: Добавить stale guard в `TopicsCatalogCubit`
 - [ ] Step 6: Привести async lifecycle safety к единому стандарту
 - [ ] Step 7: Стандартизовать equality и dedup state updates

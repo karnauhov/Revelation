@@ -106,6 +106,34 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsNothing);
     },
   );
+
+  testWidgets(
+    'PrimarySourcesScreen toggles source details without mutating model state',
+    (tester) async {
+      final cubit = PrimarySourcesCubit(_SuccessPrimarySourcesRepository());
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      final context = tester.element(find.byType(PrimarySourcesScreen));
+      final l10n = AppLocalizations.of(context)!;
+
+      expect(
+        find.text('(${l10n.show_more})', findRichText: true),
+        findsWidgets,
+      );
+      expect(find.text('(${l10n.hide})', findRichText: true), findsNothing);
+
+      await tester.tap(
+        find.text('(${l10n.show_more})', findRichText: true).first,
+      );
+      await tester.pump();
+
+      expect(find.text('(${l10n.hide})', findRichText: true), findsOneWidget);
+    },
+  );
 }
 
 Widget _buildPrimarySourcesScreenApp(PrimarySourcesCubit cubit) {

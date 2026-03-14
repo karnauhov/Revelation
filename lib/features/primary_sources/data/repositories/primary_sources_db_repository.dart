@@ -267,7 +267,7 @@ class PrimarySourcesDbRepository {
       links: source.links,
       attributes: source.attributes,
       permissionsReceived: source.permissionsReceived,
-    )..showMore = source.showMore;
+    );
   }
 
   PageWord _buildWord(dynamic row) {

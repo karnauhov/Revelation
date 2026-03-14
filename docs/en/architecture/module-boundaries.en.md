@@ -1,6 +1,6 @@
 # Module Boundaries (EN)
 
-Doc-Version: `1.1.2`  
+Doc-Version: `1.1.3`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -27,6 +27,7 @@ A lightweight feature module without all three layers is allowed, but dependency
 - `presentation` must not import `infra` directly.
 - `presentation` works through feature repositories/services/cubit contracts.
 - Cross-slice presentation orchestration is implemented as `Cubit`/`Bloc` classes (for example, `*OrchestrationCubit`), not as mutable controller singletons.
+- UI expand/collapse state for primary source list cards is owned by screen-scoped `PrimarySourcesExpansionCubit`, not by mutable fields on `PrimarySource`.
 - If one state slice already owns selection and display fields (for example, `PrimarySourceDescriptionState.currentType/currentNumber`), do not introduce a separate duplicate cubit for the same source of truth.
 - `application` must not contain UI widgets.
 - `data` may depend on `infra` data source/gateway contracts.
