@@ -36,6 +36,16 @@
   - New or modified stateful presentation logic must use `BLoC/Cubit`.
   - Do not introduce `provider`/`ChangeNotifier`/`notifyListeners` in runtime or test code.
   - When touching non-cubit stateful flows, migrate the touched scope to `Cubit`/`Bloc`.
+  - In `lib/features/**/presentation`, use only `bloc/`, `screens/`, and `widgets/` as target architecture folders; do not add `controllers/` or `coordinators/`.
+  - In feature code, keep a single source of truth for each state slice; do not maintain parallel cubits/states for the same UI data.
+  - Do not pass `BuildContext` into `application/**` services or `presentation/bloc/**`; localization and UI context-dependent work must stay in presentation UI layer.
+  - For architecture moves/renames, update barrel exports, imports, related tests, and RU/EN architecture docs in the same change set.
+  - Do not run business or cross-slice side effects from `build`; place them in cubit/listener/lifecycle hooks with idempotent guards.
+  - For async cubit flows, after each `await` protect state application with `isClosed` and/or stale-request guards (`LatestRequestGuard` or equivalent).
+  - Keep state/value contracts comparable: implement consistent value equality (`==/hashCode` or `Equatable`) for state-driven classes.
+  - Do not add duplicate visibility flags in state (for example `imageShown`/`showDescription`) when visibility is derivable from existing data and UI modes.
+  - In presentation, avoid direct repository/orchestrator construction where DI factories exist; use `AppDi` provisioning/factories.
+  - For high-risk state-management fixes, add regression tests for stale async race, close-before-complete lifecycle, and side-effect call-count/rapid-switch behavior.
 - Any state-management contract change must be synchronized in:
   - `docs/ru/architecture/state_management_matrix.ru.md` and `docs/en/architecture/state_management_matrix.en.md`
   - `docs/ru/architecture/overview.ru.md` and `docs/en/architecture/overview.en.md`
@@ -81,6 +91,11 @@
 - Run `flutter test` before finishing non-trivial code changes.
 - When docs from approved RU/EN pairs are changed, run `dart run scripts/check_docs_sync.dart`.
 - For state-architecture changes, run `rg "package:provider|ChangeNotifier|notifyListeners" lib test` and treat new matches as architecture regressions.
+- For state-architecture changes, run `rg "BuildContext" lib/features --glob "**/application/**/*.dart" --glob "**/presentation/bloc/**/*.dart"` and treat matches as architecture regressions (except explicitly approved transitional adapters).
+- For state-management changes in high-risk flows, ensure regression tests cover:
+  - stale async race (`latest request wins`)
+  - lifecycle safety (`close before async completes`)
+  - side-effect call-count and rapid-switch UI scenarios (for example detail image-preview flows)
 - `flutter analyze` and `flutter test` pass in the repository state verified on March 7, 2026.
 
 ## Release Versioning
