@@ -5,6 +5,8 @@ export 'application/services/description_content_service.dart';
 export 'application/services/primary_source_reference_resolver.dart';
 export 'data/repositories/pages_repository.dart';
 export 'data/repositories/primary_sources_db_repository.dart';
+export 'presentation/bloc/primary_source_image_cubit.dart';
+export 'presentation/bloc/primary_source_image_state.dart';
 export 'presentation/bloc/primary_source_session_cubit.dart';
 export 'presentation/bloc/primary_source_session_state.dart';
 export 'presentation/controllers/primary_source_view_model.dart';

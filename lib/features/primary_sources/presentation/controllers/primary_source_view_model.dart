@@ -3,8 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/description_panel_orchestrator.dart';
-import 'package:revelation/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
@@ -18,14 +19,12 @@ import 'package:revelation/features/primary_sources/presentation/controllers/ima
 
 class PrimarySourceViewModel extends ChangeNotifier {
   final PrimarySourceDescriptionPanelOrchestrator _descriptionPanelOrchestrator;
-  final PrimarySourceImageLoadingOrchestrator _imageLoadingOrchestrator;
   final PrimarySourcePageSettingsOrchestrator _pageSettingsOrchestrator;
+  late final PrimarySourceImageCubit _imageCubit;
+  late final bool _ownsImageCubit;
+  StreamSubscription<PrimarySourceImageState>? _imageStateSubscription;
   final PrimarySourceSessionCubit _sessionCubit;
   final bool _ownsSessionCubit;
-  Uint8List? imageData;
-  bool isLoading = false;
-  bool refreshError = false;
-  bool imageShown = false;
   bool scaleAndPositionRestored = false;
   double dx = 0;
   double dy = 0;
@@ -45,7 +44,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
   bool showStrongNumbers = false;
   bool showVerseNumbers = true;
 
-  final Map<String, bool?> localPageLoaded = {};
   late ImagePreviewController imageController;
   final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
     const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false),
@@ -54,7 +52,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
   late String _pageSettings;
   late final bool _isWeb;
   late final bool _isMobileWeb;
-  int _maxTextureSize = 4096;
   bool _pipetteMode = false;
   void Function(Color?)? _onPipettePicked;
   bool _isColorToReplace = true;
@@ -63,11 +60,15 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
   final LatestRequestGuard _imageLoadRequestGuard = LatestRequestGuard();
-  final LatestRequestGuard _localPagesRequestGuard = LatestRequestGuard();
   bool _isDisposed = false;
 
   bool get isMobileWeb => _isMobileWeb;
-  int get maxTextureSize => _maxTextureSize;
+  Uint8List? get imageData => _imageCubit.state.imageData;
+  bool get isLoading => _imageCubit.state.isLoading;
+  bool get refreshError => _imageCubit.state.refreshError;
+  bool get imageShown => _imageCubit.state.imageShown;
+  Map<String, bool?> get localPageLoaded => _imageCubit.state.localPageLoaded;
+  int get maxTextureSize => _imageCubit.state.maxTextureSize;
   bool get pipetteMode => _pipetteMode;
   bool get selectAreaMode => _selectAreaMode;
   PrimarySource get primarySource => _sessionCubit.state.source;
@@ -86,9 +87,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
   PrimarySourceViewModel(
     PagesRepository pagesRepository, {
     required PrimarySource primarySource,
+    PrimarySourceImageCubit? imageCubit,
     PrimarySourceSessionCubit? sessionCubit,
     DescriptionContentService? descriptionService,
-    PrimarySourceImageLoadingOrchestrator? imageLoadingOrchestrator,
     PrimarySourcePageSettingsOrchestrator? pageSettingsOrchestrator,
     PrimarySourceDescriptionPanelOrchestrator? descriptionPanelOrchestrator,
   }) : _descriptionPanelOrchestrator =
@@ -96,8 +97,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
            PrimarySourceDescriptionPanelOrchestrator(
              descriptionService: descriptionService,
            ),
-       _imageLoadingOrchestrator =
-           imageLoadingOrchestrator ?? PrimarySourceImageLoadingOrchestrator(),
        _pageSettingsOrchestrator =
            pageSettingsOrchestrator ??
            PrimarySourcePageSettingsOrchestrator(pagesRepository),
@@ -112,27 +111,21 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _isWeb = isWeb();
     _isMobileWeb = _isWeb && isMobileBrowser();
 
-    if (_isWeb) {
-      fetchMaxTextureSize().then((size) {
-        _maxTextureSize = size > 0 ? size : 4096;
-        if (_isMobileWeb) {
-          log.warning(
-            "A mobile browser with max texture size of $_maxTextureSize was detected.",
-          );
-        } else {
-          log.info(
-            "A browser with max texture size of $_maxTextureSize was detected.",
-          );
-        }
-      });
-    } else {
-      _maxTextureSize = 0;
-    }
+    _ownsImageCubit = imageCubit == null;
+    _imageCubit =
+        imageCubit ??
+        PrimarySourceImageCubit(
+          source: primarySource,
+          isWeb: _isWeb,
+          isMobileWeb: _isMobileWeb,
+        );
+    _imageStateSubscription = _imageCubit.stream.listen(
+      (_) => notifyListeners(),
+    );
 
     if (selectedPage != null) {
-      loadImage(selectedPage!.image);
+      unawaited(loadImage(selectedPage!.image));
     }
-    _checkLocalPages();
   }
 
   @override
@@ -146,8 +139,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   Future<void> loadImage(String page, {bool isReload = false}) async {
     final requestToken = _imageLoadRequestGuard.start();
     try {
-      isLoading = true;
-      imageShown = false;
+      _imageCubit.setImageShown(false);
       scaleAndPositionRestored = false;
       notifyListeners();
 
@@ -162,31 +154,13 @@ class PrimarySourceViewModel extends ChangeNotifier {
       }
       notifyListeners();
 
-      final loadResult = await _imageLoadingOrchestrator.loadPageImage(
+      await _imageCubit.loadImage(
         page: page,
         sourceHashCode: primarySource.hashCode,
-        isWeb: _isWeb,
-        isMobileWeb: _isMobileWeb,
-        isReload: _isWeb ? false : isReload,
-        previousPageLoaded: localPageLoaded[page],
+        isReload: isReload,
       );
       if (!_canApplyImageRequest(requestToken)) {
         return;
-      }
-
-      localPageLoaded[page] = loadResult.pageLoaded;
-      refreshError = loadResult.refreshError;
-      switch (loadResult.contentAction) {
-        case ImageContentAction.replace:
-          imageData = loadResult.imageData;
-          _sessionCubit.setImageName(loadResult.imageName);
-          break;
-        case ImageContentAction.clear:
-          imageData = null;
-          _sessionCubit.setImageName('');
-          break;
-        case ImageContentAction.keep:
-          break;
       }
     } catch (error, stackTrace) {
       if (_canApplyImageRequest(requestToken)) {
@@ -196,13 +170,17 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (!_canApplyImageRequest(requestToken)) {
       return;
     }
+    if (imageData != null) {
+      _sessionCubit.setImageName('${primarySource.hashCode}_$page');
+    } else {
+      _sessionCubit.setImageName('');
+    }
     _updateTransformStatus();
-    isLoading = false;
     notifyListeners();
   }
 
   Future<void> changeSelectedPage(model.Page? newPage) async {
-    imageShown = false;
+    _imageCubit.setImageShown(false);
     scaleAndPositionRestored = false;
     _sessionCubit.setSelectedPage(newPage);
     resetColorReplacement();
@@ -482,25 +460,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
     showVerseNumbers = settings.showVerseNumbers;
   }
 
-  Future<void> _checkLocalPages() async {
-    final requestToken = _localPagesRequestGuard.start();
-    final availability = await _imageLoadingOrchestrator
-        .detectLocalPageAvailability(pages: primarySource.pages, isWeb: _isWeb);
-    if (!_canApplyLocalPagesRequest(requestToken)) {
-      return;
-    }
-    localPageLoaded
-      ..clear()
-      ..addAll(availability);
-    notifyListeners();
-  }
-
   bool _canApplyImageRequest(RequestToken token) {
     return !_isDisposed && _imageLoadRequestGuard.isActive(token);
-  }
-
-  bool _canApplyLocalPagesRequest(RequestToken token) {
-    return !_isDisposed && _localPagesRequestGuard.isActive(token);
   }
 
   void _updateTransformStatus() {
@@ -547,7 +508,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _imageLoadRequestGuard.cancelActive();
-    _localPagesRequestGuard.cancelActive();
+    _imageStateSubscription?.cancel();
     _restoreDebounceTimer?.cancel();
     _saveDebounceTimer?.cancel();
     imageController.transformationController.removeListener(
@@ -558,6 +519,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _onPipettePicked = null;
     _onAreaSelected = null;
     _isDisposed = true;
+    if (_ownsImageCubit) {
+      unawaited(_imageCubit.close());
+    }
     if (_ownsSessionCubit) {
       unawaited(_sessionCubit.close());
     }

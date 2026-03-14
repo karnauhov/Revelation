@@ -17,6 +17,7 @@ import 'package:revelation/features/primary_sources/presentation/detail/strong_n
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
 
@@ -86,12 +87,26 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final TextTheme textTheme = theme.textTheme;
     final ColorScheme colorScheme = theme.colorScheme;
 
-    return BlocProvider<PrimarySourceSessionCubit>(
-      create: (_) => PrimarySourceSessionCubit(source: widget.primarySource),
+    final currentIsWeb = isWeb();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PrimarySourceSessionCubit>(
+          create: (_) =>
+              PrimarySourceSessionCubit(source: widget.primarySource),
+        ),
+        BlocProvider<PrimarySourceImageCubit>(
+          create: (_) => PrimarySourceImageCubit(
+            source: widget.primarySource,
+            isWeb: currentIsWeb,
+            isMobileWeb: currentIsWeb && isMobileBrowser(),
+          ),
+        ),
+      ],
       child: ChangeNotifierProvider<PrimarySourceViewModel>(
         create: (context) => PrimarySourceViewModel(
           PagesRepository(),
           primarySource: widget.primarySource,
+          imageCubit: context.read<PrimarySourceImageCubit>(),
           sessionCubit: context.read<PrimarySourceSessionCubit>(),
         ),
         child: Consumer<PrimarySourceViewModel>(

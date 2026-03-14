@@ -148,7 +148,7 @@
 - [x] Задача [P0]: мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
 - [ ] Задача [P0]: выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы.
 - [x] Подшаг [P3.7.1]: source/session/page context cubit.
-- [ ] Подшаг [P3.7.2]: image loading/cache/local availability cubit.
+- [x] Подшаг [P3.7.2]: image loading/cache/local availability cubit.
 - [ ] Подшаг [P3.7.3]: page settings persistence cubit.
 - [ ] Подшаг [P3.7.4]: selection cubit (`word/verse/strong`).
 - [ ] Подшаг [P3.7.5]: description panel cubit (content + navigation).
@@ -1740,3 +1740,49 @@
   - New risks: `PrimarySourceViewModel` пока остается orchestrator-агрегатор для остальных state-срезов до завершения `P3.7.2`–`P3.7.6`.
   - Mitigations: следующий подшаг — вынести image-loading/cache/local-availability в отдельный `PrimarySourceImageCubit`.
   - Next task: Phase 3.7 / Substep `P3.7.2` — image loading/cache/local availability cubit.
+
+#### [2026-03-14 16:00] Phase 3.7 / Substep P3.7.2 / Introduce `PrimarySourceImageCubit` (image loading/cache/local availability)
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен новый granular state-slice:
+    - `PrimarySourceImageState { imageData, isLoading, imageShown, refreshError, localPageLoaded, maxTextureSize }`
+    - `PrimarySourceImageCubit` с ответственностью за:
+      - загрузку изображения страницы (`loadImage`),
+      - управление `refreshError/isLoading`,
+      - локальную доступность страниц (`refreshLocalPageAvailability`),
+      - web max texture size detection.
+  - `PrimarySourceScreen` обновлен на `MultiBlocProvider`:
+    - подключены `PrimarySourceSessionCubit` и `PrimarySourceImageCubit`.
+    - `PrimarySourceViewModel` получает оба cubit через DI из build-context.
+  - `PrimarySourceViewModel` переведен на image-срез как source-of-truth для image-state:
+    - `imageData`, `isLoading`, `refreshError`, `imageShown`, `localPageLoaded`, `maxTextureSize` теперь читаются из `PrimarySourceImageCubit`.
+    - загрузка изображения делегирована в `PrimarySourceImageCubit`; VM сохраняет orchestration (page settings + transform sync) до `P3.7.3+`.
+  - Обновлены feature exports:
+    - `lib/features/primary_sources/primary_sources.dart`.
+  - Добавлен unit-тест suite для image cubit:
+    - `test/features/primary_sources/presentation/bloc/primary_source_image_cubit_test.dart`.
+- Why changed:
+  - Закрыть обязательный подшаг `P3.7.2` и отделить image/cache/local availability state от монолитного VM перед выносом `page settings` (`P3.7.3`) и остальных срезов.
+- Scope (files/modules):
+  - `lib/features/primary_sources/presentation/bloc/primary_source_image_state.dart`
+  - `lib/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart`
+  - `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`
+  - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
+  - `lib/features/primary_sources/primary_sources.dart`
+  - `test/features/primary_sources/presentation/bloc/primary_source_image_cubit_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass (image loading/cache/local availability выделены в отдельный cubit)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого подшага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `PrimarySourceViewModel` пока остается промежуточным orchestration-слоем для page-settings/selection/description/viewport.
+  - Mitigations: следующий подшаг — выделить persistence state page settings в `PrimarySourcePageSettingsCubit`.
+  - Next task: Phase 3.7 / Substep `P3.7.3` — page settings persistence cubit.
