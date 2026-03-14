@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:path/path.dart' as p;
+import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
@@ -42,7 +43,7 @@ class _TopicScreenState extends State<TopicScreen> {
   @override
   void initState() {
     super.initState();
-    _topicContentCubit = TopicContentCubit(
+    _topicContentCubit = AppDi.createTopicContentCubit(
       settingsCubit: context.read<SettingsCubit>(),
       route: widget.file ?? '',
       name: widget.name,

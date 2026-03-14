@@ -11,12 +11,12 @@ import 'package:revelation/features/topics/presentation/bloc/topic_content_state
 
 class TopicContentCubit extends Cubit<TopicContentState> {
   TopicContentCubit({
-    TopicsRepository? topicsRepository,
+    required TopicsRepository topicsRepository,
     required SettingsCubit settingsCubit,
     required String route,
     String? name,
     String? description,
-  }) : _topicsRepository = topicsRepository ?? TopicsRepository(),
+  }) : _topicsRepository = topicsRepository,
        _settingsCubit = settingsCubit,
        _route = route,
        _initialName = name ?? '',

@@ -3,7 +3,7 @@
 Дата аудита: `2026-03-14`  
 Область: весь Flutter-проект (`lib/`, `test/`, `integration_test/`, `docs/`, CI/scripts)  
 Фокус: только state management и связанные архитектурные аспекты  
-Статус выполнения плана: `в процессе (Step 1-8 частично выполнены)`  
+Статус выполнения плана: `в процессе (Step 1-9 частично выполнены)`  
 
 Как использовать документ:
 - Этот файл предназначен как пошаговый execution-plan.
@@ -593,19 +593,19 @@ Legacy/candidate cleanup:
 - [x] How to validate: Search no-unused + full test suite pass.
 
 ### Step 9 — Привести provisioning к единому стилю DI
-- [ ] Цель: Повысить консистентность создания зависимостей.
-- [ ] Почему приоритет: Упростит поддержку, подмену зависимостей и тесты.
-- [ ] Конкретные действия:
-- [ ] Убрать из UI прямое создание репозиториев/оркестраторов там, где это мешает DI.
-- [ ] Выделить screen-level factories/registrations в согласованный слой.
-- [ ] Затрагиваемые файлы/папки:
-- [ ] `lib/app/di/app_di.dart`
-- [ ] `lib/features/primary_sources/presentation/screens/primary_source_screen.dart`
-- [ ] `lib/features/topics/presentation/bloc/topic_content_cubit.dart` (опционально)
-- [ ] Риск: Средний.
-- [ ] Ожидаемый результат: Предсказуемый provisioning без скрытых new().
-- [ ] Dependency on previous steps: Желательно после Step 1.
-- [ ] How to validate: Unit/widget tests с простым mock/fake injection.
+- [x] Цель: Повысить консистентность создания зависимостей.
+- [x] Почему приоритет: Упростит поддержку, подмену зависимостей и тесты.
+- [x] Конкретные действия:
+- [x] Убрать из UI прямое создание репозиториев/оркестраторов там, где это мешает DI.
+- [x] Выделить screen-level factories/registrations в согласованный слой.
+- [x] Затрагиваемые файлы/папки:
+- [x] `lib/app/di/app_di.dart`
+- [x] `lib/features/primary_sources/presentation/screens/primary_source_screen.dart`
+- [x] `lib/features/topics/presentation/bloc/topic_content_cubit.dart` (опционально)
+- [x] Риск: Средний.
+- [x] Ожидаемый результат: Предсказуемый provisioning без скрытых new().
+- [x] Dependency on previous steps: Желательно после Step 1.
+- [x] How to validate: Unit/widget tests с простым mock/fake injection.
 
 ### Step 10 — Закрыть тестовый и документационный контур
 - [ ] Цель: Зафиксировать изменения в тестах и RU/EN docs синхронно.
@@ -715,5 +715,5 @@ Legacy/candidate cleanup:
 - [x] Step 6: Привести async lifecycle safety к единому стандарту
 - [x] Step 7: Стандартизовать equality и dedup state updates
 - [x] Step 8: Очистить legacy state leftovers
-- [ ] Step 9: Упорядочить DI/provisioning style
+- [x] Step 9: Упорядочить DI/provisioning style
 - [ ] Step 10: Закрыть тесты + синхронизировать RU/EN docs

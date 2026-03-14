@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
-import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_attributes_footer.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/image_preview.dart';
@@ -27,7 +27,6 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_detail_coordinator.dart';
-import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 
 // Define the intent for exiting pipette or selectArea mode
 class ExitChooseModeIntent extends Intent {
@@ -123,9 +122,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           ),
         ),
         BlocProvider<PrimarySourcePageSettingsCubit>(
-          create: (_) => PrimarySourcePageSettingsCubit(
-            PrimarySourcePageSettingsOrchestrator(PagesRepository()),
-          ),
+          create: (_) => AppDi.createPrimarySourcePageSettingsCubit(),
         ),
         BlocProvider<PrimarySourceDescriptionCubit>(
           create: (_) => PrimarySourceDescriptionCubit(),
@@ -990,7 +987,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     }
 
     final created = PrimarySourceDetailCoordinator(
-      PagesRepository(),
+      AppDi.createPagesRepository(),
       primarySource: widget.primarySource,
       imageCubit: context.read<PrimarySourceImageCubit>(),
       pageSettingsCubit: context.read<PrimarySourcePageSettingsCubit>(),
