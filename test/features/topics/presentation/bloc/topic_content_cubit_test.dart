@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
+import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
@@ -121,6 +124,74 @@ void main() {
     expect(cubit.state.failure!.type, AppFailureType.dataSource);
     expect(cubit.state.failure!.message, 'forced markdown failure');
   });
+
+  test(
+    'loadCommonResource caches result and avoids duplicate requests',
+    () async {
+      final settingsCubit = SettingsCubit(
+        _FakeSettingsRepository(
+          initialSettings: _buildSettings(language: 'en'),
+        ),
+      );
+      addTearDown(settingsCubit.close);
+      await settingsCubit.loadSettings();
+
+      final repository = _FakeTopicsRepository(
+        markdownByRouteLanguage: const <String, AppResult<String>>{},
+        topicByRouteLanguage: const <String, AppResult<TopicInfo?>>{},
+        resourceByKey: <String, AppResult<TopicResource?>>{
+          'icon': AppSuccess<TopicResource?>(
+            TopicResource(
+              fileName: 'icon.svg',
+              mimeType: 'image/svg+xml',
+              data: Uint8List(0),
+            ),
+          ),
+        },
+      );
+      final cubit = TopicContentCubit(
+        topicsRepository: repository,
+        settingsCubit: settingsCubit,
+        route: '',
+      );
+      addTearDown(cubit.close);
+
+      await _flushAsync();
+
+      final firstResult = await cubit.loadCommonResource(' icon ');
+      final secondResult = await cubit.loadCommonResource('icon');
+
+      expect(firstResult, isA<AppSuccess<TopicResource?>>());
+      expect(secondResult, isA<AppSuccess<TopicResource?>>());
+      expect(repository.resourceRequests, <String>['icon']);
+    },
+  );
+
+  test('loadCommonResource returns validation failure for empty key', () async {
+    final settingsCubit = SettingsCubit(
+      _FakeSettingsRepository(initialSettings: _buildSettings(language: 'en')),
+    );
+    addTearDown(settingsCubit.close);
+    await settingsCubit.loadSettings();
+
+    final repository = _FakeTopicsRepository(
+      markdownByRouteLanguage: const <String, AppResult<String>>{},
+      topicByRouteLanguage: const <String, AppResult<TopicInfo?>>{},
+    );
+    final cubit = TopicContentCubit(
+      topicsRepository: repository,
+      settingsCubit: settingsCubit,
+      route: '',
+    );
+    addTearDown(cubit.close);
+
+    await _flushAsync();
+
+    final result = await cubit.loadCommonResource('   ');
+
+    expect(result, isA<AppFailureResult<TopicResource?>>());
+    expect(repository.resourceRequests, isEmpty);
+  });
 }
 
 Future<void> _flushAsync() async {
@@ -160,12 +231,15 @@ class _FakeTopicsRepository extends TopicsRepository {
   _FakeTopicsRepository({
     required this.markdownByRouteLanguage,
     required this.topicByRouteLanguage,
+    this.resourceByKey = const <String, AppResult<TopicResource?>>{},
   }) : super(dataSource: _NoopTopicsDataSource());
 
   final Map<String, AppResult<String>> markdownByRouteLanguage;
   final Map<String, AppResult<TopicInfo?>> topicByRouteLanguage;
+  final Map<String, AppResult<TopicResource?>> resourceByKey;
   final List<String> markdownRequests = <String>[];
   final List<String> topicByRouteRequests = <String>[];
+  final List<String> resourceRequests = <String>[];
 
   @override
   Future<AppResult<String>> getArticleMarkdown({
@@ -190,6 +264,15 @@ class _FakeTopicsRepository extends TopicsRepository {
     return topicByRouteLanguage[requestKey] ??
         const AppFailureResult<TopicInfo?>(
           AppFailure.notFound('No fake topic metadata configured.'),
+        );
+  }
+
+  @override
+  Future<AppResult<TopicResource?>> getCommonResource(String key) async {
+    resourceRequests.add(key);
+    return resourceByKey[key] ??
+        const AppFailureResult<TopicResource?>(
+          AppFailure.notFound('No fake common resource configured.'),
         );
   }
 }

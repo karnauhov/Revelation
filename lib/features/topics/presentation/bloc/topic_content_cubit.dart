@@ -5,17 +5,18 @@ import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
+import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_state.dart';
 
 class TopicContentCubit extends Cubit<TopicContentState> {
   TopicContentCubit({
-    required TopicsRepository topicsRepository,
+    TopicsRepository? topicsRepository,
     required SettingsCubit settingsCubit,
     required String route,
     String? name,
     String? description,
-  }) : _topicsRepository = topicsRepository,
+  }) : _topicsRepository = topicsRepository ?? TopicsRepository(),
        _settingsCubit = settingsCubit,
        _route = route,
        _initialName = name ?? '',
@@ -41,6 +42,10 @@ class TopicContentCubit extends Cubit<TopicContentState> {
   final String _initialDescription;
   StreamSubscription<String>? _settingsSubscription;
   int _activeRequestToken = 0;
+  final Map<String, AppResult<TopicResource?>> _resourceCache =
+      <String, AppResult<TopicResource?>>{};
+  final Map<String, Future<AppResult<TopicResource?>>> _resourceRequests =
+      <String, Future<AppResult<TopicResource?>>>{};
 
   Future<void> loadForLanguage(String language) async {
     final requestToken = ++_activeRequestToken;
@@ -66,6 +71,9 @@ class TopicContentCubit extends Cubit<TopicContentState> {
         clearFailure: true,
       ),
     );
+
+    _resourceCache.clear();
+    _resourceRequests.clear();
 
     if (_route.isEmpty) {
       emit(
@@ -138,6 +146,38 @@ class TopicContentCubit extends Cubit<TopicContentState> {
         clearFailure: true,
       ),
     );
+  }
+
+  Future<AppResult<TopicResource?>> loadCommonResource(String key) async {
+    final normalizedKey = key.trim();
+    if (normalizedKey.isEmpty) {
+      return const AppFailureResult<TopicResource?>(
+        AppFailure.validation('Common resource key must not be empty.'),
+      );
+    }
+
+    final cachedResult = _resourceCache[normalizedKey];
+    if (cachedResult != null) {
+      return cachedResult;
+    }
+
+    final activeRequest = _resourceRequests[normalizedKey];
+    if (activeRequest != null) {
+      return activeRequest;
+    }
+
+    final request = _topicsRepository
+        .getCommonResource(normalizedKey)
+        .then((result) {
+          _resourceCache[normalizedKey] = result;
+          return result;
+        })
+        .whenComplete(() {
+          _resourceRequests.remove(normalizedKey);
+        });
+
+    _resourceRequests[normalizedKey] = request;
+    return request;
   }
 
   String _firstNonEmpty(String? first, String? second, [String fallback = '']) {

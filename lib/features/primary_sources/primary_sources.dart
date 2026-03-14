@@ -1,4 +1,3 @@
-export 'application/orchestrators/description_panel_orchestrator.dart';
 export 'application/orchestrators/image_loading_orchestrator.dart';
 export 'application/orchestrators/page_settings_orchestrator.dart';
 export 'application/services/description_content_service.dart';

@@ -48,12 +48,12 @@
 
 ### Фаза B. Корректная декомпозиция слоев внутри feature
 
-- [ ] `B1` Убрать обход `cubit` в `TopicScreen` (прямые вызовы repository из UI).
+- [x] `B1` Убрать обход `cubit` в `TopicScreen` (прямые вызовы repository из UI).
 Файлы-кандидаты: `lib/features/topics/presentation/screens/topic_screen.dart`, `lib/features/topics/presentation/bloc/topic_content_cubit.dart`, `lib/features/topics/application/...` (при необходимости).
 Ожидаемый результат: экран получает данные через cubit/application orchestration.
 Проверка: code review + widget/unit tests для сценариев загрузки ресурсов.
 
-- [ ] `B2` Нормализовать orchestration в `primary_sources` и устранить дубли.
+- [x] `B2` Нормализовать orchestration в `primary_sources` и устранить дубли.
 Файлы-кандидаты: `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`, `lib/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart`, `lib/features/primary_sources/application/orchestrators/description_panel_orchestrator.dart`.
 Ожидаемый результат: один консистентный orchestration path, без «мертвых» дубликатов.
 Проверка: `rg -n "PrimarySourceDescriptionPanelOrchestrator|DescriptionPanelState" lib test`.

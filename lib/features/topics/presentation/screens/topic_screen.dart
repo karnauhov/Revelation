@@ -7,7 +7,6 @@ import 'package:path/path.dart' as p;
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
-import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_state.dart';
@@ -35,7 +34,6 @@ class _TopicScreenState extends State<TopicScreen> {
   static const String _assetResourceScheme = 'resource:';
 
   final ScrollController _scrollController = ScrollController();
-  final TopicsRepository _topicsRepository = TopicsRepository();
   late final TopicContentCubit _topicContentCubit;
 
   bool _isDragging = false;
@@ -45,7 +43,6 @@ class _TopicScreenState extends State<TopicScreen> {
   void initState() {
     super.initState();
     _topicContentCubit = TopicContentCubit(
-      topicsRepository: _topicsRepository,
       settingsCubit: context.read<SettingsCubit>(),
       route: widget.file ?? '',
       name: widget.name,
@@ -223,7 +220,7 @@ class _TopicScreenState extends State<TopicScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: FutureBuilder<AppResult<TopicResource?>>(
-        future: _topicsRepository.getCommonResource(key),
+        future: _topicContentCubit.loadCommonResource(key),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return const Center(child: CircularProgressIndicator());
@@ -265,7 +262,7 @@ class _TopicScreenState extends State<TopicScreen> {
       return false;
     }
 
-    final resourceResult = await _topicsRepository.getCommonResource(key);
+    final resourceResult = await _topicContentCubit.loadCommonResource(key);
     if (resourceResult is! AppSuccess<TopicResource?>) {
       showCustomDialog(
         MessageType.errorCommon,

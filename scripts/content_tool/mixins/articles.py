@@ -465,6 +465,20 @@ class ArticlesMixin:
         def _sort_articles(self) -> None:
             self.articles.sort(key=lambda item: (item.sort_order, item.route))
 
+        def _select_article_by_route(self, route: str) -> None:
+            if not route:
+                return
+            for idx, row in enumerate(self.articles):
+                if row.route != route:
+                    continue
+                item_id = str(idx)
+                self.articles_tree.selection_set(item_id)
+                self.articles_tree.focus(item_id)
+                self.articles_tree.see(item_id)
+                self.selected_article_index = idx
+                self._reload_selected_article()
+                return
+
 
         def _on_md_tab_changed(self, _event: object) -> None:
             selected_index = self.md_tabs.index(self.md_tabs.select())
