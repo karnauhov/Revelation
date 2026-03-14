@@ -7,6 +7,7 @@ class ImagePreviewController {
   double minScale = 1.0;
   double maxScale = 10.0;
   Size? imageSize;
+  bool _isDisposed = false;
 
   ImagePreviewController(this.maxScale);
 
@@ -19,6 +20,9 @@ class ImagePreviewController {
     double availableHeight, {
     recalc = false,
   }) {
+    if (_isDisposed) {
+      return;
+    }
     if (imageSize == null || imageSize != size || recalc) {
       imageSize = size;
       minScale = availableWidth / size.width;
@@ -31,6 +35,9 @@ class ImagePreviewController {
   }
 
   void setTransformParams(double dx, double dy, double scale) {
+    if (_isDisposed) {
+      return;
+    }
     final clampedScale = scale.clamp(minScale, maxScale);
     _transformationController.value = Matrix4.identity()
       ..translateByDouble(dx, dy, 0.0, 1.0)
@@ -38,6 +45,9 @@ class ImagePreviewController {
   }
 
   void zoomIn(Offset focalPoint) {
+    if (_isDisposed) {
+      return;
+    }
     final matrix = _transformationController.value;
     final inverseMatrix = Matrix4.inverted(matrix);
     final focalImage = MatrixUtils.transformPoint(inverseMatrix, focalPoint);
@@ -52,6 +62,9 @@ class ImagePreviewController {
   }
 
   void zoomOut(Offset focalPoint, Size viewportSize) {
+    if (_isDisposed || imageSize == null) {
+      return;
+    }
     final matrix = _transformationController.value;
     final inverseMatrix = Matrix4.inverted(matrix);
     final focalImage = MatrixUtils.transformPoint(inverseMatrix, focalPoint);
@@ -121,13 +134,25 @@ class ImagePreviewController {
   }
 
   void backToMinScale() {
+    if (_isDisposed) {
+      return;
+    }
     if (imageSize != null) {
       _transformationController.value = Matrix4.identity()
         ..scaleByDouble(minScale, minScale, minScale, 1.0);
     }
   }
 
+  void resetImageSize() {
+    if (_isDisposed) {
+      return;
+    }
+    imageSize = null;
+    _transformationController.value = Matrix4.identity();
+  }
+
   void dispose() {
+    _isDisposed = true;
     _transformationController.dispose();
   }
 }

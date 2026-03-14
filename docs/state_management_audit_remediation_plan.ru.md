@@ -3,7 +3,7 @@
 Дата аудита: `2026-03-14`  
 Область: весь Flutter-проект (`lib/`, `test/`, `integration_test/`, `docs/`, CI/scripts)  
 Фокус: только state management и связанные архитектурные аспекты  
-Статус выполнения плана: `в процессе (Step 1 выполнен)`  
+Статус выполнения плана: `в процессе (Step 1-3 частично выполнены)`  
 
 Как использовать документ:
 - Этот файл предназначен как пошаговый execution-plan.
@@ -504,9 +504,11 @@ Legacy/candidate cleanup:
 - [x] Конкретные действия:
 - [x] Перенести `changeSelectedPage/showCommonInfo` из build в listener/init lifecycle.
 - [x] Перенести `onRestorePositionAndScale` из `ImagePreview.build` в безопасный lifecycle trigger.
+- [x] Исправить race на быстрой смене страниц в `ImagePreview`: сбрасывать stale geometry, заново декодировать размер изображения и игнорировать поздние decode callbacks.
 - [x] Затрагиваемые файлы/папки:
 - [x] `lib/features/primary_sources/presentation/screens/primary_source_screen.dart`
 - [x] `lib/features/primary_sources/presentation/widgets/image_preview.dart`
+- [x] `test/widget/primary_sources/detail/image_preview_test.dart`
 - [x] Риск: Средний.
 - [ ] Ожидаемый результат: Side effects запускаются контролируемо и ровно один раз в нужных сценариях (manual smoke pending).
 - [x] Dependency on previous steps: После Step 2 проще проверить.
@@ -706,7 +708,7 @@ Legacy/candidate cleanup:
 
 - [ ] Step 1: Архитектурное решение по detail orchestration (частично выполнен: решение + код + side-effects rule, осталось docs/ADR)
 - [ ] Step 2: Устранить rebuild hotspot detail screen (частично выполнен: narrow subscriptions + split hot zones + dedup emits; ожидается ручной perf smoke/profiling)
-- [ ] Step 3: Убрать side effects из build (частично выполнен: side effects вынесены из build; ожидается финальный smoke + целевой widget test на call-count)
+- [ ] Step 3: Убрать side effects из build (частично выполнен: side effects вынесены из build + добавлен regression test на stale geometry; ожидается финальный smoke + целевой widget test на call-count)
 - [ ] Step 4: Убрать mutable state из `PrimarySource`
 - [ ] Step 5: Добавить stale guard в `TopicsCatalogCubit`
 - [ ] Step 6: Привести async lifecycle safety к единому стандарту

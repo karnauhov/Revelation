@@ -96,15 +96,16 @@ class ImagePreviewState extends State<ImagePreview> {
   Size? _lastContainerSize;
   List<SingleLine>? _lines;
   List<TextLabel>? _strongLabels;
+  int _decodeRequestId = 0;
 
   @override
   void initState() {
     super.initState();
-    _decodeImage();
     _original = null;
     _imageName = null;
     _lines = _prepareWordSeparators(widget.words);
     _strongLabels = _preparStrongNumbers(widget.words);
+    _decodeImage();
     _requestRestorePositionAndScale();
   }
 
@@ -113,8 +114,16 @@ class ImagePreviewState extends State<ImagePreview> {
     super.didUpdateWidget(oldWidget);
     _lines = _prepareWordSeparators(widget.words);
     _strongLabels = _preparStrongNumbers(widget.words);
-    if (oldWidget.imageName != widget.imageName ||
-        !identical(oldWidget.imageData, widget.imageData)) {
+    final imageChanged =
+        oldWidget.imageName != widget.imageName ||
+        !identical(oldWidget.imageData, widget.imageData);
+    if (imageChanged) {
+      _start = null;
+      _end = null;
+      _imageName = null;
+      _original = null;
+      widget.controller.resetImageSize();
+      _decodeImage();
       _requestRestorePositionAndScale();
     }
   }
@@ -126,13 +135,6 @@ class ImagePreviewState extends State<ImagePreview> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (widget.controller.imageSize == null) {
-          return Container(
-            color: colorScheme.surface,
-            child: const Center(child: CircularProgressIndicator()),
-          );
-        }
-
         final currentSize = Size(constraints.maxWidth, constraints.maxHeight);
         bool recalcAnyway = false;
         if (_lastContainerSize == null ||
@@ -140,6 +142,13 @@ class ImagePreviewState extends State<ImagePreview> {
             (_lastContainerSize!.height - currentSize.height).abs() > 40) {
           _lastContainerSize = currentSize;
           recalcAnyway = true;
+        }
+
+        if (widget.controller.imageSize == null) {
+          return Container(
+            color: colorScheme.surface,
+            child: const Center(child: CircularProgressIndicator()),
+          );
         }
 
         widget.controller.setImageSize(
@@ -342,6 +351,11 @@ class ImagePreviewState extends State<ImagePreview> {
           ),
         );
 
+        final effectiveMaxScale =
+            widget.controller.maxScale >= widget.controller.minScale
+            ? widget.controller.maxScale
+            : widget.controller.minScale;
+
         return MouseRegion(
           cursor: widget.selectAreaMode
               ? SystemMouseCursors.precise
@@ -352,7 +366,7 @@ class ImagePreviewState extends State<ImagePreview> {
             transformationController:
                 widget.controller.transformationController,
             minScale: widget.controller.minScale,
-            maxScale: widget.controller.maxScale,
+            maxScale: effectiveMaxScale,
             constrained: false,
             child: gestureWrapped,
           ),
@@ -380,16 +394,44 @@ class ImagePreviewState extends State<ImagePreview> {
   }
 
   void _decodeImage() {
-    ui.decodeImageFromList(widget.imageData, (ui.Image image) {
-      if (mounted) {
-        setState(() {
-          widget.controller.setImageSize(
-            Size(image.width.toDouble(), image.height.toDouble()),
-            context.size!.width,
-            context.size!.height,
-          );
-        });
-      }
+    final requestId = ++_decodeRequestId;
+    final imageData = widget.imageData;
+    ui.decodeImageFromList(imageData, (ui.Image image) {
+      _applyDecodedImageSize(
+        requestId: requestId,
+        imageWidth: image.width.toDouble(),
+        imageHeight: image.height.toDouble(),
+      );
+    });
+  }
+
+  void _applyDecodedImageSize({
+    required int requestId,
+    required double imageWidth,
+    required double imageHeight,
+  }) {
+    if (!mounted || requestId != _decodeRequestId) {
+      return;
+    }
+
+    final viewportSize = _lastContainerSize;
+    if (viewportSize == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _applyDecodedImageSize(
+          requestId: requestId,
+          imageWidth: imageWidth,
+          imageHeight: imageHeight,
+        );
+      });
+      return;
+    }
+
+    setState(() {
+      widget.controller.setImageSize(
+        Size(imageWidth, imageHeight),
+        viewportSize.width,
+        viewportSize.height,
+      );
     });
   }
 
