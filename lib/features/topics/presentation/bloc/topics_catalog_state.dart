@@ -3,16 +3,17 @@ import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
 
 class TopicsCatalogState {
-  const TopicsCatalogState({
+  TopicsCatalogState({
     required this.language,
-    required this.topics,
-    required this.iconByKey,
+    required List<TopicInfo> topics,
+    required Map<String, TopicResource?> iconByKey,
     required this.isLoading,
     this.failure,
-  });
+  }) : topics = List<TopicInfo>.unmodifiable(topics),
+       iconByKey = Map<String, TopicResource?>.unmodifiable(iconByKey);
 
   factory TopicsCatalogState.initial() {
-    return const TopicsCatalogState(
+    return TopicsCatalogState(
       language: '',
       topics: <TopicInfo>[],
       iconByKey: <String, TopicResource?>{},

@@ -1,14 +1,14 @@
 import 'dart:typed_data';
 
 class PrimarySourceImageState {
-  const PrimarySourceImageState({
+  PrimarySourceImageState({
     required this.imageData,
     required this.isLoading,
     required this.imageShown,
     required this.refreshError,
-    required this.localPageLoaded,
+    required Map<String, bool?> localPageLoaded,
     required this.maxTextureSize,
-  });
+  }) : localPageLoaded = Map<String, bool?>.unmodifiable(localPageLoaded);
 
   factory PrimarySourceImageState.initial({required int maxTextureSize}) {
     return PrimarySourceImageState(

@@ -60,12 +60,12 @@
 
 ### Фаза C. Контракты state management
 
-- [ ] `C1` Усилить immutability состояний с коллекциями (`List/Map`).
+- [x] `C1` Усилить immutability состояний с коллекциями (`List/Map`).
 Файлы-кандидаты: `lib/features/topics/presentation/bloc/topics_catalog_state.dart`, `lib/features/primary_sources/presentation/bloc/primary_sources_state.dart`, `lib/features/primary_sources/presentation/bloc/primary_source_image_state.dart`, сопутствующие cubit.
 Ожидаемый результат: коллекции в state не мутируются извне.
 Проверка: unit tests + ручная проверка `copyWith`/constructor semantics.
 
-- [ ] `C2` Проверить, что state ownership остается только в Cubit/BLoC.
+- [x] `C2` Проверить, что state ownership остается только в Cubit/BLoC.
 Файлы-кандидаты: весь `lib/features/**/presentation`.
 Ожидаемый результат: source of truth состояния не уходит в viewmodel/coordinator.
 Проверка: архитектурный code review + `rg "package:provider|ChangeNotifier|notifyListeners" lib test`.
