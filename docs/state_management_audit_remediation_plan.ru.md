@@ -3,7 +3,7 @@
 Дата аудита: `2026-03-14`  
 Область: весь Flutter-проект (`lib/`, `test/`, `integration_test/`, `docs/`, CI/scripts)  
 Фокус: только state management и связанные архитектурные аспекты  
-Статус выполнения плана: `в процессе (Step 1-4 частично выполнены)`  
+Статус выполнения плана: `в процессе (Step 1-5 частично выполнены)`  
 
 Как использовать документ:
 - Этот файл предназначен как пошаговый execution-plan.
@@ -534,18 +534,18 @@ Legacy/candidate cleanup:
 - [ ] How to validate (финально): ручной smoke списка первоисточников.
 
 ### Step 5 — Добавить stale protection в TopicsCatalogCubit
-- [ ] Цель: Защитить catalog flow от race conditions.
-- [ ] Почему приоритет: Это прямой async correctness риск.
-- [ ] Конкретные действия:
-- [ ] Добавить request token/`LatestRequestGuard` в `loadForLanguage`.
-- [ ] Добавить проверки перед `emit` после каждого await.
-- [ ] Затрагиваемые файлы/папки:
-- [ ] `lib/features/topics/presentation/bloc/topics_catalog_cubit.dart`
-- [ ] `test/features/topics/presentation/bloc/topics_catalog_cubit_test.dart`
-- [ ] Риск: Низкий.
-- [ ] Ожидаемый результат: Старые запросы не перезаписывают новый state.
-- [ ] Dependency on previous steps: Нет.
-- [ ] How to validate: Новый regression test “ignores stale result”.
+- [x] Цель: Защитить catalog flow от race conditions.
+- [x] Почему приоритет: Это прямой async correctness риск.
+- [x] Конкретные действия:
+- [x] Добавить request token/`LatestRequestGuard` в `loadForLanguage`.
+- [x] Добавить проверки перед `emit` после каждого await.
+- [x] Затрагиваемые файлы/папки:
+- [x] `lib/features/topics/presentation/bloc/topics_catalog_cubit.dart`
+- [x] `test/features/topics/presentation/bloc/topics_catalog_cubit_test.dart`
+- [x] Риск: Низкий.
+- [x] Ожидаемый результат: Старые запросы не перезаписывают новый state.
+- [x] Dependency on previous steps: Нет.
+- [x] How to validate: Новый regression test “ignores stale result”.
 
 ### Step 6 — Стандартизировать lifecycle safety в async cubits
 - [ ] Цель: Свести к нулю `emit after close` риски.
@@ -711,7 +711,7 @@ Legacy/candidate cleanup:
 - [ ] Step 2: Устранить rebuild hotspot detail screen (частично выполнен: narrow subscriptions + split hot zones + dedup emits; ожидается ручной perf smoke/profiling)
 - [ ] Step 3: Убрать side effects из build (частично выполнен: side effects вынесены из build + добавлен regression test на stale geometry; ожидается финальный smoke + целевой widget test на call-count)
 - [ ] Step 4: Убрать mutable state из `PrimarySource` (частично выполнен: showMore удален из модели, добавлен `PrimarySourcesExpansionCubit`, ожидается ручной smoke)
-- [ ] Step 5: Добавить stale guard в `TopicsCatalogCubit`
+- [x] Step 5: Добавить stale guard в `TopicsCatalogCubit`
 - [ ] Step 6: Привести async lifecycle safety к единому стандарту
 - [ ] Step 7: Стандартизовать equality и dedup state updates
 - [ ] Step 8: Очистить legacy state leftovers

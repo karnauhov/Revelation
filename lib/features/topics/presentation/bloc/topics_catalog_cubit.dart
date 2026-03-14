@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
@@ -26,9 +27,14 @@ class TopicsCatalogCubit extends Cubit<TopicsCatalogState> {
   final TopicsRepository _topicsRepository;
   final SettingsCubit _settingsCubit;
   StreamSubscription<String>? _settingsSubscription;
+  final LatestRequestGuard _loadRequestGuard = LatestRequestGuard();
 
   Future<void> loadForLanguage(String language) async {
+    final requestToken = _loadRequestGuard.start();
     if (language.trim().isEmpty) {
+      if (!_canApplyRequest(requestToken)) {
+        return;
+      }
       emit(
         state.copyWith(
           isLoading: false,
@@ -38,11 +44,17 @@ class TopicsCatalogCubit extends Cubit<TopicsCatalogState> {
       return;
     }
 
+    if (!_canApplyRequest(requestToken)) {
+      return;
+    }
     emit(
       state.copyWith(language: language, isLoading: true, clearFailure: true),
     );
 
     final topicsResult = await _topicsRepository.getTopics(language: language);
+    if (!_canApplyRequest(requestToken)) {
+      return;
+    }
     if (topicsResult is! AppSuccess<List<TopicInfo>>) {
       final failure = topicsResult is AppFailureResult<List<TopicInfo>>
           ? topicsResult.error
@@ -53,6 +65,9 @@ class TopicsCatalogCubit extends Cubit<TopicsCatalogState> {
 
     final topics = topicsResult.data;
     final iconByKey = await _loadIcons(topics);
+    if (!_canApplyRequest(requestToken)) {
+      return;
+    }
     emit(
       state.copyWith(
         language: language,
@@ -62,6 +77,10 @@ class TopicsCatalogCubit extends Cubit<TopicsCatalogState> {
         clearFailure: true,
       ),
     );
+  }
+
+  bool _canApplyRequest(RequestToken token) {
+    return !isClosed && _loadRequestGuard.isActive(token);
   }
 
   Future<Map<String, TopicResource?>> _loadIcons(List<TopicInfo> topics) async {
@@ -88,6 +107,7 @@ class TopicsCatalogCubit extends Cubit<TopicsCatalogState> {
 
   @override
   Future<void> close() async {
+    _loadRequestGuard.cancelActive();
     await _settingsSubscription?.cancel();
     return super.close();
   }

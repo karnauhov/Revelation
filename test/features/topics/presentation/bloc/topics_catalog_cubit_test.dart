@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -153,6 +154,62 @@ void main() {
     expect(cubit.state.failure!.type, AppFailureType.dataSource);
     expect(cubit.state.failure!.message, 'forced topics failure');
   });
+
+  test('ignores stale result and keeps latest language state', () async {
+    final settingsCubit = SettingsCubit(
+      _FakeSettingsRepository(initialSettings: _buildSettings(language: 'en')),
+    );
+    addTearDown(settingsCubit.close);
+    await settingsCubit.loadSettings();
+
+    final repository = _ControllableTopicsRepository();
+    final cubit = TopicsCatalogCubit(
+      topicsRepository: repository,
+      settingsCubit: settingsCubit,
+    );
+    addTearDown(cubit.close);
+
+    await _flushAsync();
+    expect(repository.requestedLanguages, contains('en'));
+
+    await settingsCubit.changeLanguage('ru');
+    await _flushAsync();
+    expect(repository.requestedLanguages.last, 'ru');
+
+    repository.completeTopics(
+      language: 'ru',
+      result: AppSuccess<List<TopicInfo>>(<TopicInfo>[
+        TopicInfo(
+          name: 'Topic RU',
+          idIcon: '',
+          description: 'Description RU',
+          route: 'ru-route',
+        ),
+      ]),
+    );
+    await _flushAsync();
+
+    expect(cubit.state.language, 'ru');
+    expect(cubit.state.topics.single.route, 'ru-route');
+    expect(cubit.state.isLoading, isFalse);
+
+    repository.completeTopics(
+      language: 'en',
+      result: AppSuccess<List<TopicInfo>>(<TopicInfo>[
+        TopicInfo(
+          name: 'Topic EN',
+          idIcon: '',
+          description: 'Description EN',
+          route: 'en-route',
+        ),
+      ]),
+    );
+    await _flushAsync();
+
+    expect(cubit.state.language, 'ru');
+    expect(cubit.state.topics.single.route, 'ru-route');
+    expect(cubit.state.failure, isNull);
+  });
 }
 
 Future<void> _flushAsync() async {
@@ -226,6 +283,44 @@ class _FakeTopicsRepository extends TopicsRepository {
   Future<AppResult<TopicResource?>> getCommonResource(String key) async {
     requestedIconKeys.add(key);
     return iconByKey[key] ?? const AppSuccess<TopicResource?>(null);
+  }
+}
+
+class _ControllableTopicsRepository extends TopicsRepository {
+  _ControllableTopicsRepository() : super(dataSource: _NoopTopicsDataSource());
+
+  final Map<String, Completer<AppResult<List<TopicInfo>>>> _topicsCompleters =
+      <String, Completer<AppResult<List<TopicInfo>>>>{};
+  final List<String> requestedLanguages = <String>[];
+
+  @override
+  Future<AppResult<List<TopicInfo>>> getTopics({
+    required String language,
+  }) async {
+    requestedLanguages.add(language);
+    final completer = _topicsCompleters.putIfAbsent(
+      language,
+      () => Completer<AppResult<List<TopicInfo>>>(),
+    );
+    return completer.future;
+  }
+
+  @override
+  Future<AppResult<TopicResource?>> getCommonResource(String key) async {
+    return const AppSuccess<TopicResource?>(null);
+  }
+
+  void completeTopics({
+    required String language,
+    required AppResult<List<TopicInfo>> result,
+  }) {
+    final completer = _topicsCompleters[language];
+    if (completer == null) {
+      throw StateError('No pending topics request for language: $language');
+    }
+    if (!completer.isCompleted) {
+      completer.complete(result);
+    }
   }
 }
 
