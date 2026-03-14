@@ -30,6 +30,7 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 - Hybrid feature-first structure (`features/`, `shared/`, `core/`, `infra/`).
 - Explicit boundaries between presentation/application/data/infra.
 - Full state-management migration to `BLoC/Cubit` (Phase 3.7) with a final `zero Provider/ChangeNotifier` target.
+- The detailed state-ownership contracts are defined in `docs/architecture/state_migration_matrix_phase_3_7.en.md` (RU twin: `.ru.md`).
 - Typed route args for critical navigation flows.
 
 ## 6. Boundary Rules (Migration Baseline)

@@ -40,6 +40,7 @@
 - Any state-management contract change must be synchronized in:
   - `docs/architecture/revelation_architecture_refactor_roadmap_ru.md`
   - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/architecture/state_migration_matrix_phase_3_7.ru.md` and `docs/architecture/state_migration_matrix_phase_3_7.en.md`
   - `docs/architecture/overview.ru.md` and `docs/architecture/overview.en.md`
   - `docs/architecture/module-boundaries.ru.md` and `docs/architecture/module-boundaries.en.md`
 - Keep localization in sync for supported locales: `en`, `es`, `uk`, `ru`.

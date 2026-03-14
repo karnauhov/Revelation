@@ -519,6 +519,9 @@ lib/
 ### Phase 3.7 — Full state migration to BLoC/Cubit + granular PrimarySource slicing
 - Цель: полностью перенести управление состоянием на BLoC/Cubit и убрать legacy state frameworks.
 - Почему нужна: без этого останется смешанная архитектура состояния и высокий риск повторной деградации в крупные state-monoliths.
+- Approved matrix artifact:
+  - `docs/architecture/state_migration_matrix_phase_3_7.ru.md`
+  - `docs/architecture/state_migration_matrix_phase_3_7.en.md`
 - Concrete tasks:
   - [P0] Утвердить migration matrix `feature -> target cubit/bloc set -> owner state contracts`.
   - [P0] Добавить и настроить BLoC runtime слой (`flutter_bloc`, `BlocObserver`, единые правила ошибок/логирования переходов).

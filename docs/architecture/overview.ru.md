@@ -30,6 +30,7 @@ Source-Commit: `working-tree`
 - Hybrid feature-first структура (`features/`, `shared/`, `core/`, `infra/`).
 - Явные границы между presentation/application/data/infra.
 - Полный переход state management на `BLoC/Cubit` (Phase 3.7) с финальным `zero Provider/ChangeNotifier`.
+- Детальный ownership state-контрактов зафиксирован в `docs/architecture/state_migration_matrix_phase_3_7.ru.md` (EN twin: `.en.md`).
 - Типизированные route args для критичных переходов.
 
 ## 6. Boundary Rules (Migration Baseline)

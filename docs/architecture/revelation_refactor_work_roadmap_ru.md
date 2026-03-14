@@ -3,7 +3,7 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1/2/3/3.5 завершены, Phase 3.7 planned, Phase 4 paused`  
+Статус: `Phase 0/1/2/3/3.5 завершены, Phase 3.7 in progress, Phase 4 paused`  
 Версия roadmap: `v1.1`  
 Дата создания: `2026-03-08`
 
@@ -129,9 +129,12 @@
 - [x] Criteria of done выполнен.
 
 ### Phase 3.7 — Full state migration to BLoC/Cubit + granular PrimarySource slicing
-- [ ] Цель фазы зафиксирована: полностью перенести state management на `BLoC/Cubit` и закрыть legacy state-layer.
-- [ ] Обоснование фазы зафиксировано: без полного cutover останется смешанная архитектура и высокий риск регрессий/деградации состояния.
-- [ ] Задача [P0]: утвердить migration matrix `feature -> cubit/bloc set -> state contracts`.
+- [x] Цель фазы зафиксирована: полностью перенести state management на `BLoC/Cubit` и закрыть legacy state-layer.
+- [x] Обоснование фазы зафиксировано: без полного cutover останется смешанная архитектура и высокий риск регрессий/деградации состояния.
+- [x] Задача [P0]: утвердить migration matrix `feature -> cubit/bloc set -> state contracts`.
+- [x] Артефакт [P0]: зафиксированная матрица:
+  - `docs/architecture/state_migration_matrix_phase_3_7.ru.md`
+  - `docs/architecture/state_migration_matrix_phase_3_7.en.md`
 - [ ] Задача [P0]: добавить и настроить BLoC runtime (`flutter_bloc`, `BlocObserver`, logging/error policy для state transitions).
 - [ ] Задача [P0]: перевести composition root (`main/app/di`) c provider wiring на `MultiBlocProvider`/`BlocProvider`.
 - [ ] Задача [P0]: мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
@@ -1541,3 +1544,33 @@
   - New risks: план Phase 4 зависим от фактического завершения state migration (Phase 3.7).
   - Mitigations: исполнять Phase 3.7 как P0 до возврата к CI hardening задачам.
   - Next task: Phase 3.7 / P0 — утвердить migration matrix и стартовать техническую миграцию на `BLoC/Cubit`.
+
+#### [2026-03-14 12:20] Phase 3.7 / Task P0 / Approve migration matrix (`feature -> cubit/bloc set -> state contracts`)
+- Статус: done
+- Priority: P0
+- What changed:
+  - Утверждена детальная migration matrix для всех целевых срезов Phase 3.7.
+  - Добавлен отдельный RU/EN pair документов с source-of-truth контрактами:
+    - `docs/architecture/state_migration_matrix_phase_3_7.ru.md`
+    - `docs/architecture/state_migration_matrix_phase_3_7.en.md`
+  - В глобальном чеклисте Phase 3.7 задача `утвердить migration matrix` отмечена как выполненная.
+- Why changed:
+  - Это первый обязательный технический шаг миграции: без зафиксированного ownership state-контрактов переход на `BLoC/Cubit` будет неконтролируемым и несогласованным между фичами.
+- Scope (files/modules):
+  - `docs/architecture/state_migration_matrix_phase_3_7.ru.md`
+  - `docs/architecture/state_migration_matrix_phase_3_7.en.md`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: n/a (docs-only change)
+  - Unit tests: n/a (docs-only change)
+  - Widget tests: n/a (docs-only change)
+  - Integration smoke: n/a
+  - Grep boundary checks: n/a (документационная задача)
+- Docs:
+  - RU updated: yes (`docs/architecture/state_migration_matrix_phase_3_7.ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: yes (`docs/architecture/state_migration_matrix_phase_3_7.en.md`)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: выбранный granular split `PrimarySource` добавляет количество state-holder'ов и связей.
+  - Mitigations: при следующем шаге (runtime setup) сохранить `Cubit by default` и вводить `Bloc` только при подтвержденной необходимости orchestration.
+  - Next task: Phase 3.7 / P0 — добавить и настроить BLoC runtime (`flutter_bloc`, `BlocObserver`, logging/error policy).
