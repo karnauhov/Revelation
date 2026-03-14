@@ -2,8 +2,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:revelation/core/async/latest_request_guard.dart';
-import 'package:revelation/features/primary_sources/application/orchestrators/description_panel_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
@@ -22,7 +23,10 @@ import 'package:revelation/shared/utils/common.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
 
 class PrimarySourceViewModel extends ChangeNotifier {
-  final PrimarySourceDescriptionPanelOrchestrator _descriptionPanelOrchestrator;
+  late final PrimarySourceDescriptionCubit _descriptionCubit;
+  late final bool _ownsDescriptionCubit;
+  StreamSubscription<PrimarySourceDescriptionState>?
+  _descriptionStateSubscription;
   late final PrimarySourceImageCubit _imageCubit;
   late final bool _ownsImageCubit;
   StreamSubscription<PrimarySourceImageState>? _imageStateSubscription;
@@ -85,9 +89,8 @@ class PrimarySourceViewModel extends ChangeNotifier {
   String get imageName => _sessionCubit.state.imageName;
   bool get isMenuOpen => _sessionCubit.state.isMenuOpen;
   String get pageSettings => _pageSettingsCubit.state.rawSettings;
-  bool get showDescription =>
-      _descriptionPanelOrchestrator.state.showDescription;
-  String? get descriptionContent => _descriptionPanelOrchestrator.state.content;
+  bool get showDescription => _descriptionCubit.state.showDescription;
+  String? get descriptionContent => _descriptionCubit.state.content;
   DescriptionKind get currentDescriptionType =>
       _selectionCubit.state.currentType;
   int? get currentDescriptionNumber => _selectionCubit.state.currentNumber;
@@ -98,16 +101,11 @@ class PrimarySourceViewModel extends ChangeNotifier {
     PrimarySourceImageCubit? imageCubit,
     PrimarySourcePageSettingsCubit? pageSettingsCubit,
     PrimarySourceSelectionCubit? selectionCubit,
+    PrimarySourceDescriptionCubit? descriptionCubit,
     PrimarySourceSessionCubit? sessionCubit,
     DescriptionContentService? descriptionService,
     PrimarySourcePageSettingsOrchestrator? pageSettingsOrchestrator,
-    PrimarySourceDescriptionPanelOrchestrator? descriptionPanelOrchestrator,
-  }) : _descriptionPanelOrchestrator =
-           descriptionPanelOrchestrator ??
-           PrimarySourceDescriptionPanelOrchestrator(
-             descriptionService: descriptionService,
-           ),
-       _sessionCubit =
+  }) : _sessionCubit =
            sessionCubit ?? PrimarySourceSessionCubit(source: primarySource),
        _ownsSessionCubit = sessionCubit == null {
     imageController = ImagePreviewController(primarySource.maxScale);
@@ -139,6 +137,14 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _pageSettingsStateSubscription = _pageSettingsCubit.stream.listen(
       (_) => notifyListeners(),
     );
+    _ownsDescriptionCubit = descriptionCubit == null;
+    _descriptionCubit =
+        descriptionCubit ??
+        PrimarySourceDescriptionCubit(descriptionService: descriptionService);
+    _descriptionStateSubscription = _descriptionCubit.stream.listen((_) {
+      _syncSelectionFromDescriptionState();
+      notifyListeners();
+    });
     _ownsSelectionCubit = selectionCubit == null;
     _selectionCubit = selectionCubit ?? PrimarySourceSelectionCubit();
     _selectionStateSubscription = _selectionCubit.stream.listen(
@@ -365,8 +371,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void toggleDescription() {
-    _descriptionPanelOrchestrator.toggleDescriptionVisibility();
-    notifyListeners();
+    _descriptionCubit.toggleDescriptionVisibility();
   }
 
   void updateDescriptionContent(
@@ -374,56 +379,45 @@ class PrimarySourceViewModel extends ChangeNotifier {
     DescriptionKind type,
     int? number,
   ) {
-    _descriptionPanelOrchestrator.updateDescriptionContent(
+    _descriptionCubit.updateDescriptionContent(
       content: content,
       type: type,
       number: number,
     );
-    _syncSelectionFromDescriptionState();
-    notifyListeners();
   }
 
   void showCommonInfo(BuildContext context) {
-    _descriptionPanelOrchestrator.showCommonInfo(context);
-    _syncSelectionFromDescriptionState();
-    notifyListeners();
+    _descriptionCubit.showCommonInfo(context);
   }
 
   bool navigateDescriptionSelection(
     BuildContext context, {
     required bool forward,
   }) {
-    final navigated = _descriptionPanelOrchestrator.navigateSelection(
+    return _descriptionCubit.navigateSelection(
       context,
       forward: forward,
       source: primarySource,
       selectedPage: selectedPage,
     );
-    if (navigated) {
-      _syncSelectionFromDescriptionState();
-      notifyListeners();
-    }
-    return navigated;
   }
 
   List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
-    return _descriptionPanelOrchestrator.getGreekStrongPickerEntries();
+    return _descriptionCubit.getGreekStrongPickerEntries();
   }
 
   void showInfoForStrongNumber(int strongNumber, BuildContext context) {
-    final shown = _descriptionPanelOrchestrator.showInfoForStrongNumber(
+    final shown = _descriptionCubit.showInfoForStrongNumber(
       strongNumber: strongNumber,
       context: context,
     );
     if (!shown) {
       return;
     }
-    _syncSelectionFromDescriptionState();
-    notifyListeners();
   }
 
   void showInfoForWord(int wordIndex, BuildContext context) {
-    final shown = _descriptionPanelOrchestrator.showInfoForWord(
+    final shown = _descriptionCubit.showInfoForWord(
       wordIndex: wordIndex,
       context: context,
       source: primarySource,
@@ -432,12 +426,10 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (!shown) {
       return;
     }
-    _syncSelectionFromDescriptionState();
-    notifyListeners();
   }
 
   void showInfoForVerse(int verseIndex, BuildContext context) {
-    final shown = _descriptionPanelOrchestrator.showInfoForVerse(
+    final shown = _descriptionCubit.showInfoForVerse(
       verseIndex: verseIndex,
       context: context,
       source: primarySource,
@@ -446,8 +438,6 @@ class PrimarySourceViewModel extends ChangeNotifier {
     if (!shown) {
       return;
     }
-    _syncSelectionFromDescriptionState();
-    notifyListeners();
   }
 
   void _applyViewportSettings(PageSettingsState settings) {
@@ -457,7 +447,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   }
 
   void _syncSelectionFromDescriptionState() {
-    final descriptionState = _descriptionPanelOrchestrator.state;
+    final descriptionState = _descriptionCubit.state;
     _selectionCubit.setSelection(
       type: descriptionState.currentType,
       number: descriptionState.currentNumber,
@@ -512,6 +502,7 @@ class PrimarySourceViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _imageLoadRequestGuard.cancelActive();
+    _descriptionStateSubscription?.cancel();
     _imageStateSubscription?.cancel();
     _pageSettingsStateSubscription?.cancel();
     _selectionStateSubscription?.cancel();
@@ -525,6 +516,9 @@ class PrimarySourceViewModel extends ChangeNotifier {
     _onPipettePicked = null;
     _onAreaSelected = null;
     _isDisposed = true;
+    if (_ownsDescriptionCubit) {
+      unawaited(_descriptionCubit.close());
+    }
     if (_ownsImageCubit) {
       unawaited(_imageCubit.close());
     }

@@ -17,6 +17,7 @@ import 'package:revelation/features/primary_sources/presentation/detail/strong_n
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/utils/common.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
@@ -112,6 +113,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         BlocProvider<PrimarySourceSelectionCubit>(
           create: (_) => PrimarySourceSelectionCubit(),
         ),
+        BlocProvider<PrimarySourceDescriptionCubit>(
+          create: (_) => PrimarySourceDescriptionCubit(),
+        ),
       ],
       child: ChangeNotifierProvider<PrimarySourceViewModel>(
         create: (context) => PrimarySourceViewModel(
@@ -120,6 +124,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           imageCubit: context.read<PrimarySourceImageCubit>(),
           pageSettingsCubit: context.read<PrimarySourcePageSettingsCubit>(),
           selectionCubit: context.read<PrimarySourceSelectionCubit>(),
+          descriptionCubit: context.read<PrimarySourceDescriptionCubit>(),
           sessionCubit: context.read<PrimarySourceSessionCubit>(),
         ),
         child: Consumer<PrimarySourceViewModel>(

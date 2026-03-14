@@ -151,7 +151,7 @@
 - [x] Подшаг [P3.7.2]: image loading/cache/local availability cubit.
 - [x] Подшаг [P3.7.3]: page settings persistence cubit.
 - [x] Подшаг [P3.7.4]: selection cubit (`word/verse/strong`).
-- [ ] Подшаг [P3.7.5]: description panel cubit (content + navigation).
+- [x] Подшаг [P3.7.5]: description panel cubit (content + navigation).
 - [ ] Подшаг [P3.7.6]: viewport/render controls cubit (zoom/layers/tool mode/colors).
 - [ ] Задача [P0]: заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.
 - [ ] Задача [P0]: удалить legacy state слой (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts).
@@ -1870,3 +1870,48 @@
   - New risks: description content/navigation по-прежнему управляется orchestrator-слоем; пока сохранена временная синхронизация selection между VM и orchestrator.
   - Mitigations: следующий подшаг — вынести description panel (content + navigation) в отдельный cubit и убрать transitional sync.
   - Next task: Phase 3.7 / Substep `P3.7.5` — description panel cubit (content + navigation).
+
+#### [2026-03-14 17:05] Phase 3.7 / Substep P3.7.5 / Introduce `PrimarySourceDescriptionCubit` (content + navigation)
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлен новый granular state-slice:
+    - `PrimarySourceDescriptionState { showDescription, content, currentType, currentNumber, pickerEntries }`.
+    - `PrimarySourceDescriptionCubit` с ответственностью за:
+      - visibility/content state description panel,
+      - word/verse/strong selection navigation,
+      - info-loading (`showInfoForWord/Verse/Strong`, `showCommonInfo`),
+      - поддержание `pickerEntries` в state.
+  - `PrimarySourceScreen` расширен новым `BlocProvider<PrimarySourceDescriptionCubit>`.
+  - `PrimarySourceViewModel` переключен с `PrimarySourceDescriptionPanelOrchestrator` на `PrimarySourceDescriptionCubit`:
+    - description getters читаются из cubit state,
+    - navigation/info команды делегированы в cubit,
+    - сохранена синхронизация с `PrimarySourceSelectionCubit` через description-state updates.
+  - Обновлены feature exports:
+    - `lib/features/primary_sources/primary_sources.dart`.
+  - Добавлен unit/widget test suite для description cubit:
+    - `test/features/primary_sources/presentation/bloc/primary_source_description_cubit_test.dart`.
+- Why changed:
+  - Закрыть обязательный подшаг `P3.7.5` и отделить description panel state/навигацию от legacy VM/orchestrator слоя перед финальным подшагом `P3.7.6` (viewport/render controls).
+- Scope (files/modules):
+  - `lib/features/primary_sources/presentation/bloc/primary_source_description_state.dart`
+  - `lib/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart`
+  - `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`
+  - `lib/features/primary_sources/presentation/detail/primary_source_screen.dart`
+  - `lib/features/primary_sources/primary_sources.dart`
+  - `test/features/primary_sources/presentation/bloc/primary_source_description_cubit_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass (description content/navigation выделены в отдельный cubit)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого подшага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: `PrimarySourceViewModel` по-прежнему содержит viewport/render/tool-mode state и `notifyListeners`-binding слой.
+  - Mitigations: следующий подшаг — вынести viewport/render controls (zoom/layers/tool mode/colors) в отдельный cubit.
+  - Next task: Phase 3.7 / Substep `P3.7.6` — viewport/render controls cubit (zoom/layers/tool mode/colors).
