@@ -154,7 +154,7 @@
 - [x] Подшаг [P3.7.5]: description panel cubit (content + navigation).
 - [x] Подшаг [P3.7.6]: viewport/render controls cubit (zoom/layers/tool mode/colors).
 - [x] Задача [P0]: заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.
-- [ ] Задача [P0]: удалить legacy state слой (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts).
+- [x] Задача [P0]: удалить legacy state слой (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts).
 - [ ] Задача [P1]: добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/` (кроме документации).
 - [ ] Задача [P1]: добавить unit/widget regression suite на cubit/bloc transitions и критичные user flows.
 - [ ] Affected areas верифицированы: `lib/main.dart`, `lib/app/di/*`, `lib/app/router/*`, `lib/features/*/presentation/*`, `lib/features/primary_sources/{presentation,application}/*`, `scripts/check_forbidden_patterns.dart`, `pubspec.yaml`.
@@ -1997,3 +1997,50 @@
   - New risks: в runtime-коде еще остается legacy state слой вне detail scope (например `PrimarySourcesViewModel`/`Provider` в списке primary sources).
   - Mitigations: следующий обязательный шаг — удалить legacy state слой полностью (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts) и завершить zero-legacy target для Phase 3.7.
   - Next task: Phase 3.7 / Task `P0` — удалить legacy state слой (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts).
+
+#### [2026-03-14 18:00] Phase 3.7 / Task P0 / Remove legacy runtime state layer (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts)
+- Статус: done
+- Priority: P0
+- What changed:
+  - `primary_sources/list` полностью переведен на cubit state flow:
+    - добавлены `PrimarySourcesCubit` и `PrimarySourcesState`;
+    - `PrimarySourcesScreen` переведен с `Provider.of<PrimarySourcesViewModel>` на `PrimarySourcesCubit` (`context.read/context.select`).
+  - Удалены legacy runtime state-контракты:
+    - удален `PrimarySourcesViewModel` (`ChangeNotifier`);
+    - удален transitional `ChangeNotifierBridgeCubit`.
+  - Обновлен composition root:
+    - `main.dart` больше не использует `MultiProvider` и не импортирует `provider`;
+    - `AppDi` переведен на чистый `MultiBlocProvider` wiring с `PrimarySourcesCubit`.
+  - Удалена прямая dependency `provider` из `pubspec.yaml` и синхронизирован `assets/data/about_libraries.xml`.
+  - Обновлены тесты:
+    - widget-тест `primary_sources_screen` переведен на `BlocProvider`;
+    - unit-тест VM заменен на `PrimarySourcesCubit` test suite.
+- Why changed:
+  - Закрыть обязательный P0 шаг Phase 3.7: полностью убрать legacy runtime state слой (`provider`/`ChangeNotifier`) и закрепить BLoC/Cubit-only policy в рабочем коде.
+- Scope (files/modules):
+  - `lib/features/primary_sources/presentation/bloc/primary_sources_cubit.dart`
+  - `lib/features/primary_sources/presentation/bloc/primary_sources_state.dart`
+  - `lib/features/primary_sources/presentation/list/primary_sources_screen.dart`
+  - `lib/app/di/app_di.dart`
+  - `lib/main.dart`
+  - `lib/features/primary_sources/primary_sources.dart`
+  - `pubspec.yaml`
+  - `assets/data/about_libraries.xml`
+  - `AGENTS.md`
+  - `test/features/primary_sources/presentation/bloc/primary_sources_cubit_test.dart`
+  - `test/widget/primary_sources/primary_sources_screen_test.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: pass (`rg "package:provider|ChangeNotifier|notifyListeners\(" lib test` не находит вхождений).
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: без автоматизированного guardrail возможно повторное внесение `provider/ChangeNotifier` в будущих изменениях.
+  - Mitigations: следующий шаг — добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/`.
+  - Next task: Phase 3.7 / Task `P1` — добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/` (кроме документации).

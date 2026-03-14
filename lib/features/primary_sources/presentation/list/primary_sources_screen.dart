@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_state.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/primary_sources_view_model.dart';
 import 'package:revelation/features/primary_sources/presentation/list/source_item.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/primary_source.dart';
@@ -25,13 +26,7 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel = Provider.of<PrimarySourcesViewModel>(
-        context,
-        listen: false,
-      );
-      unawaited(viewModel.loadPrimarySources());
-    });
+    unawaited(context.read<PrimarySourcesCubit>().loadPrimarySources());
   }
 
   @override
@@ -45,17 +40,14 @@ class _PrimarySourcesScreenState extends State<PrimarySourcesScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-    final primarySourcesViewModel = Provider.of<PrimarySourcesViewModel>(
-      context,
+    final PrimarySourcesState state = context.select(
+      (PrimarySourcesCubit cubit) => cubit.state,
     );
-    List<PrimarySource> fullSources =
-        primarySourcesViewModel.fullPrimarySources;
-    List<PrimarySource> significantSources =
-        primarySourcesViewModel.significantPrimarySources;
-    List<PrimarySource> fragmentsSources =
-        primarySourcesViewModel.fragmentsPrimarySources;
-    final isLoading = primarySourcesViewModel.isLoading;
-    final hasError = primarySourcesViewModel.hasError;
+    final List<PrimarySource> fullSources = state.full;
+    final List<PrimarySource> significantSources = state.significant;
+    final List<PrimarySource> fragmentsSources = state.fragments;
+    final bool isLoading = state.isLoading;
+    final bool hasError = state.hasError;
 
     if (isLoading &&
         fullSources.isEmpty &&

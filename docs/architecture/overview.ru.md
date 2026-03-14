@@ -11,7 +11,7 @@ Source-Commit: `working-tree`
 - Composition root перегружен: `lib/main.dart` одновременно инициализирует логирование, платформу, DI, БД и UI.
 - Критические singleton-узлы: `DBManager`, `ServerManager`, `AppRouter`.
 - Навигационные контракты частично не типизированы (`Map<String, dynamic>` в `state.extra`).
-- Структура каталогов уже выровнена в canonical layout (`app/core/infra/shared/features/l10n`), но state-слой еще требует полного перехода на `BLoC/Cubit`.
+- Структура каталогов уже выровнена в canonical layout (`app/core/infra/shared/features/l10n`), а runtime state-слой уже мигрирован на `BLoC/Cubit` (в рамках Phase 3.7, hardening-этап остается).
 
 ## 3. Main Strengths To Preserve
 - Рабочий multi-platform стек Flutter + Drift + Supabase.
@@ -29,7 +29,7 @@ Source-Commit: `working-tree`
 - Эволюционная миграция без rewrite.
 - Hybrid feature-first структура (`features/`, `shared/`, `core/`, `infra/`).
 - Явные границы между presentation/application/data/infra.
-- Полный переход state management на `BLoC/Cubit` (Phase 3.7) с финальным `zero Provider/ChangeNotifier`.
+- Runtime state management в режиме `BLoC/Cubit`-only (Phase 3.7 target достигнут) и последующий hardening через guardrails/regression suites.
 - Детальный ownership state-контрактов зафиксирован в `docs/architecture/state_migration_matrix_phase_3_7.ru.md` (EN twin: `.en.md`).
 - Типизированные route args для критичных переходов.
 

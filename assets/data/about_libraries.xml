@@ -127,13 +127,6 @@
         <licenseLink>https://pub.dev/packages/get_it/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'provider'</name>
-        <idIcon></idIcon>
-        <license>MIT</license>
-        <officialSite>https://pub.dev/packages/provider</officialSite>
-        <licenseLink>https://pub.dev/packages/provider/license</licenseLink>
-    </library>
-    <library>
         <name>@Package 'flutter_bloc'</name>
         <idIcon></idIcon>
         <license>MIT</license>

@@ -10,7 +10,6 @@
 - Flutter with `flutter generate: true`
 - Navigation: `go_router`
 - State management target (mandatory): `BLoC/Cubit` (`flutter_bloc`)
-- Legacy state stack (temporary, migration only): `provider` with `ChangeNotifier`
 - Dependency lookup: `get_it`
 - Local persistence: `shared_preferences`
 - Local database: `drift`, `drift_flutter`

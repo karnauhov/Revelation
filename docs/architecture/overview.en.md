@@ -11,7 +11,7 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 - The composition root is overloaded: `lib/main.dart` initializes logging, platform setup, DI, DB, and UI wiring.
 - Critical singleton nodes: `DBManager`, `ServerManager`, `AppRouter`.
 - Navigation contracts are partially untyped (`Map<String, dynamic>` in `state.extra`).
-- Folder layout is already aligned to the canonical structure (`app/core/infra/shared/features/l10n`), but the state layer still needs full migration to `BLoC/Cubit`.
+- Folder layout is already aligned to the canonical structure (`app/core/infra/shared/features/l10n`), and runtime state management has been migrated to `BLoC/Cubit` (Phase 3.7, migration hardening remains).
 
 ## 3. Main Strengths To Preserve
 - Stable multi-platform Flutter stack with Drift and Supabase.
@@ -29,7 +29,7 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 - Evolutionary migration without rewrite.
 - Hybrid feature-first structure (`features/`, `shared/`, `core/`, `infra/`).
 - Explicit boundaries between presentation/application/data/infra.
-- Full state-management migration to `BLoC/Cubit` (Phase 3.7) with a final `zero Provider/ChangeNotifier` target.
+- `BLoC/Cubit`-only runtime state layer (Phase 3.7 target achieved), plus follow-up hardening via guardrails and regression suites.
 - The detailed state-ownership contracts are defined in `docs/architecture/state_migration_matrix_phase_3_7.en.md` (RU twin: `.ru.md`).
 - Typed route args for critical navigation flows.
 

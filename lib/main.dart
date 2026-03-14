@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/core/logging/app_bloc_observer.dart';
@@ -26,20 +25,11 @@ void main() async {
     () async {
       final appBootstrap = AppBootstrap(talker: talker);
       final SettingsCubit settingsCubit = await appBootstrap.initialize();
-      final primarySourcesViewModel = AppDi.createPrimarySourcesViewModel();
 
       runApp(
         MultiBlocProvider(
-          providers: AppDi.appBlocProviders(
-            settingsCubit: settingsCubit,
-            primarySourcesViewModel: primarySourcesViewModel,
-          ),
-          child: MultiProvider(
-            providers: AppDi.appProviders(
-              primarySourcesViewModel: primarySourcesViewModel,
-            ),
-            child: const RevelationApp(),
-          ),
+          providers: AppDi.appBlocProviders(settingsCubit: settingsCubit),
+          child: const RevelationApp(),
         ),
       );
     },

@@ -21,7 +21,7 @@ Source-Commit: `working-tree`
 | `about` | `AboutViewModel` (screen-local) | `AboutCubit` | `AboutState { String appVersion; String buildNumber; String changelog; bool isLoading; bool isChangelogExpanded; bool isAcknowledgementsExpanded; bool isRecommendedExpanded; AppFailure? failure; }` |
 | `topics/catalog` (`MainScreen`, `TopicList`, icons) | `MainViewModel` + local `FutureBuilder` state | `TopicsCatalogCubit` | `TopicsCatalogState { String language; List<TopicInfo> topics; Map<String, CommonResource?> iconByKey; bool isLoading; AppFailure? failure; }` |
 | `topics/content` (`TopicScreen`) | local `FutureBuilder` state | `TopicContentCubit` | `TopicContentState { String route; String language; String name; String description; String markdown; bool isLoading; AppFailure? failure; }` |
-| `primary_sources/list` | `PrimarySourcesViewModel` | `PrimarySourcesCubit` | `PrimarySourcesState { List<PrimarySource> full; List<PrimarySource> significant; List<PrimarySource> fragments; bool isLoading; AppFailure? failure; }` |
+| `primary_sources/list` | `PrimarySourcesCubit` | `PrimarySourcesCubit` | `PrimarySourcesState { List<PrimarySource> full; List<PrimarySource> significant; List<PrimarySource> fragments; bool isLoading; AppFailure? failure; }` |
 | `primary_source/detail/session` | `PrimarySourceViewModel` (часть state) | `PrimarySourceSessionCubit` | `PrimarySourceSessionState { PrimarySource source; model.Page? selectedPage; String imageName; bool isMenuOpen; }` |
 | `primary_source/detail/image` | `PrimarySourceViewModel` + image orchestrator | `PrimarySourceImageCubit` | `PrimarySourceImageState { Uint8List? imageData; bool isLoading; bool imageShown; bool refreshError; Map<String, bool?> localPageLoaded; int maxTextureSize; }` |
 | `primary_source/detail/page-settings` | `PrimarySourceViewModel` + page-settings orchestrator | `PrimarySourcePageSettingsCubit` | `PrimarySourcePageSettingsState { String rawSettings; bool isNegative; bool isMonochrome; double brightness; double contrast; bool showWordSeparators; bool showStrongNumbers; bool showVerseNumbers; }` |
@@ -30,7 +30,7 @@ Source-Commit: `working-tree`
 | `primary_source/detail/description` | `PrimarySourceViewModel` + description orchestrator | `PrimarySourceDescriptionCubit` | `PrimarySourceDescriptionState { bool showDescription; String? content; DescriptionKind currentType; int? currentNumber; List<GreekStrongPickerEntry> pickerEntries; }` |
 | `primary_source/detail/cross-slice orchestration` | внутри одного `PrimarySourceViewModel` | `PrimarySourceCoordinatorBloc` (optional, if needed) | `PrimarySourceCoordinatorState { bool initialized; AppFailure? failure; }` |
 | `download` | stateless screen (без state-holder) | `No Cubit/Bloc in Phase 3.7` | `N/A` |
-| `app/di + app/root provider wiring` | `AppDi.appProviders` + `MultiProvider` | `AppDi.appBlocProviders` + `MultiBlocProvider` | `AppStateScopeContract { global providers map; feature-scoped providers per route; }` |
+| `app/di + app/root provider wiring` | `AppDi.appBlocProviders` + `MultiBlocProvider` | `AppDi.appBlocProviders` + `MultiBlocProvider` | `AppStateScopeContract { global providers map; feature-scoped providers per route; }` |
 
 ## 4. Notes
 - Для `download` в текущем scope отдельный state-holder не вводится: экран уже stateless.

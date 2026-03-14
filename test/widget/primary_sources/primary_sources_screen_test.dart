@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:provider/provider.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
@@ -14,8 +14,8 @@ import 'package:revelation/infra/db/localized/db_localized.dart'
 import 'package:revelation/infra/db/data_sources/primary_sources_data_source.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/list/primary_sources_screen.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/primary_sources_view_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 void main() {
@@ -31,13 +31,12 @@ void main() {
   testWidgets(
     'PrimarySourcesScreen shows error fallback when load fails and there is no data',
     (tester) async {
-      final viewModel = PrimarySourcesViewModel(
-        _FailurePrimarySourcesRepository(),
-      );
+      final cubit = PrimarySourcesCubit(_FailurePrimarySourcesRepository());
+      addTearDown(cubit.close);
 
       await tester.pumpWidget(
-        ChangeNotifierProvider<PrimarySourcesViewModel>.value(
-          value: viewModel,
+        BlocProvider<PrimarySourcesCubit>.value(
+          value: cubit,
           child: MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,

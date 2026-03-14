@@ -3,26 +3,27 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/core/errors/app_result.dart';
+import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
 import 'package:revelation/infra/db/common/db_common.dart' as common_db;
+import 'package:revelation/infra/db/data_sources/primary_sources_data_source.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart'
     as localized_db;
-import 'package:revelation/infra/db/data_sources/primary_sources_data_source.dart';
 import 'package:revelation/shared/models/primary_source.dart';
-import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/primary_sources_view_model.dart';
 
 void main() {
   test('loadPrimarySources ignores stale result from older request', () async {
     final repository = _ControlledPrimarySourcesRepository();
-    final viewModel = PrimarySourcesViewModel(repository);
+    final cubit = PrimarySourcesCubit(repository);
+    addTearDown(cubit.close);
 
-    unawaited(viewModel.loadPrimarySources());
+    unawaited(cubit.loadPrimarySources());
     await _flushAsync();
-    unawaited(viewModel.loadPrimarySources());
+    unawaited(cubit.loadPrimarySources());
     await _flushAsync();
 
     expect(repository.pendingRequestsCount, 2);
-    expect(viewModel.isLoading, isTrue);
+    expect(cubit.state.isLoading, isTrue);
 
     repository.completeRequest(
       0,
@@ -36,8 +37,8 @@ void main() {
     );
     await _flushAsync();
 
-    expect(viewModel.isLoading, isTrue);
-    expect(viewModel.fullPrimarySources, isEmpty);
+    expect(cubit.state.isLoading, isTrue);
+    expect(cubit.state.full, isEmpty);
 
     repository.completeRequest(
       1,
@@ -51,9 +52,9 @@ void main() {
     );
     await _flushAsync();
 
-    expect(viewModel.isLoading, isFalse);
-    expect(viewModel.fullPrimarySources.length, 1);
-    expect(viewModel.fullPrimarySources.first.id, 'fresh');
+    expect(cubit.state.isLoading, isFalse);
+    expect(cubit.state.full.length, 1);
+    expect(cubit.state.full.first.id, 'fresh');
   });
 }
 
