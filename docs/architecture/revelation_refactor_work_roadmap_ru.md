@@ -135,7 +135,11 @@
 - [x] Артефакт [P0]: зафиксированная матрица:
   - `docs/architecture/state_migration_matrix_phase_3_7.ru.md`
   - `docs/architecture/state_migration_matrix_phase_3_7.en.md`
-- [ ] Задача [P0]: добавить и настроить BLoC runtime (`flutter_bloc`, `BlocObserver`, logging/error policy для state transitions).
+- [x] Задача [P0]: добавить и настроить BLoC runtime (`flutter_bloc`, `BlocObserver`, logging/error policy для state transitions).
+- [x] Артефакт [P0]: runtime wiring и observer:
+  - `pubspec.yaml`
+  - `lib/core/logging/app_bloc_observer.dart`
+  - `lib/main.dart`
 - [ ] Задача [P0]: перевести composition root (`main/app/di`) c provider wiring на `MultiBlocProvider`/`BlocProvider`.
 - [ ] Задача [P0]: мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
 - [ ] Задача [P0]: выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы.
@@ -1574,3 +1578,38 @@
   - New risks: выбранный granular split `PrimarySource` добавляет количество state-holder'ов и связей.
   - Mitigations: при следующем шаге (runtime setup) сохранить `Cubit by default` и вводить `Bloc` только при подтвержденной необходимости orchestration.
   - Next task: Phase 3.7 / P0 — добавить и настроить BLoC runtime (`flutter_bloc`, `BlocObserver`, logging/error policy).
+
+#### [2026-03-14 12:55] Phase 3.7 / Task P0 / Add and configure BLoC runtime (`flutter_bloc`, `BlocObserver`, logging/error policy)
+- Статус: done
+- Priority: P0
+- What changed:
+  - Добавлена runtime-зависимость `flutter_bloc` в `pubspec.yaml`.
+  - Реализован централизованный observer `AppBlocObserver`:
+    - lifecycle hooks (`onCreate/onClose`),
+    - state transition logging (`onChange/onTransition`),
+    - event logging (`onEvent`),
+    - централизованная обработка ошибок (`onError` -> `Talker.handle`).
+  - В `main.dart` добавлен runtime wiring: `Bloc.observer = AppBlocObserver(talker: talker)`.
+  - Обновлен Phase 3.7 чеклист: шаг runtime setup отмечен как выполненный.
+- Why changed:
+  - Закрыть второй обязательный P0 шаг миграции и подготовить единый runtime policy слой для дальнейшего перевода state-holder'ов с `ChangeNotifier` на `Cubit/Bloc`.
+- Scope (files/modules):
+  - `pubspec.yaml`
+  - `pubspec.lock`
+  - `lib/core/logging/app_bloc_observer.dart`
+  - `lib/main.dart`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+- Validation:
+  - Analyze: pass (`flutter analyze`)
+  - Unit tests: pass (`flutter test`)
+  - Widget tests: pass (`flutter test`)
+  - Integration smoke: n/a
+  - Grep boundary checks: n/a (на этом шаге не изменялись guardrail скрипты)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
+  - EN updated: no (для этого шага не требуется)
+  - ADR updated: no
+- Risks / follow-ups:
+  - New risks: до перехода на `MultiBlocProvider` observer будет фиксировать только будущие bloc/cubit, а текущий `Provider`-слой остается активным.
+  - Mitigations: следующий шаг — миграция composition root с provider wiring на `MultiBlocProvider`/`BlocProvider`.
+  - Next task: Phase 3.7 / P0 — перевести composition root (`main/app/di`) c provider wiring на `MultiBlocProvider`/`BlocProvider`.

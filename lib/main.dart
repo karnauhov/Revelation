@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/core/logging/app_bloc_observer.dart';
 import 'package:revelation/features/settings/settings.dart'
     show SettingsViewModel;
 import 'package:revelation/l10n/app_localizations.dart';
@@ -19,6 +21,7 @@ void main() async {
     logger: TalkerLogger(formatter: AppLoggerFormatter()),
   );
   AppDi.registerCore(talker: talker);
+  Bloc.observer = AppBlocObserver(talker: talker);
 
   runZonedGuarded(
     () async {
