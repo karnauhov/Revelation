@@ -1,6 +1,6 @@
 # Residual Architecture Debt Backlog (EN)
 
-Doc-Version: `0.1.0`  
+Doc-Version: `0.1.1`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -15,7 +15,7 @@ Capture the remaining architecture debt after Phase 5 completion and define a pr
   - `primary_source_toolbar.dart` - `1079` lines;
   - `primary_source_view_model.dart` - `472` lines.
 - `4` `deprecated_member_use` suppressions remain in platform/runtime code.
-- `DBManager` is now constrained to infra runtime usage, but still stores aggregated caches with mixed responsibilities.
+- `DBManager` is reduced to runtime/composition responsibility; feature-level DB caches are moved into domain-specific gateways (`articles`, `lexicon`, `primary_sources`).
 
 ## 3. Prioritized Backlog
 
@@ -24,7 +24,6 @@ Capture the remaining architecture debt after Phase 5 completion and define a pr
 | `RAD-01` | P1 | Decompose `primary_sources` detail UI monoliths | Large files: `primary_source_screen.dart`, `image_preview.dart`, `primary_source_toolbar.dart` | Split into smaller widgets/flows by responsibility (navigation shell, image canvas, description panel, toolbar actions) | No detail-scope presentation files above `700` lines and widget tests cover key subtrees |
 | `RAD-02` | P1 | Remove orchestration concentration in `PrimarySourceViewModel` | `primary_source_view_model.dart` combines lifecycle, routing callbacks, and image/viewport orchestration | Move lifecycle and orchestration to dedicated coordinator/use-case layer and reduce VM surface | VM no longer owns cubit lifecycle flags or manual disposal chains |
 | `RAD-03` | P1 | Remove global `shared/utils/common.dart` barrel | `36` imports across layers (`app/core/infra/features/shared`) | Replace barrel usage with explicit imports (`core/logging`, `shared/ui/dialogs`, `core/platform`, etc.), then delete barrel | `rg "shared/utils/common.dart" lib test` -> `0` matches |
-| `RAD-04` | P1 | Continue `DBManager` decomposition to domain-specific data gateways | `DBManager` still keeps aggregated table caches and mixed read APIs | Introduce dedicated gateways/data-sources (`articles`, `lexicon`, `primary_sources`) and simplify runtime adapter role | `DBManager` no longer hosts feature-level aggregate caches or is reduced to composition-only adapter |
 | `RAD-05` | P2 | Expand integration smoke coverage for critical features | Current smoke suite is limited to selective manual scenarios | Add smoke for `about`, `download`, and at least one cross-feature navigation flow | `integration_test/smoke` covers at least `4` scenarios and remains manual-triggered |
 | `RAD-06` | P2 | Remove `deprecated_member_use` suppressions outside generated scope | `deprecated_member_use` appears in `core/platform`, `core/diagnostics`, `shared/utils/links_utils.dart` | Migrate to non-deprecated APIs and remove suppressions | `rg "deprecated_member_use" lib` reports only allowed generated exceptions |
 | `RAD-07` | P2 | Normalize terminology in master architecture docs | Defective tokens were recorded after mass terminology replacement | Clean master roadmap docs from artifacts and stabilize glossary usage | Search by known defective tokens in `docs/architecture` returns no matches |
@@ -36,3 +35,6 @@ Capture the remaining architecture debt after Phase 5 completion and define a pr
   - a target owner scope;
   - explicit exit criteria.
 - Closed entries must be recorded in the migration journal of the relevant phase.
+
+## 5. Recently Closed
+- `2026-03-14`: `RAD-04` closed - `DBManager` decomposition completed, runtime layer kept composition-only, and feature-level caches moved into domain-specific gateways.

@@ -1,6 +1,6 @@
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
-import 'package:revelation/infra/db/runtime/db_manager_gateway.dart';
+import 'package:revelation/infra/db/runtime/gateways/articles_database_gateway.dart';
 
 abstract class TopicsDataSource {
   Future<void> updateLanguage(String language);
@@ -15,10 +15,10 @@ abstract class TopicsDataSource {
 }
 
 class DbManagerTopicsDataSource implements TopicsDataSource {
-  DbManagerTopicsDataSource({DatabaseGateway? databaseGateway})
-    : _databaseGateway = databaseGateway ?? DbManagerDatabaseGateway();
+  DbManagerTopicsDataSource({ArticlesDatabaseGateway? databaseGateway})
+    : _databaseGateway = databaseGateway ?? DbManagerArticlesDatabaseGateway();
 
-  final DatabaseGateway _databaseGateway;
+  final ArticlesDatabaseGateway _databaseGateway;
 
   @override
   Future<void> updateLanguage(String language) {

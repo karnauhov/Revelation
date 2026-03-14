@@ -1,7 +1,7 @@
 import 'package:revelation/infra/db/common/db_common.dart' as common_db;
 import 'package:revelation/infra/db/localized/db_localized.dart'
     as localized_db;
-import 'package:revelation/infra/db/runtime/db_manager_gateway.dart';
+import 'package:revelation/infra/db/runtime/gateways/lexicon_database_gateway.dart';
 
 abstract class DescriptionDataSource {
   bool get isInitialized;
@@ -14,10 +14,10 @@ abstract class DescriptionDataSource {
 }
 
 class DbManagerDescriptionDataSource implements DescriptionDataSource {
-  DbManagerDescriptionDataSource({DatabaseGateway? databaseGateway})
-    : _databaseGateway = databaseGateway ?? DbManagerDatabaseGateway();
+  DbManagerDescriptionDataSource({LexiconDatabaseGateway? databaseGateway})
+    : _databaseGateway = databaseGateway ?? DbManagerLexiconDatabaseGateway();
 
-  final DatabaseGateway _databaseGateway;
+  final LexiconDatabaseGateway _databaseGateway;
 
   @override
   bool get isInitialized => _databaseGateway.isInitialized;

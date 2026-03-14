@@ -70,7 +70,9 @@ void main() {
       roots: <String>['lib/infra'],
       allowedFiles: <String>{
         'lib/infra/db/runtime/db_manager.dart',
-        'lib/infra/db/runtime/db_manager_gateway.dart',
+        'lib/infra/db/runtime/gateways/articles_database_gateway.dart',
+        'lib/infra/db/runtime/gateways/lexicon_database_gateway.dart',
+        'lib/infra/db/runtime/gateways/primary_sources_database_gateway.dart',
       },
     ),
     PatternCheck(

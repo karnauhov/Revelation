@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:revelation/infra/db/common/db_common.dart' as common_db;
 import 'package:revelation/infra/db/localized/db_localized.dart'
     as localized_db;
-import 'package:revelation/infra/db/runtime/db_manager_gateway.dart';
+import 'package:revelation/infra/db/runtime/gateways/primary_sources_database_gateway.dart';
 
 abstract class PrimarySourcesDataSource {
   bool get isInitialized;
@@ -28,10 +28,12 @@ abstract class PrimarySourcesDataSource {
 }
 
 class DbManagerPrimarySourcesDataSource implements PrimarySourcesDataSource {
-  DbManagerPrimarySourcesDataSource({DatabaseGateway? databaseGateway})
-    : _databaseGateway = databaseGateway ?? DbManagerDatabaseGateway();
+  DbManagerPrimarySourcesDataSource({
+    PrimarySourcesDatabaseGateway? databaseGateway,
+  }) : _databaseGateway =
+           databaseGateway ?? DbManagerPrimarySourcesDatabaseGateway();
 
-  final DatabaseGateway _databaseGateway;
+  final PrimarySourcesDatabaseGateway _databaseGateway;
 
   @override
   bool get isInitialized => _databaseGateway.isInitialized;
