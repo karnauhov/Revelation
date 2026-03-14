@@ -1,6 +1,6 @@
 # State Management Matrix (RU)
 
-Doc-Version: `1.1.0`  
+Doc-Version: `1.1.2`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -29,6 +29,7 @@ Source-Commit: `working-tree`
 | `primary_source/detail/selection` | `PrimarySourceSelectionCubit` | `PrimarySourceSelectionState { DescriptionKind currentType; int? currentNumber; }` |
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | `PrimarySourceDescriptionState { bool showDescription; String? content; DescriptionKind currentType; int? currentNumber; List<GreekStrongPickerEntry> pickerEntries; }` |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | `PrimarySourceViewportState { double dx; double dy; double scale; double savedX; double savedY; double savedScale; bool scaleAndPositionRestored; ZoomStatus zoomStatus; Rect? selectedArea; Color colorToReplace; Color newColor; double tolerance; bool pipetteMode; bool selectAreaMode; bool isColorToReplace; }` |
+| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | `PrimarySourceDetailOrchestrationState {}` (координирует `loadImage`, `changeSelectedPage` и debounced save/restore поверх detail cubit-ов) |
 | `download` | stateless screen | `N/A` |
 
 ## 4. Provider Scope
@@ -36,5 +37,5 @@ Source-Commit: `working-tree`
 - Feature-scoped detail state в `PrimarySourceScreen` создается через `MultiBlocProvider`.
 
 ## 5. Notes
-- `PrimarySourceDetailCoordinator` и `PrimarySourceViewModel` являются orchestration-слоем поверх cubit-срезов и не являются source-of-truth для state-контрактов.
+- `PrimarySourceDetailCoordinator` делегирует image/page/save/restore flow в `PrimarySourceDetailOrchestrationCubit` и не является source-of-truth для state-контрактов.
 - Изменение state ownership требует синхронного обновления RU/EN версии этого документа.

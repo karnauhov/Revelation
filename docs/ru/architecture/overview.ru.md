@@ -1,6 +1,6 @@
 # Architecture Overview (RU)
 
-Doc-Version: `1.1.0`  
+Doc-Version: `1.1.1`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -14,6 +14,7 @@ Source-Commit: `working-tree`
 - Обработка `word:`-ссылок: `shared/navigation` использует callback-контракты; дефолтный обработчик регистрируется на bootstrap-уровне (`AppBootstrap`).
 - Глобальный state scope: `AppDi.appBlocProviders` предоставляет `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
 - Detail state для primary source: в `PrimarySourceScreen` создается `MultiBlocProvider` с cubit-срезами `session/image/page-settings/selection/description/viewport`.
+- Detail orchestration для primary source: `PrimarySourceDetailOrchestrationCubit` координирует `loadImage`, `changeSelectedPage` и debounce-логику save/restore между detail cubit-срезами.
 - Поток данных: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
 - Remote-слой: `ServerManager` работает с Supabase Storage для загрузки БД и файлов.
 - Логирование и диагностика: `Talker`, `TalkerRouteObserver`, `AppBlocObserver`.

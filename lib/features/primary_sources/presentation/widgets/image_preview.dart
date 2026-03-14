@@ -7,7 +7,7 @@ import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/verse.dart';
 import 'package:revelation/shared/utils/links_utils.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/image_preview_painters.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 
@@ -26,7 +26,7 @@ const grayscaleMatrix = <double>[
 ];
 
 class ImagePreview extends StatefulWidget {
-  final PrimarySourceViewModel viewModel;
+  final PrimarySourceDetailCoordinator viewModel;
   final Uint8List imageData;
   final String imageName;
   final ImagePreviewController controller;
@@ -433,7 +433,7 @@ class ImagePreviewState extends State<ImagePreview> {
     return result;
   }
 
-  Widget _buildSelectedWordRects(PrimarySourceViewModel vm) {
+  Widget _buildSelectedWordRects(PrimarySourceDetailCoordinator vm) {
     if (vm.currentDescriptionType != DescriptionKind.word ||
         vm.currentDescriptionNumber == null ||
         widget.words.isEmpty) {
@@ -488,7 +488,7 @@ class ImagePreviewState extends State<ImagePreview> {
 
   Future<bool> _handlePipetteModeTap(
     Offset globalPosition,
-    PrimarySourceViewModel vm,
+    PrimarySourceDetailCoordinator vm,
   ) async {
     if (vm.pipetteMode) {
       final coord = _getCursorCoord(globalPosition);
@@ -514,7 +514,7 @@ class ImagePreviewState extends State<ImagePreview> {
     return false;
   }
 
-  bool _handleSelectArea(PrimarySourceViewModel vm) {
+  bool _handleSelectArea(PrimarySourceDetailCoordinator vm) {
     if (vm.selectAreaMode) {
       return true;
     }
@@ -523,7 +523,7 @@ class ImagePreviewState extends State<ImagePreview> {
 
   bool _handleTapOnVerseLabels(
     Offset globalPosition,
-    PrimarySourceViewModel vm,
+    PrimarySourceDetailCoordinator vm,
   ) {
     if (!widget.showVerseNumbers ||
         widget.controller.imageSize == null ||
@@ -547,7 +547,10 @@ class ImagePreviewState extends State<ImagePreview> {
     return false;
   }
 
-  bool _handleTapOnWords(Offset globalPosition, PrimarySourceViewModel vm) {
+  bool _handleTapOnWords(
+    Offset globalPosition,
+    PrimarySourceDetailCoordinator vm,
+  ) {
     if (widget.controller.imageSize == null) {
       return false;
     }
@@ -589,7 +592,7 @@ class ImagePreviewState extends State<ImagePreview> {
 
   bool _handleTapOnStrongNumbers(
     Offset globalPosition,
-    PrimarySourceViewModel vm,
+    PrimarySourceDetailCoordinator vm,
   ) {
     if (widget.controller.imageSize == null) {
       return false;

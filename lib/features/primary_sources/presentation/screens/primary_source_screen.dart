@@ -24,7 +24,7 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 
 // Define the intent for exiting pipette or selectArea mode
@@ -58,7 +58,7 @@ class PrimarySourceScreen extends StatefulWidget {
 
 class PrimarySourceScreenState extends State<PrimarySourceScreen>
     with WidgetsBindingObserver {
-  PrimarySourceViewModel? _viewModel;
+  PrimarySourceDetailCoordinator? _viewModel;
   final GlobalKey<TooltipState> _referenceTooltipKey =
       GlobalKey<TooltipState>();
   final PrimarySourceReferenceService _referenceResolver =
@@ -330,7 +330,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     );
   }
 
-  Widget _buildImagePreview(PrimarySourceViewModel viewModel) {
+  Widget _buildImagePreview(PrimarySourceDetailCoordinator viewModel) {
     return ImagePreview(
       viewModel: viewModel,
       imageData: viewModel.imageData!,
@@ -362,7 +362,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
 
   Widget _buildDescriptionView(
     BuildContext context,
-    PrimarySourceViewModel viewModel,
+    PrimarySourceDetailCoordinator viewModel,
   ) {
     final bool showStrongInfoIcon =
         viewModel.currentDescriptionType == DescriptionKind.word ||
@@ -404,7 +404,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
 
   Future<void> _openStrongNumberPickerDialog(
     BuildContext dialogContext,
-    PrimarySourceViewModel viewModel,
+    PrimarySourceDetailCoordinator viewModel,
     int initialStrongNumber,
   ) async {
     final pickedStrongNumber = await showDialog<int>(
@@ -423,7 +423,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     viewModel.showInfoForStrongNumber(pickedStrongNumber, context);
   }
 
-  void _tryApplyInitialReference(PrimarySourceViewModel viewModel) {
+  void _tryApplyInitialReference(PrimarySourceDetailCoordinator viewModel) {
     if (_initialReferenceApplied) {
       return;
     }
@@ -456,7 +456,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     required String? pageName,
     required int? wordIndex,
     required BuildContext linkContext,
-    required PrimarySourceViewModel viewModel,
+    required PrimarySourceDetailCoordinator viewModel,
   }) async {
     final normalizedSourceId = sourceId.trim();
     final normalizedPageName = pageName?.trim();
@@ -499,7 +499,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   }
 
   Future<void> _openReferenceInCurrentSource({
-    required PrimarySourceViewModel viewModel,
+    required PrimarySourceDetailCoordinator viewModel,
     required BuildContext linkContext,
     String? pageName,
     int? wordIndex,
@@ -551,7 +551,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
 
   Widget _buildSplitView(
     BuildContext context,
-    PrimarySourceViewModel viewModel,
+    PrimarySourceDetailCoordinator viewModel,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
     return PrimarySourceSplitView(
@@ -595,13 +595,15 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     return actionsWidth > screenWidth - widthForTitle * 1 - 60;
   }
 
-  bool _isMobileSwipeNavigationEnabled(PrimarySourceViewModel viewModel) {
+  bool _isMobileSwipeNavigationEnabled(
+    PrimarySourceDetailCoordinator viewModel,
+  ) {
     return isMobile() || viewModel.isMobileWeb;
   }
 
   void _handleDescriptionSwipe(
     DragEndDetails details,
-    PrimarySourceViewModel viewModel,
+    PrimarySourceDetailCoordinator viewModel,
   ) {
     if (!_isMobileSwipeNavigationEnabled(viewModel)) {
       return;
@@ -619,7 +621,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     viewModel.navigateDescriptionSelection(context, forward: forward);
   }
 
-  bool _canNavigateDescriptionByArrow(PrimarySourceViewModel viewModel) {
+  bool _canNavigateDescriptionByArrow(
+    PrimarySourceDetailCoordinator viewModel,
+  ) {
     if (viewModel.currentDescriptionNumber == null) {
       return false;
     }
@@ -640,7 +644,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   }
 
   void _tryNavigateDescriptionByArrow(
-    PrimarySourceViewModel viewModel, {
+    PrimarySourceDetailCoordinator viewModel, {
     required bool forward,
   }) {
     if (!(isDesktop() || isWeb())) {
@@ -655,13 +659,13 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     viewModel.navigateDescriptionSelection(context, forward: forward);
   }
 
-  PrimarySourceViewModel _ensureViewModel(BuildContext context) {
+  PrimarySourceDetailCoordinator _ensureViewModel(BuildContext context) {
     final current = _viewModel;
     if (current != null) {
       return current;
     }
 
-    final created = PrimarySourceViewModel(
+    final created = PrimarySourceDetailCoordinator(
       PagesRepository(),
       primarySource: widget.primarySource,
       imageCubit: context.read<PrimarySourceImageCubit>(),

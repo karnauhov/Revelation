@@ -3,10 +3,10 @@ import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
 
 class ReplaceColorDialog extends StatefulWidget {
-  final PrimarySourceViewModel viewModel;
+  final PrimarySourceDetailCoordinator viewModel;
   final BuildContext parentContext;
   final Function(Rect?, Color, Color, double) onApply;
   final Function() onCancel;

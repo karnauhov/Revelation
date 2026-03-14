@@ -1,6 +1,6 @@
 # Module Boundaries (EN)
 
-Doc-Version: `1.1.0`  
+Doc-Version: `1.1.1`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -26,6 +26,7 @@ A lightweight feature module without all three layers is allowed, but dependency
 ## 4. Dependency Rules
 - `presentation` must not import `infra` directly.
 - `presentation` works through feature repositories/services/cubit contracts.
+- Cross-slice presentation orchestration is implemented as `Cubit`/`Bloc` classes (for example, `*OrchestrationCubit`), not as mutable controller singletons.
 - `application` must not contain UI widgets.
 - `data` may depend on `infra` data source/gateway contracts.
 - `infra` must not import feature `presentation`.

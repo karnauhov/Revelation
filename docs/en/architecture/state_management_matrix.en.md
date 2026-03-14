@@ -1,6 +1,6 @@
 # State Management Matrix (EN)
 
-Doc-Version: `1.1.0`  
+Doc-Version: `1.1.2`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -29,6 +29,7 @@ Define the current runtime state ownership model in Revelation.
 | `primary_source/detail/selection` | `PrimarySourceSelectionCubit` | `PrimarySourceSelectionState { DescriptionKind currentType; int? currentNumber; }` |
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | `PrimarySourceDescriptionState { bool showDescription; String? content; DescriptionKind currentType; int? currentNumber; List<GreekStrongPickerEntry> pickerEntries; }` |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | `PrimarySourceViewportState { double dx; double dy; double scale; double savedX; double savedY; double savedScale; bool scaleAndPositionRestored; ZoomStatus zoomStatus; Rect? selectedArea; Color colorToReplace; Color newColor; double tolerance; bool pipetteMode; bool selectAreaMode; bool isColorToReplace; }` |
+| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | `PrimarySourceDetailOrchestrationState {}` (coordinates `loadImage`, `changeSelectedPage`, and debounced save/restore over detail cubits) |
 | `download` | stateless screen | `N/A` |
 
 ## 4. Provider Scope
@@ -36,5 +37,5 @@ Define the current runtime state ownership model in Revelation.
 - Feature-scoped detail state in `PrimarySourceScreen` is created with `MultiBlocProvider`.
 
 ## 5. Notes
-- `PrimarySourceDetailCoordinator` and `PrimarySourceViewModel` are orchestration adapters over cubit slices and are not the source of truth for state contracts.
+- `PrimarySourceDetailCoordinator` delegates image/page/save/restore flow to `PrimarySourceDetailOrchestrationCubit` and is not the source of truth for state contracts.
 - Any state ownership change must be mirrored in both RU and EN versions of this document.

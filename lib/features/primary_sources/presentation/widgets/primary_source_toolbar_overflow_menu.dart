@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/zoom_status.dart';
 
 class PrimarySourceToolbarOverflowMenuButton extends StatelessWidget {
-  final PrimarySourceViewModel viewModel;
+  final PrimarySourceDetailCoordinator viewModel;
   final AudioController audioController;
   final int numButtons;
   final VoidCallback onOpenBrightnessContrastDialog;

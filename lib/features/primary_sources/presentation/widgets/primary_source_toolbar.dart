@@ -8,10 +8,10 @@ import 'package:revelation/features/primary_sources/presentation/widgets/brightn
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar_overflow_menu.dart';
 import 'package:revelation/features/primary_sources/presentation/screens/primary_source_screen.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/replace_color_dialog.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
 
 class PrimarySourceToolbar extends StatelessWidget {
-  final PrimarySourceViewModel viewModel;
+  final PrimarySourceDetailCoordinator viewModel;
   final PrimarySource primarySource;
   final bool isBottom;
   final double dropdownWidth;
@@ -355,7 +355,7 @@ class PrimarySourceToolbar extends StatelessWidget {
 
   Widget _buildDropdownItem(
     BuildContext context,
-    PrimarySourceViewModel viewModel,
+    PrimarySourceDetailCoordinator viewModel,
     model.Page page,
   ) {
     final theme = Theme.of(context);

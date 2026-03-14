@@ -1,6 +1,6 @@
 # Module Boundaries (RU)
 
-Doc-Version: `1.1.0`  
+Doc-Version: `1.1.1`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -26,6 +26,7 @@ Source-Commit: `working-tree`
 ## 4. Dependency Rules
 - `presentation` не импортирует `infra` напрямую.
 - `presentation` работает через feature repositories/services/cubit contracts.
+- Межсрезовая orchestration в presentation реализуется через `Cubit`/`Bloc` классы (например, `*OrchestrationCubit`), а не через mutable controller-singleton.
 - `application` не содержит UI-виджеты.
 - `data` может зависеть от `infra` data source/gateway контрактов.
 - `infra` не импортирует feature `presentation`.

@@ -10,7 +10,7 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/controllers/primary_source_view_model.dart';
+import 'package:revelation/features/primary_sources/presentation/coordinators/primary_source_detail_coordinator.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
@@ -213,7 +213,7 @@ Widget _buildMediaQueryHost({required Size size, required Widget child}) {
 
 class _ToolbarVmBundle {
   final PrimarySource source;
-  final PrimarySourceViewModel viewModel;
+  final PrimarySourceDetailCoordinator viewModel;
   final List<BlocBase<Object?>> cubits;
 
   _ToolbarVmBundle({
@@ -248,7 +248,7 @@ _ToolbarVmBundle _createToolbarVmBundle() {
   final viewportCubit = PrimarySourceViewportCubit();
   final sessionCubit = PrimarySourceSessionCubit(source: source);
 
-  final viewModel = PrimarySourceViewModel(
+  final viewModel = PrimarySourceDetailCoordinator(
     PagesRepository(),
     primarySource: source,
     imageCubit: imageCubit,

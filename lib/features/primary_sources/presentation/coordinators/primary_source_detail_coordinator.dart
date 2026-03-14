@@ -2,24 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_detail_orchestration_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_selection_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
-import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart';
 import 'package:revelation/features/primary_sources/presentation/controllers/image_preview_controller.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/zoom_status.dart';
-import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 
 class PrimarySourceDetailCoordinator {
@@ -33,23 +31,20 @@ class PrimarySourceDetailCoordinator {
   late final bool _ownsSelectionCubit;
   late final PrimarySourceViewportCubit _viewportCubit;
   late final bool _ownsViewportCubit;
-  StreamSubscription<PrimarySourceViewportState>? _viewportStateSubscription;
   final PrimarySourceSessionCubit _sessionCubit;
   final bool _ownsSessionCubit;
+  late final PrimarySourceDetailOrchestrationCubit _orchestrationCubit;
+  late final bool _ownsOrchestrationCubit;
 
-  late ImagePreviewController imageController;
-  final ValueNotifier<ZoomStatus> zoomStatusNotifier = ValueNotifier(
-    const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false),
-  );
+  ImagePreviewController get imageController =>
+      _orchestrationCubit.imageController;
+  ValueNotifier<ZoomStatus> get zoomStatusNotifier =>
+      _orchestrationCubit.zoomStatusNotifier;
 
   late final bool _isWeb;
   late final bool _isMobileWeb;
   void Function(Color?)? _onPipettePicked;
   void Function(Rect?)? _onAreaSelected;
-  Timer? _restoreDebounceTimer;
-  Timer? _saveDebounceTimer;
-  final LatestRequestGuard _imageLoadRequestGuard = LatestRequestGuard();
-  bool _isDisposed = false;
 
   bool get isMobileWeb => _isMobileWeb;
   Uint8List? get imageData => _imageCubit.state.imageData;
@@ -99,16 +94,12 @@ class PrimarySourceDetailCoordinator {
     PrimarySourceDescriptionCubit? descriptionCubit,
     PrimarySourceViewportCubit? viewportCubit,
     PrimarySourceSessionCubit? sessionCubit,
+    PrimarySourceDetailOrchestrationCubit? orchestrationCubit,
     DescriptionContentService? descriptionService,
     PrimarySourcePageSettingsOrchestrator? pageSettingsOrchestrator,
   }) : _sessionCubit =
            sessionCubit ?? PrimarySourceSessionCubit(source: primarySource),
        _ownsSessionCubit = sessionCubit == null {
-    imageController = ImagePreviewController(primarySource.maxScale);
-    imageController.transformationController.addListener(
-      _updateTransformStatus,
-    );
-
     _isWeb = isWeb();
     _isMobileWeb = _isWeb && isMobileBrowser();
 
@@ -133,68 +124,27 @@ class PrimarySourceDetailCoordinator {
         PrimarySourceDescriptionCubit(descriptionService: descriptionService);
     _ownsViewportCubit = viewportCubit == null;
     _viewportCubit = viewportCubit ?? PrimarySourceViewportCubit();
-    _viewportStateSubscription = _viewportCubit.stream.listen((state) {
-      zoomStatusNotifier.value = state.zoomStatus;
-    });
     _ownsSelectionCubit = selectionCubit == null;
     _selectionCubit = selectionCubit ?? PrimarySourceSelectionCubit();
+    _ownsOrchestrationCubit = orchestrationCubit == null;
+    _orchestrationCubit =
+        orchestrationCubit ??
+        PrimarySourceDetailOrchestrationCubit(
+          source: primarySource,
+          imageCubit: _imageCubit,
+          pageSettingsCubit: _pageSettingsCubit,
+          sessionCubit: _sessionCubit,
+          viewportCubit: _viewportCubit,
+        );
     _syncSelectionFromDescriptionState();
-
-    if (selectedPage != null) {
-      unawaited(loadImage(selectedPage!.image));
-    }
   }
 
   Future<void> loadImage(String page, {bool isReload = false}) async {
-    final requestToken = _imageLoadRequestGuard.start();
-    try {
-      _imageCubit.setImageShown(false);
-      _viewportCubit.markImageLoadingStarted();
-
-      final pageSettings = await _pageSettingsCubit.loadSettingsForPage(
-        source: primarySource,
-        selectedPage: selectedPage,
-      );
-      if (!_canApplyImageRequest(requestToken)) {
-        return;
-      }
-      _applyViewportSettings(pageSettings);
-
-      await _imageCubit.loadImage(
-        page: page,
-        sourceHashCode: primarySource.hashCode,
-        isReload: isReload,
-      );
-      if (!_canApplyImageRequest(requestToken)) {
-        return;
-      }
-    } catch (error, stackTrace) {
-      if (_canApplyImageRequest(requestToken)) {
-        log.error('Image loading error: $error', stackTrace);
-      }
-    }
-    if (!_canApplyImageRequest(requestToken)) {
-      return;
-    }
-    if (imageData != null) {
-      _sessionCubit.setImageName('${primarySource.hashCode}_$page');
-    } else {
-      _sessionCubit.setImageName('');
-    }
-    _updateTransformStatus();
+    await _orchestrationCubit.loadImage(page, isReload: isReload);
   }
 
   Future<void> changeSelectedPage(model.Page? newPage) async {
-    _imageCubit.setImageShown(false);
-    _viewportCubit.markImageLoadingStarted();
-    _sessionCubit.setSelectedPage(newPage);
-    resetColorReplacement();
-    if (newPage != null) {
-      await loadImage(newPage.image);
-    } else {
-      _viewportCubit.resetViewportWithNoPage();
-      _pageSettingsCubit.resetToDefaults();
-    }
+    await _orchestrationCubit.changeSelectedPage(newPage);
   }
 
   void toggleNegative() {
@@ -281,14 +231,7 @@ class PrimarySourceDetailCoordinator {
   }
 
   void savePageSettings() {
-    _pageSettingsCubit.saveSettingsForPage(
-      source: primarySource,
-      selectedPage: selectedPage,
-      scaleAndPositionRestored: scaleAndPositionRestored,
-      posX: dx,
-      posY: dy,
-      scale: scale,
-    );
+    _orchestrationCubit.savePageSettings();
   }
 
   void removePageSettings() {
@@ -301,13 +244,7 @@ class PrimarySourceDetailCoordinator {
   }
 
   void restorePositionAndScale() {
-    if (!scaleAndPositionRestored) {
-      _restoreDebounceTimer?.cancel();
-      _restoreDebounceTimer = Timer(const Duration(milliseconds: 1000), () {
-        imageController.setTransformParams(savedX, savedY, savedScale);
-        _viewportCubit.setScaleAndPositionRestored(true);
-      });
-    }
+    _orchestrationCubit.restorePositionAndScale();
   }
 
   void toggleDescription() {
@@ -389,10 +326,6 @@ class PrimarySourceDetailCoordinator {
     _syncSelectionFromDescriptionState();
   }
 
-  void _applyViewportSettings(PageSettingsState settings) {
-    _viewportCubit.applyViewportSettings(settings);
-  }
-
   void _syncSelectionFromDescriptionState() {
     final descriptionState = _descriptionCubit.state;
     _selectionCubit.setSelection(
@@ -401,57 +334,12 @@ class PrimarySourceDetailCoordinator {
     );
   }
 
-  bool _canApplyImageRequest(RequestToken token) {
-    return !_isDisposed && _imageLoadRequestGuard.isActive(token);
-  }
-
-  void _updateTransformStatus() {
-    if (_isDisposed) {
-      return;
-    }
-
-    if (imageData == null) {
-      _viewportCubit.setZoomStatus(
-        const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false),
-      );
-    } else {
-      final matrix = imageController.transformationController.value;
-      final currentDx = matrix.storage[12];
-      final currentDy = matrix.storage[13];
-      final currentScale = matrix.getMaxScaleOnAxis();
-      _viewportCubit.updateTransform(
-        dx: currentDx,
-        dy: currentDy,
-        scale: currentScale,
-        zoomStatus: ZoomStatus(
-          canZoomIn: currentScale < imageController.maxScale,
-          canZoomOut: currentScale > imageController.minScale,
-          canReset: currentScale != imageController.minScale,
-        ),
-      );
-      if (scaleAndPositionRestored) {
-        _saveDebounceTimer?.cancel();
-        _saveDebounceTimer = Timer(
-          const Duration(seconds: 1),
-          savePageSettings,
-        );
-      }
-    }
-  }
-
   void dispose() {
-    _imageLoadRequestGuard.cancelActive();
-    _viewportStateSubscription?.cancel();
-    _restoreDebounceTimer?.cancel();
-    _saveDebounceTimer?.cancel();
-    imageController.transformationController.removeListener(
-      _updateTransformStatus,
-    );
-    imageController.dispose();
-    zoomStatusNotifier.dispose();
     _onPipettePicked = null;
     _onAreaSelected = null;
-    _isDisposed = true;
+    if (_ownsOrchestrationCubit) {
+      unawaited(_orchestrationCubit.close());
+    }
     if (_ownsDescriptionCubit) {
       unawaited(_descriptionCubit.close());
     }
