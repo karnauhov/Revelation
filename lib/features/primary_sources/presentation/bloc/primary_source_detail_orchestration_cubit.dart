@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_detail_orchestration_state.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/image_preview_controller.dart';
@@ -11,6 +13,9 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart';
+import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/models/description_kind.dart';
+import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/zoom_status.dart';
@@ -21,11 +26,13 @@ class PrimarySourceDetailOrchestrationCubit
     required PrimarySource source,
     required PrimarySourceImageCubit imageCubit,
     required PrimarySourcePageSettingsCubit pageSettingsCubit,
+    required PrimarySourceDescriptionCubit descriptionCubit,
     required PrimarySourceSessionCubit sessionCubit,
     required PrimarySourceViewportCubit viewportCubit,
   }) : _source = source,
        _imageCubit = imageCubit,
        _pageSettingsCubit = pageSettingsCubit,
+       _descriptionCubit = descriptionCubit,
        _sessionCubit = sessionCubit,
        _viewportCubit = viewportCubit,
        super(PrimarySourceDetailOrchestrationState.initial) {
@@ -46,6 +53,7 @@ class PrimarySourceDetailOrchestrationCubit
   final PrimarySource _source;
   final PrimarySourceImageCubit _imageCubit;
   final PrimarySourcePageSettingsCubit _pageSettingsCubit;
+  final PrimarySourceDescriptionCubit _descriptionCubit;
   final PrimarySourceSessionCubit _sessionCubit;
   final PrimarySourceViewportCubit _viewportCubit;
 
@@ -122,6 +130,158 @@ class PrimarySourceDetailOrchestrationCubit
       _viewportCubit.resetViewportWithNoPage();
       _pageSettingsCubit.resetToDefaults();
     }
+  }
+
+  void toggleNegative() {
+    _pageSettingsCubit.toggleNegative();
+    savePageSettings();
+  }
+
+  void toggleMonochrome() {
+    _pageSettingsCubit.toggleMonochrome();
+    savePageSettings();
+  }
+
+  void applyBrightnessContrast(double brightness, double contrast) {
+    _pageSettingsCubit.applyBrightnessContrast(brightness, contrast);
+    savePageSettings();
+  }
+
+  void resetBrightnessContrast() {
+    _pageSettingsCubit.resetBrightnessContrast();
+    savePageSettings();
+  }
+
+  void toggleShowWordSeparators() {
+    _pageSettingsCubit.toggleShowWordSeparators();
+    savePageSettings();
+  }
+
+  void toggleShowStrongNumbers() {
+    _pageSettingsCubit.toggleShowStrongNumbers();
+    savePageSettings();
+  }
+
+  void toggleShowVerseNumbers() {
+    _pageSettingsCubit.toggleShowVerseNumbers();
+    savePageSettings();
+  }
+
+  void removePageSettings() {
+    _pageSettingsCubit.clearSettingsForPage(
+      source: _source,
+      selectedPage: selectedPage,
+    );
+    _viewportCubit.resetViewportAndRenderControls();
+    imageController.backToMinScale();
+  }
+
+  void startSelectAreaMode() {
+    _viewportCubit.startSelectAreaMode();
+  }
+
+  void finishSelectAreaMode(Rect? selectedArea) {
+    _viewportCubit.finishSelectAreaMode(selectedArea);
+  }
+
+  void startPipetteMode({required bool isColorToReplace}) {
+    _viewportCubit.startPipetteMode(isColorToReplace: isColorToReplace);
+  }
+
+  void finishPipetteMode(Color? color) {
+    _viewportCubit.finishPipetteMode(color);
+  }
+
+  void applyColorReplacement({
+    required Rect? selectedArea,
+    required Color colorToReplace,
+    required Color newColor,
+    required double tolerance,
+  }) {
+    _viewportCubit.applyColorReplacement(
+      selectedArea: selectedArea,
+      colorToReplace: colorToReplace,
+      newColor: newColor,
+      tolerance: tolerance,
+    );
+  }
+
+  void resetColorReplacement() {
+    _viewportCubit.resetColorReplacement();
+  }
+
+  void setMenuOpen(bool isMenuOpen) {
+    _sessionCubit.setMenuOpen(isMenuOpen);
+  }
+
+  void toggleDescription() {
+    _descriptionCubit.toggleDescriptionVisibility();
+  }
+
+  void updateDescriptionContent({
+    required String content,
+    required DescriptionKind type,
+    required int? number,
+  }) {
+    _descriptionCubit.updateDescriptionContent(
+      content: content,
+      type: type,
+      number: number,
+    );
+  }
+
+  void showCommonInfo(AppLocalizations localizations) {
+    _descriptionCubit.showCommonInfo(localizations);
+  }
+
+  bool navigateDescriptionSelection(
+    AppLocalizations localizations, {
+    required bool forward,
+  }) {
+    return _descriptionCubit.navigateSelection(
+      localizations,
+      forward: forward,
+      source: _source,
+      selectedPage: selectedPage,
+    );
+  }
+
+  List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
+    return _descriptionCubit.getGreekStrongPickerEntries();
+  }
+
+  bool showInfoForStrongNumber({
+    required int strongNumber,
+    required AppLocalizations localizations,
+  }) {
+    return _descriptionCubit.showInfoForStrongNumber(
+      strongNumber: strongNumber,
+      localizations: localizations,
+    );
+  }
+
+  bool showInfoForWord({
+    required int wordIndex,
+    required AppLocalizations localizations,
+  }) {
+    return _descriptionCubit.showInfoForWord(
+      wordIndex: wordIndex,
+      localizations: localizations,
+      source: _source,
+      selectedPage: selectedPage,
+    );
+  }
+
+  bool showInfoForVerse({
+    required int verseIndex,
+    required AppLocalizations localizations,
+  }) {
+    return _descriptionCubit.showInfoForVerse(
+      verseIndex: verseIndex,
+      localizations: localizations,
+      source: _source,
+      selectedPage: selectedPage,
+    );
   }
 
   void savePageSettings() {

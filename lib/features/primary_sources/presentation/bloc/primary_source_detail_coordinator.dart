@@ -128,6 +128,7 @@ class PrimarySourceDetailCoordinator {
           source: primarySource,
           imageCubit: _imageCubit,
           pageSettingsCubit: _pageSettingsCubit,
+          descriptionCubit: _descriptionCubit,
           sessionCubit: _sessionCubit,
           viewportCubit: _viewportCubit,
         );
@@ -142,27 +143,23 @@ class PrimarySourceDetailCoordinator {
   }
 
   void toggleNegative() {
-    _pageSettingsCubit.toggleNegative();
-    savePageSettings();
+    _orchestrationCubit.toggleNegative();
   }
 
   void toggleMonochrome() {
-    _pageSettingsCubit.toggleMonochrome();
-    savePageSettings();
+    _orchestrationCubit.toggleMonochrome();
   }
 
   void applyBrightnessContrast(double brightness, double contrast) {
-    _pageSettingsCubit.applyBrightnessContrast(brightness, contrast);
-    savePageSettings();
+    _orchestrationCubit.applyBrightnessContrast(brightness, contrast);
   }
 
   void resetBrightnessContrast() {
-    _pageSettingsCubit.resetBrightnessContrast();
-    savePageSettings();
+    _orchestrationCubit.resetBrightnessContrast();
   }
 
   void startSelectAreaMode(void Function(Rect?) onSelected) {
-    _viewportCubit.startSelectAreaMode();
+    _orchestrationCubit.startSelectAreaMode();
     _onAreaSelected = onSelected;
   }
 
@@ -170,12 +167,12 @@ class PrimarySourceDetailCoordinator {
     if (selectAreaMode && _onAreaSelected != null) {
       _onAreaSelected!(selectRect);
     }
-    _viewportCubit.finishSelectAreaMode(selectRect);
+    _orchestrationCubit.finishSelectAreaMode(selectRect);
     _onAreaSelected = null;
   }
 
   void startPipetteMode(void Function(Color?) onPicked, bool isColorToReplace) {
-    _viewportCubit.startPipetteMode(isColorToReplace: isColorToReplace);
+    _orchestrationCubit.startPipetteMode(isColorToReplace: isColorToReplace);
     _onPipettePicked = onPicked;
   }
 
@@ -183,7 +180,7 @@ class PrimarySourceDetailCoordinator {
     if (pipetteMode && _onPipettePicked != null) {
       _onPipettePicked!(color);
     }
-    _viewportCubit.finishPipetteMode(color);
+    _orchestrationCubit.finishPipetteMode(color);
     _onPipettePicked = null;
   }
 
@@ -193,7 +190,7 @@ class PrimarySourceDetailCoordinator {
     Color newColor,
     double tolerance,
   ) {
-    _viewportCubit.applyColorReplacement(
+    _orchestrationCubit.applyColorReplacement(
       selectedArea: selectedArea,
       colorToReplace: colorToReplace,
       newColor: newColor,
@@ -202,26 +199,23 @@ class PrimarySourceDetailCoordinator {
   }
 
   void resetColorReplacement() {
-    _viewportCubit.resetColorReplacement();
+    _orchestrationCubit.resetColorReplacement();
   }
 
   void toggleShowWordSeparators() {
-    _pageSettingsCubit.toggleShowWordSeparators();
-    savePageSettings();
+    _orchestrationCubit.toggleShowWordSeparators();
   }
 
   void toggleShowStrongNumbers() {
-    _pageSettingsCubit.toggleShowStrongNumbers();
-    savePageSettings();
+    _orchestrationCubit.toggleShowStrongNumbers();
   }
 
   void toggleShowVerseNumbers() {
-    _pageSettingsCubit.toggleShowVerseNumbers();
-    savePageSettings();
+    _orchestrationCubit.toggleShowVerseNumbers();
   }
 
   void setMenuOpen(bool value) {
-    _sessionCubit.setMenuOpen(value);
+    _orchestrationCubit.setMenuOpen(value);
   }
 
   void savePageSettings() {
@@ -229,12 +223,7 @@ class PrimarySourceDetailCoordinator {
   }
 
   void removePageSettings() {
-    _pageSettingsCubit.clearSettingsForPage(
-      source: primarySource,
-      selectedPage: selectedPage,
-    );
-    _viewportCubit.resetViewportAndRenderControls();
-    imageController.backToMinScale();
+    _orchestrationCubit.removePageSettings();
   }
 
   void restorePositionAndScale() {
@@ -242,7 +231,7 @@ class PrimarySourceDetailCoordinator {
   }
 
   void toggleDescription() {
-    _descriptionCubit.toggleDescriptionVisibility();
+    _orchestrationCubit.toggleDescription();
   }
 
   void updateDescriptionContent(
@@ -250,7 +239,7 @@ class PrimarySourceDetailCoordinator {
     DescriptionKind type,
     int? number,
   ) {
-    _descriptionCubit.updateDescriptionContent(
+    _orchestrationCubit.updateDescriptionContent(
       content: content,
       type: type,
       number: number,
@@ -258,31 +247,29 @@ class PrimarySourceDetailCoordinator {
   }
 
   void showCommonInfo(AppLocalizations localizations) {
-    _descriptionCubit.showCommonInfo(localizations);
+    _orchestrationCubit.showCommonInfo(localizations);
   }
 
   bool navigateDescriptionSelection(
     AppLocalizations localizations, {
     required bool forward,
   }) {
-    final navigated = _descriptionCubit.navigateSelection(
+    final navigated = _orchestrationCubit.navigateDescriptionSelection(
       localizations,
       forward: forward,
-      source: primarySource,
-      selectedPage: selectedPage,
     );
     return navigated;
   }
 
   List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
-    return _descriptionCubit.getGreekStrongPickerEntries();
+    return _orchestrationCubit.getGreekStrongPickerEntries();
   }
 
   void showInfoForStrongNumber(
     int strongNumber,
     AppLocalizations localizations,
   ) {
-    final shown = _descriptionCubit.showInfoForStrongNumber(
+    final shown = _orchestrationCubit.showInfoForStrongNumber(
       strongNumber: strongNumber,
       localizations: localizations,
     );
@@ -292,11 +279,9 @@ class PrimarySourceDetailCoordinator {
   }
 
   void showInfoForWord(int wordIndex, AppLocalizations localizations) {
-    final shown = _descriptionCubit.showInfoForWord(
+    final shown = _orchestrationCubit.showInfoForWord(
       wordIndex: wordIndex,
       localizations: localizations,
-      source: primarySource,
-      selectedPage: selectedPage,
     );
     if (!shown) {
       return;
@@ -304,11 +289,9 @@ class PrimarySourceDetailCoordinator {
   }
 
   void showInfoForVerse(int verseIndex, AppLocalizations localizations) {
-    final shown = _descriptionCubit.showInfoForVerse(
+    final shown = _orchestrationCubit.showInfoForVerse(
       verseIndex: verseIndex,
       localizations: localizations,
-      source: primarySource,
-      selectedPage: selectedPage,
     );
     if (!shown) {
       return;

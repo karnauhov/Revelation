@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
+import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_detail_orchestration_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
@@ -50,18 +51,21 @@ void main() {
     final pageSettingsCubit = PrimarySourcePageSettingsCubit(
       _FakePageSettingsOrchestrator(),
     );
+    final descriptionCubit = PrimarySourceDescriptionCubit();
     final sessionCubit = PrimarySourceSessionCubit(source: source);
     final viewportCubit = PrimarySourceViewportCubit();
     final cubit = PrimarySourceDetailOrchestrationCubit(
       source: source,
       imageCubit: imageCubit,
       pageSettingsCubit: pageSettingsCubit,
+      descriptionCubit: descriptionCubit,
       sessionCubit: sessionCubit,
       viewportCubit: viewportCubit,
     );
     addTearDown(cubit.close);
     addTearDown(imageCubit.close);
     addTearDown(pageSettingsCubit.close);
+    addTearDown(descriptionCubit.close);
     addTearDown(sessionCubit.close);
     addTearDown(viewportCubit.close);
 
@@ -107,18 +111,21 @@ void main() {
       final pageSettingsCubit = PrimarySourcePageSettingsCubit(
         _FakePageSettingsOrchestrator(),
       );
+      final descriptionCubit = PrimarySourceDescriptionCubit();
       final sessionCubit = PrimarySourceSessionCubit(source: source);
       final viewportCubit = PrimarySourceViewportCubit();
       final cubit = PrimarySourceDetailOrchestrationCubit(
         source: source,
         imageCubit: imageCubit,
         pageSettingsCubit: pageSettingsCubit,
+        descriptionCubit: descriptionCubit,
         sessionCubit: sessionCubit,
         viewportCubit: viewportCubit,
       );
       addTearDown(cubit.close);
       addTearDown(imageCubit.close);
       addTearDown(pageSettingsCubit.close);
+      addTearDown(descriptionCubit.close);
       addTearDown(sessionCubit.close);
       addTearDown(viewportCubit.close);
 
@@ -177,18 +184,21 @@ void main() {
       final pageSettingsCubit = PrimarySourcePageSettingsCubit(
         _FakePageSettingsOrchestrator(),
       );
+      final descriptionCubit = PrimarySourceDescriptionCubit();
       final sessionCubit = PrimarySourceSessionCubit(source: source);
       final viewportCubit = PrimarySourceViewportCubit();
       final cubit = PrimarySourceDetailOrchestrationCubit(
         source: source,
         imageCubit: imageCubit,
         pageSettingsCubit: pageSettingsCubit,
+        descriptionCubit: descriptionCubit,
         sessionCubit: sessionCubit,
         viewportCubit: viewportCubit,
       );
       addTearDown(cubit.close);
       addTearDown(imageCubit.close);
       addTearDown(pageSettingsCubit.close);
+      addTearDown(descriptionCubit.close);
       addTearDown(sessionCubit.close);
       addTearDown(viewportCubit.close);
 

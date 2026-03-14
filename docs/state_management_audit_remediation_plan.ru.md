@@ -3,7 +3,7 @@
 Дата аудита: `2026-03-14`  
 Область: весь Flutter-проект (`lib/`, `test/`, `integration_test/`, `docs/`, CI/scripts)  
 Фокус: только state management и связанные архитектурные аспекты  
-Статус выполнения плана: `в процессе`  
+Статус выполнения плана: `в процессе (Step 1 выполнен)`  
 
 Как использовать документ:
 - Этот файл предназначен как пошаговый execution-plan.
@@ -465,16 +465,17 @@ Legacy/candidate cleanup:
 ## Prioritized Remediation Plan (чеклист исполнения)
 
 ### Step 1 — Архитектурное решение по detail orchestration
-- [ ] Цель: Зафиксировать целевую модель ownership в primary source detail.
-- [ ] Почему приоритет: Без этого последующие правки будут фрагментированными.
-- [ ] Конкретные действия:
-- [ ] Зафиксировать решение: `single orchestration cubit` vs `coordinator as adapter`.
+- [x] Цель: Зафиксировать целевую модель ownership в primary source detail.
+- [x] Почему приоритет: Без этого последующие правки будут фрагментированными.
+- [x] Конкретные действия:
+- [x] Зафиксировать решение: `single orchestration cubit` vs `coordinator as adapter`.
 - [ ] Определить, какие side effects разрешены вне cubit (если разрешены).
-- [ ] Затрагиваемые файлы/папки: `lib/features/primary_sources/presentation/bloc/`, `docs/ru|en/architecture/*`.
-- [ ] Риск: Средний (неверное решение может закрепить долг).
-- [ ] Ожидаемый результат: Ясные ownership boundaries и единый подход для команды.
-- [ ] Dependency on previous steps: Нет.
-- [ ] How to validate: Архитектурный чек ревью + согласованный ADR/decision record.
+- [ ] Затрагиваемые файлы/папки: `lib/features/primary_sources/presentation/bloc/`, `docs/ru|en/architecture/*` (выполнено частично: `lib` обновлен, `docs` и явное архитектурное правило pending).
+- [x] Риск: Средний (неверное решение может закрепить долг).
+- [x] Ожидаемый результат: Ясные ownership boundaries и единый подход для команды.
+- [x] Dependency on previous steps: Нет.
+- [x] How to validate (оперативно): `flutter analyze` + целевые detail tests passed.
+- [ ] How to validate (финально): Архитектурный чек ревью + согласованный ADR/decision record.
 
 ### Step 2 — Устранить критичный rebuild hotspot
 - [ ] Цель: Снизить rebuild pressure в detail screen до предсказуемого уровня.
@@ -697,7 +698,7 @@ Legacy/candidate cleanup:
 
 ## Отдельный чеклист исполнения (короткая версия)
 
-- [ ] Step 1: Архитектурное решение по detail orchestration
+- [ ] Step 1: Архитектурное решение по detail orchestration (частично выполнен: решение + код, остались formal side-effects rule и docs/ADR)
 - [ ] Step 2: Устранить rebuild hotspot detail screen
 - [ ] Step 3: Убрать side effects из build
 - [ ] Step 4: Убрать mutable state из `PrimarySource`
