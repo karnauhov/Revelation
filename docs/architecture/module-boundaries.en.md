@@ -1,7 +1,7 @@
 # Module Boundaries (EN)
 
-Doc-Version: `0.1.0`  
-Last-Updated: `2026-03-08`  
+Doc-Version: `0.2.0`  
+Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -16,7 +16,7 @@ Target top-level layout:
 - `lib/features` - feature-first modules (presentation/application/data).
 - `lib/l10n` - localization assets/code.
 
-Current legacy directories (must be fully removed in zero-legacy migration):
+Forbidden legacy directories (must not be reintroduced):
 - `lib/screens`, `lib/viewmodels`, `lib/repositories`, `lib/services`,
 - `lib/common_widgets`, `lib/managers`, `lib/controllers`,
 - `lib/models`, `lib/db`, `lib/utils`.
@@ -47,6 +47,8 @@ If none applies, update architecture docs/roadmap first, then add the file.
 ## 5. Boundary Rules
 - `presentation` must not import `infra` directly.
 - `presentation` communicates via `application/controller/orchestrator`.
+- `presentation` state management must use `BLoC/Cubit` only.
+- `provider`/`ChangeNotifier` are forbidden for new or modified runtime code.
 - `data` owns raw db/json knowledge; UI does not.
 - `shared` must not contain feature business logic.
 - `core` must not depend on feature modules.
@@ -60,4 +62,5 @@ If none applies, update architecture docs/roadmap first, then add the file.
 - `scripts/check_forbidden_patterns.dart` enforces:
   - critical anti-pattern imports/calls;
   - no legacy directories in `lib/`;
+  - no `provider`/`ChangeNotifier` usage after Phase 3.7;
   - approved top-level `lib/` directory set.

@@ -1,9 +1,9 @@
 **Короткий executive summary**
-Проект уже production-ready по платформам и релизному процессу, но архитектурно упирается в концентрацию ответственности в нескольких “god”-модулях (`main.dart`, `DBManager`, `PrimarySourceViewModel`, `utils/common.dart`) и в непоследовательные границы слоёв (часть экранов работает напрямую с DB/сервисами). Рекомендация: **эволюционный deep-refactor без rewrite**, с сохранением `Provider + ChangeNotifier`, `go_router`, `Drift`, `Supabase`, `Talker`, но с переходом к **hybrid feature-first** структуре, формализацией контрактов маршрутов/ошибок/данных, декомпозицией state/data orchestration, обязательными unit+widget тестами в CI и постоянной RU/EN документацией с policy синхронизации.
+Проект уже production-ready по платформам и релизному процессу, но архитектурно упирается в концентрацию ответственности в нескольких “god”-модулях (`main.dart`, `DBManager`, `PrimarySourceViewModel`, `utils/common.dart`) и в непоследовательные границы слоёв (часть экранов работает напрямую с DB/сервисами). Рекомендация: **эволюционный deep-refactor без rewrite**, с переходом к **hybrid feature-first** структуре и целевым **полным переходом на BLoC/Cubit** (без остатка `Provider/ChangeNotifier` после завершения Phase 3.7), формализацией контрактов маршрутов/ошибок/данных, декомпозицией state/data orchestration, обязательными unit+widget тестами в CI и постоянной RU/EN документацией с policy синхронизации.
 
 ---
 
-# Revelation — Architecture Audit & Deep Refactor Roadmap (2026-03-08)
+# Revelation — Architecture Audit & Deep Refactor Roadmap (2026-03-14)
 
 ## 1. Title
 **Revelation Architecture Audit & Practically Actionable Deep Refactor Roadmap (No Rewrite, Evolutionary)**
@@ -13,29 +13,29 @@
 - Главный долг: **размытые boundaries** между UI/state/data/infra.
 - Главные точки риска:  
   [main.dart](C:/Users/karna/Projects/Revelation/lib/main.dart:75),  
-  [db_manager.dart](C:/Users/karna/Projects/Revelation/lib/managers/db_manager.dart:53),  
-  [primary_source_view_model.dart](C:/Users/karna/Projects/Revelation/lib/viewmodels/primary_source_view_model.dart:19),  
-  [common.dart](C:/Users/karna/Projects/Revelation/lib/utils/common.dart:28),  
-  [app_router.dart](C:/Users/karna/Projects/Revelation/lib/app_router.dart:47).
+  [db_manager.dart](C:/Users/karna/Projects/Revelation/lib/infra/db/runtime/db_manager.dart:53),  
+  [primary_source_view_model.dart](C:/Users/karna/Projects/Revelation/lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart:19),  
+  [common.dart](C:/Users/karna/Projects/Revelation/lib/shared/utils/common.dart:1),  
+  [app_router.dart](C:/Users/karna/Projects/Revelation/lib/app/router/app_router.dart:47).
 - CI зрелый для билдов/релизов, но как quality gate неполный:  
   [flutter_build.yml](C:/Users/karna/Projects/Revelation/.github/workflows/flutter_build.yml:46) содержит `analyze`, но нет обязательных unit/widget тестов.
 - Тестовый baseline минимальный: 1 test file (`test/utils/pronunciation_test.dart`), integration tests отсутствуют.
 - Локализация по ключам синхронизирована (`en/es/uk/ru`), это сильная сторона.
-- Рекомендуемый путь: **6 фаз (0..5)**, сначала safety net + границы + low-risk wins, затем data/state/navigation refactor, потом тесты и governance.
-- Фреймворк state management менять не требуется “по моде”: **остаемся на Provider**, усиливаем дисциплину, вводим предсказуемые state contracts.
+- Рекомендуемый путь: **7 фаз (0..5 + 3.7)**, сначала safety net + границы + low-risk wins, затем data/state/navigation refactor, потом полный state migration на BLoC/Cubit, затем тесты и governance.
+- State management политика: **полный переход на BLoC/Cubit с запретом Provider/ChangeNotifier в целевом состоянии**.
 
 ## 3. Project context
 - Домен: Bible study app (Book of Revelation), multi-platform: Web/Android/Windows/Linux.
 - Текущий стек подтвержден в [pubspec.yaml](C:/Users/karna/Projects/Revelation/pubspec.yaml:8).
 - Текущий bootstrap/DI/router:  
   [main.dart](C:/Users/karna/Projects/Revelation/lib/main.dart:29),  
-  [app_router.dart](C:/Users/karna/Projects/Revelation/lib/app_router.dart:16).
+  [app_router.dart](C:/Users/karna/Projects/Revelation/lib/app/router/app_router.dart:16).
 - DB layer: Drift common/localized DB + web/native connectors:  
-  [db_common.dart](C:/Users/karna/Projects/Revelation/lib/db/db_common.dart:129),  
-  [db_localized.dart](C:/Users/karna/Projects/Revelation/lib/db/db_localized.dart:45),  
-  [connect/native.dart](C:/Users/karna/Projects/Revelation/lib/db/connect/native.dart:21),  
-  [connect/web.dart](C:/Users/karna/Projects/Revelation/lib/db/connect/web.dart:27).
-- Supabase integration: [server_manager.dart](C:/Users/karna/Projects/Revelation/lib/managers/server_manager.dart:15).
+  [db_common.dart](C:/Users/karna/Projects/Revelation/lib/infra/db/common/db_common.dart:129),  
+  [db_localized.dart](C:/Users/karna/Projects/Revelation/lib/infra/db/localized/db_localized.dart:45),  
+  [connect/native.dart](C:/Users/karna/Projects/Revelation/lib/infra/db/connectors/native.dart:21),  
+  [connect/web.dart](C:/Users/karna/Projects/Revelation/lib/infra/db/connectors/web.dart:27).
+- Supabase integration: [server_manager.dart](C:/Users/karna/Projects/Revelation/lib/infra/remote/supabase/server_manager.dart:15).
 - Локальные skills изучены все; в roadmap используются: `flutter-architecture`, `flutter-testing`, `flutter-drift`, `flutter-internationalization`, `flutter-adaptive-ui`, `flutter-expert`, `revelation`.
 - Baseline quality (проверено локально): `flutter analyze` — clean; `flutter test` — pass (1 файл).
 
@@ -63,8 +63,8 @@
 - `DBManager` — singleton + in-memory hub, хранит массивы таблиц и раздает их во все слои.
 - `ServerManager` — singleton для Supabase init/download/info.
 - State management:
-  - Глобально: `SettingsViewModel`, `PrimarySourcesViewModel`, `MainViewModel`.
-  - Локально внутри экранов: отдельные `ChangeNotifierProvider` (например, `MainScreen`, `AboutScreen`, `PrimarySourceScreen`).
+  - Исторически: `Provider + ChangeNotifier` (`SettingsViewModel`, `PrimarySourcesViewModel`, `MainViewModel` и локальные VM).
+  - Target: BLoC/Cubit-only, с миграцией и декомпозицией state в отдельной Phase 3.7.
 - UI неоднороден:
   - Часть экранов идёт через VM.
   - Часть экранов работает напрямую с DB/service/link logic.
@@ -101,7 +101,7 @@
 - Async race risks в image loading/state updates.
 - Отсутствие lifecycle cleanup (`dispose`) в некоторых state holders.
 - `utils/common.dart` смешивает platform, link, dialog, markdown, parser, file sync, diagnostics.
-- Дублирование/размытые границы provider setup (`MainViewModel` глобально и локально).
+- Историческое дублирование/размытые границы state setup (`MainViewModel` глобально и локально) как индикатор слабой формализации state contracts.
 
 ### P2 (желательно)
 - Избыточные/неиспользуемые зависимости/регистрации (например, cache manager registration без фактического использования).
@@ -131,23 +131,24 @@
 
 ## 9. Recommended state management direction
 ### Выбор
-**Остаться на Provider + ChangeNotifier, но ужесточить архитектурные правила**.
+**Полный переход на BLoC/Cubit с финальным запретом Provider/ChangeNotifier в production-коде**.
 
 ### Обоснование
-- Текущий стек уже принят в проекте, migration cost на Bloc/Cubit/Riverpod сейчас не окупается.
-- Проблема не в библиотеке, а в boundaries и размерности state holders.
-- Для одной команды/solo поддержка будет проще при контролируемом Provider-подходе.
+- Принято явное архитектурное решение: максимальная предсказуемость, масштабируемость и формализованные state transitions важнее migration cost.
+- После завершения folder/module migration (`Phase 3.5`) кодовая база готова к контролируемой миграции state-слоя без big-bang rewrite.
+- `PrimarySource` требует гранулярного разрезания состояния; BLoC/Cubit дает ясную FSM-модель и точечный контроль rebuild-поведения.
 
 ### Практический target pattern
-- `FeatureScreenState` (immutable state DTO).
-- `FeatureController extends ChangeNotifier` с явными async commands.
-- Вынесение тяжёлой orchestration в application services/use-cases.
-- UI не ходит напрямую в `DBManager/ServerManager`.
+- `FeatureState` как immutable DTO (предпочтительно с `equatable`).
+- `FeatureCubit` для state-driven сценариев, `FeatureBloc` для event-heavy сценариев.
+- `BlocSelector` / `buildWhen` для гранулярных перерисовок.
+- `PrimarySource` разбивается на несколько cubit-срезов (image/page settings/selection/description/viewport/session).
+- Вынесение тяжёлой orchestration в application services/use-cases; UI не ходит напрямую в `DBManager/ServerManager`.
 
 ### Альтернативы и trade-offs
-- Full Bloc/Cubit migration: +строгая FSM модель, -высокая стоимость и churn.
-- Riverpod migration: +testability/DI ergonomics, -перемешивание paradigms в текущем проекте.
-- Hybrid Provider + Cubit только в 1 фиче: допустимо как P2 эксперимент, но не первичный путь.
+- Сохранение Provider/ChangeNotifier: +ниже краткосрочная стоимость, -слабее формализация переходов, хуже масштабирование сложных экранов (`primary_sources`).
+- Riverpod migration: +DI/testability ergonomics, -дополнительный paradigm churn при уже принятом решении на BLoC/Cubit.
+- Гибрид Provider + Cubit в долгую: запрещено как целевое состояние; допускается только как краткоживущий transitional слой в рамках Phase 3.7.
 
 ## 10. Recommended folder/module structure
 ### Target structure (proposed)
@@ -207,7 +208,7 @@ lib/
 | `lib/screens/topic/*` | `lib/features/topics/presentation/*` | P0 | Topic markdown/content screen |
 | `lib/screens/primary_sources/*` | `lib/features/primary_sources/presentation/list/*` | P0 | Source list/item |
 | `lib/screens/primary_source/*` | `lib/features/primary_sources/presentation/detail/*` | P0 | Decompose by widgets/controllers |
-| `lib/viewmodels/*` | `lib/features/*/presentation/controllers/*` | P0 | Rename VM -> controller per feature |
+| `lib/features/*/presentation/viewmodels/*` | `lib/features/*/presentation/bloc/*` | P0 | Replace ChangeNotifier VM with Cubit/Bloc state holders |
 | `lib/repositories/settings_repository.dart` | `lib/features/settings/data/*` | P1 | prefs adapter |
 | `lib/repositories/pages_repository.dart` | `lib/features/primary_sources/data/*` | P1 | page state persistence |
 | `lib/repositories/primary_sources_db_repository.dart` | `lib/features/primary_sources/data/*` | P0 | core data mapping |
@@ -224,6 +225,7 @@ lib/
 ### Boundary rules
 - `presentation` не импортирует `infra` напрямую.
 - `presentation` общается с `application/controller`.
+- `presentation` state holders реализуются через `Cubit/Bloc` (без `ChangeNotifier`).
 - `data` слой единственный знает про Drift row/JSON raw.
 - `infra` не зависит от feature presentation.
 - `shared/ui` не содержит feature business logic.
@@ -236,6 +238,7 @@ lib/
 - Запрещенные:
   - `screens/widgets -> DBManager()/ServerManager()`.
   - `router` contracts через untyped maps.
+  - Новый runtime-код на `Provider/ChangeNotifier` после старта Phase 3.7 запрещен.
   - Глобальные mutable singletons в feature-логике.
 
 ### Route contract rules
@@ -282,7 +285,7 @@ lib/
 
 ### Минимальный набор ADR
 - ADR-001: Hybrid feature-first target architecture.
-- ADR-002: State management policy on Provider.
+- ADR-002: State management policy on BLoC/Cubit (zero Provider/ChangeNotifier after Phase 3.7).
 - ADR-003: Typed routing contracts.
 - ADR-004: DBManager decomposition and data source boundaries.
 - ADR-005: Testing pyramid + CI quality gates.
@@ -329,7 +332,7 @@ lib/
 - In-memory Drift DB fixtures.
 - Fake `ServerManager`/remote downloader.
 - Fake logger/talker adapter.
-- Test harness for router + providers.
+- Test harness for router + bloc/cubit state holders.
 - Optional golden tests for top screens after stabilization.
 
 ### Regression safety strategy
@@ -489,12 +492,12 @@ lib/
   - [P1] Ввести error/result model и user-facing fallback states.
   - [P1] Стандартизировать async patterns (request token/cancel/ignore stale result).
 - Affected files/modules/areas:
-  - `lib/managers/db_manager.dart`,
-  - `lib/repositories/primary_sources_db_repository.dart`,
-  - `lib/screens/topic/*`,
-  - `lib/screens/primary_source/*`,
-  - `lib/viewmodels/primary_source_view_model.dart`,
-  - `lib/app_router.dart`.
+  - `lib/infra/db/runtime/db_manager.dart`,
+  - `lib/features/primary_sources/data/repositories/primary_sources_db_repository.dart`,
+  - `lib/features/topics/presentation/*`,
+  - `lib/features/primary_sources/presentation/detail/*`,
+  - `lib/features/primary_sources/presentation/controllers/primary_source_view_model.dart`,
+  - `lib/app/router/app_router.dart`.
 - Риски:
   - Поведенческие регрессии в primary source UX.
 - Dependencies/prerequisites:
@@ -513,6 +516,49 @@ lib/
   - DBManager перестал быть global read hub.
   - Primary source flow предсказуем и покрыт тестами.
 
+### Phase 3.7 — Full state migration to BLoC/Cubit + granular PrimarySource slicing
+- Цель: полностью перенести управление состоянием на BLoC/Cubit и убрать legacy state frameworks.
+- Почему нужна: без этого останется смешанная архитектура состояния и высокий риск повторной деградации в крупные state-monoliths.
+- Concrete tasks:
+  - [P0] Утвердить migration matrix `feature -> target cubit/bloc set -> owner state contracts`.
+  - [P0] Добавить и настроить BLoC runtime слой (`flutter_bloc`, `BlocObserver`, единые правила ошибок/логирования переходов).
+  - [P0] Перевести app composition root c provider wiring на `MultiBlocProvider`/feature-scoped `BlocProvider`.
+  - [P0] Мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
+  - [P0] Разрезать state `PrimarySource` на гранулярные cubit-срезы:
+    - source/session context,
+    - image loading/cache/local availability,
+    - page settings persistence,
+    - selection (word/verse/strong),
+    - description panel content/navigation,
+    - viewport/render controls (zoom/layers/colors/tool mode).
+  - [P0] Удалить legacy state слой: `provider` imports, `ChangeNotifier`, `notifyListeners`, viewmodel-only contracts.
+  - [P1] Ввести архитектурные guardrails (`rg`/script checks) на запрет нового `Provider/ChangeNotifier` кода в `lib/` и `test/` (кроме исторической документации).
+  - [P1] Добавить unit/widget тесты на state transitions и regression-critical сценарии после миграции.
+- Affected files/modules/areas:
+  - `lib/main.dart`, `lib/app/di/*`, `lib/app/router/*`,
+  - `lib/features/*/presentation/*`,
+  - `lib/features/primary_sources/{presentation,application}/*`,
+  - `scripts/check_forbidden_patterns.dart`,
+  - `pubspec.yaml`, `pubspec.lock`.
+- Риски:
+  - Высокий churn в UI-state bindings и потенциальные behavioral regressions в `primary_sources`.
+- Dependencies/prerequisites:
+  - Phase 3 и Phase 3.5 completed.
+- Relevant skills:
+  - `flutter-architecture`, `flutter-expert`, `flutter-testing`.
+- Test expectations:
+  - Unit tests на все новые cubit/bloc state transitions.
+  - Widget tests на критичные user flows с `BlocProvider`.
+  - Regression smoke по navigation + primary source interactions.
+- Docs update expectations (RU + EN):
+  - Обновить `overview`, `module-boundaries`, `testing strategy`, `AGENTS.md`, ADR-002.
+- Quality gates:
+  - `rg "package:provider|ChangeNotifier|notifyListeners" lib test` не находит production/test code после завершения фазы.
+- Criteria of done:
+  - В runtime-коде нет `Provider/ChangeNotifier`.
+  - Все feature state flows работают через `BLoC/Cubit`.
+  - `PrimarySource` state декомпозирован на гранулярные cubit-срезы и покрыт тестами.
+
 ### Phase 4 — Testing hardening and CI enforcement
 - Цель: сделать качество воспроизводимым и enforceable.
 - Почему нужна: без этого архитектура деградирует обратно.
@@ -527,7 +573,7 @@ lib/
 - Риски:
   - Увеличение CI времени.
 - Dependencies/prerequisites:
-  - Phase 3 key refactors merged.
+  - Phase 3 + Phase 3.7 key refactors merged.
 - Relevant skills:
   - `flutter-testing`, `flutter-expert`.
 - Test expectations:
@@ -579,7 +625,7 @@ lib/
 
 ## 18. What should NOT be changed
 - Не делать full rewrite.
-- Не мигрировать state framework целиком “ради моды”.
+- Не оставлять смешанную state-архитектуру (`Provider + BLoC`) после завершения Phase 3.7.
 - Не ломать рабочий Drift schema/web-db deployment flow.
 - Не убирать Talker/logging hooks без эквивалентной observability.
 - Не трогать generated files вручную (`*.g.dart`, generated l10n).
@@ -591,14 +637,17 @@ lib/
 2. Phase 1 P0 tasks.
 3. Phase 2 pilot migrations (`settings`, `about`) + boundary checks.
 4. Phase 3 P0 tasks (`DBManager` split, `primary_source` decomposition, typed routes).
-5. Phase 4 CI enforcement for tests.
-6. Phase 5 governance/docs hardening and cleanup.
+5. Phase 3.7 full state migration to `BLoC/Cubit` + `PrimarySource` granular slicing.
+6. Phase 4 CI enforcement for tests.
+7. Phase 5 governance/docs hardening and cleanup.
 
 ## 20. Definition of Done
 - Архитектура в hybrid feature-first форме для критичных фич.
 - Нет прямого DB/remote access из presentation.
 - Typed route contracts заменили map-based critical navigation.
 - `primary_source` flow декомпозирован и покрыт тестами.
+- В production/test коде отсутствуют `provider`/`ChangeNotifier` state patterns.
+- State management унифицирован на `BLoC/Cubit` с гранулярными state slices в `primary_sources`.
 - Unit+widget tests обязательны в CI на PR.
 - Integration smoke для critical navigation/data flows есть и стабилен.
 - RU/EN docs синхронизированы и обновляются при structural changes.
@@ -642,11 +691,10 @@ lib/
 1. **P0** Разделить `DBManager` на data sources/repositories с явными контрактами.
 2. **P0** Убрать untyped `Map<String, dynamic>` route contracts для `topic/primary_source`.
 3. **P0** Декомпозировать `PrimarySourceViewModel` и `primary_source` UI-монолиты.
-4. **P0** Вынести bootstrap/DI/router composition из `main.dart` в `app/*`.
-5. **P0** Сделать unit+widget tests обязательным PR gate в CI.
-6. **P1** Разбить `utils/common.dart` на целевые модули и убрать cross-layer util-sink.
-7. **P1** Перевести `topics`/`settings`/`about` в hybrid feature-first structure.
-8. **P1** Ввести единый error/result model + user-facing fallback states.
-9. **P1** Внедрить RU/EN docs sync policy с CI checks и ADR набором.
-10. **P2** Провести dependency cleanup (включая неиспользуемые регистрации/deps) и закрепить ownership по слоям.
-
+4. **P0** Полностью мигрировать state слой на `BLoC/Cubit` и удалить `Provider/ChangeNotifier`.
+5. **P0** Вынести bootstrap/DI/router composition из `main.dart` в `app/*`.
+6. **P0** Сделать unit+widget tests обязательным PR gate в CI.
+7. **P1** Разбить `utils/common.dart` на целевые модули и убрать cross-layer util-sink.
+8. **P1** Перевести `topics`/`settings`/`about` в hybrid feature-first structure.
+9. **P1** Ввести единый error/result model + user-facing fallback states.
+10. **P1** Внедрить RU/EN docs sync policy с CI checks и ADR набором.

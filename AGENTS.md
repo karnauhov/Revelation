@@ -9,7 +9,8 @@
 - Dart SDK: `^3.9.0`
 - Flutter with `flutter generate: true`
 - Navigation: `go_router`
-- State management: `provider` with `ChangeNotifier`
+- State management target (mandatory): `BLoC/Cubit` (`flutter_bloc`)
+- Legacy state stack (temporary, migration only): `provider` with `ChangeNotifier`
 - Dependency lookup: `get_it`
 - Local persistence: `shared_preferences`
 - Local database: `drift`, `drift_flutter`
@@ -19,12 +20,11 @@
 - Localization: `flutter_localizations`, `intl`
 
 ## Repository Layout
-- `lib/screens/`: UI screens
-- `lib/viewmodels/`: `ChangeNotifier` view models
-- `lib/repositories/`: persistence and data access
-- `lib/managers/`: app-wide managers such as DB and server initialization
-- `lib/services/`: domain/content helpers
-- `lib/db/`: Drift schema and generated database code
+- `lib/app/`: app bootstrap, DI, router, composition root
+- `lib/core/`: cross-cutting contracts (`errors`, `async`, `platform`, `logging`, `audio`, diagnostics)
+- `lib/infra/`: DB/remote/storage implementations (`db`, `remote`, `storage`)
+- `lib/shared/`: reusable UI, config, localization helpers, navigation helpers, shared models/utils
+- `lib/features/`: feature-first modules (`about`, `download`, `primary_sources`, `settings`, `topics`)
 - `lib/l10n/`: ARB files and generated localization files
 - `assets/data/`, `assets/images/`, `assets/sounds/`: app content and assets
 - `web/db/`: localized SQLite files used by the web build
@@ -33,14 +33,23 @@
 
 ## Working Rules
 - Keep changes aligned with the current folder responsibilities in the repository layout above.
+- State management policy is strict:
+  - New or modified stateful presentation logic must use `BLoC/Cubit`.
+  - Do not introduce new `provider`/`ChangeNotifier` usages.
+  - When touching legacy `ChangeNotifier` flows, migrate the touched scope to `Cubit`/`Bloc` instead of extending legacy patterns.
+- Any state-management contract change must be synchronized in:
+  - `docs/architecture/revelation_architecture_refactor_roadmap_ru.md`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/architecture/overview.ru.md` and `docs/architecture/overview.en.md`
+  - `docs/architecture/module-boundaries.ru.md` and `docs/architecture/module-boundaries.en.md`
 - Keep localization in sync for supported locales: `en`, `es`, `uk`, `ru`.
 - Do not commit secrets. `api-keys.json` is gitignored.
 - `ServerManager` expects compile-time defines `SUPABASE_URL` and `SUPABASE_KEY`.
 - The Snap packaging flow uses `--dart-define-from-file=api-keys.json`.
-- If you change database content or language loading behavior, check both `lib/db/` and `web/db/`.
+- If you change database content or language loading behavior, check both `lib/infra/db/` and `web/db/`.
 
 ## Generated Files
-- Do not manually edit generated Drift files such as `lib/db/*.g.dart`.
+- Do not manually edit generated Drift files such as `lib/infra/db/**/*.g.dart`.
 - Do not manually edit generated localization files such as `lib/l10n/app_localizations*.dart`.
 - Treat generated platform plugin registrant files under platform folders as generated unless there is a clear reason to touch them.
 
@@ -57,6 +66,7 @@
 - Run `dart format .` before finishing non-trivial code changes.
 - Run `flutter analyze` before finishing non-trivial code changes.
 - Run `flutter test` before finishing non-trivial code changes.
+- For state-architecture changes, run `rg "package:provider|ChangeNotifier|notifyListeners" lib test` and treat new matches as migration regressions.
 - `flutter analyze` and `flutter test` pass in the repository state verified on March 7, 2026.
 
 ## Release Versioning

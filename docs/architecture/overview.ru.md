@@ -1,7 +1,7 @@
 # Architecture Overview (RU)
 
-Doc-Version: `0.1.0`  
-Last-Updated: `2026-03-08`  
+Doc-Version: `0.2.0`  
+Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -11,7 +11,7 @@ Source-Commit: `working-tree`
 - Composition root перегружен: `lib/main.dart` одновременно инициализирует логирование, платформу, DI, БД и UI.
 - Критические singleton-узлы: `DBManager`, `ServerManager`, `AppRouter`.
 - Навигационные контракты частично не типизированы (`Map<String, dynamic>` в `state.extra`).
-- Структура кода в основном type-first (`screens/`, `viewmodels/`, `repositories/`), но с гибридными элементами.
+- Структура каталогов уже выровнена в canonical layout (`app/core/infra/shared/features/l10n`), но state-слой еще требует полного перехода на `BLoC/Cubit`.
 
 ## 3. Main Strengths To Preserve
 - Рабочий multi-platform стек Flutter + Drift + Supabase.
@@ -29,11 +29,13 @@ Source-Commit: `working-tree`
 - Эволюционная миграция без rewrite.
 - Hybrid feature-first структура (`features/`, `shared/`, `core/`, `infra/`).
 - Явные границы между presentation/application/data/infra.
+- Полный переход state management на `BLoC/Cubit` (Phase 3.7) с финальным `zero Provider/ChangeNotifier`.
 - Типизированные route args для критичных переходов.
 
 ## 6. Boundary Rules (Migration Baseline)
 - Presentation не обращается напрямую к `DBManager()/ServerManager()`.
 - Router-контракты постепенно уходят от untyped map-передачи.
+- Новый или изменяемый stateful presentation код реализуется только через `BLoC/Cubit`.
 - Все структурные изменения сопровождаются тестами и обновлением RU/EN docs.
 
 ## 7. Phase 0 Exit Criteria
@@ -43,6 +45,6 @@ Source-Commit: `working-tree`
 - Добавлены fast grep-проверки для запрещенных паттернов с baseline-allowlist.
 
 ## 8. Out Of Scope
-- Полный rewrite state management.
-- Массовая миграция feature папок (Phase 2+).
-- Декомпозиция `DBManager`/`PrimarySourceViewModel` (Phase 3).
+- Big-bang rewrite без фазовой миграции.
+- Сохранение mixed state frameworks после завершения Phase 3.7.
+- Ослабление архитектурных quality gates ради ускорения миграции.

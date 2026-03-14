@@ -1,7 +1,7 @@
 # Module Boundaries (RU)
 
-Doc-Version: `0.1.0`  
-Last-Updated: `2026-03-08`  
+Doc-Version: `0.2.0`  
+Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -16,7 +16,7 @@ Source-Commit: `working-tree`
 - `lib/features` — feature-first модули (presentation/application/data).
 - `lib/l10n` — локализации.
 
-Текущие legacy-каталоги (подлежат полному удалению в рамках zero-legacy migration):
+Запрещенные legacy-каталоги (не допускаются к повторному появлению):
 - `lib/screens`, `lib/viewmodels`, `lib/repositories`, `lib/services`,
 - `lib/common_widgets`, `lib/managers`, `lib/controllers`,
 - `lib/models`, `lib/db`, `lib/utils`.
@@ -47,6 +47,8 @@ Source-Commit: `working-tree`
 ## 5. Boundary Rules
 - `presentation` не импортирует `infra` напрямую.
 - `presentation` общается через `application/controller/orchestrator`.
+- `presentation` state management выполняется только через `BLoC/Cubit`.
+- `provider`/`ChangeNotifier` запрещены для нового и модифицируемого runtime-кода.
 - `data` знает про raw db/json; UI не знает.
 - `shared` не содержит feature-бизнес логики.
 - `core` не зависит от feature-кода.
@@ -60,4 +62,5 @@ Source-Commit: `working-tree`
 - `scripts/check_forbidden_patterns.dart` выполняет:
   - запрет ключевых anti-pattern imports/calls;
   - запрет существования legacy-каталогов в `lib/`;
+  - запрет использования `provider`/`ChangeNotifier` после завершения Phase 3.7;
   - контроль набора top-level директорий `lib/`.

@@ -3,8 +3,8 @@
 Источник: раздел `16. Phased migration roadmap` и `21. Progress journal template` из  
 [revelation_architecture_refactor_roadmap_ru.md](C:/Users/karna/Projects/Revelation/docs/architecture/revelation_architecture_refactor_roadmap_ru.md)
 
-Статус: `Phase 0/1/2/3/3.5 завершены, Phase 4 paused`  
-Версия roadmap: `v1`  
+Статус: `Phase 0/1/2/3/3.5 завершены, Phase 3.7 planned, Phase 4 paused`  
+Версия roadmap: `v1.1`  
 Дата создания: `2026-03-08`
 
 ## 1. Глобальный чеклист по фазам (пустые чекбоксы)
@@ -128,6 +128,33 @@
 - [x] Quality gates пройдены.
 - [x] Criteria of done выполнен.
 
+### Phase 3.7 — Full state migration to BLoC/Cubit + granular PrimarySource slicing
+- [ ] Цель фазы зафиксирована: полностью перенести state management на `BLoC/Cubit` и закрыть legacy state-layer.
+- [ ] Обоснование фазы зафиксировано: без полного cutover останется смешанная архитектура и высокий риск регрессий/деградации состояния.
+- [ ] Задача [P0]: утвердить migration matrix `feature -> cubit/bloc set -> state contracts`.
+- [ ] Задача [P0]: добавить и настроить BLoC runtime (`flutter_bloc`, `BlocObserver`, logging/error policy для state transitions).
+- [ ] Задача [P0]: перевести composition root (`main/app/di`) c provider wiring на `MultiBlocProvider`/`BlocProvider`.
+- [ ] Задача [P0]: мигрировать `settings/about/topics/download` с `ChangeNotifier` на `Cubit/Bloc`.
+- [ ] Задача [P0]: выполнить гранулярный разрез состояния `PrimarySource` на отдельные cubit-срезы.
+- [ ] Подшаг [P3.7.1]: source/session/page context cubit.
+- [ ] Подшаг [P3.7.2]: image loading/cache/local availability cubit.
+- [ ] Подшаг [P3.7.3]: page settings persistence cubit.
+- [ ] Подшаг [P3.7.4]: selection cubit (`word/verse/strong`).
+- [ ] Подшаг [P3.7.5]: description panel cubit (content + navigation).
+- [ ] Подшаг [P3.7.6]: viewport/render controls cubit (zoom/layers/tool mode/colors).
+- [ ] Задача [P0]: заменить VM bindings в UI на `BlocBuilder/BlocSelector/buildWhen`, убрать `notifyListeners`-based обновления.
+- [ ] Задача [P0]: удалить legacy state слой (`provider` imports, `ChangeNotifier`, runtime viewmodel contracts).
+- [ ] Задача [P1]: добавить automated enforcement на запрет `provider/ChangeNotifier` в `lib/` и `test/` (кроме документации).
+- [ ] Задача [P1]: добавить unit/widget regression suite на cubit/bloc transitions и критичные user flows.
+- [ ] Affected areas верифицированы: `lib/main.dart`, `lib/app/di/*`, `lib/app/router/*`, `lib/features/*/presentation/*`, `lib/features/primary_sources/{presentation,application}/*`, `scripts/check_forbidden_patterns.dart`, `pubspec.yaml`.
+- [ ] Риски проверены и записаны.
+- [ ] Dependencies/prerequisites подтверждены (`Phase 3` и `Phase 3.5` completed).
+- [ ] Relevant skills назначены.
+- [ ] Test expectations выполнены.
+- [ ] Docs update expectations выполнены (`docs/architecture/revelation_architecture_refactor_roadmap_ru.md`, `docs/architecture/overview.ru.md`, `docs/architecture/overview.en.md`, `docs/architecture/module-boundaries.ru.md`, `docs/architecture/module-boundaries.en.md`, `AGENTS.md`).
+- [ ] Quality gates пройдены.
+- [ ] Criteria of done выполнен.
+
 ### Phase 4 — Testing hardening and CI enforcement
 - [x] Цель фазы зафиксирована: сделать качество воспроизводимым и enforceable.
 - [x] Обоснование фазы зафиксировано: без этого архитектура деградирует обратно.
@@ -138,7 +165,7 @@
 - [ ] Задача [P2]: golden tests для стабильных экранов.
 - [ ] Affected areas верифицированы: `.github/workflows/*`, `test/*`, `integration_test/*`.
 - [ ] Риски проверены и записаны.
-- [ ] Dependencies/prerequisites подтверждены (`Phase 3 key refactors merged`).
+- [ ] Dependencies/prerequisites подтверждены (`Phase 3.7 completed`).
 - [x] Relevant skills назначены.
 - [ ] Test expectations выполнены.
 - [ ] Docs update expectations выполнены.
@@ -1477,3 +1504,40 @@
   - RU updated: yes (`docs/architecture/revelation_refactor_work_roadmap_ru.md`)
   - EN updated: no (для этого шага не требуется)
   - ADR updated: no
+- Risks / follow-ups:
+  - New risks: нет
+  - Mitigations: n/a
+  - Next task: ре-приоритизация roadmap при изменении state-management стратегии.
+
+#### [2026-03-14 12:00] Phase 3.7 / Task PLAN / Add full BLoC/Cubit migration phase and strict state policy docs sync
+- Статус: done
+- Priority: P0
+- What changed:
+  - В roadmap добавлена новая фаза `3.7` с полным переходом на `BLoC/Cubit`.
+  - Для `PrimarySource` зафиксирован обязательный granular split состояния на отдельные cubit-срезы (`session`, `image`, `page settings`, `selection`, `description`, `viewport/render`).
+  - Зафиксирован целевой критерий `zero Provider/ChangeNotifier` после завершения Phase 3.7.
+  - Синхронизированы архитектурные документы и `AGENTS.md` под новый state policy.
+- Why changed:
+  - По решению владельца проекта выбран строгий архитектурный курс: после миграции в коде не должно остаться legacy state-management подходов.
+- Scope (files/modules):
+  - `docs/architecture/revelation_architecture_refactor_roadmap_ru.md`
+  - `docs/architecture/revelation_refactor_work_roadmap_ru.md`
+  - `docs/architecture/overview.ru.md`
+  - `docs/architecture/overview.en.md`
+  - `docs/architecture/module-boundaries.ru.md`
+  - `docs/architecture/module-boundaries.en.md`
+  - `AGENTS.md`
+- Validation:
+  - Analyze: n/a (docs-only change)
+  - Unit tests: n/a (docs-only change)
+  - Widget tests: n/a (docs-only change)
+  - Integration smoke: n/a
+  - Grep boundary checks: n/a (документационная задача)
+- Docs:
+  - RU updated: yes (`docs/architecture/revelation_architecture_refactor_roadmap_ru.md`, `docs/architecture/revelation_refactor_work_roadmap_ru.md`, `docs/architecture/overview.ru.md`, `docs/architecture/module-boundaries.ru.md`, `AGENTS.md`)
+  - EN updated: yes (`docs/architecture/overview.en.md`, `docs/architecture/module-boundaries.en.md`)
+  - ADR updated: no (ожидается в рамках исполнения фазы 3.7)
+- Risks / follow-ups:
+  - New risks: план Phase 4 зависим от фактического завершения state migration (Phase 3.7).
+  - Mitigations: исполнять Phase 3.7 как P0 до возврата к CI hardening задачам.
+  - Next task: Phase 3.7 / P0 — утвердить migration matrix и стартовать техническую миграцию на `BLoC/Cubit`.

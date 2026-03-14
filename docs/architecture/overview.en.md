@@ -1,7 +1,7 @@
 # Architecture Overview (EN)
 
-Doc-Version: `0.1.0`  
-Last-Updated: `2026-03-08`  
+Doc-Version: `0.2.0`  
+Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -11,7 +11,7 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 - The composition root is overloaded: `lib/main.dart` initializes logging, platform setup, DI, DB, and UI wiring.
 - Critical singleton nodes: `DBManager`, `ServerManager`, `AppRouter`.
 - Navigation contracts are partially untyped (`Map<String, dynamic>` in `state.extra`).
-- The codebase is mainly type-first (`screens/`, `viewmodels/`, `repositories/`) with hybrid elements.
+- Folder layout is already aligned to the canonical structure (`app/core/infra/shared/features/l10n`), but the state layer still needs full migration to `BLoC/Cubit`.
 
 ## 3. Main Strengths To Preserve
 - Stable multi-platform Flutter stack with Drift and Supabase.
@@ -29,11 +29,13 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 - Evolutionary migration without rewrite.
 - Hybrid feature-first structure (`features/`, `shared/`, `core/`, `infra/`).
 - Explicit boundaries between presentation/application/data/infra.
+- Full state-management migration to `BLoC/Cubit` (Phase 3.7) with a final `zero Provider/ChangeNotifier` target.
 - Typed route args for critical navigation flows.
 
 ## 6. Boundary Rules (Migration Baseline)
 - Presentation must not call `DBManager()/ServerManager()` directly.
 - Router contracts should move away from untyped map payloads.
+- New or modified stateful presentation code must be implemented with `BLoC/Cubit` only.
 - Every structural change must include tests and RU/EN docs updates.
 
 ## 7. Phase 0 Exit Criteria
@@ -43,6 +45,6 @@ Capture the architecture baseline of Revelation before deep refactoring begins.
 - Fast grep checks exist for forbidden patterns with a baseline allowlist.
 
 ## 8. Out Of Scope
-- Full state management rewrite.
-- Mass feature folder migration (Phase 2+).
-- `DBManager`/`PrimarySourceViewModel` decomposition (Phase 3).
+- Big-bang rewrite without phased migration.
+- Keeping mixed state frameworks after Phase 3.7.
+- Weakening architecture quality gates just to speed up migration.
