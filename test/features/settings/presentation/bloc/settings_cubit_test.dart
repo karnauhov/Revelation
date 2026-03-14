@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
@@ -76,6 +78,54 @@ void main() {
     expect(cubit.state.failure!.message, 'Unable to persist app settings.');
     expect(repository.savedSettings, isEmpty);
   });
+
+  test(
+    'loadSettings returns safely when cubit closes before load completes',
+    () async {
+      final loadCompleter = Completer<AppSettings>();
+      final repository = _FakeSettingsRepository(
+        initialSettings: _buildSettings(language: 'en'),
+        loadCompleter: loadCompleter,
+      );
+      final cubit = SettingsCubit(repository);
+
+      final loadFuture = cubit.loadSettings();
+      await Future<void>.delayed(Duration.zero);
+      await cubit.close();
+
+      loadCompleter.complete(_buildSettings(language: 'ru'));
+      await loadFuture;
+
+      expect(cubit.isClosed, isTrue);
+    },
+  );
+
+  test(
+    'changeTheme returns safely when cubit closes before save fails',
+    () async {
+      final saveCompleter = Completer<void>();
+      final repository = _FakeSettingsRepository(
+        initialSettings: _buildSettings(language: 'en'),
+        saveCompleter: saveCompleter,
+      );
+      final cubit = SettingsCubit(repository);
+      addTearDown(() async {
+        if (!cubit.isClosed) {
+          await cubit.close();
+        }
+      });
+      await cubit.loadSettings();
+
+      final changeFuture = cubit.changeTheme('midnight');
+      await Future<void>.delayed(Duration.zero);
+      await cubit.close();
+
+      saveCompleter.completeError(StateError('forced delayed save failure'));
+      await changeFuture;
+
+      expect(cubit.isClosed, isTrue);
+    },
+  );
 }
 
 AppSettings _buildSettings({
@@ -97,15 +147,22 @@ class _FakeSettingsRepository extends SettingsRepository {
     required this.initialSettings,
     this.throwOnLoad = false,
     this.throwOnSave = false,
+    this.loadCompleter,
+    this.saveCompleter,
   });
 
   AppSettings initialSettings;
   final bool throwOnLoad;
   final bool throwOnSave;
+  final Completer<AppSettings>? loadCompleter;
+  final Completer<void>? saveCompleter;
   final List<AppSettings> savedSettings = <AppSettings>[];
 
   @override
   Future<AppSettings> getSettings() async {
+    if (loadCompleter != null) {
+      return loadCompleter!.future;
+    }
     if (throwOnLoad) {
       throw StateError('forced load failure');
     }
@@ -114,6 +171,12 @@ class _FakeSettingsRepository extends SettingsRepository {
 
   @override
   Future<void> saveSettings(AppSettings settings) async {
+    if (saveCompleter != null) {
+      await saveCompleter!.future;
+      initialSettings = settings;
+      savedSettings.add(settings);
+      return;
+    }
     if (throwOnSave) {
       throw StateError('forced save failure');
     }

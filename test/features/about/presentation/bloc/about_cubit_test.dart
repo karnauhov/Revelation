@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:revelation/core/errors/app_failure.dart';
@@ -58,6 +60,34 @@ void main() {
     expect(cubit.state.isAcknowledgementsExpanded, isTrue);
     expect(cubit.state.isRecommendedExpanded, isTrue);
   });
+
+  test(
+    'load returns safely when cubit is closed before await completes',
+    () async {
+      final packageInfoCompleter = Completer<PackageInfo>();
+      var changelogLoaderCalled = false;
+      final cubit = AboutCubit(
+        autoLoad: false,
+        packageInfoLoader: () => packageInfoCompleter.future,
+        changelogLoader: () async {
+          changelogLoaderCalled = true;
+          return '# Changelog';
+        },
+      );
+
+      final loadFuture = cubit.load();
+      await Future<void>.delayed(Duration.zero);
+      await cubit.close();
+
+      packageInfoCompleter.complete(
+        _buildPackageInfo(version: '1.2.3', buildNumber: '45'),
+      );
+      await loadFuture;
+
+      expect(cubit.isClosed, isTrue);
+      expect(changelogLoaderCalled, isFalse);
+    },
+  );
 }
 
 PackageInfo _buildPackageInfo({

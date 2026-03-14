@@ -24,7 +24,13 @@ class AboutCubit extends Cubit<AboutState> {
     emit(state.copyWith(isLoading: true, clearFailure: true));
     try {
       final packageInfo = await _packageInfoLoader();
+      if (isClosed) {
+        return;
+      }
       final changelog = await _changelogLoader();
+      if (isClosed) {
+        return;
+      }
       emit(
         state.copyWith(
           appVersion: packageInfo.version,
@@ -35,6 +41,9 @@ class AboutCubit extends Cubit<AboutState> {
         ),
       );
     } catch (error, stackTrace) {
+      if (isClosed) {
+        return;
+      }
       emit(
         state.copyWith(
           isLoading: false,

@@ -13,6 +13,9 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(isLoading: true, clearFailure: true));
     try {
       final loadedSettings = await _settingsRepository.getSettings();
+      if (isClosed) {
+        return;
+      }
       emit(
         state.copyWith(
           settings: loadedSettings,
@@ -21,6 +24,9 @@ class SettingsCubit extends Cubit<SettingsState> {
         ),
       );
     } catch (error, stackTrace) {
+      if (isClosed) {
+        return;
+      }
       emit(
         state.copyWith(
           isLoading: false,
@@ -70,10 +76,16 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> _updateAndPersist({required AppSettings settings}) async {
+    if (isClosed) {
+      return;
+    }
     emit(state.copyWith(settings: settings, clearFailure: true));
     try {
       await _settingsRepository.saveSettings(settings);
     } catch (error, stackTrace) {
+      if (isClosed) {
+        return;
+      }
       emit(
         state.copyWith(
           failure: AppFailure.dataSource(

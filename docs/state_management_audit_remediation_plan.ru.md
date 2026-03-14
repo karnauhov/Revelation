@@ -3,7 +3,7 @@
 Дата аудита: `2026-03-14`  
 Область: весь Flutter-проект (`lib/`, `test/`, `integration_test/`, `docs/`, CI/scripts)  
 Фокус: только state management и связанные архитектурные аспекты  
-Статус выполнения плана: `в процессе (Step 1-5 частично выполнены)`  
+Статус выполнения плана: `в процессе (Step 1-6 частично выполнены)`  
 
 Как использовать документ:
 - Этот файл предназначен как пошаговый execution-plan.
@@ -548,19 +548,19 @@ Legacy/candidate cleanup:
 - [x] How to validate: Новый regression test “ignores stale result”.
 
 ### Step 6 — Стандартизировать lifecycle safety в async cubits
-- [ ] Цель: Свести к нулю `emit after close` риски.
-- [ ] Почему приоритет: Влияет на надежность при быстрых переходах/dispose.
-- [ ] Конкретные действия:
-- [ ] Ввести общий шаблон `if (isClosed) return;` после await.
-- [ ] Применить в `AboutCubit`, `SettingsCubit`, `PrimarySourcePageSettingsCubit` и других async местах.
-- [ ] Затрагиваемые файлы/папки:
-- [ ] `lib/features/about/presentation/bloc/about_cubit.dart`
-- [ ] `lib/features/settings/presentation/bloc/settings_cubit.dart`
-- [ ] `lib/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart`
-- [ ] Риск: Низкий.
-- [ ] Ожидаемый результат: Устойчивый lifecycle при повторной навигации.
-- [ ] Dependency on previous steps: Нет.
-- [ ] How to validate: Unit tests “close before async completes”.
+- [x] Цель: Свести к нулю `emit after close` риски.
+- [x] Почему приоритет: Влияет на надежность при быстрых переходах/dispose.
+- [x] Конкретные действия:
+- [x] Ввести общий шаблон `if (isClosed) return;` после await.
+- [x] Применить в `AboutCubit`, `SettingsCubit`, `PrimarySourcePageSettingsCubit` и других async местах.
+- [x] Затрагиваемые файлы/папки:
+- [x] `lib/features/about/presentation/bloc/about_cubit.dart`
+- [x] `lib/features/settings/presentation/bloc/settings_cubit.dart`
+- [x] `lib/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart`
+- [x] Риск: Низкий.
+- [x] Ожидаемый результат: Устойчивый lifecycle при повторной навигации.
+- [x] Dependency on previous steps: Нет.
+- [x] How to validate: Unit tests “close before async completes”.
 
 ### Step 7 — Усилить state contracts (equality + шум emit)
 - [ ] Цель: Снизить churn и сделать переходы состояния прозрачнее.
@@ -712,7 +712,7 @@ Legacy/candidate cleanup:
 - [ ] Step 3: Убрать side effects из build (частично выполнен: side effects вынесены из build + добавлен regression test на stale geometry; ожидается финальный smoke + целевой widget test на call-count)
 - [ ] Step 4: Убрать mutable state из `PrimarySource` (частично выполнен: showMore удален из модели, добавлен `PrimarySourcesExpansionCubit`, ожидается ручной smoke)
 - [x] Step 5: Добавить stale guard в `TopicsCatalogCubit`
-- [ ] Step 6: Привести async lifecycle safety к единому стандарту
+- [x] Step 6: Привести async lifecycle safety к единому стандарту
 - [ ] Step 7: Стандартизовать equality и dedup state updates
 - [ ] Step 8: Очистить legacy state leftovers
 - [ ] Step 9: Упорядочить DI/provisioning style

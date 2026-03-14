@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
@@ -110,6 +112,44 @@ void main() {
     expect(cubit.state.showStrongNumbers, isFalse);
     expect(cubit.state.showVerseNumbers, isTrue);
   });
+
+  test(
+    'loadSettingsForPage returns safely when cubit closes before async completes',
+    () async {
+      final loadCompleter = Completer<PageSettingsState>();
+      final fakeOrchestrator = _FakePageSettingsOrchestrator()
+        ..loadCompleter = loadCompleter;
+      final cubit = PrimarySourcePageSettingsCubit(fakeOrchestrator);
+      final source = _buildSource();
+      final page = source.pages.first;
+
+      final loadFuture = cubit.loadSettingsForPage(
+        source: source,
+        selectedPage: page,
+      );
+      await Future<void>.delayed(Duration.zero);
+      await cubit.close();
+
+      const delayedResult = PageSettingsState(
+        rawSettings: 'late-raw',
+        posX: 0,
+        posY: 0,
+        scale: 1,
+        isNegative: false,
+        isMonochrome: false,
+        brightness: 0,
+        contrast: 100,
+        showWordSeparators: false,
+        showStrongNumbers: false,
+        showVerseNumbers: true,
+      );
+      loadCompleter.complete(delayedResult);
+
+      final loaded = await loadFuture;
+      expect(loaded.rawSettings, 'late-raw');
+      expect(cubit.isClosed, isTrue);
+    },
+  );
 }
 
 class _FakePageSettingsOrchestrator
@@ -117,6 +157,7 @@ class _FakePageSettingsOrchestrator
   _FakePageSettingsOrchestrator() : super(PagesRepository());
 
   PageSettingsState nextLoadResult = PageSettingsState.defaults;
+  Completer<PageSettingsState>? loadCompleter;
   _SaveInvocation? lastSaveCall;
   bool clearCalled = false;
 
@@ -125,6 +166,9 @@ class _FakePageSettingsOrchestrator
     required PrimarySource source,
     required model.Page? selectedPage,
   }) async {
+    if (loadCompleter != null) {
+      return loadCompleter!.future;
+    }
     return nextLoadResult;
   }
 

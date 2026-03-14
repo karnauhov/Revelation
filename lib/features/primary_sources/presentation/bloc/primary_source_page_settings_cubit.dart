@@ -19,11 +19,17 @@ class PrimarySourcePageSettingsCubit
       source: source,
       selectedPage: selectedPage,
     );
+    if (isClosed) {
+      return loaded;
+    }
     applyLoadedSettings(loaded);
     return loaded;
   }
 
   void applyLoadedSettings(PageSettingsState loaded) {
+    if (isClosed) {
+      return;
+    }
     emit(
       state.copyWith(
         rawSettings: loaded.rawSettings,
