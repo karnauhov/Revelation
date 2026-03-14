@@ -11,7 +11,6 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/theme/material_theme.dart';
 import 'package:revelation/core/logging/app_logger_formatter.dart';
 import 'package:revelation/shared/utils/common.dart';
-import 'package:window_manager/window_manager.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:revelation/app/router/app_router.dart';
 
@@ -86,10 +85,9 @@ class RevelationApp extends StatelessWidget {
   }
 
   String onGenerateTitle(BuildContext context) {
-    String title = AppLocalizations.of(context)!.app_name;
+    final title = AppLocalizations.of(context)!.app_name;
     if (isDesktop()) {
-      windowManager.setTitle(title);
-      windowManager.setIcon('assets/images/UI/app_icon.png');
+      unawaited(setDesktopWindowTitle(title));
     }
     return title;
   }

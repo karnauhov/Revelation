@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/utils/common.dart';
-import 'package:window_manager/window_manager.dart';
 import 'drawer_item.dart';
 
 class DrawerContent extends StatefulWidget {
@@ -128,10 +129,16 @@ class _DrawerContentState extends State<DrawerContent> {
                 text: AppLocalizations.of(context)!.close_app,
                 onClick: () {
                   widget.onItemClicked();
-                  SystemNavigator.pop();
                   if (isDesktop()) {
-                    windowManager.close();
+                    unawaited(() async {
+                      final closed = await closeDesktopWindow();
+                      if (!closed) {
+                        SystemNavigator.pop();
+                      }
+                    }());
+                    return;
                   }
+                  SystemNavigator.pop();
                 },
               ),
             ),

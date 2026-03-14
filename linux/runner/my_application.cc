@@ -2,6 +2,7 @@
 #include "my_application.h"
 
 #include <flutter_linux/flutter_linux.h>
+#include <cstring>
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
 #endif
@@ -11,22 +12,98 @@
 struct _MyApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
+  GtkWindow* window;
+  GtkHeaderBar* header_bar;
+  FlMethodChannel* window_channel;
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
+
+namespace {
+
+constexpr int kDefaultWidth = 800;
+constexpr int kDefaultHeight = 650;
+
+gchar* get_window_icon_path() {
+  g_autofree gchar* exe_path = g_file_read_link("/proc/self/exe", nullptr);
+  if (exe_path != nullptr) {
+    g_autofree gchar* exe_dir = g_path_get_dirname(exe_path);
+    gchar* bundled_icon_path = g_build_filename(exe_dir, "data",
+                                                "flutter_assets", "assets",
+                                                "images", "UI",
+                                                "app_icon.png", nullptr);
+    if (g_file_test(bundled_icon_path, G_FILE_TEST_EXISTS)) {
+      return bundled_icon_path;
+    }
+    g_free(bundled_icon_path);
+  }
+
+  return g_strdup("assets/images/UI/app_icon.png");
+}
+
+}  // namespace
+
+static void window_method_call_handler(FlMethodChannel* channel,
+                                       FlMethodCall* method_call,
+                                       gpointer user_data) {
+  (void)channel;
+  MyApplication* self = MY_APPLICATION(user_data);
+  const gchar* method = fl_method_call_get_name(method_call);
+
+  g_autoptr(FlMethodResponse) response = nullptr;
+
+  if (std::strcmp(method, "setWindowTitle") == 0) {
+    const gchar* title = nullptr;
+    FlValue* args = fl_method_call_get_args(method_call);
+    if (args != nullptr && fl_value_get_type(args) == FL_VALUE_TYPE_MAP) {
+      FlValue* title_value = fl_value_lookup_string(args, "title");
+      if (title_value != nullptr &&
+          fl_value_get_type(title_value) == FL_VALUE_TYPE_STRING) {
+        title = fl_value_get_string(title_value);
+      }
+    }
+
+    if (title != nullptr && self->window != nullptr) {
+      gtk_window_set_title(self->window, title);
+      if (self->header_bar != nullptr) {
+        gtk_header_bar_set_title(self->header_bar, title);
+      }
+    }
+
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(nullptr));
+  } else if (std::strcmp(method, "closeWindow") == 0) {
+    if (self->window != nullptr) {
+      gtk_window_close(self->window);
+    }
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(nullptr));
+  } else {
+    response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
+  }
+
+  g_autoptr(GError) error = nullptr;
+  if (!fl_method_call_respond(method_call, response, &error)) {
+    g_warning("Failed to respond to window method call: %s", error->message);
+  }
+}
 
 // Implements GApplication::activate.
 static void my_application_activate(GApplication* application) {
   MyApplication* self = MY_APPLICATION(application);
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
+  self->window = window;
+  self->header_bar = nullptr;
 
-  const char* icon_path = "assets/images/UI/app_icon.png";
-  GdkPixbuf* icon = gdk_pixbuf_new_from_file(icon_path, NULL);
+  g_autofree gchar* icon_path = get_window_icon_path();
+  GdkPixbuf* icon = gdk_pixbuf_new_from_file(icon_path, nullptr);
   if (icon) {
     gtk_window_set_icon(GTK_WINDOW(window), icon);
     g_object_unref(icon);
-  }    
+  }
+
+  // Startup title is replaced by localized Flutter title after first frame.
+  const gchar* app_title = "Revelation";
+
   // Use a header bar when running in GNOME as this is the common style used
   // by applications and is the setup most users will be using (e.g. Ubuntu
   // desktop).
@@ -47,14 +124,20 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "revelation");
+    gtk_header_bar_set_title(header_bar, app_title);
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
+    self->header_bar = header_bar;
   } else {
-    gtk_window_set_title(window, "revelation");
+    gtk_window_set_title(window, app_title);
   }
 
-  gtk_window_set_default_size(window, 1280, 720);
+  GdkGeometry geometry = {};
+  geometry.min_width = kDefaultWidth;
+  geometry.min_height = kDefaultHeight;
+  gtk_window_set_geometry_hints(window, nullptr, &geometry, GDK_HINT_MIN_SIZE);
+
+  gtk_window_set_default_size(window, kDefaultWidth, kDefaultHeight);
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
@@ -65,6 +148,13 @@ static void my_application_activate(GApplication* application) {
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+
+  g_autoptr(FlStandardMethodCodec) codec = fl_standard_method_codec_new();
+  self->window_channel = fl_method_channel_new(
+      fl_engine_get_binary_messenger(fl_view_get_engine(view)),
+      "revelation/window", FL_METHOD_CODEC(codec));
+  fl_method_channel_set_method_call_handler(
+      self->window_channel, window_method_call_handler, self, nullptr);
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
 }
@@ -109,6 +199,9 @@ static void my_application_shutdown(GApplication* application) {
 // Implements GObject::dispose.
 static void my_application_dispose(GObject* object) {
   MyApplication* self = MY_APPLICATION(object);
+  g_clear_object(&self->window_channel);
+  self->window = nullptr;
+  self->header_bar = nullptr;
   g_clear_pointer(&self->dart_entrypoint_arguments, g_strfreev);
   G_OBJECT_CLASS(my_application_parent_class)->dispose(object);
 }
@@ -121,7 +214,11 @@ static void my_application_class_init(MyApplicationClass* klass) {
   G_OBJECT_CLASS(klass)->dispose = my_application_dispose;
 }
 
-static void my_application_init(MyApplication* self) {}
+static void my_application_init(MyApplication* self) {
+  self->window = nullptr;
+  self->header_bar = nullptr;
+  self->window_channel = nullptr;
+}
 
 MyApplication* my_application_new() {
   // Set the program name to the application ID, which helps various systems

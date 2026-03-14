@@ -2,9 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'dependent.dart' as dep;
 import 'package:revelation/core/logging/common_logger.dart';
+
+const MethodChannel _desktopWindowChannel = MethodChannel('revelation/window');
+String? _lastDesktopWindowTitle;
 
 bool isDesktop() {
   return [
@@ -25,6 +29,14 @@ bool isMobile() {
 
 bool isWeb() {
   return kIsWeb;
+}
+
+bool isDesktopWindowChannelSupported() {
+  if (kIsWeb) {
+    return false;
+  }
+  return defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.linux;
 }
 
 bool isLocalWeb() {
@@ -71,4 +83,37 @@ String getSystemLanguage() {
     log.debug(e);
   }
   return language;
+}
+
+Future<bool> setDesktopWindowTitle(String title) async {
+  if (!isDesktopWindowChannelSupported()) {
+    return false;
+  }
+  if (_lastDesktopWindowTitle == title) {
+    return true;
+  }
+  try {
+    await _desktopWindowChannel.invokeMethod<void>(
+      'setWindowTitle',
+      <String, String>{'title': title},
+    );
+    _lastDesktopWindowTitle = title;
+    return true;
+  } catch (e) {
+    log.debug(e);
+    return false;
+  }
+}
+
+Future<bool> closeDesktopWindow() async {
+  if (!isDesktopWindowChannelSupported()) {
+    return false;
+  }
+  try {
+    await _desktopWindowChannel.invokeMethod<void>('closeWindow');
+    return true;
+  } catch (e) {
+    log.debug(e);
+    return false;
+  }
 }

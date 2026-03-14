@@ -9,7 +9,6 @@ import 'package:revelation/infra/remote/supabase/server_manager.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/utils/common.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:window_manager/window_manager.dart';
 
 class AppBootstrap {
   AppBootstrap({required Talker talker, DatabaseRuntime? databaseRuntime})
@@ -62,18 +61,6 @@ class AppBootstrap {
     if (!isDesktop()) {
       return;
     }
-
-    await windowManager.ensureInitialized();
-    const windowOptions = WindowOptions(
-      size: Size(800, 650),
-      minimumSize: Size(800, 650),
-      center: true,
-    );
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.setIcon('assets/images/UI/app_icon.png');
-      await windowManager.show();
-      await windowManager.focus();
-    });
   }
 
   Future<void> _initializeDatabases(SettingsViewModel settingsViewModel) async {

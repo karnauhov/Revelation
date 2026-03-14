@@ -15,7 +15,7 @@
 - Local database: `drift`, `drift_flutter`
 - Remote downloads/storage: `supabase_flutter`
 - Logging and route tracing: `talker_flutter`
-- Desktop window handling: `window_manager`
+- Desktop window handling: native platform runners (`windows/runner`, `linux/runner`)
 - Localization: `flutter_localizations`, `intl`
 
 ## Repository Layout

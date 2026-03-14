@@ -64,13 +64,6 @@
         <licenseLink></licenseLink>
     </library>
     <library>
-        <name>@Package 'window_manager'</name>
-        <idIcon></idIcon>
-        <license>MIT License</license>
-        <officialSite>https://pub.dev/packages/window_manager</officialSite>
-        <licenseLink>https://pub.dev/packages/window_manager/license</licenseLink>
-    </library>
-    <library>
         <name>@Package 'flutter_cache_manager'</name>
         <idIcon></idIcon>
         <license>MIT License</license>
