@@ -130,11 +130,15 @@ Future<String> collectSystemAndAppInfo({BuildContext? context}) async {
       safeWrite('screen.devicePixelRatio', mq.devicePixelRatio);
       safeWrite('screen.orientation', mq.orientation.toString());
     } else {
-      // ignore: deprecated_member_use
-      final window = WidgetsBinding.instance.window;
-      safeWrite('screen.physicalWidth', window.physicalSize.width);
-      safeWrite('screen.physicalHeight', window.physicalSize.height);
-      safeWrite('screen.devicePixelRatio', window.devicePixelRatio);
+      final dispatcher = PlatformDispatcher.instance;
+      final view = dispatcher.implicitView;
+      if (view != null) {
+        safeWrite('screen.physicalWidth', view.physicalSize.width);
+        safeWrite('screen.physicalHeight', view.physicalSize.height);
+        safeWrite('screen.devicePixelRatio', view.devicePixelRatio);
+      } else {
+        safeWrite('screenInfo', 'implicitView is not available');
+      }
     }
   } catch (e) {
     safeWrite('ScreenInfoError', e);

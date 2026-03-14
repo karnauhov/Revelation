@@ -48,7 +48,6 @@ Future<bool> launchLink(String url) async {
 
 List<String> splitTrailingDigits(String s) {
   final str = s.trim();
-  // ignore: deprecated_member_use
   final reg = RegExp(r'^(.*?)(\d+)\s*$');
   final m = reg.firstMatch(str);
   if (m != null) {

@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
-
-import 'dart:html' as html;
+import 'dart:js_interop';
 import 'dart:typed_data';
+import 'package:web/web.dart' as web;
 
 Future<String?> saveDownloadableFile({
   required Uint8List bytes,
@@ -9,17 +8,21 @@ Future<String?> saveDownloadableFile({
   required String mimeType,
 }) async {
   final sanitizedName = _sanitizeFileName(fileName);
-  final blob = html.Blob(<dynamic>[bytes], mimeType);
-  final url = html.Url.createObjectUrlFromBlob(blob);
+  final blob = web.Blob(
+    <JSAny>[bytes.toJS].toJS,
+    web.BlobPropertyBag(type: mimeType),
+  );
+  final url = web.URL.createObjectURL(blob);
 
-  final anchor = html.AnchorElement(href: url)
+  final anchor = web.HTMLAnchorElement()
+    ..href = url
     ..download = sanitizedName
     ..style.display = 'none';
 
-  html.document.body?.append(anchor);
+  web.document.body?.appendChild(anchor);
   anchor.click();
   anchor.remove();
-  html.Url.revokeObjectUrl(url);
+  web.URL.revokeObjectURL(url);
 
   return sanitizedName;
 }

@@ -8,7 +8,6 @@ String getPlatformLanguage() {
 
 bool isMobileBrowser() {
   final ua = window.navigator.userAgent;
-  // ignore: deprecated_member_use
   if (RegExp(r'Mobi|Android|iPhone|iPad|iPod|IEMobile').hasMatch(ua)) {
     return true;
   }
