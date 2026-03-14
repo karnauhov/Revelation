@@ -5,15 +5,26 @@ import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/about/presentation/bloc/about_state.dart';
 
 class AboutCubit extends Cubit<AboutState> {
-  AboutCubit() : super(AboutState.initial()) {
-    load();
+  AboutCubit({
+    Future<PackageInfo> Function()? packageInfoLoader,
+    Future<String> Function()? changelogLoader,
+    bool autoLoad = true,
+  }) : _packageInfoLoader = packageInfoLoader ?? PackageInfo.fromPlatform,
+       _changelogLoader = changelogLoader ?? _loadChangelogFromBundle,
+       super(AboutState.initial()) {
+    if (autoLoad) {
+      load();
+    }
   }
+
+  final Future<PackageInfo> Function() _packageInfoLoader;
+  final Future<String> Function() _changelogLoader;
 
   Future<void> load() async {
     emit(state.copyWith(isLoading: true, clearFailure: true));
     try {
-      final packageInfo = await PackageInfo.fromPlatform();
-      final changelog = await _loadChangelog();
+      final packageInfo = await _packageInfoLoader();
+      final changelog = await _changelogLoader();
       emit(
         state.copyWith(
           appVersion: packageInfo.version,
@@ -49,7 +60,7 @@ class AboutCubit extends Cubit<AboutState> {
     emit(state.copyWith(isRecommendedExpanded: expanded));
   }
 
-  Future<String> _loadChangelog() async {
+  static Future<String> _loadChangelogFromBundle() async {
     try {
       return await rootBundle.loadString('CHANGELOG.md');
     } catch (_) {

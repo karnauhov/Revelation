@@ -1,6 +1,6 @@
 # Architecture Overview (EN)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.1.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -11,6 +11,7 @@ Define the current Revelation architecture as-is.
 - Entry point: `lib/main.dart` configures `Talker`, registers core dependencies, sets `AppBlocObserver`, initializes `AppBootstrap`, and starts `MaterialApp.router`.
 - Bootstrap: `AppBootstrap` performs `WidgetsFlutterBinding.ensureInitialized`, global error hooks, platform initialization, settings loading, Supabase initialization, and local database initialization.
 - Navigation: `go_router` in `AppRouter`; critical routes use typed route args (`TopicRouteArgs`, `PrimarySourceRouteArgs`).
+- `word:` link handling: `shared/navigation` uses callback contracts; the default handler is registered at bootstrap level (`AppBootstrap`).
 - Global state scope: `AppDi.appBlocProviders` provides `SettingsCubit`, `TopicsCatalogCubit`, and `PrimarySourcesCubit`.
 - Primary source detail state: `PrimarySourceScreen` creates a `MultiBlocProvider` with `session/image/page-settings/selection/description/viewport` cubit slices.
 - Data flow: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
@@ -23,6 +24,7 @@ Define the current Revelation architecture as-is.
 - Stateful presentation is implemented with `BLoC/Cubit` only.
 - `provider`/`ChangeNotifier`/`notifyListeners` are forbidden in runtime/test code.
 - Presentation does not call `DBManager()`/`ServerManager()` directly.
+- `core` and `shared` do not contain feature-specific orchestration or feature-module dependencies.
 - RU and EN architecture docs are updated together.
 
 ## 4. Core Cross-Cutting Contracts

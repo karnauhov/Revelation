@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:revelation/features/primary_sources/application/services/pronunciation.dart';
+import 'package:revelation/features/primary_sources/application/services/pronunciation_service.dart';
 
 class _WordCase {
   const _WordCase({
@@ -235,7 +235,7 @@ const List<_WordCase> _wordCases = [
 ];
 
 void main() {
-  final pronunciation = Pronunciation();
+  final pronunciation = PronunciationService();
 
   group('Word pronunciation by locale', () {
     for (final c in _wordCases) {

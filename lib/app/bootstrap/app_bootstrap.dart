@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
-import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
+import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/strong_dictionary_dialog.dart';
 import 'package:revelation/features/settings/settings.dart'
     show SettingsCubit, SettingsRepository;
@@ -22,8 +22,8 @@ class AppBootstrap {
 
   final Talker _talker;
   final DatabaseRuntime _databaseRuntime;
-  final PrimarySourceReferenceResolver _referenceResolver =
-      PrimarySourceReferenceResolver();
+  final PrimarySourceReferenceService _referenceResolver =
+      PrimarySourceReferenceService();
   StreamSubscription<String>? _languageSubscription;
 
   Future<SettingsCubit> initialize() async {

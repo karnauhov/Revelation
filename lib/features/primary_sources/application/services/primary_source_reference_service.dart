@@ -32,10 +32,10 @@ class ResolvedVerseReference {
   });
 }
 
-class PrimarySourceReferenceResolver {
+class PrimarySourceReferenceService {
   final PrimarySourcesDbRepository _repository;
 
-  PrimarySourceReferenceResolver({PrimarySourcesDbRepository? repository})
+  PrimarySourceReferenceService({PrimarySourcesDbRepository? repository})
     : _repository = repository ?? PrimarySourcesDbRepository();
 
   PrimarySource? findSourceById(String sourceId) {

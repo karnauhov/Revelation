@@ -1,10 +1,10 @@
 export 'presentation/bloc/about_cubit.dart';
 export 'presentation/bloc/about_state.dart';
 export 'presentation/screens/about_screen.dart';
-export 'presentation/screens/icon_url.dart';
-export 'presentation/screens/institution_card.dart';
-export 'presentation/screens/institution_list.dart';
-export 'presentation/screens/library_card.dart';
-export 'presentation/screens/library_list.dart';
-export 'presentation/screens/recommended_card.dart';
-export 'presentation/screens/recommended_list.dart';
+export 'presentation/widgets/icon_url.dart';
+export 'presentation/widgets/institution_card.dart';
+export 'presentation/widgets/institution_list.dart';
+export 'presentation/widgets/library_card.dart';
+export 'presentation/widgets/library_list.dart';
+export 'presentation/widgets/recommended_card.dart';
+export 'presentation/widgets/recommended_list.dart';

@@ -72,30 +72,30 @@
 
 ### Фаза D. Legacy cleanup
 
-- [ ] `D1` Удалить пустые legacy/directories после миграции.
+- [x] `D1` Удалить пустые legacy/directories после миграции.
 Файлы-кандидаты: `lib/features/about/presentation/viewmodels`, `lib/features/settings/presentation/viewmodels`, `lib/features/topics/presentation/viewmodels`, `lib/core/state`, `test/viewmodels` (если пустая).
 Ожидаемый результат: отсутствуют переходные пустые папки.
 Проверка: `Get-ChildItem -Path lib -Directory -Recurse` + `Get-ChildItem -Path test -Directory -Recurse`.
 
-- [ ] `D2` Перепроверить отсутствие layer-first импортов/путей.
+- [x] `D2` Перепроверить отсутствие layer-first импортов/путей.
 Ожидаемый результат: нет регрессии к legacy-структуре.
 Проверка: `dart run scripts/check_forbidden_patterns.dart`.
 
 ### Фаза E. Тестовая стратегия и покрытие
 
-- [ ] `E1` Добавить unit-тесты для `AboutCubit`.
+- [x] `E1` Добавить unit-тесты для `AboutCubit`.
 Файлы-кандидаты: `test/features/about/presentation/bloc/about_cubit_test.dart`.
 Ожидаемый результат: нет «висящих» cubit без unit coverage.
 Проверка: `flutter test --exclude-tags widget`.
 
-- [ ] `E2` Добавить regression-тесты на исправленные архитектурные баги.
+- [x] `E2` Добавить regression-тесты на исправленные архитектурные баги.
 Файлы-кандидаты: `test/features/...`, `test/app/router/...`, `test/widget/...` по факту правок.
 Ожидаемый результат: ключевые сценарии зафиксированы тестами и не деградируют.
 Проверка: `flutter test --exclude-tags widget` и `flutter test --tags widget`.
 
 ### Фаза F. Синхронизация архитектурной документации (RU/EN)
 
-- [ ] `F1` Обновить RU/EN архитектурные документы по фактической целевой модели.
+- [x] `F1` Обновить RU/EN архитектурные документы по фактической целевой модели.
 Обязательные пары:
 - `docs/ru/architecture/overview.ru.md` <-> `docs/en/architecture/overview.en.md`
 - `docs/ru/architecture/module-boundaries.ru.md` <-> `docs/en/architecture/module-boundaries.en.md`
@@ -103,39 +103,39 @@
 - `docs/ru/testing/strategy.ru.md` <-> `docs/en/testing/strategy.en.md` (если затронута тестовая политика)
 Ожидаемый результат: нет конфликтов между документами и принятым кодом.
 
-- [ ] `F2` Синхронизировать поля метаданных в RU/EN-парах.
+- [x] `F2` Синхронизировать поля метаданных в RU/EN-парах.
 Ожидаемый результат: `Doc-Version`, `Last-Updated`, `Source-Commit` совпадают в каждой паре.
 
-- [ ] `F3` Проверить docs sync скриптом.
+- [x] `F3` Проверить docs sync скриптом.
 Проверка: `dart run scripts/check_docs_sync.dart`.
 
 ### Фаза G. Финальная валидация перед завершением
 
-- [ ] `G1` Форматирование.
+- [x] `G1` Форматирование.
 Проверка: `dart format .`
 
-- [ ] `G2` Статический анализ.
+- [x] `G2` Статический анализ.
 Проверка: `flutter analyze`
 
-- [ ] `G3` Unit + widget тесты.
+- [x] `G3` Unit + widget тесты.
 Проверка:
 - `flutter test --exclude-tags widget`
 - `flutter test --tags widget`
 
-- [ ] `G4` Архитектурные guardrails.
+- [x] `G4` Архитектурные guardrails.
 Проверка: `dart run scripts/check_forbidden_patterns.dart`
 
 ### Фаза N. Naming, форматирование и орфография
 
-- [ ] `N1` Проверить snake_case для имен файлов (`lib/`, `test/`, `integration_test/`), исключая generated (`*.g.dart`, `app_localizations*.dart`).
+- [x] `N1` Проверить snake_case для имен файлов (`lib/`, `test/`, `integration_test/`), исключая generated (`*.g.dart`, `app_localizations*.dart`).
 Ожидаемый результат: все ручные Dart-файлы в lower_snake_case.
 Проверка: выборка файлов + ручная ревизия исключений.
 
-- [ ] `N2` Проверить именование классов/виджетов по Dart conventions.
+- [x] `N2` Проверить именование классов/виджетов по Dart conventions.
 Ожидаемый результат: `PascalCase` для типов, логичные имена без двусмысленности и legacy-терминов.
 Проверка: ревизия сигнатур `class ...` в изменяемых модулях.
 
-- [ ] `N3` Проверить консистентность суффиксов/ролей по слоям.
+- [x] `N3` Проверить консистентность суффиксов/ролей по слоям.
 Ожидаемый результат:
 - presentation state-management: `*Cubit`, `*State`
 - presentation экраны: `*Screen`
@@ -143,17 +143,17 @@
 - application orchestration/service: `*Orchestrator`, `*Service`
 Проверка: точечный grep по именам классов и файлов в затронутых feature.
 
-- [ ] `N4` Проверить орфографию и смысловую читаемость публичных имен.
+- [x] `N4` Проверить орфографию и смысловую читаемость публичных имен.
 Ожидаемый результат: нет опечаток/неясных сокращений в public API (классы, методы, поля state, route args, docs).
 Проверка: ручная ревизия + при необходимости правки с регресс-тестами на переименованные контракты.
 
 ## 4. Definition of Done
 
-- [ ] Критичные нарушения зависимостей устранены.
-- [ ] Presentation слой не импортирует `infra` напрямую.
-- [ ] Stateful логика остается в Cubit/BLoC, states иммутабельны.
-- [ ] Legacy-остатки удалены.
-- [ ] Проверка naming/суффиксов/орфографии пройдена и зафиксирована.
-- [ ] Тестовое покрытие расширено (включая `AboutCubit` и regression-кейсы).
-- [ ] RU/EN архитектурные документы синхронизированы и отражают фактическую целевую архитектуру.
-- [ ] Все обязательные проверки проходят локально и в CI.
+- [x] Критичные нарушения зависимостей устранены.
+- [x] Presentation слой не импортирует `infra` напрямую.
+- [x] Stateful логика остается в Cubit/BLoC, states иммутабельны.
+- [x] Legacy-остатки удалены.
+- [x] Проверка naming/суффиксов/орфографии пройдена и зафиксирована.
+- [x] Тестовое покрытие расширено (включая `AboutCubit` и regression-кейсы).
+- [x] RU/EN архитектурные документы синхронизированы и отражают фактическую целевую архитектуру.
+- [x] Все обязательные проверки проходят локально и в CI.

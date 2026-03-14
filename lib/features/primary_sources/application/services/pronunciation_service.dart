@@ -1,10 +1,11 @@
 ﻿import 'package:unorm_dart/unorm_dart.dart' as unorm;
 
-class Pronunciation {
-  static final Pronunciation _instance = Pronunciation._internal();
-  Pronunciation._internal();
+class PronunciationService {
+  static final PronunciationService _instance =
+      PronunciationService._internal();
+  PronunciationService._internal();
 
-  factory Pronunciation() {
+  factory PronunciationService() {
     return _instance;
   }
 

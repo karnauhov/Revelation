@@ -1,6 +1,6 @@
 # Architecture Overview (RU)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.1.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -11,6 +11,7 @@ Source-Commit: `working-tree`
 - Точка входа: `lib/main.dart` настраивает `Talker`, регистрирует core-зависимости, подключает `AppBlocObserver`, инициализирует `AppBootstrap` и запускает `MaterialApp.router`.
 - Bootstrap: `AppBootstrap` выполняет `WidgetsFlutterBinding.ensureInitialized`, глобальные error hooks, инициализацию платформы, загрузку настроек, инициализацию Supabase и локальных БД.
 - Навигация: `go_router` в `AppRouter`, для критичных переходов используются typed route args (`TopicRouteArgs`, `PrimarySourceRouteArgs`).
+- Обработка `word:`-ссылок: `shared/navigation` использует callback-контракты; дефолтный обработчик регистрируется на bootstrap-уровне (`AppBootstrap`).
 - Глобальный state scope: `AppDi.appBlocProviders` предоставляет `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
 - Detail state для primary source: в `PrimarySourceScreen` создается `MultiBlocProvider` с cubit-срезами `session/image/page-settings/selection/description/viewport`.
 - Поток данных: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
@@ -23,6 +24,7 @@ Source-Commit: `working-tree`
 - Stateful presentation реализуется только на `BLoC/Cubit`.
 - `provider`/`ChangeNotifier`/`notifyListeners` запрещены в runtime/test коде.
 - Presentation-слой не обращается напрямую к `DBManager()`/`ServerManager()`.
+- `core` и `shared` не содержат feature-specific orchestration/зависимостей на feature-модули.
 - Изменения архитектурных документов в RU/EN выполняются синхронно.
 
 ## 4. Core Cross-Cutting Contracts

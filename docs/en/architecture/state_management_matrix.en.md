@@ -1,6 +1,6 @@
 # State Management Matrix (EN)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.1.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -11,6 +11,7 @@ Define the current runtime state ownership model in Revelation.
 - Stateful presentation logic is implemented with `Cubit`/`Bloc`.
 - Default pattern: `Cubit`; `Bloc` is used only for event orchestration across multiple state slices.
 - State classes remain immutable and evolve through `copyWith`.
+- Collections in state (`List`/`Map`) are stored as unmodifiable copies.
 - Errors in state contracts are represented by `AppFailure`.
 
 ## 3. Ownership Matrix
@@ -19,7 +20,7 @@ Define the current runtime state ownership model in Revelation.
 |---|---|---|
 | `app/settings` | `SettingsCubit` | `SettingsState { AppSettings settings; bool isLoading; AppFailure? failure; }` |
 | `about` | `AboutCubit` | `AboutState { String appVersion; String buildNumber; String changelog; bool isLoading; bool isChangelogExpanded; bool isAcknowledgementsExpanded; bool isRecommendedExpanded; AppFailure? failure; }` |
-| `topics/catalog` | `TopicsCatalogCubit` | `TopicsCatalogState { String language; List<TopicInfo> topics; Map<String, CommonResource?> iconByKey; bool isLoading; AppFailure? failure; }` |
+| `topics/catalog` | `TopicsCatalogCubit` | `TopicsCatalogState { String language; List<TopicInfo> topics; Map<String, TopicResource?> iconByKey; bool isLoading; AppFailure? failure; }` |
 | `topics/content` | `TopicContentCubit` | `TopicContentState { String route; String language; String name; String description; String markdown; bool isLoading; AppFailure? failure; }` |
 | `primary_sources/list` | `PrimarySourcesCubit` | `PrimarySourcesState { List<PrimarySource> full; List<PrimarySource> significant; List<PrimarySource> fragments; bool isLoading; AppFailure? failure; }` |
 | `primary_source/detail/session` | `PrimarySourceSessionCubit` | `PrimarySourceSessionState { PrimarySource source; model.Page? selectedPage; String imageName; bool isMenuOpen; }` |

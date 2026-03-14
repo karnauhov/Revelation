@@ -1,7 +1,7 @@
 export 'application/orchestrators/image_loading_orchestrator.dart';
 export 'application/orchestrators/page_settings_orchestrator.dart';
 export 'application/services/description_content_service.dart';
-export 'application/services/primary_source_reference_resolver.dart';
+export 'application/services/primary_source_reference_service.dart';
 export 'data/repositories/pages_repository.dart';
 export 'data/repositories/primary_sources_db_repository.dart';
 export 'presentation/bloc/primary_source_description_cubit.dart';

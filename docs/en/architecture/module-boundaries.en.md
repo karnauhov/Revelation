@@ -1,6 +1,6 @@
 # Module Boundaries (EN)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.1.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -16,10 +16,12 @@ Define mandatory module boundaries and file placement rules for `lib/`.
 - `lib/l10n` - ARB assets and generated localization code.
 
 ## 3. Feature Module Layout
-Each feature follows:
+Recommended feature layout:
 - `presentation` - screens, widgets, cubit/bloc, and UI coordination.
-- `application` - orchestration/use-case/service logic.
-- `data` - repositories, data contracts, and mapping.
+- `application` - orchestration/use-case/service logic (optional for simple features).
+- `data` - repositories, data contracts, and mapping (optional when a feature has no data access).
+
+A lightweight feature module without all three layers is allowed, but dependency boundaries remain mandatory for every layer that is present.
 
 ## 4. Dependency Rules
 - `presentation` must not import `infra` directly.

@@ -14,7 +14,7 @@ import 'package:revelation/features/primary_sources/presentation/detail/image_pr
 import 'package:revelation/features/primary_sources/presentation/detail/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/primary_source_toolbar.dart';
 import 'package:revelation/features/primary_sources/presentation/detail/strong_number_picker_dialog.dart';
-import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
+import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/shared/ui/styled_text/styled_text_utils.dart';
@@ -61,8 +61,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   PrimarySourceViewModel? _viewModel;
   final GlobalKey<TooltipState> _referenceTooltipKey =
       GlobalKey<TooltipState>();
-  final PrimarySourceReferenceResolver _referenceResolver =
-      PrimarySourceReferenceResolver();
+  final PrimarySourceReferenceService _referenceResolver =
+      PrimarySourceReferenceService();
   bool _initialReferenceApplied = false;
 
   @override

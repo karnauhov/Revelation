@@ -1,6 +1,6 @@
 # Module Boundaries (RU)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.1.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -16,10 +16,12 @@ Source-Commit: `working-tree`
 - `lib/l10n` - ARB и generated localization-код.
 
 ## 3. Feature Module Layout
-Для каждого feature используется схема:
+Рекомендуемая схема feature:
 - `presentation` - экраны, виджеты, cubit/bloc и UI-coordination.
-- `application` - orchestration/use-case/service логика.
-- `data` - repositories, data contracts и маппинг.
+- `application` - orchestration/use-case/service логика (опционально для простых feature).
+- `data` - repositories, data contracts и маппинг (опционально, если feature не работает с данными).
+
+Допускается облегченный feature-модуль без всех трех слоев, но для присутствующих слоев границы зависимостей обязательны.
 
 ## 4. Dependency Rules
 - `presentation` не импортирует `infra` напрямую.

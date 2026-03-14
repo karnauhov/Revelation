@@ -1,6 +1,6 @@
 # State Management Matrix (RU)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.1.0`  
 Last-Updated: `2026-03-14`  
 Source-Commit: `working-tree`
 
@@ -11,6 +11,7 @@ Source-Commit: `working-tree`
 - Stateful presentation-логика реализуется через `Cubit`/`Bloc`.
 - Базовый паттерн: `Cubit`; `Bloc` используется только для event-orchestration между несколькими state-срезами.
 - State-классы остаются immutable и обновляются через `copyWith`.
+- Коллекции в state (`List`/`Map`) хранятся как unmodifiable-копии.
 - Ошибки в state-контрактах передаются через `AppFailure`.
 
 ## 3. Ownership Matrix
@@ -19,7 +20,7 @@ Source-Commit: `working-tree`
 |---|---|---|
 | `app/settings` | `SettingsCubit` | `SettingsState { AppSettings settings; bool isLoading; AppFailure? failure; }` |
 | `about` | `AboutCubit` | `AboutState { String appVersion; String buildNumber; String changelog; bool isLoading; bool isChangelogExpanded; bool isAcknowledgementsExpanded; bool isRecommendedExpanded; AppFailure? failure; }` |
-| `topics/catalog` | `TopicsCatalogCubit` | `TopicsCatalogState { String language; List<TopicInfo> topics; Map<String, CommonResource?> iconByKey; bool isLoading; AppFailure? failure; }` |
+| `topics/catalog` | `TopicsCatalogCubit` | `TopicsCatalogState { String language; List<TopicInfo> topics; Map<String, TopicResource?> iconByKey; bool isLoading; AppFailure? failure; }` |
 | `topics/content` | `TopicContentCubit` | `TopicContentState { String route; String language; String name; String description; String markdown; bool isLoading; AppFailure? failure; }` |
 | `primary_sources/list` | `PrimarySourcesCubit` | `PrimarySourcesState { List<PrimarySource> full; List<PrimarySource> significant; List<PrimarySource> fragments; bool isLoading; AppFailure? failure; }` |
 | `primary_source/detail/session` | `PrimarySourceSessionCubit` | `PrimarySourceSessionState { PrimarySource source; model.Page? selectedPage; String imageName; bool isMenuOpen; }` |

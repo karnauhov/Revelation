@@ -7,25 +7,25 @@ import 'package:revelation/shared/models/description_request.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
-import 'package:revelation/features/primary_sources/application/services/primary_source_reference_resolver.dart';
+import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/shared/localization/localization_utils.dart';
-import 'package:revelation/features/primary_sources/application/services/pronunciation.dart';
+import 'package:revelation/features/primary_sources/application/services/pronunciation_service.dart';
 
 class DescriptionContentService {
   final DescriptionDataSource _dataSource;
-  final Pronunciation _pronunciation;
-  final PrimarySourceReferenceResolver _referenceResolver;
+  final PronunciationService _pronunciation;
+  final PrimarySourceReferenceService _referenceResolver;
 
   List<GreekStrongPickerEntry>? _strongPickerEntriesCache;
 
   DescriptionContentService({
     DescriptionDataSource? dataSource,
-    Pronunciation? pronunciation,
-    PrimarySourceReferenceResolver? referenceResolver,
+    PronunciationService? pronunciation,
+    PrimarySourceReferenceService? referenceResolver,
   }) : _dataSource = dataSource ?? DbManagerDescriptionDataSource(),
-       _pronunciation = pronunciation ?? Pronunciation(),
+       _pronunciation = pronunciation ?? PronunciationService(),
        _referenceResolver =
-           referenceResolver ?? PrimarySourceReferenceResolver();
+           referenceResolver ?? PrimarySourceReferenceService();
 
   DescriptionContent? buildContent(
     BuildContext context,
