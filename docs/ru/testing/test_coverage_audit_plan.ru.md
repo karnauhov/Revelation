@@ -369,10 +369,10 @@
 - expected outcome: deterministic contracts для infra-слоя
 - recommended execution order: 11
 - checklist:
-- [ ] DB runtime/adapters: success/failure/fallback contracts — завершено, когда ключевые runtime path протестированы.
-- [ ] Remote wrappers: error mapping/retry semantics — завершено, когда ошибки нормализованы тестами.
-- [ ] Storage adapters: missing/corrupt data handling — завершено, когда защитные ветки закрыты.
-- [ ] Исключить внешние вызовы (network/fs нестабильный) — завершено, когда тесты полностью isolated.
+- [x] DB runtime/adapters: success/failure/fallback contracts — завершено, когда ключевые runtime path протестированы.
+- [x] Remote wrappers: error mapping/retry semantics — завершено, когда ошибки нормализованы тестами.
+- [x] Storage adapters: missing/corrupt data handling — завершено, когда защитные ветки закрыты.
+- [x] Исключить внешние вызовы (network/fs нестабильный) — завершено, когда тесты полностью isolated.
 - deliverables: infra deterministic unit pack.
 - exit criteria: infra перестает быть near-zero по покрытию.
 - validation commands: `flutter test test/infra`.
