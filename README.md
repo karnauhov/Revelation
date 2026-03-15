@@ -33,7 +33,6 @@ Linux: [Snapcraft](https://snapcraft.io/revelation-x)
 - [Матрица управления состоянием](./docs/ru/architecture/state_management_matrix.ru.md)
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
 - [Бэклог оптимизации производительности](./docs/ru/performance/optimization_backlog.ru.md)
-- [Покрытие тестами](./docs/ru/testing/test_coverage_index.ru.md)
 
 ---
 

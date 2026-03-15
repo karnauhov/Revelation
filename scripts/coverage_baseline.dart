@@ -9,7 +9,13 @@ const Set<String> _platformGlueFiles = <String>{
 };
 
 void main(List<String> args) {
-  final String lcovPath = args.isNotEmpty ? args.first : _defaultLcovPath;
+  final CoverageArgs coverageArgs = _parseArgs(args);
+  if (!coverageArgs.isValid) {
+    exitCode = 2;
+    return;
+  }
+
+  final String lcovPath = coverageArgs.lcovPath;
   final File lcovFile = File(lcovPath);
   if (!lcovFile.existsSync()) {
     stderr.writeln('LCOV file not found: $lcovPath');
@@ -77,10 +83,23 @@ void main(List<String> args) {
   stdout.writeln('Date: ${DateTime.now().toIso8601String()}');
   stdout.writeln('LCOV: $lcovPath');
   stdout.writeln('');
+  final double allPercent = _percentValue(allLh, allLf);
+  final double effectivePercent = _percentValue(effectiveLh, effectiveLf);
+
   stdout.writeln('ALL_LIB: $allLh/$allLf (${_formatPercent(allLh, allLf)}%)');
   stdout.writeln(
     'EFFECTIVE_LIB: $effectiveLh/$effectiveLf (${_formatPercent(effectiveLh, effectiveLf)}%)',
   );
+  if (coverageArgs.minAll != null) {
+    stdout.writeln(
+      'ALL_LIB threshold: ${coverageArgs.minAll!.toStringAsFixed(2)}%',
+    );
+  }
+  if (coverageArgs.minEffective != null) {
+    stdout.writeln(
+      'EFFECTIVE_LIB threshold: ${coverageArgs.minEffective!.toStringAsFixed(2)}%',
+    );
+  }
   stdout.writeln('');
   stdout.writeln('Effective scope exclusions (file-level from LCOV):');
   stdout.writeln('  generated (*.g.dart, *.freezed.dart): $generatedCount');
@@ -96,6 +115,84 @@ void main(List<String> args) {
       stdout.writeln('  - $path');
     }
   }
+
+  bool failed = false;
+  if (coverageArgs.minAll != null && allPercent < coverageArgs.minAll!) {
+    stderr.writeln(
+      'ALL_LIB coverage ${_formatPercent(allLh, allLf)}% is below ${coverageArgs.minAll!.toStringAsFixed(2)}%',
+    );
+    failed = true;
+  }
+  if (coverageArgs.minEffective != null &&
+      effectivePercent < coverageArgs.minEffective!) {
+    stderr.writeln(
+      'EFFECTIVE_LIB coverage ${_formatPercent(effectiveLh, effectiveLf)}% is below ${coverageArgs.minEffective!.toStringAsFixed(2)}%',
+    );
+    failed = true;
+  }
+  if (failed) {
+    exitCode = 4;
+  }
+}
+
+class CoverageArgs {
+  const CoverageArgs({
+    required this.lcovPath,
+    required this.isValid,
+    this.minAll,
+    this.minEffective,
+  });
+
+  final String lcovPath;
+  final double? minAll;
+  final double? minEffective;
+  final bool isValid;
+}
+
+CoverageArgs _parseArgs(List<String> args) {
+  String? lcovPath;
+  double? minAll;
+  double? minEffective;
+  bool isValid = true;
+
+  for (final String arg in args) {
+    if (arg.startsWith('--lcov=')) {
+      lcovPath = arg.substring('--lcov='.length);
+      continue;
+    }
+    if (arg.startsWith('--min-all=')) {
+      final String raw = arg.substring('--min-all='.length);
+      final double? parsed = double.tryParse(raw);
+      if (parsed == null) {
+        stderr.writeln('Invalid --min-all value: $raw');
+        isValid = false;
+      } else {
+        minAll = parsed;
+      }
+      continue;
+    }
+    if (arg.startsWith('--min-effective=')) {
+      final String raw = arg.substring('--min-effective='.length);
+      final double? parsed = double.tryParse(raw);
+      if (parsed == null) {
+        stderr.writeln('Invalid --min-effective value: $raw');
+        isValid = false;
+      } else {
+        minEffective = parsed;
+      }
+      continue;
+    }
+    if (!arg.startsWith('--') && lcovPath == null) {
+      lcovPath = arg;
+    }
+  }
+
+  return CoverageArgs(
+    lcovPath: lcovPath ?? _defaultLcovPath,
+    minAll: minAll,
+    minEffective: minEffective,
+    isValid: isValid,
+  );
 }
 
 Map<String, CoverageRecord> _parseLcov(File lcovFile) {
@@ -240,6 +337,13 @@ String _formatPercent(int covered, int total) {
   }
   final double value = (covered * 100.0) / total;
   return value.toStringAsFixed(2);
+}
+
+double _percentValue(int covered, int total) {
+  if (total == 0) {
+    return 0;
+  }
+  return (covered * 100.0) / total;
 }
 
 class CoverageRecord {

@@ -43,6 +43,12 @@ jobs:
       - name: Widget tests
         run: flutter test --tags widget
 
+      - name: Coverage
+        run: flutter test --coverage
+
+      - name: Coverage thresholds
+        run: dart run scripts/coverage_baseline.dart --min-all=90.0
+
       - name: Forbidden pattern checks
         run: dart run scripts/check_forbidden_patterns.dart
 

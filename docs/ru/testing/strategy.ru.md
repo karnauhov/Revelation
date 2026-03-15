@@ -1,7 +1,7 @@
 # Testing Strategy (RU)
 
-Doc-Version: `1.0.1`  
-Last-Updated: `2026-03-14`  
+Doc-Version: `1.0.2`  
+Last-Updated: `2026-03-15`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -19,6 +19,8 @@ dart format --output=none --set-exit-if-changed .
 flutter analyze
 flutter test --exclude-tags widget
 flutter test --tags widget
+flutter test --coverage
+dart run scripts/coverage_baseline.dart --min-all=90.0
 dart run scripts/check_forbidden_patterns.dart
 ```
 
@@ -28,6 +30,7 @@ dart run scripts/check_forbidden_patterns.dart
   - analyze
   - unit tests
   - widget tests
+  - coverage + thresholds
   - forbidden patterns
 - `.github/workflows/integration_smoke.yml`:
   - запускается только через `workflow_dispatch`
