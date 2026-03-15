@@ -1,6 +1,9 @@
 name: Integration Smoke
 
 on:
+  schedule:
+    # Weekly nightly run (Monday 02:00 UTC).
+    - cron: '0 2 * * 1'
   workflow_dispatch:
     inputs:
       reason:
