@@ -46,6 +46,9 @@ jobs:
       - name: Forbidden pattern checks
         run: dart run scripts/check_forbidden_patterns.dart
 
+      - name: Encoding sanity checks
+        run: dart run scripts/check_encoding_sanity.dart
+
   build-windows:
     runs-on: windows-latest
     needs: quality
