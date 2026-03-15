@@ -1,4 +1,4 @@
-# Revelation
+﻿# Revelation
 
 This program has been created to help all Christians, regardless of denomination, better understand book of the Revelation.
 
@@ -33,18 +33,11 @@ Linux: [Snapcraft](https://snapcraft.io/revelation-x)
 - [Матрица управления состоянием](./docs/ru/architecture/state_management_matrix.ru.md)
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
 - [Бэклог оптимизации производительности](./docs/ru/performance/optimization_backlog.ru.md)
+- [Покрытие тестами](./docs/ru/testing/test_coverage_index.ru.md)
 
 ---
 
 <a href="https://www.revelation.website" target="_blank"><img src=".\_art\Sticker.jpg" width="512" height="256" /></a>
 
-## Additional Documentation
-- [Test Coverage Audit Plan (RU)](./docs/ru/testing/test_coverage_audit_plan.ru.md)
-- [Test Coverage Baseline P01 (RU)](./docs/ru/testing/test_coverage_baseline_p01.ru.md)
 
-### Coverage Baseline (P01)
-```bash
-flutter test --coverage
-dart run scripts/coverage_baseline.dart
-```
 

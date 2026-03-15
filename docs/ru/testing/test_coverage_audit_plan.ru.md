@@ -153,10 +153,10 @@
 - expected outcome: module map + gap registry
 - recommended execution order: 2
 - checklist:
-- [ ] Сформировать список production файлов без тест-контракта — завершено, когда есть приоритизированный gap list.
-- [ ] Пометить зоны: `real issue`/`acceptable tradeoff`/`low-value-to-test` — завершено, когда каждый gap имеет класс.
-- [ ] Отметить docs divergence и тип (code/docs/decision) — завершено, когда расхождения классифицированы.
-- [ ] Сформировать ownership map по feature — завершено, когда видно кто и в какой фазе покрывает модуль.
+- [x] Сформировать список production файлов без тест-контракта — завершено, когда есть приоритизированный gap list.
+- [x] Пометить зоны: `real issue`/`acceptable tradeoff`/`low-value-to-test` — завершено, когда каждый gap имеет класс.
+- [x] Отметить docs divergence и тип (code/docs/decision) — завершено, когда расхождения классифицированы.
+- [x] Сформировать ownership map по feature — завершено, когда видно кто и в какой фазе покрывает модуль.
 - deliverables: traceability matrix.
 - exit criteria: нет “слепых зон” без классификации.
 - validation commands: `rg --files test`, `rg --files lib`, `flutter test --coverage`.
