@@ -28,6 +28,7 @@ class SourceItemWidget extends StatelessWidget {
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
     final bodyTextStyle = textTheme.bodyMedium;
+    final sourceLinkSpans = _buildSourceLinkSpans(context);
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -148,12 +149,12 @@ class SourceItemWidget extends StatelessWidget {
                     style: bodyTextStyle,
                   ),
                 ),
-              if (showMore)
+              if (showMore && sourceLinkSpans.isNotEmpty)
                 Text.rich(
                   TextSpan(
                     text: "🌐 ",
                     style: bodyTextStyle,
-                    children: _buildSourceLinkSpans(context),
+                    children: sourceLinkSpans,
                   ),
                 ),
             ],
@@ -189,60 +190,23 @@ class SourceItemWidget extends StatelessWidget {
       color: Theme.of(context).colorScheme.primary,
     );
 
-    if (source.links.isNotEmpty) {
-      final spans = <InlineSpan>[];
-      for (final link in source.links) {
-        final title = _resolveLinkTitle(context, link.role, link.titleOverride);
-        if (title.isEmpty || link.url.isEmpty) {
-          continue;
-        }
-        spans.add(
-          TextSpan(
-            text: '${spans.isEmpty ? '' : ', '}[$title]',
-            style: linkStyle,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () => launchLink(link.url),
-          ),
-        );
+    final spans = <InlineSpan>[];
+    for (final link in source.links) {
+      final title = _resolveLinkTitle(context, link.role, link.titleOverride);
+      if (title.isEmpty || link.url.isEmpty) {
+        continue;
       }
-      return spans;
+      spans.add(
+        TextSpan(
+          text: '${spans.isEmpty ? '' : ', '}[$title]',
+          style: linkStyle,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () => launchLink(link.url),
+        ),
+      );
     }
 
-    return [
-      if (source.link1Title.isNotEmpty)
-        TextSpan(
-          text: "[${source.link1Title}]",
-          style: linkStyle,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              if (source.link1Url.isNotEmpty) {
-                launchLink(source.link1Url);
-              }
-            },
-        ),
-      if (source.link2Title.isNotEmpty)
-        TextSpan(
-          text: ", [${source.link2Title}]",
-          style: linkStyle,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              if (source.link2Url.isNotEmpty) {
-                launchLink(source.link2Url);
-              }
-            },
-        ),
-      if (source.link3Title.isNotEmpty)
-        TextSpan(
-          text: ", [${source.link3Title}]",
-          style: linkStyle,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              if (source.link3Url.isNotEmpty) {
-                launchLink(source.link3Url);
-              }
-            },
-        ),
-    ];
+    return spans;
   }
 
   String _resolveLinkTitle(

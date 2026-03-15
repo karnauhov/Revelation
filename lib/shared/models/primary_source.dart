@@ -14,12 +14,6 @@ class PrimarySource {
   final String found;
   final String classification;
   final String currentLocation;
-  final String link1Title;
-  final String link1Url;
-  final String link2Title;
-  final String link2Url;
-  final String link3Title;
-  final String link3Url;
   final String preview;
   final Uint8List? previewBytes;
   final double maxScale;
@@ -40,12 +34,6 @@ class PrimarySource {
     required this.found,
     required this.classification,
     required this.currentLocation,
-    required this.link1Title,
-    required this.link1Url,
-    required this.link2Title,
-    required this.link2Url,
-    required this.link3Title,
-    required this.link3Url,
     required this.preview,
     this.previewBytes,
     required this.maxScale,
