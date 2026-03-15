@@ -345,10 +345,10 @@
 - expected outcome: контракты ошибок/edge cases в оставшихся модулях
 - recommended execution order: 10
 - checklist:
-- [ ] Settings: persistence/read/write/error branches — завершено, когда настройки устойчивы к ошибкам.
-- [ ] About/Download: load/fail/retry logic — завершено, когда сценарии поведения зафиксированы.
-- [ ] Shared/core utilities (xml, links, diagnostics) — завершено, когда invalid input обработка покрыта.
-- [ ] Исключить network/time зависимости через fakes — завершено, когда тесты полностью локальные.
+- [x] Settings: persistence/read/write/error branches — завершено, когда настройки устойчивы к ошибкам.
+- [x] About/Download: load/fail/retry logic — завершено, когда сценарии поведения зафиксированы.
+- [x] Shared/core utilities (xml, links, diagnostics) — завершено, когда invalid input обработка покрыта.
+- [x] Исключить network/time зависимости через fakes — завершено, когда тесты полностью локальные.
 - deliverables: unit tests for remaining feature/core gaps.
 - exit criteria: критичные utility/remainder зоны больше не 0%.
 - validation commands: `flutter test test/features/settings test/features/about test/features/download test/shared test/core`.
