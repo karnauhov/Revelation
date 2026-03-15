@@ -15,9 +15,5 @@ Future<void> pumpAndSettleSafe(
   Duration step = const Duration(milliseconds: 16),
   Duration timeout = const Duration(seconds: 5),
 }) {
-  return tester.pumpAndSettle(
-    step,
-    EnginePhase.sendSemanticsUpdate,
-    timeout,
-  );
+  return tester.pumpAndSettle(step, EnginePhase.sendSemanticsUpdate, timeout);
 }
