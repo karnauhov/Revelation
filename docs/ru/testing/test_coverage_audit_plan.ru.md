@@ -393,10 +393,10 @@
 - expected outcome: надежные UI contracts ключевых экранов
 - recommended execution order: 12
 - checklist:
-- [ ] Для каждого ключевого экрана закрыть `loading/empty/error/content` — завершено, когда 4 состояния покрыты тестами.
-- [ ] Проверить основные user interactions и side effects — завершено, когда действия дают ожидаемый визуальный/state результат.
-- [ ] Проверить navigation triggers на уровне practical widget scope — завершено, когда переходы инициируются корректно.
-- [ ] Убрать asset-driven недетерминизм через controlled fixtures — завершено, когда тесты стабильны на CI.
+- [x] Для каждого ключевого экрана закрыть `loading/empty/error/content` — завершено, когда 4 состояния покрыты тестами.
+- [x] Проверить основные user interactions и side effects — завершено, когда действия дают ожидаемый визуальный/state результат.
+- [x] Проверить navigation triggers на уровне practical widget scope — завершено, когда переходы инициируются корректно.
+- [x] Убрать asset-driven недетерминизм через controlled fixtures — завершено, когда тесты стабильны на CI.
 - deliverables: widget contract pack for two largest features.
 - exit criteria: screen-level gaps существенно сокращены.
 - validation commands: `flutter test --tags widget test/features/primary_sources test/features/topics`.

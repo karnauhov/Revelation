@@ -154,7 +154,9 @@ void main() {
 
   test('clearSettingsForPage resets cache and persists', () async {
     final repository = _FakePagesRepository(
-      initial: PagesSettings(pages: {'source-1_page-1': 'raw'}),
+      initial: PagesSettings(
+        pages: {'source-1_page-1': PagesSettings.packData()},
+      ),
     );
     final orchestrator = PrimarySourcePageSettingsOrchestrator(repository);
     final source = _buildSource();
