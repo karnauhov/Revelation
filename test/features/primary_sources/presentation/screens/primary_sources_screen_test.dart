@@ -20,6 +20,7 @@ import 'package:revelation/features/primary_sources/presentation/screens/primary
 import 'package:revelation/features/primary_sources/presentation/widgets/source_item.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import '../../../../test_harness/test_harness.dart';
 
 void main() {
   setUp(() async {
@@ -38,9 +39,7 @@ void main() {
       addTearDown(cubit.close);
 
       await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
-
-      await tester.pump();
-      await tester.pump();
+      await pumpFrames(tester, count: 2);
 
       expect(find.byType(ErrorMessage), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
@@ -55,7 +54,7 @@ void main() {
       addTearDown(cubit.close);
 
       await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
-      await tester.pump();
+      await pumpFrames(tester);
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(find.byType(ErrorMessage), findsNothing);
@@ -70,7 +69,7 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await pumpAndSettleSafe(tester);
 
       expect(find.byType(CircularProgressIndicator), findsNothing);
     },
@@ -83,8 +82,8 @@ void main() {
       addTearDown(cubit.close);
 
       await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
-      await tester.pump();
-      await tester.pumpAndSettle();
+      await pumpFrames(tester);
+      await pumpAndSettleSafe(tester);
 
       final context = tester.element(find.byType(PrimarySourcesScreen));
       final l10n = AppLocalizations.of(context)!;
@@ -95,7 +94,7 @@ void main() {
         findsOneWidget,
       );
       await tester.drag(find.byType(Scrollable).first, const Offset(0, -900));
-      await tester.pumpAndSettle();
+      await pumpAndSettleSafe(tester);
 
       expect(
         find.text('${l10n.fragments_primary_sources} (1)'),
@@ -114,8 +113,8 @@ void main() {
       addTearDown(cubit.close);
 
       await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
-      await tester.pump();
-      await tester.pumpAndSettle();
+      await pumpFrames(tester);
+      await pumpAndSettleSafe(tester);
 
       final context = tester.element(find.byType(PrimarySourcesScreen));
       final l10n = AppLocalizations.of(context)!;
@@ -129,7 +128,7 @@ void main() {
       await tester.tap(
         find.text('(${l10n.show_more})', findRichText: true).first,
       );
-      await tester.pump();
+      await pumpFrames(tester);
 
       expect(find.text('(${l10n.hide})', findRichText: true), findsOneWidget);
     },
@@ -139,10 +138,9 @@ void main() {
 Widget _buildPrimarySourcesScreenApp(PrimarySourcesCubit cubit) {
   return BlocProvider<PrimarySourcesCubit>.value(
     value: cubit,
-    child: MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const PrimarySourcesScreen(),
+    child: buildLocalizedTestApp(
+      child: const PrimarySourcesScreen(),
+      withScaffold: false,
     ),
   );
 }

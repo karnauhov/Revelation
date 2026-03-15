@@ -13,9 +13,9 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
-import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
+import '../../../../test_harness/test_harness.dart';
 
 void main() {
   testWidgets(
@@ -218,11 +218,7 @@ void main() {
 }
 
 Widget _buildApp({required Widget child}) {
-  return MaterialApp(
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    supportedLocales: AppLocalizations.supportedLocales,
-    home: Scaffold(body: child),
-  );
+  return buildLocalizedTestApp(child: child);
 }
 
 Widget _buildMediaQueryHost({required Size size, required Widget child}) {

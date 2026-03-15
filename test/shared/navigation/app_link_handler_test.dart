@@ -1,9 +1,9 @@
 @Tags(['widget'])
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import '../../test_harness/test_harness.dart';
 
 void main() {
   setUp(() async {
@@ -18,7 +18,7 @@ void main() {
   });
 
   testWidgets('word link uses explicit onWordTap callback', (tester) async {
-    final context = await _pumpAndGetContext(tester);
+    final context = await pumpContext(tester);
     String? capturedSourceId;
     String? capturedPageName;
     int? capturedWordIndex;
@@ -40,7 +40,7 @@ void main() {
   });
 
   testWidgets('word link falls back to default callback', (tester) async {
-    final context = await _pumpAndGetContext(tester);
+    final context = await pumpContext(tester);
     String? capturedSourceId;
     String? capturedPageName;
     int? capturedWordIndex;
@@ -62,26 +62,10 @@ void main() {
   testWidgets('word link returns false when callbacks are not provided', (
     tester,
   ) async {
-    final context = await _pumpAndGetContext(tester);
+    final context = await pumpContext(tester);
 
     final handled = await handleAppLink(context, 'word:source-c:page-c:2');
 
     expect(handled, isFalse);
   });
-}
-
-Future<BuildContext> _pumpAndGetContext(WidgetTester tester) async {
-  late BuildContext capturedContext;
-  await tester.pumpWidget(
-    MaterialApp(
-      home: Builder(
-        builder: (context) {
-          capturedContext = context;
-          return const SizedBox.shrink();
-        },
-      ),
-    ),
-  );
-  await tester.pump();
-  return capturedContext;
 }

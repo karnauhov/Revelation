@@ -201,10 +201,10 @@
 - expected outcome: переиспользуемый deterministic toolkit
 - recommended execution order: 4
 - checklist:
-- [ ] Выделить повторяемые fake/mock builders из тестов — завершено, когда дубли уменьшены.
-- [ ] Вынести time/async helper utilities для стабильных await flows — завершено, когда исключены wall-clock зависимости.
-- [ ] Добавить стандартный app test wrapper для widget tests — завершено, когда routing/localization setup унифицирован.
-- [ ] Документировать harness usage кратким README в test_harness — завершено, когда новый тест можно писать по шаблону.
+- [x] Выделить повторяемые fake/mock builders из тестов — завершено, когда дубли уменьшены.
+- [x] Вынести time/async helper utilities для стабильных await flows — завершено, когда исключены wall-clock зависимости.
+- [x] Добавить стандартный app test wrapper для widget tests — завершено, когда routing/localization setup унифицирован.
+- [x] Документировать harness usage кратким README в test_harness — завершено, когда новый тест можно писать по шаблону.
 - deliverables: shared harness utilities.
 - exit criteria: новые тесты пишутся с минимумом boilerplate.
 - validation commands: `flutter test --exclude-tags widget`, `flutter test --tags widget`.

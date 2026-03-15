@@ -1,5 +1,4 @@
 @Tags(['widget'])
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
@@ -12,6 +11,7 @@ import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/verse.dart';
+import '../../../../test_harness/test_harness.dart';
 
 void main() {
   test('initial state contains picker entries from service', () {
@@ -27,7 +27,7 @@ void main() {
   });
 
   testWidgets('showCommonInfo switches state to info mode', (tester) async {
-    final context = await _pumpAndGetContext(tester);
+    final context = await pumpLocalizedContext(tester);
     final localizations = AppLocalizations.of(context)!;
     final cubit = PrimarySourceDescriptionCubit(
       descriptionService: _FakeDescriptionContentService(),
@@ -44,7 +44,7 @@ void main() {
   testWidgets(
     'showInfoForWord and navigateSelection move through word indexes',
     (tester) async {
-      final context = await _pumpAndGetContext(tester);
+      final context = await pumpLocalizedContext(tester);
       final localizations = AppLocalizations.of(context)!;
       final source = _buildSource();
       final page = source.pages.first;
@@ -77,7 +77,7 @@ void main() {
   testWidgets(
     'showInfoForStrongNumber and navigateSelection use strong neighbors',
     (tester) async {
-      final context = await _pumpAndGetContext(tester);
+      final context = await pumpLocalizedContext(tester);
       final localizations = AppLocalizations.of(context)!;
       final source = _buildSource();
       final cubit = PrimarySourceDescriptionCubit(
@@ -103,24 +103,6 @@ void main() {
       expect(cubit.state.content, 'strong-11');
     },
   );
-}
-
-Future<BuildContext> _pumpAndGetContext(WidgetTester tester) async {
-  late BuildContext context;
-  await tester.pumpWidget(
-    MaterialApp(
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Builder(
-        builder: (buildContext) {
-          context = buildContext;
-          return const SizedBox.shrink();
-        },
-      ),
-    ),
-  );
-  return context;
 }
 
 class _FakeDescriptionContentService extends DescriptionContentService {

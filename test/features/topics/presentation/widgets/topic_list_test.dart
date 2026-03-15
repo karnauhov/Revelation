@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
-import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
@@ -19,16 +18,16 @@ import 'package:revelation/features/topics/presentation/widgets/topic_list.dart'
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
-import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/app_settings.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
+import '../../../../test_harness/test_harness.dart';
 
 void main() {
   testWidgets('TopicList shows loading indicator while request is pending', (
     tester,
   ) async {
     final settingsCubit = SettingsCubit(
-      _FakeSettingsRepository(
+      FakeSettingsRepository(
         initialSettings: AppSettings(
           selectedLanguage: 'en',
           selectedTheme: 'manuscript',
@@ -48,7 +47,7 @@ void main() {
     addTearDown(cubit.close);
 
     await tester.pumpWidget(_buildApp(cubit));
-    await tester.pump();
+    await pumpFrames(tester);
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(find.byType(ErrorMessage), findsNothing);
@@ -57,7 +56,7 @@ void main() {
       0,
       const AppSuccess<List<TopicInfo>>(<TopicInfo>[]),
     );
-    await tester.pumpAndSettle();
+    await pumpAndSettleSafe(tester);
 
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byType(ErrorMessage), findsNothing);
@@ -67,7 +66,7 @@ void main() {
     tester,
   ) async {
     final settingsCubit = SettingsCubit(
-      _FakeSettingsRepository(
+      FakeSettingsRepository(
         initialSettings: AppSettings(
           selectedLanguage: 'en',
           selectedTheme: 'manuscript',
@@ -90,7 +89,7 @@ void main() {
     addTearDown(cubit.close);
 
     await tester.pumpWidget(_buildApp(cubit));
-    await tester.pumpAndSettle();
+    await pumpAndSettleSafe(tester);
 
     expect(find.byType(ErrorMessage), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
@@ -101,7 +100,7 @@ void main() {
     tester,
   ) async {
     final settingsCubit = SettingsCubit(
-      _FakeSettingsRepository(
+      FakeSettingsRepository(
         initialSettings: AppSettings(
           selectedLanguage: 'en',
           selectedTheme: 'manuscript',
@@ -132,7 +131,7 @@ void main() {
     addTearDown(cubit.close);
 
     await tester.pumpWidget(_buildApp(cubit));
-    await tester.pumpAndSettle();
+    await pumpAndSettleSafe(tester);
 
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byType(ErrorMessage), findsNothing);
@@ -145,11 +144,9 @@ void main() {
 Widget _buildApp(TopicsCatalogCubit cubit) {
   return BlocProvider<TopicsCatalogCubit>.value(
     value: cubit,
-    child: MaterialApp(
+    child: buildLocalizedTestApp(
       locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const Scaffold(body: TopicList()),
+      child: const TopicList(),
     ),
   );
 }
@@ -164,20 +161,6 @@ TopicResource _buildSvgResource() {
       ),
     ),
   );
-}
-
-class _FakeSettingsRepository extends SettingsRepository {
-  _FakeSettingsRepository({required this.initialSettings});
-
-  AppSettings initialSettings;
-
-  @override
-  Future<AppSettings> getSettings() async => initialSettings;
-
-  @override
-  Future<void> saveSettings(AppSettings settings) async {
-    initialSettings = settings;
-  }
 }
 
 class _FixedTopicsRepository extends TopicsRepository {
