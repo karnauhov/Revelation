@@ -32,6 +32,7 @@ Linux: [Snapcraft](https://snapcraft.io/revelation-x)
 - [Границы модулей](./docs/ru/architecture/module-boundaries.ru.md)
 - [Матрица управления состоянием](./docs/ru/architecture/state_management_matrix.ru.md)
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
+- [Бэклог оптимизации производительности](./docs/ru/performance/optimization_backlog.ru.md)
 
 ---
 
