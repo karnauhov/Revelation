@@ -129,10 +129,10 @@
 - expected outcome: baseline report + agreed scope coverage
 - recommended execution order: 1
 - checklist:
-- [ ] Зафиксировать baseline `%` для `ALL_LIB` и `EFFECTIVE_LIB` — завершено, когда оба значения сохранены в артефакте.
-- [ ] Утвердить exclude-list: generated/l10n/barrels/platform glue — завершено, когда список формализован в одном месте.
-- [ ] Согласовать target ladder (например 40→55→70→80→90) — завершено, когда есть этапные thresholds.
-- [ ] Зафиксировать метод расчета в CI/readme для тестов — завершено, когда любой участник может повторить расчет.
+- [x] Зафиксировать baseline `%` для `ALL_LIB` и `EFFECTIVE_LIB` — завершено, когда оба значения сохранены в артефакте.
+- [x] Утвердить exclude-list: generated/l10n/barrels/platform glue — завершено, когда список формализован в одном месте.
+- [x] Согласовать target ladder (например 40→55→70→80→90) — завершено, когда есть этапные thresholds.
+- [x] Зафиксировать метод расчета в CI/readme для тестов — завершено, когда любой участник может повторить расчет.
 - deliverables: baseline coverage report, denominator policy.
 - exit criteria: повторяемый расчет coverage без двусмысленности.
 - validation commands: `flutter test --coverage`, `flutter analyze`.

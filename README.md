@@ -40,4 +40,11 @@ Linux: [Snapcraft](https://snapcraft.io/revelation-x)
 
 ## Additional Documentation
 - [Test Coverage Audit Plan (RU)](./docs/ru/testing/test_coverage_audit_plan.ru.md)
+- [Test Coverage Baseline P01 (RU)](./docs/ru/testing/test_coverage_baseline_p01.ru.md)
+
+### Coverage Baseline (P01)
+```bash
+flutter test --coverage
+dart run scripts/coverage_baseline.dart
+```
 

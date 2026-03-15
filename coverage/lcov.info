@@ -12,12 +12,12 @@ LH:8
 end_of_record
 SF:lib\core\errors\app_failure.dart
 DA:4,5
-DA:16,3
-DA:20,3
-DA:27,3
-DA:31,3
-DA:38,3
-DA:42,3
+DA:16,4
+DA:20,4
+DA:27,4
+DA:31,4
+DA:38,4
+DA:42,4
 DA:49,4
 DA:53,4
 DA:60,0
@@ -206,7 +206,7 @@ DA:15,0
 DA:16,0
 DA:18,0
 DA:23,5
-DA:29,3
+DA:29,4
 LF:9
 LH:3
 end_of_record
@@ -4062,7 +4062,7 @@ LF:71
 LH:69
 end_of_record
 SF:lib\features\topics\presentation\bloc\topic_content_state.dart
-DA:4,3
+DA:4,4
 DA:14,1
 DA:33,1
 DA:43,1
@@ -4096,7 +4096,7 @@ LF:30
 LH:17
 end_of_record
 SF:lib\features\primary_sources\application\orchestrators\page_settings_orchestrator.dart
-DA:9,2
+DA:9,3
 DA:51,3
 DA:56,0
 DA:60,0
@@ -4272,7 +4272,7 @@ LF:54
 LH:50
 end_of_record
 SF:lib\features\primary_sources\presentation\bloc\primary_source_viewport_state.dart
-DA:5,4
+DA:5,5
 DA:61,2
 DA:79,2
 DA:80,2
@@ -4329,7 +4329,7 @@ LF:53
 LH:36
 end_of_record
 SF:lib\shared\models\zoom_status.dart
-DA:8,3
+DA:8,4
 DA:14,2
 DA:17,1
 DA:18,3
@@ -4712,8 +4712,8 @@ LF:21
 LH:5
 end_of_record
 SF:lib\features\primary_sources\presentation\screens\primary_source_screen.dart
-DA:33,2
-DA:40,2
+DA:33,3
+DA:40,3
 DA:49,0
 DA:56,0
 DA:57,0
@@ -5438,7 +5438,7 @@ LF:25
 LH:22
 end_of_record
 SF:lib\features\about\presentation\bloc\about_state.dart
-DA:4,2
+DA:4,3
 DA:15,1
 DA:36,1
 DA:47,1
@@ -5806,7 +5806,7 @@ LF:57
 LH:0
 end_of_record
 SF:lib\features\about\presentation\widgets\institution_list.dart
-DA:10,2
+DA:10,3
 DA:12,0
 DA:14,0
 DA:20,0
@@ -5886,7 +5886,7 @@ LF:48
 LH:0
 end_of_record
 SF:lib\features\about\presentation\widgets\library_list.dart
-DA:10,2
+DA:10,3
 DA:12,0
 DA:14,0
 DA:20,0
@@ -5945,7 +5945,7 @@ LF:28
 LH:0
 end_of_record
 SF:lib\features\about\presentation\widgets\recommended_list.dart
-DA:10,2
+DA:10,3
 DA:12,0
 DA:14,0
 DA:20,0
@@ -5998,7 +5998,7 @@ DA:67,5
 DA:68,10
 DA:72,5
 DA:73,5
-DA:1158,2
+DA:1158,3
 DA:1160,5
 DA:1162,10
 DA:1165,5
@@ -6390,7 +6390,7 @@ LF:55
 LH:0
 end_of_record
 SF:lib\features\primary_sources\application\orchestrators\image_loading_orchestrator.dart
-DA:11,4
+DA:11,5
 DA:27,3
 DA:30,3
 DA:34,0
@@ -7561,7 +7561,7 @@ LF:8
 LH:8
 end_of_record
 SF:lib\features\primary_sources\presentation\bloc\primary_source_detail_orchestration_state.dart
-DA:5,2
+DA:5,3
 DA:9,0
 DA:12,0
 DA:15,0
@@ -7569,7 +7569,7 @@ LF:4
 LH:1
 end_of_record
 SF:lib\features\primary_sources\presentation\bloc\primary_source_page_settings_state.dart
-DA:2,4
+DA:2,5
 DA:34,2
 DA:44,2
 DA:45,2
@@ -9964,7 +9964,7 @@ LF:74
 LH:0
 end_of_record
 SF:lib\features\topics\presentation\widgets\topic_list.dart
-DA:10,2
+DA:10,3
 DA:12,1
 DA:14,2
 DA:15,1
