@@ -1,13 +1,29 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 
 class AudioController {
-  static final AudioController _instance = AudioController._internal();
-  AudioController._internal();
+  static AudioController _instance = AudioController._internal();
+  AudioController._internal({AudioPlayer? soundPlayer})
+    : _soundPlayer = soundPlayer ?? AudioPlayer();
   factory AudioController() => _instance;
 
-  final AudioPlayer _soundPlayer = AudioPlayer();
+  @visibleForTesting
+  AudioController.forTest({AudioPlayer? soundPlayer})
+    : _soundPlayer = soundPlayer ?? AudioPlayer();
+
+  @visibleForTesting
+  static void setInstanceForTest(AudioController controller) {
+    _instance = controller;
+  }
+
+  @visibleForTesting
+  static void resetForTest() {
+    _instance = AudioController._internal();
+  }
+
+  final AudioPlayer _soundPlayer;
   final _sources = <String, Source>{};
   bool Function() _isSoundEnabled = _soundDisabledByDefault;
 
