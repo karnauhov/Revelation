@@ -443,9 +443,10 @@
 - recommended execution order: 14
 - checklist:
 - [ ] Startup smoke через реальный app entry path — завершено, когда приложение поднимается в integration smoke.
-- [ ] Критичная навигация по 2-3 главным маршрутам — завершено, когда сценарии проходят end-to-end.
-- [ ] Feature open/load/render sanity (topics + primary sources + settings/about/download минимум) — завершено, когда ключевые экраны доступны.
-- [ ] Ограничить runtime smoke suite по времени — завершено, когда smoke стабильно быстрый.
+- [x] Startup smoke через реальный app entry path — завершено, когда приложение поднимается в integration smoke.
+- [x] Критичная навигация по 2-3 главным маршрутам — завершено, когда сценарии проходят end-to-end.
+- [x] Feature open/load/render sanity (topics + primary sources + settings/about/download минимум) — завершено, когда ключевые экраны доступны.
+- [x] Ограничить runtime smoke suite по времени — завершено, когда smoke стабильно быстрый.
 - deliverables: expanded integration smoke suite.
 - exit criteria: weekly/manual smoke устойчиво проходит.
 - validation commands: `flutter test integration_test/smoke`.
