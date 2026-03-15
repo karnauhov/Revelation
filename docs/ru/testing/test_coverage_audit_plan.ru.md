@@ -297,10 +297,10 @@
 - expected outcome: надежные поведенческие контракты data/application слоя
 - recommended execution order: 8
 - checklist:
-- [ ] Покрыть repositories happy/error/empty cases — завершено, когда поведение при каждом исходе проверено.
-- [ ] Покрыть parsers/mappers/normalizers invalid input paths — завершено, когда bad data не падает неожиданно.
-- [ ] Покрыть orchestration сервисы и reference resolution — завершено, когда side effects проверяются контрактно.
-- [ ] Добавить regression кейсы на известные fragile места detail flow — завершено, когда сценарии воспроизводимы тестом.
+- [x] Покрыть repositories happy/error/empty cases — завершено, когда поведение при каждом исходе проверено.
+- [x] Покрыть parsers/mappers/normalizers invalid input paths — завершено, когда bad data не падает неожиданно.
+- [x] Покрыть orchestration сервисы и reference resolution — завершено, когда side effects проверяются контрактно.
+- [x] Добавить regression кейсы на известные fragile места detail flow — завершено, когда сценарии воспроизводимы тестом.
 - deliverables: primary_sources unit pack.
 - exit criteria: zero/near-zero файлы модуля выходят из красной зоны.
 - validation commands: `flutter test test/features/primary_sources`.
