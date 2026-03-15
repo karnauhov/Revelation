@@ -230,6 +230,86 @@ void main() {
     expect(matrix.storage[12], closeTo(17, 0.001));
     expect(matrix.storage[13], closeTo(23, 0.001));
   });
+
+  test(
+    'rapid transform updates trigger one debounced save side effect',
+    () async {
+      final source = _buildSource();
+      final page = source.pages.first;
+      final imageBytes = Uint8List.fromList([5, 6, 7]);
+
+      final imageCubit = PrimarySourceImageCubit(
+        source: source,
+        isWeb: false,
+        isMobileWeb: false,
+        imageLoadingOrchestrator: _FakeImageLoadingOrchestrator(
+          detectLocalPageAvailabilityImpl:
+              ({required pages, required isWeb}) async => <String, bool?>{
+                'p1.png': true,
+                'p2.png': true,
+              },
+          loadPageImageImpl:
+              ({
+                required page,
+                required sourceHashCode,
+                required isWeb,
+                required isMobileWeb,
+                required isReload,
+                previousPageLoaded,
+              }) async => PageImageLoadResult(
+                contentAction: ImageContentAction.replace,
+                imageData: imageBytes,
+                imageName: '${sourceHashCode}_$page',
+                pageLoaded: true,
+                refreshError: false,
+              ),
+        ),
+        autoInitialize: false,
+      );
+      final pageSettingsOrchestrator = _FakePageSettingsOrchestrator();
+      final pageSettingsCubit = PrimarySourcePageSettingsCubit(
+        pageSettingsOrchestrator,
+      );
+      final descriptionCubit = PrimarySourceDescriptionCubit();
+      final sessionCubit = PrimarySourceSessionCubit(source: source);
+      final viewportCubit = PrimarySourceViewportCubit();
+      final cubit = PrimarySourceDetailOrchestrationCubit(
+        source: source,
+        imageCubit: imageCubit,
+        pageSettingsCubit: pageSettingsCubit,
+        descriptionCubit: descriptionCubit,
+        sessionCubit: sessionCubit,
+        viewportCubit: viewportCubit,
+      );
+      addTearDown(cubit.close);
+      addTearDown(imageCubit.close);
+      addTearDown(pageSettingsCubit.close);
+      addTearDown(descriptionCubit.close);
+      addTearDown(sessionCubit.close);
+      addTearDown(viewportCubit.close);
+
+      sessionCubit.setSelectedPage(page);
+      await cubit.loadImage(page.image);
+      viewportCubit.setScaleAndPositionRestored(true);
+
+      fakeAsync((async) {
+        cubit.imageController.transformationController.value =
+            Matrix4.identity()..setTranslationRaw(10.0, 0.0, 0.0);
+        async.elapse(const Duration(milliseconds: 300));
+        cubit.imageController.transformationController.value =
+            Matrix4.identity()..setTranslationRaw(20.0, 0.0, 0.0);
+        async.elapse(const Duration(milliseconds: 300));
+        cubit.imageController.transformationController.value =
+            Matrix4.identity()..setTranslationRaw(30.0, 0.0, 0.0);
+
+        expect(pageSettingsOrchestrator.saveCallCount, 0);
+        async.elapse(const Duration(milliseconds: 999));
+        expect(pageSettingsOrchestrator.saveCallCount, 0);
+        async.elapse(const Duration(milliseconds: 1));
+        expect(pageSettingsOrchestrator.saveCallCount, 1);
+      });
+    },
+  );
 }
 
 class _FakeImageLoadingOrchestrator
@@ -287,6 +367,8 @@ class _FakePageSettingsOrchestrator
     extends PrimarySourcePageSettingsOrchestrator {
   _FakePageSettingsOrchestrator() : super(PagesRepository());
 
+  int saveCallCount = 0;
+
   @override
   Future<PageSettingsState> loadSettingsForPage({
     required PrimarySource source,
@@ -305,6 +387,26 @@ class _FakePageSettingsOrchestrator
       showStrongNumbers: false,
       showVerseNumbers: true,
     );
+  }
+
+  @override
+  String saveSettingsForPage({
+    required PrimarySource source,
+    required model.Page? selectedPage,
+    required bool scaleAndPositionRestored,
+    required double posX,
+    required double posY,
+    required double scale,
+    required bool isNegative,
+    required bool isMonochrome,
+    required double brightness,
+    required double contrast,
+    required bool showWordSeparators,
+    required bool showStrongNumbers,
+    required bool showVerseNumbers,
+  }) {
+    saveCallCount++;
+    return 'saved-raw';
   }
 }
 

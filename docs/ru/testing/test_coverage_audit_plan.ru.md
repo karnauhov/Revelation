@@ -273,10 +273,10 @@
 - expected outcome: стандартизированный набор high-risk regression tests
 - recommended execution order: 7
 - checklist:
-- [ ] Для ключевых Cubit добавить `latest-request-wins` — завершено, когда stale responses игнорируются тестами.
-- [ ] Добавить `close-before-complete` для async flows — завершено, когда нет emit after close.
-- [ ] Проверить side-effect call counts при rapid-switch — завершено, когда нет дублей вызовов.
-- [ ] Зафиксировать retry/reopen contracts — завершено, когда повторные открытия не ломают state.
+- [x] Для ключевых Cubit добавить `latest-request-wins` — завершено, когда stale responses игнорируются тестами.
+- [x] Добавить `close-before-complete` для async flows — завершено, когда нет emit after close.
+- [x] Проверить side-effect call counts при rapid-switch — завершено, когда нет дублей вызовов.
+- [x] Зафиксировать retry/reopen contracts — завершено, когда повторные открытия не ломают state.
 - deliverables: high-risk cubit regression suite.
 - exit criteria: high-risk async class закрыт по ключевым модулям.
 - validation commands: `flutter test test/features/**/presentation/bloc`.

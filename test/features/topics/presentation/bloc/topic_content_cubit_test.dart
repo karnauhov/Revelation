@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -193,6 +194,88 @@ void main() {
     expect(result, isA<AppFailureResult<TopicResource?>>());
     expect(repository.resourceRequests, isEmpty);
   });
+
+  test('loadForLanguage ignores stale result from older request', () async {
+    final settingsCubit = SettingsCubit(
+      _FakeSettingsRepository(initialSettings: _buildSettings(language: ' ')),
+    );
+    addTearDown(settingsCubit.close);
+    await settingsCubit.loadSettings();
+
+    final repository = _ControllableTopicsRepository();
+    final cubit = TopicContentCubit(
+      topicsRepository: repository,
+      settingsCubit: settingsCubit,
+      route: 'intro',
+      name: 'Preset Name',
+      description: 'Preset Description',
+    );
+    addTearDown(cubit.close);
+
+    await _flushAsync();
+
+    final firstLoad = cubit.loadForLanguage('en');
+    await _flushAsync();
+    final secondLoad = cubit.loadForLanguage('ru');
+    await _flushAsync();
+
+    repository.completeMarkdown(
+      requestKey: 'intro|ru',
+      result: const AppSuccess<String>('## RU markdown'),
+    );
+    await secondLoad;
+    await _flushAsync();
+
+    expect(cubit.state.language, 'ru');
+    expect(cubit.state.markdown, '## RU markdown');
+    expect(cubit.state.failure, isNull);
+
+    repository.completeMarkdown(
+      requestKey: 'intro|en',
+      result: const AppSuccess<String>('## EN stale markdown'),
+    );
+    await firstLoad;
+    await _flushAsync();
+
+    expect(cubit.state.language, 'ru');
+    expect(cubit.state.markdown, '## RU markdown');
+    expect(cubit.state.failure, isNull);
+    expect(repository.markdownRequests, <String>['intro|en', 'intro|ru']);
+  });
+
+  test(
+    'loadForLanguage returns safely when cubit closes before request completes',
+    () async {
+      final settingsCubit = SettingsCubit(
+        _FakeSettingsRepository(initialSettings: _buildSettings(language: ' ')),
+      );
+      addTearDown(settingsCubit.close);
+      await settingsCubit.loadSettings();
+
+      final repository = _ControllableTopicsRepository();
+      final cubit = TopicContentCubit(
+        topicsRepository: repository,
+        settingsCubit: settingsCubit,
+        route: 'intro',
+        name: 'Preset Name',
+        description: 'Preset Description',
+      );
+
+      await _flushAsync();
+      final loadFuture = cubit.loadForLanguage('ru');
+      await _flushAsync();
+      await cubit.close();
+
+      repository.completeMarkdown(
+        requestKey: 'intro|ru',
+        result: const AppSuccess<String>('## Late markdown'),
+      );
+      await loadFuture;
+
+      expect(cubit.isClosed, isTrue);
+      expect(cubit.state.markdown, isEmpty);
+    },
+  );
 }
 
 Future<void> _flushAsync() async {
@@ -275,6 +358,54 @@ class _FakeTopicsRepository extends TopicsRepository {
         const AppFailureResult<TopicResource?>(
           AppFailure.notFound('No fake common resource configured.'),
         );
+  }
+}
+
+class _ControllableTopicsRepository extends TopicsRepository {
+  _ControllableTopicsRepository() : super(dataSource: _NoopTopicsDataSource());
+
+  final Map<String, Completer<AppResult<String>>> _markdownByRequestKey =
+      <String, Completer<AppResult<String>>>{};
+  final List<String> markdownRequests = <String>[];
+
+  @override
+  Future<AppResult<String>> getArticleMarkdown({
+    required String route,
+    required String language,
+  }) {
+    final requestKey = '$route|$language';
+    markdownRequests.add(requestKey);
+    final completer = _markdownByRequestKey.putIfAbsent(
+      requestKey,
+      () => Completer<AppResult<String>>(),
+    );
+    return completer.future;
+  }
+
+  @override
+  Future<AppResult<TopicInfo?>> getTopicByRoute({
+    required String route,
+    required String language,
+  }) async {
+    return const AppSuccess<TopicInfo?>(null);
+  }
+
+  @override
+  Future<AppResult<TopicResource?>> getCommonResource(String key) async {
+    return const AppSuccess<TopicResource?>(null);
+  }
+
+  void completeMarkdown({
+    required String requestKey,
+    required AppResult<String> result,
+  }) {
+    final completer = _markdownByRequestKey[requestKey];
+    if (completer == null) {
+      throw StateError('No pending markdown request for key: $requestKey');
+    }
+    if (!completer.isCompleted) {
+      completer.complete(result);
+    }
   }
 }
 

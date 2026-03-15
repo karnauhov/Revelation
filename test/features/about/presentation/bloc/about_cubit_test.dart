@@ -89,6 +89,37 @@ void main() {
       expect(changelogLoaderCalled, isFalse);
     },
   );
+
+  test('load supports retry after initial failure', () async {
+    var attempts = 0;
+    final cubit = AboutCubit(
+      autoLoad: false,
+      packageInfoLoader: () async {
+        attempts++;
+        if (attempts == 1) {
+          throw StateError('forced first attempt failure');
+        }
+        return _buildPackageInfo(version: '2.0.0', buildNumber: '99');
+      },
+      changelogLoader: () async => '# Retry success',
+    );
+    addTearDown(cubit.close);
+
+    await cubit.load();
+    expect(cubit.state.isLoading, isFalse);
+    expect(
+      cubit.state.failure,
+      const AppFailure.dataSource('Unable to load about screen data.'),
+    );
+
+    await cubit.load();
+
+    expect(cubit.state.isLoading, isFalse);
+    expect(cubit.state.failure, isNull);
+    expect(cubit.state.appVersion, '2.0.0');
+    expect(cubit.state.buildNumber, '99');
+    expect(cubit.state.changelog, '# Retry success');
+  });
 }
 
 PackageInfo _buildPackageInfo({

@@ -154,6 +154,52 @@ void main() {
     expect(cubit.state.full.length, 1);
     expect(cubit.state.full.first.id, 'fresh');
   });
+
+  test('loadPrimarySources supports retry after failure', () async {
+    final repository = _ControlledPrimarySourcesRepository();
+    final cubit = PrimarySourcesCubit(repository);
+    addTearDown(cubit.close);
+
+    final firstLoad = cubit.loadPrimarySources();
+    await _flushAsync();
+    repository.completeRequest(
+      0,
+      const AppFailureResult<PrimarySourcesLoadResult>(
+        AppFailure.dataSource('forced first failure'),
+      ),
+    );
+    await firstLoad;
+    await _flushAsync();
+
+    expect(cubit.state.isLoading, isFalse);
+    expect(cubit.state.hasError, isTrue);
+    expect(
+      cubit.state.failure,
+      const AppFailure.dataSource('forced first failure'),
+    );
+
+    final retryLoad = cubit.loadPrimarySources();
+    await _flushAsync();
+    repository.completeRequest(
+      1,
+      AppSuccess<PrimarySourcesLoadResult>(
+        PrimarySourcesLoadResult(
+          fullPrimarySources: [_buildSource('retry-fresh')],
+          significantPrimarySources: const [],
+          fragmentsPrimarySources: const [],
+        ),
+      ),
+    );
+    await retryLoad;
+    await _flushAsync();
+
+    expect(cubit.state.isLoading, isFalse);
+    expect(cubit.state.hasError, isFalse);
+    expect(cubit.state.failure, isNull);
+    expect(cubit.state.full.map((source) => source.id), <String>[
+      'retry-fresh',
+    ]);
+  });
 }
 
 Future<void> _flushAsync() async {
