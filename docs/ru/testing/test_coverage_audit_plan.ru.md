@@ -321,10 +321,10 @@
 - expected outcome: стабильное поведение catalog/content data logic
 - recommended execution order: 9
 - checklist:
-- [ ] Покрыть repository branches (success/error/empty) — завершено, когда нет непроверенных веток.
-- [ ] Покрыть маппинг/сортировку/фильтрацию — завершено, когда бизнес-правила зафиксированы.
-- [ ] Добавить invalid payload tests — завершено, когда defensive handling проверен.
-- [ ] Добавить regression tests для refresh/switch scenarios — завершено, когда race-кейсы закрыты.
+- [x] Покрыть repository branches (success/error/empty) — завершено, когда нет непроверенных веток.
+- [x] Покрыть маппинг/сортировку/фильтрацию — завершено, когда бизнес-правила зафиксированы.
+- [x] Добавить invalid payload tests — завершено, когда defensive handling проверен.
+- [x] Добавить regression tests для refresh/switch scenarios — завершено, когда race-кейсы закрыты.
 - deliverables: topics unit pack.
 - exit criteria: data/application coverage модуля заметно поднят.
 - validation commands: `flutter test test/features/topics`.
