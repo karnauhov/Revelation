@@ -10,22 +10,24 @@ import 'package:revelation/infra/db/localized/db_localized.dart'
     as localized_db;
 
 void main() {
-  test('loadGroupedSourcesResult returns failure when not initialized',
-      () async {
-    final repository = PrimarySourcesDbRepository(
-      dataSource: _FakePrimarySourcesDataSource(isInitialized: false),
-    );
+  test(
+    'loadGroupedSourcesResult returns failure when not initialized',
+    () async {
+      final repository = PrimarySourcesDbRepository(
+        dataSource: _FakePrimarySourcesDataSource(isInitialized: false),
+      );
 
-    final result = await repository.loadGroupedSourcesResult();
+      final result = await repository.loadGroupedSourcesResult();
 
-    expect(result, isA<AppFailureResult<PrimarySourcesLoadResult>>());
-    expect(
-      (result as AppFailureResult<PrimarySourcesLoadResult>).error,
-      const AppFailure.dataSource(
-        'Primary sources data is not initialized in local database.',
-      ),
-    );
-  });
+      expect(result, isA<AppFailureResult<PrimarySourcesLoadResult>>());
+      expect(
+        (result as AppFailureResult<PrimarySourcesLoadResult>).error,
+        const AppFailure.dataSource(
+          'Primary sources data is not initialized in local database.',
+        ),
+      );
+    },
+  );
 
   test('getAllSourcesSync returns empty when not initialized', () {
     final repository = PrimarySourcesDbRepository(

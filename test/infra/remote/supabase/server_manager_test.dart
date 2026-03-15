@@ -29,12 +29,14 @@ void main() {
     expect(result, isNull);
   });
 
-  test('getLastUpdateFileFromServer returns null when not initialized',
-      () async {
-    final manager = ServerManager();
+  test(
+    'getLastUpdateFileFromServer returns null when not initialized',
+    () async {
+      final manager = ServerManager();
 
-    final result = await manager.getLastUpdateFileFromServer('repo', 'file');
+      final result = await manager.getLastUpdateFileFromServer('repo', 'file');
 
-    expect(result, isNull);
-  });
+      expect(result, isNull);
+    },
+  );
 }

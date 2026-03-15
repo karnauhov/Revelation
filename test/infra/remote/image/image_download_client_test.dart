@@ -5,22 +5,25 @@ import 'package:revelation/infra/remote/image/image_download_client.dart';
 import 'package:revelation/infra/remote/supabase/server_manager.dart';
 
 void main() {
-  test('ServerManagerImageDownloadClient delegates to server manager',
-      () async {
-    final bytes = Uint8List.fromList([1, 2, 3]);
-    final serverManager = _FakeServerManager()..response = bytes;
-    final client =
-        ServerManagerImageDownloadClient(serverManager: serverManager);
+  test(
+    'ServerManagerImageDownloadClient delegates to server manager',
+    () async {
+      final bytes = Uint8List.fromList([1, 2, 3]);
+      final serverManager = _FakeServerManager()..response = bytes;
+      final client = ServerManagerImageDownloadClient(
+        serverManager: serverManager,
+      );
 
-    final result = await client.downloadImage(
-      page: 'repo/page.png',
-      isMobileWeb: true,
-    );
+      final result = await client.downloadImage(
+        page: 'repo/page.png',
+        isMobileWeb: true,
+      );
 
-    expect(result, bytes);
-    expect(serverManager.lastPage, 'repo/page.png');
-    expect(serverManager.lastIsMobileWeb, isTrue);
-  });
+      expect(result, bytes);
+      expect(serverManager.lastPage, 'repo/page.png');
+      expect(serverManager.lastIsMobileWeb, isTrue);
+    },
+  );
 }
 
 class _FakeServerManager implements ServerManager {

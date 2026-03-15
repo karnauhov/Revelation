@@ -23,9 +23,7 @@ void main() {
       greekDescs: const [localized_db.GreekDesc(id: 1, desc: 'Desc')],
     );
 
-    final dataSource = DbManagerDescriptionDataSource(
-      databaseGateway: gateway,
-    );
+    final dataSource = DbManagerDescriptionDataSource(databaseGateway: gateway);
 
     expect(dataSource.isInitialized, isTrue);
     expect(dataSource.languageCode, 'uk');

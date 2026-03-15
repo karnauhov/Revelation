@@ -19,21 +19,23 @@ void main() {
     expect(repository.loadCalls, 1);
   });
 
-  test('loadSettingsForPage returns defaults when raw settings empty',
-      () async {
-    final repository = _FakePagesRepository(
-      initial: PagesSettings(pages: {'source-1_page-1': ''}),
-    );
-    final orchestrator = PrimarySourcePageSettingsOrchestrator(repository);
-    final source = _buildSource();
+  test(
+    'loadSettingsForPage returns defaults when raw settings empty',
+    () async {
+      final repository = _FakePagesRepository(
+        initial: PagesSettings(pages: {'source-1_page-1': ''}),
+      );
+      final orchestrator = PrimarySourcePageSettingsOrchestrator(repository);
+      final source = _buildSource();
 
-    final result = await orchestrator.loadSettingsForPage(
-      source: source,
-      selectedPage: source.pages.first,
-    );
+      final result = await orchestrator.loadSettingsForPage(
+        source: source,
+        selectedPage: source.pages.first,
+      );
 
-    expect(result, PageSettingsState.defaults);
-  });
+      expect(result, PageSettingsState.defaults);
+    },
+  );
 
   test('loadSettingsForPage unpacks stored settings', () async {
     final raw = PagesSettings.packData(
@@ -72,52 +74,54 @@ void main() {
     expect(result.showVerseNumbers, isFalse);
   });
 
-  test('saveSettingsForPage requires cached settings and restored state',
-      () async {
-    final repository = _FakePagesRepository();
-    final orchestrator = PrimarySourcePageSettingsOrchestrator(repository);
-    final source = _buildSource();
+  test(
+    'saveSettingsForPage requires cached settings and restored state',
+    () async {
+      final repository = _FakePagesRepository();
+      final orchestrator = PrimarySourcePageSettingsOrchestrator(repository);
+      final source = _buildSource();
 
-    final missingCache = orchestrator.saveSettingsForPage(
-      source: source,
-      selectedPage: source.pages.first,
-      scaleAndPositionRestored: true,
-      posX: 1,
-      posY: 2,
-      scale: 1,
-      isNegative: false,
-      isMonochrome: false,
-      brightness: 0,
-      contrast: 100,
-      showWordSeparators: false,
-      showStrongNumbers: false,
-      showVerseNumbers: true,
-    );
-    expect(missingCache, '');
-    expect(repository.saveCalls, 0);
+      final missingCache = orchestrator.saveSettingsForPage(
+        source: source,
+        selectedPage: source.pages.first,
+        scaleAndPositionRestored: true,
+        posX: 1,
+        posY: 2,
+        scale: 1,
+        isNegative: false,
+        isMonochrome: false,
+        brightness: 0,
+        contrast: 100,
+        showWordSeparators: false,
+        showStrongNumbers: false,
+        showVerseNumbers: true,
+      );
+      expect(missingCache, '');
+      expect(repository.saveCalls, 0);
 
-    await orchestrator.loadSettingsForPage(
-      source: source,
-      selectedPage: source.pages.first,
-    );
+      await orchestrator.loadSettingsForPage(
+        source: source,
+        selectedPage: source.pages.first,
+      );
 
-    final notRestored = orchestrator.saveSettingsForPage(
-      source: source,
-      selectedPage: source.pages.first,
-      scaleAndPositionRestored: false,
-      posX: 1,
-      posY: 2,
-      scale: 1,
-      isNegative: false,
-      isMonochrome: false,
-      brightness: 0,
-      contrast: 100,
-      showWordSeparators: false,
-      showStrongNumbers: false,
-      showVerseNumbers: true,
-    );
-    expect(notRestored, '');
-  });
+      final notRestored = orchestrator.saveSettingsForPage(
+        source: source,
+        selectedPage: source.pages.first,
+        scaleAndPositionRestored: false,
+        posX: 1,
+        posY: 2,
+        scale: 1,
+        isNegative: false,
+        isMonochrome: false,
+        brightness: 0,
+        contrast: 100,
+        showWordSeparators: false,
+        showStrongNumbers: false,
+        showVerseNumbers: true,
+      );
+      expect(notRestored, '');
+    },
+  );
 
   test('saveSettingsForPage persists and returns raw settings', () async {
     final repository = _FakePagesRepository(
@@ -178,7 +182,7 @@ void main() {
 
 class _FakePagesRepository extends PagesRepository {
   _FakePagesRepository({PagesSettings? initial})
-      : _settings = initial ?? PagesSettings(pages: {});
+    : _settings = initial ?? PagesSettings(pages: {});
 
   PagesSettings _settings;
   int loadCalls = 0;
@@ -215,11 +219,7 @@ PrimarySource _buildSource() {
     maxScale: 1,
     isMonochrome: false,
     pages: [
-      model.Page(
-        name: 'page-1',
-        content: 'content',
-        image: 'page-1.png',
-      ),
+      model.Page(name: 'page-1', content: 'content', image: 'page-1.png'),
     ],
     attributes: const [],
     permissionsReceived: true,

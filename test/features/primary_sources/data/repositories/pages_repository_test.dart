@@ -18,9 +18,7 @@ void main() {
 
   test('savePages persists and can be read back', () async {
     final repository = PagesRepository();
-    final settings = PagesSettings(
-      pages: {'source-1_page-1': 'raw-settings'},
-    );
+    final settings = PagesSettings(pages: {'source-1_page-1': 'raw-settings'});
 
     await repository.savePages(settings);
     final loaded = await repository.getPages();

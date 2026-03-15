@@ -5,9 +5,8 @@ import 'package:xml/xml.dart';
 
 void main() {
   test('parseLibraries returns parsed entries', () async {
-    final bundle = _FakeAssetBundle(
-      {
-        'libraries.xml': '''
+    final bundle = _FakeAssetBundle({
+      'libraries.xml': '''
 <root>
   <library>
     <name>Lib</name>
@@ -18,8 +17,7 @@ void main() {
   </library>
 </root>
 ''',
-      },
-    );
+    });
 
     final libraries = await parseLibraries(bundle, 'libraries.xml');
 
@@ -33,9 +31,8 @@ void main() {
   });
 
   test('parseLibraries throws for missing required tags', () async {
-    final bundle = _FakeAssetBundle(
-      {
-        'libraries.xml': '''
+    final bundle = _FakeAssetBundle({
+      'libraries.xml': '''
 <root>
   <library>
     <name>Lib</name>
@@ -43,8 +40,7 @@ void main() {
   </library>
 </root>
 ''',
-      },
-    );
+    });
 
     expect(
       () => parseLibraries(bundle, 'libraries.xml'),
@@ -59,9 +55,9 @@ void main() {
   });
 
   test('parseLibraries rethrows XML exceptions', () async {
-    final bundle = _FakeAssetBundle(
-      {'libraries.xml': '<root><library></root>'},
-    );
+    final bundle = _FakeAssetBundle({
+      'libraries.xml': '<root><library></root>',
+    });
 
     expect(
       () => parseLibraries(bundle, 'libraries.xml'),
@@ -70,10 +66,7 @@ void main() {
   });
 
   test('parseLibraries rethrows platform exceptions', () async {
-    final bundle = _FakeAssetBundle(
-      const {},
-      throwPlatformException: true,
-    );
+    final bundle = _FakeAssetBundle(const {}, throwPlatformException: true);
 
     expect(
       () => parseLibraries(bundle, 'libraries.xml'),
@@ -82,9 +75,8 @@ void main() {
   });
 
   test('parseInstitutions parses sources map', () async {
-    final bundle = _FakeAssetBundle(
-      {
-        'institutions.xml': '''
+    final bundle = _FakeAssetBundle({
+      'institutions.xml': '''
 <root>
   <institution>
     <name>Inst</name>
@@ -99,8 +91,7 @@ void main() {
   </institution>
 </root>
 ''',
-      },
-    );
+    });
 
     final institutions = await parseInstitutions(bundle, 'institutions.xml');
 
@@ -113,9 +104,8 @@ void main() {
   });
 
   test('parseInstitutions throws for missing required tags', () async {
-    final bundle = _FakeAssetBundle(
-      {
-        'institutions.xml': '''
+    final bundle = _FakeAssetBundle({
+      'institutions.xml': '''
 <root>
   <institution>
     <name>Inst</name>
@@ -123,8 +113,7 @@ void main() {
   </institution>
 </root>
 ''',
-      },
-    );
+    });
 
     expect(
       () => parseInstitutions(bundle, 'institutions.xml'),
@@ -139,9 +128,8 @@ void main() {
   });
 
   test('parseRecommended parses entries', () async {
-    final bundle = _FakeAssetBundle(
-      {
-        'recommended.xml': '''
+    final bundle = _FakeAssetBundle({
+      'recommended.xml': '''
 <root>
   <recommendation>
     <name>Rec</name>
@@ -150,8 +138,7 @@ void main() {
   </recommendation>
 </root>
 ''',
-      },
-    );
+    });
 
     final items = await parseRecommended(bundle, 'recommended.xml');
 
@@ -163,17 +150,15 @@ void main() {
   });
 
   test('parseRecommended throws for missing required tags', () async {
-    final bundle = _FakeAssetBundle(
-      {
-        'recommended.xml': '''
+    final bundle = _FakeAssetBundle({
+      'recommended.xml': '''
 <root>
   <recommendation>
     <name>Rec</name>
   </recommendation>
 </root>
 ''',
-      },
-    );
+    });
 
     expect(
       () => parseRecommended(bundle, 'recommended.xml'),
@@ -181,9 +166,9 @@ void main() {
         predicate(
           (error) =>
               error is Exception &&
-              error
-                  .toString()
-                  .contains('Missing required tags in recommendation'),
+              error.toString().contains(
+                'Missing required tags in recommendation',
+              ),
         ),
       ),
     );
@@ -191,10 +176,7 @@ void main() {
 }
 
 class _FakeAssetBundle extends AssetBundle {
-  _FakeAssetBundle(
-    this._assets, {
-    this.throwPlatformException = false,
-  });
+  _FakeAssetBundle(this._assets, {this.throwPlatformException = false});
 
   final Map<String, String> _assets;
   final bool throwPlatformException;

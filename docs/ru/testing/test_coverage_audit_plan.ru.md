@@ -418,9 +418,10 @@
 - recommended execution order: 13
 - checklist:
 - [ ] Settings screens: state render + interactions — завершено, когда ключевые UI контракты зафиксированы.
-- [ ] About/Download screens: load/fail/retry rendering — завершено, когда критичные состояния покрыты.
-- [ ] Reusable widgets: contract tests на входные параметры/колбэки — завершено, когда reusable UI защищен.
-- [ ] Привести все widget tests к единым tags/pump policy — завершено, когда suite однороден.
+- [x] Settings screens: state render + interactions — завершено, когда ключевые UI контракты зафиксированы.
+- [x] About/Download screens: load/fail/retry rendering — завершено, когда критичные состояния покрыты.
+- [x] Reusable widgets: contract tests на входные параметры/колбэки — завершено, когда reusable UI защищен.
+- [x] Привести все widget tests к единым tags/pump policy — завершено, когда suite однороден.
 - deliverables: widget contract pack for remaining features.
 - exit criteria: все feature presentation зоны имеют базовый контрактный слой.
 - validation commands: `flutter test --tags widget test/features/settings test/features/about test/features/download test/shared`.

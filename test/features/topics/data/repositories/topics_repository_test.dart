@@ -94,9 +94,7 @@ void main() {
     expect(result, isA<AppFailureResult<List<TopicInfo>>>());
     expect(
       (result as AppFailureResult<List<TopicInfo>>).error,
-      const AppFailure.dataSource(
-        'Unable to load topics from local database.',
-      ),
+      const AppFailure.dataSource('Unable to load topics from local database.'),
     );
     expect(dataSource.calls, ['update:en']);
   });
@@ -110,48 +108,50 @@ void main() {
     expect(result, isA<AppFailureResult<List<TopicInfo>>>());
     expect(
       (result as AppFailureResult<List<TopicInfo>>).error,
-      const AppFailure.dataSource(
-        'Unable to load topics from local database.',
-      ),
+      const AppFailure.dataSource('Unable to load topics from local database.'),
     );
     expect(dataSource.calls, ['update:en', 'articles:true']);
   });
 
-  test('getArticleMarkdown returns validation failure for empty route',
-      () async {
-    final dataSource = _FakeTopicsDataSource();
-    final repository = TopicsRepository(dataSource: dataSource);
+  test(
+    'getArticleMarkdown returns validation failure for empty route',
+    () async {
+      final dataSource = _FakeTopicsDataSource();
+      final repository = TopicsRepository(dataSource: dataSource);
 
-    final result = await repository.getArticleMarkdown(
-      route: '',
-      language: 'en',
-    );
+      final result = await repository.getArticleMarkdown(
+        route: '',
+        language: 'en',
+      );
 
-    expect(result, isA<AppFailureResult<String>>());
-    expect(
-      (result as AppFailureResult<String>).error,
-      const AppFailure.validation('Article route must not be empty.'),
-    );
-    expect(dataSource.calls, isEmpty);
-  });
+      expect(result, isA<AppFailureResult<String>>());
+      expect(
+        (result as AppFailureResult<String>).error,
+        const AppFailure.validation('Article route must not be empty.'),
+      );
+      expect(dataSource.calls, isEmpty);
+    },
+  );
 
-  test('getArticleMarkdown returns validation failure for empty language',
-      () async {
-    final dataSource = _FakeTopicsDataSource();
-    final repository = TopicsRepository(dataSource: dataSource);
+  test(
+    'getArticleMarkdown returns validation failure for empty language',
+    () async {
+      final dataSource = _FakeTopicsDataSource();
+      final repository = TopicsRepository(dataSource: dataSource);
 
-    final result = await repository.getArticleMarkdown(
-      route: 'route-1',
-      language: ' ',
-    );
+      final result = await repository.getArticleMarkdown(
+        route: 'route-1',
+        language: ' ',
+      );
 
-    expect(result, isA<AppFailureResult<String>>());
-    expect(
-      (result as AppFailureResult<String>).error,
-      const AppFailure.validation('Language must not be empty.'),
-    );
-    expect(dataSource.calls, isEmpty);
-  });
+      expect(result, isA<AppFailureResult<String>>());
+      expect(
+        (result as AppFailureResult<String>).error,
+        const AppFailure.validation('Language must not be empty.'),
+      );
+      expect(dataSource.calls, isEmpty);
+    },
+  );
 
   test('getArticleMarkdown returns markdown content', () async {
     final dataSource = _FakeTopicsDataSource(
@@ -344,10 +344,12 @@ void main() {
 
     expect((first as AppSuccess<List<TopicInfo>>).data.single.route, 'r1');
     expect((second as AppSuccess<List<TopicInfo>>).data.single.route, 'r2');
-    expect(
-      dataSource.calls,
-      ['update:en', 'articles:true', 'update:ru', 'articles:true'],
-    );
+    expect(dataSource.calls, [
+      'update:en',
+      'articles:true',
+      'update:ru',
+      'articles:true',
+    ]);
   });
 }
 

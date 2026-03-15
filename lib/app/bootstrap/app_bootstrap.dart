@@ -27,14 +27,13 @@ class AppBootstrap {
     PrimarySourceReferenceService? referenceResolver,
     StrongDialogPresenter? showStrongDialog,
     PrimarySourceNavigator? navigateToPrimarySource,
-  })
-    : _talker = talker,
-      _databaseRuntime = databaseRuntime ?? DbManagerDatabaseRuntime(),
-      _referenceResolver =
-          referenceResolver ?? PrimarySourceReferenceService(),
-      _showStrongDialog = showStrongDialog ?? _defaultShowStrongDialog,
-      _navigateToPrimarySource =
-          navigateToPrimarySource ?? _defaultNavigateToPrimarySource;
+  }) : _talker = talker,
+       _databaseRuntime = databaseRuntime ?? DbManagerDatabaseRuntime(),
+       _referenceResolver =
+           referenceResolver ?? PrimarySourceReferenceService(),
+       _showStrongDialog = showStrongDialog ?? _defaultShowStrongDialog,
+       _navigateToPrimarySource =
+           navigateToPrimarySource ?? _defaultNavigateToPrimarySource;
 
   final Talker _talker;
   final DatabaseRuntime _databaseRuntime;
@@ -43,10 +42,7 @@ class AppBootstrap {
   final PrimarySourceNavigator _navigateToPrimarySource;
   StreamSubscription<String>? _languageSubscription;
 
-  static void _defaultShowStrongDialog(
-    BuildContext context,
-    int strongNumber,
-  ) {
+  static void _defaultShowStrongDialog(BuildContext context, int strongNumber) {
     showStrongDictionaryDialog(context, strongNumber);
   }
 

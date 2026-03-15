@@ -1,5 +1,4 @@
 @Tags(['widget'])
-
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -13,9 +12,7 @@ import 'package:revelation/features/topics/presentation/widgets/topic_card.dart'
 import 'package:revelation/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('TopicCard navigates to topic route with args', (
-    tester,
-  ) async {
+  testWidgets('TopicCard navigates to topic route with args', (tester) async {
     final topic = TopicInfo(
       name: 'Topic',
       idIcon: 'topic-icon',

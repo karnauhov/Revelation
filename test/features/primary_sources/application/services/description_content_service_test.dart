@@ -1,5 +1,4 @@
 @Tags(['widget'])
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
@@ -197,9 +196,9 @@ class _FakeDescriptionDataSource implements DescriptionDataSource {
     required this.isInitialized,
     List<common_db.GreekWord>? greekWords,
     List<localized_db.GreekDesc>? greekDescs,
-  })  : languageCode = 'en',
-        greekWords = greekWords ?? const [],
-        greekDescs = greekDescs ?? const [];
+  }) : languageCode = 'en',
+       greekWords = greekWords ?? const [],
+       greekDescs = greekDescs ?? const [];
 
   @override
   final bool isInitialized;
