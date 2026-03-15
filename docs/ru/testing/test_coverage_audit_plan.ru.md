@@ -249,10 +249,10 @@
 - expected outcome: стабильные контракты старта и маршрутизации
 - recommended execution order: 6
 - checklist:
-- [ ] Добавить тесты happy/failure startup path — завершено, когда init ошибки детерминированно тестируются.
-- [ ] Проверить route contracts и неизвестные маршруты — завершено, когда fallback behavior зафиксирован.
-- [ ] Покрыть базовый deep-link/open behavior — завершено, когда обработка URI тестируема.
-- [ ] Добавить smoke widget contract для app shell — завершено, когда основной shell рендерится в тестовой среде.
+- [x] Добавить тесты happy/failure startup path — завершено, когда init ошибки детерминированно тестируются.
+- [x] Проверить route contracts и неизвестные маршруты — завершено, когда fallback behavior зафиксирован.
+- [x] Покрыть базовый deep-link/open behavior — завершено, когда обработка URI тестируема.
+- [x] Добавить smoke widget contract для app shell — завершено, когда основной shell рендерится в тестовой среде.
 - deliverables: bootstrap/router test pack.
 - exit criteria: критические startup/nav сценарии закрыты.
 - validation commands: `flutter test test/app`, `flutter test --tags widget`.

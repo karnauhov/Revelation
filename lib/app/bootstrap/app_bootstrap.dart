@@ -15,16 +15,47 @@ import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
+typedef StrongDialogPresenter =
+    void Function(BuildContext context, int strongNumber);
+typedef PrimarySourceNavigator =
+    void Function(BuildContext context, PrimarySourceRouteArgs routeArgs);
+
 class AppBootstrap {
-  AppBootstrap({required Talker talker, DatabaseRuntime? databaseRuntime})
+  AppBootstrap({
+    required Talker talker,
+    DatabaseRuntime? databaseRuntime,
+    PrimarySourceReferenceService? referenceResolver,
+    StrongDialogPresenter? showStrongDialog,
+    PrimarySourceNavigator? navigateToPrimarySource,
+  })
     : _talker = talker,
-      _databaseRuntime = databaseRuntime ?? DbManagerDatabaseRuntime();
+      _databaseRuntime = databaseRuntime ?? DbManagerDatabaseRuntime(),
+      _referenceResolver =
+          referenceResolver ?? PrimarySourceReferenceService(),
+      _showStrongDialog = showStrongDialog ?? _defaultShowStrongDialog,
+      _navigateToPrimarySource =
+          navigateToPrimarySource ?? _defaultNavigateToPrimarySource;
 
   final Talker _talker;
   final DatabaseRuntime _databaseRuntime;
-  final PrimarySourceReferenceService _referenceResolver =
-      PrimarySourceReferenceService();
+  final PrimarySourceReferenceService _referenceResolver;
+  final StrongDialogPresenter _showStrongDialog;
+  final PrimarySourceNavigator _navigateToPrimarySource;
   StreamSubscription<String>? _languageSubscription;
+
+  static void _defaultShowStrongDialog(
+    BuildContext context,
+    int strongNumber,
+  ) {
+    showStrongDictionaryDialog(context, strongNumber);
+  }
+
+  static void _defaultNavigateToPrimarySource(
+    BuildContext context,
+    PrimarySourceRouteArgs routeArgs,
+  ) {
+    context.push('/primary_source', extra: routeArgs);
+  }
 
   Future<SettingsCubit> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -90,10 +121,10 @@ class AppBootstrap {
 
   void _configureStrongHandlers() {
     setDefaultGreekStrongTapHandler((strongNumber, context) {
-      showStrongDictionaryDialog(context, strongNumber);
+      _showStrongDialog(context, strongNumber);
     });
     setDefaultGreekStrongPickerTapHandler((strongNumber, context) {
-      showStrongDictionaryDialog(context, strongNumber);
+      _showStrongDialog(context, strongNumber);
     });
     setDefaultWordTapHandler((sourceId, pageName, wordIndex, context) {
       final source = _referenceResolver.findSourceById(sourceId);
@@ -108,9 +139,9 @@ class AppBootstrap {
         return;
       }
 
-      context.push(
-        '/primary_source',
-        extra: PrimarySourceRouteArgs(
+      _navigateToPrimarySource(
+        context,
+        PrimarySourceRouteArgs(
           primarySource: source,
           pageName: pageName,
           wordIndex: wordIndex,
