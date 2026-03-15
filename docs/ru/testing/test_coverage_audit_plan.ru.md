@@ -177,10 +177,10 @@
 - expected outcome: единый layout и корректный split unit/widget
 - recommended execution order: 3
 - checklist:
-- [ ] Перенести misplaced тесты в feature-aligned пути — завершено, когда путь теста отражает production path.
-- [ ] Нормализовать `@Tags(['widget'])` для всех `testWidgets` — завершено, когда split-команды не пересекаются.
-- [ ] Удалить/архивировать dead/stale тест-файлы — завершено, когда нет “висячих” или дублирующих файлов.
-- [ ] Проверить naming convention тестов — завершено, когда имена отражают behavioral contract.
+- [x] Перенести misplaced тесты в feature-aligned пути — завершено, когда путь теста отражает production path.
+- [x] Нормализовать `@Tags(['widget'])` для всех `testWidgets` — завершено, когда split-команды не пересекаются.
+- [x] Удалить/архивировать dead/stale тест-файлы — завершено, когда нет “висячих” или дублирующих файлов.
+- [x] Проверить naming convention тестов — завершено, когда имена отражают behavioral contract.
 - deliverables: clean test tree.
 - exit criteria: структура консистентна и discoverable.
 - validation commands: `flutter test --exclude-tags widget`, `flutter test --tags widget`.

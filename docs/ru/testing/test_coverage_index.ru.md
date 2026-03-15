@@ -6,6 +6,7 @@
 - [План аудита и фаз](./test_coverage_audit_plan.ru.md)
 - [Базовая фиксация P01](./test_coverage_baseline_p01.ru.md)
 - [Traceability-карта P02](./test_coverage_traceability_p02.ru.md)
+- [Структурная нормализация P03](./test_coverage_structural_normalization_p03.ru.md)
 
 ## Базовый расчёт покрытия (P01)
 ```bash

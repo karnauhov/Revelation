@@ -1,3 +1,4 @@
+@Tags(['widget'])
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
