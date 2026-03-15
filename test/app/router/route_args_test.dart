@@ -13,7 +13,7 @@ void main() {
 
       final parsed = TopicRouteArgs.tryParse(args, const <String, String>{});
 
-      expect(parsed, isNotNull);
+      expect(parsed, same(args));
       expect(parsed!.file, 'rev-1');
       expect(parsed.name, 'Revelation 1');
       expect(parsed.description, 'Intro');
@@ -35,7 +35,7 @@ void main() {
         'name': 'Revelation 3',
       });
 
-      expect(parsed, isNotNull);
+      expect(parsed, isA<TopicRouteArgs>());
       expect(parsed!.file, 'rev-3');
       expect(parsed.name, 'Revelation 3');
       expect(parsed.description, isNull);
@@ -43,6 +43,13 @@ void main() {
 
     test('returns null when required file is missing', () {
       final parsed = TopicRouteArgs.tryParse(null, const <String, String>{});
+      expect(parsed, isNull);
+    });
+
+    test('returns null when required file is blank', () {
+      final parsed = TopicRouteArgs.tryParse(null, const <String, String>{
+        'file': '   ',
+      });
       expect(parsed, isNull);
     });
   });
@@ -58,7 +65,7 @@ void main() {
 
       final parsed = PrimarySourceRouteArgs.tryParse(args);
 
-      expect(parsed, isNotNull);
+      expect(parsed, same(args));
       expect(parsed!.primarySource, source);
       expect(parsed.pageName, 'page1');
       expect(parsed.wordIndex, 5);

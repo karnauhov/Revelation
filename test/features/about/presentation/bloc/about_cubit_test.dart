@@ -37,9 +37,10 @@ void main() {
       await cubit.load();
 
       expect(cubit.state.isLoading, isFalse);
-      expect(cubit.state.failure, isNotNull);
-      expect(cubit.state.failure!.type, AppFailureType.dataSource);
-      expect(cubit.state.failure!.message, 'Unable to load about screen data.');
+      expect(
+        cubit.state.failure,
+        const AppFailure.dataSource('Unable to load about screen data.'),
+      );
     },
   );
 

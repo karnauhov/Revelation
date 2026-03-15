@@ -8,6 +8,7 @@
 - [Traceability-карта P02](./test_coverage_traceability_p02.ru.md)
 - [Структурная нормализация P03](./test_coverage_structural_normalization_p03.ru.md)
 - [Стабилизация test harness P04](./test_coverage_harness_stabilization_p04.ru.md)
+- [Triage качества существующих тестов P05](./test_coverage_quality_triage_p05.ru.md)
 
 ## Базовый расчёт покрытия (P01)
 ```bash

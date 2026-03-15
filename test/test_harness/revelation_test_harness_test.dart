@@ -18,8 +18,7 @@ void main() {
       harness.remote.addFile('db', 'test.sqlite', <int>[1, 2, 3]);
       final bytes = await harness.remote.download('db', 'test.sqlite');
 
-      expect(bytes, isNotNull);
-      expect(bytes!.toList(), <int>[1, 2, 3]);
+      expect(bytes?.toList(), <int>[1, 2, 3]);
       expect(harness.remote.contains('db', 'test.sqlite'), isTrue);
     });
   });

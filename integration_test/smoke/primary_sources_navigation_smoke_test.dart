@@ -16,6 +16,7 @@ import 'package:revelation/infra/db/localized/db_localized.dart'
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import 'smoke_test_harness.dart';
 
 void main() {
   setUp(() async {
@@ -58,15 +59,15 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await pumpAndSettleSmoke(tester);
 
     final context = tester.element(find.byType(PrimarySourcesScreen));
     final l10n = AppLocalizations.of(context)!;
     expect(find.text('${l10n.full_primary_sources} (1)'), findsOneWidget);
-    expect(find.byType(ElevatedButton), findsWidgets);
+    expect(find.byType(ElevatedButton), findsAtLeastNWidgets(1));
 
     await tester.tap(find.byType(ElevatedButton).first);
-    await tester.pumpAndSettle();
+    await pumpAndSettleSmoke(tester);
 
     expect(find.text('detail-stub'), findsOneWidget);
   });

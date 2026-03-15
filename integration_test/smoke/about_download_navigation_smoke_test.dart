@@ -10,6 +10,7 @@ import 'package:revelation/features/settings/presentation/bloc/settings_cubit.da
 import 'package:revelation/features/settings/presentation/screens/settings_screen.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/app_settings.dart';
+import 'smoke_test_harness.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +45,7 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await pumpAndSettleSmoke(tester);
 
     final context = tester.element(find.byType(AboutScreen));
     final l10n = AppLocalizations.of(context)!;
@@ -65,7 +66,7 @@ void main() {
         home: DownloadScreen(),
       ),
     );
-    await tester.pumpAndSettle();
+    await pumpAndSettleSmoke(tester);
 
     final context = tester.element(find.byType(DownloadScreen));
     final l10n = AppLocalizations.of(context)!;
@@ -115,21 +116,21 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      await pumpAndSettleSmoke(tester);
 
       final settingsContext = tester.element(find.byType(SettingsScreen));
       final settingsL10n = AppLocalizations.of(settingsContext)!;
       expect(find.text(settingsL10n.settings_screen), findsOneWidget);
 
       router.go('/about');
-      await tester.pumpAndSettle();
+      await pumpAndSettleSmoke(tester);
 
       final aboutContext = tester.element(find.byType(AboutScreen));
       final aboutL10n = AppLocalizations.of(aboutContext)!;
       expect(find.text(aboutL10n.about_screen), findsOneWidget);
 
       router.go('/download');
-      await tester.pumpAndSettle();
+      await pumpAndSettleSmoke(tester);
 
       final downloadContext = tester.element(find.byType(DownloadScreen));
       final downloadL10n = AppLocalizations.of(downloadContext)!;

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart';
@@ -149,85 +150,86 @@ void main() {
     },
   );
 
-  test(
-    'restorePositionAndScale applies saved transform after debounce',
-    () async {
-      final source = _buildSource();
-      final imageCubit = PrimarySourceImageCubit(
-        source: source,
-        isWeb: false,
-        isMobileWeb: false,
-        imageLoadingOrchestrator: _FakeImageLoadingOrchestrator(
-          detectLocalPageAvailabilityImpl:
-              ({required pages, required isWeb}) async => <String, bool?>{
-                'p1.png': true,
-                'p2.png': true,
-              },
-          loadPageImageImpl:
-              ({
-                required page,
-                required sourceHashCode,
-                required isWeb,
-                required isMobileWeb,
-                required isReload,
-                previousPageLoaded,
-              }) async => const PageImageLoadResult(
-                contentAction: ImageContentAction.keep,
-                imageData: null,
-                imageName: '',
-                pageLoaded: true,
-                refreshError: false,
-              ),
-        ),
-        autoInitialize: false,
-      );
-      final pageSettingsCubit = PrimarySourcePageSettingsCubit(
-        _FakePageSettingsOrchestrator(),
-      );
-      final descriptionCubit = PrimarySourceDescriptionCubit();
-      final sessionCubit = PrimarySourceSessionCubit(source: source);
-      final viewportCubit = PrimarySourceViewportCubit();
-      final cubit = PrimarySourceDetailOrchestrationCubit(
-        source: source,
-        imageCubit: imageCubit,
-        pageSettingsCubit: pageSettingsCubit,
-        descriptionCubit: descriptionCubit,
-        sessionCubit: sessionCubit,
-        viewportCubit: viewportCubit,
-      );
-      addTearDown(cubit.close);
-      addTearDown(imageCubit.close);
-      addTearDown(pageSettingsCubit.close);
-      addTearDown(descriptionCubit.close);
-      addTearDown(sessionCubit.close);
-      addTearDown(viewportCubit.close);
+  test('restorePositionAndScale applies saved transform after debounce', () {
+    final source = _buildSource();
+    final imageCubit = PrimarySourceImageCubit(
+      source: source,
+      isWeb: false,
+      isMobileWeb: false,
+      imageLoadingOrchestrator: _FakeImageLoadingOrchestrator(
+        detectLocalPageAvailabilityImpl:
+            ({required pages, required isWeb}) async => <String, bool?>{
+              'p1.png': true,
+              'p2.png': true,
+            },
+        loadPageImageImpl:
+            ({
+              required page,
+              required sourceHashCode,
+              required isWeb,
+              required isMobileWeb,
+              required isReload,
+              previousPageLoaded,
+            }) async => const PageImageLoadResult(
+              contentAction: ImageContentAction.keep,
+              imageData: null,
+              imageName: '',
+              pageLoaded: true,
+              refreshError: false,
+            ),
+      ),
+      autoInitialize: false,
+    );
+    final pageSettingsCubit = PrimarySourcePageSettingsCubit(
+      _FakePageSettingsOrchestrator(),
+    );
+    final descriptionCubit = PrimarySourceDescriptionCubit();
+    final sessionCubit = PrimarySourceSessionCubit(source: source);
+    final viewportCubit = PrimarySourceViewportCubit();
+    final cubit = PrimarySourceDetailOrchestrationCubit(
+      source: source,
+      imageCubit: imageCubit,
+      pageSettingsCubit: pageSettingsCubit,
+      descriptionCubit: descriptionCubit,
+      sessionCubit: sessionCubit,
+      viewportCubit: viewportCubit,
+    );
+    addTearDown(cubit.close);
+    addTearDown(imageCubit.close);
+    addTearDown(pageSettingsCubit.close);
+    addTearDown(descriptionCubit.close);
+    addTearDown(sessionCubit.close);
+    addTearDown(viewportCubit.close);
 
-      viewportCubit.applyViewportSettings(
-        const PageSettingsState(
-          rawSettings: 'raw',
-          posX: 17,
-          posY: 23,
-          scale: 1.4,
-          isNegative: false,
-          isMonochrome: false,
-          brightness: 0,
-          contrast: 100,
-          showWordSeparators: false,
-          showStrongNumbers: false,
-          showVerseNumbers: true,
-        ),
-      );
-      viewportCubit.setScaleAndPositionRestored(false);
+    viewportCubit.applyViewportSettings(
+      const PageSettingsState(
+        rawSettings: 'raw',
+        posX: 17,
+        posY: 23,
+        scale: 1.4,
+        isNegative: false,
+        isMonochrome: false,
+        brightness: 0,
+        contrast: 100,
+        showWordSeparators: false,
+        showStrongNumbers: false,
+        showVerseNumbers: true,
+      ),
+    );
+    viewportCubit.setScaleAndPositionRestored(false);
 
+    fakeAsync((async) {
       cubit.restorePositionAndScale();
-      await Future<void>.delayed(const Duration(milliseconds: 1100));
+      async.elapse(const Duration(milliseconds: 999));
+      expect(viewportCubit.state.scaleAndPositionRestored, isFalse);
+      async.elapse(const Duration(milliseconds: 1));
+    });
 
-      final matrix = cubit.imageController.transformationController.value;
-      expect(viewportCubit.state.scaleAndPositionRestored, isTrue);
-      expect(matrix.storage[12], closeTo(17, 0.001));
-      expect(matrix.storage[13], closeTo(23, 0.001));
-    },
-  );
+    final matrix = cubit.imageController.transformationController.value;
+    expect(viewportCubit.state.scaleAndPositionRestored, isTrue);
+    expect(matrix.storage[12], closeTo(17, 0.001));
+    expect(matrix.storage[13], closeTo(23, 0.001));
+  });
 }
 
 class _FakeImageLoadingOrchestrator

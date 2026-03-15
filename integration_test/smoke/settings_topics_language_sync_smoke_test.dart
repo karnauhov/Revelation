@@ -14,7 +14,9 @@ import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/models/app_settings.dart';
+import 'smoke_test_harness.dart';
 
 void main() {
   testWidgets('Settings language change propagates to topics catalog', (
@@ -76,22 +78,23 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await pumpAndSettleSmoke(tester);
 
     expect(find.text('Topic EN'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('open-settings')));
-    await tester.pumpAndSettle();
+    await pumpAndSettleSmoke(tester);
 
     final settingsContext = tester.element(find.byType(SettingsScreen));
     final l10n = AppLocalizations.of(settingsContext)!;
+    final russianLanguageLabel = AppConstants.languages['ru']!;
     await tester.tap(find.text(l10n.language));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Русский').last);
-    await tester.pumpAndSettle();
+    await pumpAndSettleSmoke(tester);
+    await tester.tap(find.text(russianLanguageLabel).last);
+    await pumpAndSettleSmoke(tester);
 
     await tester.pageBack();
-    await tester.pumpAndSettle();
+    await pumpAndSettleSmoke(tester);
 
     expect(find.text('Topic RU'), findsOneWidget);
     expect(topicsRepository.requestedLanguages, contains('en'));

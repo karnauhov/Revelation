@@ -81,9 +81,10 @@ void main() {
 
       expect(cubit.state.isLoading, isFalse);
       expect(cubit.state.hasError, isTrue);
-      expect(cubit.state.failure, isNotNull);
-      expect(cubit.state.failure!.type, AppFailureType.dataSource);
-      expect(cubit.state.failure!.message, 'forced data failure');
+      expect(
+        cubit.state.failure,
+        const AppFailure.dataSource('forced data failure'),
+      );
       expect(cubit.state.full, isEmpty);
       expect(cubit.state.significant, isEmpty);
       expect(cubit.state.fragments, isEmpty);
@@ -100,11 +101,11 @@ void main() {
 
       expect(cubit.state.isLoading, isFalse);
       expect(cubit.state.hasError, isTrue);
-      expect(cubit.state.failure, isNotNull);
-      expect(cubit.state.failure!.type, AppFailureType.unknown);
       expect(
-        cubit.state.failure!.message,
-        'Unexpected error while loading primary sources.',
+        cubit.state.failure,
+        const AppFailure.unknown(
+          'Unexpected error while loading primary sources.',
+        ),
       );
     },
   );

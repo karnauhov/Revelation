@@ -120,9 +120,10 @@ void main() {
 
     expect(cubit.state.isLoading, isFalse);
     expect(cubit.state.markdown, isEmpty);
-    expect(cubit.state.failure, isNotNull);
-    expect(cubit.state.failure!.type, AppFailureType.dataSource);
-    expect(cubit.state.failure!.message, 'forced markdown failure');
+    expect(
+      cubit.state.failure,
+      const AppFailure.dataSource('forced markdown failure'),
+    );
   });
 
   test(

@@ -52,7 +52,7 @@ void main() {
     expect(cubit.state.language, 'en');
     expect(cubit.state.topics, hasLength(1));
     expect(cubit.state.topics.single.route, 'en-route');
-    expect(cubit.state.iconByKey['icon-en'], isNotNull);
+    expect(cubit.state.iconByKey['icon-en']?.fileName, 'icon-en.svg');
     expect(repository.requestedLanguages, <String>['en']);
     expect(repository.requestedIconKeys, <String>['icon-en']);
   });
@@ -78,9 +78,10 @@ void main() {
     await cubit.loadForLanguage('  ');
 
     expect(cubit.state.isLoading, isFalse);
-    expect(cubit.state.failure, isNotNull);
-    expect(cubit.state.failure!.type, AppFailureType.validation);
-    expect(cubit.state.failure!.message, 'Language must not be empty.');
+    expect(
+      cubit.state.failure,
+      const AppFailure.validation('Language must not be empty.'),
+    );
   });
 
   test('reacts to language changes from SettingsCubit', () async {
@@ -150,9 +151,10 @@ void main() {
     await _flushAsync();
 
     expect(cubit.state.isLoading, isFalse);
-    expect(cubit.state.failure, isNotNull);
-    expect(cubit.state.failure!.type, AppFailureType.dataSource);
-    expect(cubit.state.failure!.message, 'forced topics failure');
+    expect(
+      cubit.state.failure,
+      const AppFailure.dataSource('forced topics failure'),
+    );
   });
 
   test('ignores stale result and keeps latest language state', () async {

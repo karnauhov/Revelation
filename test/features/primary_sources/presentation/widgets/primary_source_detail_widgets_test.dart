@@ -95,15 +95,23 @@ void main() {
       );
 
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
+      final backButton = find.byKey(const Key('description_nav_back'));
+      final forwardButton = find.byKey(const Key('description_nav_forward'));
+      expect(backButton, findsOneWidget);
+      expect(forwardButton, findsOneWidget);
+      final backTapTarget = find.ancestor(
+        of: backButton,
+        matching: find.byType(InkResponse),
+      );
+      final forwardTapTarget = find.ancestor(
+        of: forwardButton,
+        matching: find.byType(InkResponse),
+      );
 
-      await tester.tap(
-        find.byKey(const Key('description_nav_back')),
-        warnIfMissed: false,
-      );
-      await tester.tap(
-        find.byKey(const Key('description_nav_forward')),
-        warnIfMissed: false,
-      );
+      await tester.ensureVisible(backButton);
+      await tester.ensureVisible(forwardButton);
+      await tester.tap(backTapTarget);
+      await tester.tap(forwardTapTarget);
       await tester.pump();
 
       expect(backwardTaps, 1);
@@ -145,15 +153,27 @@ void main() {
         ),
       );
 
-      await tester.tap(
-        find.byKey(const Key('description_nav_back')),
-        warnIfMissed: false,
+      final backButton = find.byKey(const Key('description_nav_back'));
+      final forwardButton = find.byKey(const Key('description_nav_forward'));
+      expect(backButton, findsOneWidget);
+      expect(forwardButton, findsOneWidget);
+      final backIgnorePointerFinder = find.ancestor(
+        of: backButton,
+        matching: find.byType(IgnorePointer),
       );
-      await tester.tap(
-        find.byKey(const Key('description_nav_forward')),
-        warnIfMissed: false,
+      final forwardIgnorePointerFinder = find.ancestor(
+        of: forwardButton,
+        matching: find.byType(IgnorePointer),
       );
-      await tester.pump();
+
+      final backIgnorePointer = tester.widget<IgnorePointer>(
+        backIgnorePointerFinder.first,
+      );
+      final forwardIgnorePointer = tester.widget<IgnorePointer>(
+        forwardIgnorePointerFinder.first,
+      );
+      expect(backIgnorePointer.ignoring, isTrue);
+      expect(forwardIgnorePointer.ignoring, isTrue);
 
       expect(taps, 0);
       expect(find.byIcon(Icons.info_outline), findsNothing);

@@ -56,9 +56,10 @@ void main() {
     await cubit.loadSettings();
 
     expect(cubit.state.isLoading, isFalse);
-    expect(cubit.state.failure, isNotNull);
-    expect(cubit.state.failure!.type, AppFailureType.dataSource);
-    expect(cubit.state.failure!.message, 'Unable to load app settings.');
+    expect(
+      cubit.state.failure,
+      const AppFailure.dataSource('Unable to load app settings.'),
+    );
   });
 
   test('changeTheme keeps optimistic state and reports save failure', () async {
@@ -73,9 +74,10 @@ void main() {
     await cubit.changeTheme('midnight');
 
     expect(cubit.state.settings.selectedTheme, 'midnight');
-    expect(cubit.state.failure, isNotNull);
-    expect(cubit.state.failure!.type, AppFailureType.dataSource);
-    expect(cubit.state.failure!.message, 'Unable to persist app settings.');
+    expect(
+      cubit.state.failure,
+      const AppFailure.dataSource('Unable to persist app settings.'),
+    );
     expect(repository.savedSettings, isEmpty);
   });
 

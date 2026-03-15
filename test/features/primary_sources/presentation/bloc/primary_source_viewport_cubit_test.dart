@@ -95,68 +95,56 @@ void main() {
     expect(cubit.state.tolerance, 0);
   });
 
-  test('updateTransform ignores unchanged transform values', () async {
+  test('updateTransform ignores unchanged transform values', () {
     final cubit = PrimarySourceViewportCubit();
     addTearDown(cubit.close);
-
-    var emissions = 0;
-    final subscription = cubit.stream.listen((_) {
-      emissions++;
-    });
-    addTearDown(subscription.cancel);
 
     const status = ZoomStatus(
       canZoomIn: true,
       canZoomOut: true,
       canReset: true,
     );
+    final initialState = cubit.state;
     cubit.updateTransform(dx: 12, dy: 24, scale: 2, zoomStatus: status);
-    await Future<void>.delayed(Duration.zero);
-    expect(emissions, 1);
+    final stateAfterFirstUpdate = cubit.state;
+    expect(stateAfterFirstUpdate, isNot(initialState));
+    expect(stateAfterFirstUpdate.dx, 12);
+    expect(stateAfterFirstUpdate.dy, 24);
+    expect(stateAfterFirstUpdate.scale, 2);
 
     cubit.updateTransform(dx: 12, dy: 24, scale: 2, zoomStatus: status);
-    await Future<void>.delayed(Duration.zero);
-    expect(emissions, 1);
+    expect(cubit.state, same(stateAfterFirstUpdate));
 
     cubit.setZoomStatus(
       const ZoomStatus(canZoomIn: true, canZoomOut: true, canReset: true),
     );
-    await Future<void>.delayed(Duration.zero);
-    expect(emissions, 1);
+    expect(cubit.state, same(stateAfterFirstUpdate));
   });
 
-  test('dedups repeated non-transform updates', () async {
+  test('dedups repeated non-transform updates', () {
     final cubit = PrimarySourceViewportCubit();
     addTearDown(cubit.close);
 
-    var emissions = 0;
-    final subscription = cubit.stream.listen((_) {
-      emissions++;
-    });
-    addTearDown(subscription.cancel);
+    final initialState = cubit.state;
 
     cubit.setScaleAndPositionRestored(false);
-    await Future<void>.delayed(Duration.zero);
-    expect(emissions, 0);
+    expect(cubit.state, same(initialState));
 
     cubit.startSelectAreaMode();
-    await Future<void>.delayed(Duration.zero);
-    expect(emissions, 1);
+    final stateAfterSelectStart = cubit.state;
+    expect(stateAfterSelectStart.selectAreaMode, isTrue);
 
     cubit.startSelectAreaMode();
-    await Future<void>.delayed(Duration.zero);
-    expect(emissions, 1);
+    expect(cubit.state, same(stateAfterSelectStart));
 
     cubit.startPipetteMode(isColorToReplace: true);
-    await Future<void>.delayed(Duration.zero);
-    expect(emissions, 2);
+    final stateAfterPipetteStart = cubit.state;
+    expect(stateAfterPipetteStart.pipetteMode, isTrue);
 
     cubit.startPipetteMode(isColorToReplace: true);
-    await Future<void>.delayed(Duration.zero);
-    expect(emissions, 2);
+    expect(cubit.state, same(stateAfterPipetteStart));
 
     cubit.resetColorReplacement();
-    await Future<void>.delayed(Duration.zero);
-    expect(emissions, 2);
+    expect(cubit.state, same(stateAfterPipetteStart));
   });
 }

@@ -93,7 +93,7 @@ void main() {
     );
 
     final call = fakeOrchestrator.lastSaveCall;
-    expect(call, isNotNull);
+    expect(call, isA<_SaveInvocation>());
     expect(call!.isNegative, isTrue);
     expect(call.brightness, 17);
     expect(call.contrast, 93);

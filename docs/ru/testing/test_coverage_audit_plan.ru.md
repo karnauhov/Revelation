@@ -225,10 +225,10 @@
 - expected outcome: each test marked keep/strengthen/rewrite/remove
 - recommended execution order: 5
 - checklist:
-- [ ] Классифицировать тесты по ценности регресс-защиты — завершено, когда каждому файлу присвоен статус.
-- [ ] Усилить слабые asserts (behavior over implementation) — завершено, когда тест проверяет эффект, а не внутреннюю деталь.
-- [ ] Убрать недетерминизм (assets/time/network dependencies) — завершено, когда тест стабилен локально и в CI.
-- [ ] Зафиксировать backlog “rewrite later” отдельно — завершено, когда нет скрытого техдолга.
+- [x] Классифицировать тесты по ценности регресс-защиты — завершено, когда каждому файлу присвоен статус.
+- [x] Усилить слабые asserts (behavior over implementation) — завершено, когда тест проверяет эффект, а не внутреннюю деталь.
+- [x] Убрать недетерминизм (assets/time/network dependencies) — завершено, когда тест стабилен локально и в CI.
+- [x] Зафиксировать backlog “rewrite later” отдельно — завершено, когда нет скрытого техдолга.
 - deliverables: quality triage sheet.
 - exit criteria: нет критично слабых тестов в high-risk зонах.
 - validation commands: `flutter test`, `flutter test integration_test/smoke`.
