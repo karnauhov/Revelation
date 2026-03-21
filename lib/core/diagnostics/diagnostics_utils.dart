@@ -5,12 +5,46 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+enum DiagnosticsDevicePlatform {
+  web,
+  android,
+  ios,
+  macos,
+  windows,
+  linux,
+  unknown,
+}
+
+DiagnosticsDevicePlatform resolveDiagnosticsDevicePlatform() {
+  if (kIsWeb) {
+    return DiagnosticsDevicePlatform.web;
+  }
+  if (Platform.isAndroid) {
+    return DiagnosticsDevicePlatform.android;
+  }
+  if (Platform.isIOS) {
+    return DiagnosticsDevicePlatform.ios;
+  }
+  if (Platform.isMacOS) {
+    return DiagnosticsDevicePlatform.macos;
+  }
+  if (Platform.isWindows) {
+    return DiagnosticsDevicePlatform.windows;
+  }
+  if (Platform.isLinux) {
+    return DiagnosticsDevicePlatform.linux;
+  }
+  return DiagnosticsDevicePlatform.unknown;
+}
+
 Future<String> collectSystemAndAppInfo({
   BuildContext? context,
   String? dbFilesSection,
+  DeviceInfoPlugin? deviceInfoPlugin,
+  DiagnosticsDevicePlatform? devicePlatformOverride,
 }) async {
   final buf = StringBuffer();
-  final deviceInfo = DeviceInfoPlugin();
+  final deviceInfo = deviceInfoPlugin ?? DeviceInfoPlugin();
   void safeWrite(String key, Object? value) {
     buf.writeln('$key: ${value ?? "null"}');
   }
@@ -57,53 +91,13 @@ Future<String> collectSystemAndAppInfo({
   // DEVICE INFO (device_info_plus)
   try {
     buf.write("\r\n=======DEVICE INFO=======\r\n");
-    if (kIsWeb) {
-      final web = await deviceInfo.webBrowserInfo;
-      safeWrite('web_browserName', web.browserName.name);
-      safeWrite('web_platform', web.platform);
-      safeWrite('web_language', web.language);
-    } else if (Platform.isAndroid) {
-      final a = await deviceInfo.androidInfo;
-      safeWrite('android.model', a.model);
-      safeWrite('android.manufacturer', a.manufacturer);
-      safeWrite('android.brand', a.brand);
-      safeWrite('android.version.sdkInt', a.version.sdkInt);
-      safeWrite('android.version.release', a.version.release);
-      safeWrite('android.isPhysicalDevice', a.isPhysicalDevice);
-    } else if (Platform.isIOS) {
-      final i = await deviceInfo.iosInfo;
-      safeWrite('ios.systemName', i.systemName);
-      safeWrite('ios.systemVersion', i.systemVersion);
-      safeWrite('ios.model', i.model);
-      safeWrite('ios.localizedModel', i.localizedModel);
-      safeWrite('ios.isPhysicalDevice', i.isPhysicalDevice);
-      safeWrite('ios.utsname.machine', i.utsname.machine);
-    } else if (Platform.isMacOS) {
-      final m = await deviceInfo.macOsInfo;
-      safeWrite('macos.arch', m.arch);
-      safeWrite('macos.model', m.model);
-      safeWrite('macos.kernelVersion', m.kernelVersion);
-      safeWrite('macos.osRelease', m.osRelease);
-      safeWrite('macos.activeCPUs', m.activeCPUs);
-      safeWrite('macos.memorySize', m.memorySize);
-    } else if (Platform.isWindows) {
-      final w = await deviceInfo.windowsInfo;
-      safeWrite('windows.numberOfCores', w.numberOfCores);
-      safeWrite('windows.systemMemoryInMegabytes', w.systemMemoryInMegabytes);
-      safeWrite('windows.majorVersion', w.majorVersion);
-      safeWrite('windows.minorVersion', w.minorVersion);
-      safeWrite('windows.buildNumber', w.buildNumber);
-      safeWrite('windows.displayVersion', w.displayVersion);
-      safeWrite('windows.productName', w.productName);
-      safeWrite('windows.editionId', w.editionId);
-    } else if (Platform.isLinux) {
-      final l = await deviceInfo.linuxInfo;
-      safeWrite('linux.name', l.name);
-      safeWrite('linux.version', l.version);
-      safeWrite('linux.id', l.id);
-    } else {
-      safeWrite('deviceInfo', 'unknown platform');
-    }
+    final devicePlatform =
+        devicePlatformOverride ?? resolveDiagnosticsDevicePlatform();
+    await _writeDeviceInfoForPlatform(
+      deviceInfo: deviceInfo,
+      platform: devicePlatform,
+      safeWrite: safeWrite,
+    );
   } catch (e) {
     safeWrite('DeviceInfoError', e);
   }
@@ -164,4 +158,66 @@ Future<String> collectSystemAndAppInfo({
   }
 
   return buf.toString();
+}
+
+Future<void> _writeDeviceInfoForPlatform({
+  required DeviceInfoPlugin deviceInfo,
+  required DiagnosticsDevicePlatform platform,
+  required void Function(String key, Object? value) safeWrite,
+}) async {
+  switch (platform) {
+    case DiagnosticsDevicePlatform.web:
+      final web = await deviceInfo.webBrowserInfo;
+      safeWrite('web_browserName', web.browserName.name);
+      safeWrite('web_platform', web.platform);
+      safeWrite('web_language', web.language);
+      break;
+    case DiagnosticsDevicePlatform.android:
+      final a = await deviceInfo.androidInfo;
+      safeWrite('android.model', a.model);
+      safeWrite('android.manufacturer', a.manufacturer);
+      safeWrite('android.brand', a.brand);
+      safeWrite('android.version.sdkInt', a.version.sdkInt);
+      safeWrite('android.version.release', a.version.release);
+      safeWrite('android.isPhysicalDevice', a.isPhysicalDevice);
+      break;
+    case DiagnosticsDevicePlatform.ios:
+      final i = await deviceInfo.iosInfo;
+      safeWrite('ios.systemName', i.systemName);
+      safeWrite('ios.systemVersion', i.systemVersion);
+      safeWrite('ios.model', i.model);
+      safeWrite('ios.localizedModel', i.localizedModel);
+      safeWrite('ios.isPhysicalDevice', i.isPhysicalDevice);
+      safeWrite('ios.utsname.machine', i.utsname.machine);
+      break;
+    case DiagnosticsDevicePlatform.macos:
+      final m = await deviceInfo.macOsInfo;
+      safeWrite('macos.arch', m.arch);
+      safeWrite('macos.model', m.model);
+      safeWrite('macos.kernelVersion', m.kernelVersion);
+      safeWrite('macos.osRelease', m.osRelease);
+      safeWrite('macos.activeCPUs', m.activeCPUs);
+      safeWrite('macos.memorySize', m.memorySize);
+      break;
+    case DiagnosticsDevicePlatform.windows:
+      final w = await deviceInfo.windowsInfo;
+      safeWrite('windows.numberOfCores', w.numberOfCores);
+      safeWrite('windows.systemMemoryInMegabytes', w.systemMemoryInMegabytes);
+      safeWrite('windows.majorVersion', w.majorVersion);
+      safeWrite('windows.minorVersion', w.minorVersion);
+      safeWrite('windows.buildNumber', w.buildNumber);
+      safeWrite('windows.displayVersion', w.displayVersion);
+      safeWrite('windows.productName', w.productName);
+      safeWrite('windows.editionId', w.editionId);
+      break;
+    case DiagnosticsDevicePlatform.linux:
+      final l = await deviceInfo.linuxInfo;
+      safeWrite('linux.name', l.name);
+      safeWrite('linux.version', l.version);
+      safeWrite('linux.id', l.id);
+      break;
+    case DiagnosticsDevicePlatform.unknown:
+      safeWrite('deviceInfo', 'unknown platform');
+      break;
+  }
 }

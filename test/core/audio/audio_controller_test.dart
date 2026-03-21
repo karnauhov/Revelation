@@ -263,7 +263,9 @@ void main() {
 
   setUp(() async {
     await GetIt.I.reset();
-    GetIt.I.registerSingleton<Talker>(Talker());
+    GetIt.I.registerSingleton<Talker>(
+      Talker(settings: TalkerSettings(useConsoleLogs: false)),
+    );
     fakePlatform.resetCounts();
     AudioController.setInstanceForTest(AudioController.forTest());
   });

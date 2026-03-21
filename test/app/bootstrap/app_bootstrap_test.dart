@@ -42,7 +42,9 @@ void main() {
   });
 
   test('constructor supports default database runtime', () {
-    final bootstrap = AppBootstrap(talker: Talker());
+    final bootstrap = AppBootstrap(
+      talker: Talker(settings: TalkerSettings(useConsoleLogs: false)),
+    );
     expect(bootstrap, isA<AppBootstrap>());
   });
 
@@ -50,7 +52,7 @@ void main() {
     'initialize configures startup path and reacts to language changes',
     () async {
       await _seedSettings(language: 'ru');
-      final talker = Talker();
+      final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
       AppDi.registerCore(talker: talker);
       final runtime = _FakeDatabaseRuntime();
 
@@ -70,7 +72,7 @@ void main() {
 
   test('initialize keeps app startup alive when database init fails', () async {
     await _seedSettings(language: 'uk');
-    final talker = Talker();
+    final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
     AppDi.registerCore(talker: talker);
     final runtime = _FakeDatabaseRuntime(failOnInitialize: true);
 
@@ -88,7 +90,7 @@ void main() {
 
   test('initialize configures global error handlers', () async {
     await _seedSettings(language: 'en');
-    final talker = Talker();
+    final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
     AppDi.registerCore(talker: talker);
     final bootstrap = AppBootstrap(
       talker: talker,
@@ -114,7 +116,7 @@ void main() {
   });
 
   testWidgets('initialize wires default strong link handlers', (tester) async {
-    final talker = Talker();
+    final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
     AppDi.registerCore(talker: talker);
     final bootstrap = AppBootstrap(
       talker: talker,
@@ -141,7 +143,7 @@ void main() {
     'word link handler covers missing source, missing page and success branch',
     (tester) async {
       await _seedSettings(language: 'en');
-      final talker = Talker();
+      final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
       AppDi.registerCore(talker: talker);
       final source = _buildPrimarySource(id: 'source-1', pageName: 'page-1');
       final referenceResolver = PrimarySourceReferenceService(

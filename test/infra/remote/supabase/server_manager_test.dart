@@ -6,7 +6,9 @@ import 'package:talker_flutter/talker_flutter.dart';
 void main() {
   setUp(() async {
     await GetIt.I.reset();
-    GetIt.I.registerSingleton<Talker>(Talker());
+    GetIt.I.registerSingleton<Talker>(
+      Talker(settings: TalkerSettings(useConsoleLogs: false)),
+    );
   });
 
   tearDown(() async {

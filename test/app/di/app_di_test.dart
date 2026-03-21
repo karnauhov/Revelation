@@ -28,8 +28,8 @@ void main() {
   });
 
   test('registerCore replaces existing Talker singleton', () async {
-    final first = Talker();
-    final second = Talker();
+    final first = Talker(settings: TalkerSettings(useConsoleLogs: false));
+    final second = Talker(settings: TalkerSettings(useConsoleLogs: false));
 
     AppDi.registerCore(talker: first);
     expect(GetIt.I<Talker>(), same(first));
@@ -41,7 +41,9 @@ void main() {
   testWidgets(
     'appBlocProviders wires settings, topics and primary sources cubits',
     (tester) async {
-      AppDi.registerCore(talker: Talker());
+      AppDi.registerCore(
+        talker: Talker(settings: TalkerSettings(useConsoleLogs: false)),
+      );
       final settingsCubit = SettingsCubit(
         FakeSettingsRepository(initialSettings: _testSettings),
       );
@@ -76,7 +78,9 @@ void main() {
   );
 
   test('factory helpers return expected types and support overrides', () async {
-    AppDi.registerCore(talker: Talker());
+    AppDi.registerCore(
+      talker: Talker(settings: TalkerSettings(useConsoleLogs: false)),
+    );
     final settingsCubit = SettingsCubit(
       FakeSettingsRepository(initialSettings: _testSettings),
     );

@@ -40,10 +40,15 @@ bool isDesktopWindowChannelSupported() {
 }
 
 bool isLocalWeb() {
-  if (!kIsWeb) {
+  return isLocalWebWith();
+}
+
+bool isLocalWebWith({bool? isWebOverride, Uri? uriOverride}) {
+  final runningOnWeb = isWebOverride ?? kIsWeb;
+  if (!runningOnWeb) {
     return false;
   }
-  final host = Uri.base.host;
+  final host = (uriOverride ?? Uri.base).host;
   return host == 'localhost' || host == '127.0.0.1';
 }
 
@@ -64,12 +69,21 @@ TargetPlatform getPlatform() {
 }
 
 String getSystemLanguage() {
+  return getSystemLanguageWith();
+}
+
+String getSystemLanguageWith({
+  bool? isWebOverride,
+  String? localeNameOverride,
+  String Function()? platformLanguageProvider,
+}) {
   var language = 'en';
   try {
-    if (isWeb()) {
-      language = dep.getPlatformLanguage();
+    final runningOnWeb = isWebOverride ?? isWeb();
+    if (runningOnWeb) {
+      language = (platformLanguageProvider ?? dep.getPlatformLanguage)();
     } else {
-      final localeName = Platform.localeName;
+      final localeName = localeNameOverride ?? Platform.localeName;
       final parts = localeName.split('_');
       if (parts.length == 1) {
         language = Locale(parts[0]).languageCode;

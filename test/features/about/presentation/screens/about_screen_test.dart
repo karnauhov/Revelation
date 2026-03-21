@@ -2,16 +2,27 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
 import 'package:revelation/features/about/presentation/screens/about_screen.dart';
+import 'package:revelation/features/about/presentation/widgets/institution_card.dart';
+import 'package:revelation/features/about/presentation/widgets/recommended_card.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
+import 'package:revelation/infra/db/connectors/database_version_info.dart';
+import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/models/app_settings.dart';
+import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../../test_harness/test_harness.dart';
 
@@ -21,13 +32,6 @@ void main() {
   Map<String, Uint8List> assetBytes = <String, Uint8List>{};
 
   setUpAll(() {
-    PackageInfo.setMockInitialValues(
-      appName: 'Revelation',
-      packageName: 'revelation.app',
-      version: '1.2.3',
-      buildNumber: '45',
-      buildSignature: 'build',
-    );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler('flutter/assets', (message) async {
           if (message == null) {
@@ -47,66 +51,507 @@ void main() {
         .setMockMessageHandler('flutter/assets', null);
   });
 
-  setUp(() {
+  setUp(() async {
     assetBytes = _buildAboutAssets();
+    await GetIt.I.reset();
+    GetIt.I.registerSingleton<Talker>(
+      Talker(settings: TalkerSettings(useConsoleLogs: false)),
+    );
+    debugDefaultTargetPlatformOverride = null;
   });
 
-  testWidgets('AboutScreen renders loading then content', (tester) async {
-    final repository = FakeSettingsRepository(
-      initialSettings: AppSettings(
-        selectedLanguage: 'en',
-        selectedTheme: 'manuscript',
-        selectedFontSize: 'medium',
-        soundEnabled: true,
+  tearDown(() async {
+    debugDefaultTargetPlatformOverride = null;
+    await GetIt.I.reset();
+  });
+
+  testWidgets('AboutScreen renders loaded content and expands major sections', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness();
+    final cubit = await _createSettingsCubit(language: 'de');
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
       ),
     );
-    final cubit = SettingsCubit(repository);
-    addTearDown(cubit.close);
-    await cubit.loadSettings();
-
-    await tester.pumpWidget(_buildApp(cubit));
-
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
-    await pumpAndSettleSafe(tester);
+    await _pumpUntilAboutScreenLoaded(tester);
 
     final context = tester.element(find.byType(AboutScreen));
     final l10n = AppLocalizations.of(context)!;
-
     expect(find.text(l10n.about_screen), findsOneWidget);
     expect(find.text('${l10n.version} 1.2.3 (45)'), findsOneWidget);
-    expect(find.textContaining(l10n.common_data_update), findsOneWidget);
     expect(
       find.textContaining(l10n.localized_data_update(l10n.language_name_en)),
       findsOneWidget,
     );
-    await tester.tap(find.text(l10n.changelog));
-    await pumpAndSettleSafe(tester);
 
-    final markdown = tester.widget<MarkdownBody>(find.byType(MarkdownBody));
-    expect(markdown.data, contains('Added tests'));
-    expect(find.text(l10n.acknowledgements_title), findsOneWidget);
-    expect(find.text(l10n.recommended_title), findsOneWidget);
+    await tester.ensureVisible(find.text(l10n.acknowledgements_title));
+    await tester.tap(find.text(l10n.acknowledgements_title));
+    await _pumpUntilFound(tester, find.byType(InstitutionCard));
+    expect(find.byType(InstitutionCard), findsOneWidget);
+
+    await tester.ensureVisible(find.text(l10n.recommended_title));
+    await tester.tap(find.text(l10n.recommended_title));
+    await _pumpUntilFound(tester, find.byType(RecommendedCard));
+    expect(find.byType(RecommendedCard), findsOneWidget);
   });
+
+  testWidgets(
+    'AboutScreen localized DB label supports es/uk/ru and fallback to en',
+    (tester) async {
+      final harness = _AboutScreenTestHarness();
+      final cases = <String, String>{
+        'es': 'Spanish',
+        'uk': 'Ukrainian',
+        'ru': 'Russian',
+        'de': 'English',
+      };
+
+      for (final entry in cases.entries) {
+        final cubit = await _createSettingsCubit(language: entry.key);
+        await tester.pumpWidget(
+          _buildApp(
+            cubit,
+            dependencies: harness.buildDependencies(),
+            aboutCubitBuilder: _buildAboutCubitBuilder(),
+          ),
+        );
+        await _pumpUntilAboutScreenLoaded(tester);
+
+        final context = tester.element(find.byType(AboutScreen));
+        final l10n = AppLocalizations.of(context)!;
+        final languageName = switch (entry.key) {
+          'es' => l10n.language_name_es,
+          'uk' => l10n.language_name_uk,
+          'ru' => l10n.language_name_ru,
+          _ => l10n.language_name_en,
+        };
+        expect(
+          find.textContaining(l10n.localized_data_update(languageName)),
+          findsOneWidget,
+        );
+
+        await cubit.close();
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+      }
+    },
+  );
+
+  testWidgets('AboutScreen opens contact and legal external links', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness();
+    final cubit = await _createSettingsCubit(language: 'en');
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
+
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+
+    await tester.ensureVisible(find.text(AppConstants.supportEmail));
+    await tester.tap(find.text(AppConstants.supportEmail));
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.website));
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.github_project));
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.installation_packages));
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.support_us));
+    await tester.pump();
+
+    expect(harness.launchedUrls.length, 5);
+    expect(harness.launchedUrls[0], startsWith('mailto:'));
+    expect(harness.launchedUrls[1], AppConstants.websiteUrl);
+    expect(harness.launchedUrls[2], AppConstants.projectUrl);
+    expect(harness.launchedUrls[3], AppConstants.latestReleaseUrl);
+    expect(harness.launchedUrls[4], contains('en.html#join'));
+  });
+
+  testWidgets('AboutScreen legal topic links navigate through app router', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness();
+    final cubit = await _createSettingsCubit(language: 'en');
+    addTearDown(cubit.close);
+
+    final router = GoRouter(
+      routes: <RouteBase>[
+        GoRoute(
+          path: '/',
+          builder: (_, __) => BlocProvider<SettingsCubit>.value(
+            value: cubit,
+            child: AboutScreen(
+              dependencies: harness.buildDependencies(),
+              aboutCubitBuilder: _buildAboutCubitBuilder(),
+              diagnosticsIoTimeout: const Duration(milliseconds: 200),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: '/topic',
+          builder: (_, state) => Scaffold(
+            body: Text('Topic: ${state.uri.queryParameters['file']}'),
+          ),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(
+        routerConfig: router,
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
+
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+
+    final privacyPolicyTileFinder = find.widgetWithText(
+      ListTile,
+      l10n.privacy_policy,
+    );
+    await tester.ensureVisible(privacyPolicyTileFinder);
+    await tester.tap(privacyPolicyTileFinder);
+    await _pumpUntilFound(tester, find.text('Topic: privacy_policy'));
+    expect(find.text('Topic: privacy_policy'), findsOneWidget);
+
+    router.go('/');
+    await pumpAndSettleSafe(tester);
+    await _pumpUntilFound(tester, find.text(l10n.license));
+
+    final licenseTileFinder = find.widgetWithText(ListTile, l10n.license);
+    await tester.ensureVisible(licenseTileFinder);
+    await tester.tap(licenseTileFinder);
+    await _pumpUntilFound(tester, find.text('Topic: license'));
+    expect(find.text('Topic: license'), findsOneWidget);
+  });
+
+  testWidgets(
+    'AboutScreen changelog markdown link delegates to app link handler',
+    (tester) async {
+      final harness = _AboutScreenTestHarness();
+      final handledLinks = <String?>[];
+      final cubit = await _createSettingsCubit(language: 'en');
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(
+        _buildApp(
+          cubit,
+          dependencies: harness.buildDependencies(
+            appLinkHandler: (context, href) async {
+              handledLinks.add(href);
+              return true;
+            },
+          ),
+          aboutCubitBuilder: _buildAboutCubitBuilder(
+            changelog: '[Open site](https://example.com/md)',
+          ),
+        ),
+      );
+      await _pumpUntilAboutScreenLoaded(tester);
+
+      final context = tester.element(find.byType(AboutScreen));
+      final l10n = AppLocalizations.of(context)!;
+
+      await tester.ensureVisible(find.text(l10n.changelog));
+      await tester.tap(find.text(l10n.changelog));
+      await _pumpUntilFound(tester, find.byType(MarkdownBody));
+
+      final markdownBody = tester.widget<MarkdownBody>(
+        find.byType(MarkdownBody),
+      );
+      markdownBody.onTapLink?.call('Open site', 'https://example.com/md', '');
+      await tester.pump();
+
+      expect(handledLinks, contains('https://example.com/md'));
+    },
+  );
+
+  testWidgets(
+    'AboutScreen bug report copies diagnostics and shows fallback message',
+    (tester) async {
+      final harness = _AboutScreenTestHarness();
+      harness.launchResult = false;
+      harness.primarySourceFiles = const [
+        PrimarySourceFileInfo(
+          relativePath: 'primary_sources/a.txt',
+          sizeBytes: 4096,
+        ),
+      ];
+      harness.dbFileSizesByName.addAll({
+        AppConstants.commonDB: 2048,
+        AppConstants.localizedDB.replaceAll('@loc', 'en'): 4096,
+        AppConstants.localizedDB.replaceAll('@loc', 'es'): 2048,
+        AppConstants.localizedDB.replaceAll('@loc', 'uk'): 1024,
+        AppConstants.localizedDB.replaceAll('@loc', 'ru'): 512,
+      });
+      harness.dbVersionByName.addAll({
+        AppConstants.commonDB: DatabaseVersionInfo(
+          schemaVersion: 4,
+          dataVersion: 11,
+          date: DateTime.utc(2026, 3, 21, 12, 0, 0),
+        ),
+        AppConstants.localizedDB.replaceAll('@loc', 'en'): DatabaseVersionInfo(
+          schemaVersion: 4,
+          dataVersion: 9,
+          date: DateTime.utc(2026, 3, 21, 12, 10, 0),
+        ),
+      });
+      harness.systemAndAppInfoBuilder = ({context, dbFilesSection}) {
+        return [
+          '=======PLATFORM / DART=======',
+          'IsWeb: false',
+          '',
+          '=======DATA / DB FILES=======',
+          dbFilesSection ?? '',
+        ].join('\r\n');
+      };
+
+      final cubit = await _createSettingsCubit(language: 'en');
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(
+        _buildApp(
+          cubit,
+          dependencies: harness.buildDependencies(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(),
+        ),
+      );
+      await _pumpUntilAboutScreenLoaded(tester);
+
+      final context = tester.element(find.byType(AboutScreen));
+      final l10n = AppLocalizations.of(context)!;
+
+      await tester.ensureVisible(find.text(l10n.bug_report));
+      await tester.tap(find.text(l10n.bug_report));
+      await _pumpUntilFound(
+        tester,
+        find.textContaining(l10n.log_copied_message),
+        maxTicks: 120,
+      );
+      await _pumpUntilCondition(
+        tester,
+        condition: () => harness.launchedUrls.isNotEmpty,
+        maxTicks: 120,
+      );
+
+      expect(harness.launchedUrls, hasLength(1));
+      expect(harness.launchedUrls.first, startsWith('mailto:'));
+
+      final clipboardText = harness.clipboardText ?? '';
+      expect(clipboardText, contains('=======TIMESTAMP======='));
+      expect(clipboardText, contains('=======DATA / DB FILES======='));
+      expect(clipboardText, contains('[PRIMARY SOURCES FILES]'));
+      expect(clipboardText, contains('size=4.0 KB'));
+      expect(clipboardText, contains('=======APP SETTINGS======='));
+    },
+  );
+
+  testWidgets(
+    'AboutScreen desktop drag listener handles pointer drag',
+    (tester) async {
+      final harness = _AboutScreenTestHarness();
+      final cubit = await _createSettingsCubit(language: 'en');
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(
+        _buildApp(
+          cubit,
+          dependencies: harness.buildDependencies(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(),
+        ),
+      );
+      await pumpAndSettleSafe(tester);
+
+      final listenerFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is Listener &&
+            widget.onPointerDown != null &&
+            widget.onPointerMove != null &&
+            widget.onPointerUp != null,
+      );
+      expect(listenerFinder, findsAtLeastNWidgets(1));
+
+      final start = tester.getCenter(listenerFinder.first);
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: start);
+      await gesture.down(start);
+      await gesture.moveTo(Offset(start.dx, start.dy - 60));
+      await gesture.up();
+      await tester.pump();
+
+      final context = tester.element(find.byType(AboutScreen));
+      final l10n = AppLocalizations.of(context)!;
+      expect(find.text(l10n.about_screen), findsOneWidget);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.windows),
+  );
 }
 
-Widget _buildApp(SettingsCubit cubit) {
+class _AboutScreenTestHarness {
+  final List<String> launchedUrls = <String>[];
+  final Map<String, int?> dbFileSizesByName = <String, int?>{};
+  final Map<String, DatabaseVersionInfo?> dbVersionByName =
+      <String, DatabaseVersionInfo?>{};
+  List<PrimarySourceFileInfo> primarySourceFiles = const [];
+  String? clipboardText;
+  bool launchResult = true;
+  String Function({BuildContext? context, String? dbFilesSection})?
+  systemAndAppInfoBuilder;
+
+  AboutScreenDependencies buildDependencies({
+    AboutAppLinkHandler? appLinkHandler,
+  }) {
+    return AboutScreenDependencies(
+      launchLink: (url) async {
+        launchedUrls.add(url);
+        return launchResult;
+      },
+      appLinkHandler: appLinkHandler ?? handleAppLink,
+      collectSystemAndAppInfo: ({context, dbFilesSection}) async {
+        if (systemAndAppInfoBuilder != null) {
+          return systemAndAppInfoBuilder!(
+            context: context,
+            dbFilesSection: dbFilesSection,
+          );
+        }
+        return '=======DATA / DB FILES=======\r\n${dbFilesSection ?? ''}\r\n';
+      },
+      databaseFileSizeLoader: (dbFile) async => dbFileSizesByName[dbFile],
+      databaseVersionLoader: (dbFile) async => dbVersionByName[dbFile],
+      primarySourceFilesLoader: () async => primarySourceFiles,
+      writeClipboardText: (text) async {
+        clipboardText = text;
+      },
+    );
+  }
+}
+
+AboutCubitBuilder _buildAboutCubitBuilder({String changelog = _changelog}) {
+  return (initialLanguageCode) => AboutCubit(
+    initialLanguageCode: initialLanguageCode,
+    packageInfoLoader: () async => PackageInfo(
+      appName: 'Revelation',
+      packageName: 'revelation.app',
+      version: '1.2.3',
+      buildNumber: '45',
+    ),
+    changelogLoader: () async => changelog,
+    dbVersionInfoLoader: (_) async => null,
+  );
+}
+
+Future<SettingsCubit> _createSettingsCubit({required String language}) async {
+  final repository = FakeSettingsRepository(
+    initialSettings: AppSettings(
+      selectedLanguage: language,
+      selectedTheme: 'manuscript',
+      selectedFontSize: 'medium',
+      soundEnabled: true,
+    ),
+  );
+  final cubit = SettingsCubit(repository);
+  await cubit.loadSettings();
+  return cubit;
+}
+
+Future<void> _pumpUntilFound(
+  WidgetTester tester,
+  Finder finder, {
+  int maxTicks = 40,
+  Duration step = const Duration(milliseconds: 120),
+}) async {
+  for (var i = 0; i < maxTicks; i++) {
+    await tester.pump(step);
+    if (finder.evaluate().isNotEmpty) {
+      return;
+    }
+  }
+  fail('Finder did not appear within $maxTicks ticks: $finder');
+}
+
+Future<void> _pumpUntilCondition(
+  WidgetTester tester, {
+  required bool Function() condition,
+  int maxTicks = 40,
+  Duration step = const Duration(milliseconds: 120),
+}) async {
+  for (var i = 0; i < maxTicks; i++) {
+    await tester.pump(step);
+    if (condition()) {
+      return;
+    }
+  }
+  fail('Condition was not met within $maxTicks ticks.');
+}
+
+Future<void> _pumpUntilAboutScreenLoaded(
+  WidgetTester tester, {
+  int maxTicks = 60,
+  Duration step = const Duration(milliseconds: 120),
+}) async {
+  for (var i = 0; i < maxTicks; i++) {
+    await tester.pump(step);
+    if (find.byType(CircularProgressIndicator).evaluate().isEmpty &&
+        find.byType(AboutScreen).evaluate().isNotEmpty) {
+      return;
+    }
+  }
+  fail('AboutScreen did not finish loading within $maxTicks ticks.');
+}
+
+Widget _buildApp(
+  SettingsCubit cubit, {
+  required AboutScreenDependencies dependencies,
+  required AboutCubitBuilder aboutCubitBuilder,
+}) {
   return BlocProvider<SettingsCubit>.value(
     value: cubit,
     child: buildLocalizedTestApp(
       locale: const Locale('en'),
-      child: const AboutScreen(),
+      child: AboutScreen(
+        dependencies: dependencies,
+        aboutCubitBuilder: aboutCubitBuilder,
+        diagnosticsIoTimeout: const Duration(milliseconds: 200),
+      ),
       withScaffold: false,
     ),
   );
 }
 
-Map<String, Uint8List> _buildAboutAssets() {
+Map<String, Uint8List> _buildAboutAssets({
+  String institutions = _institutionsXml,
+  String recommended = _recommendedXml,
+  String libraries = _librariesXml,
+}) {
   return <String, Uint8List>{
-    'CHANGELOG.md': _bytes(_changelog),
-    'assets/data/about_libraries.xml': _bytes(_librariesXml),
-    'assets/data/about_institutions.xml': _bytes(_institutionsXml),
-    'assets/data/about_recommended.xml': _bytes(_recommendedXml),
+    'assets/data/about_libraries.xml': _bytes(libraries),
+    'assets/data/about_institutions.xml': _bytes(institutions),
+    'assets/data/about_recommended.xml': _bytes(recommended),
     'assets/images/UI/main-icon.svg': _bytes(_svg),
     'assets/images/UI/email.svg': _bytes(_svg),
     'assets/images/UI/www.svg': _bytes(_svg),

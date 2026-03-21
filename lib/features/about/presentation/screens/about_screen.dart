@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +30,74 @@ import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
+typedef AboutLinkLauncher = Future<bool> Function(String url);
+typedef AboutAppLinkHandler =
+    Future<bool> Function(BuildContext context, String? href);
+typedef AboutSystemInfoCollector =
+    Future<String> Function({BuildContext? context, String? dbFilesSection});
+typedef AboutDatabaseFileSizeLoader = Future<int?> Function(String dbFile);
+typedef AboutDatabaseVersionLoader =
+    Future<DatabaseVersionInfo?> Function(String dbFile);
+typedef AboutPrimarySourceFilesLoader =
+    Future<List<PrimarySourceFileInfo>> Function();
+typedef AboutClipboardWriter = Future<void> Function(String text);
+typedef AboutCubitBuilder = AboutCubit Function(String initialLanguageCode);
+
+Future<void> _defaultAboutClipboardWriter(String text) {
+  return Clipboard.setData(ClipboardData(text: text));
+}
+
+Future<bool> _defaultAboutLaunchLink(String url) {
+  return launchLink(url);
+}
+
+Future<String> _defaultAboutSystemInfoCollector({
+  BuildContext? context,
+  String? dbFilesSection,
+}) {
+  return collectSystemAndAppInfo(
+    context: context,
+    dbFilesSection: dbFilesSection,
+  );
+}
+
+AboutCubit _defaultAboutCubitBuilder(String initialLanguageCode) {
+  return AboutCubit(initialLanguageCode: initialLanguageCode);
+}
+
+@immutable
+class AboutScreenDependencies {
+  const AboutScreenDependencies({
+    this.launchLink = _defaultAboutLaunchLink,
+    this.appLinkHandler = handleAppLink,
+    this.collectSystemAndAppInfo = _defaultAboutSystemInfoCollector,
+    this.databaseFileSizeLoader = getLocalDatabaseFileSize,
+    this.databaseVersionLoader = getLocalDatabaseVersionInfo,
+    this.primarySourceFilesLoader = getLocalPrimarySourceFilesInfo,
+    this.writeClipboardText = _defaultAboutClipboardWriter,
+  });
+
+  final AboutLinkLauncher launchLink;
+  final AboutAppLinkHandler appLinkHandler;
+  final AboutSystemInfoCollector collectSystemAndAppInfo;
+  final AboutDatabaseFileSizeLoader databaseFileSizeLoader;
+  final AboutDatabaseVersionLoader databaseVersionLoader;
+  final AboutPrimarySourceFilesLoader primarySourceFilesLoader;
+  final AboutClipboardWriter writeClipboardText;
+}
+
 class AboutScreen extends StatefulWidget {
-  const AboutScreen({super.key});
+  const AboutScreen({
+    super.key,
+    AboutScreenDependencies? dependencies,
+    this.diagnosticsIoTimeout = const Duration(seconds: 2),
+    AboutCubitBuilder? aboutCubitBuilder,
+  }) : dependencies = dependencies ?? const AboutScreenDependencies(),
+       aboutCubitBuilder = aboutCubitBuilder ?? _defaultAboutCubitBuilder;
+
+  final AboutScreenDependencies dependencies;
+  final Duration diagnosticsIoTimeout;
+  final AboutCubitBuilder aboutCubitBuilder;
 
   @override
   State<AboutScreen> createState() => _AboutScreenState();
@@ -45,12 +113,8 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   void initState() {
     super.initState();
-    _aboutCubit = AboutCubit(
-      initialLanguageCode: context
-          .read<SettingsCubit>()
-          .state
-          .settings
-          .selectedLanguage,
+    _aboutCubit = widget.aboutCubitBuilder(
+      context.read<SettingsCubit>().state.settings.selectedLanguage,
     );
   }
 
@@ -316,17 +380,19 @@ class _AboutScreenState extends State<AboutScreen> {
         IconLinkItem(
           iconPath: "assets/images/UI/email.svg",
           text: AppConstants.supportEmail,
-          onTap: () => launchLink("mailto:${AppConstants.supportEmail}"),
+          onTap: () => widget.dependencies.launchLink(
+            "mailto:${AppConstants.supportEmail}",
+          ),
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/www.svg",
           text: AppLocalizations.of(context)!.website,
-          onTap: () => launchLink(AppConstants.websiteUrl),
+          onTap: () => widget.dependencies.launchLink(AppConstants.websiteUrl),
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/github.svg",
           text: AppLocalizations.of(context)!.github_project,
-          onTap: () => launchLink(AppConstants.projectUrl),
+          onTap: () => widget.dependencies.launchLink(AppConstants.projectUrl),
         ),
       ],
     );
@@ -338,26 +404,27 @@ class _AboutScreenState extends State<AboutScreen> {
         IconLinkItem(
           iconPath: "assets/images/UI/download.svg",
           text: AppLocalizations.of(context)!.installation_packages,
-          onTap: () => launchLink(AppConstants.latestReleaseUrl),
+          onTap: () =>
+              widget.dependencies.launchLink(AppConstants.latestReleaseUrl),
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/shield.svg",
           text: AppLocalizations.of(context)!.privacy_policy,
           onTap: () {
-            handleAppLink(context, 'topic:privacy_policy');
+            widget.dependencies.appLinkHandler(context, 'topic:privacy_policy');
           },
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/license.svg",
           text: AppLocalizations.of(context)!.license,
           onTap: () {
-            handleAppLink(context, 'topic:license');
+            widget.dependencies.appLinkHandler(context, 'topic:license');
           },
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/support_us.svg",
           text: AppLocalizations.of(context)!.support_us,
-          onTap: () => launchLink(
+          onTap: () => widget.dependencies.launchLink(
             AppConstants.websiteUrl +
                 AppConstants.joinPartUrl.replaceFirst('@loc', currentLocale),
           ),
@@ -529,7 +596,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   data: state.changelog,
                   styleSheet: getMarkdownStyleSheet(theme, colorScheme),
                   onTapLink: (text, href, title) {
-                    handleAppLink(context, href);
+                    widget.dependencies.appLinkHandler(context, href);
                   },
                 ),
               )
@@ -563,7 +630,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 return;
               }
               sbTechInfo.write(
-                await collectSystemAndAppInfo(
+                await widget.dependencies.collectSystemAndAppInfo(
                   context: this.context,
                   dbFilesSection: dataFilesSection,
                 ),
@@ -573,8 +640,10 @@ class _AboutScreenState extends State<AboutScreen> {
                 sbTechInfo.writeln("$key: $value");
               });
               final emailBodyContent = Uri.encodeFull(sbEmail.toString());
-              Clipboard.setData(ClipboardData(text: sbTechInfo.toString()));
-              final openEmailResult = await launchLink(
+              await widget.dependencies.writeClipboardText(
+                sbTechInfo.toString(),
+              );
+              final openEmailResult = await widget.dependencies.launchLink(
                 "mailto:${AppConstants.supportEmail}?subject=Revelation%20Bug%20Report&body=${emailBodyContent}",
               );
               if (!mounted) {
@@ -621,13 +690,17 @@ class _AboutScreenState extends State<AboutScreen> {
       String? sizeError;
       String? versionInfoError;
       try {
-        sizeBytes = await getLocalDatabaseFileSize(dbFile);
+        sizeBytes = await widget.dependencies
+            .databaseFileSizeLoader(dbFile)
+            .timeout(widget.diagnosticsIoTimeout);
       } catch (error, stackTrace) {
         log.handle(error, stackTrace);
         sizeError = _singleLineError(error);
       }
       try {
-        versionInfo = await getLocalDatabaseVersionInfo(dbFile);
+        versionInfo = await widget.dependencies
+            .databaseVersionLoader(dbFile)
+            .timeout(widget.diagnosticsIoTimeout);
       } catch (error, stackTrace) {
         log.handle(error, stackTrace);
         versionInfoError = _singleLineError(error);
@@ -661,7 +734,16 @@ class _AboutScreenState extends State<AboutScreen> {
     if (!isWeb()) {
       lines.add('');
       lines.add('[PRIMARY SOURCES FILES]');
-      lines.addAll(await _collectPrimarySourcesFilesDiagnosticsLines());
+      try {
+        final primarySourcesLines =
+            await _collectPrimarySourcesFilesDiagnosticsLines().timeout(
+              widget.diagnosticsIoTimeout,
+            );
+        lines.addAll(primarySourcesLines);
+      } catch (error, stackTrace) {
+        log.handle(error, stackTrace);
+        lines.add('primary_sources: read_error=${_singleLineError(error)}');
+      }
     }
 
     return lines.join('\r\n');
@@ -671,7 +753,7 @@ class _AboutScreenState extends State<AboutScreen> {
     final lines = <String>[];
     List<PrimarySourceFileInfo> fileInfos;
     try {
-      fileInfos = await getLocalPrimarySourceFilesInfo();
+      fileInfos = await widget.dependencies.primarySourceFilesLoader();
     } catch (error, stackTrace) {
       log.handle(error, stackTrace);
       return ['primary_sources: read_error=${_singleLineError(error)}'];

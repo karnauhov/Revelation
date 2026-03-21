@@ -25,7 +25,9 @@ import '../../test_harness/test_harness.dart';
 void main() {
   setUp(() async {
     await GetIt.I.reset();
-    AppDi.registerCore(talker: Talker());
+    AppDi.registerCore(
+      talker: Talker(settings: TalkerSettings(useConsoleLogs: false)),
+    );
   });
 
   tearDown(() async {
