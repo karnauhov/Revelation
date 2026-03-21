@@ -5,7 +5,7 @@
   - [setup.iss (MyAppVersion, MyAppBuild)](./setup.iss),
   - [revelation.desktop (Version)](/snap/gui/revelation.desktop),
   - [snapcraft.yaml (version)](./snapcraft.yaml)
-- Fix [Changelog](CHANGELOG.md)
+- Update [Changelog](CHANGELOG.md) only when release has new notable user-facing changes not already covered; keep entries short, clear, and non-duplicated
 - Build snap package (`snapcraft_build.sh`), install local and check
 - Commit for auto build
 - Deploy on [revelation.website](https://github.com/karnauhov/Revelation.website)

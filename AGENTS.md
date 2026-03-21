@@ -18,6 +18,31 @@
 - Desktop window handling: native platform runners (`windows/runner`, `linux/runner`)
 - Localization: `flutter_localizations`, `intl`
 
+## Model and Reasoning Selection
+- The assistant cannot switch the model in the current session on its own; model switching is performed by the user.
+- Before each new task, the assistant must recommend a pair: `model + reasoning level`, with a short rationale.
+- After the user switches the model, the assistant must continue the same task without losing context.
+- If task complexity/risk increases during execution, escalate reasoning to `high` or `xhigh` and explain why.
+
+### Model Selection Matrix
+| Model | Use Cases |
+| --- | --- |
+| `GPT-5.4` | Architecture work, deep code review, complex bugs, system-level logic. |
+| `GPT-5.3-Codex` | Main development, refactoring, tests, CI/CD, databases, API integrations. |
+| `GPT-5.4-Mini` | Translations, UI/UX copy, changelog/release notes, simple JSON edits. |
+| `GPT-5.2-Codex` | Boilerplate and minor local edits. |
+
+### Reasoning Matrix
+| Reasoning | When to Use |
+| --- | --- |
+| `low` | Very simple or template-based tasks. |
+| `medium` | Most everyday implementation tasks. |
+| `high` | Complex logic, non-trivial bugs, architectural decisions. |
+| `xhigh` | Critical incidents, high uncertainty, high cost of error. |
+
+### Default Recommendation
+- If task type is unclear, recommend `GPT-5.3-Codex + high`.
+
 ## Repository Layout
 - `lib/app/`: app bootstrap, DI, router, composition root
 - `lib/core/`: cross-cutting contracts (`errors`, `async`, `platform`, `logging`, `audio`, diagnostics)
@@ -113,12 +138,21 @@
 
 ## Release Checklist
 - Update version information in the versioned project files listed above.
-- Update `CHANGELOG.md`.
+- Update `CHANGELOG.md` only when there are new user-visible and non-duplicated changes for the release.
 - Build the Snap package with `snapcraft_build.sh`, install it locally, and verify it.
 - Commit the release changes for auto build.
 - Deploy the website content in the separate `Revelation.website` repository.
 - Deploy release artifacts to Snapcraft and GitHub Releases.
 - Deploy mobile and store releases to Google Play and Microsoft Store.
+
+## Changelog Rules
+- Keep changelog entries compact and user-facing; `CHANGELOG.md` is not a commit-by-commit technical log.
+- Add a changelog bullet only for notable user-visible outcomes (feature, fix, UX/performance/reliability improvement) or release-critical changes users must know about.
+- Do not add bullets for purely internal work with no user impact (refactors, folder moves, dependency bumps without visible effect, test-only updates, formatting, CI tweaks).
+- Do not duplicate information: if a change is already covered by an existing bullet in the same unreleased version, update that bullet only if clarity improves; otherwise add nothing.
+- Merge related internal commits into one short outcome-oriented bullet written in plain language.
+- Prefer concise wording: one bullet = one clear user outcome; avoid deep implementation details and architecture/process jargon.
+- If a release has no new notable user-facing changes beyond already documented items, skipping changelog edits is allowed.
 
 ## Database Update Checklist
 - Edit/version working DB files in `%Documents%/revelation/db`.
