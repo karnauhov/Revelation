@@ -1,6 +1,8 @@
 import 'package:revelation/core/errors/app_failure.dart';
 
 class AboutState {
+  static const Object _unset = Object();
+
   const AboutState({
     required this.appVersion,
     required this.buildNumber,
@@ -9,6 +11,8 @@ class AboutState {
     required this.isChangelogExpanded,
     required this.isAcknowledgementsExpanded,
     required this.isRecommendedExpanded,
+    this.commonDbUpdatedAt,
+    this.localizedDbUpdatedAt,
     this.failure,
   });
 
@@ -21,6 +25,8 @@ class AboutState {
       isChangelogExpanded: false,
       isAcknowledgementsExpanded: false,
       isRecommendedExpanded: false,
+      commonDbUpdatedAt: null,
+      localizedDbUpdatedAt: null,
     );
   }
 
@@ -31,6 +37,8 @@ class AboutState {
   final bool isChangelogExpanded;
   final bool isAcknowledgementsExpanded;
   final bool isRecommendedExpanded;
+  final DateTime? commonDbUpdatedAt;
+  final DateTime? localizedDbUpdatedAt;
   final AppFailure? failure;
 
   AboutState copyWith({
@@ -41,6 +49,8 @@ class AboutState {
     bool? isChangelogExpanded,
     bool? isAcknowledgementsExpanded,
     bool? isRecommendedExpanded,
+    Object? commonDbUpdatedAt = _unset,
+    Object? localizedDbUpdatedAt = _unset,
     AppFailure? failure,
     bool clearFailure = false,
   }) {
@@ -54,6 +64,12 @@ class AboutState {
           isAcknowledgementsExpanded ?? this.isAcknowledgementsExpanded,
       isRecommendedExpanded:
           isRecommendedExpanded ?? this.isRecommendedExpanded,
+      commonDbUpdatedAt: identical(commonDbUpdatedAt, _unset)
+          ? this.commonDbUpdatedAt
+          : commonDbUpdatedAt as DateTime?,
+      localizedDbUpdatedAt: identical(localizedDbUpdatedAt, _unset)
+          ? this.localizedDbUpdatedAt
+          : localizedDbUpdatedAt as DateTime?,
       failure: clearFailure ? null : (failure ?? this.failure),
     );
   }
@@ -70,6 +86,8 @@ class AboutState {
             isChangelogExpanded == other.isChangelogExpanded &&
             isAcknowledgementsExpanded == other.isAcknowledgementsExpanded &&
             isRecommendedExpanded == other.isRecommendedExpanded &&
+            commonDbUpdatedAt == other.commonDbUpdatedAt &&
+            localizedDbUpdatedAt == other.localizedDbUpdatedAt &&
             failure == other.failure;
   }
 
@@ -82,6 +100,8 @@ class AboutState {
     isChangelogExpanded,
     isAcknowledgementsExpanded,
     isRecommendedExpanded,
+    commonDbUpdatedAt,
+    localizedDbUpdatedAt,
     failure,
   );
 }

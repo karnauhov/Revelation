@@ -103,7 +103,8 @@ class CoreDbMixin:
             self.current_db_path = db_path
             self._open_common_connection()
 
-            self._ensure_schema()
+            # NOTE: Disabled by request to keep DB file modification time stable on open.
+            # self._ensure_schema()
             self._load_rows()
             self._set_dirty(False)
             self._update_section_db_labels()
@@ -127,7 +128,8 @@ class CoreDbMixin:
                     if cur.fetchone() is None:
                         con.close()
                         continue
-                    self._ensure_common_schema_on_connection(con)
+                    # NOTE: Disabled by request to keep DB file modification time stable on open.
+                    # self._ensure_common_schema_on_connection(con)
                     self.common_connection = con
                     self.common_db_path = path.resolve()
                     return

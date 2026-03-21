@@ -6,6 +6,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:revelation/shared/ui/widgets/icon_link_item.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
 import 'package:revelation/features/about/presentation/bloc/about_state.dart';
@@ -41,7 +42,13 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   void initState() {
     super.initState();
-    _aboutCubit = AboutCubit();
+    _aboutCubit = AboutCubit(
+      initialLanguageCode: context
+          .read<SettingsCubit>()
+          .state
+          .settings
+          .selectedLanguage,
+    );
   }
 
   @override
@@ -82,7 +89,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // About the application
-                  _buildAppInfo(context, state),
+                  _buildAppInfo(context, state, currentLocale),
                   const SizedBox(height: 8),
                   Text(
                     AppLocalizations.of(context)!.app_description,
@@ -127,7 +134,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   // Copyright
                   Center(
                     child: Text(
-                      "В© ${DateTime.now().year} ${AppConstants.author}. ${AppLocalizations.of(context)!.all_rights_reserved}.",
+                      "© ${DateTime.now().year} ${AppConstants.author}. ${AppLocalizations.of(context)!.all_rights_reserved}.",
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.outline,
                       ),
@@ -200,9 +207,18 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  Widget _buildAppInfo(BuildContext context, AboutState state) {
+  Widget _buildAppInfo(
+    BuildContext context,
+    AboutState state,
+    String selectedLanguage,
+  ) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+    final versionTextStyle = theme.textTheme.titleMedium?.copyWith(
+      fontWeight: FontWeight.normal,
+      color: colorScheme.onSurfaceVariant,
+    );
 
     return Row(
       children: [
@@ -216,23 +232,51 @@ class _AboutScreenState extends State<AboutScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppLocalizations.of(context)!.app_name,
+              l10n.app_name,
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
               ),
             ),
             Text(
-              "${AppLocalizations.of(context)!.version} ${state.appVersion} (${state.buildNumber})",
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.normal,
-                color: colorScheme.onSurfaceVariant,
-              ),
+              "${l10n.version} ${state.appVersion} (${state.buildNumber})",
+              style: versionTextStyle,
+            ),
+            Text(
+              "${l10n.common_data_update} ${_formatDbUpdatedAt(context, state.commonDbUpdatedAt)}",
+              style: versionTextStyle,
+            ),
+            Text(
+              "${l10n.localized_data_update(_localizedLanguageName(l10n, selectedLanguage))} ${_formatDbUpdatedAt(context, state.localizedDbUpdatedAt)}",
+              style: versionTextStyle,
             ),
           ],
         ),
       ],
     );
+  }
+
+  String _formatDbUpdatedAt(BuildContext context, DateTime? dateTime) {
+    if (dateTime == null) {
+      return "-";
+    }
+    final localeName = Localizations.localeOf(context).toString();
+    return DateFormat.yMd(localeName).add_Hms().format(dateTime.toLocal());
+  }
+
+  String _localizedLanguageName(AppLocalizations l10n, String languageCode) {
+    switch (languageCode.toLowerCase()) {
+      case 'en':
+        return l10n.language_name_en;
+      case 'es':
+        return l10n.language_name_es;
+      case 'uk':
+        return l10n.language_name_uk;
+      case 'ru':
+        return l10n.language_name_ru;
+      default:
+        return l10n.language_name_en;
+    }
   }
 
   Widget _buildContactsLinks(BuildContext context) {

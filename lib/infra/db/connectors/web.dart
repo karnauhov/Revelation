@@ -18,6 +18,16 @@ LocalizedDB getLocalizedDB(String loc) {
   return LocalizedDB(connectOnWeb(dbFile));
 }
 
+Future<DateTime?> getLocalDatabaseUpdatedAt(String dbFile) async {
+  final databaseName = dbFile.replaceAll(".sqlite", "");
+  final prefs = await SharedPreferences.getInstance();
+  final createdAtIso = prefs.getString(_createdAtKey(databaseName));
+  if (createdAtIso == null || createdAtIso.isEmpty) {
+    return null;
+  }
+  return DateTime.tryParse(createdAtIso);
+}
+
 DatabaseConnection connectOnWeb(String dbFile) {
   return DatabaseConnection.delayed(
     Future(() async {

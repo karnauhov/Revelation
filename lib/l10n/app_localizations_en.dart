@@ -12,7 +12,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_name => 'Revelation';
 
   @override
-  String get version => 'Version';
+  String get version => 'Version:';
+
+  @override
+  String get common_data_update => 'Common data from:';
+
+  @override
+  String localized_data_update(String language) {
+    return 'Data in $language from:';
+  }
+
+  @override
+  String get language_name_en => 'English';
+
+  @override
+  String get language_name_es => 'Spanish';
+
+  @override
+  String get language_name_uk => 'Ukrainian';
+
+  @override
+  String get language_name_ru => 'Russian';
 
   @override
   String get app_description => 'Revelation Study app.';

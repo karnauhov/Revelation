@@ -18,6 +18,11 @@ LocalizedDB getLocalizedDB(String loc) {
   return LocalizedDB(getLazyDatabase(dbFile));
 }
 
+Future<DateTime?> getLocalDatabaseUpdatedAt(String dbFile) {
+  const folder = "db";
+  return getLastUpdateFileLocal(folder, dbFile);
+}
+
 LazyDatabase getLazyDatabase(dbFile) {
   final folder = "db";
   final db = LazyDatabase(() async {

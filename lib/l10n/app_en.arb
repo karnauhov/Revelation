@@ -1,7 +1,21 @@
 {
   "@@locale": "en",
   "app_name": "Revelation",
-  "version": "Version",
+  "version": "Version:",
+  "common_data_update": "Common data from:",
+  "localized_data_update": "Data in {language} from:",
+  "@localized_data_update": {
+    "description": "Label for localized DB update timestamp by language",
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "language_name_en": "English",
+  "language_name_es": "Spanish",
+  "language_name_uk": "Ukrainian",
+  "language_name_ru": "Russian",
   "app_description": "Revelation Study app.",
   "website": "Revelation.website",
   "github_project": "GitHub project",

@@ -75,6 +75,11 @@ void main() {
 
     expect(find.text(l10n.about_screen), findsOneWidget);
     expect(find.text('${l10n.version} 1.2.3 (45)'), findsOneWidget);
+    expect(find.textContaining(l10n.common_data_update), findsOneWidget);
+    expect(
+      find.textContaining(l10n.localized_data_update(l10n.language_name_en)),
+      findsOneWidget,
+    );
     await tester.tap(find.text(l10n.changelog));
     await pumpAndSettleSafe(tester);
 

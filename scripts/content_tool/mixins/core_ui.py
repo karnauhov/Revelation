@@ -222,6 +222,7 @@ class CoreUiMixin:
                 "Раздел «Библии» скоро будет доступен.",
                 local_db_var=self.bibles_local_db_var,
                 common_db_var=self.bibles_common_db_var,
+                show_db_labels=False,
             )
 
             ttk.Separator(self, orient="horizontal").grid(row=2, column=0, sticky="ew")
@@ -506,6 +507,7 @@ class CoreUiMixin:
             *,
             local_db_var: tk.StringVar,
             common_db_var: tk.StringVar,
+            show_db_labels: bool = True,
         ) -> None:
             parent.columnconfigure(0, weight=1)
             parent.rowconfigure(1, weight=1)
@@ -515,10 +517,11 @@ class CoreUiMixin:
             top.columnconfigure(1, weight=1)
             top.columnconfigure(3, weight=1)
 
-            ttk.Label(top, text="Локализованная БД:").grid(row=0, column=0, sticky="w", padx=(0, 8))
-            ttk.Label(top, textvariable=local_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
-            ttk.Label(top, text="Общая БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
-            ttk.Label(top, textvariable=common_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
+            if show_db_labels:
+                ttk.Label(top, text="Локализованная БД:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+                ttk.Label(top, textvariable=local_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
+                ttk.Label(top, text="Общая БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
+                ttk.Label(top, textvariable=common_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
 
             body = ttk.Frame(parent, padding=20)
             body.grid(row=1, column=0, sticky="nsew")
