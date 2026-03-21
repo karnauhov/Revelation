@@ -61,7 +61,9 @@ class TopicsCatalogState {
   int get hashCode => Object.hash(
     language,
     Object.hashAll(topics),
-    Object.hashAllUnordered(iconByKey.entries),
+    Object.hashAllUnordered(
+      iconByKey.entries.map((entry) => Object.hash(entry.key, entry.value)),
+    ),
     isLoading,
     failure,
   );
