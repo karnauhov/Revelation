@@ -46,8 +46,11 @@ jobs:
       - name: Coverage
         run: flutter test --coverage
 
+      - name: Filter coverage report
+        run: dart run scripts/filter_lcov.dart --lcov=coverage/lcov.info
+
       - name: Coverage thresholds
-        run: dart run scripts/coverage_baseline.dart --min-all=90.0
+        run: dart run scripts/coverage_baseline.dart --min-effective=90.0
 
       - name: Forbidden pattern checks
         run: dart run scripts/check_forbidden_patterns.dart

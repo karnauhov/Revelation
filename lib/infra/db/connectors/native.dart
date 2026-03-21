@@ -71,7 +71,7 @@ Future<List<PrimarySourceFileInfo>> getLocalPrimarySourceFilesInfo() async {
       try {
         await for (final entity in dir.list(
           recursive: false,
-          followLinks: true,
+          followLinks: false,
         )) {
           if (entity is Directory) {
             queue.add(entity);
