@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -135,6 +136,152 @@ void main() {
       expect(find.text('(${l10n.hide})', findRichText: true), findsOneWidget);
     },
   );
+
+  testWidgets(
+    'expansion state is retained only for source ids that still exist after reload',
+    (tester) async {
+      final repository = _SequentialPrimarySourcesRepository([
+        PrimarySourcesLoadResult(
+          fullPrimarySources: <PrimarySource>[_buildSource('old-id')],
+          significantPrimarySources: const <PrimarySource>[],
+          fragmentsPrimarySources: const <PrimarySource>[],
+        ),
+        PrimarySourcesLoadResult(
+          fullPrimarySources: <PrimarySource>[_buildSource('new-id')],
+          significantPrimarySources: const <PrimarySource>[],
+          fragmentsPrimarySources: const <PrimarySource>[],
+        ),
+      ]);
+      final cubit = PrimarySourcesCubit(repository);
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
+      await pumpFrames(tester);
+      await pumpAndSettleSafe(tester);
+
+      final context = tester.element(find.byType(PrimarySourcesScreen));
+      final l10n = AppLocalizations.of(context)!;
+
+      await tester.tap(
+        find.text('(${l10n.show_more})', findRichText: true).first,
+      );
+      await pumpFrames(tester);
+      expect(find.text('(${l10n.hide})', findRichText: true), findsOneWidget);
+
+      await cubit.loadPrimarySources();
+      await pumpFrames(tester, count: 2);
+      await pumpAndSettleSafe(tester);
+
+      expect(find.text('(${l10n.hide})', findRichText: true), findsNothing);
+      expect(
+        find.text('(${l10n.show_more})', findRichText: true),
+        findsWidgets,
+      );
+    },
+  );
+
+  testWidgets(
+    'listener compares significant and fragments groups on sequential reloads',
+    (tester) async {
+      final repository = _SequentialPrimarySourcesRepository([
+        PrimarySourcesLoadResult(
+          fullPrimarySources: <PrimarySource>[_buildSource('stable')],
+          significantPrimarySources: const <PrimarySource>[],
+          fragmentsPrimarySources: const <PrimarySource>[],
+        ),
+        PrimarySourcesLoadResult(
+          fullPrimarySources: <PrimarySource>[_buildSource('stable')],
+          significantPrimarySources: <PrimarySource>[_buildSource('sig-1')],
+          fragmentsPrimarySources: const <PrimarySource>[],
+        ),
+        PrimarySourcesLoadResult(
+          fullPrimarySources: <PrimarySource>[_buildSource('stable')],
+          significantPrimarySources: <PrimarySource>[_buildSource('sig-1')],
+          fragmentsPrimarySources: <PrimarySource>[_buildSource('frag-1')],
+        ),
+      ]);
+      final cubit = PrimarySourcesCubit(repository);
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
+      await pumpFrames(tester, count: 2);
+      await pumpAndSettleSafe(tester);
+
+      await cubit.loadPrimarySources();
+      await pumpFrames(tester, count: 2);
+      await pumpAndSettleSafe(tester);
+
+      await cubit.loadPrimarySources();
+      await pumpFrames(tester, count: 2);
+      await pumpAndSettleSafe(tester);
+
+      expect(find.byType(PrimarySourcesScreen), findsOneWidget);
+      expect(find.byType(SourceItemWidget), findsWidgets);
+    },
+  );
+
+  testWidgets(
+    'desktop drag listener updates scrolling state without throwing',
+    (tester) async {
+      final repository = _SequentialPrimarySourcesRepository([
+        PrimarySourcesLoadResult(
+          fullPrimarySources: List<PrimarySource>.generate(
+            20,
+            (index) => _buildSource('full-$index'),
+          ),
+          significantPrimarySources: List<PrimarySource>.generate(
+            20,
+            (index) => _buildSource('sig-$index'),
+          ),
+          fragmentsPrimarySources: List<PrimarySource>.generate(
+            20,
+            (index) => _buildSource('frag-$index'),
+          ),
+        ),
+      ]);
+      final cubit = PrimarySourcesCubit(repository);
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(_buildPrimarySourcesScreenApp(cubit));
+      await pumpFrames(tester, count: 2);
+      await pumpAndSettleSafe(tester);
+
+      final dragListeners = tester
+          .widgetList<Listener>(find.byType(Listener))
+          .where((widget) {
+            return widget.onPointerDown != null &&
+                widget.onPointerMove != null &&
+                widget.onPointerUp != null;
+          })
+          .toList();
+      expect(dragListeners, isNotEmpty);
+      final listener = dragListeners.first;
+
+      listener.onPointerDown?.call(
+        const PointerDownEvent(
+          position: Offset(100, 350),
+          buttons: kPrimaryMouseButton,
+        ),
+      );
+      await tester.pump();
+
+      listener.onPointerMove?.call(
+        const PointerMoveEvent(
+          position: Offset(100, 310),
+          buttons: kPrimaryMouseButton,
+        ),
+      );
+      await tester.pump();
+
+      listener.onPointerUp?.call(
+        const PointerUpEvent(position: Offset(100, 310)),
+      );
+      await tester.pump();
+
+      expect(find.byType(PrimarySourcesScreen), findsOneWidget);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.linux),
+  );
 }
 
 Widget _buildPrimarySourcesScreenApp(PrimarySourcesCubit cubit) {
@@ -191,6 +338,22 @@ class _ControlledPrimarySourcesRepository extends PrimarySourcesDbRepository {
 
   void completeRequest(int index, AppResult<PrimarySourcesLoadResult> result) {
     _requests[index].complete(result);
+  }
+}
+
+class _SequentialPrimarySourcesRepository extends PrimarySourcesDbRepository {
+  _SequentialPrimarySourcesRepository(this._results)
+    : super(dataSource: _EmptyPrimarySourcesDataSource());
+
+  final List<PrimarySourcesLoadResult> _results;
+  int _index = 0;
+
+  @override
+  Future<AppResult<PrimarySourcesLoadResult>> loadGroupedSourcesResult() async {
+    final safeIndex = _index < _results.length ? _index : _results.length - 1;
+    final result = _results[safeIndex];
+    _index++;
+    return AppSuccess<PrimarySourcesLoadResult>(result);
   }
 }
 

@@ -42,8 +42,13 @@ class _StrongNumberPickerDialogState extends State<StrongNumberPickerDialog> {
       for (final entry in widget.entries) entry.number: entry,
     };
 
-    final initial = _normalizeToAllowedStrongNumber(widget.initialStrongNumber);
-    _currentStrongNumber = _entryByNumber.isEmpty ? null : initial;
+    if (_entryByNumber.isEmpty) {
+      _currentStrongNumber = null;
+    } else {
+      _currentStrongNumber = _normalizeToAllowedStrongNumber(
+        widget.initialStrongNumber,
+      );
+    }
 
     _numberController = TextEditingController(
       text: _currentStrongNumber?.toString() ?? '',
@@ -296,6 +301,10 @@ class _StrongNumberPickerDialogState extends State<StrongNumberPickerDialog> {
   }
 
   int _closestExistingStrongNumber(int value) {
+    if (_entryByNumber.isEmpty) {
+      return _minStrongNumber;
+    }
+
     if (_entryByNumber.containsKey(value)) {
       return value;
     }
@@ -310,7 +319,6 @@ class _StrongNumberPickerDialogState extends State<StrongNumberPickerDialog> {
         return down;
       }
     }
-
     return widget.entries.first.number;
   }
 

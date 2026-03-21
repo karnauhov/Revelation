@@ -184,6 +184,329 @@ void main() {
     expect(content!.kind, DescriptionKind.verse);
     expect(content.markdown, contains('word:source-1:page-1:0'));
   });
+
+  test('doesStrongNumberExist validates boundaries and forbidden ranges', () {
+    final service = DescriptionContentService(
+      dataSource: _FakeDescriptionDataSource(isInitialized: true),
+    );
+
+    expect(service.doesStrongNumberExist(0), isFalse);
+    expect(service.doesStrongNumberExist(1), isTrue);
+    expect(service.doesStrongNumberExist(2717), isFalse);
+    expect(service.doesStrongNumberExist(3203), isFalse);
+    expect(service.doesStrongNumberExist(3302), isFalse);
+    expect(service.doesStrongNumberExist(3303), isTrue);
+    expect(service.doesStrongNumberExist(5624), isTrue);
+    expect(service.doesStrongNumberExist(5625), isFalse);
+  });
+
+  test('getNeighborStrongNumber skips blocked values and wraps around', () {
+    final service = DescriptionContentService(
+      dataSource: _FakeDescriptionDataSource(isInitialized: true),
+    );
+
+    expect(service.getNeighborStrongNumber(2716, forward: true), 2718);
+    expect(service.getNeighborStrongNumber(3202, forward: true), 3303);
+    expect(service.getNeighborStrongNumber(3303, forward: false), 3202);
+    expect(service.getNeighborStrongNumber(5624, forward: true), 1);
+    expect(service.getNeighborStrongNumber(1, forward: false), 5624);
+  });
+
+  testWidgets('buildStrongContent formats origins, synonyms, usage and links', (
+    tester,
+  ) async {
+    final localizations = await _loadLocalizations(tester);
+    final dataSource = _FakeDescriptionDataSource(
+      isInitialized: true,
+      greekWords: const [
+        common_db.GreekWord(
+          id: 1,
+          word: 'Logos',
+          category: '@noun',
+          synonyms: '2,2717,3',
+          origin: 'G2,H123,G2717',
+          usage: 'sample [], 2\nother [], 3',
+        ),
+        common_db.GreekWord(
+          id: 2,
+          word: 'Alpha',
+          category: '',
+          synonyms: '',
+          origin: '',
+          usage: '',
+        ),
+        common_db.GreekWord(
+          id: 3,
+          word: 'Beta',
+          category: '',
+          synonyms: '',
+          origin: '',
+          usage: '',
+        ),
+      ],
+      greekDescs: const [
+        localized_db.GreekDesc(id: 1, desc: 'See [G2](strong:G2) and text'),
+      ],
+    );
+    final service = DescriptionContentService(dataSource: dataSource);
+
+    final content = service.buildStrongContent(localizations, 1);
+
+    expect(content, isNotNull);
+    expect(content!.markdown, contains('**Alpha** ([G2](strong:G2))'));
+    expect(content.markdown, contains('[H123](strong:H123)'));
+    expect(content.markdown, contains('**Beta** ([G3](strong:G3))'));
+    expect(content.markdown, contains('sample 2; **other 3'));
+    expect(content.markdown, isNot(contains('@noun')));
+  });
+
+  testWidgets('buildStrongContent returns null when word is absent or blank', (
+    tester,
+  ) async {
+    final localizations = await _loadLocalizations(tester);
+    final service = DescriptionContentService(
+      dataSource: _FakeDescriptionDataSource(
+        isInitialized: true,
+        greekWords: const [
+          common_db.GreekWord(
+            id: 1,
+            word: '  ',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+        ],
+      ),
+    );
+
+    expect(service.buildStrongContent(localizations, 999), isNull);
+    expect(service.buildStrongContent(localizations, 1), isNull);
+  });
+
+  testWidgets(
+    'buildWordContent applies strike and skips pronunciation for non letters',
+    (tester) async {
+      final localizations = await _loadLocalizations(tester);
+      final source = PrimarySource(
+        id: 'source-2',
+        title: 'Title',
+        date: 'Date',
+        content: 'Content',
+        quantity: 1,
+        material: 'Material',
+        textStyle: 'Text style',
+        found: 'Found',
+        classification: 'Classification',
+        currentLocation: 'Location',
+        preview: 'preview.png',
+        maxScale: 1,
+        isMonochrome: false,
+        pages: [
+          model.Page(
+            name: 'page-1',
+            content: 'content',
+            image: 'page-1.png',
+            words: [
+              PageWord(
+                'ab',
+                const [],
+                notExist: const [1],
+                sn: 2,
+                snPronounce: false,
+              ),
+              PageWord('123', const []),
+            ],
+            verses: const [],
+          ),
+        ],
+        attributes: const [],
+        permissionsReceived: true,
+      );
+      final referenceResolver = PrimarySourceReferenceService(
+        repository: _FakePrimarySourcesDbRepository(<PrimarySource>[source]),
+      );
+      final service = DescriptionContentService(
+        dataSource: _FakeDescriptionDataSource(
+          isInitialized: true,
+          greekWords: const [
+            common_db.GreekWord(
+              id: 2,
+              word: 'Alpha',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+          ],
+        ),
+        referenceResolver: referenceResolver,
+      );
+
+      final first = service.buildContent(
+        localizations,
+        const WordDescriptionRequest(
+          sourceId: 'source-2',
+          pageName: 'page-1',
+          wordIndex: 0,
+        ),
+      );
+      final second = service.buildContent(
+        localizations,
+        const WordDescriptionRequest(
+          sourceId: 'source-2',
+          pageName: 'page-1',
+          wordIndex: 1,
+        ),
+      );
+
+      expect(first, isNotNull);
+      expect(first!.markdown, contains('\u200E~~b~~'));
+      expect(first.markdown, contains('[2](strong:G2)'));
+      expect(second, isNotNull);
+      expect(
+        second!.markdown,
+        isNot(contains(localizations.strong_pronunciation)),
+      );
+    },
+  );
+
+  testWidgets(
+    'buildVerseContent shows fallback text when verse has no valid word indexes',
+    (tester) async {
+      final localizations = await _loadLocalizations(tester);
+      final source = PrimarySource(
+        id: 'source-3',
+        title: 'Title',
+        date: 'Date',
+        content: 'Content',
+        quantity: 1,
+        material: 'Material',
+        textStyle: 'Text style',
+        found: 'Found',
+        classification: 'Classification',
+        currentLocation: 'Location',
+        preview: 'preview.png',
+        maxScale: 1,
+        isMonochrome: false,
+        pages: [
+          model.Page(
+            name: 'page-1',
+            content: 'content',
+            image: 'page-1.png',
+            words: [PageWord('Word', const [])],
+            verses: const [
+              Verse(
+                chapterNumber: 1,
+                verseNumber: 1,
+                labelPosition: Offset.zero,
+                wordIndexes: [99],
+              ),
+            ],
+          ),
+        ],
+        attributes: const [],
+        permissionsReceived: true,
+      );
+      final referenceResolver = PrimarySourceReferenceService(
+        repository: _FakePrimarySourcesDbRepository(<PrimarySource>[source]),
+      );
+      final service = DescriptionContentService(
+        dataSource: _FakeDescriptionDataSource(isInitialized: true),
+        referenceResolver: referenceResolver,
+      );
+
+      final content = service.buildContent(
+        localizations,
+        const VerseDescriptionRequest(
+          sourceId: 'source-3',
+          pageName: 'page-1',
+          chapterNumber: 1,
+          verseNumber: 1,
+        ),
+      );
+
+      expect(content, isNotNull);
+      expect(content!.markdown, contains(localizations.click_for_info));
+    },
+  );
+
+  testWidgets(
+    'buildVerseContent combines same verse across pages when requested',
+    (tester) async {
+      final localizations = await _loadLocalizations(tester);
+      final source = PrimarySource(
+        id: 'source-4',
+        title: 'Title',
+        date: 'Date',
+        content: 'Content',
+        quantity: 1,
+        material: 'Material',
+        textStyle: 'Text style',
+        found: 'Found',
+        classification: 'Classification',
+        currentLocation: 'Location',
+        preview: 'preview.png',
+        maxScale: 1,
+        isMonochrome: false,
+        pages: [
+          model.Page(
+            name: 'page-1',
+            content: 'content',
+            image: 'page-1.png',
+            words: [PageWord('One', const [])],
+            verses: const [
+              Verse(
+                chapterNumber: 1,
+                verseNumber: 1,
+                labelPosition: Offset.zero,
+                wordIndexes: [0],
+              ),
+            ],
+          ),
+          model.Page(
+            name: 'page-2',
+            content: 'content',
+            image: 'page-2.png',
+            words: [PageWord('Two', const [])],
+            verses: const [
+              Verse(
+                chapterNumber: 1,
+                verseNumber: 1,
+                labelPosition: Offset.zero,
+                wordIndexes: [0],
+              ),
+            ],
+          ),
+        ],
+        attributes: const [],
+        permissionsReceived: true,
+      );
+      final referenceResolver = PrimarySourceReferenceService(
+        repository: _FakePrimarySourcesDbRepository(<PrimarySource>[source]),
+      );
+      final service = DescriptionContentService(
+        dataSource: _FakeDescriptionDataSource(isInitialized: true),
+        referenceResolver: referenceResolver,
+      );
+
+      final content = service.buildContent(
+        localizations,
+        const VerseDescriptionRequest(
+          sourceId: 'source-4',
+          chapterNumber: 1,
+          verseNumber: 1,
+          combineAcrossPages: true,
+        ),
+        fallbackSource: source,
+        fallbackPage: source.pages.first,
+      );
+
+      expect(content, isNotNull);
+      expect(content!.markdown, contains('word:source-4:page-1:0'));
+      expect(content.markdown, contains('word:source-4:page-2:0'));
+    },
+  );
 }
 
 Future<AppLocalizations> _loadLocalizations(WidgetTester tester) async {

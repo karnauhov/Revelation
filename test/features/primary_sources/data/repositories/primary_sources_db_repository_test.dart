@@ -97,6 +97,103 @@ void main() {
       ),
     );
   });
+
+  test(
+    'loadGroupedSources throws AppFailure on repository failure result',
+    () async {
+      final repository = PrimarySourcesDbRepository(
+        dataSource: _FakePrimarySourcesDataSource(isInitialized: false),
+      );
+
+      expect(
+        () => repository.loadGroupedSources(),
+        throwsA(
+          const AppFailure.dataSource(
+            'Primary sources data is not initialized in local database.',
+          ),
+        ),
+      );
+    },
+  );
+
+  test('findSourceById trims input and returns null for empty id', () {
+    final repository = PrimarySourcesDbRepository(
+      dataSource: _buildDataSource(),
+    );
+
+    expect(repository.findSourceById('  s1  ')?.id, 's1');
+    expect(repository.findSourceById('   '), isNull);
+    expect(repository.findSourceById('missing'), isNull);
+  });
+
+  test(
+    'getAllSourcesSync orders by group -> sortOrder -> id and skips non localized rows',
+    () {
+      final dataSource = _buildDataSource();
+      final withExtra = _FakePrimarySourcesDataSource(
+        isInitialized: true,
+        primarySourceRows: [
+          ...dataSource.primarySourceRows,
+          const common_db.PrimarySource(
+            id: 's3',
+            family: 'fam',
+            number: 3,
+            groupKind: 'full',
+            sortOrder: 0,
+            versesCount: 0,
+            previewResourceKey: '',
+            defaultMaxScale: 1,
+            canShowImages: true,
+            imagesAreMonochrome: false,
+            notes: '',
+          ),
+          const common_db.PrimarySource(
+            id: 's4',
+            family: 'fam',
+            number: 4,
+            groupKind: 'unknown',
+            sortOrder: 0,
+            versesCount: 0,
+            previewResourceKey: '',
+            defaultMaxScale: 1,
+            canShowImages: true,
+            imagesAreMonochrome: false,
+            notes: '',
+          ),
+        ],
+        primarySourceTextRows: [
+          ...dataSource.primarySourceTextRows,
+          const localized_db.PrimarySourceText(
+            sourceId: 's3',
+            titleMarkup: 'Title 3',
+            dateLabel: '',
+            contentLabel: '',
+            materialText: '',
+            textStyleText: '',
+            foundText: '',
+            classificationText: '',
+            currentLocationText: '',
+          ),
+        ],
+        primarySourceLinkRows: dataSource.primarySourceLinkRows,
+        primarySourceLinkTextRows: dataSource.primarySourceLinkTextRows,
+        primarySourceAttributionRows: dataSource.primarySourceAttributionRows,
+        primarySourcePageRows: dataSource.primarySourcePageRows,
+        primarySourceWordRows: dataSource.primarySourceWordRows,
+        primarySourceVerseRows: dataSource.primarySourceVerseRows,
+        previewBytes: dataSource.previewBytes,
+      );
+      final repository = PrimarySourcesDbRepository(dataSource: withExtra);
+
+      final ids = repository
+          .getAllSourcesSync()
+          .map((source) => source.id)
+          .toList();
+
+      expect(ids, <String>['s1', 's3', 's2']);
+      expect(ids, isNot(contains('s4')));
+    },
+  );
 }
 
 _FakePrimarySourcesDataSource _buildDataSource({bool invalidJson = false}) {

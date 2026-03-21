@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_state.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 
@@ -39,6 +40,42 @@ void main() {
       () => updated.full.add(_buildSource('next-3')),
       throwsUnsupportedError,
     );
+  });
+
+  test('failure contract is explicit and clearFailure resets error state', () {
+    final failed = PrimarySourcesState.initial().copyWith(
+      failure: const AppFailure.dataSource('load failed'),
+    );
+    expect(failed.hasError, isTrue);
+    expect(failed.failure, const AppFailure.dataSource('load failed'));
+
+    final cleared = failed.copyWith(clearFailure: true);
+    expect(cleared.hasError, isFalse);
+    expect(cleared.failure, isNull);
+  });
+
+  test('value equality includes loading and failure', () {
+    final full = _buildSource('f');
+    final significant = _buildSource('s');
+    final fragments = _buildSource('r');
+    final first = PrimarySourcesState(
+      full: [full],
+      significant: [significant],
+      fragments: [fragments],
+      isLoading: true,
+      failure: const AppFailure.dataSource('e'),
+    );
+    final second = PrimarySourcesState(
+      full: [full],
+      significant: [significant],
+      fragments: [fragments],
+      isLoading: true,
+      failure: const AppFailure.dataSource('e'),
+    );
+
+    expect(first, second);
+    expect(first.hashCode, second.hashCode);
+    expect(second, isNot(second.copyWith(isLoading: false)));
   });
 }
 
