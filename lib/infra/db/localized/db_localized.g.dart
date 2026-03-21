@@ -3,6 +3,219 @@
 part of 'db_localized.dart';
 
 // ignore_for_file: type=lint
+class $LocalizedDbMetadataTable extends LocalizedDbMetadata
+    with TableInfo<$LocalizedDbMetadataTable, LocalizedDbMetadataData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalizedDbMetadataTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [key, value];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'db_metadata';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalizedDbMetadataData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  LocalizedDbMetadataData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalizedDbMetadataData(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $LocalizedDbMetadataTable createAlias(String alias) {
+    return $LocalizedDbMetadataTable(attachedDatabase, alias);
+  }
+}
+
+class LocalizedDbMetadataData extends DataClass
+    implements Insertable<LocalizedDbMetadataData> {
+  final String key;
+  final String value;
+  const LocalizedDbMetadataData({required this.key, required this.value});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['value'] = Variable<String>(value);
+    return map;
+  }
+
+  LocalizedDbMetadataCompanion toCompanion(bool nullToAbsent) {
+    return LocalizedDbMetadataCompanion(key: Value(key), value: Value(value));
+  }
+
+  factory LocalizedDbMetadataData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalizedDbMetadataData(
+      key: serializer.fromJson<String>(json['key']),
+      value: serializer.fromJson<String>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'value': serializer.toJson<String>(value),
+    };
+  }
+
+  LocalizedDbMetadataData copyWith({String? key, String? value}) =>
+      LocalizedDbMetadataData(key: key ?? this.key, value: value ?? this.value);
+  LocalizedDbMetadataData copyWithCompanion(LocalizedDbMetadataCompanion data) {
+    return LocalizedDbMetadataData(
+      key: data.key.present ? data.key.value : this.key,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalizedDbMetadataData(')
+          ..write('key: $key, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(key, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalizedDbMetadataData &&
+          other.key == this.key &&
+          other.value == this.value);
+}
+
+class LocalizedDbMetadataCompanion
+    extends UpdateCompanion<LocalizedDbMetadataData> {
+  final Value<String> key;
+  final Value<String> value;
+  final Value<int> rowid;
+  const LocalizedDbMetadataCompanion({
+    this.key = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalizedDbMetadataCompanion.insert({
+    required String key,
+    required String value,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       value = Value(value);
+  static Insertable<LocalizedDbMetadataData> custom({
+    Expression<String>? key,
+    Expression<String>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalizedDbMetadataCompanion copyWith({
+    Value<String>? key,
+    Value<String>? value,
+    Value<int>? rowid,
+  }) {
+    return LocalizedDbMetadataCompanion(
+      key: key ?? this.key,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalizedDbMetadataCompanion(')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $GreekDescsTable extends GreekDescs
     with TableInfo<$GreekDescsTable, GreekDesc> {
   @override
@@ -1531,6 +1744,8 @@ class PrimarySourceLinkTextsCompanion
 abstract class _$LocalizedDB extends GeneratedDatabase {
   _$LocalizedDB(QueryExecutor e) : super(e);
   $LocalizedDBManager get managers => $LocalizedDBManager(this);
+  late final $LocalizedDbMetadataTable localizedDbMetadata =
+      $LocalizedDbMetadataTable(this);
   late final $GreekDescsTable greekDescs = $GreekDescsTable(this);
   late final $ArticlesTable articles = $ArticlesTable(this);
   late final $PrimarySourceTextsTable primarySourceTexts =
@@ -1542,6 +1757,7 @@ abstract class _$LocalizedDB extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+    localizedDbMetadata,
     greekDescs,
     articles,
     primarySourceTexts,
@@ -1549,6 +1765,165 @@ abstract class _$LocalizedDB extends GeneratedDatabase {
   ];
 }
 
+typedef $$LocalizedDbMetadataTableCreateCompanionBuilder =
+    LocalizedDbMetadataCompanion Function({
+      required String key,
+      required String value,
+      Value<int> rowid,
+    });
+typedef $$LocalizedDbMetadataTableUpdateCompanionBuilder =
+    LocalizedDbMetadataCompanion Function({
+      Value<String> key,
+      Value<String> value,
+      Value<int> rowid,
+    });
+
+class $$LocalizedDbMetadataTableFilterComposer
+    extends Composer<_$LocalizedDB, $LocalizedDbMetadataTable> {
+  $$LocalizedDbMetadataTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalizedDbMetadataTableOrderingComposer
+    extends Composer<_$LocalizedDB, $LocalizedDbMetadataTable> {
+  $$LocalizedDbMetadataTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalizedDbMetadataTableAnnotationComposer
+    extends Composer<_$LocalizedDB, $LocalizedDbMetadataTable> {
+  $$LocalizedDbMetadataTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$LocalizedDbMetadataTableTableManager
+    extends
+        RootTableManager<
+          _$LocalizedDB,
+          $LocalizedDbMetadataTable,
+          LocalizedDbMetadataData,
+          $$LocalizedDbMetadataTableFilterComposer,
+          $$LocalizedDbMetadataTableOrderingComposer,
+          $$LocalizedDbMetadataTableAnnotationComposer,
+          $$LocalizedDbMetadataTableCreateCompanionBuilder,
+          $$LocalizedDbMetadataTableUpdateCompanionBuilder,
+          (
+            LocalizedDbMetadataData,
+            BaseReferences<
+              _$LocalizedDB,
+              $LocalizedDbMetadataTable,
+              LocalizedDbMetadataData
+            >,
+          ),
+          LocalizedDbMetadataData,
+          PrefetchHooks Function()
+        > {
+  $$LocalizedDbMetadataTableTableManager(
+    _$LocalizedDB db,
+    $LocalizedDbMetadataTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalizedDbMetadataTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalizedDbMetadataTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$LocalizedDbMetadataTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalizedDbMetadataCompanion(
+                key: key,
+                value: value,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required String value,
+                Value<int> rowid = const Value.absent(),
+              }) => LocalizedDbMetadataCompanion.insert(
+                key: key,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalizedDbMetadataTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LocalizedDB,
+      $LocalizedDbMetadataTable,
+      LocalizedDbMetadataData,
+      $$LocalizedDbMetadataTableFilterComposer,
+      $$LocalizedDbMetadataTableOrderingComposer,
+      $$LocalizedDbMetadataTableAnnotationComposer,
+      $$LocalizedDbMetadataTableCreateCompanionBuilder,
+      $$LocalizedDbMetadataTableUpdateCompanionBuilder,
+      (
+        LocalizedDbMetadataData,
+        BaseReferences<
+          _$LocalizedDB,
+          $LocalizedDbMetadataTable,
+          LocalizedDbMetadataData
+        >,
+      ),
+      LocalizedDbMetadataData,
+      PrefetchHooks Function()
+    >;
 typedef $$GreekDescsTableCreateCompanionBuilder =
     GreekDescsCompanion Function({Value<int> id, required String desc});
 typedef $$GreekDescsTableUpdateCompanionBuilder =
@@ -2389,6 +2764,8 @@ typedef $$PrimarySourceLinkTextsTableProcessedTableManager =
 class $LocalizedDBManager {
   final _$LocalizedDB _db;
   $LocalizedDBManager(this._db);
+  $$LocalizedDbMetadataTableTableManager get localizedDbMetadata =>
+      $$LocalizedDbMetadataTableTableManager(_db, _db.localizedDbMetadata);
   $$GreekDescsTableTableManager get greekDescs =>
       $$GreekDescsTableTableManager(_db, _db.greekDescs);
   $$ArticlesTableTableManager get articles =>

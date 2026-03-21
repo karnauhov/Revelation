@@ -5,6 +5,9 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
+import 'package:revelation/infra/db/connectors/database_version_info.dart';
+import 'package:revelation/infra/db/connectors/database_version_loader.dart';
+import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/core/logging/common_logger.dart';
@@ -27,6 +30,19 @@ Future<DateTime?> getLocalDatabaseUpdatedAt(String dbFile) async {
   }
   return DateTime.tryParse(createdAtIso);
 }
+
+Future<DatabaseVersionInfo?> getLocalDatabaseVersionInfo(String dbFile) {
+  if (dbFile == AppConstants.commonDB) {
+    return loadDatabaseVersionInfo(CommonDB(connectOnWeb(dbFile)));
+  }
+
+  return loadDatabaseVersionInfo(LocalizedDB(connectOnWeb(dbFile)));
+}
+
+Future<int?> getLocalDatabaseFileSize(String dbFile) async => null;
+
+Future<List<PrimarySourceFileInfo>> getLocalPrimarySourceFilesInfo() async =>
+    const [];
 
 DatabaseConnection connectOnWeb(String dbFile) {
   return DatabaseConnection.delayed(

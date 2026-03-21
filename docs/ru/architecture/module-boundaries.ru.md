@@ -1,7 +1,7 @@
 # Module Boundaries (RU)
 
-Doc-Version: `1.1.4`  
-Last-Updated: `2026-03-14`  
+Doc-Version: `1.1.5`  
+Last-Updated: `2026-03-21`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -33,6 +33,7 @@ Source-Commit: `working-tree`
 - `application` не содержит UI-виджеты.
 - `data` может зависеть от `infra` data source/gateway контрактов.
 - `infra` не импортирует feature `presentation`.
+- Метаданные схемы SQLite относятся к зоне `lib/infra/db`; `db_metadata.schema_version` в `revelation.sqlite` и `revelation_<lang>.sqlite` должен оставаться синхронизированным с изменениями схемы в коде.
 - `shared` не содержит feature-специфичную orchestration-логику.
 - `core` не зависит от feature-модулей.
 

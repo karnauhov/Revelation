@@ -1,7 +1,7 @@
 # Architecture Overview (RU)
 
-Doc-Version: `1.1.4`  
-Last-Updated: `2026-03-14`  
+Doc-Version: `1.1.5`  
+Last-Updated: `2026-03-21`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -17,6 +17,7 @@ Source-Commit: `working-tree`
 - Detail state для primary source: в `PrimarySourceScreen` создается `MultiBlocProvider` с cubit-срезами `session/image/page-settings/description/viewport`; selection-поля (`currentType/currentNumber`) входят в `PrimarySourceDescriptionState`.
 - В detail image/description state не хранятся дублирующие visibility-флаги (`imageShown`, `showDescription`): видимость выводится из фактических данных и режимов UI.
 - Detail orchestration для primary source: `PrimarySourceDetailOrchestrationCubit` координирует `loadImage`, `changeSelectedPage` и debounce-логику save/restore между detail cubit-срезами.
+- Метаданные версий БД на экране about: `AboutCubit` читает `schema_version`, `data_version` и `date` из `db_metadata` общей и локализованной SQLite БД и отдает их в UI для локализованного отображения.
 - Поток данных: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
 - Remote-слой: `ServerManager` работает с Supabase Storage для загрузки БД и файлов.
 - Логирование и диагностика: `Talker`, `TalkerRouteObserver`, `AppBlocObserver`.
@@ -27,6 +28,7 @@ Source-Commit: `working-tree`
 - Stateful presentation реализуется только на `BLoC/Cubit`.
 - `provider`/`ChangeNotifier`/`notifyListeners` запрещены в runtime/test коде.
 - Presentation-слой не обращается напрямую к `DBManager()`/`ServerManager()`.
+- Версия схемы БД хранится внутри SQLite в `db_metadata.schema_version`; при изменении схемы нужно синхронно обновлять Drift `schemaVersion`, SQLite `PRAGMA user_version` и распространяемые DB-файлы.
 - `core` и `shared` не содержат feature-specific orchestration/зависимостей на feature-модули.
 - Изменения архитектурных документов в RU/EN выполняются синхронно.
 

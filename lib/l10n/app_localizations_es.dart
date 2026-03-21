@@ -12,15 +12,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app_name => 'Apocalipsis';
 
   @override
-  String get version => 'Versión:';
+  String get version => 'Versión de la aplicación:';
 
   @override
-  String get common_data_update => 'Datos comunes de:';
+  String get common_data_update => 'Versión de datos:';
 
   @override
   String localized_data_update(String language) {
-    return 'Datos en idioma $language de:';
+    return 'Versión de datos en $language:';
   }
+
+  @override
+  String get data_version_from => 'del';
 
   @override
   String get language_name_en => 'inglés';

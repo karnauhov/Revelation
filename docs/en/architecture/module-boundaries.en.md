@@ -1,7 +1,7 @@
 # Module Boundaries (EN)
 
-Doc-Version: `1.1.4`  
-Last-Updated: `2026-03-14`  
+Doc-Version: `1.1.5`  
+Last-Updated: `2026-03-21`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -33,6 +33,7 @@ A lightweight feature module without all three layers is allowed, but dependency
 - `application` must not contain UI widgets.
 - `data` may depend on `infra` data source/gateway contracts.
 - `infra` must not import feature `presentation`.
+- SQLite schema metadata belongs to `lib/infra/db`; `db_metadata.schema_version` in `revelation.sqlite` and `revelation_<lang>.sqlite` must stay synchronized with code-level schema changes.
 - `shared` must not contain feature-specific orchestration logic.
 - `core` must not depend on feature modules.
 

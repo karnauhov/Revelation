@@ -2,6 +2,17 @@ import 'package:drift/drift.dart';
 
 part 'db_common.g.dart';
 
+class CommonDbMetadata extends Table {
+  @override
+  String get tableName => 'db_metadata';
+
+  TextColumn get key => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
 class GreekWords extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get word => text().named('word')();
@@ -119,6 +130,7 @@ class PrimarySourceVerses extends Table {
 
 @DriftDatabase(
   tables: [
+    CommonDbMetadata,
     GreekWords,
     CommonResources,
     PrimarySources,
@@ -133,12 +145,13 @@ class CommonDB extends _$CommonDB {
   CommonDB(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (Migrator m) async {
       await m.createAll();
+      await _ensureDbMetadataInitialized(initializeDataVersionAndDate: true);
     },
     onUpgrade: (Migrator m, int from, int to) async {
       if (from < 2) {
@@ -226,6 +239,47 @@ class CommonDB extends _$CommonDB {
           )
         """);
       }
+      if (from < 4) {
+        await customStatement("""
+          CREATE TABLE IF NOT EXISTS db_metadata (
+            key TEXT NOT NULL PRIMARY KEY,
+            value TEXT NOT NULL
+          )
+        """);
+      }
+      await _ensureDbMetadataInitialized(
+        initializeDataVersionAndDate: from < 4,
+      );
     },
   );
+
+  Future<void> _ensureDbMetadataInitialized({
+    required bool initializeDataVersionAndDate,
+  }) async {
+    await customStatement(
+      """
+      INSERT INTO db_metadata(key, value)
+      VALUES('schema_version', ?)
+      ON CONFLICT(key) DO UPDATE SET value = excluded.value
+      """,
+      [schemaVersion.toString()],
+    );
+    if (!initializeDataVersionAndDate) {
+      return;
+    }
+    final now = DateTime.now().toUtc().toIso8601String();
+    await customStatement("""
+      INSERT INTO db_metadata(key, value)
+      VALUES('data_version', '1')
+      ON CONFLICT(key) DO NOTHING
+      """);
+    await customStatement(
+      """
+      INSERT INTO db_metadata(key, value)
+      VALUES('date', ?)
+      ON CONFLICT(key) DO NOTHING
+      """,
+      [now],
+    );
+  }
 }

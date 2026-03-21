@@ -12,15 +12,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get app_name => 'Откровение';
 
   @override
-  String get version => 'Версия:';
+  String get version => 'Версия приложения:';
 
   @override
-  String get common_data_update => 'Общие данные от:';
+  String get common_data_update => 'Версия данных:';
 
   @override
   String localized_data_update(String language) {
-    return 'Данные на $language языке от:';
+    return 'Версия данных на $language языке:';
   }
+
+  @override
+  String get data_version_from => 'от';
 
   @override
   String get language_name_en => 'английском';

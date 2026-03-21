@@ -1,7 +1,7 @@
 # Architecture Overview (EN)
 
-Doc-Version: `1.1.4`  
-Last-Updated: `2026-03-14`  
+Doc-Version: `1.1.5`  
+Last-Updated: `2026-03-21`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -17,6 +17,7 @@ Define the current Revelation architecture as-is.
 - Primary source detail state: `PrimarySourceScreen` creates a `MultiBlocProvider` with `session/image/page-settings/description/viewport` cubit slices; selection fields (`currentType/currentNumber`) belong to `PrimarySourceDescriptionState`.
 - Primary source detail image/description state does not keep duplicate visibility flags (`imageShown`, `showDescription`): visibility is derived from actual data and active UI modes.
 - Primary source detail orchestration: `PrimarySourceDetailOrchestrationCubit` coordinates `loadImage`, `changeSelectedPage`, and debounced save/restore across detail cubit slices.
+- About screen DB metadata: `AboutCubit` loads `schema_version`, `data_version`, and `date` from `db_metadata` in the common/localized SQLite files and renders localized version/date information.
 - Data flow: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
 - Remote layer: `ServerManager` uses Supabase Storage for database and file downloads.
 - Logging and diagnostics: `Talker`, `TalkerRouteObserver`, `AppBlocObserver`.
@@ -27,6 +28,7 @@ Define the current Revelation architecture as-is.
 - Stateful presentation is implemented with `BLoC/Cubit` only.
 - `provider`/`ChangeNotifier`/`notifyListeners` are forbidden in runtime/test code.
 - Presentation does not call `DBManager()`/`ServerManager()` directly.
+- DB schema version is stored inside SQLite `db_metadata.schema_version`; schema changes must keep Drift `schemaVersion`, SQLite `PRAGMA user_version`, and distributed DB files in sync.
 - `core` and `shared` do not contain feature-specific orchestration or feature-module dependencies.
 - RU and EN architecture docs are updated together.
 

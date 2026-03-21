@@ -1,4 +1,5 @@
 import 'package:revelation/core/errors/app_failure.dart';
+import 'package:revelation/infra/db/connectors/database_version_info.dart';
 
 class AboutState {
   static const Object _unset = Object();
@@ -11,8 +12,8 @@ class AboutState {
     required this.isChangelogExpanded,
     required this.isAcknowledgementsExpanded,
     required this.isRecommendedExpanded,
-    this.commonDbUpdatedAt,
-    this.localizedDbUpdatedAt,
+    this.commonDbVersionInfo,
+    this.localizedDbVersionInfo,
     this.failure,
   });
 
@@ -25,8 +26,8 @@ class AboutState {
       isChangelogExpanded: false,
       isAcknowledgementsExpanded: false,
       isRecommendedExpanded: false,
-      commonDbUpdatedAt: null,
-      localizedDbUpdatedAt: null,
+      commonDbVersionInfo: null,
+      localizedDbVersionInfo: null,
     );
   }
 
@@ -37,8 +38,8 @@ class AboutState {
   final bool isChangelogExpanded;
   final bool isAcknowledgementsExpanded;
   final bool isRecommendedExpanded;
-  final DateTime? commonDbUpdatedAt;
-  final DateTime? localizedDbUpdatedAt;
+  final DatabaseVersionInfo? commonDbVersionInfo;
+  final DatabaseVersionInfo? localizedDbVersionInfo;
   final AppFailure? failure;
 
   AboutState copyWith({
@@ -49,8 +50,8 @@ class AboutState {
     bool? isChangelogExpanded,
     bool? isAcknowledgementsExpanded,
     bool? isRecommendedExpanded,
-    Object? commonDbUpdatedAt = _unset,
-    Object? localizedDbUpdatedAt = _unset,
+    Object? commonDbVersionInfo = _unset,
+    Object? localizedDbVersionInfo = _unset,
     AppFailure? failure,
     bool clearFailure = false,
   }) {
@@ -64,12 +65,12 @@ class AboutState {
           isAcknowledgementsExpanded ?? this.isAcknowledgementsExpanded,
       isRecommendedExpanded:
           isRecommendedExpanded ?? this.isRecommendedExpanded,
-      commonDbUpdatedAt: identical(commonDbUpdatedAt, _unset)
-          ? this.commonDbUpdatedAt
-          : commonDbUpdatedAt as DateTime?,
-      localizedDbUpdatedAt: identical(localizedDbUpdatedAt, _unset)
-          ? this.localizedDbUpdatedAt
-          : localizedDbUpdatedAt as DateTime?,
+      commonDbVersionInfo: identical(commonDbVersionInfo, _unset)
+          ? this.commonDbVersionInfo
+          : commonDbVersionInfo as DatabaseVersionInfo?,
+      localizedDbVersionInfo: identical(localizedDbVersionInfo, _unset)
+          ? this.localizedDbVersionInfo
+          : localizedDbVersionInfo as DatabaseVersionInfo?,
       failure: clearFailure ? null : (failure ?? this.failure),
     );
   }
@@ -86,8 +87,8 @@ class AboutState {
             isChangelogExpanded == other.isChangelogExpanded &&
             isAcknowledgementsExpanded == other.isAcknowledgementsExpanded &&
             isRecommendedExpanded == other.isRecommendedExpanded &&
-            commonDbUpdatedAt == other.commonDbUpdatedAt &&
-            localizedDbUpdatedAt == other.localizedDbUpdatedAt &&
+            commonDbVersionInfo == other.commonDbVersionInfo &&
+            localizedDbVersionInfo == other.localizedDbVersionInfo &&
             failure == other.failure;
   }
 
@@ -100,8 +101,8 @@ class AboutState {
     isChangelogExpanded,
     isAcknowledgementsExpanded,
     isRecommendedExpanded,
-    commonDbUpdatedAt,
-    localizedDbUpdatedAt,
+    commonDbVersionInfo,
+    localizedDbVersionInfo,
     failure,
   );
 }

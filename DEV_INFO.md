@@ -15,8 +15,13 @@
 
 # Preparing new databases
 
+- Working DB files are edited in `%Documents%/revelation/db`
+- Each DB file (`revelation.sqlite`, `revelation_<lang>.sqlite`) must contain `db_metadata(key TEXT PRIMARY KEY, value TEXT NOT NULL)`
+- Required `db_metadata` keys: `schema_version`, `data_version`, `date`
+- `schema_version` must stay synchronized with the corresponding code schema (`drift schemaVersion` and SQLite `PRAGMA user_version`)
+- When the DB schema changes, update the schema version in both code and the DB files themselves before publishing
 - Upload DB file on [supabase](https://supabase.com/dashboard/project/adfdfxnzxmzyoioedwuy/storage/buckets/db)
-- Copy DB file to folder web\db\...
+- Copy DB file from `%Documents%/revelation/db` to folder web\db\...
 - Deploy on [revelation.website](https://github.com/karnauhov/Revelation.website)
 
 # Primary sources maintenance
@@ -24,6 +29,7 @@
 - Primary sources are now maintained in SQLite, not in ARB files and not in `lib/repositories/primary_sources_repository.dart`
 - The content tool is now a package in `scripts/content_tool/`
 - Run it with `python -m scripts.content_tool`
+- The default DB working folder is `%Documents%/revelation/db`
 - Use the `Первоисточники` section for create/edit/delete operations
 - Preview images are stored as `common_resources` records in `revelation.sqlite`
 - Localized metadata and localized link titles are stored in `revelation_<lang>.sqlite`

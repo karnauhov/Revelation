@@ -3,6 +3,215 @@
 part of 'db_common.dart';
 
 // ignore_for_file: type=lint
+class $CommonDbMetadataTable extends CommonDbMetadata
+    with TableInfo<$CommonDbMetadataTable, CommonDbMetadataData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CommonDbMetadataTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [key, value];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'db_metadata';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CommonDbMetadataData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  CommonDbMetadataData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CommonDbMetadataData(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $CommonDbMetadataTable createAlias(String alias) {
+    return $CommonDbMetadataTable(attachedDatabase, alias);
+  }
+}
+
+class CommonDbMetadataData extends DataClass
+    implements Insertable<CommonDbMetadataData> {
+  final String key;
+  final String value;
+  const CommonDbMetadataData({required this.key, required this.value});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['value'] = Variable<String>(value);
+    return map;
+  }
+
+  CommonDbMetadataCompanion toCompanion(bool nullToAbsent) {
+    return CommonDbMetadataCompanion(key: Value(key), value: Value(value));
+  }
+
+  factory CommonDbMetadataData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CommonDbMetadataData(
+      key: serializer.fromJson<String>(json['key']),
+      value: serializer.fromJson<String>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'value': serializer.toJson<String>(value),
+    };
+  }
+
+  CommonDbMetadataData copyWith({String? key, String? value}) =>
+      CommonDbMetadataData(key: key ?? this.key, value: value ?? this.value);
+  CommonDbMetadataData copyWithCompanion(CommonDbMetadataCompanion data) {
+    return CommonDbMetadataData(
+      key: data.key.present ? data.key.value : this.key,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommonDbMetadataData(')
+          ..write('key: $key, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(key, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CommonDbMetadataData &&
+          other.key == this.key &&
+          other.value == this.value);
+}
+
+class CommonDbMetadataCompanion extends UpdateCompanion<CommonDbMetadataData> {
+  final Value<String> key;
+  final Value<String> value;
+  final Value<int> rowid;
+  const CommonDbMetadataCompanion({
+    this.key = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CommonDbMetadataCompanion.insert({
+    required String key,
+    required String value,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       value = Value(value);
+  static Insertable<CommonDbMetadataData> custom({
+    Expression<String>? key,
+    Expression<String>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CommonDbMetadataCompanion copyWith({
+    Value<String>? key,
+    Value<String>? value,
+    Value<int>? rowid,
+  }) {
+    return CommonDbMetadataCompanion(
+      key: key ?? this.key,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommonDbMetadataCompanion(')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $GreekWordsTable extends GreekWords
     with TableInfo<$GreekWordsTable, GreekWord> {
   @override
@@ -3670,6 +3879,9 @@ class PrimarySourceVersesCompanion extends UpdateCompanion<PrimarySourceVerse> {
 abstract class _$CommonDB extends GeneratedDatabase {
   _$CommonDB(QueryExecutor e) : super(e);
   $CommonDBManager get managers => $CommonDBManager(this);
+  late final $CommonDbMetadataTable commonDbMetadata = $CommonDbMetadataTable(
+    this,
+  );
   late final $GreekWordsTable greekWords = $GreekWordsTable(this);
   late final $CommonResourcesTable commonResources = $CommonResourcesTable(
     this,
@@ -3690,6 +3902,7 @@ abstract class _$CommonDB extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+    commonDbMetadata,
     greekWords,
     commonResources,
     primarySources,
@@ -3701,6 +3914,159 @@ abstract class _$CommonDB extends GeneratedDatabase {
   ];
 }
 
+typedef $$CommonDbMetadataTableCreateCompanionBuilder =
+    CommonDbMetadataCompanion Function({
+      required String key,
+      required String value,
+      Value<int> rowid,
+    });
+typedef $$CommonDbMetadataTableUpdateCompanionBuilder =
+    CommonDbMetadataCompanion Function({
+      Value<String> key,
+      Value<String> value,
+      Value<int> rowid,
+    });
+
+class $$CommonDbMetadataTableFilterComposer
+    extends Composer<_$CommonDB, $CommonDbMetadataTable> {
+  $$CommonDbMetadataTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CommonDbMetadataTableOrderingComposer
+    extends Composer<_$CommonDB, $CommonDbMetadataTable> {
+  $$CommonDbMetadataTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CommonDbMetadataTableAnnotationComposer
+    extends Composer<_$CommonDB, $CommonDbMetadataTable> {
+  $$CommonDbMetadataTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$CommonDbMetadataTableTableManager
+    extends
+        RootTableManager<
+          _$CommonDB,
+          $CommonDbMetadataTable,
+          CommonDbMetadataData,
+          $$CommonDbMetadataTableFilterComposer,
+          $$CommonDbMetadataTableOrderingComposer,
+          $$CommonDbMetadataTableAnnotationComposer,
+          $$CommonDbMetadataTableCreateCompanionBuilder,
+          $$CommonDbMetadataTableUpdateCompanionBuilder,
+          (
+            CommonDbMetadataData,
+            BaseReferences<
+              _$CommonDB,
+              $CommonDbMetadataTable,
+              CommonDbMetadataData
+            >,
+          ),
+          CommonDbMetadataData,
+          PrefetchHooks Function()
+        > {
+  $$CommonDbMetadataTableTableManager(
+    _$CommonDB db,
+    $CommonDbMetadataTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CommonDbMetadataTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CommonDbMetadataTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CommonDbMetadataTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CommonDbMetadataCompanion(
+                key: key,
+                value: value,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required String value,
+                Value<int> rowid = const Value.absent(),
+              }) => CommonDbMetadataCompanion.insert(
+                key: key,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CommonDbMetadataTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CommonDB,
+      $CommonDbMetadataTable,
+      CommonDbMetadataData,
+      $$CommonDbMetadataTableFilterComposer,
+      $$CommonDbMetadataTableOrderingComposer,
+      $$CommonDbMetadataTableAnnotationComposer,
+      $$CommonDbMetadataTableCreateCompanionBuilder,
+      $$CommonDbMetadataTableUpdateCompanionBuilder,
+      (
+        CommonDbMetadataData,
+        BaseReferences<
+          _$CommonDB,
+          $CommonDbMetadataTable,
+          CommonDbMetadataData
+        >,
+      ),
+      CommonDbMetadataData,
+      PrefetchHooks Function()
+    >;
 typedef $$GreekWordsTableCreateCompanionBuilder =
     GreekWordsCompanion Function({
       Value<int> id,
@@ -5657,6 +6023,8 @@ typedef $$PrimarySourceVersesTableProcessedTableManager =
 class $CommonDBManager {
   final _$CommonDB _db;
   $CommonDBManager(this._db);
+  $$CommonDbMetadataTableTableManager get commonDbMetadata =>
+      $$CommonDbMetadataTableTableManager(_db, _db.commonDbMetadata);
   $$GreekWordsTableTableManager get greekWords =>
       $$GreekWordsTableTableManager(_db, _db.greekWords);
   $$CommonResourcesTableTableManager get commonResources =>

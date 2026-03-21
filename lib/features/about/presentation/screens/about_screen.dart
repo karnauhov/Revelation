@@ -15,6 +15,9 @@ import 'package:revelation/features/about/presentation/widgets/institution_list.
 import 'package:revelation/features/about/presentation/widgets/library_list.dart';
 import 'package:revelation/features/about/presentation/widgets/recommended_list.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
+import 'package:revelation/infra/db/connectors/database_version_info.dart';
+import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
+import 'package:revelation/infra/db/connectors/shared.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
@@ -242,13 +245,27 @@ class _AboutScreenState extends State<AboutScreen> {
               "${l10n.version} ${state.appVersion} (${state.buildNumber})",
               style: versionTextStyle,
             ),
-            Text(
-              "${l10n.common_data_update} ${_formatDbUpdatedAt(context, state.commonDbUpdatedAt)}",
-              style: versionTextStyle,
+            Tooltip(
+              message: _formatDbVersionTooltip(
+                context,
+                state.commonDbVersionInfo,
+              ),
+              triggerMode: TooltipTriggerMode.tap,
+              child: Text(
+                "${l10n.common_data_update} ${_formatDbVersionValue(state.commonDbVersionInfo)}",
+                style: versionTextStyle,
+              ),
             ),
-            Text(
-              "${l10n.localized_data_update(_localizedLanguageName(l10n, selectedLanguage))} ${_formatDbUpdatedAt(context, state.localizedDbUpdatedAt)}",
-              style: versionTextStyle,
+            Tooltip(
+              message: _formatDbVersionTooltip(
+                context,
+                state.localizedDbVersionInfo,
+              ),
+              triggerMode: TooltipTriggerMode.tap,
+              child: Text(
+                "${l10n.localized_data_update(_localizedLanguageName(l10n, selectedLanguage))} ${_formatDbVersionValue(state.localizedDbVersionInfo)}",
+                style: versionTextStyle,
+              ),
             ),
           ],
         ),
@@ -256,12 +273,26 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  String _formatDbUpdatedAt(BuildContext context, DateTime? dateTime) {
-    if (dateTime == null) {
+  String _formatDbVersionValue(DatabaseVersionInfo? versionInfo) {
+    if (versionInfo == null) {
+      return "-";
+    }
+    return "${versionInfo.schemaVersion} (${versionInfo.dataVersion})";
+  }
+
+  String _formatDbVersionTooltip(
+    BuildContext context,
+    DatabaseVersionInfo? versionInfo,
+  ) {
+    if (versionInfo == null) {
       return "-";
     }
     final localeName = Localizations.localeOf(context).toString();
-    return DateFormat.yMd(localeName).add_Hms().format(dateTime.toLocal());
+    final formattedDate = DateFormat.yMd(
+      localeName,
+    ).add_jms().format(versionInfo.date.toLocal());
+    final l10n = AppLocalizations.of(context)!;
+    return "${l10n.data_version_from} $formattedDate";
   }
 
   String _localizedLanguageName(AppLocalizations l10n, String languageCode) {
@@ -526,7 +557,17 @@ class _AboutScreenState extends State<AboutScreen> {
               sbTechInfo.write("=======LOGS=======\r\n");
               sbTechInfo.write(GetIt.I<Talker>().history.text());
               sbTechInfo.write("\r\n");
-              sbTechInfo.write(await collectSystemAndAppInfo(context: context));
+              final dataFilesSection =
+                  await _collectDataFilesDiagnosticsSection();
+              if (!mounted) {
+                return;
+              }
+              sbTechInfo.write(
+                await collectSystemAndAppInfo(
+                  context: this.context,
+                  dbFilesSection: dataFilesSection,
+                ),
+              );
               sbTechInfo.write("\r\n=======APP SETTINGS=======\r\n");
               settings.forEach((key, value) {
                 sbTechInfo.writeln("$key: $value");
@@ -536,11 +577,17 @@ class _AboutScreenState extends State<AboutScreen> {
               final openEmailResult = await launchLink(
                 "mailto:${AppConstants.supportEmail}?subject=Revelation%20Bug%20Report&body=${emailBodyContent}",
               );
+              if (!mounted) {
+                return;
+              }
               if (!openEmailResult) {
                 _showBugMessage();
               }
             } catch (ex, st) {
               log.handle(ex, st);
+              if (!mounted) {
+                return;
+              }
               _showBugMessage();
             }
           },
@@ -555,5 +602,113 @@ class _AboutScreenState extends State<AboutScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(snackMessage), duration: Duration(seconds: 10)),
     );
+  }
+
+  Future<String> _collectDataFilesDiagnosticsSection() async {
+    final lines = <String>[];
+    lines.add('[DB FILES]');
+
+    final dbFiles = <String>[
+      AppConstants.commonDB,
+      ...AppConstants.languages.keys.map(
+        (lang) => AppConstants.localizedDB.replaceAll('@loc', lang),
+      ),
+    ];
+
+    for (final dbFile in dbFiles) {
+      int? sizeBytes;
+      DatabaseVersionInfo? versionInfo;
+      String? sizeError;
+      String? versionInfoError;
+      try {
+        sizeBytes = await getLocalDatabaseFileSize(dbFile);
+      } catch (error, stackTrace) {
+        log.handle(error, stackTrace);
+        sizeError = _singleLineError(error);
+      }
+      try {
+        versionInfo = await getLocalDatabaseVersionInfo(dbFile);
+      } catch (error, stackTrace) {
+        log.handle(error, stackTrace);
+        versionInfoError = _singleLineError(error);
+      }
+
+      final exists = sizeBytes != null || versionInfo != null;
+      if (!exists && sizeError == null && versionInfoError == null) {
+        lines.add('$dbFile: missing');
+        continue;
+      }
+
+      final schemaVersion = versionInfo?.schemaVersion.toString() ?? 'n/a';
+      final dataVersion = versionInfo?.dataVersion.toString() ?? 'n/a';
+      final dateValue = versionInfo?.date.toUtc().toIso8601String() ?? 'n/a';
+      final sizeValue = sizeBytes == null
+          ? 'n/a'
+          : '${_formatFileSize(sizeBytes)} ($sizeBytes bytes)';
+      final errors = <String>[];
+      if (versionInfoError != null) {
+        errors.add('version_read_error=$versionInfoError');
+      }
+      if (sizeError != null) {
+        errors.add('size_read_error=$sizeError');
+      }
+      final errorSuffix = errors.isEmpty ? '' : '; ${errors.join("; ")}';
+      lines.add(
+        '$dbFile: schema_version=$schemaVersion; data_version=$dataVersion; date=$dateValue; size=$sizeValue$errorSuffix',
+      );
+    }
+
+    if (!isWeb()) {
+      lines.add('');
+      lines.add('[PRIMARY SOURCES FILES]');
+      lines.addAll(await _collectPrimarySourcesFilesDiagnosticsLines());
+    }
+
+    return lines.join('\r\n');
+  }
+
+  Future<List<String>> _collectPrimarySourcesFilesDiagnosticsLines() async {
+    final lines = <String>[];
+    List<PrimarySourceFileInfo> fileInfos;
+    try {
+      fileInfos = await getLocalPrimarySourceFilesInfo();
+    } catch (error, stackTrace) {
+      log.handle(error, stackTrace);
+      return ['primary_sources: read_error=${_singleLineError(error)}'];
+    }
+
+    if (fileInfos.isEmpty) {
+      return const ['primary_sources: folder missing or empty'];
+    }
+
+    for (final fileInfo in fileInfos) {
+      if (fileInfo.error != null) {
+        lines.add(
+          '${fileInfo.relativePath}: read_error=${_singleLineError(fileInfo.error!)}',
+        );
+        continue;
+      }
+      final sizeBytes = fileInfo.sizeBytes ?? 0;
+      lines.add(
+        '${fileInfo.relativePath}: size=${_formatFileSize(sizeBytes)} ($sizeBytes bytes)',
+      );
+    }
+    return lines;
+  }
+
+  String _singleLineError(Object error) {
+    return error.toString().replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
+
+  String _formatFileSize(int bytes) {
+    const units = ['B', 'KB', 'MB', 'GB'];
+    var value = bytes.toDouble();
+    var unitIndex = 0;
+    while (value >= 1024 && unitIndex < units.length - 1) {
+      value /= 1024;
+      unitIndex++;
+    }
+    final precision = unitIndex == 0 ? 0 : 1;
+    return '${value.toStringAsFixed(precision)} ${units[unitIndex]}';
   }
 }

@@ -107,12 +107,44 @@ void main() {
     expect(info, contains('appName: Test App'));
     expect(info, contains('packageName: dev.test.app'));
     expect(info, contains('=======DEVICE INFO======='));
-    expect(info, contains('windows.computerName: TEST-PC'));
+    expect(info, contains('windows.numberOfCores: 8'));
+    expect(info, contains('windows.productName: Windows'));
+    expect(info, isNot(contains('windows.userName:')));
+    expect(info, isNot(contains('windows.registeredOwner:')));
+    expect(info, isNot(contains('windows.productId:')));
+    expect(info, isNot(contains('windows.digitalProductId:')));
+    expect(info, isNot(contains('windows.deviceId:')));
     expect(info, contains('=======SCREEN / DISPLAY======='));
     expect(info, contains('screen.logicalWidth'));
     expect(info, contains('=======LOCALE / TIMEZONE======='));
     expect(info, contains('locale: en'));
     expect(info, contains('=======ENVIRONMENT======='));
+  });
+
+  testWidgets('collectSystemAndAppInfo appends DB files section', (_) async {
+    PackageInfoPlatform.instance = _FakePackageInfoPlatform(
+      PackageInfoData(
+        appName: 'Test App',
+        packageName: 'dev.test.app',
+        version: '1.2.3',
+        buildNumber: '42',
+        buildSignature: 'abc',
+      ),
+    );
+
+    final info = await collectSystemAndAppInfo(
+      dbFilesSection:
+          'revelation.sqlite: schema_version=4; data_version=1; date=2026-03-21T00:00:00Z; size=1.0 MB (1048576 bytes)',
+    );
+
+    expect(info, contains('=======PACKAGE / APP======='));
+    expect(info, contains('=======DATA / DB FILES======='));
+    expect(
+      info,
+      contains(
+        'revelation.sqlite: schema_version=4; data_version=1; date=2026-03-21T00:00:00Z; size=1.0 MB (1048576 bytes)',
+      ),
+    );
   });
 
   testWidgets('collectSystemAndAppInfo reports device info errors', (_) async {

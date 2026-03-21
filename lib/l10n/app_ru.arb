@@ -1,9 +1,10 @@
 {
   "@@locale": "ru",
   "app_name": "Откровение",
-  "version": "Версия:",
-  "common_data_update": "Общие данные от:",
-  "localized_data_update": "Данные на {language} языке от:",
+  "version": "Версия приложения:",
+  "common_data_update": "Версия данных:",
+  "localized_data_update": "Версия данных на {language} языке:",
+  "data_version_from": "от",
   "language_name_en": "английском",
   "language_name_es": "испанском",
   "language_name_uk": "украинском",

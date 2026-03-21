@@ -2,6 +2,17 @@ import 'package:drift/drift.dart';
 
 part 'db_localized.g.dart';
 
+class LocalizedDbMetadata extends Table {
+  @override
+  String get tableName => 'db_metadata';
+
+  TextColumn get key => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
 class GreekDescs extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get desc => text().named('desc')();
@@ -47,18 +58,25 @@ class PrimarySourceLinkTexts extends Table {
 }
 
 @DriftDatabase(
-  tables: [GreekDescs, Articles, PrimarySourceTexts, PrimarySourceLinkTexts],
+  tables: [
+    LocalizedDbMetadata,
+    GreekDescs,
+    Articles,
+    PrimarySourceTexts,
+    PrimarySourceLinkTexts,
+  ],
 )
 class LocalizedDB extends _$LocalizedDB {
   LocalizedDB(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (Migrator m) async {
       await m.createAll();
+      await _ensureDbMetadataInitialized(initializeDataVersionAndDate: true);
     },
     onUpgrade: (Migrator m, int from, int to) async {
       if (from < 4) {
@@ -157,6 +175,47 @@ class LocalizedDB extends _$LocalizedDB {
           )
         """);
       }
+      if (from < 6) {
+        await customStatement("""
+          CREATE TABLE IF NOT EXISTS db_metadata (
+            key TEXT NOT NULL PRIMARY KEY,
+            value TEXT NOT NULL
+          )
+        """);
+      }
+      await _ensureDbMetadataInitialized(
+        initializeDataVersionAndDate: from < 6,
+      );
     },
   );
+
+  Future<void> _ensureDbMetadataInitialized({
+    required bool initializeDataVersionAndDate,
+  }) async {
+    await customStatement(
+      """
+      INSERT INTO db_metadata(key, value)
+      VALUES('schema_version', ?)
+      ON CONFLICT(key) DO UPDATE SET value = excluded.value
+      """,
+      [schemaVersion.toString()],
+    );
+    if (!initializeDataVersionAndDate) {
+      return;
+    }
+    final now = DateTime.now().toUtc().toIso8601String();
+    await customStatement("""
+      INSERT INTO db_metadata(key, value)
+      VALUES('data_version', '1')
+      ON CONFLICT(key) DO NOTHING
+      """);
+    await customStatement(
+      """
+      INSERT INTO db_metadata(key, value)
+      VALUES('date', ?)
+      ON CONFLICT(key) DO NOTHING
+      """,
+      [now],
+    );
+  }
 }

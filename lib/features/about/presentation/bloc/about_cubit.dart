@@ -4,20 +4,23 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/about/presentation/bloc/about_state.dart';
 import 'package:revelation/infra/db/connectors/shared.dart';
+import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 
-typedef DbLastUpdateLoader = Future<DateTime?> Function(String dbFile);
+typedef DbVersionInfoLoader =
+    Future<DatabaseVersionInfo?> Function(String dbFile);
 
 class AboutCubit extends Cubit<AboutState> {
   AboutCubit({
     Future<PackageInfo> Function()? packageInfoLoader,
     Future<String> Function()? changelogLoader,
-    DbLastUpdateLoader? dbLastUpdateLoader,
+    DbVersionInfoLoader? dbVersionInfoLoader,
     String? initialLanguageCode,
     bool autoLoad = true,
   }) : _packageInfoLoader = packageInfoLoader ?? PackageInfo.fromPlatform,
        _changelogLoader = changelogLoader ?? _loadChangelogFromBundle,
-       _dbLastUpdateLoader = dbLastUpdateLoader ?? getLocalDatabaseUpdatedAt,
+       _dbVersionInfoLoader =
+           dbVersionInfoLoader ?? getLocalDatabaseVersionInfo,
        _initialLanguageCode = _normalizeLanguageCode(initialLanguageCode),
        super(AboutState.initial()) {
     if (autoLoad) {
@@ -27,7 +30,7 @@ class AboutCubit extends Cubit<AboutState> {
 
   final Future<PackageInfo> Function() _packageInfoLoader;
   final Future<String> Function() _changelogLoader;
-  final DbLastUpdateLoader _dbLastUpdateLoader;
+  final DbVersionInfoLoader _dbVersionInfoLoader;
   final String _initialLanguageCode;
 
   Future<void> load({String? languageCode}) async {
@@ -51,8 +54,8 @@ class AboutCubit extends Cubit<AboutState> {
           appVersion: packageInfo.version,
           buildNumber: packageInfo.buildNumber,
           changelog: changelog,
-          commonDbUpdatedAt: dbUpdateInfo.commonDbUpdatedAt,
-          localizedDbUpdatedAt: dbUpdateInfo.localizedDbUpdatedAt,
+          commonDbVersionInfo: dbUpdateInfo.commonDbVersionInfo,
+          localizedDbVersionInfo: dbUpdateInfo.localizedDbVersionInfo,
           isLoading: false,
           clearFailure: true,
         ),
@@ -95,21 +98,21 @@ class AboutCubit extends Cubit<AboutState> {
       '@loc',
       languageCode,
     );
-    final timestamps = await Future.wait<DateTime?>([
-      _safeLoadDbUpdatedAt(AppConstants.commonDB),
-      _safeLoadDbUpdatedAt(localizedDbFile),
+    final versionInfos = await Future.wait<DatabaseVersionInfo?>([
+      _safeLoadDbVersionInfo(AppConstants.commonDB),
+      _safeLoadDbVersionInfo(localizedDbFile),
     ]);
     return _DbUpdateInfo(
-      commonDbUpdatedAt: timestamps[0],
-      localizedDbUpdatedAt: timestamps[1],
+      commonDbVersionInfo: versionInfos[0],
+      localizedDbVersionInfo: versionInfos[1],
     );
   }
 
-  Future<DateTime?> _safeLoadDbUpdatedAt(String dbFile) async {
+  Future<DatabaseVersionInfo?> _safeLoadDbVersionInfo(String dbFile) async {
     try {
-      return await _dbLastUpdateLoader(
+      return await _dbVersionInfoLoader(
         dbFile,
-      ).timeout(const Duration(milliseconds: 500), onTimeout: () => null);
+      ).timeout(const Duration(seconds: 3), onTimeout: () => null);
     } catch (_) {
       return null;
     }
@@ -134,10 +137,10 @@ class AboutCubit extends Cubit<AboutState> {
 
 class _DbUpdateInfo {
   const _DbUpdateInfo({
-    required this.commonDbUpdatedAt,
-    required this.localizedDbUpdatedAt,
+    required this.commonDbVersionInfo,
+    required this.localizedDbVersionInfo,
   });
 
-  final DateTime? commonDbUpdatedAt;
-  final DateTime? localizedDbUpdatedAt;
+  final DatabaseVersionInfo? commonDbVersionInfo;
+  final DatabaseVersionInfo? localizedDbVersionInfo;
 }

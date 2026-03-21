@@ -5,7 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-Future<String> collectSystemAndAppInfo({BuildContext? context}) async {
+Future<String> collectSystemAndAppInfo({
+  BuildContext? context,
+  String? dbFilesSection,
+}) async {
   final buf = StringBuffer();
   final deviceInfo = DeviceInfoPlugin();
   void safeWrite(String key, Object? value) {
@@ -44,74 +47,60 @@ Future<String> collectSystemAndAppInfo({BuildContext? context}) async {
     safeWrite('PackageInfoError', e);
   }
 
+  // DATA / DB FILES
+  if (dbFilesSection != null && dbFilesSection.trim().isNotEmpty) {
+    buf.write("\r\n=======DATA / DB FILES=======\r\n");
+    buf.write(dbFilesSection.trimRight());
+    buf.write("\r\n");
+  }
+
   // DEVICE INFO (device_info_plus)
   try {
     buf.write("\r\n=======DEVICE INFO=======\r\n");
     if (kIsWeb) {
       final web = await deviceInfo.webBrowserInfo;
-      safeWrite('web_userAgent', web.userAgent);
+      safeWrite('web_browserName', web.browserName.name);
       safeWrite('web_platform', web.platform);
-      safeWrite('web_vendor', web.vendor);
       safeWrite('web_language', web.language);
-      safeWrite('web_languages', web.languages);
-      safeWrite('web_hardwareConcurrency', web.hardwareConcurrency);
-      safeWrite('web_maxTouchPoints', web.maxTouchPoints);
-      safeWrite('web_product', web.product);
     } else if (Platform.isAndroid) {
       final a = await deviceInfo.androidInfo;
-      try {
-        final map = a.data;
-        map.forEach((k, v) => safeWrite('android.$k', v));
-      } catch (_) {
-        safeWrite('android.model', a.model);
-        safeWrite('android.manufacturer', a.manufacturer);
-        safeWrite('android.version.sdkInt', a.version.sdkInt);
-        safeWrite('android.version.release', a.version.release);
-        safeWrite('android.isPhysicalDevice', a.isPhysicalDevice);
-      }
+      safeWrite('android.model', a.model);
+      safeWrite('android.manufacturer', a.manufacturer);
+      safeWrite('android.brand', a.brand);
+      safeWrite('android.version.sdkInt', a.version.sdkInt);
+      safeWrite('android.version.release', a.version.release);
+      safeWrite('android.isPhysicalDevice', a.isPhysicalDevice);
     } else if (Platform.isIOS) {
       final i = await deviceInfo.iosInfo;
-      try {
-        final map = i.data;
-        map.forEach((k, v) => safeWrite('ios.$k', v));
-      } catch (_) {
-        safeWrite('ios.name', i.name);
-        safeWrite('ios.systemName', i.systemName);
-        safeWrite('ios.systemVersion', i.systemVersion);
-        safeWrite('ios.model', i.model);
-        safeWrite('ios.identifierForVendor', i.identifierForVendor);
-        safeWrite('ios.utsname.sysname', i.utsname.sysname);
-      }
+      safeWrite('ios.systemName', i.systemName);
+      safeWrite('ios.systemVersion', i.systemVersion);
+      safeWrite('ios.model', i.model);
+      safeWrite('ios.localizedModel', i.localizedModel);
+      safeWrite('ios.isPhysicalDevice', i.isPhysicalDevice);
+      safeWrite('ios.utsname.machine', i.utsname.machine);
     } else if (Platform.isMacOS) {
       final m = await deviceInfo.macOsInfo;
-      try {
-        final map = m.data;
-        map.forEach((k, v) => safeWrite('macos.$k', v));
-      } catch (_) {
-        safeWrite('macos.computerName', m.computerName);
-        safeWrite('macos.arch', m.arch);
-        safeWrite('macos.kernelVersion', m.kernelVersion);
-      }
+      safeWrite('macos.arch', m.arch);
+      safeWrite('macos.model', m.model);
+      safeWrite('macos.kernelVersion', m.kernelVersion);
+      safeWrite('macos.osRelease', m.osRelease);
+      safeWrite('macos.activeCPUs', m.activeCPUs);
+      safeWrite('macos.memorySize', m.memorySize);
     } else if (Platform.isWindows) {
       final w = await deviceInfo.windowsInfo;
-      try {
-        final map = w.data;
-        map.forEach((k, v) => safeWrite('windows.$k', v));
-      } catch (_) {
-        safeWrite('windows.computerName', w.computerName);
-        safeWrite('windows.numberOfCores', w.numberOfCores);
-        safeWrite('windows.systemMemoryInMegabytes', w.systemMemoryInMegabytes);
-      }
+      safeWrite('windows.numberOfCores', w.numberOfCores);
+      safeWrite('windows.systemMemoryInMegabytes', w.systemMemoryInMegabytes);
+      safeWrite('windows.majorVersion', w.majorVersion);
+      safeWrite('windows.minorVersion', w.minorVersion);
+      safeWrite('windows.buildNumber', w.buildNumber);
+      safeWrite('windows.displayVersion', w.displayVersion);
+      safeWrite('windows.productName', w.productName);
+      safeWrite('windows.editionId', w.editionId);
     } else if (Platform.isLinux) {
       final l = await deviceInfo.linuxInfo;
-      try {
-        final map = l.data;
-        map.forEach((k, v) => safeWrite('linux.$k', v));
-      } catch (_) {
-        safeWrite('linux.name', l.name);
-        safeWrite('linux.version', l.version);
-        safeWrite('linux.id', l.id);
-      }
+      safeWrite('linux.name', l.name);
+      safeWrite('linux.version', l.version);
+      safeWrite('linux.id', l.id);
     } else {
       safeWrite('deviceInfo', 'unknown platform');
     }

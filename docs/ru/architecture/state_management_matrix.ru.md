@@ -1,7 +1,7 @@
 # State Management Matrix (RU)
 
-Doc-Version: `1.1.5`  
-Last-Updated: `2026-03-14`  
+Doc-Version: `1.1.6`  
+Last-Updated: `2026-03-21`  
 Source-Commit: `working-tree`
 
 ## 1. Purpose
@@ -19,7 +19,7 @@ Source-Commit: `working-tree`
 | Scope | Owner | State contract (summary) |
 |---|---|---|
 | `app/settings` | `SettingsCubit` | `SettingsState { AppSettings settings; bool isLoading; AppFailure? failure; }` |
-| `about` | `AboutCubit` | `AboutState { String appVersion; String buildNumber; String changelog; bool isLoading; bool isChangelogExpanded; bool isAcknowledgementsExpanded; bool isRecommendedExpanded; AppFailure? failure; }` |
+| `about` | `AboutCubit` | `AboutState { String appVersion; String buildNumber; String changelog; DatabaseVersionInfo? commonDbVersionInfo; DatabaseVersionInfo? localizedDbVersionInfo; bool isLoading; bool isChangelogExpanded; bool isAcknowledgementsExpanded; bool isRecommendedExpanded; AppFailure? failure; }` |
 | `topics/catalog` | `TopicsCatalogCubit` | `TopicsCatalogState { String language; List<TopicInfo> topics; Map<String, TopicResource?> iconByKey; bool isLoading; AppFailure? failure; }` |
 | `topics/content` | `TopicContentCubit` | `TopicContentState { String route; String language; String name; String description; String markdown; bool isLoading; AppFailure? failure; }` |
 | `primary_sources/list` | `PrimarySourcesCubit` | `PrimarySourcesState { List<PrimarySource> full; List<PrimarySource> significant; List<PrimarySource> fragments; bool isLoading; AppFailure? failure; }` |

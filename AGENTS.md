@@ -69,6 +69,8 @@
 - `ServerManager` expects compile-time defines `SUPABASE_URL` and `SUPABASE_KEY`.
 - The Snap packaging flow uses `--dart-define-from-file=api-keys.json`.
 - If you change database content or language loading behavior, check both `lib/infra/db/` and `web/db/`.
+- Database schema version is stored inside each SQLite file in `db_metadata.schema_version` (`revelation.sqlite` and `revelation_<lang>.sqlite`).
+- When changing a DB schema, update the Drift `schemaVersion`, the SQLite `PRAGMA user_version`, and `db_metadata.schema_version` in the working DB files under `%Documents%/revelation/db`, then publish/copy the updated DB files to `web/db/`.
 
 ## Generated Files
 - Do not manually edit generated Drift files such as `lib/infra/db/**/*.g.dart`.
@@ -119,6 +121,9 @@
 - Deploy mobile and store releases to Google Play and Microsoft Store.
 
 ## Database Update Checklist
+- Edit/version working DB files in `%Documents%/revelation/db`.
+- Keep `db_metadata` records in sync for every DB file: `schema_version`, `data_version`, `date`.
+- If the DB schema changed, update both the code schema version and the schema version stored inside the DB files before publishing.
 - Upload the new DB file to the Supabase storage bucket used by the project.
 - Copy the DB file into `web/db/`.
 - Deploy the website content in the separate `Revelation.website` repository.

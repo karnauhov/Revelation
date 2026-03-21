@@ -1,9 +1,10 @@
 {
   "@@locale": "uk",
   "app_name": "Об'явлення",
-  "version": "Версія:",
-  "common_data_update": "Спільні дані від:",
-  "localized_data_update": "Дані {language} мовою від:",
+  "version": "Версія застосунку:",
+  "common_data_update": "Версія даних:",
+  "localized_data_update": "Версія даних {language} мовою:",
+  "data_version_from": "від",
   "language_name_en": "англійською",
   "language_name_es": "іспанською",
   "language_name_uk": "українською",

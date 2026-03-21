@@ -4,23 +4,32 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
+import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 
 void main() {
   test('load fills version, build number and changelog on success', () async {
-    final commonUpdatedAt = DateTime.utc(2026, 3, 20, 10, 30, 0);
-    final localizedUpdatedAt = DateTime.utc(2026, 3, 20, 11, 0, 0);
+    final commonVersionInfo = DatabaseVersionInfo(
+      schemaVersion: 4,
+      dataVersion: 7,
+      date: DateTime.utc(2026, 3, 20, 10, 30, 0),
+    );
+    final localizedVersionInfo = DatabaseVersionInfo(
+      schemaVersion: 6,
+      dataVersion: 3,
+      date: DateTime.utc(2026, 3, 20, 11, 0, 0),
+    );
     final cubit = AboutCubit(
       autoLoad: false,
       packageInfoLoader: () async =>
           _buildPackageInfo(version: '1.2.3', buildNumber: '45'),
       changelogLoader: () async => '# Changelog',
-      dbLastUpdateLoader: (dbFile) async {
+      dbVersionInfoLoader: (dbFile) async {
         if (dbFile == AppConstants.commonDB) {
-          return commonUpdatedAt;
+          return commonVersionInfo;
         }
         if (dbFile == AppConstants.localizedDB.replaceAll('@loc', 'en')) {
-          return localizedUpdatedAt;
+          return localizedVersionInfo;
         }
         return null;
       },
@@ -35,8 +44,8 @@ void main() {
     expect(cubit.state.appVersion, '1.2.3');
     expect(cubit.state.buildNumber, '45');
     expect(cubit.state.changelog, '# Changelog');
-    expect(cubit.state.commonDbUpdatedAt, commonUpdatedAt);
-    expect(cubit.state.localizedDbUpdatedAt, localizedUpdatedAt);
+    expect(cubit.state.commonDbVersionInfo, commonVersionInfo);
+    expect(cubit.state.localizedDbVersionInfo, localizedVersionInfo);
   });
 
   test(
@@ -46,7 +55,7 @@ void main() {
         autoLoad: false,
         packageInfoLoader: () async => throw StateError('forced failure'),
         changelogLoader: () async => '# Changelog',
-        dbLastUpdateLoader: (_) async => null,
+        dbVersionInfoLoader: (_) async => null,
       );
       addTearDown(cubit.close);
 
@@ -66,7 +75,7 @@ void main() {
       packageInfoLoader: () async =>
           _buildPackageInfo(version: '0.0.0', buildNumber: '0'),
       changelogLoader: () async => '',
-      dbLastUpdateLoader: (_) async => null,
+      dbVersionInfoLoader: (_) async => null,
     );
     addTearDown(cubit.close);
 
@@ -91,7 +100,7 @@ void main() {
           changelogLoaderCalled = true;
           return '# Changelog';
         },
-        dbLastUpdateLoader: (_) async => null,
+        dbVersionInfoLoader: (_) async => null,
       );
 
       final loadFuture = cubit.load();
@@ -120,7 +129,7 @@ void main() {
         return _buildPackageInfo(version: '2.0.0', buildNumber: '99');
       },
       changelogLoader: () async => '# Retry success',
-      dbLastUpdateLoader: (_) async => null,
+      dbVersionInfoLoader: (_) async => null,
     );
     addTearDown(cubit.close);
 
