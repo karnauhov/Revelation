@@ -3,39 +3,91 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:revelation/app/router/app_router.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/core/logging/app_bloc_observer.dart';
+import 'package:revelation/core/logging/app_logger_formatter.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/theme/material_theme.dart';
-import 'package:revelation/core/logging/app_logger_formatter.dart';
-import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:revelation/app/router/app_router.dart';
 
-void main() async {
-  final talker = TalkerFlutter.init(
+typedef AppStartCallback = Future<void> Function(Talker talker);
+typedef InitializeSettingsCubit = Future<SettingsCubit> Function(Talker talker);
+typedef RunAppCallback = void Function(Widget app);
+typedef RunEntryPointCallback =
+    Future<void> Function({
+      required Talker talker,
+      required AppStartCallback startAppCallback,
+    });
+
+@visibleForTesting
+Future<void> Function() launchRevelationAppCallback = launchRevelationApp;
+
+@visibleForTesting
+InitializeSettingsCubit defaultInitializeSettingsCubit = (talker) =>
+    AppBootstrap(talker: talker).initialize();
+
+Future<void> main() async {
+  await launchRevelationAppCallback();
+}
+
+@visibleForTesting
+Future<void> launchRevelationApp({
+  Talker Function()? createTalker,
+  void Function(Talker talker)? configureCore,
+  RunEntryPointCallback? runEntryPoint,
+  AppStartCallback? startAppCallback,
+}) async {
+  final talker = (createTalker ?? createAppTalker)();
+  (configureCore ?? configureAppCore)(talker);
+  await (runEntryPoint ?? runAppEntryPoint)(
+    talker: talker,
+    startAppCallback: startAppCallback ?? startApp,
+  );
+}
+
+Talker createAppTalker() {
+  return TalkerFlutter.init(
     logger: TalkerLogger(formatter: AppLoggerFormatter()),
   );
+}
+
+void configureAppCore(Talker talker) {
   AppDi.registerCore(talker: talker);
   Bloc.observer = AppBlocObserver(talker: talker);
+}
 
+@visibleForTesting
+Future<void> runAppEntryPoint({
+  required Talker talker,
+  required AppStartCallback startAppCallback,
+}) async {
   runZonedGuarded(
     () async {
-      final appBootstrap = AppBootstrap(talker: talker);
-      final SettingsCubit settingsCubit = await appBootstrap.initialize();
-
-      runApp(
-        MultiBlocProvider(
-          providers: AppDi.appBlocProviders(settingsCubit: settingsCubit),
-          child: const RevelationApp(),
-        ),
-      );
+      await startAppCallback(talker);
     },
     (Object error, StackTrace stack) {
       talker.handle(error, stack, 'Uncaught app exception (zone)');
     },
+  );
+}
+
+@visibleForTesting
+Future<void> startApp(
+  Talker talker, {
+  InitializeSettingsCubit? initializeSettingsCubit,
+  RunAppCallback? runAppCallback,
+}) async {
+  final settingsCubit =
+      await (initializeSettingsCubit ?? defaultInitializeSettingsCubit)(talker);
+  (runAppCallback ?? runApp)(
+    MultiBlocProvider(
+      providers: AppDi.appBlocProviders(settingsCubit: settingsCubit),
+      child: const RevelationApp(),
+    ),
   );
 }
 
