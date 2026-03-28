@@ -64,32 +64,74 @@
         <licenseLink></licenseLink>
     </library>
     <library>
-        <name>@Package 'window_manager'</name>
+        <name>@Package 'cupertino_icons'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
-        <officialSite>https://pub.dev/packages/window_manager</officialSite>
-        <licenseLink>https://pub.dev/packages/window_manager/license</licenseLink>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/cupertino_icons</officialSite>
+        <licenseLink>https://pub.dev/packages/cupertino_icons/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'flutter_cache_manager'</name>
+        <name>@Package 'go_router'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
-        <officialSite>https://pub.dev/packages/flutter_cache_manager</officialSite>
-        <licenseLink>https://pub.dev/packages/flutter_cache_manager/license</licenseLink>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/go_router</officialSite>
+        <licenseLink>https://pub.dev/packages/go_router/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'flutter_svg'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/flutter_svg</officialSite>
+        <licenseLink>https://pub.dev/packages/flutter_svg/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'url_launcher'</name>
+        <idIcon></idIcon>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/url_launcher</officialSite>
+        <licenseLink>https://pub.dev/packages/url_launcher/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'shared_preferences'</name>
+        <idIcon></idIcon>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/shared_preferences</officialSite>
+        <licenseLink>https://pub.dev/packages/shared_preferences/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'path_provider'</name>
+        <idIcon></idIcon>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/path_provider</officialSite>
+        <licenseLink>https://pub.dev/packages/path_provider/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'web'</name>
+        <idIcon></idIcon>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/web</officialSite>
+        <licenseLink>https://pub.dev/packages/web/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'intl'</name>
+        <idIcon></idIcon>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/intl</officialSite>
+        <licenseLink>https://pub.dev/packages/intl/license</licenseLink>
     </library>
     <library>
         <name>@Package 'get_it'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
+        <license>MIT</license>
         <officialSite>https://pub.dev/packages/get_it</officialSite>
         <licenseLink>https://pub.dev/packages/get_it/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'provider'</name>
+        <name>@Package 'flutter_bloc'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
-        <officialSite>https://pub.dev/packages/provider</officialSite>
-        <licenseLink>https://pub.dev/packages/provider/license</licenseLink>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/flutter_bloc</officialSite>
+        <licenseLink>https://pub.dev/packages/flutter_bloc/license</licenseLink>
     </library>
     <library>
         <name>@Package 'package_info_plus'</name>
@@ -108,12 +150,12 @@
     <library>
         <name>@Package 'xml'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
+        <license>MIT</license>
         <officialSite>https://pub.dev/packages/xml</officialSite>
         <licenseLink>https://pub.dev/packages/xml/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'flutter_markdown_plus '</name>
+        <name>@Package 'flutter_markdown_plus'</name>
         <idIcon></idIcon>
         <license>BSD-3-Clause</license>
         <officialSite>https://pub.dev/packages/flutter_markdown_plus</officialSite>
@@ -122,7 +164,7 @@
     <library>
         <name>@Package 'float_column'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
+        <license>MIT</license>
         <officialSite>https://pub.dev/packages/float_column</officialSite>
         <licenseLink>https://pub.dev/packages/float_column/license</licenseLink>
     </library>
@@ -136,14 +178,14 @@
     <library>
         <name>@Package 'supabase_flutter'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
+        <license>MIT</license>
         <officialSite>https://pub.dev/packages/supabase_flutter</officialSite>
         <licenseLink>https://pub.dev/packages/supabase_flutter/license</licenseLink>
     </library>
     <library>
         <name>@Package 'flutter_colorpicker'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
+        <license>MIT</license>
         <officialSite>https://pub.dev/packages/flutter_colorpicker</officialSite>
         <licenseLink>https://pub.dev/packages/flutter_colorpicker/license</licenseLink>
     </library>
@@ -157,14 +199,14 @@
     <library>
         <name>@Package 'image'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
+        <license>MIT</license>
         <officialSite>https://pub.dev/packages/image</officialSite>
         <licenseLink>https://pub.dev/packages/image/license</licenseLink>
     </library>
     <library>
         <name>@Package 'audioplayers'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
+        <license>MIT</license>
         <officialSite>https://pub.dev/packages/audioplayers</officialSite>
         <licenseLink>https://pub.dev/packages/audioplayers/license</licenseLink>
     </library>
@@ -197,25 +239,18 @@
         <licenseLink>https://pub.dev/packages/talker_flutter/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'flutter_launcher_icons'</name>
+        <name>@Package 'flutter_lints'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
-        <officialSite>https://pub.dev/packages/flutter_launcher_icons</officialSite>
-        <licenseLink>https://pub.dev/packages/flutter_launcher_icons/license</licenseLink>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/flutter_lints</officialSite>
+        <licenseLink>https://pub.dev/packages/flutter_lints/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'msix'</name>
+        <name>@Package 'integration_test'</name>
         <idIcon></idIcon>
-        <license>MIT License</license>
-        <officialSite>https://pub.dev/packages/msix</officialSite>
-        <licenseLink>https://pub.dev/packages/msix/license</licenseLink>
-    </library>
-        <library>
-        <name>@Package 'drift_dev'</name>
-        <idIcon></idIcon>
-        <license>MIT</license>
-        <officialSite>https://pub.dev/packages/drift_dev</officialSite>
-        <licenseLink>https://pub.dev/packages/drift_dev/license</licenseLink>
+        <license>BSD-3-Clause</license>
+        <officialSite>https://pub.dev/packages/integration_test</officialSite>
+        <licenseLink>https://pub.dev/packages/integration_test/license</licenseLink>
     </library>
     <library>
         <name>@Package 'build_runner'</name>
@@ -223,6 +258,27 @@
         <license>BSD-3-Clause</license>
         <officialSite>https://pub.dev/packages/build_runner</officialSite>
         <licenseLink>https://pub.dev/packages/build_runner/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'flutter_launcher_icons'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/flutter_launcher_icons</officialSite>
+        <licenseLink>https://pub.dev/packages/flutter_launcher_icons/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'msix'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/msix</officialSite>
+        <licenseLink>https://pub.dev/packages/msix/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'drift_dev'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/drift_dev</officialSite>
+        <licenseLink>https://pub.dev/packages/drift_dev/license</licenseLink>
     </library>
     <library>
         <name>@Font 'Arimo'</name>

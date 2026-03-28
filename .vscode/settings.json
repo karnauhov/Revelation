@@ -1,3 +1,8 @@
 {
-    "arb-editor.suppressedWarnings": "all"
+    "arb-editor.suppressedWarnings": "all",
+    "dart.coverageExcludePatterns": [
+        "**/*.g.dart",
+        "**/*.freezed.dart",
+        "**/lib/l10n/**"
+    ]
 }

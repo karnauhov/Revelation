@@ -12,7 +12,65 @@ class AppLocalizationsUk extends AppLocalizations {
   String get app_name => 'Об\'явлення';
 
   @override
-  String get version => 'Версія';
+  String get startup_title => 'Запуск застосунку…';
+
+  @override
+  String get startup_step_preparing => 'Підготовка застосунку';
+
+  @override
+  String get startup_step_loading_settings => 'Завантажуємо ваші налаштування';
+
+  @override
+  String get startup_step_initializing_server => 'Підключаємо онлайн-сервіси';
+
+  @override
+  String get startup_step_initializing_databases =>
+      'Відкриваємо дані застосунку';
+
+  @override
+  String get startup_step_configuring_links => 'Підготовка словника Стронга';
+
+  @override
+  String startup_progress(int current, int total) {
+    return 'Крок $current з $total';
+  }
+
+  @override
+  String get startup_error => 'Не вдалося запустити застосунок :(';
+
+  @override
+  String get startup_retry => 'Спробувати ще раз';
+
+  @override
+  String startup_version_build(String version, String build) {
+    return 'Версія $version ($build)';
+  }
+
+  @override
+  String get version => 'Версія застосунку:';
+
+  @override
+  String get common_data_update => 'Версія даних:';
+
+  @override
+  String localized_data_update(String language) {
+    return 'Версія даних $language мовою:';
+  }
+
+  @override
+  String get data_version_from => 'від';
+
+  @override
+  String get language_name_en => 'англійською';
+
+  @override
+  String get language_name_es => 'іспанською';
+
+  @override
+  String get language_name_uk => 'українською';
+
+  @override
+  String get language_name_ru => 'російською';
 
   @override
   String get app_description => 'Додаток для вивчення Об\'явлення.';
@@ -138,6 +196,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get error_loading_topics => 'Помилка завантаження тем';
+
+  @override
+  String get error_loading_primary_sources =>
+      'Помилка завантаження першоджерел';
 
   @override
   String get changelog => 'Журнал змін (en)';

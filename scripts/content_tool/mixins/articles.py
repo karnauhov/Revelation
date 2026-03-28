@@ -38,7 +38,7 @@ class ArticlesMixin:
             self.articles_tree.heading("route", text="Маршрут")
             self.articles_tree.heading("name", text="Заголовок статьи")
             self.articles_tree.heading("sort", text="Порядок")
-            self.articles_tree.heading("visible", text="Показывать")
+            self.articles_tree.heading("visible", text="На главной")
             self.articles_tree.column("route", width=200, anchor="w")
             self.articles_tree.column("name", width=260, anchor="w")
             self.articles_tree.column("sort", width=90, anchor="center")
@@ -464,6 +464,20 @@ class ArticlesMixin:
 
         def _sort_articles(self) -> None:
             self.articles.sort(key=lambda item: (item.sort_order, item.route))
+
+        def _select_article_by_route(self, route: str) -> None:
+            if not route:
+                return
+            for idx, row in enumerate(self.articles):
+                if row.route != route:
+                    continue
+                item_id = str(idx)
+                self.articles_tree.selection_set(item_id)
+                self.articles_tree.focus(item_id)
+                self.articles_tree.see(item_id)
+                self.selected_article_index = idx
+                self._reload_selected_article()
+                return
 
 
         def _on_md_tab_changed(self, _event: object) -> None:

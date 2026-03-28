@@ -12,7 +12,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_name => 'Revelation';
 
   @override
-  String get version => 'Version';
+  String get startup_title => 'Launching the app…';
+
+  @override
+  String get startup_step_preparing => 'Preparing the app';
+
+  @override
+  String get startup_step_loading_settings => 'Loading your settings';
+
+  @override
+  String get startup_step_initializing_server =>
+      'Connecting to online services';
+
+  @override
+  String get startup_step_initializing_databases => 'Opening app data';
+
+  @override
+  String get startup_step_configuring_links => 'Preparing Strong’s dictionary';
+
+  @override
+  String startup_progress(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get startup_error => 'Couldn\'t start the app :(';
+
+  @override
+  String get startup_retry => 'Try again';
+
+  @override
+  String startup_version_build(String version, String build) {
+    return 'Version $version ($build)';
+  }
+
+  @override
+  String get version => 'App version:';
+
+  @override
+  String get common_data_update => 'Data version:';
+
+  @override
+  String localized_data_update(String language) {
+    return 'Data version in $language:';
+  }
+
+  @override
+  String get data_version_from => 'from';
+
+  @override
+  String get language_name_en => 'English';
+
+  @override
+  String get language_name_es => 'Spanish';
+
+  @override
+  String get language_name_uk => 'Ukrainian';
+
+  @override
+  String get language_name_ru => 'Russian';
 
   @override
   String get app_description => 'Revelation Study app.';
@@ -137,6 +195,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error_loading_topics => 'Error loading topics';
+
+  @override
+  String get error_loading_primary_sources => 'Error loading primary sources';
 
   @override
   String get changelog => 'Changelog';

@@ -26,8 +26,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
-  Win32Window::Size size(1280, 720);
-  if (!window.Create(L"revelation", origin, size)) {
+  Win32Window::Size size(800, 650);
+  window.SetMinSize(800, 650);
+  // Startup title is replaced by localized Flutter title after first frame.
+  if (!window.Create(L"Revelation", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

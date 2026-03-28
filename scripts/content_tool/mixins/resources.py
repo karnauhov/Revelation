@@ -386,6 +386,7 @@ class ResourcesMixin:
                         """,
                         (key, file_name, mime, sqlite3.Binary(data)),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить ресурс:\n{exc}", parent=self)
                 return
@@ -446,6 +447,7 @@ class ResourcesMixin:
             try:
                 with self.common_connection:
                     self.common_connection.execute("DELETE FROM common_resources WHERE key = ?", (row.key,))
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка удаления", f"Не удалось удалить ресурс:\n{exc}", parent=self)
                 return
@@ -914,6 +916,10 @@ class ResourcesMixin:
             try:
                 con.commit()
                 con.execute("VACUUM")
+                if db_path.name.lower() == "revelation.sqlite":
+                    self._touch_common_db_data_version(connection=con, db_path=db_path)
+                else:
+                    self._touch_localized_db_data_version(connection=con, db_path=db_path)
                 con.commit()
             finally:
                 if own_connection:

@@ -2,21 +2,19 @@
 
 All notable changes to this application will be documented here.
 
-## [1.0.5] - Under development
+## [1.0.5](https://github.com/karnauhov/Revelation/releases/tag/v1.0.4%2B141) - 28.03.26
 
 ### Added
 
 - Verse labels and interactive verse selection overlays on Primary Source pages
 - Verse description mode with per-word links that jump to the exact word on the page
 - Toggle to show or hide verse numbers in Primary Source toolbar
-- Topic metadata storage in localized SQLite databases (`topics` table) for dynamic topic list management
+- Full-screen startup splash screen with loading progress and app version
 
 ### Changed
 
-- Primary Source description info icon is now shown only for word and Strong's number modes
-- Topic list and topic header text now come from localized databases instead of bundled localization keys
-- Topic content and media references are now DB-oriented to allow content updates without app recompilation
-- Primary Sources are now fully DB-driven (metadata, localized fields, links, pages, words, verses, preview resources) with editing workflow in Content Tool
+- Content updates are now independent from the app. You no longer need to update the app to get new or improved content.
+- Completed a deep architecture refactor: migration to canonical feature-first structure (`app/core/infra/shared/features`), full state-management cutover to `BLoC/Cubit`, and governance hardening
 
 ## [1.0.4](https://github.com/karnauhov/Revelation/releases/tag/v1.0.4%2B134) - 22.02.26
 

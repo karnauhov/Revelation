@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime as dt
 import json
 import re
 import shutil
@@ -14,9 +15,203 @@ from typing import Any
 
 from ..helpers import LANGUAGE_NAME_RU_BY_CODE
 from ..models import ArticleRow, PrimarySourceSummary, ResourceRow, StrongRow
+from ..web_db_manifest import build_web_db_manifest_payload_from_paths, write_web_db_manifest
+
+COMMON_DB_SCHEMA_VERSION = 4
+LOCALIZED_DB_SCHEMA_VERSION = 6
+DB_METADATA_TABLE_NAME = "db_metadata"
+DB_METADATA_SCHEMA_VERSION_KEY = "schema_version"
+DB_METADATA_DATA_VERSION_KEY = "data_version"
+DB_METADATA_DATE_KEY = "date"
 
 
 class CoreDbMixin:
+        def _db_schema_version_for_path(self, db_path: Path) -> int:
+            if db_path.name.lower() == "revelation.sqlite":
+                return COMMON_DB_SCHEMA_VERSION
+            return LOCALIZED_DB_SCHEMA_VERSION
+
+        def _active_connection_for_db_path(self, db_path: Path) -> sqlite3.Connection | None:
+            resolved = db_path.resolve()
+            if self.common_connection is not None and self.common_db_path is not None:
+                if self.common_db_path.resolve() == resolved:
+                    return self.common_connection
+            if self.connection is not None and self.current_db_path is not None:
+                if self.current_db_path.resolve() == resolved:
+                    return self.connection
+            return None
+
+        def _metadata_now_iso(self) -> str:
+            return dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+        def _ensure_db_metadata_table_on_connection(
+            self,
+            connection: sqlite3.Connection,
+            *,
+            schema_version: int,
+        ) -> int:
+            connection.execute(
+                f"""
+                CREATE TABLE IF NOT EXISTS {DB_METADATA_TABLE_NAME} (
+                  key TEXT NOT NULL PRIMARY KEY,
+                  value TEXT NOT NULL
+                )
+                """
+            )
+            current_user_version = int(connection.execute("PRAGMA user_version").fetchone()[0] or 0)
+            effective_schema_version = max(current_user_version, schema_version)
+            if current_user_version < effective_schema_version:
+                connection.execute(f"PRAGMA user_version = {effective_schema_version}")
+            connection.execute(
+                f"""
+                INSERT INTO {DB_METADATA_TABLE_NAME}(key, value)
+                VALUES(?, ?)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value
+                """,
+                (DB_METADATA_SCHEMA_VERSION_KEY, str(effective_schema_version)),
+            )
+            return effective_schema_version
+
+        def _read_db_version_snapshot(
+            self,
+            db_path: Path | None,
+            *,
+            connection: sqlite3.Connection | None = None,
+        ) -> dict[str, object] | None:
+            if db_path is None or not db_path.exists():
+                return None
+
+            con = connection
+            own_connection = False
+            if con is None:
+                con = self._active_connection_for_db_path(db_path)
+            if con is None:
+                con = sqlite3.connect(str(db_path))
+                con.row_factory = sqlite3.Row
+                own_connection = True
+
+            try:
+                user_version = int(con.execute("PRAGMA user_version").fetchone()[0] or 0)
+                schema_version: int | None = user_version if user_version > 0 else None
+                data_version: int | None = None
+                date_iso: str | None = None
+
+                if self._table_exists(con, DB_METADATA_TABLE_NAME):
+                    rows = con.execute(
+                        f"""
+                        SELECT key, value
+                        FROM {DB_METADATA_TABLE_NAME}
+                        WHERE key IN (?, ?, ?)
+                        """,
+                        (
+                            DB_METADATA_SCHEMA_VERSION_KEY,
+                            DB_METADATA_DATA_VERSION_KEY,
+                            DB_METADATA_DATE_KEY,
+                        ),
+                    ).fetchall()
+                    values = {str(row["key"]): str(row["value"]) for row in rows}
+                    if values.get(DB_METADATA_SCHEMA_VERSION_KEY, "").isdigit():
+                        schema_version = int(values[DB_METADATA_SCHEMA_VERSION_KEY])
+                    if values.get(DB_METADATA_DATA_VERSION_KEY, "").isdigit():
+                        data_version = int(values[DB_METADATA_DATA_VERSION_KEY])
+                    date_iso = values.get(DB_METADATA_DATE_KEY) or None
+
+                return {
+                    "path": db_path,
+                    "schema_version": schema_version,
+                    "data_version": data_version,
+                    "date_iso": date_iso,
+                    "size_bytes": int(db_path.stat().st_size),
+                }
+            finally:
+                if own_connection:
+                    con.close()
+
+        def _touch_db_data_version(
+            self,
+            db_path: Path,
+            *,
+            schema_version: int,
+            connection: sqlite3.Connection | None = None,
+        ) -> dict[str, object] | None:
+            con = connection
+            own_connection = False
+            if con is None:
+                con = sqlite3.connect(str(db_path))
+                own_connection = True
+
+            try:
+                def apply_touch(active_connection: sqlite3.Connection) -> None:
+                    effective_schema_version = self._ensure_db_metadata_table_on_connection(
+                        active_connection,
+                        schema_version=schema_version,
+                    )
+                    row = active_connection.execute(
+                        f"""
+                        SELECT value
+                        FROM {DB_METADATA_TABLE_NAME}
+                        WHERE key = ?
+                        LIMIT 1
+                        """,
+                        (DB_METADATA_DATA_VERSION_KEY,),
+                    ).fetchone()
+                    current_data_version = int(str(row[0]).strip()) if row and str(row[0]).strip().isdigit() else 0
+                    next_data_version = current_data_version + 1
+                    now_iso = self._metadata_now_iso()
+                    active_connection.executemany(
+                        f"""
+                        INSERT INTO {DB_METADATA_TABLE_NAME}(key, value)
+                        VALUES(?, ?)
+                        ON CONFLICT(key) DO UPDATE SET value = excluded.value
+                        """,
+                        [
+                            (DB_METADATA_SCHEMA_VERSION_KEY, str(effective_schema_version)),
+                            (DB_METADATA_DATA_VERSION_KEY, str(next_data_version)),
+                            (DB_METADATA_DATE_KEY, now_iso),
+                        ],
+                    )
+
+                if own_connection:
+                    with con:
+                        apply_touch(con)
+                else:
+                    apply_touch(con)
+
+                return self._read_db_version_snapshot(db_path, connection=con)
+            finally:
+                if own_connection:
+                    con.close()
+
+        def _touch_common_db_data_version(
+            self,
+            *,
+            connection: sqlite3.Connection | None = None,
+            db_path: Path | None = None,
+        ) -> dict[str, object] | None:
+            target_path = db_path or self.common_db_path
+            if target_path is None:
+                return None
+            return self._touch_db_data_version(
+                target_path,
+                schema_version=COMMON_DB_SCHEMA_VERSION,
+                connection=connection,
+            )
+
+        def _touch_localized_db_data_version(
+            self,
+            *,
+            connection: sqlite3.Connection | None = None,
+            db_path: Path | None = None,
+        ) -> dict[str, object] | None:
+            target_path = db_path or self.current_db_path
+            if target_path is None:
+                return None
+            return self._touch_db_data_version(
+                target_path,
+                schema_version=LOCALIZED_DB_SCHEMA_VERSION,
+                connection=connection,
+            )
+
         def _choose_folder(self) -> None:
             chosen = filedialog.askdirectory(initialdir=str(self.work_dir), title="Выберите папку с БД")
             if not chosen:
@@ -103,7 +298,8 @@ class CoreDbMixin:
             self.current_db_path = db_path
             self._open_common_connection()
 
-            self._ensure_schema()
+            # NOTE: Disabled by request to keep DB file modification time stable on open.
+            # self._ensure_schema()
             self._load_rows()
             self._set_dirty(False)
             self._update_section_db_labels()
@@ -127,7 +323,8 @@ class CoreDbMixin:
                     if cur.fetchone() is None:
                         con.close()
                         continue
-                    self._ensure_common_schema_on_connection(con)
+                    # NOTE: Disabled by request to keep DB file modification time stable on open.
+                    # self._ensure_common_schema_on_connection(con)
                     self.common_connection = con
                     self.common_db_path = path.resolve()
                     return
@@ -177,6 +374,11 @@ class CoreDbMixin:
                 CREATE TABLE IF NOT EXISTS greek_descs (
                   id INTEGER NOT NULL PRIMARY KEY,
                   "desc" TEXT NOT NULL
+                );
+
+                CREATE TABLE IF NOT EXISTS db_metadata (
+                  key TEXT NOT NULL PRIMARY KEY,
+                  value TEXT NOT NULL
                 );
 
                 CREATE TABLE IF NOT EXISTS primary_source_texts (
@@ -241,6 +443,10 @@ class CoreDbMixin:
                 DROP TABLE IF EXISTS topic_texts;
                 """
             )
+            self._ensure_db_metadata_table_on_connection(
+                self.connection,
+                schema_version=LOCALIZED_DB_SCHEMA_VERSION,
+            )
             self.connection.commit()
 
         def _ensure_common_schema_on_connection(self, connection: sqlite3.Connection) -> None:
@@ -260,6 +466,11 @@ class CoreDbMixin:
                   file_name TEXT NOT NULL,
                   mime_type TEXT NOT NULL,
                   data BLOB NOT NULL
+                );
+
+                CREATE TABLE IF NOT EXISTS db_metadata (
+                  key TEXT NOT NULL PRIMARY KEY,
+                  value TEXT NOT NULL
                 );
 
                 CREATE TABLE IF NOT EXISTS primary_sources (
@@ -329,6 +540,10 @@ class CoreDbMixin:
                   PRIMARY KEY (source_id, page_name, verse_index)
                 );
                 """
+            )
+            self._ensure_db_metadata_table_on_connection(
+                connection,
+                schema_version=COMMON_DB_SCHEMA_VERSION,
             )
             connection.commit()
 
@@ -496,6 +711,7 @@ class CoreDbMixin:
                             for row in self.articles
                         ],
                     )
+                    self._touch_localized_db_data_version(connection=self.connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить изменения:\n{exc}", parent=self)
                 return False
@@ -760,6 +976,7 @@ class CoreDbMixin:
                 if self._table_exists(con, "primary_source_link_texts"):
                     con.execute("UPDATE primary_source_link_texts SET title = ''")
 
+                self._touch_localized_db_data_version(connection=con, db_path=db_path)
                 con.commit()
 
             return translated_test_rows
@@ -806,6 +1023,9 @@ class CoreDbMixin:
             ).strip()
             return translated or source_text
 
+        def _web_db_manifest_path(self, target_dir: Path) -> Path:
+            return target_dir / "manifest.json"
+
         def _copy_to_web_db(self) -> None:
             source_dir = self.work_dir
             target_dir = self.project_root / "web" / "db"
@@ -831,10 +1051,28 @@ class CoreDbMixin:
                 messagebox.showwarning("Нет БД", "В рабочей папке не найдены файлы revelation*.sqlite.", parent=self)
                 return
 
+            try:
+                build_web_db_manifest_payload_from_paths(files)
+            except (OSError, sqlite3.DatabaseError, ValueError) as exc:
+                messagebox.showerror(
+                    "Ошибка manifest.json",
+                    (
+                        "Не удалось подготовить manifest.json перед копированием.\n"
+                        f"{exc}"
+                    ),
+                    parent=self,
+                )
+                return
+
             confirmation_text = (
                 f"Переписать {len(files)} файл(ов) из:\n{source_dir}\n\n"
                 f"в:\n{target_dir}\n\n"
                 "Это только копирование файлов в web/db."
+            )
+            confirmation_text += (
+                "\n\n"
+                "SQLite-файлы будут скопированы в web/db, "
+                "а manifest.json будет пересоздан по метаданным из этих БД."
             )
             if test_enabled_db_files:
                 test_block = "\n".join(f"- {name}" for name in test_enabled_db_files)
@@ -853,10 +1091,32 @@ class CoreDbMixin:
                 return
 
             target_dir.mkdir(parents=True, exist_ok=True)
+            copied_files: list[Path] = []
             for src in files:
-                shutil.copy2(src, target_dir / src.name)
+                target_path = target_dir / src.name
+                shutil.copy2(src, target_path)
+                copied_files.append(target_path)
+            manifest_path = self._web_db_manifest_path(target_dir)
+            try:
+                write_web_db_manifest(manifest_path, db_paths=copied_files)
+            except (OSError, sqlite3.DatabaseError, ValueError) as exc:
+                messagebox.showerror(
+                    "Ошибка manifest.json",
+                    (
+                        "SQLite-файлы были скопированы, но manifest.json не обновлен.\n"
+                        "Исправьте проблему и повторите копирование.\n\n"
+                        f"{exc}"
+                    ),
+                    parent=self,
+                )
+                self._set_status(
+                    f"SQLite-файлы скопированы в {target_dir}, но manifest.json не обновлен."
+                )
+                return
 
-            self._set_status(f"Файлы переписаны в {target_dir}. Скопировано файлов: {len(files)}")
+            self._set_status(
+                f"Файлы и manifest.json переписаны в {target_dir}. Скопировано SQLite-файлов: {len(files)}"
+            )
 
         def _find_localized_dbs_with_enabled_tests(self, source_dir: Path) -> list[str]:
             found: list[str] = []

@@ -157,6 +157,7 @@ class CoreUiMixin:
             self._install_global_text_shortcuts()
             self.strong_filter_var.trace_add("write", self._on_strong_filter_changed)
             self._refresh_db_list(initial_select=True)
+            self._log_current_db_versions_on_startup()
             self.after(0, self._maximize_window)
 
             self.protocol("WM_DELETE_WINDOW", self._on_close)
@@ -222,6 +223,7 @@ class CoreUiMixin:
                 "Раздел «Библии» скоро будет доступен.",
                 local_db_var=self.bibles_local_db_var,
                 common_db_var=self.bibles_common_db_var,
+                show_db_labels=False,
             )
 
             ttk.Separator(self, orient="horizontal").grid(row=2, column=0, sticky="ew")
@@ -234,11 +236,18 @@ class CoreUiMixin:
             file_info_wrap = ttk.Frame(status_frame)
             file_info_wrap.grid(row=0, column=0, sticky="ew")
             file_info_wrap.columnconfigure(0, weight=1)
-            ttk.Label(file_info_wrap, textvariable=self.file_info_var, anchor="w").grid(
+            self.file_info_label = ttk.Label(
+                file_info_wrap,
+                textvariable=self.file_info_var,
+                anchor="w",
+                cursor="hand2",
+            )
+            self.file_info_label.grid(
                 row=0,
                 column=0,
                 sticky="ew",
             )
+            self.file_info_label.bind("<Button-1>", self._open_db_versions_dialog)
             ttk.Separator(status_frame, orient="vertical").grid(
                 row=0,
                 column=1,
@@ -506,6 +515,7 @@ class CoreUiMixin:
             *,
             local_db_var: tk.StringVar,
             common_db_var: tk.StringVar,
+            show_db_labels: bool = True,
         ) -> None:
             parent.columnconfigure(0, weight=1)
             parent.rowconfigure(1, weight=1)
@@ -515,10 +525,11 @@ class CoreUiMixin:
             top.columnconfigure(1, weight=1)
             top.columnconfigure(3, weight=1)
 
-            ttk.Label(top, text="Локализованная БД:").grid(row=0, column=0, sticky="w", padx=(0, 8))
-            ttk.Label(top, textvariable=local_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
-            ttk.Label(top, text="Общая БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
-            ttk.Label(top, textvariable=common_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
+            if show_db_labels:
+                ttk.Label(top, text="Локализованная БД:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+                ttk.Label(top, textvariable=local_db_var, anchor="w").grid(row=0, column=1, sticky="ew")
+                ttk.Label(top, text="Общая БД:").grid(row=0, column=2, sticky="w", padx=(16, 8))
+                ttk.Label(top, textvariable=common_db_var, anchor="w").grid(row=0, column=3, sticky="ew")
 
             body = ttk.Frame(parent, padding=20)
             body.grid(row=1, column=0, sticky="nsew")
@@ -1603,11 +1614,15 @@ class CoreUiMixin:
             self.title(title)
             self._update_file_info()
 
-        def _set_status(self, text: str) -> None:
+        def _log_message(self, text: str, *, update_status: bool) -> None:
             ts = dt.datetime.now().strftime("%H:%M:%S")
             self.message_log.append((ts, text))
-            self.status_var.set(text)
-            self._update_file_info()
+            if update_status:
+                self.status_var.set(text)
+                self._update_file_info()
+
+        def _set_status(self, text: str) -> None:
+            self._log_message(text, update_status=True)
 
         def _open_message_log(self, _event: object | None = None) -> None:
             log_window = tk.Toplevel(self)
@@ -1655,13 +1670,115 @@ class CoreUiMixin:
                     return f"_{suffix.lower()}"
             return stem
 
+        def _format_db_date_for_ui(self, date_iso: object | None) -> str:
+            if date_iso is None:
+                return "-"
+            text = str(date_iso).strip()
+            if not text:
+                return "-"
+            try:
+                parsed = dt.datetime.fromisoformat(text.replace("Z", "+00:00"))
+            except ValueError:
+                return text
+            if parsed.tzinfo is not None:
+                parsed = parsed.astimezone()
+            return parsed.strftime("%Y-%m-%d %H:%M:%S")
+
+        def _format_db_version_value(self, snapshot: dict[str, object] | None) -> str:
+            if snapshot is None:
+                return "- (-) от -"
+            schema_version = snapshot.get("schema_version")
+            data_version = snapshot.get("data_version")
+            schema_text = str(schema_version) if schema_version is not None else "-"
+            data_text = str(data_version) if data_version is not None else "-"
+            date_text = self._format_db_date_for_ui(snapshot.get("date_iso"))
+            return f"{schema_text} ({data_text}) от {date_text}"
+
+        def _db_paths_for_version_details(self) -> list[Path]:
+            paths: list[Path] = []
+            seen: set[str] = set()
+
+            for path in self._common_db_candidates():
+                if not path.exists():
+                    continue
+                resolved = str(path.resolve())
+                if resolved in seen:
+                    continue
+                seen.add(resolved)
+                paths.append(path.resolve())
+
+            for _lang, db_path in self._localized_db_entries():
+                if not db_path.exists():
+                    continue
+                resolved = str(db_path.resolve())
+                if resolved in seen:
+                    continue
+                seen.add(resolved)
+                paths.append(db_path.resolve())
+
+            return paths
+
+        def _db_version_detail_lines(self, paths: list[Path]) -> list[str]:
+            lines: list[str] = []
+            for path in paths:
+                snapshot = self._read_db_version_snapshot(path)
+                if snapshot is None:
+                    continue
+                size_kb = float(snapshot["size_bytes"]) / 1024
+                schema_version = snapshot.get("schema_version")
+                data_version = snapshot.get("data_version")
+                schema_text = str(schema_version) if schema_version is not None else "-"
+                data_text = str(data_version) if data_version is not None else "-"
+                date_text = self._format_db_date_for_ui(snapshot.get("date_iso"))
+                lines.append(
+                    f"{path.name} | schema {schema_text} | data {data_text} | date {date_text} | size {size_kb:.1f} KB"
+                )
+            return lines
+
+        def _open_db_versions_dialog(self, _event: object | None = None) -> None:
+            dialog = tk.Toplevel(self)
+            dialog.title("Версии БД")
+            dialog.geometry("980x320")
+            dialog.minsize(760, 220)
+
+            container = ttk.Frame(dialog, padding=10)
+            container.grid(row=0, column=0, sticky="nsew")
+            dialog.columnconfigure(0, weight=1)
+            dialog.rowconfigure(0, weight=1)
+            container.columnconfigure(0, weight=1)
+            container.rowconfigure(0, weight=1)
+
+            text_widget = tk.Text(container, wrap="none")
+            text_widget.grid(row=0, column=0, sticky="nsew")
+            scroll_y = ttk.Scrollbar(container, orient="vertical", command=text_widget.yview)
+            scroll_y.grid(row=0, column=1, sticky="ns")
+            scroll_x = ttk.Scrollbar(container, orient="horizontal", command=text_widget.xview)
+            scroll_x.grid(row=1, column=0, sticky="ew")
+            text_widget.configure(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
+
+            lines = self._db_version_detail_lines(self._db_paths_for_version_details())
+            if not lines:
+                lines = ["Файлы БД не найдены."]
+            text_widget.insert("1.0", "\n".join(lines))
+            text_widget.configure(state="disabled")
+
+        def _log_current_db_versions_on_startup(self) -> None:
+            lines = self._db_version_detail_lines(self._db_paths_for_version_details())
+            if not lines:
+                self._log_message("Версии БД при запуске: файлы не найдены.", update_status=False)
+                return
+            self._log_message("Версии БД при запуске:", update_status=False)
+            for line in lines:
+                self._log_message(line, update_status=False)
+
         def _format_db_info(self, path: Path | None) -> str:
             if path is None or not path.exists():
                 return "-"
-            stat = path.stat()
-            modified = dt.datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
-            size_kb = stat.st_size / 1024
-            return f"{self._db_short_name(path)} {modified} 💾 {size_kb:.1f} KB"
+            snapshot = self._read_db_version_snapshot(path)
+            if snapshot is None:
+                return "-"
+            size_kb = float(snapshot["size_bytes"]) / 1024
+            return f"{self._db_short_name(path)} {self._format_db_version_value(snapshot)} 💾 {size_kb:.1f} KB"
 
         def _compose_db_info_line(self, paths: list[Path | None]) -> str:
             parts: list[str] = []

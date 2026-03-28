@@ -824,6 +824,7 @@ class StrongsMixin:
 
             try:
                 inserted, updated_existing, table_rows_after = self._upsert_group_records_in_db(target_db_path, records)
+                self._touch_localized_db_data_version(db_path=target_db_path)
             except (OSError, sqlite3.DatabaseError) as exc:
                 messagebox.showerror("Ошибка импорта", f"Не удалось сохранить переводы:\n{exc}", parent=self)
                 return
@@ -1593,6 +1594,13 @@ class StrongsMixin:
                     parent=self,
                 )
                 return
+
+            self._touch_common_db_data_version(connection=self.common_connection)
+            for lang in localized_saved_order:
+                db_path = self.strong_local_db_paths_by_lang.get(lang)
+                if db_path is None:
+                    continue
+                self._touch_localized_db_data_version(db_path=db_path)
 
             self._load_strong_rows()
             self._select_strong_by_id(strong_id)

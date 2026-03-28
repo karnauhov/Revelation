@@ -1,116 +1,80 @@
 import 'dart:async';
-import 'dart:ui';
-import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:revelation/common_widgets/strong_dictionary_dialog.dart';
-import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/managers/db_manager.dart';
-import 'package:revelation/repositories/primary_sources_db_repository.dart';
-import 'package:revelation/theme.dart';
-import 'package:revelation/managers/server_manager.dart';
-import 'package:revelation/utils/app_logger_formatter.dart';
-import 'package:revelation/utils/app_link_handler.dart';
-import 'package:talker_flutter/talker_flutter.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:get_it/get_it.dart';
-import 'repositories/settings_repository.dart';
-import 'viewmodels/main_view_model.dart';
-import 'viewmodels/primary_sources_view_model.dart';
-import 'viewmodels/settings_view_model.dart';
-import 'utils/common.dart';
-import 'app_router.dart';
 
-void main() async {
-  final talker = TalkerFlutter.init(
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:revelation/app/router/app_router.dart';
+import 'package:revelation/app/bootstrap/app_bootstrap.dart';
+import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/app/startup/bloc/app_startup_cubit.dart';
+import 'package:revelation/app/startup/bloc/app_startup_state.dart';
+import 'package:revelation/app/startup/startup_error_reporter.dart';
+import 'package:revelation/app/startup/screens/app_startup_screen.dart';
+import 'package:revelation/core/logging/app_bloc_observer.dart';
+import 'package:revelation/core/logging/app_logger_formatter.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
+import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
+import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/ui/theme/material_theme.dart';
+import 'package:talker_flutter/talker_flutter.dart';
+
+typedef AppStartCallback = Future<void> Function(Talker talker);
+typedef RunAppCallback = void Function(Widget app);
+typedef RunEntryPointCallback =
+    Future<void> Function({
+      required Talker talker,
+      required AppStartCallback startAppCallback,
+    });
+
+@visibleForTesting
+Future<void> Function() launchRevelationAppCallback = launchRevelationApp;
+
+@visibleForTesting
+StartupSettingsCubitLoader defaultInitializeSettingsCubit = (talker) =>
+    defaultAppBootstrapFactory(talker).initialize();
+
+@visibleForTesting
+AppBootstrapFactory defaultAppBootstrapFactory = (talker) =>
+    AppBootstrap(talker: talker);
+
+Future<void> main() async {
+  await launchRevelationAppCallback();
+}
+
+@visibleForTesting
+Future<void> launchRevelationApp({
+  Talker Function()? createTalker,
+  void Function(Talker talker)? configureCore,
+  RunEntryPointCallback? runEntryPoint,
+  AppStartCallback? startAppCallback,
+}) async {
+  final talker = (createTalker ?? createAppTalker)();
+  (configureCore ?? configureAppCore)(talker);
+  await (runEntryPoint ?? runAppEntryPoint)(
+    talker: talker,
+    startAppCallback: startAppCallback ?? startApp,
+  );
+}
+
+Talker createAppTalker() {
+  return TalkerFlutter.init(
     logger: TalkerLogger(formatter: AppLoggerFormatter()),
   );
-  final getIt = GetIt.instance;
-  getIt.registerSingleton<Talker>(talker);
+}
 
+void configureAppCore(Talker talker) {
+  AppDi.registerCore(talker: talker);
+  Bloc.observer = AppBlocObserver(talker: talker);
+}
+
+@visibleForTesting
+Future<void> runAppEntryPoint({
+  required Talker talker,
+  required AppStartCallback startAppCallback,
+}) async {
   runZonedGuarded(
     () async {
-      WidgetsFlutterBinding.ensureInitialized();
-
-      FlutterError.onError = (FlutterErrorDetails details) {
-        talker.handle(
-          details.exception,
-          details.stack ?? StackTrace.current,
-          'Flutter framework error',
-        );
-        FlutterError.presentError(details);
-      };
-
-      PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
-        talker.handle(error, stack, 'PlatformDispatcher uncaught error');
-        return true;
-      };
-
-      if (isWeb()) {
-        final userAgent = getUserAgent();
-        final mobileBrowser = isMobileBrowser() ? " (mobile browser)" : "";
-        log.info("Started on web '$userAgent'$mobileBrowser");
-      } else {
-        log.info("Started on ${getPlatform()}");
-      }
-
-      if (isDesktop()) {
-        await windowManager.ensureInitialized();
-        WindowOptions windowOptions = const WindowOptions(
-          size: Size(800, 650),
-          minimumSize: Size(800, 650),
-          center: true,
-        );
-        windowManager.waitUntilReadyToShow(windowOptions, () async {
-          await windowManager.setIcon('assets/images/UI/app_icon.png');
-          await windowManager.show();
-          await windowManager.focus();
-        });
-      }
-
-      getIt.registerLazySingleton<BaseCacheManager>(
-        () => DefaultCacheManager(),
-      );
-      final settingsViewModel = SettingsViewModel(SettingsRepository());
-      await settingsViewModel.loadSettings();
-
-      await ServerManager().init();
-      try {
-        await DBManager().init(settingsViewModel.settings.selectedLanguage);
-        settingsViewModel.addListener(() {
-          DBManager().updateLanguage(
-            settingsViewModel.settings.selectedLanguage,
-          );
-        });
-      } catch (e, st) {
-        talker.handle(e, st, 'Failed to initialize local databases');
-      }
-
-      setDefaultGreekStrongTapHandler((strongNumber, context) {
-        showStrongDictionaryDialog(context, strongNumber);
-      });
-      setDefaultGreekStrongPickerTapHandler((strongNumber, context) {
-        showStrongDictionaryDialog(context, strongNumber);
-      });
-
-      runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider<MainViewModel>(
-              create: (_) => MainViewModel(),
-            ),
-            ChangeNotifierProvider<SettingsViewModel>(
-              create: (_) => settingsViewModel,
-            ),
-            ChangeNotifierProvider<PrimarySourcesViewModel>(
-              create: (_) =>
-                  PrimarySourcesViewModel(PrimarySourcesDbRepository()),
-            ),
-          ],
-          child: const RevelationApp(),
-        ),
-      );
+      await startAppCallback(talker);
     },
     (Object error, StackTrace stack) {
       talker.handle(error, stack, 'Uncaught app exception (zone)');
@@ -118,19 +82,82 @@ void main() async {
   );
 }
 
+@visibleForTesting
+Future<void> startApp(
+  Talker talker, {
+  StartupSettingsCubitLoader? initializeSettingsCubit,
+  RunAppCallback? runAppCallback,
+}) async {
+  (runAppCallback ?? runApp)(
+    BlocProvider<AppStartupCubit>(
+      create: (_) => AppStartupCubit(
+        talker: talker,
+        appBootstrapFactory: defaultAppBootstrapFactory,
+        initializeSettingsCubit: initializeSettingsCubit,
+      ),
+      child: const RevelationStartupHost(),
+    ),
+  );
+}
+
+class RevelationStartupHost extends StatelessWidget {
+  const RevelationStartupHost({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AppStartupCubit, AppStartupState>(
+      builder: (context, state) {
+        final startupCubit = context.read<AppStartupCubit>();
+        final settingsCubit = startupCubit.initializedSettingsCubit;
+        if (state.isReady && settingsCubit != null) {
+          return MultiBlocProvider(
+            providers: AppDi.appBlocProviders(settingsCubit: settingsCubit),
+            child: const RevelationApp(),
+          );
+        }
+
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          locale: Locale(state.localeCode),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          title: 'Revelation',
+          theme: ThemeData(
+            fontFamily: 'Arimo',
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0xFFF2C48E),
+              secondary: Color(0xFFE5B06B),
+              surface: Color(0xFF17120E),
+            ),
+            scaffoldBackgroundColor: const Color(0xFF0D0907),
+            useMaterial3: true,
+          ),
+          home: AppStartupScreen(
+            state: state,
+            onRetry: state.failure != null ? startupCubit.retry : null,
+            onReportError: state.failure != null
+                ? (screenContext) => reportStartupFailure(screenContext, state)
+                : null,
+          ),
+        );
+      },
+    );
+  }
+}
+
 class RevelationApp extends StatelessWidget {
   const RevelationApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final settingsViewModel = context.watch<SettingsViewModel>();
-    final currentLocale = Locale(settingsViewModel.settings.selectedLanguage);
-    final colorScheme = MaterialTheme.getColorTheme(
-      settingsViewModel.settings.selectedTheme,
+    final settings = context.select(
+      (SettingsCubit cubit) => cubit.state.settings,
     );
+    final currentLocale = Locale(settings.selectedLanguage);
+    final colorScheme = MaterialTheme.getColorTheme(settings.selectedTheme);
     final textTheme = MaterialTheme.getTextTheme(
       context,
-      settingsViewModel.settings.selectedFontSize,
+      settings.selectedFontSize,
     );
     final appRouter = AppRouter();
     final materialApp = MaterialApp.router(
@@ -164,10 +191,9 @@ class RevelationApp extends StatelessWidget {
   }
 
   String onGenerateTitle(BuildContext context) {
-    String title = AppLocalizations.of(context)!.app_name;
+    final title = AppLocalizations.of(context)!.app_name;
     if (isDesktop()) {
-      windowManager.setTitle(title);
-      windowManager.setIcon('assets/images/UI/app_icon.png');
+      unawaited(setDesktopWindowTitle(title));
     }
     return title;
   }

@@ -1398,6 +1398,7 @@ class PrimarySourcesMixin:
                             notes,
                         ),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить источник:\n{exc}", parent=self)
                 return
@@ -1473,6 +1474,7 @@ class PrimarySourcesMixin:
                             "DELETE FROM primary_source_texts WHERE source_id = ?",
                             (source_id,),
                         )
+                    self._touch_localized_db_data_version(connection=con, db_path=db_path)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror(
                     "Ошибка локализации",
@@ -1563,6 +1565,7 @@ class PrimarySourcesMixin:
                             preview_key,
                         ),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка создания", f"Не удалось создать источник:\n{exc}", parent=self)
                 return
@@ -1604,6 +1607,7 @@ class PrimarySourcesMixin:
                         "DELETE FROM primary_sources WHERE id = ?",
                         (source_id,),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
                 for _lang, db_path in self._localized_db_entries():
                     with sqlite3.connect(str(db_path)) as localized_con:
                         localized_con.execute(
@@ -1614,6 +1618,7 @@ class PrimarySourcesMixin:
                             "DELETE FROM primary_source_texts WHERE source_id = ?",
                             (source_id,),
                         )
+                        self._touch_localized_db_data_version(connection=localized_con, db_path=db_path)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка удаления", f"Не удалось удалить источник:\n{exc}", parent=self)
                 return
@@ -1655,6 +1660,7 @@ class PrimarySourcesMixin:
                         """,
                         (preview_key, path.name, mime, sqlite3.Binary(data)),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка записи", f"Не удалось сохранить preview:\n{exc}", parent=self)
                 return
@@ -2581,6 +2587,7 @@ class PrimarySourcesMixin:
                         """,
                         (source_id, link_id, sort_order, link_role, url),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
                 if previous_link_id and previous_link_id != link_id:
                     for _lang, db_path in self._localized_db_entries():
                         with sqlite3.connect(str(db_path)) as localized_con:
@@ -2593,6 +2600,7 @@ class PrimarySourcesMixin:
                                 """,
                                 (link_id, source_id, previous_link_id),
                             )
+                            self._touch_localized_db_data_version(connection=localized_con, db_path=db_path)
                 localized_titles_payload = payload.get("localized_titles")
                 localized_titles = localized_titles_payload if isinstance(localized_titles_payload, dict) else {}
                 for lang, db_path in self._localized_db_entries():
@@ -2631,6 +2639,7 @@ class PrimarySourcesMixin:
                                     "DELETE FROM primary_source_link_texts WHERE source_id = ? AND link_id = ?",
                                     (source_id, link_id),
                                 )
+                            self._touch_localized_db_data_version(connection=localized_con, db_path=db_path)
                     finally:
                         if localized_con is not None:
                             localized_con.close()
@@ -2659,12 +2668,14 @@ class PrimarySourcesMixin:
                         "DELETE FROM primary_source_links WHERE source_id = ? AND link_id = ?",
                         (source_id, link_id),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
                 for _lang, db_path in self._localized_db_entries():
                     with sqlite3.connect(str(db_path)) as localized_con:
                         localized_con.execute(
                             "DELETE FROM primary_source_link_texts WHERE source_id = ? AND link_id = ?",
                             (source_id, link_id),
                         )
+                        self._touch_localized_db_data_version(connection=localized_con, db_path=db_path)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка удаления", f"Не удалось удалить ссылку:\n{exc}", parent=self)
                 return
@@ -2777,6 +2788,7 @@ class PrimarySourcesMixin:
                         """,
                         (source_id, attribution_id, sort_order, text, url),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить атрибуцию:\n{exc}", parent=self)
                 return
@@ -2801,6 +2813,7 @@ class PrimarySourcesMixin:
                         "DELETE FROM primary_source_attributions WHERE source_id = ? AND attribution_id = ?",
                         (source_id, attribution_id),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка удаления", f"Не удалось удалить атрибуцию:\n{exc}", parent=self)
                 return
@@ -2935,6 +2948,7 @@ class PrimarySourcesMixin:
                             image_path,
                         ),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить страницу:\n{exc}", parent=self)
                 return
@@ -2970,6 +2984,7 @@ class PrimarySourcesMixin:
                         "DELETE FROM primary_source_pages WHERE source_id = ? AND page_name = ?",
                         (source_id, row.page_name),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка удаления", f"Не удалось удалить страницу:\n{exc}", parent=self)
                 return
@@ -3211,6 +3226,7 @@ class PrimarySourcesMixin:
                             json.dumps(rectangles, ensure_ascii=False),
                         ),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить слово:\n{exc}", parent=self)
                 return False
@@ -3244,6 +3260,7 @@ class PrimarySourcesMixin:
                         """,
                         (source_id, page_name, word_index),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка удаления", f"Не удалось удалить слово:\n{exc}", parent=self)
                 return
@@ -3368,6 +3385,7 @@ class PrimarySourcesMixin:
                             json.dumps(contours, ensure_ascii=False),
                         ),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить стих:\n{exc}", parent=self)
                 return False
@@ -3401,6 +3419,7 @@ class PrimarySourcesMixin:
                         """,
                         (source_id, page_name, verse_index),
                     )
+                    self._touch_common_db_data_version(connection=self.common_connection)
             except sqlite3.DatabaseError as exc:
                 messagebox.showerror("Ошибка удаления", f"Не удалось удалить стих:\n{exc}", parent=self)
                 return
