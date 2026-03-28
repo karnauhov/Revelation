@@ -1,56 +1,51 @@
-# Module Boundaries (RU)
+# Границы модулей (RU)
 
-Doc-Version: `1.1.5`  
-Last-Updated: `2026-03-21`  
+Doc-Version: `2.0.0`  
+Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
-## 1. Purpose
-Определить обязательные границы модулей и правила размещения файлов в `lib/`.
+## Назначение
 
-## 2. Canonical Top-Level Structure
-- `lib/app` - bootstrap, DI, router, composition root.
-- `lib/core` - платформенные и кросс-функциональные контракты (`errors`, `async`, `logging`, `platform`, `audio`, `diagnostics`).
-- `lib/infra` - реализации доступа к БД/remote/storage.
-- `lib/shared` - переиспользуемый UI и общие модели/утилиты без feature-бизнес-логики.
-- `lib/features` - feature-first модули.
-- `lib/l10n` - ARB и generated localization-код.
+Определить, где должен лежать код и как направлены зависимости между слоями.
 
-## 3. Feature Module Layout
-Рекомендуемая схема feature:
-- `presentation` - экраны, виджеты, cubit/bloc и UI-coordination.
-- `application` - orchestration/use-case/service логика (опционально для простых feature).
-- `data` - repositories, data contracts и маппинг (опционально, если feature не работает с данными).
+## Верхний уровень
 
-Допускается облегченный feature-модуль без всех трех слоев, но для присутствующих слоев границы зависимостей обязательны.
+- `lib/app` - bootstrap, DI, router, верхнеуровневая сборка приложения
+- `lib/core` - кросс-функциональные примитивы: ошибки, async guards, logging, audio, platform utilities, diagnostics
+- `lib/infra` - реализации доступа к БД, remote и storage
+- `lib/shared` - переиспользуемый UI, общие модели, localization helpers и общие утилиты
+- `lib/features` - feature-first модули
+- `lib/l10n` - ARB-файлы и generated localization-код
 
-## 4. Dependency Rules
-- `presentation` не импортирует `infra` напрямую.
-- `presentation` работает через feature repositories/services/cubit contracts.
-- Межсрезовая orchestration в presentation реализуется через `Cubit`/`Bloc` классы (например, `*OrchestrationCubit`), а не через mutable controller-singleton.
-- UI expand/collapse state для карточек первоисточников хранится в screen-scoped `PrimarySourcesExpansionCubit`, а не в mutable полях модели `PrimarySource`.
-- Если один state-срез уже содержит поля выбора и отображения (например, `PrimarySourceDescriptionState.currentType/currentNumber`), не вводится отдельный дублирующий cubit для того же источника истины.
-- Не добавлять дублирующие visibility-флаги (`imageShown`, `showDescription`) в detail state, если видимость однозначно выводится из существующих данных и UI-режимов.
-- `application` не содержит UI-виджеты.
-- `data` может зависеть от `infra` data source/gateway контрактов.
-- `infra` не импортирует feature `presentation`.
-- Метаданные схемы SQLite относятся к зоне `lib/infra/db`; `db_metadata.schema_version` в `revelation.sqlite` и `revelation_<lang>.sqlite` должен оставаться синхронизированным с изменениями схемы в коде.
-- `shared` не содержит feature-специфичную orchestration-логику.
-- `core` не зависит от feature-модулей.
+## Структура feature-модуля
 
-## 5. File Placement Rules
-1. App bootstrap/router/DI -> `lib/app/...`
-2. Платформенные и кросс-функциональные контракты -> `lib/core/...`
-3. Инфраструктурные реализации -> `lib/infra/...`
-4. Переиспользуемый UI и общие модели -> `lib/shared/...`
-5. Feature-логика -> `lib/features/<feature>/...`
+Если feature нужен внутренний слойный разрез, используется схема:
 
-## 6. Forbidden Paths
-В `lib/` не допускается появление каталогов:
-- `screens`, `viewmodels`, `repositories`, `services`
-- `common_widgets`, `managers`, `controllers`
-- `models`, `db`, `utils`
+- `presentation` - `bloc/`, `screens/`, `widgets/`
+- `application` - orchestration и use-case сервисы
+- `data` - repositories, data models и mapping
 
-## 7. Enforcement
-- Автоматическая проверка архитектурных ограничений: `dart run scripts/check_forbidden_patterns.dart`.
-- Запрет `provider`/`ChangeNotifier` контролируется в CI и локальных проверках.
-- Перед merge обязательны `flutter analyze` и `flutter test`.
+Feature может быть легче и не содержать все слои, но направление зависимостей не меняется.
+
+## Правила зависимостей
+
+- `presentation` может зависеть от feature-сервисов, репозиториев и DI-фабрик, но не от низкоуровневых infra manager-классов напрямую.
+- В `presentation/bloc` и `application` не передается `BuildContext`.
+- `application` не содержит виджеты.
+- `data` может использовать infra gateways и storage-реализации.
+- `infra` не импортирует feature presentation-код.
+- `shared` остается переиспользуемым и не хранит feature-специфичную orchestration-логику.
+- `core` остается feature-agnostic.
+
+## Правила состояния
+
+- Stateful presentation строится только на `Cubit`/`Bloc`.
+- Для каждого UI-среза данных есть один source of truth.
+- Не добавляются дублирующие cubit-ы и visibility-флаги, если состояние выводится из уже существующих данных.
+- Async cubit-ы после `await` защищают применение state через `isClosed` и stale-request protection там, где возможна гонка.
+
+## Базовая проверка
+
+- `dart run scripts/check_forbidden_patterns.dart`
+- `flutter analyze`
+- `flutter test`

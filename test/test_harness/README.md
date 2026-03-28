@@ -1,15 +1,15 @@
 # Test Harness
 
-`test/test_harness` содержит общие deterministic helper-утилиты для тестов.
+`test/test_harness` contains shared deterministic helpers for unit and widget tests.
 
-## Состав
+## Contents
 
-- `test_harness.dart` — единый barrel-экспорт для тестов.
-- `widget_test_harness.dart` — стандартные app/context wrapper-утилиты.
-- `async_test_harness.dart` — стабильные `pump`/`pumpAndSettle` helper-обертки.
-- `fakes/*` — переиспользуемые fake-реализации для unit/widget тестов.
+- `test_harness.dart` - barrel export for most tests
+- `revelation_test_harness.dart` - repo-level harness setup
+- `widget_test_harness.dart` - localized app/context wrappers
+- `async_test_harness.dart` - stable `pump` helpers for async UI work
 
-## Быстрое использование
+## Example
 
 ```dart
 import '../../../../test_harness/test_harness.dart';
@@ -23,8 +23,8 @@ await pumpFrames(tester, count: 2);
 await pumpAndSettleSafe(tester);
 ```
 
-## Правила
+## Rules
 
-- Не дублировать одинаковые fake/helper в feature-тестах, если они уже есть в harness.
-- Для `testWidgets` использовать общий wrapper, чтобы локализация и базовая среда были консистентными.
-- Для async-ожиданий предпочитать harness helper вместо произвольных `Future.delayed`.
+- Reuse harness helpers before adding feature-local duplicates.
+- Prefer the shared localized wrapper for widget tests.
+- Prefer harness `pump` helpers over ad-hoc `Future.delayed`.

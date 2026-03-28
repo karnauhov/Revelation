@@ -1,44 +1,39 @@
 # Architecture Overview (EN)
 
-Doc-Version: `1.1.5`  
-Last-Updated: `2026-03-21`  
+Doc-Version: `2.0.0`  
+Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
-## 1. Purpose
-Define the current Revelation architecture as-is.
+## Purpose
 
-## 2. Runtime Architecture Snapshot
-- Entry point: `lib/main.dart` configures `Talker`, registers core dependencies, sets `AppBlocObserver`, initializes `AppBootstrap`, and starts `MaterialApp.router`.
-- Bootstrap: `AppBootstrap` performs `WidgetsFlutterBinding.ensureInitialized`, global error hooks, platform initialization, settings loading, Supabase initialization, and local database initialization.
-- Navigation: `go_router` in `AppRouter`; critical routes use typed route args (`TopicRouteArgs`, `PrimarySourceRouteArgs`).
-- `word:` link handling: `shared/navigation` uses callback contracts; the default handler is registered at bootstrap level (`AppBootstrap`).
-- Global state scope: `AppDi.appBlocProviders` provides `SettingsCubit`, `TopicsCatalogCubit`, and `PrimarySourcesCubit`.
-- Primary source list UI state: `PrimarySourcesScreen` owns expand/collapse state via screen-scoped `PrimarySourcesExpansionCubit`; `PrimarySource` model is kept free of mutable UI flags.
-- Primary source detail state: `PrimarySourceScreen` creates a `MultiBlocProvider` with `session/image/page-settings/description/viewport` cubit slices; selection fields (`currentType/currentNumber`) belong to `PrimarySourceDescriptionState`.
-- Primary source detail image/description state does not keep duplicate visibility flags (`imageShown`, `showDescription`): visibility is derived from actual data and active UI modes.
-- Primary source detail orchestration: `PrimarySourceDetailOrchestrationCubit` coordinates `loadImage`, `changeSelectedPage`, and debounced save/restore across detail cubit slices.
-- About screen DB metadata: `AboutCubit` loads `schema_version`, `data_version`, and `date` from `db_metadata` in the common/localized SQLite files and renders localized version/date information.
-- Data flow: `presentation cubit -> feature repository -> data source -> infra gateway -> drift db`.
-- Remote layer: `ServerManager` uses Supabase Storage for database and file downloads.
-- Logging and diagnostics: `Talker`, `TalkerRouteObserver`, `AppBlocObserver`.
-- Localization: supported locales are `en`, `es`, `uk`, `ru`.
+Describe the current Revelation runtime architecture.
 
-## 3. Architectural Invariants
-- `lib/` keeps only these top-level folders: `app`, `core`, `infra`, `shared`, `features`, `l10n`.
-- Stateful presentation is implemented with `BLoC/Cubit` only.
-- `provider`/`ChangeNotifier`/`notifyListeners` are forbidden in runtime/test code.
-- Presentation does not call `DBManager()`/`ServerManager()` directly.
-- DB schema version is stored inside SQLite `db_metadata.schema_version`; schema changes must keep Drift `schemaVersion`, SQLite `PRAGMA user_version`, and distributed DB files in sync.
-- `core` and `shared` do not contain feature-specific orchestration or feature-module dependencies.
-- RU and EN architecture docs are updated together.
+## Runtime Shape
 
-## 4. Core Cross-Cutting Contracts
-- Operation errors/results: `AppFailure` and `AppResult`.
-- Stale async response protection: `LatestRequestGuard`.
-- Platform-specific behavior is isolated in `core/platform`.
+- `lib/main.dart` creates `Talker`, registers core services in `AppDi`, installs `AppBlocObserver`, delegates startup to `AppBootstrap`, and launches `RevelationApp`.
+- `AppBootstrap` initializes Flutter bindings, global error handling, platform setup, settings, Supabase, local databases, and the default handlers for `word:` and Strong links.
+- `RevelationApp` builds `MaterialApp.router`, applies locale/theme/font settings from `SettingsCubit`, and exposes `en`, `es`, `uk`, and `ru`.
+- `AppRouter` uses `go_router` and routes to the main, topic, primary source list, primary source detail, settings, about, and download screens.
+- `AppDi.appBlocProviders` wires the global app state: `SettingsCubit`, `TopicsCatalogCubit`, and `PrimarySourcesCubit`.
+- `PrimarySourceScreen` creates feature-scoped detail state with `session`, `image`, `page-settings`, `description`, `viewport`, and `orchestration` cubits. `PrimarySourceDetailCoordinator` is a screen helper, not the source of truth.
 
-## 5. Related Docs
-- Module boundaries: `docs/en/architecture/module-boundaries.en.md` and RU twin.
-- State ownership contracts: `docs/en/architecture/state_management_matrix.en.md` and RU twin.
-- Testing strategy: `docs/en/testing/strategy.en.md` and RU twin.
-- RU/EN sync rules are defined in `AGENTS.md`.
+## Data and Services
+
+- App settings are persisted with `shared_preferences`.
+- Local content is read from Drift-backed SQLite databases.
+- Remote downloads use Supabase Storage through `ServerManager`.
+- `AboutCubit` reads database metadata from `db_metadata` and exposes app/build/database version information to the UI.
+- `LatestRequestGuard` is used in async flows where stale responses must not overwrite newer state.
+
+## Architectural Invariants
+
+- The runtime structure of `lib/` is `app`, `core`, `infra`, `shared`, `features`, `l10n`.
+- Stateful presentation logic uses `Cubit`/`Bloc`.
+- Presentation does not talk directly to low-level DB or remote managers.
+- Database schema changes must keep code-level schema versions and distributed SQLite files synchronized.
+
+## Related Documents
+
+- [Module Boundaries](./module-boundaries.en.md)
+- [State Management Matrix](./state_management_matrix.en.md)
+- [Testing Strategy](../testing/strategy.en.md)

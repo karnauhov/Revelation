@@ -1,56 +1,51 @@
 # Module Boundaries (EN)
 
-Doc-Version: `1.1.5`  
-Last-Updated: `2026-03-21`  
+Doc-Version: `2.0.0`  
+Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
-## 1. Purpose
-Define mandatory module boundaries and file placement rules for `lib/`.
+## Purpose
 
-## 2. Canonical Top-Level Structure
-- `lib/app` - bootstrap, DI, router, composition root.
-- `lib/core` - platform and cross-cutting contracts (`errors`, `async`, `logging`, `platform`, `audio`, `diagnostics`).
-- `lib/infra` - database/remote/storage implementations.
-- `lib/shared` - reusable UI and shared models/utils without feature business logic.
-- `lib/features` - feature-first modules.
-- `lib/l10n` - ARB assets and generated localization code.
+Define where code belongs and how layers depend on each other.
 
-## 3. Feature Module Layout
-Recommended feature layout:
-- `presentation` - screens, widgets, cubit/bloc, and UI coordination.
-- `application` - orchestration/use-case/service logic (optional for simple features).
-- `data` - repositories, data contracts, and mapping (optional when a feature has no data access).
+## Top-Level Structure
 
-A lightweight feature module without all three layers is allowed, but dependency boundaries remain mandatory for every layer that is present.
+- `lib/app` - bootstrap, DI, router, top-level composition
+- `lib/core` - cross-cutting primitives such as errors, async guards, logging, audio, platform utilities, diagnostics
+- `lib/infra` - database, remote, and storage implementations
+- `lib/shared` - reusable UI, shared models, localization helpers, and common utilities
+- `lib/features` - feature-first modules
+- `lib/l10n` - ARB files and generated localization code
 
-## 4. Dependency Rules
-- `presentation` must not import `infra` directly.
-- `presentation` works through feature repositories/services/cubit contracts.
-- Cross-slice presentation orchestration is implemented as `Cubit`/`Bloc` classes (for example, `*OrchestrationCubit`), not as mutable controller singletons.
-- UI expand/collapse state for primary source list cards is owned by screen-scoped `PrimarySourcesExpansionCubit`, not by mutable fields on `PrimarySource`.
-- If one state slice already owns selection and display fields (for example, `PrimarySourceDescriptionState.currentType/currentNumber`), do not introduce a separate duplicate cubit for the same source of truth.
-- Do not add duplicate visibility flags (`imageShown`, `showDescription`) to detail state when visibility is already derivable from existing data and active UI modes.
-- `application` must not contain UI widgets.
-- `data` may depend on `infra` data source/gateway contracts.
-- `infra` must not import feature `presentation`.
-- SQLite schema metadata belongs to `lib/infra/db`; `db_metadata.schema_version` in `revelation.sqlite` and `revelation_<lang>.sqlite` must stay synchronized with code-level schema changes.
-- `shared` must not contain feature-specific orchestration logic.
-- `core` must not depend on feature modules.
+## Feature Layout
 
-## 5. File Placement Rules
-1. App bootstrap/router/DI -> `lib/app/...`
-2. Platform and cross-cutting contracts -> `lib/core/...`
-3. Infrastructure implementations -> `lib/infra/...`
-4. Reusable UI and shared models -> `lib/shared/...`
-5. Feature logic -> `lib/features/<feature>/...`
+When a feature needs internal layering, use this structure:
 
-## 6. Forbidden Paths
-These folders must not exist in `lib/`:
-- `screens`, `viewmodels`, `repositories`, `services`
-- `common_widgets`, `managers`, `controllers`
-- `models`, `db`, `utils`
+- `presentation` - `bloc/`, `screens/`, `widgets/`
+- `application` - orchestration and use-case services
+- `data` - repositories, data models, and mapping
 
-## 7. Enforcement
-- Automated architecture checks: `dart run scripts/check_forbidden_patterns.dart`.
-- `provider`/`ChangeNotifier` ban is enforced in CI and local checks.
-- `flutter analyze` and `flutter test` are required before merge.
+A smaller feature may omit layers that it does not need, but the dependency direction stays the same.
+
+## Dependency Rules
+
+- `presentation` may depend on feature services, repositories, and DI factories, but not on low-level infra managers directly.
+- `presentation/bloc` and `application` must not receive `BuildContext`.
+- `application` contains no widgets.
+- `data` may use infra gateways and storage implementations.
+- `infra` does not import feature presentation code.
+- `shared` stays reusable and does not own feature-specific orchestration.
+- `core` stays feature-agnostic.
+
+## State Rules
+
+- Stateful presentation uses `Cubit`/`Bloc` only.
+- A single UI data slice has a single source of truth.
+- Do not introduce duplicate cubits or duplicate visibility flags when state can be derived from existing values.
+- Async cubits must guard post-`await` state application with `isClosed` and stale-request protection where needed.
+
+## Usual Validation
+
+- `dart run scripts/check_forbidden_patterns.dart`
+- `flutter analyze`
+- `flutter test`

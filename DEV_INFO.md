@@ -1,38 +1,53 @@
-# Preparing the release
+# Operational Notes
 
-- Change version number:
-  - [pubspec.yaml (version, msix_version)](./pubspec.yaml),
-  - [setup.iss (MyAppVersion, MyAppBuild)](./setup.iss),
-  - [revelation.desktop (Version)](/snap/gui/revelation.desktop),
-  - [snapcraft.yaml (version)](./snapcraft.yaml)
-- Update [Changelog](CHANGELOG.md) only when release has new notable user-facing changes not already covered; keep entries short, clear, and non-duplicated
-- Build snap package (`snapcraft_build.sh`), install local and check
-- Commit for auto build
-- Deploy on [revelation.website](https://github.com/karnauhov/Revelation.website)
-- Deploy on [Snapcraft](https://snapcraft.io/revelation-x/listing) and [GitHub Releases](https://github.com/karnauhov/Revelation/releases). See [commands for deploy](https://dashboard.snapcraft.io/snaps/revelation-x/upload/), then [move release to latest/stable](https://snapcraft.io/revelation-x/releases) and save
-- Deploy on [Goole Play](https://play.google.com/console/u/1/developers/8693299089478158768/app/4975644827990074725/tracks/production)
-- Deploy on [Microsoft Sore](https://partner.microsoft.com/ru-ru/dashboard/products/9NXHRR2P4087/overview)
+This file contains short practical notes for local development, release work, and content maintenance.
 
-# Preparing new databases
+## Environment
 
-- Working DB files are edited in `%Documents%/revelation/db`
-- Each DB file (`revelation.sqlite`, `revelation_<lang>.sqlite`) must contain `db_metadata(key TEXT PRIMARY KEY, value TEXT NOT NULL)`
-- Required `db_metadata` keys: `schema_version`, `data_version`, `date`
-- `schema_version` must stay synchronized with the corresponding code schema (`drift schemaVersion` and SQLite `PRAGMA user_version`)
-- When the DB schema changes, update the schema version in both code and the DB files themselves before publishing
-- Upload DB file on [supabase](https://supabase.com/dashboard/project/adfdfxnzxmzyoioedwuy/storage/buckets/db)
-- Copy DB file from `%Documents%/revelation/db` to folder web\db\...
-- Deploy on [revelation.website](https://github.com/karnauhov/Revelation.website)
+- The app expects compile-time defines `SUPABASE_URL` and `SUPABASE_KEY`.
+- Snap packaging uses `--dart-define-from-file=api-keys.json`.
+- Working database files are edited in `%Documents%/revelation/db`.
+- Web builds consume SQLite files from `web/db/`.
 
-# Primary sources maintenance
+## Release Versioning
 
-- Primary sources are now maintained in SQLite, not in ARB files and not in `lib/repositories/primary_sources_repository.dart`
-- The content tool is now a package in `scripts/content_tool/`
-- Run it with `python -m scripts.content_tool`
-- The default DB working folder is `%Documents%/revelation/db`
-- Use the `Первоисточники` section for create/edit/delete operations
-- Preview images are stored as `common_resources` records in `revelation.sqlite`
-- Localized metadata and localized link titles are stored in `revelation_<lang>.sqlite`
-- Page images are expected under `%Documents%/revelation/primary_sources/...` with the same relative path as `page.image`
-- Download page images and edit verse contours directly from the content tool package
-- After changing primary source DB content, upload the updated DB files to Supabase, copy them into `web/db/`, and deploy the website
+Use the helper script instead of editing release files by hand:
+
+```bash
+python .agents/skills/revelation/scripts/update_release_version.py inc-build
+python .agents/skills/revelation/scripts/update_release_version.py set-version X.Y.Z
+```
+
+The script keeps these files synchronized:
+
+- `pubspec.yaml`
+- `setup.iss`
+- `snap/snapcraft.yaml`
+- `snap/gui/revelation-x.desktop`
+
+## Release Notes
+
+- Update `CHANGELOG.md` only for notable user-visible changes.
+- Build and verify the platforms that are part of the release.
+- Publish updated website content in the separate `Revelation.website` repository when web assets or web DB files change.
+- Publish release artifacts to the required stores and distribution channels for that release.
+
+## Database Workflow
+
+- Each working DB file (`revelation.sqlite`, `revelation_<lang>.sqlite`) must contain `db_metadata`.
+- Required metadata keys are `schema_version`, `data_version`, and `date`.
+- Schema changes must keep these values synchronized:
+  - Drift `schemaVersion`
+  - SQLite `PRAGMA user_version`
+  - `db_metadata.schema_version`
+  - distributed DB files in `%Documents%/revelation/db` and `web/db/`
+- After DB content updates, upload the new DB files to the Supabase storage bucket and copy the same files into `web/db/`.
+
+## Primary Sources Content
+
+- The content tool lives in `scripts/content_tool/`.
+- Run it with `python -m scripts.content_tool`.
+- Preview images are stored as `common_resources` records in `revelation.sqlite`.
+- Localized metadata and localized link titles are stored in `revelation_<lang>.sqlite`.
+- Page images are expected under `%Documents%/revelation/primary_sources/...` with the same relative path as `page.image`.
+- After changing primary source content, publish the updated DB files to Supabase, copy them to `web/db/`, and deploy the website content if needed.

@@ -1,51 +1,43 @@
 # Testing Strategy (EN)
 
-Doc-Version: `1.0.2`  
-Last-Updated: `2026-03-15`  
+Doc-Version: `2.0.0`  
+Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
-## 1. Purpose
-Define the required testing strategy for the current Revelation architecture.
+## Purpose
 
-## 2. Test Suites
-- Unit: `test/` (cubit, router args, async guards, domain/service logic).
-- Widget: `test/widget/` with `@Tags(['widget'])`.
-- Integration smoke: `integration_test/smoke/` (manual workflow run).
-- Harness: `test/test_harness/` with `fake_env`, `fake_logger`, `fake_remote`.
+Define the current testing baseline for Revelation.
 
-## 3. Mandatory Local Checks
+## Test Layers
+
+- Unit tests live in `test/` and cover cubits, services, repositories, router contracts, and shared helpers.
+- Widget tests cover screen and widget behavior. Tagged widget runs are available when isolating that layer.
+- Smoke integration tests live in `integration_test/smoke/`.
+- Shared test helpers live in [`test/test_harness/README.md`](../../../test/test_harness/README.md).
+
+## Usual Local Checks
+
 ```bash
-dart format --output=none --set-exit-if-changed .
+dart format .
 flutter analyze
-flutter test --exclude-tags widget
+flutter test
 flutter test --tags widget
-flutter test --coverage
-dart run scripts/coverage_baseline.dart --min-all=90.0
 dart run scripts/check_forbidden_patterns.dart
+dart run scripts/check_docs_sync.dart
 ```
 
-## 4. CI Gates
-- `.github/workflows/flutter_build.yml`:
-  - format check
-  - analyze
-  - unit tests
-  - widget tests
-  - coverage + thresholds
-  - forbidden patterns
-- `.github/workflows/integration_smoke.yml`:
-  - runs only via `workflow_dispatch`
-  - executes `flutter test integration_test/smoke` on an Android emulator.
+Run `dart run scripts/check_docs_sync.dart` when a synchronized RU/EN doc pair changes.
 
-## 5. Test Quality Rules
-- Changes in cubit/repository/router code must include relevant unit or widget tests.
-- Bug fixes require regression tests.
-- Tests must not depend on external network or unstable runtime conditions.
-- UI scenarios should use deterministic fake/stub dependencies.
-- For state-management changes in high-risk flows, regression scenarios are required:
-  - stale async race (`latest request wins`);
-  - lifecycle safety (`close before async completes`);
-  - detail image-preview rapid-switch behavior (stale geometry and side-effect call-count).
+## Automation
 
-## 6. Done Criteria
-- All mandatory checks from sections 3 and 4 pass.
-- For RU/EN docs changes, `dart run scripts/check_docs_sync.dart` is executed.
+- `.github/workflows/flutter_build.yml` repeats format, analysis, tests, coverage filtering, and forbidden-pattern checks.
+- `.github/workflows/integration_smoke.yml` runs the smoke suite on Android on schedule or on demand.
+
+## Quality Rules
+
+- New behavior or bug fixes should land with the nearest relevant unit or widget test.
+- Tests should use deterministic fakes/stubs and should not depend on external network access.
+- High-risk state flows should cover:
+  - stale async race (`latest request wins`)
+  - lifecycle safety (`close before async completes`)
+  - rapid switching in primary source image-preview flows

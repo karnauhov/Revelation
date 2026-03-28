@@ -1,42 +1,41 @@
-# State Management Matrix (RU)
+# Матрица управления состоянием (RU)
 
-Doc-Version: `1.1.6`  
-Last-Updated: `2026-03-21`  
+Doc-Version: `2.0.0`  
+Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
-## 1. Purpose
-Зафиксировать актуальное распределение runtime state в проекте Revelation.
+## Назначение
 
-## 2. Mandatory Contracts
-- Stateful presentation-логика реализуется через `Cubit`/`Bloc`.
-- Базовый паттерн: `Cubit`; `Bloc` используется только для event-orchestration между несколькими state-срезами.
-- State-классы остаются immutable и обновляются через `copyWith`.
-- Коллекции в state (`List`/`Map`) хранятся как unmodifiable-копии.
-- Ошибки в state-контрактах передаются через `AppFailure`.
+Показать, какой cubit владеет каждым runtime state-срезом.
 
-## 3. Ownership Matrix
+## Базовые правила
 
-| Scope | Owner | State contract (summary) |
+- `Cubit` является основным state-примитивом приложения.
+- Состояние хранится в cubit-ах, а не в mutable-полях виджетов или feature-моделей.
+- State-классы остаются immutable и comparable.
+- Ошибки представляются через `AppFailure`.
+- Если async-запросы могут гоняться между собой, побеждает самый новый запрос.
+
+## Матрица владения
+
+| Scope | Owner | Responsibility |
 |---|---|---|
-| `app/settings` | `SettingsCubit` | `SettingsState { AppSettings settings; bool isLoading; AppFailure? failure; }` |
-| `about` | `AboutCubit` | `AboutState { String appVersion; String buildNumber; String changelog; DatabaseVersionInfo? commonDbVersionInfo; DatabaseVersionInfo? localizedDbVersionInfo; bool isLoading; bool isChangelogExpanded; bool isAcknowledgementsExpanded; bool isRecommendedExpanded; AppFailure? failure; }` |
-| `topics/catalog` | `TopicsCatalogCubit` | `TopicsCatalogState { String language; List<TopicInfo> topics; Map<String, TopicResource?> iconByKey; bool isLoading; AppFailure? failure; }` |
-| `topics/content` | `TopicContentCubit` | `TopicContentState { String route; String language; String name; String description; String markdown; bool isLoading; AppFailure? failure; }` |
-| `primary_sources/list` | `PrimarySourcesCubit` | `PrimarySourcesState { List<PrimarySource> full; List<PrimarySource> significant; List<PrimarySource> fragments; bool isLoading; AppFailure? failure; }` |
-| `primary_sources/list-expansion` | `PrimarySourcesExpansionCubit` | `PrimarySourcesExpansionState { Set<String> expandedSourceIds; }` |
-| `primary_source/detail/session` | `PrimarySourceSessionCubit` | `PrimarySourceSessionState { PrimarySource source; model.Page? selectedPage; String imageName; bool isMenuOpen; }` |
-| `primary_source/detail/image` | `PrimarySourceImageCubit` | `PrimarySourceImageState { Uint8List? imageData; bool isLoading; bool refreshError; Map<String, bool?> localPageLoaded; int maxTextureSize; }` |
-| `primary_source/detail/page-settings` | `PrimarySourcePageSettingsCubit` | `PrimarySourcePageSettingsState { String rawSettings; bool isNegative; bool isMonochrome; double brightness; double contrast; bool showWordSeparators; bool showStrongNumbers; bool showVerseNumbers; }` |
-| `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | `PrimarySourceDescriptionState { String? content; DescriptionKind currentType; int? currentNumber; List<GreekStrongPickerEntry> pickerEntries; }` |
-| `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | `PrimarySourceViewportState { double dx; double dy; double scale; double savedX; double savedY; double savedScale; bool scaleAndPositionRestored; ZoomStatus zoomStatus; Rect? selectedArea; Color colorToReplace; Color newColor; double tolerance; bool pipetteMode; bool selectAreaMode; bool isColorToReplace; }` |
-| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | `PrimarySourceDetailOrchestrationState {}` (координирует `loadImage`, `changeSelectedPage` и debounced save/restore поверх detail cubit-ов) |
-| `download` | stateless screen | `N/A` |
+| `app/settings` | `SettingsCubit` | Текущие настройки приложения, выбранные locale/theme/font size, loading и failure state |
+| `about` | `AboutCubit` | Версии приложения и сборки, метаданные БД, состояние changelog-блока и раскрываемых секций about-экрана |
+| `topics/catalog` | `TopicsCatalogCubit` | Список тем, reload при смене языка, иконки тем |
+| `topics/content` | `TopicContentCubit` | Markdown-контент одной темы и ее loading/failure state |
+| `primary_sources/list` | `PrimarySourcesCubit` | Коллекции full/significant/fragments и loading/failure state |
+| `primary_sources/list-ui` | `PrimarySourcesExpansionCubit` | Раскрытые карточки на экране списка |
+| `primary_source/detail/session` | `PrimarySourceSessionCubit` | Текущий первоисточник, выбранная страница, image key, состояние toolbar/menu |
+| `primary_source/detail/image` | `PrimarySourceImageCubit` | Байты изображения, доступность локальных страниц, loading state, ограничения texture size |
+| `primary_source/detail/page-settings` | `PrimarySourcePageSettingsCubit` | Фильтры изображения и overlay-переключатели |
+| `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | Выбор стиха/слова, контент описания, элементы Strong picker |
+| `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | Pan, zoom, область выделения, состояние замены цвета |
+| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Безопасная координация смены страниц, загрузки изображений и save/restore flow |
+| `download` | Stateless screen | Постоянный runtime state-срез отсутствует |
 
-## 4. Provider Scope
-- Глобальные cubit-провайдеры в `AppDi.appBlocProviders`: `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
-- Feature-scoped detail state в `PrimarySourceScreen` создается через `MultiBlocProvider`.
+## Примечания по scope
 
-## 5. Notes
-- `PrimarySourceDetailCoordinator` делегирует image/page/save/restore flow в `PrimarySourceDetailOrchestrationCubit` и не является source-of-truth для state-контрактов.
-- Selection (`currentType/currentNumber`) для detail-экрана primary source хранится в `PrimarySourceDescriptionState`; отдельный selection-cubit не используется.
-- Изменение state ownership требует синхронного обновления RU/EN версии этого документа.
+- Глобальные провайдеры создаются в `AppDi.appBlocProviders`.
+- `PrimarySourceScreen` поднимает detail cubit-ы через `MultiBlocProvider`.
+- `PrimarySourceDetailCoordinator` адаптирует UI-события к detail cubit-ам и не владеет состоянием.

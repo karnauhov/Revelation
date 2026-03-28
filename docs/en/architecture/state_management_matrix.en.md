@@ -1,42 +1,41 @@
 # State Management Matrix (EN)
 
-Doc-Version: `1.1.6`  
-Last-Updated: `2026-03-21`  
+Doc-Version: `2.0.0`  
+Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
-## 1. Purpose
-Define the current runtime state ownership model in Revelation.
+## Purpose
 
-## 2. Mandatory Contracts
-- Stateful presentation logic is implemented with `Cubit`/`Bloc`.
-- Default pattern: `Cubit`; `Bloc` is used only for event orchestration across multiple state slices.
-- State classes remain immutable and evolve through `copyWith`.
-- Collections in state (`List`/`Map`) are stored as unmodifiable copies.
-- Errors in state contracts are represented by `AppFailure`.
+Show which cubit owns each runtime state slice.
 
-## 3. Ownership Matrix
+## Core Rules
 
-| Scope | Owner | State contract (summary) |
+- `Cubit` is the default state primitive in the app.
+- State lives in cubits, not in mutable widget fields or feature models.
+- State classes stay immutable and comparable.
+- Errors are represented with `AppFailure`.
+- When async work can race, newer requests must win.
+
+## Ownership Matrix
+
+| Scope | Owner | Responsibility |
 |---|---|---|
-| `app/settings` | `SettingsCubit` | `SettingsState { AppSettings settings; bool isLoading; AppFailure? failure; }` |
-| `about` | `AboutCubit` | `AboutState { String appVersion; String buildNumber; String changelog; DatabaseVersionInfo? commonDbVersionInfo; DatabaseVersionInfo? localizedDbVersionInfo; bool isLoading; bool isChangelogExpanded; bool isAcknowledgementsExpanded; bool isRecommendedExpanded; AppFailure? failure; }` |
-| `topics/catalog` | `TopicsCatalogCubit` | `TopicsCatalogState { String language; List<TopicInfo> topics; Map<String, TopicResource?> iconByKey; bool isLoading; AppFailure? failure; }` |
-| `topics/content` | `TopicContentCubit` | `TopicContentState { String route; String language; String name; String description; String markdown; bool isLoading; AppFailure? failure; }` |
-| `primary_sources/list` | `PrimarySourcesCubit` | `PrimarySourcesState { List<PrimarySource> full; List<PrimarySource> significant; List<PrimarySource> fragments; bool isLoading; AppFailure? failure; }` |
-| `primary_sources/list-expansion` | `PrimarySourcesExpansionCubit` | `PrimarySourcesExpansionState { Set<String> expandedSourceIds; }` |
-| `primary_source/detail/session` | `PrimarySourceSessionCubit` | `PrimarySourceSessionState { PrimarySource source; model.Page? selectedPage; String imageName; bool isMenuOpen; }` |
-| `primary_source/detail/image` | `PrimarySourceImageCubit` | `PrimarySourceImageState { Uint8List? imageData; bool isLoading; bool refreshError; Map<String, bool?> localPageLoaded; int maxTextureSize; }` |
-| `primary_source/detail/page-settings` | `PrimarySourcePageSettingsCubit` | `PrimarySourcePageSettingsState { String rawSettings; bool isNegative; bool isMonochrome; double brightness; double contrast; bool showWordSeparators; bool showStrongNumbers; bool showVerseNumbers; }` |
-| `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | `PrimarySourceDescriptionState { String? content; DescriptionKind currentType; int? currentNumber; List<GreekStrongPickerEntry> pickerEntries; }` |
-| `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | `PrimarySourceViewportState { double dx; double dy; double scale; double savedX; double savedY; double savedScale; bool scaleAndPositionRestored; ZoomStatus zoomStatus; Rect? selectedArea; Color colorToReplace; Color newColor; double tolerance; bool pipetteMode; bool selectAreaMode; bool isColorToReplace; }` |
-| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | `PrimarySourceDetailOrchestrationState {}` (coordinates `loadImage`, `changeSelectedPage`, and debounced save/restore over detail cubits) |
-| `download` | stateless screen | `N/A` |
+| `app/settings` | `SettingsCubit` | Current app settings, selected locale, theme, font size, loading and failure state |
+| `about` | `AboutCubit` | App/build versions, database metadata, changelog section state, expandable about sections |
+| `topics/catalog` | `TopicsCatalogCubit` | Topic list, language-bound reloads, topic icons |
+| `topics/content` | `TopicContentCubit` | Single topic markdown content and loading/failure state |
+| `primary_sources/list` | `PrimarySourcesCubit` | Full/significant/fragment source collections and loading/failure state |
+| `primary_sources/list-ui` | `PrimarySourcesExpansionCubit` | Expanded cards on the list screen |
+| `primary_source/detail/session` | `PrimarySourceSessionCubit` | Current source, selected page, image key, toolbar/menu session state |
+| `primary_source/detail/image` | `PrimarySourceImageCubit` | Image bytes, local-page availability, loading state, texture limits |
+| `primary_source/detail/page-settings` | `PrimarySourcePageSettingsCubit` | Image filters and overlay toggles |
+| `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | Verse/word selection, description content, Strong picker entries |
+| `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | Pan, zoom, selection area, color replacement state |
+| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Safe coordination of page changes, image loading, and save/restore flows |
+| `download` | Stateless screen | No persistent runtime state slice |
 
-## 4. Provider Scope
-- Global cubit providers are wired in `AppDi.appBlocProviders`: `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
-- Feature-scoped detail state in `PrimarySourceScreen` is created with `MultiBlocProvider`.
+## Scope Notes
 
-## 5. Notes
-- `PrimarySourceDetailCoordinator` delegates image/page/save/restore flow to `PrimarySourceDetailOrchestrationCubit` and is not the source of truth for state contracts.
-- Selection (`currentType/currentNumber`) on the primary source detail screen is stored in `PrimarySourceDescriptionState`; there is no separate selection cubit.
-- Any state ownership change must be mirrored in both RU and EN versions of this document.
+- Global providers are created by `AppDi.appBlocProviders`.
+- `PrimarySourceScreen` creates the detail cubits with `MultiBlocProvider`.
+- `PrimarySourceDetailCoordinator` adapts UI events to the detail cubits; it is not a state owner.
