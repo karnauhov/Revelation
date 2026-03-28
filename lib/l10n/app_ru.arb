@@ -1,7 +1,7 @@
 {
   "@@locale": "ru",
   "app_name": "Откровение",
-  "startup_title": "Запуск приложения…",
+  "startup_title": "Запуск приложения...",
   "startup_step_preparing": "Подготавливаем приложение",
   "startup_step_loading_settings": "Загружаем ваши настройки",
   "startup_step_initializing_server": "Подключаем онлайн-сервисы",

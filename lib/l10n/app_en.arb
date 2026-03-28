@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
   "app_name": "Revelation",
-  "startup_title": "Launching the app…",
+  "startup_title": "Launching the app...",
   "startup_step_preparing": "Preparing the app",
   "startup_step_loading_settings": "Loading your settings",
   "startup_step_initializing_server": "Connecting to online services",

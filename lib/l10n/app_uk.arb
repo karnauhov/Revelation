@@ -1,7 +1,7 @@
 {
   "@@locale": "uk",
   "app_name": "Об'явлення",
-  "startup_title": "Запуск застосунку…",
+  "startup_title": "Запуск застосунку...",
   "startup_step_preparing": "Підготовка застосунку",
   "startup_step_loading_settings": "Завантажуємо ваші налаштування",
   "startup_step_initializing_server": "Підключаємо онлайн-сервіси",

@@ -12,7 +12,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get app_name => 'Откровение';
 
   @override
-  String get startup_title => 'Запуск приложения…';
+  String get startup_title => 'Запуск приложения...';
 
   @override
   String get startup_step_preparing => 'Подготавливаем приложение';

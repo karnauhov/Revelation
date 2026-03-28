@@ -1,7 +1,7 @@
 {
   "@@locale": "es",
   "app_name": "Apocalipsis",
-  "startup_title": "Iniciando la aplicación…",
+  "startup_title": "Iniciando la aplicación...",
   "startup_step_preparing": "Preparando la aplicación",
   "startup_step_loading_settings": "Cargando tus ajustes",
   "startup_step_initializing_server": "Conectando a servicios en línea",

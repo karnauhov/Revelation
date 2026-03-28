@@ -17,7 +17,9 @@ const _requiredSnippetsByFile = <String, List<String>>{
 };
 
 const _requiredArbValues = <String, Map<String, String>>{
-  'lib/l10n/app_es.arb': <String, String>{'version': 'Versión'},
+  'lib/l10n/app_es.arb': <String, String>{
+    'version': 'Versión de la aplicación:',
+  },
   'lib/l10n/app_ru.arb': <String, String>{'app_name': 'Откровение'},
 };
 

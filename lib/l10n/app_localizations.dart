@@ -111,7 +111,7 @@ abstract class AppLocalizations {
   /// No description provided for @startup_title.
   ///
   /// In en, this message translates to:
-  /// **'Launching the app…'**
+  /// **'Launching the app...'**
   String get startup_title;
 
   /// No description provided for @startup_step_preparing.

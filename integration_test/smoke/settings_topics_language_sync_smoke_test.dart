@@ -14,7 +14,6 @@ import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/models/app_settings.dart';
 import 'smoke_test_harness.dart';
 
@@ -87,10 +86,9 @@ void main() {
 
     final settingsContext = tester.element(find.byType(SettingsScreen));
     final l10n = AppLocalizations.of(settingsContext)!;
-    final russianLanguageLabel = AppConstants.languages['ru']!;
     await tester.tap(find.text(l10n.language));
     await pumpAndSettleSmoke(tester);
-    await tester.tap(find.text(russianLanguageLabel).last);
+    await tester.tap(find.text('Русский').last);
     await pumpAndSettleSmoke(tester);
 
     await tester.pageBack();

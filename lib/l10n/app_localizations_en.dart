@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_name => 'Revelation';
 
   @override
-  String get startup_title => 'Launching the app…';
+  String get startup_title => 'Launching the app...';
 
   @override
   String get startup_step_preparing => 'Preparing the app';

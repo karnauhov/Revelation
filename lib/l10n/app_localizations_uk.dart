@@ -12,7 +12,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get app_name => 'Об\'явлення';
 
   @override
-  String get startup_title => 'Запуск застосунку…';
+  String get startup_title => 'Запуск застосунку...';
 
   @override
   String get startup_step_preparing => 'Підготовка застосунку';
