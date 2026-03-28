@@ -1,5 +1,7 @@
 # AGENTS.md
 
+If any rule below conflicts with a direct owner request, owner request wins.
+
 ## Project Overview
 - Revelation is a Flutter app for studying the Book of Revelation.
 - The repository includes targets for web, Android, iOS, Windows, Linux, and macOS.
@@ -57,6 +59,12 @@
 
 ## Working Rules
 - Keep changes aligned with the current folder responsibilities in the repository layout above.
+- When moving or renaming runtime files under `lib/`, move or rename related tests under `test/` in the same change set.
+- Any functional add/change/remove in runtime code must include relevant test updates in the same change set:
+  - add or update unit tests for changed business logic, repositories, services, and shared contracts;
+  - add or update widget tests for changed UI behavior and state-driven presentation;
+  - remove or rewrite obsolete tests when functionality is removed.
+- Any new screen, route, deep link, startup flow, or other critical end-to-end behavior must update relevant smoke coverage in `integration_test/smoke/` in the same change set.
 - State management policy is strict:
   - New or modified stateful presentation logic must use `BLoC/Cubit`.
   - Do not introduce `provider`/`ChangeNotifier`/`notifyListeners` in runtime or test code.
@@ -71,6 +79,10 @@
   - Do not add duplicate visibility flags in state (for example `imageShown`/`showDescription`) when visibility is derivable from existing data and UI modes.
   - In presentation, avoid direct repository/orchestrator construction where DI factories exist; use `AppDi` provisioning/factories.
   - For high-risk state-management fixes, add regression tests for stale async race, close-before-complete lifecycle, and side-effect call-count/rapid-switch behavior.
+- Preserve the current logging contract:
+  - keep uncaught error logging wired through `runZonedGuarded`, `FlutterError.onError`, and `PlatformDispatcher.instance.onError`;
+  - keep route tracing enabled through `TalkerRouteObserver`;
+  - keep BLoC/Cubit lifecycle logging enabled through `AppBlocObserver`.
 - Any state-management contract change must be synchronized in:
   - `docs/ru/architecture/state_management_matrix.ru.md` and `docs/en/architecture/state_management_matrix.en.md`
   - `docs/ru/architecture/overview.ru.md` and `docs/en/architecture/overview.en.md`
@@ -107,7 +119,10 @@
 - Format code: `dart format .`
 - Static analysis: `flutter analyze`
 - Tests: `flutter test`
+- Coverage: `flutter test --coverage`
 - Docs sync check: `dart run scripts/check_docs_sync.dart`
+- Forbidden pattern checks: `dart run scripts/check_forbidden_patterns.dart`
+- Smoke integration tests: `flutter test integration_test/smoke`
 - Generate Drift code: `dart run build_runner build --delete-conflicting-outputs`
 - Watch Drift codegen: `dart run build_runner watch --delete-conflicting-outputs`
 - Generate localization files: `flutter gen-l10n`
@@ -116,13 +131,16 @@
 - Run `dart format .` before finishing non-trivial code changes.
 - Run `flutter analyze` before finishing non-trivial code changes.
 - Run `flutter test` before finishing non-trivial code changes.
+- Run `dart run scripts/check_forbidden_patterns.dart` before finishing non-trivial code changes.
 - When docs from approved RU/EN pairs are changed, run `dart run scripts/check_docs_sync.dart`.
+- For startup, routing, deep-link, or other critical end-to-end flow changes, update relevant coverage in `integration_test/smoke/` and run `flutter test integration_test/smoke` when the environment supports it; otherwise trigger `.github/workflows/integration_smoke.yml`.
 - For state-architecture changes, run `rg "package:provider|ChangeNotifier|notifyListeners" lib test` and treat new matches as architecture regressions.
 - For state-architecture changes, run `rg "BuildContext" lib/features --glob "**/application/**/*.dart" --glob "**/presentation/bloc/**/*.dart"` and treat matches as architecture regressions (except explicitly approved transitional adapters).
 - For state-management changes in high-risk flows, ensure regression tests cover:
   - stale async race (`latest request wins`)
   - lifecycle safety (`close before async completes`)
   - side-effect call-count and rapid-switch UI scenarios (for example detail image-preview flows)
+- Coverage thresholds are enforced in CI through `dart run scripts/coverage_baseline.dart --min-effective=90.0`; run `flutter test --coverage` for broad or high-risk runtime changes and before release-oriented validation.
 - `flutter analyze` and `flutter test` pass in the repository state verified on March 7, 2026.
 
 ## Release Versioning
@@ -135,6 +153,7 @@
   - `python .agents/skills/revelation/scripts/update_release_version.py inc-build`
   - `python .agents/skills/revelation/scripts/update_release_version.py set-version X.Y.Z`
 - The script keeps `pubspec.yaml` build metadata, `msix_version`, Inno Setup values, Snap version, and desktop entry version in sync.
+- Do not bypass the release-version synchronization helper unless explicitly requested by the owner.
 
 ## Release Checklist
 - Update version information in the versioned project files listed above.
@@ -161,6 +180,12 @@
 - Upload the new DB file to the Supabase storage bucket used by the project.
 - Copy the DB file into `web/db/`.
 - Deploy the website content in the separate `Revelation.website` repository.
+
+## Cases Requiring Owner Confirmation
+- Breaking public route or deep-link contract changes without a compatibility path.
+- Legal, license, copyright, or other policy text changes that affect app content or published docs.
+- Weakening or removing quality gates, smoke coverage expectations, or logging hooks.
+- Changing the release/version synchronization flow or bypassing the helper script.
 
 ## References
 - `README.md`: project overview and platform links
