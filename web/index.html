@@ -18,8 +18,214 @@
 
   <title>Revelation</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    :root {
+      color-scheme: dark;
+      --loader-backdrop: #110c09;
+      --loader-panel: rgba(23, 18, 14, 0.65);
+      --loader-panel-border: rgba(255, 255, 255, 0.25);
+      --loader-title: #ffffff;
+      --loader-subtitle: #e8ddd4;
+      --loader-progress-text: #d5c4b7;
+      --loader-progress-track: rgba(255, 255, 255, 0.2);
+      --loader-progress-fill: #f2c48e;
+      --loader-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--loader-backdrop);
+    }
+
+    body {
+      font-family: Arimo, "Segoe UI", sans-serif;
+    }
+
+    #app-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.4),
+          rgba(17, 12, 9, 0.53),
+          rgba(17, 12, 9, 0.85)
+        ),
+        url("assets/assets/images/UI/startup_splash_banner.jpg") center / cover no-repeat,
+        var(--loader-backdrop);
+      transition: opacity 320ms ease, visibility 320ms ease;
+    }
+
+    body.app-loaded #app-loader {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .app-loader__panel {
+      width: min(100%, 460px);
+      border: 1px solid var(--loader-panel-border);
+      border-radius: 24px;
+      background: var(--loader-panel);
+      box-shadow: var(--loader-shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .app-loader__panel-inner {
+      padding: 22px;
+    }
+
+    .app-loader__title {
+      margin: 0;
+      color: var(--loader-title);
+      font-size: clamp(2rem, 1.4rem + 1.8vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    .app-loader__subtitle,
+    .app-loader__status,
+    .app-loader__progress-text {
+      margin: 0;
+      text-align: center;
+    }
+
+    .app-loader__subtitle {
+      margin-top: 8px;
+      color: var(--loader-subtitle);
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    .app-loader__status {
+      margin-top: 18px;
+      color: var(--loader-title);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .app-loader__progress {
+      margin-top: 14px;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--loader-progress-track);
+    }
+
+    .app-loader__progress-fill {
+      width: 12%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--loader-progress-fill);
+      transition: width 360ms ease;
+    }
+
+    .app-loader__progress-fill::after {
+      content: "";
+      display: block;
+      width: 38%;
+      height: 100%;
+      margin-left: auto;
+      opacity: 0.55;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0.7),
+        rgba(255, 255, 255, 0)
+      );
+      animation: loader-shimmer 1.8s linear infinite;
+    }
+
+    .app-loader__progress-text {
+      margin-top: 10px;
+      color: var(--loader-progress-text);
+      font-size: 0.94rem;
+    }
+
+    @keyframes loader-shimmer {
+      from {
+        transform: translateX(-180%);
+      }
+
+      to {
+        transform: translateX(260%);
+      }
+    }
+
+    @media (min-width: 840px) {
+      #app-loader {
+        justify-content: flex-start;
+        padding: 40px 48px;
+      }
+
+      .app-loader__panel {
+        width: min(100%, 560px);
+        border-radius: 28px;
+      }
+
+      .app-loader__panel-inner {
+        padding: 28px;
+      }
+
+      .app-loader__title,
+      .app-loader__subtitle,
+      .app-loader__status,
+      .app-loader__progress-text {
+        text-align: left;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #app-loader,
+      .app-loader__progress-fill {
+        transition: none;
+      }
+
+      .app-loader__progress-fill::after {
+        animation: none;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div id="app-loader" role="status" aria-live="polite" aria-busy="true">
+    <div class="app-loader__panel">
+      <div class="app-loader__panel-inner">
+        <h1 id="app-loader-title" class="app-loader__title">Revelation</h1>
+        <p id="app-loader-subtitle" class="app-loader__subtitle">
+          Launching the app...
+        </p>
+        <p id="app-loader-status" class="app-loader__status">
+          Preparing Revelation
+        </p>
+        <div
+          id="app-loader-progress"
+          class="app-loader__progress"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="12"
+        >
+          <div
+            id="app-loader-progress-fill"
+            class="app-loader__progress-fill"
+          ></div>
+        </div>
+        <p id="app-loader-progress-text" class="app-loader__progress-text">
+          Step 1 of 4
+        </p>
+      </div>
+    </div>
+  </div>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
