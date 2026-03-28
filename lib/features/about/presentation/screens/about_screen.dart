@@ -27,6 +27,7 @@ import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/shared/utils/bug_report_utils.dart';
 import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
+import 'package:revelation/shared/ui/widgets/platform_expansion_tile.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 typedef AboutLinkLauncher = BugReportLinkLauncher;
@@ -115,6 +116,8 @@ class _AboutScreenState extends State<AboutScreen> {
     final appSettings = context.select(
       (SettingsCubit cubit) => cubit.state.settings.toMap(),
     );
+    final keepSectionDividersOnWindows =
+        !isWeb() && getPlatform() == TargetPlatform.windows;
 
     return BlocProvider.value(
       value: _aboutCubit,
@@ -155,21 +158,25 @@ class _AboutScreenState extends State<AboutScreen> {
                   Divider(height: 1, color: colorScheme.outlineVariant),
                   // Legal Links
                   _buildLegalLinks(context, currentLocale),
-                  if (!state.isAcknowledgementsExpanded)
+                  if (keepSectionDividersOnWindows ||
+                      !state.isAcknowledgementsExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Acknowledgments
                   _buildAcknowledgements(context, state),
-                  if (!state.isRecommendedExpanded ||
+                  if (keepSectionDividersOnWindows ||
+                      !state.isRecommendedExpanded ||
                       !state.isAcknowledgementsExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Recommended
                   _buildRecommended(context, state),
-                  if (!state.isChangelogExpanded ||
+                  if (keepSectionDividersOnWindows ||
+                      !state.isChangelogExpanded ||
                       !state.isRecommendedExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Changelog
                   _buildChangelog(context, state),
-                  if (!state.isChangelogExpanded)
+                  if (keepSectionDividersOnWindows ||
+                      !state.isChangelogExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Bugs report
                   _buildBugsReport(context, appSettings),
@@ -448,7 +455,7 @@ class _AboutScreenState extends State<AboutScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return ExpansionTile(
+    return PlatformExpansionTile(
       initiallyExpanded: state.isAcknowledgementsExpanded,
       onExpansionChanged: (expanded) {
         aud.playSound("click");
@@ -502,7 +509,7 @@ class _AboutScreenState extends State<AboutScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return ExpansionTile(
+    return PlatformExpansionTile(
       initiallyExpanded: state.isRecommendedExpanded,
       onExpansionChanged: (expanded) {
         aud.playSound("click");
@@ -548,7 +555,7 @@ class _AboutScreenState extends State<AboutScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return ExpansionTile(
+    return PlatformExpansionTile(
       minTileHeight: 30,
       tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
       initiallyExpanded: state.isChangelogExpanded,

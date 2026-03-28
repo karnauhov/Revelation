@@ -437,6 +437,44 @@ void main() {
     },
     variant: TargetPlatformVariant.only(TargetPlatform.windows),
   );
+
+  testWidgets(
+    'AboutScreen keeps section dividers visible on Windows when sections expand',
+    (tester) async {
+      final harness = _AboutScreenTestHarness();
+      final cubit = await _createSettingsCubit(language: 'en');
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(
+        _buildApp(
+          cubit,
+          dependencies: harness.buildDependencies(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(),
+        ),
+      );
+      await _pumpUntilAboutScreenLoaded(tester);
+
+      final dividerCountBefore = find.byType(Divider).evaluate().length;
+      final context = tester.element(find.byType(AboutScreen));
+      final l10n = AppLocalizations.of(context)!;
+
+      await tester.ensureVisible(find.text(l10n.acknowledgements_title));
+      await tester.tap(find.text(l10n.acknowledgements_title));
+      await pumpFrames(tester, count: 20);
+
+      await tester.ensureVisible(find.text(l10n.recommended_title));
+      await tester.tap(find.text(l10n.recommended_title));
+      await pumpFrames(tester, count: 20);
+
+      await tester.ensureVisible(find.text(l10n.changelog));
+      await tester.tap(find.text(l10n.changelog));
+      await pumpFrames(tester, count: 20);
+
+      final dividerCountAfter = find.byType(Divider).evaluate().length;
+      expect(dividerCountAfter, dividerCountBefore);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.windows),
+  );
 }
 
 class _AboutScreenTestHarness {

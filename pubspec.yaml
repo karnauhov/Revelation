@@ -36,7 +36,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   vector_math: ^2.2.0
   image: ^4.7.2
-  audioplayers: ^6.5.1
+  audioplayers: ^6.6.0
   drift: ^2.30.1
   drift_flutter: ^0.2.8
   unorm_dart: ^0.3.2

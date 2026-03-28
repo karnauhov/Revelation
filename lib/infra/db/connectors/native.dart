@@ -5,8 +5,8 @@ import 'package:path/path.dart' as p;
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
+import 'package:revelation/infra/db/connectors/database_version_file_loader.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
-import 'package:revelation/infra/db/connectors/database_version_loader.dart';
 import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/shared/config/app_constants.dart';
@@ -32,12 +32,7 @@ Future<DatabaseVersionInfo?> getLocalDatabaseVersionInfo(String dbFile) async {
   if (!file.existsSync()) {
     return null;
   }
-
-  if (dbFile == AppConstants.commonDB) {
-    return loadDatabaseVersionInfo(CommonDB(NativeDatabase(file)));
-  }
-
-  return loadDatabaseVersionInfo(LocalizedDB(NativeDatabase(file)));
+  return loadDatabaseVersionInfoFromFile(file);
 }
 
 Future<int?> getLocalDatabaseFileSize(String dbFile) async {

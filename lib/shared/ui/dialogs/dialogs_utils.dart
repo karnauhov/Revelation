@@ -3,6 +3,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/ui/widgets/platform_expansion_tile.dart';
 
 import 'package:revelation/app/router/app_router.dart';
 import 'package:revelation/core/logging/common_logger.dart';
@@ -92,7 +93,7 @@ void showCustomDialog(
             ),
             const SizedBox(height: 10),
             if (additional.isNotEmpty)
-              ExpansionTile(
+              PlatformExpansionTile(
                 title: ConstrainedBox(
                   constraints: const BoxConstraints(minWidth: 300.0),
                   child: Row(
