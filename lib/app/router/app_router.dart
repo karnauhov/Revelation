@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
+import 'package:revelation/app/router/route_sound_observer.dart';
 import 'package:revelation/features/about/about.dart' show AboutScreen;
 import 'package:revelation/features/download/download.dart' show DownloadScreen;
 import 'package:revelation/features/settings/settings.dart' show SettingsScreen;
 import 'package:revelation/features/topics/topics.dart'
     show MainScreen, TopicScreen;
 import 'package:revelation/core/logging/common_logger.dart';
-import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/primary_sources/presentation/screens/primary_source_screen.dart';
 import 'package:revelation/features/primary_sources/presentation/screens/primary_sources_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -23,7 +23,6 @@ class AppRouter {
   AppRouter._internal();
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  final aud = AudioController();
 
   late final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
@@ -32,7 +31,6 @@ class AppRouter {
         path: '/',
         name: 'main',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -60,7 +58,6 @@ class AppRouter {
             );
           }
 
-          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -76,7 +73,6 @@ class AppRouter {
         path: '/primary_sources',
         name: 'primary_sources',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -102,7 +98,6 @@ class AppRouter {
               child: const SizedBox.shrink(),
             );
           }
-          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -118,7 +113,6 @@ class AppRouter {
         path: '/settings',
         name: 'settings',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -130,7 +124,6 @@ class AppRouter {
         path: '/about',
         name: 'about',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -142,7 +135,6 @@ class AppRouter {
         path: '/download',
         name: 'download',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          aud.playSound("page");
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
@@ -151,7 +143,10 @@ class AppRouter {
         },
       ),
     ],
-    observers: <NavigatorObserver>[TalkerRouteObserver(GetIt.I<Talker>())],
+    observers: <NavigatorObserver>[
+      RouteSoundObserver(),
+      TalkerRouteObserver(GetIt.I<Talker>()),
+    ],
   );
 }
 

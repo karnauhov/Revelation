@@ -8,6 +8,9 @@ import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/connectors/database_version_loader.dart';
 import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
+import 'package:revelation/infra/db/connectors/web_db_manifest.dart';
+import 'package:revelation/infra/db/connectors/web_db_uri.dart';
+import 'package:revelation/infra/db/connectors/web_db_version_probe_policy.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/core/logging/common_logger.dart';
@@ -100,6 +103,8 @@ const _noCacheHeaders = <String, String>{
   'pragma': 'no-cache',
 };
 
+Future<Map<String, String>>? _webDbManifestVersionTokensFuture;
+
 String _versionKey(String databaseName) => 'web_db_version::$databaseName';
 
 String _createdAtKey(String databaseName) => 'web_db_created_at::$databaseName';
@@ -109,14 +114,11 @@ Uri _buildDbUri(
   String? versionToken,
   bool forceNoCache = false,
 }) {
-  final query = <String, String>{};
-  if (versionToken != null && versionToken.isNotEmpty) {
-    query['rev'] = versionToken;
-  }
-  if (forceNoCache) {
-    query['ts'] = DateTime.now().millisecondsSinceEpoch.toString();
-  }
-  return Uri(path: '/db/$dbFile', queryParameters: query);
+  return buildWebDbUri(
+    dbFile,
+    versionToken: versionToken,
+    forceNoCache: forceNoCache,
+  );
 }
 
 Future<String?> _syncWebDbVersion({
@@ -159,18 +161,25 @@ Future<String?> _syncWebDbVersion({
 }
 
 Future<String?> _fetchRemoteDbVersionToken(String dbFile) async {
+  final manifestVersionToken = await _fetchManifestDbVersionToken(dbFile);
+  if (manifestVersionToken != null) {
+    return manifestVersionToken;
+  }
+
   final uri = _buildDbUri(dbFile, forceNoCache: true);
 
-  try {
-    final response = await http.head(uri, headers: _noCacheHeaders);
-    if (response.statusCode >= 200 && response.statusCode < 400) {
-      final token = _buildVersionToken(response.headers);
-      if (token != null) {
-        return token;
+  if (shouldUseHeadForWebDbVersionProbe(uri: uri)) {
+    try {
+      final response = await http.head(uri, headers: _noCacheHeaders);
+      if (response.statusCode >= 200 && response.statusCode < 400) {
+        final token = _buildVersionToken(response.headers);
+        if (token != null) {
+          return token;
+        }
       }
+    } catch (e) {
+      log.debug('HEAD request failed for DB version check ($dbFile): $e');
     }
-  } catch (e) {
-    log.debug('HEAD request failed for DB version check ($dbFile): $e');
   }
 
   try {
@@ -199,6 +208,41 @@ Future<String?> _fetchRemoteDbVersionToken(String dbFile) async {
   }
 
   return null;
+}
+
+Future<String?> _fetchManifestDbVersionToken(String dbFile) async {
+  final tokens = await _loadWebDbManifestVersionTokens();
+  return tokens[dbFile];
+}
+
+Future<Map<String, String>> _loadWebDbManifestVersionTokens() {
+  return _webDbManifestVersionTokensFuture ??=
+      _fetchWebDbManifestVersionTokens();
+}
+
+Future<Map<String, String>> _fetchWebDbManifestVersionTokens() async {
+  final uri = buildWebDbManifestUri(forceNoCache: true);
+
+  try {
+    final response = await http.get(uri, headers: _noCacheHeaders);
+    if (response.statusCode != 200) {
+      if (response.statusCode != 404) {
+        log.debug(
+          'Manifest request returned ${response.statusCode} for DB version check: $uri',
+        );
+      }
+      return const {};
+    }
+
+    final tokens = parseWebDbManifestVersionTokens(response.body);
+    if (tokens.isEmpty) {
+      log.debug('Web DB manifest is empty or invalid: $uri');
+    }
+    return tokens;
+  } catch (e) {
+    log.debug('Manifest request failed for DB version check: $e');
+    return const {};
+  }
 }
 
 String? _buildVersionToken(Map<String, String> headers) {

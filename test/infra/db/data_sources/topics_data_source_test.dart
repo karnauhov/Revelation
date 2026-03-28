@@ -1,5 +1,4 @@
-import 'dart:typed_data';
-
+import 'package:drift/drift.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/infra/db/common/db_common.dart' as common_db;
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
@@ -69,6 +68,9 @@ class _FakeArticlesGateway implements ArticlesDatabaseGateway {
 
   @override
   String get languageCode => 'en';
+
+  @override
+  GeneratedDatabase? getActiveDatabase(String dbFile) => null;
 
   @override
   Future<void> initialize(String language) async {

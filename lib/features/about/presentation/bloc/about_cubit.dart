@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/about/presentation/bloc/about_state.dart';
-import 'package:revelation/infra/db/connectors/shared.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
+import 'package:revelation/infra/db/runtime/runtime_database_version_loader.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 
 typedef DbVersionInfoLoader =
@@ -20,7 +20,7 @@ class AboutCubit extends Cubit<AboutState> {
   }) : _packageInfoLoader = packageInfoLoader ?? PackageInfo.fromPlatform,
        _changelogLoader = changelogLoader ?? _loadChangelogFromBundle,
        _dbVersionInfoLoader =
-           dbVersionInfoLoader ?? getLocalDatabaseVersionInfo,
+           dbVersionInfoLoader ?? getPreferredDatabaseVersionInfo,
        _initialLanguageCode = _normalizeLanguageCode(initialLanguageCode),
        super(AboutState.initial()) {
     if (autoLoad) {

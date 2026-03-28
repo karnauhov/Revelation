@@ -5,7 +5,7 @@ const _schemaVersionKey = 'schema_version';
 const _dataVersionKey = 'data_version';
 const _dateKey = 'date';
 
-Future<DatabaseVersionInfo?> loadDatabaseVersionInfo(
+Future<DatabaseVersionInfo?> readDatabaseVersionInfo(
   GeneratedDatabase database,
 ) async {
   try {
@@ -47,6 +47,16 @@ Future<DatabaseVersionInfo?> loadDatabaseVersionInfo(
       dataVersion: dataVersion,
       date: date,
     );
+  } catch (_) {
+    return null;
+  }
+}
+
+Future<DatabaseVersionInfo?> loadDatabaseVersionInfo(
+  GeneratedDatabase database,
+) async {
+  try {
+    return readDatabaseVersionInfo(database);
   } catch (_) {
     return null;
   } finally {

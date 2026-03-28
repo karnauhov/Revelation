@@ -3,11 +3,14 @@ import 'package:revelation/infra/db/common/db_common.dart' as common_db;
 import 'package:revelation/infra/db/localized/db_localized.dart'
     as localized_db;
 import 'package:revelation/infra/db/runtime/db_manager.dart';
+import 'package:revelation/shared/config/app_constants.dart';
 
 abstract class ArticlesDatabaseGateway {
   bool get isInitialized;
 
   String get languageCode;
+
+  GeneratedDatabase? getActiveDatabase(String dbFile);
 
   Future<void> initialize(String language);
 
@@ -39,6 +42,27 @@ class DbManagerArticlesDatabaseGateway implements ArticlesDatabaseGateway {
 
   @override
   String get languageCode => _dbManager.langDB;
+
+  @override
+  GeneratedDatabase? getActiveDatabase(String dbFile) {
+    if (!_dbManager.isInitialized) {
+      return null;
+    }
+
+    if (dbFile == AppConstants.commonDB) {
+      return _dbManager.commonDB;
+    }
+
+    final localizedDbFile = AppConstants.localizedDB.replaceAll(
+      '@loc',
+      _dbManager.langDB,
+    );
+    if (dbFile == localizedDbFile) {
+      return _dbManager.localizedDB;
+    }
+
+    return null;
+  }
 
   @override
   Future<void> initialize(String language) {

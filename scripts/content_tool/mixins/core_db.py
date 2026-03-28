@@ -15,6 +15,7 @@ from typing import Any
 
 from ..helpers import LANGUAGE_NAME_RU_BY_CODE
 from ..models import ArticleRow, PrimarySourceSummary, ResourceRow, StrongRow
+from ..web_db_manifest import build_web_db_manifest_payload_from_paths, write_web_db_manifest
 
 COMMON_DB_SCHEMA_VERSION = 4
 LOCALIZED_DB_SCHEMA_VERSION = 6
@@ -1022,6 +1023,9 @@ class CoreDbMixin:
             ).strip()
             return translated or source_text
 
+        def _web_db_manifest_path(self, target_dir: Path) -> Path:
+            return target_dir / "manifest.json"
+
         def _copy_to_web_db(self) -> None:
             source_dir = self.work_dir
             target_dir = self.project_root / "web" / "db"
@@ -1047,10 +1051,28 @@ class CoreDbMixin:
                 messagebox.showwarning("Нет БД", "В рабочей папке не найдены файлы revelation*.sqlite.", parent=self)
                 return
 
+            try:
+                build_web_db_manifest_payload_from_paths(files)
+            except (OSError, sqlite3.DatabaseError, ValueError) as exc:
+                messagebox.showerror(
+                    "Ошибка manifest.json",
+                    (
+                        "Не удалось подготовить manifest.json перед копированием.\n"
+                        f"{exc}"
+                    ),
+                    parent=self,
+                )
+                return
+
             confirmation_text = (
                 f"Переписать {len(files)} файл(ов) из:\n{source_dir}\n\n"
                 f"в:\n{target_dir}\n\n"
                 "Это только копирование файлов в web/db."
+            )
+            confirmation_text += (
+                "\n\n"
+                "SQLite-файлы будут скопированы в web/db, "
+                "а manifest.json будет пересоздан по метаданным из этих БД."
             )
             if test_enabled_db_files:
                 test_block = "\n".join(f"- {name}" for name in test_enabled_db_files)
@@ -1069,10 +1091,32 @@ class CoreDbMixin:
                 return
 
             target_dir.mkdir(parents=True, exist_ok=True)
+            copied_files: list[Path] = []
             for src in files:
-                shutil.copy2(src, target_dir / src.name)
+                target_path = target_dir / src.name
+                shutil.copy2(src, target_path)
+                copied_files.append(target_path)
+            manifest_path = self._web_db_manifest_path(target_dir)
+            try:
+                write_web_db_manifest(manifest_path, db_paths=copied_files)
+            except (OSError, sqlite3.DatabaseError, ValueError) as exc:
+                messagebox.showerror(
+                    "Ошибка manifest.json",
+                    (
+                        "SQLite-файлы были скопированы, но manifest.json не обновлен.\n"
+                        "Исправьте проблему и повторите копирование.\n\n"
+                        f"{exc}"
+                    ),
+                    parent=self,
+                )
+                self._set_status(
+                    f"SQLite-файлы скопированы в {target_dir}, но manifest.json не обновлен."
+                )
+                return
 
-            self._set_status(f"Файлы переписаны в {target_dir}. Скопировано файлов: {len(files)}")
+            self._set_status(
+                f"Файлы и manifest.json переписаны в {target_dir}. Скопировано SQLite-файлов: {len(files)}"
+            )
 
         def _find_localized_dbs_with_enabled_tests(self, source_dir: Path) -> list[str]:
             found: list[str] = []

@@ -20,6 +20,7 @@ import 'package:revelation/features/settings/presentation/bloc/settings_cubit.da
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/infra/db/connectors/shared.dart';
+import 'package:revelation/infra/db/runtime/runtime_database_version_loader.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
@@ -72,7 +73,7 @@ class AboutScreenDependencies {
     this.appLinkHandler = handleAppLink,
     this.collectSystemAndAppInfo = _defaultAboutSystemInfoCollector,
     this.databaseFileSizeLoader = getLocalDatabaseFileSize,
-    this.databaseVersionLoader = getLocalDatabaseVersionInfo,
+    this.databaseVersionLoader = getPreferredDatabaseVersionInfo,
     this.primarySourceFilesLoader = getLocalPrimarySourceFilesInfo,
     this.writeClipboardText = _defaultAboutClipboardWriter,
   });
