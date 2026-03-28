@@ -2,7 +2,7 @@
 
 All notable changes to this application will be documented here.
 
-## [1.0.5] - Under development
+## [1.0.5](https://github.com/karnauhov/Revelation/releases/tag/v1.0.4%2B141) - 28.03.26
 
 ### Added
 
