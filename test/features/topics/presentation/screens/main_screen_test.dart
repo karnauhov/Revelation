@@ -1,5 +1,6 @@
 @Tags(['widget'])
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -85,9 +86,165 @@ void main() {
       expect(stoneSounds, hasLength(1));
     },
   );
+
+  testWidgets('MainScreen navigates to primary sources and about from drawer', (
+    tester,
+  ) async {
+    final harness = await _buildHarness();
+    addTearDown(harness.dispose);
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.byType(MainScreen));
+    final l10n = AppLocalizations.of(context)!;
+
+    await tester.tap(find.byTooltip(l10n.menu));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.primary_sources_screen));
+    await tester.pumpAndSettle();
+    expect(find.text('primary-sources-page'), findsOneWidget);
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip(l10n.menu));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.about_screen));
+    await tester.pumpAndSettle();
+    expect(find.text('about-page'), findsOneWidget);
+  });
+
+  testWidgets(
+    'MainScreen resets close-sound suppression after drawer item click',
+    (tester) async {
+      final harness = await _buildHarness();
+      addTearDown(harness.dispose);
+      await tester.pumpWidget(harness.app);
+      await tester.pumpAndSettle();
+
+      final context = tester.element(find.byType(MainScreen));
+      final l10n = AppLocalizations.of(context)!;
+
+      await tester.tap(find.byTooltip(l10n.menu));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.settings_screen));
+      await tester.pumpAndSettle();
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip(l10n.menu));
+      await tester.pumpAndSettle();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      final stoneSounds = harness.audio.playedSources
+          .where((source) => source == 'stone')
+          .toList();
+      expect(stoneSounds, hasLength(3));
+    },
+  );
+
+  testWidgets('MainScreen respects disabled sound setting', (tester) async {
+    final harness = await _buildHarness(soundEnabled: false);
+    addTearDown(harness.dispose);
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.byType(MainScreen));
+    final l10n = AppLocalizations.of(context)!;
+
+    await tester.tap(find.byTooltip(l10n.menu));
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(harness.audio.playedSources, isEmpty);
+  });
+
+  testWidgets(
+    'MainScreen initializes audio once and reads the latest sound setting',
+    (tester) async {
+      final harness = await _buildHarness(soundEnabled: true);
+      addTearDown(harness.dispose);
+      await tester.pumpWidget(harness.app);
+      await tester.pumpAndSettle();
+
+      expect(harness.audio.initCalls, 1);
+
+      await harness.settingsCubit.setSoundEnabled(false);
+      await tester.pump();
+
+      final context = tester.element(find.byType(MainScreen));
+      final l10n = AppLocalizations.of(context)!;
+
+      await tester.tap(find.byTooltip(l10n.menu));
+      await tester.pumpAndSettle();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(harness.audio.playedSources, isEmpty);
+    },
+  );
+
+  testWidgets(
+    'MainScreen keeps drag listener disabled on non-desktop platforms',
+    (tester) async {
+      final harness = await _buildHarness(topicCount: 40);
+      addTearDown(harness.dispose);
+      await tester.pumpWidget(harness.app);
+      await tester.pumpAndSettle();
+
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+      final body = scaffold.body as SizedBox;
+
+      expect(body.child, isNot(isA<Listener>()));
+    },
+  );
+
+  testWidgets(
+    'MainScreen desktop drag scrolls topic list',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1200, 700));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final harness = await _buildHarness(topicCount: 40);
+      addTearDown(harness.dispose);
+      await tester.pumpWidget(harness.app);
+      await tester.pumpAndSettle();
+
+      final listenerFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is Listener &&
+            widget.onPointerDown != null &&
+            widget.onPointerMove != null &&
+            widget.onPointerUp != null,
+      );
+      expect(listenerFinder, findsAtLeastNWidgets(1));
+
+      final scrollableFinder = find.byType(Scrollable).first;
+      final before = tester.state<ScrollableState>(scrollableFinder).position;
+      expect(before.pixels, 0);
+
+      final start = tester.getCenter(listenerFinder.first);
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: start);
+      await gesture.down(start);
+      await gesture.moveTo(Offset(start.dx, start.dy - 180));
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      final after = tester.state<ScrollableState>(scrollableFinder).position;
+      expect(after.pixels, greaterThan(0));
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.windows),
+  );
 }
 
-Future<_MainScreenHarness> _buildHarness() async {
+Future<_MainScreenHarness> _buildHarness({
+  bool soundEnabled = true,
+  int topicCount = 0,
+}) async {
   final audio = _SpyAudioController();
   AudioController.setInstanceForTest(audio);
 
@@ -97,14 +254,24 @@ Future<_MainScreenHarness> _buildHarness() async {
         selectedLanguage: 'en',
         selectedTheme: 'manuscript',
         selectedFontSize: 'medium',
-        soundEnabled: true,
+        soundEnabled: soundEnabled,
       ),
     ),
   );
   await settingsCubit.loadSettings();
 
   final topicsCubit = TopicsCatalogCubit(
-    topicsRepository: _FixedTopicsRepository(),
+    topicsRepository: _FixedTopicsRepository(
+      topics: List<TopicInfo>.generate(
+        topicCount,
+        (index) => TopicInfo(
+          name: 'Topic $index',
+          idIcon: '',
+          description: 'Description $index',
+          route: 'topic_$index',
+        ),
+      ),
+    ),
     settingsCubit: settingsCubit,
   );
 
@@ -183,10 +350,12 @@ class _SpyAudioController extends AudioController {
   _SpyAudioController() : super.forTest();
 
   bool Function()? _isSoundEnabled;
+  int initCalls = 0;
   final List<String> playedSources = <String>[];
 
   @override
   Future<void> init({required bool Function() isSoundEnabled}) async {
+    initCalls += 1;
     _isSoundEnabled = isSoundEnabled;
   }
 
@@ -200,13 +369,16 @@ class _SpyAudioController extends AudioController {
 }
 
 class _FixedTopicsRepository extends TopicsRepository {
-  _FixedTopicsRepository() : super(dataSource: _NoopTopicsDataSource());
+  _FixedTopicsRepository({required this.topics})
+    : super(dataSource: _NoopTopicsDataSource());
+
+  final List<TopicInfo> topics;
 
   @override
   Future<AppResult<List<TopicInfo>>> getTopics({
     required String language,
   }) async {
-    return const AppSuccess<List<TopicInfo>>(<TopicInfo>[]);
+    return AppSuccess<List<TopicInfo>>(topics);
   }
 
   @override

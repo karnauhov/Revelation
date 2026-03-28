@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +10,22 @@ import 'drawer_item.dart';
 class DrawerContent extends StatefulWidget {
   final VoidCallback onItemClicked;
   const DrawerContent({super.key, required this.onItemClicked});
+
+  @visibleForTesting
+  static bool Function() isWebForTest = isWeb;
+
+  @visibleForTesting
+  static bool Function() isDesktopForTest = isDesktop;
+
+  @visibleForTesting
+  static Future<bool> Function() closeDesktopWindowForTest = closeDesktopWindow;
+
+  @visibleForTesting
+  static void resetPlatformTestOverrides() {
+    isWebForTest = isWeb;
+    isDesktopForTest = isDesktop;
+    closeDesktopWindowForTest = closeDesktopWindow;
+  }
 
   @override
   // ignore: library_private_types_in_public_api
@@ -105,7 +120,7 @@ class _DrawerContentState extends State<DrawerContent> {
                         context.push('/about');
                       },
                     ),
-                    if (isWeb())
+                    if (DrawerContent.isWebForTest())
                       DrawerItem(
                         assetPath: 'assets/images/UI/get_app.svg',
                         text: AppLocalizations.of(context)!.download,
@@ -121,7 +136,7 @@ class _DrawerContentState extends State<DrawerContent> {
             ),
           ),
           const SizedBox(height: 4.0),
-          if (!kIsWeb)
+          if (!DrawerContent.isWebForTest())
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: DrawerItem(
@@ -129,9 +144,10 @@ class _DrawerContentState extends State<DrawerContent> {
                 text: AppLocalizations.of(context)!.close_app,
                 onClick: () {
                   widget.onItemClicked();
-                  if (isDesktop()) {
+                  if (DrawerContent.isDesktopForTest()) {
                     unawaited(() async {
-                      final closed = await closeDesktopWindow();
+                      final closed =
+                          await DrawerContent.closeDesktopWindowForTest();
                       if (!closed) {
                         SystemNavigator.pop();
                       }

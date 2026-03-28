@@ -18,12 +18,43 @@ import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/core/platform/file_downloader.dart';
 
+typedef TopicContentCubitBuilder =
+    TopicContentCubit Function({
+      required SettingsCubit settingsCubit,
+      required String route,
+      String? name,
+      String? description,
+    });
+
+typedef DownloadableFileSaver =
+    Future<String?> Function({
+      required Uint8List bytes,
+      required String fileName,
+      required String mimeType,
+    });
+
 class TopicScreen extends StatefulWidget {
   final String? name;
   final String? description;
   final String? file;
+  final TopicContentCubitBuilder? topicContentCubitBuilder;
 
-  const TopicScreen({super.key, this.name, this.description, this.file});
+  const TopicScreen({
+    super.key,
+    this.name,
+    this.description,
+    this.file,
+    this.topicContentCubitBuilder,
+  });
+
+  @visibleForTesting
+  static DownloadableFileSaver saveDownloadableFileForTest =
+      saveDownloadableFile;
+
+  @visibleForTesting
+  static void resetTestOverrides() {
+    saveDownloadableFileForTest = saveDownloadableFile;
+  }
 
   @override
   State<TopicScreen> createState() => _TopicScreenState();
@@ -43,7 +74,9 @@ class _TopicScreenState extends State<TopicScreen> {
   @override
   void initState() {
     super.initState();
-    _topicContentCubit = AppDi.createTopicContentCubit(
+    final cubitBuilder =
+        widget.topicContentCubitBuilder ?? AppDi.createTopicContentCubit;
+    _topicContentCubit = cubitBuilder(
       settingsCubit: context.read<SettingsCubit>(),
       route: widget.file ?? '',
       name: widget.name,
@@ -326,7 +359,7 @@ class _TopicScreenState extends State<TopicScreen> {
     required String Function(String location) savedMessageBuilder,
   }) async {
     try {
-      final location = await saveDownloadableFile(
+      final location = await TopicScreen.saveDownloadableFileForTest(
         bytes: bytes,
         fileName: fileName,
         mimeType: mimeType,
