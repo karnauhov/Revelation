@@ -34,6 +34,10 @@ class FlutterWindow : public Win32Window {
   // Channel for native window operations exposed to Dart.
   std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>>
       window_channel_;
+
+  // Channel for lightweight UI sounds exposed to Dart.
+  std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>>
+      audio_channel_;
 };
 
 #endif  // RUNNER_FLUTTER_WINDOW_H_

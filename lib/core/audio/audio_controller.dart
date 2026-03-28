@@ -1,17 +1,26 @@
 import 'dart:async';
-import 'package:audioplayers/audioplayers.dart';
+
 import 'package:flutter/foundation.dart';
+import 'package:revelation/core/audio/audio_backend.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 
 class AudioController {
+  static const Map<String, String> _soundAssets = <String, String>{
+    'page': 'assets/sounds/page.mp3',
+    'stone': 'assets/sounds/stone.mp3',
+    'click': 'assets/sounds/click.mp3',
+  };
+
   static AudioController _instance = AudioController._internal();
-  AudioController._internal({AudioPlayer? soundPlayer})
-    : _soundPlayer = soundPlayer ?? AudioPlayer();
+
+  AudioController._internal({AppSoundBackend? soundBackend})
+    : _soundBackend = soundBackend ?? createDefaultSoundBackend();
+
   factory AudioController() => _instance;
 
   @visibleForTesting
-  AudioController.forTest({AudioPlayer? soundPlayer})
-    : _soundPlayer = soundPlayer ?? AudioPlayer();
+  AudioController.forTest({AppSoundBackend? soundBackend})
+    : _soundBackend = soundBackend ?? createDefaultSoundBackend();
 
   @visibleForTesting
   static void setInstanceForTest(AudioController controller) {
@@ -23,50 +32,24 @@ class AudioController {
     _instance = AudioController._internal();
   }
 
-  final AudioPlayer _soundPlayer;
-  final _sources = <String, Source>{};
+  final AppSoundBackend _soundBackend;
   bool Function() _isSoundEnabled = _soundDisabledByDefault;
 
   static bool _soundDisabledByDefault() => false;
 
   Future<void> init({required bool Function() isSoundEnabled}) async {
-    _soundPlayer.audioCache = AudioCache(prefix: "");
     _isSoundEnabled = isSoundEnabled;
-
-    await _soundPlayer.setAudioContext(
-      AudioContext(
-        android: AudioContextAndroid(
-          isSpeakerphoneOn: true,
-          stayAwake: false,
-          contentType: AndroidContentType.sonification,
-          usageType: AndroidUsageType.assistanceSonification,
-          audioFocus: AndroidAudioFocus.none,
-        ),
-        iOS: AudioContextIOS(
-          category: AVAudioSessionCategory.playback,
-          options: {AVAudioSessionOptions.mixWithOthers},
-        ),
-      ),
-    );
-
-    _sources["page"] = AssetSource(
-      'assets/sounds/page.mp3',
-      mimeType: "audio/mpeg",
-    );
-    _sources["stone"] = AssetSource(
-      'assets/sounds/stone.mp3',
-      mimeType: "audio/mpeg",
-    );
-    _sources["click"] = AssetSource(
-      'assets/sounds/click.mp3',
-      mimeType: "audio/mpeg",
-    );
+    await _soundBackend.init(_soundAssets);
   }
 
   void playSound(String sourceName) {
+    unawaited(_playSound(sourceName));
+  }
+
+  Future<void> _playSound(String sourceName) async {
     try {
-      if (_sources.containsKey(sourceName) && _isSoundEnabled()) {
-        _soundPlayer.play(_sources[sourceName]!);
+      if (_soundAssets.containsKey(sourceName) && _isSoundEnabled()) {
+        await _soundBackend.play(sourceName);
       }
     } catch (e) {
       log.error(e);
@@ -75,7 +58,7 @@ class AudioController {
 
   Future<void> stopSound() async {
     try {
-      await _soundPlayer.stop();
+      await _soundBackend.stop();
     } catch (_) {}
   }
 }
