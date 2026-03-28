@@ -296,43 +296,45 @@ class _AboutScreenState extends State<AboutScreen> {
           height: 96,
         ),
         const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.app_name,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.app_name,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
               ),
-            ),
-            Text(
-              "${l10n.version} ${state.appVersion} (${state.buildNumber})",
-              style: versionTextStyle,
-            ),
-            Tooltip(
-              message: _formatDbVersionTooltip(
-                context,
-                state.commonDbVersionInfo,
-              ),
-              triggerMode: TooltipTriggerMode.tap,
-              child: Text(
-                "${l10n.common_data_update} ${_formatDbVersionValue(state.commonDbVersionInfo)}",
+              Text(
+                "${l10n.version} ${state.appVersion} (${state.buildNumber})",
                 style: versionTextStyle,
               ),
-            ),
-            Tooltip(
-              message: _formatDbVersionTooltip(
-                context,
-                state.localizedDbVersionInfo,
+              Tooltip(
+                message: _formatDbVersionTooltip(
+                  context,
+                  state.commonDbVersionInfo,
+                ),
+                triggerMode: TooltipTriggerMode.tap,
+                child: Text(
+                  "${l10n.common_data_update} ${_formatDbVersionValue(state.commonDbVersionInfo)}",
+                  style: versionTextStyle,
+                ),
               ),
-              triggerMode: TooltipTriggerMode.tap,
-              child: Text(
-                "${l10n.localized_data_update(_localizedLanguageName(l10n, selectedLanguage))} ${_formatDbVersionValue(state.localizedDbVersionInfo)}",
-                style: versionTextStyle,
+              Tooltip(
+                message: _formatDbVersionTooltip(
+                  context,
+                  state.localizedDbVersionInfo,
+                ),
+                triggerMode: TooltipTriggerMode.tap,
+                child: Text(
+                  "${l10n.localized_data_update(_localizedLanguageName(l10n, selectedLanguage))} ${_formatDbVersionValue(state.localizedDbVersionInfo)}",
+                  style: versionTextStyle,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -484,11 +486,13 @@ class _AboutScreenState extends State<AboutScreen> {
             colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
           ),
           const SizedBox(width: 12),
-          Text(
-            AppLocalizations.of(context)!.acknowledgements_title,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.primary,
+          Expanded(
+            child: Text(
+              AppLocalizations.of(context)!.acknowledgements_title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.primary,
+              ),
             ),
           ),
         ],
@@ -536,11 +540,13 @@ class _AboutScreenState extends State<AboutScreen> {
             colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
           ),
           const SizedBox(width: 12),
-          Text(
-            AppLocalizations.of(context)!.recommended_title,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.primary,
+          Expanded(
+            child: Text(
+              AppLocalizations.of(context)!.recommended_title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.primary,
+              ),
             ),
           ),
         ],
@@ -580,11 +586,13 @@ class _AboutScreenState extends State<AboutScreen> {
             colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
           ),
           const SizedBox(width: 12),
-          Text(
-            AppLocalizations.of(context)!.changelog,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.primary,
+          Expanded(
+            child: Text(
+              AppLocalizations.of(context)!.changelog,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.primary,
+              ),
             ),
           ),
         ],

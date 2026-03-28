@@ -186,6 +186,34 @@ void main() {
     expect(harness.launchedUrls[4], contains('en.html#join'));
   });
 
+  testWidgets(
+    'AboutScreen app info does not overflow on narrow Android width',
+    (tester) async {
+      final harness = _AboutScreenTestHarness();
+      final cubit = await _createSettingsCubit(language: 'ru');
+      addTearDown(cubit.close);
+
+      tester.view.devicePixelRatio = 1.0;
+      tester.view.physicalSize = const Size(376.7, 900);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        _buildApp(
+          cubit,
+          dependencies: harness.buildDependencies(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(),
+          locale: const Locale('ru'),
+        ),
+      );
+      await _pumpUntilAboutScreenLoaded(tester);
+      await tester.pump();
+
+      expect(_takeAllPumpExceptions(tester), isEmpty);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.android),
+  );
+
   testWidgets('AboutScreen legal topic links navigate through app router', (
     tester,
   ) async {
@@ -527,11 +555,12 @@ Widget _buildApp(
   SettingsCubit cubit, {
   required AboutScreenDependencies dependencies,
   required AboutCubitBuilder aboutCubitBuilder,
+  Locale locale = const Locale('en'),
 }) {
   return BlocProvider<SettingsCubit>.value(
     value: cubit,
     child: buildLocalizedTestApp(
-      locale: const Locale('en'),
+      locale: locale,
       child: AboutScreen(
         dependencies: dependencies,
         aboutCubitBuilder: aboutCubitBuilder,
@@ -540,6 +569,17 @@ Widget _buildApp(
       withScaffold: false,
     ),
   );
+}
+
+List<Object> _takeAllPumpExceptions(WidgetTester tester) {
+  final exceptions = <Object>[];
+  while (true) {
+    final exception = tester.takeException();
+    if (exception == null) {
+      return exceptions;
+    }
+    exceptions.add(exception);
+  }
 }
 
 Map<String, Uint8List> _buildAboutAssets({
