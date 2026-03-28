@@ -76,7 +76,6 @@ flutter:
     - CHANGELOG.md
     - assets/data/
     - assets/images/UI/
-    - assets/images/PrimarySources/
     - assets/sounds/
 
   fonts:
