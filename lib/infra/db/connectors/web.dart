@@ -35,17 +35,38 @@ Future<DateTime?> getLocalDatabaseUpdatedAt(String dbFile) async {
 }
 
 Future<DatabaseVersionInfo?> getLocalDatabaseVersionInfo(String dbFile) {
-  if (dbFile == AppConstants.commonDB) {
-    return loadDatabaseVersionInfo(CommonDB(connectOnWeb(dbFile)));
-  }
+  return _getManifestDatabaseVersionInfo(dbFile).then((manifestInfo) {
+    if (manifestInfo != null) {
+      return manifestInfo;
+    }
 
-  return loadDatabaseVersionInfo(LocalizedDB(connectOnWeb(dbFile)));
+    if (dbFile == AppConstants.commonDB) {
+      return loadDatabaseVersionInfo(CommonDB(connectOnWeb(dbFile)));
+    }
+
+    return loadDatabaseVersionInfo(LocalizedDB(connectOnWeb(dbFile)));
+  });
 }
 
-Future<int?> getLocalDatabaseFileSize(String dbFile) async => null;
+Future<int?> getLocalDatabaseFileSize(String dbFile) async {
+  final manifestEntry = await _getManifestDbEntry(dbFile);
+  return manifestEntry?.fileSizeBytes;
+}
 
 Future<List<PrimarySourceFileInfo>> getLocalPrimarySourceFilesInfo() async =>
     const [];
+
+Future<DatabaseVersionInfo?> _getManifestDatabaseVersionInfo(
+  String dbFile,
+) async {
+  final manifestEntry = await _getManifestDbEntry(dbFile);
+  return manifestEntry?.versionInfo;
+}
+
+Future<WebDbManifestEntry?> _getManifestDbEntry(String dbFile) async {
+  final entries = await _loadWebDbManifestEntries();
+  return entries[dbFile];
+}
 
 DatabaseConnection connectOnWeb(String dbFile) {
   return DatabaseConnection.delayed(
@@ -103,7 +124,7 @@ const _noCacheHeaders = <String, String>{
   'pragma': 'no-cache',
 };
 
-Future<Map<String, String>>? _webDbManifestVersionTokensFuture;
+Future<Map<String, WebDbManifestEntry>>? _webDbManifestEntriesFuture;
 
 String _versionKey(String databaseName) => 'web_db_version::$databaseName';
 
@@ -211,16 +232,15 @@ Future<String?> _fetchRemoteDbVersionToken(String dbFile) async {
 }
 
 Future<String?> _fetchManifestDbVersionToken(String dbFile) async {
-  final tokens = await _loadWebDbManifestVersionTokens();
-  return tokens[dbFile];
+  final manifestEntry = await _getManifestDbEntry(dbFile);
+  return manifestEntry?.versionToken;
 }
 
-Future<Map<String, String>> _loadWebDbManifestVersionTokens() {
-  return _webDbManifestVersionTokensFuture ??=
-      _fetchWebDbManifestVersionTokens();
+Future<Map<String, WebDbManifestEntry>> _loadWebDbManifestEntries() {
+  return _webDbManifestEntriesFuture ??= _fetchWebDbManifestEntries();
 }
 
-Future<Map<String, String>> _fetchWebDbManifestVersionTokens() async {
+Future<Map<String, WebDbManifestEntry>> _fetchWebDbManifestEntries() async {
   final uri = buildWebDbManifestUri(forceNoCache: true);
 
   try {
@@ -234,11 +254,11 @@ Future<Map<String, String>> _fetchWebDbManifestVersionTokens() async {
       return const {};
     }
 
-    final tokens = parseWebDbManifestVersionTokens(response.body);
-    if (tokens.isEmpty) {
+    final entries = parseWebDbManifestEntries(response.body);
+    if (entries.isEmpty) {
       log.debug('Web DB manifest is empty or invalid: $uri');
     }
-    return tokens;
+    return entries;
   } catch (e) {
     log.debug('Manifest request failed for DB version check: $e');
     return const {};
