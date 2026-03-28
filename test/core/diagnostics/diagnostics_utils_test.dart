@@ -153,7 +153,10 @@ void main() {
       tester,
       locale: const Locale('en'),
     );
-    final info = await collectSystemAndAppInfo(context: context);
+    final info = await collectSystemAndAppInfo(
+      context: context,
+      devicePlatformOverride: DiagnosticsDevicePlatform.windows,
+    );
 
     expect(info, contains('=======PLATFORM / DART======='));
     expect(info, contains('=======PACKAGE / APP======='));
