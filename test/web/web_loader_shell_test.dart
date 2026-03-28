@@ -12,10 +12,7 @@ void main() {
     expect(indexHtml, contains('id="app-loader-progress-fill"'));
     expect(indexHtml, contains('body.app-loaded #app-loader'));
 
-    expect(
-      bootstrapScript,
-      contains("serviceWorkerVersion: String("),
-    );
+    expect(bootstrapScript, contains("serviceWorkerVersion: String("));
     expect(
       bootstrapScript,
       contains(
