@@ -48,6 +48,7 @@ Application entry point: `lib/main.dart`.
 - [Матрица управления состоянием](./docs/ru/architecture/state_management_matrix.ru.md)
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
 - [Бэклог оптимизации производительности](./docs/ru/performance/optimization_backlog.ru.md)
+- [Исследование Откр. 1:1-3: этап 1](./docs/ru/studies/revelation-1-1-3-research.ru.md)
 
 ### Additional Notes
 
