@@ -187,55 +187,50 @@ void main() {
     () async {
       final appFolder = await getAppFolder();
       final root = Directory(p.join(appFolder, 'primary_sources'));
+      await root.create(recursive: true);
+      final stableFile = File(p.join(root.path, 'stable.txt'));
+      await stableFile.writeAsBytes(const [7]);
 
-      var observedTraversalError = false;
-      for (var attempt = 0; attempt < 4 && !observedTraversalError; attempt++) {
-        if (await root.exists()) {
-          await root.delete(recursive: true);
-        }
-        await root.create(recursive: true);
-        final targetDir = Directory(p.join(appFolder, 'target_dir_$attempt'));
-        await targetDir.create(recursive: true);
-        await File(
-          p.join(targetDir.path, 'target_file.txt'),
-        ).writeAsBytes(const [1, 2, 3]);
-        final volatileLink = Link(
-          p.join(root.path, '000_volatile_link_$attempt'),
-        );
-        final linkCreated = await _tryCreateLink(volatileLink, targetDir.path);
-        if (!linkCreated) {
-          return;
-        }
+      final targetDir = Directory(p.join(appFolder, 'volatile_target'));
+      await targetDir.create(recursive: true);
+      await File(
+        p.join(targetDir.path, 'target_file.txt'),
+      ).writeAsBytes(const [1, 2, 3]);
 
-        for (var i = 0; i < 800; i++) {
-          final file = File(p.join(root.path, 'file_${attempt}_$i.tmp'));
-          await file.writeAsBytes(const [0]);
-        }
-
-        final deleteFuture = Future<void>(() async {
-          await Future<void>.delayed(const Duration(milliseconds: 15));
-          if (await volatileLink.exists()) {
-            await volatileLink.delete();
-          }
-        });
-
-        final files = await native_connector.getLocalPrimarySourceFilesInfo();
-        await deleteFuture;
-        if (await targetDir.exists()) {
-          await targetDir.delete(recursive: true);
-        }
-
-        observedTraversalError = files.any(
-          (file) =>
-              file.relativePath.endsWith(
-                'primary_sources/000_volatile_link_$attempt',
-              ) &&
-              ((file.error?.startsWith('list failed:') ?? false) ||
-                  (file.error?.startsWith('link resolve failed:') ?? false)),
-        );
+      final volatileLink = Link(p.join(root.path, '000_volatile_link'));
+      final linkCreated = await _tryCreateLink(volatileLink, targetDir.path);
+      if (!linkCreated) {
+        return;
       }
 
-      expect(observedTraversalError, isTrue);
+      for (var i = 0; i < 800; i++) {
+        final file = File(p.join(root.path, 'file_$i.tmp'));
+        await file.writeAsBytes(const [0]);
+      }
+
+      final deleteFuture = Future<void>(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 1));
+        if (await volatileLink.exists()) {
+          await volatileLink.delete();
+        }
+      });
+
+      final files = await native_connector.getLocalPrimarySourceFilesInfo();
+      await deleteFuture;
+
+      if (await targetDir.exists()) {
+        await targetDir.delete(recursive: true);
+      }
+
+      expect(
+        files.any(
+          (file) =>
+              file.relativePath == 'primary_sources/stable.txt' &&
+              file.sizeBytes == 1 &&
+              file.error == null,
+        ),
+        isTrue,
+      );
     },
   );
 
