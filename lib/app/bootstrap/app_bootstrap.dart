@@ -19,6 +19,61 @@ typedef StrongDialogPresenter =
     void Function(BuildContext context, int strongNumber);
 typedef PrimarySourceNavigator =
     void Function(BuildContext context, PrimarySourceRouteArgs routeArgs);
+typedef AppBootstrapProgressCallback =
+    void Function(AppBootstrapProgress progress);
+
+const int appBootstrapVisibleStepCount = 5;
+
+enum AppBootstrapStep {
+  preparing,
+  loadingSettings,
+  initializingServer,
+  initializingDatabases,
+  configuringLinks,
+  ready,
+}
+
+extension AppBootstrapStepX on AppBootstrapStep {
+  int get stepNumber {
+    switch (this) {
+      case AppBootstrapStep.preparing:
+        return 1;
+      case AppBootstrapStep.loadingSettings:
+        return 2;
+      case AppBootstrapStep.initializingServer:
+        return 3;
+      case AppBootstrapStep.initializingDatabases:
+        return 4;
+      case AppBootstrapStep.configuringLinks:
+      case AppBootstrapStep.ready:
+        return 5;
+    }
+  }
+
+  double get progressValue {
+    switch (this) {
+      case AppBootstrapStep.preparing:
+        return 0.12;
+      case AppBootstrapStep.loadingSettings:
+        return 0.32;
+      case AppBootstrapStep.initializingServer:
+        return 0.52;
+      case AppBootstrapStep.initializingDatabases:
+        return 0.74;
+      case AppBootstrapStep.configuringLinks:
+        return 0.9;
+      case AppBootstrapStep.ready:
+        return 1;
+    }
+  }
+}
+
+class AppBootstrapProgress {
+  const AppBootstrapProgress(this.step, {this.selectedLanguageCode});
+
+  final AppBootstrapStep step;
+  final String? selectedLanguageCode;
+}
 
 class AppBootstrap {
   AppBootstrap({
@@ -53,19 +108,61 @@ class AppBootstrap {
     context.push('/primary_source', extra: routeArgs);
   }
 
-  Future<SettingsCubit> initialize() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    _configureGlobalErrorHandling();
-    await _initializePlatform();
+  Future<SettingsCubit> initialize({
+    AppBootstrapProgressCallback? onProgress,
+  }) async {
+    SettingsCubit? settingsCubit;
 
-    final settingsCubit = SettingsCubit(SettingsRepository());
-    await settingsCubit.loadSettings();
+    try {
+      onProgress?.call(const AppBootstrapProgress(AppBootstrapStep.preparing));
+      WidgetsFlutterBinding.ensureInitialized();
+      _configureGlobalErrorHandling();
+      await _initializePlatform();
 
-    await ServerManager().init();
-    await _initializeDatabases(settingsCubit);
-    _configureStrongHandlers();
+      onProgress?.call(
+        const AppBootstrapProgress(AppBootstrapStep.loadingSettings),
+      );
+      settingsCubit = SettingsCubit(SettingsRepository());
+      await settingsCubit.loadSettings();
+      final selectedLanguage = settingsCubit.state.settings.selectedLanguage;
 
-    return settingsCubit;
+      onProgress?.call(
+        AppBootstrapProgress(
+          AppBootstrapStep.initializingServer,
+          selectedLanguageCode: selectedLanguage,
+        ),
+      );
+      await ServerManager().init();
+
+      onProgress?.call(
+        AppBootstrapProgress(
+          AppBootstrapStep.initializingDatabases,
+          selectedLanguageCode: selectedLanguage,
+        ),
+      );
+      await _initializeDatabases(settingsCubit);
+
+      onProgress?.call(
+        AppBootstrapProgress(
+          AppBootstrapStep.configuringLinks,
+          selectedLanguageCode: selectedLanguage,
+        ),
+      );
+      _configureStrongHandlers();
+      onProgress?.call(
+        AppBootstrapProgress(
+          AppBootstrapStep.ready,
+          selectedLanguageCode: selectedLanguage,
+        ),
+      );
+
+      return settingsCubit;
+    } catch (_) {
+      if (settingsCubit != null && !settingsCubit.isClosed) {
+        await settingsCubit.close();
+      }
+      rethrow;
+    }
   }
 
   void _configureGlobalErrorHandling() {

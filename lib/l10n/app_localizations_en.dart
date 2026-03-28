@@ -12,6 +12,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_name => 'Revelation';
 
   @override
+  String get startup_title => 'Launching the app…';
+
+  @override
+  String get startup_step_preparing => 'Preparing the app';
+
+  @override
+  String get startup_step_loading_settings => 'Loading your settings';
+
+  @override
+  String get startup_step_initializing_server =>
+      'Connecting to online services';
+
+  @override
+  String get startup_step_initializing_databases => 'Opening app data';
+
+  @override
+  String get startup_step_configuring_links => 'Preparing Strong’s dictionary';
+
+  @override
+  String startup_progress(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get startup_error => 'Couldn\'t start the app :(';
+
+  @override
+  String get startup_retry => 'Try again';
+
+  @override
+  String startup_version_build(String version, String build) {
+    return 'Version $version ($build)';
+  }
+
+  @override
   String get version => 'App version:';
 
   @override

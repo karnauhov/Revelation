@@ -1,6 +1,6 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.0.0`  
+Doc-Version: `2.1.0`  
 Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
@@ -10,7 +10,7 @@ Define where code belongs and how layers depend on each other.
 
 ## Top-Level Structure
 
-- `lib/app` - bootstrap, DI, router, top-level composition
+- `lib/app` - bootstrap, startup shell, DI, router, top-level composition
 - `lib/core` - cross-cutting primitives such as errors, async guards, logging, audio, platform utilities, diagnostics
 - `lib/infra` - database, remote, and storage implementations
 - `lib/shared` - reusable UI, shared models, localization helpers, and common utilities
@@ -30,6 +30,7 @@ A smaller feature may omit layers that it does not need, but the dependency dire
 ## Dependency Rules
 
 - `presentation` may depend on feature services, repositories, and DI factories, but not on low-level infra managers directly.
+- `app/startup` may depend on app bootstrap/composition code and shared localization/theme primitives, but it must not move feature-specific state ownership into the root shell.
 - `presentation/bloc` and `application` must not receive `BuildContext`.
 - `application` contains no widgets.
 - `data` may use infra gateways and storage implementations.

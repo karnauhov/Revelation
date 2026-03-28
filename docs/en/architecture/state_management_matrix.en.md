@@ -1,6 +1,6 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.0.0`  
+Doc-Version: `2.1.0`  
 Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
@@ -20,6 +20,7 @@ Show which cubit owns each runtime state slice.
 
 | Scope | Owner | Responsibility |
 |---|---|---|
+| `app/startup` | `AppStartupCubit` | Launch splash progress, startup locale/version metadata, readiness/failure state, and handoff to the initialized app shell |
 | `app/settings` | `SettingsCubit` | Current app settings, selected locale, theme, font size, loading and failure state |
 | `about` | `AboutCubit` | App/build versions, database metadata, changelog section state, expandable about sections |
 | `topics/catalog` | `TopicsCatalogCubit` | Topic list, language-bound reloads, topic icons |
@@ -36,6 +37,7 @@ Show which cubit owns each runtime state slice.
 
 ## Scope Notes
 
+- `RevelationStartupHost` creates `AppStartupCubit` at the app root and mounts the global app providers only after startup is ready.
 - Global providers are created by `AppDi.appBlocProviders`.
 - `PrimarySourceScreen` creates the detail cubits with `MultiBlocProvider`.
 - `PrimarySourceDetailCoordinator` adapts UI events to the detail cubits; it is not a state owner.

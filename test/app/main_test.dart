@@ -1,4 +1,6 @@
 @Tags(['widget'])
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,12 +8,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/app/startup/bloc/app_startup_cubit.dart';
+import 'package:revelation/app/startup/screens/app_startup_screen.dart';
 import 'package:revelation/core/logging/app_bloc_observer.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/main.dart';
 import 'package:revelation/main.dart' as app_entry show main;
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:revelation/shared/models/app_settings.dart';
 import 'package:revelation/shared/ui/theme/material_theme.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -26,15 +31,24 @@ void main() {
 
   late BlocObserver previousBlocObserver;
   late Future<void> Function() previousLaunchRevelationAppCallback;
-  late InitializeSettingsCubit previousDefaultInitializeSettingsCubit;
+  late StartupSettingsCubitLoader previousDefaultInitializeSettingsCubit;
+  late AppBootstrapFactory previousDefaultAppBootstrapFactory;
 
   setUp(() async {
     previousBlocObserver = Bloc.observer;
     previousLaunchRevelationAppCallback = launchRevelationAppCallback;
     previousDefaultInitializeSettingsCubit = defaultInitializeSettingsCubit;
+    previousDefaultAppBootstrapFactory = defaultAppBootstrapFactory;
     await GetIt.I.reset();
     AppDi.registerCore(
       talker: Talker(settings: TalkerSettings(useConsoleLogs: false)),
+    );
+    PackageInfo.setMockInitialValues(
+      appName: 'Revelation',
+      packageName: 'revelation',
+      version: '1.0.5-test',
+      buildNumber: '141',
+      buildSignature: '',
     );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(audioGlobalChannel, (call) async {
@@ -48,6 +62,7 @@ void main() {
     Bloc.observer = previousBlocObserver;
     launchRevelationAppCallback = previousLaunchRevelationAppCallback;
     defaultInitializeSettingsCubit = previousDefaultInitializeSettingsCubit;
+    defaultAppBootstrapFactory = previousDefaultAppBootstrapFactory;
     debugDefaultTargetPlatformOverride = null;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(audioGlobalChannel, null);
@@ -162,52 +177,58 @@ void main() {
   });
 
   group('startApp', () {
-    test(
-      'uses default initializer when initializer override is absent',
-      () async {
-        final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
-        final settingsCubit = await _createSettingsCubit(_enManuscriptSettings);
-        addTearDown(settingsCubit.close);
-        defaultInitializeSettingsCubit = (_) async => settingsCubit;
-        var runAppCalls = 0;
+    test('passes a single root widget to runApp', () async {
+      final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
+      var runAppCalls = 0;
 
-        await startApp(
-          talker,
-          runAppCallback: (_) {
-            runAppCalls++;
-          },
-        );
+      await startApp(
+        talker,
+        runAppCallback: (_) {
+          runAppCalls++;
+        },
+      );
 
-        expect(runAppCalls, 1);
-      },
-    );
+      expect(runAppCalls, 1);
+    });
 
-    testWidgets('builds root app shell from initialized settings cubit', (
+    testWidgets('renders splash first and then resolves into RevelationApp', (
       tester,
     ) async {
       final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
       configureAppCore(talker);
       final settingsCubit = await _createSettingsCubit(_esForestSettings);
-      addTearDown(settingsCubit.close);
       Widget? capturedRoot;
       var initializeCalls = 0;
+      final initializeCompleter = Completer<SettingsCubit>();
 
       await startApp(
         talker,
         initializeSettingsCubit: (_) async {
           initializeCalls++;
-          return settingsCubit;
+          return initializeCompleter.future;
         },
         runAppCallback: (rootWidget) {
           capturedRoot = rootWidget;
         },
       );
 
-      expect(initializeCalls, 1);
-      expect(capturedRoot, isA<MultiBlocProvider>());
+      expect(initializeCalls, 0);
+      expect(capturedRoot, isNotNull);
 
       await tester.pumpWidget(capturedRoot!);
-      await pumpFrames(tester, count: 6);
+      await pumpFrames(tester, count: 2);
+
+      expect(initializeCalls, 1);
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(AppStartupScreen)),
+      )!;
+      expect(find.byType(AppStartupScreen), findsOneWidget);
+      expect(find.text(l10n.startup_title), findsOneWidget);
+      expect(find.byType(RevelationApp), findsNothing);
+
+      initializeCompleter.complete(settingsCubit);
+      await pumpFrames(tester, count: 20);
+
       expect(find.byType(RevelationApp), findsOneWidget);
       expect(find.byType(MaterialApp), findsOneWidget);
     });

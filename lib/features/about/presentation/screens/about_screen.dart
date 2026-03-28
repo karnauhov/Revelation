@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,42 +24,22 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/core/logging/common_logger.dart';
-import 'package:revelation/core/diagnostics/diagnostics_utils.dart';
-import 'package:revelation/shared/utils/links_utils.dart';
+import 'package:revelation/shared/utils/bug_report_utils.dart';
 import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-typedef AboutLinkLauncher = Future<bool> Function(String url);
+typedef AboutLinkLauncher = BugReportLinkLauncher;
 typedef AboutAppLinkHandler =
     Future<bool> Function(BuildContext context, String? href);
-typedef AboutSystemInfoCollector =
-    Future<String> Function({BuildContext? context, String? dbFilesSection});
+typedef AboutSystemInfoCollector = BugReportSystemInfoCollector;
 typedef AboutDatabaseFileSizeLoader = Future<int?> Function(String dbFile);
 typedef AboutDatabaseVersionLoader =
     Future<DatabaseVersionInfo?> Function(String dbFile);
 typedef AboutPrimarySourceFilesLoader =
     Future<List<PrimarySourceFileInfo>> Function();
-typedef AboutClipboardWriter = Future<void> Function(String text);
+typedef AboutClipboardWriter = BugReportClipboardWriter;
 typedef AboutCubitBuilder = AboutCubit Function(String initialLanguageCode);
-
-Future<void> _defaultAboutClipboardWriter(String text) {
-  return Clipboard.setData(ClipboardData(text: text));
-}
-
-Future<bool> _defaultAboutLaunchLink(String url) {
-  return launchLink(url);
-}
-
-Future<String> _defaultAboutSystemInfoCollector({
-  BuildContext? context,
-  String? dbFilesSection,
-}) {
-  return collectSystemAndAppInfo(
-    context: context,
-    dbFilesSection: dbFilesSection,
-  );
-}
 
 AboutCubit _defaultAboutCubitBuilder(String initialLanguageCode) {
   return AboutCubit(initialLanguageCode: initialLanguageCode);
@@ -69,13 +48,13 @@ AboutCubit _defaultAboutCubitBuilder(String initialLanguageCode) {
 @immutable
 class AboutScreenDependencies {
   const AboutScreenDependencies({
-    this.launchLink = _defaultAboutLaunchLink,
+    this.launchLink = defaultBugReportLinkLauncher,
     this.appLinkHandler = handleAppLink,
-    this.collectSystemAndAppInfo = _defaultAboutSystemInfoCollector,
+    this.collectSystemAndAppInfo = defaultBugReportSystemInfoCollector,
     this.databaseFileSizeLoader = getLocalDatabaseFileSize,
     this.databaseVersionLoader = getPreferredDatabaseVersionInfo,
     this.primarySourceFilesLoader = getLocalPrimarySourceFilesInfo,
-    this.writeClipboardText = _defaultAboutClipboardWriter,
+    this.writeClipboardText = defaultBugReportClipboardWriter,
   });
 
   final AboutLinkLauncher launchLink;
@@ -623,62 +602,42 @@ class _AboutScreenState extends State<AboutScreen> {
           iconPath: "assets/images/UI/bug.svg",
           text: AppLocalizations.of(context)!.bug_report,
           onTap: () async {
-            try {
-              StringBuffer sbEmail = StringBuffer();
-              StringBuffer sbTechInfo = StringBuffer();
-              sbEmail.write(AppLocalizations.of(context)!.bug_report_wish);
-              sbEmail.write("\r\n\r\n");
-              sbTechInfo.write("=======TIMESTAMP=======\r\n");
-              sbTechInfo.write("${DateTime.now().toIso8601String()}\r\n\r\n");
-              sbTechInfo.write("=======LOGS=======\r\n");
-              sbTechInfo.write(GetIt.I<Talker>().history.text());
-              sbTechInfo.write("\r\n");
-              final dataFilesSection =
-                  await _collectDataFilesDiagnosticsSection();
-              if (!mounted) {
-                return;
-              }
-              sbTechInfo.write(
-                await widget.dependencies.collectSystemAndAppInfo(
-                  context: this.context,
-                  dbFilesSection: dataFilesSection,
-                ),
-              );
-              sbTechInfo.write("\r\n=======APP SETTINGS=======\r\n");
-              settings.forEach((key, value) {
-                sbTechInfo.writeln("$key: $value");
-              });
-              final emailBodyContent = Uri.encodeFull(sbEmail.toString());
-              await widget.dependencies.writeClipboardText(
-                sbTechInfo.toString(),
-              );
-              final openEmailResult = await widget.dependencies.launchLink(
-                "mailto:${AppConstants.supportEmail}?subject=Revelation%20Bug%20Report&body=${emailBodyContent}",
-              );
-              if (!mounted) {
-                return;
-              }
-              if (!openEmailResult) {
-                _showBugMessage();
-              }
-            } catch (ex, st) {
-              log.handle(ex, st);
-              if (!mounted) {
-                return;
-              }
-              _showBugMessage();
-            }
+            await submitBugReport(
+              context: this.context,
+              dependencies: BugReportDependencies(
+                launchLink: widget.dependencies.launchLink,
+                collectSystemAndAppInfo:
+                    widget.dependencies.collectSystemAndAppInfo,
+                writeClipboardText: widget.dependencies.writeClipboardText,
+              ),
+              diagnosticsBuilder: () async {
+                final sbTechInfo = StringBuffer();
+                sbTechInfo.write("=======TIMESTAMP=======\r\n");
+                sbTechInfo.write("${DateTime.now().toIso8601String()}\r\n\r\n");
+                sbTechInfo.write("=======LOGS=======\r\n");
+                sbTechInfo.write(GetIt.I<Talker>().history.text());
+                sbTechInfo.write("\r\n");
+                final dataFilesSection =
+                    await _collectDataFilesDiagnosticsSection();
+                if (!mounted) {
+                  return sbTechInfo.toString();
+                }
+                sbTechInfo.write(
+                  await widget.dependencies.collectSystemAndAppInfo(
+                    context: this.context,
+                    dbFilesSection: dataFilesSection,
+                  ),
+                );
+                sbTechInfo.write("\r\n=======APP SETTINGS=======\r\n");
+                settings.forEach((key, value) {
+                  sbTechInfo.writeln("$key: $value");
+                });
+                return sbTechInfo.toString();
+              },
+            );
           },
         ),
       ],
-    );
-  }
-
-  void _showBugMessage() {
-    final snackMessage =
-        "${AppLocalizations.of(context)!.log_copied_message} ${AppConstants.supportEmail}";
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(snackMessage), duration: Duration(seconds: 10)),
     );
   }
 

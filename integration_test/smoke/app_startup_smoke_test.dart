@@ -1,23 +1,17 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:revelation/app/startup/screens/app_startup_screen.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
-import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
-import 'package:revelation/features/topics/data/models/topic_info.dart';
-import 'package:revelation/features/topics/data/models/topic_resource.dart';
-import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
-import 'package:revelation/features/topics/presentation/bloc/topics_catalog_cubit.dart';
 import 'package:revelation/features/topics/presentation/screens/main_screen.dart';
-import 'package:revelation/infra/db/common/db_common.dart';
-import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
-import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/main.dart' as app;
 import 'package:revelation/shared/models/app_settings.dart';
@@ -32,16 +26,23 @@ void main() {
 
   late BlocObserver previousBlocObserver;
   late Future<void> Function() previousLaunchRevelationAppCallback;
+  late Completer<SettingsCubit> startupCompleter;
   SettingsCubit? settingsCubit;
-  TopicsCatalogCubit? topicsCubit;
 
   setUp(() async {
     previousBlocObserver = Bloc.observer;
     previousLaunchRevelationAppCallback = app.launchRevelationAppCallback;
+    startupCompleter = Completer<SettingsCubit>();
     settingsCubit = null;
-    topicsCubit = null;
     await GetIt.I.reset();
     AudioController.setInstanceForTest(_SilentAudioController());
+    PackageInfo.setMockInitialValues(
+      appName: 'Revelation',
+      packageName: 'revelation',
+      version: '1.0.5-test',
+      buildNumber: '141',
+      buildSignature: '',
+    );
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler('flutter/assets', (message) async {
@@ -71,19 +72,11 @@ void main() {
       );
       await settingsCubit!.loadSettings();
 
-      topicsCubit = TopicsCatalogCubit(
-        topicsRepository: _FixedTopicsRepository(topics: const <TopicInfo>[]),
-        settingsCubit: settingsCubit!,
-      );
-
-      runApp(
-        MultiBlocProvider(
-          providers: <BlocProvider<dynamic>>[
-            BlocProvider<SettingsCubit>.value(value: settingsCubit!),
-            BlocProvider<TopicsCatalogCubit>.value(value: topicsCubit!),
-          ],
-          child: const app.RevelationApp(),
-        ),
+      await app.startApp(
+        talker,
+        initializeSettingsCubit: (_) async {
+          return startupCompleter.future;
+        },
       );
     };
   });
@@ -95,16 +88,20 @@ void main() {
         .setMockMessageHandler('flutter/assets', null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(desktopChannel, null);
-    await topicsCubit?.close();
     await settingsCubit?.close();
     AudioController.resetForTest();
     await GetIt.I.reset();
   });
 
-  testWidgets('App startup smoke: main entry renders home shell', (
+  testWidgets('App startup smoke: splash resolves into home shell', (
     tester,
   ) async {
     await app.main();
+    await tester.pump();
+
+    expect(find.byType(AppStartupScreen), findsOneWidget);
+
+    startupCompleter.complete(settingsCubit!);
     await pumpAndSettleSmoke(tester);
 
     expect(find.byType(MainScreen), findsOneWidget);
@@ -116,7 +113,27 @@ void main() {
 }
 
 ByteData _assetFor(String key) {
-  if (key.toLowerCase().endsWith('.png')) {
+  final normalizedKey = key.toLowerCase();
+  const assetManifestEntry = <String, List<Map<String, Object?>>>{
+    'assets/images/UI/startup_splash_banner.jpg': <Map<String, Object?>>[
+      <String, Object?>{'asset': 'assets/images/UI/startup_splash_banner.jpg'},
+    ],
+  };
+  if (key == 'AssetManifest.bin') {
+    return const StandardMessageCodec().encodeMessage(assetManifestEntry)!;
+  }
+  if (key == 'AssetManifest.json') {
+    return ByteData.sublistView(
+      Uint8List.fromList(utf8.encode(jsonEncode(assetManifestEntry))),
+    );
+  }
+  if (key == 'FontManifest.json') {
+    return ByteData.sublistView(Uint8List.fromList(utf8.encode('[]')));
+  }
+  if (normalizedKey.endsWith('.png')) {
+    return ByteData.sublistView(_pngBytes);
+  }
+  if (normalizedKey.endsWith('.jpg') || normalizedKey.endsWith('.jpeg')) {
     return ByteData.sublistView(_pngBytes);
   }
   return ByteData.sublistView(_svgBytes);
@@ -144,43 +161,6 @@ class _FakeSettingsRepository extends SettingsRepository {
   Future<void> saveSettings(AppSettings settings) async {
     initialSettings = settings;
   }
-}
-
-class _FixedTopicsRepository extends TopicsRepository {
-  _FixedTopicsRepository({required this.topics})
-    : super(dataSource: _NoopTopicsDataSource());
-
-  final List<TopicInfo> topics;
-
-  @override
-  Future<AppResult<List<TopicInfo>>> getTopics({
-    required String language,
-  }) async {
-    return AppSuccess<List<TopicInfo>>(topics);
-  }
-
-  @override
-  Future<AppResult<TopicResource?>> getCommonResource(String key) async {
-    return const AppSuccess<TopicResource?>(null);
-  }
-}
-
-class _NoopTopicsDataSource implements TopicsDataSource {
-  @override
-  Future<void> updateLanguage(String language) async {}
-
-  @override
-  Future<List<Article>> fetchArticles({bool onlyVisible = true}) async =>
-      const <Article>[];
-
-  @override
-  Future<String> fetchArticleMarkdown(String route) async => '';
-
-  @override
-  Future<Article?> fetchArticleByRoute(String route) async => null;
-
-  @override
-  Future<CommonResource?> fetchCommonResource(String key) async => null;
 }
 
 final Uint8List _svgBytes = Uint8List.fromList(

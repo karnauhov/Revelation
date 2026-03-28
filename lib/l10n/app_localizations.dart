@@ -108,6 +108,66 @@ abstract class AppLocalizations {
   /// **'Revelation'**
   String get app_name;
 
+  /// No description provided for @startup_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Launching the app…'**
+  String get startup_title;
+
+  /// No description provided for @startup_step_preparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing the app'**
+  String get startup_step_preparing;
+
+  /// No description provided for @startup_step_loading_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your settings'**
+  String get startup_step_loading_settings;
+
+  /// No description provided for @startup_step_initializing_server.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to online services'**
+  String get startup_step_initializing_server;
+
+  /// No description provided for @startup_step_initializing_databases.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening app data'**
+  String get startup_step_initializing_databases;
+
+  /// No description provided for @startup_step_configuring_links.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing Strong’s dictionary'**
+  String get startup_step_configuring_links;
+
+  /// Shows the current startup step number out of the total
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String startup_progress(int current, int total);
+
+  /// No description provided for @startup_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t start the app :('**
+  String get startup_error;
+
+  /// No description provided for @startup_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get startup_retry;
+
+  /// App version and build number shown on the startup screen
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} ({build})'**
+  String startup_version_build(String version, String build);
+
   /// No description provided for @version.
   ///
   /// In en, this message translates to:

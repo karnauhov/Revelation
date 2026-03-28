@@ -12,6 +12,43 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app_name => 'Apocalipsis';
 
   @override
+  String get startup_title => 'Iniciando la aplicación…';
+
+  @override
+  String get startup_step_preparing => 'Preparando la aplicación';
+
+  @override
+  String get startup_step_loading_settings => 'Cargando tus ajustes';
+
+  @override
+  String get startup_step_initializing_server =>
+      'Conectando a servicios en línea';
+
+  @override
+  String get startup_step_initializing_databases =>
+      'Abriendo los datos de la aplicación';
+
+  @override
+  String get startup_step_configuring_links =>
+      'Preparando el diccionario de Strong';
+
+  @override
+  String startup_progress(int current, int total) {
+    return 'Paso $current de $total';
+  }
+
+  @override
+  String get startup_error => 'No se pudo iniciar la aplicación :(';
+
+  @override
+  String get startup_retry => 'Reintentar';
+
+  @override
+  String startup_version_build(String version, String build) {
+    return 'Versión $version ($build)';
+  }
+
+  @override
   String get version => 'Versión de la aplicación:';
 
   @override

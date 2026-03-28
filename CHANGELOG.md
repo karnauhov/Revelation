@@ -9,6 +9,7 @@ All notable changes to this application will be documented here.
 - Verse labels and interactive verse selection overlays on Primary Source pages
 - Verse description mode with per-word links that jump to the exact word on the page
 - Toggle to show or hide verse numbers in Primary Source toolbar
+- Full-screen startup splash screen with loading progress and app version
 
 ### Changed
 

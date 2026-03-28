@@ -6,6 +6,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:revelation/app/router/app_router.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/app/startup/bloc/app_startup_cubit.dart';
+import 'package:revelation/app/startup/bloc/app_startup_state.dart';
+import 'package:revelation/app/startup/startup_error_reporter.dart';
+import 'package:revelation/app/startup/screens/app_startup_screen.dart';
 import 'package:revelation/core/logging/app_bloc_observer.dart';
 import 'package:revelation/core/logging/app_logger_formatter.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
@@ -15,7 +19,6 @@ import 'package:revelation/shared/ui/theme/material_theme.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 typedef AppStartCallback = Future<void> Function(Talker talker);
-typedef InitializeSettingsCubit = Future<SettingsCubit> Function(Talker talker);
 typedef RunAppCallback = void Function(Widget app);
 typedef RunEntryPointCallback =
     Future<void> Function({
@@ -27,8 +30,12 @@ typedef RunEntryPointCallback =
 Future<void> Function() launchRevelationAppCallback = launchRevelationApp;
 
 @visibleForTesting
-InitializeSettingsCubit defaultInitializeSettingsCubit = (talker) =>
-    AppBootstrap(talker: talker).initialize();
+StartupSettingsCubitLoader defaultInitializeSettingsCubit = (talker) =>
+    defaultAppBootstrapFactory(talker).initialize();
+
+@visibleForTesting
+AppBootstrapFactory defaultAppBootstrapFactory = (talker) =>
+    AppBootstrap(talker: talker);
 
 Future<void> main() async {
   await launchRevelationAppCallback();
@@ -78,17 +85,64 @@ Future<void> runAppEntryPoint({
 @visibleForTesting
 Future<void> startApp(
   Talker talker, {
-  InitializeSettingsCubit? initializeSettingsCubit,
+  StartupSettingsCubitLoader? initializeSettingsCubit,
   RunAppCallback? runAppCallback,
 }) async {
-  final settingsCubit =
-      await (initializeSettingsCubit ?? defaultInitializeSettingsCubit)(talker);
   (runAppCallback ?? runApp)(
-    MultiBlocProvider(
-      providers: AppDi.appBlocProviders(settingsCubit: settingsCubit),
-      child: const RevelationApp(),
+    BlocProvider<AppStartupCubit>(
+      create: (_) => AppStartupCubit(
+        talker: talker,
+        appBootstrapFactory: defaultAppBootstrapFactory,
+        initializeSettingsCubit: initializeSettingsCubit,
+      ),
+      child: const RevelationStartupHost(),
     ),
   );
+}
+
+class RevelationStartupHost extends StatelessWidget {
+  const RevelationStartupHost({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AppStartupCubit, AppStartupState>(
+      builder: (context, state) {
+        final startupCubit = context.read<AppStartupCubit>();
+        final settingsCubit = startupCubit.initializedSettingsCubit;
+        if (state.isReady && settingsCubit != null) {
+          return MultiBlocProvider(
+            providers: AppDi.appBlocProviders(settingsCubit: settingsCubit),
+            child: const RevelationApp(),
+          );
+        }
+
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          locale: Locale(state.localeCode),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          title: 'Revelation',
+          theme: ThemeData(
+            fontFamily: 'Arimo',
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0xFFF2C48E),
+              secondary: Color(0xFFE5B06B),
+              surface: Color(0xFF17120E),
+            ),
+            scaffoldBackgroundColor: const Color(0xFF0D0907),
+            useMaterial3: true,
+          ),
+          home: AppStartupScreen(
+            state: state,
+            onRetry: state.failure != null ? startupCubit.retry : null,
+            onReportError: state.failure != null
+                ? (screenContext) => reportStartupFailure(screenContext, state)
+                : null,
+          ),
+        );
+      },
+    );
+  }
 }
 
 class RevelationApp extends StatelessWidget {

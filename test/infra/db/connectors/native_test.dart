@@ -196,9 +196,9 @@ void main() {
         await root.create(recursive: true);
         final targetDir = Directory(p.join(appFolder, 'target_dir_$attempt'));
         await targetDir.create(recursive: true);
-        await File(p.join(targetDir.path, 'target_file.txt')).writeAsBytes(
-          const [1, 2, 3],
-        );
+        await File(
+          p.join(targetDir.path, 'target_file.txt'),
+        ).writeAsBytes(const [1, 2, 3]);
         final volatileLink = Link(
           p.join(root.path, '000_volatile_link_$attempt'),
         );

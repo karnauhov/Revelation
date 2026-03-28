@@ -12,6 +12,41 @@ class AppLocalizationsUk extends AppLocalizations {
   String get app_name => 'Об\'явлення';
 
   @override
+  String get startup_title => 'Запуск застосунку…';
+
+  @override
+  String get startup_step_preparing => 'Підготовка застосунку';
+
+  @override
+  String get startup_step_loading_settings => 'Завантажуємо ваші налаштування';
+
+  @override
+  String get startup_step_initializing_server => 'Підключаємо онлайн-сервіси';
+
+  @override
+  String get startup_step_initializing_databases =>
+      'Відкриваємо дані застосунку';
+
+  @override
+  String get startup_step_configuring_links => 'Підготовка словника Стронга';
+
+  @override
+  String startup_progress(int current, int total) {
+    return 'Крок $current з $total';
+  }
+
+  @override
+  String get startup_error => 'Не вдалося запустити застосунок :(';
+
+  @override
+  String get startup_retry => 'Спробувати ще раз';
+
+  @override
+  String startup_version_build(String version, String build) {
+    return 'Версія $version ($build)';
+  }
+
+  @override
   String get version => 'Версія застосунку:';
 
   @override

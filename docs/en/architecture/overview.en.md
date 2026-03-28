@@ -1,6 +1,6 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.0.0`  
+Doc-Version: `2.1.0`  
 Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
@@ -10,8 +10,9 @@ Describe the current Revelation runtime architecture.
 
 ## Runtime Shape
 
-- `lib/main.dart` creates `Talker`, registers core services in `AppDi`, installs `AppBlocObserver`, delegates startup to `AppBootstrap`, and launches `RevelationApp`.
-- `AppBootstrap` initializes Flutter bindings, global error handling, platform setup, settings, Supabase, local databases, and the default handlers for `word:` and Strong links.
+- `lib/main.dart` creates `Talker`, registers core services in `AppDi`, installs `AppBlocObserver`, launches `RevelationStartupHost`, and delegates progressive startup to `AppStartupCubit` plus `AppBootstrap`.
+- `AppStartupCubit` owns the launch splash state, app/build metadata for the splash footer, startup progress, failure/retry flow, and the handoff to the ready app shell.
+- `AppBootstrap` initializes Flutter bindings, global error handling, platform setup, settings, Supabase, local databases, and the default handlers for `word:` and Strong links while reporting startup progress.
 - `RevelationApp` builds `MaterialApp.router`, applies locale/theme/font settings from `SettingsCubit`, and exposes `en`, `es`, `uk`, and `ru`.
 - `AppRouter` uses `go_router` and routes to the main, topic, primary source list, primary source detail, settings, about, and download screens.
 - `AppDi.appBlocProviders` wires the global app state: `SettingsCubit`, `TopicsCatalogCubit`, and `PrimarySourcesCubit`.

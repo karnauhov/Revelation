@@ -1,6 +1,6 @@
 # Матрица управления состоянием (RU)
 
-Doc-Version: `2.0.0`  
+Doc-Version: `2.1.0`  
 Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
@@ -20,10 +20,11 @@ Source-Commit: `working-tree`
 
 | Scope | Owner | Responsibility |
 |---|---|---|
+| `app/startup` | `AppStartupCubit` | Прогресс стартового splash-экрана, locale/version-метаданные splash, readiness/failure state и переключение в инициализированную оболочку приложения |
 | `app/settings` | `SettingsCubit` | Текущие настройки приложения, выбранные locale/theme/font size, loading и failure state |
 | `about` | `AboutCubit` | Версии приложения и сборки, метаданные БД, состояние changelog-блока и раскрываемых секций about-экрана |
 | `topics/catalog` | `TopicsCatalogCubit` | Список тем, reload при смене языка, иконки тем |
-| `topics/content` | `TopicContentCubit` | Markdown-контент одной темы и ее loading/failure state |
+| `topics/content` | `TopicContentCubit` | Markdown-контент одной темы и её loading/failure state |
 | `primary_sources/list` | `PrimarySourcesCubit` | Коллекции full/significant/fragments и loading/failure state |
 | `primary_sources/list-ui` | `PrimarySourcesExpansionCubit` | Раскрытые карточки на экране списка |
 | `primary_source/detail/session` | `PrimarySourceSessionCubit` | Текущий первоисточник, выбранная страница, image key, состояние toolbar/menu |
@@ -36,6 +37,7 @@ Source-Commit: `working-tree`
 
 ## Примечания по scope
 
+- `RevelationStartupHost` создаёт `AppStartupCubit` в корне приложения и подключает глобальные app-провайдеры только после готовности startup-flow.
 - Глобальные провайдеры создаются в `AppDi.appBlocProviders`.
 - `PrimarySourceScreen` поднимает detail cubit-ы через `MultiBlocProvider`.
 - `PrimarySourceDetailCoordinator` адаптирует UI-события к detail cubit-ам и не владеет состоянием.

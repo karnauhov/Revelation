@@ -12,6 +12,41 @@ class AppLocalizationsRu extends AppLocalizations {
   String get app_name => 'Откровение';
 
   @override
+  String get startup_title => 'Запуск приложения…';
+
+  @override
+  String get startup_step_preparing => 'Подготавливаем приложение';
+
+  @override
+  String get startup_step_loading_settings => 'Загружаем ваши настройки';
+
+  @override
+  String get startup_step_initializing_server => 'Подключаем онлайн-сервисы';
+
+  @override
+  String get startup_step_initializing_databases =>
+      'Открываем данные приложения';
+
+  @override
+  String get startup_step_configuring_links => 'Подготавливаем словарь Стронга';
+
+  @override
+  String startup_progress(int current, int total) {
+    return 'Шаг $current из $total';
+  }
+
+  @override
+  String get startup_error => 'Не удалось запустить :(';
+
+  @override
+  String get startup_retry => 'Повторить';
+
+  @override
+  String startup_version_build(String version, String build) {
+    return 'Версия $version ($build)';
+  }
+
+  @override
   String get version => 'Версия приложения:';
 
   @override

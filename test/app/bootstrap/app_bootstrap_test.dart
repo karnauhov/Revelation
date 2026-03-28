@@ -55,13 +55,26 @@ void main() {
       final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
       AppDi.registerCore(talker: talker);
       final runtime = _FakeDatabaseRuntime();
+      final progressSteps = <AppBootstrapStep>[];
 
       final bootstrap = AppBootstrap(talker: talker, databaseRuntime: runtime);
-      final settingsCubit = await bootstrap.initialize();
+      final settingsCubit = await bootstrap.initialize(
+        onProgress: (progress) {
+          progressSteps.add(progress.step);
+        },
+      );
       addTearDown(settingsCubit.close);
 
       expect(settingsCubit.state.settings.selectedLanguage, 'ru');
       expect(runtime.initializedLanguages, <String>['ru']);
+      expect(progressSteps, <AppBootstrapStep>[
+        AppBootstrapStep.preparing,
+        AppBootstrapStep.loadingSettings,
+        AppBootstrapStep.initializingServer,
+        AppBootstrapStep.initializingDatabases,
+        AppBootstrapStep.configuringLinks,
+        AppBootstrapStep.ready,
+      ]);
 
       await settingsCubit.changeLanguage('en');
       final updatedLanguage = await runtime.firstUpdatedLanguage.future;

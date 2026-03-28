@@ -7,85 +7,88 @@ import 'package:path/path.dart' as p;
 import 'package:revelation/infra/db/common/db_common.dart';
 
 void main() {
-  test('Raw common table declarations fail fast outside generated DB context', () {
-    void expectUnsupported(Object? Function() callback) {
-      expect(callback, throwsA(isA<UnsupportedError>()));
-    }
+  test(
+    'Raw common table declarations fail fast outside generated DB context',
+    () {
+      void expectUnsupported(Object? Function() callback) {
+        expect(callback, throwsA(isA<UnsupportedError>()));
+      }
 
-    expect(CommonDbMetadata().tableName, 'db_metadata');
-    expectUnsupported(() => CommonDbMetadata().key);
-    expectUnsupported(() => CommonDbMetadata().value);
-    expectUnsupported(() => CommonDbMetadata().primaryKey);
+      expect(CommonDbMetadata().tableName, 'db_metadata');
+      expectUnsupported(() => CommonDbMetadata().key);
+      expectUnsupported(() => CommonDbMetadata().value);
+      expectUnsupported(() => CommonDbMetadata().primaryKey);
 
-    expectUnsupported(() => GreekWords().id);
-    expectUnsupported(() => GreekWords().word);
-    expectUnsupported(() => GreekWords().category);
-    expectUnsupported(() => GreekWords().synonyms);
-    expectUnsupported(() => GreekWords().origin);
-    expectUnsupported(() => GreekWords().usage);
+      expectUnsupported(() => GreekWords().id);
+      expectUnsupported(() => GreekWords().word);
+      expectUnsupported(() => GreekWords().category);
+      expectUnsupported(() => GreekWords().synonyms);
+      expectUnsupported(() => GreekWords().origin);
+      expectUnsupported(() => GreekWords().usage);
 
-    expectUnsupported(() => CommonResources().key);
-    expectUnsupported(() => CommonResources().fileName);
-    expectUnsupported(() => CommonResources().mimeType);
-    expectUnsupported(() => CommonResources().data);
-    expectUnsupported(() => CommonResources().primaryKey);
+      expectUnsupported(() => CommonResources().key);
+      expectUnsupported(() => CommonResources().fileName);
+      expectUnsupported(() => CommonResources().mimeType);
+      expectUnsupported(() => CommonResources().data);
+      expectUnsupported(() => CommonResources().primaryKey);
 
-    expectUnsupported(() => PrimarySources().id);
-    expectUnsupported(() => PrimarySources().family);
-    expectUnsupported(() => PrimarySources().number);
-    expectUnsupported(() => PrimarySources().groupKind);
-    expectUnsupported(() => PrimarySources().sortOrder);
-    expectUnsupported(() => PrimarySources().versesCount);
-    expectUnsupported(() => PrimarySources().previewResourceKey);
-    expectUnsupported(() => PrimarySources().defaultMaxScale);
-    expectUnsupported(() => PrimarySources().canShowImages);
-    expectUnsupported(() => PrimarySources().imagesAreMonochrome);
-    expectUnsupported(() => PrimarySources().notes);
-    expectUnsupported(() => PrimarySources().primaryKey);
+      expectUnsupported(() => PrimarySources().id);
+      expectUnsupported(() => PrimarySources().family);
+      expectUnsupported(() => PrimarySources().number);
+      expectUnsupported(() => PrimarySources().groupKind);
+      expectUnsupported(() => PrimarySources().sortOrder);
+      expectUnsupported(() => PrimarySources().versesCount);
+      expectUnsupported(() => PrimarySources().previewResourceKey);
+      expectUnsupported(() => PrimarySources().defaultMaxScale);
+      expectUnsupported(() => PrimarySources().canShowImages);
+      expectUnsupported(() => PrimarySources().imagesAreMonochrome);
+      expectUnsupported(() => PrimarySources().notes);
+      expectUnsupported(() => PrimarySources().primaryKey);
 
-    expectUnsupported(() => PrimarySourceLinks().sourceId);
-    expectUnsupported(() => PrimarySourceLinks().linkId);
-    expectUnsupported(() => PrimarySourceLinks().sortOrder);
-    expectUnsupported(() => PrimarySourceLinks().linkRole);
-    expectUnsupported(() => PrimarySourceLinks().url);
-    expectUnsupported(() => PrimarySourceLinks().primaryKey);
+      expectUnsupported(() => PrimarySourceLinks().sourceId);
+      expectUnsupported(() => PrimarySourceLinks().linkId);
+      expectUnsupported(() => PrimarySourceLinks().sortOrder);
+      expectUnsupported(() => PrimarySourceLinks().linkRole);
+      expectUnsupported(() => PrimarySourceLinks().url);
+      expectUnsupported(() => PrimarySourceLinks().primaryKey);
 
-    expectUnsupported(() => PrimarySourceAttributions().sourceId);
-    expectUnsupported(() => PrimarySourceAttributions().attributionId);
-    expectUnsupported(() => PrimarySourceAttributions().sortOrder);
-    expectUnsupported(() => PrimarySourceAttributions().displayText);
-    expectUnsupported(() => PrimarySourceAttributions().url);
-    expectUnsupported(() => PrimarySourceAttributions().primaryKey);
+      expectUnsupported(() => PrimarySourceAttributions().sourceId);
+      expectUnsupported(() => PrimarySourceAttributions().attributionId);
+      expectUnsupported(() => PrimarySourceAttributions().sortOrder);
+      expectUnsupported(() => PrimarySourceAttributions().displayText);
+      expectUnsupported(() => PrimarySourceAttributions().url);
+      expectUnsupported(() => PrimarySourceAttributions().primaryKey);
 
-    expectUnsupported(() => PrimarySourcePages().sourceId);
-    expectUnsupported(() => PrimarySourcePages().pageName);
-    expectUnsupported(() => PrimarySourcePages().sortOrder);
-    expectUnsupported(() => PrimarySourcePages().contentRef);
-    expectUnsupported(() => PrimarySourcePages().imagePath);
-    expectUnsupported(() => PrimarySourcePages().primaryKey);
+      expectUnsupported(() => PrimarySourcePages().sourceId);
+      expectUnsupported(() => PrimarySourcePages().pageName);
+      expectUnsupported(() => PrimarySourcePages().sortOrder);
+      expectUnsupported(() => PrimarySourcePages().contentRef);
+      expectUnsupported(() => PrimarySourcePages().imagePath);
+      expectUnsupported(() => PrimarySourcePages().primaryKey);
 
-    expectUnsupported(() => PrimarySourceWords().sourceId);
-    expectUnsupported(() => PrimarySourceWords().pageName);
-    expectUnsupported(() => PrimarySourceWords().wordIndex);
-    expectUnsupported(() => PrimarySourceWords().wordText);
-    expectUnsupported(() => PrimarySourceWords().strongNumber);
-    expectUnsupported(() => PrimarySourceWords().strongPronounce);
-    expectUnsupported(() => PrimarySourceWords().strongXShift);
-    expectUnsupported(() => PrimarySourceWords().missingCharIndexesJson);
-    expectUnsupported(() => PrimarySourceWords().rectanglesJson);
-    expectUnsupported(() => PrimarySourceWords().primaryKey);
+      expectUnsupported(() => PrimarySourceWords().sourceId);
+      expectUnsupported(() => PrimarySourceWords().pageName);
+      expectUnsupported(() => PrimarySourceWords().wordIndex);
+      expectUnsupported(() => PrimarySourceWords().wordText);
+      expectUnsupported(() => PrimarySourceWords().strongNumber);
+      expectUnsupported(() => PrimarySourceWords().strongPronounce);
+      expectUnsupported(() => PrimarySourceWords().strongXShift);
+      expectUnsupported(() => PrimarySourceWords().missingCharIndexesJson);
+      expectUnsupported(() => PrimarySourceWords().rectanglesJson);
+      expectUnsupported(() => PrimarySourceWords().primaryKey);
 
-    expectUnsupported(() => PrimarySourceVerses().sourceId);
-    expectUnsupported(() => PrimarySourceVerses().pageName);
-    expectUnsupported(() => PrimarySourceVerses().verseIndex);
-    expectUnsupported(() => PrimarySourceVerses().chapterNumber);
-    expectUnsupported(() => PrimarySourceVerses().verseNumber);
-    expectUnsupported(() => PrimarySourceVerses().labelX);
-    expectUnsupported(() => PrimarySourceVerses().labelY);
-    expectUnsupported(() => PrimarySourceVerses().wordIndexesJson);
-    expectUnsupported(() => PrimarySourceVerses().contoursJson);
-    expectUnsupported(() => PrimarySourceVerses().primaryKey);
-  });
+      expectUnsupported(() => PrimarySourceVerses().sourceId);
+      expectUnsupported(() => PrimarySourceVerses().pageName);
+      expectUnsupported(() => PrimarySourceVerses().verseIndex);
+      expectUnsupported(() => PrimarySourceVerses().chapterNumber);
+      expectUnsupported(() => PrimarySourceVerses().verseNumber);
+      expectUnsupported(() => PrimarySourceVerses().labelX);
+      expectUnsupported(() => PrimarySourceVerses().labelY);
+      expectUnsupported(() => PrimarySourceVerses().wordIndexesJson);
+      expectUnsupported(() => PrimarySourceVerses().contoursJson);
+      expectUnsupported(() => PrimarySourceVerses().primaryKey);
+    },
+  );
 
   test('Common table definitions expose stable schema contract', () {
     final db = CommonDB(NativeDatabase.memory());

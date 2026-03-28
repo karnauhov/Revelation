@@ -1,6 +1,6 @@
 # Обзор архитектуры (RU)
 
-Doc-Version: `2.0.0`  
+Doc-Version: `2.1.0`  
 Last-Updated: `2026-03-28`  
 Source-Commit: `working-tree`
 
@@ -10,19 +10,20 @@ Source-Commit: `working-tree`
 
 ## Общая схема
 
-- `lib/main.dart` создает `Talker`, регистрирует core-сервисы в `AppDi`, подключает `AppBlocObserver`, передает запуск в `AppBootstrap` и стартует `RevelationApp`.
-- `AppBootstrap` инициализирует Flutter bindings, глобальную обработку ошибок, платформенную среду, настройки, Supabase, локальные базы данных и дефолтные обработчики `word:` и Strong-ссылок.
+- `lib/main.dart` создаёт `Talker`, регистрирует core-сервисы в `AppDi`, подключает `AppBlocObserver`, запускает `RevelationStartupHost` и делегирует поэтапный старт связке `AppStartupCubit` и `AppBootstrap`.
+- `AppStartupCubit` владеет состоянием стартового splash-экрана, метаданными версии/сборки для нижнего блока splash, прогрессом запуска, failure/retry-потоком и переключением в готовую оболочку приложения.
+- `AppBootstrap` инициализирует Flutter bindings, глобальную обработку ошибок, платформенную среду, настройки, Supabase, локальные базы данных и дефолтные обработчики `word:` и Strong-ссылок, параллельно публикуя прогресс запуска.
 - `RevelationApp` собирает `MaterialApp.router`, применяет locale/theme/font из `SettingsCubit` и поддерживает `en`, `es`, `uk`, `ru`.
 - `AppRouter` использует `go_router` и обслуживает экраны main, topic, список первоисточников, detail первоисточника, settings, about и download.
 - `AppDi.appBlocProviders` подключает глобальный app-state: `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
-- `PrimarySourceScreen` создает screen-scoped detail-state через cubit-срезы `session`, `image`, `page-settings`, `description`, `viewport`, `orchestration`. `PrimarySourceDetailCoordinator` выступает экранным адаптером, но не хранит source of truth.
+- `PrimarySourceScreen` создаёт screen-scoped detail-state через cubit-срезы `session`, `image`, `page-settings`, `description`, `viewport`, `orchestration`. `PrimarySourceDetailCoordinator` выступает экранным адаптером, но не хранит source of truth.
 
 ## Данные и сервисы
 
 - Настройки приложения сохраняются через `shared_preferences`.
 - Локальный контент читается из SQLite через Drift.
-- Удаленные загрузки идут через Supabase Storage и `ServerManager`.
-- `AboutCubit` читает метаданные БД из `db_metadata` и отдает в UI версии приложения, сборки и баз данных.
+- Удалённые загрузки идут через Supabase Storage и `ServerManager`.
+- `AboutCubit` читает метаданные БД из `db_metadata` и отдаёт в UI версии приложения, сборки и баз данных.
 - `LatestRequestGuard` используется в async-потоках, где устаревший ответ не должен перезаписывать более новое состояние.
 
 ## Инварианты
