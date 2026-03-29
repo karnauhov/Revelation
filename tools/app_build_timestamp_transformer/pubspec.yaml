@@ -1,0 +1,9 @@
+name: app_build_timestamp_transformer
+description: Build-time asset transformer for Revelation app build timestamp.
+publish_to: 'none'
+
+environment:
+  sdk: ^3.9.0
+
+executables:
+  app_build_timestamp_transformer:

@@ -9,7 +9,6 @@ import 'package:revelation/shared/ui/widgets/icon_link_item.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
-import 'package:revelation/core/diagnostics/app_build_timestamp.dart';
 import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
 import 'package:revelation/features/about/presentation/bloc/about_state.dart';
 import 'package:revelation/features/about/presentation/widgets/icon_url.dart';
@@ -41,15 +40,10 @@ typedef AboutDatabaseVersionLoader =
 typedef AboutPrimarySourceFilesLoader =
     Future<List<PrimarySourceFileInfo>> Function();
 typedef AboutClipboardWriter = BugReportClipboardWriter;
-typedef AboutBuildTimestampProvider = DateTime? Function();
 typedef AboutCubitBuilder = AboutCubit Function(String initialLanguageCode);
 
 AboutCubit _defaultAboutCubitBuilder(String initialLanguageCode) {
   return AboutCubit(initialLanguageCode: initialLanguageCode);
-}
-
-DateTime? defaultAppBuildTimestampProvider() {
-  return resolveAppBuildTimestamp();
 }
 
 @immutable
@@ -62,7 +56,6 @@ class AboutScreenDependencies {
     this.databaseVersionLoader = getPreferredDatabaseVersionInfo,
     this.primarySourceFilesLoader = getLocalPrimarySourceFilesInfo,
     this.writeClipboardText = defaultBugReportClipboardWriter,
-    this.appBuildTimestampProvider = defaultAppBuildTimestampProvider,
   });
 
   final AboutLinkLauncher launchLink;
@@ -72,7 +65,6 @@ class AboutScreenDependencies {
   final AboutDatabaseVersionLoader databaseVersionLoader;
   final AboutPrimarySourceFilesLoader primarySourceFilesLoader;
   final AboutClipboardWriter writeClipboardText;
-  final AboutBuildTimestampProvider appBuildTimestampProvider;
 }
 
 class AboutScreen extends StatefulWidget {
@@ -277,7 +269,6 @@ class _AboutScreenState extends State<AboutScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final appBuildTimestamp = widget.dependencies.appBuildTimestampProvider();
     final localizedLanguageCode = _localizedLanguageBadge(selectedLanguage);
 
     return Row(
@@ -315,7 +306,7 @@ class _AboutScreenState extends State<AboutScreen> {
                     semanticsLabel: l10n.version,
                     tooltipMessage: _formatAppVersionTooltip(
                       context,
-                      appBuildTimestamp,
+                      state.appBuildTimestamp,
                     ),
                     value: "${state.appVersion} (${state.buildNumber})",
                   ),

@@ -43,6 +43,7 @@ Future<String> collectSystemAndAppInfo({
   String? dbFilesSection,
   DeviceInfoPlugin? deviceInfoPlugin,
   DiagnosticsDevicePlatform? devicePlatformOverride,
+  Future<DateTime?> Function()? appBuildTimestampLoader,
 }) async {
   final buf = StringBuffer();
   final deviceInfo = deviceInfoPlugin ?? DeviceInfoPlugin();
@@ -77,7 +78,9 @@ Future<String> collectSystemAndAppInfo({
     safeWrite('packageName', pkg.packageName);
     safeWrite('version', pkg.version);
     safeWrite('buildNumber', pkg.buildNumber);
-    safeWrite('appBuildTimestamp', resolveAppBuildTimestampIso8601());
+    final appBuildTimestamp =
+        await (appBuildTimestampLoader ?? defaultAppBuildTimestampLoader)();
+    safeWrite('appBuildTimestamp', appBuildTimestamp?.toIso8601String());
     safeWrite('buildSignature', pkg.buildSignature);
   } catch (e) {
     safeWrite('PackageInfoError', e);

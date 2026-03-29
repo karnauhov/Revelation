@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus_platform_interface/package_info_data.dart';
 import 'package:package_info_plus_platform_interface/package_info_platform_interface.dart';
-import 'package:revelation/core/diagnostics/app_build_timestamp.dart';
 import 'package:revelation/core/diagnostics/diagnostics_utils.dart';
 
 import '../../test_harness/widget_test_harness.dart';
@@ -47,6 +46,10 @@ class _ThrowingPackageInfoPlatform extends PackageInfoPlatform {
   Future<PackageInfoData> getAll({String? baseUrl}) async {
     throw Exception('package info failed');
   }
+}
+
+Future<DateTime?> _fixedAppBuildTimestampLoader() async {
+  return DateTime.utc(2026, 3, 29, 14, 15, 16);
 }
 
 void main() {
@@ -130,7 +133,9 @@ void main() {
     DeviceInfoPlatform.instance = _FakeDeviceInfoPlatform(windowsInfo);
     PackageInfoPlatform.instance = _ThrowingPackageInfoPlatform();
 
-    final info = await collectSystemAndAppInfo();
+    final info = await collectSystemAndAppInfo(
+      appBuildTimestampLoader: _fixedAppBuildTimestampLoader,
+    );
 
     expect(info, contains('PackageInfoError'));
     expect(info, contains('=======PLATFORM / DART======='));
@@ -157,16 +162,14 @@ void main() {
     final info = await collectSystemAndAppInfo(
       context: context,
       devicePlatformOverride: DiagnosticsDevicePlatform.windows,
+      appBuildTimestampLoader: _fixedAppBuildTimestampLoader,
     );
 
     expect(info, contains('=======PLATFORM / DART======='));
     expect(info, contains('=======PACKAGE / APP======='));
     expect(info, contains('appName: Test App'));
     expect(info, contains('packageName: dev.test.app'));
-    expect(
-      info,
-      contains('appBuildTimestamp: ${resolveAppBuildTimestampIso8601()}'),
-    );
+    expect(info, contains('appBuildTimestamp: 2026-03-29T14:15:16.000Z'));
     expect(info, contains('=======DEVICE INFO======='));
     expect(info, contains('windows.numberOfCores: 8'));
     expect(info, contains('windows.productName: Windows'));
@@ -196,6 +199,7 @@ void main() {
     final info = await collectSystemAndAppInfo(
       dbFilesSection:
           'revelation.sqlite: schema_version=4; data_version=1; date=2026-03-21T00:00:00Z; size=1.0 MB (1048576 bytes)',
+      appBuildTimestampLoader: _fixedAppBuildTimestampLoader,
     );
 
     expect(info, contains('=======PACKAGE / APP======='));
@@ -221,7 +225,10 @@ void main() {
       ),
     );
 
-    final info = await collectSystemAndAppInfo(dbFilesSection: '   \r\n   ');
+    final info = await collectSystemAndAppInfo(
+      dbFilesSection: '   \r\n   ',
+      appBuildTimestampLoader: _fixedAppBuildTimestampLoader,
+    );
 
     expect(info, isNot(contains('=======DATA / DB FILES=======')));
   });
@@ -241,6 +248,7 @@ void main() {
 
       final info = await collectSystemAndAppInfo(
         dbFilesSection: '  revelation.sqlite: ok   \r\n',
+        appBuildTimestampLoader: _fixedAppBuildTimestampLoader,
       );
 
       final packageSection = info.indexOf('=======PACKAGE / APP=======');
@@ -270,7 +278,9 @@ void main() {
       ),
     );
 
-    final info = await collectSystemAndAppInfo();
+    final info = await collectSystemAndAppInfo(
+      appBuildTimestampLoader: _fixedAppBuildTimestampLoader,
+    );
 
     expect(info, contains('DeviceInfoError'));
     expect(info, contains('=======PACKAGE / APP======='));
@@ -289,7 +299,9 @@ void main() {
       ),
     );
 
-    final info = await collectSystemAndAppInfo();
+    final info = await collectSystemAndAppInfo(
+      appBuildTimestampLoader: _fixedAppBuildTimestampLoader,
+    );
 
     expect(info, contains('=======SCREEN / DISPLAY======='));
     expect(
@@ -323,7 +335,10 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
 
-      final info = await collectSystemAndAppInfo(context: staleContext);
+      final info = await collectSystemAndAppInfo(
+        context: staleContext,
+        appBuildTimestampLoader: _fixedAppBuildTimestampLoader,
+      );
 
       expect(info, contains('ScreenInfoError'));
       expect(info, contains('LocaleOrTimezoneError'));
@@ -458,6 +473,7 @@ void main() {
         final info = await collectSystemAndAppInfo(
           deviceInfoPlugin: plugin,
           devicePlatformOverride: entry.key,
+          appBuildTimestampLoader: _fixedAppBuildTimestampLoader,
         );
         expect(info, contains(entry.value));
       }

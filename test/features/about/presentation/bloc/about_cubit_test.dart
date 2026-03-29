@@ -19,11 +19,13 @@ void main() {
       dataVersion: 3,
       date: DateTime.utc(2026, 3, 20, 11, 0, 0),
     );
+    final appBuildTimestamp = DateTime.utc(2026, 3, 29, 14, 15, 16);
     final cubit = AboutCubit(
       autoLoad: false,
       packageInfoLoader: () async =>
           _buildPackageInfo(version: '1.2.3', buildNumber: '45'),
       changelogLoader: () async => '# Changelog',
+      appBuildTimestampLoader: () async => appBuildTimestamp,
       dbVersionInfoLoader: (dbFile) async {
         if (dbFile == AppConstants.commonDB) {
           return commonVersionInfo;
@@ -43,6 +45,7 @@ void main() {
     expect(cubit.state.failure, isNull);
     expect(cubit.state.appVersion, '1.2.3');
     expect(cubit.state.buildNumber, '45');
+    expect(cubit.state.appBuildTimestamp, appBuildTimestamp);
     expect(cubit.state.changelog, '# Changelog');
     expect(cubit.state.commonDbVersionInfo, commonVersionInfo);
     expect(cubit.state.localizedDbVersionInfo, localizedVersionInfo);

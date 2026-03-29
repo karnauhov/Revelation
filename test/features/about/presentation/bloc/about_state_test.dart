@@ -10,6 +10,7 @@ void main() {
 
       expect(state.appVersion, isEmpty);
       expect(state.buildNumber, isEmpty);
+      expect(state.appBuildTimestamp, isNull);
       expect(state.changelog, isEmpty);
       expect(state.isLoading, isTrue);
       expect(state.isChangelogExpanded, isFalse);
@@ -26,6 +27,7 @@ void main() {
       final next = base.copyWith(
         appVersion: '1.2.3',
         buildNumber: '42',
+        appBuildTimestamp: DateTime.utc(2026, 3, 29, 14, 15, 16),
         changelog: '# New',
         isLoading: false,
         isChangelogExpanded: true,
@@ -35,6 +37,7 @@ void main() {
 
       expect(next.appVersion, '1.2.3');
       expect(next.buildNumber, '42');
+      expect(next.appBuildTimestamp, DateTime.utc(2026, 3, 29, 14, 15, 16));
       expect(next.changelog, '# New');
       expect(next.isLoading, isFalse);
       expect(next.isChangelogExpanded, isTrue);
@@ -123,6 +126,7 @@ void main() {
       final a = AboutState.initial().copyWith(
         appVersion: '1.0.0',
         buildNumber: '10',
+        appBuildTimestamp: DateTime.utc(2026, 3, 29, 14, 15, 16),
         changelog: 'changelog',
         isLoading: false,
         isChangelogExpanded: true,
@@ -135,6 +139,7 @@ void main() {
       final b = AboutState.initial().copyWith(
         appVersion: '1.0.0',
         buildNumber: '10',
+        appBuildTimestamp: DateTime.utc(2026, 3, 29, 14, 15, 16),
         changelog: 'changelog',
         isLoading: false,
         isChangelogExpanded: true,

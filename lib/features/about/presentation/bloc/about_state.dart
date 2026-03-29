@@ -7,6 +7,7 @@ class AboutState {
   const AboutState({
     required this.appVersion,
     required this.buildNumber,
+    required this.appBuildTimestamp,
     required this.changelog,
     required this.isLoading,
     required this.isChangelogExpanded,
@@ -21,6 +22,7 @@ class AboutState {
     return const AboutState(
       appVersion: '',
       buildNumber: '',
+      appBuildTimestamp: null,
       changelog: '',
       isLoading: true,
       isChangelogExpanded: false,
@@ -33,6 +35,7 @@ class AboutState {
 
   final String appVersion;
   final String buildNumber;
+  final DateTime? appBuildTimestamp;
   final String changelog;
   final bool isLoading;
   final bool isChangelogExpanded;
@@ -45,6 +48,7 @@ class AboutState {
   AboutState copyWith({
     String? appVersion,
     String? buildNumber,
+    Object? appBuildTimestamp = _unset,
     String? changelog,
     bool? isLoading,
     bool? isChangelogExpanded,
@@ -58,6 +62,9 @@ class AboutState {
     return AboutState(
       appVersion: appVersion ?? this.appVersion,
       buildNumber: buildNumber ?? this.buildNumber,
+      appBuildTimestamp: identical(appBuildTimestamp, _unset)
+          ? this.appBuildTimestamp
+          : appBuildTimestamp as DateTime?,
       changelog: changelog ?? this.changelog,
       isLoading: isLoading ?? this.isLoading,
       isChangelogExpanded: isChangelogExpanded ?? this.isChangelogExpanded,
@@ -82,6 +89,7 @@ class AboutState {
             runtimeType == other.runtimeType &&
             appVersion == other.appVersion &&
             buildNumber == other.buildNumber &&
+            appBuildTimestamp == other.appBuildTimestamp &&
             changelog == other.changelog &&
             isLoading == other.isLoading &&
             isChangelogExpanded == other.isChangelogExpanded &&
@@ -96,6 +104,7 @@ class AboutState {
   int get hashCode => Object.hash(
     appVersion,
     buildNumber,
+    appBuildTimestamp,
     changelog,
     isLoading,
     isChangelogExpanded,

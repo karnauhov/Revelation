@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:revelation/core/diagnostics/app_build_timestamp.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/about/presentation/bloc/about_state.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
@@ -9,18 +10,22 @@ import 'package:revelation/shared/config/app_constants.dart';
 
 typedef DbVersionInfoLoader =
     Future<DatabaseVersionInfo?> Function(String dbFile);
+typedef AppBuildTimestampLoader = Future<DateTime?> Function();
 
 class AboutCubit extends Cubit<AboutState> {
   AboutCubit({
     Future<PackageInfo> Function()? packageInfoLoader,
     Future<String> Function()? changelogLoader,
     DbVersionInfoLoader? dbVersionInfoLoader,
+    AppBuildTimestampLoader? appBuildTimestampLoader,
     String? initialLanguageCode,
     bool autoLoad = true,
   }) : _packageInfoLoader = packageInfoLoader ?? PackageInfo.fromPlatform,
        _changelogLoader = changelogLoader ?? _loadChangelogFromBundle,
        _dbVersionInfoLoader =
            dbVersionInfoLoader ?? getPreferredDatabaseVersionInfo,
+       _appBuildTimestampLoader =
+           appBuildTimestampLoader ?? defaultAppBuildTimestampLoader,
        _initialLanguageCode = _normalizeLanguageCode(initialLanguageCode),
        super(AboutState.initial()) {
     if (autoLoad) {
@@ -31,6 +36,7 @@ class AboutCubit extends Cubit<AboutState> {
   final Future<PackageInfo> Function() _packageInfoLoader;
   final Future<String> Function() _changelogLoader;
   final DbVersionInfoLoader _dbVersionInfoLoader;
+  final AppBuildTimestampLoader _appBuildTimestampLoader;
   final String _initialLanguageCode;
 
   Future<void> load({String? languageCode}) async {
@@ -45,6 +51,10 @@ class AboutCubit extends Cubit<AboutState> {
       if (isClosed) {
         return;
       }
+      final appBuildTimestamp = await _appBuildTimestampLoader();
+      if (isClosed) {
+        return;
+      }
       final dbUpdateInfo = await _loadDbUpdateInfo(normalizedLanguageCode);
       if (isClosed) {
         return;
@@ -53,6 +63,7 @@ class AboutCubit extends Cubit<AboutState> {
         state.copyWith(
           appVersion: packageInfo.version,
           buildNumber: packageInfo.buildNumber,
+          appBuildTimestamp: appBuildTimestamp,
           changelog: changelog,
           commonDbVersionInfo: dbUpdateInfo.commonDbVersionInfo,
           localizedDbVersionInfo: dbUpdateInfo.localizedDbVersionInfo,

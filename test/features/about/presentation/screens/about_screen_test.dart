@@ -65,14 +65,6 @@ void main() {
     await GetIt.I.reset();
   });
 
-  test(
-    'defaultAppBuildTimestampProvider returns timestamp when APP_BUILD_TIMESTAMP is absent',
-    () {
-      final timestamp = defaultAppBuildTimestampProvider();
-      expect(timestamp, isNotNull);
-    },
-  );
-
   testWidgets('AboutScreen renders loaded content and expands major sections', (
     tester,
   ) async {
@@ -185,7 +177,9 @@ void main() {
       _buildApp(
         cubit,
         dependencies: harness.buildDependencies(),
-        aboutCubitBuilder: _buildAboutCubitBuilder(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(
+          appBuildTimestamp: harness.appBuildTimestamp,
+        ),
         locale: const Locale('ru'),
       ),
     );
@@ -211,7 +205,9 @@ void main() {
         _buildApp(
           cubit,
           dependencies: harness.buildDependencies(),
-          aboutCubitBuilder: _buildAboutCubitBuilder(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(
+            appBuildTimestamp: harness.appBuildTimestamp,
+          ),
         ),
       );
       await _pumpUntilAboutScreenLoaded(tester);
@@ -234,7 +230,9 @@ void main() {
         _buildApp(
           cubit,
           dependencies: harness.buildDependencies(),
-          aboutCubitBuilder: _buildAboutCubitBuilder(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(
+            appBuildTimestamp: harness.appBuildTimestamp,
+          ),
           locale: const Locale('ru'),
         ),
       );
@@ -624,7 +622,6 @@ class _AboutScreenTestHarness {
       databaseFileSizeLoader: (dbFile) async => dbFileSizesByName[dbFile],
       databaseVersionLoader: (dbFile) async => dbVersionByName[dbFile],
       primarySourceFilesLoader: () async => primarySourceFiles,
-      appBuildTimestampProvider: () => appBuildTimestamp,
       writeClipboardText: (text) async {
         clipboardText = text;
       },
@@ -632,7 +629,10 @@ class _AboutScreenTestHarness {
   }
 }
 
-AboutCubitBuilder _buildAboutCubitBuilder({String changelog = _changelog}) {
+AboutCubitBuilder _buildAboutCubitBuilder({
+  String changelog = _changelog,
+  DateTime? appBuildTimestamp,
+}) {
   return (initialLanguageCode) => AboutCubit(
     initialLanguageCode: initialLanguageCode,
     packageInfoLoader: () async => PackageInfo(
@@ -642,6 +642,7 @@ AboutCubitBuilder _buildAboutCubitBuilder({String changelog = _changelog}) {
       buildNumber: '45',
     ),
     changelogLoader: () async => changelog,
+    appBuildTimestampLoader: () async => appBuildTimestamp,
     dbVersionInfoLoader: (_) async => null,
   );
 }
