@@ -201,6 +201,7 @@ void main() {
 
         expect(fromTree.app_name, fromLookup.app_name);
         expect(fromTree.version, fromLookup.version);
+        expect(fromTree.app_version_from, fromLookup.app_version_from);
         expect(
           fromTree.localized_data_update('English'),
           fromLookup.localized_data_update('English'),
@@ -218,6 +219,11 @@ void _assertLocalizationContract(AppLocalizations l10n) {
   final testPath = '/tmp/revelation.db';
   expect(l10n.app_name, isNotEmpty, reason: 'app_name should not be empty');
   expect(l10n.version, isNotEmpty, reason: 'version should not be empty');
+  expect(
+    l10n.app_version_from,
+    isNotEmpty,
+    reason: 'app_version_from should not be empty',
+  );
   expect(
     l10n.common_data_update,
     isNotEmpty,

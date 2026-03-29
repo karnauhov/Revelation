@@ -174,16 +174,22 @@ abstract class AppLocalizations {
   /// **'App version:'**
   String get version;
 
+  /// No description provided for @app_version_from.
+  ///
+  /// In en, this message translates to:
+  /// **'App version from'**
+  String get app_version_from;
+
   /// No description provided for @common_data_update.
   ///
   /// In en, this message translates to:
-  /// **'Data version:'**
+  /// **'Data version'**
   String get common_data_update;
 
   /// Label for localized DB data version by language
   ///
   /// In en, this message translates to:
-  /// **'Data version in {language}:'**
+  /// **'Data version in {language}'**
   String localized_data_update(String language);
 
   /// No description provided for @data_version_from.

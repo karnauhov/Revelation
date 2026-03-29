@@ -9,6 +9,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
 import 'package:revelation/features/about/presentation/screens/about_screen.dart';
@@ -64,6 +65,14 @@ void main() {
     await GetIt.I.reset();
   });
 
+  test(
+    'defaultAppBuildTimestampProvider returns timestamp when APP_BUILD_TIMESTAMP is absent',
+    () {
+      final timestamp = defaultAppBuildTimestampProvider();
+      expect(timestamp, isNotNull);
+    },
+  );
+
   testWidgets('AboutScreen renders loaded content and expands major sections', (
     tester,
   ) async {
@@ -84,10 +93,38 @@ void main() {
     final context = tester.element(find.byType(AboutScreen));
     final l10n = AppLocalizations.of(context)!;
     expect(find.text(l10n.about_screen), findsOneWidget);
-    expect(find.text('${l10n.version} 1.2.3 (45)'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('about-version-metadata')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('about-version-app')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('about-version-common-db')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('about-version-localized-db')),
+      findsOneWidget,
+    );
+    expect(find.text('1.2.3 (45)'), findsOneWidget);
+    expect(find.text('-'), findsNWidgets(2));
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('about-version-metadata')),
+        matching: find.text(';'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey('about-version-localized-db-code')),
+      findsOneWidget,
+    );
+    expect(find.text('EN'), findsOneWidget);
+    expect(find.textContaining(l10n.version), findsNothing);
+    expect(find.textContaining(l10n.common_data_update), findsNothing);
     expect(
       find.textContaining(l10n.localized_data_update(l10n.language_name_en)),
-      findsOneWidget,
+      findsNothing,
     );
 
     await tester.ensureVisible(find.text(l10n.acknowledgements_title));
@@ -102,14 +139,14 @@ void main() {
   });
 
   testWidgets(
-    'AboutScreen localized DB label supports es/uk/ru and fallback to en',
+    'AboutScreen localized DB badge supports es/uk/ru and fallback to en',
     (tester) async {
       final harness = _AboutScreenTestHarness();
       final cases = <String, String>{
-        'es': 'Spanish',
-        'uk': 'Ukrainian',
-        'ru': 'Russian',
-        'de': 'English',
+        'es': 'ES',
+        'uk': 'UK',
+        'ru': 'RU',
+        'de': 'EN',
       };
 
       for (final entry in cases.entries) {
@@ -123,24 +160,101 @@ void main() {
         );
         await _pumpUntilAboutScreenLoaded(tester);
 
-        final context = tester.element(find.byType(AboutScreen));
-        final l10n = AppLocalizations.of(context)!;
-        final languageName = switch (entry.key) {
-          'es' => l10n.language_name_es,
-          'uk' => l10n.language_name_uk,
-          'ru' => l10n.language_name_ru,
-          _ => l10n.language_name_en,
-        };
         expect(
-          find.textContaining(l10n.localized_data_update(languageName)),
+          find.byKey(const ValueKey('about-version-localized-db-code')),
           findsOneWidget,
         );
+        expect(find.text(entry.value), findsOneWidget);
 
         await cubit.close();
         await tester.pumpWidget(const SizedBox.shrink());
         await tester.pump();
       }
     },
+  );
+
+  testWidgets('AboutScreen app version tooltip shows localized build date', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness()
+      ..appBuildTimestamp = DateTime(2026, 3, 29, 14, 15, 16);
+    final cubit = await _createSettingsCubit(language: 'ru');
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
+        locale: const Locale('ru'),
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
+
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+    final expectedTooltip =
+        '${l10n.app_version_from} '
+        '${DateFormat.yMd('ru').add_jms().format(harness.appBuildTimestamp!)}';
+
+    expect(find.byTooltip(expectedTooltip), findsOneWidget);
+  });
+
+  testWidgets(
+    'AboutScreen app version tooltip falls back to version label without build timestamp',
+    (tester) async {
+      final harness = _AboutScreenTestHarness();
+      final cubit = await _createSettingsCubit(language: 'en');
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(
+        _buildApp(
+          cubit,
+          dependencies: harness.buildDependencies(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(),
+        ),
+      );
+      await _pumpUntilAboutScreenLoaded(tester);
+
+      final context = tester.element(find.byType(AboutScreen));
+      final l10n = AppLocalizations.of(context)!;
+      expect(find.byTooltip(l10n.version), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'AboutScreen app version tooltip opens on tap for Android',
+    (tester) async {
+      final harness = _AboutScreenTestHarness()
+        ..appBuildTimestamp = DateTime(2026, 3, 29, 14, 15, 16);
+      final cubit = await _createSettingsCubit(language: 'ru');
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(
+        _buildApp(
+          cubit,
+          dependencies: harness.buildDependencies(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(),
+          locale: const Locale('ru'),
+        ),
+      );
+      await _pumpUntilAboutScreenLoaded(tester);
+
+      final context = tester.element(find.byType(AboutScreen));
+      final l10n = AppLocalizations.of(context)!;
+      final expectedTooltip =
+          '${l10n.app_version_from} '
+          '${DateFormat.yMd('ru').add_jms().format(harness.appBuildTimestamp!)}';
+
+      final appVersionItem = find.byKey(const ValueKey('about-version-app'));
+      await tester.ensureVisible(appVersionItem);
+      await tester.tap(appVersionItem);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+
+      expect(find.text(expectedTooltip), findsOneWidget);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.android),
   );
 
   testWidgets('AboutScreen opens contact and legal external links', (
@@ -484,6 +598,7 @@ class _AboutScreenTestHarness {
       <String, DatabaseVersionInfo?>{};
   List<PrimarySourceFileInfo> primarySourceFiles = const [];
   String? clipboardText;
+  DateTime? appBuildTimestamp;
   bool launchResult = true;
   String Function({BuildContext? context, String? dbFilesSection})?
   systemAndAppInfoBuilder;
@@ -509,6 +624,7 @@ class _AboutScreenTestHarness {
       databaseFileSizeLoader: (dbFile) async => dbFileSizesByName[dbFile],
       databaseVersionLoader: (dbFile) async => dbVersionByName[dbFile],
       primarySourceFilesLoader: () async => primarySourceFiles,
+      appBuildTimestampProvider: () => appBuildTimestamp,
       writeClipboardText: (text) async {
         clipboardText = text;
       },

@@ -50,11 +50,14 @@ class AppLocalizationsUk extends AppLocalizations {
   String get version => 'Версія застосунку:';
 
   @override
-  String get common_data_update => 'Версія даних:';
+  String get app_version_from => 'Версія застосунку від';
+
+  @override
+  String get common_data_update => 'Версія даних';
 
   @override
   String localized_data_update(String language) {
-    return 'Версія даних $language мовою:';
+    return 'Версія даних $language мовою';
   }
 
   @override

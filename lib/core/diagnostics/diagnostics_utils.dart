@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:revelation/core/diagnostics/app_build_timestamp.dart';
 
 enum DiagnosticsDevicePlatform {
   web,
@@ -76,6 +77,7 @@ Future<String> collectSystemAndAppInfo({
     safeWrite('packageName', pkg.packageName);
     safeWrite('version', pkg.version);
     safeWrite('buildNumber', pkg.buildNumber);
+    safeWrite('appBuildTimestamp', resolveAppBuildTimestampIso8601());
     safeWrite('buildSignature', pkg.buildSignature);
   } catch (e) {
     safeWrite('PackageInfoError', e);

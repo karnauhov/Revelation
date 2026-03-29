@@ -163,7 +163,7 @@ void main() {
   });
 
   testWidgets(
-    'MainScreen initializes audio once and reads the latest sound setting',
+    'MainScreen uses initialized audio and reads the latest sound setting',
     (tester) async {
       final harness = await _buildHarness(soundEnabled: true);
       addTearDown(harness.dispose);
@@ -259,6 +259,9 @@ Future<_MainScreenHarness> _buildHarness({
     ),
   );
   await settingsCubit.loadSettings();
+  await audio.init(
+    isSoundEnabled: () => settingsCubit.state.settings.soundEnabled,
+  );
 
   final topicsCubit = TopicsCatalogCubit(
     topicsRepository: _FixedTopicsRepository(

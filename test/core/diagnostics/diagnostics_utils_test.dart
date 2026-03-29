@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus_platform_interface/package_info_data.dart';
 import 'package:package_info_plus_platform_interface/package_info_platform_interface.dart';
+import 'package:revelation/core/diagnostics/app_build_timestamp.dart';
 import 'package:revelation/core/diagnostics/diagnostics_utils.dart';
 
 import '../../test_harness/widget_test_harness.dart';
@@ -162,6 +163,10 @@ void main() {
     expect(info, contains('=======PACKAGE / APP======='));
     expect(info, contains('appName: Test App'));
     expect(info, contains('packageName: dev.test.app'));
+    expect(
+      info,
+      contains('appBuildTimestamp: ${resolveAppBuildTimestampIso8601()}'),
+    );
     expect(info, contains('=======DEVICE INFO======='));
     expect(info, contains('windows.numberOfCores: 8'));
     expect(info, contains('windows.productName: Windows'));

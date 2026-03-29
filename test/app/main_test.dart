@@ -27,6 +27,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   const desktopChannel = MethodChannel('revelation/window');
+  const audioChannel = MethodChannel('revelation/audio');
   const audioGlobalChannel = MethodChannel('xyz.luan/audioplayers.global');
 
   late BlocObserver previousBlocObserver;
@@ -55,6 +56,10 @@ void main() {
           return null;
         });
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(audioChannel, (call) async {
+          return null;
+        });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(desktopChannel, null);
   });
 
@@ -66,6 +71,8 @@ void main() {
     debugDefaultTargetPlatformOverride = null;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(audioGlobalChannel, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(audioChannel, null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(desktopChannel, null);
     await GetIt.I.reset();

@@ -8,6 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/app/router/route_args.dart';
+import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
@@ -57,7 +58,14 @@ void main() {
       final runtime = _FakeDatabaseRuntime();
       final progressSteps = <AppBootstrapStep>[];
 
-      final bootstrap = AppBootstrap(talker: talker, databaseRuntime: runtime);
+      final audioInitCalls = <String>[];
+      final bootstrap = AppBootstrap(
+        talker: talker,
+        databaseRuntime: runtime,
+        initializeAudio: (settingsCubit) async {
+          audioInitCalls.add(settingsCubit.state.settings.selectedLanguage);
+        },
+      );
       final settingsCubit = await bootstrap.initialize(
         onProgress: (progress) {
           progressSteps.add(progress.step);
@@ -67,6 +75,7 @@ void main() {
 
       expect(settingsCubit.state.settings.selectedLanguage, 'ru');
       expect(runtime.initializedLanguages, <String>['ru']);
+      expect(audioInitCalls, <String>['ru']);
       expect(progressSteps, <AppBootstrapStep>[
         AppBootstrapStep.preparing,
         AppBootstrapStep.loadingSettings,
@@ -89,7 +98,11 @@ void main() {
     AppDi.registerCore(talker: talker);
     final runtime = _FakeDatabaseRuntime(failOnInitialize: true);
 
-    final bootstrap = AppBootstrap(talker: talker, databaseRuntime: runtime);
+    final bootstrap = AppBootstrap(
+      talker: talker,
+      databaseRuntime: runtime,
+      initializeAudio: _noopInitializeAudio,
+    );
     final settingsCubit = await bootstrap.initialize();
     addTearDown(settingsCubit.close);
 
@@ -108,6 +121,7 @@ void main() {
     final bootstrap = AppBootstrap(
       talker: talker,
       databaseRuntime: _FakeDatabaseRuntime(),
+      initializeAudio: _noopInitializeAudio,
     );
     final settingsCubit = await bootstrap.initialize();
     addTearDown(settingsCubit.close);
@@ -134,6 +148,7 @@ void main() {
     final bootstrap = AppBootstrap(
       talker: talker,
       databaseRuntime: _SilentRuntime(),
+      initializeAudio: _noopInitializeAudio,
     );
     final settingsCubit = await bootstrap.initialize();
     addTearDown(settingsCubit.close);
@@ -167,6 +182,7 @@ void main() {
         talker: talker,
         databaseRuntime: _SilentRuntime(),
         referenceResolver: referenceResolver,
+        initializeAudio: _noopInitializeAudio,
         navigateToPrimarySource: (_, routeArgs) {
           navigations.add(routeArgs);
         },
@@ -203,7 +219,29 @@ void main() {
       expect(navigations.last.wordIndex, isNull);
     },
   );
+
+  test('initialize keeps app startup alive when audio init fails', () async {
+    await _seedSettings(language: 'es');
+    final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
+    AppDi.registerCore(talker: talker);
+    final runtime = _FakeDatabaseRuntime();
+
+    final bootstrap = AppBootstrap(
+      talker: talker,
+      databaseRuntime: runtime,
+      initializeAudio: (_) async {
+        throw StateError('forced audio initialization failure');
+      },
+    );
+    final settingsCubit = await bootstrap.initialize();
+    addTearDown(settingsCubit.close);
+
+    expect(settingsCubit.state.settings.selectedLanguage, 'es');
+    expect(runtime.initializedLanguages, <String>['es']);
+  });
 }
+
+Future<void> _noopInitializeAudio(SettingsCubit settingsCubit) async {}
 
 Future<void> _seedSettings({required String language}) async {
   SharedPreferences.setMockInitialValues(<String, Object>{

@@ -135,8 +135,15 @@ jobs:
             exit 1
           }
 
+      - name: Resolve build timestamp
+        id: build_timestamp_windows
+        shell: pwsh
+        run: |
+          $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+          "value=$timestamp" >> $env:GITHUB_OUTPUT
+
       - name: Build APK
-        run: flutter build apk --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+        run: flutter build apk --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} --dart-define=APP_BUILD_TIMESTAMP=${{ steps.build_timestamp_windows.outputs.value }}
 
       - name: Rename APK
         shell: pwsh
@@ -150,7 +157,7 @@ jobs:
           Rename-Item -Path $sourcePath -NewName $destFileName
 
       - name: Build App Bundle (AAB)
-        run: flutter build appbundle --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+        run: flutter build appbundle --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} --dart-define=APP_BUILD_TIMESTAMP=${{ steps.build_timestamp_windows.outputs.value }}
 
       - name: Rename AAB
         shell: pwsh
@@ -160,7 +167,7 @@ jobs:
           Move-Item -Path 'build/app/outputs/bundle/release/app-release.aab' -Destination "build/app/outputs/bundle/release/Revelation-android-$version-$build.aab"
 
       - name: Build Windows App
-        run: flutter build windows --release --no-tree-shake-icons --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+        run: flutter build windows --release --no-tree-shake-icons --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} --dart-define=APP_BUILD_TIMESTAMP=${{ steps.build_timestamp_windows.outputs.value }}
 
       - name: Install Inno Setup
         run: |
@@ -200,7 +207,7 @@ jobs:
 
       - name: Build web
         run: |
-          flutter build web --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+          flutter build web --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} --dart-define=APP_BUILD_TIMESTAMP=${{ steps.build_timestamp_windows.outputs.value }}
 
       - name: Zip Web Build
         shell: pwsh
@@ -348,8 +355,14 @@ jobs:
             exit 1
           fi
 
+      - name: Resolve build timestamp
+        id: build_timestamp_linux
+        run: |
+          timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "value=$timestamp" >> $GITHUB_OUTPUT
+
       - name: Build Linux
-        run: flutter build linux --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+        run: flutter build linux --release --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} --dart-define=APP_BUILD_TIMESTAMP=${{ steps.build_timestamp_linux.outputs.value }}
 
       - name: Archive Linux Build
         run: |

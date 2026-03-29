@@ -9,6 +9,7 @@ import 'package:revelation/shared/ui/widgets/icon_link_item.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
+import 'package:revelation/core/diagnostics/app_build_timestamp.dart';
 import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
 import 'package:revelation/features/about/presentation/bloc/about_state.dart';
 import 'package:revelation/features/about/presentation/widgets/icon_url.dart';
@@ -40,10 +41,15 @@ typedef AboutDatabaseVersionLoader =
 typedef AboutPrimarySourceFilesLoader =
     Future<List<PrimarySourceFileInfo>> Function();
 typedef AboutClipboardWriter = BugReportClipboardWriter;
+typedef AboutBuildTimestampProvider = DateTime? Function();
 typedef AboutCubitBuilder = AboutCubit Function(String initialLanguageCode);
 
 AboutCubit _defaultAboutCubitBuilder(String initialLanguageCode) {
   return AboutCubit(initialLanguageCode: initialLanguageCode);
+}
+
+DateTime? defaultAppBuildTimestampProvider() {
+  return resolveAppBuildTimestamp();
 }
 
 @immutable
@@ -56,6 +62,7 @@ class AboutScreenDependencies {
     this.databaseVersionLoader = getPreferredDatabaseVersionInfo,
     this.primarySourceFilesLoader = getLocalPrimarySourceFilesInfo,
     this.writeClipboardText = defaultBugReportClipboardWriter,
+    this.appBuildTimestampProvider = defaultAppBuildTimestampProvider,
   });
 
   final AboutLinkLauncher launchLink;
@@ -65,6 +72,7 @@ class AboutScreenDependencies {
   final AboutDatabaseVersionLoader databaseVersionLoader;
   final AboutPrimarySourceFilesLoader primarySourceFilesLoader;
   final AboutClipboardWriter writeClipboardText;
+  final AboutBuildTimestampProvider appBuildTimestampProvider;
 }
 
 class AboutScreen extends StatefulWidget {
@@ -269,12 +277,11 @@ class _AboutScreenState extends State<AboutScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final versionTextStyle = theme.textTheme.titleMedium?.copyWith(
-      fontWeight: FontWeight.normal,
-      color: colorScheme.onSurfaceVariant,
-    );
+    final appBuildTimestamp = widget.dependencies.appBuildTimestampProvider();
+    final localizedLanguageCode = _localizedLanguageBadge(selectedLanguage);
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SvgPicture.asset(
           "assets/images/UI/main-icon.svg",
@@ -293,37 +300,123 @@ class _AboutScreenState extends State<AboutScreen> {
                   color: colorScheme.onSurface,
                 ),
               ),
-              Text(
-                "${l10n.version} ${state.appVersion} (${state.buildNumber})",
-                style: versionTextStyle,
-              ),
-              Tooltip(
-                message: _formatDbVersionTooltip(
-                  context,
-                  state.commonDbVersionInfo,
-                ),
-                triggerMode: TooltipTriggerMode.tap,
-                child: Text(
-                  "${l10n.common_data_update} ${_formatDbVersionValue(state.commonDbVersionInfo)}",
-                  style: versionTextStyle,
-                ),
-              ),
-              Tooltip(
-                message: _formatDbVersionTooltip(
-                  context,
-                  state.localizedDbVersionInfo,
-                ),
-                triggerMode: TooltipTriggerMode.tap,
-                child: Text(
-                  "${l10n.localized_data_update(_localizedLanguageName(l10n, selectedLanguage))} ${_formatDbVersionValue(state.localizedDbVersionInfo)}",
-                  style: versionTextStyle,
-                ),
+              const SizedBox(height: 6),
+              Wrap(
+                key: const ValueKey('about-version-metadata'),
+                spacing: 10,
+                runSpacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  _buildVersionInfoItem(
+                    context,
+                    key: const ValueKey('about-version-app'),
+                    icon: const _AboutVersionIcon(icon: Icons.apps_rounded),
+                    iconTopPadding: 3,
+                    semanticsLabel: l10n.version,
+                    tooltipMessage: _formatAppVersionTooltip(
+                      context,
+                      appBuildTimestamp,
+                    ),
+                    value: "${state.appVersion} (${state.buildNumber})",
+                  ),
+                  _buildVersionInfoItem(
+                    context,
+                    key: const ValueKey('about-version-common-db'),
+                    icon: const _AboutVersionIcon(icon: Icons.storage_rounded),
+                    iconTopPadding: 3,
+                    semanticsLabel: l10n.common_data_update,
+                    tooltipMessage: _formatDbVersionTooltip(
+                      context,
+                      label: l10n.common_data_update,
+                      versionInfo: state.commonDbVersionInfo,
+                    ),
+                    value: _formatDbVersionValue(state.commonDbVersionInfo),
+                  ),
+                  _buildVersionInfoItem(
+                    context,
+                    key: const ValueKey('about-version-localized-db'),
+                    icon: _AboutVersionIcon(
+                      icon: Icons.storage_rounded,
+                      badgeText: localizedLanguageCode,
+                      badgeKey: const ValueKey(
+                        'about-version-localized-db-code',
+                      ),
+                    ),
+                    iconTopPadding: 7,
+                    semanticsLabel: l10n.localized_data_update(
+                      _localizedLanguageName(l10n, localizedLanguageCode),
+                    ),
+                    tooltipMessage: _formatDbVersionTooltip(
+                      context,
+                      label: l10n.localized_data_update(
+                        _localizedLanguageName(l10n, localizedLanguageCode),
+                      ),
+                      versionInfo: state.localizedDbVersionInfo,
+                    ),
+                    value: _formatDbVersionValue(state.localizedDbVersionInfo),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  Widget _buildVersionInfoItem(
+    BuildContext context, {
+    required Key key,
+    required Widget icon,
+    required String semanticsLabel,
+    required String value,
+    String? tooltipMessage,
+    double iconTopPadding = 0,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final versionTextStyle = theme.textTheme.titleMedium?.copyWith(
+      fontWeight: FontWeight.normal,
+      color: colorScheme.onSurfaceVariant,
+    );
+
+    Widget item = Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: iconTopPadding),
+          child: icon,
+        ),
+        const SizedBox(width: 4),
+        Text(value, style: versionTextStyle),
+      ],
+    );
+
+    item = Semantics(
+      container: true,
+      label: '$semanticsLabel $value',
+      child: item,
+    );
+
+    if (tooltipMessage != null) {
+      final tooltipKey = GlobalKey<TooltipState>();
+      item = Tooltip(
+        key: tooltipKey,
+        message: tooltipMessage,
+        waitDuration: Duration.zero,
+        triggerMode: TooltipTriggerMode.tap,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            tooltipKey.currentState?.ensureTooltipVisible();
+          },
+          child: item,
+        ),
+      );
+    }
+
+    return KeyedSubtree(key: key, child: item);
   }
 
   String _formatDbVersionValue(DatabaseVersionInfo? versionInfo) {
@@ -333,19 +426,42 @@ class _AboutScreenState extends State<AboutScreen> {
     return "${versionInfo.schemaVersion} (${versionInfo.dataVersion})";
   }
 
-  String _formatDbVersionTooltip(
+  String _formatAppVersionTooltip(
     BuildContext context,
-    DatabaseVersionInfo? versionInfo,
+    DateTime? buildTimestamp,
   ) {
-    if (versionInfo == null) {
-      return "-";
-    }
-    final localeName = Localizations.localeOf(context).toString();
-    final formattedDate = DateFormat.yMd(
-      localeName,
-    ).add_jms().format(versionInfo.date.toLocal());
     final l10n = AppLocalizations.of(context)!;
-    return "${l10n.data_version_from} $formattedDate";
+    if (buildTimestamp == null) {
+      return l10n.version;
+    }
+    final formattedDate = _formatTooltipDateTime(context, buildTimestamp);
+    return "${l10n.app_version_from} $formattedDate";
+  }
+
+  String _formatDbVersionTooltip(
+    BuildContext context, {
+    required String label,
+    required DatabaseVersionInfo? versionInfo,
+  }) {
+    if (versionInfo == null) {
+      return label;
+    }
+    final l10n = AppLocalizations.of(context)!;
+    final formattedDate = _formatTooltipDateTime(context, versionInfo.date);
+    return "$label ${l10n.data_version_from} $formattedDate";
+  }
+
+  String _formatTooltipDateTime(BuildContext context, DateTime value) {
+    final localeName = Localizations.localeOf(context).toString();
+    return DateFormat.yMd(localeName).add_jms().format(value.toLocal());
+  }
+
+  String _localizedLanguageBadge(String selectedLanguage) {
+    final normalized = selectedLanguage.toLowerCase();
+    if (AppConstants.languages.containsKey(normalized)) {
+      return normalized.toUpperCase();
+    }
+    return 'EN';
   }
 
   String _localizedLanguageName(AppLocalizations l10n, String languageCode) {
@@ -767,5 +883,46 @@ class _AboutScreenState extends State<AboutScreen> {
     }
     final precision = unitIndex == 0 ? 0 : 1;
     return '${value.toStringAsFixed(precision)} ${units[unitIndex]}';
+  }
+}
+
+class _AboutVersionIcon extends StatelessWidget {
+  const _AboutVersionIcon({required this.icon, this.badgeText, this.badgeKey});
+
+  final IconData icon;
+  final String? badgeText;
+  final Key? badgeKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final badgeStyle = theme.textTheme.labelSmall?.copyWith(
+      fontSize: 9,
+      height: 1,
+      fontWeight: FontWeight.w700,
+      color: colorScheme.onSurfaceVariant,
+    );
+
+    return SizedBox(
+      width: 24,
+      height: badgeText == null ? 20 : 28,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: colorScheme.onSurfaceVariant),
+          if (badgeText != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 1),
+              child: Text(
+                badgeText!,
+                key: badgeKey,
+                style: badgeStyle,
+                textAlign: TextAlign.center,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

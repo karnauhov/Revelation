@@ -1,15 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:revelation/shared/ui/widgets/new_icon_button.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
-import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/topics/presentation/widgets/drawer_content.dart';
 import 'package:revelation/features/topics/presentation/widgets/topic_list.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/core/platform/platform_utils.dart';
+import 'package:revelation/shared/ui/widgets/new_icon_button.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -24,20 +20,6 @@ class _MainScreenState extends State<MainScreen> {
   bool _isDragging = false;
   Offset _lastOffset = Offset.zero;
   bool _closedByItem = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final settingsCubit = context.read<SettingsCubit>();
-      AudioController aud = AudioController();
-      unawaited(
-        aud.init(
-          isSoundEnabled: () => settingsCubit.state.settings.soundEnabled,
-        ),
-      );
-    });
-  }
 
   @override
   void dispose() {

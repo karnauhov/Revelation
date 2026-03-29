@@ -34,8 +34,9 @@
     }
   },
   "version": "App version:",
-  "common_data_update": "Data version:",
-  "localized_data_update": "Data version in {language}:",
+  "app_version_from": "App version from",
+  "common_data_update": "Data version",
+  "localized_data_update": "Data version in {language}",
   "@localized_data_update": {
     "description": "Label for localized DB data version by language",
     "placeholders": {

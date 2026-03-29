@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:audioplayers_platform_interface/audioplayers_platform_interface.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -203,6 +204,10 @@ class _FakePathProviderPlatform extends PathProviderPlatform {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  tearDown(() {
+    debugDefaultTargetPlatformOverride = null;
+  });
+
   group('AudioplayersSoundBackend', () {
     late _FakeAudioplayersPlatform fakePlatform;
     late _FakeGlobalAudioplayersPlatform fakeGlobalPlatform;
@@ -308,20 +313,40 @@ void main() {
           .setMockMethodCallHandler(channel, null);
     });
 
-    test('play sends the asset key over the platform channel', () async {
+    test('default backend uses method channel on Windows', () {
+      debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+
+      final backend = createDefaultSoundBackend();
+
+      expect(backend, isA<WindowsMethodChannelSoundBackend>());
+    });
+
+    test('init sends the asset map over the platform channel', () async {
       await backend.init(<String, String>{'click': 'assets/sounds/click.mp3'});
+
+      expect(methodCalls, hasLength(1));
+      expect(methodCalls.single.method, 'prepareAssets');
+      expect(methodCalls.single.arguments, <String, Object>{
+        'assets': <String, String>{'click': 'assets/sounds/click.mp3'},
+      });
+    });
+
+    test('play sends the sound name over the platform channel', () async {
+      await backend.init(<String, String>{'click': 'assets/sounds/click.mp3'});
+      methodCalls.clear();
 
       await backend.play('click');
 
       expect(methodCalls, hasLength(1));
-      expect(methodCalls.single.method, 'playAsset');
+      expect(methodCalls.single.method, 'play');
       expect(methodCalls.single.arguments, <String, String>{
-        'assetKey': 'assets/sounds/click.mp3',
+        'soundName': 'click',
       });
     });
 
     test('stop sends the stop command over the platform channel', () async {
       await backend.init(const <String, String>{});
+      methodCalls.clear();
 
       await backend.stop();
 

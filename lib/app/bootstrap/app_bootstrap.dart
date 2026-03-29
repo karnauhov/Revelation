@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
+import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/features/settings/settings.dart'
@@ -21,6 +22,8 @@ typedef PrimarySourceNavigator =
     void Function(BuildContext context, PrimarySourceRouteArgs routeArgs);
 typedef AppBootstrapProgressCallback =
     void Function(AppBootstrapProgress progress);
+typedef AppBootstrapAudioInitializer =
+    Future<void> Function(SettingsCubit settingsCubit);
 
 const int appBootstrapVisibleStepCount = 5;
 
@@ -82,19 +85,22 @@ class AppBootstrap {
     PrimarySourceReferenceService? referenceResolver,
     StrongDialogPresenter? showStrongDialog,
     PrimarySourceNavigator? navigateToPrimarySource,
+    AppBootstrapAudioInitializer? initializeAudio,
   }) : _talker = talker,
        _databaseRuntime = databaseRuntime ?? DbManagerDatabaseRuntime(),
        _referenceResolver =
            referenceResolver ?? PrimarySourceReferenceService(),
        _showStrongDialog = showStrongDialog ?? _defaultShowStrongDialog,
        _navigateToPrimarySource =
-           navigateToPrimarySource ?? _defaultNavigateToPrimarySource;
+           navigateToPrimarySource ?? _defaultNavigateToPrimarySource,
+       _initializeAudio = initializeAudio ?? _defaultInitializeAudio;
 
   final Talker _talker;
   final DatabaseRuntime _databaseRuntime;
   final PrimarySourceReferenceService _referenceResolver;
   final StrongDialogPresenter _showStrongDialog;
   final PrimarySourceNavigator _navigateToPrimarySource;
+  final AppBootstrapAudioInitializer _initializeAudio;
   StreamSubscription<String>? _languageSubscription;
 
   static void _defaultShowStrongDialog(BuildContext context, int strongNumber) {
@@ -106,6 +112,12 @@ class AppBootstrap {
     PrimarySourceRouteArgs routeArgs,
   ) {
     context.push('/primary_source', extra: routeArgs);
+  }
+
+  static Future<void> _defaultInitializeAudio(SettingsCubit settingsCubit) {
+    return AudioController().init(
+      isSoundEnabled: () => settingsCubit.state.settings.soundEnabled,
+    );
   }
 
   Future<SettingsCubit> initialize({
@@ -124,6 +136,7 @@ class AppBootstrap {
       );
       settingsCubit = SettingsCubit(SettingsRepository());
       await settingsCubit.loadSettings();
+      await _initializeAudioSafely(settingsCubit);
       final selectedLanguage = settingsCubit.state.settings.selectedLanguage;
 
       onProgress?.call(
@@ -209,6 +222,14 @@ class AppBootstrap {
           });
     } catch (error, stackTrace) {
       _talker.handle(error, stackTrace, 'Failed to initialize local databases');
+    }
+  }
+
+  Future<void> _initializeAudioSafely(SettingsCubit settingsCubit) async {
+    try {
+      await _initializeAudio(settingsCubit);
+    } catch (error, stackTrace) {
+      _talker.handle(error, stackTrace, 'Failed to initialize UI audio');
     }
   }
 

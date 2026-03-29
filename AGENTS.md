@@ -99,7 +99,10 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - Documentation navigation rule:
   - Every documentation file must be reachable either by a direct link from `README.md` or by links from another document when it is a 2nd+ level nested document.
   - When adding, renaming, or deleting docs, update navigation links in `README.md` and in related parent docs in the same change set.
-- Keep package metadata synchronized between `pubspec.yaml` and `assets/data/about_libraries.xml`: when adding/removing a package in `dependencies` or `dev_dependencies`, add/remove the corresponding `@Package` entry in `about_libraries.xml` in the same change, and take license name plus links from the package page.
+- Keep acknowledgements metadata synchronized with `assets/data/about_libraries.xml`:
+  - when adding/removing a package in `dependencies` or `dev_dependencies`, add/remove the corresponding `@Package` entry in `about_libraries.xml` in the same change, and take license name plus links from the package page;
+  - when adding/removing a third-party native library, SDK, redistributable, binary, or other non-pub dependency used directly from platform code, add/remove the corresponding entry in `about_libraries.xml` in the same change, and record its license name plus official/license links;
+  - do not add separate acknowledgement entries for operating-system or platform SDK APIs that are part of the target platform/toolchain and are not redistributed with the app (for example `XAudio2` from Windows).
 - Use change checklist from `.github/change_checklist.md` for every change set (code + tests + docs RU/EN).
 - Keep localization in sync for supported locales: `en`, `es`, `uk`, `ru`.
 - Do not commit secrets. `api-keys.json` is gitignored.

@@ -8,6 +8,7 @@
 
 #include <memory>
 
+#include "sound_engine.h"
 #include "win32_window.h"
 
 // A window that does nothing but host a Flutter view.
@@ -38,6 +39,9 @@ class FlutterWindow : public Win32Window {
   // Channel for lightweight UI sounds exposed to Dart.
   std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>>
       audio_channel_;
+
+  // Native async sound engine for Windows UI sounds.
+  std::unique_ptr<SoundEngine> sound_engine_;
 };
 
 #endif  // RUNNER_FLUTTER_WINDOW_H_

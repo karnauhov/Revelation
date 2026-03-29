@@ -52,11 +52,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get version => 'Versión de la aplicación:';
 
   @override
-  String get common_data_update => 'Versión de datos:';
+  String get app_version_from => 'Versión de la aplicación del';
+
+  @override
+  String get common_data_update => 'Versión de datos';
 
   @override
   String localized_data_update(String language) {
-    return 'Versión de datos en $language:';
+    return 'Versión de datos en $language';
   }
 
   @override

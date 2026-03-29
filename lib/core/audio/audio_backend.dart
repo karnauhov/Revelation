@@ -79,17 +79,19 @@ class WindowsMethodChannelSoundBackend implements AppSoundBackend {
   @override
   Future<void> init(Map<String, String> soundAssets) async {
     _soundAssets = Map<String, String>.unmodifiable(soundAssets);
+    await _channel.invokeMethod<void>('prepareAssets', <String, Object>{
+      'assets': _soundAssets,
+    });
   }
 
   @override
   Future<void> play(String sourceName) async {
-    final String? assetKey = _soundAssets[sourceName];
-    if (assetKey == null) {
+    if (!_soundAssets.containsKey(sourceName)) {
       return;
     }
 
-    await _channel.invokeMethod<void>('playAsset', <String, String>{
-      'assetKey': assetKey,
+    await _channel.invokeMethod<void>('play', <String, String>{
+      'soundName': sourceName,
     });
   }
 
