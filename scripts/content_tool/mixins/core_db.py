@@ -13,17 +13,20 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, font as tkfont, messagebox, ttk
 from typing import Any
 
 from ..helpers import LANGUAGE_NAME_RU_BY_CODE
 from ..models import ArticleRow, PrimarySourceSummary, ResourceRow, StrongRow
-from ..web_db_manifest import write_web_db_manifest
+from ..web_db_manifest import build_web_db_manifest_payload_from_paths, write_web_db_manifest
 
 COMMON_DB_SCHEMA_VERSION = 4
 LOCALIZED_DB_SCHEMA_VERSION = 6
 ALLOWED_GIT_PUBLISH_REMOTE_URLS = {
     "https://github.com/karnauhov/revelation",
+}
+ALLOWED_WEB_PUBLISH_REMOTE_URLS = {
+    "https://github.com/karnauhov/revelation.website",
 }
 DB_METADATA_TABLE_NAME = "db_metadata"
 DB_METADATA_SCHEMA_VERSION_KEY = "schema_version"
@@ -1068,6 +1071,225 @@ class CoreDbMixin:
         def _web_db_manifest_path(self, target_dir: Path) -> Path:
             return target_dir / "manifest.json"
 
+        def _release_publish_env_path(self) -> Path:
+            return self.project_root / "env" / "content_tool_release_publish.env"
+
+        def _release_publish_settings(self) -> dict[str, str]:
+            return self._parse_env_file(self._release_publish_env_path())
+
+        def _release_publish_required_env_keys(self) -> list[str]:
+            return [
+                "REVELATION_CONTENT_TOOL_REMOTE_WEB_MANIFEST_URL",
+                "REVELATION_CONTENT_TOOL_REMOTE_SUPABASE_MANIFEST_URL",
+                *self._release_web_publish_env_keys(),
+                *self._release_supabase_publish_env_keys(),
+            ]
+
+        def _release_web_publish_env_keys(self) -> list[str]:
+            return [
+                "REVELATION_CONTENT_TOOL_WEB_PUBLISH_REPO_PATH",
+                "REVELATION_CONTENT_TOOL_WEB_PUBLISH_REMOTE",
+                "REVELATION_CONTENT_TOOL_WEB_PUBLISH_BRANCH",
+                "REVELATION_CONTENT_TOOL_WEB_PUBLISH_DB_DIR",
+            ]
+
+        def _release_supabase_publish_env_keys(self) -> list[str]:
+            return [
+                "REVELATION_CONTENT_TOOL_SUPABASE_URL",
+                "REVELATION_CONTENT_TOOL_SUPABASE_SERVICE_ROLE_KEY",
+                "REVELATION_CONTENT_TOOL_SUPABASE_DB_BUCKET",
+                "REVELATION_CONTENT_TOOL_SUPABASE_DB_PREFIX",
+                "REVELATION_CONTENT_TOOL_SUPABASE_MANIFEST_OBJECT_PATH",
+            ]
+
+        def _release_target_entries_to_publish(self, target_state: dict[str, Any]) -> list[dict[str, Any]]:
+            return [
+                entry
+                for entry in target_state.get("plan", [])
+                if isinstance(entry, dict) and bool(entry.get("needs_publish"))
+            ]
+
+        def _release_publish_missing_env_keys(
+            self,
+            *,
+            settings: dict[str, str],
+            web_required: bool,
+            supabase_required: bool,
+        ) -> list[str]:
+            required_keys: list[str] = []
+            if web_required:
+                required_keys.extend(self._release_web_publish_env_keys())
+            if supabase_required:
+                required_keys.extend(self._release_supabase_publish_env_keys())
+            return [key for key in required_keys if not settings.get(key, "").strip()]
+
+        def _release_publish_target_paths(
+            self,
+            *,
+            target_dir: Path,
+            target_state: dict[str, Any],
+        ) -> list[Path]:
+            return [target_dir / str(entry["name"]) for entry in self._release_target_entries_to_publish(target_state)]
+
+        def _manifest_request_headers(
+            self,
+            *,
+            api_key: str | None = None,
+            bearer_token: str | None = None,
+        ) -> dict[str, str]:
+            headers: dict[str, str] = {}
+            if api_key:
+                headers["apikey"] = api_key
+            if bearer_token:
+                headers["Authorization"] = f"Bearer {bearer_token}"
+            return headers
+
+        def _load_manifest_payload_from_path(self, manifest_path: Path) -> dict[str, Any]:
+            if not manifest_path.exists():
+                raise FileNotFoundError(f"Файл manifest.json не найден: {manifest_path}")
+            try:
+                payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"Некорректный JSON в {manifest_path.name}: {exc}") from exc
+            if not isinstance(payload, dict):
+                raise ValueError(f"Некорректная структура manifest.json: {manifest_path}")
+            return payload
+
+        def _load_manifest_payload_from_url(
+            self,
+            manifest_url: str,
+            *,
+            headers: dict[str, str] | None = None,
+        ) -> dict[str, Any]:
+            request = urllib.request.Request(manifest_url, headers=headers or {})
+            try:
+                with urllib.request.urlopen(request, timeout=60) as response:
+                    payload = json.loads(response.read().decode("utf-8"))
+            except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError, ValueError) as exc:
+                raise ValueError(f"Не удалось загрузить manifest.json по URL {manifest_url}: {exc}") from exc
+            if not isinstance(payload, dict):
+                raise ValueError(f"Некорректная структура manifest.json по URL {manifest_url}")
+            return payload
+
+        def _manifest_entries_from_payload(
+            self,
+            payload: dict[str, Any],
+            *,
+            manifest_label: str,
+        ) -> dict[str, dict[str, object]]:
+            raw_entries = payload.get("databases")
+            if not isinstance(raw_entries, dict):
+                raise ValueError(f"В {manifest_label} отсутствует объект databases.")
+
+            entries: dict[str, dict[str, object]] = {}
+            for file_name, raw_entry in raw_entries.items():
+                if not isinstance(file_name, str) or not isinstance(raw_entry, dict):
+                    raise ValueError(f"В {manifest_label} найдена некорректная запись databases.")
+
+                schema_version = raw_entry.get("schemaVersion")
+                data_version = raw_entry.get("dataVersion")
+                date_iso = raw_entry.get("date")
+                size_bytes = raw_entry.get("fileSizeBytes")
+
+                if not isinstance(schema_version, int):
+                    raise ValueError(f"В {manifest_label} у {file_name} отсутствует schemaVersion.")
+                if not isinstance(data_version, int):
+                    raise ValueError(f"В {manifest_label} у {file_name} отсутствует dataVersion.")
+                if not isinstance(date_iso, str) or not date_iso.strip():
+                    raise ValueError(f"В {manifest_label} у {file_name} отсутствует date.")
+                if not isinstance(size_bytes, int):
+                    raise ValueError(f"В {manifest_label} у {file_name} отсутствует fileSizeBytes.")
+
+                entries[file_name] = {
+                    "schema_version": schema_version,
+                    "data_version": data_version,
+                    "date_iso": date_iso.strip(),
+                    "size_bytes": size_bytes,
+                }
+
+            return entries
+
+        def _build_manifest_payload_for_db_paths(self, db_paths: list[Path]) -> dict[str, Any]:
+            return build_web_db_manifest_payload_from_paths(
+                db_paths,
+                generated_at="1970-01-01T00:00:00Z",
+            )
+
+        def _collect_manifest_comparison_plan(
+            self,
+            *,
+            local_entries: dict[str, dict[str, object]],
+            remote_entries: dict[str, dict[str, object]],
+        ) -> list[dict[str, Any]]:
+            plan: list[dict[str, Any]] = []
+            all_names = sorted(set(local_entries) | set(remote_entries), key=str.lower)
+
+            for file_name in all_names:
+                local_snapshot = local_entries.get(file_name)
+                remote_snapshot = remote_entries.get(file_name)
+                reasons: list[str] = []
+
+                if local_snapshot is None:
+                    reasons.append("локально отсутствует")
+                elif remote_snapshot is None:
+                    reasons.append("файл отсутствует")
+                else:
+                    if local_snapshot.get("schema_version") != remote_snapshot.get("schema_version"):
+                        reasons.append("schema_version")
+                    if local_snapshot.get("data_version") != remote_snapshot.get("data_version"):
+                        reasons.append("data_version")
+                    if local_snapshot.get("date_iso") != remote_snapshot.get("date_iso"):
+                        reasons.append("дата")
+                    if local_snapshot.get("size_bytes") != remote_snapshot.get("size_bytes"):
+                        reasons.append("размер")
+
+                plan.append(
+                    {
+                        "name": file_name,
+                        "local_snapshot": local_snapshot,
+                        "remote_snapshot": remote_snapshot,
+                        "needs_publish": bool(reasons) and local_snapshot is not None,
+                        "reasons": reasons,
+                        "remote_only": local_snapshot is None and remote_snapshot is not None,
+                    }
+                )
+
+            return plan
+
+        def _collect_manifest_target_state(
+            self,
+            *,
+            display_name: str,
+            manifest_url: str,
+            headers: dict[str, str] | None,
+            local_entries: dict[str, dict[str, object]],
+        ) -> dict[str, Any]:
+            if not manifest_url:
+                return {
+                    "display_name": display_name,
+                    "configured": False,
+                    "manifest_url": "",
+                    "plan": [],
+                    "error": "Не настроен URL manifest.json.",
+                }
+
+            payload = self._load_manifest_payload_from_url(manifest_url, headers=headers)
+            remote_entries = self._manifest_entries_from_payload(
+                payload,
+                manifest_label=display_name,
+            )
+            plan = self._collect_manifest_comparison_plan(
+                local_entries=local_entries,
+                remote_entries=remote_entries,
+            )
+            return {
+                "display_name": display_name,
+                "configured": True,
+                "manifest_url": manifest_url,
+                "plan": plan,
+                "error": None,
+            }
+
         def _git_publish_env_path(self) -> Path:
             return self.project_root / "env" / "content_tool_git_publish.env"
 
@@ -1331,9 +1553,19 @@ class CoreDbMixin:
             subject = "Update published web databases [skip ci]"
             body_lines: list[str] = []
             for result in successful_results:
+                before_snapshot = result.get("before_snapshot") or result.get("target_snapshot")
+                after_snapshot = result.get("after_snapshot")
+                planned_data_version = result.get("planned_data_version")
+                version_before = self._format_publish_snapshot_data_version(before_snapshot)
+                if planned_data_version is None:
+                    version_after = self._format_publish_snapshot_data_version(after_snapshot)
+                else:
+                    version_after = str(planned_data_version)
                 changed_tables = [str(name) for name in result.get("changed_tables", [])]
                 table_text = ", ".join(changed_tables) if changed_tables else "metadata only"
-                body_lines.append(f"{result['name']}: {table_text}")
+                body_lines.append(
+                    f"{result['name']}: data_version {version_before} -> {version_after}; tables: {table_text}"
+                )
             body = "\n".join(body_lines)
             return subject, body
 
@@ -1343,6 +1575,407 @@ class CoreDbMixin:
                 lines.append("")
                 lines.extend(body.splitlines())
             return "\n".join(lines)
+
+        def _build_release_web_commit_message(
+            self,
+            *,
+            local_entries: dict[str, dict[str, object]],
+            target_state: dict[str, Any],
+        ) -> tuple[str, str]:
+            subject = "Update published website databases [skip ci]"
+            body_lines: list[str] = []
+            for entry in sorted(
+                self._release_target_entries_to_publish(target_state),
+                key=lambda item: str(item["name"]).lower(),
+            ):
+                name = str(entry["name"])
+                local_snapshot = local_entries.get(name)
+                body_lines.append(
+                    f"{name}: new data_version {self._format_publish_snapshot_data_version(local_snapshot)}"
+                )
+            return subject, "\n".join(body_lines)
+
+        def _git_config_value(self, key: str, *, cwd: Path | None = None) -> str:
+            completed = self._run_git_command(["config", "--get", key], cwd=cwd, check=False)
+            if completed.returncode != 0:
+                return ""
+            return completed.stdout.strip()
+
+        def _clean_relative_publish_path(self, raw_path: str, *, label: str) -> str:
+            normalized = raw_path.strip().replace("\\", "/")
+            parts = [part for part in normalized.split("/") if part not in {"", "."}]
+            if any(part == ".." for part in parts):
+                raise RuntimeError(f"{label} не должен содержать '..'.")
+            return "/".join(parts)
+
+        def _prepare_release_web_publish_source(
+            self,
+            *,
+            repo_source: str,
+            remote_name: str,
+        ) -> dict[str, Any]:
+            source = repo_source.strip()
+            if not source:
+                raise RuntimeError("Не указан источник Git-репозитория для публикации web.")
+
+            source_path = Path(source)
+            if source_path.exists():
+                if not source_path.is_dir():
+                    raise RuntimeError(f"Путь Git-репозитория web не является папкой: {source_path}")
+                repo_root_text = self._run_git_command(
+                    ["rev-parse", "--show-toplevel"],
+                    cwd=source_path,
+                ).stdout.strip()
+                repo_root = Path(repo_root_text).resolve()
+                remote_url = self._run_git_command(
+                    ["remote", "get-url", remote_name],
+                    cwd=repo_root,
+                ).stdout.strip()
+                normalized_remote_url = self._normalize_git_remote_url(remote_url)
+                if normalized_remote_url not in ALLOWED_WEB_PUBLISH_REMOTE_URLS:
+                    raise RuntimeError(
+                        "Git-публикация web разрешена только для официального репозитория Revelation.website.\n"
+                        f"Текущий URL remote: {remote_url}"
+                    )
+                return {
+                    "clone_source": str(repo_root),
+                    "remote_url": remote_url,
+                    "identity_source": repo_root,
+                }
+
+            normalized_source = self._normalize_git_remote_url(source)
+            if normalized_source not in ALLOWED_WEB_PUBLISH_REMOTE_URLS:
+                raise RuntimeError(
+                    "Git-публикация web разрешена только для официального репозитория Revelation.website.\n"
+                    f"Текущий источник: {source}"
+                )
+            return {
+                "clone_source": source,
+                "remote_url": None,
+                "identity_source": None,
+            }
+
+        def _apply_git_identity_to_repo(
+            self,
+            *,
+            target_repo: Path,
+            preferred_source: Path | None = None,
+        ) -> None:
+            source_candidates: list[Path] = []
+            if preferred_source is not None:
+                source_candidates.append(preferred_source)
+            source_candidates.append(self.project_root)
+
+            for key in ("user.name", "user.email"):
+                value = ""
+                for source in source_candidates:
+                    if source.exists():
+                        value = self._git_config_value(key, cwd=source)
+                    if value:
+                        break
+                if value:
+                    self._run_git_command(["config", key, value], cwd=target_repo)
+
+        def _publish_files_to_external_git_repo(
+            self,
+            *,
+            repo_source: str,
+            branch_name: str,
+            remote_name: str,
+            repo_db_dir: str,
+            paths_to_publish: list[Path],
+            commit_subject: str,
+            commit_body: str,
+        ) -> dict[str, Any]:
+            publish_source = self._prepare_release_web_publish_source(
+                repo_source=repo_source,
+                remote_name=remote_name,
+            )
+            repo_db_dir_rel = self._clean_relative_publish_path(
+                repo_db_dir,
+                label="Папка DB в web-репозитории",
+            )
+            if not repo_db_dir_rel:
+                raise RuntimeError("Папка DB в web-репозитории не должна быть пустой.")
+
+            with tempfile.TemporaryDirectory(prefix="revelation-web-publish-") as temp_dir_str:
+                temp_dir = Path(temp_dir_str)
+                self._run_git_command(
+                    [
+                        "clone",
+                        "--branch",
+                        branch_name,
+                        "--single-branch",
+                        publish_source["clone_source"],
+                        str(temp_dir),
+                    ],
+                    cwd=temp_dir.parent,
+                )
+                self._apply_git_identity_to_repo(
+                    target_repo=temp_dir,
+                    preferred_source=publish_source["identity_source"],
+                )
+
+                if publish_source["remote_url"]:
+                    remote_names = [
+                        line.strip()
+                        for line in self._run_git_command(["remote"], cwd=temp_dir).stdout.splitlines()
+                        if line.strip()
+                    ]
+                    if remote_name in remote_names:
+                        self._run_git_command(
+                            ["remote", "set-url", remote_name, publish_source["remote_url"]],
+                            cwd=temp_dir,
+                        )
+                    elif "origin" in remote_names:
+                        self._run_git_command(
+                            ["remote", "set-url", "origin", publish_source["remote_url"]],
+                            cwd=temp_dir,
+                        )
+                        if remote_name != "origin":
+                            self._run_git_command(
+                                ["remote", "rename", "origin", remote_name],
+                                cwd=temp_dir,
+                            )
+                    else:
+                        self._run_git_command(
+                            ["remote", "add", remote_name, publish_source["remote_url"]],
+                            cwd=temp_dir,
+                        )
+                else:
+                    remote_names = [
+                        line.strip()
+                        for line in self._run_git_command(["remote"], cwd=temp_dir).stdout.splitlines()
+                        if line.strip()
+                    ]
+                    if remote_name not in remote_names:
+                        if "origin" not in remote_names:
+                            raise RuntimeError(f"В web-репозитории не найден remote '{remote_name}'.")
+                        origin_url = self._run_git_command(
+                            ["remote", "get-url", "origin"],
+                            cwd=temp_dir,
+                        ).stdout.strip()
+                        self._run_git_command(
+                            ["remote", "add", remote_name, origin_url],
+                            cwd=temp_dir,
+                        )
+
+                repo_db_dir_path = temp_dir / Path(repo_db_dir_rel)
+                relative_paths: list[Path] = []
+                for source_path in paths_to_publish:
+                    destination_path = repo_db_dir_path / source_path.name
+                    destination_path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(source_path, destination_path)
+                    relative_paths.append(destination_path.relative_to(temp_dir))
+
+                self._run_git_command(
+                    ["add", "--", *[str(path) for path in relative_paths]],
+                    cwd=temp_dir,
+                )
+                staged_names = [
+                    line.strip()
+                    for line in self._run_git_command(
+                        ["diff", "--cached", "--name-only", "--", *[str(path) for path in relative_paths]],
+                        cwd=temp_dir,
+                    ).stdout.splitlines()
+                    if line.strip()
+                ]
+                if not staged_names:
+                    return {
+                        "performed": False,
+                        "branch_name": branch_name,
+                        "remote_name": remote_name,
+                        "subject": commit_subject,
+                        "reason": "В web-репозитории не появилось новых изменений для commit/push.",
+                    }
+
+                commit_args = ["commit", "-m", commit_subject]
+                if commit_body.strip():
+                    commit_args.extend(["-m", commit_body])
+                self._run_git_command(commit_args, cwd=temp_dir)
+                commit_hash = self._run_git_command(["rev-parse", "HEAD"], cwd=temp_dir).stdout.strip()
+                self._run_git_command(
+                    ["push", remote_name, f"HEAD:refs/heads/{branch_name}"],
+                    cwd=temp_dir,
+                )
+
+            return {
+                "performed": True,
+                "branch_name": branch_name,
+                "remote_name": remote_name,
+                "commit_hash": commit_hash,
+                "subject": commit_subject,
+                "staged_paths": [str(path) for path in relative_paths],
+            }
+
+        def _supabase_object_path(self, *, prefix: str, file_name: str) -> str:
+            clean_prefix = self._clean_relative_publish_path(prefix, label="Префикс Supabase DB")
+            if clean_prefix:
+                return f"{clean_prefix}/{file_name}"
+            return file_name
+
+        def _supabase_upload_url(
+            self,
+            *,
+            supabase_url: str,
+            bucket_name: str,
+            object_path: str,
+        ) -> str:
+            base_url = supabase_url.strip().rstrip("/")
+            if not base_url:
+                raise RuntimeError("Не указан URL Supabase.")
+            encoded_bucket = urllib.parse.quote(bucket_name.strip(), safe="")
+            encoded_object_path = urllib.parse.quote(object_path.lstrip("/"), safe="/")
+            return f"{base_url}/storage/v1/object/{encoded_bucket}/{encoded_object_path}"
+
+        def _upload_file_to_supabase_storage(
+            self,
+            *,
+            supabase_url: str,
+            service_role_key: str,
+            bucket_name: str,
+            object_path: str,
+            file_path: Path,
+        ) -> None:
+            request = urllib.request.Request(
+                self._supabase_upload_url(
+                    supabase_url=supabase_url,
+                    bucket_name=bucket_name,
+                    object_path=object_path,
+                ),
+                data=file_path.read_bytes(),
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {service_role_key}",
+                    "apikey": service_role_key,
+                    "x-upsert": "true",
+                    "Content-Type": (
+                        "application/json; charset=utf-8"
+                        if file_path.suffix.lower() == ".json"
+                        else "application/octet-stream"
+                    ),
+                },
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=120) as response:
+                    response.read()
+            except urllib.error.HTTPError as exc:
+                response_text = exc.read().decode("utf-8", errors="replace").strip()
+                details = f"{exc.code} {exc.reason}".strip()
+                if response_text:
+                    details = f"{details}: {response_text}"
+                raise RuntimeError(
+                    f"Не удалось загрузить {file_path.name} в Supabase ({object_path}): {details}"
+                ) from exc
+            except (OSError, urllib.error.URLError, TimeoutError, ValueError) as exc:
+                raise RuntimeError(
+                    f"Не удалось загрузить {file_path.name} в Supabase ({object_path}): {exc}"
+                ) from exc
+
+        def _publish_db_files_to_supabase(
+            self,
+            *,
+            supabase_url: str,
+            service_role_key: str,
+            bucket_name: str,
+            db_prefix: str,
+            db_paths: list[Path],
+        ) -> dict[str, Any]:
+            published_objects: list[str] = []
+            for db_path in db_paths:
+                object_path = self._supabase_object_path(prefix=db_prefix, file_name=db_path.name)
+                self._upload_file_to_supabase_storage(
+                    supabase_url=supabase_url,
+                    service_role_key=service_role_key,
+                    bucket_name=bucket_name,
+                    object_path=object_path,
+                    file_path=db_path,
+                )
+                published_objects.append(object_path)
+            return {
+                "performed": bool(db_paths),
+                "published_objects": published_objects,
+            }
+
+        def _publish_manifest_to_supabase(
+            self,
+            *,
+            supabase_url: str,
+            service_role_key: str,
+            bucket_name: str,
+            manifest_object_path: str,
+            manifest_path: Path,
+        ) -> str:
+            object_path = self._clean_relative_publish_path(
+                manifest_object_path,
+                label="Путь manifest.json в Supabase",
+            )
+            if not object_path:
+                raise RuntimeError("Путь manifest.json в Supabase не должен быть пустым.")
+            self._upload_file_to_supabase_storage(
+                supabase_url=supabase_url,
+                service_role_key=service_role_key,
+                bucket_name=bucket_name,
+                object_path=object_path,
+                file_path=manifest_path,
+            )
+            return object_path
+
+        def _confirmation_message_highlight_specs(self, message: str) -> list[tuple[int, str]]:
+            specs: list[tuple[int, str]] = []
+            for line_number, raw_line in enumerate(message.splitlines(), start=1):
+                line = raw_line.strip()
+                if not line:
+                    continue
+                if (
+                    "[ПЕРЕПИСАТЬ]" in raw_line
+                    or "Будут переписаны:" in raw_line
+                    or "публикация в web: ДА" in raw_line
+                    or "публикация в Supabase: ДА" in raw_line
+                    or line == "Подготовленное сообщение коммита Git:"
+                    or line.startswith("Удаленный web: будет публикация")
+                    or line.startswith("Удаленный Supabase: будет публикация")
+                ):
+                    specs.append((line_number, "accent_primary"))
+                    continue
+                if (
+                    line.startswith("план data_version:")
+                    or line.startswith("таблицы:")
+                    or line.startswith("причина:")
+                ):
+                    specs.append((line_number, "accent_secondary"))
+                    continue
+                if "ВНИМАНИЕ:" in raw_line or "ручная проверка нужна" in raw_line:
+                    specs.append((line_number, "warning"))
+            return specs
+
+        def _apply_confirmation_message_highlights(self, text_widget: tk.Text, *, message: str) -> None:
+            base_font = tkfont.nametofont(text_widget.cget("font"))
+            bold_font = base_font.copy()
+            bold_font.configure(weight="bold")
+
+            text_widget.tag_configure(
+                "accent_primary",
+                foreground="#ffb347",
+                background="#1f1f1f",
+                font=bold_font,
+            )
+            text_widget.tag_configure(
+                "accent_secondary",
+                foreground="#d97706",
+                background="#1f1f1f",
+                font=bold_font,
+            )
+            text_widget.tag_configure(
+                "warning",
+                foreground="#ff6b6b",
+                background="#1f1f1f",
+                font=bold_font,
+            )
+            text_widget._confirmation_fonts = (base_font, bold_font)
+
+            for line_number, tag_name in self._confirmation_message_highlight_specs(message):
+                text_widget.tag_add(tag_name, f"{line_number}.0", f"{line_number}.end")
 
         def _publish_files_to_git_branch(
             self,
@@ -1437,6 +2070,7 @@ class CoreDbMixin:
             scroll_y.grid(row=0, column=1, sticky="ns")
             text_widget.configure(yscrollcommand=scroll_y.set)
             text_widget.insert("1.0", message)
+            self._apply_confirmation_message_highlights(text_widget, message=message)
             text_widget.configure(state="disabled")
 
             publish_after_save_var = tk.BooleanVar(value=False)
@@ -1631,6 +2265,20 @@ class CoreDbMixin:
                 return None
             return parsed
 
+        def _snapshot_schema_version(self, snapshot: dict[str, object] | None) -> int | None:
+            if snapshot is None:
+                return None
+            value = snapshot.get("schema_version")
+            if value is None:
+                return None
+            try:
+                parsed = int(str(value).strip())
+            except (TypeError, ValueError):
+                return None
+            if parsed <= 0:
+                return None
+            return parsed
+
         def _snapshot_size_bytes(self, snapshot: dict[str, object] | None) -> int | None:
             if snapshot is None:
                 return None
@@ -1654,6 +2302,10 @@ class CoreDbMixin:
         def _format_publish_snapshot_data_version(self, snapshot: dict[str, object] | None) -> str:
             data_version = self._snapshot_data_version(snapshot)
             return str(data_version) if data_version is not None else "-"
+
+        def _format_publish_snapshot_schema_version(self, snapshot: dict[str, object] | None) -> str:
+            schema_version = self._snapshot_schema_version(snapshot)
+            return str(schema_version) if schema_version is not None else "-"
 
         def _format_publish_snapshot_size(self, snapshot: dict[str, object] | None) -> str:
             size_bytes = self._snapshot_size_bytes(snapshot)
@@ -1906,6 +2558,345 @@ class CoreDbMixin:
 
             return "\n".join(lines)
 
+        def _build_release_requires_save_text(
+            self,
+            *,
+            source_dir: Path,
+            target_dir: Path,
+            local_sync_plan: list[dict[str, Any]],
+            manifest_sync_plan: list[dict[str, Any]],
+            manifest_issue: str | None,
+        ) -> str:
+            lines: list[str] = [
+                'Перед публикацией сначала нужно выполнить "Сохранить в проект".',
+                "",
+                f"Рабочая папка: {source_dir}",
+                f"Папка проекта: {target_dir}",
+            ]
+
+            changed_local_entries = [entry for entry in local_sync_plan if bool(entry["needs_copy"])]
+            if changed_local_entries:
+                lines.append("")
+                lines.append("В рабочей папке и в web/db есть различия:")
+                for entry in changed_local_entries:
+                    source_snapshot = entry["source_snapshot"]
+                    target_snapshot = entry["target_snapshot"]
+                    reasons: list[str] = []
+                    if bool(entry["size_differs"]):
+                        reasons.append("размер")
+                    if bool(entry["date_differs"]):
+                        reasons.append("дата")
+                    reason_text = ", ".join(reasons) if reasons else "отличия"
+                    lines.append("")
+                    lines.append(f"{entry['name']}:")
+                    lines.append(
+                        "  рабочая: "
+                        f"data_version={self._format_publish_snapshot_data_version(source_snapshot)}; "
+                        f"date={self._format_publish_snapshot_date(source_snapshot)}; "
+                        f"size={self._format_publish_snapshot_size(source_snapshot)}"
+                    )
+                    if target_snapshot is None:
+                        lines.append("  web/db: файл отсутствует")
+                    else:
+                        lines.append(
+                            "  web/db: "
+                            f"data_version={self._format_publish_snapshot_data_version(target_snapshot)}; "
+                            f"date={self._format_publish_snapshot_date(target_snapshot)}; "
+                            f"size={self._format_publish_snapshot_size(target_snapshot)}"
+                        )
+                    lines.append(f"  отличается: {reason_text}")
+
+            if manifest_issue is not None or manifest_sync_plan:
+                lines.append("")
+                lines.append("Состояние локального manifest.json:")
+                if manifest_issue is not None:
+                    lines.append(manifest_issue)
+                for entry in manifest_sync_plan:
+                    local_snapshot = entry["local_snapshot"]
+                    remote_snapshot = entry["remote_snapshot"]
+                    reasons = [str(item) for item in entry.get("reasons", [])]
+                    lines.append("")
+                    lines.append(f"{entry['name']}:")
+                    if local_snapshot is None:
+                        lines.append("  web/db: файл отсутствует")
+                    else:
+                        lines.append(
+                            "  web/db: "
+                            f"schema_version={self._format_publish_snapshot_schema_version(local_snapshot)}; "
+                            f"data_version={self._format_publish_snapshot_data_version(local_snapshot)}; "
+                            f"date={self._format_publish_snapshot_date(local_snapshot)}; "
+                            f"size={self._format_publish_snapshot_size(local_snapshot)}"
+                        )
+                    if remote_snapshot is None:
+                        lines.append("  manifest.json: запись отсутствует")
+                    else:
+                        lines.append(
+                            "  manifest.json: "
+                            f"schema_version={self._format_publish_snapshot_schema_version(remote_snapshot)}; "
+                            f"data_version={self._format_publish_snapshot_data_version(remote_snapshot)}; "
+                            f"date={self._format_publish_snapshot_date(remote_snapshot)}; "
+                            f"size={self._format_publish_snapshot_size(remote_snapshot)}"
+                        )
+                    if reasons:
+                        lines.append("  отличается: " + ", ".join(reasons))
+
+            lines.append("")
+            lines.append('После "Сохранить в проект" повторите публикацию.')
+            return "\n".join(lines)
+
+        def _release_target_publish_count(self, target_state: dict[str, Any]) -> int:
+            return sum(
+                1
+                for entry in target_state.get("plan", [])
+                if bool(entry.get("needs_publish"))
+            )
+
+        def _release_target_plan_by_name(self, target_state: dict[str, Any]) -> dict[str, dict[str, Any]]:
+            return {
+                str(entry["name"]): entry
+                for entry in target_state.get("plan", [])
+                if isinstance(entry, dict) and "name" in entry
+            }
+
+        def _build_release_publish_confirmation_text(
+            self,
+            *,
+            target_dir: Path,
+            local_entries: dict[str, dict[str, object]],
+            web_target_state: dict[str, Any],
+            supabase_target_state: dict[str, Any],
+        ) -> str:
+            web_publish_count = self._release_target_publish_count(web_target_state)
+            supabase_publish_count = self._release_target_publish_count(supabase_target_state)
+            lines: list[str] = [
+                f"Локальный источник публикации: {target_dir}",
+                "",
+                f"Удаленный web: {'будет публикация' if web_publish_count else 'публикация не требуется'}",
+                f"Удаленный Supabase: {'будет публикация' if supabase_publish_count else 'публикация не требуется'}",
+            ]
+
+            if not bool(web_target_state.get("configured")):
+                lines.append(f"Удаленный web не настроен: {web_target_state.get('error', '-')}")
+            elif web_target_state.get("error"):
+                lines.append(f"Удаленный web недоступен: {web_target_state['error']}")
+
+            if not bool(supabase_target_state.get("configured")):
+                lines.append(f"Удаленный Supabase не настроен: {supabase_target_state.get('error', '-')}")
+            elif supabase_target_state.get("error"):
+                lines.append(f"Удаленный Supabase недоступен: {supabase_target_state['error']}")
+
+            lines.append("")
+            lines.append("Сравнение локального web/db с удаленными manifest.json:")
+
+            web_plan_by_name = self._release_target_plan_by_name(web_target_state)
+            supabase_plan_by_name = self._release_target_plan_by_name(supabase_target_state)
+            all_names = sorted(
+                set(local_entries) | set(web_plan_by_name) | set(supabase_plan_by_name),
+                key=str.lower,
+            )
+
+            for file_name in all_names:
+                local_snapshot = local_entries.get(file_name)
+                web_entry = web_plan_by_name.get(file_name)
+                supabase_entry = supabase_plan_by_name.get(file_name)
+                lines.append("")
+                lines.append(file_name)
+
+                if local_snapshot is None:
+                    lines.append("  локально web/db: файл отсутствует")
+                else:
+                    lines.append(
+                        "  локально web/db: "
+                        f"schema_version={self._format_publish_snapshot_schema_version(local_snapshot)}; "
+                        f"data_version={self._format_publish_snapshot_data_version(local_snapshot)}; "
+                        f"date={self._format_publish_snapshot_date(local_snapshot)}; "
+                        f"size={self._format_publish_snapshot_size(local_snapshot)}"
+                    )
+
+                if web_entry is None:
+                    lines.append("  удаленный web: сравнение недоступно")
+                    lines.append("  публикация в web: состояние не определено")
+                else:
+                    web_snapshot = web_entry.get("remote_snapshot")
+                    if web_snapshot is None:
+                        lines.append("  удаленный web: файл отсутствует")
+                    else:
+                        lines.append(
+                            "  удаленный web: "
+                            f"schema_version={self._format_publish_snapshot_schema_version(web_snapshot)}; "
+                            f"data_version={self._format_publish_snapshot_data_version(web_snapshot)}; "
+                            f"date={self._format_publish_snapshot_date(web_snapshot)}; "
+                            f"size={self._format_publish_snapshot_size(web_snapshot)}"
+                        )
+                    if bool(web_entry.get("needs_publish")):
+                        lines.append(
+                            "  публикация в web: ДА ("
+                            + ", ".join(str(item) for item in web_entry.get("reasons", []))
+                            + ")"
+                        )
+                    elif bool(web_entry.get("remote_only")):
+                        lines.append("  публикация в web: ручная проверка нужна (файл есть только на удаленной стороне)")
+                    else:
+                        lines.append("  публикация в web: НЕТ")
+
+                if supabase_entry is None:
+                    lines.append("  удаленный Supabase: сравнение недоступно")
+                    lines.append("  публикация в Supabase: состояние не определено")
+                else:
+                    supabase_snapshot = supabase_entry.get("remote_snapshot")
+                    if supabase_snapshot is None:
+                        lines.append("  удаленный Supabase: файл отсутствует")
+                    else:
+                        lines.append(
+                            "  удаленный Supabase: "
+                            f"schema_version={self._format_publish_snapshot_schema_version(supabase_snapshot)}; "
+                            f"data_version={self._format_publish_snapshot_data_version(supabase_snapshot)}; "
+                            f"date={self._format_publish_snapshot_date(supabase_snapshot)}; "
+                            f"size={self._format_publish_snapshot_size(supabase_snapshot)}"
+                        )
+                    if bool(supabase_entry.get("needs_publish")):
+                        lines.append(
+                            "  публикация в Supabase: ДА ("
+                            + ", ".join(str(item) for item in supabase_entry.get("reasons", []))
+                            + ")"
+                        )
+                    elif bool(supabase_entry.get("remote_only")):
+                        lines.append(
+                            "  публикация в Supabase: ручная проверка нужна (файл есть только на удаленной стороне)"
+                        )
+                    else:
+                        lines.append("  публикация в Supabase: НЕТ")
+
+            lines.append("")
+            lines.append("Продолжить подготовку публикации?")
+            return "\n".join(lines)
+
+        def _build_release_publish_noop_text(
+            self,
+            *,
+            target_dir: Path,
+            web_target_state: dict[str, Any],
+            supabase_target_state: dict[str, Any],
+        ) -> str:
+            lines: list[str] = [
+                "Публикация не требуется.",
+                "",
+                f"Локальный источник: {target_dir}",
+                "Локальный web/db уже совпадает с удаленным web и удаленным Supabase.",
+            ]
+            if web_target_state.get("manifest_url"):
+                lines.append(f"Удаленный web manifest: {web_target_state['manifest_url']}")
+            if supabase_target_state.get("manifest_url"):
+                lines.append(f"Удаленный Supabase manifest: {supabase_target_state['manifest_url']}")
+            return "\n".join(lines)
+
+        def _build_release_publish_blocked_text(
+            self,
+            *,
+            target_dir: Path,
+            problems: list[str],
+        ) -> str:
+            lines = [
+                "Публикация не выполнена.",
+                "",
+                f"Локальный источник: {target_dir}",
+                "Перед автоматической публикацией нужно устранить проблемы подготовки:",
+            ]
+            for problem in problems:
+                lines.append(f"- {problem}")
+            return "\n".join(lines)
+
+        def _build_release_publish_result_text(
+            self,
+            *,
+            target_dir: Path,
+            local_entries: dict[str, dict[str, object]],
+            web_target_state: dict[str, Any],
+            supabase_target_state: dict[str, Any],
+            web_result: dict[str, Any] | None,
+            supabase_result: dict[str, Any] | None,
+            web_error: str | None,
+            supabase_error: str | None,
+        ) -> str:
+            lines = [f"Локальный источник: {target_dir}", ""]
+
+            web_names = [
+                str(entry["name"])
+                for entry in self._release_target_entries_to_publish(web_target_state)
+            ]
+            lines.append("web:")
+            if web_names:
+                if web_error is not None:
+                    lines.append(f"Ошибка публикации: {web_error}")
+                elif web_result is not None and bool(web_result.get("performed")):
+                    lines.append(
+                        f"Опубликовано БД: {len(web_names)}; manifest.json: да; ветка: {web_result['branch_name']}"
+                    )
+                    lines.append(f"commit: {web_result['commit_hash']}")
+                    lines.append(web_result["subject"])
+                    for file_name in web_names:
+                        lines.append(
+                            f"- {file_name}: data_version "
+                            f"{self._format_publish_snapshot_data_version(local_entries.get(file_name))}"
+                        )
+                else:
+                    lines.append("Изменения не появились в web-репозитории, commit/push не выполнялся.")
+            else:
+                lines.append("Публикация не требовалась.")
+
+            lines.append("")
+            supabase_names = [
+                str(entry["name"])
+                for entry in self._release_target_entries_to_publish(supabase_target_state)
+            ]
+            lines.append("Supabase:")
+            if supabase_names:
+                if supabase_error is not None:
+                    lines.append(f"Ошибка публикации: {supabase_error}")
+                else:
+                    manifest_object = ""
+                    if supabase_result is not None:
+                        manifest_object = str(supabase_result.get("manifest_object_path", "") or "")
+                    lines.append(
+                        "Опубликовано БД: "
+                        f"{len(supabase_names)}; manifest.json: {'да' if manifest_object else 'нет'}"
+                    )
+                    for file_name in supabase_names:
+                        lines.append(
+                            f"- {file_name}: data_version "
+                            f"{self._format_publish_snapshot_data_version(local_entries.get(file_name))}"
+                        )
+                    if manifest_object:
+                        lines.append(f"manifest object: {manifest_object}")
+            else:
+                lines.append("Публикация не требовалась.")
+
+            return "\n".join(lines)
+
+        def _build_release_publish_placeholder_text(
+            self,
+            *,
+            target_dir: Path,
+            web_target_state: dict[str, Any],
+            supabase_target_state: dict[str, Any],
+            missing_env_keys: list[str],
+        ) -> str:
+            lines: list[str] = [
+                "Подготовка публикации завершена, но сама публикация пока не реализована.",
+                "",
+                f"Локальный источник: {target_dir}",
+                f"Будет опубликовано в web: {self._release_target_publish_count(web_target_state)} файл(ов)",
+                f"Будет опубликовано в Supabase: {self._release_target_publish_count(supabase_target_state)} файл(ов)",
+                "",
+                "Скоро здесь будет реальная публикация в web и Supabase.",
+            ]
+            if missing_env_keys:
+                lines.append("")
+                lines.append("Для полной настройки заполните env-переменные:")
+                for key in missing_env_keys:
+                    lines.append(f"- {key}")
+            return "\n".join(lines)
+
         def _copy_to_web_db(self) -> None:
             source_dir = self.work_dir
             target_dir = self.project_root / "web" / "db"
@@ -2107,6 +3098,375 @@ class CoreDbMixin:
             else:
                 self._show_publish_result_dialog(title="Сохранение не выполнено", message=result_text)
                 self._set_status("Не удалось сохранить БД в проект.")
+
+        def _prepare_release_publish(self) -> None:
+            source_dir = self.work_dir
+            target_dir = self.project_root / "web" / "db"
+            if not source_dir.exists():
+                messagebox.showwarning("Нет папки", "Рабочая папка не существует.", parent=self)
+                return
+
+            if self.dirty:
+                answer = messagebox.askyesnocancel(
+                    "Несохраненные изменения",
+                    "Перед подготовкой публикации есть несохраненные изменения.\nСохранить сейчас?",
+                    parent=self,
+                )
+                if answer is None:
+                    return
+                if answer and not self._save_all():
+                    return
+
+            source_files = sorted(source_dir.glob("revelation*.sqlite"))
+            if not source_files:
+                messagebox.showwarning("Нет БД", "В рабочей папке не найдены файлы revelation*.sqlite.", parent=self)
+                return
+
+            local_sync_plan: list[dict[str, Any]] = []
+            manifest_sync_plan: list[dict[str, Any]] = []
+            manifest_issue: str | None = None
+            local_manifest_entries: dict[str, dict[str, object]] = {}
+            web_target_state: dict[str, Any] = {
+                "display_name": "удаленный web",
+                "configured": False,
+                "manifest_url": "",
+                "plan": [],
+                "error": "Не настроен URL manifest.json.",
+            }
+            supabase_target_state: dict[str, Any] = {
+                "display_name": "удаленный Supabase",
+                "configured": False,
+                "manifest_url": "",
+                "plan": [],
+                "error": "Не настроен URL manifest.json.",
+            }
+            confirmation_text: str | None = None
+            settings: dict[str, str] = {}
+            prepare_error: str | None = None
+
+            previous_cursor = self._push_wait_cursor()
+            try:
+                local_sync_plan = self._collect_web_db_publish_plan(files=source_files, target_dir=target_dir)
+
+                source_file_names = {path.name for path in source_files}
+                extra_target_db_paths = sorted(
+                    (
+                        path
+                        for path in target_dir.glob("revelation*.sqlite")
+                        if path.name not in source_file_names
+                    ),
+                    key=lambda path: path.name.lower(),
+                )
+                for extra_path in extra_target_db_paths:
+                    local_sync_plan.append(
+                        {
+                            "name": extra_path.name,
+                            "source_path": source_dir / extra_path.name,
+                            "target_path": extra_path,
+                            "source_snapshot": None,
+                            "target_snapshot": self._read_db_version_snapshot(extra_path),
+                            "size_differs": True,
+                            "date_differs": True,
+                            "needs_copy": True,
+                            "planned_data_version": None,
+                            "changed_tables": [],
+                        }
+                    )
+                local_sync_plan.sort(key=lambda entry: str(entry["name"]).lower())
+
+                local_manifest_path = self._web_db_manifest_path(target_dir)
+                try:
+                    actual_manifest_payload = self._build_manifest_payload_for_db_paths(
+                        sorted(target_dir.glob("revelation*.sqlite"), key=lambda path: path.name.lower())
+                    )
+                    actual_manifest_entries = self._manifest_entries_from_payload(
+                        actual_manifest_payload,
+                        manifest_label="текущие БД web/db",
+                    )
+                    saved_manifest_payload = self._load_manifest_payload_from_path(local_manifest_path)
+                    local_manifest_entries = self._manifest_entries_from_payload(
+                        saved_manifest_payload,
+                        manifest_label="локальный manifest.json",
+                    )
+                    manifest_sync_plan = [
+                        entry
+                        for entry in self._collect_manifest_comparison_plan(
+                            local_entries=actual_manifest_entries,
+                            remote_entries=local_manifest_entries,
+                        )
+                        if entry["reasons"]
+                    ]
+                except (OSError, ValueError) as exc:
+                    manifest_issue = str(exc)
+
+                if any(bool(entry["needs_copy"]) for entry in local_sync_plan) or manifest_issue is not None or manifest_sync_plan:
+                    confirmation_text = self._build_release_requires_save_text(
+                        source_dir=source_dir,
+                        target_dir=target_dir,
+                        local_sync_plan=local_sync_plan,
+                        manifest_sync_plan=manifest_sync_plan,
+                        manifest_issue=manifest_issue,
+                    )
+                else:
+                    settings = self._release_publish_settings()
+
+                    web_headers = self._manifest_request_headers(
+                        api_key=settings.get("REVELATION_CONTENT_TOOL_REMOTE_WEB_APIKEY", "").strip() or None,
+                        bearer_token=settings.get("REVELATION_CONTENT_TOOL_REMOTE_WEB_BEARER_TOKEN", "").strip() or None,
+                    )
+                    supabase_headers = self._manifest_request_headers(
+                        api_key=settings.get("REVELATION_CONTENT_TOOL_REMOTE_SUPABASE_APIKEY", "").strip() or None,
+                        bearer_token=settings.get("REVELATION_CONTENT_TOOL_REMOTE_SUPABASE_BEARER_TOKEN", "").strip() or None,
+                    )
+
+                    web_manifest_url = settings.get("REVELATION_CONTENT_TOOL_REMOTE_WEB_MANIFEST_URL", "").strip()
+                    supabase_manifest_url = settings.get("REVELATION_CONTENT_TOOL_REMOTE_SUPABASE_MANIFEST_URL", "").strip()
+
+                    try:
+                        web_target_state = self._collect_manifest_target_state(
+                            display_name="удаленный web",
+                            manifest_url=web_manifest_url,
+                            headers=web_headers,
+                            local_entries=local_manifest_entries,
+                        )
+                    except (OSError, ValueError) as exc:
+                        web_target_state = {
+                            "display_name": "удаленный web",
+                            "configured": bool(web_manifest_url),
+                            "manifest_url": web_manifest_url,
+                            "plan": [],
+                            "error": str(exc),
+                        }
+
+                    try:
+                        supabase_target_state = self._collect_manifest_target_state(
+                            display_name="удаленный Supabase",
+                            manifest_url=supabase_manifest_url,
+                            headers=supabase_headers,
+                            local_entries=local_manifest_entries,
+                        )
+                    except (OSError, ValueError) as exc:
+                        supabase_target_state = {
+                            "display_name": "удаленный Supabase",
+                            "configured": bool(supabase_manifest_url),
+                            "manifest_url": supabase_manifest_url,
+                            "plan": [],
+                            "error": str(exc),
+                        }
+
+                    confirmation_text = self._build_release_publish_confirmation_text(
+                        target_dir=target_dir,
+                        local_entries=local_manifest_entries,
+                        web_target_state=web_target_state,
+                        supabase_target_state=supabase_target_state,
+                    )
+            except (OSError, sqlite3.DatabaseError, ValueError) as exc:
+                prepare_error = str(exc)
+            finally:
+                self._pop_wait_cursor(previous_cursor)
+
+            if prepare_error is not None:
+                messagebox.showerror(
+                    "Ошибка подготовки публикации",
+                    f"Не удалось подготовить публикацию.\n{prepare_error}",
+                    parent=self,
+                )
+                return
+
+            if any(bool(entry["needs_copy"]) for entry in local_sync_plan) or manifest_issue is not None or manifest_sync_plan:
+                self._show_publish_result_dialog(
+                    title="Сначала сохраните в проект",
+                    message=confirmation_text or "",
+                )
+                self._set_status('Публикация остановлена: сначала выполните "Сохранить в проект".')
+                return
+
+            web_publish_count = self._release_target_publish_count(web_target_state)
+            supabase_publish_count = self._release_target_publish_count(supabase_target_state)
+            comparison_problems: list[str] = []
+            for target_state in (web_target_state, supabase_target_state):
+                display_name = str(target_state.get("display_name", "удаленный источник"))
+                if not bool(target_state.get("configured")):
+                    comparison_problems.append(f"{display_name}: {target_state.get('error', 'источник не настроен')}")
+                elif target_state.get("error"):
+                    comparison_problems.append(f"{display_name}: {target_state['error']}")
+            if comparison_problems:
+                self._show_publish_result_dialog(
+                    title="Публикация не подготовлена",
+                    message=self._build_release_publish_blocked_text(
+                        target_dir=target_dir,
+                        problems=comparison_problems,
+                    ),
+                )
+                self._set_status("Публикация остановлена: есть проблемы подготовки удаленных источников.")
+                return
+
+            if web_publish_count == 0 and supabase_publish_count == 0:
+                self._show_publish_result_dialog(
+                    title="Публикация не требуется",
+                    message=self._build_release_publish_noop_text(
+                        target_dir=target_dir,
+                        web_target_state=web_target_state,
+                        supabase_target_state=supabase_target_state,
+                    ),
+                )
+                self._set_status("Публикация не требуется: удаленные данные уже синхронизированы.")
+                return
+
+            confirmation_result = self._ask_publish_confirmation_dialog(
+                title="Подтверждение публикации",
+                message=confirmation_text or "",
+            )
+            if not bool(confirmation_result.get("confirmed")):
+                return
+
+            publish_missing_env_keys = self._release_publish_missing_env_keys(
+                settings=settings,
+                web_required=web_publish_count > 0,
+                supabase_required=supabase_publish_count > 0,
+            )
+            if publish_missing_env_keys:
+                self._show_publish_result_dialog(
+                    title="Публикация не выполнена",
+                    message=self._build_release_publish_blocked_text(
+                        target_dir=target_dir,
+                        problems=[
+                            "Не заполнены env-переменные для реальной публикации:",
+                            *publish_missing_env_keys,
+                        ],
+                    ),
+                )
+                self._set_status("Публикация остановлена: env-настройки заполнены не полностью.")
+                return
+
+            web_result: dict[str, Any] | None = None
+            supabase_result: dict[str, Any] | None = None
+            web_error: str | None = None
+            supabase_error: str | None = None
+
+            web_db_paths = self._release_publish_target_paths(
+                target_dir=target_dir,
+                target_state=web_target_state,
+            )
+            supabase_db_paths = self._release_publish_target_paths(
+                target_dir=target_dir,
+                target_state=supabase_target_state,
+            )
+            missing_local_publish_files = [
+                str(path.name)
+                for path in [*web_db_paths, *supabase_db_paths]
+                if not path.exists()
+            ]
+            if missing_local_publish_files:
+                self._show_publish_result_dialog(
+                    title="Публикация не выполнена",
+                    message=self._build_release_publish_blocked_text(
+                        target_dir=target_dir,
+                        problems=[
+                            "Не найдены локальные файлы для публикации:",
+                            *sorted(set(missing_local_publish_files), key=str.lower),
+                        ],
+                    ),
+                )
+                self._set_status("Публикация остановлена: не найдены локальные файлы DB.")
+                return
+
+            manifest_path = self._web_db_manifest_path(target_dir)
+            if (web_publish_count > 0 or supabase_publish_count > 0) and not manifest_path.exists():
+                self._show_publish_result_dialog(
+                    title="Публикация не выполнена",
+                    message=self._build_release_publish_blocked_text(
+                        target_dir=target_dir,
+                        problems=[f"Локальный manifest.json не найден: {manifest_path}"],
+                    ),
+                )
+                self._set_status("Публикация остановлена: локальный manifest.json не найден.")
+                return
+
+            previous_cursor = self._push_wait_cursor()
+            try:
+                if supabase_db_paths:
+                    try:
+                        supabase_result = self._publish_db_files_to_supabase(
+                            supabase_url=settings["REVELATION_CONTENT_TOOL_SUPABASE_URL"].strip(),
+                            service_role_key=settings["REVELATION_CONTENT_TOOL_SUPABASE_SERVICE_ROLE_KEY"].strip(),
+                            bucket_name=settings["REVELATION_CONTENT_TOOL_SUPABASE_DB_BUCKET"].strip(),
+                            db_prefix=settings.get("REVELATION_CONTENT_TOOL_SUPABASE_DB_PREFIX", "").strip(),
+                            db_paths=supabase_db_paths,
+                        )
+                    except RuntimeError as exc:
+                        supabase_error = str(exc)
+
+                if web_db_paths and supabase_error is None:
+                    commit_subject, commit_body = self._build_release_web_commit_message(
+                        local_entries=local_manifest_entries,
+                        target_state=web_target_state,
+                    )
+                    web_paths_to_publish = [*web_db_paths, manifest_path]
+                    try:
+                        web_result = self._publish_files_to_external_git_repo(
+                            repo_source=settings["REVELATION_CONTENT_TOOL_WEB_PUBLISH_REPO_PATH"].strip(),
+                            branch_name=settings["REVELATION_CONTENT_TOOL_WEB_PUBLISH_BRANCH"].strip(),
+                            remote_name=settings["REVELATION_CONTENT_TOOL_WEB_PUBLISH_REMOTE"].strip(),
+                            repo_db_dir=settings["REVELATION_CONTENT_TOOL_WEB_PUBLISH_DB_DIR"].strip(),
+                            paths_to_publish=web_paths_to_publish,
+                            commit_subject=commit_subject,
+                            commit_body=commit_body,
+                        )
+                    except RuntimeError as exc:
+                        web_error = str(exc)
+
+                if supabase_db_paths and web_error is None and supabase_error is None:
+                    try:
+                        manifest_object_path = self._publish_manifest_to_supabase(
+                            supabase_url=settings["REVELATION_CONTENT_TOOL_SUPABASE_URL"].strip(),
+                            service_role_key=settings["REVELATION_CONTENT_TOOL_SUPABASE_SERVICE_ROLE_KEY"].strip(),
+                            bucket_name=settings["REVELATION_CONTENT_TOOL_SUPABASE_DB_BUCKET"].strip(),
+                            manifest_object_path=settings["REVELATION_CONTENT_TOOL_SUPABASE_MANIFEST_OBJECT_PATH"].strip(),
+                            manifest_path=manifest_path,
+                        )
+                        if supabase_result is None:
+                            supabase_result = {"performed": True, "published_objects": []}
+                        supabase_result["manifest_object_path"] = manifest_object_path
+                    except RuntimeError as exc:
+                        supabase_error = str(exc)
+            finally:
+                self._pop_wait_cursor(previous_cursor)
+
+            if web_db_paths and web_error is None and (web_result is None or not bool(web_result.get("performed"))):
+                web_error = "В web-репозитории не появилось новых изменений для commit/push."
+
+            result_text = self._build_release_publish_result_text(
+                target_dir=target_dir,
+                local_entries=local_manifest_entries,
+                web_target_state=web_target_state,
+                supabase_target_state=supabase_target_state,
+                web_result=web_result,
+                supabase_result=supabase_result,
+                web_error=web_error,
+                supabase_error=supabase_error,
+            )
+            success_without_errors = web_error is None and supabase_error is None
+            if success_without_errors:
+                self._show_publish_result_dialog(
+                    title="Публикация завершена",
+                    message=result_text,
+                )
+                self._set_status(
+                    "Публикация завершена: "
+                    f"web={web_publish_count} DB, Supabase={supabase_publish_count} DB."
+                )
+            else:
+                self._show_publish_result_dialog(
+                    title="Публикация завершена с предупреждениями",
+                    message=result_text,
+                )
+                status = "Публикация завершена не полностью"
+                if web_error is not None:
+                    status += ", ошибка web"
+                if supabase_error is not None:
+                    status += ", ошибка Supabase"
+                self._set_status(status + ".")
 
         def _find_localized_dbs_with_enabled_tests(self, source_dir: Path) -> list[str]:
             found: list[str] = []

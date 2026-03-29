@@ -203,7 +203,7 @@ class CoreUiMixin:
             self.btn_release_publish = tk.Button(
                 header,
                 text="Опубликовать",
-                command=self._publish_placeholder,
+                command=self._prepare_release_publish,
                 bg="#c84040",
                 activebackground="#aa3030",
                 fg="#ffffff",
@@ -1316,9 +1316,6 @@ class CoreUiMixin:
                 "image": icon,
                 "compound": "left",
             }
-
-        def _publish_placeholder(self) -> None:
-            return
 
         def _new_split_pane(
             self,
