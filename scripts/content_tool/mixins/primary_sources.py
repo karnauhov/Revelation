@@ -514,10 +514,10 @@ class PrimarySourcesMixin:
                         row.words_count,
                         row.verse_rows_count,
                         row.ocr_metric,
+                        "✓" if locale.get("ru") else "",
                         "✓" if locale.get("en") else "",
                         "✓" if locale.get("es") else "",
                         "✓" if locale.get("uk") else "",
-                        "✓" if locale.get("ru") else "",
                     ),
                 )
 

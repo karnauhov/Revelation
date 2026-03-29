@@ -7,7 +7,11 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog, ttk
 from typing import Any
 
-from ..compat import HtmlFrameWidget, md_to_html
+from ..compat import (
+    HtmlFrameWidget,
+    HtmlNotebookWidget,
+    md_to_html,
+)
 from ..models import ArticleRow, MarkdownTemplateSpec
 from ..widgets import MarkdownTemplateToolbar, revelation_markdown_template_sections
 
@@ -133,7 +137,10 @@ class ArticlesMixin:
             )
             self.btn_cancel_topic.pack(side="left", padx=(8, 0))
 
-            self.md_tabs = ttk.Notebook(right)
+            if HtmlNotebookWidget is not None:
+                self.md_tabs = HtmlNotebookWidget(right)
+            else:
+                self.md_tabs = ttk.Notebook(right)
             self.md_tabs.grid(row=8, column=0, columnspan=2, sticky="nsew", pady=(10, 0))
             self.md_tabs.bind("<<NotebookTabChanged>>", self._on_md_tab_changed)
 
@@ -161,7 +168,7 @@ class ArticlesMixin:
             self.markdown_text.configure(yscrollcommand=md_scroll.set)
             self.markdown_text.bind("<<Modified>>", self._on_markdown_modified)
 
-            if HtmlFrameWidget is not None and md_to_html is not None:
+            if HtmlFrameWidget is not None and HtmlNotebookWidget is not None and md_to_html is not None:
                 self.preview_html = HtmlFrameWidget(
                     preview_tab,
                     horizontal_scrollbar="auto",
@@ -169,15 +176,23 @@ class ArticlesMixin:
                 )
                 self.preview_html.grid(row=0, column=0, sticky="nsew")
             else:
-                missing = []
+                missing_packages = []
                 if md_to_html is None:
-                    missing.append("markdown")
+                    missing_packages.append("markdown")
                 if HtmlFrameWidget is None:
-                    missing.append("tkinterweb")
-                self.preview_unavailable_reason = (
-                    "Полный MD-предпросмотр недоступен. Установите: pip install "
-                    + " ".join(missing)
-                )
+                    missing_packages.append("tkinterweb")
+
+                if missing_packages:
+                    self.preview_unavailable_reason = (
+                        "Полный MD-предпросмотр недоступен. Установите: pip install "
+                        + " ".join(missing_packages)
+                    )
+                    if HtmlNotebookWidget is None:
+                        self.preview_unavailable_reason += (
+                            "\nТакже требуется версия tkinterweb с поддержкой класса Notebook."
+                        )
+                else:
+                    self.preview_unavailable_reason = "Полный MD-предпросмотр недоступен."
                 self.preview_text = tk.Text(preview_tab, wrap="word", state="disabled")
                 self.preview_text.grid(row=0, column=0, sticky="nsew")
                 preview_scroll = ttk.Scrollbar(preview_tab, orient="vertical", command=self.preview_text.yview)

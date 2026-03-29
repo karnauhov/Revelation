@@ -41,11 +41,13 @@ class StrongsMixin:
         def _localized_db_entries(self) -> list[tuple[str, Path]]:
             seen_langs: set[str] = set()
             entries: list[tuple[str, Path]] = []
-            for display_key, db_path in sorted(self.db_files.items(), key=lambda item: item[0]):
-                lang = display_key.split("  ", maxsplit=1)[0].strip().lower()
+            for _display_key, db_path in sorted(
+                self.db_files.items(),
+                key=lambda item: self._localized_db_path_sort_key(item[1]),
+            ):
+                lang = self._db_lang_code_from_path(db_path)
                 if not lang:
                     continue
-                lang = lang[:2]
                 if lang in seen_langs:
                     continue
                 seen_langs.add(lang)

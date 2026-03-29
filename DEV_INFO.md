@@ -8,7 +8,7 @@ This file contains short practical notes for local development, release work, an
 - Snap packaging uses `--dart-define-from-file=api-keys.json`.
 - Working database files are edited in `%Documents%/revelation/db`.
 - Web builds consume SQLite files from `web/db/`.
-- Web DB version checks prefer `web/db/manifest.json`; the content tool button `Скопировать в проект` refreshes that manifest automatically when it copies DB files into `web/db/`.
+- Web DB version checks prefer `web/db/manifest.json`; the content tool button `Сохранить в проект` compares DB size/date between working DBs and `web/db`, rewrites only changed files, increments `data_version` only for rewritten DBs, and then refreshes `manifest.json`.
 
 ## Release Versioning
 
@@ -42,6 +42,7 @@ The script keeps these files synchronized:
   - SQLite `PRAGMA user_version`
   - `db_metadata.schema_version`
   - distributed DB files in `%Documents%/revelation/db` and `web/db/`
+- Every DB schema change must also review the content tool DB comparison/publish logic in `scripts/content_tool/mixins/core_db.py`. Update that logic and `scripts/content_tool/tests/test_core_db_metadata.py` whenever the schema change affects how DB differences should be detected or summarized (for example new tables to ignore, virtual/shadow tables, metadata-only tables, or changed publish semantics).
 - After DB content updates, upload the new DB files to the Supabase storage bucket and copy the same files into `web/db/`; when you use the content tool publish button, `web/db/manifest.json` is refreshed automatically in the same step.
 
 ## Primary Sources Content

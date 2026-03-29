@@ -185,18 +185,41 @@ class CoreUiMixin:
                 command=self._refresh_db_list,
             )
             self.btn_refresh.grid(row=0, column=3, padx=(8, 0))
-            self.btn_publish = ttk.Button(
+            publish_kwargs = self._button_kwargs("publish", "Сохранить в проект")
+            self.btn_publish = tk.Button(
                 header,
-                **self._button_kwargs("publish", "Скопировать в проект"),
+                **publish_kwargs,
                 command=self._copy_to_web_db,
+                bg="#f6cf3b",
+                activebackground="#e0b91d",
+                fg="#1f1f1f",
+                activeforeground="#1f1f1f",
+                relief="raised",
+                bd=1,
+                padx=10,
+                pady=4,
             )
             self.btn_publish.grid(row=0, column=4, padx=(8, 0))
+            self.btn_release_publish = tk.Button(
+                header,
+                text="Опубликовать",
+                command=self._publish_placeholder,
+                bg="#c84040",
+                activebackground="#aa3030",
+                fg="#ffffff",
+                activeforeground="#ffffff",
+                relief="raised",
+                bd=1,
+                padx=10,
+                pady=4,
+            )
+            self.btn_release_publish.grid(row=0, column=5, padx=(8, 0))
             self.btn_add_language = ttk.Button(
                 header,
                 **self._button_kwargs("add", "Добавить язык"),
                 command=self._add_localized_language_db,
             )
-            self.btn_add_language.grid(row=0, column=5, padx=(8, 0))
+            self.btn_add_language.grid(row=0, column=6, padx=(8, 0))
 
             self.sections = ttk.Notebook(self)
             self.sections.grid(row=1, column=0, sticky="nsew", padx=10, pady=(0, 6))
@@ -577,7 +600,7 @@ class CoreUiMixin:
 
             self.primary_sources_tree = ttk.Treeview(
                 left,
-                columns=("id", "title", "group", "pages", "words", "verses", "ocr", "en", "es", "uk", "ru"),
+                columns=("id", "title", "group", "pages", "words", "verses", "ocr", "ru", "en", "es", "uk"),
                 show="headings",
                 selectmode="browse",
             )
@@ -589,10 +612,10 @@ class CoreUiMixin:
                 ("words", "Слова", 64, "center"),
                 ("verses", "Стих", 64, "center"),
                 ("ocr", "OCR", 72, "center"),
+                ("ru", "RU", 40, "center"),
                 ("en", "EN", 40, "center"),
                 ("es", "ES", 40, "center"),
                 ("uk", "UK", 40, "center"),
-                ("ru", "RU", 40, "center"),
             ]:
                 self.primary_sources_tree.heading(column, text=title)
                 self.primary_sources_tree.column(column, width=width, anchor=anchor)
@@ -1294,6 +1317,9 @@ class CoreUiMixin:
                 "compound": "left",
             }
 
+        def _publish_placeholder(self) -> None:
+            return
+
         def _new_split_pane(
             self,
             parent: tk.Misc,
@@ -1538,7 +1564,8 @@ class CoreUiMixin:
             has_loaded_db = self.connection is not None and self.current_db_path is not None
             has_common_db = self.common_connection is not None and self.common_db_path is not None
             self.db_combo.configure(state="readonly" if self.db_files else "disabled")
-            self.btn_publish.state(["!disabled"])
+            self.btn_publish.configure(state="normal")
+            self.btn_release_publish.configure(state="normal")
             self.btn_add_language.state(["!disabled"])
             self._set_editor_controls_enabled(
                 localized_enabled=has_loaded_db,

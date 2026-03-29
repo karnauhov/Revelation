@@ -116,6 +116,7 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - If you change database content or language loading behavior, check both `lib/infra/db/` and `web/db/`.
 - Database schema version is stored inside each SQLite file in `db_metadata.schema_version` (`revelation.sqlite` and `revelation_<lang>.sqlite`).
 - When changing a DB schema, update the Drift `schemaVersion`, the SQLite `PRAGMA user_version`, and `db_metadata.schema_version` in the working DB files under `%Documents%/revelation/db`, then publish/copy the updated DB files to `web/db/`.
+- When changing a DB schema, explicitly review the content tool DB comparison/publish logic in `scripts/content_tool/mixins/core_db.py`; update that logic and `scripts/content_tool/tests/test_core_db_metadata.py` whenever the schema change affects how DB differences should be detected or summarized (for example new tables to ignore, virtual/shadow tables, metadata-only tables, or changed publish semantics).
 
 ## Generated Files
 - Do not manually edit generated Drift files such as `lib/infra/db/**/*.g.dart`.
@@ -185,6 +186,7 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - Edit/version working DB files in `%Documents%/revelation/db`.
 - Keep `db_metadata` records in sync for every DB file: `schema_version`, `data_version`, `date`.
 - If the DB schema changed, update both the code schema version and the schema version stored inside the DB files before publishing.
+- If the DB schema changed, review and update the content tool DB comparison/publish logic plus `scripts/content_tool/tests/test_core_db_metadata.py` whenever publish diff detection or table summaries should change.
 - Upload the new DB file to the Supabase storage bucket used by the project.
 - Copy the DB file into `web/db/`.
 - Deploy the website content in the separate `Revelation.website` repository.

@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import json
 import re
 import shutil
 import sqlite3
+import subprocess
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -15,10 +18,13 @@ from typing import Any
 
 from ..helpers import LANGUAGE_NAME_RU_BY_CODE
 from ..models import ArticleRow, PrimarySourceSummary, ResourceRow, StrongRow
-from ..web_db_manifest import build_web_db_manifest_payload_from_paths, write_web_db_manifest
+from ..web_db_manifest import write_web_db_manifest
 
 COMMON_DB_SCHEMA_VERSION = 4
 LOCALIZED_DB_SCHEMA_VERSION = 6
+ALLOWED_GIT_PUBLISH_REMOTE_URLS = {
+    "https://github.com/karnauhov/revelation",
+}
 DB_METADATA_TABLE_NAME = "db_metadata"
 DB_METADATA_SCHEMA_VERSION_KEY = "schema_version"
 DB_METADATA_DATA_VERSION_KEY = "data_version"
@@ -30,6 +36,25 @@ class CoreDbMixin:
             if db_path.name.lower() == "revelation.sqlite":
                 return COMMON_DB_SCHEMA_VERSION
             return LOCALIZED_DB_SCHEMA_VERSION
+
+        def _db_lang_code_from_path(self, db_path: Path | None) -> str:
+            if db_path is None:
+                return ""
+            stem = db_path.stem
+            if "_" not in stem:
+                return ""
+            raw_lang = stem.split("_", maxsplit=1)[1].strip().lower()
+            if not raw_lang:
+                return ""
+            return raw_lang[:2]
+
+        def _lang_sort_key(self, lang_code: str) -> tuple[int, str]:
+            normalized = lang_code.strip().lower()[:2]
+            return (0 if normalized == "ru" else 1, normalized)
+
+        def _localized_db_path_sort_key(self, db_path: Path) -> tuple[int, str, str]:
+            lang_code = self._db_lang_code_from_path(db_path)
+            return (*self._lang_sort_key(lang_code), db_path.name.lower())
 
         def _active_connection_for_db_path(self, db_path: Path) -> sqlite3.Connection | None:
             resolved = db_path.resolve()
@@ -133,11 +158,15 @@ class CoreDbMixin:
             *,
             schema_version: int,
             connection: sqlite3.Connection | None = None,
+            increment_data_version: bool = False,
+            next_data_version: int | None = None,
+            commit: bool = False,
         ) -> dict[str, object] | None:
             con = connection
             own_connection = False
             if con is None:
                 con = sqlite3.connect(str(db_path))
+                con.row_factory = sqlite3.Row
                 own_connection = True
 
             try:
@@ -156,7 +185,14 @@ class CoreDbMixin:
                         (DB_METADATA_DATA_VERSION_KEY,),
                     ).fetchone()
                     current_data_version = int(str(row[0]).strip()) if row and str(row[0]).strip().isdigit() else 0
-                    next_data_version = current_data_version + 1
+                    resolved_data_version = current_data_version
+                    if increment_data_version:
+                        if next_data_version is not None:
+                            resolved_data_version = max(next_data_version, 1)
+                        else:
+                            resolved_data_version = current_data_version + 1
+                    if resolved_data_version <= 0:
+                        resolved_data_version = 1
                     now_iso = self._metadata_now_iso()
                     active_connection.executemany(
                         f"""
@@ -166,7 +202,7 @@ class CoreDbMixin:
                         """,
                         [
                             (DB_METADATA_SCHEMA_VERSION_KEY, str(effective_schema_version)),
-                            (DB_METADATA_DATA_VERSION_KEY, str(next_data_version)),
+                            (DB_METADATA_DATA_VERSION_KEY, str(resolved_data_version)),
                             (DB_METADATA_DATE_KEY, now_iso),
                         ],
                     )
@@ -176,6 +212,8 @@ class CoreDbMixin:
                         apply_touch(con)
                 else:
                     apply_touch(con)
+                    if commit:
+                        con.commit()
 
                 return self._read_db_version_snapshot(db_path, connection=con)
             finally:
@@ -232,7 +270,10 @@ class CoreDbMixin:
         def _refresh_db_list(self, initial_select: bool = False) -> None:
             self.db_files.clear()
             if self.work_dir.exists():
-                for db_path in sorted(self.work_dir.glob("revelation_*.sqlite")):
+                for db_path in sorted(
+                    self.work_dir.glob("revelation_*.sqlite"),
+                    key=self._localized_db_path_sort_key,
+                ):
                     key = self._display_key_for_db(db_path)
                     self.db_files[key] = db_path
 
@@ -823,13 +864,14 @@ class CoreDbMixin:
 
         def _prompt_new_language_code(self) -> str | None:
             existing_codes = {lang for lang, _ in self._localized_db_entries()}
-            options = sorted(
-                (
-                    code,
-                    name,
-                )
+            available_options = [
+                (code, name)
                 for code, name in LANGUAGE_NAME_RU_BY_CODE.items()
                 if code != "en" and code not in existing_codes
+            ]
+            options = sorted(
+                available_options,
+                key=lambda item: (*self._lang_sort_key(item[0]), item[1].lower()),
             )
             labels = [f"{code.upper()} - {name}" for code, name in options]
             code_by_label = {label: code for label, (code, _name) in zip(labels, options)}
@@ -1026,6 +1068,844 @@ class CoreDbMixin:
         def _web_db_manifest_path(self, target_dir: Path) -> Path:
             return target_dir / "manifest.json"
 
+        def _git_publish_env_path(self) -> Path:
+            return self.project_root / "env" / "content_tool_git_publish.env"
+
+        def _parse_env_file(self, env_path: Path) -> dict[str, str]:
+            values: dict[str, str] = {}
+            if not env_path.exists():
+                return values
+            for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+                line = raw_line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, value = line.split("=", maxsplit=1)
+                values[key.strip()] = value.strip()
+            return values
+
+        def _env_flag_is_enabled(self, value: str | None) -> bool:
+            if value is None:
+                return False
+            return value.strip().lower() in {"1", "true", "yes", "on"}
+
+        def _run_git_command(
+            self,
+            args: list[str],
+            *,
+            cwd: Path | None = None,
+            check: bool = True,
+        ) -> subprocess.CompletedProcess[str]:
+            completed = subprocess.run(
+                ["git", *args],
+                cwd=str(cwd or self.project_root),
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            if check and completed.returncode != 0:
+                error_text = (completed.stderr or completed.stdout or "").strip()
+                if not error_text:
+                    error_text = f"git exited with code {completed.returncode}"
+                raise RuntimeError(error_text)
+            return completed
+
+        def _quote_sqlite_identifier(self, identifier: str) -> str:
+            return '"' + identifier.replace('"', '""') + '"'
+
+        def _db_table_names(self, connection: sqlite3.Connection) -> list[str]:
+            rows = connection.execute(
+                """
+                SELECT name
+                FROM sqlite_master
+                WHERE type = 'table'
+                  AND name NOT LIKE 'sqlite_%'
+                  AND name <> ?
+                ORDER BY name COLLATE NOCASE ASC
+                """,
+                (DB_METADATA_TABLE_NAME,),
+            ).fetchall()
+            return [str(row[0]) for row in rows]
+
+        def _db_table_sql(self, connection: sqlite3.Connection, table_name: str) -> str:
+            row = connection.execute(
+                """
+                SELECT COALESCE(sql, '')
+                FROM sqlite_master
+                WHERE type = 'table' AND name = ?
+                LIMIT 1
+                """,
+                (table_name,),
+            ).fetchone()
+            return str(row[0]) if row is not None else ""
+
+        def _hash_sqlite_value(self, digest: Any, value: object) -> None:
+            if value is None:
+                digest.update(b"N")
+                return
+            if isinstance(value, bytes):
+                digest.update(b"B")
+                digest.update(len(value).to_bytes(8, byteorder="big", signed=False))
+                digest.update(value)
+                return
+            if isinstance(value, str):
+                encoded = value.encode("utf-8")
+                digest.update(b"S")
+                digest.update(len(encoded).to_bytes(8, byteorder="big", signed=False))
+                digest.update(encoded)
+                return
+            if isinstance(value, int):
+                digest.update(b"I")
+                digest.update(str(value).encode("ascii"))
+                return
+            if isinstance(value, float):
+                digest.update(b"F")
+                digest.update(repr(value).encode("ascii"))
+                return
+            encoded = repr(value).encode("utf-8")
+            digest.update(b"R")
+            digest.update(len(encoded).to_bytes(8, byteorder="big", signed=False))
+            digest.update(encoded)
+
+        def _table_content_digest(self, connection: sqlite3.Connection, table_name: str) -> str:
+            quoted_table = self._quote_sqlite_identifier(table_name)
+            cursor = connection.execute(f"SELECT * FROM {quoted_table}")
+            row_digests: list[bytes] = []
+            row_count = 0
+
+            for row in cursor:
+                row_digest = hashlib.sha256()
+                for value in row:
+                    self._hash_sqlite_value(row_digest, value)
+                    row_digest.update(b"\x1f")
+                row_digests.append(row_digest.digest())
+                row_count += 1
+
+            row_digests.sort()
+            digest = hashlib.sha256()
+            digest.update(self._db_table_sql(connection, table_name).encode("utf-8"))
+            digest.update(b"\x1e")
+            digest.update(str(row_count).encode("ascii"))
+            digest.update(b"\x1e")
+            for row_digest in row_digests:
+                digest.update(row_digest)
+            return digest.hexdigest()
+
+        def _compare_db_tables(self, source_db_path: Path, target_db_path: Path | None) -> list[str]:
+            if target_db_path is None or not target_db_path.exists():
+                source_con = sqlite3.connect(str(source_db_path))
+                try:
+                    return self._db_table_names(source_con)
+                finally:
+                    source_con.close()
+
+            source_con = sqlite3.connect(str(source_db_path))
+            target_con = sqlite3.connect(str(target_db_path))
+            try:
+                source_tables = self._db_table_names(source_con)
+                target_tables = self._db_table_names(target_con)
+                all_tables = sorted(set(source_tables) | set(target_tables), key=str.lower)
+                changed_tables: list[str] = []
+
+                for table_name in all_tables:
+                    if table_name not in source_tables or table_name not in target_tables:
+                        changed_tables.append(table_name)
+                        continue
+                    if self._db_table_sql(source_con, table_name) != self._db_table_sql(target_con, table_name):
+                        changed_tables.append(table_name)
+                        continue
+                    if self._table_content_digest(source_con, table_name) != self._table_content_digest(target_con, table_name):
+                        changed_tables.append(table_name)
+
+                return changed_tables
+            finally:
+                source_con.close()
+                target_con.close()
+
+        def _relative_repo_path(self, path: Path) -> Path:
+            return path.resolve().relative_to(self.project_root.resolve())
+
+        def _normalize_git_remote_url(self, remote_url: str) -> str:
+            normalized = remote_url.strip()
+            if normalized.startswith("git@github.com:"):
+                normalized = "https://github.com/" + normalized.split(":", maxsplit=1)[1]
+            normalized = normalized.rstrip("/")
+            if normalized.endswith(".git"):
+                normalized = normalized[:-4]
+            return normalized.lower()
+
+        def _git_publish_settings(self) -> dict[str, str] | None:
+            env_path = self._git_publish_env_path()
+            values = self._parse_env_file(env_path)
+            if not self._env_flag_is_enabled(values.get("REVELATION_CONTENT_TOOL_GIT_PUBLISH_ENABLED")):
+                return None
+            remote_name = values.get("REVELATION_CONTENT_TOOL_GIT_REMOTE", "").strip() or "origin"
+            return {
+                "remote_name": remote_name,
+                "env_path": str(env_path),
+            }
+
+        def _git_publish_option_state(self) -> dict[str, Any]:
+            env_path = self._git_publish_env_path()
+            settings = self._git_publish_settings()
+            if settings is None:
+                return {
+                    "enabled": False,
+                    "reason": (
+                        "Git-публикация по умолчанию отключена.\n"
+                        f"Создайте локальный файл: {env_path}\n"
+                        "со следующим содержимым:\n"
+                        "REVELATION_CONTENT_TOOL_GIT_PUBLISH_ENABLED=1\n"
+                        "REVELATION_CONTENT_TOOL_GIT_REMOTE=origin"
+                    ),
+                }
+
+            try:
+                repo_root = Path(
+                    self._run_git_command(["rev-parse", "--show-toplevel"]).stdout.strip()
+                ).resolve()
+                if repo_root != self.project_root.resolve():
+                    return {
+                        "enabled": False,
+                        "reason": f"Корень Git-репозитория не совпадает с project_root: {repo_root}",
+                    }
+                remote_names = [
+                    line.strip()
+                    for line in self._run_git_command(["remote"]).stdout.splitlines()
+                    if line.strip()
+                ]
+                remote_name = settings["remote_name"]
+                if remote_name not in remote_names:
+                    return {
+                        "enabled": False,
+                        "reason": f"Настроенный remote '{remote_name}' не найден в этом репозитории.",
+                    }
+                remote_url = self._run_git_command(["remote", "get-url", remote_name]).stdout.strip()
+                normalized_remote_url = self._normalize_git_remote_url(remote_url)
+                if normalized_remote_url not in ALLOWED_GIT_PUBLISH_REMOTE_URLS:
+                    return {
+                        "enabled": False,
+                        "reason": (
+                            "Git-публикация разрешена только для официального remote репозитория Revelation.\n"
+                            f"Текущий URL remote: {remote_url}"
+                        ),
+                    }
+                branches = [
+                    line.strip()
+                    for line in self._run_git_command(
+                        ["for-each-ref", "--format=%(refname:short)", "refs/heads"]
+                    ).stdout.splitlines()
+                    if line.strip()
+                ]
+                current_branch = self._run_git_command(["branch", "--show-current"]).stdout.strip()
+            except RuntimeError as exc:
+                return {
+                    "enabled": False,
+                    "reason": f"Git-публикация недоступна: {exc}",
+                }
+
+            ordered_branches: list[str] = []
+            for branch_name in [current_branch, *branches]:
+                if branch_name and branch_name not in ordered_branches:
+                    ordered_branches.append(branch_name)
+
+            if not ordered_branches:
+                return {
+                    "enabled": False,
+                    "reason": "Для Git-публикации не найдено ни одной локальной ветки.",
+                }
+
+            return {
+                "enabled": True,
+                "remote_name": settings["remote_name"],
+                "remote_url": remote_url,
+                "branches": ordered_branches,
+                "default_branch": current_branch or ordered_branches[0],
+                "env_path": settings["env_path"],
+            }
+
+        def _build_git_publish_commit_message(
+            self,
+            *,
+            successful_results: list[dict[str, Any]],
+        ) -> tuple[str, str]:
+            subject = "Update published web databases [skip ci]"
+            body_lines: list[str] = []
+            for result in successful_results:
+                changed_tables = [str(name) for name in result.get("changed_tables", [])]
+                table_text = ", ".join(changed_tables) if changed_tables else "metadata only"
+                body_lines.append(f"{result['name']}: {table_text}")
+            body = "\n".join(body_lines)
+            return subject, body
+
+        def _format_git_commit_message_preview(self, *, subject: str, body: str) -> str:
+            lines = [subject]
+            if body.strip():
+                lines.append("")
+                lines.extend(body.splitlines())
+            return "\n".join(lines)
+
+        def _publish_files_to_git_branch(
+            self,
+            *,
+            branch_name: str,
+            remote_name: str,
+            paths_to_publish: list[Path],
+            successful_results: list[dict[str, Any]],
+            commit_subject: str | None = None,
+            commit_body: str | None = None,
+        ) -> dict[str, str]:
+            subject = commit_subject
+            body = commit_body
+            if subject is None or body is None:
+                subject, body = self._build_git_publish_commit_message(successful_results=successful_results)
+            relative_paths = [self._relative_repo_path(path) for path in paths_to_publish]
+
+            with tempfile.TemporaryDirectory(prefix="revelation-content-tool-git-") as temp_dir_str:
+                temp_dir = Path(temp_dir_str)
+                self._run_git_command(
+                    ["worktree", "add", "--detach", str(temp_dir), f"refs/heads/{branch_name}"]
+                )
+                try:
+                    for relative_path in relative_paths:
+                        source_path = self.project_root / relative_path
+                        destination_path = temp_dir / relative_path
+                        destination_path.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(source_path, destination_path)
+
+                    add_args = ["add", "--", *[str(path) for path in relative_paths]]
+                    self._run_git_command(add_args, cwd=temp_dir)
+
+                    staged_names = [
+                        line.strip()
+                        for line in self._run_git_command(
+                            ["diff", "--cached", "--name-only", "--", *[str(path) for path in relative_paths]],
+                            cwd=temp_dir,
+                        ).stdout.splitlines()
+                        if line.strip()
+                    ]
+                    if not staged_names:
+                        raise RuntimeError("Не удалось подготовить изменения для Git-публикации.")
+
+                    commit_args = ["commit", "-m", subject]
+                    if body:
+                        commit_args.extend(["-m", body])
+                    self._run_git_command(commit_args, cwd=temp_dir)
+                    commit_hash = self._run_git_command(["rev-parse", "HEAD"], cwd=temp_dir).stdout.strip()
+                    self._run_git_command(
+                        ["push", remote_name, f"HEAD:refs/heads/{branch_name}"],
+                        cwd=temp_dir,
+                    )
+                finally:
+                    self._run_git_command(["worktree", "remove", "--force", str(temp_dir)], check=False)
+
+            return {
+                "branch_name": branch_name,
+                "remote_name": remote_name,
+                "commit_hash": commit_hash,
+                "subject": subject,
+            }
+
+        def _ask_publish_confirmation_dialog(
+            self,
+            *,
+            title: str,
+            message: str,
+            git_option_state: dict[str, Any] | None = None,
+        ) -> dict[str, Any]:
+            decision: dict[str, Any] = {
+                "confirmed": False,
+                "git_publish": False,
+                "branch_name": "",
+            }
+
+            dialog = tk.Toplevel(self)
+            dialog.title(title)
+            dialog.transient(self)
+            dialog.grab_set()
+            dialog.minsize(960, 480)
+
+            container = ttk.Frame(dialog, padding=10)
+            container.grid(row=0, column=0, sticky="nsew")
+            dialog.columnconfigure(0, weight=1)
+            dialog.rowconfigure(0, weight=1)
+            container.columnconfigure(0, weight=1)
+            container.rowconfigure(0, weight=1)
+
+            text_widget = tk.Text(container, wrap="word", undo=False)
+            text_widget.grid(row=0, column=0, sticky="nsew")
+            scroll_y = ttk.Scrollbar(container, orient="vertical", command=text_widget.yview)
+            scroll_y.grid(row=0, column=1, sticky="ns")
+            text_widget.configure(yscrollcommand=scroll_y.set)
+            text_widget.insert("1.0", message)
+            text_widget.configure(state="disabled")
+
+            publish_after_save_var = tk.BooleanVar(value=False)
+            branch_var = tk.StringVar()
+            branch_combo: ttk.Combobox | None = None
+
+            if git_option_state is not None:
+                git_frame = ttk.LabelFrame(container, text="Git-публикация", padding=10)
+                git_frame.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(10, 0))
+                git_frame.columnconfigure(1, weight=1)
+
+                if bool(git_option_state.get("enabled")):
+                    branches = [str(item) for item in git_option_state.get("branches", [])]
+                    default_branch = str(git_option_state.get("default_branch", "") or "")
+                    branch_var.set(default_branch)
+
+                    ttk.Checkbutton(
+                        git_frame,
+                        text="После сохранения выполнить commit и push только измененных файлов публикации",
+                        variable=publish_after_save_var,
+                    ).grid(row=0, column=0, columnspan=2, sticky="w")
+                    ttk.Label(git_frame, text="Целевая ветка:").grid(
+                        row=1,
+                        column=0,
+                        sticky="w",
+                        padx=(0, 8),
+                        pady=(8, 0),
+                    )
+                    branch_combo = ttk.Combobox(
+                        git_frame,
+                        textvariable=branch_var,
+                        values=branches,
+                        state="disabled",
+                    )
+                    branch_combo.grid(row=1, column=1, sticky="ew", pady=(8, 0))
+                    ttk.Label(
+                        git_frame,
+                        text=f"Удаленный репозиторий (remote): {git_option_state['remote_name']}",
+                    ).grid(row=2, column=0, columnspan=2, sticky="w", pady=(8, 0))
+
+                    def sync_git_controls() -> None:
+                        assert branch_combo is not None
+                        branch_combo.configure(state="readonly" if publish_after_save_var.get() else "disabled")
+
+                    publish_after_save_var.trace_add("write", lambda *_args: sync_git_controls())
+                    sync_git_controls()
+                else:
+                    ttk.Label(
+                        git_frame,
+                        text=str(git_option_state.get("reason", "Git-публикация недоступна.")),
+                        justify="left",
+                    ).grid(row=0, column=0, sticky="w")
+
+            buttons = ttk.Frame(container)
+            buttons.grid(row=2, column=0, columnspan=2, sticky="e", pady=(10, 0))
+
+            def confirm() -> None:
+                if bool(git_option_state and git_option_state.get("enabled")) and publish_after_save_var.get():
+                    selected_branch = branch_var.get().strip()
+                    branches = [str(item) for item in git_option_state.get("branches", [])]
+                    if selected_branch not in branches:
+                        messagebox.showwarning(
+                            "Некорректная ветка",
+                            "Перед Git-публикацией выберите целевую ветку из списка.",
+                            parent=dialog,
+                        )
+                        return
+                    decision["git_publish"] = True
+                    decision["branch_name"] = selected_branch
+                decision["confirmed"] = True
+                dialog.destroy()
+
+            def decline() -> None:
+                dialog.destroy()
+
+            btn_confirm = ttk.Button(buttons, text="Подтвердить", command=confirm)
+            btn_confirm.pack(side="left")
+            ttk.Button(buttons, text="Отмена", command=decline).pack(side="left", padx=(8, 0))
+
+            dialog.bind("<Return>", lambda _event: confirm())
+            dialog.bind("<Escape>", lambda _event: decline())
+            dialog.protocol("WM_DELETE_WINDOW", decline)
+
+            # Intentionally ~1.5x wider than regular text dialogs for publish details.
+            self._fit_and_center_toplevel(
+                dialog,
+                min_width=960,
+                max_width=1560,
+                min_height=480,
+                max_height=980,
+                pad_x=140,
+                pad_y=120,
+            )
+            btn_confirm.focus_set()
+            self.wait_window(dialog)
+            return decision
+
+        def _show_publish_result_dialog(self, *, title: str, message: str) -> None:
+            dialog = tk.Toplevel(self)
+            dialog.title(title)
+            dialog.transient(self)
+            dialog.grab_set()
+            dialog.minsize(960, 420)
+
+            container = ttk.Frame(dialog, padding=10)
+            container.grid(row=0, column=0, sticky="nsew")
+            dialog.columnconfigure(0, weight=1)
+            dialog.rowconfigure(0, weight=1)
+            container.columnconfigure(0, weight=1)
+            container.rowconfigure(0, weight=1)
+
+            text_widget = tk.Text(container, wrap="word", undo=False)
+            text_widget.grid(row=0, column=0, sticky="nsew")
+            scroll_y = ttk.Scrollbar(container, orient="vertical", command=text_widget.yview)
+            scroll_y.grid(row=0, column=1, sticky="ns")
+            text_widget.configure(yscrollcommand=scroll_y.set)
+            text_widget.insert("1.0", message)
+            text_widget.configure(state="disabled")
+
+            buttons = ttk.Frame(container)
+            buttons.grid(row=1, column=0, columnspan=2, sticky="e", pady=(10, 0))
+            ok_button = ttk.Button(buttons, text="OK", command=dialog.destroy)
+            ok_button.pack(side="left")
+
+            dialog.bind("<Return>", lambda _event: dialog.destroy())
+            dialog.bind("<Escape>", lambda _event: dialog.destroy())
+            dialog.protocol("WM_DELETE_WINDOW", dialog.destroy)
+
+            # Intentionally ~1.5x wider than regular text dialogs for publish details.
+            self._fit_and_center_toplevel(
+                dialog,
+                min_width=960,
+                max_width=1560,
+                min_height=420,
+                max_height=980,
+                pad_x=140,
+                pad_y=120,
+            )
+            ok_button.focus_set()
+            self.wait_window(dialog)
+
+        def _push_wait_cursor(self) -> str:
+            try:
+                previous_cursor = str(self.cget("cursor") or "")
+            except tk.TclError:
+                previous_cursor = ""
+            try:
+                self.configure(cursor="watch")
+                self.update_idletasks()
+            except tk.TclError:
+                pass
+            return previous_cursor
+
+        def _pop_wait_cursor(self, previous_cursor: str) -> None:
+            try:
+                self.configure(cursor=previous_cursor)
+                self.update_idletasks()
+            except tk.TclError:
+                pass
+
+        def _vacuum_db_before_publish(
+            self,
+            db_path: Path,
+            *,
+            connection: sqlite3.Connection | None = None,
+        ) -> None:
+            con = connection
+            own_connection = False
+            if con is None:
+                con = sqlite3.connect(str(db_path))
+                own_connection = True
+            try:
+                con.commit()
+                con.execute("VACUUM")
+                if not own_connection:
+                    con.commit()
+            finally:
+                if own_connection:
+                    con.close()
+
+        def _snapshot_data_version(self, snapshot: dict[str, object] | None) -> int | None:
+            if snapshot is None:
+                return None
+            value = snapshot.get("data_version")
+            if value is None:
+                return None
+            try:
+                parsed = int(str(value).strip())
+            except (TypeError, ValueError):
+                return None
+            if parsed <= 0:
+                return None
+            return parsed
+
+        def _snapshot_size_bytes(self, snapshot: dict[str, object] | None) -> int | None:
+            if snapshot is None:
+                return None
+            value = snapshot.get("size_bytes")
+            if value is None:
+                return None
+            try:
+                return int(value)
+            except (TypeError, ValueError):
+                return None
+
+        def _snapshot_date_iso(self, snapshot: dict[str, object] | None) -> str | None:
+            if snapshot is None:
+                return None
+            value = snapshot.get("date_iso")
+            if value is None:
+                return None
+            text = str(value).strip()
+            return text or None
+
+        def _format_publish_snapshot_data_version(self, snapshot: dict[str, object] | None) -> str:
+            data_version = self._snapshot_data_version(snapshot)
+            return str(data_version) if data_version is not None else "-"
+
+        def _format_publish_snapshot_size(self, snapshot: dict[str, object] | None) -> str:
+            size_bytes = self._snapshot_size_bytes(snapshot)
+            return f"{size_bytes} байт" if size_bytes is not None else "-"
+
+        def _format_publish_snapshot_date(self, snapshot: dict[str, object] | None) -> str:
+            date_iso = self._snapshot_date_iso(snapshot)
+            return self._format_db_date_for_ui(date_iso)
+
+        def _format_publish_size_delta(
+            self,
+            before_snapshot: dict[str, object] | None,
+            after_snapshot: dict[str, object] | None,
+        ) -> str:
+            before_size = self._snapshot_size_bytes(before_snapshot)
+            after_size = self._snapshot_size_bytes(after_snapshot)
+            if after_size is None:
+                return "-"
+            if before_size is None:
+                return f"+{after_size} байт"
+            delta = after_size - before_size
+            if delta == 0:
+                return "0 байт"
+            return f"{delta:+d} байт"
+
+        def _collect_web_db_publish_plan(
+            self,
+            *,
+            files: list[Path],
+            target_dir: Path,
+        ) -> list[dict[str, Any]]:
+            plan: list[dict[str, Any]] = []
+            for source_path in files:
+                source_snapshot = self._read_db_version_snapshot(source_path)
+                if source_snapshot is None:
+                    raise ValueError(f"Не удалось прочитать метаданные {source_path.name}.")
+                target_path = target_dir / source_path.name
+                target_snapshot = self._read_db_version_snapshot(target_path)
+
+                source_size = self._snapshot_size_bytes(source_snapshot)
+                target_size = self._snapshot_size_bytes(target_snapshot)
+                source_date = self._snapshot_date_iso(source_snapshot)
+                target_date = self._snapshot_date_iso(target_snapshot)
+
+                size_differs = target_snapshot is None or source_size != target_size
+                date_differs = target_snapshot is None or source_date != target_date
+                needs_copy = target_snapshot is None or size_differs or date_differs
+
+                web_data_version = self._snapshot_data_version(target_snapshot)
+                source_data_version = self._snapshot_data_version(source_snapshot)
+                if web_data_version is not None:
+                    planned_data_version = web_data_version + 1
+                elif source_data_version is not None:
+                    planned_data_version = source_data_version + 1
+                else:
+                    planned_data_version = 1
+
+                changed_tables: list[str] = []
+                if needs_copy:
+                    changed_tables = self._compare_db_tables(source_path, target_path if target_path.exists() else None)
+
+                plan.append(
+                    {
+                        "name": source_path.name,
+                        "source_path": source_path,
+                        "target_path": target_path,
+                        "source_snapshot": source_snapshot,
+                        "target_snapshot": target_snapshot,
+                        "size_differs": size_differs,
+                        "date_differs": date_differs,
+                        "needs_copy": needs_copy,
+                        "planned_data_version": planned_data_version,
+                        "changed_tables": changed_tables,
+                    }
+                )
+
+            return plan
+
+        def _build_publish_confirmation_text(
+            self,
+            *,
+            source_dir: Path,
+            target_dir: Path,
+            plan: list[dict[str, Any]],
+            test_enabled_db_files: list[str],
+            prepared_git_commit_message: str | None = None,
+        ) -> str:
+            changed = [entry for entry in plan if bool(entry["needs_copy"])]
+            unchanged_count = len(plan) - len(changed)
+            lines: list[str] = [
+                f"Рабочая папка: {source_dir}",
+                f"Папка проекта: {target_dir}",
+                "",
+                f"Найдено БД: {len(plan)}. Будут переписаны: {len(changed)}.",
+            ]
+            if unchanged_count > 0:
+                lines.append(f"Без изменений: {unchanged_count}.")
+
+            lines.append("")
+            lines.append("Сравнение web/db -> рабочая БД:")
+
+            for entry in plan:
+                source_snapshot = entry["source_snapshot"]
+                target_snapshot = entry["target_snapshot"]
+                name = str(entry["name"])
+                status = "ПЕРЕПИСАТЬ" if bool(entry["needs_copy"]) else "без изменений"
+                lines.append("")
+                lines.append(f"{name} [{status}]")
+                if target_snapshot is None:
+                    lines.append("  web/db: файл отсутствует")
+                else:
+                    lines.append(
+                        "  web/db: "
+                        f"data_version={self._format_publish_snapshot_data_version(target_snapshot)}; "
+                        f"date={self._format_publish_snapshot_date(target_snapshot)}; "
+                        f"size={self._format_publish_snapshot_size(target_snapshot)}"
+                    )
+                lines.append(
+                    "  рабочая: "
+                    f"data_version={self._format_publish_snapshot_data_version(source_snapshot)}; "
+                    f"date={self._format_publish_snapshot_date(source_snapshot)}; "
+                    f"size={self._format_publish_snapshot_size(source_snapshot)}"
+                )
+
+                if bool(entry["needs_copy"]):
+                    reasons: list[str] = []
+                    if bool(entry["size_differs"]):
+                        reasons.append("размер")
+                    if bool(entry["date_differs"]):
+                        reasons.append("дата")
+                    reasons_text = ", ".join(reasons) if reasons else "явное отличие"
+                    lines.append(f"  причина: отличается {reasons_text}")
+                    lines.append(
+                        "  план data_version: "
+                        f"{self._format_publish_snapshot_data_version(target_snapshot)} -> "
+                        f"{entry['planned_data_version']}"
+                    )
+                    changed_tables = [str(name) for name in entry.get("changed_tables", [])]
+                    if changed_tables:
+                        lines.append("  таблицы: " + ", ".join(changed_tables))
+                    else:
+                        lines.append("  таблицы: только db_metadata")
+
+            if test_enabled_db_files:
+                lines.append("")
+                lines.append("ВНИМАНИЕ: найдены локализованные БД с включенными тестовыми статьями:")
+                for file_name in test_enabled_db_files:
+                    lines.append(f"- {file_name}")
+
+            if prepared_git_commit_message is not None:
+                lines.append("")
+                lines.append("Подготовленное сообщение коммита Git:")
+                lines.append(prepared_git_commit_message)
+
+            lines.append("")
+            lines.append("Продолжить сохранение в проект?")
+            return "\n".join(lines)
+
+        def _build_publish_noop_text(
+            self,
+            *,
+            target_dir: Path,
+            plan: list[dict[str, Any]],
+        ) -> str:
+            lines: list[str] = [
+                "Сохранение не требуется.",
+                "",
+                "Все файлы БД в рабочей папке и в web/db совпадают по размеру и дате.",
+                f"Папка web/db: {target_dir}",
+                "",
+                "Проверенные файлы:",
+            ]
+            for entry in plan:
+                source_snapshot = entry["source_snapshot"]
+                lines.append(
+                    f"- {entry['name']}: "
+                    f"size={self._format_publish_snapshot_size(source_snapshot)}, "
+                    f"date={self._format_publish_snapshot_date(source_snapshot)}"
+                )
+            return "\n".join(lines)
+
+        def _build_publish_result_text(
+            self,
+            *,
+            target_dir: Path,
+            successful_results: list[dict[str, Any]],
+            failed_results: list[str],
+            manifest_error: str | None,
+            git_result: dict[str, str] | None = None,
+            git_error: str | None = None,
+        ) -> str:
+            lines: list[str] = [f"Папка web/db: {target_dir}", ""]
+
+            if successful_results:
+                lines.append(f"Успешно переписано: {len(successful_results)}")
+                for result in successful_results:
+                    before_snapshot = result["before_snapshot"]
+                    after_snapshot = result["after_snapshot"]
+                    lines.append("")
+                    lines.append(f"{result['name']}:")
+                    lines.append(
+                        "  data_version: "
+                        f"{self._format_publish_snapshot_data_version(before_snapshot)} -> "
+                        f"{self._format_publish_snapshot_data_version(after_snapshot)}"
+                    )
+                    lines.append(
+                        "  date: "
+                        f"{self._format_publish_snapshot_date(before_snapshot)} -> "
+                        f"{self._format_publish_snapshot_date(after_snapshot)}"
+                    )
+                    lines.append(
+                        "  size: "
+                        f"{self._format_publish_snapshot_size(before_snapshot)} -> "
+                        f"{self._format_publish_snapshot_size(after_snapshot)} "
+                        f"({self._format_publish_size_delta(before_snapshot, after_snapshot)})"
+                    )
+                    changed_tables = [str(name) for name in result.get("changed_tables", [])]
+                    lines.append(
+                        "  таблицы: " + (", ".join(changed_tables) if changed_tables else "только db_metadata")
+                    )
+            else:
+                lines.append("Не удалось переписать ни одной БД.")
+
+            if failed_results:
+                lines.append("")
+                lines.append(f"Ошибки ({len(failed_results)}):")
+                for item in failed_results:
+                    lines.append(f"- {item}")
+
+            if manifest_error is not None:
+                lines.append("")
+                lines.append("manifest.json не обновлен:")
+                lines.append(manifest_error)
+
+            if git_result is not None:
+                lines.append("")
+                lines.append("Git-публикация:")
+                lines.append(f"ветка: {git_result['branch_name']}")
+                lines.append(f"remote: {git_result['remote_name']}")
+                lines.append(f"коммит: {git_result['commit_hash']}")
+                lines.append(git_result["subject"])
+                lines.append(
+                    "примечание: удаленная ветка обновлена; текущая локальная ветка в рабочем дереве не изменялась в целях безопасности"
+                )
+
+            if git_error is not None:
+                lines.append("")
+                lines.append("Ошибка Git-публикации:")
+                lines.append(git_error)
+
+            return "\n".join(lines)
+
         def _copy_to_web_db(self) -> None:
             source_dir = self.work_dir
             target_dir = self.project_root / "web" / "db"
@@ -1036,7 +1916,7 @@ class CoreDbMixin:
             if self.dirty:
                 answer = messagebox.askyesnocancel(
                     "Несохраненные изменения",
-                    "Перед копированием есть несохраненные изменения.\nСохранить сейчас?",
+                    "Перед сохранением в проект есть несохраненные изменения.\nСохранить сейчас?",
                     parent=self,
                 )
                 if answer is None:
@@ -1044,79 +1924,189 @@ class CoreDbMixin:
                 if answer and not self._save_all():
                     return
 
-            test_enabled_db_files = self._find_localized_dbs_with_enabled_tests(source_dir)
-
             files = sorted(source_dir.glob("revelation*.sqlite"))
             if not files:
                 messagebox.showwarning("Нет БД", "В рабочей папке не найдены файлы revelation*.sqlite.", parent=self)
                 return
 
+            prepare_error: str | None = None
+            test_enabled_db_files: list[str] = []
+            publish_plan: list[dict[str, Any]] = []
+            files_to_copy: list[dict[str, Any]] = []
+            git_option_state: dict[str, Any] = {"enabled": False}
+            prepared_git_commit_subject: str | None = None
+            prepared_git_commit_body: str | None = None
+            prepared_git_commit_message: str | None = None
+            confirmation_text: str | None = None
+
+            previous_cursor = self._push_wait_cursor()
             try:
-                build_web_db_manifest_payload_from_paths(files)
+                test_enabled_db_files = self._find_localized_dbs_with_enabled_tests(source_dir)
+                publish_plan = self._collect_web_db_publish_plan(files=files, target_dir=target_dir)
+                files_to_copy = [entry for entry in publish_plan if bool(entry["needs_copy"])]
+                if files_to_copy:
+                    git_option_state = self._git_publish_option_state()
+                    if bool(git_option_state.get("enabled")):
+                        prepared_git_commit_subject, prepared_git_commit_body = self._build_git_publish_commit_message(
+                            successful_results=files_to_copy
+                        )
+                        prepared_git_commit_message = self._format_git_commit_message_preview(
+                            subject=prepared_git_commit_subject,
+                            body=prepared_git_commit_body,
+                        )
+
+                    confirmation_text = self._build_publish_confirmation_text(
+                        source_dir=source_dir,
+                        target_dir=target_dir,
+                        plan=publish_plan,
+                        test_enabled_db_files=test_enabled_db_files,
+                        prepared_git_commit_message=prepared_git_commit_message,
+                    )
             except (OSError, sqlite3.DatabaseError, ValueError) as exc:
+                prepare_error = str(exc)
+            finally:
+                self._pop_wait_cursor(previous_cursor)
+
+            if prepare_error is not None:
                 messagebox.showerror(
-                    "Ошибка manifest.json",
+                    "Ошибка сравнения БД",
                     (
-                        "Не удалось подготовить manifest.json перед копированием.\n"
-                        f"{exc}"
+                        "Не удалось сравнить рабочие БД и web/db.\n"
+                        f"{prepare_error}"
                     ),
                     parent=self,
                 )
                 return
 
-            confirmation_text = (
-                f"Переписать {len(files)} файл(ов) из:\n{source_dir}\n\n"
-                f"в:\n{target_dir}\n\n"
-                "Это только копирование файлов в web/db."
-            )
-            confirmation_text += (
-                "\n\n"
-                "SQLite-файлы будут скопированы в web/db, "
-                "а manifest.json будет пересоздан по метаданным из этих БД."
-            )
-            if test_enabled_db_files:
-                test_block = "\n".join(f"- {name}" for name in test_enabled_db_files)
-                confirmation_text += (
-                    "\n\n"
-                    "ВНИМАНИЕ: найдены локализованные БД с включенными тестовыми статьями.\n"
-                    "Они тоже будут опубликованы:\n"
-                    f"{test_block}"
+            if not files_to_copy:
+                self._show_publish_result_dialog(
+                    title="Сохранение не требуется",
+                    message=self._build_publish_noop_text(target_dir=target_dir, plan=publish_plan),
                 )
+                self._set_status("Сохранение в проект не требуется: БД уже синхронизированы.")
+                return
 
-            if not messagebox.askyesno(
-                "Подтверждение",
-                confirmation_text,
-                parent=self,
-            ):
+            confirmation_result = self._ask_publish_confirmation_dialog(
+                title="Подтверждение сохранения",
+                message=confirmation_text or "",
+                git_option_state=git_option_state,
+            )
+            if not bool(confirmation_result.get("confirmed")):
                 return
 
             target_dir.mkdir(parents=True, exist_ok=True)
-            copied_files: list[Path] = []
-            for src in files:
-                target_path = target_dir / src.name
-                shutil.copy2(src, target_path)
-                copied_files.append(target_path)
-            manifest_path = self._web_db_manifest_path(target_dir)
-            try:
-                write_web_db_manifest(manifest_path, db_paths=copied_files)
-            except (OSError, sqlite3.DatabaseError, ValueError) as exc:
-                messagebox.showerror(
-                    "Ошибка manifest.json",
-                    (
-                        "SQLite-файлы были скопированы, но manifest.json не обновлен.\n"
-                        "Исправьте проблему и повторите копирование.\n\n"
-                        f"{exc}"
-                    ),
-                    parent=self,
-                )
-                self._set_status(
-                    f"SQLite-файлы скопированы в {target_dir}, но manifest.json не обновлен."
-                )
-                return
+            successful_results: list[dict[str, Any]] = []
+            failed_results: list[str] = []
 
-            self._set_status(
-                f"Файлы и manifest.json переписаны в {target_dir}. Скопировано SQLite-файлов: {len(files)}"
+            for entry in files_to_copy:
+                source_path = Path(entry["source_path"])
+                target_path = Path(entry["target_path"])
+                previous_web_snapshot = entry["target_snapshot"]
+                active_connection = self._active_connection_for_db_path(source_path)
+                try:
+                    self._vacuum_db_before_publish(source_path, connection=active_connection)
+                    updated_source_snapshot = self._touch_db_data_version(
+                        source_path,
+                        schema_version=self._db_schema_version_for_path(source_path),
+                        connection=active_connection,
+                        increment_data_version=True,
+                        next_data_version=int(entry["planned_data_version"]),
+                        commit=active_connection is not None,
+                    )
+                    if updated_source_snapshot is None:
+                        raise ValueError(
+                            f"Не удалось обновить db_metadata.{DB_METADATA_DATA_VERSION_KEY}."
+                        )
+                    shutil.copy2(source_path, target_path)
+                    copied_snapshot = self._read_db_version_snapshot(target_path)
+                    if copied_snapshot is None:
+                        raise ValueError("Не удалось прочитать переписанный файл.")
+                    successful_results.append(
+                        {
+                            "name": source_path.name,
+                            "before_snapshot": previous_web_snapshot,
+                            "after_snapshot": copied_snapshot,
+                            "changed_tables": list(entry.get("changed_tables", [])),
+                        }
+                    )
+                except (OSError, sqlite3.DatabaseError, ValueError) as exc:
+                    failed_results.append(f"{source_path.name}: {exc}")
+
+            manifest_error: str | None = None
+            if successful_results:
+                manifest_path = self._web_db_manifest_path(target_dir)
+                manifest_db_paths = [
+                    target_dir / source_path.name
+                    for source_path in files
+                    if (target_dir / source_path.name).exists()
+                ]
+                try:
+                    write_web_db_manifest(manifest_path, db_paths=manifest_db_paths)
+                except (OSError, sqlite3.DatabaseError, ValueError) as exc:
+                    manifest_error = str(exc)
+
+            git_publish_result: dict[str, str] | None = None
+            git_publish_error: str | None = None
+            if bool(confirmation_result.get("git_publish")):
+                branch_name = str(confirmation_result.get("branch_name", "")).strip()
+                remote_name = str(git_option_state.get("remote_name", "")).strip()
+                if not branch_name or not remote_name:
+                    git_publish_error = "Настройки Git-публикации заполнены не полностью."
+                elif failed_results or manifest_error is not None:
+                    git_publish_error = (
+                        "Git-публикация пропущена, потому что сохранение БД завершилось с ошибками или manifest.json не был обновлен."
+                    )
+                else:
+                    manifest_path = self._web_db_manifest_path(target_dir)
+                    paths_to_publish = [Path(result["after_snapshot"]["path"]) for result in successful_results]
+                    if manifest_path.exists():
+                        paths_to_publish.append(manifest_path)
+                    try:
+                        git_publish_result = self._publish_files_to_git_branch(
+                            branch_name=branch_name,
+                            remote_name=remote_name,
+                            paths_to_publish=paths_to_publish,
+                            successful_results=successful_results,
+                            commit_subject=prepared_git_commit_subject,
+                            commit_body=prepared_git_commit_body,
+                        )
+                    except RuntimeError as exc:
+                        git_publish_error = str(exc)
+
+            result_text = self._build_publish_result_text(
+                target_dir=target_dir,
+                successful_results=successful_results,
+                failed_results=failed_results,
+                manifest_error=manifest_error,
+                git_result=git_publish_result,
+                git_error=git_publish_error,
             )
+
+            if successful_results and not failed_results and manifest_error is None and git_publish_error is None:
+                self._show_publish_result_dialog(title="Сохранение завершено", message=result_text)
+                status = (
+                    "Сохранение в проект завершено: "
+                    f"{len(successful_results)} БД, manifest.json обновлен."
+                )
+                if git_publish_result is not None:
+                    status += f" Commit и push выполнены в ветку {git_publish_result['branch_name']}."
+                self._set_status(status)
+            elif successful_results:
+                self._show_publish_result_dialog(
+                    title="Сохранение завершено с предупреждениями",
+                    message=result_text,
+                )
+                status = f"Сохранено в проект: {len(successful_results)} БД"
+                if failed_results:
+                    status += f", ошибок: {len(failed_results)}"
+                if manifest_error is not None:
+                    status += ", manifest.json не обновлен"
+                if git_publish_error is not None:
+                    status += ", ошибка Git-публикации"
+                self._set_status(status + ".")
+            else:
+                self._show_publish_result_dialog(title="Сохранение не выполнено", message=result_text)
+                self._set_status("Не удалось сохранить БД в проект.")
 
         def _find_localized_dbs_with_enabled_tests(self, source_dir: Path) -> list[str]:
             found: list[str] = []
