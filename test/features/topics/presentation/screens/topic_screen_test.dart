@@ -13,13 +13,14 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as p;
 import 'package:revelation/app/router/app_router.dart';
+import 'package:revelation/core/content/markdown_images/markdown_image_load_result.dart';
+import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
-import 'package:revelation/features/topics/application/orchestrators/topic_markdown_image_orchestrator.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/screens/topic_screen.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
@@ -38,6 +39,7 @@ void main() {
 
   Map<String, Uint8List> assetBytes = <String, Uint8List>{};
   Map<String, Uint8List> savedDownloads = <String, Uint8List>{};
+  late _FakeMarkdownImageLoader markdownImageLoader;
 
   setUpAll(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -61,9 +63,11 @@ void main() {
 
   setUp(() async {
     await GetIt.I.reset();
+    markdownImageLoader = _FakeMarkdownImageLoader();
     GetIt.I.registerSingleton<Talker>(
       Talker(settings: TalkerSettings(useConsoleLogs: false)),
     );
+    GetIt.I.registerSingleton<MarkdownImageLoader>(markdownImageLoader);
 
     savedDownloads = <String, Uint8List>{};
     TopicScreen.resetTestOverrides();
@@ -459,34 +463,28 @@ void main() {
           ),
         },
       );
-      final imageOrchestrator = _FakeTopicMarkdownImageOrchestrator(
-        imageResultsByCacheKey: <String, TopicMarkdownImageLoadResult>{
-          _cacheKeyForSource(
-            'dbres:icon',
-          ): TopicMarkdownImageLoadResult.success(
-            bytes: _png1x1,
-            mimeType: 'image/png',
-          ),
-          _cacheKeyForSource('dbres:missing'):
-              const TopicMarkdownImageLoadResult.failure(),
-          _cacheKeyForSource('dbres:missing_without_alt'):
-              const TopicMarkdownImageLoadResult.failure(),
-          _cacheKeyForSource(
-            'https://example.invalid/missing.png',
-          ): TopicMarkdownImageLoadResult.success(
-            bytes: _png1x1,
-            mimeType: 'image/png',
-          ),
-        },
-      );
+      markdownImageLoader.resultsByCacheKey
+          .addAll(<String, MarkdownImageLoadResult>{
+            _cacheKeyForSource('dbres:icon'): MarkdownImageLoadResult.success(
+              bytes: _png1x1,
+              mimeType: 'image/png',
+            ),
+            _cacheKeyForSource('dbres:missing'):
+                const MarkdownImageLoadResult.failure(),
+            _cacheKeyForSource('dbres:missing_without_alt'):
+                const MarkdownImageLoadResult.failure(),
+            _cacheKeyForSource(
+              'https://example.invalid/missing.png',
+            ): MarkdownImageLoadResult.success(
+              bytes: _png1x1,
+              mimeType: 'image/png',
+            ),
+          });
       final harness = await _buildHarness(
         includeDialogHost: false,
         child: TopicScreen(
           file: 'images',
-          topicContentCubitBuilder: _topicCubitBuilder(
-            repo,
-            topicMarkdownImageOrchestrator: imageOrchestrator,
-          ),
+          topicContentCubitBuilder: _topicCubitBuilder(repo),
         ),
       );
       addTearDown(harness.dispose);
@@ -530,29 +528,19 @@ void main() {
           ),
         },
       );
-      final imageOrchestrator = _FakeTopicMarkdownImageOrchestrator(
-        imageResultsByCacheKey: <String, TopicMarkdownImageLoadResult>{
-          _cacheKeyForSource(
-            'dbres:delayed',
-          ): TopicMarkdownImageLoadResult.success(
-            bytes: _png1x1,
-            mimeType: 'image/png',
-          ),
-        },
-        imageDelayByCacheKey: <String, Duration>{
-          _cacheKeyForSource('dbres:delayed'): const Duration(
-            milliseconds: 250,
-          ),
-        },
+      markdownImageLoader.resultsByCacheKey[_cacheKeyForSource(
+        'dbres:delayed',
+      )] = MarkdownImageLoadResult.success(
+        bytes: _png1x1,
+        mimeType: 'image/png',
       );
+      markdownImageLoader.delayByCacheKey[_cacheKeyForSource('dbres:delayed')] =
+          const Duration(milliseconds: 250);
       final harness = await _buildHarness(
         includeDialogHost: false,
         child: TopicScreen(
           file: 'delayed',
-          topicContentCubitBuilder: _topicCubitBuilder(
-            repo,
-            topicMarkdownImageOrchestrator: imageOrchestrator,
-          ),
+          topicContentCubitBuilder: _topicCubitBuilder(repo),
         ),
       );
       addTearDown(harness.dispose);
@@ -666,10 +654,7 @@ void main() {
   );
 }
 
-TopicContentCubitBuilder _topicCubitBuilder(
-  TopicsRepository repository, {
-  TopicMarkdownImageOrchestrator? topicMarkdownImageOrchestrator,
-}) {
+TopicContentCubitBuilder _topicCubitBuilder(TopicsRepository repository) {
   return ({
     required SettingsCubit settingsCubit,
     required String route,
@@ -682,7 +667,6 @@ TopicContentCubitBuilder _topicCubitBuilder(
       route: route,
       name: name,
       description: description,
-      topicMarkdownImageOrchestrator: topicMarkdownImageOrchestrator,
     );
   };
 }
@@ -891,31 +875,21 @@ class _ControllableTopicsRepository extends TopicsRepository {
   }
 }
 
-class _FakeTopicMarkdownImageOrchestrator
-    extends TopicMarkdownImageOrchestrator {
-  _FakeTopicMarkdownImageOrchestrator({
-    this.imageResultsByCacheKey =
-        const <String, TopicMarkdownImageLoadResult>{},
-    this.imageDelayByCacheKey = const <String, Duration>{},
-  }) : super(
-         topicsRepository: TopicsRepository(
-           dataSource: _NoopTopicsDataSource(),
-         ),
-       );
-
-  final Map<String, TopicMarkdownImageLoadResult> imageResultsByCacheKey;
-  final Map<String, Duration> imageDelayByCacheKey;
+class _FakeMarkdownImageLoader implements MarkdownImageLoader {
+  final Map<String, MarkdownImageLoadResult> resultsByCacheKey =
+      <String, MarkdownImageLoadResult>{};
+  final Map<String, Duration> delayByCacheKey = <String, Duration>{};
 
   @override
-  Future<TopicMarkdownImageLoadResult> loadImage(
-    RevelationMarkdownImageData image,
+  Future<MarkdownImageLoadResult> loadImage(
+    MarkdownImageRequest request,
   ) async {
-    final delay = imageDelayByCacheKey[image.cacheKey];
+    final delay = delayByCacheKey[request.cacheKey];
     if (delay != null) {
       await Future<void>.delayed(delay);
     }
-    return imageResultsByCacheKey[image.cacheKey] ??
-        const TopicMarkdownImageLoadResult.failure();
+    return resultsByCacheKey[request.cacheKey] ??
+        const MarkdownImageLoadResult.failure();
   }
 }
 

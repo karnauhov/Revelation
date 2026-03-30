@@ -2,24 +2,20 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/core/errors/app_result.dart';
+import 'package:revelation/core/platform/file_downloader.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_state.dart';
-import 'package:revelation/features/topics/presentation/widgets/topic_markdown_image_view.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
-import 'package:revelation/shared/ui/markdown/revelation_markdown_config.dart';
-import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dart';
-import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_body.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
-import 'package:revelation/core/platform/platform_utils.dart';
-import 'package:revelation/core/platform/file_downloader.dart';
 
 typedef TopicContentCubitBuilder =
     TopicContentCubit Function({
@@ -95,8 +91,7 @@ class _TopicScreenState extends State<TopicScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
 
     return BlocProvider.value(
@@ -112,29 +107,16 @@ class _TopicScreenState extends State<TopicScreen> {
             content = SizedBox.expand(
               child: SingleChildScrollView(
                 controller: _scrollController,
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (state.isMarkdownImagePreloadActive)
-                      _buildMarkdownImagePreloadBanner(context, state),
-                    MarkdownBody(
-                      key: ValueKey(
-                        'topic-markdown-${state.route}-${state.language}-${state.markdown.hashCode}-${state.markdownImagesCompletedCount}-${state.markdownImagesFailedCount}',
-                      ),
-                      data: state.markdown,
-                      styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-                      extensionSet: buildRevelationMarkdownExtensionSet(),
-                      builders: buildRevelationMarkdownBuilders(
-                        imageBuilder: (context, image) =>
-                            _buildTopicMarkdownImage(state, image),
-                      ),
-                      paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
-                      onTapLink: (text, href, title) async {
-                        await _handleTopicLink(context, href);
-                      },
-                    ),
-                  ],
+                child: RevelationMarkdownBody(
+                  key: ValueKey(
+                    'topic-markdown-${state.route}-${state.language}-${state.markdown.hashCode}',
+                  ),
+                  data: state.markdown,
+                  padding: const EdgeInsets.all(8.0),
+                  showImagePreloadProgress: true,
+                  onTapLink: (text, href, title) async {
+                    await _handleTopicLink(context, href);
+                  },
                 ),
               ),
             );
@@ -233,58 +215,6 @@ class _TopicScreenState extends State<TopicScreen> {
     }
 
     return handleAppLink(context, link, popBeforeScreenPush: true);
-  }
-
-  Widget _buildTopicMarkdownImage(
-    TopicContentState state,
-    RevelationMarkdownImageData image,
-  ) {
-    return TopicMarkdownImageView(
-      key: ValueKey(
-        '${image.cacheKey}-${state.markdownImages[image.cacheKey]?.status.name ?? 'missing'}',
-      ),
-      image: image,
-      imageState: state.markdownImages[image.cacheKey],
-    );
-  }
-
-  Widget _buildMarkdownImagePreloadBanner(
-    BuildContext context,
-    TopicContentState state,
-  ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final progress = state.markdownImagePreloadProgress ?? 0;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: colorScheme.outlineVariant),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.markdown_images_loading_progress(
-                  state.markdownImagesCompletedCount,
-                  state.markdownImagesTotalCount,
-                ),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 8),
-              LinearProgressIndicator(value: progress),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   Future<bool> _downloadDbFile(BuildContext context, String key) async {

@@ -1,5 +1,6 @@
 import 'package:markdown/markdown.dart' as md;
 import 'package:path/path.dart' as p;
+import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/shared/config/supabase_storage_paths.dart';
 
 enum RevelationMarkdownImageAlignment { left, center, right }
@@ -366,6 +367,51 @@ class RevelationMarkdownImageData {
   String get cacheKey => source.cacheKey;
 
   bool get hasExplicitSize => width != null || height != null;
+
+  MarkdownImageRequest? toLoadRequest() {
+    switch (source.kind) {
+      case RevelationMarkdownImageSourceKind.databaseResource:
+        final key = source.databaseResourceKey;
+        if (key == null || key.isEmpty) {
+          return null;
+        }
+        return MarkdownImageRequest(
+          kind: MarkdownImageRequestKind.databaseResource,
+          cacheKey: cacheKey,
+          databaseResourceKey: key,
+          guessedMimeType: source.guessedMimeType,
+        );
+      case RevelationMarkdownImageSourceKind.supabaseStorage:
+        final bucket = source.supabaseBucket;
+        final path = source.supabasePath;
+        if (bucket == null || bucket.isEmpty || path == null || path.isEmpty) {
+          return null;
+        }
+        return MarkdownImageRequest(
+          kind: MarkdownImageRequestKind.supabaseStorage,
+          cacheKey: cacheKey,
+          supabaseBucket: bucket,
+          supabasePath: path,
+          guessedMimeType: source.guessedMimeType,
+          localRelativePath: source.buildLocalRelativePath(),
+        );
+      case RevelationMarkdownImageSourceKind.network:
+        final uri = source.networkUri;
+        if (uri == null) {
+          return null;
+        }
+        return MarkdownImageRequest(
+          kind: MarkdownImageRequestKind.network,
+          cacheKey: cacheKey,
+          networkUri: uri,
+          guessedMimeType: source.guessedMimeType,
+          localRelativePath: source.buildLocalRelativePath(),
+        );
+      case RevelationMarkdownImageSourceKind.asset:
+      case RevelationMarkdownImageSourceKind.unsupported:
+        return null;
+    }
+  }
 
   static RevelationMarkdownImageData? fromMarkdownElement(md.Element element) {
     final rawSource = element.attributes['src']?.trim() ?? '';

@@ -1,30 +1,30 @@
 import 'dart:typed_data';
 
-enum TopicMarkdownImageStatus { loading, ready, failure }
+enum RevelationMarkdownImageStatus { loading, ready, failure }
 
-class TopicMarkdownImageState {
-  const TopicMarkdownImageState._({
+class RevelationMarkdownImageState {
+  const RevelationMarkdownImageState._({
     required this.status,
     this.bytes,
     this.mimeType,
   });
 
-  const TopicMarkdownImageState.loading()
-    : this._(status: TopicMarkdownImageStatus.loading);
+  const RevelationMarkdownImageState.loading()
+    : this._(status: RevelationMarkdownImageStatus.loading);
 
-  const TopicMarkdownImageState.ready({
+  const RevelationMarkdownImageState.ready({
     required Uint8List bytes,
     String? mimeType,
   }) : this._(
-         status: TopicMarkdownImageStatus.ready,
+         status: RevelationMarkdownImageStatus.ready,
          bytes: bytes,
          mimeType: mimeType,
        );
 
-  const TopicMarkdownImageState.failure()
-    : this._(status: TopicMarkdownImageStatus.failure);
+  const RevelationMarkdownImageState.failure()
+    : this._(status: RevelationMarkdownImageStatus.failure);
 
-  final TopicMarkdownImageStatus status;
+  final RevelationMarkdownImageStatus status;
   final Uint8List? bytes;
   final String? mimeType;
 
@@ -33,7 +33,7 @@ class TopicMarkdownImageState {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        other is TopicMarkdownImageState &&
+        other is RevelationMarkdownImageState &&
             runtimeType == other.runtimeType &&
             status == other.status &&
             identical(bytes, other.bytes) &&

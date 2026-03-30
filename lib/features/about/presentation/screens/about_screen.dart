@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:revelation/shared/ui/widgets/icon_link_item.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
+import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
 import 'package:revelation/features/about/presentation/bloc/about_state.dart';
 import 'package:revelation/features/about/presentation/widgets/icon_url.dart';
@@ -23,13 +23,10 @@ import 'package:revelation/infra/db/runtime/runtime_database_version_loader.dart
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
-import 'package:revelation/core/logging/common_logger.dart';
-import 'package:revelation/shared/ui/markdown/revelation_markdown_basic_image_builder.dart';
-import 'package:revelation/shared/ui/markdown/revelation_markdown_config.dart';
-import 'package:revelation/shared/utils/bug_report_utils.dart';
-import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
-import 'package:revelation/core/platform/platform_utils.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_body.dart';
 import 'package:revelation/shared/ui/widgets/platform_expansion_tile.dart';
+import 'package:revelation/shared/ui/widgets/icon_link_item.dart';
+import 'package:revelation/shared/utils/bug_report_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 typedef AboutLinkLauncher = BugReportLinkLauncher;
@@ -662,7 +659,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
   Widget _buildChangelog(BuildContext context, AboutState state) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return PlatformExpansionTile(
       minTileHeight: 30,
@@ -696,14 +693,8 @@ class _AboutScreenState extends State<AboutScreen> {
         state.changelog.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: MarkdownBody(
+                child: RevelationMarkdownBody(
                   data: state.changelog,
-                  styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-                  extensionSet: buildRevelationMarkdownExtensionSet(),
-                  builders: buildRevelationMarkdownBuilders(
-                    imageBuilder: buildBasicRevelationMarkdownImage,
-                  ),
-                  paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
                   onTapLink: (text, href, title) {
                     widget.dependencies.appLinkHandler(context, href);
                   },

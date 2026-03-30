@@ -1,7 +1,7 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.1.0`  
-Last-Updated: `2026-03-28`  
+Doc-Version: `2.2.0`  
+Last-Updated: `2026-03-30`  
 Source-Commit: `working-tree`
 
 ## Purpose
@@ -23,8 +23,9 @@ Show which cubit owns each runtime state slice.
 | `app/startup` | `AppStartupCubit` | Launch splash progress, startup locale/version metadata, readiness/failure state, and handoff to the initialized app shell |
 | `app/settings` | `SettingsCubit` | Current app settings, selected locale, theme, font size, loading and failure state |
 | `about` | `AboutCubit` | App/build versions, database metadata, changelog section state, expandable about sections |
+| `shared/markdown/document` | `RevelationMarkdownImagesCubit` | Per-markdown-document remote image preload, local-first image state, progress counters, and stale-request protection shared across features |
 | `topics/catalog` | `TopicsCatalogCubit` | Topic list, language-bound reloads, topic icons |
-| `topics/content` | `TopicContentCubit` | Single topic markdown content and loading/failure state |
+| `topics/content` | `TopicContentCubit` | Single topic markdown content, metadata fallback resolution, and loading/failure state |
 | `primary_sources/list` | `PrimarySourcesCubit` | Full/significant/fragment source collections and loading/failure state |
 | `primary_sources/list-ui` | `PrimarySourcesExpansionCubit` | Expanded cards on the list screen |
 | `primary_source/detail/session` | `PrimarySourceSessionCubit` | Current source, selected page, image key, toolbar/menu session state |
@@ -39,5 +40,6 @@ Show which cubit owns each runtime state slice.
 
 - `RevelationStartupHost` creates `AppStartupCubit` at the app root and mounts the global app providers only after startup is ready.
 - Global providers are created by `AppDi.appBlocProviders`.
+- Shared markdown widgets create `RevelationMarkdownImagesCubit` per rendered markdown document instead of storing markdown image preload state inside feature cubits.
 - `PrimarySourceScreen` creates the detail cubits with `MultiBlocProvider`.
 - `PrimarySourceDetailCoordinator` adapts UI events to the detail cubits; it is not a state owner.

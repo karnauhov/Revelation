@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
-import 'package:revelation/features/topics/application/orchestrators/topic_markdown_image_orchestrator.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/bloc/topics_catalog_cubit.dart';
@@ -34,9 +34,11 @@ void main() {
 
     AppDi.registerCore(talker: first);
     expect(GetIt.I<Talker>(), same(first));
+    expect(GetIt.I<MarkdownImageLoader>(), isA<MarkdownImageLoader>());
 
     AppDi.registerCore(talker: second);
     expect(GetIt.I<Talker>(), same(second));
+    expect(GetIt.I<MarkdownImageLoader>(), isA<MarkdownImageLoader>());
   });
 
   testWidgets(
@@ -91,9 +93,7 @@ void main() {
     final topicsRepository = AppDi.createTopicsRepository();
     final primarySourcesRepository = AppDi.createPrimarySourcesDbRepository();
     final pagesRepository = AppDi.createPagesRepository();
-    final topicImageOrchestrator = AppDi.createTopicMarkdownImageOrchestrator(
-      topicsRepository: topicsRepository,
-    );
+    final markdownImageLoader = AppDi.createMarkdownImageLoader();
     final explicitOrchestrator =
         AppDi.createPrimarySourcePageSettingsOrchestrator(
           pagesRepository: pagesRepository,
@@ -124,7 +124,7 @@ void main() {
     expect(topicsRepository, isA<TopicsRepository>());
     expect(primarySourcesRepository, isA<PrimarySourcesDbRepository>());
     expect(pagesRepository, isA<PagesRepository>());
-    expect(topicImageOrchestrator, isA<TopicMarkdownImageOrchestrator>());
+    expect(markdownImageLoader, isA<MarkdownImageLoader>());
     expect(explicitOrchestrator, isA<PrimarySourcePageSettingsOrchestrator>());
     expect(fallbackOrchestrator, isA<PrimarySourcePageSettingsOrchestrator>());
     expect(cubitFromExplicit, isA<PrimarySourcePageSettingsCubit>());

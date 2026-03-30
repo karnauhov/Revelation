@@ -1,7 +1,7 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.1.0`  
-Last-Updated: `2026-03-28`  
+Doc-Version: `2.2.0`  
+Last-Updated: `2026-03-30`  
 Source-Commit: `working-tree`
 
 ## Purpose
@@ -16,6 +16,7 @@ Describe the current Revelation runtime architecture.
 - `RevelationApp` builds `MaterialApp.router`, applies locale/theme/font settings from `SettingsCubit`, and exposes `en`, `es`, `uk`, and `ru`.
 - `AppRouter` uses `go_router` and routes to the main, topic, primary source list, primary source detail, settings, about, and download screens.
 - `AppDi.appBlocProviders` wires the global app state: `SettingsCubit`, `TopicsCatalogCubit`, and `PrimarySourcesCubit`.
+- `AppDi.registerCore` registers cross-cutting runtime services such as `Talker` and the shared `MarkdownImageLoader`.
 - `PrimarySourceScreen` creates feature-scoped detail state with `session`, `image`, `page-settings`, `description`, `viewport`, and `orchestration` cubits. `PrimarySourceDetailCoordinator` is a screen helper, not the source of truth.
 
 ## Data and Services
@@ -23,6 +24,8 @@ Describe the current Revelation runtime architecture.
 - App settings are persisted with `shared_preferences`.
 - Local content is read from Drift-backed SQLite databases.
 - Remote downloads use Supabase Storage through `ServerManager`.
+- Shared markdown rendering is centralized in `shared/ui/markdown`: `RevelationMarkdownBody` plus `RevelationMarkdownImagesCubit` provide one project-wide markdown image policy with local-first loading, preload progress, and reusable image rendering across topics, primary source descriptions, dialogs, and about content.
+- `MarkdownImageLoader` contracts live in `core/content/markdown_images`, while the default downloader/cache implementation lives in `infra/content/markdown_images`.
 - `AboutCubit` reads database metadata from `db_metadata` and exposes app/build/database version information to the UI.
 - `LatestRequestGuard` is used in async flows where stale responses must not overwrite newer state.
 
@@ -31,6 +34,7 @@ Describe the current Revelation runtime architecture.
 - The runtime structure of `lib/` is `app`, `core`, `infra`, `shared`, `features`, `l10n`.
 - Stateful presentation logic uses `Cubit`/`Bloc`.
 - Presentation does not talk directly to low-level DB or remote managers.
+- Global cross-feature policies belong in shared/core/infra layers, not inside a single feature module.
 - Database schema changes must keep code-level schema versions and distributed SQLite files synchronized.
 
 ## Related Documents

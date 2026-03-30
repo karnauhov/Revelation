@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:revelation/features/topics/presentation/bloc/topic_markdown_image_state.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_image_state.dart';
 
-class TopicMarkdownImageView extends StatelessWidget {
-  const TopicMarkdownImageView({
+class RevelationMarkdownImageView extends StatelessWidget {
+  const RevelationMarkdownImageView({
     required this.image,
-    required this.imageState,
+    this.imageState,
     super.key,
   });
 
   final RevelationMarkdownImageData image;
-  final TopicMarkdownImageState? imageState;
+  final RevelationMarkdownImageState? imageState;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +76,6 @@ class TopicMarkdownImageView extends StatelessWidget {
     final errorLabel = _fallbackLabel(context);
     if (image.source.isSvg) {
       return _sizeWrapper(
-        context,
         SvgPicture.asset(
           assetPath,
           width: image.width,
@@ -89,7 +88,6 @@ class TopicMarkdownImageView extends StatelessWidget {
     }
 
     return _sizeWrapper(
-      context,
       Image.asset(
         assetPath,
         width: image.width,
@@ -104,7 +102,7 @@ class TopicMarkdownImageView extends StatelessWidget {
   Widget _buildAsyncImage(BuildContext context) {
     final resolvedState = imageState;
     if (resolvedState == null ||
-        resolvedState.status == TopicMarkdownImageStatus.loading) {
+        resolvedState.status == RevelationMarkdownImageStatus.loading) {
       return _buildStateFrame(
         context,
         label: _loadingLabel(context),
@@ -116,14 +114,13 @@ class TopicMarkdownImageView extends StatelessWidget {
       );
     }
 
-    if (resolvedState.status == TopicMarkdownImageStatus.failure ||
+    if (resolvedState.status == RevelationMarkdownImageStatus.failure ||
         resolvedState.bytes == null) {
       return _buildStateFrame(context, label: _fallbackLabel(context));
     }
 
     if (resolvedState.isSvg) {
       return _sizeWrapper(
-        context,
         SvgPicture.memory(
           resolvedState.bytes!,
           width: image.width,
@@ -136,7 +133,6 @@ class TopicMarkdownImageView extends StatelessWidget {
     }
 
     return _sizeWrapper(
-      context,
       Image.memory(
         resolvedState.bytes!,
         width: image.width,
@@ -157,7 +153,6 @@ class TopicMarkdownImageView extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return _sizeWrapper(
-      context,
       DecoratedBox(
         decoration: BoxDecoration(
           color: colorScheme.surfaceContainerHighest,
@@ -187,7 +182,7 @@ class TopicMarkdownImageView extends StatelessWidget {
     );
   }
 
-  Widget _sizeWrapper(BuildContext context, Widget child) {
+  Widget _sizeWrapper(Widget child) {
     final hasExplicitSize = image.width != null || image.height != null;
     if (hasExplicitSize) {
       return SizedBox(width: image.width, height: image.height, child: child);

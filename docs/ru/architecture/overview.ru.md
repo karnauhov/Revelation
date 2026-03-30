@@ -1,7 +1,7 @@
 # Обзор архитектуры (RU)
 
-Doc-Version: `2.1.0`  
-Last-Updated: `2026-03-28`  
+Doc-Version: `2.2.0`  
+Last-Updated: `2026-03-30`  
 Source-Commit: `working-tree`
 
 ## Назначение
@@ -16,13 +16,16 @@ Source-Commit: `working-tree`
 - `RevelationApp` собирает `MaterialApp.router`, применяет locale/theme/font из `SettingsCubit` и поддерживает `en`, `es`, `uk`, `ru`.
 - `AppRouter` использует `go_router` и обслуживает экраны main, topic, список первоисточников, detail первоисточника, settings, about и download.
 - `AppDi.appBlocProviders` подключает глобальный app-state: `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
-- `PrimarySourceScreen` создаёт screen-scoped detail-state через cubit-срезы `session`, `image`, `page-settings`, `description`, `viewport`, `orchestration`. `PrimarySourceDetailCoordinator` выступает экранным адаптером, но не хранит source of truth.
+- `AppDi.registerCore` регистрирует кросс-срезные runtime-сервисы, включая `Talker` и общий `MarkdownImageLoader`.
+- `PrimarySourceScreen` создаёт feature-scoped detail-state через cubit-срезы `session`, `image`, `page-settings`, `description`, `viewport`, `orchestration`. `PrimarySourceDetailCoordinator` выступает экранным адаптером, но не хранит source of truth.
 
 ## Данные и сервисы
 
 - Настройки приложения сохраняются через `shared_preferences`.
 - Локальный контент читается из SQLite через Drift.
 - Удалённые загрузки идут через Supabase Storage и `ServerManager`.
+- Общий markdown-низ вынесен в `shared/ui/markdown`: `RevelationMarkdownBody` и `RevelationMarkdownImagesCubit` обеспечивают единую project-wide политику изображений с local-first загрузкой, прогрессом предзагрузки и общим рендерингом для topic-ов, описаний первоисточников, dialog-ов и about-контента.
+- Контракты `MarkdownImageLoader` живут в `core/content/markdown_images`, а дефолтная downloader/cache-реализация живёт в `infra/content/markdown_images`.
 - `AboutCubit` читает метаданные БД из `db_metadata` и отдаёт в UI версии приложения, сборки и баз данных.
 - `LatestRequestGuard` используется в async-потоках, где устаревший ответ не должен перезаписывать более новое состояние.
 
@@ -31,6 +34,7 @@ Source-Commit: `working-tree`
 - Рабочая структура `lib/`: `app`, `core`, `infra`, `shared`, `features`, `l10n`.
 - Stateful presentation-логика строится на `Cubit`/`Bloc`.
 - Presentation-слой не обращается напрямую к низкоуровневым DB/remote manager-классам.
+- Глобальные cross-feature политики живут в shared/core/infra слоях, а не внутри одной feature.
 - Изменения схемы БД требуют синхронизации версий в коде и в распространяемых SQLite-файлах.
 
 ## Связанные документы

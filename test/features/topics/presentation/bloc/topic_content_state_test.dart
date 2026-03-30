@@ -1,9 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_state.dart';
-import 'package:revelation/features/topics/presentation/bloc/topic_markdown_image_state.dart';
 
 void main() {
   test('initial is loading and contains empty topic payload', () {
@@ -39,26 +36,6 @@ void main() {
     expect(cleared.failure, isNull);
   });
 
-  test('markdown preload helpers reflect progress counters', () {
-    final state = TopicContentState.initial().copyWith(
-      markdownImages: <String, TopicMarkdownImageState>{
-        'first': TopicMarkdownImageState.ready(
-          bytes: Uint8List.fromList(<int>[1]),
-          mimeType: 'image/png',
-        ),
-        'second': const TopicMarkdownImageState.loading(),
-        'third': const TopicMarkdownImageState.failure(),
-      },
-      markdownImagesTotalCount: 3,
-      markdownImagesCompletedCount: 2,
-      markdownImagesFailedCount: 1,
-    );
-
-    expect(state.hasMarkdownImagePreload, isTrue);
-    expect(state.isMarkdownImagePreloadActive, isTrue);
-    expect(state.markdownImagePreloadProgress, closeTo(2 / 3, 0.0001));
-  });
-
   test('value equality includes all state fields', () {
     final a = TopicContentState(
       route: 'intro',
@@ -67,10 +44,6 @@ void main() {
       description: 'Desc',
       markdown: '# Body',
       isLoading: false,
-      markdownImages: const <String, TopicMarkdownImageState>{},
-      markdownImagesTotalCount: 0,
-      markdownImagesCompletedCount: 0,
-      markdownImagesFailedCount: 0,
       failure: const AppFailure.validation('bad'),
     );
     final b = TopicContentState(
@@ -80,10 +53,6 @@ void main() {
       description: 'Desc',
       markdown: '# Body',
       isLoading: false,
-      markdownImages: const <String, TopicMarkdownImageState>{},
-      markdownImagesTotalCount: 0,
-      markdownImagesCompletedCount: 0,
-      markdownImagesFailedCount: 0,
       failure: const AppFailure.validation('bad'),
     );
     final c = b.copyWith(isLoading: true);

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
-import 'package:revelation/shared/ui/markdown/revelation_markdown_basic_image_builder.dart';
-import 'package:revelation/shared/ui/markdown/revelation_markdown_config.dart';
-import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_body.dart';
 
 class DescriptionMarkdownView extends StatelessWidget {
   final String data;
@@ -12,6 +10,7 @@ class DescriptionMarkdownView extends StatelessWidget {
   final GreekStrongTapHandler? onGreekStrongTap;
   final GreekStrongPickerTapHandler? onGreekStrongPickerTap;
   final WordTapHandler? onWordTap;
+  final MarkdownImageLoader? markdownImageLoader;
 
   const DescriptionMarkdownView({
     required this.data,
@@ -20,13 +19,12 @@ class DescriptionMarkdownView extends StatelessWidget {
     this.onGreekStrongTap,
     this.onGreekStrongPickerTap,
     this.onWordTap,
+    this.markdownImageLoader,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     void handleTapLink(String text, String? href, String title) {
       handleAppLink(
         context,
@@ -38,31 +36,21 @@ class DescriptionMarkdownView extends StatelessWidget {
     }
 
     if (scrollable) {
-      return Markdown(
-        data: data,
-        padding: padding,
-        styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-        extensionSet: buildRevelationMarkdownExtensionSet(),
-        builders: buildRevelationMarkdownBuilders(
-          imageBuilder: buildBasicRevelationMarkdownImage,
+      return SingleChildScrollView(
+        child: RevelationMarkdownBody(
+          data: data,
+          padding: padding,
+          onTapLink: handleTapLink,
+          markdownImageLoader: markdownImageLoader,
         ),
-        paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
-        onTapLink: handleTapLink,
       );
     }
 
-    return Padding(
+    return RevelationMarkdownBody(
+      data: data,
       padding: padding,
-      child: MarkdownBody(
-        data: data,
-        styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-        extensionSet: buildRevelationMarkdownExtensionSet(),
-        builders: buildRevelationMarkdownBuilders(
-          imageBuilder: buildBasicRevelationMarkdownImage,
-        ),
-        paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
-        onTapLink: handleTapLink,
-      ),
+      onTapLink: handleTapLink,
+      markdownImageLoader: markdownImageLoader,
     );
   }
 }

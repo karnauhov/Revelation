@@ -20,18 +20,22 @@ void main() {
     await GetIt.I.reset();
   });
 
-  testWidgets('DescriptionMarkdownView uses Markdown when scrollable', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      buildLocalizedTestApp(
-        child: const DescriptionMarkdownView(data: 'Hello **world**'),
-      ),
-    );
+  testWidgets(
+    'DescriptionMarkdownView wraps shared markdown body in scroll view when scrollable',
+    (tester) async {
+      await tester.pumpWidget(
+        buildLocalizedTestApp(
+          child: const DescriptionMarkdownView(data: 'Hello **world**'),
+        ),
+      );
 
-    final markdown = tester.widget<Markdown>(find.byType(Markdown));
-    expect(markdown.data, contains('Hello'));
-  });
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
+      final markdownBody = tester.widget<MarkdownBody>(
+        find.byType(MarkdownBody),
+      );
+      expect(markdownBody.data, contains('Hello'));
+    },
+  );
 
   testWidgets('DescriptionMarkdownView uses MarkdownBody when static', (
     tester,

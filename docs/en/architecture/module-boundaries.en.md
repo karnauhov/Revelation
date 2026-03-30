@@ -1,7 +1,7 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.1.0`  
-Last-Updated: `2026-03-28`  
+Doc-Version: `2.2.0`  
+Last-Updated: `2026-03-30`  
 Source-Commit: `working-tree`
 
 ## Purpose
@@ -37,6 +37,8 @@ A smaller feature may omit layers that it does not need, but the dependency dire
 - `infra` does not import feature presentation code.
 - `shared` stays reusable and does not own feature-specific orchestration.
 - `core` stays feature-agnostic.
+- The global markdown image policy is split by layer: request/load contracts live in `core/content/markdown_images`, the default downloader/cache implementation lives in `infra/content/markdown_images`, and per-document UI state plus rendering live in `shared/ui/markdown`.
+- Features do not own markdown image caching or preload policy; they only pass markdown content and feature-specific link handlers into the shared markdown widgets.
 
 ## State Rules
 
