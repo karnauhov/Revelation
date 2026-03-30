@@ -332,14 +332,15 @@ class RevelationMarkdownImageSource {
   }
 
   static String _stableHexHash(String value) {
-    const int offsetBasis = 0xcbf29ce484222325;
-    const int prime = 0x100000001b3;
+    // Keep the suffix hash JS-safe for Flutter web.
+    const int offsetBasis = 0x811c9dc5;
+    const int prime = 0x01000193;
     var hash = offsetBasis;
     for (final unit in value.codeUnits) {
       hash ^= unit;
-      hash = (hash * prime) & 0xffffffffffffffff;
+      hash = (hash * prime) & 0xffffffff;
     }
-    return hash.toRadixString(16).padLeft(16, '0');
+    return hash.toUnsigned(32).toRadixString(16).padLeft(8, '0');
   }
 }
 

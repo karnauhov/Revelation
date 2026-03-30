@@ -117,4 +117,16 @@ align: left
       'external/other-project.supabase.co/storage/v1/object/public/images/map.jpg',
     );
   });
+
+  test('network query suffix hash stays stable and JS-safe', () {
+    final source = RevelationMarkdownImageSource.parse(
+      'https://images.example.com/map.jpg?size=large&lang=ru',
+    );
+
+    expect(source.kind, RevelationMarkdownImageSourceKind.network);
+    expect(
+      source.buildLocalRelativePath(),
+      'external/images.example.com/map_acb4f33a.jpg',
+    );
+  });
 }
