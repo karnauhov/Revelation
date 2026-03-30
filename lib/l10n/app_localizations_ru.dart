@@ -609,4 +609,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get strong_or => 'или';
+
+  @override
+  String get markdown_image_loading => 'Загрузка изображения...';
+
+  @override
+  String markdown_images_loading_progress(int loaded, int total) {
+    return 'Загрузка изображений: $loaded из $total';
+  }
 }

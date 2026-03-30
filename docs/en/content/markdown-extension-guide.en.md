@@ -1,169 +1,144 @@
 # Markdown Extension Guide (EN)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.1.0`  
 Last-Updated: `2026-03-30`  
 Source-Commit: `working-tree`
 
 ## Purpose
 
-Document a practical Revelation strategy for extending Markdown without moving to a full HTML runtime, using the current `flutter_markdown_plus` + `markdown` stack.
+Document the Revelation markdown extension approach built on top of `flutter_markdown_plus` and `markdown`, including the custom image block syntax and the supported image source forms.
 
 ## Stack Baseline
 
 - The project uses `flutter_markdown_plus` and transitive `markdown`.
-- `Markdown`/`MarkdownBody` default to `md.ExtensionSet.gitHubFlavored`.
-- This already provides: tables, task lists (checkboxes), footnotes, strikethrough, and autolinks.
-- `:emoji_shortcodes:` need an explicit `md.EmojiSyntax()` addition.
+- `Markdown` and `MarkdownBody` are wired through a shared Revelation markdown config.
+- The shared config extends `gitHubFlavored` and adds `md.EmojiSyntax()`.
 
-## What You Can Get in Markdown
+## Built-in Markdown Features
 
-### Task Lists
+- Tables
+- Task lists
+- Footnotes
+- Strikethrough
+- Autolinks
+- Emoji shortcodes when `EmojiSyntax` is enabled
 
-```md
-- [x] Done
-- [ ] In progress
-```
+## Custom Image Blocks
 
-### Footnotes
-
-```md
-Text with a footnote[^a].
-
-[^a]: Footnote content.
-```
-
-### Tables
+Revelation supports a custom block image syntax for article content:
 
 ```md
-| Symbol | Meaning |
-|:-------|--------:|
-| Lamb   | Christ  |
-| Horn   | Power   |
+{{image}}
+src: images/map.jpg
+alt: Map of the seals
+align: center
+width: 640
+height: 360
+caption: Optional caption
+{{/image}}
 ```
 
-### Autolinks
+Supported fields:
+
+- `src`
+- `alt`
+- `align`: `left`, `center`, `right`
+- `width`
+- `height`
+- `caption`
+
+## Supported Image Source Forms
+
+The image parser recognizes these forms in both the custom `{{image}}` block and regular markdown image syntax such as `![Alt](...)`.
+
+### Asset
 
 ```md
-https://www.revelation.website
-support@example.com
+![Icon](resource:assets/images/UI/app_icon.png)
 ```
 
-### Superscript for footnotes
-
-- Footnote indices are superscripted automatically by `flutter_markdown_plus`.
-- If needed, tune font feature behavior with `superscriptFontFeatureTag` in `MarkdownStyleSheet`.
-
-## Enabling Emoji Shortcodes
-
-```dart
-import 'package:markdown/markdown.dart' as md;
-
-md.ExtensionSet buildRevelationExtensionSet() {
-  return md.ExtensionSet(
-    md.ExtensionSet.gitHubFlavored.blockSyntaxes,
-    <md.InlineSyntax>[
-      md.EmojiSyntax(),
-      ...md.ExtensionSet.gitHubFlavored.inlineSyntaxes,
-    ],
-  );
-}
-```
-
-Usage:
-
-```dart
-MarkdownBody(
-  data: markdown,
-  extensionSet: buildRevelationExtensionSet(),
-)
-```
-
-Markdown sample:
+### DB Resource
 
 ```md
-Important :warning: and joy :smiley:
+![Diagram](dbres:topic/diagram.svg)
 ```
 
-## Custom Bullets and Checkboxes
+### Supabase Bucket Shorthand
 
-`bulletBuilder` and `checkboxBuilder` customize rendering only; Markdown syntax stays standard.
-
-```dart
-MarkdownBody(
-  data: markdown,
-  extensionSet: buildRevelationExtensionSet(),
-  bulletBuilder: (params) {
-    if (params.style == BulletStyle.orderedList) {
-      return CircleAvatar(
-        radius: 10,
-        child: Text('${params.index + 1}'),
-      );
-    }
-    return Icon(
-      params.nestLevel == 0 ? Icons.star : Icons.chevron_right,
-      size: 16,
-    );
-  },
-  checkboxBuilder: (checked) {
-    return Icon(
-      checked ? Icons.check_circle : Icons.radio_button_unchecked,
-      size: 18,
-    );
-  },
-)
-```
-
-## Custom Widgets Inside Markdown
-
-For article widgets (video block, callout, compare-card), use:
-
-1. `md.BlockSyntax` or `md.InlineSyntax` to parse.
-2. `MarkdownElementBuilder` to render a Flutter widget.
-
-Markdown sample:
+Recommended for article images stored in the public `images` bucket:
 
 ```md
-{{video}}
-src: https://cdn.example.com/intro.mp4
-caption: Intro
-{{/video}}
+{{image}}
+src: images/map.jpg
+alt: Map
+align: right
+width: 320
+height: 200
+{{/image}}
 ```
 
-Rendering idea:
+This resolves to the Supabase public storage path for the `images` bucket.
 
-- `VideoBlockSyntax` parses `{{video}}...{{/video}}` and creates `md.Element('video')` with attributes.
-- `VideoBuilder` (extends `MarkdownElementBuilder`) reads those attributes and returns your widget (card, player, placeholder, etc.).
+### Explicit Supabase Bucket Path
 
-## Where to Wire This in Revelation
+```md
+![Chart](supabase:images/charts/seals.svg)
+```
 
-Keep one consistent markdown config for:
+### Full Public Supabase URL
+
+```md
+![Map](https://adfdfxnzxmzyoioedwuy.supabase.co/storage/v1/object/public/images/map.jpg)
+```
+
+Full public storage URLs are parsed back into `bucket/path` form automatically.
+
+### External URL
+
+```md
+![Reference image](https://example.com/reference/chart.png)
+```
+
+External URLs are still supported, but the preferred content workflow is to move stable article images into the project Supabase storage and reference them from the `images` bucket.
+
+## Local Image Caching
+
+For topic articles:
+
+- remote Supabase and external images are downloaded once on first load;
+- cached files are stored locally under `Documents/revelation/images/`;
+- files keep readable image names and extensions instead of opaque cache-only names;
+- if the source comes from the `images` bucket, the local file path mirrors that bucket path directly.
+
+Examples:
+
+- `images/map.jpg` -> `Documents/revelation/images/map.jpg`
+- `images/maps/seal-1.svg` -> `Documents/revelation/images/maps/seal-1.svg`
+- external URLs are stored under `Documents/revelation/images/external/...`
+
+## Placeholder Sizing
+
+- If `width` and `height` are provided, the placeholder frame uses those dimensions immediately.
+- For regular markdown images, dimensions can also be embedded as a source fragment:
+
+```md
+![Inline map](images/map.jpg#640x360)
+```
+
+## Where the Shared Markdown Config Is Used
 
 - `lib/shared/ui/widgets/description_markdown_view.dart`
 - `lib/features/topics/presentation/screens/topic_screen.dart`
 - `lib/shared/ui/dialogs/dialogs_utils.dart`
 
-Recommended helper location:
+Helper location:
 
 - `lib/shared/ui/markdown/revelation_markdown_config.dart`
 
-## Practical Limits
-
-- Markdown is a strong fit for controlled article layouts with a known block set.
-- Arbitrary HTML/CSS/JS and browser-like behavior still requires a WebView runtime.
-- Avoid an unbounded DSL; define and maintain a stable whitelist of custom blocks.
-
-## Export and Useful Add-ons
-
-- Export rendered Flutter markdown screens to PDF: `flutter_to_pdf` (MIT).
-- Dedicated document PDF pipeline: `htmltopdfwidgets` + `pdf` + `printing` (Apache-2.0).
-- Math in markdown: `flutter_markdown_plus_latex` (Apache-2.0).
-
 ## Quick Adoption Checklist
 
-1. Extract a shared markdown `extensionSet`.
-2. Add `EmojiSyntax` on top of `gitHubFlavored`.
-3. Centralize `bulletBuilder` and `checkboxBuilder`.
-4. Tune `superscriptFontFeatureTag` if needed for fonts.
-5. Add custom syntax + builder for richer article blocks.
-6. Add tests for new markdown features and custom blocks.
-
+1. Keep markdown rendering wired through the shared Revelation markdown config.
+2. Use `{{image}}` when you need alignment, caption, or explicit placeholder size.
+3. Prefer `images/...` references for article images stored in the public Supabase `images` bucket.
+4. Add width and height when layout stability matters.
+5. Keep tests updated when markdown parsing or rendering behavior changes.

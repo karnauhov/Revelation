@@ -6,6 +6,7 @@ import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
+import 'package:revelation/features/topics/application/orchestrators/topic_markdown_image_orchestrator.dart';
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
@@ -14,6 +15,7 @@ import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/shared/models/app_settings.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dart';
 
 void main() {
   test(
@@ -276,11 +278,161 @@ void main() {
       expect(cubit.state.markdown, isEmpty);
     },
   );
+
+  test('preloads markdown images and updates completion counters', () async {
+    final settingsCubit = SettingsCubit(
+      _FakeSettingsRepository(initialSettings: _buildSettings(language: 'en')),
+    );
+    addTearDown(settingsCubit.close);
+    await settingsCubit.loadSettings();
+
+    final repository = _FakeTopicsRepository(
+      markdownByRouteLanguage: <String, AppResult<String>>{
+        'images|en': const AppSuccess<String>(
+          '![One](dbres:one)\n'
+          '![Two](https://example.com/two.png)',
+        ),
+      },
+      topicByRouteLanguage: const <String, AppResult<TopicInfo?>>{},
+    );
+    final imageOrchestrator = _FakeTopicMarkdownImageOrchestrator(
+      imageResultsByCacheKey: <String, TopicMarkdownImageLoadResult>{
+        _cacheKeyForSource('dbres:one'): TopicMarkdownImageLoadResult.success(
+          bytes: Uint8List.fromList(<int>[1, 2, 3]),
+          mimeType: 'image/png',
+        ),
+        _cacheKeyForSource('https://example.com/two.png'):
+            const TopicMarkdownImageLoadResult.failure(),
+      },
+    );
+    final cubit = TopicContentCubit(
+      topicsRepository: repository,
+      settingsCubit: settingsCubit,
+      route: 'images',
+      topicMarkdownImageOrchestrator: imageOrchestrator,
+    );
+    addTearDown(cubit.close);
+
+    await _waitUntil(() => cubit.state.markdownImagesCompletedCount == 2);
+
+    expect(cubit.state.markdownImagesTotalCount, 2);
+    expect(cubit.state.markdownImagesCompletedCount, 2);
+    expect(cubit.state.markdownImagesFailedCount, 1);
+    expect(cubit.state.hasMarkdownImagePreload, isTrue);
+    expect(cubit.state.isMarkdownImagePreloadActive, isFalse);
+  });
+
+  test('ignores stale markdown image completion from older load', () async {
+    final settingsCubit = SettingsCubit(
+      _FakeSettingsRepository(initialSettings: _buildSettings(language: ' ')),
+    );
+    addTearDown(settingsCubit.close);
+    await settingsCubit.loadSettings();
+
+    final repository = _FakeTopicsRepository(
+      markdownByRouteLanguage: <String, AppResult<String>>{
+        'intro|en': const AppSuccess<String>('![EN](dbres:en-image)'),
+        'intro|ru': const AppSuccess<String>('![RU](dbres:ru-image)'),
+      },
+      topicByRouteLanguage: const <String, AppResult<TopicInfo?>>{},
+    );
+    final imageOrchestrator = _ControllableTopicMarkdownImageOrchestrator();
+    final cubit = TopicContentCubit(
+      topicsRepository: repository,
+      settingsCubit: settingsCubit,
+      route: 'intro',
+      topicMarkdownImageOrchestrator: imageOrchestrator,
+    );
+    addTearDown(cubit.close);
+
+    await _flushAsync();
+
+    await cubit.loadForLanguage('en');
+    await _flushAsync();
+    await cubit.loadForLanguage('ru');
+    await _flushAsync();
+
+    imageOrchestrator.complete(
+      _cacheKeyForSource('dbres:ru-image'),
+      TopicMarkdownImageLoadResult.success(
+        bytes: Uint8List.fromList(<int>[7]),
+        mimeType: 'image/png',
+      ),
+    );
+    await _waitUntil(() => cubit.state.markdownImagesCompletedCount == 1);
+
+    imageOrchestrator.complete(
+      _cacheKeyForSource('dbres:en-image'),
+      TopicMarkdownImageLoadResult.success(
+        bytes: Uint8List.fromList(<int>[9]),
+        mimeType: 'image/png',
+      ),
+    );
+    await _flushAsync();
+
+    expect(cubit.state.language, 'ru');
+    expect(cubit.state.markdown, '![RU](dbres:ru-image)');
+    expect(
+      cubit.state.markdownImages.keys,
+      contains(_cacheKeyForSource('dbres:ru-image')),
+    );
+    expect(
+      cubit.state.markdownImages.keys,
+      isNot(contains(_cacheKeyForSource('dbres:en-image'))),
+    );
+  });
+
+  test('ignores markdown image completion after cubit is closed', () async {
+    final settingsCubit = SettingsCubit(
+      _FakeSettingsRepository(initialSettings: _buildSettings(language: 'en')),
+    );
+    addTearDown(settingsCubit.close);
+    await settingsCubit.loadSettings();
+
+    final repository = _FakeTopicsRepository(
+      markdownByRouteLanguage: <String, AppResult<String>>{
+        'late|en': const AppSuccess<String>('![Late](dbres:late-image)'),
+      },
+      topicByRouteLanguage: const <String, AppResult<TopicInfo?>>{},
+    );
+    final imageOrchestrator = _ControllableTopicMarkdownImageOrchestrator();
+    final cubit = TopicContentCubit(
+      topicsRepository: repository,
+      settingsCubit: settingsCubit,
+      route: 'late',
+      topicMarkdownImageOrchestrator: imageOrchestrator,
+    );
+
+    await _flushAsync();
+    expect(cubit.state.markdownImagesTotalCount, 1);
+
+    await cubit.close();
+    imageOrchestrator.complete(
+      _cacheKeyForSource('dbres:late-image'),
+      TopicMarkdownImageLoadResult.success(
+        bytes: Uint8List.fromList(<int>[5]),
+        mimeType: 'image/png',
+      ),
+    );
+    await _flushAsync();
+
+    expect(cubit.isClosed, isTrue);
+  });
 }
 
 Future<void> _flushAsync() async {
   await Future<void>.delayed(Duration.zero);
   await Future<void>.delayed(Duration.zero);
+}
+
+Future<void> _waitUntil(bool Function() condition, {int maxTicks = 40}) async {
+  for (var i = 0; i < maxTicks; i++) {
+    await _flushAsync();
+    if (condition()) {
+      return;
+    }
+  }
+  fail('Condition was not met within $maxTicks ticks.');
 }
 
 AppSettings _buildSettings({
@@ -425,4 +577,63 @@ class _NoopTopicsDataSource implements TopicsDataSource {
 
   @override
   Future<CommonResource?> fetchCommonResource(String key) async => null;
+}
+
+String _cacheKeyForSource(String source) {
+  return RevelationMarkdownImageSource.parse(source).cacheKey;
+}
+
+class _FakeTopicMarkdownImageOrchestrator
+    extends TopicMarkdownImageOrchestrator {
+  _FakeTopicMarkdownImageOrchestrator({
+    this.imageResultsByCacheKey =
+        const <String, TopicMarkdownImageLoadResult>{},
+  }) : super(
+         topicsRepository: TopicsRepository(
+           dataSource: _NoopTopicsDataSource(),
+         ),
+       );
+
+  final Map<String, TopicMarkdownImageLoadResult> imageResultsByCacheKey;
+
+  @override
+  Future<TopicMarkdownImageLoadResult> loadImage(
+    RevelationMarkdownImageData image,
+  ) async {
+    return imageResultsByCacheKey[image.cacheKey] ??
+        const TopicMarkdownImageLoadResult.failure();
+  }
+}
+
+class _ControllableTopicMarkdownImageOrchestrator
+    extends TopicMarkdownImageOrchestrator {
+  _ControllableTopicMarkdownImageOrchestrator()
+    : super(
+        topicsRepository: TopicsRepository(dataSource: _NoopTopicsDataSource()),
+      );
+
+  final Map<String, Completer<TopicMarkdownImageLoadResult>> _requests =
+      <String, Completer<TopicMarkdownImageLoadResult>>{};
+
+  @override
+  Future<TopicMarkdownImageLoadResult> loadImage(
+    RevelationMarkdownImageData image,
+  ) {
+    return _requests
+        .putIfAbsent(
+          image.cacheKey,
+          () => Completer<TopicMarkdownImageLoadResult>(),
+        )
+        .future;
+  }
+
+  void complete(String cacheKey, TopicMarkdownImageLoadResult result) {
+    final completer = _requests.putIfAbsent(
+      cacheKey,
+      () => Completer<TopicMarkdownImageLoadResult>(),
+    );
+    if (!completer.isCompleted) {
+      completer.complete(result);
+    }
+  }
 }

@@ -611,4 +611,12 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get strong_or => 'або';
+
+  @override
+  String get markdown_image_loading => 'Завантаження зображення...';
+
+  @override
+  String markdown_images_loading_progress(int loaded, int total) {
+    return 'Завантаження зображень: $loaded із $total';
+  }
 }

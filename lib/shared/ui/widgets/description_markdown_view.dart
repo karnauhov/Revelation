@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_basic_image_builder.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_config.dart';
 import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
 
 class DescriptionMarkdownView extends StatelessWidget {
@@ -40,6 +42,11 @@ class DescriptionMarkdownView extends StatelessWidget {
         data: data,
         padding: padding,
         styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+        extensionSet: buildRevelationMarkdownExtensionSet(),
+        builders: buildRevelationMarkdownBuilders(
+          imageBuilder: buildBasicRevelationMarkdownImage,
+        ),
+        paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
         onTapLink: handleTapLink,
       );
     }
@@ -49,6 +56,11 @@ class DescriptionMarkdownView extends StatelessWidget {
       child: MarkdownBody(
         data: data,
         styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+        extensionSet: buildRevelationMarkdownExtensionSet(),
+        builders: buildRevelationMarkdownBuilders(
+          imageBuilder: buildBasicRevelationMarkdownImage,
+        ),
+        paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
         onTapLink: handleTapLink,
       ),
     );

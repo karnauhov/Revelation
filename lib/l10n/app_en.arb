@@ -222,5 +222,18 @@
   "strong_phrase": "phrase",
   "strong_conjNeg": "negative conjunction",
   "strong_conj": "conjunction",
-  "strong_or": "or"
+  "strong_or": "or",
+  "markdown_image_loading": "Loading image...",
+  "markdown_images_loading_progress": "Loading images: {loaded} of {total}",
+  "@markdown_images_loading_progress": {
+    "description": "Progress label for markdown image preloading in topic articles",
+    "placeholders": {
+      "loaded": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

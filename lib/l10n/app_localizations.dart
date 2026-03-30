@@ -1259,6 +1259,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'or'**
   String get strong_or;
+
+  /// No description provided for @markdown_image_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading image...'**
+  String get markdown_image_loading;
+
+  /// Progress label for markdown image preloading in topic articles
+  ///
+  /// In en, this message translates to:
+  /// **'Loading images: {loaded} of {total}'**
+  String markdown_images_loading_progress(int loaded, int total);
 }
 
 class _AppLocalizationsDelegate

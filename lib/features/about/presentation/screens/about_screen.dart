@@ -24,6 +24,8 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_basic_image_builder.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_config.dart';
 import 'package:revelation/shared/utils/bug_report_utils.dart';
 import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
@@ -697,6 +699,11 @@ class _AboutScreenState extends State<AboutScreen> {
                 child: MarkdownBody(
                   data: state.changelog,
                   styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+                  extensionSet: buildRevelationMarkdownExtensionSet(),
+                  builders: buildRevelationMarkdownBuilders(
+                    imageBuilder: buildBasicRevelationMarkdownImage,
+                  ),
+                  paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
                   onTapLink: (text, href, title) {
                     widget.dependencies.appLinkHandler(context, href);
                   },

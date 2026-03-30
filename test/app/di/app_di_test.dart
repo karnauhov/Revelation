@@ -10,6 +10,7 @@ import 'package:revelation/features/primary_sources/data/repositories/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
+import 'package:revelation/features/topics/application/orchestrators/topic_markdown_image_orchestrator.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/bloc/topics_catalog_cubit.dart';
@@ -90,6 +91,9 @@ void main() {
     final topicsRepository = AppDi.createTopicsRepository();
     final primarySourcesRepository = AppDi.createPrimarySourcesDbRepository();
     final pagesRepository = AppDi.createPagesRepository();
+    final topicImageOrchestrator = AppDi.createTopicMarkdownImageOrchestrator(
+      topicsRepository: topicsRepository,
+    );
     final explicitOrchestrator =
         AppDi.createPrimarySourcePageSettingsOrchestrator(
           pagesRepository: pagesRepository,
@@ -120,6 +124,7 @@ void main() {
     expect(topicsRepository, isA<TopicsRepository>());
     expect(primarySourcesRepository, isA<PrimarySourcesDbRepository>());
     expect(pagesRepository, isA<PagesRepository>());
+    expect(topicImageOrchestrator, isA<TopicMarkdownImageOrchestrator>());
     expect(explicitOrchestrator, isA<PrimarySourcePageSettingsOrchestrator>());
     expect(fallbackOrchestrator, isA<PrimarySourcePageSettingsOrchestrator>());
     expect(cubitFromExplicit, isA<PrimarySourcePageSettingsCubit>());

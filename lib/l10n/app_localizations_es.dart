@@ -612,4 +612,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get strong_or => 'o';
+
+  @override
+  String get markdown_image_loading => 'Cargando imagen...';
+
+  @override
+  String markdown_images_loading_progress(int loaded, int total) {
+    return 'Cargando imágenes: $loaded de $total';
+  }
 }

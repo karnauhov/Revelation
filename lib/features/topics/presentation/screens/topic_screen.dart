@@ -5,16 +5,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:revelation/app/di/app_di.dart';
-import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_state.dart';
+import 'package:revelation/features/topics/presentation/widgets/topic_markdown_image_view.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_config.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dart';
 import 'package:revelation/shared/ui/markdown/markdown_utils.dart';
+import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/core/platform/file_downloader.dart';
 
@@ -61,7 +64,6 @@ class TopicScreen extends StatefulWidget {
 }
 
 class _TopicScreenState extends State<TopicScreen> {
-  static const String _dbResourceScheme = 'dbres:';
   static const String _dbFileScheme = 'dbfile:';
   static const String _assetResourceScheme = 'resource:';
 
@@ -111,14 +113,28 @@ class _TopicScreenState extends State<TopicScreen> {
               child: SingleChildScrollView(
                 controller: _scrollController,
                 padding: const EdgeInsets.all(8.0),
-                child: MarkdownBody(
-                  data: state.markdown,
-                  styleSheet: getMarkdownStyleSheet(theme, colorScheme),
-                  imageBuilder: (uri, title, alt) =>
-                      _buildMarkdownImage(context, uri, alt),
-                  onTapLink: (text, href, title) async {
-                    await _handleTopicLink(context, href);
-                  },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (state.isMarkdownImagePreloadActive)
+                      _buildMarkdownImagePreloadBanner(context, state),
+                    MarkdownBody(
+                      key: ValueKey(
+                        'topic-markdown-${state.route}-${state.language}-${state.markdown.hashCode}-${state.markdownImagesCompletedCount}-${state.markdownImagesFailedCount}',
+                      ),
+                      data: state.markdown,
+                      styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+                      extensionSet: buildRevelationMarkdownExtensionSet(),
+                      builders: buildRevelationMarkdownBuilders(
+                        imageBuilder: (context, image) =>
+                            _buildTopicMarkdownImage(state, image),
+                      ),
+                      paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
+                      onTapLink: (text, href, title) async {
+                        await _handleTopicLink(context, href);
+                      },
+                    ),
+                  ],
                 ),
               ),
             );
@@ -219,72 +235,54 @@ class _TopicScreenState extends State<TopicScreen> {
     return handleAppLink(context, link, popBeforeScreenPush: true);
   }
 
-  Widget _buildMarkdownImage(BuildContext context, Uri uri, String? alt) {
-    final link = uri.toString().trim();
-    if (link.toLowerCase().startsWith(_dbResourceScheme)) {
-      final key = link.substring(_dbResourceScheme.length).trim();
-      return _buildDbResourceImage(context, key, alt);
-    }
-
-    if (link.toLowerCase().startsWith(_assetResourceScheme)) {
-      final assetPath = link.substring(_assetResourceScheme.length).trim();
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Image.asset(
-          assetPath,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) =>
-              _buildImageErrorWidget(context, assetPath, alt),
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Image.network(
-        link,
-        fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) =>
-            _buildImageErrorWidget(context, link, alt),
-      ),
-    );
-  }
-
-  Widget _buildDbResourceImage(BuildContext context, String key, String? alt) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: FutureBuilder<AppResult<TopicResource?>>(
-        future: _topicContentCubit.loadCommonResource(key),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final result = snapshot.data;
-          if (snapshot.hasError || result is! AppSuccess<TopicResource?>) {
-            return _buildImageErrorWidget(context, key, alt);
-          }
-          final resource = result.data;
-          if (resource == null) {
-            return _buildImageErrorWidget(context, key, alt);
-          }
-          return Image.memory(resource.data, fit: BoxFit.contain);
-        },
-      ),
-    );
-  }
-
-  Widget _buildImageErrorWidget(
-    BuildContext context,
-    String source,
-    String? alt,
+  Widget _buildTopicMarkdownImage(
+    TopicContentState state,
+    RevelationMarkdownImageData image,
   ) {
-    final message = (alt != null && alt.isNotEmpty)
-        ? alt
-        : 'Image not found: $source';
-    return Text(
-      message,
-      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        color: Theme.of(context).colorScheme.error,
+    return TopicMarkdownImageView(
+      key: ValueKey(
+        '${image.cacheKey}-${state.markdownImages[image.cacheKey]?.status.name ?? 'missing'}',
+      ),
+      image: image,
+      imageState: state.markdownImages[image.cacheKey],
+    );
+  }
+
+  Widget _buildMarkdownImagePreloadBanner(
+    BuildContext context,
+    TopicContentState state,
+  ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final progress = state.markdownImagePreloadProgress ?? 0;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.markdown_images_loading_progress(
+                  state.markdownImagesCompletedCount,
+                  state.markdownImagesTotalCount,
+                ),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 8),
+              LinearProgressIndicator(value: progress),
+            ],
+          ),
+        ),
       ),
     );
   }

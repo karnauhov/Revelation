@@ -193,4 +193,18 @@
   "strong_conjNeg": "заперечний сполучник",
   "strong_conj": "сполучник",
   "strong_or": "або"
+,
+  "markdown_image_loading": "Завантаження зображення...",
+  "markdown_images_loading_progress": "Завантаження зображень: {loaded} із {total}",
+  "@markdown_images_loading_progress": {
+    "description": "Текст прогресу попереднього завантаження Markdown-зображень у статтях",
+    "placeholders": {
+      "loaded": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

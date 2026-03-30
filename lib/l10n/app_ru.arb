@@ -193,4 +193,18 @@
   "strong_conjNeg": "отрицательный союз",
   "strong_conj": "союз",
   "strong_or": "или"
+,
+  "markdown_image_loading": "Загрузка изображения...",
+  "markdown_images_loading_progress": "Загрузка изображений: {loaded} из {total}",
+  "@markdown_images_loading_progress": {
+    "description": "Текст прогресса предзагрузки изображений Markdown в статьях",
+    "placeholders": {
+      "loaded": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

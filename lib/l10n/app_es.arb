@@ -192,5 +192,18 @@
   "strong_phrase": "frase",
   "strong_conjNeg": "conjunción negativa",
   "strong_conj": "conjunción",
-  "strong_or": "o"
+  "strong_or": "o",
+  "markdown_image_loading": "Cargando imagen...",
+  "markdown_images_loading_progress": "Cargando imágenes: {loaded} de {total}",
+  "@markdown_images_loading_progress": {
+    "description": "Etiqueta de progreso para la precarga de imágenes Markdown en artículos",
+    "placeholders": {
+      "loaded": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

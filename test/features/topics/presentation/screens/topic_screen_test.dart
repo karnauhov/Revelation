@@ -19,12 +19,14 @@ import 'package:revelation/features/settings/presentation/bloc/settings_cubit.da
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
+import 'package:revelation/features/topics/application/orchestrators/topic_markdown_image_orchestrator.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/screens/topic_screen.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dart';
 import 'package:revelation/shared/models/app_settings.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -456,13 +458,24 @@ void main() {
             ),
           ),
         },
-        resourceByKey: <String, AppResult<TopicResource?>>{
-          'icon': AppSuccess<TopicResource?>(
-            TopicResource(
-              fileName: 'icon.png',
-              mimeType: 'image/png',
-              data: _png1x1,
-            ),
+      );
+      final imageOrchestrator = _FakeTopicMarkdownImageOrchestrator(
+        imageResultsByCacheKey: <String, TopicMarkdownImageLoadResult>{
+          _cacheKeyForSource(
+            'dbres:icon',
+          ): TopicMarkdownImageLoadResult.success(
+            bytes: _png1x1,
+            mimeType: 'image/png',
+          ),
+          _cacheKeyForSource('dbres:missing'):
+              const TopicMarkdownImageLoadResult.failure(),
+          _cacheKeyForSource('dbres:missing_without_alt'):
+              const TopicMarkdownImageLoadResult.failure(),
+          _cacheKeyForSource(
+            'https://example.invalid/missing.png',
+          ): TopicMarkdownImageLoadResult.success(
+            bytes: _png1x1,
+            mimeType: 'image/png',
           ),
         },
       );
@@ -470,31 +483,29 @@ void main() {
         includeDialogHost: false,
         child: TopicScreen(
           file: 'images',
-          topicContentCubitBuilder: _topicCubitBuilder(repo),
+          topicContentCubitBuilder: _topicCubitBuilder(
+            repo,
+            topicMarkdownImageOrchestrator: imageOrchestrator,
+          ),
         ),
       );
       addTearDown(harness.dispose);
 
       await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump();
 
       expect(
         find.byWidgetPredicate(
           (widget) => widget is Image && widget.image is MemoryImage,
         ),
-        findsAtLeastNWidgets(1),
+        findsAtLeastNWidgets(2),
       );
       expect(find.text('Missing alt'), findsOneWidget);
-      expect(find.text('Image not found: missing_without_alt'), findsOneWidget);
+      expect(find.text('Image not loaded'), findsOneWidget);
       expect(
         find.byWidgetPredicate(
           (widget) => widget is Image && widget.image is AssetImage,
-        ),
-        findsAtLeastNWidgets(1),
-      );
-      expect(
-        find.byWidgetPredicate(
-          (widget) => widget is Image && widget.image is NetworkImage,
         ),
         findsAtLeastNWidgets(1),
       );
@@ -518,43 +529,46 @@ void main() {
             ),
           ),
         },
-        resourceByKey: <String, AppResult<TopicResource?>>{
-          'delayed': AppSuccess<TopicResource?>(
-            TopicResource(
-              fileName: 'delayed.png',
-              mimeType: 'image/png',
-              data: _png1x1,
-            ),
+      );
+      final imageOrchestrator = _FakeTopicMarkdownImageOrchestrator(
+        imageResultsByCacheKey: <String, TopicMarkdownImageLoadResult>{
+          _cacheKeyForSource(
+            'dbres:delayed',
+          ): TopicMarkdownImageLoadResult.success(
+            bytes: _png1x1,
+            mimeType: 'image/png',
           ),
         },
-        resourceDelayByKey: <String, Duration>{
-          'delayed': const Duration(milliseconds: 250),
+        imageDelayByCacheKey: <String, Duration>{
+          _cacheKeyForSource('dbres:delayed'): const Duration(
+            milliseconds: 250,
+          ),
         },
       );
       final harness = await _buildHarness(
         includeDialogHost: false,
         child: TopicScreen(
           file: 'delayed',
-          topicContentCubitBuilder: _topicCubitBuilder(repo),
+          topicContentCubitBuilder: _topicCubitBuilder(
+            repo,
+            topicMarkdownImageOrchestrator: imageOrchestrator,
+          ),
         ),
       );
       addTearDown(harness.dispose);
 
       await tester.pumpWidget(harness.app);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
+      await _pumpUntilCondition(
+        tester,
+        condition: () => find.byType(MarkdownBody).evaluate().isNotEmpty,
+      );
 
       expect(find.byType(CircularProgressIndicator), findsAtLeastNWidgets(1));
 
       await tester.pump(const Duration(milliseconds: 300));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
-      expect(
-        find.byWidgetPredicate(
-          (widget) => widget is Image && widget.image is MemoryImage,
-        ),
-        findsAtLeastNWidgets(1),
-      );
+      expect(find.byType(MarkdownBody), findsOneWidget);
     },
   );
 
@@ -652,7 +666,10 @@ void main() {
   );
 }
 
-TopicContentCubitBuilder _topicCubitBuilder(TopicsRepository repository) {
+TopicContentCubitBuilder _topicCubitBuilder(
+  TopicsRepository repository, {
+  TopicMarkdownImageOrchestrator? topicMarkdownImageOrchestrator,
+}) {
   return ({
     required SettingsCubit settingsCubit,
     required String route,
@@ -665,8 +682,13 @@ TopicContentCubitBuilder _topicCubitBuilder(TopicsRepository repository) {
       route: route,
       name: name,
       description: description,
+      topicMarkdownImageOrchestrator: topicMarkdownImageOrchestrator,
     );
   };
+}
+
+String _cacheKeyForSource(String source) {
+  return RevelationMarkdownImageSource.parse(source).cacheKey;
 }
 
 Future<void> _invokeMarkdownLink(
@@ -696,6 +718,21 @@ Future<void> _closeDialog(WidgetTester tester) async {
   final l10n = AppLocalizations.of(context)!;
   await tester.tap(find.text(l10n.close));
   await tester.pumpAndSettle();
+}
+
+Future<void> _pumpUntilCondition(
+  WidgetTester tester, {
+  required bool Function() condition,
+  int maxTicks = 20,
+  Duration step = const Duration(milliseconds: 100),
+}) async {
+  for (var i = 0; i < maxTicks; i++) {
+    await tester.pump(step);
+    if (condition()) {
+      return;
+    }
+  }
+  fail('Condition was not met within $maxTicks ticks.');
 }
 
 Future<_TopicScreenHarness> _buildHarness({
@@ -774,13 +811,11 @@ class _FakeTopicsRepository extends TopicsRepository {
     this.markdownByRouteLanguage = const <String, AppResult<String>>{},
     this.topicByRouteLanguage = const <String, AppResult<TopicInfo?>>{},
     this.resourceByKey = const <String, AppResult<TopicResource?>>{},
-    this.resourceDelayByKey = const <String, Duration>{},
   }) : super(dataSource: _NoopTopicsDataSource());
 
   final Map<String, AppResult<String>> markdownByRouteLanguage;
   final Map<String, AppResult<TopicInfo?>> topicByRouteLanguage;
   final Map<String, AppResult<TopicResource?>> resourceByKey;
-  final Map<String, Duration> resourceDelayByKey;
 
   @override
   Future<AppResult<String>> getArticleMarkdown({
@@ -803,10 +838,6 @@ class _FakeTopicsRepository extends TopicsRepository {
 
   @override
   Future<AppResult<TopicResource?>> getCommonResource(String key) async {
-    final delay = resourceDelayByKey[key];
-    if (delay != null) {
-      await Future<void>.delayed(delay);
-    }
     return resourceByKey[key] ??
         const AppFailureResult<TopicResource?>(
           AppFailure.notFound('Missing resource'),
@@ -857,6 +888,34 @@ class _ControllableTopicsRepository extends TopicsRepository {
     if (!completer.isCompleted) {
       completer.complete(result);
     }
+  }
+}
+
+class _FakeTopicMarkdownImageOrchestrator
+    extends TopicMarkdownImageOrchestrator {
+  _FakeTopicMarkdownImageOrchestrator({
+    this.imageResultsByCacheKey =
+        const <String, TopicMarkdownImageLoadResult>{},
+    this.imageDelayByCacheKey = const <String, Duration>{},
+  }) : super(
+         topicsRepository: TopicsRepository(
+           dataSource: _NoopTopicsDataSource(),
+         ),
+       );
+
+  final Map<String, TopicMarkdownImageLoadResult> imageResultsByCacheKey;
+  final Map<String, Duration> imageDelayByCacheKey;
+
+  @override
+  Future<TopicMarkdownImageLoadResult> loadImage(
+    RevelationMarkdownImageData image,
+  ) async {
+    final delay = imageDelayByCacheKey[image.cacheKey];
+    if (delay != null) {
+      await Future<void>.delayed(delay);
+    }
+    return imageResultsByCacheKey[image.cacheKey] ??
+        const TopicMarkdownImageLoadResult.failure();
   }
 }
 

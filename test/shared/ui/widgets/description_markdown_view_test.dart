@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../test_harness/widget_test_harness.dart';
 

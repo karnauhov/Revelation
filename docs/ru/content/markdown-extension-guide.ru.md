@@ -1,169 +1,144 @@
 # Руководство по расширению Markdown (RU)
 
-Doc-Version: `1.0.0`  
+Doc-Version: `1.1.0`  
 Last-Updated: `2026-03-30`  
 Source-Commit: `working-tree`
 
 ## Назначение
 
-Зафиксировать практический подход для Revelation: как расширять Markdown без перехода на полный HTML runtime, и как включить нужные возможности на текущем стеке `flutter_markdown_plus` + `markdown`.
+Зафиксировать подход Revelation к расширению Markdown на базе `flutter_markdown_plus` и `markdown`, включая кастомный синтаксис изображений и поддерживаемые форматы ссылок на изображения.
 
-## База стека
+## Базовый стек
 
-- В проекте используется `flutter_markdown_plus` и transitive `markdown`.
-- По умолчанию `Markdown`/`MarkdownBody` работают с `md.ExtensionSet.gitHubFlavored`.
-- Это уже покрывает: таблицы, task lists (чекбоксы), footnotes, strikethrough, autolinks.
-- Для `:emoji_shortcodes:` нужно явно добавить `md.EmojiSyntax()`.
+- В проекте используются `flutter_markdown_plus` и transitive `markdown`.
+- `Markdown` и `MarkdownBody` подключаются через общий Revelation markdown config.
+- Общий config расширяет `gitHubFlavored` и добавляет `md.EmojiSyntax()`.
 
-## Что можно получить в документе Markdown
+## Что уже доступно в Markdown
 
-### Task Lists
+- таблицы;
+- task lists;
+- footnotes;
+- strikethrough;
+- autolinks;
+- emoji shortcodes при включённом `EmojiSyntax`.
 
-```md
-- [x] Уже выполнено
-- [ ] Еще в работе
-```
+## Кастомный блок изображения
 
-### Footnotes
-
-```md
-Текст со сноской[^a].
-
-[^a]: Содержимое сноски.
-```
-
-### Таблицы
+Для статей Revelation поддерживается специальный блок:
 
 ```md
-| Символ | Значение |
-|:------|---------:|
-| Агнец | Христос  |
-| Рог   | Власть   |
+{{image}}
+src: images/map.jpg
+alt: Карта печатей
+align: center
+width: 640
+height: 360
+caption: Необязательная подпись
+{{/image}}
 ```
 
-### Автоссылки
+Поддерживаемые поля:
+
+- `src`
+- `alt`
+- `align`: `left`, `center`, `right`
+- `width`
+- `height`
+- `caption`
+
+## Поддерживаемые варианты источника изображения
+
+Парсер изображений понимает эти формы и в кастомном блоке `{{image}}`, и в обычном markdown-синтаксисе `![Alt](...)`.
+
+### Asset
 
 ```md
-https://www.revelation.website
-support@example.com
+![Иконка](resource:assets/images/UI/app_icon.png)
 ```
 
-### Superscript для footnotes
-
-- Индексы сносок в `flutter_markdown_plus` поднимаются автоматически.
-- При необходимости можно сменить font feature через `superscriptFontFeatureTag` в `MarkdownStyleSheet`.
-
-## Включение emoji shortcodes
-
-```dart
-import 'package:markdown/markdown.dart' as md;
-
-md.ExtensionSet buildRevelationExtensionSet() {
-  return md.ExtensionSet(
-    md.ExtensionSet.gitHubFlavored.blockSyntaxes,
-    <md.InlineSyntax>[
-      md.EmojiSyntax(),
-      ...md.ExtensionSet.gitHubFlavored.inlineSyntaxes,
-    ],
-  );
-}
-```
-
-Использование:
-
-```dart
-MarkdownBody(
-  data: markdown,
-  extensionSet: buildRevelationExtensionSet(),
-)
-```
-
-Пример в тексте:
+### DB Resource
 
 ```md
-Важно :warning: и радость :smiley:
+![Схема](dbres:topic/diagram.svg)
 ```
 
-## Кастомные bullets и checkboxes
+### Короткая запись для Supabase bucket
 
-`bulletBuilder` и `checkboxBuilder` позволяют менять только рендер, не меняя Markdown-синтаксис.
-
-```dart
-MarkdownBody(
-  data: markdown,
-  extensionSet: buildRevelationExtensionSet(),
-  bulletBuilder: (params) {
-    if (params.style == BulletStyle.orderedList) {
-      return CircleAvatar(
-        radius: 10,
-        child: Text('${params.index + 1}'),
-      );
-    }
-    return Icon(
-      params.nestLevel == 0 ? Icons.star : Icons.chevron_right,
-      size: 16,
-    );
-  },
-  checkboxBuilder: (checked) {
-    return Icon(
-      checked ? Icons.check_circle : Icons.radio_button_unchecked,
-      size: 18,
-    );
-  },
-)
-```
-
-## Кастомные элементы в Markdown
-
-Если нужен виджет в теле статьи (например, видео-блок, callout, compare-card), используется пара:
-
-1. `md.BlockSyntax` или `md.InlineSyntax` для парсинга.
-2. `MarkdownElementBuilder` для рендера Flutter-виджета.
-
-Пример Markdown:
+Рекомендуемый вариант для изображений статей из публичного bucket `images`:
 
 ```md
-{{video}}
-src: https://cdn.example.com/intro.mp4
-caption: Введение
-{{/video}}
+{{image}}
+src: images/map.jpg
+alt: Карта
+align: right
+width: 320
+height: 200
+{{/image}}
 ```
 
-Пример рендера (идея):
+Такая запись автоматически трактуется как путь в публичном Supabase bucket `images`.
 
-- `VideoBlockSyntax` распознает блок `{{video}}...{{/video}}` и создает узел `md.Element('video')` с атрибутами.
-- `VideoBuilder` (наследник `MarkdownElementBuilder`) получает этот узел и возвращает ваш `Widget` (карточка, плеер, placeholder, и т.д.).
+### Явный путь Supabase
 
-## Где подключать в Revelation
+```md
+![Диаграмма](supabase:images/charts/seals.svg)
+```
 
-Единообразно прокидывать один и тот же конфиг markdown в:
+### Полный public URL Supabase
+
+```md
+![Карта](https://adfdfxnzxmzyoioedwuy.supabase.co/storage/v1/object/public/images/map.jpg)
+```
+
+Полный public URL автоматически распознаётся обратно как `bucket/path`.
+
+### Внешний URL
+
+```md
+![Внешнее изображение](https://example.com/reference/chart.png)
+```
+
+Внешние URL по-прежнему поддерживаются, но для стабильного контента статей лучше переносить изображения в Supabase проекта и ссылаться на них через bucket `images`.
+
+## Локальный кеш изображений
+
+Для topic-статей:
+
+- удалённые изображения из Supabase и внешних URL скачиваются один раз при первом открытии;
+- локальные файлы сохраняются в `Documents/revelation/images/`;
+- файлы имеют читаемые имена и расширения, а не hash-only имена кеша;
+- если источник находится в bucket `images`, локальный путь повторяет этот путь напрямую.
+
+Примеры:
+
+- `images/map.jpg` -> `Documents/revelation/images/map.jpg`
+- `images/maps/seal-1.svg` -> `Documents/revelation/images/maps/seal-1.svg`
+- внешние URL сохраняются в `Documents/revelation/images/external/...`
+
+## Размер placeholder до загрузки
+
+- Если заданы `width` и `height`, временный фрейм сразу занимает нужный размер.
+- Для обычного markdown-изображения размер можно задать и через fragment:
+
+```md
+![Встроенная карта](images/map.jpg#640x360)
+```
+
+## Где подключается общий markdown config
 
 - `lib/shared/ui/widgets/description_markdown_view.dart`
 - `lib/features/topics/presentation/screens/topic_screen.dart`
 - `lib/shared/ui/dialogs/dialogs_utils.dart`
 
-Рекомендуется вынести это в один helper, например:
+Рекомендуемое место helper-а:
 
 - `lib/shared/ui/markdown/revelation_markdown_config.dart`
 
-## Практические ограничения
+## Быстрый checklist
 
-- Markdown-путь хорош для статей с контролируемым набором блоков.
-- Для произвольного HTML/CSS/JS и сложного браузерного поведения нужен WebView runtime.
-- Не стоит делать “бесконечный DSL”: лучше утвердить whitelist блоков и поддерживать его стабильно.
-
-## Экспорт и дополнительные возможности
-
-- Для экспорта уже отрендеренного Flutter markdown-экрана в PDF: `flutter_to_pdf` (MIT).
-- Для отдельного документного PDF-pipeline: `htmltopdfwidgets` + `pdf` + `printing` (Apache-2.0).
-- Для математики в markdown: `flutter_markdown_plus_latex` (Apache-2.0).
-
-## Быстрый checklist внедрения
-
-1. Вынести общий `extensionSet`.
-2. Добавить `EmojiSyntax` поверх `gitHubFlavored`.
-3. Централизовать `bulletBuilder` и `checkboxBuilder`.
-4. При необходимости настроить `superscriptFontFeatureTag`.
-5. Для сложных блоков добавить custom syntax + builder.
-6. Добавить тесты на новые markdown-возможности и кастомные блоки.
-
+1. Держать markdown-рендеринг на общем Revelation markdown config.
+2. Использовать `{{image}}`, когда нужны выравнивание, подпись или явный размер placeholder.
+3. Для изображений статей предпочитать ссылки вида `images/...` из публичного Supabase bucket `images`.
+4. Указывать `width` и `height`, когда важна стабильная раскладка.
+5. Обновлять тесты при изменении markdown-парсинга или рендера.
