@@ -20,10 +20,10 @@ class RevelationMarkdownImageView extends StatelessWidget {
     final caption = image.caption;
 
     if (!image.isBlockImage) {
-      return child;
+      return _clipOverflowSafely(child: child, alignment: Alignment.topCenter);
     }
 
-    return Align(
+    final content = Align(
       alignment: _alignmentFor(image.alignment),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -43,6 +43,11 @@ class RevelationMarkdownImageView extends StatelessWidget {
             ),
         ],
       ),
+    );
+    final horizontalAlignment = _alignmentFor(image.alignment).x;
+    return _clipOverflowSafely(
+      child: content,
+      alignment: Alignment(horizontalAlignment, -1),
     );
   }
 
@@ -162,19 +167,22 @@ class RevelationMarkdownImageView extends StatelessWidget {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                child ?? const SizedBox.shrink(),
-                if (child != null) const SizedBox(height: 12),
-                Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+            child: _clipOverflowSafely(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  child ?? const SizedBox.shrink(),
+                  if (child != null) const SizedBox(height: 12),
+                  Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              alignment: Alignment.topCenter,
             ),
           ),
         ),
@@ -239,5 +247,28 @@ class RevelationMarkdownImageView extends StatelessWidget {
       case RevelationMarkdownImageAlignment.center:
         return TextAlign.center;
     }
+  }
+
+  Widget _clipOverflowSafely({
+    required Widget child,
+    required AlignmentGeometry alignment,
+  }) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.hasBoundedHeight) {
+          return child;
+        }
+
+        return ClipRect(
+          child: OverflowBox(
+            minHeight: 0,
+            maxWidth: constraints.hasBoundedWidth ? constraints.maxWidth : null,
+            maxHeight: double.infinity,
+            alignment: alignment,
+            child: child,
+          ),
+        );
+      },
+    );
   }
 }

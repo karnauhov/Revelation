@@ -6,7 +6,7 @@ All notable changes to this application will be documented here.
 
 ### Added
 
-- ...
+- Implemented image caching for all platforms.
 
 ### Changed
 

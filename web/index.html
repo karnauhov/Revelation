@@ -26,6 +26,7 @@
       --loader-panel-border: rgba(255, 255, 255, 0.25);
       --loader-title: #ffffff;
       --loader-subtitle: #e8ddd4;
+      --loader-version: rgba(232, 221, 212, 0.92);
       --loader-progress-text: #d5c4b7;
       --loader-progress-track: rgba(255, 255, 255, 0.2);
       --loader-progress-fill: #f2c48e;
@@ -93,7 +94,7 @@
     }
 
     .app-loader__subtitle,
-    .app-loader__status,
+    .app-loader__version,
     .app-loader__progress-text {
       margin: 0;
       text-align: center;
@@ -106,15 +107,15 @@
       font-weight: 500;
     }
 
-    .app-loader__status {
-      margin-top: 18px;
-      color: var(--loader-title);
-      font-size: 1rem;
-      font-weight: 600;
+    .app-loader__version {
+      margin-top: 8px;
+      color: var(--loader-version);
+      font-size: 0.92rem;
+      font-weight: 500;
     }
 
     .app-loader__progress {
-      margin-top: 14px;
+      margin-top: 12px;
       height: 8px;
       border-radius: 999px;
       overflow: hidden;
@@ -122,11 +123,11 @@
     }
 
     .app-loader__progress-fill {
-      width: 12%;
+      width: 3%;
       height: 100%;
       border-radius: inherit;
       background: var(--loader-progress-fill);
-      transition: width 360ms ease;
+      transition: width 180ms linear;
     }
 
     .app-loader__progress-fill::after {
@@ -178,7 +179,7 @@
 
       .app-loader__title,
       .app-loader__subtitle,
-      .app-loader__status,
+      .app-loader__version,
       .app-loader__progress-text {
         text-align: left;
       }
@@ -202,18 +203,19 @@
       <div class="app-loader__panel-inner">
         <h1 id="app-loader-title" class="app-loader__title">Revelation</h1>
         <p id="app-loader-subtitle" class="app-loader__subtitle">
-          Launching the app...
+          Loading web application...
         </p>
-        <p id="app-loader-status" class="app-loader__status">
-          Preparing Revelation
+        <p id="app-loader-version" class="app-loader__version">
+          Version -- (--)
         </p>
         <div
           id="app-loader-progress"
           class="app-loader__progress"
           role="progressbar"
+          aria-label="Loading progress"
           aria-valuemin="0"
           aria-valuemax="100"
-          aria-valuenow="12"
+          aria-valuenow="3"
         >
           <div
             id="app-loader-progress-fill"
@@ -221,7 +223,7 @@
           ></div>
         </div>
         <p id="app-loader-progress-text" class="app-loader__progress-text">
-          Step 1 of 4
+          3%
         </p>
       </div>
     </div>
