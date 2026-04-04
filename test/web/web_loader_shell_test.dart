@@ -13,13 +13,21 @@ void main() {
     expect(indexHtml, contains('id="app-loader-version"'));
     expect(indexHtml, contains('body.app-loaded #app-loader'));
 
-    expect(bootstrapScript, contains("const loaderManifestUrl = 'loader_manifest.json';"));
-    expect(bootstrapScript, contains("fetch('version.json', { cache: 'no-store' })"));
-    expect(bootstrapScript, contains('parseServiceWorkerVersion(`{{flutter_service_worker_version}}`)'));
     expect(
       bootstrapScript,
-      contains("const serviceWorkerVersion ="),
+      contains("const loaderManifestUrl = 'loader_manifest.json';"),
     );
+    expect(
+      bootstrapScript,
+      contains("fetch('version.json', { cache: 'no-store' })"),
+    );
+    expect(
+      bootstrapScript,
+      contains(
+        'parseServiceWorkerVersion(`{{flutter_service_worker_version}}`)',
+      ),
+    );
+    expect(bootstrapScript, contains("const serviceWorkerVersion ="));
     expect(bootstrapScript, contains("serviceWorkerUrl:"));
     expect(bootstrapScript, contains("revelation_files_cache_sw.js?v="));
     expect(bootstrapScript, contains("computeExpectedTotalBytes()"));
