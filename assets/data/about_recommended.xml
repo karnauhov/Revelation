@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <recommendations>
     <recommendation>
+        <name>The Battle of Armageddon</name>
+        <idIcon>like_bb.png</idIcon>
+        <officialSite>https://www.thebattleofarmageddon.com</officialSite>
+    </recommendation>
+    <recommendation>
         <name>OnBible</name>
         <idIcon>like_onbible.png</idIcon>
         <officialSite>https://on-bible.com</officialSite>

@@ -29,6 +29,13 @@
         <licenseLink>https://supabase.com/terms</licenseLink>
     </library>
     <library>
+        <name>Codex, ChatGPT</name>
+        <idIcon>lib_codex</idIcon>
+        <license>Terms of Use</license>
+        <officialSite>https://chatgpt.com/codex</officialSite>
+        <licenseLink>https://openai.com/policies/row-terms-of-use/</licenseLink>
+    </library>
+    <library>
         <name>@Vectors @and @Icons @by SVG Repo</name>
         <idIcon>lib_svgrepo</idIcon>
         <license>SVG Repo License</license>
