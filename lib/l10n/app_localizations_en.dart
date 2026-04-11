@@ -611,6 +611,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strong_or => 'or';
 
   @override
+  String get markdown_unknown_block_title => 'Unsupported content block';
+
+  @override
+  String markdown_unknown_block_description(String blockName) {
+    return 'This version of the app cannot display the `$blockName` block.';
+  }
+
+  @override
+  String get markdown_unknown_block_update_hint =>
+      'Open the downloads page to install a newer app version for your platform.';
+
+  @override
+  String get markdown_unknown_block_update_action => 'Update app';
+
+  @override
   String get markdown_image_loading => 'Loading image...';
 
   @override

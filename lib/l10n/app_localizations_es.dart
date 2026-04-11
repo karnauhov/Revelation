@@ -614,6 +614,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get strong_or => 'o';
 
   @override
+  String get markdown_unknown_block_title =>
+      'Bloque de contenido no compatible';
+
+  @override
+  String markdown_unknown_block_description(String blockName) {
+    return 'Esta versión de la aplicación no puede mostrar el bloque `$blockName`.';
+  }
+
+  @override
+  String get markdown_unknown_block_update_hint =>
+      'Abre la página de descargas para instalar una versión más reciente de la aplicación para tu plataforma.';
+
+  @override
+  String get markdown_unknown_block_update_action => 'Actualizar aplicación';
+
+  @override
   String get markdown_image_loading => 'Cargando imagen...';
 
   @override

@@ -526,6 +526,26 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'image_not_loaded should not be empty',
   );
   expect(
+    l10n.markdown_unknown_block_title,
+    isNotEmpty,
+    reason: 'markdown_unknown_block_title should not be empty',
+  );
+  expect(
+    l10n.markdown_unknown_block_description('timeline'),
+    isNotEmpty,
+    reason: 'markdown_unknown_block_description should not be empty',
+  );
+  expect(
+    l10n.markdown_unknown_block_update_hint,
+    isNotEmpty,
+    reason: 'markdown_unknown_block_update_hint should not be empty',
+  );
+  expect(
+    l10n.markdown_unknown_block_update_action,
+    isNotEmpty,
+    reason: 'markdown_unknown_block_update_action should not be empty',
+  );
+  expect(
     l10n.click_for_info,
     isNotEmpty,
     reason: 'click_for_info should not be empty',

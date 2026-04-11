@@ -3,6 +3,7 @@ import 'package:markdown/markdown.dart' as md;
 class RevelationMarkdownImageBlockSyntax extends md.BlockSyntax {
   const RevelationMarkdownImageBlockSyntax();
 
+  static const String blockName = 'image';
   static const String tag = 'revelation-image';
   static final RegExp _openingPattern = RegExp(r'^\s*\{\{image\}\}\s*$');
   static final RegExp _closingPattern = RegExp(r'^\s*\{\{\/image\}\}\s*$');

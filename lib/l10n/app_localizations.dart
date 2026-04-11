@@ -1260,6 +1260,30 @@ abstract class AppLocalizations {
   /// **'or'**
   String get strong_or;
 
+  /// No description provided for @markdown_unknown_block_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported content block'**
+  String get markdown_unknown_block_title;
+
+  /// Explains that the current app build does not support a custom markdown block
+  ///
+  /// In en, this message translates to:
+  /// **'This version of the app cannot display the `{blockName}` block.'**
+  String markdown_unknown_block_description(String blockName);
+
+  /// No description provided for @markdown_unknown_block_update_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the downloads page to install a newer app version for your platform.'**
+  String get markdown_unknown_block_update_hint;
+
+  /// No description provided for @markdown_unknown_block_update_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Update app'**
+  String get markdown_unknown_block_update_action;
+
   /// No description provided for @markdown_image_loading.
   ///
   /// In en, this message translates to:

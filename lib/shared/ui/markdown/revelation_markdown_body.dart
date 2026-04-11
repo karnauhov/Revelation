@@ -13,6 +13,8 @@ import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dar
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_view.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_images_cubit.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_images_state.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_unknown_block_data.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_unknown_block_view.dart';
 
 class RevelationMarkdownBody extends StatefulWidget {
   const RevelationMarkdownBody({
@@ -84,6 +86,8 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
             builders: buildRevelationMarkdownBuilders(
               imageBuilder: (context, image) =>
                   _buildMarkdownImage(state, image),
+              unknownBlockBuilder: (context, block) =>
+                  _buildUnknownBlock(block),
             ),
             paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
             onTapLink: widget.onTapLink,
@@ -110,6 +114,8 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
                   builders: buildRevelationMarkdownBuilders(
                     imageBuilder: (context, image) =>
                         _buildMarkdownImage(state, image),
+                    unknownBlockBuilder: (context, block) =>
+                        _buildUnknownBlock(block),
                   ),
                   paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
                   onTapLink: widget.onTapLink,
@@ -132,6 +138,13 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
       ),
       image: image,
       imageState: state.images[image.cacheKey],
+    );
+  }
+
+  Widget _buildUnknownBlock(RevelationMarkdownUnknownBlockData block) {
+    return RevelationMarkdownUnknownBlockView(
+      key: ValueKey('markdown-unknown-block-${block.name}'),
+      block: block,
     );
   }
 

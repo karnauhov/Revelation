@@ -28,25 +28,24 @@ void main() {
     addTearDown(_suppressOverflowErrors());
   });
 
-  testWidgets(
-    'DrawerContent shows non-web actions and hides web-only download entry',
-    (tester) async {
-      final app = _buildApp(onItemClicked: () {});
-      await tester.pumpWidget(app);
-      await tester.pumpAndSettle();
+  testWidgets('DrawerContent shows non-web actions including download entry', (
+    tester,
+  ) async {
+    final app = _buildApp(onItemClicked: () {});
+    await tester.pumpWidget(app);
+    await tester.pumpAndSettle();
 
-      await _openDrawer(tester);
+    await _openDrawer(tester);
 
-      final context = tester.element(find.byType(DrawerContent));
-      final l10n = AppLocalizations.of(context)!;
+    final context = tester.element(find.byType(DrawerContent));
+    final l10n = AppLocalizations.of(context)!;
 
-      expect(find.text(l10n.primary_sources_screen), findsOneWidget);
-      expect(find.text(l10n.settings_screen), findsOneWidget);
-      expect(find.text(l10n.about_screen), findsOneWidget);
-      expect(find.text(l10n.close_app), findsOneWidget);
-      expect(find.text(l10n.download), findsNothing);
-    },
-  );
+    expect(find.text(l10n.primary_sources_screen), findsOneWidget);
+    expect(find.text(l10n.settings_screen), findsOneWidget);
+    expect(find.text(l10n.about_screen), findsOneWidget);
+    expect(find.text(l10n.close_app), findsOneWidget);
+    expect(find.text(l10n.download), findsOneWidget);
+  });
 
   testWidgets(
     'DrawerContent shows web download action, hides close action, and navigates',

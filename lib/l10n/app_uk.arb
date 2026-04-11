@@ -194,6 +194,18 @@
   "strong_conj": "сполучник",
   "strong_or": "або"
 ,
+  "markdown_unknown_block_title": "Непідтримуваний блок вмісту",
+  "markdown_unknown_block_description": "Ця версія застосунку не вміє відображати блок `{blockName}`.",
+  "@markdown_unknown_block_description": {
+    "description": "Пояснює, що поточна збірка застосунку не підтримує користувацький markdown-блок",
+    "placeholders": {
+      "blockName": {
+        "type": "String"
+      }
+    }
+  },
+  "markdown_unknown_block_update_hint": "Відкрийте сторінку завантажень, щоб установити новішу версію застосунку для вашої платформи.",
+  "markdown_unknown_block_update_action": "Оновити застосунок",
   "markdown_image_loading": "Завантаження зображення...",
   "markdown_images_loading_progress": "Завантаження зображень: {loaded} із {total}",
   "@markdown_images_loading_progress": {

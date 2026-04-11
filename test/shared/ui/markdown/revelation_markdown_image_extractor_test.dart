@@ -22,6 +22,10 @@ src: resource:assets/images/example.png
 alt: Asset alt
 align: left
 {{/image}}
+
+{{timeline}}
+title: Future block
+{{/timeline}}
 ''';
 
     final images = extractRevelationMarkdownImages(markdown);

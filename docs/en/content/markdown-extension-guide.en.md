@@ -1,7 +1,7 @@
 # Markdown Extension Guide (EN)
 
-Doc-Version: `1.1.0`  
-Last-Updated: `2026-03-30`  
+Doc-Version: `1.2.1`  
+Last-Updated: `2026-04-11`  
 Source-Commit: `working-tree`
 
 ## Purpose
@@ -46,6 +46,24 @@ Supported fields:
 - `width`
 - `height`
 - `caption`
+
+## Unknown Custom Block Fallback
+
+The shared markdown config also recognizes any custom block that follows the same wrapper format as `{{image}}`:
+
+```md
+{{timeline}}
+title: Seven seals
+layout: compact
+{{/timeline}}
+```
+
+Behavior:
+
+- Known blocks such as `{{image}}` continue to render through their dedicated builder.
+- Unknown blocks render as a centered compatibility placeholder instead of disappearing silently.
+- Native app builds show a recommendation to open the `download` page so users can choose their marketplace manually.
+- Web builds keep only the fallback placeholder without the extra update hint/action.
 
 ## Supported Image Source Forms
 

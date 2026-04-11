@@ -194,6 +194,18 @@
   "strong_conj": "союз",
   "strong_or": "или"
 ,
+  "markdown_unknown_block_title": "Неподдерживаемый блок содержимого",
+  "markdown_unknown_block_description": "Эта версия приложения не умеет отображать блок `{blockName}`.",
+  "@markdown_unknown_block_description": {
+    "description": "Объясняет, что текущая сборка приложения не поддерживает пользовательский markdown-блок",
+    "placeholders": {
+      "blockName": {
+        "type": "String"
+      }
+    }
+  },
+  "markdown_unknown_block_update_hint": "Откройте страницу загрузок, чтобы установить более новую версию приложения для вашей платформы.",
+  "markdown_unknown_block_update_action": "Обновить приложение",
   "markdown_image_loading": "Загрузка изображения...",
   "markdown_images_loading_progress": "Загрузка изображений: {loaded} из {total}",
   "@markdown_images_loading_progress": {

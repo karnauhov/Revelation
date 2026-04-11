@@ -611,6 +611,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get strong_or => 'или';
 
   @override
+  String get markdown_unknown_block_title =>
+      'Неподдерживаемый блок содержимого';
+
+  @override
+  String markdown_unknown_block_description(String blockName) {
+    return 'Эта версия приложения не умеет отображать блок `$blockName`.';
+  }
+
+  @override
+  String get markdown_unknown_block_update_hint =>
+      'Откройте страницу загрузок, чтобы установить более новую версию приложения для вашей платформы.';
+
+  @override
+  String get markdown_unknown_block_update_action => 'Обновить приложение';
+
+  @override
   String get markdown_image_loading => 'Загрузка изображения...';
 
   @override

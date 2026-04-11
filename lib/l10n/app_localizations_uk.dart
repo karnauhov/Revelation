@@ -613,6 +613,21 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_or => 'або';
 
   @override
+  String get markdown_unknown_block_title => 'Непідтримуваний блок вмісту';
+
+  @override
+  String markdown_unknown_block_description(String blockName) {
+    return 'Ця версія застосунку не вміє відображати блок `$blockName`.';
+  }
+
+  @override
+  String get markdown_unknown_block_update_hint =>
+      'Відкрийте сторінку завантажень, щоб установити новішу версію застосунку для вашої платформи.';
+
+  @override
+  String get markdown_unknown_block_update_action => 'Оновити застосунок';
+
+  @override
   String get markdown_image_loading => 'Завантаження зображення...';
 
   @override

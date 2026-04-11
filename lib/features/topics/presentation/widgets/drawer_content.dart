@@ -120,16 +120,15 @@ class _DrawerContentState extends State<DrawerContent> {
                         context.push('/about');
                       },
                     ),
-                    if (DrawerContent.isWebForTest())
-                      DrawerItem(
-                        assetPath: 'assets/images/UI/get_app.svg',
-                        text: AppLocalizations.of(context)!.download,
-                        onClick: () {
-                          widget.onItemClicked();
-                          Navigator.pop(context);
-                          context.push('/download');
-                        },
-                      ),
+                    DrawerItem(
+                      assetPath: 'assets/images/UI/get_app.svg',
+                      text: AppLocalizations.of(context)!.download,
+                      onClick: () {
+                        widget.onItemClicked();
+                        Navigator.pop(context);
+                        context.push('/download');
+                      },
+                    ),
                   ],
                 ),
               ),

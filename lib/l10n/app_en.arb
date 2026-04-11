@@ -223,6 +223,18 @@
   "strong_conjNeg": "negative conjunction",
   "strong_conj": "conjunction",
   "strong_or": "or",
+  "markdown_unknown_block_title": "Unsupported content block",
+  "markdown_unknown_block_description": "This version of the app cannot display the `{blockName}` block.",
+  "@markdown_unknown_block_description": {
+    "description": "Explains that the current app build does not support a custom markdown block",
+    "placeholders": {
+      "blockName": {
+        "type": "String"
+      }
+    }
+  },
+  "markdown_unknown_block_update_hint": "Open the downloads page to install a newer app version for your platform.",
+  "markdown_unknown_block_update_action": "Update app",
   "markdown_image_loading": "Loading image...",
   "markdown_images_loading_progress": "Loading images: {loaded} of {total}",
   "@markdown_images_loading_progress": {

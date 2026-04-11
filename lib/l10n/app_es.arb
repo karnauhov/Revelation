@@ -193,6 +193,18 @@
   "strong_conjNeg": "conjunción negativa",
   "strong_conj": "conjunción",
   "strong_or": "o",
+  "markdown_unknown_block_title": "Bloque de contenido no compatible",
+  "markdown_unknown_block_description": "Esta versión de la aplicación no puede mostrar el bloque `{blockName}`.",
+  "@markdown_unknown_block_description": {
+    "description": "Explica que la compilación actual de la aplicación no admite un bloque markdown personalizado",
+    "placeholders": {
+      "blockName": {
+        "type": "String"
+      }
+    }
+  },
+  "markdown_unknown_block_update_hint": "Abre la página de descargas para instalar una versión más reciente de la aplicación para tu plataforma.",
+  "markdown_unknown_block_update_action": "Actualizar aplicación",
   "markdown_image_loading": "Cargando imagen...",
   "markdown_images_loading_progress": "Cargando imágenes: {loaded} de {total}",
   "@markdown_images_loading_progress": {
