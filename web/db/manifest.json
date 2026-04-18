@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-03-29T12:30:24Z",
+  "generatedAt": "2026-04-18T15:04:10Z",
   "databases": {
     "revelation.sqlite": {
       "versionToken": "manifest:schema:4|data:2|date:2026-03-21T06:09:24Z|size:1630208",
@@ -10,32 +10,32 @@
       "fileSizeBytes": 1630208
     },
     "revelation_en.sqlite": {
-      "versionToken": "manifest:schema:6|data:3|date:2026-03-28T20:24:24Z|size:585728",
+      "versionToken": "manifest:schema:6|data:4|date:2026-04-18T15:04:10Z|size:585728",
       "schemaVersion": 6,
-      "dataVersion": 3,
-      "date": "2026-03-28T20:24:24Z",
+      "dataVersion": 4,
+      "date": "2026-04-18T15:04:10Z",
       "fileSizeBytes": 585728
     },
     "revelation_es.sqlite": {
-      "versionToken": "manifest:schema:6|data:3|date:2026-03-28T20:27:12Z|size:622592",
+      "versionToken": "manifest:schema:6|data:4|date:2026-04-18T15:04:10Z|size:618496",
       "schemaVersion": 6,
-      "dataVersion": 3,
-      "date": "2026-03-28T20:27:12Z",
-      "fileSizeBytes": 622592
+      "dataVersion": 4,
+      "date": "2026-04-18T15:04:10Z",
+      "fileSizeBytes": 618496
     },
     "revelation_ru.sqlite": {
-      "versionToken": "manifest:schema:6|data:5|date:2026-03-29T12:30:24Z|size:684032",
+      "versionToken": "manifest:schema:6|data:6|date:2026-04-18T15:04:10Z|size:679936",
       "schemaVersion": 6,
-      "dataVersion": 5,
-      "date": "2026-03-29T12:30:24Z",
-      "fileSizeBytes": 684032
+      "dataVersion": 6,
+      "date": "2026-04-18T15:04:10Z",
+      "fileSizeBytes": 679936
     },
     "revelation_uk.sqlite": {
-      "versionToken": "manifest:schema:6|data:3|date:2026-03-28T20:20:37Z|size:684032",
+      "versionToken": "manifest:schema:6|data:4|date:2026-04-18T15:04:10Z|size:688128",
       "schemaVersion": 6,
-      "dataVersion": 3,
-      "date": "2026-03-28T20:20:37Z",
-      "fileSizeBytes": 684032
+      "dataVersion": 4,
+      "date": "2026-04-18T15:04:10Z",
+      "fileSizeBytes": 688128
     }
   }
 }
