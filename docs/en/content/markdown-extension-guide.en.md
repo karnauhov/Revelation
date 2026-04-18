@@ -1,6 +1,6 @@
 # Markdown Extension Guide (EN)
 
-Doc-Version: `1.2.1`  
+Doc-Version: `1.3.0`  
 Last-Updated: `2026-04-11`  
 Source-Commit: `working-tree`
 
@@ -143,6 +143,37 @@ Examples:
 ![Inline map](images/map.jpg#640x360)
 ```
 
+## YouTube Blocks
+
+Revelation also supports an embedded YouTube block for inline playback inside markdown articles:
+
+```md
+{{youtube}}
+url: https://www.youtube.com/watch?v=aqz-KE-bpKQ&t=42s
+title: Big Buck Bunny
+width: 960
+height: 540
+{{/youtube}}
+```
+
+Supported fields:
+
+- `url`: full YouTube URL such as `watch`, `youtu.be`, `embed`, `shorts`
+- `id`: direct YouTube video id when you do not want to store the full URL
+- `title`
+- `start`
+- `width`
+- `height`
+- `aspect_ratio`: for example `16:9`
+
+Behavior:
+
+- Web builds render a regular YouTube iframe.
+- Android, iOS, macOS, Windows, and Linux builds render a local HTML shell through `flutter_inappwebview`, powered by the official YouTube IFrame Player API.
+- The embedded player keeps native YouTube controls and fullscreen behavior.
+- On Android, iOS, macOS, Windows, and Linux, any attempt to open a page outside the local player shell is redirected to the system browser instead of replacing the player inside the markdown block.
+- The markdown block renders only the player surface, without extra title/caption/link UI under it.
+
 ## Where the Shared Markdown Config Is Used
 
 - `lib/shared/ui/widgets/description_markdown_view.dart`
@@ -156,7 +187,7 @@ Helper location:
 ## Quick Adoption Checklist
 
 1. Keep markdown rendering wired through the shared Revelation markdown config.
-2. Use `{{image}}` when you need alignment, caption, or explicit placeholder size.
+2. Use `{{image}}` for article images and `{{youtube}}` for embedded YouTube playback.
 3. Prefer `images/...` references for article images stored in the public Supabase `images` bucket.
 4. Add width and height when layout stability matters.
 5. Keep tests updated when markdown parsing or rendering behavior changes.

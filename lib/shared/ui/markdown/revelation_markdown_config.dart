@@ -3,11 +3,15 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_block_syntax.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_youtube_block_syntax.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_youtube_data.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_unknown_block_data.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_unknown_block_syntax.dart';
 
 typedef RevelationMarkdownImageWidgetBuilder =
     Widget Function(BuildContext context, RevelationMarkdownImageData image);
+typedef RevelationMarkdownYoutubeWidgetBuilder =
+    Widget Function(BuildContext context, RevelationMarkdownYoutubeData video);
 typedef RevelationMarkdownUnknownBlockWidgetBuilder =
     Widget Function(
       BuildContext context,
@@ -18,6 +22,7 @@ md.ExtensionSet buildRevelationMarkdownExtensionSet() {
   return md.ExtensionSet(
     <md.BlockSyntax>[
       const RevelationMarkdownImageBlockSyntax(),
+      const RevelationMarkdownYoutubeBlockSyntax(),
       const RevelationMarkdownUnknownBlockSyntax(),
       ...md.ExtensionSet.gitHubFlavored.blockSyntaxes,
     ],
@@ -30,6 +35,7 @@ md.ExtensionSet buildRevelationMarkdownExtensionSet() {
 
 Map<String, MarkdownElementBuilder> buildRevelationMarkdownBuilders({
   required RevelationMarkdownImageWidgetBuilder imageBuilder,
+  required RevelationMarkdownYoutubeWidgetBuilder youtubeBuilder,
   required RevelationMarkdownUnknownBlockWidgetBuilder unknownBlockBuilder,
 }) {
   final sharedBuilder = _RevelationMarkdownImageElementBuilder(
@@ -43,6 +49,9 @@ Map<String, MarkdownElementBuilder> buildRevelationMarkdownBuilders({
           imageBuilder: imageBuilder,
           isBlock: true,
         ),
+    RevelationMarkdownYoutubeData.tag: _RevelationMarkdownYoutubeElementBuilder(
+      youtubeBuilder: youtubeBuilder,
+    ),
     RevelationMarkdownUnknownBlockData.tag:
         _RevelationMarkdownUnknownBlockElementBuilder(
           unknownBlockBuilder: unknownBlockBuilder,
@@ -53,6 +62,7 @@ Map<String, MarkdownElementBuilder> buildRevelationMarkdownBuilders({
 Map<String, MarkdownPaddingBuilder> buildRevelationMarkdownPaddingBuilders() {
   return <String, MarkdownPaddingBuilder>{
     'img': _VerticalMarkdownImagePaddingBuilder(),
+    RevelationMarkdownYoutubeData.tag: _VerticalMarkdownImagePaddingBuilder(),
     RevelationMarkdownUnknownBlockData.tag:
         _VerticalMarkdownImagePaddingBuilder(),
   };
@@ -110,6 +120,29 @@ class _RevelationMarkdownUnknownBlockElementBuilder
       return const SizedBox.shrink();
     }
     return unknownBlockBuilder(context, block);
+  }
+}
+
+class _RevelationMarkdownYoutubeElementBuilder extends MarkdownElementBuilder {
+  _RevelationMarkdownYoutubeElementBuilder({required this.youtubeBuilder});
+
+  final RevelationMarkdownYoutubeWidgetBuilder youtubeBuilder;
+
+  @override
+  bool isBlockElement() => true;
+
+  @override
+  Widget? visitElementAfterWithContext(
+    BuildContext context,
+    md.Element element,
+    TextStyle? preferredStyle,
+    TextStyle? parentStyle,
+  ) {
+    final video = RevelationMarkdownYoutubeData.fromMarkdownElement(element);
+    if (video == null) {
+      return const SizedBox.shrink();
+    }
+    return youtubeBuilder(context, video);
   }
 }
 

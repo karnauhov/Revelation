@@ -1284,6 +1284,24 @@ abstract class AppLocalizations {
   /// **'Update app'**
   String get markdown_unknown_block_update_action;
 
+  /// No description provided for @markdown_youtube_player_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Embedded YouTube video'**
+  String get markdown_youtube_player_title;
+
+  /// No description provided for @markdown_youtube_unavailable_title.
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube video unavailable'**
+  String get markdown_youtube_unavailable_title;
+
+  /// No description provided for @markdown_youtube_unavailable_description.
+  ///
+  /// In en, this message translates to:
+  /// **'This YouTube block could not be rendered in the embedded player.'**
+  String get markdown_youtube_unavailable_description;
+
   /// No description provided for @markdown_image_loading.
   ///
   /// In en, this message translates to:

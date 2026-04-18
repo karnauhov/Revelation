@@ -235,6 +235,9 @@
   },
   "markdown_unknown_block_update_hint": "Open the downloads page to install a newer app version for your platform.",
   "markdown_unknown_block_update_action": "Update app",
+  "markdown_youtube_player_title": "Embedded YouTube video",
+  "markdown_youtube_unavailable_title": "YouTube video unavailable",
+  "markdown_youtube_unavailable_description": "This YouTube block could not be rendered in the embedded player.",
   "markdown_image_loading": "Loading image...",
   "markdown_images_loading_progress": "Loading images: {loaded} of {total}",
   "@markdown_images_loading_progress": {

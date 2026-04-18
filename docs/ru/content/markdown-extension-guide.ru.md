@@ -1,6 +1,6 @@
 # Руководство по расширению Markdown (RU)
 
-Doc-Version: `1.2.1`  
+Doc-Version: `1.3.0`  
 Last-Updated: `2026-04-11`  
 Source-Commit: `working-tree`
 
@@ -143,6 +143,37 @@ height: 200
 ![Встроенная карта](images/map.jpg#640x360)
 ```
 
+## YouTube-блок
+
+Revelation также поддерживает встроенный YouTube-блок для проигрывания видео прямо внутри markdown-статьи:
+
+```md
+{{youtube}}
+url: https://www.youtube.com/watch?v=aqz-KE-bpKQ&t=42s
+title: Big Buck Bunny
+width: 960
+height: 540
+{{/youtube}}
+```
+
+Поддерживаемые поля:
+
+- `url`: полный YouTube URL, например `watch`, `youtu.be`, `embed`, `shorts`
+- `id`: прямой YouTube video id, если не нужен полный URL
+- `title`
+- `start`
+- `width`
+- `height`
+- `aspect_ratio`: например `16:9`
+
+Поведение:
+
+- В web-сборке рендерится обычный YouTube iframe.
+- В Android, iOS, macOS, Windows и Linux используется локальный HTML shell через `flutter_inappwebview` на базе официального YouTube IFrame Player API.
+- Встроенный плеер сохраняет родные YouTube controls и fullscreen-поведение.
+- В Android, iOS, macOS, Windows и Linux любая попытка открыть страницу вне локального player shell перенаправляется в системный браузер и не заменяет плеер внутри markdown-блока.
+- Markdown-блок рендерит только поверхность плеера, без дополнительного заголовка/подписи/ссылки под ним.
+
 ## Где подключается общий markdown config
 
 - `lib/shared/ui/widgets/description_markdown_view.dart`
@@ -156,7 +187,7 @@ height: 200
 ## Быстрый checklist
 
 1. Держать markdown-рендеринг на общем Revelation markdown config.
-2. Использовать `{{image}}`, когда нужны выравнивание, подпись или явный размер placeholder.
+2. Использовать `{{image}}` для изображений статьи и `{{youtube}}` для встроенного YouTube-воспроизведения.
 3. Для изображений статей предпочитать ссылки вида `images/...` из публичного Supabase bucket `images`.
 4. Указывать `width` и `height`, когда важна стабильная раскладка.
 5. Обновлять тесты при изменении markdown-парсинга или рендера.

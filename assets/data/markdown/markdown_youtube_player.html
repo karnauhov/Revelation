@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+  <title>YouTube Player</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --player-bg: #000000;
+      --player-fg: rgba(255, 255, 255, 0.88);
+      --player-muted: rgba(255, 255, 255, 0.62);
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--player-bg);
+      color: var(--player-fg);
+      font-family: Arimo, "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+
+    #player-root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--player-bg);
+    }
+
+    #player {
+      width: 100%;
+      height: 100%;
+    }
+
+    #loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: radial-gradient(
+        circle at center,
+        rgba(24, 24, 24, 0.86),
+        rgba(0, 0, 0, 0.98)
+      );
+      transition: opacity 180ms ease;
+    }
+
+    #loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid rgba(255, 255, 255, 0.18);
+      border-top-color: #ff0000;
+      border-radius: 999px;
+      animation: spin 0.9s linear infinite;
+    }
+
+    .loading-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .loading-subtitle {
+      font-size: 0.82rem;
+      color: var(--player-muted);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #loading {
+        transition: none;
+      }
+
+      .spinner {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="player-root">
+    <div id="player"></div>
+    <div id="loading" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loading-title">Loading YouTube video</div>
+      <div class="loading-subtitle">Preparing embedded player...</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var videoId = (params.get('videoId') || '').trim();
+      var title = (params.get('title') || 'YouTube video').trim();
+      var startValue = parseInt(params.get('start') || '0', 10);
+      var startSeconds = Number.isFinite(startValue) && startValue > 0
+        ? startValue
+        : 0;
+      var loading = document.getElementById('loading');
+      var playerRoot = document.getElementById('player-root');
+
+      document.title = title;
+
+      function hideLoading() {
+        if (!loading) {
+          return;
+        }
+        loading.classList.add('hidden');
+      }
+
+      function showMessage(message) {
+        if (!loading) {
+          return;
+        }
+        loading.classList.remove('hidden');
+        loading.innerHTML =
+          '<div class="loading-title">' + message + '</div>' +
+          '<div class="loading-subtitle">Please try reloading this page.</div>';
+      }
+
+      if (!videoId) {
+        showMessage('Video ID is missing.');
+        return;
+      }
+
+      var tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+
+      window.onYouTubeIframeAPIReady = function () {
+        new window.YT.Player('player', {
+          width: '100%',
+          height: '100%',
+          videoId: videoId,
+          playerVars: {
+            autoplay: 0,
+            controls: 1,
+            fs: 1,
+            playsinline: 1,
+            rel: 0,
+            loop: 1,
+            playlist: videoId,
+            start: startSeconds
+          },
+          events: {
+            onReady: function () {
+              hideLoading();
+            },
+            onError: function () {
+              showMessage('Unable to load YouTube video.');
+            }
+          }
+        });
+      };
+
+      window.addEventListener('error', function () {
+        showMessage('Unable to load YouTube video.');
+      });
+
+      playerRoot.addEventListener('click', function () {
+        hideLoading();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -630,6 +630,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markdown_unknown_block_update_action => 'Actualizar aplicación';
 
   @override
+  String get markdown_youtube_player_title => 'Video de YouTube incrustado';
+
+  @override
+  String get markdown_youtube_unavailable_title =>
+      'Video de YouTube no disponible';
+
+  @override
+  String get markdown_youtube_unavailable_description =>
+      'No se pudo mostrar este bloque de YouTube en el reproductor incrustado.';
+
+  @override
   String get markdown_image_loading => 'Cargando imagen...';
 
   @override

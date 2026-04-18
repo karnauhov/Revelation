@@ -626,6 +626,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markdown_unknown_block_update_action => 'Update app';
 
   @override
+  String get markdown_youtube_player_title => 'Embedded YouTube video';
+
+  @override
+  String get markdown_youtube_unavailable_title => 'YouTube video unavailable';
+
+  @override
+  String get markdown_youtube_unavailable_description =>
+      'This YouTube block could not be rendered in the embedded player.';
+
+  @override
   String get markdown_image_loading => 'Loading image...';
 
   @override

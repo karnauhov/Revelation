@@ -546,6 +546,21 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'markdown_unknown_block_update_action should not be empty',
   );
   expect(
+    l10n.markdown_youtube_player_title,
+    isNotEmpty,
+    reason: 'markdown_youtube_player_title should not be empty',
+  );
+  expect(
+    l10n.markdown_youtube_unavailable_title,
+    isNotEmpty,
+    reason: 'markdown_youtube_unavailable_title should not be empty',
+  );
+  expect(
+    l10n.markdown_youtube_unavailable_description,
+    isNotEmpty,
+    reason: 'markdown_youtube_unavailable_description should not be empty',
+  );
+  expect(
     l10n.click_for_info,
     isNotEmpty,
     reason: 'click_for_info should not be empty',

@@ -628,6 +628,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get markdown_unknown_block_update_action => 'Оновити застосунок';
 
   @override
+  String get markdown_youtube_player_title => 'Вбудоване YouTube-відео';
+
+  @override
+  String get markdown_youtube_unavailable_title => 'YouTube-відео недоступне';
+
+  @override
+  String get markdown_youtube_unavailable_description =>
+      'Не вдалося відобразити цей блок YouTube у вбудованому плеєрі.';
+
+  @override
   String get markdown_image_loading => 'Завантаження зображення...';
 
   @override

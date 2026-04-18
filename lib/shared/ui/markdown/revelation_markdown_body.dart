@@ -15,6 +15,8 @@ import 'package:revelation/shared/ui/markdown/revelation_markdown_images_cubit.d
 import 'package:revelation/shared/ui/markdown/revelation_markdown_images_state.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_unknown_block_data.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_unknown_block_view.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_youtube_data.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_youtube_view.dart';
 
 class RevelationMarkdownBody extends StatefulWidget {
   const RevelationMarkdownBody({
@@ -86,6 +88,7 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
             builders: buildRevelationMarkdownBuilders(
               imageBuilder: (context, image) =>
                   _buildMarkdownImage(state, image),
+              youtubeBuilder: (context, video) => _buildYoutubeBlock(video),
               unknownBlockBuilder: (context, block) =>
                   _buildUnknownBlock(block),
             ),
@@ -114,6 +117,8 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
                   builders: buildRevelationMarkdownBuilders(
                     imageBuilder: (context, image) =>
                         _buildMarkdownImage(state, image),
+                    youtubeBuilder: (context, video) =>
+                        _buildYoutubeBlock(video),
                     unknownBlockBuilder: (context, block) =>
                         _buildUnknownBlock(block),
                   ),
@@ -145,6 +150,15 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
     return RevelationMarkdownUnknownBlockView(
       key: ValueKey('markdown-unknown-block-${block.name}'),
       block: block,
+    );
+  }
+
+  Widget _buildYoutubeBlock(RevelationMarkdownYoutubeData video) {
+    return RevelationMarkdownYoutubeView(
+      key: ValueKey(
+        'markdown-youtube-${video.videoId}-${video.startAtSeconds}-${video.title ?? 'untitled'}',
+      ),
+      video: video,
     );
   }
 

@@ -197,6 +197,13 @@
         <licenseLink>https://pub.dev/packages/flutter_colorpicker/license</licenseLink>
     </library>
     <library>
+        <name>@Package 'flutter_inappwebview'</name>
+        <idIcon></idIcon>
+        <license>Apache-2.0</license>
+        <officialSite>https://pub.dev/packages/flutter_inappwebview</officialSite>
+        <licenseLink>https://pub.dev/packages/flutter_inappwebview/license</licenseLink>
+    </library>
+    <library>
         <name>@Package 'vector_math'</name>
         <idIcon></idIcon>
         <license>Zlib, BSD-3-Clause</license>

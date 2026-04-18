@@ -206,6 +206,9 @@
   },
   "markdown_unknown_block_update_hint": "Откройте страницу загрузок, чтобы установить более новую версию приложения для вашей платформы.",
   "markdown_unknown_block_update_action": "Обновить приложение",
+  "markdown_youtube_player_title": "Встроенное YouTube-видео",
+  "markdown_youtube_unavailable_title": "YouTube-видео недоступно",
+  "markdown_youtube_unavailable_description": "Этот YouTube-блок не удалось отобразить во встроенном плеере.",
   "markdown_image_loading": "Загрузка изображения...",
   "markdown_images_loading_progress": "Загрузка изображений: {loaded} из {total}",
   "@markdown_images_loading_progress": {

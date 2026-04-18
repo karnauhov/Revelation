@@ -1,5 +1,6 @@
 import 'package:markdown/markdown.dart' as md;
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_block_syntax.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_youtube_block_syntax.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_unknown_block_data.dart';
 
 class RevelationMarkdownUnknownBlockSyntax extends md.BlockSyntax {
@@ -22,7 +23,8 @@ class RevelationMarkdownUnknownBlockSyntax extends md.BlockSyntax {
       pattern: _openingPattern,
     );
     return blockName != null &&
-        blockName != RevelationMarkdownImageBlockSyntax.blockName;
+        blockName != RevelationMarkdownImageBlockSyntax.blockName &&
+        blockName != RevelationMarkdownYoutubeBlockSyntax.blockName;
   }
 
   @override

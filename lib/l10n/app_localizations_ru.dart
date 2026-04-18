@@ -627,6 +627,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get markdown_unknown_block_update_action => 'Обновить приложение';
 
   @override
+  String get markdown_youtube_player_title => 'Встроенное YouTube-видео';
+
+  @override
+  String get markdown_youtube_unavailable_title => 'YouTube-видео недоступно';
+
+  @override
+  String get markdown_youtube_unavailable_description =>
+      'Этот YouTube-блок не удалось отобразить во встроенном плеере.';
+
+  @override
   String get markdown_image_loading => 'Загрузка изображения...';
 
   @override

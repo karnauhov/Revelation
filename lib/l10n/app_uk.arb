@@ -206,6 +206,9 @@
   },
   "markdown_unknown_block_update_hint": "Відкрийте сторінку завантажень, щоб установити новішу версію застосунку для вашої платформи.",
   "markdown_unknown_block_update_action": "Оновити застосунок",
+  "markdown_youtube_player_title": "Вбудоване YouTube-відео",
+  "markdown_youtube_unavailable_title": "YouTube-відео недоступне",
+  "markdown_youtube_unavailable_description": "Не вдалося відобразити цей блок YouTube у вбудованому плеєрі.",
   "markdown_image_loading": "Завантаження зображення...",
   "markdown_images_loading_progress": "Завантаження зображень: {loaded} із {total}",
   "@markdown_images_loading_progress": {

@@ -205,6 +205,9 @@
   },
   "markdown_unknown_block_update_hint": "Abre la página de descargas para instalar una versión más reciente de la aplicación para tu plataforma.",
   "markdown_unknown_block_update_action": "Actualizar aplicación",
+  "markdown_youtube_player_title": "Video de YouTube incrustado",
+  "markdown_youtube_unavailable_title": "Video de YouTube no disponible",
+  "markdown_youtube_unavailable_description": "No se pudo mostrar este bloque de YouTube en el reproductor incrustado.",
   "markdown_image_loading": "Cargando imagen...",
   "markdown_images_loading_progress": "Cargando imágenes: {loaded} de {total}",
   "@markdown_images_loading_progress": {
