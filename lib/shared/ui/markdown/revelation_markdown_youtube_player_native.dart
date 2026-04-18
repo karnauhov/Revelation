@@ -68,7 +68,72 @@ Widget buildRevelationMarkdownYoutubePlayer({
   Key? key,
   required RevelationMarkdownYoutubeData video,
 }) {
+  if (shouldUseRevelationMarkdownYoutubeLinuxFallback(
+    isWeb: kIsWeb,
+    platform: defaultTargetPlatform,
+  )) {
+    return _RevelationMarkdownYoutubeLinuxFallbackPlayer(
+      key: key,
+      video: video,
+    );
+  }
   return _RevelationMarkdownYoutubeNativePlayer(key: key, video: video);
+}
+
+@visibleForTesting
+bool shouldUseRevelationMarkdownYoutubeLinuxFallback({
+  required bool isWeb,
+  required TargetPlatform platform,
+}) {
+  return !isWeb && platform == TargetPlatform.linux;
+}
+
+class _RevelationMarkdownYoutubeLinuxFallbackPlayer extends StatelessWidget {
+  const _RevelationMarkdownYoutubeLinuxFallbackPlayer({
+    required this.video,
+    super.key,
+  });
+
+  final RevelationMarkdownYoutubeData video;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final externalUrl = video.originalVideoUri?.toString();
+    final theme = Theme.of(context);
+    final onTap = externalUrl == null
+        ? null
+        : () async {
+            await launchLink(externalUrl);
+          };
+
+    return Material(
+      color: Colors.black,
+      child: InkWell(
+        onTap: onTap,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.ondemand_video, color: Colors.white, size: 36),
+                const SizedBox(height: 10),
+                Text(
+                  video.title ?? l10n.markdown_youtube_player_title,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _RevelationMarkdownYoutubeNativePlayer extends StatefulWidget {

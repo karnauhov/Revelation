@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show TargetPlatform;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_youtube_player_native.dart';
 
@@ -95,5 +96,29 @@ void main() {
     );
 
     expect(suppress, isFalse);
+  });
+
+  test('linux fallback is enabled only for non-web Linux builds', () {
+    expect(
+      shouldUseRevelationMarkdownYoutubeLinuxFallback(
+        isWeb: false,
+        platform: TargetPlatform.linux,
+      ),
+      isTrue,
+    );
+    expect(
+      shouldUseRevelationMarkdownYoutubeLinuxFallback(
+        isWeb: false,
+        platform: TargetPlatform.windows,
+      ),
+      isFalse,
+    );
+    expect(
+      shouldUseRevelationMarkdownYoutubeLinuxFallback(
+        isWeb: true,
+        platform: TargetPlatform.linux,
+      ),
+      isFalse,
+    );
   });
 }
