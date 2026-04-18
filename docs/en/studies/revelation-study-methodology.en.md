@@ -8,10 +8,6 @@ Source-Commit: `working-tree`
 
 This document turns the 7-stage method from the in-app `Preface` article into a reusable working standard for the `Rev. 1:1-3` article and for later Revelation articles.
 
-It complements, rather than replaces, the existing local working file:
-
-- [Rev. 1:1-3 Stage 1 Working Dossier (currently RU only)](../../ru/studies/revelation-1-1-3-research.ru.md)
-
 ## The Seven Stages
 
 1. Forming the shared text from all primary witnesses.

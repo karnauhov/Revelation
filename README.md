@@ -51,7 +51,6 @@ Application entry point: `lib/main.dart`.
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
 - [Руководство по расширению Markdown](./docs/ru/content/markdown-extension-guide.ru.md)
 - [Бэклог оптимизации производительности](./docs/ru/performance/optimization_backlog.ru.md)
-- [Исследование Откр. 1:1-3: этап 1](./docs/ru/studies/revelation-1-1-3-research.ru.md)
 - [Методология исследовательских статей по Откровению](./docs/ru/studies/revelation-study-methodology.ru.md)
 
 ### Additional Notes
