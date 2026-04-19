@@ -418,8 +418,8 @@ class RelativeRectsPainter extends CustomPainter {
   RelativeRectsPainter({
     required this.rects,
     this.color = Colors.transparent,
-    this.strokeColor = Colors.green,
-    this.strokeWidth = 2.0,
+    this.strokeColor = Colors.red,
+    this.strokeWidth = 3.0,
   });
 
   @override
