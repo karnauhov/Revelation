@@ -79,13 +79,13 @@ Source-Commit: `working-tree`
 
 Главные хабы:
 
-- [Library](https://www.thebattleofarmageddon.com/library/)
 - [Facebook Commentary on Revelation](https://www.thebattleofarmageddon.com/revelation-commentary-facebook/)
 - [Twitter Commentary on Revelation](https://www.thebattleofarmageddon.com/revelation-tweets/)
 - [Armageddon Articles](https://www.thebattleofarmageddon.com/articles-on-armageddon/)
 - [Blog](https://revelation-armageddon.com/)
 - [YouTube channel](https://www.youtube.com/@DrJonPaulien)
 - [Lecture playlist](https://www.youtube.com/playlist?list=PL1MTivDDDnyuStBHIT7KWA3FUrxYSUmL5)
+- [Library](https://www.thebattleofarmageddon.com/library/)
 
 Ключевые тексты:
 
@@ -98,6 +98,9 @@ Source-Commit: `working-tree`
 - [Finding Christ in the Book of Revelation](https://revelation-armageddon.com/2025/03/finding-christ-in-the-book-of-revelation/)
 - [The Deep Things of God](https://www.thebattleofarmageddon.com/the-deep-things-of-god-2/)
 - [Armageddon at the Door](https://www.thebattleofarmageddon.com/armageddon-at-the-door/)
+- [Present Truth in the Real World](https://www.thebattleofarmageddon.com/present-truth-in-the-real-world/)
+- [Meet God Again for the First Time](https://www.thebattleofarmageddon.com/meet-god-again-for-the-first-time/)
+- [Knowing God in the Real World](https://www.thebattleofarmageddon.com/knowing-god-in-the-real-world/)
 - [Interpreting the Seven Trumpets](https://www.thebattleofarmageddon.com/wp-content/uploads/2024/08/Interpreting-the-Seven-Trumpets.pdf)
 - [The 1260 Days in Revelation](https://www.thebattleofarmageddon.com/wp-content/uploads/2025/11/The-1260-Days-in-Revelation.pdf)
 - [Ellen White and the Book of Revelation](https://www.thebattleofarmageddon.com/wp-content/uploads/2025/08/Ellen-White-and-the-Book-of-Revelation.pdf)
