@@ -6,6 +6,7 @@ import 'package:revelation/shared/models/description_request.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
+import 'package:revelation/features/primary_sources/application/services/manuscript_greek_text_converter.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/shared/localization/localization_utils.dart';
 import 'package:revelation/features/primary_sources/application/services/pronunciation_service.dart';
@@ -14,6 +15,7 @@ class DescriptionContentService {
   final DescriptionDataSource _dataSource;
   final PronunciationService _pronunciation;
   final PrimarySourceReferenceService _referenceResolver;
+  final ManuscriptGreekTextConverter _manuscriptGreekTextConverter;
 
   List<GreekStrongPickerEntry>? _strongPickerEntriesCache;
 
@@ -21,10 +23,13 @@ class DescriptionContentService {
     DescriptionDataSource? dataSource,
     PronunciationService? pronunciation,
     PrimarySourceReferenceService? referenceResolver,
+    ManuscriptGreekTextConverter? manuscriptGreekTextConverter,
   }) : _dataSource = dataSource ?? DbManagerDescriptionDataSource(),
        _pronunciation = pronunciation ?? PronunciationService(),
        _referenceResolver =
-           referenceResolver ?? PrimarySourceReferenceService();
+           referenceResolver ?? PrimarySourceReferenceService(),
+       _manuscriptGreekTextConverter =
+           manuscriptGreekTextConverter ?? ManuscriptGreekTextConverter();
 
   DescriptionContent? buildContent(
     AppLocalizations localizations,
@@ -374,12 +379,14 @@ class DescriptionContentService {
     }
 
     if (normalized.isEmpty) {
-      return word;
+      return _manuscriptGreekTextConverter.convert(word);
     }
 
     final buffer = StringBuffer();
     for (var i = 0; i < length; i++) {
-      final ch = String.fromCharCode(codePoints[i]);
+      final ch = _manuscriptGreekTextConverter.convert(
+        String.fromCharCode(codePoints[i]),
+      );
       if (normalized.contains(i)) {
         buffer.write('\u200E~~');
         buffer.write(ch);

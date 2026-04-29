@@ -1,6 +1,7 @@
 @Tags(['widget'])
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
+import 'package:revelation/features/primary_sources/application/services/manuscript_greek_text_converter.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/infra/db/common/db_common.dart' as common_db;
@@ -184,6 +185,109 @@ void main() {
     expect(content!.kind, DescriptionKind.verse);
     expect(content.markdown, contains('word:source-1:page-1:0'));
   });
+
+  testWidgets(
+    'buildContent converts primary-source manuscript words but not Strong words',
+    (tester) async {
+      final localizations = await _loadLocalizations(tester);
+      final source = PrimarySource(
+        id: 'source-greek',
+        title: 'Title',
+        date: 'Date',
+        content: 'Content',
+        quantity: 1,
+        material: 'Material',
+        textStyle: 'Text style',
+        found: 'Found',
+        classification: 'Classification',
+        currentLocation: 'Location',
+        preview: 'preview.png',
+        maxScale: 1,
+        isMonochrome: false,
+        pages: [
+          model.Page(
+            name: 'page-1',
+            content: 'content',
+            image: 'page-1.png',
+            words: [PageWord('ΑΒΓΜΨΩ', const [], sn: 1, snPronounce: false)],
+            verses: const [
+              Verse(
+                chapterNumber: 1,
+                verseNumber: 1,
+                labelPosition: Offset.zero,
+                wordIndexes: [0],
+              ),
+            ],
+          ),
+        ],
+        attributes: const [],
+        permissionsReceived: true,
+      );
+      final referenceResolver = PrimarySourceReferenceService(
+        repository: _FakePrimarySourcesDbRepository(<PrimarySource>[source]),
+      );
+      final dataSource = _FakeDescriptionDataSource(
+        isInitialized: true,
+        greekWords: const [
+          common_db.GreekWord(
+            id: 1,
+            word: 'ΑΒΓΜΨΩ',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+        ],
+        greekDescs: const [
+          localized_db.GreekDesc(id: 1, desc: 'See [G1](strong:G1)'),
+        ],
+      );
+      final service = DescriptionContentService(
+        dataSource: dataSource,
+        referenceResolver: referenceResolver,
+        manuscriptGreekTextConverter: ManuscriptGreekTextConverter(
+          letterReplacements: const <String, String>{
+            'Α': 'Α',
+            'Β': 'Ⲃ',
+            'Γ': 'Ⲅ',
+            'Μ': 'Μ',
+            'Ψ': 'ⲯ',
+            'Ω': 'Ⲱ',
+          },
+        ),
+      );
+
+      final wordContent = service.buildContent(
+        localizations,
+        const WordDescriptionRequest(
+          sourceId: 'source-greek',
+          pageName: 'page-1',
+          wordIndex: 0,
+        ),
+      );
+      final verseContent = service.buildContent(
+        localizations,
+        const VerseDescriptionRequest(
+          sourceId: 'source-greek',
+          pageName: 'page-1',
+          chapterNumber: 1,
+          verseNumber: 1,
+        ),
+      );
+      final strongContent = service.buildStrongContent(localizations, 1);
+
+      expect(wordContent, isNotNull);
+      expect(wordContent!.markdown, contains('## ΑⲂⲄΜⲯⲰ'));
+      expect(verseContent, isNotNull);
+      expect(
+        verseContent!.markdown,
+        contains('[ΑⲂⲄΜⲯⲰ](word:source-greek:page-1:0)'),
+      );
+      expect(strongContent, isNotNull);
+      expect(strongContent!.markdown, contains('## ΑΒΓΜΨΩ'));
+      expect(strongContent.markdown, contains('**ΑΒΓΜΨΩ** ([G1](strong:G1))'));
+    },
+  );
 
   test('doesStrongNumberExist validates boundaries and forbidden ranges', () {
     final service = DescriptionContentService(

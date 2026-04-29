@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
+import 'package:revelation/features/primary_sources/application/services/manuscript_greek_text_converter.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/features/settings/settings.dart'
@@ -24,6 +25,7 @@ typedef AppBootstrapProgressCallback =
     void Function(AppBootstrapProgress progress);
 typedef AppBootstrapAudioInitializer =
     Future<void> Function(SettingsCubit settingsCubit);
+typedef AppBootstrapManuscriptGreekConfigLoader = Future<void> Function();
 
 const int appBootstrapVisibleStepCount = 5;
 
@@ -86,6 +88,7 @@ class AppBootstrap {
     StrongDialogPresenter? showStrongDialog,
     PrimarySourceNavigator? navigateToPrimarySource,
     AppBootstrapAudioInitializer? initializeAudio,
+    AppBootstrapManuscriptGreekConfigLoader? loadManuscriptGreekTextConfig,
   }) : _talker = talker,
        _databaseRuntime = databaseRuntime ?? DbManagerDatabaseRuntime(),
        _referenceResolver =
@@ -93,7 +96,10 @@ class AppBootstrap {
        _showStrongDialog = showStrongDialog ?? _defaultShowStrongDialog,
        _navigateToPrimarySource =
            navigateToPrimarySource ?? _defaultNavigateToPrimarySource,
-       _initializeAudio = initializeAudio ?? _defaultInitializeAudio;
+       _initializeAudio = initializeAudio ?? _defaultInitializeAudio,
+       _loadManuscriptGreekTextConfig =
+           loadManuscriptGreekTextConfig ??
+           ManuscriptGreekTextConverter.loadDefaultConfig;
 
   final Talker _talker;
   final DatabaseRuntime _databaseRuntime;
@@ -101,6 +107,7 @@ class AppBootstrap {
   final StrongDialogPresenter _showStrongDialog;
   final PrimarySourceNavigator _navigateToPrimarySource;
   final AppBootstrapAudioInitializer _initializeAudio;
+  final AppBootstrapManuscriptGreekConfigLoader _loadManuscriptGreekTextConfig;
   StreamSubscription<String>? _languageSubscription;
 
   static void _defaultShowStrongDialog(BuildContext context, int strongNumber) {
@@ -129,6 +136,7 @@ class AppBootstrap {
       onProgress?.call(const AppBootstrapProgress(AppBootstrapStep.preparing));
       WidgetsFlutterBinding.ensureInitialized();
       _configureGlobalErrorHandling();
+      await _initializeManuscriptGreekTextConfigSafely();
       await _initializePlatform();
 
       onProgress?.call(
@@ -205,6 +213,18 @@ class AppBootstrap {
 
     if (!isDesktop()) {
       return;
+    }
+  }
+
+  Future<void> _initializeManuscriptGreekTextConfigSafely() async {
+    try {
+      await _loadManuscriptGreekTextConfig();
+    } catch (error, stackTrace) {
+      _talker.handle(
+        error,
+        stackTrace,
+        'Failed to load manuscript Greek text config',
+      );
     }
   }
 

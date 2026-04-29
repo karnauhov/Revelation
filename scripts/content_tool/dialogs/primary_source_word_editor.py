@@ -377,7 +377,7 @@ class PrimarySourceWordEditorDialog(tk.Toplevel):
 
         ttk.Checkbutton(
             meta,
-            text="Произн. из Стронга",
+            text="Nomina sacra",
             variable=self.strong_pronounce_var,
         ).grid(row=0, column=8, padx=(8, 8), pady=(0, 2), sticky="w")
 
