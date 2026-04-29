@@ -647,7 +647,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get copy_content => 'Copiar contenido';
 
   @override
-  String get print_content => 'Imprimir contenido';
+  String get export_pdf_content => 'Exportar a PDF';
 
   @override
   String get markdown_copied => 'Contenido copiado al portapapeles.';
@@ -656,8 +656,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markdown_copy_failed => 'No se pudo copiar el contenido.';
 
   @override
-  String get markdown_print_failed =>
-      'No se pudo abrir el diálogo de impresión.';
+  String get markdown_pdf_export_failed => 'No se pudo exportar el PDF.';
 
   @override
   String get previous_description_item => 'Elemento anterior';

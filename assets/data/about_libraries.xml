@@ -253,11 +253,11 @@
         <licenseLink>https://pub.dev/packages/talker_flutter/license</licenseLink>
     </library>
     <library>
-        <name>@Package 'printing'</name>
+        <name>@Package 'pdf'</name>
         <idIcon></idIcon>
         <license>Apache-2.0</license>
-        <officialSite>https://pub.dev/packages/printing</officialSite>
-        <licenseLink>https://pub.dev/packages/printing/license</licenseLink>
+        <officialSite>https://pub.dev/packages/pdf</officialSite>
+        <licenseLink>https://pub.dev/packages/pdf/license</licenseLink>
     </library>
     <library>
         <name>@Package 'flutter_lints'</name>
@@ -307,6 +307,13 @@
         <license>Apache License</license>
         <officialSite>https://fonts.google.com/specimen/Arimo</officialSite>
         <licenseLink>https://fonts.google.com/specimen/Arimo/license</licenseLink>
+    </library>
+    <library>
+        <name>@Font 'Noto Sans Coptic'</name>
+        <idIcon>file_font</idIcon>
+        <license>OFL-1.1</license>
+        <officialSite>https://github.com/notofonts/coptic/releases/tag/NotoSansCoptic-v2.004</officialSite>
+        <licenseLink>https://github.com/notofonts/coptic/blob/main/OFL.txt</licenseLink>
     </library>
     <library>
         <name>@Sound 'paper' @by 1bob</name>

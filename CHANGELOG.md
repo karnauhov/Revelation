@@ -8,11 +8,12 @@ All notable changes to this application will be documented here.
 
 - Implemented image caching for all platforms.
 - Markdown Extension (image, youtube, unknown block)
-- Toolbar on DescriptionMarkdownView and TopicScreen (print, copy, navigations)
+- Toolbar on DescriptionMarkdownView and TopicScreen (pdf download, copy, navigations)
 
 ### Changed
 
 - Improved version display on the “About” page.
+- Using Coptic characters
 
 ### Fixed
 

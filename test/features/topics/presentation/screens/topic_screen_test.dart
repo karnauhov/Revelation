@@ -227,52 +227,60 @@ void main() {
     expect(find.text(l10n.topic), findsOneWidget);
   });
 
-  testWidgets('TopicScreen shows app bar print action for loaded article', (
-    tester,
-  ) async {
-    final repo = _FakeTopicsRepository(
-      markdownByRouteLanguage: <String, AppResult<String>>{
-        'intro|en': const AppSuccess<String>('Printable markdown'),
-      },
-      topicByRouteLanguage: <String, AppResult<TopicInfo?>>{
-        'intro|en': AppSuccess<TopicInfo?>(
-          TopicInfo(
-            name: 'Printable title',
-            idIcon: '',
-            description: 'Printable subtitle',
-            route: 'intro',
+  testWidgets(
+    'TopicScreen shows app bar PDF export action for loaded article',
+    (tester) async {
+      final repo = _FakeTopicsRepository(
+        markdownByRouteLanguage: <String, AppResult<String>>{
+          'intro|en': const AppSuccess<String>('Printable markdown'),
+        },
+        topicByRouteLanguage: <String, AppResult<TopicInfo?>>{
+          'intro|en': AppSuccess<TopicInfo?>(
+            TopicInfo(
+              name: 'Printable title',
+              idIcon: '',
+              description: 'Printable subtitle',
+              route: 'intro',
+            ),
           ),
+        },
+      );
+      String? capturedMarkdown;
+      String? capturedDocumentTitle;
+      final harness = await _buildHarness(
+        child: TopicScreen(
+          file: 'intro',
+          topicContentCubitBuilder: _topicCubitBuilder(repo),
+          onExportPdfRequested:
+              ({
+                required String markdown,
+                required String documentTitle,
+              }) async {
+                capturedMarkdown = markdown;
+                capturedDocumentTitle = documentTitle;
+                return 'Printable title.pdf';
+              },
         ),
-      },
-    );
-    String? capturedMarkdown;
-    String? capturedJobName;
-    final harness = await _buildHarness(
-      child: TopicScreen(
-        file: 'intro',
-        topicContentCubitBuilder: _topicCubitBuilder(repo),
-        onPrintRequested:
-            ({required String markdown, required String jobName}) async {
-              capturedMarkdown = markdown;
-              capturedJobName = jobName;
-            },
-      ),
-    );
-    addTearDown(harness.dispose);
+      );
+      addTearDown(harness.dispose);
 
-    await tester.pumpWidget(harness.app);
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(harness.app);
+      await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('topic_screen_print_button')), findsOneWidget);
-    expect(find.byKey(const Key('topic_screen_copy_button')), findsOneWidget);
-    expect(find.byType(MarkdownBody), findsOneWidget);
+      expect(
+        find.byKey(const Key('topic_screen_export_pdf_button')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('topic_screen_copy_button')), findsOneWidget);
+      expect(find.byType(MarkdownBody), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('topic_screen_print_button')));
-    await tester.pump();
+      await tester.tap(find.byKey(const Key('topic_screen_export_pdf_button')));
+      await tester.pump();
 
-    expect(capturedMarkdown, 'Printable markdown');
-    expect(capturedJobName, 'Printable title');
-  });
+      expect(capturedMarkdown, 'Printable markdown');
+      expect(capturedDocumentTitle, 'Printable title');
+    },
+  );
 
   testWidgets('TopicScreen copies markdown from app bar action', (
     tester,
@@ -305,7 +313,7 @@ void main() {
     expect(find.text('Content copied to the clipboard.'), findsOneWidget);
   });
 
-  testWidgets('TopicScreen shows snackbar when article print fails', (
+  testWidgets('TopicScreen shows snackbar when article PDF export fails', (
     tester,
   ) async {
     final repo = _FakeTopicsRepository(
@@ -317,8 +325,8 @@ void main() {
       child: TopicScreen(
         file: 'intro',
         topicContentCubitBuilder: _topicCubitBuilder(repo),
-        onPrintRequested:
-            ({required String markdown, required String jobName}) async {
+        onExportPdfRequested:
+            ({required String markdown, required String documentTitle}) async {
               throw StateError('boom');
             },
       ),
@@ -328,11 +336,11 @@ void main() {
     await tester.pumpWidget(harness.app);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('topic_screen_print_button')));
+    await tester.tap(find.byKey(const Key('topic_screen_export_pdf_button')));
     await tester.pumpAndSettle();
 
     expect(find.byType(SnackBar), findsOneWidget);
-    expect(find.text("Couldn't open the print dialog."), findsOneWidget);
+    expect(find.text("Couldn't export the PDF."), findsOneWidget);
   });
 
   testWidgets('TopicScreen shows snackbar when article copy fails', (

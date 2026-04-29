@@ -1314,11 +1314,11 @@ abstract class AppLocalizations {
   /// **'Copy content'**
   String get copy_content;
 
-  /// No description provided for @print_content.
+  /// No description provided for @export_pdf_content.
   ///
   /// In en, this message translates to:
-  /// **'Print content'**
-  String get print_content;
+  /// **'Export to PDF'**
+  String get export_pdf_content;
 
   /// No description provided for @markdown_copied.
   ///
@@ -1332,11 +1332,11 @@ abstract class AppLocalizations {
   /// **'Couldn\'t copy the content.'**
   String get markdown_copy_failed;
 
-  /// No description provided for @markdown_print_failed.
+  /// No description provided for @markdown_pdf_export_failed.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t open the print dialog.'**
-  String get markdown_print_failed;
+  /// **'Couldn\'t export the PDF.'**
+  String get markdown_pdf_export_failed;
 
   /// No description provided for @previous_description_item.
   ///

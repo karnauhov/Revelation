@@ -42,7 +42,7 @@ dependencies:
   drift_flutter: ^0.2.8
   unorm_dart: ^0.3.2
   talker_flutter: ^5.1.12
-  printing: ^5.14.3
+  pdf: ^3.12.0
 
 dev_dependencies:
   flutter_test:
@@ -92,4 +92,7 @@ flutter:
       fonts:
         - asset: assets/fonts/Arimo/Arimo.ttf
           weight: 400
-
+    - family: NotoSansCoptic
+      fonts:
+        - asset: assets/fonts/NotoSansCoptic/NotoSansCoptic-Regular.ttf
+          weight: 400

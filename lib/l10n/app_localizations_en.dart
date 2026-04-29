@@ -642,7 +642,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy_content => 'Copy content';
 
   @override
-  String get print_content => 'Print content';
+  String get export_pdf_content => 'Export to PDF';
 
   @override
   String get markdown_copied => 'Content copied to the clipboard.';
@@ -651,7 +651,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markdown_copy_failed => 'Couldn\'t copy the content.';
 
   @override
-  String get markdown_print_failed => 'Couldn\'t open the print dialog.';
+  String get markdown_pdf_export_failed => 'Couldn\'t export the PDF.';
 
   @override
   String get previous_description_item => 'Previous item';

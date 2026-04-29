@@ -17,7 +17,7 @@ import 'package:revelation/features/topics/presentation/bloc/topic_content_state
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
-import 'package:revelation/shared/ui/markdown/revelation_markdown_printing.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_pdf_export.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_body.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 
@@ -36,8 +36,11 @@ typedef DownloadableFileSaver =
       required String mimeType,
     });
 
-typedef TopicScreenPrintHandler =
-    Future<void> Function({required String markdown, required String jobName});
+typedef TopicScreenExportPdfHandler =
+    Future<String?> Function({
+      required String markdown,
+      required String documentTitle,
+    });
 typedef TopicScreenCopyHandler = Future<void> Function(String markdown);
 
 class TopicScreen extends StatefulWidget {
@@ -45,7 +48,7 @@ class TopicScreen extends StatefulWidget {
   final String? description;
   final String? file;
   final TopicContentCubitBuilder? topicContentCubitBuilder;
-  final TopicScreenPrintHandler? onPrintRequested;
+  final TopicScreenExportPdfHandler? onExportPdfRequested;
   final TopicScreenCopyHandler? onCopyRequested;
 
   const TopicScreen({
@@ -54,7 +57,7 @@ class TopicScreen extends StatefulWidget {
     this.description,
     this.file,
     this.topicContentCubitBuilder,
-    this.onPrintRequested,
+    this.onExportPdfRequested,
     this.onCopyRequested,
   });
 
@@ -170,7 +173,7 @@ class _TopicScreenState extends State<TopicScreen> {
             state.description,
             '',
           );
-          final canPrint = !state.isLoading && state.failure == null;
+          final canExportPdf = !state.isLoading && state.failure == null;
 
           return Scaffold(
             appBar: AppBar(
@@ -194,15 +197,15 @@ class _TopicScreenState extends State<TopicScreen> {
               ),
               foregroundColor: colorScheme.primary,
               actions: [
-                if (canPrint)
+                if (canExportPdf)
                   IconButton(
-                    key: const Key('topic_screen_print_button'),
-                    tooltip: l10n.print_content,
+                    key: const Key('topic_screen_export_pdf_button'),
+                    tooltip: l10n.export_pdf_content,
                     onPressed: () =>
-                        unawaited(_handlePrint(title, state.markdown)),
-                    icon: const Icon(Icons.print_outlined),
+                        unawaited(_handleExportPdf(title, state.markdown)),
+                    icon: const Icon(Icons.file_download_outlined),
                   ),
-                if (canPrint)
+                if (canExportPdf)
                   IconButton(
                     key: const Key('topic_screen_copy_button'),
                     tooltip: l10n.copy_content,
@@ -228,20 +231,39 @@ class _TopicScreenState extends State<TopicScreen> {
     return fallback;
   }
 
-  Future<void> _handlePrint(String jobName, String markdown) async {
+  Future<void> _handleExportPdf(String documentTitle, String markdown) async {
     try {
-      final printHandler =
-          widget.onPrintRequested ??
-          ({required String markdown, required String jobName}) =>
-              printRevelationMarkdown(
+      final exportPdfHandler =
+          widget.onExportPdfRequested ??
+          ({required String markdown, required String documentTitle}) =>
+              exportRevelationMarkdownPdf(
                 markdown: markdown,
-                documentTitle: jobName,
+                documentTitle: documentTitle,
+                saveFile: TopicScreen.saveDownloadableFileForTest,
               );
 
-      await printHandler(markdown: markdown, jobName: jobName);
+      final location = await exportPdfHandler(
+        markdown: markdown,
+        documentTitle: documentTitle,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      if (location != null && location.isNotEmpty) {
+        final messenger = ScaffoldMessenger.maybeOf(context);
+        messenger?.showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.file_saved_at(location),
+            ),
+          ),
+        );
+      }
     } catch (error, stackTrace) {
       try {
-        log.handle(error, stackTrace, 'Failed to print TopicScreen article');
+        log.handle(error, stackTrace, 'Failed to export TopicScreen PDF');
       } catch (_) {}
 
       if (!mounted) {
@@ -255,7 +277,9 @@ class _TopicScreenState extends State<TopicScreen> {
 
       messenger.showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.markdown_print_failed),
+          content: Text(
+            AppLocalizations.of(context)!.markdown_pdf_export_failed,
+          ),
         ),
       );
     }

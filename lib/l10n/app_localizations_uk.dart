@@ -644,7 +644,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get copy_content => 'Скопіювати вміст';
 
   @override
-  String get print_content => 'Роздрукувати вміст';
+  String get export_pdf_content => 'Експортувати в PDF';
 
   @override
   String get markdown_copied => 'Вміст скопійовано до буфера обміну.';
@@ -653,7 +653,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get markdown_copy_failed => 'Не вдалося скопіювати вміст.';
 
   @override
-  String get markdown_print_failed => 'Не вдалося відкрити вікно друку.';
+  String get markdown_pdf_export_failed => 'Не вдалося експортувати PDF.';
 
   @override
   String get previous_description_item => 'Попередній елемент';

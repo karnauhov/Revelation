@@ -5,49 +5,63 @@ import 'package:get_it/get_it.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
+import 'package:revelation/core/platform/file_downloader.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_config.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_block_syntax.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_unknown_block_data.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_youtube_data.dart';
 
-const String _revelationMarkdownPrintFontAsset = 'assets/fonts/Arimo/Arimo.ttf';
+const String _revelationMarkdownPdfBaseFontAsset =
+    'assets/fonts/Arimo/Arimo.ttf';
+const String _revelationMarkdownPdfCopticFontAsset =
+    'assets/fonts/NotoSansCoptic/NotoSansCoptic-Regular.ttf';
+const double revelationMarkdownPdfPageMargin = 18 * PdfPageFormat.mm;
 
-const Map<String, String> revelationMarkdownPrintFonts = {
-  'Arimo': _revelationMarkdownPrintFontAsset,
-  'Segoe UI': _revelationMarkdownPrintFontAsset,
-  'Segoe UI Symbol': _revelationMarkdownPrintFontAsset,
-  'Segoe UI Variable': _revelationMarkdownPrintFontAsset,
-  'Roboto': _revelationMarkdownPrintFontAsset,
-  'Arial': _revelationMarkdownPrintFontAsset,
-  'Helvetica Neue': _revelationMarkdownPrintFontAsset,
-  'Liberation Sans': _revelationMarkdownPrintFontAsset,
-  'Ubuntu': _revelationMarkdownPrintFontAsset,
-  'sans-serif': _revelationMarkdownPrintFontAsset,
-  'monospace': _revelationMarkdownPrintFontAsset,
+const Map<String, String> revelationMarkdownPdfFonts = {
+  'Arimo': _revelationMarkdownPdfBaseFontAsset,
+  'Segoe UI': _revelationMarkdownPdfBaseFontAsset,
+  'Segoe UI Symbol': _revelationMarkdownPdfBaseFontAsset,
+  'Segoe UI Variable': _revelationMarkdownPdfBaseFontAsset,
+  'Roboto': _revelationMarkdownPdfBaseFontAsset,
+  'Arial': _revelationMarkdownPdfBaseFontAsset,
+  'Helvetica Neue': _revelationMarkdownPdfBaseFontAsset,
+  'Liberation Sans': _revelationMarkdownPdfBaseFontAsset,
+  'Ubuntu': _revelationMarkdownPdfBaseFontAsset,
+  'sans-serif': _revelationMarkdownPdfBaseFontAsset,
+  'monospace': _revelationMarkdownPdfBaseFontAsset,
+  'Noto Sans Coptic': _revelationMarkdownPdfCopticFontAsset,
 };
 
-Future<pw.Font>? _printFontFuture;
+typedef RevelationMarkdownPdfSaver =
+    Future<String?> Function({
+      required Uint8List bytes,
+      required String fileName,
+      required String mimeType,
+    });
 
-Future<void> printRevelationMarkdown({
+Future<_RevelationMarkdownPdfFonts>? _pdfFontsFuture;
+
+Future<String?> exportRevelationMarkdownPdf({
   required String markdown,
   required String documentTitle,
   MarkdownImageLoader? markdownImageLoader,
+  RevelationMarkdownPdfSaver? saveFile,
 }) async {
   final title = _normalizeDocumentTitle(documentTitle);
+  final bytes = await buildRevelationMarkdownPdfData(
+    markdown: markdown,
+    documentTitle: title,
+    pageFormat: PdfPageFormat.a4,
+    markdownImageLoader: markdownImageLoader,
+  );
+  final saver = saveFile ?? saveDownloadableFile;
 
-  await Printing.layoutPdf(
-    name: title,
-    format: PdfPageFormat.a4,
-    dynamicLayout: true,
-    onLayout: (format) => buildRevelationMarkdownPdfData(
-      markdown: markdown,
-      documentTitle: title,
-      pageFormat: format,
-      markdownImageLoader: markdownImageLoader,
-    ),
+  return saver(
+    bytes: bytes,
+    fileName: _pdfFileName(title),
+    mimeType: 'application/pdf',
   );
 }
 
@@ -57,7 +71,8 @@ Future<Uint8List> buildRevelationMarkdownPdfData({
   required PdfPageFormat pageFormat,
   MarkdownImageLoader? markdownImageLoader,
 }) async {
-  final font = await _loadPrintFont();
+  final fonts = await _loadPdfFonts();
+  final theme = fonts.toTheme();
   final title = _normalizeDocumentTitle(documentTitle);
   final buildContext = _RevelationMarkdownPdfBuildContext(
     markdownImageLoader: _resolveMarkdownImageLoader(markdownImageLoader),
@@ -68,23 +83,14 @@ Future<Uint8List> buildRevelationMarkdownPdfData({
     title: title,
     creator: 'Revelation',
     producer: 'Revelation',
-    theme: pw.ThemeData.withFont(
-      base: font,
-      bold: font,
-      italic: font,
-      boldItalic: font,
-    ),
+    theme: theme,
   );
 
   document.addPage(
     pw.MultiPage(
       pageFormat: pageFormat,
-      theme: pw.ThemeData.withFont(
-        base: font,
-        bold: font,
-        italic: font,
-        boldItalic: font,
-      ),
+      margin: const pw.EdgeInsets.all(revelationMarkdownPdfPageMargin),
+      theme: theme,
       build: (_) => widgets.isEmpty ? <pw.Widget>[pw.SizedBox()] : widgets,
     ),
   );
@@ -92,11 +98,19 @@ Future<Uint8List> buildRevelationMarkdownPdfData({
   return document.save(enableEventLoopBalancing: true);
 }
 
-Future<pw.Font> _loadPrintFont() {
-  _printFontFuture ??= rootBundle
-      .load(_revelationMarkdownPrintFontAsset)
-      .then(pw.Font.ttf);
-  return _printFontFuture!;
+Future<_RevelationMarkdownPdfFonts> _loadPdfFonts() {
+  _pdfFontsFuture ??= _loadPdfFontsFromAssets();
+  return _pdfFontsFuture!;
+}
+
+Future<_RevelationMarkdownPdfFonts> _loadPdfFontsFromAssets() async {
+  final baseFont = pw.Font.ttf(
+    await rootBundle.load(_revelationMarkdownPdfBaseFontAsset),
+  );
+  final copticFont = pw.Font.ttf(
+    await rootBundle.load(_revelationMarkdownPdfCopticFontAsset),
+  );
+  return _RevelationMarkdownPdfFonts(base: baseFont, fallback: [copticFont]);
 }
 
 MarkdownImageLoader? _resolveMarkdownImageLoader(
@@ -114,6 +128,32 @@ MarkdownImageLoader? _resolveMarkdownImageLoader(
 String _normalizeDocumentTitle(String documentTitle) {
   final normalized = documentTitle.trim().replaceAll(RegExp(r'\s+'), ' ');
   return normalized.isEmpty ? 'Revelation' : normalized;
+}
+
+String _pdfFileName(String documentTitle) {
+  return documentTitle.toLowerCase().endsWith('.pdf')
+      ? documentTitle
+      : '$documentTitle.pdf';
+}
+
+class _RevelationMarkdownPdfFonts {
+  const _RevelationMarkdownPdfFonts({
+    required this.base,
+    required this.fallback,
+  });
+
+  final pw.Font base;
+  final List<pw.Font> fallback;
+
+  pw.ThemeData toTheme() {
+    return pw.ThemeData.withFont(
+      base: base,
+      bold: base,
+      italic: base,
+      boldItalic: base,
+      fontFallback: fallback,
+    );
+  }
 }
 
 class _RevelationMarkdownPdfBuildContext {
@@ -494,7 +534,7 @@ class _RevelationMarkdownPdfBuildContext {
         border: pw.Border.all(color: PdfColors.grey400, width: 0.5),
       ),
       child: pw.Text(
-        normalized.isEmpty ? 'Content unavailable for print' : normalized,
+        normalized.isEmpty ? 'Content unavailable for PDF export' : normalized,
         style: baseStyle.copyWith(fontSize: 9, color: PdfColors.grey700),
       ),
     );

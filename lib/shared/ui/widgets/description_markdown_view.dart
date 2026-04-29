@@ -7,17 +7,17 @@ import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_body.dart';
-import 'package:revelation/shared/ui/markdown/revelation_markdown_printing.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_pdf_export.dart';
 
-typedef DescriptionMarkdownPrintHandler =
-    Future<void> Function({
+typedef DescriptionMarkdownExportPdfHandler =
+    Future<String?> Function({
       required String markdown,
       required String documentTitle,
     });
 typedef DescriptionMarkdownCopyHandler = Future<void> Function(String markdown);
 
 class DescriptionMarkdownView extends StatelessWidget {
-  static const EdgeInsets _printButtonInset = EdgeInsets.only(top: 44);
+  static const EdgeInsets _toolbarButtonInset = EdgeInsets.only(top: 44);
 
   final String data;
   final bool scrollable;
@@ -26,8 +26,8 @@ class DescriptionMarkdownView extends StatelessWidget {
   final GreekStrongPickerTapHandler? onGreekStrongPickerTap;
   final WordTapHandler? onWordTap;
   final MarkdownImageLoader? markdownImageLoader;
-  final bool showPrintButton;
-  final DescriptionMarkdownPrintHandler? onPrintRequested;
+  final bool showExportPdfButton;
+  final DescriptionMarkdownExportPdfHandler? onExportPdfRequested;
   final DescriptionMarkdownCopyHandler? onCopyRequested;
   final List<Widget> toolbarActions;
   final FontWeight? h2FontWeight;
@@ -40,8 +40,8 @@ class DescriptionMarkdownView extends StatelessWidget {
     this.onGreekStrongPickerTap,
     this.onWordTap,
     this.markdownImageLoader,
-    this.showPrintButton = true,
-    this.onPrintRequested,
+    this.showExportPdfButton = true,
+    this.onExportPdfRequested,
     this.onCopyRequested,
     this.toolbarActions = const <Widget>[],
     this.h2FontWeight,
@@ -51,11 +51,11 @@ class DescriptionMarkdownView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final hasToolbar = showPrintButton || toolbarActions.isNotEmpty;
+    final hasToolbar = showExportPdfButton || toolbarActions.isNotEmpty;
     final effectivePadding = hasToolbar
         ? EdgeInsets.only(
             left: padding.left,
-            top: padding.top + _printButtonInset.top,
+            top: padding.top + _toolbarButtonInset.top,
             right: padding.right,
             bottom: padding.bottom,
           )
@@ -71,24 +71,38 @@ class DescriptionMarkdownView extends StatelessWidget {
       );
     }
 
-    Future<void> handlePrint() async {
+    Future<void> handleExportPdf() async {
       try {
-        final printHandler =
-            onPrintRequested ??
+        final exportPdfHandler =
+            onExportPdfRequested ??
             ({required String markdown, required String documentTitle}) =>
-                printRevelationMarkdown(
+                exportRevelationMarkdownPdf(
                   markdown: markdown,
                   documentTitle: documentTitle,
                   markdownImageLoader: markdownImageLoader,
                 );
 
-        await printHandler(markdown: data, documentTitle: l10n.app_name);
+        final location = await exportPdfHandler(
+          markdown: data,
+          documentTitle: l10n.app_name,
+        );
+
+        if (!context.mounted) {
+          return;
+        }
+
+        if (location != null && location.isNotEmpty) {
+          final messenger = ScaffoldMessenger.maybeOf(context);
+          messenger?.showSnackBar(
+            SnackBar(content: Text(l10n.file_saved_at(location))),
+          );
+        }
       } catch (error, stackTrace) {
         try {
           log.handle(
             error,
             stackTrace,
-            'Failed to print DescriptionMarkdownView',
+            'Failed to export DescriptionMarkdownView PDF',
           );
         } catch (_) {}
 
@@ -102,7 +116,7 @@ class DescriptionMarkdownView extends StatelessWidget {
         }
 
         messenger.showSnackBar(
-          SnackBar(content: Text(l10n.markdown_print_failed)),
+          SnackBar(content: Text(l10n.markdown_pdf_export_failed)),
         );
       }
     }
@@ -166,14 +180,14 @@ class DescriptionMarkdownView extends StatelessWidget {
     }
 
     final toolbarChildren = <Widget>[
-      if (showPrintButton)
+      if (showExportPdfButton)
         DescriptionMarkdownToolbarButton(
-          buttonKey: const Key('description_markdown_print_button'),
-          tooltip: l10n.print_content,
-          icon: Icons.print_outlined,
-          onPressed: () => unawaited(handlePrint()),
+          buttonKey: const Key('description_markdown_export_pdf_button'),
+          tooltip: l10n.export_pdf_content,
+          icon: Icons.file_download_outlined,
+          onPressed: () => unawaited(handleExportPdf()),
         ),
-      if (showPrintButton)
+      if (showExportPdfButton)
         DescriptionMarkdownToolbarButton(
           buttonKey: const Key('description_markdown_copy_button'),
           tooltip: l10n.copy_content,

@@ -643,7 +643,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get copy_content => 'Скопировать содержимое';
 
   @override
-  String get print_content => 'Распечатать содержимое';
+  String get export_pdf_content => 'Экспортировать в PDF';
 
   @override
   String get markdown_copied => 'Содержимое скопировано в буфер обмена.';
@@ -652,7 +652,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get markdown_copy_failed => 'Не удалось скопировать содержимое.';
 
   @override
-  String get markdown_print_failed => 'Не удалось открыть окно печати.';
+  String get markdown_pdf_export_failed => 'Не удалось экспортировать PDF.';
 
   @override
   String get previous_description_item => 'Предыдущий элемент';

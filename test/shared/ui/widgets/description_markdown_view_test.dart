@@ -153,7 +153,7 @@ void main() {
         child: const DescriptionMarkdownView(
           data: 'content',
           scrollable: false,
-          showPrintButton: false,
+          showExportPdfButton: false,
           padding: EdgeInsets.only(left: 11, top: 7),
         ),
       ),
@@ -163,7 +163,7 @@ void main() {
     expect(padding.padding, const EdgeInsets.only(left: 11, top: 7));
   });
 
-  testWidgets('DescriptionMarkdownView shows print button by default', (
+  testWidgets('DescriptionMarkdownView shows PDF export button by default', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -173,7 +173,7 @@ void main() {
     );
 
     expect(
-      find.byKey(const Key('description_markdown_print_button')),
+      find.byKey(const Key('description_markdown_export_pdf_button')),
       findsOneWidget,
     );
     expect(
@@ -182,7 +182,7 @@ void main() {
     );
   });
 
-  testWidgets('DescriptionMarkdownView can delegate print action', (
+  testWidgets('DescriptionMarkdownView can delegate PDF export action', (
     tester,
   ) async {
     String? capturedMarkdown;
@@ -192,17 +192,18 @@ void main() {
       buildLocalizedTestApp(
         child: DescriptionMarkdownView(
           data: 'Printable content',
-          onPrintRequested:
+          onExportPdfRequested:
               ({required markdown, required documentTitle}) async {
                 capturedMarkdown = markdown;
                 capturedDocumentTitle = documentTitle;
+                return 'Revelation.pdf';
               },
         ),
       ),
     );
 
     await tester.tap(
-      find.byKey(const Key('description_markdown_print_button')),
+      find.byKey(const Key('description_markdown_export_pdf_button')),
     );
     await tester.pump();
 
@@ -235,47 +236,48 @@ void main() {
     expect(find.text('Content copied to the clipboard.'), findsOneWidget);
   });
 
-  testWidgets('DescriptionMarkdownView shows toolbar actions after print', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      buildLocalizedTestApp(
-        child: DescriptionMarkdownView(
-          data: 'Printable content',
-          toolbarActions: [
-            DescriptionMarkdownToolbarButton(
-              buttonKey: const Key('custom_toolbar_action'),
-              tooltip: 'Next',
-              icon: Icons.arrow_forward,
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ),
-    );
-
-    final printButtonLeft = tester.getTopLeft(
-      find.byKey(const Key('description_markdown_print_button')),
-    );
-    final copyButtonLeft = tester.getTopLeft(
-      find.byKey(const Key('description_markdown_copy_button')),
-    );
-    final customActionLeft = tester.getTopLeft(
-      find.byKey(const Key('custom_toolbar_action')),
-    );
-
-    expect(copyButtonLeft.dx, greaterThan(printButtonLeft.dx));
-    expect(customActionLeft.dx, greaterThan(copyButtonLeft.dx));
-  });
-
   testWidgets(
-    'DescriptionMarkdownView can show toolbar actions without print',
+    'DescriptionMarkdownView shows toolbar actions after PDF export',
     (tester) async {
       await tester.pumpWidget(
         buildLocalizedTestApp(
           child: DescriptionMarkdownView(
             data: 'Printable content',
-            showPrintButton: false,
+            toolbarActions: [
+              DescriptionMarkdownToolbarButton(
+                buttonKey: const Key('custom_toolbar_action'),
+                tooltip: 'Next',
+                icon: Icons.arrow_forward,
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final exportButtonLeft = tester.getTopLeft(
+        find.byKey(const Key('description_markdown_export_pdf_button')),
+      );
+      final copyButtonLeft = tester.getTopLeft(
+        find.byKey(const Key('description_markdown_copy_button')),
+      );
+      final customActionLeft = tester.getTopLeft(
+        find.byKey(const Key('custom_toolbar_action')),
+      );
+
+      expect(copyButtonLeft.dx, greaterThan(exportButtonLeft.dx));
+      expect(customActionLeft.dx, greaterThan(copyButtonLeft.dx));
+    },
+  );
+
+  testWidgets(
+    'DescriptionMarkdownView can show toolbar actions without PDF export',
+    (tester) async {
+      await tester.pumpWidget(
+        buildLocalizedTestApp(
+          child: DescriptionMarkdownView(
+            data: 'Printable content',
+            showExportPdfButton: false,
             toolbarActions: [
               DescriptionMarkdownToolbarButton(
                 buttonKey: const Key('custom_toolbar_action'),
@@ -289,7 +291,7 @@ void main() {
       );
 
       expect(
-        find.byKey(const Key('description_markdown_print_button')),
+        find.byKey(const Key('description_markdown_export_pdf_button')),
         findsNothing,
       );
       expect(
@@ -307,13 +309,13 @@ void main() {
       buildLocalizedTestApp(
         child: const DescriptionMarkdownView(
           data: 'Printable content',
-          showPrintButton: false,
+          showExportPdfButton: false,
         ),
       ),
     );
 
     expect(
-      find.byKey(const Key('description_markdown_print_button')),
+      find.byKey(const Key('description_markdown_export_pdf_button')),
       findsNothing,
     );
     expect(
@@ -323,18 +325,20 @@ void main() {
     expect(find.byType(DescriptionMarkdownToolbarButton), findsNothing);
   });
 
-  testWidgets('DescriptionMarkdownView can hide print button', (tester) async {
+  testWidgets('DescriptionMarkdownView can hide PDF export button', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       buildLocalizedTestApp(
         child: const DescriptionMarkdownView(
           data: 'Printable content',
-          showPrintButton: false,
+          showExportPdfButton: false,
         ),
       ),
     );
 
     expect(
-      find.byKey(const Key('description_markdown_print_button')),
+      find.byKey(const Key('description_markdown_export_pdf_button')),
       findsNothing,
     );
     expect(
@@ -343,14 +347,14 @@ void main() {
     );
   });
 
-  testWidgets('DescriptionMarkdownView shows snackbar when print fails', (
+  testWidgets('DescriptionMarkdownView shows snackbar when PDF export fails', (
     tester,
   ) async {
     await tester.pumpWidget(
       buildLocalizedTestApp(
         child: DescriptionMarkdownView(
           data: 'Printable content',
-          onPrintRequested:
+          onExportPdfRequested:
               ({required markdown, required documentTitle}) async {
                 throw StateError('boom');
               },
@@ -359,14 +363,14 @@ void main() {
     );
 
     await tester.tap(
-      find.byKey(const Key('description_markdown_print_button')),
+      find.byKey(const Key('description_markdown_export_pdf_button')),
     );
     await tester.pump();
 
     await tester.pumpAndSettle();
 
     expect(find.byType(SnackBar), findsOneWidget);
-    expect(find.text("Couldn't open the print dialog."), findsOneWidget);
+    expect(find.text("Couldn't export the PDF."), findsOneWidget);
   });
 
   testWidgets('DescriptionMarkdownView shows snackbar when copy fails', (

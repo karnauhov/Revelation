@@ -104,7 +104,7 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('strong dictionary dialog exposes markdown print action', (
+  testWidgets('strong dictionary dialog exposes markdown PDF export action', (
     tester,
   ) async {
     final context = await pumpLocalizedContext(tester);
@@ -113,7 +113,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.byKey(const Key('description_markdown_print_button')),
+      find.byKey(const Key('description_markdown_export_pdf_button')),
       findsOneWidget,
     );
     expect(
