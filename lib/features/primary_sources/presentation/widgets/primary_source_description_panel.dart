@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 
 class PrimarySourceDescriptionPanel extends StatelessWidget {
   final String? descriptionContent;
+  final DescriptionKind currentDescriptionType;
   final GreekStrongTapHandler onGreekStrongTap;
   final GreekStrongPickerTapHandler onGreekStrongPickerTap;
   final WordTapHandler onWordTap;
@@ -18,6 +20,7 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
 
   const PrimarySourceDescriptionPanel({
     required this.descriptionContent,
+    required this.currentDescriptionType,
     required this.onGreekStrongTap,
     required this.onGreekStrongPickerTap,
     required this.onWordTap,
@@ -46,30 +49,35 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
           Positioned.fill(
             child: DescriptionMarkdownView(
               data: descriptionContent ?? localizations.click_for_info,
-              padding: const EdgeInsets.fromLTRB(8, 2, 8, 58),
+              padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
+              h2FontWeight: currentDescriptionType == DescriptionKind.word
+                  ? FontWeight.normal
+                  : null,
               onGreekStrongTap: onGreekStrongTap,
               onGreekStrongPickerTap: onGreekStrongPickerTap,
               onWordTap: onWordTap,
-            ),
-          ),
-          Positioned(
-            left: 4,
-            bottom: 4,
-            child: _DescriptionNavigationOverlayButton(
-              buttonKey: const Key('description_nav_back'),
-              canNavigate: canNavigate,
-              forward: false,
-              onTap: onNavigateBackward,
-            ),
-          ),
-          Positioned(
-            right: 4,
-            bottom: 4,
-            child: _DescriptionNavigationOverlayButton(
-              buttonKey: const Key('description_nav_forward'),
-              canNavigate: canNavigate,
-              forward: true,
-              onTap: onNavigateForward,
+              toolbarActions: [
+                _DescriptionNavigationToolbarButton(
+                  buttonKey: const Key('description_nav_back'),
+                  canNavigate: canNavigate,
+                  forward: false,
+                  tooltip: _buildNavigationTooltip(
+                    localizations,
+                    forward: false,
+                  ),
+                  onTap: onNavigateBackward,
+                ),
+                _DescriptionNavigationToolbarButton(
+                  buttonKey: const Key('description_nav_forward'),
+                  canNavigate: canNavigate,
+                  forward: true,
+                  tooltip: _buildNavigationTooltip(
+                    localizations,
+                    forward: true,
+                  ),
+                  onTap: onNavigateForward,
+                ),
+              ],
             ),
           ),
           if (showStrongInfoIcon)
@@ -116,56 +124,54 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
       child: descriptionView,
     );
   }
+
+  String _buildNavigationTooltip(
+    AppLocalizations localizations, {
+    required bool forward,
+  }) {
+    return switch (currentDescriptionType) {
+      DescriptionKind.word =>
+        forward ? localizations.next_word : localizations.previous_word,
+      DescriptionKind.verse =>
+        forward ? localizations.next_verse : localizations.previous_verse,
+      DescriptionKind.strongNumber =>
+        forward
+            ? localizations.next_dictionary_entry
+            : localizations.previous_dictionary_entry,
+      DescriptionKind.info =>
+        forward
+            ? localizations.next_description_item
+            : localizations.previous_description_item,
+    };
+  }
 }
 
-class _DescriptionNavigationOverlayButton extends StatelessWidget {
-  final Key? buttonKey;
+class _DescriptionNavigationToolbarButton extends StatelessWidget {
+  final Key buttonKey;
   final bool canNavigate;
   final bool forward;
+  final String tooltip;
   final VoidCallback onTap;
 
-  const _DescriptionNavigationOverlayButton({
-    this.buttonKey,
+  const _DescriptionNavigationToolbarButton({
+    required this.buttonKey,
     required this.canNavigate,
     required this.forward,
+    required this.tooltip,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final Color bgColor = colorScheme.surface.withValues(
-      alpha: canNavigate ? 0.08 : 0.04,
-    );
-    final Color iconColor = colorScheme.primary.withValues(
-      alpha: canNavigate ? 0.35 : 0.18,
-    );
-
-    return IgnorePointer(
-      ignoring: !canNavigate,
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkResponse(
-          radius: 28,
-          highlightShape: BoxShape.circle,
-          onTap: onTap,
-          child: Container(
-            key: buttonKey,
-            width: 54,
-            height: 54,
-            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-            alignment: Alignment.center,
-            child: Icon(
-              forward
-                  ? Icons.arrow_forward_ios_rounded
-                  : Icons.arrow_back_ios_new_rounded,
-              size: 22,
-              color: iconColor,
-            ),
-          ),
-        ),
-      ),
+    return DescriptionMarkdownToolbarButton(
+      buttonKey: buttonKey,
+      tooltip: tooltip,
+      icon: forward
+          ? Icons.arrow_forward_ios_rounded
+          : Icons.arrow_back_ios_new_rounded,
+      iconSize: 18,
+      enabled: canNavigate,
+      onPressed: onTap,
     );
   }
 }

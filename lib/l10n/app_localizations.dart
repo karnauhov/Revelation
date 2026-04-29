@@ -1308,6 +1308,84 @@ abstract class AppLocalizations {
   /// **'Loading image...'**
   String get markdown_image_loading;
 
+  /// No description provided for @copy_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy content'**
+  String get copy_content;
+
+  /// No description provided for @print_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Print content'**
+  String get print_content;
+
+  /// No description provided for @markdown_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Content copied to the clipboard.'**
+  String get markdown_copied;
+
+  /// No description provided for @markdown_copy_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t copy the content.'**
+  String get markdown_copy_failed;
+
+  /// No description provided for @markdown_print_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the print dialog.'**
+  String get markdown_print_failed;
+
+  /// No description provided for @previous_description_item.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous item'**
+  String get previous_description_item;
+
+  /// No description provided for @next_description_item.
+  ///
+  /// In en, this message translates to:
+  /// **'Next item'**
+  String get next_description_item;
+
+  /// No description provided for @previous_word.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous word'**
+  String get previous_word;
+
+  /// No description provided for @next_word.
+  ///
+  /// In en, this message translates to:
+  /// **'Next word'**
+  String get next_word;
+
+  /// No description provided for @previous_verse.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous verse'**
+  String get previous_verse;
+
+  /// No description provided for @next_verse.
+  ///
+  /// In en, this message translates to:
+  /// **'Next verse'**
+  String get next_verse;
+
+  /// No description provided for @previous_dictionary_entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous dictionary entry'**
+  String get previous_dictionary_entry;
+
+  /// No description provided for @next_dictionary_entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Next dictionary entry'**
+  String get next_dictionary_entry;
+
   /// Progress label for markdown image preloading in topic articles
   ///
   /// In en, this message translates to:

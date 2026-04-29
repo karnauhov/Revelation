@@ -1,6 +1,7 @@
 @Tags(['widget'])
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
@@ -13,6 +14,7 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
+import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import '../../../../test_harness/test_harness.dart';
@@ -74,6 +76,7 @@ void main() {
         _buildApp(
           child: PrimarySourceDescriptionPanel(
             descriptionContent: 'Example',
+            currentDescriptionType: DescriptionKind.word,
             onGreekStrongTap: (_, __) {},
             onGreekStrongPickerTap: (_, __) {},
             onWordTap: (_, __, ___, ____) async {},
@@ -99,19 +102,13 @@ void main() {
       final forwardButton = find.byKey(const Key('description_nav_forward'));
       expect(backButton, findsOneWidget);
       expect(forwardButton, findsOneWidget);
-      final backTapTarget = find.ancestor(
-        of: backButton,
-        matching: find.byType(InkResponse),
-      );
-      final forwardTapTarget = find.ancestor(
-        of: forwardButton,
-        matching: find.byType(InkResponse),
-      );
+      expect(find.byTooltip('Previous word'), findsOneWidget);
+      expect(find.byTooltip('Next word'), findsOneWidget);
 
       await tester.ensureVisible(backButton);
       await tester.ensureVisible(forwardButton);
-      await tester.tap(backTapTarget);
-      await tester.tap(forwardTapTarget);
+      await tester.tap(backButton);
+      await tester.tap(forwardButton);
       await tester.pump();
 
       expect(backwardTaps, 1);
@@ -135,6 +132,7 @@ void main() {
         _buildApp(
           child: PrimarySourceDescriptionPanel(
             descriptionContent: 'Example',
+            currentDescriptionType: DescriptionKind.info,
             onGreekStrongTap: (_, __) {},
             onGreekStrongPickerTap: (_, __) {},
             onWordTap: (_, __, ___, ____) async {},
@@ -177,6 +175,80 @@ void main() {
 
       expect(taps, 0);
       expect(find.byIcon(Icons.info_outline), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'PrimarySourceDescriptionPanel adapts navigation tooltips to description type',
+    (tester) async {
+      Future<void> pumpPanel(DescriptionKind type) {
+        return tester.pumpWidget(
+          _buildApp(
+            child: PrimarySourceDescriptionPanel(
+              descriptionContent: 'Example',
+              currentDescriptionType: type,
+              onGreekStrongTap: (_, __) {},
+              onGreekStrongPickerTap: (_, __) {},
+              onWordTap: (_, __, ___, ____) async {},
+              showStrongInfoIcon: false,
+              canNavigate: true,
+              enableSwipeNavigation: false,
+              referenceTooltipKey: GlobalKey<TooltipState>(),
+              onNavigateBackward: () {},
+              onNavigateForward: () {},
+              onHorizontalDragEnd: (_) {},
+            ),
+          ),
+        );
+      }
+
+      await pumpPanel(DescriptionKind.verse);
+      expect(find.byTooltip('Previous verse'), findsOneWidget);
+      expect(find.byTooltip('Next verse'), findsOneWidget);
+
+      await pumpPanel(DescriptionKind.strongNumber);
+      expect(find.byTooltip('Previous dictionary entry'), findsOneWidget);
+      expect(find.byTooltip('Next dictionary entry'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'PrimarySourceDescriptionPanel lightens h2 only for manuscript word descriptions',
+    (tester) async {
+      Future<FontWeight?> pumpAndReadH2Weight(DescriptionKind type) async {
+        await tester.pumpWidget(
+          _buildApp(
+            child: PrimarySourceDescriptionPanel(
+              descriptionContent: '## ΑⲂΜ',
+              currentDescriptionType: type,
+              onGreekStrongTap: (_, __) {},
+              onGreekStrongPickerTap: (_, __) {},
+              onWordTap: (_, __, ___, ____) async {},
+              showStrongInfoIcon: false,
+              canNavigate: true,
+              enableSwipeNavigation: false,
+              referenceTooltipKey: GlobalKey<TooltipState>(),
+              onNavigateBackward: () {},
+              onNavigateForward: () {},
+              onHorizontalDragEnd: (_) {},
+            ),
+          ),
+        );
+
+        final markdownBody = tester.widget<MarkdownBody>(
+          find.byType(MarkdownBody),
+        );
+        return markdownBody.styleSheet!.h2!.fontWeight;
+      }
+
+      expect(
+        await pumpAndReadH2Weight(DescriptionKind.word),
+        FontWeight.normal,
+      );
+      expect(
+        await pumpAndReadH2Weight(DescriptionKind.strongNumber),
+        FontWeight.bold,
+      );
     },
   );
 

@@ -103,4 +103,22 @@ void main() {
     await tester.tap(find.text(l10n.close).first);
     await tester.pumpAndSettle();
   });
+
+  testWidgets('strong dictionary dialog exposes markdown print action', (
+    tester,
+  ) async {
+    final context = await pumpLocalizedContext(tester);
+
+    unawaited(showStrongDictionaryDialog(context, 1));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('description_markdown_print_button')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('description_markdown_copy_button')),
+      findsOneWidget,
+    );
+  });
 }

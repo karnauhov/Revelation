@@ -640,6 +640,45 @@ class AppLocalizationsRu extends AppLocalizations {
   String get markdown_image_loading => 'Загрузка изображения...';
 
   @override
+  String get copy_content => 'Скопировать содержимое';
+
+  @override
+  String get print_content => 'Распечатать содержимое';
+
+  @override
+  String get markdown_copied => 'Содержимое скопировано в буфер обмена.';
+
+  @override
+  String get markdown_copy_failed => 'Не удалось скопировать содержимое.';
+
+  @override
+  String get markdown_print_failed => 'Не удалось открыть окно печати.';
+
+  @override
+  String get previous_description_item => 'Предыдущий элемент';
+
+  @override
+  String get next_description_item => 'Следующий элемент';
+
+  @override
+  String get previous_word => 'Предыдущее слово';
+
+  @override
+  String get next_word => 'Следующее слово';
+
+  @override
+  String get previous_verse => 'Предыдущий стих';
+
+  @override
+  String get next_verse => 'Следующий стих';
+
+  @override
+  String get previous_dictionary_entry => 'Предыдущая словарная статья';
+
+  @override
+  String get next_dictionary_entry => 'Следующая словарная статья';
+
+  @override
   String markdown_images_loading_progress(int loaded, int total) {
     return 'Загрузка изображений: $loaded из $total';
   }

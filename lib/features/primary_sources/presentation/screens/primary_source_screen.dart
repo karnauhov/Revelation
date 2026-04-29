@@ -492,6 +492,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
 
         return PrimarySourceDescriptionPanel(
           descriptionContent: descriptionSlice.content,
+          currentDescriptionType: descriptionSlice.currentType,
           onGreekStrongTap: (strongNumber, linkContext) {
             viewModel.showInfoForStrongNumber(
               strongNumber,

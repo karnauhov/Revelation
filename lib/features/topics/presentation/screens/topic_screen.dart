@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/core/errors/app_result.dart';
+import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/platform/file_downloader.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
@@ -14,6 +17,7 @@ import 'package:revelation/features/topics/presentation/bloc/topic_content_state
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
+import 'package:revelation/shared/ui/markdown/revelation_markdown_printing.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_body.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 
@@ -32,11 +36,17 @@ typedef DownloadableFileSaver =
       required String mimeType,
     });
 
+typedef TopicScreenPrintHandler =
+    Future<void> Function({required String markdown, required String jobName});
+typedef TopicScreenCopyHandler = Future<void> Function(String markdown);
+
 class TopicScreen extends StatefulWidget {
   final String? name;
   final String? description;
   final String? file;
   final TopicContentCubitBuilder? topicContentCubitBuilder;
+  final TopicScreenPrintHandler? onPrintRequested;
+  final TopicScreenCopyHandler? onCopyRequested;
 
   const TopicScreen({
     super.key,
@@ -44,6 +54,8 @@ class TopicScreen extends StatefulWidget {
     this.description,
     this.file,
     this.topicContentCubitBuilder,
+    this.onPrintRequested,
+    this.onCopyRequested,
   });
 
   @visibleForTesting
@@ -158,6 +170,7 @@ class _TopicScreenState extends State<TopicScreen> {
             state.description,
             '',
           );
+          final canPrint = !state.isLoading && state.failure == null;
 
           return Scaffold(
             appBar: AppBar(
@@ -180,6 +193,23 @@ class _TopicScreenState extends State<TopicScreen> {
                 ],
               ),
               foregroundColor: colorScheme.primary,
+              actions: [
+                if (canPrint)
+                  IconButton(
+                    key: const Key('topic_screen_print_button'),
+                    tooltip: l10n.print_content,
+                    onPressed: () =>
+                        unawaited(_handlePrint(title, state.markdown)),
+                    icon: const Icon(Icons.print_outlined),
+                  ),
+                if (canPrint)
+                  IconButton(
+                    key: const Key('topic_screen_copy_button'),
+                    tooltip: l10n.copy_content,
+                    onPressed: () => unawaited(_handleCopy(state.markdown)),
+                    icon: const Icon(Icons.content_copy_outlined),
+                  ),
+              ],
             ),
             body: content,
           );
@@ -196,6 +226,82 @@ class _TopicScreenState extends State<TopicScreen> {
       return second;
     }
     return fallback;
+  }
+
+  Future<void> _handlePrint(String jobName, String markdown) async {
+    try {
+      final printHandler =
+          widget.onPrintRequested ??
+          ({required String markdown, required String jobName}) =>
+              printRevelationMarkdown(
+                markdown: markdown,
+                documentTitle: jobName,
+              );
+
+      await printHandler(markdown: markdown, jobName: jobName);
+    } catch (error, stackTrace) {
+      try {
+        log.handle(error, stackTrace, 'Failed to print TopicScreen article');
+      } catch (_) {}
+
+      if (!mounted) {
+        return;
+      }
+
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      if (messenger == null) {
+        return;
+      }
+
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.markdown_print_failed),
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleCopy(String markdown) async {
+    try {
+      final copyHandler =
+          widget.onCopyRequested ??
+          (String markdown) => Clipboard.setData(ClipboardData(text: markdown));
+
+      await copyHandler(markdown);
+    } catch (error, stackTrace) {
+      try {
+        log.handle(error, stackTrace, 'Failed to copy TopicScreen article');
+      } catch (_) {}
+
+      if (!mounted) {
+        return;
+      }
+
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      if (messenger == null) {
+        return;
+      }
+
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.markdown_copy_failed),
+        ),
+      );
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    if (messenger == null) {
+      return;
+    }
+
+    messenger.showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context)!.markdown_copied)),
+    );
   }
 
   Future<bool> _handleTopicLink(BuildContext context, String? href) async {

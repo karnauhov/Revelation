@@ -639,6 +639,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markdown_image_loading => 'Loading image...';
 
   @override
+  String get copy_content => 'Copy content';
+
+  @override
+  String get print_content => 'Print content';
+
+  @override
+  String get markdown_copied => 'Content copied to the clipboard.';
+
+  @override
+  String get markdown_copy_failed => 'Couldn\'t copy the content.';
+
+  @override
+  String get markdown_print_failed => 'Couldn\'t open the print dialog.';
+
+  @override
+  String get previous_description_item => 'Previous item';
+
+  @override
+  String get next_description_item => 'Next item';
+
+  @override
+  String get previous_word => 'Previous word';
+
+  @override
+  String get next_word => 'Next word';
+
+  @override
+  String get previous_verse => 'Previous verse';
+
+  @override
+  String get next_verse => 'Next verse';
+
+  @override
+  String get previous_dictionary_entry => 'Previous dictionary entry';
+
+  @override
+  String get next_dictionary_entry => 'Next dictionary entry';
+
+  @override
   String markdown_images_loading_progress(int loaded, int total) {
     return 'Loading images: $loaded of $total';
   }

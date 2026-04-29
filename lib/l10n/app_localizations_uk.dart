@@ -641,6 +641,45 @@ class AppLocalizationsUk extends AppLocalizations {
   String get markdown_image_loading => 'Завантаження зображення...';
 
   @override
+  String get copy_content => 'Скопіювати вміст';
+
+  @override
+  String get print_content => 'Роздрукувати вміст';
+
+  @override
+  String get markdown_copied => 'Вміст скопійовано до буфера обміну.';
+
+  @override
+  String get markdown_copy_failed => 'Не вдалося скопіювати вміст.';
+
+  @override
+  String get markdown_print_failed => 'Не вдалося відкрити вікно друку.';
+
+  @override
+  String get previous_description_item => 'Попередній елемент';
+
+  @override
+  String get next_description_item => 'Наступний елемент';
+
+  @override
+  String get previous_word => 'Попереднє слово';
+
+  @override
+  String get next_word => 'Наступне слово';
+
+  @override
+  String get previous_verse => 'Попередній вірш';
+
+  @override
+  String get next_verse => 'Наступний вірш';
+
+  @override
+  String get previous_dictionary_entry => 'Попередня словникова стаття';
+
+  @override
+  String get next_dictionary_entry => 'Наступна словникова стаття';
+
+  @override
   String markdown_images_loading_progress(int loaded, int total) {
     return 'Завантаження зображень: $loaded із $total';
   }

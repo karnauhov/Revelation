@@ -53,6 +53,23 @@ void main() {
     expect(markdownBody.data, contains('Static text'));
   });
 
+  testWidgets('DescriptionMarkdownView can override h2 font weight', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: const DescriptionMarkdownView(
+          data: '## ΑⲂΜ',
+          scrollable: false,
+          h2FontWeight: FontWeight.normal,
+        ),
+      ),
+    );
+
+    final markdownBody = tester.widget<MarkdownBody>(find.byType(MarkdownBody));
+    expect(markdownBody.styleSheet!.h2!.fontWeight, FontWeight.normal);
+  });
+
   testWidgets('DescriptionMarkdownView forwards strong link taps to callback', (
     tester,
   ) async {
@@ -136,6 +153,7 @@ void main() {
         child: const DescriptionMarkdownView(
           data: 'content',
           scrollable: false,
+          showPrintButton: false,
           padding: EdgeInsets.only(left: 11, top: 7),
         ),
       ),
@@ -143,5 +161,233 @@ void main() {
 
     final padding = tester.widget<Padding>(find.byType(Padding).first);
     expect(padding.padding, const EdgeInsets.only(left: 11, top: 7));
+  });
+
+  testWidgets('DescriptionMarkdownView shows print button by default', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: const DescriptionMarkdownView(data: 'Printable content'),
+      ),
+    );
+
+    expect(
+      find.byKey(const Key('description_markdown_print_button')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('description_markdown_copy_button')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('DescriptionMarkdownView can delegate print action', (
+    tester,
+  ) async {
+    String? capturedMarkdown;
+    String? capturedDocumentTitle;
+
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: DescriptionMarkdownView(
+          data: 'Printable content',
+          onPrintRequested:
+              ({required markdown, required documentTitle}) async {
+                capturedMarkdown = markdown;
+                capturedDocumentTitle = documentTitle;
+              },
+        ),
+      ),
+    );
+
+    await tester.tap(
+      find.byKey(const Key('description_markdown_print_button')),
+    );
+    await tester.pump();
+
+    expect(capturedMarkdown, 'Printable content');
+    expect(capturedDocumentTitle, 'Revelation');
+  });
+
+  testWidgets('DescriptionMarkdownView can delegate copy action', (
+    tester,
+  ) async {
+    String? capturedMarkdown;
+
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: DescriptionMarkdownView(
+          data: 'Printable content',
+          onCopyRequested: (markdown) async {
+            capturedMarkdown = markdown;
+          },
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('description_markdown_copy_button')));
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    expect(capturedMarkdown, 'Printable content');
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.text('Content copied to the clipboard.'), findsOneWidget);
+  });
+
+  testWidgets('DescriptionMarkdownView shows toolbar actions after print', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: DescriptionMarkdownView(
+          data: 'Printable content',
+          toolbarActions: [
+            DescriptionMarkdownToolbarButton(
+              buttonKey: const Key('custom_toolbar_action'),
+              tooltip: 'Next',
+              icon: Icons.arrow_forward,
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final printButtonLeft = tester.getTopLeft(
+      find.byKey(const Key('description_markdown_print_button')),
+    );
+    final copyButtonLeft = tester.getTopLeft(
+      find.byKey(const Key('description_markdown_copy_button')),
+    );
+    final customActionLeft = tester.getTopLeft(
+      find.byKey(const Key('custom_toolbar_action')),
+    );
+
+    expect(copyButtonLeft.dx, greaterThan(printButtonLeft.dx));
+    expect(customActionLeft.dx, greaterThan(copyButtonLeft.dx));
+  });
+
+  testWidgets(
+    'DescriptionMarkdownView can show toolbar actions without print',
+    (tester) async {
+      await tester.pumpWidget(
+        buildLocalizedTestApp(
+          child: DescriptionMarkdownView(
+            data: 'Printable content',
+            showPrintButton: false,
+            toolbarActions: [
+              DescriptionMarkdownToolbarButton(
+                buttonKey: const Key('custom_toolbar_action'),
+                tooltip: 'Next',
+                icon: Icons.arrow_forward,
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
+      );
+
+      expect(
+        find.byKey(const Key('description_markdown_print_button')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('description_markdown_copy_button')),
+        findsNothing,
+      );
+      expect(find.byKey(const Key('custom_toolbar_action')), findsOneWidget);
+    },
+  );
+
+  testWidgets('DescriptionMarkdownView hides toolbar when it has no actions', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: const DescriptionMarkdownView(
+          data: 'Printable content',
+          showPrintButton: false,
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(const Key('description_markdown_print_button')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('description_markdown_copy_button')),
+      findsNothing,
+    );
+    expect(find.byType(DescriptionMarkdownToolbarButton), findsNothing);
+  });
+
+  testWidgets('DescriptionMarkdownView can hide print button', (tester) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: const DescriptionMarkdownView(
+          data: 'Printable content',
+          showPrintButton: false,
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(const Key('description_markdown_print_button')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('description_markdown_copy_button')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('DescriptionMarkdownView shows snackbar when print fails', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: DescriptionMarkdownView(
+          data: 'Printable content',
+          onPrintRequested:
+              ({required markdown, required documentTitle}) async {
+                throw StateError('boom');
+              },
+        ),
+      ),
+    );
+
+    await tester.tap(
+      find.byKey(const Key('description_markdown_print_button')),
+    );
+    await tester.pump();
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.text("Couldn't open the print dialog."), findsOneWidget);
+  });
+
+  testWidgets('DescriptionMarkdownView shows snackbar when copy fails', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: DescriptionMarkdownView(
+          data: 'Printable content',
+          onCopyRequested: (markdown) async {
+            throw StateError('boom');
+          },
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('description_markdown_copy_button')));
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.text("Couldn't copy the content."), findsOneWidget);
   });
 }

@@ -25,6 +25,7 @@ class RevelationMarkdownBody extends StatefulWidget {
     this.onTapLink,
     this.showImagePreloadProgress = false,
     this.markdownImageLoader,
+    this.h2FontWeight,
     super.key,
   });
 
@@ -33,6 +34,7 @@ class RevelationMarkdownBody extends StatefulWidget {
   final MarkdownTapLinkCallback? onTapLink;
   final bool showImagePreloadProgress;
   final MarkdownImageLoader? markdownImageLoader;
+  final FontWeight? h2FontWeight;
 
   @override
   State<RevelationMarkdownBody> createState() => _RevelationMarkdownBodyState();
@@ -83,7 +85,11 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
               'revelation-markdown-${state.documentRevision}-${widget.data.hashCode}-${state.completedCount}-${state.failedCount}',
             ),
             data: widget.data,
-            styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+            styleSheet: getMarkdownStyleSheet(
+              theme,
+              colorScheme,
+              h2FontWeight: widget.h2FontWeight,
+            ),
             extensionSet: buildRevelationMarkdownExtensionSet(),
             builders: buildRevelationMarkdownBuilders(
               imageBuilder: (context, image) =>
@@ -112,7 +118,11 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
                     'revelation-markdown-content-${state.documentRevision}-${widget.data.hashCode}-${state.completedCount}-${state.failedCount}',
                   ),
                   data: widget.data,
-                  styleSheet: getMarkdownStyleSheet(theme, colorScheme),
+                  styleSheet: getMarkdownStyleSheet(
+                    theme,
+                    colorScheme,
+                    h2FontWeight: widget.h2FontWeight,
+                  ),
                   extensionSet: buildRevelationMarkdownExtensionSet(),
                   builders: buildRevelationMarkdownBuilders(
                     imageBuilder: (context, image) =>

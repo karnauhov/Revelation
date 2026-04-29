@@ -253,6 +253,13 @@
         <licenseLink>https://pub.dev/packages/talker_flutter/license</licenseLink>
     </library>
     <library>
+        <name>@Package 'printing'</name>
+        <idIcon></idIcon>
+        <license>Apache-2.0</license>
+        <officialSite>https://pub.dev/packages/printing</officialSite>
+        <licenseLink>https://pub.dev/packages/printing/license</licenseLink>
+    </library>
+    <library>
         <name>@Package 'flutter_lints'</name>
         <idIcon></idIcon>
         <license>BSD-3-Clause</license>

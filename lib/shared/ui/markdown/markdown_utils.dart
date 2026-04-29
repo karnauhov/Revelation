@@ -3,8 +3,9 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 MarkdownStyleSheet getMarkdownStyleSheet(
   ThemeData theme,
-  ColorScheme colorScheme,
-) {
+  ColorScheme colorScheme, {
+  FontWeight? h2FontWeight,
+}) {
   return MarkdownStyleSheet.fromTheme(theme).copyWith(
     p: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
     h1: theme.textTheme.headlineSmall?.copyWith(
@@ -12,7 +13,7 @@ MarkdownStyleSheet getMarkdownStyleSheet(
       color: colorScheme.onSurface,
     ),
     h2: theme.textTheme.titleLarge?.copyWith(
-      fontWeight: FontWeight.bold,
+      fontWeight: h2FontWeight ?? FontWeight.bold,
       color: colorScheme.onSurface,
     ),
     h3: theme.textTheme.titleMedium?.copyWith(
