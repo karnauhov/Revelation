@@ -211,6 +211,72 @@ void main() {
     expect(capturedDocumentTitle, 'Revelation');
   });
 
+  testWidgets('DescriptionMarkdownView can use custom PDF document title', (
+    tester,
+  ) async {
+    String? capturedDocumentTitle;
+
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: DescriptionMarkdownView(
+          data: 'Strong content',
+          exportPdfDocumentTitle: 'G25',
+          onExportPdfRequested:
+              ({required markdown, required documentTitle}) async {
+                capturedDocumentTitle = documentTitle;
+                return 'G25.pdf';
+              },
+        ),
+      ),
+    );
+
+    await tester.tap(
+      find.byKey(const Key('description_markdown_export_pdf_button')),
+    );
+    await tester.pump();
+
+    expect(capturedDocumentTitle, 'G25');
+  });
+
+  testWidgets('DescriptionMarkdownView can disable PDF export and copy', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: DescriptionMarkdownView(
+          data: 'Disabled content',
+          exportPdfEnabled: false,
+          copyEnabled: false,
+          onExportPdfRequested:
+              ({required markdown, required documentTitle}) async {
+                fail('PDF export should stay disabled.');
+              },
+          onCopyRequested: (_) async {
+            fail('Copy should stay disabled.');
+          },
+        ),
+      ),
+    );
+
+    final exportIgnorePointerFinder = find.ancestor(
+      of: find.byKey(const Key('description_markdown_export_pdf_button')),
+      matching: find.byType(IgnorePointer),
+    );
+    final copyIgnorePointerFinder = find.ancestor(
+      of: find.byKey(const Key('description_markdown_copy_button')),
+      matching: find.byType(IgnorePointer),
+    );
+
+    expect(
+      tester.widget<IgnorePointer>(exportIgnorePointerFinder.first).ignoring,
+      isTrue,
+    );
+    expect(
+      tester.widget<IgnorePointer>(copyIgnorePointerFinder.first).ignoring,
+      isTrue,
+    );
+  });
+
   testWidgets('DescriptionMarkdownView can delegate copy action', (
     tester,
   ) async {

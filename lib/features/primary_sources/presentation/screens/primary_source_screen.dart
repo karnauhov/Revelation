@@ -489,6 +489,14 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
             ) &&
             !modeSlice.selectAreaMode &&
             !modeSlice.pipetteMode;
+        final descriptionPdfDocumentTitle = _descriptionPdfDocumentTitle(
+          primarySource: widget.primarySource,
+          selectedPage: selectedPage,
+          currentType: descriptionSlice.currentType,
+          currentNumber: descriptionSlice.currentNumber,
+        );
+        final bool descriptionActionsEnabled =
+            canNavigate && descriptionPdfDocumentTitle != null;
 
         return PrimarySourceDescriptionPanel(
           descriptionContent: descriptionSlice.content,
@@ -513,6 +521,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           },
           showStrongInfoIcon: showStrongInfoIcon,
           canNavigate: canNavigate,
+          descriptionActionsEnabled: descriptionActionsEnabled,
+          exportPdfDocumentTitle: descriptionPdfDocumentTitle,
           enableSwipeNavigation: _isMobileSwipeNavigationEnabled(viewModel),
           referenceTooltipKey: _referenceTooltipKey,
           onNavigateBackward: () {
@@ -948,7 +958,11 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     }
 
     if (currentType == DescriptionKind.word) {
-      return selectedPage?.words.isNotEmpty ?? false;
+      final words = selectedPage?.words;
+      return words != null &&
+          words.isNotEmpty &&
+          currentNumber >= 0 &&
+          currentNumber < words.length;
     }
 
     if (currentType == DescriptionKind.strongNumber) {
@@ -956,10 +970,76 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     }
 
     if (currentType == DescriptionKind.verse) {
-      return selectedPage?.verses.isNotEmpty ?? false;
+      final verses = selectedPage?.verses;
+      return verses != null &&
+          verses.isNotEmpty &&
+          currentNumber >= 0 &&
+          currentNumber < verses.length;
     }
 
     return false;
+  }
+
+  String? _descriptionPdfDocumentTitle({
+    required PrimarySource primarySource,
+    required model.Page? selectedPage,
+    required DescriptionKind currentType,
+    required int? currentNumber,
+  }) {
+    if (currentNumber == null) {
+      return null;
+    }
+
+    return switch (currentType) {
+      DescriptionKind.strongNumber => 'G$currentNumber',
+      DescriptionKind.word => _wordDescriptionPdfDocumentTitle(
+        primarySource: primarySource,
+        selectedPage: selectedPage,
+        wordIndex: currentNumber,
+      ),
+      DescriptionKind.verse => _verseDescriptionPdfDocumentTitle(
+        primarySource: primarySource,
+        selectedPage: selectedPage,
+        verseIndex: currentNumber,
+      ),
+      DescriptionKind.info => null,
+    };
+  }
+
+  String? _wordDescriptionPdfDocumentTitle({
+    required PrimarySource primarySource,
+    required model.Page? selectedPage,
+    required int wordIndex,
+  }) {
+    if (selectedPage == null ||
+        wordIndex < 0 ||
+        wordIndex >= selectedPage.words.length) {
+      return null;
+    }
+
+    return '${primarySource.id}_${selectedPage.name}_word_$wordIndex';
+  }
+
+  String? _verseDescriptionPdfDocumentTitle({
+    required PrimarySource primarySource,
+    required model.Page? selectedPage,
+    required int verseIndex,
+  }) {
+    if (selectedPage == null ||
+        verseIndex < 0 ||
+        verseIndex >= selectedPage.verses.length) {
+      return null;
+    }
+
+    final verse = selectedPage.verses[verseIndex];
+    final verseReference = _replaceInvalidFileNameCharactersWithDots(
+      '${verse.chapterNumber}:${verse.verseNumber}',
+    );
+    return '${primarySource.id}_Rev_$verseReference';
+  }
+
+  String _replaceInvalidFileNameCharactersWithDots(String value) {
+    return value.replaceAll(RegExp(r'[\\/:*?"<>|]'), '.');
   }
 
   void _tryNavigateDescriptionByArrow(

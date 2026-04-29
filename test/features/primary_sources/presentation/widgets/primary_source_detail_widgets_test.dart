@@ -17,6 +17,7 @@ import 'package:revelation/features/primary_sources/presentation/widgets/primary
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
+import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 import '../../../../test_harness/test_harness.dart';
 
 void main() {
@@ -138,6 +139,7 @@ void main() {
             onWordTap: (_, __, ___, ____) async {},
             showStrongInfoIcon: false,
             canNavigate: false,
+            descriptionActionsEnabled: false,
             enableSwipeNavigation: false,
             referenceTooltipKey: GlobalKey<TooltipState>(),
             onNavigateBackward: () {
@@ -172,6 +174,12 @@ void main() {
       );
       expect(backIgnorePointer.ignoring, isTrue);
       expect(forwardIgnorePointer.ignoring, isTrue);
+
+      final markdownView = tester.widget<DescriptionMarkdownView>(
+        find.byType(DescriptionMarkdownView),
+      );
+      expect(markdownView.exportPdfEnabled, isFalse);
+      expect(markdownView.copyEnabled, isFalse);
 
       expect(taps, 0);
       expect(find.byIcon(Icons.info_outline), findsNothing);

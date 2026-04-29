@@ -27,6 +27,9 @@ class DescriptionMarkdownView extends StatelessWidget {
   final WordTapHandler? onWordTap;
   final MarkdownImageLoader? markdownImageLoader;
   final bool showExportPdfButton;
+  final bool exportPdfEnabled;
+  final bool copyEnabled;
+  final String? exportPdfDocumentTitle;
   final DescriptionMarkdownExportPdfHandler? onExportPdfRequested;
   final DescriptionMarkdownCopyHandler? onCopyRequested;
   final List<Widget> toolbarActions;
@@ -41,6 +44,9 @@ class DescriptionMarkdownView extends StatelessWidget {
     this.onWordTap,
     this.markdownImageLoader,
     this.showExportPdfButton = true,
+    this.exportPdfEnabled = true,
+    this.copyEnabled = true,
+    this.exportPdfDocumentTitle,
     this.onExportPdfRequested,
     this.onCopyRequested,
     this.toolbarActions = const <Widget>[],
@@ -84,7 +90,7 @@ class DescriptionMarkdownView extends StatelessWidget {
 
         final location = await exportPdfHandler(
           markdown: data,
-          documentTitle: l10n.app_name,
+          documentTitle: exportPdfDocumentTitle ?? l10n.app_name,
         );
 
         if (!context.mounted) {
@@ -185,6 +191,7 @@ class DescriptionMarkdownView extends StatelessWidget {
           buttonKey: const Key('description_markdown_export_pdf_button'),
           tooltip: l10n.export_pdf_content,
           icon: Icons.file_download_outlined,
+          enabled: exportPdfEnabled,
           onPressed: () => unawaited(handleExportPdf()),
         ),
       if (showExportPdfButton)
@@ -192,6 +199,7 @@ class DescriptionMarkdownView extends StatelessWidget {
           buttonKey: const Key('description_markdown_copy_button'),
           tooltip: l10n.copy_content,
           icon: Icons.content_copy_outlined,
+          enabled: copyEnabled,
           onPressed: () => unawaited(handleCopy()),
         ),
       ...toolbarActions,

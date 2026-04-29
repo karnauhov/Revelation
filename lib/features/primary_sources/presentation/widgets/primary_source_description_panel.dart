@@ -12,6 +12,8 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
   final WordTapHandler onWordTap;
   final bool showStrongInfoIcon;
   final bool canNavigate;
+  final bool descriptionActionsEnabled;
+  final String? exportPdfDocumentTitle;
   final bool enableSwipeNavigation;
   final GlobalKey<TooltipState> referenceTooltipKey;
   final VoidCallback onNavigateBackward;
@@ -26,6 +28,8 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
     required this.onWordTap,
     required this.showStrongInfoIcon,
     required this.canNavigate,
+    this.descriptionActionsEnabled = true,
+    this.exportPdfDocumentTitle,
     required this.enableSwipeNavigation,
     required this.referenceTooltipKey,
     required this.onNavigateBackward,
@@ -56,6 +60,9 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
               onGreekStrongTap: onGreekStrongTap,
               onGreekStrongPickerTap: onGreekStrongPickerTap,
               onWordTap: onWordTap,
+              exportPdfEnabled: descriptionActionsEnabled,
+              copyEnabled: descriptionActionsEnabled,
+              exportPdfDocumentTitle: exportPdfDocumentTitle,
               toolbarActions: [
                 _DescriptionNavigationToolbarButton(
                   buttonKey: const Key('description_nav_back'),

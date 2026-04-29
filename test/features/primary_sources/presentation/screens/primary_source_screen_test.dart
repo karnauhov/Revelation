@@ -371,6 +371,9 @@ void main() {
       await _forceLoadFirstPageImage(tester, source);
       await _pumpUntilFound(tester, find.byType(PrimarySourceDescriptionPanel));
 
+      expect(_descriptionPanel(tester).descriptionActionsEnabled, isFalse);
+      expect(_descriptionPanel(tester).exportPdfDocumentTitle, isNull);
+
       final sessionCubit = _sessionCubit(tester);
       final descriptionCubit = _descriptionCubit(tester);
       final panelContext = tester.element(
@@ -387,8 +390,21 @@ void main() {
         context: panelContext,
       );
       await _pumpUntilPageSelected(tester, 'P2');
+      await tester.pump();
 
       expect(sessionCubit.state.selectedPage?.name, 'P2');
+      descriptionCubit.updateDescriptionContent(
+        content: 'word description',
+        type: DescriptionKind.word,
+        number: 1,
+      );
+      await tester.pump();
+
+      expect(_descriptionPanel(tester).descriptionActionsEnabled, isTrue);
+      expect(
+        _descriptionPanel(tester).exportPdfDocumentTitle,
+        'source-links_P2_word_1',
+      );
 
       await _invokeWordTap(
         tester,
@@ -433,6 +449,28 @@ void main() {
 
       expect(_descriptionPanel(tester).showStrongInfoIcon, isTrue);
       expect(_descriptionPanel(tester).canNavigate, isTrue);
+      expect(_descriptionPanel(tester).descriptionActionsEnabled, isTrue);
+      expect(
+        _descriptionPanel(tester).exportPdfDocumentTitle,
+        'source-links_P1_word_0',
+      );
+
+      descriptionCubit.updateDescriptionContent(
+        content: 'strong description',
+        type: DescriptionKind.strongNumber,
+        number: 25,
+      );
+      await tester.pump();
+
+      expect(_descriptionPanel(tester).descriptionActionsEnabled, isTrue);
+      expect(_descriptionPanel(tester).exportPdfDocumentTitle, 'G25');
+
+      descriptionCubit.updateDescriptionContent(
+        content: 'word description',
+        type: DescriptionKind.word,
+        number: 0,
+      );
+      await tester.pump();
 
       _descriptionPanel(tester).onGreekStrongPickerTap(1, panelContext);
       await _pumpUntilFound(tester, find.byType(StrongNumberPickerDialog));
@@ -447,6 +485,11 @@ void main() {
 
       expect(_descriptionPanel(tester).showStrongInfoIcon, isFalse);
       expect(_descriptionPanel(tester).canNavigate, isTrue);
+      expect(_descriptionPanel(tester).descriptionActionsEnabled, isTrue);
+      expect(
+        _descriptionPanel(tester).exportPdfDocumentTitle,
+        'source-links_Rev_1.1',
+      );
     },
   );
 
