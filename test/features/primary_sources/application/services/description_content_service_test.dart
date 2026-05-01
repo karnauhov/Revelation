@@ -113,6 +113,8 @@ void main() {
     expect(content!.kind, DescriptionKind.strongNumber);
     expect(content.markdown, contains('Logos'));
     expect(content.markdown, contains('strong_picker:G1'));
+    expect(content.markdown, isNot(contains('[<-]')));
+    expect(content.markdown, isNot(contains('[->]')));
   });
 
   testWidgets('buildWordContent includes strong link and description', (

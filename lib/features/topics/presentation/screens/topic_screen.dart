@@ -233,12 +233,14 @@ class _TopicScreenState extends State<TopicScreen> {
 
   Future<void> _handleExportPdf(String documentTitle, String markdown) async {
     try {
+      final appName = AppLocalizations.of(context)!.app_name;
       final exportPdfHandler =
           widget.onExportPdfRequested ??
           ({required String markdown, required String documentTitle}) =>
               exportRevelationMarkdownPdf(
                 markdown: markdown,
                 documentTitle: documentTitle,
+                appName: appName,
                 saveFile: TopicScreen.saveDownloadableFileForTest,
               );
 

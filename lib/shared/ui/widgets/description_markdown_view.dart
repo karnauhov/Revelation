@@ -85,6 +85,7 @@ class DescriptionMarkdownView extends StatelessWidget {
                 exportRevelationMarkdownPdf(
                   markdown: markdown,
                   documentTitle: documentTitle,
+                  appName: l10n.app_name,
                   markdownImageLoader: markdownImageLoader,
                 );
 

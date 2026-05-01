@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -17,6 +18,8 @@ const String _revelationMarkdownPdfBaseFontAsset =
     'assets/fonts/Arimo/Arimo.ttf';
 const String _revelationMarkdownPdfCopticFontAsset =
     'assets/fonts/NotoSansCoptic/NotoSansCoptic-Regular.ttf';
+const String revelationMarkdownPdfAuthor = 'Karnauhov Oleh';
+const int _combiningOverlineCodePoint = 0x0305;
 const double revelationMarkdownPdfPageMargin = 18 * PdfPageFormat.mm;
 
 const Map<String, String> revelationMarkdownPdfFonts = {
@@ -46,6 +49,7 @@ Future<_RevelationMarkdownPdfFonts>? _pdfFontsFuture;
 Future<String?> exportRevelationMarkdownPdf({
   required String markdown,
   required String documentTitle,
+  required String appName,
   MarkdownImageLoader? markdownImageLoader,
   RevelationMarkdownPdfSaver? saveFile,
 }) async {
@@ -53,6 +57,7 @@ Future<String?> exportRevelationMarkdownPdf({
   final bytes = await buildRevelationMarkdownPdfData(
     markdown: markdown,
     documentTitle: title,
+    appName: appName,
     pageFormat: PdfPageFormat.a4,
     markdownImageLoader: markdownImageLoader,
   );
@@ -68,6 +73,7 @@ Future<String?> exportRevelationMarkdownPdf({
 Future<Uint8List> buildRevelationMarkdownPdfData({
   required String markdown,
   required String documentTitle,
+  required String appName,
   required PdfPageFormat pageFormat,
   MarkdownImageLoader? markdownImageLoader,
 }) async {
@@ -78,10 +84,16 @@ Future<Uint8List> buildRevelationMarkdownPdfData({
     markdownImageLoader: _resolveMarkdownImageLoader(markdownImageLoader),
   );
   final widgets = await buildContext.build(markdown);
+  final subject = _normalizeDocumentSubject(appName);
 
   final document = pw.Document(
+    pageMode: buildContext.hasOutlineEntries
+        ? PdfPageMode.outlines
+        : PdfPageMode.none,
     title: title,
+    author: revelationMarkdownPdfAuthor,
     creator: 'Revelation',
+    subject: subject,
     producer: 'Revelation',
     theme: theme,
   );
@@ -130,10 +142,117 @@ String _normalizeDocumentTitle(String documentTitle) {
   return normalized.isEmpty ? 'Revelation' : normalized;
 }
 
+String _normalizeDocumentSubject(String appName) {
+  final normalized = appName.trim().replaceAll(RegExp(r'\s+'), ' ');
+  return normalized.isEmpty ? 'Revelation' : normalized;
+}
+
 String _pdfFileName(String documentTitle) {
   return documentTitle.toLowerCase().endsWith('.pdf')
       ? documentTitle
       : '$documentTitle.pdf';
+}
+
+@visibleForTesting
+bool isRevelationMarkdownPdfExternalHttpLink(String? href) {
+  return _externalHttpLinkDestination(href) != null;
+}
+
+@visibleForTesting
+final class RevelationMarkdownPdfTextSegment {
+  const RevelationMarkdownPdfTextSegment(this.text, {required this.overlined});
+
+  final String text;
+  final bool overlined;
+
+  @override
+  bool operator ==(Object other) {
+    return other is RevelationMarkdownPdfTextSegment &&
+        text == other.text &&
+        overlined == other.overlined;
+  }
+
+  @override
+  int get hashCode => Object.hash(text, overlined);
+
+  @override
+  String toString() {
+    return 'RevelationMarkdownPdfTextSegment('
+        'text: $text, '
+        'overlined: $overlined'
+        ')';
+  }
+}
+
+@visibleForTesting
+List<RevelationMarkdownPdfTextSegment>
+segmentRevelationMarkdownPdfTextForExport(String text) {
+  return _splitTextSegments(text);
+}
+
+String? _externalHttpLinkDestination(String? href) {
+  final normalized = href?.trim() ?? '';
+  return RegExp(r'^https?://', caseSensitive: false).hasMatch(normalized)
+      ? normalized
+      : null;
+}
+
+List<RevelationMarkdownPdfTextSegment> _splitTextSegments(String text) {
+  if (!text.runes.contains(_combiningOverlineCodePoint)) {
+    return <RevelationMarkdownPdfTextSegment>[
+      RevelationMarkdownPdfTextSegment(text, overlined: false),
+    ];
+  }
+
+  final segments = <RevelationMarkdownPdfTextSegment>[];
+  final normal = StringBuffer();
+  final overlined = StringBuffer();
+  final runes = text.runes.toList(growable: false);
+
+  void flushNormal() {
+    if (normal.isEmpty) {
+      return;
+    }
+    segments.add(
+      RevelationMarkdownPdfTextSegment(normal.toString(), overlined: false),
+    );
+    normal.clear();
+  }
+
+  void flushOverlined() {
+    if (overlined.isEmpty) {
+      return;
+    }
+    segments.add(
+      RevelationMarkdownPdfTextSegment(overlined.toString(), overlined: true),
+    );
+    overlined.clear();
+  }
+
+  for (var index = 0; index < runes.length; index++) {
+    final rune = runes[index];
+    if (rune == _combiningOverlineCodePoint) {
+      flushOverlined();
+      normal.writeCharCode(rune);
+      continue;
+    }
+
+    final hasOverline =
+        index + 1 < runes.length &&
+        runes[index + 1] == _combiningOverlineCodePoint;
+    if (hasOverline) {
+      flushNormal();
+      overlined.writeCharCode(rune);
+      index++;
+    } else {
+      flushOverlined();
+      normal.writeCharCode(rune);
+    }
+  }
+
+  flushNormal();
+  flushOverlined();
+  return segments;
 }
 
 class _RevelationMarkdownPdfFonts {
@@ -163,12 +282,16 @@ class _RevelationMarkdownPdfBuildContext {
   static const double _listIndent = 18;
 
   final MarkdownImageLoader? markdownImageLoader;
+  var _outlineCounter = 0;
+  var _hasOutlineEntries = false;
 
   final pw.TextStyle baseStyle = const pw.TextStyle(
     fontSize: 11,
     height: 1.35,
     color: PdfColors.black,
   );
+
+  bool get hasOutlineEntries => _hasOutlineEntries;
   final pw.TextStyle codeStyle = const pw.TextStyle(
     fontSize: 9.5,
     height: 1.25,
@@ -209,7 +332,7 @@ class _RevelationMarkdownPdfBuildContext {
       case 'h4':
       case 'h5':
       case 'h6':
-        return _spaced(_richText(node.children, _headingStyle(node.tag)));
+        return _spaced(_heading(node));
       case 'p':
         return _spaced(_richText(node.children, baseStyle));
       case 'ul':
@@ -260,6 +383,27 @@ class _RevelationMarkdownPdfBuildContext {
     );
   }
 
+  pw.Widget _heading(md.Element element) {
+    final content = _richText(element.children, _headingStyle(element.tag));
+    final title = element.textContent.trim().replaceAll(RegExp(r'\s+'), ' ');
+    if (title.isEmpty) {
+      return content;
+    }
+
+    _hasOutlineEntries = true;
+    return pw.Outline(
+      name: 'heading-${_outlineCounter++}',
+      title: title,
+      level: _headingOutlineLevel(element.tag),
+      child: content,
+    );
+  }
+
+  int _headingOutlineLevel(String tag) {
+    final level = int.tryParse(tag.substring(1)) ?? 1;
+    return level < 1 ? 0 : level - 1;
+  }
+
   pw.Widget _richText(List<md.Node>? nodes, pw.TextStyle style) {
     return pw.RichText(
       overflow: pw.TextOverflow.span,
@@ -275,29 +419,58 @@ class _RevelationMarkdownPdfBuildContext {
     final spans = <pw.InlineSpan>[];
     for (final node in nodes) {
       if (node is md.Text) {
-        spans.add(pw.TextSpan(text: node.text, style: style));
+        spans.addAll(_textSpans(node.text, style));
         continue;
       }
       if (node is! md.Element) {
         continue;
       }
 
-      final nextStyle = _styleForInlineTag(node.tag, style);
       if (node.tag == 'br') {
-        spans.add(pw.TextSpan(text: '\n', style: nextStyle));
+        spans.add(pw.TextSpan(text: '\n', style: style));
       } else if (node.tag == 'code') {
+        final nextStyle = _styleForInlineTag(node.tag, style);
         spans.add(pw.TextSpan(text: node.textContent, style: nextStyle));
       } else if (node.tag == 'img') {
+        final nextStyle = _styleForInlineTag(node.tag, style);
         final image = RevelationMarkdownImageData.fromMarkdownElement(node);
         final label = image?.alt ?? node.attributes['alt'] ?? '';
         if (label.trim().isNotEmpty) {
           spans.add(pw.TextSpan(text: label.trim(), style: nextStyle));
         }
+      } else if (node.tag == 'a') {
+        final href = node.attributes['href'];
+        final nextStyle = _styleForLink(href, style);
+        final annotation = _annotationForLink(href);
+        final children = _inlineSpans(node.children, nextStyle);
+        if (annotation == null) {
+          spans.addAll(children);
+        } else {
+          spans.add(
+            pw.TextSpan(
+              style: nextStyle,
+              annotation: annotation,
+              children: children,
+            ),
+          );
+        }
       } else {
+        final nextStyle = _styleForInlineTag(node.tag, style);
         spans.addAll(_inlineSpans(node.children, nextStyle));
       }
     }
     return spans;
+  }
+
+  List<pw.InlineSpan> _textSpans(String text, pw.TextStyle style) {
+    return _splitTextSegments(text)
+        .map(
+          (segment) => pw.TextSpan(
+            text: segment.text,
+            style: segment.overlined ? _overlineStyle(style) : style,
+          ),
+        )
+        .toList(growable: false);
   }
 
   pw.TextStyle _styleForInlineTag(String tag, pw.TextStyle style) {
@@ -311,16 +484,34 @@ class _RevelationMarkdownPdfBuildContext {
           color: PdfColors.grey900,
           background: pw.BoxDecoration(color: PdfColors.grey200),
         );
-      case 'a':
-        return style.copyWith(
-          color: PdfColors.blue700,
-          decoration: pw.TextDecoration.underline,
-        );
       case 'del':
         return style.copyWith(decoration: pw.TextDecoration.lineThrough);
       default:
         return style;
     }
+  }
+
+  pw.TextStyle _styleForLink(String? href, pw.TextStyle style) {
+    if (!isRevelationMarkdownPdfExternalHttpLink(href)) {
+      return style;
+    }
+    return style.copyWith(
+      color: PdfColors.blue700,
+      decoration: pw.TextDecoration.underline,
+    );
+  }
+
+  pw.TextStyle _overlineStyle(pw.TextStyle style) {
+    return style.copyWith(
+      decoration:
+          style.decoration?.merge(pw.TextDecoration.overline) ??
+          pw.TextDecoration.overline,
+    );
+  }
+
+  pw.AnnotationUrl? _annotationForLink(String? href) {
+    final destination = _externalHttpLinkDestination(href);
+    return destination == null ? null : pw.AnnotationUrl(destination);
   }
 
   Future<pw.Widget> _list(md.Element element, {required bool ordered}) async {

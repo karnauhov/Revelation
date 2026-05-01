@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:pdf/pdf.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pdf/pdf.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_pdf_export.dart';
 
 void main() {
@@ -38,12 +38,15 @@ void main() {
     expect(revelationMarkdownPdfPageMargin, 18 * PdfPageFormat.mm);
   });
 
-  test('markdown PDF export embeds a Unicode document title', () async {
-    const title = 'Лицензия Apache';
+  test('markdown PDF export embeds document metadata', () async {
+    const title = '\u041b\u0438\u0446\u0435\u043d\u0437\u0438\u044f Apache';
+    const appName =
+        '\u041e\u0442\u043a\u0440\u043e\u0432\u0435\u043d\u0438\u0435';
 
     final bytes = await buildRevelationMarkdownPdfData(
-      markdown: '# $title\n\nВерсия 2.0',
+      markdown: '# $title\n\n\u0412\u0435\u0440\u0441\u0438\u044f 2.0',
       documentTitle: title,
+      appName: appName,
       pageFormat: PdfPageFormat.a4,
     );
 
@@ -53,7 +56,40 @@ void main() {
       isTrue,
       reason: 'PDF metadata should preserve Cyrillic titles.',
     );
+    expect(
+      _containsPdfString(bytes, revelationMarkdownPdfAuthor),
+      isTrue,
+      reason: 'PDF metadata should include the configured author.',
+    );
+    expect(
+      _containsPdfString(bytes, appName),
+      isTrue,
+      reason: 'PDF metadata subject should use the localized app name.',
+    );
   });
+
+  test(
+    'markdown PDF export creates a hierarchical outline from headings',
+    () async {
+      final bytes = await buildRevelationMarkdownPdfData(
+        markdown: '# Root\n\n## Child\n\n### Grandchild\n\n# Second',
+        documentTitle: 'Heading outline',
+        appName: 'Revelation',
+        pageFormat: PdfPageFormat.a4,
+      );
+      final pdfText = latin1.decode(bytes, allowInvalid: true);
+
+      expect(pdfText, contains('/Outlines'));
+      expect(pdfText, contains('/PageMode/UseOutlines'));
+      expect(pdfText, contains('/Count 2'));
+      expect(pdfText, contains('/Count -2'));
+      expect(pdfText, contains('/Count -1'));
+      expect(_containsPdfString(bytes, 'Root'), isTrue);
+      expect(_containsPdfString(bytes, 'Child'), isTrue);
+      expect(_containsPdfString(bytes, 'Grandchild'), isTrue);
+      expect(_containsPdfString(bytes, 'Second'), isTrue);
+    },
+  );
 
   test('markdown PDF export paginates long content', () async {
     final markdown = List<String>.generate(
@@ -66,6 +102,7 @@ void main() {
     final bytes = await buildRevelationMarkdownPdfData(
       markdown: markdown,
       documentTitle: 'Long article',
+      appName: 'Revelation',
       pageFormat: PdfPageFormat.a6,
     );
     final pdfText = latin1.decode(bytes, allowInvalid: true);
@@ -78,8 +115,11 @@ void main() {
     'markdown PDF export keeps text as PDF text with Coptic fallback',
     () async {
       final bytes = await buildRevelationMarkdownPdfData(
-        markdown: 'Text remains selectable.\n\nⲀⲁ Ⲃⲃ ϣϩ',
+        markdown:
+            'Text remains selectable.\n\n'
+            '\u2c80\u2c81 \u2c82\u2c83 \u03e3\u03e9',
         documentTitle: 'Coptic text',
+        appName: 'Revelation',
         pageFormat: PdfPageFormat.a4,
       );
       final pdfText = latin1.decode(bytes, allowInvalid: true);
@@ -98,6 +138,7 @@ void main() {
     final location = await exportRevelationMarkdownPdf(
       markdown: '# Exported',
       documentTitle: ' Exported Article ',
+      appName: 'Revelation',
       saveFile:
           ({
             required Uint8List bytes,
@@ -116,6 +157,78 @@ void main() {
     expect(capturedBytes, isNotEmpty);
     expect(capturedFileName, 'Exported Article.pdf');
     expect(capturedMimeType, 'application/pdf');
+  });
+
+  test('markdown PDF export styles only http links as links', () {
+    expect(
+      isRevelationMarkdownPdfExternalHttpLink('https://example.com'),
+      isTrue,
+    );
+    expect(
+      isRevelationMarkdownPdfExternalHttpLink('HTTP://example.com'),
+      isTrue,
+    );
+
+    for (final href in <String>[
+      'dbfile:topic-media/sample.pdf',
+      'screen:settings',
+      'topic:intro',
+      'bible:Rev.1.1',
+      'word:logos',
+      'strong:G25',
+      'strong_picker:G25',
+      'mailto:hello@example.com',
+      '#local-anchor',
+      'custom:future-link',
+      '',
+      ' httpx://not-http',
+    ]) {
+      expect(
+        isRevelationMarkdownPdfExternalHttpLink(href),
+        isFalse,
+        reason: href,
+      );
+    }
+  });
+
+  test('markdown PDF export writes URL annotations for http links', () async {
+    final bytes = await buildRevelationMarkdownPdfData(
+      markdown:
+          '[7 papyri and 12 uncials]'
+          '(https://en.wikipedia.org/wiki/Biblical_manuscript)\n\n'
+          '[Topic](topic:intro)',
+      documentTitle: 'Links',
+      appName: 'Revelation',
+      pageFormat: PdfPageFormat.a4,
+    );
+    final pdfText = latin1.decode(bytes, allowInvalid: true);
+
+    expect(pdfText, contains('/Subtype/Link'));
+    expect(
+      pdfText,
+      contains('/URI(https://en.wikipedia.org/wiki/Biblical_manuscript)'),
+    );
+    expect(pdfText, isNot(contains('/URI(topic:intro)')));
+  });
+
+  test('markdown PDF export segments combining overlines for decoration', () {
+    expect(
+      segmentRevelationMarkdownPdfTextForExport(
+        '\u0399\u0305\u03a5\u0305 \u03a7\u0305\u03a5\u0305',
+      ),
+      <RevelationMarkdownPdfTextSegment>[
+        const RevelationMarkdownPdfTextSegment('\u0399\u03a5', overlined: true),
+        const RevelationMarkdownPdfTextSegment(' ', overlined: false),
+        const RevelationMarkdownPdfTextSegment('\u03a7\u03a5', overlined: true),
+      ],
+    );
+    expect(
+      segmentRevelationMarkdownPdfTextForExport('A\u0305B'),
+      <RevelationMarkdownPdfTextSegment>[
+        const RevelationMarkdownPdfTextSegment('A', overlined: true),
+        const RevelationMarkdownPdfTextSegment('B', overlined: false),
+      ],
+    );
   });
 }
 
@@ -147,4 +260,18 @@ List<int> _utf16BeWithBom(String value) {
       ..add(unit & 0x00ff);
   }
   return bytes;
+}
+
+bool _containsPdfString(Uint8List bytes, String value) {
+  final latin1Bytes = _tryLatin1(value);
+  return (latin1Bytes != null && _containsBytes(bytes, latin1Bytes)) ||
+      _containsBytes(bytes, _utf16BeWithBom(value));
+}
+
+List<int>? _tryLatin1(String value) {
+  try {
+    return latin1.encode(value);
+  } catch (_) {
+    return null;
+  }
 }

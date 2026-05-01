@@ -146,20 +146,12 @@ class DescriptionContentService {
     buffer.write('\n\r');
 
     buffer.write(localizations.strong_number);
-    final prevId = getNeighborStrongNumber(
-      _dataSource.greekWords[wordIndex].id,
-      forward: false,
-    );
-    buffer.write(': [<-](strong:G$prevId) **');
+    buffer.write(': **');
     buffer.write(
       '[${_dataSource.greekWords[wordIndex].id}]'
       '(strong_picker:G${_dataSource.greekWords[wordIndex].id})',
     );
-    final nextId = getNeighborStrongNumber(
-      _dataSource.greekWords[wordIndex].id,
-      forward: true,
-    );
-    buffer.write('** [->](strong:G$nextId)\n\r');
+    buffer.write('**\n\r');
 
     buffer.write(localizations.strong_pronunciation);
     buffer.write(': **');
