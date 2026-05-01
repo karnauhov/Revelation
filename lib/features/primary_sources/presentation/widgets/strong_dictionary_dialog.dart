@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/strong_number_picker_dialog.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/strong_reference_info_icon.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 
 Future<void> showStrongDictionaryDialog(
@@ -28,6 +29,8 @@ class StrongDictionaryDialog extends StatefulWidget {
 class _StrongDictionaryDialogState extends State<StrongDictionaryDialog> {
   final DescriptionContentService _descriptionService =
       DescriptionContentService();
+  final GlobalKey<TooltipState> _referenceTooltipKey =
+      GlobalKey<TooltipState>();
 
   late int _strongNumber;
 
@@ -48,6 +51,7 @@ class _StrongDictionaryDialogState extends State<StrongDictionaryDialog> {
     final dialogHeight = (mediaSize.height - 36).clamp(220.0, 600.0).toDouble();
 
     final content = _descriptionService.buildStrongContent(l10n, _strongNumber);
+    const canNavigate = true;
 
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -60,12 +64,25 @@ class _StrongDictionaryDialogState extends State<StrongDictionaryDialog> {
       contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       actionsPadding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
       title: Center(
-        child: Text(
-          l10n.strongsConcordance,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: dialogWidth - 80),
+              child: Text(
+                l10n.strongsConcordance,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Transform.translate(
+              offset: const Offset(4, -5),
+              child: StrongReferenceInfoIcon(tooltipKey: _referenceTooltipKey),
+            ),
+          ],
         ),
       ),
       content: SizedBox(
@@ -74,6 +91,25 @@ class _StrongDictionaryDialogState extends State<StrongDictionaryDialog> {
         child: DescriptionMarkdownView(
           data: content?.markdown ?? '-',
           padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
+          exportPdfDocumentTitle: 'G$_strongNumber',
+          toolbarActions: [
+            DescriptionMarkdownToolbarButton(
+              buttonKey: const Key('strong_dictionary_nav_back'),
+              tooltip: l10n.previous_dictionary_entry,
+              icon: Icons.arrow_back_ios_new_rounded,
+              iconSize: 18,
+              enabled: canNavigate,
+              onPressed: () => _navigateToNeighbor(forward: false),
+            ),
+            DescriptionMarkdownToolbarButton(
+              buttonKey: const Key('strong_dictionary_nav_forward'),
+              tooltip: l10n.next_dictionary_entry,
+              icon: Icons.arrow_forward_ios_rounded,
+              iconSize: 18,
+              enabled: canNavigate,
+              onPressed: () => _navigateToNeighbor(forward: true),
+            ),
+          ],
           onGreekStrongTap: (strongNumber, _) {
             setState(() {
               _strongNumber = strongNumber;
@@ -112,6 +148,15 @@ class _StrongDictionaryDialogState extends State<StrongDictionaryDialog> {
 
     setState(() {
       _strongNumber = pickedStrongNumber;
+    });
+  }
+
+  void _navigateToNeighbor({required bool forward}) {
+    setState(() {
+      _strongNumber = _descriptionService.getNeighborStrongNumber(
+        _strongNumber,
+        forward: forward,
+      );
     });
   }
 }

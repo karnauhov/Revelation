@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/strong_reference_info_icon.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
@@ -43,8 +44,6 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context)!;
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final tooltipMaxWidth = screenWidth > 432 ? 420.0 : screenWidth - 12.0;
 
     final descriptionView = Container(
       color: colorScheme.surface,
@@ -91,30 +90,7 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
             Positioned(
               top: -8,
               right: -8,
-              child: Tooltip(
-                key: referenceTooltipKey,
-                message: localizations.strong_reference_commentary,
-                constraints: BoxConstraints(maxWidth: tooltipMaxWidth),
-                showDuration: const Duration(seconds: 12),
-                preferBelow: false,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    referenceTooltipKey.currentState?.ensureTooltipVisible();
-                  },
-                  child: SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: Center(
-                      child: Icon(
-                        Icons.info_outline,
-                        size: 18,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              child: StrongReferenceInfoIcon(tooltipKey: referenceTooltipKey),
             ),
         ],
       ),

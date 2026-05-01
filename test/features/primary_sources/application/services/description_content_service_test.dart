@@ -658,7 +658,7 @@ void main() {
     expect(
       content!.markdown,
       contains(
-        '${localizations.strong_origin}: $strongOriginInfoMarkdownMarker ',
+        '${localizations.strong_origin}:$strongOriginInfoMarkdownMarker',
       ),
     );
     expect(content.markdown, contains('**Alpha** ([G2](strong:G2))'));
