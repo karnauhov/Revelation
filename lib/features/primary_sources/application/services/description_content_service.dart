@@ -5,15 +5,20 @@ import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/description_request.dart';
 import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
+import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/features/primary_sources/application/services/manuscript_greek_text_converter.dart';
+import 'package:revelation/features/primary_sources/application/services/nomina_sacra_pronunciation_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/shared/localization/localization_utils.dart';
 import 'package:revelation/features/primary_sources/application/services/pronunciation_service.dart';
 
 class DescriptionContentService {
+  static const int _combiningOverlineCodePoint = 0x0305;
+
   final DescriptionDataSource _dataSource;
   final PronunciationService _pronunciation;
+  final NominaSacraPronunciationService _nominaSacraPronunciation;
   final PrimarySourceReferenceService _referenceResolver;
   final ManuscriptGreekTextConverter _manuscriptGreekTextConverter;
 
@@ -22,10 +27,13 @@ class DescriptionContentService {
   DescriptionContentService({
     DescriptionDataSource? dataSource,
     PronunciationService? pronunciation,
+    NominaSacraPronunciationService? nominaSacraPronunciation,
     PrimarySourceReferenceService? referenceResolver,
     ManuscriptGreekTextConverter? manuscriptGreekTextConverter,
   }) : _dataSource = dataSource ?? DbManagerDescriptionDataSource(),
        _pronunciation = pronunciation ?? PronunciationService(),
+       _nominaSacraPronunciation =
+           nominaSacraPronunciation ?? NominaSacraPronunciationService(),
        _referenceResolver =
            referenceResolver ?? PrimarySourceReferenceService(),
        _manuscriptGreekTextConverter =
@@ -234,7 +242,7 @@ class DescriptionContentService {
     final buffer = StringBuffer();
 
     buffer.write('## ');
-    buffer.write(_strikeThroughByIndexes(word.text, word.notExist));
+    buffer.write(_formatWordText(word));
     buffer.write('\n\r');
 
     if (word.sn != null) {
@@ -247,22 +255,14 @@ class DescriptionContentService {
     if (_containsAnyLetter(word.text)) {
       buffer.write(localizations.strong_pronunciation);
       buffer.write(': **');
-      if (word.snPronounce && word.sn != null) {
-        final index = _dataSource.greekWords.indexWhere((w) => w.id == word.sn);
-        if (index != -1) {
-          buffer.write(
-            _pronunciation
-                .convert(
-                  _dataSource.greekWords[index].word.toLowerCase().trim(),
-                  _dataSource.languageCode,
-                )
-                .toLowerCase(),
-          );
-        }
-      } else {
+      final pronunciationSource = _resolveWordPronunciationSource(word);
+      if (pronunciationSource != null) {
         buffer.write(
           _pronunciation
-              .convert(word.text.toLowerCase().trim(), _dataSource.languageCode)
+              .convert(
+                pronunciationSource.toLowerCase().trim(),
+                _dataSource.languageCode,
+              )
               .toLowerCase(),
         );
       }
@@ -326,7 +326,7 @@ class DescriptionContentService {
           continue;
         }
         final word = words[wordIndex];
-        final text = _strikeThroughByIndexes(word.text, word.notExist);
+        final text = _formatWordText(word);
         parts.add('[$text](word:${source.id}:${ref.page.name}:$wordIndex)');
       }
     }
@@ -355,7 +355,19 @@ class DescriptionContentService {
     });
   }
 
-  String _strikeThroughByIndexes(String word, Iterable<int> indices) {
+  String _formatWordText(PageWord word) {
+    return _formatWordTextByIndexes(
+      word.text,
+      word.notExist,
+      overlineLetters: _isNominaSacraWord(word),
+    );
+  }
+
+  String _formatWordTextByIndexes(
+    String word,
+    Iterable<int> indices, {
+    required bool overlineLetters,
+  }) {
     if (word.isEmpty) {
       return word;
     }
@@ -370,21 +382,26 @@ class DescriptionContentService {
       }
     }
 
-    if (normalized.isEmpty) {
+    if (normalized.isEmpty && !overlineLetters) {
       return _manuscriptGreekTextConverter.convert(word);
     }
 
     final buffer = StringBuffer();
     for (var i = 0; i < length; i++) {
+      if (overlineLetters && codePoints[i] == _combiningOverlineCodePoint) {
+        continue;
+      }
+
       final ch = _manuscriptGreekTextConverter.convert(
         String.fromCharCode(codePoints[i]),
       );
+      final displayChar = overlineLetters ? _overlineLetter(ch) : ch;
       if (normalized.contains(i)) {
         buffer.write('\u200E~~');
-        buffer.write(ch);
+        buffer.write(displayChar);
         buffer.write('~~');
       } else {
-        buffer.write(ch);
+        buffer.write(displayChar);
       }
     }
 
@@ -394,6 +411,30 @@ class DescriptionContentService {
   bool _containsAnyLetter(String text) {
     final regExp = RegExp(r'\p{L}', unicode: true);
     return regExp.hasMatch(text);
+  }
+
+  String? _resolveWordPronunciationSource(PageWord word) {
+    if (word.snPronounce) {
+      final nominaSacraSource = _nominaSacraPronunciation
+          .resolvePronunciationSource(word.text);
+      if (nominaSacraSource != null) {
+        return nominaSacraSource;
+      }
+    }
+
+    return word.text;
+  }
+
+  bool _isNominaSacraWord(PageWord word) {
+    return word.snPronounce &&
+        _nominaSacraPronunciation.resolvePronunciationSource(word.text) != null;
+  }
+
+  String _overlineLetter(String character) {
+    if (!_containsAnyLetter(character)) {
+      return character;
+    }
+    return '$character${String.fromCharCode(_combiningOverlineCodePoint)}';
   }
 
   String _getOrigins(String content) {

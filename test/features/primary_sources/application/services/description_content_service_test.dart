@@ -2,6 +2,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/application/services/manuscript_greek_text_converter.dart';
+import 'package:revelation/features/primary_sources/application/services/nomina_sacra_pronunciation_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/infra/db/common/db_common.dart' as common_db;
@@ -161,6 +162,219 @@ void main() {
     expect(content.markdown, contains('Word description'));
   });
 
+  testWidgets(
+    'buildWordContent expands and overlines nomina sacra when snPronounce is set',
+    (tester) async {
+      final localizations = await _loadLocalizations(tester);
+      final source = PrimarySource(
+        id: 'source-nomina',
+        title: 'Title',
+        date: 'Date',
+        content: 'Content',
+        quantity: 1,
+        material: 'Material',
+        textStyle: 'Text style',
+        found: 'Found',
+        classification: 'Classification',
+        currentLocation: 'Location',
+        preview: 'preview.png',
+        maxScale: 1,
+        isMonochrome: false,
+        pages: [
+          model.Page(
+            name: 'page-1',
+            content: 'content',
+            image: 'page-1.png',
+            words: [PageWord('Ι̅Σ', const [], sn: 1, snPronounce: true)],
+            verses: const [],
+          ),
+        ],
+        attributes: const [],
+        permissionsReceived: true,
+      );
+      final referenceResolver = PrimarySourceReferenceService(
+        repository: _FakePrimarySourcesDbRepository(<PrimarySource>[source]),
+      );
+      final service = DescriptionContentService(
+        dataSource: _FakeDescriptionDataSource(
+          isInitialized: true,
+          languageCode: 'en',
+          greekWords: const [
+            common_db.GreekWord(
+              id: 1,
+              word: 'Λόγος',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+          ],
+        ),
+        referenceResolver: referenceResolver,
+        nominaSacraPronunciation: NominaSacraPronunciationService(
+          pronunciationSourcesByVariant: const <String, String>{'ΙΣ': 'Ἰησοῦς'},
+        ),
+      );
+
+      final content = service.buildContent(
+        localizations,
+        const WordDescriptionRequest(
+          sourceId: 'source-nomina',
+          pageName: 'page-1',
+          wordIndex: 0,
+        ),
+      );
+
+      expect(content, isNotNull);
+      expect(content!.markdown, contains('## Ι̅Σ̅'));
+      expect(content.markdown, contains('**iesous**'));
+      expect(content.markdown, isNot(contains('logos')));
+    },
+  );
+
+  testWidgets(
+    'buildWordContent uses regular pronunciation when nomina sacra flag is absent',
+    (tester) async {
+      final localizations = await _loadLocalizations(tester);
+      final source = PrimarySource(
+        id: 'source-not-nomina',
+        title: 'Title',
+        date: 'Date',
+        content: 'Content',
+        quantity: 1,
+        material: 'Material',
+        textStyle: 'Text style',
+        found: 'Found',
+        classification: 'Classification',
+        currentLocation: 'Location',
+        preview: 'preview.png',
+        maxScale: 1,
+        isMonochrome: false,
+        pages: [
+          model.Page(
+            name: 'page-1',
+            content: 'content',
+            image: 'page-1.png',
+            words: [PageWord('ΙΣ', const [], sn: 1, snPronounce: false)],
+            verses: const [],
+          ),
+        ],
+        attributes: const [],
+        permissionsReceived: true,
+      );
+      final referenceResolver = PrimarySourceReferenceService(
+        repository: _FakePrimarySourcesDbRepository(<PrimarySource>[source]),
+      );
+      final service = DescriptionContentService(
+        dataSource: _FakeDescriptionDataSource(
+          isInitialized: true,
+          languageCode: 'en',
+          greekWords: const [
+            common_db.GreekWord(
+              id: 1,
+              word: 'Λόγος',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+          ],
+        ),
+        referenceResolver: referenceResolver,
+        nominaSacraPronunciation: NominaSacraPronunciationService(
+          pronunciationSourcesByVariant: const <String, String>{'ΙΣ': 'Ἰησοῦς'},
+        ),
+      );
+
+      final content = service.buildContent(
+        localizations,
+        const WordDescriptionRequest(
+          sourceId: 'source-not-nomina',
+          pageName: 'page-1',
+          wordIndex: 0,
+        ),
+      );
+
+      expect(content, isNotNull);
+      expect(content!.markdown, contains('## ΙΣ'));
+      expect(content.markdown, contains('**is**'));
+      expect(content.markdown, isNot(contains('## Ι̅Σ̅')));
+      expect(content.markdown, isNot(contains('iesous')));
+      expect(content.markdown, isNot(contains('logos')));
+    },
+  );
+
+  testWidgets(
+    'buildWordContent uses regular pronunciation when snPronounce variant is unknown',
+    (tester) async {
+      final localizations = await _loadLocalizations(tester);
+      final source = PrimarySource(
+        id: 'source-unknown-nomina',
+        title: 'Title',
+        date: 'Date',
+        content: 'Content',
+        quantity: 1,
+        material: 'Material',
+        textStyle: 'Text style',
+        found: 'Found',
+        classification: 'Classification',
+        currentLocation: 'Location',
+        preview: 'preview.png',
+        maxScale: 1,
+        isMonochrome: false,
+        pages: [
+          model.Page(
+            name: 'page-1',
+            content: 'content',
+            image: 'page-1.png',
+            words: [PageWord('ΑΒ', const [], sn: 1, snPronounce: true)],
+            verses: const [],
+          ),
+        ],
+        attributes: const [],
+        permissionsReceived: true,
+      );
+      final referenceResolver = PrimarySourceReferenceService(
+        repository: _FakePrimarySourcesDbRepository(<PrimarySource>[source]),
+      );
+      final service = DescriptionContentService(
+        dataSource: _FakeDescriptionDataSource(
+          isInitialized: true,
+          languageCode: 'en',
+          greekWords: const [
+            common_db.GreekWord(
+              id: 1,
+              word: 'Λόγος',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+          ],
+        ),
+        referenceResolver: referenceResolver,
+        nominaSacraPronunciation: NominaSacraPronunciationService(
+          pronunciationSourcesByVariant: const <String, String>{'ΙΣ': 'Ἰησοῦς'},
+        ),
+      );
+
+      final content = service.buildContent(
+        localizations,
+        const WordDescriptionRequest(
+          sourceId: 'source-unknown-nomina',
+          pageName: 'page-1',
+          wordIndex: 0,
+        ),
+      );
+
+      expect(content, isNotNull);
+      expect(content!.markdown, contains('## ΑΒ'));
+      expect(content.markdown, contains('**ab**'));
+      expect(content.markdown, isNot(contains('λόγος')));
+      expect(content.markdown, isNot(contains('logos')));
+    },
+  );
+
   testWidgets('buildVerseContent creates word links', (tester) async {
     final localizations = await _loadLocalizations(tester);
     final source = _buildSource();
@@ -186,6 +400,86 @@ void main() {
     expect(content, isNotNull);
     expect(content!.kind, DescriptionKind.verse);
     expect(content.markdown, contains('word:source-1:page-1:0'));
+  });
+
+  testWidgets('buildVerseContent overlines nomina sacra word links', (
+    tester,
+  ) async {
+    final localizations = await _loadLocalizations(tester);
+    final source = PrimarySource(
+      id: 'source-nomina-verse',
+      title: 'Title',
+      date: 'Date',
+      content: 'Content',
+      quantity: 1,
+      material: 'Material',
+      textStyle: 'Text style',
+      found: 'Found',
+      classification: 'Classification',
+      currentLocation: 'Location',
+      preview: 'preview.png',
+      maxScale: 1,
+      isMonochrome: false,
+      pages: [
+        model.Page(
+          name: 'page-1',
+          content: 'content',
+          image: 'page-1.png',
+          words: [
+            PageWord('ΙΥ', const [], snPronounce: true),
+            PageWord('ΧΥ', const [], snPronounce: true),
+            PageWord('ΛΟΓΟΣ', const [], snPronounce: false),
+          ],
+          verses: const [
+            Verse(
+              chapterNumber: 1,
+              verseNumber: 1,
+              labelPosition: Offset.zero,
+              wordIndexes: [0, 1, 2],
+            ),
+          ],
+        ),
+      ],
+      attributes: const [],
+      permissionsReceived: true,
+    );
+    final referenceResolver = PrimarySourceReferenceService(
+      repository: _FakePrimarySourcesDbRepository(<PrimarySource>[source]),
+    );
+    final service = DescriptionContentService(
+      dataSource: _FakeDescriptionDataSource(isInitialized: true),
+      referenceResolver: referenceResolver,
+      nominaSacraPronunciation: NominaSacraPronunciationService(
+        pronunciationSourcesByVariant: const <String, String>{
+          'ΙΥ': 'Ἰησοῦ',
+          'ΧΥ': 'Χριστοῦ',
+        },
+      ),
+    );
+
+    final content = service.buildContent(
+      localizations,
+      const VerseDescriptionRequest(
+        sourceId: 'source-nomina-verse',
+        pageName: 'page-1',
+        chapterNumber: 1,
+        verseNumber: 1,
+      ),
+    );
+
+    expect(content, isNotNull);
+    expect(
+      content!.markdown,
+      contains('[Ι̅Υ̅](word:source-nomina-verse:page-1:0)'),
+    );
+    expect(
+      content.markdown,
+      contains('[Χ̅Υ̅](word:source-nomina-verse:page-1:1)'),
+    );
+    expect(
+      content.markdown,
+      contains('[ΛΟΓΟΣ](word:source-nomina-verse:page-1:2)'),
+    );
   });
 
   testWidgets(
@@ -623,10 +917,10 @@ Future<AppLocalizations> _loadLocalizations(WidgetTester tester) async {
 class _FakeDescriptionDataSource implements DescriptionDataSource {
   _FakeDescriptionDataSource({
     required this.isInitialized,
+    this.languageCode = 'en',
     List<common_db.GreekWord>? greekWords,
     List<localized_db.GreekDesc>? greekDescs,
-  }) : languageCode = 'en',
-       greekWords = greekWords ?? const [],
+  }) : greekWords = greekWords ?? const [],
        greekDescs = greekDescs ?? const [];
 
   @override

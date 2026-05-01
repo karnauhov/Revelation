@@ -52,11 +52,18 @@ void main() {
       final progressSteps = <AppBootstrapStep>[];
 
       final audioInitCalls = <String>[];
+      final configLoadCalls = <String>[];
       final bootstrap = AppBootstrap(
         talker: talker,
         databaseRuntime: runtime,
         initializeAudio: (settingsCubit) async {
           audioInitCalls.add(settingsCubit.state.settings.selectedLanguage);
+        },
+        loadManuscriptGreekTextConfig: () async {
+          configLoadCalls.add('manuscript-greek');
+        },
+        loadNominaSacraPronunciationConfig: () async {
+          configLoadCalls.add('nomina-sacra');
         },
       );
       final settingsCubit = await bootstrap.initialize(
@@ -69,6 +76,7 @@ void main() {
       expect(settingsCubit.state.settings.selectedLanguage, 'ru');
       expect(runtime.initializedLanguages, <String>['ru']);
       expect(audioInitCalls, <String>['ru']);
+      expect(configLoadCalls, <String>['manuscript-greek', 'nomina-sacra']);
       expect(progressSteps, <AppBootstrapStep>[
         AppBootstrapStep.preparing,
         AppBootstrapStep.loadingSettings,

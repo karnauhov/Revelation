@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/primary_sources/application/services/manuscript_greek_text_converter.dart';
+import 'package:revelation/features/primary_sources/application/services/nomina_sacra_pronunciation_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/features/settings/settings.dart'
@@ -26,6 +27,7 @@ typedef AppBootstrapProgressCallback =
 typedef AppBootstrapAudioInitializer =
     Future<void> Function(SettingsCubit settingsCubit);
 typedef AppBootstrapManuscriptGreekConfigLoader = Future<void> Function();
+typedef AppBootstrapNominaSacraConfigLoader = Future<void> Function();
 
 const int appBootstrapVisibleStepCount = 5;
 
@@ -89,6 +91,7 @@ class AppBootstrap {
     PrimarySourceNavigator? navigateToPrimarySource,
     AppBootstrapAudioInitializer? initializeAudio,
     AppBootstrapManuscriptGreekConfigLoader? loadManuscriptGreekTextConfig,
+    AppBootstrapNominaSacraConfigLoader? loadNominaSacraPronunciationConfig,
   }) : _talker = talker,
        _databaseRuntime = databaseRuntime ?? DbManagerDatabaseRuntime(),
        _referenceResolver =
@@ -99,7 +102,10 @@ class AppBootstrap {
        _initializeAudio = initializeAudio ?? _defaultInitializeAudio,
        _loadManuscriptGreekTextConfig =
            loadManuscriptGreekTextConfig ??
-           ManuscriptGreekTextConverter.loadDefaultConfig;
+           ManuscriptGreekTextConverter.loadDefaultConfig,
+       _loadNominaSacraPronunciationConfig =
+           loadNominaSacraPronunciationConfig ??
+           NominaSacraPronunciationService.loadDefaultConfig;
 
   final Talker _talker;
   final DatabaseRuntime _databaseRuntime;
@@ -108,6 +114,7 @@ class AppBootstrap {
   final PrimarySourceNavigator _navigateToPrimarySource;
   final AppBootstrapAudioInitializer _initializeAudio;
   final AppBootstrapManuscriptGreekConfigLoader _loadManuscriptGreekTextConfig;
+  final AppBootstrapNominaSacraConfigLoader _loadNominaSacraPronunciationConfig;
   StreamSubscription<String>? _languageSubscription;
 
   static void _defaultShowStrongDialog(BuildContext context, int strongNumber) {
@@ -137,6 +144,7 @@ class AppBootstrap {
       WidgetsFlutterBinding.ensureInitialized();
       _configureGlobalErrorHandling();
       await _initializeManuscriptGreekTextConfigSafely();
+      await _initializeNominaSacraPronunciationConfigSafely();
       await _initializePlatform();
 
       onProgress?.call(
@@ -224,6 +232,18 @@ class AppBootstrap {
         error,
         stackTrace,
         'Failed to load manuscript Greek text config',
+      );
+    }
+  }
+
+  Future<void> _initializeNominaSacraPronunciationConfigSafely() async {
+    try {
+      await _loadNominaSacraPronunciationConfig();
+    } catch (error, stackTrace) {
+      _talker.handle(
+        error,
+        stackTrace,
+        'Failed to load nomina sacra pronunciation config',
       );
     }
   }

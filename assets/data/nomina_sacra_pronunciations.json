@@ -1,0 +1,243 @@
+{
+  "lemmas": [
+    {
+      "lemma": "Θεός",
+      "forms": [
+        {
+          "pronunciationSource": "Θεός",
+          "variants": ["ΘΣ"]
+        },
+        {
+          "pronunciationSource": "Θεοῦ",
+          "variants": ["ΘΥ"]
+        },
+        {
+          "pronunciationSource": "Θεῷ",
+          "variants": ["ΘΩ"]
+        },
+        {
+          "pronunciationSource": "Θεόν",
+          "variants": ["ΘΝ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Κύριος",
+      "forms": [
+        {
+          "pronunciationSource": "Κύριος",
+          "variants": ["ΚΣ"]
+        },
+        {
+          "pronunciationSource": "Κυρίου",
+          "variants": ["ΚΥ"]
+        },
+        {
+          "pronunciationSource": "Κυρίῳ",
+          "variants": ["ΚΩ"]
+        },
+        {
+          "pronunciationSource": "Κύριον",
+          "variants": ["ΚΝ"]
+        },
+        {
+          "pronunciationSource": "Κύριε",
+          "variants": ["ΚΕ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Ἰησοῦς",
+      "forms": [
+        {
+          "pronunciationSource": "Ἰησοῦς",
+          "variants": ["ΙΣ", "ΙΗΣ"]
+        },
+        {
+          "pronunciationSource": "Ἰησοῦ",
+          "variants": ["ΙΥ", "ΙΗΥ"]
+        },
+        {
+          "pronunciationSource": "Ἰησοῦν",
+          "variants": ["ΙΝ"]
+        },
+        {
+          "pronunciationSource": "Ἰη",
+          "variants": ["ΙΗ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Χριστός",
+      "forms": [
+        {
+          "pronunciationSource": "Χριστός",
+          "variants": ["ΧΣ", "ΧΡΣ", "ΧΡ", "Χ"]
+        },
+        {
+          "pronunciationSource": "Χριστοῦ",
+          "variants": ["ΧΥ", "ΧΡΥ"]
+        },
+        {
+          "pronunciationSource": "Χριστῷ",
+          "variants": ["ΧΩ", "ΧΡΩ"]
+        },
+        {
+          "pronunciationSource": "Χριστόν",
+          "variants": ["ΧΝ", "ΧΡΝ"]
+        },
+        {
+          "pronunciationSource": "Χριστέ",
+          "variants": ["ΧΕ", "ΧΡΕ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Υἱός",
+      "forms": [
+        {
+          "pronunciationSource": "Υἱός",
+          "variants": ["ΥΣ"]
+        },
+        {
+          "pronunciationSource": "Υἱοῦ",
+          "variants": ["ΥΥ"]
+        },
+        {
+          "pronunciationSource": "Υἱῷ",
+          "variants": ["ΥΩ"]
+        },
+        {
+          "pronunciationSource": "Υἱόν",
+          "variants": ["ΥΝ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Πνεῦμα",
+      "forms": [
+        {
+          "pronunciationSource": "Πνεῦμα",
+          "variants": ["ΠΝΑ"]
+        },
+        {
+          "pronunciationSource": "Πνεύματος",
+          "variants": ["ΠΣ", "ΠΝΣ", "ΠΝΟΣ"]
+        },
+        {
+          "pronunciationSource": "Πνεύματι",
+          "variants": ["ΠΝΙ", "ΠΝΪ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Πατήρ",
+      "forms": [
+        {
+          "pronunciationSource": "Πατήρ",
+          "variants": ["ΠΗΡ", "ΠΤΡ", "ΠΡ"]
+        },
+        {
+          "pronunciationSource": "Πατρός",
+          "variants": ["ΠΡΣ"]
+        },
+        {
+          "pronunciationSource": "Πατρί",
+          "variants": ["ΠΡΙ", "ΠΡΪ"]
+        },
+        {
+          "pronunciationSource": "Πατέρα",
+          "variants": ["ΠΡΑ", "ΠΕΡ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Δαυείδ",
+      "forms": [
+        {
+          "pronunciationSource": "Δαυείδ",
+          "variants": ["ΔΔ", "ΔΑΔ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Σταυρός",
+      "forms": [
+        {
+          "pronunciationSource": "Σταυρός",
+          "variants": ["ΣΤΡΟΣ", "ΣΤΡΣ", "ΣΤΣ", "ΣΤΡ"]
+        },
+        {
+          "pronunciationSource": "Σταυροῦ",
+          "variants": ["ΣΤΥ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Μήτηρ",
+      "forms": [
+        {
+          "pronunciationSource": "Μήτηρ",
+          "variants": ["ΜΗΡ", "ΜΡ"]
+        },
+        {
+          "pronunciationSource": "Μητρός",
+          "variants": ["ΜΗΡΣ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Ἰσραήλ",
+      "forms": [
+        {
+          "pronunciationSource": "Ἰσραήλ",
+          "variants": ["ΙΗΛ", "ΙΣΡΛ", "ΙΧΛ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Σωτήρ",
+      "forms": [
+        {
+          "pronunciationSource": "Σωτήρ",
+          "variants": ["ΣΗΡ"]
+        },
+        {
+          "pronunciationSource": "Σωτῆρος",
+          "variants": ["ΣΡΣ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Ἄνθρωπος",
+      "forms": [
+        {
+          "pronunciationSource": "Ἄνθρωπος",
+          "variants": ["ΑΝΟΣ", "ΑΝ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Ἱερουσαλήμ",
+      "forms": [
+        {
+          "pronunciationSource": "Ἱερουσαλήμ",
+          "variants": ["ΙΛΗΜ", "ΙΗΛΜ", "ΙΣΡΗΜ", "ΙΣΡΗΛ"]
+        }
+      ]
+    },
+    {
+      "lemma": "Οὐρανός",
+      "forms": [
+        {
+          "pronunciationSource": "Οὐρανός",
+          "variants": ["ΟΥΝΟΣ"]
+        },
+        {
+          "pronunciationSource": "Οὐρανούς",
+          "variants": ["ΟΥΝΟΥΣ"]
+        }
+      ]
+    }
+  ]
+}
