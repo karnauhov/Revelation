@@ -11,6 +11,7 @@ import 'package:revelation/features/primary_sources/application/services/manuscr
 import 'package:revelation/features/primary_sources/application/services/nomina_sacra_pronunciation_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/shared/localization/localization_utils.dart';
+import 'package:revelation/shared/utils/description_markdown_tokens.dart';
 import 'package:revelation/features/primary_sources/application/services/pronunciation_service.dart';
 
 class DescriptionContentService {
@@ -193,7 +194,8 @@ class DescriptionContentService {
     if (origin.isNotEmpty) {
       buffer.write('\n\r');
       buffer.write(localizations.strong_origin);
-      buffer.write(': ');
+      buffer.write(':');
+      buffer.write(strongOriginInfoMarkdownMarker);
       buffer.write(_getOrigins(origin));
       buffer.write('\n\r');
     }

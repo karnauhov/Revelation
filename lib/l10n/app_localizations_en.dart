@@ -455,7 +455,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get strong_reference_commentary =>
-      'Translation source: https://github.com/openscriptures/strongs\nWord analysis may include the following elements: derivatives, comparative words, phrases, and related words.';
+      'Translation source: https://github.com/openscriptures/strongs';
+
+  @override
+  String get strong_origin_tooltip =>
+      'Word analysis may include the following elements: derivatives, comparative words, phrases, and related words.';
 
   @override
   String get strong_part_of_speech => 'Part of speech';

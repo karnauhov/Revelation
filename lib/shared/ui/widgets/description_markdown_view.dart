@@ -8,6 +8,7 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_body.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_pdf_export.dart';
+import 'package:revelation/shared/utils/description_markdown_tokens.dart';
 
 typedef DescriptionMarkdownExportPdfHandler =
     Future<String?> Function({
@@ -91,7 +92,7 @@ class DescriptionMarkdownView extends StatelessWidget {
                 );
 
         final location = await exportPdfHandler(
-          markdown: data,
+          markdown: stripDescriptionMarkdownPresentationMarkers(data),
           documentTitle: exportPdfDocumentTitle ?? l10n.app_name,
         );
 
@@ -135,7 +136,7 @@ class DescriptionMarkdownView extends StatelessWidget {
             onCopyRequested ??
             (String markdown) =>
                 Clipboard.setData(ClipboardData(text: markdown));
-        await copyHandler(data);
+        await copyHandler(stripDescriptionMarkdownPresentationMarkers(data));
 
         if (!context.mounted) {
           return;

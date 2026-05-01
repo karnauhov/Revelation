@@ -719,6 +719,11 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'strong_reference_commentary should not be empty',
   );
   expect(
+    l10n.strong_origin_tooltip,
+    isNotEmpty,
+    reason: 'strong_origin_tooltip should not be empty',
+  );
+  expect(
     l10n.strong_part_of_speech,
     isNotEmpty,
     reason: 'strong_part_of_speech should not be empty',

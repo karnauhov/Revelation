@@ -951,8 +951,14 @@ abstract class AppLocalizations {
   /// No description provided for @strong_reference_commentary.
   ///
   /// In en, this message translates to:
-  /// **'Translation source: https://github.com/openscriptures/strongs\nWord analysis may include the following elements: derivatives, comparative words, phrases, and related words.'**
+  /// **'Translation source: https://github.com/openscriptures/strongs'**
   String get strong_reference_commentary;
+
+  /// No description provided for @strong_origin_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Word analysis may include the following elements: derivatives, comparative words, phrases, and related words.'**
+  String get strong_origin_tooltip;
 
   /// No description provided for @strong_part_of_speech.
   ///
