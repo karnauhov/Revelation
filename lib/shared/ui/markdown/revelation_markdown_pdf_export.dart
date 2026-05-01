@@ -8,6 +8,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/core/platform/file_downloader.dart';
+import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_config.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_block_syntax.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dart';
@@ -19,6 +20,8 @@ const String _revelationMarkdownPdfBaseFontAsset =
 const String _revelationMarkdownPdfCopticFontAsset =
     'assets/fonts/NotoSansCoptic/NotoSansCoptic-Regular.ttf';
 const String revelationMarkdownPdfAuthor = 'Karnauhov Oleh';
+const String revelationMarkdownPdfUnknownBlockLink =
+    'https://www.revelation.website';
 const int _combiningOverlineCodePoint = 0x0305;
 const double revelationMarkdownPdfPageMargin = 18 * PdfPageFormat.mm;
 
@@ -43,6 +46,62 @@ typedef RevelationMarkdownPdfSaver =
       required String fileName,
       required String mimeType,
     });
+typedef RevelationMarkdownPdfUnknownBlockDescriptionBuilder =
+    String Function(String blockName);
+
+class RevelationMarkdownPdfStrings {
+  RevelationMarkdownPdfStrings({
+    required this.imageNotLoaded,
+    required this.contentUnavailable,
+    required this.youtubeUnavailableTitle,
+    required this.youtubeUnavailableDescription,
+    required this.unknownBlockTitle,
+    required this.unknownBlockDescription,
+    required this.unknownBlockUpdateHint,
+    required this.unknownBlockUpdateAction,
+  });
+
+  factory RevelationMarkdownPdfStrings.fromLocalizations(
+    AppLocalizations l10n,
+  ) {
+    return RevelationMarkdownPdfStrings(
+      imageNotLoaded: l10n.image_not_loaded,
+      contentUnavailable: l10n.image_not_loaded,
+      youtubeUnavailableTitle: l10n.markdown_youtube_unavailable_title,
+      youtubeUnavailableDescription:
+          l10n.markdown_youtube_unavailable_description,
+      unknownBlockTitle: l10n.markdown_unknown_block_title,
+      unknownBlockDescription: l10n.markdown_unknown_block_description,
+      unknownBlockUpdateHint: l10n.markdown_unknown_block_update_hint,
+      unknownBlockUpdateAction: l10n.markdown_unknown_block_update_action,
+    );
+  }
+
+  static final RevelationMarkdownPdfStrings
+  fallback = RevelationMarkdownPdfStrings(
+    imageNotLoaded: 'Image not loaded',
+    contentUnavailable: 'Content unavailable for PDF export',
+    youtubeUnavailableTitle: 'YouTube video unavailable',
+    youtubeUnavailableDescription:
+        'This YouTube block could not be rendered in the embedded player.',
+    unknownBlockTitle: 'Unsupported content block',
+    unknownBlockDescription: (blockName) =>
+        'This version of the app cannot display the `$blockName` block.',
+    unknownBlockUpdateHint:
+        'Open the downloads page to install a newer app version for your platform.',
+    unknownBlockUpdateAction: 'Update app',
+  );
+
+  final String imageNotLoaded;
+  final String contentUnavailable;
+  final String youtubeUnavailableTitle;
+  final String youtubeUnavailableDescription;
+  final String unknownBlockTitle;
+  final RevelationMarkdownPdfUnknownBlockDescriptionBuilder
+  unknownBlockDescription;
+  final String unknownBlockUpdateHint;
+  final String unknownBlockUpdateAction;
+}
 
 Future<_RevelationMarkdownPdfFonts>? _pdfFontsFuture;
 
@@ -51,6 +110,7 @@ Future<String?> exportRevelationMarkdownPdf({
   required String documentTitle,
   required String appName,
   MarkdownImageLoader? markdownImageLoader,
+  RevelationMarkdownPdfStrings? strings,
   RevelationMarkdownPdfSaver? saveFile,
 }) async {
   final title = _normalizeDocumentTitle(documentTitle);
@@ -60,6 +120,7 @@ Future<String?> exportRevelationMarkdownPdf({
     appName: appName,
     pageFormat: PdfPageFormat.a4,
     markdownImageLoader: markdownImageLoader,
+    strings: strings,
   );
   final saver = saveFile ?? saveDownloadableFile;
 
@@ -76,12 +137,16 @@ Future<Uint8List> buildRevelationMarkdownPdfData({
   required String appName,
   required PdfPageFormat pageFormat,
   MarkdownImageLoader? markdownImageLoader,
+  RevelationMarkdownPdfStrings? strings,
 }) async {
   final fonts = await _loadPdfFonts();
   final theme = fonts.toTheme();
   final title = _normalizeDocumentTitle(documentTitle);
   final buildContext = _RevelationMarkdownPdfBuildContext(
     markdownImageLoader: _resolveMarkdownImageLoader(markdownImageLoader),
+    contentWidth: _contentWidthFor(pageFormat),
+    contentHeight: _contentHeightFor(pageFormat),
+    strings: strings ?? RevelationMarkdownPdfStrings.fallback,
   );
   final widgets = await buildContext.build(markdown);
   final subject = _normalizeDocumentSubject(appName);
@@ -108,6 +173,24 @@ Future<Uint8List> buildRevelationMarkdownPdfData({
   );
 
   return document.save(enableEventLoopBalancing: true);
+}
+
+double _contentWidthFor(PdfPageFormat pageFormat) {
+  final width =
+      pageFormat.availableWidth - (revelationMarkdownPdfPageMargin * 2);
+  if (width > 0) {
+    return width;
+  }
+  return pageFormat.width;
+}
+
+double _contentHeightFor(PdfPageFormat pageFormat) {
+  final height =
+      pageFormat.availableHeight - (revelationMarkdownPdfPageMargin * 2);
+  if (height > 0) {
+    return height;
+  }
+  return pageFormat.height;
 }
 
 Future<_RevelationMarkdownPdfFonts> _loadPdfFonts() {
@@ -275,13 +358,34 @@ class _RevelationMarkdownPdfFonts {
   }
 }
 
+class _PdfSize {
+  const _PdfSize({required this.width, required this.height});
+
+  final double width;
+  final double height;
+}
+
 class _RevelationMarkdownPdfBuildContext {
-  _RevelationMarkdownPdfBuildContext({required this.markdownImageLoader});
+  _RevelationMarkdownPdfBuildContext({
+    required this.markdownImageLoader,
+    required this.contentWidth,
+    required this.contentHeight,
+    required this.strings,
+  });
 
   static const double _blockSpacing = 8;
   static const double _listIndent = 18;
+  static const double _defaultBlockImageWidth = 320;
+  static const double _defaultBlockImageHeight = 180;
+  static const double _defaultInlineImageWidth = 320;
+  static const double _defaultInlineImageHeight = 180;
+  static const double _defaultYoutubeWidth = 960;
+  static const double _unknownBlockMaxWidth = 420;
 
   final MarkdownImageLoader? markdownImageLoader;
+  final double contentWidth;
+  final double contentHeight;
+  final RevelationMarkdownPdfStrings strings;
   var _outlineCounter = 0;
   var _hasOutlineEntries = false;
 
@@ -334,6 +438,10 @@ class _RevelationMarkdownPdfBuildContext {
       case 'h6':
         return _spaced(_heading(node));
       case 'p':
+        final imageElement = _singleImageChild(node);
+        if (imageElement != null) {
+          return _spaced(await _imageBlock(imageElement));
+        }
         return _spaced(_richText(node.children, baseStyle));
       case 'ul':
         return _spaced(await _list(node, ordered: false));
@@ -351,9 +459,9 @@ class _RevelationMarkdownPdfBuildContext {
       case 'img':
         return _spaced(await _imageBlock(node));
       case RevelationMarkdownYoutubeData.tag:
-        return _spaced(_placeholder(node.attributes['title'] ?? 'YouTube'));
+        return _spaced(await _youtubeBlock(node));
       case RevelationMarkdownUnknownBlockData.tag:
-        return _spaced(_placeholder(node.attributes['name'] ?? ''));
+        return _spaced(_unknownBlock(node));
       default:
         if (node.children == null || node.children!.isEmpty) {
           return null;
@@ -365,6 +473,26 @@ class _RevelationMarkdownPdfBuildContext {
           ),
         );
     }
+  }
+
+  md.Element? _singleImageChild(md.Element element) {
+    final children = element.children;
+    if (children == null || children.isEmpty) {
+      return null;
+    }
+
+    md.Element? imageElement;
+    for (final child in children) {
+      if (child is md.Text && child.text.trim().isEmpty) {
+        continue;
+      }
+      if (child is md.Element && child.tag == 'img' && imageElement == null) {
+        imageElement = child;
+        continue;
+      }
+      return null;
+    }
+    return imageElement;
   }
 
   pw.TextStyle _headingStyle(String tag) {
@@ -644,21 +772,10 @@ class _RevelationMarkdownPdfBuildContext {
       return _placeholder(image.alt);
     }
 
-    final width = image.width ?? (image.isBlockImage ? 320.0 : null);
-    final height = image.height ?? (image.isBlockImage ? 180.0 : null);
-    final imageWidget = _isSvgImage(image, bytes)
-        ? pw.SvgImage(
-            svg: utf8.decode(bytes),
-            width: width,
-            height: height,
-            fit: pw.BoxFit.contain,
-          )
-        : pw.Image(
-            pw.MemoryImage(bytes),
-            width: width,
-            height: height,
-            fit: pw.BoxFit.contain,
-          );
+    final imageWidget = _buildPdfImageWidget(image: image, bytes: bytes);
+    if (imageWidget == null) {
+      return _placeholder(image.alt);
+    }
 
     final content = <pw.Widget>[imageWidget];
     final caption = image.caption;
@@ -682,6 +799,518 @@ class _RevelationMarkdownPdfBuildContext {
         children: content,
       ),
     );
+  }
+
+  pw.Widget? _buildPdfImageWidget({
+    required RevelationMarkdownImageData image,
+    required Uint8List bytes,
+  }) {
+    if (_isSvgImage(image, bytes)) {
+      return _buildSvgImageWidget(image: image, bytes: bytes);
+    }
+    return _buildRasterImageWidget(image: image, bytes: bytes);
+  }
+
+  pw.Widget? _buildSvgImageWidget({
+    required RevelationMarkdownImageData image,
+    required Uint8List bytes,
+  }) {
+    final svg = utf8.decode(bytes, allowMalformed: true);
+    final intrinsicSize = _parseSvgSize(svg);
+    final size = _resolveMediaSize(
+      explicitWidth: image.width,
+      explicitHeight: image.height,
+      intrinsicWidth: intrinsicSize?.width,
+      intrinsicHeight: intrinsicSize?.height,
+      defaultWidth: image.isBlockImage
+          ? _defaultBlockImageWidth
+          : _defaultInlineImageWidth,
+      defaultHeight: image.isBlockImage
+          ? _defaultBlockImageHeight
+          : _defaultInlineImageHeight,
+      useDefaultSizeWhenUnspecified: image.isBlockImage,
+    );
+
+    try {
+      return pw.SvgImage(
+        svg: svg,
+        width: size.width,
+        height: size.height,
+        fit: pw.BoxFit.contain,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  pw.Widget? _buildRasterImageWidget({
+    required RevelationMarkdownImageData image,
+    required Uint8List bytes,
+  }) {
+    final imageProvider = _memoryImageOrNull(bytes);
+    if (imageProvider == null) {
+      return null;
+    }
+
+    final size = _resolveMediaSize(
+      explicitWidth: image.width,
+      explicitHeight: image.height,
+      intrinsicWidth: imageProvider.width?.toDouble(),
+      intrinsicHeight: imageProvider.height?.toDouble(),
+      defaultWidth: image.isBlockImage
+          ? _defaultBlockImageWidth
+          : _defaultInlineImageWidth,
+      defaultHeight: image.isBlockImage
+          ? _defaultBlockImageHeight
+          : _defaultInlineImageHeight,
+      useDefaultSizeWhenUnspecified: image.isBlockImage,
+    );
+
+    return pw.Image(
+      imageProvider,
+      width: size.width,
+      height: size.height,
+      fit: pw.BoxFit.contain,
+    );
+  }
+
+  Future<pw.Widget> _youtubeBlock(md.Element element) async {
+    final video = RevelationMarkdownYoutubeData.fromMarkdownElement(element);
+    if (video == null || !video.isValid) {
+      return _youtubeUnavailableCard();
+    }
+
+    final targetWidth = video.maxWidth ?? _defaultYoutubeWidth;
+    final size = _resolveMediaSize(
+      explicitWidth: targetWidth,
+      explicitHeight: targetWidth / video.resolvedAspectRatio,
+      intrinsicWidth: targetWidth,
+      intrinsicHeight: targetWidth / video.resolvedAspectRatio,
+      defaultWidth: _defaultYoutubeWidth,
+      defaultHeight: _defaultYoutubeWidth / video.resolvedAspectRatio,
+    );
+    final thumbnail = await _loadYoutubeThumbnailBytes(video);
+    final poster = thumbnail == null
+        ? _youtubePosterFallback()
+        : _youtubeThumbnailImage(thumbnail, size: size);
+    final player = pw.ClipRRect(
+      horizontalRadius: 12,
+      verticalRadius: 12,
+      child: pw.SizedBox(
+        width: size.width,
+        height: size.height,
+        child: pw.Stack(
+          fit: pw.StackFit.expand,
+          children: [
+            poster,
+            pw.Positioned.fill(
+              child: pw.Opacity(
+                opacity: 0.18,
+                child: pw.Container(color: PdfColors.black),
+              ),
+            ),
+            pw.Center(child: _playButton()),
+          ],
+        ),
+      ),
+    );
+    final destination = video.originalVideoUri?.toString();
+    final linkedPlayer = destination == null
+        ? player
+        : pw.UrlLink(destination: destination, child: player);
+
+    return pw.Center(child: linkedPlayer);
+  }
+
+  pw.Widget _youtubeUnavailableCard() {
+    return pw.Center(
+      child: pw.SizedBox(
+        width: _fitWidth(_unknownBlockMaxWidth),
+        child: pw.Container(
+          padding: const pw.EdgeInsets.all(16),
+          decoration: pw.BoxDecoration(
+            color: const PdfColor.fromInt(0xffe7e0ec),
+            borderRadius: pw.BorderRadius.circular(12),
+            border: pw.Border.all(
+              color: const PdfColor.fromInt(0xffcac4d0),
+              width: 0.5,
+            ),
+          ),
+          child: pw.Column(
+            mainAxisSize: pw.MainAxisSize.min,
+            children: [
+              _videoIcon(),
+              pw.SizedBox(height: 12),
+              pw.Text(
+                strings.youtubeUnavailableTitle,
+                textAlign: pw.TextAlign.center,
+                style: baseStyle.copyWith(
+                  fontSize: 12,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+              pw.SizedBox(height: 8),
+              pw.Text(
+                strings.youtubeUnavailableDescription,
+                textAlign: pw.TextAlign.center,
+                style: baseStyle.copyWith(
+                  fontSize: 9.5,
+                  color: const PdfColor.fromInt(0xff49454f),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  pw.Widget _youtubeThumbnailImage(Uint8List bytes, {required _PdfSize size}) {
+    final imageProvider = _memoryImageOrNull(bytes);
+    if (imageProvider == null) {
+      return _youtubePosterFallback();
+    }
+    return pw.Image(
+      imageProvider,
+      width: size.width,
+      height: size.height,
+      fit: pw.BoxFit.cover,
+    );
+  }
+
+  pw.Widget _youtubePosterFallback() {
+    return pw.Container(color: PdfColors.black);
+  }
+
+  pw.Widget _playButton() {
+    return pw.Container(
+      width: 54,
+      height: 54,
+      decoration: const pw.BoxDecoration(
+        shape: pw.BoxShape.circle,
+        color: PdfColor(0, 0, 0, 0.66),
+      ),
+      child: pw.Center(
+        child: pw.CustomPaint(
+          size: const PdfPoint(18, 22),
+          painter: (canvas, size) {
+            canvas
+              ..setFillColor(PdfColors.white)
+              ..moveTo(size.x * 0.25, size.y * 0.1)
+              ..lineTo(size.x * 0.25, size.y * 0.9)
+              ..lineTo(size.x * 0.9, size.y * 0.5)
+              ..closePath()
+              ..fillPath();
+          },
+        ),
+      ),
+    );
+  }
+
+  pw.Widget _videoIcon() {
+    return pw.CustomPaint(
+      size: const PdfPoint(36, 36),
+      painter: (canvas, size) {
+        final centerX = size.x / 2;
+        final centerY = size.y / 2;
+        canvas
+          ..setStrokeColor(const PdfColor.fromInt(0xff49454f))
+          ..setLineWidth(2)
+          ..drawEllipse(centerX, centerY, 16, 16)
+          ..strokePath()
+          ..setFillColor(const PdfColor.fromInt(0xff49454f))
+          ..moveTo(centerX - 4, centerY - 8)
+          ..lineTo(centerX - 4, centerY + 8)
+          ..lineTo(centerX + 8, centerY)
+          ..closePath()
+          ..fillPath();
+      },
+    );
+  }
+
+  Future<Uint8List?> _loadYoutubeThumbnailBytes(
+    RevelationMarkdownYoutubeData video,
+  ) async {
+    final loader = markdownImageLoader;
+    if (loader == null) {
+      return null;
+    }
+
+    for (final uri in _youtubeThumbnailUris(video.videoId)) {
+      final source = RevelationMarkdownImageSource.parse(uri.toString());
+      final result = await loader.loadImage(
+        MarkdownImageRequest(
+          kind: MarkdownImageRequestKind.network,
+          cacheKey: 'youtube-thumbnail:${video.videoId}:${uri.path}',
+          networkUri: uri,
+          guessedMimeType: 'image/jpeg',
+          localRelativePath: source.buildLocalRelativePath(
+            mimeType: 'image/jpeg',
+          ),
+        ),
+      );
+      if (result.isSuccess && result.bytes != null) {
+        return result.bytes;
+      }
+    }
+    return null;
+  }
+
+  Iterable<Uri> _youtubeThumbnailUris(String videoId) sync* {
+    yield Uri.https('i.ytimg.com', '/vi/$videoId/hqdefault.jpg');
+  }
+
+  pw.Widget _unknownBlock(md.Element element) {
+    final block = RevelationMarkdownUnknownBlockData.fromMarkdownElement(
+      element,
+    );
+    if (block == null) {
+      return _placeholder('');
+    }
+
+    final card = pw.Center(
+      child: pw.SizedBox(
+        width: _fitWidth(_unknownBlockMaxWidth),
+        child: pw.Container(
+          padding: const pw.EdgeInsets.all(16),
+          decoration: pw.BoxDecoration(
+            color: const PdfColor.fromInt(0xffe7e0ec),
+            borderRadius: pw.BorderRadius.circular(12),
+            border: pw.Border.all(
+              color: const PdfColor.fromInt(0xffcac4d0),
+              width: 0.5,
+            ),
+          ),
+          child: pw.Column(
+            mainAxisSize: pw.MainAxisSize.min,
+            children: [
+              _unknownBlockIcon(),
+              pw.SizedBox(height: 12),
+              pw.Text(
+                strings.unknownBlockTitle,
+                textAlign: pw.TextAlign.center,
+                style: baseStyle.copyWith(
+                  fontSize: 12,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+              pw.SizedBox(height: 8),
+              pw.Text(
+                strings.unknownBlockDescription(block.name),
+                textAlign: pw.TextAlign.center,
+                style: baseStyle.copyWith(
+                  color: const PdfColor.fromInt(0xff49454f),
+                ),
+              ),
+              pw.SizedBox(height: 8),
+              pw.Text(
+                strings.unknownBlockUpdateHint,
+                textAlign: pw.TextAlign.center,
+                style: baseStyle.copyWith(
+                  fontSize: 9.5,
+                  color: const PdfColor.fromInt(0xff49454f),
+                ),
+              ),
+              pw.SizedBox(height: 16),
+              _unknownBlockButton(),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    return pw.UrlLink(
+      destination: revelationMarkdownPdfUnknownBlockLink,
+      child: card,
+    );
+  }
+
+  pw.Widget _unknownBlockButton() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: pw.BoxDecoration(
+        color: const PdfColor.fromInt(0xffeaddff),
+        borderRadius: pw.BorderRadius.circular(20),
+      ),
+      child: pw.Text(
+        strings.unknownBlockUpdateAction,
+        style: baseStyle.copyWith(
+          fontSize: 10,
+          fontWeight: pw.FontWeight.bold,
+          color: const PdfColor.fromInt(0xff4f378b),
+        ),
+      ),
+    );
+  }
+
+  pw.Widget _unknownBlockIcon() {
+    return pw.CustomPaint(
+      size: const PdfPoint(32, 32),
+      painter: (canvas, size) {
+        canvas
+          ..setStrokeColor(const PdfColor.fromInt(0xff49454f))
+          ..setLineWidth(2)
+          ..drawRRect(5, 5, size.x - 10, size.y - 10, 5, 5)
+          ..strokePath()
+          ..moveTo(10, 10)
+          ..lineTo(size.x - 10, size.y - 10)
+          ..moveTo(size.x - 10, 10)
+          ..lineTo(10, size.y - 10)
+          ..strokePath();
+      },
+    );
+  }
+
+  pw.MemoryImage? _memoryImageOrNull(Uint8List bytes) {
+    try {
+      return pw.MemoryImage(bytes);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  _PdfSize _resolveMediaSize({
+    required double? explicitWidth,
+    required double? explicitHeight,
+    required double? intrinsicWidth,
+    required double? intrinsicHeight,
+    required double defaultWidth,
+    required double defaultHeight,
+    bool useDefaultSizeWhenUnspecified = false,
+  }) {
+    final safeExplicitWidth = _positiveOrNull(explicitWidth);
+    final safeExplicitHeight = _positiveOrNull(explicitHeight);
+    final safeIntrinsicWidth = _positiveOrNull(intrinsicWidth);
+    final safeIntrinsicHeight = _positiveOrNull(intrinsicHeight);
+    final safeDefaultWidth = _positiveOrNull(defaultWidth) ?? 1;
+    final safeDefaultHeight = _positiveOrNull(defaultHeight) ?? 1;
+    final aspectRatio = _resolveAspectRatio(
+      width: safeExplicitWidth,
+      height: safeExplicitHeight,
+      fallbackWidth: safeIntrinsicWidth,
+      fallbackHeight: safeIntrinsicHeight,
+      defaultWidth: safeDefaultWidth,
+      defaultHeight: safeDefaultHeight,
+    );
+
+    late double width;
+    late double height;
+    if (safeExplicitWidth != null && safeExplicitHeight != null) {
+      width = safeExplicitWidth;
+      height = safeExplicitHeight;
+    } else if (safeExplicitWidth != null) {
+      width = safeExplicitWidth;
+      height = safeExplicitWidth / aspectRatio;
+    } else if (safeExplicitHeight != null) {
+      height = safeExplicitHeight;
+      width = safeExplicitHeight * aspectRatio;
+    } else if (useDefaultSizeWhenUnspecified) {
+      width = safeDefaultWidth;
+      height = safeDefaultHeight;
+    } else if (safeIntrinsicWidth != null && safeIntrinsicHeight != null) {
+      width = safeIntrinsicWidth;
+      height = safeIntrinsicHeight;
+    } else {
+      width = safeDefaultWidth;
+      height = safeDefaultHeight;
+    }
+
+    return _scaleMediaToPage(width: width, height: height);
+  }
+
+  double _resolveAspectRatio({
+    required double? width,
+    required double? height,
+    required double? fallbackWidth,
+    required double? fallbackHeight,
+    required double defaultWidth,
+    required double defaultHeight,
+  }) {
+    if (width != null && height != null) {
+      return width / height;
+    }
+    if (fallbackWidth != null && fallbackHeight != null) {
+      return fallbackWidth / fallbackHeight;
+    }
+    return defaultWidth / defaultHeight;
+  }
+
+  _PdfSize _scaleMediaToPage({required double width, required double height}) {
+    final maxWidth = _positiveOrNull(contentWidth);
+    final maxHeight = _positiveOrNull(contentHeight);
+    var scale = 1.0;
+
+    if (maxWidth != null && width > maxWidth) {
+      scale = maxWidth / width;
+    }
+    if (maxHeight != null && height * scale > maxHeight) {
+      final heightScale = maxHeight / height;
+      if (heightScale < scale) {
+        scale = heightScale;
+      }
+    }
+
+    if (scale <= 0) {
+      return const _PdfSize(width: 1, height: 1);
+    }
+    return _PdfSize(width: width * scale, height: height * scale);
+  }
+
+  double _fitWidth(double width) {
+    final maxWidth = _positiveOrNull(contentWidth);
+    if (maxWidth != null && width > maxWidth) {
+      return maxWidth;
+    }
+    return _positiveOrNull(width) ?? 1;
+  }
+
+  double? _positiveOrNull(double? value) {
+    if (value == null || value <= 0 || value.isNaN || value.isInfinite) {
+      return null;
+    }
+    return value;
+  }
+
+  _PdfSize? _parseSvgSize(String svg) {
+    final width = _parseSvgDimension(
+      RegExp(r'''\bwidth\s*=\s*["']([^"']+)["']''').firstMatch(svg)?.group(1),
+    );
+    final height = _parseSvgDimension(
+      RegExp(r'''\bheight\s*=\s*["']([^"']+)["']''').firstMatch(svg)?.group(1),
+    );
+    if (width != null && height != null) {
+      return _PdfSize(width: width, height: height);
+    }
+
+    final viewBox = RegExp(
+      r'''\bviewBox\s*=\s*["']\s*'''
+      r'[-+]?(?:\d+(?:\.\d+)?|\.\d+)[,\s]+'
+      r'[-+]?(?:\d+(?:\.\d+)?|\.\d+)[,\s]+'
+      r'([-+]?(?:\d+(?:\.\d+)?|\.\d+))[,\s]+'
+      r'([-+]?(?:\d+(?:\.\d+)?|\.\d+))',
+      caseSensitive: false,
+    ).firstMatch(svg);
+    if (viewBox == null) {
+      return null;
+    }
+
+    final viewBoxWidth = double.tryParse(viewBox.group(1) ?? '');
+    final viewBoxHeight = double.tryParse(viewBox.group(2) ?? '');
+    if (_positiveOrNull(viewBoxWidth) == null ||
+        _positiveOrNull(viewBoxHeight) == null) {
+      return null;
+    }
+    return _PdfSize(width: viewBoxWidth!, height: viewBoxHeight!);
+  }
+
+  double? _parseSvgDimension(String? rawValue) {
+    final match = RegExp(
+      r'^\s*([0-9]+(?:\.[0-9]+)?|\.[0-9]+)',
+    ).firstMatch(rawValue ?? '');
+    if (match == null) {
+      return null;
+    }
+    return _positiveOrNull(double.tryParse(match.group(1)!));
   }
 
   Future<Uint8List?> _loadImageBytes(RevelationMarkdownImageData image) async {
@@ -725,7 +1354,7 @@ class _RevelationMarkdownPdfBuildContext {
         border: pw.Border.all(color: PdfColors.grey400, width: 0.5),
       ),
       child: pw.Text(
-        normalized.isEmpty ? 'Content unavailable for PDF export' : normalized,
+        normalized.isEmpty ? strings.contentUnavailable : normalized,
         style: baseStyle.copyWith(fontSize: 9, color: PdfColors.grey700),
       ),
     );

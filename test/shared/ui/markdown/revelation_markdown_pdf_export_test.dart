@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image/image.dart' as image;
 import 'package:pdf/pdf.dart';
+import 'package:revelation/core/content/markdown_images/markdown_image_load_result.dart';
+import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_pdf_export.dart';
 
 void main() {
@@ -211,6 +214,97 @@ void main() {
     expect(pdfText, isNot(contains('/URI(topic:intro)')));
   });
 
+  test('markdown PDF export renders image-only paragraphs as images', () async {
+    final loader = _FakeMarkdownImageLoader(
+      resultsByUri: <String, MarkdownImageLoadResult>{
+        'https://example.com/road.png': MarkdownImageLoadResult.success(
+          bytes: _png1x1,
+          mimeType: 'image/png',
+        ),
+      },
+    );
+
+    final bytes = await buildRevelationMarkdownPdfData(
+      markdown: '![road](https://example.com/road.png#640x360)',
+      documentTitle: 'Image paragraph',
+      appName: 'Revelation',
+      pageFormat: PdfPageFormat.a4,
+      markdownImageLoader: loader,
+    );
+
+    expect(loader.requests, hasLength(1));
+    expect(
+      loader.requests.single.networkUri.toString(),
+      'https://example.com/road.png',
+    );
+    expect(_containsPdfImage(bytes), isTrue);
+    expect(
+      _containsPdfString(bytes, 'road'),
+      isFalse,
+      reason: 'A standalone image should not collapse to its alt text.',
+    );
+  });
+
+  test(
+    'markdown PDF export renders youtube blocks as linked poster images',
+    () async {
+      final loader = _FakeMarkdownImageLoader(
+        resultsByUri: <String, MarkdownImageLoadResult>{
+          'https://i.ytimg.com/vi/Cp8LoFXv5j4/hqdefault.jpg':
+              MarkdownImageLoadResult.success(
+                bytes: _png1x1,
+                mimeType: 'image/png',
+              ),
+        },
+      );
+
+      final bytes = await buildRevelationMarkdownPdfData(
+        markdown: '''
+{{youtube}}
+id: Cp8LoFXv5j4
+start: 30
+width: 960
+height: 540
+{{/youtube}}
+''',
+        documentTitle: 'Video',
+        appName: 'Revelation',
+        pageFormat: PdfPageFormat.a4,
+        markdownImageLoader: loader,
+      );
+      final pdfText = latin1.decode(bytes, allowInvalid: true);
+
+      expect(
+        loader.requests.single.networkUri.toString(),
+        'https://i.ytimg.com/vi/Cp8LoFXv5j4/hqdefault.jpg',
+      );
+      expect(_containsPdfImage(bytes), isTrue);
+      expect(
+        pdfText,
+        contains('/URI(https://www.youtube.com/watch?v=Cp8LoFXv5j4&t=30s)'),
+      );
+    },
+  );
+
+  test(
+    'markdown PDF export links unknown block cards to the website',
+    () async {
+      final bytes = await buildRevelationMarkdownPdfData(
+        markdown: '''
+{{timeline}}
+title: Seven seals
+{{/timeline}}
+''',
+        documentTitle: 'Unknown block',
+        appName: 'Revelation',
+        pageFormat: PdfPageFormat.a4,
+      );
+      final pdfText = latin1.decode(bytes, allowInvalid: true);
+
+      expect(pdfText, contains('/URI($revelationMarkdownPdfUnknownBlockLink)'));
+    },
+  );
+
   test('markdown PDF export segments combining overlines for decoration', () {
     expect(
       segmentRevelationMarkdownPdfTextForExport(
@@ -268,10 +362,40 @@ bool _containsPdfString(Uint8List bytes, String value) {
       _containsBytes(bytes, _utf16BeWithBom(value));
 }
 
+bool _containsPdfImage(Uint8List bytes) {
+  final pdfText = latin1.decode(bytes, allowInvalid: true);
+  return pdfText.contains('/Subtype/Image') ||
+      pdfText.contains('/Subtype /Image');
+}
+
 List<int>? _tryLatin1(String value) {
   try {
     return latin1.encode(value);
   } catch (_) {
     return null;
   }
+}
+
+class _FakeMarkdownImageLoader implements MarkdownImageLoader {
+  _FakeMarkdownImageLoader({required this.resultsByUri});
+
+  final Map<String, MarkdownImageLoadResult> resultsByUri;
+  final List<MarkdownImageRequest> requests = <MarkdownImageRequest>[];
+
+  @override
+  Future<MarkdownImageLoadResult> loadImage(
+    MarkdownImageRequest request,
+  ) async {
+    requests.add(request);
+    return resultsByUri[request.networkUri?.toString()] ??
+        const MarkdownImageLoadResult.failure();
+  }
+}
+
+final Uint8List _png1x1 = _createPng1x1();
+
+Uint8List _createPng1x1() {
+  final data = image.Image(width: 1, height: 1);
+  data.setPixelRgb(0, 0, 255, 255, 255);
+  return Uint8List.fromList(image.encodePng(data));
 }

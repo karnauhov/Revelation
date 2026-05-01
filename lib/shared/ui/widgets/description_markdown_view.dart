@@ -87,6 +87,7 @@ class DescriptionMarkdownView extends StatelessWidget {
                   documentTitle: documentTitle,
                   appName: l10n.app_name,
                   markdownImageLoader: markdownImageLoader,
+                  strings: RevelationMarkdownPdfStrings.fromLocalizations(l10n),
                 );
 
         final location = await exportPdfHandler(
