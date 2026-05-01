@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_youtube_data.dart';
 import 'package:revelation/shared/utils/links_utils.dart';
@@ -86,6 +89,17 @@ bool shouldUseRevelationMarkdownYoutubeLinuxFallback({
   required TargetPlatform platform,
 }) {
   return !isWeb && platform == TargetPlatform.linux;
+}
+
+@visibleForTesting
+String buildRevelationMarkdownYoutubeWindowsUserDataFolderPath(
+  String applicationSupportPath,
+) {
+  return [
+    applicationSupportPath,
+    'webview2',
+    'youtube_player',
+  ].join(Platform.pathSeparator);
 }
 
 class _RevelationMarkdownYoutubeLinuxFallbackPlayer extends StatelessWidget {
@@ -212,8 +226,8 @@ class _RevelationMarkdownYoutubeNativePlayerState
   Widget build(BuildContext context) {
     return BlocProvider<_RevelationMarkdownYoutubeNativeCubit>(
       create: (_) => _RevelationMarkdownYoutubeNativeCubit(
-        resolvePlayerUri:
-            _RevelationMarkdownYoutubeLocalhostServer.buildPlayerUri,
+        resolvePlayerRuntime:
+            _RevelationMarkdownYoutubeLocalhostServer.buildPlayerRuntime,
       )..initialize(widget.video),
       child:
           BlocBuilder<
@@ -232,6 +246,7 @@ class _RevelationMarkdownYoutubeNativePlayerState
                     return _YoutubeNativeFailureCard(video: widget.video);
                   }
                   return InAppWebView(
+                    webViewEnvironment: state.webViewEnvironment,
                     initialUrlRequest: URLRequest(
                       url: WebUri(playerUri.toString()),
                     ),
@@ -357,50 +372,63 @@ class _RevelationMarkdownYoutubeNativeState {
   const _RevelationMarkdownYoutubeNativeState._({
     required this.status,
     this.playerUri,
+    this.webViewEnvironment,
   });
 
   const _RevelationMarkdownYoutubeNativeState.loading()
     : this._(status: _RevelationMarkdownYoutubeNativeStatus.loading);
 
-  const _RevelationMarkdownYoutubeNativeState.ready({required Uri playerUri})
-    : this._(
-        status: _RevelationMarkdownYoutubeNativeStatus.ready,
-        playerUri: playerUri,
-      );
+  const _RevelationMarkdownYoutubeNativeState.ready({
+    required Uri playerUri,
+    WebViewEnvironment? webViewEnvironment,
+  }) : this._(
+         status: _RevelationMarkdownYoutubeNativeStatus.ready,
+         playerUri: playerUri,
+         webViewEnvironment: webViewEnvironment,
+       );
 
   const _RevelationMarkdownYoutubeNativeState.failure()
     : this._(status: _RevelationMarkdownYoutubeNativeStatus.failure);
 
   final _RevelationMarkdownYoutubeNativeStatus status;
   final Uri? playerUri;
+  final WebViewEnvironment? webViewEnvironment;
 
   @override
   bool operator ==(Object other) {
     return other is _RevelationMarkdownYoutubeNativeState &&
         other.status == status &&
-        other.playerUri == playerUri;
+        other.playerUri == playerUri &&
+        other.webViewEnvironment == webViewEnvironment;
   }
 
   @override
-  int get hashCode => Object.hash(status, playerUri);
+  int get hashCode => Object.hash(status, playerUri, webViewEnvironment);
 }
 
 class _RevelationMarkdownYoutubeNativeCubit
     extends Cubit<_RevelationMarkdownYoutubeNativeState> {
-  _RevelationMarkdownYoutubeNativeCubit({required this.resolvePlayerUri})
+  _RevelationMarkdownYoutubeNativeCubit({required this.resolvePlayerRuntime})
     : super(const _RevelationMarkdownYoutubeNativeState.loading());
 
-  final Future<Uri> Function(RevelationMarkdownYoutubeData video)
-  resolvePlayerUri;
+  final Future<_RevelationMarkdownYoutubePlayerRuntime> Function(
+    RevelationMarkdownYoutubeData video,
+  )
+  resolvePlayerRuntime;
 
   Future<void> initialize(RevelationMarkdownYoutubeData video) async {
     emit(const _RevelationMarkdownYoutubeNativeState.loading());
     try {
-      final playerUri = await resolvePlayerUri(video);
+      final runtime = await resolvePlayerRuntime(video);
       if (isClosed) {
         return;
       }
-      emit(_RevelationMarkdownYoutubeNativeState.ready(playerUri: playerUri));
+      emit(
+        _RevelationMarkdownYoutubeNativeState.ready(
+          playerUri: runtime.playerUri,
+          webViewEnvironment: runtime.webViewEnvironment,
+        ),
+      );
     } catch (_) {
       if (isClosed) {
         return;
@@ -408,6 +436,16 @@ class _RevelationMarkdownYoutubeNativeCubit
       emit(const _RevelationMarkdownYoutubeNativeState.failure());
     }
   }
+}
+
+class _RevelationMarkdownYoutubePlayerRuntime {
+  const _RevelationMarkdownYoutubePlayerRuntime({
+    required this.playerUri,
+    this.webViewEnvironment,
+  });
+
+  final Uri playerUri;
+  final WebViewEnvironment? webViewEnvironment;
 }
 
 class _RevelationMarkdownYoutubeLocalhostServer {
@@ -422,11 +460,21 @@ class _RevelationMarkdownYoutubeLocalhostServer {
     shared: true,
   );
   static Future<void>? _startFuture;
+  static Future<WebViewEnvironment?>? _windowsEnvironmentFuture;
 
-  static Future<Uri> buildPlayerUri(RevelationMarkdownYoutubeData video) async {
+  static Future<_RevelationMarkdownYoutubePlayerRuntime> buildPlayerRuntime(
+    RevelationMarkdownYoutubeData video,
+  ) async {
     _startFuture ??= _startServer();
     await _startFuture;
 
+    return _RevelationMarkdownYoutubePlayerRuntime(
+      playerUri: _buildPlayerUri(video),
+      webViewEnvironment: await _resolveWindowsWebViewEnvironment(),
+    );
+  }
+
+  static Uri _buildPlayerUri(RevelationMarkdownYoutubeData video) {
     return Uri(
       scheme: 'http',
       host: 'localhost',
@@ -450,6 +498,40 @@ class _RevelationMarkdownYoutubeLocalhostServer {
       _startFuture = null;
       rethrow;
     }
+  }
+
+  static Future<WebViewEnvironment?> _resolveWindowsWebViewEnvironment() async {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.windows) {
+      return null;
+    }
+
+    _windowsEnvironmentFuture ??= _createWindowsWebViewEnvironment();
+    try {
+      return await _windowsEnvironmentFuture;
+    } catch (_) {
+      _windowsEnvironmentFuture = null;
+      rethrow;
+    }
+  }
+
+  static Future<WebViewEnvironment> _createWindowsWebViewEnvironment() async {
+    final availableVersion = await WebViewEnvironment.getAvailableVersion();
+    if (availableVersion == null) {
+      throw StateError('WebView2 Runtime is not available.');
+    }
+
+    final applicationSupportDirectory = await getApplicationSupportDirectory();
+    final userDataFolderPath =
+        buildRevelationMarkdownYoutubeWindowsUserDataFolderPath(
+          applicationSupportDirectory.path,
+        );
+    await Directory(userDataFolderPath).create(recursive: true);
+
+    // Keep WebView2 data out of the executable directory; packaged Windows
+    // installs may not allow WebView2 to create its default sibling folder.
+    return WebViewEnvironment.create(
+      settings: WebViewEnvironmentSettings(userDataFolder: userDataFolderPath),
+    );
   }
 }
 

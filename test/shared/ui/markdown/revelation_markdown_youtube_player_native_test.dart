@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart' show TargetPlatform;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_youtube_player_native.dart';
@@ -119,6 +121,26 @@ void main() {
         platform: TargetPlatform.linux,
       ),
       isFalse,
+    );
+    expect(
+      shouldUseRevelationMarkdownYoutubeLinuxFallback(
+        isWeb: false,
+        platform: TargetPlatform.macOS,
+      ),
+      isFalse,
+    );
+  });
+
+  test('windows WebView2 user data folder is scoped to the YouTube player', () {
+    final path = buildRevelationMarkdownYoutubeWindowsUserDataFolderPath(
+      'C:${Platform.pathSeparator}app-support',
+    );
+
+    expect(
+      path,
+      'C:${Platform.pathSeparator}app-support'
+      '${Platform.pathSeparator}webview2'
+      '${Platform.pathSeparator}youtube_player',
     );
   });
 }
