@@ -2,13 +2,14 @@
 
 All notable changes to this application will be documented here.
 
-## [1.0.6] - Under development
+## [1.0.6](https://github.com/karnauhov/Revelation/releases/tag/v1.0.6%2B153) - 02.05.26
 
 ### Added
 
 - Implemented image caching for all platforms.
 - Markdown Extension (image, youtube, unknown block)
 - Toolbar on DescriptionMarkdownView and TopicScreen (pdf download, copy, navigations)
+- Dialog for compare words from different primary sources
 
 ### Changed
 

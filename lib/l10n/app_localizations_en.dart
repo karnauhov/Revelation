@@ -325,6 +325,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get image_not_loaded => 'Image not loaded';
 
   @override
+  String get primary_source_word_source_unavailable =>
+      'Primary source unavailable';
+
+  @override
+  String get primary_source_word_page_unavailable => 'Page unavailable';
+
+  @override
+  String get primary_source_word_word_unavailable => 'Word unavailable';
+
+  @override
+  String get primary_source_word_image_unavailable => 'Image unavailable';
+
+  @override
+  String get primary_source_words_image_hint =>
+      'Tap the image to see the word in the primary source.';
+
+  @override
   String get click_for_info =>
       'Click on the image element you’re interested in to get information about it.';
 

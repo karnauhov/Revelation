@@ -325,6 +325,23 @@ class AppLocalizationsRu extends AppLocalizations {
   String get image_not_loaded => 'Изображение не загружено';
 
   @override
+  String get primary_source_word_source_unavailable =>
+      'Первоисточник недоступен';
+
+  @override
+  String get primary_source_word_page_unavailable => 'Страница недоступна';
+
+  @override
+  String get primary_source_word_word_unavailable => 'Слово недоступно';
+
+  @override
+  String get primary_source_word_image_unavailable => 'Изображение недоступно';
+
+  @override
+  String get primary_source_words_image_hint =>
+      'Нажмите на изображение чтоб увидеть слово в первоисточнике';
+
+  @override
   String get click_for_info =>
       'Кликните на интересующий вас элемент изображения, чтобы получить о нем информацию.';
 

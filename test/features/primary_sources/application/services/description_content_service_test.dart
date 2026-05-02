@@ -165,6 +165,60 @@ void main() {
   });
 
   testWidgets(
+    'buildSharedWordSupplementContent ignores words without strong numbers',
+    (tester) async {
+      final localizations = await _loadLocalizations(tester);
+      final dataSource = _FakeDescriptionDataSource(
+        isInitialized: true,
+        greekWords: const [
+          common_db.GreekWord(
+            id: 1,
+            word: 'Alpha',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 2,
+            word: 'Beta',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+        ],
+        greekDescs: const [
+          localized_db.GreekDesc(id: 1, desc: 'Only strong description'),
+          localized_db.GreekDesc(id: 2, desc: 'Other strong description'),
+        ],
+      );
+      final service = DescriptionContentService(dataSource: dataSource);
+
+      final oneStrongContent = service.buildSharedWordSupplementContent(
+        localizations,
+        [PageWord('Alpha', const [], sn: 1), PageWord('Different', const [])],
+      );
+      final onlyNoStrongContent = service.buildSharedWordSupplementContent(
+        localizations,
+        [PageWord('Different', const [])],
+      );
+      final mixedStrongContent = service
+          .buildSharedWordSupplementContent(localizations, [
+            PageWord('Alpha', const [], sn: 1),
+            PageWord('Beta', const [], sn: 2),
+            PageWord('Different', const []),
+          ]);
+
+      expect(oneStrongContent, isNotNull);
+      expect(oneStrongContent!.markdown, contains('strong:G1'));
+      expect(oneStrongContent.markdown, contains('Only strong description'));
+      expect(onlyNoStrongContent, isNull);
+      expect(mixedStrongContent, isNull);
+    },
+  );
+
+  testWidgets(
     'buildWordContent expands and overlines nomina sacra when snPronounce is set',
     (tester) async {
       final localizations = await _loadLocalizations(tester);

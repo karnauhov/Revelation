@@ -10,6 +10,7 @@ import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_attributes_footer.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_words_dialog.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/image_preview.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
@@ -20,6 +21,7 @@ import 'package:revelation/features/primary_sources/application/services/primary
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/shared/ui/styled_text/styled_text_utils.dart';
+import 'package:revelation/shared/models/primary_source_word_link_target.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_image_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_cubit.dart';
@@ -519,6 +521,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
               viewModel: viewModel,
             );
           },
+          onWordsTap: (targets, linkContext) {
+            return _openWordsDialog(linkContext, targets, viewModel);
+          },
           showStrongInfoIcon: showStrongInfoIcon,
           canNavigate: canNavigate,
           descriptionActionsEnabled: descriptionActionsEnabled,
@@ -566,6 +571,26 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     viewModel.showInfoForStrongNumber(
       pickedStrongNumber,
       AppLocalizations.of(context)!,
+    );
+  }
+
+  Future<void> _openWordsDialog(
+    BuildContext dialogContext,
+    List<PrimarySourceWordLinkTarget> targets,
+    PrimarySourceDetailCoordinator viewModel,
+  ) {
+    return showPrimarySourceWordsDialog(
+      dialogContext,
+      targets,
+      onWordTap: (sourceId, pageName, wordIndex, linkContext) {
+        return _handleWordLinkTap(
+          sourceId: sourceId,
+          pageName: pageName,
+          wordIndex: wordIndex,
+          linkContext: linkContext,
+          viewModel: viewModel,
+        );
+      },
     );
   }
 

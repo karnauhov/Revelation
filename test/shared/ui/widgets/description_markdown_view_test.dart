@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
+import 'package:revelation/shared/models/primary_source_word_link_target.dart';
 import 'package:revelation/shared/utils/description_markdown_tokens.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -178,6 +179,40 @@ void main() {
       expect(capturedStrongNumber, 145);
     },
   );
+
+  testWidgets('DescriptionMarkdownView forwards words link taps to callback', (
+    tester,
+  ) async {
+    var capturedTargets = const <PrimarySourceWordLinkTarget>[];
+
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: DescriptionMarkdownView(
+          data: '[Words](words:U001:325v:2;U002:150r:5)',
+          scrollable: false,
+          onWordsTap: (targets, _) {
+            capturedTargets = targets;
+          },
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Words'));
+    await tester.pump();
+
+    expect(capturedTargets, <PrimarySourceWordLinkTarget>[
+      const PrimarySourceWordLinkTarget(
+        sourceId: 'U001',
+        pageName: '325v',
+        wordIndex: 2,
+      ),
+      const PrimarySourceWordLinkTarget(
+        sourceId: 'U002',
+        pageName: '150r',
+        wordIndex: 5,
+      ),
+    ]);
+  });
 
   testWidgets('DescriptionMarkdownView applies custom padding in static mode', (
     tester,

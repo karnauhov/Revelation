@@ -26,6 +26,7 @@ class DescriptionMarkdownView extends StatelessWidget {
   final GreekStrongTapHandler? onGreekStrongTap;
   final GreekStrongPickerTapHandler? onGreekStrongPickerTap;
   final WordTapHandler? onWordTap;
+  final WordsTapHandler? onWordsTap;
   final MarkdownImageLoader? markdownImageLoader;
   final bool showExportPdfButton;
   final bool exportPdfEnabled;
@@ -43,6 +44,7 @@ class DescriptionMarkdownView extends StatelessWidget {
     this.onGreekStrongTap,
     this.onGreekStrongPickerTap,
     this.onWordTap,
+    this.onWordsTap,
     this.markdownImageLoader,
     this.showExportPdfButton = true,
     this.exportPdfEnabled = true,
@@ -75,6 +77,7 @@ class DescriptionMarkdownView extends StatelessWidget {
         onGreekStrongTap: onGreekStrongTap,
         onGreekStrongPickerTap: onGreekStrongPickerTap,
         onWordTap: onWordTap,
+        onWordsTap: onWordsTap,
       );
     }
 

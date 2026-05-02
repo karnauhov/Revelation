@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/shared/models/primary_source_word_link_target.dart';
 import 'package:revelation/shared/utils/links_utils.dart';
 
 typedef GreekStrongTapHandler =
@@ -17,10 +18,16 @@ typedef WordTapHandler =
       int? wordIndex,
       BuildContext context,
     );
+typedef WordsTapHandler =
+    FutureOr<void> Function(
+      List<PrimarySourceWordLinkTarget> targets,
+      BuildContext context,
+    );
 
 GreekStrongTapHandler? _defaultGreekStrongTapHandler;
 GreekStrongPickerTapHandler? _defaultGreekStrongPickerTapHandler;
 WordTapHandler? _defaultWordTapHandler;
+WordsTapHandler? _defaultWordsTapHandler;
 
 void setDefaultGreekStrongTapHandler(GreekStrongTapHandler? handler) {
   _defaultGreekStrongTapHandler = handler;
@@ -36,6 +43,10 @@ void setDefaultWordTapHandler(WordTapHandler? handler) {
   _defaultWordTapHandler = handler;
 }
 
+void setDefaultWordsTapHandler(WordsTapHandler? handler) {
+  _defaultWordsTapHandler = handler;
+}
+
 Future<bool> handleAppLink(
   BuildContext context,
   String? href, {
@@ -43,6 +54,7 @@ Future<bool> handleAppLink(
   GreekStrongTapHandler? onGreekStrongTap,
   GreekStrongPickerTapHandler? onGreekStrongPickerTap,
   WordTapHandler? onWordTap,
+  WordsTapHandler? onWordsTap,
 }) async {
   final link = href?.trim();
   if (link == null || link.isEmpty) {
@@ -82,6 +94,15 @@ Future<bool> handleAppLink(
       context,
       link,
       onWordTap: onWordTap,
+      popBeforeScreenPush: popBeforeScreenPush,
+    );
+  }
+
+  if (_hasScheme(link, 'words')) {
+    return _handleWordsLink(
+      context,
+      link,
+      onWordsTap: onWordsTap,
       popBeforeScreenPush: popBeforeScreenPush,
     );
   }
@@ -298,6 +319,91 @@ Future<bool> _handleWordLink(
   }
 
   await defaultWordTapHandler(sourceId, pageName, wordIndex, context);
+  return true;
+}
+
+Future<bool> _handleWordsLink(
+  BuildContext context,
+  String href, {
+  WordsTapHandler? onWordsTap,
+  required bool popBeforeScreenPush,
+}) async {
+  final separatorIndex = href.indexOf(':');
+  if (separatorIndex == -1 || separatorIndex >= href.length - 1) {
+    log.warning("Wrong words link: '$href'");
+    return false;
+  }
+
+  final payload = href.substring(separatorIndex + 1).trim();
+  if (payload.isEmpty) {
+    log.warning("Wrong words link: '$href'");
+    return false;
+  }
+
+  final targets = <PrimarySourceWordLinkTarget>[];
+  for (final rawPart in payload.split(';')) {
+    final part = rawPart.trim();
+    if (part.isEmpty) {
+      log.warning("Wrong words link item: '$href'");
+      return false;
+    }
+
+    final address = part.split(':');
+    if (address.isEmpty || address.length > 3) {
+      log.warning("Wrong words link item: '$part'");
+      return false;
+    }
+
+    final sourceId = address[0].trim();
+    if (sourceId.isEmpty) {
+      log.warning("Wrong words link item: '$part'");
+      return false;
+    }
+
+    String? pageName;
+    if (address.length >= 2) {
+      final rawPageName = address[1].trim();
+      if (rawPageName.isNotEmpty) {
+        pageName = rawPageName;
+      }
+    }
+
+    int? wordIndex;
+    if (address.length == 3) {
+      final rawWordIndex = address[2].trim();
+      if (rawWordIndex.isNotEmpty) {
+        wordIndex = int.tryParse(rawWordIndex);
+        if (wordIndex == null || wordIndex < 0) {
+          log.warning("Wrong words link item: '$part'");
+          return false;
+        }
+      }
+    }
+
+    targets.add(
+      PrimarySourceWordLinkTarget(
+        sourceId: sourceId,
+        pageName: pageName,
+        wordIndex: wordIndex,
+      ),
+    );
+  }
+
+  if (targets.isEmpty) {
+    log.warning("Wrong words link: '$href'");
+    return false;
+  }
+
+  final handler = onWordsTap ?? _defaultWordsTapHandler;
+  if (handler == null) {
+    log.warning("Words callback is not set for link: '$href'");
+    return false;
+  }
+
+  await handler(
+    List<PrimarySourceWordLinkTarget>.unmodifiable(targets),
+    context,
+  );
   return true;
 }
 

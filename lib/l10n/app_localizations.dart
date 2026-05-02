@@ -702,6 +702,36 @@ abstract class AppLocalizations {
   /// **'Image not loaded'**
   String get image_not_loaded;
 
+  /// No description provided for @primary_source_word_source_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary source unavailable'**
+  String get primary_source_word_source_unavailable;
+
+  /// No description provided for @primary_source_word_page_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Page unavailable'**
+  String get primary_source_word_page_unavailable;
+
+  /// No description provided for @primary_source_word_word_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Word unavailable'**
+  String get primary_source_word_word_unavailable;
+
+  /// No description provided for @primary_source_word_image_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Image unavailable'**
+  String get primary_source_word_image_unavailable;
+
+  /// No description provided for @primary_source_words_image_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the image to see the word in the primary source.'**
+  String get primary_source_words_image_hint;
+
   /// No description provided for @click_for_info.
   ///
   /// In en, this message translates to:

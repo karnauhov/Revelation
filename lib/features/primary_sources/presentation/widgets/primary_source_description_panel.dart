@@ -11,6 +11,7 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
   final GreekStrongTapHandler onGreekStrongTap;
   final GreekStrongPickerTapHandler onGreekStrongPickerTap;
   final WordTapHandler onWordTap;
+  final WordsTapHandler? onWordsTap;
   final bool showStrongInfoIcon;
   final bool canNavigate;
   final bool descriptionActionsEnabled;
@@ -27,6 +28,7 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
     required this.onGreekStrongTap,
     required this.onGreekStrongPickerTap,
     required this.onWordTap,
+    this.onWordsTap,
     required this.showStrongInfoIcon,
     required this.canNavigate,
     this.descriptionActionsEnabled = true,
@@ -59,6 +61,7 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
               onGreekStrongTap: onGreekStrongTap,
               onGreekStrongPickerTap: onGreekStrongPickerTap,
               onWordTap: onWordTap,
+              onWordsTap: onWordsTap,
               exportPdfEnabled: descriptionActionsEnabled,
               copyEnabled: descriptionActionsEnabled,
               exportPdfDocumentTitle: exportPdfDocumentTitle,

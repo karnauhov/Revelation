@@ -31,6 +31,7 @@ import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/page_rect.dart';
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/primary_source.dart';
+import 'package:revelation/shared/models/primary_source_word_link_target.dart';
 import 'package:revelation/shared/models/verse.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -475,6 +476,29 @@ void main() {
       _descriptionPanel(tester).onGreekStrongPickerTap(1, panelContext);
       await _pumpUntilFound(tester, find.byType(StrongNumberPickerDialog));
       await _closeStrongPickerDialog(tester, l10n);
+
+      await tester.runAsync(() async {
+        final result = _descriptionPanel(tester).onWordsTap!(
+          const <PrimarySourceWordLinkTarget>[
+            PrimarySourceWordLinkTarget(
+              sourceId: 'missing-source',
+              pageName: 'P1',
+              wordIndex: 0,
+            ),
+          ],
+          panelContext,
+        );
+        if (result is Future<void>) {
+          unawaited(result);
+        }
+      });
+      await _pumpUntilFound(tester, find.byType(AlertDialog));
+      await _pumpUntilFound(
+        tester,
+        find.text(l10n.primary_source_word_source_unavailable),
+      );
+      await tester.tap(find.text(l10n.close).last);
+      await _pumpUntilGone(tester, find.byType(AlertDialog));
 
       descriptionCubit.updateDescriptionContent(
         content: 'verse description',

@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/models/primary_source_word_link_target.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:url_launcher_platform_interface/link.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
@@ -39,12 +40,14 @@ void main() {
     setDefaultGreekStrongTapHandler(null);
     setDefaultGreekStrongPickerTapHandler(null);
     setDefaultWordTapHandler(null);
+    setDefaultWordsTapHandler(null);
   });
 
   tearDown(() async {
     setDefaultGreekStrongTapHandler(null);
     setDefaultGreekStrongPickerTapHandler(null);
     setDefaultWordTapHandler(null);
+    setDefaultWordsTapHandler(null);
     await GetIt.I.reset();
   });
 
@@ -391,6 +394,116 @@ void main() {
       expect(await handleAppLink(context, 'word:source:page:-1'), isFalse);
       expect(await handleAppLink(context, 'word:source:page:abc'), isFalse);
       expect(await handleAppLink(context, 'word:source:page:1'), isFalse);
+    });
+  });
+
+  group('words links', () {
+    testWidgets('words link uses explicit callback with parsed targets', (
+      tester,
+    ) async {
+      final context = await pumpContext(tester);
+      var capturedTargets = const <PrimarySourceWordLinkTarget>[];
+
+      final handled = await handleAppLink(
+        context,
+        'words:U001; U002:150r; U003:325v:2',
+        onWordsTap: (targets, _) {
+          capturedTargets = targets;
+        },
+      );
+
+      expect(handled, isTrue);
+      expect(capturedTargets, <PrimarySourceWordLinkTarget>[
+        const PrimarySourceWordLinkTarget(sourceId: 'U001'),
+        const PrimarySourceWordLinkTarget(sourceId: 'U002', pageName: '150r'),
+        const PrimarySourceWordLinkTarget(
+          sourceId: 'U003',
+          pageName: '325v',
+          wordIndex: 2,
+        ),
+      ]);
+    });
+
+    testWidgets('words link falls back to default callback', (tester) async {
+      final context = await pumpContext(tester);
+      var capturedTargets = const <PrimarySourceWordLinkTarget>[];
+
+      setDefaultWordsTapHandler((targets, _) {
+        capturedTargets = targets;
+      });
+
+      final handled = await handleAppLink(context, 'words:source:page:1');
+
+      expect(handled, isTrue);
+      expect(capturedTargets.single.sourceId, 'source');
+      expect(capturedTargets.single.pageName, 'page');
+      expect(capturedTargets.single.wordIndex, 1);
+    });
+
+    testWidgets('words link does not pop current route before opening dialog', (
+      tester,
+    ) async {
+      late BuildContext rootContext;
+      late BuildContext childContext;
+      var callbackCalls = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              rootContext = context;
+              return const Text('root');
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+
+      unawaited(
+        Navigator.of(rootContext).push<void>(
+          MaterialPageRoute<void>(
+            builder: (context) {
+              childContext = context;
+              return const Text('child');
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('child'), findsOneWidget);
+
+      setDefaultWordsTapHandler((targets, _) {
+        callbackCalls++;
+      });
+
+      final handled = await handleAppLink(
+        childContext,
+        'words:source:page:1',
+        popBeforeScreenPush: true,
+      );
+      await tester.pumpAndSettle();
+
+      expect(handled, isTrue);
+      expect(callbackCalls, 1);
+      expect(find.text('root'), findsNothing);
+      expect(find.text('child'), findsOneWidget);
+    });
+
+    testWidgets('words link rejects malformed payloads and missing callback', (
+      tester,
+    ) async {
+      final context = await pumpContext(tester);
+
+      expect(await handleAppLink(context, 'words:'), isFalse);
+      expect(await handleAppLink(context, 'words::page'), isFalse);
+      expect(
+        await handleAppLink(context, 'words:source:page:1:extra'),
+        isFalse,
+      );
+      expect(await handleAppLink(context, 'words:source:page:abc'), isFalse);
+      expect(await handleAppLink(context, 'words:source:page:-1'), isFalse);
+      expect(await handleAppLink(context, 'words:source:page:1;'), isFalse);
+      expect(await handleAppLink(context, 'words:source:page:1'), isFalse);
     });
   });
 

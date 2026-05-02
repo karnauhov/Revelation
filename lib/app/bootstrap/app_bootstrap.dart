@@ -9,17 +9,24 @@ import 'package:revelation/features/primary_sources/application/services/manuscr
 import 'package:revelation/features/primary_sources/application/services/nomina_sacra_pronunciation_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/strong_dictionary_dialog.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_words_dialog.dart';
 import 'package:revelation/features/settings/settings.dart'
     show SettingsCubit, SettingsRepository;
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/infra/remote/supabase/server_manager.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/models/primary_source_word_link_target.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 typedef StrongDialogPresenter =
     void Function(BuildContext context, int strongNumber);
+typedef PrimarySourceWordsDialogPresenter =
+    void Function(
+      BuildContext context,
+      List<PrimarySourceWordLinkTarget> targets,
+    );
 typedef PrimarySourceNavigator =
     void Function(BuildContext context, PrimarySourceRouteArgs routeArgs);
 typedef AppBootstrapProgressCallback =
@@ -88,6 +95,7 @@ class AppBootstrap {
     DatabaseRuntime? databaseRuntime,
     PrimarySourceReferenceService? referenceResolver,
     StrongDialogPresenter? showStrongDialog,
+    PrimarySourceWordsDialogPresenter? showPrimarySourceWordsDialog,
     PrimarySourceNavigator? navigateToPrimarySource,
     AppBootstrapAudioInitializer? initializeAudio,
     AppBootstrapManuscriptGreekConfigLoader? loadManuscriptGreekTextConfig,
@@ -97,6 +105,8 @@ class AppBootstrap {
        _referenceResolver =
            referenceResolver ?? PrimarySourceReferenceService(),
        _showStrongDialog = showStrongDialog ?? _defaultShowStrongDialog,
+       _showPrimarySourceWordsDialog =
+           showPrimarySourceWordsDialog ?? _defaultShowPrimarySourceWordsDialog,
        _navigateToPrimarySource =
            navigateToPrimarySource ?? _defaultNavigateToPrimarySource,
        _initializeAudio = initializeAudio ?? _defaultInitializeAudio,
@@ -111,6 +121,7 @@ class AppBootstrap {
   final DatabaseRuntime _databaseRuntime;
   final PrimarySourceReferenceService _referenceResolver;
   final StrongDialogPresenter _showStrongDialog;
+  final PrimarySourceWordsDialogPresenter _showPrimarySourceWordsDialog;
   final PrimarySourceNavigator _navigateToPrimarySource;
   final AppBootstrapAudioInitializer _initializeAudio;
   final AppBootstrapManuscriptGreekConfigLoader _loadManuscriptGreekTextConfig;
@@ -119,6 +130,13 @@ class AppBootstrap {
 
   static void _defaultShowStrongDialog(BuildContext context, int strongNumber) {
     showStrongDictionaryDialog(context, strongNumber);
+  }
+
+  static void _defaultShowPrimarySourceWordsDialog(
+    BuildContext context,
+    List<PrimarySourceWordLinkTarget> targets,
+  ) {
+    showPrimarySourceWordsDialog(context, targets);
   }
 
   static void _defaultNavigateToPrimarySource(
@@ -301,6 +319,9 @@ class AppBootstrap {
           wordIndex: wordIndex,
         ),
       );
+    });
+    setDefaultWordsTapHandler((targets, context) {
+      _showPrimarySourceWordsDialog(context, targets);
     });
   }
 }

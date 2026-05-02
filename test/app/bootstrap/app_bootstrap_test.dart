@@ -32,6 +32,7 @@ void main() {
     setDefaultGreekStrongTapHandler(null);
     setDefaultGreekStrongPickerTapHandler(null);
     setDefaultWordTapHandler(null);
+    setDefaultWordsTapHandler(null);
     await GetIt.I.reset();
   });
 

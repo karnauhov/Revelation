@@ -327,6 +327,23 @@ class AppLocalizationsUk extends AppLocalizations {
   String get image_not_loaded => 'Зображення не завантажено';
 
   @override
+  String get primary_source_word_source_unavailable =>
+      'Першоджерело недоступне';
+
+  @override
+  String get primary_source_word_page_unavailable => 'Сторінка недоступна';
+
+  @override
+  String get primary_source_word_word_unavailable => 'Слово недоступне';
+
+  @override
+  String get primary_source_word_image_unavailable => 'Зображення недоступне';
+
+  @override
+  String get primary_source_words_image_hint =>
+      'Натисніть на зображення, щоб побачити слово в першоджерелі.';
+
+  @override
   String get click_for_info =>
       'Натисніть на потрібний вам елемент зображення, щоб отримати інформацію про нього.';
 

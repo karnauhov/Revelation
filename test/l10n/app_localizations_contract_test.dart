@@ -526,6 +526,31 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'image_not_loaded should not be empty',
   );
   expect(
+    l10n.primary_source_word_source_unavailable,
+    isNotEmpty,
+    reason: 'primary_source_word_source_unavailable should not be empty',
+  );
+  expect(
+    l10n.primary_source_word_page_unavailable,
+    isNotEmpty,
+    reason: 'primary_source_word_page_unavailable should not be empty',
+  );
+  expect(
+    l10n.primary_source_word_word_unavailable,
+    isNotEmpty,
+    reason: 'primary_source_word_word_unavailable should not be empty',
+  );
+  expect(
+    l10n.primary_source_word_image_unavailable,
+    isNotEmpty,
+    reason: 'primary_source_word_image_unavailable should not be empty',
+  );
+  expect(
+    l10n.primary_source_words_image_hint,
+    isNotEmpty,
+    reason: 'primary_source_words_image_hint should not be empty',
+  );
+  expect(
     l10n.markdown_unknown_block_title,
     isNotEmpty,
     reason: 'markdown_unknown_block_title should not be empty',
