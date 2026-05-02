@@ -19,6 +19,8 @@ const String _revelationMarkdownPdfBaseFontAsset =
     'assets/fonts/Arimo/Arimo.ttf';
 const String _revelationMarkdownPdfCopticFontAsset =
     'assets/fonts/NotoSansCoptic/NotoSansCoptic-Regular.ttf';
+const String _revelationMarkdownPdfSymbolsFontAsset =
+    'assets/fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf';
 const String revelationMarkdownPdfAuthor = 'Karnauhov Oleh';
 const String revelationMarkdownPdfUnknownBlockLink =
     'https://www.revelation.website';
@@ -38,6 +40,7 @@ const Map<String, String> revelationMarkdownPdfFonts = {
   'sans-serif': _revelationMarkdownPdfBaseFontAsset,
   'monospace': _revelationMarkdownPdfBaseFontAsset,
   'Noto Sans Coptic': _revelationMarkdownPdfCopticFontAsset,
+  'Noto Sans Symbols2': _revelationMarkdownPdfSymbolsFontAsset,
 };
 
 typedef RevelationMarkdownPdfSaver =
@@ -205,7 +208,13 @@ Future<_RevelationMarkdownPdfFonts> _loadPdfFontsFromAssets() async {
   final copticFont = pw.Font.ttf(
     await rootBundle.load(_revelationMarkdownPdfCopticFontAsset),
   );
-  return _RevelationMarkdownPdfFonts(base: baseFont, fallback: [copticFont]);
+  final symbolsFont = pw.Font.ttf(
+    await rootBundle.load(_revelationMarkdownPdfSymbolsFontAsset),
+  );
+  return _RevelationMarkdownPdfFonts(
+    base: baseFont,
+    fallback: [copticFont, symbolsFont],
+  );
 }
 
 MarkdownImageLoader? _resolveMarkdownImageLoader(

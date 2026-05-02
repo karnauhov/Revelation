@@ -105,6 +105,40 @@ void main() {
     },
   );
 
+  testWidgets(
+    'DescriptionMarkdownView renders strong mixed Greek and Coptic text with one font family',
+    (tester) async {
+      await tester.pumpWidget(
+        buildLocalizedTestApp(
+          child: const DescriptionMarkdownView(
+            data: 'Variant: **ΑⲄⲒⲞⲒⲤ**',
+            scrollable: false,
+            showExportPdfButton: false,
+          ),
+        ),
+      );
+
+      final richTextFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is RichText &&
+            widget.text.toPlainText().contains('Variant: ΑⲄⲒⲞⲒⲤ'),
+        description: 'RichText with mixed Greek and Coptic strong text',
+      );
+      expect(richTextFinder, findsOneWidget);
+
+      final richText = tester.widget<RichText>(richTextFinder);
+      final strongStyle = _findEffectiveStyleForText(richText.text, 'ΑⲄⲒⲞⲒⲤ');
+
+      expect(strongStyle, isNotNull);
+      expect(strongStyle!.fontFamily, 'NotoSans');
+      expect(strongStyle.fontFamilyFallback, <String>[
+        'NotoSansCoptic',
+        'Arimo',
+      ]);
+      expect(strongStyle.fontWeight, FontWeight.w600);
+    },
+  );
+
   testWidgets('DescriptionMarkdownView forwards strong link taps to callback', (
     tester,
   ) async {
@@ -579,4 +613,31 @@ void main() {
     expect(find.byType(SnackBar), findsOneWidget);
     expect(find.text("Couldn't copy the content."), findsOneWidget);
   });
+}
+
+TextStyle? _findEffectiveStyleForText(
+  InlineSpan span,
+  String value, [
+  TextStyle? inheritedStyle,
+]) {
+  if (span is! TextSpan) {
+    return null;
+  }
+  final effectiveStyle = inheritedStyle?.merge(span.style) ?? span.style;
+  final text = span.text;
+  if (text != null && text.contains(value)) {
+    return effectiveStyle;
+  }
+
+  final children = span.children;
+  if (children == null || children.isEmpty) {
+    return null;
+  }
+  for (final child in children) {
+    final matched = _findEffectiveStyleForText(child, value, effectiveStyle);
+    if (matched != null) {
+      return matched;
+    }
+  }
+  return null;
 }

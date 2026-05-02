@@ -309,11 +309,25 @@
         <licenseLink>https://fonts.google.com/specimen/Arimo/license</licenseLink>
     </library>
     <library>
+        <name>@Font 'Noto Sans'</name>
+        <idIcon>file_font</idIcon>
+        <license>OFL-1.1</license>
+        <officialSite>https://notofonts.github.io/latin-greek-cyrillic/</officialSite>
+        <licenseLink>https://github.com/notofonts/latin-greek-cyrillic/blob/main/OFL.txt</licenseLink>
+    </library>
+    <library>
         <name>@Font 'Noto Sans Coptic'</name>
         <idIcon>file_font</idIcon>
         <license>OFL-1.1</license>
         <officialSite>https://github.com/notofonts/coptic/releases/tag/NotoSansCoptic-v2.004</officialSite>
         <licenseLink>https://github.com/notofonts/coptic/blob/main/OFL.txt</licenseLink>
+    </library>
+    <library>
+        <name>@Font 'Noto Sans Symbols2'</name>
+        <idIcon>file_font</idIcon>
+        <license>OFL-1.1</license>
+        <officialSite>https://notofonts.github.io/symbols/</officialSite>
+        <licenseLink>https://github.com/notofonts/symbols/blob/main/OFL.txt</licenseLink>
     </library>
     <library>
         <name>@Sound 'paper' @by 1bob</name>

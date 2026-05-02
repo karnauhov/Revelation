@@ -34,6 +34,10 @@ void main() {
         revelationMarkdownPdfFonts['Noto Sans Coptic'],
         'assets/fonts/NotoSansCoptic/NotoSansCoptic-Regular.ttf',
       );
+      expect(
+        revelationMarkdownPdfFonts['Noto Sans Symbols2'],
+        'assets/fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf',
+      );
     },
   );
 
@@ -129,6 +133,23 @@ void main() {
 
       expect(pdfText, contains('/ToUnicode'));
       expect(pdfText, contains('NotoSansCoptic'));
+      expect(pdfText, isNot(contains('/Subtype /Image')));
+    },
+  );
+
+  test(
+    'markdown PDF export keeps heavy exclamation symbol as PDF text',
+    () async {
+      final bytes = await buildRevelationMarkdownPdfData(
+        markdown: 'Important ❗',
+        documentTitle: 'Symbol text',
+        appName: 'Revelation',
+        pageFormat: PdfPageFormat.a4,
+      );
+      final pdfText = latin1.decode(bytes, allowInvalid: true);
+
+      expect(pdfText, contains('/ToUnicode'));
+      expect(pdfText, contains('NotoSansSymbols2'));
       expect(pdfText, isNot(contains('/Subtype /Image')));
     },
   );

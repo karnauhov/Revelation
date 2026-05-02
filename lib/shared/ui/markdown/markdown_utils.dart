@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
+const String _markdownStrongTextFontFamily = 'NotoSans';
+const List<String> _markdownStrongTextFontFallback = <String>[
+  'NotoSansCoptic',
+  'Arimo',
+];
+
 MarkdownStyleSheet getMarkdownStyleSheet(
   ThemeData theme,
   ColorScheme colorScheme, {
@@ -37,7 +43,9 @@ MarkdownStyleSheet getMarkdownStyleSheet(
       decorationColor: colorScheme.primary,
     ).copyWith(color: colorScheme.primary, inherit: true),
     strong: theme.textTheme.bodyMedium?.copyWith(
-      fontWeight: FontWeight.bold,
+      fontFamily: _markdownStrongTextFontFamily,
+      fontFamilyFallback: _markdownStrongTextFontFallback,
+      fontWeight: FontWeight.w600,
       color: colorScheme.onSurface,
     ),
     em: theme.textTheme.bodyMedium?.copyWith(

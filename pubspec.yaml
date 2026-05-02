@@ -1,7 +1,7 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.6+155
+version: 1.0.6+156
 environment:
   sdk: ^3.9.0
 
@@ -70,7 +70,7 @@ msix_config:
   publisher: CN=B37F48EC-C643-42C2-82FB-3DFB514F5E74
   languages: en, es, uk, ru
   store: true
-  msix_version: 1.0.161.0
+  msix_version: 1.0.162.0
   logo_path: .\assets\images\UI\app_icon.png
 
 flutter:
@@ -92,7 +92,15 @@ flutter:
       fonts:
         - asset: assets/fonts/Arimo/Arimo.ttf
           weight: 400
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans/NotoSans-Regular.ttf
+          weight: 400
     - family: NotoSansCoptic
       fonts:
         - asset: assets/fonts/NotoSansCoptic/NotoSansCoptic-Regular.ttf
+          weight: 400
+    - family: NotoSansSymbols2
+      fonts:
+        - asset: assets/fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf
           weight: 400
