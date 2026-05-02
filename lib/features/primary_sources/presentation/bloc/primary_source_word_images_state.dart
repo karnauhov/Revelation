@@ -10,10 +10,17 @@ class PrimarySourceWordImagesState {
     this.sharedWordDetailsMarkdown,
   }) : items = List<PrimarySourceWordImageResult>.unmodifiable(items);
 
-  const PrimarySourceWordImagesState.loading()
-    : status = PrimarySourceWordImagesStatus.loading,
-      items = const <PrimarySourceWordImageResult>[],
-      sharedWordDetailsMarkdown = null;
+  factory PrimarySourceWordImagesState.loading({
+    List<PrimarySourceWordImageResult> items =
+        const <PrimarySourceWordImageResult>[],
+    String? sharedWordDetailsMarkdown,
+  }) {
+    return PrimarySourceWordImagesState(
+      status: PrimarySourceWordImagesStatus.loading,
+      items: items,
+      sharedWordDetailsMarkdown: sharedWordDetailsMarkdown,
+    );
+  }
 
   PrimarySourceWordImagesState.loaded({
     required List<PrimarySourceWordImageResult> items,
@@ -29,6 +36,7 @@ class PrimarySourceWordImagesState {
   final String? sharedWordDetailsMarkdown;
 
   bool get isLoading => status == PrimarySourceWordImagesStatus.loading;
+  bool get hasPendingItems => items.any((item) => item.isLoading);
 
   @override
   bool operator ==(Object other) {

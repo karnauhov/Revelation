@@ -127,7 +127,9 @@ class _PrimarySourceWordsDialogContent extends StatelessWidget {
             builder: (context, state) {
               final title = _resolveTitle(state);
               final canExport =
-                  !state.isLoading && _hasExportableContent(state);
+                  !state.isLoading &&
+                  !state.hasPendingItems &&
+                  _hasExportableContent(state);
               if (title.isEmpty && !canExport) {
                 return const SizedBox.shrink();
               }
@@ -180,7 +182,7 @@ class _PrimarySourceWordsDialogContent extends StatelessWidget {
               PrimarySourceWordImagesState
             >(
               builder: (context, state) {
-                if (state.isLoading) {
+                if (state.isLoading && state.items.isEmpty) {
                   return Center(
                     child: CircularProgressIndicator(
                       color: colorScheme.primary,
@@ -486,6 +488,23 @@ class _PrimarySourceWordPreview extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final imageBytes = item.imageBytes;
+
+    if (item.isLoading) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: colorScheme.primary,
+            ),
+          ),
+        ),
+      );
+    }
 
     if (imageBytes != null && imageBytes.isNotEmpty) {
       final image = Image.memory(

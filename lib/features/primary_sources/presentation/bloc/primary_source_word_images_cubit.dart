@@ -21,7 +21,7 @@ class PrimarySourceWordImagesCubit extends Cubit<PrimarySourceWordImagesState> {
        _isMobileWeb = isMobileWeb,
        _localizations = localizations,
        _imageService = imageService ?? PrimarySourceWordImageService(),
-       super(const PrimarySourceWordImagesState.loading()) {
+       super(PrimarySourceWordImagesState.loading()) {
     if (autoLoad) {
       unawaited(load());
     }
@@ -36,18 +36,40 @@ class PrimarySourceWordImagesCubit extends Cubit<PrimarySourceWordImagesState> {
 
   Future<void> load() async {
     final requestToken = _loadRequestGuard.start();
-    emit(const PrimarySourceWordImagesState.loading());
+    emit(PrimarySourceWordImagesState.loading());
 
     try {
-      final data = await _imageService.loadDialogData(
+      PrimarySourceWordsDialogData? latestData;
+      await for (final data in _imageService.loadDialogDataStream(
         targets: _targets,
         isWeb: _isWeb,
         isMobileWeb: _isMobileWeb,
         localizations: _localizations,
-      );
+      )) {
+        if (!_canApply(requestToken)) {
+          return;
+        }
+        latestData = data;
+        emit(
+          PrimarySourceWordImagesState.loading(
+            items: data.items,
+            sharedWordDetailsMarkdown: data.sharedWordDetailsMarkdown,
+          ),
+        );
+      }
       if (!_canApply(requestToken)) {
         return;
       }
+      final data =
+          latestData ??
+          PrimarySourceWordsDialogData(
+            items: _targets
+                .map(
+                  (target) =>
+                      PrimarySourceWordImageResult.unavailable(target: target),
+                )
+                .toList(growable: false),
+          );
       emit(
         PrimarySourceWordImagesState.loaded(
           items: data.items,

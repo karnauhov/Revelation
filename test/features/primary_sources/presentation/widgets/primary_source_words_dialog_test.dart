@@ -225,6 +225,67 @@ void main() {
     expect(exportedMarkdown, contains('Strong Number'));
   });
 
+  testWidgets('dialog shows row loading indicators until snippets are ready', (
+    tester,
+  ) async {
+    const target = PrimarySourceWordLinkTarget(
+      sourceId: 'U001',
+      pageName: '325v',
+      wordIndex: 2,
+    );
+    final completer = Completer<void>();
+    final cubit = PrimarySourceWordImagesCubit(
+      targets: const [target],
+      isWeb: true,
+      isMobileWeb: false,
+      localizations: lookupAppLocalizations(const Locale('en')),
+      imageService: _StreamingWordImageService(
+        loadingItems: [
+          PrimarySourceWordImageResult.loading(
+            target: target,
+            sourceTitle: 'Source One',
+            displayWordText: 'APOKALYPSIS',
+          ),
+        ],
+        finalItems: [
+          PrimarySourceWordImageResult(
+            target: target,
+            sourceTitle: 'Source One',
+            imageBytes: _png(),
+            displayWordText: 'APOKALYPSIS',
+            unavailableReason: PrimarySourceWordImageUnavailableReason.none,
+          ),
+        ],
+        completeAfter: completer.future,
+      ),
+    );
+    addTearDown(cubit.close);
+
+    final context = await pumpLocalizedContext(tester);
+    unawaited(
+      showPrimarySourceWordsDialog(context, const [target], cubit: cubit),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('APOKALYPSIS'), findsOneWidget);
+    expect(find.text('U001'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsWidgets);
+    expect(
+      find.byKey(const Key('description_markdown_export_pdf_button')),
+      findsNothing,
+    );
+
+    completer.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Image), findsOneWidget);
+    expect(
+      find.byKey(const Key('description_markdown_export_pdf_button')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('tapping word image opens the corresponding word link', (
     tester,
   ) async {
@@ -290,6 +351,21 @@ class _FakeWordImageService extends PrimarySourceWordImageService {
   final List<PrimarySourceWordImageResult> items;
 
   @override
+  Stream<PrimarySourceWordsDialogData> loadDialogDataStream({
+    required List<PrimarySourceWordLinkTarget> targets,
+    required bool isWeb,
+    required bool isMobileWeb,
+    required AppLocalizations localizations,
+  }) async* {
+    yield await loadDialogData(
+      targets: targets,
+      isWeb: isWeb,
+      isMobileWeb: isMobileWeb,
+      localizations: localizations,
+    );
+  }
+
+  @override
   Future<PrimarySourceWordsDialogData> loadDialogData({
     required List<PrimarySourceWordLinkTarget> targets,
     required bool isWeb,
@@ -304,6 +380,30 @@ class _FakeWordImageService extends PrimarySourceWordImageService {
           '\n\r'
           '*** \nrevelation\n ***',
     );
+  }
+}
+
+class _StreamingWordImageService extends PrimarySourceWordImageService {
+  _StreamingWordImageService({
+    required this.loadingItems,
+    required this.finalItems,
+    required this.completeAfter,
+  });
+
+  final List<PrimarySourceWordImageResult> loadingItems;
+  final List<PrimarySourceWordImageResult> finalItems;
+  final Future<void> completeAfter;
+
+  @override
+  Stream<PrimarySourceWordsDialogData> loadDialogDataStream({
+    required List<PrimarySourceWordLinkTarget> targets,
+    required bool isWeb,
+    required bool isMobileWeb,
+    required AppLocalizations localizations,
+  }) async* {
+    yield PrimarySourceWordsDialogData(items: loadingItems);
+    await completeAfter;
+    yield PrimarySourceWordsDialogData(items: finalItems);
   }
 }
 

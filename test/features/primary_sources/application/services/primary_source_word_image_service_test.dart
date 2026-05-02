@@ -18,6 +18,7 @@ import 'package:revelation/shared/models/page_rect.dart';
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/primary_source_word_link_target.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   test('loadWordImages crops valid words and keeps unavailable rows', () async {
@@ -165,6 +166,81 @@ void main() {
   });
 
   test(
+    'loadDialogData reuses cached web snippets before page loading',
+    () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      final source = _buildSource(
+        id: 'U001',
+        pages: [
+          model.Page(
+            name: '325v',
+            content: 'Rev 1',
+            image: 'u001_325v.png',
+            words: [
+              PageWord('Alpha', [PageRect(0.25, 0.25, 0.75, 0.75)]),
+            ],
+          ),
+        ],
+      );
+      const targets = [
+        PrimarySourceWordLinkTarget(
+          sourceId: 'U001',
+          pageName: '325v',
+          wordIndex: 0,
+        ),
+      ];
+      final localizations = lookupAppLocalizations(const Locale('en'));
+      final firstImageLoader = _FakeImageLoadingOrchestrator(_png(20, 20));
+      final firstCropper = _FakeWordImageCropper(_png(5, 5));
+      final firstService = PrimarySourceWordImageService(
+        referenceResolver: PrimarySourceReferenceService(
+          repository: _FakePrimarySourcesDbRepository([source]),
+        ),
+        imageLoadingOrchestrator: firstImageLoader,
+        cropCache: PrimarySourceWordCropCache(
+          memoryCache: <String, Uint8List>{},
+        ),
+        webImageCropper: firstCropper,
+      );
+
+      final firstData = await firstService.loadDialogData(
+        localizations: localizations,
+        targets: targets,
+        isWeb: true,
+        isMobileWeb: false,
+      );
+
+      expect(firstData.items.single.hasImage, isTrue);
+      expect(firstImageLoader.loadCalls, 1);
+      expect(firstCropper.calls, 1);
+
+      final secondImageLoader = _FakeImageLoadingOrchestrator(_png(20, 20));
+      final secondCropper = _FakeWordImageCropper(_png(7, 7));
+      final secondService = PrimarySourceWordImageService(
+        referenceResolver: PrimarySourceReferenceService(
+          repository: _FakePrimarySourcesDbRepository([source]),
+        ),
+        imageLoadingOrchestrator: secondImageLoader,
+        cropCache: PrimarySourceWordCropCache(
+          memoryCache: <String, Uint8List>{},
+        ),
+        webImageCropper: secondCropper,
+      );
+
+      final secondData = await secondService.loadDialogData(
+        localizations: localizations,
+        targets: targets,
+        isWeb: true,
+        isMobileWeb: false,
+      );
+
+      expect(secondData.items.single.hasImage, isTrue);
+      expect(secondImageLoader.loadCalls, 0);
+      expect(secondCropper.calls, 0);
+    },
+  );
+
+  test(
     'loadDialogData adds shared strong details for a single non-null strong',
     () async {
       final source = _buildSource(
@@ -277,6 +353,26 @@ class _FakeImageLoadingOrchestrator
       imageName: page,
       pageLoaded: true,
       refreshError: false,
+    );
+  }
+}
+
+class _FakeWordImageCropper implements PrimarySourceWordImageCropper {
+  _FakeWordImageCropper(this.imageBytes);
+
+  final Uint8List imageBytes;
+  int calls = 0;
+
+  @override
+  Future<List<Uint8List?>> cropWordImages({
+    required Uint8List imageData,
+    required List<PrimarySourceWordCropRequest> requests,
+  }) async {
+    calls++;
+    return List<Uint8List?>.filled(
+      requests.length,
+      imageBytes,
+      growable: false,
     );
   }
 }

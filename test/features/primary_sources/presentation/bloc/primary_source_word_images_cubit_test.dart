@@ -45,6 +45,77 @@ void main() {
     expect(service.calls, 1);
   });
 
+  test(
+    'load emits progressive loading items before final loaded state',
+    () async {
+      final loadingItem = PrimarySourceWordImageResult.loading(
+        target: target,
+        sourceTitle: 'Source',
+        displayWordText: 'Word',
+      );
+      final loadedItem = PrimarySourceWordImageResult.unavailable(
+        target: target,
+        sourceTitle: 'Source',
+        displayWordText: 'Word',
+      );
+      final completer = Completer<void>();
+      final service = _FakeWordImageService(
+        streamResponses: [
+          Stream<PrimarySourceWordsDialogData>.multi((controller) {
+            controller.add(PrimarySourceWordsDialogData(items: [loadingItem]));
+            unawaited(
+              completer.future.then((_) async {
+                controller
+                  ..add(
+                    PrimarySourceWordsDialogData(
+                      items: [loadedItem],
+                      sharedWordDetailsMarkdown: 'shared',
+                    ),
+                  )
+                  ..close();
+              }),
+            );
+          }),
+        ],
+      );
+      final cubit = PrimarySourceWordImagesCubit(
+        targets: const [target],
+        isWeb: true,
+        isMobileWeb: false,
+        localizations: lookupAppLocalizations(const Locale('en')),
+        imageService: service,
+        autoLoad: false,
+      );
+      addTearDown(cubit.close);
+
+      final states = <PrimarySourceWordImagesState>[];
+      final subscription = cubit.stream.listen(states.add);
+      addTearDown(subscription.cancel);
+
+      final loadFuture = cubit.load();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(
+        states,
+        contains(
+          predicate<PrimarySourceWordImagesState>(
+            (state) =>
+                state.status == PrimarySourceWordImagesStatus.loading &&
+                state.items.length == 1 &&
+                state.items.single.isLoading,
+          ),
+        ),
+      );
+
+      completer.complete();
+      await loadFuture;
+
+      expect(cubit.state.status, PrimarySourceWordImagesStatus.loaded);
+      expect(cubit.state.items, [loadedItem]);
+      expect(cubit.state.sharedWordDetailsMarkdown, 'shared');
+    },
+  );
+
   test('stale load result is ignored when a newer request wins', () async {
     final firstCompleter = Completer<PrimarySourceWordsDialogData>();
     final secondItem = PrimarySourceWordImageResult.unavailable(
@@ -121,11 +192,37 @@ void main() {
 
 class _FakeWordImageService extends PrimarySourceWordImageService {
   _FakeWordImageService({
-    required List<Future<PrimarySourceWordsDialogData>> responses,
-  }) : _responses = List<Future<PrimarySourceWordsDialogData>>.from(responses);
+    List<Future<PrimarySourceWordsDialogData>> responses = const [],
+    List<Stream<PrimarySourceWordsDialogData>> streamResponses = const [],
+  }) : _responses = List<Future<PrimarySourceWordsDialogData>>.from(responses),
+       _streamResponses = List<Stream<PrimarySourceWordsDialogData>>.from(
+         streamResponses,
+       );
 
   final List<Future<PrimarySourceWordsDialogData>> _responses;
+  final List<Stream<PrimarySourceWordsDialogData>> _streamResponses;
   int calls = 0;
+
+  @override
+  Stream<PrimarySourceWordsDialogData> loadDialogDataStream({
+    required List<PrimarySourceWordLinkTarget> targets,
+    required bool isWeb,
+    required bool isMobileWeb,
+    required AppLocalizations localizations,
+  }) {
+    if (_streamResponses.isNotEmpty) {
+      calls++;
+      return _streamResponses.removeAt(0);
+    }
+    return Stream.fromFuture(
+      loadDialogData(
+        targets: targets,
+        isWeb: isWeb,
+        isMobileWeb: isMobileWeb,
+        localizations: localizations,
+      ),
+    );
+  }
 
   @override
   Future<PrimarySourceWordsDialogData> loadDialogData({
