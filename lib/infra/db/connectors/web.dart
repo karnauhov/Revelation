@@ -75,55 +75,31 @@ DatabaseConnection connectOnWeb(String dbFile) {
       final talker = GetIt.I<Talker>();
       final databaseName = dbFile.replaceAll(".sqlite", "");
       try {
-        final syncPlan = await _prepareWebDbVersionSync(
+        final result = await _openWasmDatabase(
           dbFile: dbFile,
           databaseName: databaseName,
+          forceResetLocalDatabase: false,
         );
-
-        var downloadedDatabase = false;
-        final result = await WasmDatabase.open(
-          databaseName: databaseName,
-          sqlite3Uri: Uri.parse('sqlite3.wasm'),
-          driftWorkerUri: Uri.parse('drift_worker.js'),
-          initializeDatabase: () async {
-            final response = await http.get(
-              _buildDbUri(
-                dbFile,
-                versionToken: syncPlan.versionToken,
-                forceNoCache: true,
-              ),
-              headers: _noCacheHeaders,
-            );
-            if (response.statusCode == 200) {
-              downloadedDatabase = true;
-              return response.bodyBytes;
-            } else {
-              log.error(
-                'Failed to load database file: $dbFile, status: ${response.statusCode}',
-              );
-              return null;
-            }
-          },
-        );
-
-        if (downloadedDatabase) {
-          await _setWebDbCreatedAt(databaseName);
-        }
-
-        if (syncPlan.shouldCommitVersionAfterOpen) {
-          await _commitWebDbVersion(databaseName, syncPlan.versionToken!);
-        }
-
-        if (result.missingFeatures.isNotEmpty) {
-          log.info(
-            'Using ${result.chosenImplementation} due to missing browser features: ${result.missingFeatures}',
-          );
-        }
 
         return result.resolvedExecutor;
       } catch (e, st) {
-        talker.handle(e, st, 'Failed to open Wasm DB: $dbFile');
-        rethrow;
+        talker.handle(e, st, 'Failed to open Wasm DB before reset: $dbFile');
+        try {
+          final result = await _openWasmDatabase(
+            dbFile: dbFile,
+            databaseName: databaseName,
+            forceResetLocalDatabase: true,
+          );
+          log.info('Web DB recovered after forced reset: $dbFile');
+          return result.resolvedExecutor;
+        } catch (retryError, retryStackTrace) {
+          talker.handle(
+            retryError,
+            retryStackTrace,
+            'Failed to open Wasm DB after reset: $dbFile',
+          );
+          rethrow;
+        }
       }
     }),
   );
@@ -155,6 +131,7 @@ Uri _buildDbUri(
 Future<WebDbVersionSyncPlan> _prepareWebDbVersionSync({
   required String dbFile,
   required String databaseName,
+  required bool forceResetLocalDatabase,
 }) async {
   final remoteVersionToken = await _fetchRemoteDbVersionToken(dbFile);
   if (remoteVersionToken == null) {
@@ -162,6 +139,7 @@ Future<WebDbVersionSyncPlan> _prepareWebDbVersionSync({
     return planWebDbVersionSync(
       remoteVersionToken: null,
       localVersionToken: null,
+      forceResetLocalDatabase: forceResetLocalDatabase,
     );
   }
 
@@ -171,6 +149,7 @@ Future<WebDbVersionSyncPlan> _prepareWebDbVersionSync({
   final syncPlan = planWebDbVersionSync(
     remoteVersionToken: remoteVersionToken,
     localVersionToken: localVersionToken,
+    forceResetLocalDatabase: forceResetLocalDatabase,
   );
   if (!syncPlan.shouldResetLocalDatabase) {
     return syncPlan;
@@ -195,6 +174,60 @@ Future<WebDbVersionSyncPlan> _prepareWebDbVersionSync({
 
   await prefs.remove(_createdAtKey(databaseName));
   return syncPlan;
+}
+
+Future<WasmDatabaseResult> _openWasmDatabase({
+  required String dbFile,
+  required String databaseName,
+  required bool forceResetLocalDatabase,
+}) async {
+  final syncPlan = await _prepareWebDbVersionSync(
+    dbFile: dbFile,
+    databaseName: databaseName,
+    forceResetLocalDatabase: forceResetLocalDatabase,
+  );
+
+  var downloadedDatabase = false;
+  final result = await WasmDatabase.open(
+    databaseName: databaseName,
+    sqlite3Uri: Uri.parse('sqlite3.wasm'),
+    driftWorkerUri: Uri.parse('drift_worker.js'),
+    initializeDatabase: () async {
+      final response = await http.get(
+        _buildDbUri(
+          dbFile,
+          versionToken: syncPlan.versionToken,
+          forceNoCache: true,
+        ),
+        headers: _noCacheHeaders,
+      );
+      if (response.statusCode == 200) {
+        downloadedDatabase = true;
+        return response.bodyBytes;
+      } else {
+        log.error(
+          'Failed to load database file: $dbFile, status: ${response.statusCode}',
+        );
+        return null;
+      }
+    },
+  );
+
+  if (downloadedDatabase) {
+    await _setWebDbCreatedAt(databaseName);
+  }
+
+  if (syncPlan.shouldCommitVersionAfterOpen) {
+    await _commitWebDbVersion(databaseName, syncPlan.versionToken!);
+  }
+
+  if (result.missingFeatures.isNotEmpty) {
+    log.info(
+      'Using ${result.chosenImplementation} due to missing browser features: ${result.missingFeatures}',
+    );
+  }
+
+  return result;
 }
 
 Future<void> _commitWebDbVersion(

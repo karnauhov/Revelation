@@ -111,6 +111,14 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - Use change checklist from `.github/change_checklist.md` for every change set (code + tests + docs RU/EN).
 - Keep localization in sync for supported locales: `en`, `es`, `uk`, `ru`.
 - Do not commit secrets. `api-keys.json` is gitignored.
+- Sentry triage workflow:
+  - Use `pubspec.yaml` `sentry.org` and `sentry.project` as the source of truth for the Sentry organization and project.
+  - Use the local gitignored `sentry.read` file as the read-only Sentry API token source. Accept either a raw token or `SENTRY_READ_AUTH_TOKEN=...` / `SENTRY_AUTH_TOKEN=...` / `auth_token=...` format.
+  - Never print or commit the Sentry token. If API requests return 403, ask the owner for a token with `org:read`, `project:read`, and `event:read`.
+  - To inspect the latest unresolved issue, read the project id from `GET https://sentry.io/api/0/projects/{org}/{project}/`, then call `GET https://sentry.io/api/0/organizations/{org}/issues/?project={projectId}&query=is%3Aunresolved&sort=date&limit=1`.
+  - For the selected issue, fetch the latest event with `GET https://sentry.io/api/0/organizations/{org}/issues/{issueId}/events/latest/`, then inspect exception entries, raw stack frames, tags, release, dist, environment, breadcrumbs, contexts, and event `errors`.
+  - If the issue is web-related, remember that the published web build lives in `C:\Users\karna\Projects\Revelation.website`; compare production assets and `db/manifest.json` there when diagnosing web-only failures.
+  - If Sentry reports source-map/source-context errors such as `js_missing_sources_content`, verify the release was built with `--source-maps`, uploaded through `dart run sentry_dart_plugin`, and configured with `upload_source_maps: true` plus `upload_sources: true`.
 - `ServerManager` expects compile-time defines `SUPABASE_URL` and `SUPABASE_KEY`.
 - The Snap packaging flow uses `--dart-define-from-file=api-keys.json`.
 - If you change database content or language loading behavior, check both `lib/infra/db/` and `web/db/`.

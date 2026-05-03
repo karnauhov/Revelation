@@ -14,6 +14,7 @@ class WebDbVersionSyncPlan {
 WebDbVersionSyncPlan planWebDbVersionSync({
   required String? remoteVersionToken,
   required String? localVersionToken,
+  bool forceResetLocalDatabase = false,
 }) {
   if (remoteVersionToken == null) {
     return const WebDbVersionSyncPlan(
@@ -24,6 +25,7 @@ WebDbVersionSyncPlan planWebDbVersionSync({
 
   return WebDbVersionSyncPlan(
     versionToken: remoteVersionToken,
-    shouldResetLocalDatabase: localVersionToken != remoteVersionToken,
+    shouldResetLocalDatabase:
+        forceResetLocalDatabase || localVersionToken != remoteVersionToken,
   );
 }

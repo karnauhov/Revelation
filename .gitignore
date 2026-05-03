@@ -59,3 +59,4 @@ scripts/content_tool/models/ocr/**/model_state.json
 scripts/content_tool/models/ocr/**/last_training_report.json
 
 sentry.properties
+sentry.read

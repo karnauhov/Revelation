@@ -34,4 +34,28 @@ void main() {
     expect(plan.shouldResetLocalDatabase, isTrue);
     expect(plan.shouldCommitVersionAfterOpen, isTrue);
   });
+
+  test('force reset recreates database even when version token matches', () {
+    final plan = planWebDbVersionSync(
+      remoteVersionToken: 'manifest:schema:4|data:3',
+      localVersionToken: 'manifest:schema:4|data:3',
+      forceResetLocalDatabase: true,
+    );
+
+    expect(plan.versionToken, 'manifest:schema:4|data:3');
+    expect(plan.shouldResetLocalDatabase, isTrue);
+    expect(plan.shouldCommitVersionAfterOpen, isTrue);
+  });
+
+  test('force reset is ignored when remote version is unknown', () {
+    final plan = planWebDbVersionSync(
+      remoteVersionToken: null,
+      localVersionToken: 'manifest:schema:4|data:3',
+      forceResetLocalDatabase: true,
+    );
+
+    expect(plan.versionToken, isNull);
+    expect(plan.shouldResetLocalDatabase, isFalse);
+    expect(plan.shouldCommitVersionAfterOpen, isFalse);
+  });
 }
