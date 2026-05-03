@@ -60,12 +60,12 @@ class PrimarySourceWordImageResult {
 
   factory PrimarySourceWordImageResult.loading({
     required PrimarySourceWordLinkTarget target,
-    required String sourceTitle,
+    String? sourceTitle,
     String? displayWordText,
   }) {
     return PrimarySourceWordImageResult(
       target: target,
-      sourceTitle: sourceTitle,
+      sourceTitle: sourceTitle ?? _fallbackSourceTitle(target),
       imageBytes: null,
       unavailableReason: PrimarySourceWordImageUnavailableReason.none,
       displayWordText: displayWordText,
@@ -139,7 +139,8 @@ class PrimarySourceWordImageService {
            wordTextFormatter ?? PrimarySourceWordTextFormatter(),
        _descriptionService = descriptionService ?? DescriptionContentService(),
        _cropCache = cropCache ?? PrimarySourceWordCropCache(),
-       _imageCropper = imageCropper ?? DartPrimarySourceWordImageCropper(),
+       _imageCropper =
+           imageCropper ?? const BackgroundPrimarySourceWordImageCropper(),
        _webImageCropper =
            webImageCropper ?? CanvasPrimarySourceWordImageCropper();
 
@@ -206,6 +207,12 @@ class PrimarySourceWordImageService {
     AppLocalizations? localizations,
   }) async* {
     final totalStopwatch = Stopwatch()..start();
+    final initialItems = _buildInitialLoadingResults(targets);
+    if (initialItems.isNotEmpty) {
+      yield PrimarySourceWordsDialogData(items: initialItems);
+      await _yieldForUi();
+    }
+
     final resolveStopwatch = Stopwatch()..start();
     final resolvedTargets = _resolveTargets(targets);
     final items = resolvedTargets
@@ -229,6 +236,7 @@ class PrimarySourceWordImageService {
       items: items,
       sharedWordDetailsMarkdown: sharedWordDetailsMarkdown,
     );
+    await _yieldForUi();
 
     final pendingTargets = resolvedTargets
         .where((resolved) => resolved.needsCrop)
@@ -247,6 +255,7 @@ class PrimarySourceWordImageService {
         items: items,
         sharedWordDetailsMarkdown: sharedWordDetailsMarkdown,
       );
+      await _yieldForUi();
     }
 
     final uncachedTargets = pendingTargets
@@ -257,9 +266,7 @@ class PrimarySourceWordImageService {
     final cropper = isWeb ? _webImageCropper : _imageCropper;
 
     for (final group in groupedTargets.values) {
-      if (isWeb) {
-        await _yieldForWeb();
-      }
+      await _yieldForUi();
 
       final pageStopwatch = Stopwatch()..start();
       final first = group.first;
@@ -278,6 +285,7 @@ class PrimarySourceWordImageService {
           items: items,
           sharedWordDetailsMarkdown: sharedWordDetailsMarkdown,
         );
+        await _yieldForUi();
         continue;
       }
 
@@ -315,12 +323,21 @@ class PrimarySourceWordImageService {
         items: items,
         sharedWordDetailsMarkdown: sharedWordDetailsMarkdown,
       );
+      await _yieldForUi();
     }
 
     _traceWebTiming(
       isWeb,
       'finished ${targets.length} targets in ${totalStopwatch.elapsedMilliseconds} ms',
     );
+  }
+
+  List<PrimarySourceWordImageResult> _buildInitialLoadingResults(
+    List<PrimarySourceWordLinkTarget> targets,
+  ) {
+    return targets
+        .map((target) => PrimarySourceWordImageResult.loading(target: target))
+        .toList(growable: false);
   }
 
   List<_ResolvedWordTarget> _resolveTargets(
@@ -574,9 +591,9 @@ class DartPrimarySourceWordImageCropper
 
     return requests
         .map(
-          (request) => _cropWordFromDecodedImage(
+          (request) => _cropWordRectsFromDecodedImage(
             sourceImage: sourceImage,
-            word: request.word,
+            rects: request.word.rectangles,
             padding: PrimarySourceWordImageCropper.defaultPadding,
           ),
         )
@@ -592,26 +609,38 @@ class DartPrimarySourceWordImageCropper
     if (sourceImage == null) {
       return null;
     }
-    return _cropWordFromDecodedImage(
+    return _cropWordRectsFromDecodedImage(
       sourceImage: sourceImage,
-      word: word,
+      rects: word.rectangles,
       padding: padding,
     );
   }
+}
 
-  img.Image? _decodeImage(Uint8List imageData) {
-    final img.Image? sourceImage;
-    try {
-      sourceImage = img.decodeImage(imageData);
-    } catch (_) {
-      return null;
+class BackgroundPrimarySourceWordImageCropper
+    implements PrimarySourceWordImageCropper {
+  const BackgroundPrimarySourceWordImageCropper();
+
+  @override
+  Future<List<Uint8List?>> cropWordImages({
+    required Uint8List imageData,
+    required List<PrimarySourceWordCropRequest> requests,
+  }) {
+    if (requests.isEmpty) {
+      return Future.value(const <Uint8List?>[]);
     }
-    if (sourceImage == null ||
-        sourceImage.width <= 0 ||
-        sourceImage.height <= 0) {
-      return null;
+    if (kIsWeb) {
+      return DartPrimarySourceWordImageCropper().cropWordImages(
+        imageData: imageData,
+        requests: requests,
+      );
     }
-    return sourceImage;
+
+    return compute<List<Object?>, List<Uint8List?>>(
+      _cropWordImagesInBackground,
+      _encodeCropPayload(imageData: imageData, requests: requests),
+      debugLabel: 'primary-source-word-crops',
+    );
   }
 }
 
@@ -636,7 +665,7 @@ class CanvasPrimarySourceWordImageCropper
               padding: PrimarySourceWordImageCropper.defaultPadding,
             ),
           );
-          await _yieldForWeb();
+          await _yieldForUi();
         }
         return results;
       } finally {
@@ -879,17 +908,98 @@ class _ResolvedWordTarget {
   }
 }
 
-Uint8List? _cropWordFromDecodedImage({
+List<Object?> _encodeCropPayload({
+  required Uint8List imageData,
+  required List<PrimarySourceWordCropRequest> requests,
+}) {
+  return <Object?>[
+    imageData,
+    requests
+        .map(
+          (request) => request.word.rectangles
+              .map(
+                (rect) => <double>[
+                  rect.startX,
+                  rect.startY,
+                  rect.endX,
+                  rect.endY,
+                ],
+              )
+              .toList(growable: false),
+        )
+        .toList(growable: false),
+  ];
+}
+
+List<Uint8List?> _cropWordImagesInBackground(List<Object?> payload) {
+  final imageData = payload[0]! as Uint8List;
+  final encodedRequests = payload[1]! as List<Object?>;
+  final sourceImage = _decodeImage(imageData);
+  if (sourceImage == null) {
+    return List<Uint8List?>.filled(
+      encodedRequests.length,
+      null,
+      growable: false,
+    );
+  }
+
+  return encodedRequests
+      .map(
+        (encodedRequest) => _cropWordRectsFromDecodedImage(
+          sourceImage: sourceImage,
+          rects: _decodeCropRectangles(encodedRequest),
+          padding: PrimarySourceWordImageCropper.defaultPadding,
+        ),
+      )
+      .toList(growable: false);
+}
+
+List<PageRect> _decodeCropRectangles(Object? encodedRequest) {
+  final encodedRects = encodedRequest as List;
+  final rects = <PageRect>[];
+  for (final encodedRect in encodedRects) {
+    final values = encodedRect as List;
+    if (values.length < 4) {
+      continue;
+    }
+    rects.add(
+      PageRect(
+        (values[0] as num).toDouble(),
+        (values[1] as num).toDouble(),
+        (values[2] as num).toDouble(),
+        (values[3] as num).toDouble(),
+      ),
+    );
+  }
+  return rects;
+}
+
+img.Image? _decodeImage(Uint8List imageData) {
+  final img.Image? sourceImage;
+  try {
+    sourceImage = img.decodeImage(imageData);
+  } catch (_) {
+    return null;
+  }
+  if (sourceImage == null ||
+      sourceImage.width <= 0 ||
+      sourceImage.height <= 0) {
+    return null;
+  }
+  return sourceImage;
+}
+
+Uint8List? _cropWordRectsFromDecodedImage({
   required img.Image sourceImage,
-  required PageWord word,
+  required List<PageRect> rects,
   required int padding,
 }) {
-  if (word.rectangles.isEmpty) {
+  if (rects.isEmpty) {
     return null;
   }
 
   final bounds = _resolveWordBounds(
-    rects: word.rectangles,
+    rects: rects,
     imageWidth: sourceImage.width,
     imageHeight: sourceImage.height,
     padding: padding,
@@ -998,8 +1108,14 @@ img.Image _stitchFragments(List<img.Image> fragments) {
   return canvas;
 }
 
-Future<void> _yieldForWeb() {
+Future<void> _yieldForUi() {
   return Future<void>.delayed(Duration.zero);
+}
+
+String _fallbackSourceTitle(PrimarySourceWordLinkTarget target) {
+  return target.sourceId.trim().isEmpty
+      ? target.fallbackLabel
+      : target.sourceId;
 }
 
 void _traceWebTiming(bool isWeb, String message) {

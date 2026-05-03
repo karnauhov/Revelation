@@ -21,7 +21,12 @@ class PrimarySourceWordImagesCubit extends Cubit<PrimarySourceWordImagesState> {
        _isMobileWeb = isMobileWeb,
        _localizations = localizations,
        _imageService = imageService ?? PrimarySourceWordImageService(),
-       super(PrimarySourceWordImagesState.loading()) {
+       _initialItems = _buildInitialItems(targets),
+       super(
+         PrimarySourceWordImagesState.loading(
+           items: _buildInitialItems(targets),
+         ),
+       ) {
     if (autoLoad) {
       unawaited(load());
     }
@@ -32,11 +37,12 @@ class PrimarySourceWordImagesCubit extends Cubit<PrimarySourceWordImagesState> {
   final bool _isMobileWeb;
   final AppLocalizations _localizations;
   final PrimarySourceWordImageService _imageService;
+  final List<PrimarySourceWordImageResult> _initialItems;
   final LatestRequestGuard _loadRequestGuard = LatestRequestGuard();
 
   Future<void> load() async {
     final requestToken = _loadRequestGuard.start();
-    emit(PrimarySourceWordImagesState.loading());
+    emit(PrimarySourceWordImagesState.loading(items: _initialItems));
 
     try {
       PrimarySourceWordsDialogData? latestData;
@@ -96,6 +102,14 @@ class PrimarySourceWordImagesCubit extends Cubit<PrimarySourceWordImagesState> {
 
   bool _canApply(RequestToken token) {
     return !isClosed && _loadRequestGuard.isActive(token);
+  }
+
+  static List<PrimarySourceWordImageResult> _buildInitialItems(
+    List<PrimarySourceWordLinkTarget> targets,
+  ) {
+    return targets
+        .map((target) => PrimarySourceWordImageResult.loading(target: target))
+        .toList(growable: false);
   }
 
   @override

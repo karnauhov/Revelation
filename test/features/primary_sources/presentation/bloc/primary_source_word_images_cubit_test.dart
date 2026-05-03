@@ -15,6 +15,23 @@ void main() {
     wordIndex: 2,
   );
 
+  test('starts with target loading placeholders', () async {
+    final cubit = PrimarySourceWordImagesCubit(
+      targets: const [target],
+      isWeb: false,
+      isMobileWeb: false,
+      localizations: lookupAppLocalizations(const Locale('en')),
+      imageService: _FakeWordImageService(),
+      autoLoad: false,
+    );
+    addTearDown(cubit.close);
+
+    expect(cubit.state.status, PrimarySourceWordImagesStatus.loading);
+    expect(cubit.state.items, hasLength(1));
+    expect(cubit.state.items.single.isLoading, isTrue);
+    expect(cubit.state.items.single.sourceTitle, 'U001');
+  });
+
   test('load emits loaded items from service', () async {
     final item = PrimarySourceWordImageResult.unavailable(target: target);
     final service = _FakeWordImageService(

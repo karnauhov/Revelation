@@ -493,13 +493,27 @@ class _PrimarySourceWordPreview extends StatelessWidget {
       return Align(
         alignment: Alignment.centerLeft,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: SizedBox(
-            width: 22,
-            height: 22,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: colorScheme.primary,
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 96, minHeight: 36),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.35,
+                ),
+                border: Border.all(color: colorScheme.outlineVariant),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Center(
+                child: SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: colorScheme.primary,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -515,7 +529,10 @@ class _PrimarySourceWordPreview extends StatelessWidget {
       );
       final wordLink = item.target.wordLink;
       if (wordLink == null) {
-        return Align(alignment: Alignment.centerLeft, child: image);
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: RepaintBoundary(child: image),
+        );
       }
 
       return Align(
@@ -530,7 +547,7 @@ class _PrimarySourceWordPreview extends StatelessWidget {
             onTap: () {
               unawaited(_openWord(context, wordLink));
             },
-            child: image,
+            child: RepaintBoundary(child: image),
           ),
         ),
       );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
@@ -21,6 +22,8 @@ import 'package:revelation/shared/models/primary_source_word_link_target.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   test('loadWordImages crops valid words and keeps unavailable rows', () async {
     final source = _buildSource(
       id: 'U001',
@@ -164,6 +167,59 @@ void main() {
     expect(secondFragmentPixel.g, 0);
     expect(secondFragmentPixel.b, 0);
   });
+
+  test(
+    'loadDialogDataStream emits target placeholders before reference work',
+    () async {
+      final source = _buildSource(
+        id: 'U001',
+        pages: [
+          model.Page(
+            name: '325v',
+            content: 'Rev 1',
+            image: 'u001_325v.png',
+            words: [
+              PageWord('Alpha', [PageRect(0.25, 0.25, 0.75, 0.75)]),
+            ],
+          ),
+        ],
+      );
+      final imageLoader = _FakeImageLoadingOrchestrator(_png(20, 20));
+      final service = PrimarySourceWordImageService(
+        referenceResolver: PrimarySourceReferenceService(
+          repository: _FakePrimarySourcesDbRepository([source]),
+        ),
+        imageLoadingOrchestrator: imageLoader,
+      );
+      final stream = StreamIterator(
+        service.loadDialogDataStream(
+          localizations: lookupAppLocalizations(const Locale('en')),
+          targets: const [
+            PrimarySourceWordLinkTarget(
+              sourceId: 'U001',
+              pageName: '325v',
+              wordIndex: 0,
+            ),
+          ],
+          isWeb: false,
+          isMobileWeb: false,
+        ),
+      );
+      addTearDown(stream.cancel);
+
+      expect(await stream.moveNext(), isTrue);
+      expect(stream.current.items.single.isLoading, isTrue);
+      expect(stream.current.items.single.sourceTitle, 'U001');
+      expect(stream.current.items.single.displayWordText, isNull);
+      expect(imageLoader.loadCalls, 0);
+
+      expect(await stream.moveNext(), isTrue);
+      expect(stream.current.items.single.isLoading, isTrue);
+      expect(stream.current.items.single.sourceTitle, 'Title U001');
+      expect(stream.current.items.single.displayWordText, 'Alpha');
+      expect(imageLoader.loadCalls, 0);
+    },
+  );
 
   test(
     'loadDialogData reuses cached web snippets before page loading',
@@ -328,6 +384,28 @@ void main() {
       );
     },
   );
+
+  test('background cropper crops word batches', () async {
+    final cropper = const BackgroundPrimarySourceWordImageCropper();
+
+    final croppedImages = await cropper.cropWordImages(
+      imageData: _splitWordPng(),
+      requests: [
+        PrimarySourceWordCropRequest(
+          cacheKey: 'split',
+          word: PageWord('Split', [
+            PageRect(0.7, 0, 0.8, 0.5),
+            PageRect(0, 0.5, 0.1, 1),
+          ]),
+        ),
+      ],
+    );
+
+    final cropped = img.decodeImage(croppedImages.single!);
+    expect(cropped, isNotNull);
+    expect(cropped!.width, 29);
+    expect(cropped.height, 13);
+  });
 }
 
 class _FakeImageLoadingOrchestrator
