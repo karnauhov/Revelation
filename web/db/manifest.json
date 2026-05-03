@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-02T13:31:35Z",
+  "generatedAt": "2026-05-03T10:21:15Z",
   "databases": {
     "revelation.sqlite": {
       "versionToken": "manifest:schema:4|data:3|date:2026-05-02T13:31:35Z|size:1630208",
@@ -10,32 +10,32 @@
       "fileSizeBytes": 1630208
     },
     "revelation_en.sqlite": {
-      "versionToken": "manifest:schema:6|data:6|date:2026-05-02T13:31:35Z|size:589824",
+      "versionToken": "manifest:schema:6|data:7|date:2026-05-03T10:21:15Z|size:593920",
       "schemaVersion": 6,
-      "dataVersion": 6,
-      "date": "2026-05-02T13:31:35Z",
-      "fileSizeBytes": 589824
+      "dataVersion": 7,
+      "date": "2026-05-03T10:21:15Z",
+      "fileSizeBytes": 593920
     },
     "revelation_es.sqlite": {
-      "versionToken": "manifest:schema:6|data:6|date:2026-05-02T13:31:35Z|size:622592",
+      "versionToken": "manifest:schema:6|data:7|date:2026-05-03T10:21:15Z|size:626688",
       "schemaVersion": 6,
-      "dataVersion": 6,
-      "date": "2026-05-02T13:31:35Z",
-      "fileSizeBytes": 622592
+      "dataVersion": 7,
+      "date": "2026-05-03T10:21:15Z",
+      "fileSizeBytes": 626688
     },
     "revelation_ru.sqlite": {
-      "versionToken": "manifest:schema:6|data:8|date:2026-05-02T13:31:35Z|size:684032",
+      "versionToken": "manifest:schema:6|data:9|date:2026-05-03T10:21:15Z|size:688128",
       "schemaVersion": 6,
-      "dataVersion": 8,
-      "date": "2026-05-02T13:31:35Z",
-      "fileSizeBytes": 684032
+      "dataVersion": 9,
+      "date": "2026-05-03T10:21:15Z",
+      "fileSizeBytes": 688128
     },
     "revelation_uk.sqlite": {
-      "versionToken": "manifest:schema:6|data:6|date:2026-05-02T13:31:35Z|size:688128",
+      "versionToken": "manifest:schema:6|data:7|date:2026-05-03T10:21:15Z|size:692224",
       "schemaVersion": 6,
-      "dataVersion": 6,
-      "date": "2026-05-02T13:31:35Z",
-      "fileSizeBytes": 688128
+      "dataVersion": 7,
+      "date": "2026-05-03T10:21:15Z",
+      "fileSizeBytes": 692224
     }
   }
 }
