@@ -13,6 +13,7 @@ api-keys.json
 .history
 .svn/
 .swiftpm/
+.sentry-native/
 migrate_working_dir/
 
 # IntelliJ related
@@ -56,3 +57,5 @@ scripts/content_tool/models/ocr/**/*.mlmodel
 scripts/content_tool/models/ocr/datasets/
 scripts/content_tool/models/ocr/**/model_state.json
 scripts/content_tool/models/ocr/**/last_training_report.json
+
+sentry.properties

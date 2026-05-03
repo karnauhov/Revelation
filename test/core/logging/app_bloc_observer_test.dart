@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/logging/app_bloc_observer.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -113,5 +114,64 @@ void main() {
         );
       },
     );
+
+    test('reports bloc errors to analytics reporter', () async {
+      final analyticsReporter = _RecordingAppAnalyticsReporter();
+      Bloc.observer = AppBlocObserver(
+        talker: talker,
+        analyticsReporter: analyticsReporter,
+        logTransitions: false,
+      );
+
+      final cubit = _FailingCubit();
+      cubit.explode();
+      await cubit.close();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(analyticsReporter.captured, hasLength(1));
+      expect(analyticsReporter.captured.single.error, isA<StateError>());
+      expect(
+        analyticsReporter.captured.single.source,
+        '[BLoC] error in _FailingCubit',
+      );
+      expect(analyticsReporter.captured.single.fatal, isFalse);
+    });
   });
+}
+
+class _CapturedException {
+  const _CapturedException({
+    required this.error,
+    required this.source,
+    required this.fatal,
+  });
+
+  final Object error;
+  final String source;
+  final bool fatal;
+}
+
+class _RecordingAppAnalyticsReporter implements AppAnalyticsReporter {
+  final List<_CapturedException> captured = <_CapturedException>[];
+
+  @override
+  Future<void> setAppContext(AppAnalyticsAppContext context) async {}
+
+  @override
+  Future<void> setDataContext(AppAnalyticsDataContext context) async {}
+
+  @override
+  Future<void> trackAppSessionStarted(AppAnalyticsDataContext context) async {}
+
+  @override
+  Future<void> captureException(
+    Object error,
+    StackTrace stackTrace, {
+    required String source,
+    bool fatal = false,
+  }) async {
+    captured.add(
+      _CapturedException(error: error, source: source, fatal: fatal),
+    );
+  }
 }

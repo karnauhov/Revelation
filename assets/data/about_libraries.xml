@@ -253,6 +253,13 @@
         <licenseLink>https://pub.dev/packages/talker_flutter/license</licenseLink>
     </library>
     <library>
+        <name>@Package 'sentry_flutter'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/sentry_flutter</officialSite>
+        <licenseLink>https://pub.dev/packages/sentry_flutter/license</licenseLink>
+    </library>
+    <library>
         <name>@Package 'pdf'</name>
         <idIcon></idIcon>
         <license>Apache-2.0</license>
@@ -300,6 +307,13 @@
         <license>MIT</license>
         <officialSite>https://pub.dev/packages/drift_dev</officialSite>
         <licenseLink>https://pub.dev/packages/drift_dev/license</licenseLink>
+    </library>
+    <library>
+        <name>@Package 'sentry_dart_plugin'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/sentry_dart_plugin</officialSite>
+        <licenseLink>https://pub.dev/packages/sentry_dart_plugin/license</licenseLink>
     </library>
     <library>
         <name>@Font 'Arimo'</name>

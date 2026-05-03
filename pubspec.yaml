@@ -1,11 +1,12 @@
 name: revelation
 description: "Revelation Study app."
 publish_to: 'none'
-version: 1.0.7+157
+version: 1.0.7+158
 environment:
   sdk: ^3.9.0
 
 dependencies:
+  sentry_flutter: ^9.19.0
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -45,6 +46,7 @@ dependencies:
   pdf: ^3.12.0
 
 dev_dependencies:
+  sentry_dart_plugin: ^3.3.0
   flutter_test:
     sdk: flutter
   integration_test:
@@ -70,7 +72,7 @@ msix_config:
   publisher: CN=B37F48EC-C643-42C2-82FB-3DFB514F5E74
   languages: en, es, uk, ru
   store: true
-  msix_version: 1.0.164.0
+  msix_version: 1.0.165.0
   logo_path: .\assets\images\UI\app_icon.png
 
 flutter:
@@ -104,3 +106,11 @@ flutter:
       fonts:
         - asset: assets/fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf
           weight: 400
+
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: true
+  upload_sources: false
+  commits: false
+  project: revelation-flutter
+  org: ai11-link

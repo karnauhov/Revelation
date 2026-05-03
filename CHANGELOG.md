@@ -4,6 +4,10 @@ All notable changes to this application will be documented here.
 
 ## [1.0.7] - Under development
 
+### Added
+
+- Analytics and crash reporting support with Sentry
+
 ### Fixed
 
 - Performance of dialog for compare words

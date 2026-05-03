@@ -10,9 +10,11 @@ import 'package:get_it/get_it.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/app/startup/bloc/app_startup_cubit.dart';
 import 'package:revelation/app/startup/screens/app_startup_screen.dart';
+import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/logging/app_bloc_observer.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
+import 'package:revelation/infra/analytics/sentry/sentry_app_analytics_reporter.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/main.dart';
 import 'package:revelation/main.dart' as app_entry show main;
@@ -146,6 +148,10 @@ void main() {
       configureAppCore(talker);
 
       expect(GetIt.I<Talker>(), same(talker));
+      expect(
+        GetIt.I<AppAnalyticsReporter>(),
+        isA<SentryAppAnalyticsReporter>(),
+      );
       expect(Bloc.observer, isA<AppBlocObserver>());
     });
   });
@@ -157,6 +163,7 @@ void main() {
 
       await runAppEntryPoint(
         talker: talker,
+        sentryAppRunner: (appRunner) => appRunner(),
         startAppCallback: (_) async {
           startupCalls++;
         },
@@ -166,20 +173,65 @@ void main() {
       expect(talker.handled, isEmpty);
     });
 
+    test(
+      'runs Sentry setup and startup inside the same guarded zone',
+      () async {
+        final rootZone = Zone.current;
+        final talker = _RecordingTalker();
+        var bindingInitializations = 0;
+        Zone? bindingZone;
+        Zone? sentryRunnerZone;
+        Zone? startupZone;
+
+        await runAppEntryPoint(
+          talker: talker,
+          initializeBinding: () {
+            bindingInitializations++;
+            bindingZone = Zone.current;
+            return WidgetsBinding.instance;
+          },
+          sentryAppRunner: (appRunner) async {
+            sentryRunnerZone = Zone.current;
+            await appRunner();
+          },
+          startAppCallback: (_) async {
+            startupZone = Zone.current;
+          },
+        );
+
+        expect(bindingInitializations, 1);
+        expect(sentryRunnerZone, isNot(same(rootZone)));
+        expect(bindingZone, same(sentryRunnerZone));
+        expect(startupZone, same(sentryRunnerZone));
+        expect(talker.handled, isEmpty);
+      },
+    );
+
     test('forwards uncaught startup error to talker.handle', () async {
       final talker = _RecordingTalker();
+      final analyticsReporter = _RecordingAppAnalyticsReporter();
+      AppDi.registerCore(talker: talker, analyticsReporter: analyticsReporter);
 
       await runAppEntryPoint(
         talker: talker,
+        sentryAppRunner: (appRunner) => appRunner(),
         startAppCallback: (_) async {
           throw StateError('forced startup error');
         },
       );
+      await Future<void>.delayed(Duration.zero);
 
       expect(talker.handled, hasLength(1));
       expect(talker.handled.single.error, isA<StateError>());
       expect(talker.handled.single.message, 'Uncaught app exception (zone)');
       expect(talker.handled.single.stackTrace, isNotNull);
+      expect(analyticsReporter.captured, hasLength(1));
+      expect(analyticsReporter.captured.single.error, isA<StateError>());
+      expect(
+        analyticsReporter.captured.single.source,
+        'Uncaught app exception (zone)',
+      );
+      expect(analyticsReporter.captured.single.fatal, isTrue);
     });
   });
 
@@ -380,6 +432,43 @@ class _RecordingTalker extends Talker {
   void handle(Object exception, [StackTrace? stackTrace, dynamic msg]) {
     handled.add(
       _HandledError(error: exception, stackTrace: stackTrace, message: msg),
+    );
+  }
+}
+
+class _CapturedException {
+  const _CapturedException({
+    required this.error,
+    required this.source,
+    required this.fatal,
+  });
+
+  final Object error;
+  final String source;
+  final bool fatal;
+}
+
+class _RecordingAppAnalyticsReporter implements AppAnalyticsReporter {
+  final List<_CapturedException> captured = <_CapturedException>[];
+
+  @override
+  Future<void> setAppContext(AppAnalyticsAppContext context) async {}
+
+  @override
+  Future<void> setDataContext(AppAnalyticsDataContext context) async {}
+
+  @override
+  Future<void> trackAppSessionStarted(AppAnalyticsDataContext context) async {}
+
+  @override
+  Future<void> captureException(
+    Object error,
+    StackTrace stackTrace, {
+    required String source,
+    bool fatal = false,
+  }) async {
+    captured.add(
+      _CapturedException(error: error, source: source, fatal: fatal),
     );
   }
 }

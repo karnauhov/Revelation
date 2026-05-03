@@ -7,7 +7,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
+import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +26,13 @@ void main() {
     previousFlutterErrorHandler = FlutterError.onError;
     previousPlatformErrorHandler = PlatformDispatcher.instance.onError;
     SharedPreferences.setMockInitialValues(<String, Object>{});
+    PackageInfo.setMockInitialValues(
+      appName: 'Revelation',
+      packageName: 'ai11.link.revelation',
+      version: '1.0.7',
+      buildNumber: '157',
+      buildSignature: '',
+    );
     await GetIt.I.reset();
   });
 
@@ -51,6 +61,7 @@ void main() {
       AppDi.registerCore(talker: talker);
       final runtime = _FakeDatabaseRuntime();
       final progressSteps = <AppBootstrapStep>[];
+      final analyticsReporter = _RecordingAppAnalyticsReporter();
 
       final audioInitCalls = <String>[];
       final configLoadCalls = <String>[];
@@ -66,6 +77,9 @@ void main() {
         loadNominaSacraPronunciationConfig: () async {
           configLoadCalls.add('nomina-sacra');
         },
+        analyticsReporter: analyticsReporter,
+        packageInfoLoader: _loadTestPackageInfo,
+        databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
       );
       final settingsCubit = await bootstrap.initialize(
         onProgress: (progress) {
@@ -78,6 +92,29 @@ void main() {
       expect(runtime.initializedLanguages, <String>['ru']);
       expect(audioInitCalls, <String>['ru']);
       expect(configLoadCalls, <String>['manuscript-greek', 'nomina-sacra']);
+      expect(analyticsReporter.appContexts, <AppAnalyticsAppContext>[
+        const AppAnalyticsAppContext(
+          appName: 'Revelation',
+          packageName: 'ai11.link.revelation',
+          version: '1.0.7',
+          buildNumber: '157',
+          platform: 'android',
+          languageCode: 'ru',
+        ),
+      ]);
+      expect(analyticsReporter.dataContexts, hasLength(1));
+      expect(analyticsReporter.dataContexts.single.languageCode, 'ru');
+      expect(
+        analyticsReporter.dataContexts.single.commonDatabase,
+        _commonAnalyticsDatabaseVersion,
+      );
+      expect(
+        analyticsReporter.dataContexts.single.localizedDatabase,
+        _ruAnalyticsDatabaseVersion,
+      );
+      expect(analyticsReporter.sessionContexts, <AppAnalyticsDataContext>[
+        analyticsReporter.dataContexts.single,
+      ]);
       expect(progressSteps, <AppBootstrapStep>[
         AppBootstrapStep.preparing,
         AppBootstrapStep.loadingSettings,
@@ -91,6 +128,10 @@ void main() {
       final updatedLanguage = await runtime.firstUpdatedLanguage.future;
       expect(updatedLanguage, 'en');
       expect(runtime.updatedLanguages, <String>['en']);
+      await Future<void>.delayed(Duration.zero);
+      expect(analyticsReporter.dataContexts, hasLength(2));
+      expect(analyticsReporter.dataContexts.last.languageCode, 'en');
+      expect(analyticsReporter.sessionContexts, hasLength(1));
     },
   );
 
@@ -104,6 +145,7 @@ void main() {
       talker: talker,
       databaseRuntime: runtime,
       initializeAudio: _noopInitializeAudio,
+      databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
     );
     final settingsCubit = await bootstrap.initialize();
     addTearDown(settingsCubit.close);
@@ -120,6 +162,7 @@ void main() {
     await _seedSettings(language: 'en');
     final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
     AppDi.registerCore(talker: talker);
+    final analyticsReporter = _RecordingAppAnalyticsReporter();
     final previousPresentError = FlutterError.presentError;
     final presentedErrors = <FlutterErrorDetails>[];
     FlutterError.presentError = presentedErrors.add;
@@ -130,6 +173,9 @@ void main() {
       talker: talker,
       databaseRuntime: _FakeDatabaseRuntime(),
       initializeAudio: _noopInitializeAudio,
+      analyticsReporter: analyticsReporter,
+      packageInfoLoader: _loadTestPackageInfo,
+      databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
     );
     final settingsCubit = await bootstrap.initialize();
     addTearDown(settingsCubit.close);
@@ -145,11 +191,21 @@ void main() {
     );
     expect(presentedErrors, hasLength(1));
     expect(presentedErrors.single.exception, isA<StateError>());
+    await Future<void>.delayed(Duration.zero);
     final handled = platformHandler!(
       StateError('forced platform error'),
       StackTrace.current,
     );
     expect(handled, isTrue);
+    await Future<void>.delayed(Duration.zero);
+    expect(analyticsReporter.captured, hasLength(2));
+    expect(analyticsReporter.captured.first.source, 'Flutter framework error');
+    expect(analyticsReporter.captured.first.fatal, isTrue);
+    expect(
+      analyticsReporter.captured.last.source,
+      'PlatformDispatcher uncaught error',
+    );
+    expect(analyticsReporter.captured.last.fatal, isTrue);
   });
 
   test('initialize keeps app startup alive when audio init fails', () async {
@@ -164,6 +220,7 @@ void main() {
       initializeAudio: (_) async {
         throw StateError('forced audio initialization failure');
       },
+      databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
     );
     final settingsCubit = await bootstrap.initialize();
     addTearDown(settingsCubit.close);
@@ -175,6 +232,19 @@ void main() {
 
 Future<void> _noopInitializeAudio(SettingsCubit settingsCubit) async {}
 
+Future<PackageInfo> _loadTestPackageInfo() async {
+  return PackageInfo(
+    appName: 'Revelation',
+    packageName: 'ai11.link.revelation',
+    version: '1.0.7',
+    buildNumber: '157',
+  );
+}
+
+Future<DatabaseVersionInfo?> _loadTestDatabaseVersionInfo(String dbFile) async {
+  return _testDatabaseVersions[dbFile];
+}
+
 Future<void> _seedSettings({required String language}) async {
   SharedPreferences.setMockInitialValues(<String, Object>{
     'revelation_settings': jsonEncode(<String, dynamic>{
@@ -184,6 +254,83 @@ Future<void> _seedSettings({required String language}) async {
       'soundEnabled': true,
     }),
   });
+}
+
+final _commonDatabaseVersion = DatabaseVersionInfo(
+  schemaVersion: 1,
+  dataVersion: 3,
+  date: DateTime.utc(2026, 5, 1),
+);
+
+final _ruDatabaseVersion = DatabaseVersionInfo(
+  schemaVersion: 1,
+  dataVersion: 8,
+  date: DateTime.utc(2026, 5, 2),
+);
+
+final _enDatabaseVersion = DatabaseVersionInfo(
+  schemaVersion: 1,
+  dataVersion: 6,
+  date: DateTime.utc(2026, 5, 2),
+);
+
+final _testDatabaseVersions = <String, DatabaseVersionInfo>{
+  'revelation.sqlite': _commonDatabaseVersion,
+  'revelation_ru.sqlite': _ruDatabaseVersion,
+  'revelation_en.sqlite': _enDatabaseVersion,
+};
+
+final _commonAnalyticsDatabaseVersion = AppAnalyticsDatabaseVersion(
+  schemaVersion: _commonDatabaseVersion.schemaVersion,
+  dataVersion: _commonDatabaseVersion.dataVersion,
+  date: _commonDatabaseVersion.date,
+);
+
+final _ruAnalyticsDatabaseVersion = AppAnalyticsDatabaseVersion(
+  schemaVersion: _ruDatabaseVersion.schemaVersion,
+  dataVersion: _ruDatabaseVersion.dataVersion,
+  date: _ruDatabaseVersion.date,
+);
+
+class _CapturedException {
+  const _CapturedException({required this.source, required this.fatal});
+
+  final String source;
+  final bool fatal;
+}
+
+class _RecordingAppAnalyticsReporter implements AppAnalyticsReporter {
+  final List<AppAnalyticsAppContext> appContexts = <AppAnalyticsAppContext>[];
+  final List<AppAnalyticsDataContext> dataContexts =
+      <AppAnalyticsDataContext>[];
+  final List<AppAnalyticsDataContext> sessionContexts =
+      <AppAnalyticsDataContext>[];
+  final List<_CapturedException> captured = <_CapturedException>[];
+
+  @override
+  Future<void> setAppContext(AppAnalyticsAppContext context) async {
+    appContexts.add(context);
+  }
+
+  @override
+  Future<void> setDataContext(AppAnalyticsDataContext context) async {
+    dataContexts.add(context);
+  }
+
+  @override
+  Future<void> trackAppSessionStarted(AppAnalyticsDataContext context) async {
+    sessionContexts.add(context);
+  }
+
+  @override
+  Future<void> captureException(
+    Object error,
+    StackTrace stackTrace, {
+    required String source,
+    bool fatal = false,
+  }) async {
+    captured.add(_CapturedException(source: source, fatal: fatal));
+  }
 }
 
 class _FakeDatabaseRuntime implements DatabaseRuntime {

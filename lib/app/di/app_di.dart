@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nested/nested.dart';
+import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
@@ -19,11 +20,21 @@ class AppDi {
 
   static final GetIt _getIt = GetIt.instance;
 
-  static void registerCore({required Talker talker}) {
+  static void registerCore({
+    required Talker talker,
+    AppAnalyticsReporter? analyticsReporter,
+  }) {
     if (_getIt.isRegistered<Talker>()) {
       _getIt.unregister<Talker>();
     }
     _getIt.registerSingleton<Talker>(talker);
+
+    if (_getIt.isRegistered<AppAnalyticsReporter>()) {
+      _getIt.unregister<AppAnalyticsReporter>();
+    }
+    _getIt.registerSingleton<AppAnalyticsReporter>(
+      analyticsReporter ?? const NoopAppAnalyticsReporter(),
+    );
 
     if (_getIt.isRegistered<MarkdownImageLoader>()) {
       _getIt.unregister<MarkdownImageLoader>();

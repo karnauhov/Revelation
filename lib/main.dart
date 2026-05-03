@@ -3,23 +3,32 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:revelation/app/router/app_router.dart';
+import 'package:get_it/get_it.dart';
 import 'package:revelation/app/bootstrap/app_bootstrap.dart';
 import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/app/router/app_router.dart';
 import 'package:revelation/app/startup/bloc/app_startup_cubit.dart';
 import 'package:revelation/app/startup/bloc/app_startup_state.dart';
-import 'package:revelation/app/startup/startup_error_reporter.dart';
 import 'package:revelation/app/startup/screens/app_startup_screen.dart';
+import 'package:revelation/app/startup/startup_error_reporter.dart';
+import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/logging/app_bloc_observer.dart';
 import 'package:revelation/core/logging/app_logger_formatter.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
+import 'package:revelation/infra/analytics/sentry/sentry_app_analytics_reporter.dart';
+import 'package:revelation/infra/analytics/sentry/sentry_app_runner.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/theme/material_theme.dart';
+import 'package:sentry_flutter/sentry_flutter.dart'
+    show SentryWidgetsFlutterBinding;
 import 'package:talker_flutter/talker_flutter.dart';
 
 typedef AppStartCallback = Future<void> Function(Talker talker);
 typedef RunAppCallback = void Function(Widget app);
+typedef AppBindingInitializer = WidgetsBinding Function();
+typedef SentryAppRunner =
+    Future<void> Function(Future<void> Function() appRunner);
 typedef RunEntryPointCallback =
     Future<void> Function({
       required Talker talker,
@@ -63,22 +72,80 @@ Talker createAppTalker() {
 }
 
 void configureAppCore(Talker talker) {
-  AppDi.registerCore(talker: talker);
-  Bloc.observer = AppBlocObserver(talker: talker);
+  final analyticsReporter = SentryAppAnalyticsReporter();
+  AppDi.registerCore(talker: talker, analyticsReporter: analyticsReporter);
+  Bloc.observer = AppBlocObserver(
+    talker: talker,
+    analyticsReporter: analyticsReporter,
+  );
 }
 
 @visibleForTesting
 Future<void> runAppEntryPoint({
   required Talker talker,
   required AppStartCallback startAppCallback,
+  AppBindingInitializer? initializeBinding,
+  SentryAppRunner? sentryAppRunner,
 }) async {
-  runZonedGuarded(
+  final analyticsReporter = _resolveAnalyticsReporter();
+  final startupFuture = runZonedGuarded<Future<void>>(
     () async {
-      await startAppCallback(talker);
+      (initializeBinding ?? SentryWidgetsFlutterBinding.ensureInitialized)();
+      await (sentryAppRunner ?? runWithSentry)(() async {
+        try {
+          await startAppCallback(talker);
+        } catch (error, stack) {
+          _handleTopLevelException(
+            talker,
+            analyticsReporter,
+            error,
+            stack,
+            'Uncaught app exception (zone)',
+          );
+        }
+      });
     },
     (Object error, StackTrace stack) {
-      talker.handle(error, stack, 'Uncaught app exception (zone)');
+      _handleTopLevelException(
+        talker,
+        analyticsReporter,
+        error,
+        stack,
+        'Uncaught app exception (zone)',
+      );
     },
+  );
+  if (startupFuture != null) {
+    await startupFuture;
+  }
+}
+
+AppAnalyticsReporter _resolveAnalyticsReporter() {
+  final getIt = GetIt.I;
+  if (getIt.isRegistered<AppAnalyticsReporter>()) {
+    return getIt<AppAnalyticsReporter>();
+  }
+  return const NoopAppAnalyticsReporter();
+}
+
+void _handleTopLevelException(
+  Talker talker,
+  AppAnalyticsReporter analyticsReporter,
+  Object error,
+  StackTrace stack,
+  String source,
+) {
+  talker.handle(error, stack, source);
+  unawaited(
+    analyticsReporter
+        .captureException(error, stack, source: source, fatal: true)
+        .catchError((Object analyticsError, StackTrace analyticsStackTrace) {
+          talker.handle(
+            analyticsError,
+            analyticsStackTrace,
+            'Failed to report top-level exception to analytics',
+          );
+        }),
   );
 }
 
@@ -165,7 +232,7 @@ class RevelationApp extends StatelessWidget {
       routerDelegate: appRouter.router.routerDelegate,
       routeInformationParser: appRouter.router.routeInformationParser,
       routeInformationProvider: appRouter.router.routeInformationProvider,
-      title: "Revelation",
+      title: 'Revelation',
       locale: currentLocale,
       localizationsDelegates: const [
         AppLocalizations.delegate,

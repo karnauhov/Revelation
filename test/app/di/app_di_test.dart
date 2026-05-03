@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
@@ -34,10 +35,13 @@ void main() {
 
     AppDi.registerCore(talker: first);
     expect(GetIt.I<Talker>(), same(first));
+    expect(GetIt.I<AppAnalyticsReporter>(), isA<NoopAppAnalyticsReporter>());
     expect(GetIt.I<MarkdownImageLoader>(), isA<MarkdownImageLoader>());
 
-    AppDi.registerCore(talker: second);
+    const analyticsReporter = _FakeAppAnalyticsReporter();
+    AppDi.registerCore(talker: second, analyticsReporter: analyticsReporter);
     expect(GetIt.I<Talker>(), same(second));
+    expect(GetIt.I<AppAnalyticsReporter>(), same(analyticsReporter));
     expect(GetIt.I<MarkdownImageLoader>(), isA<MarkdownImageLoader>());
   });
 
@@ -140,3 +144,24 @@ final _testSettings = AppSettings(
   selectedFontSize: 'medium',
   soundEnabled: false,
 );
+
+class _FakeAppAnalyticsReporter implements AppAnalyticsReporter {
+  const _FakeAppAnalyticsReporter();
+
+  @override
+  Future<void> setAppContext(AppAnalyticsAppContext context) async {}
+
+  @override
+  Future<void> setDataContext(AppAnalyticsDataContext context) async {}
+
+  @override
+  Future<void> trackAppSessionStarted(AppAnalyticsDataContext context) async {}
+
+  @override
+  Future<void> captureException(
+    Object error,
+    StackTrace stackTrace, {
+    required String source,
+    bool fatal = false,
+  }) async {}
+}

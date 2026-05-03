@@ -5,11 +5,39 @@ This file contains short practical notes for local development, release work, an
 ## Environment
 
 - The app expects compile-time defines `SUPABASE_URL` and `SUPABASE_KEY`.
+- Sentry is enabled only when `SENTRY_DSN` is provided. Release builds should also provide `SENTRY_ENVIRONMENT=production`; `SENTRY_TRACES_SAMPLE_RATE` can lower the manual session transaction sample rate if the free quota needs protection.
+- Debug symbol/source-map upload uses the Sentry Dart plugin and requires `SENTRY_AUTH_TOKEN` in CI or local release environments.
 - Snap packaging uses `--dart-define-from-file=api-keys.json`.
 - Working database files are edited in `%Documents%/revelation/db`.
 - Web builds consume SQLite files from `web/db/`.
 - Web DB version checks prefer `web/db/manifest.json`; the content tool button `Сохранить в проект` compares DB size/date between working DBs and `web/db`, rewrites only changed files, increments `data_version` only for rewritten DBs, and then refreshes `manifest.json`.
 - Content tool release-publish config is stored locally in `env/content_tool_release_publish.env` (the `env/` folder is gitignored).
+
+## Sentry Debug Artifacts
+
+- CI uploads Sentry debug symbols/source maps from `.github/workflows/flutter_build.yml`.
+- GitHub Actions must have the repository secret `SENTRY_AUTH_TOKEN`; the runtime DSN stays in `SENTRY_DSN`.
+- `pubspec.yaml` keeps `upload_sources: false` and `commits: false` so symbolication works without uploading source bundles or requiring commit association permissions.
+- Flutter web must be built with `--source-maps` before running `dart run sentry_dart_plugin`.
+- After Sentry upload, remove generated web `*.map` files before publishing a public web archive.
+
+Local release upload examples:
+
+```powershell
+$env:SENTRY_AUTH_TOKEN = "sntrys_your_token_here"
+flutter build windows --release --no-tree-shake-icons --dart-define-from-file=api-keys.json
+dart run sentry_dart_plugin --sentry-define=upload_source_maps=false
+```
+
+```powershell
+$env:SENTRY_AUTH_TOKEN = "sntrys_your_token_here"
+flutter build web --release --source-maps --dart-define-from-file=api-keys.json
+dart run sentry_dart_plugin --sentry-define=upload_debug_symbols=false
+$workspacePath = (Resolve-Path ".").Path
+$webBuildPath = (Resolve-Path "build/web").Path
+if (-not $webBuildPath.StartsWith($workspacePath)) { throw "Unexpected web build path: $webBuildPath" }
+Get-ChildItem -LiteralPath $webBuildPath -Recurse -Filter "*.map" | Remove-Item -Force
+```
 
 ## Release Versioning
 
