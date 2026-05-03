@@ -11,6 +11,7 @@ All notable changes to this application will be documented here.
 ### Fixed
 
 - Performance of dialog for compare words
+- Improved web database startup during published updates
 
 ## [1.0.6](https://github.com/karnauhov/Revelation/releases/tag/v1.0.6%2B156) - 02.05.26
 

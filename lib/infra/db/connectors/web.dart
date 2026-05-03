@@ -11,6 +11,7 @@ import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/infra/db/connectors/web_db_manifest.dart';
 import 'package:revelation/infra/db/connectors/web_db_uri.dart';
 import 'package:revelation/infra/db/connectors/web_db_version_probe_policy.dart';
+import 'package:revelation/infra/db/connectors/web_db_version_sync_plan.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/core/logging/common_logger.dart';
@@ -74,11 +75,12 @@ DatabaseConnection connectOnWeb(String dbFile) {
       final talker = GetIt.I<Talker>();
       final databaseName = dbFile.replaceAll(".sqlite", "");
       try {
-        final remoteVersionToken = await _syncWebDbVersion(
+        final syncPlan = await _prepareWebDbVersionSync(
           dbFile: dbFile,
           databaseName: databaseName,
         );
 
+        var downloadedDatabase = false;
         final result = await WasmDatabase.open(
           databaseName: databaseName,
           sqlite3Uri: Uri.parse('sqlite3.wasm'),
@@ -87,13 +89,13 @@ DatabaseConnection connectOnWeb(String dbFile) {
             final response = await http.get(
               _buildDbUri(
                 dbFile,
-                versionToken: remoteVersionToken,
+                versionToken: syncPlan.versionToken,
                 forceNoCache: true,
               ),
               headers: _noCacheHeaders,
             );
             if (response.statusCode == 200) {
-              await _setWebDbCreatedAt(databaseName);
+              downloadedDatabase = true;
               return response.bodyBytes;
             } else {
               log.error(
@@ -103,6 +105,14 @@ DatabaseConnection connectOnWeb(String dbFile) {
             }
           },
         );
+
+        if (downloadedDatabase) {
+          await _setWebDbCreatedAt(databaseName);
+        }
+
+        if (syncPlan.shouldCommitVersionAfterOpen) {
+          await _commitWebDbVersion(databaseName, syncPlan.versionToken!);
+        }
 
         if (result.missingFeatures.isNotEmpty) {
           log.info(
@@ -142,21 +152,28 @@ Uri _buildDbUri(
   );
 }
 
-Future<String?> _syncWebDbVersion({
+Future<WebDbVersionSyncPlan> _prepareWebDbVersionSync({
   required String dbFile,
   required String databaseName,
 }) async {
   final remoteVersionToken = await _fetchRemoteDbVersionToken(dbFile);
   if (remoteVersionToken == null) {
     log.warning('Unable to detect remote DB version for $dbFile');
-    return null;
+    return planWebDbVersionSync(
+      remoteVersionToken: null,
+      localVersionToken: null,
+    );
   }
 
   final prefs = await SharedPreferences.getInstance();
   final versionKey = _versionKey(databaseName);
   final localVersionToken = prefs.getString(versionKey);
-  if (localVersionToken == remoteVersionToken) {
-    return remoteVersionToken;
+  final syncPlan = planWebDbVersionSync(
+    remoteVersionToken: remoteVersionToken,
+    localVersionToken: localVersionToken,
+  );
+  if (!syncPlan.shouldResetLocalDatabase) {
+    return syncPlan;
   }
 
   final probe = await WasmDatabase.probe(
@@ -177,8 +194,15 @@ Future<String?> _syncWebDbVersion({
   }
 
   await prefs.remove(_createdAtKey(databaseName));
-  await prefs.setString(versionKey, remoteVersionToken);
-  return remoteVersionToken;
+  return syncPlan;
+}
+
+Future<void> _commitWebDbVersion(
+  String databaseName,
+  String versionToken,
+) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(_versionKey(databaseName), versionToken);
 }
 
 Future<String?> _fetchRemoteDbVersionToken(String dbFile) async {
