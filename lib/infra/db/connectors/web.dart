@@ -1,9 +1,14 @@
+import 'dart:async';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
+
 import 'package:http/http.dart' as http;
 import 'package:drift/drift.dart';
 import 'package:drift/wasm.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import 'package:web/web.dart' as web;
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/connectors/database_version_loader.dart';
@@ -172,6 +177,7 @@ Future<WebDbVersionSyncPlan> _prepareWebDbVersionSync({
     log.info('Web DB recreated after update: $dbFile');
   }
 
+  await _deleteKnownWebDbStorage(databaseName);
   await prefs.remove(_createdAtKey(databaseName));
   return syncPlan;
 }
@@ -235,7 +241,61 @@ Future<void> _commitWebDbVersion(
   String versionToken,
 ) async {
   final prefs = await SharedPreferences.getInstance();
-  await prefs.setString(_versionKey(databaseName), versionToken);
+  await prefs.setString(
+    _versionKey(databaseName),
+    buildLocalWebDbVersionToken(versionToken),
+  );
+}
+
+Future<void> _deleteKnownWebDbStorage(String databaseName) async {
+  await _deleteKnownIndexedDbDatabase(databaseName);
+  await _deleteKnownOpfsDatabase(databaseName);
+}
+
+Future<void> _deleteKnownIndexedDbDatabase(String databaseName) async {
+  if (!web.window.has('indexedDB')) {
+    return;
+  }
+
+  try {
+    final request = web.window.indexedDB.deleteDatabase(databaseName);
+    await _completeIdbRequest(request);
+  } catch (e) {
+    log.debug('Best-effort IndexedDB reset failed for $databaseName: $e');
+  }
+}
+
+Future<void> _deleteKnownOpfsDatabase(String databaseName) async {
+  final navigator = web.window.navigator;
+  if (!navigator.has('storage')) {
+    return;
+  }
+
+  try {
+    var directory = await navigator.storage.getDirectory().toDart;
+    directory = await directory.getDirectoryHandle('drift_db').toDart;
+    await directory
+        .removeEntry(databaseName, web.FileSystemRemoveOptions(recursive: true))
+        .toDart;
+  } catch (e) {
+    log.debug('Best-effort OPFS reset failed for $databaseName: $e');
+  }
+}
+
+Future<void> _completeIdbRequest(web.IDBRequest request) {
+  Object requestError() => request.error ?? 'IndexedDB request failed';
+
+  return Future.any<void>([
+    web.EventStreamProviders.successEvent.forTarget(request).first.then((_) {}),
+    web.EventStreamProviders.errorEvent
+        .forTarget(request)
+        .first
+        .then((_) => throw requestError()),
+    web.EventStreamProviders.blockedEvent
+        .forTarget(request)
+        .first
+        .then((_) => throw requestError()),
+  ]);
 }
 
 Future<String?> _fetchRemoteDbVersionToken(String dbFile) async {

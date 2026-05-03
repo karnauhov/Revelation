@@ -14,14 +14,28 @@ void main() {
   });
 
   test('keeps existing local database when version token matches', () {
+    final localVersionToken = buildLocalWebDbVersionToken(
+      'manifest:schema:4|data:2',
+    );
+    final plan = planWebDbVersionSync(
+      remoteVersionToken: 'manifest:schema:4|data:2',
+      localVersionToken: localVersionToken,
+    );
+
+    expect(plan.versionToken, 'manifest:schema:4|data:2');
+    expect(plan.shouldResetLocalDatabase, isFalse);
+    expect(plan.shouldCommitVersionAfterOpen, isFalse);
+  });
+
+  test('resets legacy unnamespaced local version token before opening', () {
     final plan = planWebDbVersionSync(
       remoteVersionToken: 'manifest:schema:4|data:2',
       localVersionToken: 'manifest:schema:4|data:2',
     );
 
     expect(plan.versionToken, 'manifest:schema:4|data:2');
-    expect(plan.shouldResetLocalDatabase, isFalse);
-    expect(plan.shouldCommitVersionAfterOpen, isFalse);
+    expect(plan.shouldResetLocalDatabase, isTrue);
+    expect(plan.shouldCommitVersionAfterOpen, isTrue);
   });
 
   test('resets database and defers version commit for changed token', () {
@@ -38,7 +52,9 @@ void main() {
   test('force reset recreates database even when version token matches', () {
     final plan = planWebDbVersionSync(
       remoteVersionToken: 'manifest:schema:4|data:3',
-      localVersionToken: 'manifest:schema:4|data:3',
+      localVersionToken: buildLocalWebDbVersionToken(
+        'manifest:schema:4|data:3',
+      ),
       forceResetLocalDatabase: true,
     );
 
@@ -57,5 +73,12 @@ void main() {
     expect(plan.versionToken, isNull);
     expect(plan.shouldResetLocalDatabase, isFalse);
     expect(plan.shouldCommitVersionAfterOpen, isFalse);
+  });
+
+  test('buildLocalWebDbVersionToken prefixes the stored token namespace', () {
+    expect(
+      buildLocalWebDbVersionToken('manifest:schema:4|data:3'),
+      'web-storage-reset-v2|manifest:schema:4|data:3',
+    );
   });
 }

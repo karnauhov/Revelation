@@ -11,6 +11,11 @@ class WebDbVersionSyncPlan {
       versionToken != null && shouldResetLocalDatabase;
 }
 
+const webDbLocalVersionTokenNamespace = 'web-storage-reset-v2';
+
+String buildLocalWebDbVersionToken(String remoteVersionToken) =>
+    '$webDbLocalVersionTokenNamespace|$remoteVersionToken';
+
 WebDbVersionSyncPlan planWebDbVersionSync({
   required String? remoteVersionToken,
   required String? localVersionToken,
@@ -23,9 +28,14 @@ WebDbVersionSyncPlan planWebDbVersionSync({
     );
   }
 
+  final expectedLocalVersionToken = buildLocalWebDbVersionToken(
+    remoteVersionToken,
+  );
+
   return WebDbVersionSyncPlan(
     versionToken: remoteVersionToken,
     shouldResetLocalDatabase:
-        forceResetLocalDatabase || localVersionToken != remoteVersionToken,
+        forceResetLocalDatabase ||
+        localVersionToken != expectedLocalVersionToken,
   );
 }
