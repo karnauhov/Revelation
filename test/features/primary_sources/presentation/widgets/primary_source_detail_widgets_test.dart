@@ -14,6 +14,7 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
+import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
 import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page.dart' as model;
@@ -267,7 +268,8 @@ void main() {
       await tester.pumpWidget(
         _buildApp(
           child: PrimarySourceDescriptionPanel(
-            descriptionContent: 'Strong entry',
+            descriptionContent:
+                'Word analysis:$strongOriginInfoMarkdownMarker**Alpha**',
             currentDescriptionType: DescriptionKind.strongNumber,
             currentDescriptionNumber: 3056,
             onGreekStrongTap: (_, __) {},
@@ -295,7 +297,14 @@ void main() {
       expect(markdownView.exportPdfDocumentTitle, 'G3056');
       expect(find.byTooltip('Previous dictionary entry'), findsOneWidget);
       expect(find.byTooltip('Next dictionary entry'), findsOneWidget);
-      expect(find.byIcon(Icons.info_outline), findsOneWidget);
+      expect(
+        find.byKey(const Key('strong_reference_info_icon')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('description_markdown_strong_origin_info_button')),
+        findsOneWidget,
+      );
     },
   );
 

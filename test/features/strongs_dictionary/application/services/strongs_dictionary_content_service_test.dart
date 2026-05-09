@@ -1,6 +1,7 @@
 @Tags(['widget'])
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
+import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
 import 'package:revelation/infra/db/common/db_common.dart' as common_db;
 import 'package:revelation/infra/db/localized/db_localized.dart'
     as localized_db;
@@ -153,7 +154,10 @@ void main() {
     final content = service.buildStrongContent(l10n, 1);
 
     expect(content, isNotNull);
-    expect(content!.markdown, contains('${l10n.strong_origin}: '));
+    expect(
+      content!.markdown,
+      contains('${l10n.strong_origin}:$strongOriginInfoMarkdownMarker'),
+    );
     expect(content.markdown, contains('**Alpha** ([G2](strong:G2))'));
     expect(content.markdown, contains('[H123](strong:H123)'));
     expect(content.markdown, contains('**Beta** ([G3](strong:G3))'));

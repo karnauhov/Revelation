@@ -18,7 +18,9 @@ typedef RevelationMarkdownUnknownBlockWidgetBuilder =
       RevelationMarkdownUnknownBlockData block,
     );
 
-md.ExtensionSet buildRevelationMarkdownExtensionSet() {
+md.ExtensionSet buildRevelationMarkdownExtensionSet({
+  List<md.InlineSyntax> inlineSyntaxes = const <md.InlineSyntax>[],
+}) {
   return md.ExtensionSet(
     <md.BlockSyntax>[
       const RevelationMarkdownImageBlockSyntax(),
@@ -27,6 +29,7 @@ md.ExtensionSet buildRevelationMarkdownExtensionSet() {
       ...md.ExtensionSet.gitHubFlavored.blockSyntaxes,
     ],
     <md.InlineSyntax>[
+      ...inlineSyntaxes,
       md.EmojiSyntax(),
       ...md.ExtensionSet.gitHubFlavored.inlineSyntaxes,
     ],
@@ -37,6 +40,8 @@ Map<String, MarkdownElementBuilder> buildRevelationMarkdownBuilders({
   required RevelationMarkdownImageWidgetBuilder imageBuilder,
   required RevelationMarkdownYoutubeWidgetBuilder youtubeBuilder,
   required RevelationMarkdownUnknownBlockWidgetBuilder unknownBlockBuilder,
+  Map<String, MarkdownElementBuilder> elementBuilders =
+      const <String, MarkdownElementBuilder>{},
 }) {
   final sharedBuilder = _RevelationMarkdownImageElementBuilder(
     imageBuilder: imageBuilder,
@@ -56,6 +61,7 @@ Map<String, MarkdownElementBuilder> buildRevelationMarkdownBuilders({
         _RevelationMarkdownUnknownBlockElementBuilder(
           unknownBlockBuilder: unknownBlockBuilder,
         ),
+    ...elementBuilders,
   };
 }
 

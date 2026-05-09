@@ -5,6 +5,7 @@ import 'package:revelation/features/primary_sources/application/services/manuscr
 import 'package:revelation/features/primary_sources/application/services/nomina_sacra_pronunciation_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
+import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
 import 'package:revelation/infra/db/common/db_common.dart' as common_db;
 import 'package:revelation/infra/db/data_sources/description_data_source.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart'
@@ -707,7 +708,12 @@ void main() {
     final content = service.buildStrongContent(localizations, 1);
 
     expect(content, isNotNull);
-    expect(content!.markdown, contains('${localizations.strong_origin}: '));
+    expect(
+      content!.markdown,
+      contains(
+        '${localizations.strong_origin}:$strongOriginInfoMarkdownMarker',
+      ),
+    );
     expect(content.markdown, contains('**Alpha** ([G2](strong:G2))'));
     expect(content.markdown, contains('[H123](strong:H123)'));
     expect(content.markdown, contains('**Beta** ([G3](strong:G3))'));

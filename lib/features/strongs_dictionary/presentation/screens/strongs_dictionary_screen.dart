@@ -181,6 +181,10 @@ class _StrongDictionarySelectorState extends State<_StrongDictionarySelector> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final visibleEntries = widget.state.visiblePickerEntries;
+    final searchLabelStyle = theme.textTheme.labelSmall?.copyWith(
+      fontSize: 11,
+      color: colorScheme.onSurfaceVariant,
+    );
 
     return ColoredBox(
       color: colorScheme.surface,
@@ -199,6 +203,11 @@ class _StrongDictionarySelectorState extends State<_StrongDictionarySelector> {
               decoration: InputDecoration(
                 isDense: true,
                 labelText: localizations.strong_dictionary_search,
+                labelStyle: searchLabelStyle,
+                floatingLabelStyle: searchLabelStyle?.copyWith(
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.w500,
+                ),
                 hintText: 'G3056',
                 prefixIcon: const Icon(Icons.search, size: 20),
                 prefixIconConstraints: const BoxConstraints.tightFor(
@@ -386,16 +395,23 @@ class _StrongDictionaryEntryTile extends StatelessWidget {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 50,
-                    child: Text(
-                      entry.code,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: selected
-                            ? colorScheme.primary
-                            : colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w700,
+                    width: 46,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          entry.code,
+                          maxLines: 1,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontSize: 11,
+                            color: selected
+                                ? colorScheme.primary
+                                : colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
                   ),

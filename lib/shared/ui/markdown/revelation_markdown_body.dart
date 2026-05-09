@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
+import 'package:markdown/markdown.dart' as md;
 import 'package:revelation/core/content/markdown_images/markdown_image_load_result.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -26,6 +27,8 @@ class RevelationMarkdownBody extends StatefulWidget {
     this.showImagePreloadProgress = false,
     this.markdownImageLoader,
     this.h2FontWeight,
+    this.inlineSyntaxes = const <md.InlineSyntax>[],
+    this.elementBuilders = const <String, MarkdownElementBuilder>{},
     super.key,
   });
 
@@ -35,6 +38,8 @@ class RevelationMarkdownBody extends StatefulWidget {
   final bool showImagePreloadProgress;
   final MarkdownImageLoader? markdownImageLoader;
   final FontWeight? h2FontWeight;
+  final List<md.InlineSyntax> inlineSyntaxes;
+  final Map<String, MarkdownElementBuilder> elementBuilders;
 
   @override
   State<RevelationMarkdownBody> createState() => _RevelationMarkdownBodyState();
@@ -90,13 +95,16 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
               colorScheme,
               h2FontWeight: widget.h2FontWeight,
             ),
-            extensionSet: buildRevelationMarkdownExtensionSet(),
+            extensionSet: buildRevelationMarkdownExtensionSet(
+              inlineSyntaxes: widget.inlineSyntaxes,
+            ),
             builders: buildRevelationMarkdownBuilders(
               imageBuilder: (context, image) =>
                   _buildMarkdownImage(state, image),
               youtubeBuilder: (context, video) => _buildYoutubeBlock(video),
               unknownBlockBuilder: (context, block) =>
                   _buildUnknownBlock(block),
+              elementBuilders: widget.elementBuilders,
             ),
             paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
             onTapLink: widget.onTapLink,
@@ -123,7 +131,9 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
                     colorScheme,
                     h2FontWeight: widget.h2FontWeight,
                   ),
-                  extensionSet: buildRevelationMarkdownExtensionSet(),
+                  extensionSet: buildRevelationMarkdownExtensionSet(
+                    inlineSyntaxes: widget.inlineSyntaxes,
+                  ),
                   builders: buildRevelationMarkdownBuilders(
                     imageBuilder: (context, image) =>
                         _buildMarkdownImage(state, image),
@@ -131,6 +141,7 @@ class _RevelationMarkdownBodyState extends State<RevelationMarkdownBody> {
                         _buildYoutubeBlock(video),
                     unknownBlockBuilder: (context, block) =>
                         _buildUnknownBlock(block),
+                    elementBuilders: widget.elementBuilders,
                   ),
                   paddingBuilders: buildRevelationMarkdownPaddingBuilders(),
                   onTapLink: widget.onTapLink,

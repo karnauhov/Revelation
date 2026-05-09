@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:markdown/markdown.dart' as md;
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -33,8 +35,12 @@ class DescriptionMarkdownView extends StatelessWidget {
   final String? exportPdfDocumentTitle;
   final DescriptionMarkdownExportPdfHandler? onExportPdfRequested;
   final DescriptionMarkdownCopyHandler? onCopyRequested;
+  final String? exportPdfMarkdown;
+  final String? copyMarkdown;
   final List<Widget> toolbarActions;
   final FontWeight? h2FontWeight;
+  final List<md.InlineSyntax> inlineSyntaxes;
+  final Map<String, MarkdownElementBuilder> elementBuilders;
 
   const DescriptionMarkdownView({
     required this.data,
@@ -51,8 +57,12 @@ class DescriptionMarkdownView extends StatelessWidget {
     this.exportPdfDocumentTitle,
     this.onExportPdfRequested,
     this.onCopyRequested,
+    this.exportPdfMarkdown,
+    this.copyMarkdown,
     this.toolbarActions = const <Widget>[],
     this.h2FontWeight,
+    this.inlineSyntaxes = const <md.InlineSyntax>[],
+    this.elementBuilders = const <String, MarkdownElementBuilder>{},
     super.key,
   });
 
@@ -94,7 +104,7 @@ class DescriptionMarkdownView extends StatelessWidget {
                 );
 
         final location = await exportPdfHandler(
-          markdown: data,
+          markdown: exportPdfMarkdown ?? data,
           documentTitle: exportPdfDocumentTitle ?? l10n.app_name,
         );
 
@@ -138,7 +148,7 @@ class DescriptionMarkdownView extends StatelessWidget {
             onCopyRequested ??
             (String markdown) =>
                 Clipboard.setData(ClipboardData(text: markdown));
-        await copyHandler(data);
+        await copyHandler(copyMarkdown ?? data);
 
         if (!context.mounted) {
           return;
@@ -180,6 +190,8 @@ class DescriptionMarkdownView extends StatelessWidget {
       onTapLink: handleTapLink,
       markdownImageLoader: markdownImageLoader,
       h2FontWeight: h2FontWeight,
+      inlineSyntaxes: inlineSyntaxes,
+      elementBuilders: elementBuilders,
     );
 
     final content = scrollable

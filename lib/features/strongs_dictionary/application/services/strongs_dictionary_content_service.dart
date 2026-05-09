@@ -1,3 +1,4 @@
+import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
 import 'package:revelation/features/strongs_dictionary/data/repositories/strongs_dictionary_repository.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_dictionary_entry.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
@@ -105,7 +106,8 @@ class StrongsDictionaryContentService {
     if (entry.origin.isNotEmpty) {
       buffer.write('\n\r');
       buffer.write(localizations.strong_origin);
-      buffer.write(': ');
+      buffer.write(':');
+      buffer.write(strongOriginInfoMarkdownMarker);
       buffer.write(_getOrigins(entry.origin));
       buffer.write('\n\r');
     }

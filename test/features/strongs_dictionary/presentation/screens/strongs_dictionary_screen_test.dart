@@ -1,6 +1,7 @@
 @Tags(['widget'])
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
 import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_content.dart';
@@ -42,6 +43,10 @@ void main() {
     );
     expect(markdownView.exportPdfDocumentTitle, 'G2');
     expect(find.byKey(const Key('strong_dictionary_entry_2')), findsOneWidget);
+    expect(
+      find.byKey(const Key('description_markdown_strong_origin_info_button')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('search filters entries and selecting a result updates content', (
@@ -213,7 +218,9 @@ class _FakeStrongsDictionaryContentService
     for (final entry in entries) {
       if (entry.number == strongNumber) {
         return DescriptionContent(
-          markdown: '## ${entry.word}\n\r${entry.code}',
+          markdown:
+              '## ${entry.word}\n\rWord analysis:'
+              '$strongOriginInfoMarkdownMarker${entry.code}',
           kind: DescriptionKind.strongNumber,
         );
       }

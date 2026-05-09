@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 class GreekKeyboardButton extends StatefulWidget {
@@ -56,23 +54,25 @@ class _GreekKeyboardButtonState extends State<GreekKeyboardButton> {
     final value = widget.controller.value;
     final text = value.text;
     final selection = value.selection;
-    final start = selection.isValid
-        ? math.min(selection.start, selection.end).clamp(0, text.length)
+    final insertionOffset =
+        widget.focusNode.hasFocus && selection.isValid && selection.isCollapsed
+        ? selection.baseOffset.clamp(0, text.length).toInt()
         : text.length;
-    final end = selection.isValid
-        ? math.max(selection.start, selection.end).clamp(0, text.length)
-        : text.length;
-    final updatedText = text.replaceRange(start, end, letter);
+    final updatedText = text.replaceRange(
+      insertionOffset,
+      insertionOffset,
+      letter,
+    );
     final updatedSelection = TextSelection.collapsed(
-      offset: start + letter.length,
+      offset: insertionOffset + letter.length,
     );
 
+    widget.focusNode.requestFocus();
     widget.controller.value = value.copyWith(
       text: updatedText,
       selection: updatedSelection,
       composing: TextRange.empty,
     );
-    widget.focusNode.requestFocus();
     widget.onChanged?.call(updatedText);
   }
 }

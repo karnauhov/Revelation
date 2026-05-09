@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_origin_info_markdown.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 
@@ -36,9 +38,14 @@ class StrongDictionaryEntryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final actionMarkdown = stripStrongOriginInfoMarkdownMarker(markdown);
 
     return DescriptionMarkdownView(
       data: markdown,
+      exportPdfMarkdown: actionMarkdown,
+      copyMarkdown: actionMarkdown,
+      inlineSyntaxes: buildStrongOriginInfoInlineSyntaxes(),
+      elementBuilders: buildStrongOriginInfoMarkdownBuilders(),
       padding: padding,
       exportPdfEnabled: exportPdfEnabled,
       copyEnabled: copyEnabled,
