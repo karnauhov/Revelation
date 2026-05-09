@@ -318,9 +318,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get by => 'by';
 
   @override
-  String get strongsConcordance => 'Strong\'s Concordance';
-
-  @override
   String get package => 'Package';
 
   @override
@@ -502,7 +499,7 @@ class AppLocalizationsEn extends AppLocalizations {
       '2717 and 3203-3302 are unavailable';
 
   @override
-  String get strong_dictionary_search => 'Search by number or Greek word';
+  String get strong_dictionary_search => 'Full-text search';
 
   @override
   String get strong_dictionary_no_entries =>
@@ -510,6 +507,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get strong_dictionary_no_results => 'No matching entries';
+
+  @override
+  String get greek_keyboard_tooltip => 'Greek keyboard';
 
   @override
   String get strong_pronunciation => 'Pronunciation';

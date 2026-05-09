@@ -20,7 +20,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(StrongDictionaryDialog), findsOneWidget);
-    expect(find.text(l10n.strongsConcordance), findsOneWidget);
+    expect(find.text(l10n.strongs_dictionary_screen), findsOneWidget);
 
     await tester.tap(find.text(l10n.close));
     await tester.pumpAndSettle();
@@ -133,7 +133,7 @@ void main() {
     );
     expect(find.byTooltip(l10n.previous_dictionary_entry), findsOneWidget);
     expect(find.byTooltip(l10n.next_dictionary_entry), findsOneWidget);
-    final titleText = find.text(l10n.strongsConcordance);
+    final titleText = find.text(l10n.strongs_dictionary_screen);
     final infoIcon = find.byKey(const Key('strong_reference_info_icon'));
     expect(infoIcon, findsOneWidget);
     expect(

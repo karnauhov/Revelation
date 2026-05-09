@@ -1,8 +1,15 @@
 class StrongPickerEntry {
-  const StrongPickerEntry({required this.number, required this.word});
+  const StrongPickerEntry({
+    required this.number,
+    required this.word,
+    this.description = '',
+    this.searchText = '',
+  });
 
   final int number;
   final String word;
+  final String description;
+  final String searchText;
 
   String get code => 'G$number';
 
@@ -12,9 +19,11 @@ class StrongPickerEntry {
         other is StrongPickerEntry &&
             runtimeType == other.runtimeType &&
             number == other.number &&
-            word == other.word;
+            word == other.word &&
+            description == other.description &&
+            searchText == other.searchText;
   }
 
   @override
-  int get hashCode => Object.hash(number, word);
+  int get hashCode => Object.hash(number, word, description, searchText);
 }

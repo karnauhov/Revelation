@@ -7,6 +7,8 @@ All notable changes to this application will be documented here.
 ### Added
 
 - Analytics and crash reporting support with Sentry
+- Expanded the left menu with more study sections.
+- Added a Strong's Dictionary page with Greek word lookup, linked dictionary entries.
 
 ### Fixed
 

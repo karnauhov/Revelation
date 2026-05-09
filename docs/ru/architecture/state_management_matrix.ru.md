@@ -6,8 +6,8 @@ Source-Commit: `working-tree`
 
 ## Strong Feature Notes
 
-- `StrongsDictionaryCubit` is the source of truth for Strong dictionary selection/content/navigation in page and dialog flows.
-- `StrongNumberPickerCubit` owns input normalization and selected picker entry state for the Strong number picker.
+- `StrongsDictionaryCubit` является source of truth для выбора, контента, навигации и полнотекстового фильтра словаря Стронга в page/dialog-потоках.
+- `StrongNumberPickerCubit` владеет нормализацией ввода и состоянием выбранного элемента в picker-е номера Стронга.
 
 ## Назначение
 
@@ -39,6 +39,8 @@ Source-Commit: `working-tree`
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | Выбор стиха/слова, контент описания, элементы Strong picker |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | Pan, zoom, область выделения, состояние замены цвета |
 | `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Безопасная координация смены страниц, загрузки изображений и save/restore flow |
+| `strongs_dictionary/content` | `StrongsDictionaryCubit` | Выбранный номер Стронга, кэшированный picker/search-список, полнотекстовый запрос, markdown-контент статьи и навигация next/previous |
+| `strongs_dictionary/picker` | `StrongNumberPickerCubit` | Нормализация ввода номера Стронга, выбор ближайшей доступной статьи и состояние подтверждения picker-а |
 | `download` | Stateless screen | Постоянный runtime state-срез отсутствует |
 
 ## Примечания по scope
@@ -46,5 +48,6 @@ Source-Commit: `working-tree`
 - `RevelationStartupHost` создаёт `AppStartupCubit` в корне приложения и подключает глобальные app-провайдеры только после готовности startup-flow.
 - Глобальные провайдеры создаются в `AppDi.appBlocProviders`.
 - Общие markdown-виджеты создают `RevelationMarkdownImagesCubit` на уровне каждого markdown-документа, а не хранят markdown image preload state в feature-cubit-ах.
+- `StrongsDictionaryCubit` является единственным source of truth для состояния выбора словаря Стронга в page/dialog-потоках; `primary_sources` только делегирует действия через API Strong-feature.
 - `PrimarySourceScreen` поднимает detail cubit-ы через `MultiBlocProvider`.
 - `PrimarySourceDetailCoordinator` адаптирует UI-события к detail cubit-ам и не владеет состоянием.

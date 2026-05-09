@@ -93,7 +93,7 @@ class _StrongDictionaryDialogContentState
                 ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: dialogWidth - 80),
                   child: Text(
-                    localizations.strongsConcordance,
+                    localizations.strongs_dictionary_screen,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
@@ -119,6 +119,7 @@ class _StrongDictionaryDialogContentState
                 context.read<StrongsDictionaryCubit>().showStrongNumber(
                   localizations: localizations,
                   strongNumber: strongNumber,
+                  clearSearch: true,
                 );
               },
               onStrongNumberPickerRequested: _openStrongNumberPicker,
@@ -169,6 +170,7 @@ class _StrongDictionaryDialogContentState
     cubit.showStrongNumber(
       localizations: localizations,
       strongNumber: pickedStrongNumber,
+      clearSearch: true,
     );
   }
 }

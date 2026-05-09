@@ -63,7 +63,7 @@ void main() {
 
     final entries = service.getPickerEntries();
     expect(entries, const <StrongPickerEntry>[
-      StrongPickerEntry(number: 1, word: 'Alpha'),
+      StrongPickerEntry(number: 1, word: 'Alpha', searchText: '1 g1 alpha'),
     ]);
 
     words.add(

@@ -320,9 +320,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get by => 'від';
 
   @override
-  String get strongsConcordance => 'Конкорданція Стронґа';
-
-  @override
   String get package => 'Пакет';
 
   @override
@@ -503,7 +500,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_picker_unavailable_numbers => '2717 і 3203-3302 недоступні';
 
   @override
-  String get strong_dictionary_search => 'Пошук за номером або грецьким словом';
+  String get strong_dictionary_search => 'Повнотекстовий пошук';
 
   @override
   String get strong_dictionary_no_entries =>
@@ -511,6 +508,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get strong_dictionary_no_results => 'Немає відповідних статей';
+
+  @override
+  String get greek_keyboard_tooltip => 'Грецька клавіатура';
 
   @override
   String get strong_pronunciation => 'Вимова';

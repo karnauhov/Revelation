@@ -106,9 +106,10 @@ void main() {
     final entries = repository.getPickerEntries();
 
     expect(entries, const <StrongPickerEntry>[
-      StrongPickerEntry(number: 1, word: 'Alpha'),
-      StrongPickerEntry(number: 3, word: 'Gamma'),
+      StrongPickerEntry(number: 1, word: 'Alpha', searchText: '1 g1 alpha'),
+      StrongPickerEntry(number: 3, word: 'Gamma', searchText: '3 g3 gamma'),
     ]);
+    expect(entries.last.searchText, contains('g3'));
     expect(repository.closestPickerNumber(2), 3);
     expect(() => entries.add(entries.first), throwsUnsupportedError);
   });

@@ -548,11 +548,6 @@ void _assertLocalizationContract(AppLocalizations l10n) {
   expect(l10n.icons, isNotEmpty, reason: 'icons should not be empty');
   expect(l10n.and, isNotEmpty, reason: 'and should not be empty');
   expect(l10n.by, isNotEmpty, reason: 'by should not be empty');
-  expect(
-    l10n.strongsConcordance,
-    isNotEmpty,
-    reason: 'strongsConcordance should not be empty',
-  );
   expect(l10n.package, isNotEmpty, reason: 'package should not be empty');
   expect(l10n.font, isNotEmpty, reason: 'font should not be empty');
   expect(l10n.wikipedia, isNotEmpty, reason: 'wikipedia should not be empty');
@@ -803,6 +798,11 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     l10n.strong_dictionary_no_results,
     isNotEmpty,
     reason: 'strong_dictionary_no_results should not be empty',
+  );
+  expect(
+    l10n.greek_keyboard_tooltip,
+    isNotEmpty,
+    reason: 'greek_keyboard_tooltip should not be empty',
   );
   expect(
     l10n.strong_pronunciation,

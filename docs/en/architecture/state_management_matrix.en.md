@@ -6,7 +6,7 @@ Source-Commit: `working-tree`
 
 ## Strong Feature Notes
 
-- `StrongsDictionaryCubit` is the source of truth for Strong dictionary selection/content/navigation in page and dialog flows.
+- `StrongsDictionaryCubit` is the source of truth for Strong dictionary selection/content/navigation and full-text filtering in page and dialog flows.
 - `StrongNumberPickerCubit` owns input normalization and selected picker entry state for the Strong number picker.
 
 ## Purpose
@@ -39,7 +39,7 @@ Show which cubit owns each runtime state slice.
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | Verse/word selection, description content, Strong picker entries |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | Pan, zoom, selection area, color replacement state |
 | `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Safe coordination of page changes, image loading, and save/restore flows |
-| `strongs_dictionary/content` | `StrongsDictionaryCubit` | Selected Strong number, filtered picker list, dictionary markdown content, and next/previous navigation |
+| `strongs_dictionary/content` | `StrongsDictionaryCubit` | Selected Strong number, cached picker/search list, full-text query, dictionary markdown content, and next/previous navigation |
 | `strongs_dictionary/picker` | `StrongNumberPickerCubit` | Strong picker text input normalization, nearest allowed entry selection, and picker confirmation state |
 | `download` | Stateless screen | No persistent runtime state slice |
 

@@ -51,6 +51,7 @@ class StrongsDictionaryCubit extends Cubit<StrongsDictionaryState> {
   bool showStrongNumber({
     required AppLocalizations localizations,
     required int strongNumber,
+    bool clearSearch = false,
   }) {
     final content = _contentService.buildStrongContent(
       localizations,
@@ -61,6 +62,7 @@ class StrongsDictionaryCubit extends Cubit<StrongsDictionaryState> {
         strongNumber: strongNumber,
         markdown: content?.markdown,
         markdownSet: true,
+        searchQuery: clearSearch ? '' : null,
       ),
     );
     return content != null;
@@ -77,6 +79,7 @@ class StrongsDictionaryCubit extends Cubit<StrongsDictionaryState> {
     return showStrongNumber(
       localizations: localizations,
       strongNumber: nextStrongNumber,
+      clearSearch: true,
     );
   }
 
@@ -98,7 +101,10 @@ class StrongsDictionaryCubit extends Cubit<StrongsDictionaryState> {
       return false;
     }
     for (var i = 0; i < a.length; i++) {
-      if (a[i].number != b[i].number || a[i].word != b[i].word) {
+      if (a[i].number != b[i].number ||
+          a[i].word != b[i].word ||
+          a[i].description != b[i].description ||
+          a[i].searchText != b[i].searchText) {
         return false;
       }
     }

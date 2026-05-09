@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
+import 'package:revelation/features/strongs_dictionary/domain/services/strong_dictionary_search_normalizer.dart';
 
 class StrongsDictionaryState {
   const StrongsDictionaryState({
@@ -31,17 +32,19 @@ class StrongsDictionaryState {
   String get displayMarkdown => markdown ?? '-';
 
   List<StrongPickerEntry> get visiblePickerEntries {
-    final query = searchQuery.trim().toLowerCase();
+    final query = normalizeStrongDictionarySearchText(searchQuery);
     if (query.isEmpty) {
       return pickerEntries;
     }
 
-    final numberQuery = query.startsWith('g') ? query.substring(1) : query;
     return pickerEntries
         .where((entry) {
-          return entry.code.toLowerCase().contains(query) ||
-              entry.number.toString().contains(numberQuery) ||
-              entry.word.toLowerCase().contains(query);
+          final searchText = entry.searchText.isEmpty
+              ? normalizeStrongDictionarySearchText(
+                  '${entry.number} ${entry.code} ${entry.word} ${entry.description}',
+                )
+              : entry.searchText;
+          return searchText.contains(query);
         })
         .toList(growable: false);
   }

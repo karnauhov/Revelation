@@ -684,12 +684,6 @@ abstract class AppLocalizations {
   /// **'by'**
   String get by;
 
-  /// No description provided for @strongsConcordance.
-  ///
-  /// In en, this message translates to:
-  /// **'Strong\'s Concordance'**
-  String get strongsConcordance;
-
   /// No description provided for @package.
   ///
   /// In en, this message translates to:
@@ -1035,7 +1029,7 @@ abstract class AppLocalizations {
   /// No description provided for @strong_dictionary_search.
   ///
   /// In en, this message translates to:
-  /// **'Search by number or Greek word'**
+  /// **'Full-text search'**
   String get strong_dictionary_search;
 
   /// No description provided for @strong_dictionary_no_entries.
@@ -1049,6 +1043,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No matching entries'**
   String get strong_dictionary_no_results;
+
+  /// No description provided for @greek_keyboard_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Greek keyboard'**
+  String get greek_keyboard_tooltip;
 
   /// No description provided for @strong_pronunciation.
   ///

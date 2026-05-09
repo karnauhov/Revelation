@@ -8,6 +8,7 @@ Source-Commit: `working-tree`
 
 - The app now supports `/strongs_dictionary` as a first-class route.
 - `strongs_dictionary` owns Strong dictionary domain/data/presentation and its page/dialog/embedded UI.
+- `strongs_dictionary` keeps a cached picker/search index for lookup by number, Greek word, and localized entry text.
 - Shared markdown remains Strong-agnostic: no Strong-specific marker or inline syntax in `shared/ui/markdown`.
 
 ## Purpose

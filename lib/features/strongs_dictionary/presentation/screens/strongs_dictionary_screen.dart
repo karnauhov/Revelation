@@ -8,6 +8,9 @@ import 'package:revelation/features/strongs_dictionary/presentation/widgets/stro
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_number_picker_dialog.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_reference_info_icon.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/ui/widgets/greek_keyboard.dart';
+
+const _strongDictionaryEntryExtent = 36.0;
 
 class StrongsDictionaryScreen extends StatelessWidget {
   const StrongsDictionaryScreen({
@@ -52,10 +55,34 @@ class _StrongsDictionaryScreenContentState
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.strongs_dictionary_screen),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              localizations.strongs_dictionary_screen,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                height: 0.9,
+              ),
+            ),
+            Text(
+              localizations.strongs_dictionary_header,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
+        foregroundColor: colorScheme.primary,
         actions: [
           StrongReferenceInfoIcon(tooltipKey: _referenceTooltipKey),
           const SizedBox(width: 8),
@@ -99,17 +126,61 @@ class _StrongsDictionaryScreenContentState
   }
 }
 
-class _StrongDictionarySelector extends StatelessWidget {
+class _StrongDictionarySelector extends StatefulWidget {
   const _StrongDictionarySelector({required this.state});
 
   final StrongsDictionaryState state;
+
+  @override
+  State<_StrongDictionarySelector> createState() =>
+      _StrongDictionarySelectorState();
+}
+
+class _StrongDictionarySelectorState extends State<_StrongDictionarySelector> {
+  late final TextEditingController _searchController;
+  late final FocusNode _searchFocusNode;
+  late final ScrollController _scrollController;
+
+  bool _isProgrammaticSearchEdit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController(text: widget.state.searchQuery);
+    _searchFocusNode = FocusNode();
+    _scrollController = ScrollController();
+    _searchController.addListener(_handleSearchChanged);
+    _scheduleScrollToSelected();
+  }
+
+  @override
+  void didUpdateWidget(covariant _StrongDictionarySelector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_searchController.text != widget.state.searchQuery) {
+      _replaceSearchText(widget.state.searchQuery);
+    }
+    if (oldWidget.state.strongNumber != widget.state.strongNumber ||
+        oldWidget.state.searchQuery != widget.state.searchQuery ||
+        oldWidget.state.pickerEntries != widget.state.pickerEntries) {
+      _scheduleScrollToSelected();
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_handleSearchChanged);
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final visibleEntries = state.visiblePickerEntries;
+    final visibleEntries = widget.state.visiblePickerEntries;
 
     return ColoredBox(
       color: colorScheme.surface,
@@ -117,18 +188,36 @@ class _StrongDictionarySelector extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
             child: TextField(
               key: const Key('strong_dictionary_search_field'),
-              onChanged: context
-                  .read<StrongsDictionaryCubit>()
-                  .updateSearchQuery,
+              controller: _searchController,
+              focusNode: _searchFocusNode,
               onSubmitted: (value) => _submitSearch(context, value),
+              style: theme.textTheme.bodyMedium,
               textInputAction: TextInputAction.search,
               decoration: InputDecoration(
+                isDense: true,
                 labelText: localizations.strong_dictionary_search,
                 hintText: 'G3056',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search, size: 20),
+                prefixIconConstraints: const BoxConstraints.tightFor(
+                  width: 40,
+                  height: 40,
+                ),
+                suffixIcon: GreekKeyboardButton(
+                  controller: _searchController,
+                  focusNode: _searchFocusNode,
+                  tooltip: localizations.greek_keyboard_tooltip,
+                ),
+                suffixIconConstraints: const BoxConstraints.tightFor(
+                  width: 42,
+                  height: 40,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 10,
+                ),
                 border: const OutlineInputBorder(),
               ),
             ),
@@ -136,7 +225,7 @@ class _StrongDictionarySelector extends StatelessWidget {
           Expanded(
             child: Builder(
               builder: (context) {
-                if (state.pickerEntries.isEmpty) {
+                if (widget.state.pickerEntries.isEmpty) {
                   return _SelectorMessage(
                     text: localizations.strong_dictionary_no_entries,
                   );
@@ -147,13 +236,14 @@ class _StrongDictionarySelector extends StatelessWidget {
                   );
                 }
 
-                return ListView.separated(
+                return ListView.builder(
                   key: const Key('strong_dictionary_entry_list'),
+                  controller: _scrollController,
+                  itemExtent: _strongDictionaryEntryExtent,
                   itemCount: visibleEntries.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final entry = visibleEntries[index];
-                    final selected = entry.number == state.strongNumber;
+                    final selected = entry.number == widget.state.strongNumber;
                     return _StrongDictionaryEntryTile(
                       entry: entry,
                       selected: selected,
@@ -165,6 +255,61 @@ class _StrongDictionarySelector extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _handleSearchChanged() {
+    if (_isProgrammaticSearchEdit) {
+      return;
+    }
+
+    context.read<StrongsDictionaryCubit>().updateSearchQuery(
+      _searchController.text,
+    );
+  }
+
+  void _replaceSearchText(String text) {
+    _isProgrammaticSearchEdit = true;
+    _searchController.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+    _isProgrammaticSearchEdit = false;
+  }
+
+  void _scheduleScrollToSelected() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _scrollToSelected();
+    });
+  }
+
+  void _scrollToSelected() {
+    if (!_scrollController.hasClients) {
+      return;
+    }
+
+    final visibleEntries = widget.state.visiblePickerEntries;
+    final selectedIndex = visibleEntries.indexWhere(
+      (entry) => entry.number == widget.state.strongNumber,
+    );
+    if (selectedIndex == -1) {
+      return;
+    }
+
+    final position = _scrollController.position;
+    final viewport = position.viewportDimension;
+    final target =
+        selectedIndex * _strongDictionaryEntryExtent -
+        ((viewport - _strongDictionaryEntryExtent) / 2);
+    _scrollController.animateTo(
+      target
+          .clamp(position.minScrollExtent, position.maxScrollExtent)
+          .toDouble(),
+      duration: const Duration(milliseconds: 160),
+      curve: Curves.easeOutCubic,
     );
   }
 
@@ -187,14 +332,14 @@ class _StrongDictionarySelector extends StatelessWidget {
         : rawQuery;
     final parsedNumber = int.tryParse(numberQuery);
     if (parsedNumber != null) {
-      for (final entry in state.pickerEntries) {
+      for (final entry in widget.state.pickerEntries) {
         if (entry.number == parsedNumber) {
           return entry.number;
         }
       }
     }
 
-    final visibleEntries = state.visiblePickerEntries;
+    final visibleEntries = widget.state.visiblePickerEntries;
     if (visibleEntries.isEmpty) {
       return null;
     }
@@ -216,32 +361,61 @@ class _StrongDictionaryEntryTile extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return ListTile(
+    return Material(
       key: Key('strong_dictionary_entry_${entry.number}'),
-      dense: true,
-      selected: selected,
-      selectedTileColor: colorScheme.primaryContainer.withValues(alpha: 0.42),
-      title: Text(
-        entry.word,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: theme.textTheme.bodyLarge?.copyWith(
-          fontWeight: selected ? FontWeight.w700 : null,
+      color: selected
+          ? colorScheme.primaryContainer.withValues(alpha: 0.42)
+          : colorScheme.surface,
+      child: InkWell(
+        onTap: () {
+          context.read<StrongsDictionaryCubit>().showStrongNumber(
+            localizations: AppLocalizations.of(context)!,
+            strongNumber: entry.number,
+          );
+        },
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: colorScheme.outlineVariant, width: 1),
+            ),
+          ),
+          child: SizedBox(
+            height: _strongDictionaryEntryExtent,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 50,
+                    child: Text(
+                      entry.code,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: selected
+                            ? colorScheme.primary
+                            : colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      entry.word,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: selected ? FontWeight.w700 : null,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
-      leading: Text(
-        entry.code,
-        style: theme.textTheme.labelLarge?.copyWith(
-          color: selected ? colorScheme.primary : colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      onTap: () {
-        context.read<StrongsDictionaryCubit>().showStrongNumber(
-          localizations: AppLocalizations.of(context)!,
-          strongNumber: entry.number,
-        );
-      },
     );
   }
 }
@@ -291,6 +465,7 @@ class _StrongDictionaryPageEntryView extends StatelessWidget {
           context.read<StrongsDictionaryCubit>().showStrongNumber(
             localizations: AppLocalizations.of(context)!,
             strongNumber: strongNumber,
+            clearSearch: true,
           );
         },
         onStrongNumberPickerRequested: (linkContext, strongNumber) {
@@ -333,6 +508,7 @@ class _StrongDictionaryPageEntryView extends StatelessWidget {
     cubit.showStrongNumber(
       localizations: AppLocalizations.of(context)!,
       strongNumber: pickedStrongNumber,
+      clearSearch: true,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_dictionary_entry.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
+import 'package:revelation/features/strongs_dictionary/domain/services/strong_dictionary_search_normalizer.dart';
 import 'package:revelation/features/strongs_dictionary/domain/services/strong_number_policy.dart';
 import 'package:revelation/infra/db/runtime/gateways/lexicon_database_gateway.dart';
 
@@ -12,6 +13,14 @@ class StrongsDictionaryRepository {
 
   final LexiconDatabaseGateway _databaseGateway;
   final StrongNumberPolicy _numberPolicy;
+
+  String? _cachedLanguageCode;
+  Object? _cachedGreekWordsIdentity;
+  Object? _cachedGreekDescsIdentity;
+  List<StrongDictionaryEntry>? _entriesCache;
+  Map<int, StrongDictionaryEntry>? _entriesByNumberCache;
+  Map<int, String>? _descriptionsByNumberCache;
+  List<StrongPickerEntry>? _pickerEntriesCache;
 
   bool get isInitialized => _databaseGateway.isInitialized;
 
@@ -28,10 +37,12 @@ class StrongsDictionaryRepository {
       return const <StrongDictionaryEntry>[];
     }
 
-    final descriptionsByNumber = <int, String>{
-      for (final description in _databaseGateway.greekDescs)
-        description.id: description.desc.trim(),
-    };
+    _refreshCachesIfSourceChanged();
+    return _entriesCache ??= _buildEntries();
+  }
+
+  List<StrongDictionaryEntry> _buildEntries() {
+    final descriptionsByNumber = _getDescriptionsByNumber();
 
     final entries =
         _databaseGateway.greekWords
@@ -57,12 +68,10 @@ class StrongsDictionaryRepository {
       return null;
     }
 
-    for (final entry in getEntries()) {
-      if (entry.number == strongNumber) {
-        return entry;
-      }
-    }
-    return null;
+    _refreshCachesIfSourceChanged();
+    return (_entriesByNumberCache ??= {
+      for (final entry in getEntries()) entry.number: entry,
+    })[strongNumber];
   }
 
   String? findDescription(int strongNumber) {
@@ -70,13 +79,8 @@ class StrongsDictionaryRepository {
       return null;
     }
 
-    for (final description in _databaseGateway.greekDescs) {
-      if (description.id == strongNumber) {
-        final value = description.desc.trim();
-        return value.isEmpty ? null : value;
-      }
-    }
-    return null;
+    _refreshCachesIfSourceChanged();
+    return _getDescriptionsByNumber()[strongNumber];
   }
 
   String? findGreekWord(int strongNumber) {
@@ -84,13 +88,11 @@ class StrongsDictionaryRepository {
       return null;
     }
 
-    for (final word in _databaseGateway.greekWords) {
-      if (word.id == strongNumber) {
-        final value = word.word.trim();
-        return value.isEmpty ? null : value;
-      }
+    final entry = findEntry(strongNumber);
+    if (entry == null || entry.word.isEmpty) {
+      return null;
     }
-    return null;
+    return entry.word;
   }
 
   List<StrongPickerEntry> getPickerEntries() {
@@ -98,16 +100,28 @@ class StrongsDictionaryRepository {
       return const <StrongPickerEntry>[];
     }
 
-    final entries =
-        _databaseGateway.greekWords
-            .where((word) => _numberPolicy.isAllowed(word.id))
-            .map(
-              (word) =>
-                  StrongPickerEntry(number: word.id, word: word.word.trim()),
-            )
-            .where((entry) => entry.word.isNotEmpty)
-            .toList(growable: false)
-          ..sort((a, b) => a.number.compareTo(b.number));
+    _refreshCachesIfSourceChanged();
+    return _pickerEntriesCache ??= _buildPickerEntries();
+  }
+
+  List<StrongPickerEntry> _buildPickerEntries() {
+    final entries = getEntries()
+        .where(
+          (entry) =>
+              _numberPolicy.isAllowed(entry.number) && entry.word.isNotEmpty,
+        )
+        .map((entry) {
+          final searchText = normalizeStrongDictionarySearchText(
+            '${entry.number} ${entry.code} ${entry.word} ${entry.description}',
+          );
+          return StrongPickerEntry(
+            number: entry.number,
+            word: entry.word,
+            description: entry.description,
+            searchText: searchText,
+          );
+        })
+        .toList(growable: false);
 
     return List<StrongPickerEntry>.unmodifiable(entries);
   }
@@ -117,5 +131,32 @@ class StrongsDictionaryRepository {
       value,
       getPickerEntries().map((entry) => entry.number),
     );
+  }
+
+  Map<int, String> _getDescriptionsByNumber() {
+    return _descriptionsByNumberCache ??= {
+      for (final description in _databaseGateway.greekDescs)
+        if (description.desc.trim().isNotEmpty)
+          description.id: description.desc.trim(),
+    };
+  }
+
+  void _refreshCachesIfSourceChanged() {
+    final languageCode = _databaseGateway.languageCode;
+    final greekWords = _databaseGateway.greekWords;
+    final greekDescs = _databaseGateway.greekDescs;
+    if (_cachedLanguageCode == languageCode &&
+        identical(_cachedGreekWordsIdentity, greekWords) &&
+        identical(_cachedGreekDescsIdentity, greekDescs)) {
+      return;
+    }
+
+    _cachedLanguageCode = languageCode;
+    _cachedGreekWordsIdentity = greekWords;
+    _cachedGreekDescsIdentity = greekDescs;
+    _entriesCache = null;
+    _entriesByNumberCache = null;
+    _descriptionsByNumberCache = null;
+    _pickerEntriesCache = null;
   }
 }

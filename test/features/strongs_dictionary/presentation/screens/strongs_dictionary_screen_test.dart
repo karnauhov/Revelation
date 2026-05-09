@@ -31,8 +31,13 @@ void main() {
     );
 
     expect(find.text(localizations.strongs_dictionary_screen), findsOneWidget);
+    expect(find.text(localizations.strongs_dictionary_header), findsOneWidget);
     expect(
       find.byKey(const Key('strong_dictionary_search_field')),
+      findsOneWidget,
+    );
+    expect(
+      find.byTooltip(localizations.greek_keyboard_tooltip),
       findsOneWidget,
     );
     expect(markdownView.exportPdfDocumentTitle, 'G2');
@@ -69,6 +74,64 @@ void main() {
       find.byType(DescriptionMarkdownView),
     );
     expect(markdownView.exportPdfDocumentTitle, 'G2');
+  });
+
+  testWidgets('search filters entries by dictionary description text', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        withScaffold: false,
+        child: StrongsDictionaryScreen(
+          initialStrongNumber: 1,
+          contentService: _FakeStrongsDictionaryContentService(
+            entries: const [
+              StrongPickerEntry(number: 1, word: 'Alpha'),
+              StrongPickerEntry(
+                number: 2,
+                word: 'Beta',
+                description: 'Second letter',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('strong_dictionary_search_field')),
+      'LETTER',
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('strong_dictionary_entry_1')), findsNothing);
+    expect(find.byKey(const Key('strong_dictionary_entry_2')), findsOneWidget);
+  });
+
+  testWidgets('selected initial entry is revealed in the selector list', (
+    tester,
+  ) async {
+    final entries = List<StrongPickerEntry>.generate(
+      80,
+      (index) =>
+          StrongPickerEntry(number: index + 1, word: 'Word ${index + 1}'),
+    );
+
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        withScaffold: false,
+        child: StrongsDictionaryScreen(
+          initialStrongNumber: 75,
+          contentService: _FakeStrongsDictionaryContentService(
+            entries: entries,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('strong_dictionary_entry_75')), findsOneWidget);
   });
 
   testWidgets('navigation buttons move between dictionary entries', (

@@ -95,25 +95,52 @@ void main() {
     );
   });
 
-  testWidgets('updateSearchQuery filters picker entries by word and number', (
+  testWidgets('updateSearchQuery filters by number, word and description', (
     tester,
   ) async {
     final localizations = await _loadLocalizations(tester);
+    final service = _FakeStrongsDictionaryContentService(
+      entries: const [
+        StrongPickerEntry(
+          number: 1,
+          word: 'ἀγάπη',
+          description: 'Love and affection',
+        ),
+        StrongPickerEntry(
+          number: 2,
+          word: 'βῆτα',
+          description: 'Second letter',
+        ),
+      ],
+    );
     final cubit = StrongsDictionaryCubit(
       initialStrongNumber: 1,
       localizations: localizations,
-      contentService: _FakeStrongsDictionaryContentService(),
+      contentService: service,
     );
     addTearDown(cubit.close);
 
-    cubit.updateSearchQuery('beta');
+    cubit.updateSearchQuery('αγαπη');
     expect(cubit.state.visiblePickerEntries, const [
-      StrongPickerEntry(number: 2, word: 'beta'),
+      StrongPickerEntry(
+        number: 1,
+        word: 'ἀγάπη',
+        description: 'Love and affection',
+      ),
+    ]);
+
+    cubit.updateSearchQuery('LETTER');
+    expect(cubit.state.visiblePickerEntries, const [
+      StrongPickerEntry(number: 2, word: 'βῆτα', description: 'Second letter'),
     ]);
 
     cubit.updateSearchQuery('G1');
     expect(cubit.state.visiblePickerEntries, const [
-      StrongPickerEntry(number: 1, word: 'alpha'),
+      StrongPickerEntry(
+        number: 1,
+        word: 'ἀγάπη',
+        description: 'Love and affection',
+      ),
     ]);
   });
 }
@@ -125,15 +152,20 @@ Future<AppLocalizations> _loadLocalizations(WidgetTester tester) async {
 
 class _FakeStrongsDictionaryContentService
     extends StrongsDictionaryContentService {
-  _FakeStrongsDictionaryContentService({Set<int>? missingNumbers})
-    : missingNumbers = missingNumbers ?? const <int>{};
+  _FakeStrongsDictionaryContentService({
+    Set<int>? missingNumbers,
+    List<StrongPickerEntry>? entries,
+  }) : missingNumbers = missingNumbers ?? const <int>{},
+       entries =
+           entries ??
+           const [
+             StrongPickerEntry(number: 1, word: 'alpha'),
+             StrongPickerEntry(number: 2, word: 'beta'),
+           ];
 
   final Set<int> missingNumbers;
 
-  List<StrongPickerEntry> entries = const [
-    StrongPickerEntry(number: 1, word: 'alpha'),
-    StrongPickerEntry(number: 2, word: 'beta'),
-  ];
+  List<StrongPickerEntry> entries;
 
   @override
   List<StrongPickerEntry> getPickerEntries() {
