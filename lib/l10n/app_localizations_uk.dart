@@ -147,6 +147,49 @@ class AppLocalizationsUk extends AppLocalizations {
   String get primary_sources_header => 'Натисніть на зображення щоб відкрити';
 
   @override
+  String get strongs_dictionary_screen => 'Словник Стронґа';
+
+  @override
+  String get strongs_dictionary_header =>
+      'Значення грецьких слів та їх використання';
+
+  @override
+  String get allusion_search_screen => 'Пошук алюзій';
+
+  @override
+  String get allusion_search_header => 'Зв\'язки з біблійними текстами';
+
+  @override
+  String get bible_screen => 'Біблія';
+
+  @override
+  String get bible_header => 'Читання і вивчення Писання';
+
+  @override
+  String get revelation_structure_screen => 'Структура Об\'явлення';
+
+  @override
+  String get revelation_structure_header => 'План книги та структура оповіді';
+
+  @override
+  String get historical_background_screen => 'Історична довідка';
+
+  @override
+  String get historical_background_header =>
+      'Ключові події з історії церкви та світу';
+
+  @override
+  String get practical_faith_screen => 'Практична віра';
+
+  @override
+  String get practical_faith_header => 'Роздуми і застосування';
+
+  @override
+  String planned_feature_message(String featureTitle) {
+    return 'Сторінку «$featureTitle» планується реалізувати в одній із майбутніх версій.';
+  }
+
+  @override
   String get settings_screen => 'Налаштування';
 
   @override

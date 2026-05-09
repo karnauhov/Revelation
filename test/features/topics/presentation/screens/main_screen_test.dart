@@ -39,6 +39,7 @@ void main() {
 
     expect(find.text(l10n.settings_screen), findsOneWidget);
     expect(find.text(l10n.primary_sources_screen), findsOneWidget);
+    expect(find.text(l10n.bible_screen), findsOneWidget);
   });
 
   testWidgets('MainScreen plays stone sound on drawer open and manual close', (
@@ -299,6 +300,35 @@ Future<_MainScreenHarness> _buildHarness({
         path: '/primary_sources',
         builder: (context, state) =>
             const Scaffold(body: Text('primary-sources-page')),
+      ),
+      GoRoute(
+        path: '/strongs_dictionary',
+        builder: (context, state) =>
+            const Scaffold(body: Text('strongs-dictionary-page')),
+      ),
+      GoRoute(
+        path: '/allusion_search',
+        builder: (context, state) =>
+            const Scaffold(body: Text('allusion-search-page')),
+      ),
+      GoRoute(
+        path: '/bible',
+        builder: (context, state) => const Scaffold(body: Text('bible-page')),
+      ),
+      GoRoute(
+        path: '/revelation_structure',
+        builder: (context, state) =>
+            const Scaffold(body: Text('revelation-structure-page')),
+      ),
+      GoRoute(
+        path: '/historical_background',
+        builder: (context, state) =>
+            const Scaffold(body: Text('historical-background-page')),
+      ),
+      GoRoute(
+        path: '/practical_faith',
+        builder: (context, state) =>
+            const Scaffold(body: Text('practical-faith-page')),
       ),
       GoRoute(
         path: '/about',

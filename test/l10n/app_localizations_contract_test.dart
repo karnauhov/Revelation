@@ -333,6 +333,77 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'primary_sources_header should not be empty',
   );
   expect(
+    l10n.strongs_dictionary_screen,
+    isNotEmpty,
+    reason: 'strongs_dictionary_screen should not be empty',
+  );
+  expect(
+    l10n.strongs_dictionary_header,
+    isNotEmpty,
+    reason: 'strongs_dictionary_header should not be empty',
+  );
+  expect(
+    l10n.allusion_search_screen,
+    isNotEmpty,
+    reason: 'allusion_search_screen should not be empty',
+  );
+  expect(
+    l10n.allusion_search_header,
+    isNotEmpty,
+    reason: 'allusion_search_header should not be empty',
+  );
+  expect(
+    l10n.bible_screen,
+    isNotEmpty,
+    reason: 'bible_screen should not be empty',
+  );
+  expect(
+    l10n.bible_header,
+    isNotEmpty,
+    reason: 'bible_header should not be empty',
+  );
+  expect(
+    l10n.revelation_structure_screen,
+    isNotEmpty,
+    reason: 'revelation_structure_screen should not be empty',
+  );
+  expect(
+    l10n.revelation_structure_header,
+    isNotEmpty,
+    reason: 'revelation_structure_header should not be empty',
+  );
+  expect(
+    l10n.historical_background_screen,
+    isNotEmpty,
+    reason: 'historical_background_screen should not be empty',
+  );
+  expect(
+    l10n.historical_background_header,
+    isNotEmpty,
+    reason: 'historical_background_header should not be empty',
+  );
+  expect(
+    l10n.practical_faith_screen,
+    isNotEmpty,
+    reason: 'practical_faith_screen should not be empty',
+  );
+  expect(
+    l10n.practical_faith_header,
+    isNotEmpty,
+    reason: 'practical_faith_header should not be empty',
+  );
+  final plannedFeatureMessage = l10n.planned_feature_message(testLanguage);
+  expect(
+    plannedFeatureMessage,
+    contains(testLanguage),
+    reason: 'planned_feature_message should interpolate the feature title',
+  );
+  expect(
+    plannedFeatureMessage,
+    isNotEmpty,
+    reason: 'planned_feature_message should not be empty',
+  );
+  expect(
     l10n.settings_screen,
     isNotEmpty,
     reason: 'settings_screen should not be empty',

@@ -354,6 +354,84 @@ abstract class AppLocalizations {
   /// **'Click on the image to open'**
   String get primary_sources_header;
 
+  /// No description provided for @strongs_dictionary_screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong\'s Dictionary'**
+  String get strongs_dictionary_screen;
+
+  /// No description provided for @strongs_dictionary_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Greek word meanings and usage'**
+  String get strongs_dictionary_header;
+
+  /// No description provided for @allusion_search_screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Allusion Search'**
+  String get allusion_search_screen;
+
+  /// No description provided for @allusion_search_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Connections with biblical texts'**
+  String get allusion_search_header;
+
+  /// No description provided for @bible_screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Bible'**
+  String get bible_screen;
+
+  /// No description provided for @bible_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading and studying Scripture'**
+  String get bible_header;
+
+  /// No description provided for @revelation_structure_screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Revelation Structure'**
+  String get revelation_structure_screen;
+
+  /// No description provided for @revelation_structure_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Book outline and narrative structure'**
+  String get revelation_structure_header;
+
+  /// No description provided for @historical_background_screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Historical Background'**
+  String get historical_background_screen;
+
+  /// No description provided for @historical_background_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Key events in church and world history'**
+  String get historical_background_header;
+
+  /// No description provided for @practical_faith_screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Practical Faith'**
+  String get practical_faith_screen;
+
+  /// No description provided for @practical_faith_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Reflection and application'**
+  String get practical_faith_header;
+
+  /// Message shown on placeholder pages for planned sections
+  ///
+  /// In en, this message translates to:
+  /// **'The {featureTitle} page is planned for a future version.'**
+  String planned_feature_message(String featureTitle);
+
   /// No description provided for @settings_screen.
   ///
   /// In en, this message translates to:

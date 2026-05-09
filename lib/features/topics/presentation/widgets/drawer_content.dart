@@ -66,11 +66,30 @@ class _DrawerContentState extends State<DrawerContent> {
     });
   }
 
+  void _openRoute(BuildContext context, String route) {
+    widget.onItemClicked();
+    Navigator.pop(context);
+    context.push(route);
+  }
+
+  DrawerItem _buildNavigationItem({
+    required String assetPath,
+    required String text,
+    required String route,
+  }) {
+    return DrawerItem(
+      assetPath: assetPath,
+      text: text,
+      onClick: () => _openRoute(context, route),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final dividerColor = colorScheme.onSurface.withValues(alpha: 0.12);
+    final l10n = AppLocalizations.of(context)!;
 
     return SafeArea(
       child: Column(
@@ -90,44 +109,56 @@ class _DrawerContentState extends State<DrawerContent> {
                   padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: [
-                    DrawerItem(
+                    _buildNavigationItem(
                       assetPath: 'assets/images/UI/papyrus.svg',
-                      text: AppLocalizations.of(
-                        context,
-                      )!.primary_sources_screen,
-                      onClick: () {
-                        widget.onItemClicked();
-                        Navigator.pop(context);
-                        context.push('/primary_sources');
-                      },
+                      text: l10n.primary_sources_screen,
+                      route: '/primary_sources',
+                    ),
+                    _buildNavigationItem(
+                      assetPath: 'assets/images/UI/dictionary.svg',
+                      text: l10n.strongs_dictionary_screen,
+                      route: '/strongs_dictionary',
+                    ),
+                    _buildNavigationItem(
+                      assetPath: 'assets/images/UI/search_book.svg',
+                      text: l10n.allusion_search_screen,
+                      route: '/allusion_search',
+                    ),
+                    _buildNavigationItem(
+                      assetPath: 'assets/images/UI/bible.svg',
+                      text: l10n.bible_screen,
+                      route: '/bible',
+                    ),
+                    _buildNavigationItem(
+                      assetPath: 'assets/images/UI/structure.svg',
+                      text: l10n.revelation_structure_screen,
+                      route: '/revelation_structure',
+                    ),
+                    _buildNavigationItem(
+                      assetPath: 'assets/images/UI/history.svg',
+                      text: l10n.historical_background_screen,
+                      route: '/historical_background',
+                    ),
+                    _buildNavigationItem(
+                      assetPath: 'assets/images/UI/candle.svg',
+                      text: l10n.practical_faith_screen,
+                      route: '/practical_faith',
                     ),
                     Divider(color: dividerColor),
-                    DrawerItem(
+                    _buildNavigationItem(
                       assetPath: 'assets/images/UI/settings.svg',
-                      text: AppLocalizations.of(context)!.settings_screen,
-                      onClick: () {
-                        widget.onItemClicked();
-                        Navigator.pop(context);
-                        context.push('/settings');
-                      },
+                      text: l10n.settings_screen,
+                      route: '/settings',
                     ),
-                    DrawerItem(
+                    _buildNavigationItem(
                       assetPath: 'assets/images/UI/about.svg',
-                      text: AppLocalizations.of(context)!.about_screen,
-                      onClick: () {
-                        widget.onItemClicked();
-                        Navigator.pop(context);
-                        context.push('/about');
-                      },
+                      text: l10n.about_screen,
+                      route: '/about',
                     ),
-                    DrawerItem(
+                    _buildNavigationItem(
                       assetPath: 'assets/images/UI/get_app.svg',
-                      text: AppLocalizations.of(context)!.download,
-                      onClick: () {
-                        widget.onItemClicked();
-                        Navigator.pop(context);
-                        context.push('/download');
-                      },
+                      text: l10n.download,
+                      route: '/download',
                     ),
                   ],
                 ),

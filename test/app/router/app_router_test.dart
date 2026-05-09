@@ -8,11 +8,17 @@ import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/app/router/app_router.dart';
 import 'package:revelation/features/about/presentation/screens/about_screen.dart';
+import 'package:revelation/features/allusion_search/presentation/screens/allusion_search_screen.dart';
+import 'package:revelation/features/bible/presentation/screens/bible_screen.dart';
 import 'package:revelation/features/download/presentation/screens/download_screen.dart';
+import 'package:revelation/features/historical_background/presentation/screens/historical_background_screen.dart';
+import 'package:revelation/features/practical_faith/presentation/screens/practical_faith_screen.dart';
 import 'package:revelation/features/primary_sources/presentation/screens/primary_source_screen.dart';
 import 'package:revelation/features/primary_sources/presentation/screens/primary_sources_screen.dart';
+import 'package:revelation/features/revelation_structure/presentation/screens/revelation_structure_screen.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/settings/presentation/screens/settings_screen.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/screens/strongs_dictionary_screen.dart';
 import 'package:revelation/features/topics/presentation/screens/main_screen.dart';
 import 'package:revelation/features/topics/presentation/screens/topic_screen.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -151,6 +157,54 @@ void main() {
 
     expect(find.byType(PrimarySourcesScreen), findsOneWidget);
   });
+
+  final plannedFeatureRoutes = <_PlannedFeatureRoute>[
+    const _PlannedFeatureRoute(
+      path: '/strongs_dictionary',
+      screenType: StrongsDictionaryScreen,
+    ),
+    const _PlannedFeatureRoute(
+      path: '/allusion_search',
+      screenType: AllusionSearchScreen,
+    ),
+    const _PlannedFeatureRoute(path: '/bible', screenType: BibleScreen),
+    const _PlannedFeatureRoute(
+      path: '/revelation_structure',
+      screenType: RevelationStructureScreen,
+    ),
+    const _PlannedFeatureRoute(
+      path: '/historical_background',
+      screenType: HistoricalBackgroundScreen,
+    ),
+    const _PlannedFeatureRoute(
+      path: '/practical_faith',
+      screenType: PracticalFaithScreen,
+    ),
+  ];
+
+  for (final route in plannedFeatureRoutes) {
+    testWidgets('${route.path} route opens planned feature screen', (
+      tester,
+    ) async {
+      final settingsCubit = await _createSettingsCubit();
+      addTearDown(settingsCubit.close);
+      final appRouter = AppRouter();
+      final routeProvider = PlatformRouteInformationProvider(
+        initialRouteInformation: RouteInformation(uri: Uri(path: route.path)),
+      );
+
+      await tester.pumpWidget(
+        _buildRouterHost(
+          appRouter: appRouter,
+          settingsCubit: settingsCubit,
+          routeProvider: routeProvider,
+        ),
+      );
+      await pumpFrames(tester, count: 8);
+
+      expect(find.byType(route.screenType), findsOneWidget);
+    });
+  }
 
   testWidgets('invalid primary source route args render fallback page', (
     tester,
@@ -372,4 +426,11 @@ PrimarySource _buildPrimarySource() {
     attributes: const <Map<String, String>>[],
     permissionsReceived: false,
   );
+}
+
+class _PlannedFeatureRoute {
+  const _PlannedFeatureRoute({required this.path, required this.screenType});
+
+  final String path;
+  final Type screenType;
 }

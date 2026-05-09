@@ -147,6 +147,50 @@ class AppLocalizationsRu extends AppLocalizations {
   String get primary_sources_header => 'Нажмите на изображение, чтобы открыть';
 
   @override
+  String get strongs_dictionary_screen => 'Словарь Стронга';
+
+  @override
+  String get strongs_dictionary_header =>
+      'Значения греческих слов и их использование';
+
+  @override
+  String get allusion_search_screen => 'Поиск аллюзий';
+
+  @override
+  String get allusion_search_header => 'Связи с библейскими текстами';
+
+  @override
+  String get bible_screen => 'Библия';
+
+  @override
+  String get bible_header => 'Чтение и изучение Писания';
+
+  @override
+  String get revelation_structure_screen => 'Структура Откровения';
+
+  @override
+  String get revelation_structure_header =>
+      'План книги и структура повествования';
+
+  @override
+  String get historical_background_screen => 'Историческая справка';
+
+  @override
+  String get historical_background_header =>
+      'Ключевые события из истории церкви и мира';
+
+  @override
+  String get practical_faith_screen => 'Практическая вера';
+
+  @override
+  String get practical_faith_header => 'Размышление и применение';
+
+  @override
+  String planned_feature_message(String featureTitle) {
+    return 'Страница «$featureTitle» планируется к реализации в одной из будущих версий.';
+  }
+
+  @override
   String get settings_screen => 'Настройки';
 
   @override

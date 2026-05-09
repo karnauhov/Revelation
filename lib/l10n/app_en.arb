@@ -72,6 +72,27 @@
   "todo": "TODO",
   "primary_sources_screen": "Primary Sources",
   "primary_sources_header": "Click on the image to open",
+  "strongs_dictionary_screen": "Strong's Dictionary",
+  "strongs_dictionary_header": "Greek word meanings and usage",
+  "allusion_search_screen": "Allusion Search",
+  "allusion_search_header": "Connections with biblical texts",
+  "bible_screen": "Bible",
+  "bible_header": "Reading and studying Scripture",
+  "revelation_structure_screen": "Revelation Structure",
+  "revelation_structure_header": "Book outline and narrative structure",
+  "historical_background_screen": "Historical Background",
+  "historical_background_header": "Key events in church and world history",
+  "practical_faith_screen": "Practical Faith",
+  "practical_faith_header": "Reflection and application",
+  "planned_feature_message": "The {featureTitle} page is planned for a future version.",
+  "@planned_feature_message": {
+    "description": "Message shown on placeholder pages for planned sections",
+    "placeholders": {
+      "featureTitle": {
+        "type": "String"
+      }
+    }
+  },
   "settings_screen": "Settings",
   "settings_header": "Saving automatically",
   "about_screen": "About",

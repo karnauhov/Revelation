@@ -147,6 +147,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get primary_sources_header => 'Click on the image to open';
 
   @override
+  String get strongs_dictionary_screen => 'Strong\'s Dictionary';
+
+  @override
+  String get strongs_dictionary_header => 'Greek word meanings and usage';
+
+  @override
+  String get allusion_search_screen => 'Allusion Search';
+
+  @override
+  String get allusion_search_header => 'Connections with biblical texts';
+
+  @override
+  String get bible_screen => 'Bible';
+
+  @override
+  String get bible_header => 'Reading and studying Scripture';
+
+  @override
+  String get revelation_structure_screen => 'Revelation Structure';
+
+  @override
+  String get revelation_structure_header =>
+      'Book outline and narrative structure';
+
+  @override
+  String get historical_background_screen => 'Historical Background';
+
+  @override
+  String get historical_background_header =>
+      'Key events in church and world history';
+
+  @override
+  String get practical_faith_screen => 'Practical Faith';
+
+  @override
+  String get practical_faith_header => 'Reflection and application';
+
+  @override
+  String planned_feature_message(String featureTitle) {
+    return 'The $featureTitle page is planned for a future version.';
+  }
+
+  @override
   String get settings_screen => 'Settings';
 
   @override

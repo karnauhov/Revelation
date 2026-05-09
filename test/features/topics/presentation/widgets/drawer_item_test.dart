@@ -33,4 +33,29 @@ void main() {
 
     expect(tapped, 1);
   });
+
+  testWidgets('DrawerItem constrains long labels inside narrow drawers', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 304,
+            child: DrawerItem(
+              assetPath: 'assets/images/UI/menu.svg',
+              text: 'Very long planned feature title that should fit',
+              onClick: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Very long planned feature title that should fit'),
+      findsOneWidget,
+    );
+  });
 }

@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/features/topics/presentation/widgets/drawer_content.dart';
+import 'package:revelation/features/topics/presentation/widgets/drawer_item.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -28,9 +29,12 @@ void main() {
     addTearDown(_suppressOverflowErrors());
   });
 
-  testWidgets('DrawerContent shows non-web actions including download entry', (
+  testWidgets('DrawerContent shows non-web actions including planned entries', (
     tester,
   ) async {
+    await tester.binding.setSurfaceSize(const Size(480, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     final app = _buildApp(onItemClicked: () {});
     await tester.pumpWidget(app);
     await tester.pumpAndSettle();
@@ -41,6 +45,18 @@ void main() {
     final l10n = AppLocalizations.of(context)!;
 
     expect(find.text(l10n.primary_sources_screen), findsOneWidget);
+    for (final destination in _plannedFeatureDestinations(l10n)) {
+      expect(find.text(destination.label), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is DrawerItem &&
+              widget.text == destination.label &&
+              widget.assetPath == destination.iconAssetPath,
+        ),
+        findsOneWidget,
+      );
+    }
     expect(find.text(l10n.settings_screen), findsOneWidget);
     expect(find.text(l10n.about_screen), findsOneWidget);
     expect(find.text(l10n.close_app), findsOneWidget);
@@ -166,6 +182,38 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('about-page'), findsOneWidget);
     expect(clicks, 2);
+  });
+
+  testWidgets('DrawerContent navigates to planned feature placeholder routes', (
+    tester,
+  ) async {
+    var clicks = 0;
+    final app = _buildApp(
+      onItemClicked: () {
+        clicks += 1;
+      },
+    );
+    await tester.pumpWidget(app);
+    await tester.pumpAndSettle();
+
+    await _openDrawer(tester);
+    final context = tester.element(find.byType(DrawerContent));
+    final l10n = AppLocalizations.of(context)!;
+    final destinations = _plannedFeatureDestinations(l10n);
+
+    for (var i = 0; i < destinations.length; i += 1) {
+      final destination = destinations[i];
+      await _tapDrawerItem(tester, destination.label);
+
+      expect(clicks, i + 1);
+      expect(find.text(destination.pageText), findsOneWidget);
+
+      if (i < destinations.length - 1) {
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        await _openDrawer(tester);
+      }
+    }
   });
 
   testWidgets(
@@ -319,10 +367,10 @@ void main() {
       final after = tester.state<ScrollableState>(scrollableFinder).position;
       expect(after.pixels, greaterThan(0));
 
-      await tester.tap(find.text(l10n.about_screen));
+      await tester.tap(find.text(l10n.bible_screen));
       await tester.pumpAndSettle();
 
-      expect(find.text('about-page'), findsOneWidget);
+      expect(find.text('bible-page'), findsOneWidget);
     },
   );
 }
@@ -341,6 +389,35 @@ Widget _buildApp({required VoidCallback onItemClicked}) {
         path: '/primary_sources',
         builder: (context, state) =>
             const Scaffold(body: Text('primary-sources-page')),
+      ),
+      GoRoute(
+        path: '/strongs_dictionary',
+        builder: (context, state) =>
+            const Scaffold(body: Text('strongs-dictionary-page')),
+      ),
+      GoRoute(
+        path: '/allusion_search',
+        builder: (context, state) =>
+            const Scaffold(body: Text('allusion-search-page')),
+      ),
+      GoRoute(
+        path: '/bible',
+        builder: (context, state) => const Scaffold(body: Text('bible-page')),
+      ),
+      GoRoute(
+        path: '/revelation_structure',
+        builder: (context, state) =>
+            const Scaffold(body: Text('revelation-structure-page')),
+      ),
+      GoRoute(
+        path: '/historical_background',
+        builder: (context, state) =>
+            const Scaffold(body: Text('historical-background-page')),
+      ),
+      GoRoute(
+        path: '/practical_faith',
+        builder: (context, state) =>
+            const Scaffold(body: Text('practical-faith-page')),
       ),
       GoRoute(
         path: '/settings',
@@ -375,6 +452,66 @@ Future<void> _openDrawer(WidgetTester tester) async {
   );
   scaffoldState.openDrawer();
   await tester.pumpAndSettle();
+}
+
+Future<void> _tapDrawerItem(WidgetTester tester, String label) async {
+  await tester.scrollUntilVisible(
+    find.text(label),
+    80,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(label));
+  await tester.pumpAndSettle();
+}
+
+List<_PlannedFeatureDestination> _plannedFeatureDestinations(
+  AppLocalizations l10n,
+) {
+  return <_PlannedFeatureDestination>[
+    _PlannedFeatureDestination(
+      label: l10n.strongs_dictionary_screen,
+      pageText: 'strongs-dictionary-page',
+      iconAssetPath: 'assets/images/UI/dictionary.svg',
+    ),
+    _PlannedFeatureDestination(
+      label: l10n.allusion_search_screen,
+      pageText: 'allusion-search-page',
+      iconAssetPath: 'assets/images/UI/search_book.svg',
+    ),
+    _PlannedFeatureDestination(
+      label: l10n.bible_screen,
+      pageText: 'bible-page',
+      iconAssetPath: 'assets/images/UI/bible.svg',
+    ),
+    _PlannedFeatureDestination(
+      label: l10n.revelation_structure_screen,
+      pageText: 'revelation-structure-page',
+      iconAssetPath: 'assets/images/UI/structure.svg',
+    ),
+    _PlannedFeatureDestination(
+      label: l10n.historical_background_screen,
+      pageText: 'historical-background-page',
+      iconAssetPath: 'assets/images/UI/history.svg',
+    ),
+    _PlannedFeatureDestination(
+      label: l10n.practical_faith_screen,
+      pageText: 'practical-faith-page',
+      iconAssetPath: 'assets/images/UI/candle.svg',
+    ),
+  ];
+}
+
+class _PlannedFeatureDestination {
+  const _PlannedFeatureDestination({
+    required this.label,
+    required this.pageText,
+    required this.iconAssetPath,
+  });
+
+  final String label;
+  final String pageText;
+  final String iconAssetPath;
 }
 
 VoidCallback _suppressOverflowErrors() {

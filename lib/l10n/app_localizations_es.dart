@@ -149,6 +149,50 @@ class AppLocalizationsEs extends AppLocalizations {
   String get primary_sources_header => 'Haga clic en la imagen para abrir';
 
   @override
+  String get strongs_dictionary_screen => 'Diccionario de Strong';
+
+  @override
+  String get strongs_dictionary_header =>
+      'Significados y uso de palabras griegas';
+
+  @override
+  String get allusion_search_screen => 'Búsqueda de alusiones';
+
+  @override
+  String get allusion_search_header => 'Conexiones con textos bíblicos';
+
+  @override
+  String get bible_screen => 'Biblia';
+
+  @override
+  String get bible_header => 'Lectura y estudio de la Escritura';
+
+  @override
+  String get revelation_structure_screen => 'Estructura de Apocalipsis';
+
+  @override
+  String get revelation_structure_header =>
+      'Plan del libro y estructura narrativa';
+
+  @override
+  String get historical_background_screen => 'Contexto histórico';
+
+  @override
+  String get historical_background_header =>
+      'Eventos clave de la historia de la Iglesia y del mundo';
+
+  @override
+  String get practical_faith_screen => 'Fe práctica';
+
+  @override
+  String get practical_faith_header => 'Reflexión y aplicación';
+
+  @override
+  String planned_feature_message(String featureTitle) {
+    return 'La página «$featureTitle» está prevista para una versión futura.';
+  }
+
+  @override
   String get settings_screen => 'Configuración';
 
   @override

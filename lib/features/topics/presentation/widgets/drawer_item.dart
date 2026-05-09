@@ -42,11 +42,15 @@ class DrawerItem extends StatelessWidget {
                 colorFilter: ColorFilter.mode(contentColor, BlendMode.srcIn),
               ),
               const SizedBox(width: 16.0),
-              Text(
-                text,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(color: contentColor),
+              Expanded(
+                child: Text(
+                  text,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: contentColor),
+                ),
               ),
             ],
           ),

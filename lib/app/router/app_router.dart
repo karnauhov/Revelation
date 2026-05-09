@@ -4,8 +4,19 @@ import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/app/router/route_sound_observer.dart';
 import 'package:revelation/features/about/about.dart' show AboutScreen;
+import 'package:revelation/features/allusion_search/allusion_search.dart'
+    show AllusionSearchScreen;
+import 'package:revelation/features/bible/bible.dart' show BibleScreen;
 import 'package:revelation/features/download/download.dart' show DownloadScreen;
+import 'package:revelation/features/historical_background/historical_background.dart'
+    show HistoricalBackgroundScreen;
+import 'package:revelation/features/practical_faith/practical_faith.dart'
+    show PracticalFaithScreen;
+import 'package:revelation/features/revelation_structure/revelation_structure.dart'
+    show RevelationStructureScreen;
 import 'package:revelation/features/settings/settings.dart' show SettingsScreen;
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart'
+    show StrongsDictionaryScreen;
 import 'package:revelation/features/topics/topics.dart'
     show MainScreen, TopicScreen;
 import 'package:revelation/core/logging/common_logger.dart';
@@ -78,6 +89,72 @@ class AppRouter {
             context: context,
             state: state,
             child: PrimarySourcesScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/strongs_dictionary',
+        name: 'strongs_dictionary',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: const StrongsDictionaryScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/allusion_search',
+        name: 'allusion_search',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: const AllusionSearchScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/bible',
+        name: 'bible',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: const BibleScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/revelation_structure',
+        name: 'revelation_structure',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: const RevelationStructureScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/historical_background',
+        name: 'historical_background',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: const HistoricalBackgroundScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/practical_faith',
+        name: 'practical_faith',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: const PracticalFaithScreen(),
           );
         },
       ),
