@@ -191,6 +191,74 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('uses top-bottom layout in portrait mode on narrow width', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(430, 932);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        withScaffold: false,
+        child: StrongsDictionaryScreen(
+          contentService: _FakeStrongsDictionaryContentService(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final orientation = MediaQuery.of(
+      tester.element(find.byType(StrongsDictionaryScreen)),
+    ).orientation;
+    expect(orientation, Orientation.portrait);
+
+    expect(
+      find.byKey(const Key('strong_dictionary_split_view_column')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('strong_dictionary_split_view_row')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('uses side-by-side layout in landscape mode on narrow width', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(932, 430);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        withScaffold: false,
+        child: StrongsDictionaryScreen(
+          contentService: _FakeStrongsDictionaryContentService(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final orientation = MediaQuery.of(
+      tester.element(find.byType(StrongsDictionaryScreen)),
+    ).orientation;
+    expect(orientation, Orientation.landscape);
+
+    expect(
+      find.byKey(const Key('strong_dictionary_split_view_row')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('strong_dictionary_split_view_column')),
+      findsNothing,
+    );
+  });
 }
 
 class _FakeStrongsDictionaryContentService

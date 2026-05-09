@@ -95,11 +95,19 @@ class _StrongsDictionaryScreenContentState
               builder: (context, constraints) {
                 final selector = _StrongDictionarySelector(state: state);
                 final entryView = _StrongDictionaryPageEntryView(state: state);
-                if (constraints.maxWidth >= 840) {
+                final isLandscape =
+                    MediaQuery.of(context).orientation == Orientation.landscape;
+                final useSideBySideLayout =
+                    isLandscape || constraints.maxWidth >= 840;
+                if (useSideBySideLayout) {
+                  final selectorWidth = (constraints.maxWidth * 0.38)
+                      .clamp(280.0, 380.0)
+                      .toDouble();
                   return Row(
+                    key: const Key('strong_dictionary_split_view_row'),
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      SizedBox(width: 340, child: selector),
+                      SizedBox(width: selectorWidth, child: selector),
                       const VerticalDivider(width: 1),
                       Expanded(child: entryView),
                     ],
@@ -110,6 +118,7 @@ class _StrongsDictionaryScreenContentState
                     .clamp(150.0, 240.0)
                     .toDouble();
                 return Column(
+                  key: const Key('strong_dictionary_split_view_column'),
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(height: selectorHeight, child: selector),

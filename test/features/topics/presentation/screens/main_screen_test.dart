@@ -40,6 +40,9 @@ void main() {
     expect(find.text(l10n.settings_screen), findsOneWidget);
     expect(find.text(l10n.primary_sources_screen), findsOneWidget);
     expect(find.text(l10n.bible_screen), findsOneWidget);
+
+    final drawer = tester.widget<Drawer>(find.byType(Drawer));
+    expect(drawer.width, 334);
   });
 
   testWidgets('MainScreen plays stone sound on drawer open and manual close', (
