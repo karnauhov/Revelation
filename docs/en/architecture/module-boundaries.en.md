@@ -1,8 +1,13 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.2.0`  
-Last-Updated: `2026-03-30`  
+Doc-Version: `2.3.0`  
+Last-Updated: `2026-05-09`  
 Source-Commit: `working-tree`
+
+## Strong Feature Notes
+
+- `features/strongs_dictionary` owns Strong dictionary domain/data/presentation logic, including page/dialog/picker/embedded flows.
+- `shared/ui/markdown` stays Strong-agnostic and must not contain Strong-specific markers or inline syntax handlers.
 
 ## Purpose
 
@@ -39,6 +44,8 @@ A smaller feature may omit layers that it does not need, but the dependency dire
 - `core` stays feature-agnostic.
 - The global markdown image policy is split by layer: request/load contracts live in `core/content/markdown_images`, the default downloader/cache implementation lives in `infra/content/markdown_images`, and per-document UI state plus rendering live in `shared/ui/markdown`.
 - Features do not own markdown image caching or preload policy; they only pass markdown content and feature-specific link handlers into the shared markdown widgets.
+- `features/strongs_dictionary` owns Strong dictionary domain/data/presentation logic, including picker/dialog/page flows and the embedded primary-source dictionary entry UI.
+- `shared/ui/markdown` must remain Strong-agnostic: no Strong-specific markers, syntax handlers, or feature tooltip renderers.
 
 ## State Rules
 

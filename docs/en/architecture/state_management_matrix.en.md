@@ -1,8 +1,13 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.2.0`  
-Last-Updated: `2026-03-30`  
+Doc-Version: `2.3.0`  
+Last-Updated: `2026-05-09`  
 Source-Commit: `working-tree`
+
+## Strong Feature Notes
+
+- `StrongsDictionaryCubit` is the source of truth for Strong dictionary selection/content/navigation in page and dialog flows.
+- `StrongNumberPickerCubit` owns input normalization and selected picker entry state for the Strong number picker.
 
 ## Purpose
 
@@ -34,6 +39,8 @@ Show which cubit owns each runtime state slice.
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | Verse/word selection, description content, Strong picker entries |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | Pan, zoom, selection area, color replacement state |
 | `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Safe coordination of page changes, image loading, and save/restore flows |
+| `strongs_dictionary/content` | `StrongsDictionaryCubit` | Selected Strong number, filtered picker list, dictionary markdown content, and next/previous navigation |
+| `strongs_dictionary/picker` | `StrongNumberPickerCubit` | Strong picker text input normalization, nearest allowed entry selection, and picker confirmation state |
 | `download` | Stateless screen | No persistent runtime state slice |
 
 ## Scope Notes
@@ -41,5 +48,6 @@ Show which cubit owns each runtime state slice.
 - `RevelationStartupHost` creates `AppStartupCubit` at the app root and mounts the global app providers only after startup is ready.
 - Global providers are created by `AppDi.appBlocProviders`.
 - Shared markdown widgets create `RevelationMarkdownImagesCubit` per rendered markdown document instead of storing markdown image preload state inside feature cubits.
+- `StrongsDictionaryCubit` is the single source of truth for Strong dictionary selection state in page/dialog flows; `primary_sources` only delegates actions through the Strong feature API.
 - `PrimarySourceScreen` creates the detail cubits with `MultiBlocProvider`.
 - `PrimarySourceDetailCoordinator` adapts UI events to the detail cubits; it is not a state owner.

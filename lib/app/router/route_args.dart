@@ -49,3 +49,46 @@ class PrimarySourceRouteArgs {
     return null;
   }
 }
+
+class StrongDictionaryRouteArgs {
+  const StrongDictionaryRouteArgs({this.initialStrongNumber});
+
+  static const int defaultInitialStrongNumber = 1;
+
+  final int? initialStrongNumber;
+
+  int get resolvedInitialStrongNumber =>
+      initialStrongNumber ?? defaultInitialStrongNumber;
+
+  static StrongDictionaryRouteArgs? tryParse(
+    Object? extra,
+    Map<String, String> queryParameters,
+  ) {
+    if (extra is StrongDictionaryRouteArgs) {
+      return extra;
+    }
+
+    final parsedStrongNumber = _parseStrongNumber(
+      queryParameters['number'] ??
+          queryParameters['strongNumber'] ??
+          queryParameters['strong'],
+    );
+    if (parsedStrongNumber == null) {
+      return const StrongDictionaryRouteArgs();
+    }
+
+    return StrongDictionaryRouteArgs(initialStrongNumber: parsedStrongNumber);
+  }
+
+  static int? _parseStrongNumber(String? value) {
+    final normalized = value?.trim();
+    if (normalized == null || normalized.isEmpty) {
+      return null;
+    }
+
+    final numberText = normalized.startsWith('G') || normalized.startsWith('g')
+        ? normalized.substring(1)
+        : normalized;
+    return int.tryParse(numberText);
+  }
+}

@@ -3,8 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/strong_dictionary_dialog.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/strong_number_picker_dialog.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 

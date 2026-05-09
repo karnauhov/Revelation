@@ -3,9 +3,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/strong_number_picker_dialog.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 
 import '../../../../test_harness/test_harness.dart';
 
@@ -20,7 +19,7 @@ void main() {
       showDialog<int>(
         context: context,
         builder: (_) => const StrongNumberPickerDialog(
-          entries: <GreekStrongPickerEntry>[],
+          entries: <StrongPickerEntry>[],
           initialStrongNumber: 1,
         ),
       ),
@@ -44,10 +43,10 @@ void main() {
     final resultFuture = showDialog<int>(
       context: context,
       builder: (_) => const StrongNumberPickerDialog(
-        entries: <GreekStrongPickerEntry>[
-          GreekStrongPickerEntry(number: 2718, word: 'word-2718'),
-          GreekStrongPickerEntry(number: 3303, word: 'word-3303'),
-          GreekStrongPickerEntry(number: 5000, word: 'word-5000'),
+        entries: <StrongPickerEntry>[
+          StrongPickerEntry(number: 2718, word: 'word-2718'),
+          StrongPickerEntry(number: 3303, word: 'word-3303'),
+          StrongPickerEntry(number: 5000, word: 'word-5000'),
         ],
         initialStrongNumber: 2717,
       ),
@@ -78,9 +77,9 @@ void main() {
     final cancelFuture = showDialog<int>(
       context: context,
       builder: (_) => const StrongNumberPickerDialog(
-        entries: <GreekStrongPickerEntry>[
-          GreekStrongPickerEntry(number: 1, word: 'one'),
-          GreekStrongPickerEntry(number: 2, word: 'two'),
+        entries: <StrongPickerEntry>[
+          StrongPickerEntry(number: 1, word: 'one'),
+          StrongPickerEntry(number: 2, word: 'two'),
         ],
         initialStrongNumber: 1,
       ),
@@ -93,9 +92,9 @@ void main() {
     final submitFuture = showDialog<int>(
       context: context,
       builder: (_) => const StrongNumberPickerDialog(
-        entries: <GreekStrongPickerEntry>[
-          GreekStrongPickerEntry(number: 1, word: 'one'),
-          GreekStrongPickerEntry(number: 2, word: 'two'),
+        entries: <StrongPickerEntry>[
+          StrongPickerEntry(number: 1, word: 'one'),
+          StrongPickerEntry(number: 2, word: 'two'),
         ],
         initialStrongNumber: 1,
       ),

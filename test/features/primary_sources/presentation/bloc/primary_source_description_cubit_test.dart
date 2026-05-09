@@ -2,11 +2,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_content.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/description_request.dart';
-import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/primary_source.dart';
@@ -285,17 +285,16 @@ void main() {
     addTearDown(cubit.close);
 
     service.entries = const [
-      GreekStrongPickerEntry(number: 10, word: 'deka'),
-      GreekStrongPickerEntry(number: 20, word: 'eikosi'),
-      GreekStrongPickerEntry(number: 30, word: 'triakonta'),
+      StrongPickerEntry(number: 10, word: 'deka'),
+      StrongPickerEntry(number: 20, word: 'eikosi'),
+      StrongPickerEntry(number: 30, word: 'triakonta'),
     ];
     final entries = cubit.getGreekStrongPickerEntries();
 
     expect(entries, hasLength(3));
     expect(cubit.state.pickerEntries.first.number, 10);
     expect(
-      () =>
-          entries.add(const GreekStrongPickerEntry(number: 40, word: 'forty')),
+      () => entries.add(const StrongPickerEntry(number: 40, word: 'forty')),
       throwsUnsupportedError,
     );
   });
@@ -337,10 +336,10 @@ class _FakeDescriptionContentService extends DescriptionContentService {
   }
 
   @override
-  List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
+  List<StrongPickerEntry> getGreekStrongPickerEntries() {
     return const [
-      GreekStrongPickerEntry(number: 1, word: 'alpha'),
-      GreekStrongPickerEntry(number: 2, word: 'beta'),
+      StrongPickerEntry(number: 1, word: 'alpha'),
+      StrongPickerEntry(number: 2, word: 'beta'),
     ];
   }
 
@@ -363,13 +362,13 @@ class _NullStrongDescriptionContentService
 
 class _MutablePickerDescriptionContentService
     extends _FakeDescriptionContentService {
-  List<GreekStrongPickerEntry> entries = const [
-    GreekStrongPickerEntry(number: 1, word: 'alpha'),
-    GreekStrongPickerEntry(number: 2, word: 'beta'),
+  List<StrongPickerEntry> entries = const [
+    StrongPickerEntry(number: 1, word: 'alpha'),
+    StrongPickerEntry(number: 2, word: 'beta'),
   ];
 
   @override
-  List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
+  List<StrongPickerEntry> getGreekStrongPickerEntries() {
     return entries;
   }
 }

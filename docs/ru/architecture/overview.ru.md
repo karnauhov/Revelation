@@ -1,8 +1,14 @@
 # Обзор архитектуры (RU)
 
-Doc-Version: `2.2.0`  
-Last-Updated: `2026-03-30`  
+Doc-Version: `2.3.0`  
+Last-Updated: `2026-05-09`  
 Source-Commit: `working-tree`
+
+## Strong Feature Notes
+
+- The app now supports `/strongs_dictionary` as a first-class route.
+- `strongs_dictionary` owns Strong dictionary domain/data/presentation and its page/dialog/embedded UI.
+- Shared markdown remains Strong-agnostic: no Strong-specific marker or inline syntax in `shared/ui/markdown`.
 
 ## Назначение
 

@@ -13,9 +13,9 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_session_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_viewport_state.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_kind.dart';
-import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/zoom_status.dart';
@@ -240,7 +240,7 @@ class PrimarySourceDetailOrchestrationCubit
     );
   }
 
-  List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
+  List<StrongPickerEntry> getGreekStrongPickerEntries() {
     return _descriptionCubit.getGreekStrongPickerEntries();
   }
 

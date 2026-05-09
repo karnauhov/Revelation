@@ -15,7 +15,6 @@ import 'package:revelation/shared/models/primary_source_word_link_target.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_pdf_export.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
-import 'package:revelation/shared/utils/description_markdown_tokens.dart';
 
 Future<void> showPrimarySourceWordsDialog(
   BuildContext context,
@@ -251,9 +250,7 @@ class _PrimarySourceWordsDialogContent extends StatelessWidget {
               );
 
       final location = await exportPdfHandler(
-        markdown: stripDescriptionMarkdownPresentationMarkers(
-          exportData.markdown,
-        ),
+        markdown: exportData.markdown,
         documentTitle: exportData.documentTitle,
       );
 

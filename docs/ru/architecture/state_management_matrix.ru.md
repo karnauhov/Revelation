@@ -1,8 +1,13 @@
 # Матрица управления состоянием (RU)
 
-Doc-Version: `2.2.0`  
-Last-Updated: `2026-03-30`  
+Doc-Version: `2.3.0`  
+Last-Updated: `2026-05-09`  
 Source-Commit: `working-tree`
+
+## Strong Feature Notes
+
+- `StrongsDictionaryCubit` is the source of truth for Strong dictionary selection/content/navigation in page and dialog flows.
+- `StrongNumberPickerCubit` owns input normalization and selected picker entry state for the Strong number picker.
 
 ## Назначение
 

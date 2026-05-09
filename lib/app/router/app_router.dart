@@ -96,10 +96,18 @@ class AppRouter {
         path: '/strongs_dictionary',
         name: 'strongs_dictionary',
         pageBuilder: (BuildContext context, GoRouterState state) {
+          final routeArgs = StrongDictionaryRouteArgs.tryParse(
+            state.extra,
+            state.uri.queryParameters,
+          );
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
-            child: const StrongsDictionaryScreen(),
+            child: StrongsDictionaryScreen(
+              initialStrongNumber:
+                  routeArgs?.resolvedInitialStrongNumber ??
+                  StrongDictionaryRouteArgs.defaultInitialStrongNumber,
+            ),
           );
         },
       ),
@@ -261,6 +269,11 @@ String? _getRouteArgs(GoRouterState state) {
   }
   if (state.extra is PrimarySourceRouteArgs) {
     return (state.extra as PrimarySourceRouteArgs).primarySource.id;
+  }
+  if (state.extra is StrongDictionaryRouteArgs) {
+    final strongNumber =
+        (state.extra as StrongDictionaryRouteArgs).initialStrongNumber;
+    return strongNumber == null ? null : 'G$strongNumber';
   }
   return null;
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/shared/models/description_kind.dart';
-import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 
 class PrimarySourceDescriptionState {
   const PrimarySourceDescriptionState({
@@ -11,20 +11,20 @@ class PrimarySourceDescriptionState {
   });
 
   factory PrimarySourceDescriptionState.initial({
-    required List<GreekStrongPickerEntry> pickerEntries,
+    required List<StrongPickerEntry> pickerEntries,
   }) {
     return PrimarySourceDescriptionState(
       content: null,
       currentType: DescriptionKind.info,
       currentNumber: null,
-      pickerEntries: List<GreekStrongPickerEntry>.unmodifiable(pickerEntries),
+      pickerEntries: List<StrongPickerEntry>.unmodifiable(pickerEntries),
     );
   }
 
   final String? content;
   final DescriptionKind currentType;
   final int? currentNumber;
-  final List<GreekStrongPickerEntry> pickerEntries;
+  final List<StrongPickerEntry> pickerEntries;
 
   PrimarySourceDescriptionState copyWith({
     String? content,
@@ -32,7 +32,7 @@ class PrimarySourceDescriptionState {
     DescriptionKind? currentType,
     int? currentNumber,
     bool currentNumberSet = false,
-    List<GreekStrongPickerEntry>? pickerEntries,
+    List<StrongPickerEntry>? pickerEntries,
   }) {
     return PrimarySourceDescriptionState(
       content: contentSet ? content : this.content,

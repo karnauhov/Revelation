@@ -34,4 +34,3 @@ export 'presentation/widgets/primary_source_toolbar.dart';
 export 'presentation/widgets/primary_source_words_dialog.dart';
 export 'presentation/widgets/replace_color_dialog.dart';
 export 'presentation/widgets/source_item.dart';
-export 'presentation/widgets/strong_number_picker_dialog.dart';

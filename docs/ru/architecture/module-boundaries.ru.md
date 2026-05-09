@@ -1,8 +1,13 @@
 # Границы модулей (RU)
 
-Doc-Version: `2.2.0`  
-Last-Updated: `2026-03-30`  
+Doc-Version: `2.3.0`  
+Last-Updated: `2026-05-09`  
 Source-Commit: `working-tree`
+
+## Strong Feature Notes
+
+- `features/strongs_dictionary` owns Strong dictionary domain/data/presentation logic, including page/dialog/picker/embedded flows.
+- `shared/ui/markdown` stays Strong-agnostic and must not contain Strong-specific markers or inline syntax handlers.
 
 ## Назначение
 

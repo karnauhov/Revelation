@@ -14,6 +14,7 @@ import 'package:revelation/features/primary_sources/presentation/bloc/primary_so
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_split_view.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
@@ -257,6 +258,44 @@ void main() {
         await pumpAndReadH2Weight(DescriptionKind.strongNumber),
         FontWeight.bold,
       );
+    },
+  );
+
+  testWidgets(
+    'PrimarySourceDescriptionPanel uses Strong feature embedded view for Strong descriptions',
+    (tester) async {
+      await tester.pumpWidget(
+        _buildApp(
+          child: PrimarySourceDescriptionPanel(
+            descriptionContent: 'Strong entry',
+            currentDescriptionType: DescriptionKind.strongNumber,
+            currentDescriptionNumber: 3056,
+            onGreekStrongTap: (_, __) {},
+            onGreekStrongPickerTap: (_, __) {},
+            onWordTap: (_, __, ___, ____) async {},
+            showStrongInfoIcon: true,
+            canNavigate: true,
+            enableSwipeNavigation: false,
+            referenceTooltipKey: GlobalKey<TooltipState>(),
+            onNavigateBackward: () {},
+            onNavigateForward: () {},
+            onHorizontalDragEnd: (_) {},
+          ),
+        ),
+      );
+
+      expect(
+        find.byType(PrimarySourceStrongDictionaryEntryView),
+        findsOneWidget,
+      );
+
+      final markdownView = tester.widget<DescriptionMarkdownView>(
+        find.byType(DescriptionMarkdownView),
+      );
+      expect(markdownView.exportPdfDocumentTitle, 'G3056');
+      expect(find.byTooltip('Previous dictionary entry'), findsOneWidget);
+      expect(find.byTooltip('Next dictionary entry'), findsOneWidget);
+      expect(find.byIcon(Icons.info_outline), findsOneWidget);
     },
   );
 

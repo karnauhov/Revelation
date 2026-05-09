@@ -503,6 +503,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_picker_unavailable_numbers => '2717 і 3203-3302 недоступні';
 
   @override
+  String get strong_dictionary_search => 'Пошук за номером або грецьким словом';
+
+  @override
+  String get strong_dictionary_no_entries =>
+      'Статті словника Стронґа недоступні';
+
+  @override
+  String get strong_dictionary_no_results => 'Немає відповідних статей';
+
+  @override
   String get strong_pronunciation => 'Вимова';
 
   @override

@@ -16,6 +16,8 @@ import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
+import '../../test_harness/widget_test_harness.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -228,6 +230,40 @@ void main() {
     expect(settingsCubit.state.settings.selectedLanguage, 'es');
     expect(runtime.initializedLanguages, <String>['es']);
   });
+
+  testWidgets(
+    'initialize wires strong and strong_picker links to Strong dialog presenter',
+    (tester) async {
+      final context = await pumpContext(tester);
+      await tester.runAsync(() async {
+        await _seedSettings(language: 'en');
+        final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
+        AppDi.registerCore(talker: talker);
+        final shownStrongNumbers = <int>[];
+        final bootstrap = AppBootstrap(
+          talker: talker,
+          databaseRuntime: _FakeDatabaseRuntime(),
+          initializeAudio: _noopInitializeAudio,
+          showStrongDialog: (_, strongNumber) {
+            shownStrongNumbers.add(strongNumber);
+          },
+          databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
+        );
+        final settingsCubit = await bootstrap.initialize();
+        addTearDown(settingsCubit.close);
+
+        final strongHandled = await handleAppLink(context, 'strong:G13');
+        final strongPickerHandled = await handleAppLink(
+          context,
+          'strong_picker:G21',
+        );
+
+        expect(strongHandled, isTrue);
+        expect(strongPickerHandled, isTrue);
+        expect(shownStrongNumbers, <int>[13, 21]);
+      });
+    },
+  );
 }
 
 Future<void> _noopInitializeAudio(SettingsCubit settingsCubit) async {}

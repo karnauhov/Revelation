@@ -2,57 +2,55 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/bloc/strong_number_picker_cubit.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/bloc/strong_number_picker_state.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 
-class StrongNumberPickerDialog extends StatefulWidget {
-  final List<GreekStrongPickerEntry> entries;
-  final int initialStrongNumber;
-
+class StrongNumberPickerDialog extends StatelessWidget {
   const StrongNumberPickerDialog({
     required this.entries,
     required this.initialStrongNumber,
     super.key,
   });
 
+  final List<StrongPickerEntry> entries;
+  final int initialStrongNumber;
+
   @override
-  State<StrongNumberPickerDialog> createState() =>
-      _StrongNumberPickerDialogState();
+  Widget build(BuildContext context) {
+    return BlocProvider<StrongNumberPickerCubit>(
+      create: (_) => StrongNumberPickerCubit(
+        entries: entries,
+        initialStrongNumber: initialStrongNumber,
+      ),
+      child: const _StrongNumberPickerDialogContent(),
+    );
+  }
 }
 
-class _StrongNumberPickerDialogState extends State<StrongNumberPickerDialog> {
-  static const int _minStrongNumber = 1;
-  static const int _maxStrongNumber = 5624;
-  static const int _blockedSingleNumber = 2717;
-  static const int _blockedRangeStart = 3203;
-  static const int _blockedRangeEnd = 3302;
+class _StrongNumberPickerDialogContent extends StatefulWidget {
+  const _StrongNumberPickerDialogContent();
 
-  late final Map<int, GreekStrongPickerEntry> _entryByNumber;
+  @override
+  State<_StrongNumberPickerDialogContent> createState() =>
+      _StrongNumberPickerDialogContentState();
+}
+
+class _StrongNumberPickerDialogContentState
+    extends State<_StrongNumberPickerDialogContent> {
   late final TextEditingController _numberController;
   late final FocusNode _numberFocusNode;
 
-  int? _currentStrongNumber;
   bool _isProgrammaticEdit = false;
 
   @override
   void initState() {
     super.initState();
 
-    _entryByNumber = <int, GreekStrongPickerEntry>{
-      for (final entry in widget.entries) entry.number: entry,
-    };
-
-    if (_entryByNumber.isEmpty) {
-      _currentStrongNumber = null;
-    } else {
-      _currentStrongNumber = _normalizeToAllowedStrongNumber(
-        widget.initialStrongNumber,
-      );
-    }
-
-    _numberController = TextEditingController(
-      text: _currentStrongNumber?.toString() ?? '',
-    );
+    final initialState = context.read<StrongNumberPickerCubit>().state;
+    _numberController = TextEditingController(text: initialState.inputText);
     _numberFocusNode = FocusNode();
     _numberController.addListener(_handleNumberChanged);
     _numberFocusNode.addListener(_handleInputFocusChanged);
@@ -75,16 +73,23 @@ class _StrongNumberPickerDialogState extends State<StrongNumberPickerDialog> {
     super.dispose();
   }
 
-  GreekStrongPickerEntry? get _selectedEntry {
-    final strongNumber = _currentStrongNumber;
-    if (strongNumber == null) {
-      return null;
-    }
-    return _entryByNumber[strongNumber];
-  }
-
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<StrongNumberPickerCubit, StrongNumberPickerState>(
+      listenWhen: (previous, current) =>
+          previous.inputText != current.inputText,
+      listener: (context, state) {
+        if (_numberController.text != state.inputText) {
+          _replaceInputText(state.inputText);
+        }
+      },
+      builder: (context, state) {
+        return _buildDialog(context, state);
+      },
+    );
+  }
+
+  Widget _buildDialog(BuildContext context, StrongNumberPickerState state) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final mediaSize = MediaQuery.sizeOf(context);
@@ -94,7 +99,7 @@ class _StrongNumberPickerDialogState extends State<StrongNumberPickerDialog> {
     final isPortrait = mediaSize.height >= mediaSize.width;
     final isMobileLike = mediaSize.shortestSide < 600;
     final localizations = AppLocalizations.of(context)!;
-    final selectedEntry = _selectedEntry;
+    final selectedEntry = state.selectedEntry;
     final helperText = localizations.strong_picker_unavailable_numbers;
     final helperStyle =
         theme.inputDecorationTheme.helperStyle ?? theme.textTheme.bodySmall;
@@ -129,7 +134,7 @@ class _StrongNumberPickerDialogState extends State<StrongNumberPickerDialog> {
     final showHelperText = contentHeight >= 170.0;
     final showWord = contentHeight >= (isPortrait ? 190.0 : 160.0);
 
-    if (widget.entries.isEmpty) {
+    if (!state.hasEntries) {
       return AlertDialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         constraints: BoxConstraints(
@@ -261,65 +266,9 @@ class _StrongNumberPickerDialogState extends State<StrongNumberPickerDialog> {
       return;
     }
 
-    final rawText = _numberController.text.trim();
-    if (rawText.isEmpty) {
-      setState(() {
-        _currentStrongNumber = null;
-      });
-      return;
-    }
-
-    final parsed = int.tryParse(rawText);
-    if (parsed == null) {
-      return;
-    }
-
-    final normalized = _normalizeToAllowedStrongNumber(parsed);
-    if (normalized.toString() != rawText) {
-      _replaceInputText(normalized.toString());
-    }
-
-    if (_currentStrongNumber != normalized) {
-      setState(() {
-        _currentStrongNumber = normalized;
-      });
-    }
-  }
-
-  int _normalizeToAllowedStrongNumber(int value) {
-    var normalized = value.clamp(_minStrongNumber, _maxStrongNumber);
-
-    if (normalized == _blockedSingleNumber) {
-      normalized = _blockedSingleNumber + 1;
-    } else if (normalized >= _blockedRangeStart &&
-        normalized <= _blockedRangeEnd) {
-      normalized = _blockedRangeEnd + 1;
-    }
-
-    normalized = normalized.clamp(_minStrongNumber, _maxStrongNumber);
-    return _closestExistingStrongNumber(normalized);
-  }
-
-  int _closestExistingStrongNumber(int value) {
-    if (_entryByNumber.isEmpty) {
-      return _minStrongNumber;
-    }
-
-    if (_entryByNumber.containsKey(value)) {
-      return value;
-    }
-
-    for (int offset = 1; offset <= _maxStrongNumber; offset++) {
-      final up = value + offset;
-      if (up <= _maxStrongNumber && _entryByNumber.containsKey(up)) {
-        return up;
-      }
-      final down = value - offset;
-      if (down >= _minStrongNumber && _entryByNumber.containsKey(down)) {
-        return down;
-      }
-    }
-    return widget.entries.first.number;
+    context.read<StrongNumberPickerCubit>().updateInputText(
+      _numberController.text,
+    );
   }
 
   void _replaceInputText(String text) {
@@ -332,7 +281,10 @@ class _StrongNumberPickerDialogState extends State<StrongNumberPickerDialog> {
   }
 
   void _submitSelection(BuildContext context) {
-    final selectedEntry = _selectedEntry;
+    final selectedEntry = context
+        .read<StrongNumberPickerCubit>()
+        .state
+        .selectedEntry;
     if (selectedEntry == null) {
       return;
     }

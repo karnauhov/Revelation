@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/strong_reference_info_icon.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
@@ -8,6 +8,7 @@ import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 class PrimarySourceDescriptionPanel extends StatelessWidget {
   final String? descriptionContent;
   final DescriptionKind currentDescriptionType;
+  final int? currentDescriptionNumber;
   final GreekStrongTapHandler onGreekStrongTap;
   final GreekStrongPickerTapHandler onGreekStrongPickerTap;
   final WordTapHandler onWordTap;
@@ -25,6 +26,7 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
   const PrimarySourceDescriptionPanel({
     required this.descriptionContent,
     required this.currentDescriptionType,
+    this.currentDescriptionNumber,
     required this.onGreekStrongTap,
     required this.onGreekStrongPickerTap,
     required this.onWordTap,
@@ -47,53 +49,64 @@ class PrimarySourceDescriptionPanel extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context)!;
 
+    final isStrongDictionaryDescription =
+        currentDescriptionType == DescriptionKind.strongNumber &&
+        currentDescriptionNumber != null;
+    final descriptionBody = isStrongDictionaryDescription
+        ? PrimarySourceStrongDictionaryEntryView(
+            strongNumber: currentDescriptionNumber!,
+            markdown: descriptionContent ?? localizations.click_for_info,
+            onStrongTap: onGreekStrongTap,
+            onStrongPickerTap: onGreekStrongPickerTap,
+            onNavigateBackward: onNavigateBackward,
+            onNavigateForward: onNavigateForward,
+            navigationEnabled: canNavigate,
+            exportPdfEnabled: descriptionActionsEnabled,
+            copyEnabled: descriptionActionsEnabled,
+          )
+        : DescriptionMarkdownView(
+            data: descriptionContent ?? localizations.click_for_info,
+            padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
+            h2FontWeight: currentDescriptionType == DescriptionKind.word
+                ? FontWeight.normal
+                : null,
+            onGreekStrongTap: onGreekStrongTap,
+            onGreekStrongPickerTap: onGreekStrongPickerTap,
+            onWordTap: onWordTap,
+            onWordsTap: onWordsTap,
+            exportPdfEnabled: descriptionActionsEnabled,
+            copyEnabled: descriptionActionsEnabled,
+            exportPdfDocumentTitle: exportPdfDocumentTitle,
+            toolbarActions: [
+              _DescriptionNavigationToolbarButton(
+                buttonKey: const Key('description_nav_back'),
+                canNavigate: canNavigate,
+                forward: false,
+                tooltip: _buildNavigationTooltip(localizations, forward: false),
+                onTap: onNavigateBackward,
+              ),
+              _DescriptionNavigationToolbarButton(
+                buttonKey: const Key('description_nav_forward'),
+                canNavigate: canNavigate,
+                forward: true,
+                tooltip: _buildNavigationTooltip(localizations, forward: true),
+                onTap: onNavigateForward,
+              ),
+            ],
+          );
+
     final descriptionView = Container(
       color: colorScheme.surface,
       child: Stack(
         children: [
-          Positioned.fill(
-            child: DescriptionMarkdownView(
-              data: descriptionContent ?? localizations.click_for_info,
-              padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
-              h2FontWeight: currentDescriptionType == DescriptionKind.word
-                  ? FontWeight.normal
-                  : null,
-              onGreekStrongTap: onGreekStrongTap,
-              onGreekStrongPickerTap: onGreekStrongPickerTap,
-              onWordTap: onWordTap,
-              onWordsTap: onWordsTap,
-              exportPdfEnabled: descriptionActionsEnabled,
-              copyEnabled: descriptionActionsEnabled,
-              exportPdfDocumentTitle: exportPdfDocumentTitle,
-              toolbarActions: [
-                _DescriptionNavigationToolbarButton(
-                  buttonKey: const Key('description_nav_back'),
-                  canNavigate: canNavigate,
-                  forward: false,
-                  tooltip: _buildNavigationTooltip(
-                    localizations,
-                    forward: false,
-                  ),
-                  onTap: onNavigateBackward,
-                ),
-                _DescriptionNavigationToolbarButton(
-                  buttonKey: const Key('description_nav_forward'),
-                  canNavigate: canNavigate,
-                  forward: true,
-                  tooltip: _buildNavigationTooltip(
-                    localizations,
-                    forward: true,
-                  ),
-                  onTap: onNavigateForward,
-                ),
-              ],
-            ),
-          ),
+          Positioned.fill(child: descriptionBody),
           if (showStrongInfoIcon)
             Positioned(
               top: -8,
               right: -8,
-              child: StrongReferenceInfoIcon(tooltipKey: referenceTooltipKey),
+              child: buildStrongDictionaryReferenceInfoIcon(
+                tooltipKey: referenceTooltipKey,
+              ),
             ),
         ],
       ),

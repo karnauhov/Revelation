@@ -790,6 +790,21 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'strong_picker_unavailable_numbers should not be empty',
   );
   expect(
+    l10n.strong_dictionary_search,
+    isNotEmpty,
+    reason: 'strong_dictionary_search should not be empty',
+  );
+  expect(
+    l10n.strong_dictionary_no_entries,
+    isNotEmpty,
+    reason: 'strong_dictionary_no_entries should not be empty',
+  );
+  expect(
+    l10n.strong_dictionary_no_results,
+    isNotEmpty,
+    reason: 'strong_dictionary_no_results should not be empty',
+  );
+  expect(
     l10n.strong_pronunciation,
     isNotEmpty,
     reason: 'strong_pronunciation should not be empty',

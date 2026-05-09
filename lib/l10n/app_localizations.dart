@@ -1032,6 +1032,24 @@ abstract class AppLocalizations {
   /// **'2717 and 3203-3302 are unavailable'**
   String get strong_picker_unavailable_numbers;
 
+  /// No description provided for @strong_dictionary_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by number or Greek word'**
+  String get strong_dictionary_search;
+
+  /// No description provided for @strong_dictionary_no_entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong’s dictionary entries are unavailable'**
+  String get strong_dictionary_no_entries;
+
+  /// No description provided for @strong_dictionary_no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching entries'**
+  String get strong_dictionary_no_results;
+
   /// No description provided for @strong_pronunciation.
   ///
   /// In en, this message translates to:

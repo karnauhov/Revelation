@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/application/services/nomina_sacra_pronunciation_service.dart';
-import 'package:revelation/features/primary_sources/application/services/pronunciation_service.dart';
+import 'package:revelation/shared/services/pronunciation_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

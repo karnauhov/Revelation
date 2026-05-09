@@ -1,8 +1,14 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.2.0`  
-Last-Updated: `2026-03-30`  
+Doc-Version: `2.3.0`  
+Last-Updated: `2026-05-09`  
 Source-Commit: `working-tree`
+
+## Strong Feature Notes
+
+- The app now supports `/strongs_dictionary` as a first-class route.
+- `strongs_dictionary` owns Strong dictionary domain/data/presentation and its page/dialog/embedded UI.
+- Shared markdown remains Strong-agnostic: no Strong-specific marker or inline syntax in `shared/ui/markdown`.
 
 ## Purpose
 
@@ -14,10 +20,11 @@ Describe the current Revelation runtime architecture.
 - `AppStartupCubit` owns the launch splash state, app/build metadata for the splash footer, startup progress, failure/retry flow, and the handoff to the ready app shell.
 - `AppBootstrap` initializes Flutter bindings, global error handling, platform setup, settings, Supabase, local databases, and the default handlers for `word:` and Strong links while reporting startup progress.
 - `RevelationApp` builds `MaterialApp.router`, applies locale/theme/font settings from `SettingsCubit`, and exposes `en`, `es`, `uk`, and `ru`.
-- `AppRouter` uses `go_router` and routes to the main, topic, primary source list, primary source detail, settings, about, and download screens.
+- `AppRouter` uses `go_router` and routes to the main, topic, primary source list, primary source detail, Strong's dictionary page, settings, about, and download screens.
 - `AppDi.appBlocProviders` wires the global app state: `SettingsCubit`, `TopicsCatalogCubit`, and `PrimarySourcesCubit`.
 - `AppDi.registerCore` registers cross-cutting runtime services such as `Talker` and the shared `MarkdownImageLoader`.
 - `PrimarySourceScreen` creates feature-scoped detail state with `session`, `image`, `page-settings`, `description`, `viewport`, and `orchestration` cubits. `PrimarySourceDetailCoordinator` is a screen helper, not the source of truth.
+- `strongs_dictionary` is a self-contained feature with its own domain/data/presentation layers, dialog/page UI, picker flow, and primary-source integration API.
 
 ## Data and Services
 
@@ -26,6 +33,7 @@ Describe the current Revelation runtime architecture.
 - Remote downloads use Supabase Storage through `ServerManager`.
 - Shared markdown rendering is centralized in `shared/ui/markdown`: `RevelationMarkdownBody` plus `RevelationMarkdownImagesCubit` provide one project-wide markdown image policy with local-first loading, preload progress, and reusable image rendering across topics, primary source descriptions, dialogs, and about content.
 - `MarkdownImageLoader` contracts live in `core/content/markdown_images`, while the default downloader/cache implementation lives in `infra/content/markdown_images`.
+- Shared markdown no longer owns Strong-specific presentation tokens or inline syntax. Strong origin/source UI is rendered by `strongs_dictionary` widgets.
 - `AboutCubit` reads database metadata from `db_metadata` and exposes app/build/database version information to the UI.
 - `LatestRequestGuard` is used in async flows where stale responses must not overwrite newer state.
 

@@ -1,13 +1,15 @@
-class GreekStrongPickerEntry {
+class StrongPickerEntry {
+  const StrongPickerEntry({required this.number, required this.word});
+
   final int number;
   final String word;
 
-  const GreekStrongPickerEntry({required this.number, required this.word});
+  String get code => 'G$number';
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        other is GreekStrongPickerEntry &&
+        other is StrongPickerEntry &&
             runtimeType == other.runtimeType &&
             number == other.number &&
             word == other.word;

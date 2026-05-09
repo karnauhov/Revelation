@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_state.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/description_request.dart';
-import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
 
@@ -116,7 +116,7 @@ class PrimarySourceDescriptionCubit
     return false;
   }
 
-  List<GreekStrongPickerEntry> getGreekStrongPickerEntries() {
+  List<StrongPickerEntry> getGreekStrongPickerEntries() {
     final entries = _descriptionService.getGreekStrongPickerEntries();
     if (_samePickerEntries(entries, state.pickerEntries)) {
       return state.pickerEntries;
@@ -124,7 +124,7 @@ class PrimarySourceDescriptionCubit
 
     emit(
       state.copyWith(
-        pickerEntries: List<GreekStrongPickerEntry>.unmodifiable(entries),
+        pickerEntries: List<StrongPickerEntry>.unmodifiable(entries),
       ),
     );
     return state.pickerEntries;
@@ -221,8 +221,8 @@ class PrimarySourceDescriptionCubit
   }
 
   bool _samePickerEntries(
-    List<GreekStrongPickerEntry> a,
-    List<GreekStrongPickerEntry> b,
+    List<StrongPickerEntry> a,
+    List<StrongPickerEntry> b,
   ) {
     if (identical(a, b)) {
       return true;

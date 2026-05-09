@@ -16,7 +16,7 @@ import 'package:revelation/features/primary_sources/presentation/widgets/primary
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/brightness_contrast_dialog.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/replace_color_dialog.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/strong_number_picker_dialog.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
@@ -503,6 +503,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         return PrimarySourceDescriptionPanel(
           descriptionContent: descriptionSlice.content,
           currentDescriptionType: descriptionSlice.currentType,
+          currentDescriptionNumber: descriptionSlice.currentNumber,
           onGreekStrongTap: (strongNumber, linkContext) {
             viewModel.showInfoForStrongNumber(
               strongNumber,
@@ -555,13 +556,10 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     PrimarySourceDetailCoordinator viewModel,
     int initialStrongNumber,
   ) async {
-    final pickedStrongNumber = await showDialog<int>(
-      context: dialogContext,
-      routeSettings: const RouteSettings(name: 'strong_number_picker_dialog'),
-      builder: (context) => StrongNumberPickerDialog(
-        entries: viewModel.getGreekStrongPickerEntries(),
-        initialStrongNumber: initialStrongNumber,
-      ),
+    final pickedStrongNumber = await showPrimarySourceStrongNumberPickerDialog(
+      dialogContext,
+      entries: viewModel.getGreekStrongPickerEntries(),
+      initialStrongNumber: initialStrongNumber,
     );
 
     if (!mounted || pickedStrongNumber == null) {

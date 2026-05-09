@@ -5,7 +5,6 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 import 'package:revelation/shared/models/primary_source_word_link_target.dart';
-import 'package:revelation/shared/utils/description_markdown_tokens.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../test_harness/widget_test_harness.dart';
@@ -73,35 +72,23 @@ void main() {
   });
 
   testWidgets(
-    'DescriptionMarkdownView renders strong origin info marker as tooltip icon',
+    'DescriptionMarkdownView renders plain marker text without special handling',
     (tester) async {
       await tester.pumpWidget(
         buildLocalizedTestApp(
           child: const DescriptionMarkdownView(
-            data: 'Word analysis: $strongOriginInfoMarkdownMarker **Alpha**',
+            data: 'Word analysis: {{strong_origin_info}} **Alpha**',
             scrollable: false,
             showExportPdfButton: false,
           ),
         ),
       );
 
-      const tooltip =
-          'Word analysis may include the following elements: derivatives, '
-          'comparative words, phrases, and related words.';
-
-      expect(find.text(strongOriginInfoMarkdownMarker), findsNothing);
+      expect(find.textContaining('{{strong_origin_info}}'), findsOneWidget);
       expect(
         find.byKey(const Key('description_markdown_strong_origin_info_button')),
-        findsOneWidget,
+        findsNothing,
       );
-      expect(find.byTooltip(tooltip), findsOneWidget);
-
-      await tester.tap(
-        find.byKey(const Key('description_markdown_strong_origin_info_button')),
-      );
-      await tester.pump();
-
-      expect(find.text(tooltip), findsOneWidget);
     },
   );
 
@@ -315,14 +302,14 @@ void main() {
   });
 
   testWidgets(
-    'DescriptionMarkdownView strips presentation markers for export',
+    'DescriptionMarkdownView keeps markdown content unchanged for export',
     (tester) async {
       String? capturedMarkdown;
 
       await tester.pumpWidget(
         buildLocalizedTestApp(
           child: DescriptionMarkdownView(
-            data: 'Word analysis: $strongOriginInfoMarkdownMarker **Alpha**',
+            data: 'Word analysis: {{strong_origin_info}} **Alpha**',
             onExportPdfRequested:
                 ({required markdown, required documentTitle}) async {
                   capturedMarkdown = markdown;
@@ -337,7 +324,10 @@ void main() {
       );
       await tester.pump();
 
-      expect(capturedMarkdown, 'Word analysis: **Alpha**');
+      expect(
+        capturedMarkdown,
+        'Word analysis: {{strong_origin_info}} **Alpha**',
+      );
     },
   );
 
@@ -432,28 +422,34 @@ void main() {
     expect(find.text('Content copied to the clipboard.'), findsOneWidget);
   });
 
-  testWidgets('DescriptionMarkdownView strips presentation markers for copy', (
-    tester,
-  ) async {
-    String? capturedMarkdown;
+  testWidgets(
+    'DescriptionMarkdownView keeps markdown content unchanged for copy',
+    (tester) async {
+      String? capturedMarkdown;
 
-    await tester.pumpWidget(
-      buildLocalizedTestApp(
-        child: DescriptionMarkdownView(
-          data: 'Word analysis: $strongOriginInfoMarkdownMarker **Alpha**',
-          onCopyRequested: (markdown) async {
-            capturedMarkdown = markdown;
-          },
+      await tester.pumpWidget(
+        buildLocalizedTestApp(
+          child: DescriptionMarkdownView(
+            data: 'Word analysis: {{strong_origin_info}} **Alpha**',
+            onCopyRequested: (markdown) async {
+              capturedMarkdown = markdown;
+            },
+          ),
         ),
-      ),
-    );
+      );
 
-    await tester.tap(find.byKey(const Key('description_markdown_copy_button')));
-    await tester.pump();
-    await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('description_markdown_copy_button')),
+      );
+      await tester.pump();
+      await tester.pumpAndSettle();
 
-    expect(capturedMarkdown, 'Word analysis: **Alpha**');
-  });
+      expect(
+        capturedMarkdown,
+        'Word analysis: {{strong_origin_info}} **Alpha**',
+      );
+    },
+  );
 
   testWidgets(
     'DescriptionMarkdownView shows toolbar actions after PDF export',

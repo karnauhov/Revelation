@@ -6,20 +6,11 @@ import 'package:revelation/features/bible/presentation/screens/bible_screen.dart
 import 'package:revelation/features/historical_background/presentation/screens/historical_background_screen.dart';
 import 'package:revelation/features/practical_faith/presentation/screens/practical_faith_screen.dart';
 import 'package:revelation/features/revelation_structure/presentation/screens/revelation_structure_screen.dart';
-import 'package:revelation/features/strongs_dictionary/presentation/screens/strongs_dictionary_screen.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/widgets/planned_feature_screen.dart';
 
 void main() {
   final screenCases = <_PlannedScreenCase>[
-    _PlannedScreenCase(
-      description: 'Strong dictionary',
-      screen: const StrongsDictionaryScreen(),
-      screenType: StrongsDictionaryScreen,
-      titleOf: (l10n) => l10n.strongs_dictionary_screen,
-      subtitleOf: (l10n) => l10n.strongs_dictionary_header,
-      iconAssetPath: StrongsDictionaryScreen.iconAssetPath,
-    ),
     _PlannedScreenCase(
       description: 'Allusion search',
       screen: const AllusionSearchScreen(),

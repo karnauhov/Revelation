@@ -1,0 +1,72 @@
+import 'package:flutter/material.dart';
+import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
+
+class StrongDictionaryEntryView extends StatelessWidget {
+  const StrongDictionaryEntryView({
+    required this.strongNumber,
+    required this.markdown,
+    required this.onStrongNumberSelected,
+    required this.onStrongNumberPickerRequested,
+    required this.onNavigateBackward,
+    required this.onNavigateForward,
+    this.padding = const EdgeInsets.fromLTRB(6, 0, 6, 6),
+    this.navigationEnabled = true,
+    this.exportPdfEnabled = true,
+    this.copyEnabled = true,
+    this.backButtonKey = const Key('strong_dictionary_nav_back'),
+    this.forwardButtonKey = const Key('strong_dictionary_nav_forward'),
+    super.key,
+  });
+
+  final int strongNumber;
+  final String markdown;
+  final ValueChanged<int> onStrongNumberSelected;
+  final void Function(BuildContext context, int strongNumber)
+  onStrongNumberPickerRequested;
+  final VoidCallback onNavigateBackward;
+  final VoidCallback onNavigateForward;
+  final EdgeInsets padding;
+  final bool navigationEnabled;
+  final bool exportPdfEnabled;
+  final bool copyEnabled;
+  final Key backButtonKey;
+  final Key forwardButtonKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    return DescriptionMarkdownView(
+      data: markdown,
+      padding: padding,
+      exportPdfEnabled: exportPdfEnabled,
+      copyEnabled: copyEnabled,
+      exportPdfDocumentTitle: 'G$strongNumber',
+      toolbarActions: [
+        DescriptionMarkdownToolbarButton(
+          buttonKey: backButtonKey,
+          tooltip: localizations.previous_dictionary_entry,
+          icon: Icons.arrow_back_ios_new_rounded,
+          iconSize: 18,
+          enabled: navigationEnabled,
+          onPressed: onNavigateBackward,
+        ),
+        DescriptionMarkdownToolbarButton(
+          buttonKey: forwardButtonKey,
+          tooltip: localizations.next_dictionary_entry,
+          icon: Icons.arrow_forward_ios_rounded,
+          iconSize: 18,
+          enabled: navigationEnabled,
+          onPressed: onNavigateForward,
+        ),
+      ],
+      onGreekStrongTap: (selectedStrongNumber, _) {
+        onStrongNumberSelected(selectedStrongNumber);
+      },
+      onGreekStrongPickerTap: (selectedStrongNumber, linkContext) {
+        onStrongNumberPickerRequested(linkContext, selectedStrongNumber);
+      },
+    );
+  }
+}

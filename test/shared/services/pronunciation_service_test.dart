@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:revelation/features/primary_sources/application/services/pronunciation_service.dart';
+import 'package:revelation/shared/services/pronunciation_service.dart';
 
 class _WordCase {
   const _WordCase({

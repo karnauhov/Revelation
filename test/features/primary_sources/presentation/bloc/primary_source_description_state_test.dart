@@ -1,18 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_state.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/shared/models/description_kind.dart';
-import 'package:revelation/shared/models/greek_strong_picker_entry.dart';
 
 void main() {
   test('initial keeps baseline mode and immutable picker entries', () {
-    final sourceEntries = <GreekStrongPickerEntry>[
-      const GreekStrongPickerEntry(number: 1, word: 'alpha'),
+    final sourceEntries = <StrongPickerEntry>[
+      const StrongPickerEntry(number: 1, word: 'alpha'),
     ];
     final state = PrimarySourceDescriptionState.initial(
       pickerEntries: sourceEntries,
     );
 
-    sourceEntries.add(const GreekStrongPickerEntry(number: 2, word: 'beta'));
+    sourceEntries.add(const StrongPickerEntry(number: 2, word: 'beta'));
 
     expect(state.content, isNull);
     expect(state.currentType, DescriptionKind.info);
@@ -20,7 +20,7 @@ void main() {
     expect(state.pickerEntries, hasLength(1));
     expect(
       () => state.pickerEntries.add(
-        const GreekStrongPickerEntry(number: 3, word: 'gamma'),
+        const StrongPickerEntry(number: 3, word: 'gamma'),
       ),
       throwsUnsupportedError,
     );
@@ -31,8 +31,8 @@ void main() {
       content: 'base',
       currentType: DescriptionKind.word,
       currentNumber: 2,
-      pickerEntries: <GreekStrongPickerEntry>[
-        GreekStrongPickerEntry(number: 1, word: 'alpha'),
+      pickerEntries: <StrongPickerEntry>[
+        StrongPickerEntry(number: 1, word: 'alpha'),
       ],
     );
 
@@ -60,16 +60,16 @@ void main() {
       content: 'value',
       currentType: DescriptionKind.strongNumber,
       currentNumber: 10,
-      pickerEntries: <GreekStrongPickerEntry>[
-        GreekStrongPickerEntry(number: 10, word: 'deka'),
+      pickerEntries: <StrongPickerEntry>[
+        StrongPickerEntry(number: 10, word: 'deka'),
       ],
     );
     const b = PrimarySourceDescriptionState(
       content: 'value',
       currentType: DescriptionKind.strongNumber,
       currentNumber: 10,
-      pickerEntries: <GreekStrongPickerEntry>[
-        GreekStrongPickerEntry(number: 10, word: 'deka'),
+      pickerEntries: <StrongPickerEntry>[
+        StrongPickerEntry(number: 10, word: 'deka'),
       ],
     );
     final c = b.copyWith(currentType: DescriptionKind.verse);

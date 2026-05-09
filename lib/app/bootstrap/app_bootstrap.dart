@@ -11,8 +11,8 @@ import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/primary_sources/application/services/manuscript_greek_text_converter.dart';
 import 'package:revelation/features/primary_sources/application/services/nomina_sacra_pronunciation_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_words_dialog.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/features/settings/settings.dart'
     show SettingsCubit, SettingsRepository;
 import 'package:revelation/infra/db/connectors/database_version_info.dart';

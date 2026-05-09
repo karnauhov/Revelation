@@ -24,7 +24,7 @@ import 'package:revelation/features/primary_sources/presentation/widgets/image_p
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_toolbar.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/replace_color_dialog.dart';
-import 'package:revelation/features/primary_sources/presentation/widgets/strong_number_picker_dialog.dart';
+import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page.dart' as model;

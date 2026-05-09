@@ -506,6 +506,16 @@ class AppLocalizationsEs extends AppLocalizations {
       '2717 y 3203-3302 no están disponibles';
 
   @override
+  String get strong_dictionary_search => 'Buscar por número o palabra griega';
+
+  @override
+  String get strong_dictionary_no_entries =>
+      'Las entradas del diccionario de Strong no están disponibles';
+
+  @override
+  String get strong_dictionary_no_results => 'No hay entradas coincidentes';
+
+  @override
   String get strong_pronunciation => 'Pronunciación';
 
   @override

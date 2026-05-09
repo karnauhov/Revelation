@@ -16,7 +16,6 @@ import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/verse.dart';
-import 'package:revelation/shared/utils/description_markdown_tokens.dart';
 
 import '../../../../test_harness/test_harness.dart';
 
@@ -115,7 +114,6 @@ void main() {
     expect(content!.kind, DescriptionKind.strongNumber);
     expect(content.markdown, contains('Logos'));
     expect(content.markdown, contains('strong_picker:G1'));
-    expect(content.markdown, isNot(contains(strongOriginInfoMarkdownMarker)));
     expect(content.markdown, isNot(contains('[<-]')));
     expect(content.markdown, isNot(contains('[->]')));
   });
@@ -709,12 +707,7 @@ void main() {
     final content = service.buildStrongContent(localizations, 1);
 
     expect(content, isNotNull);
-    expect(
-      content!.markdown,
-      contains(
-        '${localizations.strong_origin}:$strongOriginInfoMarkdownMarker',
-      ),
-    );
+    expect(content!.markdown, contains('${localizations.strong_origin}: '));
     expect(content.markdown, contains('**Alpha** ([G2](strong:G2))'));
     expect(content.markdown, contains('[H123](strong:H123)'));
     expect(content.markdown, contains('**Beta** ([G3](strong:G3))'));

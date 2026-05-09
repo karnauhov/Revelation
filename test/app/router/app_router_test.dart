@@ -158,11 +158,65 @@ void main() {
     expect(find.byType(PrimarySourcesScreen), findsOneWidget);
   });
 
-  final plannedFeatureRoutes = <_PlannedFeatureRoute>[
-    const _PlannedFeatureRoute(
+  testWidgets('strong dictionary route opens real dictionary screen', (
+    tester,
+  ) async {
+    final settingsCubit = await _createSettingsCubit();
+    addTearDown(settingsCubit.close);
+    final appRouter = AppRouter();
+    final routeProvider = PlatformRouteInformationProvider(
+      initialRouteInformation: RouteInformation(
+        uri: Uri(
+          path: '/strongs_dictionary',
+          queryParameters: const <String, String>{'number': 'G2'},
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(
+      _buildRouterHost(
+        appRouter: appRouter,
+        settingsCubit: settingsCubit,
+        routeProvider: routeProvider,
+      ),
+    );
+    await pumpFrames(tester, count: 8);
+
+    expect(find.byType(StrongsDictionaryScreen), findsOneWidget);
+    final screen = tester.widget<StrongsDictionaryScreen>(
+      find.byType(StrongsDictionaryScreen),
+    );
+    expect(screen.initialStrongNumber, 2);
+  });
+
+  testWidgets('strong dictionary pageBuilder handles typed route args', (
+    tester,
+  ) async {
+    final appRouter = AppRouter();
+    final context = await pumpContext(tester);
+    final route = _findGoRoute(
+      appRouter: appRouter,
       path: '/strongs_dictionary',
-      screenType: StrongsDictionaryScreen,
-    ),
+    );
+    final page = route.pageBuilder!(
+      context,
+      _buildGoRouterState(
+        appRouter: appRouter,
+        path: '/strongs_dictionary',
+        name: 'strongs_dictionary',
+        extra: const StrongDictionaryRouteArgs(initialStrongNumber: 42),
+      ),
+    );
+
+    expect(page, isA<CustomTransitionPage<void>>());
+    final transitionPage = page as CustomTransitionPage<void>;
+    expect(transitionPage.arguments, 'G42');
+    expect(transitionPage.child, isA<StrongsDictionaryScreen>());
+    final child = transitionPage.child as StrongsDictionaryScreen;
+    expect(child.initialStrongNumber, 42);
+  });
+
+  final plannedFeatureRoutes = <_PlannedFeatureRoute>[
     const _PlannedFeatureRoute(
       path: '/allusion_search',
       screenType: AllusionSearchScreen,

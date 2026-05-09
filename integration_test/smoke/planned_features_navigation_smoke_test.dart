@@ -6,7 +6,6 @@ import 'package:revelation/features/bible/presentation/screens/bible_screen.dart
 import 'package:revelation/features/historical_background/presentation/screens/historical_background_screen.dart';
 import 'package:revelation/features/practical_faith/presentation/screens/practical_faith_screen.dart';
 import 'package:revelation/features/revelation_structure/presentation/screens/revelation_structure_screen.dart';
-import 'package:revelation/features/strongs_dictionary/presentation/screens/strongs_dictionary_screen.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'smoke_test_harness.dart';
 
@@ -15,12 +14,8 @@ void main() {
     tester,
   ) async {
     final router = GoRouter(
-      initialLocation: '/strongs_dictionary',
+      initialLocation: '/allusion_search',
       routes: <RouteBase>[
-        GoRoute(
-          path: '/strongs_dictionary',
-          builder: (context, state) => const StrongsDictionaryScreen(),
-        ),
         GoRoute(
           path: '/allusion_search',
           builder: (context, state) => const AllusionSearchScreen(),
@@ -71,12 +66,6 @@ void main() {
 }
 
 final _plannedFeatureDestinations = <_PlannedFeatureDestination>[
-  _PlannedFeatureDestination(
-    path: '/strongs_dictionary',
-    screenType: StrongsDictionaryScreen,
-    titleOf: (l10n) => l10n.strongs_dictionary_screen,
-    subtitleOf: (l10n) => l10n.strongs_dictionary_header,
-  ),
   _PlannedFeatureDestination(
     path: '/allusion_search',
     screenType: AllusionSearchScreen,
