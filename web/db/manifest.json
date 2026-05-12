@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-12T05:04:27Z",
+  "generatedAt": "2026-05-12T05:30:17Z",
   "databases": {
     "revelation.sqlite": {
-      "versionToken": "manifest:schema:4|data:4|date:2026-05-12T05:04:27Z|size:1630208",
+      "versionToken": "manifest:schema:4|data:5|date:2026-05-12T05:30:17Z|size:1630208",
       "schemaVersion": 4,
-      "dataVersion": 4,
-      "date": "2026-05-12T05:04:27Z",
+      "dataVersion": 5,
+      "date": "2026-05-12T05:30:17Z",
       "fileSizeBytes": 1630208
     },
     "revelation_en.sqlite": {
