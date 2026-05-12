@@ -9,7 +9,7 @@ All notable changes to this application will be documented here.
 - Analytics and crash reporting support with Sentry
 - Expanded the left menu with more study sections.
 - Added a Strong's Dictionary page with Greek word lookup, linked dictionary entries.
-- Uploaded primary-source images to supabase.com (0207, 0229);
+- Uploaded primary-source images to supabase.com (0207, 0229, P98);
 
 ### Fixed
 
