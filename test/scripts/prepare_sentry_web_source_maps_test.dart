@@ -81,6 +81,7 @@ void main() {
       expect(summary.updatedFiles, 1);
       expect(summary.resolvedSources, 4);
       expect(summary.missingSources, isEmpty);
+      expect(summary.ignorableMissingSources, isEmpty);
 
       final updated = jsonDecode(await sourceMapFile.readAsString()) as Map;
       expect(updated['sourcesContent'], [
@@ -136,6 +137,7 @@ void main() {
     expect(summary.updatedFiles, 1);
     expect(summary.resolvedSources, 0);
     expect(summary.missingSources, hasLength(1));
+    expect(summary.ignorableMissingSources, isEmpty);
     expect(
       summary.missingSources.single.source,
       'package:missing_pkg/src/file.dart',
@@ -143,5 +145,58 @@ void main() {
 
     final updated = jsonDecode(await sourceMapFile.readAsString()) as Map;
     expect(updated['sourcesContent'], [null]);
+  });
+
+  test('treats org-dartlang-sdk missing sources as ignorable', () async {
+    final tempDir = await Directory.systemTemp.createTemp(
+      'prepare_sentry_web_source_maps_ignorable_test_',
+    );
+    addTearDown(() => tempDir.delete(recursive: true));
+
+    final repoDir = Directory.fromUri(tempDir.uri.resolve('repo/'))
+      ..createSync(recursive: true);
+    final dartToolDir = Directory.fromUri(repoDir.uri.resolve('.dart_tool/'))
+      ..createSync(recursive: true);
+    final webBuildDir = Directory.fromUri(repoDir.uri.resolve('build/web/'))
+      ..createSync(recursive: true);
+    final sdkDir = Directory.fromUri(tempDir.uri.resolve('dart-sdk/'))
+      ..createSync(recursive: true);
+
+    final packageConfigFile =
+        File.fromUri(dartToolDir.uri.resolve('package_config.json'))
+          ..writeAsStringSync(
+            jsonEncode({'configVersion': 2, 'packages': <Object?>[]}),
+          );
+
+    File.fromUri(
+      webBuildDir.uri.resolve('main.dart.js.map'),
+    )..writeAsStringSync(
+      jsonEncode({
+        'version': 3,
+        'file': 'main.dart.js',
+        'sources': [
+          'org-dartlang-sdk:///dart-sdk/lib/_internal/js_runtime/lib/js_helper.dart',
+        ],
+        'names': [],
+        'mappings': '',
+      }),
+    );
+
+    final summary = await prepareSentryWebSourceMaps(
+      PrepareSentryWebSourceMapsOptions(
+        webBuildDir: webBuildDir,
+        packageConfigFile: packageConfigFile,
+        dartSdkDir: sdkDir,
+      ),
+    );
+
+    expect(summary.updatedFiles, 1);
+    expect(summary.resolvedSources, 0);
+    expect(summary.missingSources, isEmpty);
+    expect(summary.ignorableMissingSources, hasLength(1));
+    expect(
+      summary.ignorableMissingSources.single.source,
+      'org-dartlang-sdk:///dart-sdk/lib/_internal/js_runtime/lib/js_helper.dart',
+    );
   });
 }

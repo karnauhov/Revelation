@@ -10,6 +10,21 @@ Future<void> main(List<String> args) async {
     'resolved ${summary.resolvedSources} source(s).',
   );
 
+  if (summary.ignorableMissingSources.isNotEmpty) {
+    stderr.writeln(
+      'Ignored missing source content for '
+      '${summary.ignorableMissingSources.length} source(s):',
+    );
+    for (final missing in summary.ignorableMissingSources.take(20)) {
+      stderr.writeln('  ${missing.sourceMapPath}: ${missing.source}');
+    }
+    if (summary.ignorableMissingSources.length > 20) {
+      stderr.writeln(
+        '  ...and ${summary.ignorableMissingSources.length - 20} more ignored source(s).',
+      );
+    }
+  }
+
   if (summary.missingSources.isNotEmpty) {
     stderr.writeln(
       'Missing source content for ${summary.missingSources.length} source(s):',
@@ -94,11 +109,13 @@ class PrepareSentryWebSourceMapsSummary {
     required this.updatedFiles,
     required this.resolvedSources,
     required this.missingSources,
+    required this.ignorableMissingSources,
   });
 
   final int updatedFiles;
   final int resolvedSources;
   final List<MissingSourceContent> missingSources;
+  final List<MissingSourceContent> ignorableMissingSources;
 }
 
 class MissingSourceContent {
@@ -250,6 +267,7 @@ Future<PrepareSentryWebSourceMapsSummary> prepareSentryWebSourceMaps(
     dartSdkDir: options.dartSdkDir,
   );
   final missingSources = <MissingSourceContent>[];
+  final ignorableMissingSources = <MissingSourceContent>[];
   var updatedFiles = 0;
   var resolvedSources = 0;
 
@@ -280,9 +298,15 @@ Future<PrepareSentryWebSourceMapsSummary> prepareSentryWebSourceMaps(
         sourceMapFile: entity,
       );
       if (content == null) {
-        missingSources.add(
-          MissingSourceContent(sourceMapPath: entity.path, source: source),
+        final missing = MissingSourceContent(
+          sourceMapPath: entity.path,
+          source: source,
         );
+        if (_isIgnorableMissingSource(source)) {
+          ignorableMissingSources.add(missing);
+        } else {
+          missingSources.add(missing);
+        }
       } else {
         resolvedSources++;
       }
@@ -298,7 +322,19 @@ Future<PrepareSentryWebSourceMapsSummary> prepareSentryWebSourceMaps(
     updatedFiles: updatedFiles,
     resolvedSources: resolvedSources,
     missingSources: missingSources,
+    ignorableMissingSources: ignorableMissingSources,
   );
+}
+
+bool _isIgnorableMissingSource(String source) {
+  final uri = Uri.tryParse(source);
+  if (uri == null) {
+    return false;
+  }
+
+  // Flutter web source maps can include SDK/engine pseudo-paths that are not
+  // present as regular files in CI environments.
+  return uri.scheme == 'org-dartlang-sdk';
 }
 
 Directory _defaultDartSdkDir() {
