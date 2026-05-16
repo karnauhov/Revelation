@@ -8,6 +8,7 @@ import 'package:revelation/features/primary_sources/application/orchestrators/im
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/application/services/manuscript_greek_text_converter.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
+import 'package:revelation/features/primary_sources/application/services/primary_source_word_crop_persistent_store.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_word_image_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_word_text_formatter.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
@@ -297,6 +298,84 @@ void main() {
   );
 
   test(
+    'loadDialogData reuses native persistent snippets before page loading',
+    () async {
+      final persistentStore = _MemoryPersistentCropStore();
+      final source = _buildSource(
+        id: 'U001',
+        pages: [
+          model.Page(
+            name: '325v',
+            content: 'Rev 1',
+            image: 'u001_325v.png',
+            words: [
+              PageWord('Alpha', [PageRect(0.25, 0.25, 0.75, 0.75)]),
+            ],
+          ),
+        ],
+      );
+      const targets = [
+        PrimarySourceWordLinkTarget(
+          sourceId: 'U001',
+          pageName: '325v',
+          wordIndex: 0,
+        ),
+      ];
+      final localizations = lookupAppLocalizations(const Locale('en'));
+      final firstImageLoader = _FakeImageLoadingOrchestrator(_png(20, 20));
+      final firstCropper = _FakeWordImageCropper(_png(5, 5));
+      final firstService = PrimarySourceWordImageService(
+        referenceResolver: PrimarySourceReferenceService(
+          repository: _FakePrimarySourcesDbRepository([source]),
+        ),
+        imageLoadingOrchestrator: firstImageLoader,
+        cropCache: PrimarySourceWordCropCache(
+          memoryCache: <String, Uint8List>{},
+          persistentStore: persistentStore,
+        ),
+        imageCropper: firstCropper,
+      );
+
+      final firstData = await firstService.loadDialogData(
+        localizations: localizations,
+        targets: targets,
+        isWeb: false,
+        isMobileWeb: false,
+      );
+
+      expect(firstData.items.single.hasImage, isTrue);
+      expect(firstImageLoader.loadCalls, 1);
+      expect(firstCropper.calls, 1);
+      expect(persistentStore.writeCalls, 1);
+
+      final secondImageLoader = _FakeImageLoadingOrchestrator(_png(20, 20));
+      final secondCropper = _FakeWordImageCropper(_png(7, 7));
+      final secondService = PrimarySourceWordImageService(
+        referenceResolver: PrimarySourceReferenceService(
+          repository: _FakePrimarySourcesDbRepository([source]),
+        ),
+        imageLoadingOrchestrator: secondImageLoader,
+        cropCache: PrimarySourceWordCropCache(
+          memoryCache: <String, Uint8List>{},
+          persistentStore: persistentStore,
+        ),
+        imageCropper: secondCropper,
+      );
+
+      final secondData = await secondService.loadDialogData(
+        localizations: localizations,
+        targets: targets,
+        isWeb: false,
+        isMobileWeb: false,
+      );
+
+      expect(secondData.items.single.hasImage, isTrue);
+      expect(secondImageLoader.loadCalls, 0);
+      expect(secondCropper.calls, 0);
+    },
+  );
+
+  test(
     'loadDialogData adds shared strong details for a single non-null strong',
     () async {
       final source = _buildSource(
@@ -452,6 +531,26 @@ class _FakeWordImageCropper implements PrimarySourceWordImageCropper {
       imageBytes,
       growable: false,
     );
+  }
+}
+
+class _MemoryPersistentCropStore
+    implements PrimarySourceWordCropPersistentStore {
+  final Map<String, Uint8List> _files = <String, Uint8List>{};
+  int readCalls = 0;
+  int writeCalls = 0;
+
+  @override
+  Future<Uint8List?> read(String key) async {
+    readCalls++;
+    final bytes = _files[key];
+    return bytes == null ? null : Uint8List.fromList(bytes);
+  }
+
+  @override
+  Future<void> write(String key, Uint8List bytes) async {
+    writeCalls++;
+    _files[key] = Uint8List.fromList(bytes);
   }
 }
 

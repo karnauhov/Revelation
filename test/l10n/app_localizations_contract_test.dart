@@ -304,6 +304,21 @@ void _assertLocalizationContract(AppLocalizations l10n) {
   );
   expect(l10n.bug_report, isNotEmpty, reason: 'bug_report should not be empty');
   expect(
+    l10n.clear_cache,
+    isNotEmpty,
+    reason: 'clear_cache should not be empty',
+  );
+  expect(
+    l10n.cache_cleared,
+    isNotEmpty,
+    reason: 'cache_cleared should not be empty',
+  );
+  expect(
+    l10n.cache_clear_failed,
+    isNotEmpty,
+    reason: 'cache_clear_failed should not be empty',
+  );
+  expect(
     l10n.log_copied_message,
     isNotEmpty,
     reason: 'log_copied_message should not be empty',

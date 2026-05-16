@@ -510,6 +510,59 @@ void main() {
     },
   );
 
+  testWidgets('AboutScreen clear cache action invokes dependency', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness();
+    final cubit = await _createSettingsCubit(language: 'en');
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
+
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+
+    await tester.ensureVisible(find.text(l10n.clear_cache));
+    await tester.tap(find.text(l10n.clear_cache));
+    await _pumpUntilFound(tester, find.text(l10n.cache_cleared));
+
+    expect(harness.cacheClearCalls, 1);
+  });
+
+  testWidgets('AboutScreen clear cache action reports failures', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness()
+      ..cacheClearError = StateError('clear failed');
+    final cubit = await _createSettingsCubit(language: 'en');
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
+
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+
+    await tester.ensureVisible(find.text(l10n.clear_cache));
+    await tester.tap(find.text(l10n.clear_cache));
+    await _pumpUntilFound(tester, find.text(l10n.cache_clear_failed));
+
+    expect(harness.cacheClearCalls, 1);
+  });
+
   testWidgets(
     'AboutScreen desktop drag listener handles pointer drag',
     (tester) async {
@@ -598,6 +651,8 @@ class _AboutScreenTestHarness {
   String? clipboardText;
   DateTime? appBuildTimestamp;
   bool launchResult = true;
+  int cacheClearCalls = 0;
+  Object? cacheClearError;
   String Function({BuildContext? context, String? dbFilesSection})?
   systemAndAppInfoBuilder;
 
@@ -624,6 +679,13 @@ class _AboutScreenTestHarness {
       primarySourceFilesLoader: () async => primarySourceFiles,
       writeClipboardText: (text) async {
         clipboardText = text;
+      },
+      clearCache: () async {
+        cacheClearCalls += 1;
+        final error = cacheClearError;
+        if (error != null) {
+          throw error;
+        }
       },
     );
   }
@@ -758,6 +820,7 @@ Map<String, Uint8List> _buildAboutAssets({
     'assets/images/UI/like.svg': _bytes(_svg),
     'assets/images/UI/changelog.svg': _bytes(_svg),
     'assets/images/UI/bug.svg': _bytes(_svg),
+    'assets/images/UI/settings.svg': _bytes(_svg),
     'assets/images/UI/google_play.svg': _bytes(_svg),
     'assets/images/UI/microsoft_store.svg': _bytes(_svg),
     'assets/images/UI/snapcraft.svg': _bytes(_svg),

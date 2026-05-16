@@ -20,6 +20,7 @@ import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/infra/db/connectors/shared.dart';
 import 'package:revelation/infra/db/runtime/runtime_database_version_loader.dart';
+import 'package:revelation/infra/storage/app_cache_manager.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
@@ -39,6 +40,7 @@ typedef AboutDatabaseVersionLoader =
 typedef AboutPrimarySourceFilesLoader =
     Future<List<PrimarySourceFileInfo>> Function();
 typedef AboutClipboardWriter = BugReportClipboardWriter;
+typedef AboutCacheClearer = Future<void> Function();
 typedef AboutCubitBuilder = AboutCubit Function(String initialLanguageCode);
 
 AboutCubit _defaultAboutCubitBuilder(String initialLanguageCode) {
@@ -55,6 +57,7 @@ class AboutScreenDependencies {
     this.databaseVersionLoader = getPreferredDatabaseVersionInfo,
     this.primarySourceFilesLoader = getLocalPrimarySourceFilesInfo,
     this.writeClipboardText = defaultBugReportClipboardWriter,
+    this.clearCache = clearAppCache,
   });
 
   final AboutLinkLauncher launchLink;
@@ -64,6 +67,7 @@ class AboutScreenDependencies {
   final AboutDatabaseVersionLoader databaseVersionLoader;
   final AboutPrimarySourceFilesLoader primarySourceFilesLoader;
   final AboutClipboardWriter writeClipboardText;
+  final AboutCacheClearer clearCache;
 }
 
 class AboutScreen extends StatefulWidget {
@@ -179,6 +183,9 @@ class _AboutScreenState extends State<AboutScreen> {
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Bugs report
                   _buildBugsReport(context, appSettings),
+                  Divider(height: 1, color: colorScheme.outlineVariant),
+                  // Cache
+                  _buildClearCache(context),
                   Divider(height: 1, color: colorScheme.outlineVariant),
                   // Marketplaces (Desktop & Mobile)
                   if (!isWeb()) _buildMarketplaces(context),
@@ -751,6 +758,41 @@ class _AboutScreenState extends State<AboutScreen> {
         ),
       ],
     );
+  }
+
+  Widget _buildClearCache(BuildContext context) {
+    return Column(
+      children: [
+        IconLinkItem(
+          key: const ValueKey('about-clear-cache'),
+          iconPath: "assets/images/UI/broom.svg",
+          text: AppLocalizations.of(context)!.clear_cache,
+          onTap: () async {
+            aud.playSound("click");
+            final l10n = AppLocalizations.of(context)!;
+            final messenger = ScaffoldMessenger.maybeOf(context);
+            try {
+              await widget.dependencies.clearCache();
+              if (!mounted) {
+                return;
+              }
+              _showSnackBar(messenger, l10n.cache_cleared);
+            } catch (error, stackTrace) {
+              log.handle(error, stackTrace);
+              if (!mounted) {
+                return;
+              }
+              _showSnackBar(messenger, l10n.cache_clear_failed);
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  void _showSnackBar(ScaffoldMessengerState? messenger, String message) {
+    messenger?.hideCurrentSnackBar();
+    messenger?.showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<String> _collectDataFilesDiagnosticsSection() async {

@@ -300,6 +300,24 @@ abstract class AppLocalizations {
   /// **'Report a bug'**
   String get bug_report;
 
+  /// No description provided for @clear_cache.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache'**
+  String get clear_cache;
+
+  /// No description provided for @cache_cleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache cleared'**
+  String get cache_cleared;
+
+  /// No description provided for @cache_clear_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t clear cache'**
+  String get cache_clear_failed;
+
   /// No description provided for @log_copied_message.
   ///
   /// In en, this message translates to:

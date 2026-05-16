@@ -118,6 +118,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bug_report => 'Повідомити про помилку';
 
   @override
+  String get clear_cache => 'Очистити кеш';
+
+  @override
+  String get cache_cleared => 'Кеш очищено';
+
+  @override
+  String get cache_clear_failed => 'Не вдалося очистити кеш';
+
+  @override
   String get log_copied_message =>
       'Логи скопійовано до буфера обміну. Будь ласка, надішліть їх мені:';
 

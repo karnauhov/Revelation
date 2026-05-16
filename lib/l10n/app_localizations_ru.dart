@@ -118,6 +118,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bug_report => 'Сообщить об ошибке';
 
   @override
+  String get clear_cache => 'Очистить кэш';
+
+  @override
+  String get cache_cleared => 'Кэш очищен';
+
+  @override
+  String get cache_clear_failed => 'Не удалось очистить кэш';
+
+  @override
   String get log_copied_message =>
       'Логи скопированы в буфер обмена. Пожалуйста, отправьте их мне:';
 

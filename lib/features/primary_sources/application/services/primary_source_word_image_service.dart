@@ -5,8 +5,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
+import 'package:revelation/core/cache/app_runtime_cache_registry.dart';
 import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/image_loading_orchestrator.dart';
+import 'package:revelation/features/primary_sources/application/services/primary_source_word_crop_persistent_store.dart';
+import 'package:revelation/features/primary_sources/application/services/primary_source_word_crop_persistent_store_factory.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_word_text_formatter.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -310,7 +313,8 @@ class PrimarySourceWordImageService {
           await _cropCache.write(
             resolved.cropCacheKey!,
             cropped,
-            persist: isWeb,
+            persist: true,
+            isWeb: isWeb,
           );
           items[resolved.index] = resolved.availableResult(cropped);
         }
@@ -457,7 +461,8 @@ class PrimarySourceWordImageService {
     for (final resolved in pendingTargets) {
       final cached = await _cropCache.read(
         resolved.cropCacheKey!,
-        persist: isWeb,
+        persist: true,
+        isWeb: isWeb,
       );
       if (cached != null && cached.isNotEmpty) {
         items[resolved.index] = resolved.availableResult(cached);
@@ -753,29 +758,63 @@ class PrimarySourceWordCropCache {
   PrimarySourceWordCropCache({
     Map<String, Uint8List>? memoryCache,
     Future<SharedPreferences>? preferences,
+    PrimarySourceWordCropPersistentStore? persistentStore,
     int maxMemoryEntries = 250,
     int maxPersistentBytes = 256 * 1024,
   }) : _memoryCache = memoryCache ?? _defaultMemoryCache,
        _preferences = preferences,
+       _persistentStore =
+           persistentStore ?? createPrimarySourceWordCropPersistentStore(),
        _maxMemoryEntries = maxMemoryEntries,
-       _maxPersistentBytes = maxPersistentBytes;
+       _maxPersistentBytes = maxPersistentBytes {
+    if (memoryCache == null) {
+      _registerDefaultMemoryCacheClearer();
+    }
+  }
 
   static const _preferencesPrefix = 'primary_source_word_crop_v1.';
+  static var _defaultMemoryCacheClearerRegistered = false;
   static final LinkedHashMap<String, Uint8List> _defaultMemoryCache =
       LinkedHashMap<String, Uint8List>();
 
   final Map<String, Uint8List> _memoryCache;
   final Future<SharedPreferences>? _preferences;
+  final PrimarySourceWordCropPersistentStore _persistentStore;
   final int _maxMemoryEntries;
   final int _maxPersistentBytes;
 
-  Future<Uint8List?> read(String key, {required bool persist}) async {
+  static void clearDefaultMemoryCache() {
+    _defaultMemoryCache.clear();
+  }
+
+  static void _registerDefaultMemoryCacheClearer() {
+    if (_defaultMemoryCacheClearerRegistered) {
+      return;
+    }
+    AppRuntimeCacheRegistry.register(clearDefaultMemoryCache);
+    _defaultMemoryCacheClearerRegistered = true;
+  }
+
+  Future<Uint8List?> read(
+    String key, {
+    required bool persist,
+    required bool isWeb,
+  }) async {
     final memoryHit = _memoryCache[key];
     if (memoryHit != null && memoryHit.isNotEmpty) {
       return memoryHit;
     }
     if (!persist) {
       return null;
+    }
+
+    if (!isWeb) {
+      final bytes = await _persistentStore.read(key);
+      if (bytes == null || bytes.isEmpty) {
+        return null;
+      }
+      _remember(key, bytes);
+      return bytes;
     }
 
     final prefs = await (_preferences ?? SharedPreferences.getInstance());
@@ -797,12 +836,22 @@ class PrimarySourceWordCropCache {
     String key,
     Uint8List bytes, {
     required bool persist,
+    required bool isWeb,
   }) async {
     if (bytes.isEmpty) {
       return;
     }
     _remember(key, bytes);
-    if (!persist || bytes.length > _maxPersistentBytes) {
+    if (!persist) {
+      return;
+    }
+
+    if (!isWeb) {
+      await _persistentStore.write(key, bytes);
+      return;
+    }
+
+    if (bytes.length > _maxPersistentBytes) {
       return;
     }
 

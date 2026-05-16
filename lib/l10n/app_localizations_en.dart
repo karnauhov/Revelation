@@ -118,6 +118,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bug_report => 'Report a bug';
 
   @override
+  String get clear_cache => 'Clear cache';
+
+  @override
+  String get cache_cleared => 'Cache cleared';
+
+  @override
+  String get cache_clear_failed => 'Couldn\'t clear cache';
+
+  @override
   String get log_copied_message =>
       'Logs have been copied to the clipboard. Please send them to me at:';
 

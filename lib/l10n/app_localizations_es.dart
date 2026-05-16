@@ -120,6 +120,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bug_report => 'Informar de un error';
 
   @override
+  String get clear_cache => 'Borrar caché';
+
+  @override
+  String get cache_cleared => 'Caché borrada';
+
+  @override
+  String get cache_clear_failed => 'No se pudo borrar la caché';
+
+  @override
   String get log_copied_message =>
       'Los registros se han copiado en el portapapeles. Por favor, envíelos a:';
 
