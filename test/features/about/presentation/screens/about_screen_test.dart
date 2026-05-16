@@ -820,6 +820,7 @@ Map<String, Uint8List> _buildAboutAssets({
     'assets/images/UI/like.svg': _bytes(_svg),
     'assets/images/UI/changelog.svg': _bytes(_svg),
     'assets/images/UI/bug.svg': _bytes(_svg),
+    'assets/images/UI/broom.svg': _bytes(_svg),
     'assets/images/UI/settings.svg': _bytes(_svg),
     'assets/images/UI/google_play.svg': _bytes(_svg),
     'assets/images/UI/microsoft_store.svg': _bytes(_svg),
