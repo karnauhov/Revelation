@@ -24,6 +24,7 @@ All notable changes to this application will be documented here.
 - Markdown Extension (image, youtube, unknown block)
 - Toolbar on DescriptionMarkdownView and TopicScreen (pdf download, copy, navigations)
 - Dialog for compare words from different primary sources
+- Page 404 for web
 
 ### Changed
 
