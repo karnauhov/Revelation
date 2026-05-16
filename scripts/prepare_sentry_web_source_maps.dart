@@ -142,6 +142,8 @@ class _SourceResolver {
   final Directory dartSdkDir;
 
   late final Map<String, _PackageLocation> _packages = _readPackageConfig();
+  late final Directory _projectRootDir = packageConfigFile.parent.parent;
+  late final Uri? _flutterRootUri = _readFlutterRootUri();
 
   Future<String?> readSourceContent({
     required String source,
@@ -245,6 +247,22 @@ class _SourceResolver {
 
     final relativePath = sourceUri.pathSegments.join('/');
     yield File.fromUri(dartSdkDir.absolute.uri.resolve(relativePath));
+
+    if (sourceUri.pathSegments.isNotEmpty &&
+        sourceUri.pathSegments.first == 'dart-sdk') {
+      final sdkRelativePath = sourceUri.pathSegments.skip(1).join('/');
+      yield File.fromUri(dartSdkDir.absolute.uri.resolve(sdkRelativePath));
+    }
+
+    final flutterRootUri = _flutterRootUri;
+    if (flutterRootUri != null) {
+      yield File.fromUri(
+        flutterRootUri.resolve('bin/cache/flutter_web_sdk/$relativePath'),
+      );
+      yield File.fromUri(
+        flutterRootUri.resolve('bin/cache/pkg/sky_engine/$relativePath'),
+      );
+    }
   }
 
   Iterable<File> _resolveRelativeCandidates(
@@ -255,7 +273,55 @@ class _SourceResolver {
       return;
     }
 
-    yield File.fromUri(sourceMapFile.parent.absolute.uri.resolveUri(sourceUri));
+    for (final baseUri in _relativeSourceBaseUris(sourceMapFile)) {
+      yield File.fromUri(baseUri.resolveUri(sourceUri));
+    }
+  }
+
+  Iterable<Uri> _relativeSourceBaseUris(File sourceMapFile) sync* {
+    yield sourceMapFile.parent.absolute.uri;
+
+    final flutterBuildDir = Directory.fromUri(
+      _projectRootDir.absolute.uri.resolve('.dart_tool/flutter_build/'),
+    );
+    if (!flutterBuildDir.existsSync()) {
+      return;
+    }
+
+    if (sourceMapFile.uri.pathSegments.isEmpty) {
+      return;
+    }
+    final sourceMapName = sourceMapFile.uri.pathSegments.last;
+
+    for (final entity in flutterBuildDir.listSync()) {
+      if (entity is! Directory) {
+        continue;
+      }
+
+      final matchingSourceMap = File.fromUri(entity.uri.resolve(sourceMapName));
+      if (matchingSourceMap.existsSync()) {
+        yield entity.absolute.uri;
+      }
+    }
+  }
+
+  Uri? _readFlutterRootUri() {
+    final configUri = packageConfigFile.absolute.uri;
+    final configDirUri = configUri.resolve('.');
+    final decoded =
+        jsonDecode(packageConfigFile.readAsStringSync())
+            as Map<String, Object?>;
+    final flutterRoot = decoded['flutterRoot'];
+    if (flutterRoot is String && flutterRoot.isNotEmpty) {
+      return _ensureDirectoryUri(_resolveConfigUri(configDirUri, flutterRoot));
+    }
+
+    final envFlutterRoot = Platform.environment['FLUTTER_ROOT'];
+    if (envFlutterRoot != null && envFlutterRoot.isNotEmpty) {
+      return _ensureDirectoryUri(Directory(envFlutterRoot).absolute.uri);
+    }
+
+    return null;
   }
 }
 
