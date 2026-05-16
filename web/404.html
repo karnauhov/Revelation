@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta id="not-found-meta-description" name="description" content="Page not found. Redirecting to Revelation home page.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta id="not-found-apple-title" name="apple-mobile-web-app-title" content="Revelation">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <title id="not-found-page-title">404 | Revelation</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --loader-backdrop: #110c09;
+      --loader-panel: rgba(23, 18, 14, 0.65);
+      --loader-panel-border: rgba(255, 255, 255, 0.25);
+      --loader-title: #ffffff;
+      --loader-subtitle: #e8ddd4;
+      --loader-version: rgba(232, 221, 212, 0.92);
+      --loader-progress-text: #d5c4b7;
+      --loader-progress-track: rgba(255, 255, 255, 0.2);
+      --loader-progress-fill: #f2c48e;
+      --loader-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      --loader-link-bg: rgba(242, 196, 142, 0.2);
+      --loader-link-bg-hover: rgba(242, 196, 142, 0.33);
+      --loader-link-text: #ffe6c7;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--loader-backdrop);
+    }
+
+    body {
+      font-family: Arimo, "Segoe UI", sans-serif;
+    }
+
+    #not-found {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.4),
+          rgba(17, 12, 9, 0.53),
+          rgba(17, 12, 9, 0.85)
+        ),
+        url("assets/assets/images/UI/startup_splash_banner.jpg") center / cover no-repeat,
+        var(--loader-backdrop);
+    }
+
+    .not-found__panel {
+      width: min(100%, 460px);
+      border: 1px solid var(--loader-panel-border);
+      border-radius: 24px;
+      background: var(--loader-panel);
+      box-shadow: var(--loader-shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .not-found__panel-inner {
+      padding: 22px;
+    }
+
+    .not-found__title {
+      margin: 0;
+      color: var(--loader-title);
+      font-size: clamp(2rem, 1.4rem + 1.8vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    .not-found__subtitle,
+    .not-found__message,
+    .not-found__timer {
+      margin: 0;
+      text-align: center;
+    }
+
+    .not-found__subtitle {
+      margin-top: 8px;
+      color: var(--loader-subtitle);
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    .not-found__message {
+      margin-top: 8px;
+      color: var(--loader-version);
+      font-size: 0.96rem;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .not-found__progress {
+      margin-top: 12px;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--loader-progress-track);
+    }
+
+    .not-found__progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--loader-progress-fill);
+      transition: width 200ms linear;
+    }
+
+    .not-found__timer {
+      margin-top: 10px;
+      color: var(--loader-progress-text);
+      font-size: 0.94rem;
+    }
+
+    .not-found__link-wrap {
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .not-found__link {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: var(--loader-link-text);
+      background: var(--loader-link-bg);
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 180ms ease;
+    }
+
+    .not-found__link:hover,
+    .not-found__link:focus-visible {
+      background: var(--loader-link-bg-hover);
+    }
+
+    @media (min-width: 840px) {
+      #not-found {
+        justify-content: flex-start;
+        padding: 40px 48px;
+      }
+
+      .not-found__panel {
+        width: min(100%, 560px);
+        border-radius: 28px;
+      }
+
+      .not-found__panel-inner {
+        padding: 28px;
+      }
+
+      .not-found__title,
+      .not-found__subtitle,
+      .not-found__message,
+      .not-found__timer,
+      .not-found__link-wrap {
+        text-align: left;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .not-found__progress-fill,
+      .not-found__link {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="not-found" role="main" aria-live="polite">
+    <section class="not-found__panel" aria-labelledby="not-found-title">
+      <div class="not-found__panel-inner">
+        <h1 id="not-found-title" class="not-found__title">404</h1>
+        <p id="not-found-subtitle" class="not-found__subtitle">Page not found</p>
+        <p id="not-found-message" class="not-found__message">
+          The page you requested does not exist. You will be redirected to the home page.
+        </p>
+        <div
+          id="not-found-progress"
+          class="not-found__progress"
+          role="progressbar"
+          aria-label="Redirect countdown"
+          aria-valuemin="0"
+          aria-valuemax="7"
+          aria-valuenow="7"
+        >
+          <div id="not-found-progress-fill" class="not-found__progress-fill"></div>
+        </div>
+        <p id="not-found-timer" class="not-found__timer">
+          Redirecting in 7 seconds...
+        </p>
+        <p class="not-found__link-wrap">
+          <a id="not-found-link" class="not-found__link" href="/">Go to home now</a>
+        </p>
+      </div>
+    </section>
+  </main>
+  <script>
+    (function () {
+      // Keep this list in sync with AppLocalizations.languages() in
+      // lib/core/localization/localization.dart.
+      var supportedWebLoaderLocales = ["en", "es", "ru", "uk"];
+      var copyByLocale = {
+        en: {
+          appName: "Revelation",
+          pageTitle: "404 | Revelation",
+          metaDescription: "Page not found. Redirecting to Revelation home page.",
+          notFoundSubtitle: "Page not found",
+          notFoundMessage: "The page you requested does not exist. You will be redirected to the home page.",
+          redirectCountdownAriaLabel: "Redirect countdown",
+          redirectNowLink: "Go to home now",
+          redirectingIn: function (seconds) {
+            return "Redirecting in " + seconds + " second" + (seconds === 1 ? "" : "s") + "...";
+          },
+        },
+        es: {
+          appName: "Apocalipsis",
+          pageTitle: "404 | Apocalipsis",
+          metaDescription: "Página no encontrada. Redirigiendo a la página principal de Apocalipsis.",
+          notFoundSubtitle: "Página no encontrada",
+          notFoundMessage: "La página que solicitó no existe. Será redirigido a la página principal.",
+          redirectCountdownAriaLabel: "Cuenta regresiva para la redirección",
+          redirectNowLink: "Ir al inicio ahora",
+          redirectingIn: function (seconds) {
+            return "Redirigiendo en " + seconds + " segundo" + (seconds === 1 ? "" : "s") + "...";
+          },
+        },
+        ru: {
+          appName: "Откровение",
+          pageTitle: "404 | Откровение",
+          metaDescription: "Страница не найдена. Перенаправление на главную страницу Откровение.",
+          notFoundSubtitle: "Страница не найдена",
+          notFoundMessage: "Запрошенная страница не существует. Вы будете перенаправлены на главную страницу.",
+          redirectCountdownAriaLabel: "Обратный отсчёт до перенаправления",
+          redirectNowLink: "Перейти на главную сейчас",
+          redirectingIn: function (seconds) {
+            return "Перенаправление через " + seconds + " с...";
+          },
+        },
+        uk: {
+          appName: "Об'явлення",
+          pageTitle: "404 | Об'явлення",
+          metaDescription: "Сторінку не знайдено. Перенаправлення на головну сторінку Об'явлення.",
+          notFoundSubtitle: "Сторінку не знайдено",
+          notFoundMessage: "Сторінка, яку ви запитали, не існує. Вас буде перенаправлено на головну сторінку.",
+          redirectCountdownAriaLabel: "Відлік до перенаправлення",
+          redirectNowLink: "Перейти на головну зараз",
+          redirectingIn: function (seconds) {
+            return "Перенаправлення через " + seconds + " с...";
+          },
+        },
+      };
+
+      validateCopyCoverage();
+
+      var locale = resolveLocale();
+      var copy = copyByLocale[locale] || copyByLocale.en;
+      document.documentElement.lang = locale;
+
+      var REDIRECT_SECONDS = 7;
+      var startedAt = Date.now();
+      var subtitleElement = document.getElementById("not-found-subtitle");
+      var messageElement = document.getElementById("not-found-message");
+      var timerElement = document.getElementById("not-found-timer");
+      var progressFillElement = document.getElementById("not-found-progress-fill");
+      var progressElement = document.getElementById("not-found-progress");
+      var destination = "/";
+      var nowLink = document.getElementById("not-found-link");
+      var metaDescriptionElement = document.getElementById("not-found-meta-description");
+      var appleTitleElement = document.getElementById("not-found-apple-title");
+
+      document.title = copy.pageTitle;
+      if (metaDescriptionElement) {
+        metaDescriptionElement.setAttribute("content", copy.metaDescription);
+      }
+      if (appleTitleElement) {
+        appleTitleElement.setAttribute("content", copy.appName);
+      }
+      if (subtitleElement) {
+        subtitleElement.textContent = copy.notFoundSubtitle;
+      }
+      if (messageElement) {
+        messageElement.textContent = copy.notFoundMessage;
+      }
+      if (progressElement) {
+        progressElement.setAttribute("aria-label", copy.redirectCountdownAriaLabel);
+      }
+      if (nowLink) {
+        nowLink.textContent = copy.redirectNowLink;
+      }
+      if (timerElement) {
+        timerElement.textContent = copy.redirectingIn(REDIRECT_SECONDS);
+      }
+
+      if (nowLink) {
+        nowLink.setAttribute("href", destination);
+      }
+
+      function update() {
+        var elapsedMs = Date.now() - startedAt;
+        var elapsedSec = Math.floor(elapsedMs / 1000);
+        var remaining = Math.max(0, REDIRECT_SECONDS - elapsedSec);
+        var progress = Math.min(100, (elapsedMs / (REDIRECT_SECONDS * 1000)) * 100);
+
+        progressFillElement.style.width = progress + "%";
+        progressElement.setAttribute("aria-valuenow", String(remaining));
+        timerElement.textContent = copy.redirectingIn(remaining);
+
+        if (remaining === 0) {
+          window.location.replace(destination);
+          return;
+        }
+
+        window.requestAnimationFrame(update);
+      }
+
+      function resolveLocale() {
+        var languageTag = (
+          (Array.isArray(navigator.languages) && navigator.languages[0]) ||
+          navigator.language ||
+          "en"
+        ).toLowerCase();
+
+        if (languageTag.startsWith("es")) {
+          return "es";
+        }
+        if (languageTag.startsWith("ru")) {
+          return "ru";
+        }
+        if (languageTag.startsWith("uk")) {
+          return "uk";
+        }
+        return "en";
+      }
+
+      function validateCopyCoverage() {
+        for (var index = 0; index < supportedWebLoaderLocales.length; index += 1) {
+          var localeKey = supportedWebLoaderLocales[index];
+          var localeCopy = copyByLocale[localeKey];
+          if (
+            !localeCopy ||
+            !localeCopy.appName ||
+            !localeCopy.pageTitle ||
+            !localeCopy.metaDescription ||
+            !localeCopy.notFoundSubtitle ||
+            !localeCopy.notFoundMessage ||
+            !localeCopy.redirectCountdownAriaLabel ||
+            !localeCopy.redirectNowLink ||
+            typeof localeCopy.redirectingIn !== "function"
+          ) {
+            console.warn(
+              "[web-404] Missing translation for locale \"" +
+                localeKey +
+                "\". Add copy in web/404.html when adding a new app locale."
+            );
+          }
+        }
+      }
+
+      window.requestAnimationFrame(update);
+    })();
+  </script>
+</body>
+</html>
