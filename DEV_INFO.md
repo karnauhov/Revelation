@@ -18,7 +18,7 @@ This file contains short practical notes for local development, release work, an
 - CI uploads Sentry debug symbols/source maps from `.github/workflows/flutter_build.yml`.
 - GitHub Actions must have the repository secret `SENTRY_AUTH_TOKEN`; the runtime DSN stays in `SENTRY_DSN`.
 - `pubspec.yaml` keeps `upload_sources: true` for Sentry source context in Flutter web and Drift worker events; `commits: false` avoids requiring commit association permissions.
-- Flutter web must be built with `--source-maps` before running `dart run sentry_dart_plugin`.
+- Flutter web must be built with `--source-maps`, then `dart run scripts/prepare_sentry_web_source_maps.dart --web-build-dir build/web` must run before `dart run sentry_dart_plugin`. The preparation step embeds `sourcesContent` for Dart SDK and package sources used by generated web workers.
 - After Sentry upload, remove generated web `*.map` files before publishing a public web archive.
 
 Local release upload examples:
@@ -32,6 +32,7 @@ dart run sentry_dart_plugin --sentry-define=upload_source_maps=false
 ```powershell
 $env:SENTRY_AUTH_TOKEN = "sntrys_your_token_here"
 flutter build web --release --source-maps --dart-define-from-file=api-keys.json
+dart run scripts/prepare_sentry_web_source_maps.dart --web-build-dir build/web
 dart run sentry_dart_plugin --sentry-define=upload_debug_symbols=false
 $workspacePath = (Resolve-Path ".").Path
 $webBuildPath = (Resolve-Path "build/web").Path

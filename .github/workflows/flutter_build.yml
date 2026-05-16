@@ -204,6 +204,9 @@ jobs:
         run: |
           flutter build web --release --source-maps --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }} --dart-define=SENTRY_ENVIRONMENT=production
 
+      - name: Prepare Sentry web source maps
+        run: dart run scripts/prepare_sentry_web_source_maps.dart --web-build-dir build/web
+
       - name: Upload Sentry debug symbols and source maps
         run: dart run sentry_dart_plugin
 
