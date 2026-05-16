@@ -790,6 +790,11 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'strong_dictionary_search should not be empty',
   );
   expect(
+    l10n.strong_dictionary_search_hint,
+    isNotEmpty,
+    reason: 'strong_dictionary_search_hint should not be empty',
+  );
+  expect(
     l10n.strong_dictionary_no_entries,
     isNotEmpty,
     reason: 'strong_dictionary_no_entries should not be empty',

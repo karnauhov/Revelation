@@ -32,12 +32,15 @@ class _GreekKeyboardButtonState extends State<GreekKeyboardButton> {
         key: const Key('greek_keyboard_button'),
         tooltip: widget.tooltip,
         visualDensity: VisualDensity.compact,
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints.tightFor(width: 40, height: 40),
-        color: colorScheme.primary,
-        icon: const Text(
-          'Ω',
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+        padding: const EdgeInsets.all(2),
+        constraints: const BoxConstraints.tightFor(width: 44, height: 42),
+        icon: Text(
+          'ω',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: colorScheme.primary,
+          ),
         ),
         onPressed: () {
           if (_menuController.isOpen) {
@@ -119,7 +122,7 @@ class GreekKeyboardPanel extends StatelessWidget {
           children: [
             for (final letter in letters.skip(row * 6).take(6))
               Padding(
-                padding: const EdgeInsets.all(1),
+                padding: const EdgeInsets.all(1.5),
                 child: _GreekKeyboardKey(
                   letter: letter,
                   onPressed: () => onKeyPressed(letter),
@@ -135,7 +138,7 @@ class GreekKeyboardPanel extends StatelessWidget {
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(6),
       child: Padding(
-        padding: const EdgeInsets.all(3),
+        padding: const EdgeInsets.all(4),
         child: Column(mainAxisSize: MainAxisSize.min, children: rows),
       ),
     );
@@ -153,7 +156,7 @@ class _GreekKeyboardKey extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return SizedBox.square(
-      dimension: 28,
+      dimension: 42,
       child: TextButton(
         key: Key('greek_keyboard_key_$letter'),
         style: TextButton.styleFrom(
@@ -165,7 +168,7 @@ class _GreekKeyboardKey extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         ),
         onPressed: onPressed,
-        child: Text(letter, style: const TextStyle(fontSize: 15)),
+        child: Text(letter, style: const TextStyle(fontSize: 22)),
       ),
     );
   }

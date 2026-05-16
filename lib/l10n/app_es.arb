@@ -155,6 +155,7 @@
   "strong_number": "Número de Strong",
   "strong_picker_unavailable_numbers": "2717 y 3203-3302 no están disponibles",
   "strong_dictionary_search": "Búsqueda de texto completo",
+  "strong_dictionary_search_hint": "#/palabra/traducción",
   "strong_dictionary_no_entries": "Las entradas del diccionario de Strong no están disponibles",
   "strong_dictionary_no_results": "No hay entradas coincidentes",
   "greek_keyboard_tooltip": "Teclado griego",

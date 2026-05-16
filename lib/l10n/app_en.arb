@@ -193,6 +193,7 @@
   "strong_number": "Strong’s number",
   "strong_picker_unavailable_numbers": "2717 and 3203-3302 are unavailable",
   "strong_dictionary_search": "Full-text search",
+  "strong_dictionary_search_hint": "#/word/translation",
   "strong_dictionary_no_entries": "Strong’s dictionary entries are unavailable",
   "strong_dictionary_no_results": "No matching entries",
   "greek_keyboard_tooltip": "Greek keyboard",

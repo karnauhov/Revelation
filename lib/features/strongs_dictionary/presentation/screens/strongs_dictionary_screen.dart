@@ -191,7 +191,8 @@ class _StrongDictionarySelectorState extends State<_StrongDictionarySelector> {
     final colorScheme = theme.colorScheme;
     final visibleEntries = widget.state.visiblePickerEntries;
     final searchLabelStyle = theme.textTheme.labelSmall?.copyWith(
-      fontSize: 11,
+      fontSize: 13,
+      height: 0.95,
       color: colorScheme.onSurfaceVariant,
     );
 
@@ -212,12 +213,13 @@ class _StrongDictionarySelectorState extends State<_StrongDictionarySelector> {
               decoration: InputDecoration(
                 isDense: true,
                 labelText: localizations.strong_dictionary_search,
-                labelStyle: searchLabelStyle,
+                labelStyle: searchLabelStyle?.copyWith(fontSize: 14),
                 floatingLabelStyle: searchLabelStyle?.copyWith(
+                  fontSize: 16,
                   color: colorScheme.primary,
                   fontWeight: FontWeight.w500,
                 ),
-                hintText: 'G3056',
+                hintText: localizations.strong_dictionary_search_hint,
                 prefixIcon: const Icon(Icons.search, size: 20),
                 prefixIconConstraints: const BoxConstraints.tightFor(
                   width: 40,
@@ -229,8 +231,8 @@ class _StrongDictionarySelectorState extends State<_StrongDictionarySelector> {
                   tooltip: localizations.greek_keyboard_tooltip,
                 ),
                 suffixIconConstraints: const BoxConstraints.tightFor(
-                  width: 42,
-                  height: 40,
+                  width: 48,
+                  height: 42,
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -400,11 +402,11 @@ class _StrongDictionaryEntryTile extends StatelessWidget {
           child: SizedBox(
             height: _strongDictionaryEntryExtent,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 children: [
                   SizedBox(
-                    width: 46,
+                    width: 42,
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: FittedBox(
@@ -414,7 +416,7 @@ class _StrongDictionaryEntryTile extends StatelessWidget {
                           entry.code,
                           maxLines: 1,
                           style: theme.textTheme.labelSmall?.copyWith(
-                            fontSize: 11,
+                            fontSize: 12,
                             color: selected
                                 ? colorScheme.primary
                                 : colorScheme.onSurfaceVariant,
@@ -424,7 +426,7 @@ class _StrongDictionaryEntryTile extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       entry.word,

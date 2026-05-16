@@ -41,6 +41,10 @@ void main() {
       find.byTooltip(localizations.greek_keyboard_tooltip),
       findsOneWidget,
     );
+    expect(
+      find.text(localizations.strong_dictionary_search_hint),
+      findsOneWidget,
+    );
     expect(markdownView.exportPdfDocumentTitle, 'G2');
     expect(find.byKey(const Key('strong_dictionary_entry_2')), findsOneWidget);
     expect(
@@ -152,6 +156,8 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    final context = tester.element(find.byType(StrongsDictionaryScreen));
+    final localizations = AppLocalizations.of(context)!;
 
     await tester.tap(find.byKey(const Key('strong_dictionary_nav_forward')));
     await tester.pumpAndSettle();
@@ -159,6 +165,17 @@ void main() {
       find.byType(DescriptionMarkdownView),
     );
     expect(markdownView.exportPdfDocumentTitle, 'G3');
+
+    await tester.tap(find.byKey(const Key('strong_dictionary_nav_picker')));
+    await tester.pumpAndSettle();
+    expect(find.byType(StrongNumberPickerDialog), findsOneWidget);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(StrongNumberPickerDialog),
+        matching: find.text(localizations.cancel),
+      ),
+    );
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('strong_dictionary_nav_back')));
     await tester.pumpAndSettle();

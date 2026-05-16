@@ -60,6 +60,7 @@ class PrimarySourceStrongDictionaryEntryView extends StatelessWidget {
       exportPdfEnabled: exportPdfEnabled,
       copyEnabled: copyEnabled,
       backButtonKey: const Key('description_nav_back'),
+      pickerButtonKey: const Key('description_nav_picker'),
       forwardButtonKey: const Key('description_nav_forward'),
       onStrongNumberSelected: (selectedStrongNumber) {
         onStrongTap(selectedStrongNumber, context);

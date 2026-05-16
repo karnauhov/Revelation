@@ -1032,6 +1032,12 @@ abstract class AppLocalizations {
   /// **'Full-text search'**
   String get strong_dictionary_search;
 
+  /// No description provided for @strong_dictionary_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'#/word/translation'**
+  String get strong_dictionary_search_hint;
+
   /// No description provided for @strong_dictionary_no_entries.
   ///
   /// In en, this message translates to:

@@ -114,7 +114,11 @@ void main() {
     expect(content, isNotNull);
     expect(content!.kind, DescriptionKind.strongNumber);
     expect(content.markdown, contains('Logos'));
-    expect(content.markdown, contains('strong_picker:G1'));
+    expect(
+      content.markdown,
+      contains('${localizations.strong_number}: **G1**'),
+    );
+    expect(content.markdown, isNot(contains('strong_picker:G1')));
     expect(content.markdown, isNot(contains('[<-]')));
     expect(content.markdown, isNot(contains('[->]')));
   });

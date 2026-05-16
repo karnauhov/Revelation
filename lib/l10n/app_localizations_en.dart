@@ -502,6 +502,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get strong_dictionary_search => 'Full-text search';
 
   @override
+  String get strong_dictionary_search_hint => '#/word/translation';
+
+  @override
   String get strong_dictionary_no_entries =>
       'Strong’s dictionary entries are unavailable';
 

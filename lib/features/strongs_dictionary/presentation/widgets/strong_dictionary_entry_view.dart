@@ -17,6 +17,7 @@ class StrongDictionaryEntryView extends StatelessWidget {
     this.exportPdfEnabled = true,
     this.copyEnabled = true,
     this.backButtonKey = const Key('strong_dictionary_nav_back'),
+    this.pickerButtonKey = const Key('strong_dictionary_nav_picker'),
     this.forwardButtonKey = const Key('strong_dictionary_nav_forward'),
     super.key,
   });
@@ -33,6 +34,7 @@ class StrongDictionaryEntryView extends StatelessWidget {
   final bool exportPdfEnabled;
   final bool copyEnabled;
   final Key backButtonKey;
+  final Key pickerButtonKey;
   final Key forwardButtonKey;
 
   @override
@@ -47,6 +49,7 @@ class StrongDictionaryEntryView extends StatelessWidget {
       inlineSyntaxes: buildStrongOriginInfoInlineSyntaxes(),
       elementBuilders: buildStrongOriginInfoMarkdownBuilders(),
       padding: padding,
+      toolbarButtonExtent: 36,
       exportPdfEnabled: exportPdfEnabled,
       copyEnabled: copyEnabled,
       exportPdfDocumentTitle: 'G$strongNumber',
@@ -56,14 +59,25 @@ class StrongDictionaryEntryView extends StatelessWidget {
           tooltip: localizations.previous_dictionary_entry,
           icon: Icons.arrow_back_ios_new_rounded,
           iconSize: 18,
+          buttonExtent: 36,
           enabled: navigationEnabled,
           onPressed: onNavigateBackward,
+        ),
+        DescriptionMarkdownToolbarButton(
+          buttonKey: pickerButtonKey,
+          tooltip: localizations.strong_number,
+          icon: Icons.numbers_rounded,
+          iconSize: 20,
+          buttonExtent: 36,
+          enabled: navigationEnabled,
+          onPressed: () => onStrongNumberPickerRequested(context, strongNumber),
         ),
         DescriptionMarkdownToolbarButton(
           buttonKey: forwardButtonKey,
           tooltip: localizations.next_dictionary_entry,
           icon: Icons.arrow_forward_ios_rounded,
           iconSize: 18,
+          buttonExtent: 36,
           enabled: navigationEnabled,
           onPressed: onNavigateForward,
         ),

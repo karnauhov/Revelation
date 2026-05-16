@@ -128,6 +128,10 @@ void main() {
     );
     expect(find.byKey(const Key('strong_dictionary_nav_back')), findsOneWidget);
     expect(
+      find.byKey(const Key('strong_dictionary_nav_picker')),
+      findsOneWidget,
+    );
+    expect(
       find.byKey(const Key('strong_dictionary_nav_forward')),
       findsOneWidget,
     );
@@ -159,5 +163,16 @@ void main() {
       find.byType(DescriptionMarkdownView),
     );
     expect(updatedMarkdown.exportPdfDocumentTitle, 'G1');
+
+    await tester.tap(find.byKey(const Key('strong_dictionary_nav_picker')));
+    await tester.pumpAndSettle();
+    expect(find.byType(StrongNumberPickerDialog), findsOneWidget);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(StrongNumberPickerDialog),
+        matching: find.text(l10n.close),
+      ),
+    );
+    await tester.pumpAndSettle();
   });
 }

@@ -19,7 +19,8 @@ typedef DescriptionMarkdownExportPdfHandler =
 typedef DescriptionMarkdownCopyHandler = Future<void> Function(String markdown);
 
 class DescriptionMarkdownView extends StatelessWidget {
-  static const EdgeInsets _toolbarButtonInset = EdgeInsets.only(top: 44);
+  static const double _toolbarButtonTopOffset = 4;
+  static const double _defaultToolbarButtonExtent = 40;
 
   final String data;
   final bool scrollable;
@@ -38,6 +39,7 @@ class DescriptionMarkdownView extends StatelessWidget {
   final String? exportPdfMarkdown;
   final String? copyMarkdown;
   final List<Widget> toolbarActions;
+  final double toolbarButtonExtent;
   final FontWeight? h2FontWeight;
   final List<md.InlineSyntax> inlineSyntaxes;
   final Map<String, MarkdownElementBuilder> elementBuilders;
@@ -60,6 +62,7 @@ class DescriptionMarkdownView extends StatelessWidget {
     this.exportPdfMarkdown,
     this.copyMarkdown,
     this.toolbarActions = const <Widget>[],
+    this.toolbarButtonExtent = _defaultToolbarButtonExtent,
     this.h2FontWeight,
     this.inlineSyntaxes = const <md.InlineSyntax>[],
     this.elementBuilders = const <String, MarkdownElementBuilder>{},
@@ -70,10 +73,11 @@ class DescriptionMarkdownView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final hasToolbar = showExportPdfButton || toolbarActions.isNotEmpty;
+    final toolbarInsetTop = toolbarButtonExtent + _toolbarButtonTopOffset;
     final effectivePadding = hasToolbar
         ? EdgeInsets.only(
             left: padding.left,
-            top: padding.top + _toolbarButtonInset.top,
+            top: padding.top + toolbarInsetTop,
             right: padding.right,
             bottom: padding.bottom,
           )
@@ -208,6 +212,7 @@ class DescriptionMarkdownView extends StatelessWidget {
           buttonKey: const Key('description_markdown_export_pdf_button'),
           tooltip: l10n.export_pdf_content,
           icon: Icons.file_download_outlined,
+          buttonExtent: toolbarButtonExtent,
           enabled: exportPdfEnabled,
           onPressed: () => unawaited(handleExportPdf()),
         ),
@@ -216,6 +221,7 @@ class DescriptionMarkdownView extends StatelessWidget {
           buttonKey: const Key('description_markdown_copy_button'),
           tooltip: l10n.copy_content,
           icon: Icons.content_copy_outlined,
+          buttonExtent: toolbarButtonExtent,
           enabled: copyEnabled,
           onPressed: () => unawaited(handleCopy()),
         ),
@@ -251,6 +257,7 @@ class DescriptionMarkdownToolbarButton extends StatelessWidget {
     required this.onPressed,
     this.enabled = true,
     this.iconSize = 20,
+    this.buttonExtent = 40,
     super.key,
   });
 
@@ -260,6 +267,7 @@ class DescriptionMarkdownToolbarButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool enabled;
   final double iconSize;
+  final double buttonExtent;
 
   @override
   Widget build(BuildContext context) {
@@ -279,8 +287,8 @@ class DescriptionMarkdownToolbarButton extends StatelessWidget {
             customBorder: const CircleBorder(),
             onTap: onPressed,
             child: SizedBox(
-              width: 40,
-              height: 40,
+              width: buttonExtent,
+              height: buttonExtent,
               child: Icon(icon, size: iconSize, color: iconColor),
             ),
           ),

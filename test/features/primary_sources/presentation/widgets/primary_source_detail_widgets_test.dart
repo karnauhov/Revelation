@@ -296,6 +296,7 @@ void main() {
       );
       expect(markdownView.exportPdfDocumentTitle, 'G3056');
       expect(find.byTooltip('Previous dictionary entry'), findsOneWidget);
+      expect(find.byKey(const Key('description_nav_picker')), findsOneWidget);
       expect(find.byTooltip('Next dictionary entry'), findsOneWidget);
       expect(
         find.byKey(const Key('strong_reference_info_icon')),

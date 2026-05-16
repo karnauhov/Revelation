@@ -502,6 +502,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get strong_dictionary_search => 'Полнотекстовый поиск';
 
   @override
+  String get strong_dictionary_search_hint => '#/слово/перевод';
+
+  @override
   String get strong_dictionary_no_entries =>
       'Статьи словаря Стронга недоступны';
 

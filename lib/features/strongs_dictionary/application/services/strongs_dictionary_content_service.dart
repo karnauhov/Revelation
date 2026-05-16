@@ -79,7 +79,7 @@ class StrongsDictionaryContentService {
 
     buffer.write(localizations.strong_number);
     buffer.write(': **');
-    buffer.write('[${entry.number}](strong_picker:${entry.code})');
+    buffer.write(entry.code);
     buffer.write('**\n\r');
 
     buffer.write(localizations.strong_pronunciation);

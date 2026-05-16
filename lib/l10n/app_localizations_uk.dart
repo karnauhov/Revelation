@@ -503,6 +503,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get strong_dictionary_search => 'Повнотекстовий пошук';
 
   @override
+  String get strong_dictionary_search_hint => '#/слово/переклад';
+
+  @override
   String get strong_dictionary_no_entries =>
       'Статті словника Стронґа недоступні';
 
