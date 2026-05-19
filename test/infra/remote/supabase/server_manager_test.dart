@@ -176,6 +176,23 @@ void main() {
       expect(updatedAt, modifiedAt);
     });
 
+    test('getFileInfoFromServer returns parsed timestamp and size', () async {
+      final modifiedAt = DateTime.utc(2026, 3, 21, 12, 34, 56);
+      storageServer.seedFile(
+        repository: 'repo',
+        path: 'info.sqlite',
+        bytes: const [7, 8, 9],
+        lastModified: modifiedAt,
+      );
+      final manager = ServerManager();
+
+      final info = await manager.getFileInfoFromServer('repo', 'info.sqlite');
+
+      expect(info, isNotNull);
+      expect(info!.updatedAt, modifiedAt);
+      expect(info.sizeBytes, 3);
+    });
+
     test(
       'downloadDB and getLastUpdateFileFromServer return null for missing files',
       () async {
@@ -186,9 +203,14 @@ void main() {
           'repo',
           'missing.sqlite',
         );
+        final info = await manager.getFileInfoFromServer(
+          'repo',
+          'missing.sqlite',
+        );
 
         expect(bytes, isNull);
         expect(updatedAt, isNull);
+        expect(info, isNull);
       },
     );
   });

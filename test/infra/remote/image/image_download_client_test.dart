@@ -53,4 +53,12 @@ class _FakeServerManager implements ServerManager {
   ) async {
     return null;
   }
+
+  @override
+  Future<ServerFileInfo?> getFileInfoFromServer(
+    String repository,
+    String filePath,
+  ) async {
+    return null;
+  }
 }

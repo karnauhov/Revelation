@@ -48,7 +48,7 @@ void main() {
   test('getAppFolder returns app folder inside documents dir', () async {
     final folder = await getAppFolder();
 
-    expect(folder, '${tempDir.path}/${AppConstants.folder}');
+    expect(folder, p.join(tempDir.path, AppConstants.folder));
   });
 
   test('getLastUpdateFileLocal returns null when file is missing', () async {
@@ -141,6 +141,44 @@ void main() {
   });
 
   test(
+    'isUpdateNeeded returns true when local size differs from server',
+    () async {
+      await _initializeSupabase(storageServer.baseUrl);
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'size_checked.sqlite',
+        bytes: const [1, 2, 3, 4],
+        lastModified: DateTime.utc(2026, 3, 21, 12, 0, 0),
+      );
+
+      final appFolder = await getAppFolder();
+      final file = File(p.join(appFolder, 'db', 'size_checked.sqlite'));
+      await file.create(recursive: true);
+      await file.writeAsBytes(const [1, 2]);
+      await file.setLastModified(DateTime.utc(2026, 3, 21, 13, 0, 0));
+
+      final needed = await isUpdateNeeded('db', 'size_checked.sqlite');
+
+      expect(needed, isTrue);
+    },
+  );
+
+  test('isUpdateNeeded returns true when local validator fails', () async {
+    final appFolder = await getAppFolder();
+    final file = File(p.join(appFolder, 'db', 'invalid.sqlite'));
+    await file.create(recursive: true);
+    await file.writeAsString('not a valid database');
+
+    final needed = await isUpdateNeeded(
+      'db',
+      'invalid.sqlite',
+      localFileValidator: (_) => false,
+    );
+
+    expect(needed, isTrue);
+  });
+
+  test(
     'updateLocalFile downloads bytes and overwrites existing file',
     () async {
       await _initializeSupabase(storageServer.baseUrl);
@@ -150,9 +188,16 @@ void main() {
         bytes: const [10, 11, 12, 13],
         lastModified: DateTime.utc(2026, 3, 21, 12, 0, 0),
       );
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'manifest.json',
+        bytes: _manifestBytes({'sync.sqlite': 4}),
+        lastModified: DateTime.utc(2026, 3, 21, 12, 0, 0),
+      );
 
       final appFolder = await getAppFolder();
       final file = File(p.join(appFolder, 'db', 'sync.sqlite'));
+      final manifestFile = File(p.join(appFolder, 'db', 'manifest.json'));
       await file.create(recursive: true);
       await file.writeAsBytes(const [99, 99]);
 
@@ -160,6 +205,35 @@ void main() {
 
       expect(path, file.path);
       expect(await file.readAsBytes(), [10, 11, 12, 13]);
+      expect(manifestFile.existsSync(), isTrue);
+      expect(await manifestFile.readAsString(), contains('sync.sqlite'));
+    },
+  );
+
+  test(
+    'updateLocalFile keeps existing file when downloaded size is unexpected',
+    () async {
+      await _initializeSupabase(storageServer.baseUrl);
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'wrong_size.sqlite',
+        bytes: const [10, 11, 12, 13],
+        lastModified: DateTime.utc(2026, 3, 21, 12, 0, 0),
+      );
+
+      final appFolder = await getAppFolder();
+      final file = File(p.join(appFolder, 'db', 'wrong_size.sqlite'));
+      await file.create(recursive: true);
+      await file.writeAsBytes(const [99, 99]);
+
+      final path = await updateLocalFile(
+        'db',
+        'wrong_size.sqlite',
+        expectedSizeBytes: 8,
+      );
+
+      expect(path, file.path);
+      expect(await file.readAsBytes(), [99, 99]);
     },
   );
 
@@ -206,6 +280,25 @@ Future<void> _disposeSupabaseIfInitialized() async {
   try {
     await Supabase.instance.dispose();
   } catch (_) {}
+}
+
+List<int> _manifestBytes(Map<String, int> fileSizes) {
+  const generatedAt = '2026-03-21T12:00:00.000Z';
+  return utf8.encode(
+    jsonEncode(<String, Object?>{
+      'version': 1,
+      'generatedAt': generatedAt,
+      'databases': <String, Object?>{
+        for (final entry in fileSizes.entries)
+          entry.key: <String, Object?>{
+            'schemaVersion': 1,
+            'dataVersion': 1,
+            'date': generatedAt,
+            'fileSizeBytes': entry.value,
+          },
+      },
+    }),
+  );
 }
 
 class _FakePathProviderPlatform extends PathProviderPlatform {

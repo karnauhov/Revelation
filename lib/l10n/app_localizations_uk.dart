@@ -118,6 +118,32 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bug_report => 'Повідомити про помилку';
 
   @override
+  String get tools => 'Інструменти';
+
+  @override
+  String get refresh_databases => 'Оновити бази даних';
+
+  @override
+  String get databases_refreshed => 'Бази даних оновлено';
+
+  @override
+  String get databases_up_to_date =>
+      'Файли БД актуальні. Оновлення не потрібне.';
+
+  @override
+  String get database_size_mismatch =>
+      'Розміри деяких файлів БД не відповідають маніфесту. Спробуйте оновити бази даних ще раз.';
+
+  @override
+  String get database_refresh_failed => 'Не вдалося оновити бази даних';
+
+  @override
+  String get show_local_folder => 'Показати локальну папку';
+
+  @override
+  String get local_folder_open_failed => 'Не вдалося відкрити локальну папку';
+
+  @override
   String get clear_cache => 'Очистити кеш';
 
   @override

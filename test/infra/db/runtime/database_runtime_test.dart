@@ -57,6 +57,11 @@ class _FakeArticlesGateway implements ArticlesDatabaseGateway {
   }
 
   @override
+  Future<void> closeRuntime() async {
+    calls.add('articles.close');
+  }
+
+  @override
   Future<void> updateLanguage(String language) async {
     calls.add('articles.update:$language');
   }

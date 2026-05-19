@@ -16,6 +16,8 @@ abstract class ArticlesDatabaseGateway {
 
   Future<void> updateLanguage(String language);
 
+  Future<void> closeRuntime();
+
   Future<List<localized_db.Article>> getArticles({bool onlyVisible = true});
 
   Future<String> getArticleMarkdown(String route);
@@ -72,6 +74,11 @@ class DbManagerArticlesDatabaseGateway implements ArticlesDatabaseGateway {
   @override
   Future<void> updateLanguage(String language) {
     return _dbManager.updateLanguage(language);
+  }
+
+  @override
+  Future<void> closeRuntime() {
+    return _dbManager.close();
   }
 
   @override

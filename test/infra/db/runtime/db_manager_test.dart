@@ -24,8 +24,7 @@ void main() {
   tearDownAll(() async {
     final manager = DBManager();
     if (manager.isInitialized) {
-      await manager.localizedDB.close();
-      await manager.commonDB.close();
+      await manager.close();
     }
 
     await GetIt.I.reset();
@@ -61,6 +60,13 @@ void main() {
     await manager.updateLanguage('es');
     expect(manager.langDB, 'es');
     expect(identical(manager.localizedDB, secondLocalized), isFalse);
+
+    await manager.close();
+    expect(manager.isInitialized, isFalse);
+
+    await manager.init('ru');
+    expect(manager.isInitialized, isTrue);
+    expect(manager.langDB, 'ru');
   });
 }
 

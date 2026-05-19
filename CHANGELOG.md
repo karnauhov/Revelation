@@ -10,7 +10,7 @@ All notable changes to this application will be documented here.
 - Expanded the left menu with more study sections.
 - Added a Strong's Dictionary page with Greek word lookup, linked dictionary entries.
 - Uploaded primary-source images to supabase.com (0207, 0229, P98);
-- Added cache clearing from the About screen.
+- Added refresh DB, show local folder, cache clearing from the About screen.
 - Page 404 for web
 
 ### Fixed

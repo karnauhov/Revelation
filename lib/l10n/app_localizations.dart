@@ -300,6 +300,54 @@ abstract class AppLocalizations {
   /// **'Report a bug'**
   String get bug_report;
 
+  /// No description provided for @tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get tools;
+
+  /// No description provided for @refresh_databases.
+  ///
+  /// In en, this message translates to:
+  /// **'Update databases'**
+  String get refresh_databases;
+
+  /// No description provided for @databases_refreshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Databases updated'**
+  String get databases_refreshed;
+
+  /// No description provided for @databases_up_to_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Database files are up to date. No update is required.'**
+  String get databases_up_to_date;
+
+  /// No description provided for @database_size_mismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Some database file sizes don\'t match the manifest. Please update the databases again.'**
+  String get database_size_mismatch;
+
+  /// No description provided for @database_refresh_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t update databases'**
+  String get database_refresh_failed;
+
+  /// No description provided for @show_local_folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show local folder'**
+  String get show_local_folder;
+
+  /// No description provided for @local_folder_open_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open local folder'**
+  String get local_folder_open_failed;
+
   /// No description provided for @clear_cache.
   ///
   /// In en, this message translates to:

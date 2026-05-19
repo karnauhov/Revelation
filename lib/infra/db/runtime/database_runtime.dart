@@ -1,6 +1,8 @@
 import 'package:revelation/infra/db/runtime/gateways/articles_database_gateway.dart';
 import 'package:revelation/infra/db/runtime/gateways/lexicon_database_gateway.dart';
 import 'package:revelation/infra/db/runtime/gateways/primary_sources_database_gateway.dart';
+import 'package:revelation/infra/db/connectors/local_database_sync.dart';
+import 'package:revelation/infra/db/connectors/local_database_sync_result.dart';
 
 abstract class DatabaseRuntime {
   Future<void> initialize(String language);
@@ -34,5 +36,19 @@ class DbManagerDatabaseRuntime implements DatabaseRuntime {
     await _articlesGateway.updateLanguage(language);
     await _lexiconGateway.updateLanguage(language);
     await _primarySourcesGateway.updateLanguage(language);
+  }
+
+  Future<LocalDatabaseSyncResult> refreshLocalDatabases(
+    String language, {
+    bool force = false,
+  }) async {
+    final normalizedLanguage = language.trim().isEmpty ? 'en' : language;
+    await _articlesGateway.closeRuntime();
+    final result = await verifyAndUpdateKnownLocalDatabasesWithResult(
+      languageCode: normalizedLanguage,
+      force: force,
+    );
+    await initialize(normalizedLanguage);
+    return result;
   }
 }

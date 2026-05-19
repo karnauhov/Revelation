@@ -15,6 +15,7 @@ import 'package:revelation/features/primary_sources/presentation/widgets/primary
 import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/features/settings/settings.dart'
     show SettingsCubit, SettingsRepository;
+import 'package:revelation/infra/db/connectors/local_database_sync.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/infra/db/runtime/runtime_database_version_loader.dart';
@@ -44,6 +45,8 @@ typedef AppBootstrapNominaSacraConfigLoader = Future<void> Function();
 typedef AppBootstrapPackageInfoLoader = Future<PackageInfo> Function();
 typedef AppBootstrapDatabaseVersionInfoLoader =
     Future<DatabaseVersionInfo?> Function(String dbFile);
+typedef AppBootstrapDatabaseMaintenanceRunner =
+    Future<void> Function(String languageCode);
 
 const int appBootstrapVisibleStepCount = 5;
 
@@ -112,6 +115,7 @@ class AppBootstrap {
     AppAnalyticsReporter? analyticsReporter,
     AppBootstrapPackageInfoLoader? packageInfoLoader,
     AppBootstrapDatabaseVersionInfoLoader? databaseVersionInfoLoader,
+    AppBootstrapDatabaseMaintenanceRunner? databaseMaintenanceRunner,
   }) : _talker = talker,
        _databaseRuntime = databaseRuntime ?? DbManagerDatabaseRuntime(),
        _referenceResolver =
@@ -132,7 +136,9 @@ class AppBootstrap {
            analyticsReporter ?? _resolveDefaultAnalyticsReporter(),
        _packageInfoLoader = packageInfoLoader ?? PackageInfo.fromPlatform,
        _databaseVersionInfoLoader =
-           databaseVersionInfoLoader ?? getPreferredDatabaseVersionInfo;
+           databaseVersionInfoLoader ?? getPreferredDatabaseVersionInfo,
+       _databaseMaintenanceRunner =
+           databaseMaintenanceRunner ?? _defaultDatabaseMaintenanceRunner;
 
   final Talker _talker;
   final DatabaseRuntime _databaseRuntime;
@@ -146,6 +152,7 @@ class AppBootstrap {
   final AppAnalyticsReporter _analyticsReporter;
   final AppBootstrapPackageInfoLoader _packageInfoLoader;
   final AppBootstrapDatabaseVersionInfoLoader _databaseVersionInfoLoader;
+  final AppBootstrapDatabaseMaintenanceRunner _databaseMaintenanceRunner;
   StreamSubscription<String>? _languageSubscription;
 
   static AppAnalyticsReporter _resolveDefaultAnalyticsReporter() {
@@ -178,6 +185,10 @@ class AppBootstrap {
     return AudioController().init(
       isSoundEnabled: () => settingsCubit.state.settings.soundEnabled,
     );
+  }
+
+  static Future<void> _defaultDatabaseMaintenanceRunner(String languageCode) {
+    return verifyAndUpdateKnownLocalDatabases(languageCode: languageCode);
   }
 
   Future<SettingsCubit> initialize({
@@ -235,6 +246,7 @@ class AppBootstrap {
           selectedLanguageCode: selectedLanguage,
         ),
       );
+      _runDatabaseMaintenanceInBackground(selectedLanguage);
 
       return settingsCubit;
     } catch (_) {
@@ -331,6 +343,26 @@ class AppBootstrap {
     } catch (error, stackTrace) {
       _talker.handle(error, stackTrace, 'Failed to initialize UI audio');
     }
+  }
+
+  void _runDatabaseMaintenanceInBackground(String languageCode) {
+    unawaited(
+      _databaseMaintenanceRunner(languageCode).catchError((
+        Object error,
+        StackTrace stackTrace,
+      ) {
+        _talker.handle(
+          error,
+          stackTrace,
+          'Failed to verify local databases in background',
+        );
+        _captureException(
+          error,
+          stackTrace,
+          source: 'Failed to verify local databases in background',
+        );
+      }),
+    );
   }
 
   Future<void> _updateRuntimeLanguage(String language) async {

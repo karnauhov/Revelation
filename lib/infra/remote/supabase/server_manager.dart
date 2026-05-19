@@ -3,6 +3,13 @@ import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+class ServerFileInfo {
+  const ServerFileInfo({required this.updatedAt, required this.sizeBytes});
+
+  final DateTime updatedAt;
+  final int? sizeBytes;
+}
+
 class ServerManager {
   static final ServerManager _instance = ServerManager._internal();
   ServerManager._internal();
@@ -68,11 +75,33 @@ class ServerManager {
     String repository,
     String filePath,
   ) async {
+    final info = await getFileInfoFromServer(repository, filePath);
+    return info?.updatedAt;
+  }
+
+  Future<ServerFileInfo?> getFileInfoFromServer(
+    String repository,
+    String filePath,
+  ) async {
     try {
       final supabase = Supabase.instance.client;
       _removeWrongHeader(supabase);
       final fileObject = await supabase.storage.from(repository).info(filePath);
-      return DateTime.parse(fileObject.lastModified!);
+      final updatedAtValue =
+          fileObject.lastModified ??
+          fileObject.updatedAt ??
+          fileObject.createdAt;
+      final updatedAt = DateTime.tryParse(updatedAtValue);
+      if (updatedAt == null) {
+        log.error(
+          'Getting file info from server error: missing update timestamp for $repository/$filePath',
+        );
+        return null;
+      }
+      return ServerFileInfo(
+        updatedAt: updatedAt,
+        sizeBytes: fileObject.size ?? _readMetadataSize(fileObject.metadata),
+      );
     } catch (e) {
       log.error('Getting file info from server error: $e');
       return null;
@@ -101,5 +130,19 @@ class ServerManager {
     )) {
       supabase.storage.headers.remove("X-Supabase-Client-Platform-Version");
     }
+  }
+
+  int? _readMetadataSize(Map<String, dynamic>? metadata) {
+    final value = metadata?['size'];
+    if (value is int) {
+      return value;
+    }
+    if (value is num) {
+      return value.toInt();
+    }
+    if (value is String) {
+      return int.tryParse(value);
+    }
+    return null;
   }
 }

@@ -11,6 +11,7 @@ class AboutState {
     required this.changelog,
     required this.isLoading,
     required this.isChangelogExpanded,
+    required this.isMaintenanceExpanded,
     required this.isAcknowledgementsExpanded,
     required this.isRecommendedExpanded,
     this.commonDbVersionInfo,
@@ -26,6 +27,7 @@ class AboutState {
       changelog: '',
       isLoading: true,
       isChangelogExpanded: false,
+      isMaintenanceExpanded: false,
       isAcknowledgementsExpanded: false,
       isRecommendedExpanded: false,
       commonDbVersionInfo: null,
@@ -39,6 +41,7 @@ class AboutState {
   final String changelog;
   final bool isLoading;
   final bool isChangelogExpanded;
+  final bool isMaintenanceExpanded;
   final bool isAcknowledgementsExpanded;
   final bool isRecommendedExpanded;
   final DatabaseVersionInfo? commonDbVersionInfo;
@@ -52,6 +55,7 @@ class AboutState {
     String? changelog,
     bool? isLoading,
     bool? isChangelogExpanded,
+    bool? isMaintenanceExpanded,
     bool? isAcknowledgementsExpanded,
     bool? isRecommendedExpanded,
     Object? commonDbVersionInfo = _unset,
@@ -68,6 +72,8 @@ class AboutState {
       changelog: changelog ?? this.changelog,
       isLoading: isLoading ?? this.isLoading,
       isChangelogExpanded: isChangelogExpanded ?? this.isChangelogExpanded,
+      isMaintenanceExpanded:
+          isMaintenanceExpanded ?? this.isMaintenanceExpanded,
       isAcknowledgementsExpanded:
           isAcknowledgementsExpanded ?? this.isAcknowledgementsExpanded,
       isRecommendedExpanded:
@@ -93,6 +99,7 @@ class AboutState {
             changelog == other.changelog &&
             isLoading == other.isLoading &&
             isChangelogExpanded == other.isChangelogExpanded &&
+            isMaintenanceExpanded == other.isMaintenanceExpanded &&
             isAcknowledgementsExpanded == other.isAcknowledgementsExpanded &&
             isRecommendedExpanded == other.isRecommendedExpanded &&
             commonDbVersionInfo == other.commonDbVersionInfo &&
@@ -108,6 +115,7 @@ class AboutState {
     changelog,
     isLoading,
     isChangelogExpanded,
+    isMaintenanceExpanded,
     isAcknowledgementsExpanded,
     isRecommendedExpanded,
     commonDbVersionInfo,

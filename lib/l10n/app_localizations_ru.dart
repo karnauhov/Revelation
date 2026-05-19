@@ -118,6 +118,32 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bug_report => 'Сообщить об ошибке';
 
   @override
+  String get tools => 'Инструменты';
+
+  @override
+  String get refresh_databases => 'Обновить базы данных';
+
+  @override
+  String get databases_refreshed => 'Базы данных обновлены';
+
+  @override
+  String get databases_up_to_date =>
+      'Файлы БД актуальны. Обновление не требуется.';
+
+  @override
+  String get database_size_mismatch =>
+      'Размеры некоторых файлов БД не соответствуют манифесту. Попробуйте обновить базы данных ещё раз.';
+
+  @override
+  String get database_refresh_failed => 'Не удалось обновить базы данных';
+
+  @override
+  String get show_local_folder => 'Показать локальную папку';
+
+  @override
+  String get local_folder_open_failed => 'Не удалось открыть локальную папку';
+
+  @override
   String get clear_cache => 'Очистить кэш';
 
   @override

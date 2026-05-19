@@ -14,6 +14,7 @@ void main() {
       expect(state.changelog, isEmpty);
       expect(state.isLoading, isTrue);
       expect(state.isChangelogExpanded, isFalse);
+      expect(state.isMaintenanceExpanded, isFalse);
       expect(state.isAcknowledgementsExpanded, isFalse);
       expect(state.isRecommendedExpanded, isFalse);
       expect(state.commonDbVersionInfo, isNull);
@@ -31,6 +32,7 @@ void main() {
         changelog: '# New',
         isLoading: false,
         isChangelogExpanded: true,
+        isMaintenanceExpanded: true,
         isAcknowledgementsExpanded: true,
         isRecommendedExpanded: true,
       );
@@ -41,6 +43,7 @@ void main() {
       expect(next.changelog, '# New');
       expect(next.isLoading, isFalse);
       expect(next.isChangelogExpanded, isTrue);
+      expect(next.isMaintenanceExpanded, isTrue);
       expect(next.isAcknowledgementsExpanded, isTrue);
       expect(next.isRecommendedExpanded, isTrue);
       expect(next.commonDbVersionInfo, isNull);
@@ -130,6 +133,7 @@ void main() {
         changelog: 'changelog',
         isLoading: false,
         isChangelogExpanded: true,
+        isMaintenanceExpanded: true,
         isAcknowledgementsExpanded: true,
         isRecommendedExpanded: true,
         commonDbVersionInfo: common,
@@ -143,6 +147,7 @@ void main() {
         changelog: 'changelog',
         isLoading: false,
         isChangelogExpanded: true,
+        isMaintenanceExpanded: true,
         isAcknowledgementsExpanded: true,
         isRecommendedExpanded: true,
         commonDbVersionInfo: common,
@@ -152,6 +157,7 @@ void main() {
 
       expect(a, b);
       expect(a.hashCode, b.hashCode);
+      expect(a.copyWith(isMaintenanceExpanded: false), isNot(b));
       expect(a.copyWith(isRecommendedExpanded: false), isNot(b));
     });
   });

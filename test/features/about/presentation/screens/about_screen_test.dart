@@ -17,6 +17,7 @@ import 'package:revelation/features/about/presentation/widgets/institution_card.
 import 'package:revelation/features/about/presentation/widgets/recommended_card.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
+import 'package:revelation/infra/db/connectors/local_database_sync_result.dart';
 import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
@@ -529,8 +530,8 @@ void main() {
     final context = tester.element(find.byType(AboutScreen));
     final l10n = AppLocalizations.of(context)!;
 
-    await tester.ensureVisible(find.text(l10n.clear_cache));
-    await tester.tap(find.text(l10n.clear_cache));
+    await _expandMaintenanceSection(tester, l10n);
+    await _tapMaintenanceAction(tester, const ValueKey('about-clear-cache'));
     await _pumpUntilFound(tester, find.text(l10n.cache_cleared));
 
     expect(harness.cacheClearCalls, 1);
@@ -556,11 +557,148 @@ void main() {
     final context = tester.element(find.byType(AboutScreen));
     final l10n = AppLocalizations.of(context)!;
 
-    await tester.ensureVisible(find.text(l10n.clear_cache));
-    await tester.tap(find.text(l10n.clear_cache));
+    await _expandMaintenanceSection(tester, l10n);
+    await _tapMaintenanceAction(tester, const ValueKey('about-clear-cache'));
     await _pumpUntilFound(tester, find.text(l10n.cache_clear_failed));
 
     expect(harness.cacheClearCalls, 1);
+  });
+
+  testWidgets(
+    'AboutScreen maintenance actions update databases and open folder',
+    (tester) async {
+      final harness = _AboutScreenTestHarness();
+      final cubit = await _createSettingsCubit(language: 'ru');
+      addTearDown(cubit.close);
+
+      await tester.pumpWidget(
+        _buildApp(
+          cubit,
+          dependencies: harness.buildDependencies(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(),
+          locale: const Locale('ru'),
+        ),
+      );
+      await _pumpUntilAboutScreenLoaded(tester);
+
+      final context = tester.element(find.byType(AboutScreen));
+      final l10n = AppLocalizations.of(context)!;
+
+      await _expandMaintenanceSection(tester, l10n);
+
+      await _tapMaintenanceAction(
+        tester,
+        const ValueKey('about-refresh-databases'),
+      );
+      await _pumpUntilFound(tester, find.text(l10n.databases_refreshed));
+      expect(harness.databaseRefreshCalls, 1);
+      expect(harness.refreshedLanguageCode, 'ru');
+
+      await _tapMaintenanceAction(
+        tester,
+        const ValueKey('about-show-local-folder'),
+      );
+      await tester.pump();
+      expect(harness.showLocalFolderCalls, 1);
+    },
+  );
+
+  testWidgets('AboutScreen database refresh reports up-to-date result', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness()
+      ..databaseRefreshResult = _upToDateDatabaseSyncResult();
+    final cubit = await _createSettingsCubit(language: 'en');
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
+
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+
+    await _expandMaintenanceSection(tester, l10n);
+    await _tapMaintenanceAction(
+      tester,
+      const ValueKey('about-refresh-databases'),
+    );
+    await _pumpUntilFound(tester, find.text(l10n.databases_up_to_date));
+
+    expect(harness.databaseRefreshCalls, 1);
+  });
+
+  testWidgets('AboutScreen database refresh reports size mismatch result', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness()
+      ..databaseRefreshResult = _sizeMismatchDatabaseSyncResult();
+    final cubit = await _createSettingsCubit(language: 'en');
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
+
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+
+    await _expandMaintenanceSection(tester, l10n);
+    await _tapMaintenanceAction(
+      tester,
+      const ValueKey('about-refresh-databases'),
+    );
+    await _pumpUntilFound(tester, find.text(l10n.database_size_mismatch));
+
+    expect(harness.databaseRefreshCalls, 1);
+  });
+
+  testWidgets('AboutScreen maintenance actions report failures', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness()
+      ..databaseRefreshError = StateError('refresh failed')
+      ..showLocalFolderError = StateError('open failed');
+    final cubit = await _createSettingsCubit(language: 'en');
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
+
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+
+    await _expandMaintenanceSection(tester, l10n);
+
+    await _tapMaintenanceAction(
+      tester,
+      const ValueKey('about-refresh-databases'),
+    );
+    await _pumpUntilFound(tester, find.text(l10n.database_refresh_failed));
+    expect(harness.databaseRefreshCalls, 1);
+
+    await _tapMaintenanceAction(
+      tester,
+      const ValueKey('about-show-local-folder'),
+    );
+    await _pumpUntilFound(tester, find.text(l10n.local_folder_open_failed));
+    expect(harness.showLocalFolderCalls, 1);
   });
 
   testWidgets(
@@ -653,6 +791,12 @@ class _AboutScreenTestHarness {
   bool launchResult = true;
   int cacheClearCalls = 0;
   Object? cacheClearError;
+  int databaseRefreshCalls = 0;
+  String? refreshedLanguageCode;
+  Object? databaseRefreshError;
+  LocalDatabaseSyncResult databaseRefreshResult = _updatedDatabaseSyncResult();
+  int showLocalFolderCalls = 0;
+  Object? showLocalFolderError;
   String Function({BuildContext? context, String? dbFilesSection})?
   systemAndAppInfoBuilder;
 
@@ -687,8 +831,84 @@ class _AboutScreenTestHarness {
           throw error;
         }
       },
+      refreshLocalDatabases: (languageCode) async {
+        databaseRefreshCalls += 1;
+        refreshedLanguageCode = languageCode;
+        final error = databaseRefreshError;
+        if (error != null) {
+          throw error;
+        }
+        return databaseRefreshResult;
+      },
+      showLocalFolder: () async {
+        showLocalFolderCalls += 1;
+        final error = showLocalFolderError;
+        if (error != null) {
+          throw error;
+        }
+      },
     );
   }
+}
+
+LocalDatabaseSyncResult _updatedDatabaseSyncResult() {
+  return const LocalDatabaseSyncResult(
+    files: [
+      LocalDatabaseFileSyncResult(
+        fileName: 'revelation.sqlite',
+        existedBeforeSync: true,
+        healthyBeforeSync: true,
+        sizeMatchedManifestBeforeSync: false,
+        existsAfterSync: true,
+        healthyAfterSync: true,
+        sizeMatchedManifestAfterSync: true,
+        updated: true,
+        expectedSizeBytes: 42,
+        sizeBytesBeforeSync: 21,
+        sizeBytesAfterSync: 42,
+      ),
+    ],
+  );
+}
+
+LocalDatabaseSyncResult _upToDateDatabaseSyncResult() {
+  return const LocalDatabaseSyncResult(
+    files: [
+      LocalDatabaseFileSyncResult(
+        fileName: 'revelation.sqlite',
+        existedBeforeSync: true,
+        healthyBeforeSync: true,
+        sizeMatchedManifestBeforeSync: true,
+        existsAfterSync: true,
+        healthyAfterSync: true,
+        sizeMatchedManifestAfterSync: true,
+        updated: false,
+        expectedSizeBytes: 42,
+        sizeBytesBeforeSync: 42,
+        sizeBytesAfterSync: 42,
+      ),
+    ],
+  );
+}
+
+LocalDatabaseSyncResult _sizeMismatchDatabaseSyncResult() {
+  return const LocalDatabaseSyncResult(
+    files: [
+      LocalDatabaseFileSyncResult(
+        fileName: 'revelation.sqlite',
+        existedBeforeSync: true,
+        healthyBeforeSync: true,
+        sizeMatchedManifestBeforeSync: false,
+        existsAfterSync: true,
+        healthyAfterSync: true,
+        sizeMatchedManifestAfterSync: false,
+        updated: false,
+        expectedSizeBytes: 42,
+        sizeBytesBeforeSync: 21,
+        sizeBytesAfterSync: 21,
+      ),
+    ],
+  );
 }
 
 AboutCubitBuilder _buildAboutCubitBuilder({
@@ -736,6 +956,26 @@ Future<void> _pumpUntilFound(
     }
   }
   fail('Finder did not appear within $maxTicks ticks: $finder');
+}
+
+Future<void> _expandMaintenanceSection(
+  WidgetTester tester,
+  AppLocalizations l10n,
+) async {
+  await tester.ensureVisible(find.text(l10n.tools));
+  await tester.tap(find.text(l10n.tools));
+  await _pumpUntilFound(tester, find.text(l10n.clear_cache));
+}
+
+Future<void> _tapMaintenanceAction(WidgetTester tester, Key key) async {
+  final finder = find.byKey(key);
+  await tester.ensureVisible(finder);
+  await tester.pump();
+  final tile = tester.widget<ListTile>(
+    find.descendant(of: finder, matching: find.byType(ListTile)),
+  );
+  tile.onTap?.call();
+  await tester.pump();
 }
 
 Future<void> _pumpUntilCondition(
@@ -809,6 +1049,10 @@ Map<String, Uint8List> _buildAboutAssets({
     'assets/data/about_institutions.xml': _bytes(institutions),
     'assets/data/about_recommended.xml': _bytes(recommended),
     'assets/images/UI/main-icon.svg': _bytes(_svg),
+    'assets/images/UI/about.svg': _bytes(_svg),
+    'assets/images/UI/tools.svg': _bytes(_svg),
+    'assets/images/UI/database_refresh.svg': _bytes(_svg),
+    'assets/images/UI/folder.svg': _bytes(_svg),
     'assets/images/UI/email.svg': _bytes(_svg),
     'assets/images/UI/www.svg': _bytes(_svg),
     'assets/images/UI/github.svg': _bytes(_svg),

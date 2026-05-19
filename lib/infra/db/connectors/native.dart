@@ -7,6 +7,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/connectors/database_version_file_loader.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
+import 'package:revelation/infra/db/connectors/local_database_sync.dart';
 import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/shared/config/app_constants.dart';
@@ -172,17 +173,11 @@ LazyDatabase getLazyDatabase(dbFile) {
     final talker = GetIt.I<Talker>();
 
     try {
-      final needsUpdate = await isUpdateNeeded(folder, dbFile);
-      if (needsUpdate) {
-        final pathToFile = await updateLocalFile(folder, dbFile);
-        final file = File(pathToFile);
-        return NativeDatabase(file);
-      } else {
-        final appFolder = await getAppFolder();
-        final file = File(p.join(appFolder, folder, dbFile));
-        await file.parent.create(recursive: true);
-        return NativeDatabase(file);
-      }
+      await verifyAndUpdateLocalDatabaseFile(dbFile);
+      final appFolder = await getAppFolder();
+      final file = File(p.join(appFolder, folder, dbFile));
+      await file.parent.create(recursive: true);
+      return NativeDatabase(file);
     } catch (e, st) {
       talker.handle(e, st, 'Failed to open native DB: $dbFile');
       rethrow;

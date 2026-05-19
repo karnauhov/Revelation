@@ -303,6 +303,42 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'recommended_description should not be empty',
   );
   expect(l10n.bug_report, isNotEmpty, reason: 'bug_report should not be empty');
+  expect(l10n.tools, isNotEmpty, reason: 'tools should not be empty');
+  expect(
+    l10n.refresh_databases,
+    isNotEmpty,
+    reason: 'refresh_databases should not be empty',
+  );
+  expect(
+    l10n.databases_refreshed,
+    isNotEmpty,
+    reason: 'databases_refreshed should not be empty',
+  );
+  expect(
+    l10n.databases_up_to_date,
+    isNotEmpty,
+    reason: 'databases_up_to_date should not be empty',
+  );
+  expect(
+    l10n.database_size_mismatch,
+    isNotEmpty,
+    reason: 'database_size_mismatch should not be empty',
+  );
+  expect(
+    l10n.database_refresh_failed,
+    isNotEmpty,
+    reason: 'database_refresh_failed should not be empty',
+  );
+  expect(
+    l10n.show_local_folder,
+    isNotEmpty,
+    reason: 'show_local_folder should not be empty',
+  );
+  expect(
+    l10n.local_folder_open_failed,
+    isNotEmpty,
+    reason: 'local_folder_open_failed should not be empty',
+  );
   expect(
     l10n.clear_cache,
     isNotEmpty,

@@ -218,7 +218,12 @@ class CoreDbMixin:
                     if commit:
                         con.commit()
 
-                return self._read_db_version_snapshot(db_path, connection=con)
+                snapshot = self._read_db_version_snapshot(db_path, connection=con)
+                if own_connection or commit:
+                    self._refresh_local_db_manifest_for_path(db_path)
+                else:
+                    self._mark_local_db_manifest_dirty(db_path)
+                return snapshot
             finally:
                 if own_connection:
                     con.close()
@@ -1070,6 +1075,52 @@ class CoreDbMixin:
 
         def _web_db_manifest_path(self, target_dir: Path) -> Path:
             return target_dir / "manifest.json"
+
+        def _local_db_manifest_dirty_dirs(self) -> set[Path]:
+            dirty_dirs = getattr(self, "_local_db_manifest_dirty_dirs_set", None)
+            if not isinstance(dirty_dirs, set):
+                dirty_dirs = set()
+                setattr(self, "_local_db_manifest_dirty_dirs_set", dirty_dirs)
+            return dirty_dirs
+
+        def _mark_local_db_manifest_dirty(self, db_path: Path | None) -> None:
+            if db_path is None or db_path.suffix.lower() != ".sqlite":
+                return
+            if not db_path.name.lower().startswith("revelation"):
+                return
+            self._local_db_manifest_dirty_dirs().add(db_path.parent.resolve())
+
+        def _refresh_local_db_manifest_for_dir(self, target_dir: Path) -> Path | None:
+            db_paths = sorted(
+                target_dir.glob("revelation*.sqlite"),
+                key=lambda path: path.name.lower(),
+            )
+            if not db_paths:
+                return None
+            manifest_path = self._web_db_manifest_path(target_dir)
+            return write_web_db_manifest(manifest_path, db_paths=db_paths)
+
+        def _refresh_local_db_manifest_for_path(self, db_path: Path | None) -> None:
+            self._mark_local_db_manifest_dirty(db_path)
+            self._flush_dirty_local_db_manifests()
+
+        def _flush_dirty_local_db_manifests(self) -> list[str]:
+            dirty_dirs = self._local_db_manifest_dirty_dirs()
+            if not dirty_dirs:
+                return []
+
+            errors: list[str] = []
+            refreshed_dirs: list[Path] = []
+            for target_dir in sorted(dirty_dirs, key=lambda path: str(path).lower()):
+                try:
+                    self._refresh_local_db_manifest_for_dir(target_dir)
+                    refreshed_dirs.append(target_dir)
+                except (OSError, sqlite3.DatabaseError, ValueError) as exc:
+                    errors.append(f"{target_dir}: {exc}")
+
+            for target_dir in refreshed_dirs:
+                dirty_dirs.discard(target_dir)
+            return errors
 
         def _release_publish_env_path(self) -> Path:
             return self.project_root / "env" / "content_tool_release_publish.env"

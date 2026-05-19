@@ -52,4 +52,21 @@ class DBManager {
       log.info("DB runtime switched to language: ${_dbLanguage}");
     }
   }
+
+  Future<void> close() async {
+    if (!_isInitialized) {
+      return;
+    }
+
+    final commonDb = _commonDB;
+    final localizedDb = _localizedDB;
+    _isInitialized = false;
+
+    try {
+      await localizedDb.close();
+    } finally {
+      await commonDb.close();
+    }
+    log.info("DB runtime closed");
+  }
 }

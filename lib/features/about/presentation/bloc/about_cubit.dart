@@ -92,6 +92,10 @@ class AboutCubit extends Cubit<AboutState> {
     emit(state.copyWith(isChangelogExpanded: expanded));
   }
 
+  void setMaintenanceExpanded(bool expanded) {
+    emit(state.copyWith(isMaintenanceExpanded: expanded));
+  }
+
   void setAcknowledgementsExpanded(bool expanded) {
     emit(state.copyWith(isAcknowledgementsExpanded: expanded));
   }

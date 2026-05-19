@@ -120,6 +120,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bug_report => 'Informar de un error';
 
   @override
+  String get tools => 'Herramientas';
+
+  @override
+  String get refresh_databases => 'Actualizar bases de datos';
+
+  @override
+  String get databases_refreshed => 'Bases de datos actualizadas';
+
+  @override
+  String get databases_up_to_date =>
+      'Los archivos de la base de datos están actualizados. No se requiere actualización.';
+
+  @override
+  String get database_size_mismatch =>
+      'El tamaño de algunos archivos de base de datos no coincide con el manifiesto. Intenta actualizar las bases de datos de nuevo.';
+
+  @override
+  String get database_refresh_failed =>
+      'No se pudieron actualizar las bases de datos';
+
+  @override
+  String get show_local_folder => 'Mostrar carpeta local';
+
+  @override
+  String get local_folder_open_failed => 'No se pudo abrir la carpeta local';
+
+  @override
   String get clear_cache => 'Borrar caché';
 
   @override

@@ -83,10 +83,12 @@ void main() {
     addTearDown(cubit.close);
 
     cubit.setChangelogExpanded(true);
+    cubit.setMaintenanceExpanded(true);
     cubit.setAcknowledgementsExpanded(true);
     cubit.setRecommendedExpanded(true);
 
     expect(cubit.state.isChangelogExpanded, isTrue);
+    expect(cubit.state.isMaintenanceExpanded, isTrue);
     expect(cubit.state.isAcknowledgementsExpanded, isTrue);
     expect(cubit.state.isRecommendedExpanded, isTrue);
   });

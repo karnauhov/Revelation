@@ -17,10 +17,13 @@ import 'package:revelation/features/about/presentation/widgets/library_list.dart
 import 'package:revelation/features/about/presentation/widgets/recommended_list.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
+import 'package:revelation/infra/db/connectors/local_database_sync_result.dart';
 import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/infra/db/connectors/shared.dart';
+import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/infra/db/runtime/runtime_database_version_loader.dart';
 import 'package:revelation/infra/storage/app_cache_manager.dart';
+import 'package:revelation/infra/storage/local_app_folder.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
@@ -41,10 +44,19 @@ typedef AboutPrimarySourceFilesLoader =
     Future<List<PrimarySourceFileInfo>> Function();
 typedef AboutClipboardWriter = BugReportClipboardWriter;
 typedef AboutCacheClearer = Future<void> Function();
+typedef AboutDatabaseRefresher =
+    Future<LocalDatabaseSyncResult> Function(String languageCode);
+typedef AboutLocalFolderOpener = Future<void> Function();
 typedef AboutCubitBuilder = AboutCubit Function(String initialLanguageCode);
 
 AboutCubit _defaultAboutCubitBuilder(String initialLanguageCode) {
   return AboutCubit(initialLanguageCode: initialLanguageCode);
+}
+
+Future<LocalDatabaseSyncResult> _defaultRefreshLocalDatabases(
+  String languageCode,
+) {
+  return DbManagerDatabaseRuntime().refreshLocalDatabases(languageCode);
 }
 
 @immutable
@@ -58,6 +70,8 @@ class AboutScreenDependencies {
     this.primarySourceFilesLoader = getLocalPrimarySourceFilesInfo,
     this.writeClipboardText = defaultBugReportClipboardWriter,
     this.clearCache = clearAppCache,
+    this.refreshLocalDatabases = _defaultRefreshLocalDatabases,
+    this.showLocalFolder = showLocalAppFolder,
   });
 
   final AboutLinkLauncher launchLink;
@@ -68,6 +82,8 @@ class AboutScreenDependencies {
   final AboutPrimarySourceFilesLoader primarySourceFilesLoader;
   final AboutClipboardWriter writeClipboardText;
   final AboutCacheClearer clearCache;
+  final AboutDatabaseRefresher refreshLocalDatabases;
+  final AboutLocalFolderOpener showLocalFolder;
 }
 
 class AboutScreen extends StatefulWidget {
@@ -179,13 +195,16 @@ class _AboutScreenState extends State<AboutScreen> {
                   // Changelog
                   _buildChangelog(context, state),
                   if (keepSectionDividersOnWindows ||
+                      !state.isMaintenanceExpanded ||
                       !state.isChangelogExpanded)
+                    Divider(height: 1, color: colorScheme.outlineVariant),
+                  // Tools
+                  _buildTools(context, state),
+                  if (keepSectionDividersOnWindows ||
+                      !state.isMaintenanceExpanded)
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Bugs report
                   _buildBugsReport(context, appSettings),
-                  Divider(height: 1, color: colorScheme.outlineVariant),
-                  // Cache
-                  _buildClearCache(context),
                   Divider(height: 1, color: colorScheme.outlineVariant),
                   // Marketplaces (Desktop & Mobile)
                   if (!isWeb()) _buildMarketplaces(context),
@@ -760,39 +779,152 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  Widget _buildClearCache(BuildContext context) {
-    return Column(
+  Widget _buildTools(BuildContext context, AboutState state) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    return PlatformExpansionTile(
+      key: const ValueKey('about-tools'),
+      minTileHeight: 30,
+      tilePadding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+      initiallyExpanded: state.isMaintenanceExpanded,
+      onExpansionChanged: (expanded) {
+        aud.playSound("click");
+        context.read<AboutCubit>().setMaintenanceExpanded(expanded);
+      },
+      title: Row(
+        children: [
+          SvgPicture.asset(
+            "assets/images/UI/tools.svg",
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              l10n.tools,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
       children: [
+        if (!isWeb())
+          IconLinkItem(
+            key: const ValueKey('about-refresh-databases'),
+            iconPath: "assets/images/UI/database_refresh.svg",
+            text: l10n.refresh_databases,
+            onTap: () => _refreshDatabases(context),
+          ),
+        if (!isWeb())
+          IconLinkItem(
+            key: const ValueKey('about-show-local-folder'),
+            iconPath: "assets/images/UI/folder.svg",
+            text: l10n.show_local_folder,
+            onTap: () => _showLocalFolder(context),
+          ),
         IconLinkItem(
           key: const ValueKey('about-clear-cache'),
           iconPath: "assets/images/UI/broom.svg",
-          text: AppLocalizations.of(context)!.clear_cache,
-          onTap: () async {
-            aud.playSound("click");
-            final l10n = AppLocalizations.of(context)!;
-            final messenger = ScaffoldMessenger.maybeOf(context);
-            try {
-              await widget.dependencies.clearCache();
-              if (!mounted) {
-                return;
-              }
-              _showSnackBar(messenger, l10n.cache_cleared);
-            } catch (error, stackTrace) {
-              log.handle(error, stackTrace);
-              if (!mounted) {
-                return;
-              }
-              _showSnackBar(messenger, l10n.cache_clear_failed);
-            }
-          },
+          text: l10n.clear_cache,
+          onTap: () => _clearCache(context),
         ),
       ],
     );
   }
 
+  Future<void> _refreshDatabases(BuildContext context) async {
+    aud.playSound("click");
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final languageCode = context
+        .read<SettingsCubit>()
+        .state
+        .settings
+        .selectedLanguage;
+    final aboutCubit = context.read<AboutCubit>();
+    try {
+      final result = await widget.dependencies.refreshLocalDatabases(
+        languageCode,
+      );
+      if (!mounted) {
+        return;
+      }
+      await aboutCubit.load(languageCode: languageCode);
+      if (!mounted) {
+        return;
+      }
+      _showSnackBar(messenger, _formatDatabaseRefreshResult(l10n, result));
+    } catch (error, stackTrace) {
+      log.handle(error, stackTrace);
+      if (!mounted) {
+        return;
+      }
+      _showSnackBar(messenger, l10n.database_refresh_failed);
+    }
+  }
+
+  Future<void> _showLocalFolder(BuildContext context) async {
+    aud.playSound("click");
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    try {
+      await widget.dependencies.showLocalFolder();
+    } catch (error, stackTrace) {
+      log.handle(error, stackTrace);
+      if (!mounted) {
+        return;
+      }
+      _showSnackBar(messenger, l10n.local_folder_open_failed);
+    }
+  }
+
+  Future<void> _clearCache(BuildContext context) async {
+    aud.playSound("click");
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    try {
+      await widget.dependencies.clearCache();
+      if (!mounted) {
+        return;
+      }
+      _showSnackBar(messenger, l10n.cache_cleared);
+    } catch (error, stackTrace) {
+      log.handle(error, stackTrace);
+      if (!mounted) {
+        return;
+      }
+      _showSnackBar(messenger, l10n.cache_clear_failed);
+    }
+  }
+
   void _showSnackBar(ScaffoldMessengerState? messenger, String message) {
     messenger?.hideCurrentSnackBar();
     messenger?.showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  String _formatDatabaseRefreshResult(
+    AppLocalizations l10n,
+    LocalDatabaseSyncResult result,
+  ) {
+    if (result.hasSizeMismatch) {
+      return l10n.database_size_mismatch;
+    }
+    if (result.hasValidationFailures) {
+      return l10n.database_refresh_failed;
+    }
+    if (result.hasUpdates) {
+      return l10n.databases_refreshed;
+    }
+    if (result.isUpToDate) {
+      return l10n.databases_up_to_date;
+    }
+    return l10n.database_refresh_failed;
   }
 
   Future<String> _collectDataFilesDiagnosticsSection() async {

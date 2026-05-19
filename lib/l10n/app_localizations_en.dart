@@ -118,6 +118,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bug_report => 'Report a bug';
 
   @override
+  String get tools => 'Tools';
+
+  @override
+  String get refresh_databases => 'Update databases';
+
+  @override
+  String get databases_refreshed => 'Databases updated';
+
+  @override
+  String get databases_up_to_date =>
+      'Database files are up to date. No update is required.';
+
+  @override
+  String get database_size_mismatch =>
+      'Some database file sizes don\'t match the manifest. Please update the databases again.';
+
+  @override
+  String get database_refresh_failed => 'Couldn\'t update databases';
+
+  @override
+  String get show_local_folder => 'Show local folder';
+
+  @override
+  String get local_folder_open_failed => 'Couldn\'t open local folder';
+
+  @override
   String get clear_cache => 'Clear cache';
 
   @override

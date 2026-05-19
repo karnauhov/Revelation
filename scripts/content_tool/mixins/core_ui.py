@@ -1820,6 +1820,9 @@ class CoreUiMixin:
             return " | ".join(parts) if parts else "-"
 
         def _update_file_info(self) -> None:
+            flush_manifests = getattr(self, "_flush_dirty_local_db_manifests", None)
+            if callable(flush_manifests):
+                flush_manifests()
             self._update_section_db_labels()
             section = self._active_section_key()
             has_local = self.current_db_path is not None and self.current_db_path.exists()

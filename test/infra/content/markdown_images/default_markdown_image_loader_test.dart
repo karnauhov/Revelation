@@ -144,6 +144,9 @@ class _FakeArticlesDatabaseGateway implements ArticlesDatabaseGateway {
   Future<void> initialize(String language) async {}
 
   @override
+  Future<void> closeRuntime() async {}
+
+  @override
   Future<void> updateLanguage(String language) async {}
 }
 

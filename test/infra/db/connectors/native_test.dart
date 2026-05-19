@@ -340,6 +340,7 @@ void main() {
       );
 
       final dbName = 'lazy_download.sqlite';
+      _seedDbManifest(storageServer, {dbName: seededBytes.length});
       final db = CommonDB(native_connector.getLazyDatabase(dbName));
       addTearDown(db.close);
 
@@ -348,7 +349,71 @@ void main() {
 
       final appFolder = await getAppFolder();
       final file = File(p.join(appFolder, 'db', dbName));
+      final manifestFile = File(p.join(appFolder, 'db', 'manifest.json'));
       expect(file.existsSync(), isTrue);
+      expect(await file.readAsBytes(), seededBytes);
+      expect(manifestFile.existsSync(), isTrue);
+      expect(await manifestFile.readAsString(), contains(dbName));
+    },
+  );
+
+  test(
+    'getLazyDatabase replaces local db when file size differs from manifest',
+    () async {
+      await _initializeSupabase(storageServer.baseUrl);
+      final seededBytes = await _createValidCommonDbBytes();
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'lazy_size_mismatch.sqlite',
+        bytes: seededBytes,
+        lastModified: DateTime.utc(2026, 3, 21, 12, 0, 0),
+      );
+
+      final dbName = 'lazy_size_mismatch.sqlite';
+      _seedDbManifest(storageServer, {dbName: seededBytes.length});
+      final appFolder = await getAppFolder();
+      final file = File(p.join(appFolder, 'db', dbName));
+      await file.create(recursive: true);
+      await file.writeAsBytes(<int>[...seededBytes, 0]);
+      await file.setLastModified(DateTime.utc(2026, 3, 21, 13, 0, 0));
+
+      final db = CommonDB(native_connector.getLazyDatabase(dbName));
+      addTearDown(db.close);
+
+      final rows = await db.customSelect('SELECT 1 AS value').get();
+      expect(rows.single.read<int>('value'), 1);
+      expect(await file.readAsBytes(), seededBytes);
+    },
+  );
+
+  test(
+    'getLazyDatabase replaces corrupt local db even when size and timestamp match',
+    () async {
+      await _initializeSupabase(storageServer.baseUrl);
+      final seededBytes = await _createValidCommonDbBytes();
+      final serverModifiedAt = DateTime.utc(2026, 3, 21, 12, 0, 0);
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'lazy_corrupt.sqlite',
+        bytes: seededBytes,
+        lastModified: serverModifiedAt,
+      );
+
+      final dbName = 'lazy_corrupt.sqlite';
+      _seedDbManifest(storageServer, {dbName: seededBytes.length});
+      final appFolder = await getAppFolder();
+      final file = File(p.join(appFolder, 'db', dbName));
+      await file.create(recursive: true);
+      await file.writeAsBytes(List<int>.filled(seededBytes.length, 0x7f));
+      await file.setLastModified(
+        serverModifiedAt.add(const Duration(hours: 1)),
+      );
+
+      final db = CommonDB(native_connector.getLazyDatabase(dbName));
+      addTearDown(db.close);
+
+      final rows = await db.customSelect('SELECT 1 AS value').get();
+      expect(rows.single.read<int>('value'), 1);
       expect(await file.readAsBytes(), seededBytes);
     },
   );
@@ -421,6 +486,33 @@ Future<List<int>> _createValidCommonDbBytes() async {
   } finally {
     await tempDir.delete(recursive: true);
   }
+}
+
+void _seedDbManifest(
+  _FakeStorageServer storageServer,
+  Map<String, int> fileSizes,
+) {
+  const generatedAt = '2026-03-21T12:00:00.000Z';
+  storageServer.seedFile(
+    repository: 'db',
+    path: 'manifest.json',
+    bytes: utf8.encode(
+      jsonEncode(<String, Object?>{
+        'version': 1,
+        'generatedAt': generatedAt,
+        'databases': <String, Object?>{
+          for (final entry in fileSizes.entries)
+            entry.key: <String, Object?>{
+              'schemaVersion': 1,
+              'dataVersion': 1,
+              'date': generatedAt,
+              'fileSizeBytes': entry.value,
+            },
+        },
+      }),
+    ),
+    lastModified: DateTime.utc(2026, 3, 21, 12, 0, 0),
+  );
 }
 
 class _FakePathProviderPlatform extends PathProviderPlatform {

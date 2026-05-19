@@ -64,6 +64,7 @@ void main() {
       final runtime = _FakeDatabaseRuntime();
       final progressSteps = <AppBootstrapStep>[];
       final analyticsReporter = _RecordingAppAnalyticsReporter();
+      final maintenanceCalls = <String>[];
 
       final audioInitCalls = <String>[];
       final configLoadCalls = <String>[];
@@ -82,6 +83,9 @@ void main() {
         analyticsReporter: analyticsReporter,
         packageInfoLoader: _loadTestPackageInfo,
         databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
+        databaseMaintenanceRunner: (languageCode) async {
+          maintenanceCalls.add(languageCode);
+        },
       );
       final settingsCubit = await bootstrap.initialize(
         onProgress: (progress) {
@@ -125,6 +129,8 @@ void main() {
         AppBootstrapStep.configuringLinks,
         AppBootstrapStep.ready,
       ]);
+      await Future<void>.delayed(Duration.zero);
+      expect(maintenanceCalls, <String>['ru']);
 
       await settingsCubit.changeLanguage('en');
       final updatedLanguage = await runtime.firstUpdatedLanguage.future;
@@ -148,6 +154,7 @@ void main() {
       databaseRuntime: runtime,
       initializeAudio: _noopInitializeAudio,
       databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
+      databaseMaintenanceRunner: _noopDatabaseMaintenance,
     );
     final settingsCubit = await bootstrap.initialize();
     addTearDown(settingsCubit.close);
@@ -178,6 +185,7 @@ void main() {
       analyticsReporter: analyticsReporter,
       packageInfoLoader: _loadTestPackageInfo,
       databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
+      databaseMaintenanceRunner: _noopDatabaseMaintenance,
     );
     final settingsCubit = await bootstrap.initialize();
     addTearDown(settingsCubit.close);
@@ -223,6 +231,7 @@ void main() {
         throw StateError('forced audio initialization failure');
       },
       databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
+      databaseMaintenanceRunner: _noopDatabaseMaintenance,
     );
     final settingsCubit = await bootstrap.initialize();
     addTearDown(settingsCubit.close);
@@ -248,6 +257,7 @@ void main() {
             shownStrongNumbers.add(strongNumber);
           },
           databaseVersionInfoLoader: _loadTestDatabaseVersionInfo,
+          databaseMaintenanceRunner: _noopDatabaseMaintenance,
         );
         final settingsCubit = await bootstrap.initialize();
         addTearDown(settingsCubit.close);
@@ -267,6 +277,8 @@ void main() {
 }
 
 Future<void> _noopInitializeAudio(SettingsCubit settingsCubit) async {}
+
+Future<void> _noopDatabaseMaintenance(String languageCode) async {}
 
 Future<PackageInfo> _loadTestPackageInfo() async {
   return PackageInfo(

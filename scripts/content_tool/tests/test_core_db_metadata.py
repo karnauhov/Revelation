@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import shutil
 import sqlite3
 import subprocess
@@ -119,6 +120,56 @@ class CoreDbMetadataTests(unittest.TestCase):
             self.assertIsNotNone(updated)
             assert updated is not None
             self.assertEqual(updated["data_version"], 12)
+
+    def test_touch_updates_local_manifest_next_to_db_file(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "revelation_ru.sqlite"
+            self._create_db(
+                db_path,
+                schema_version=LOCALIZED_DB_SCHEMA_VERSION,
+                data_version=7,
+                date_iso="2026-03-21T00:00:00Z",
+            )
+            harness = _CoreDbHarness()
+
+            harness._touch_db_data_version(
+                db_path,
+                schema_version=LOCALIZED_DB_SCHEMA_VERSION,
+            )
+
+            manifest_path = Path(temp_dir) / "manifest.json"
+            self.assertTrue(manifest_path.exists())
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+            entry = payload["databases"][db_path.name]
+            self.assertEqual(entry["fileSizeBytes"], db_path.stat().st_size)
+
+    def test_connection_touch_flushes_pending_local_manifest_after_commit(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "revelation_ru.sqlite"
+            self._create_db(
+                db_path,
+                schema_version=LOCALIZED_DB_SCHEMA_VERSION,
+                data_version=7,
+                date_iso="2026-03-21T00:00:00Z",
+            )
+            harness = _CoreDbHarness()
+            con = sqlite3.connect(str(db_path))
+            con.row_factory = sqlite3.Row
+            try:
+                harness._touch_db_data_version(
+                    db_path,
+                    schema_version=LOCALIZED_DB_SCHEMA_VERSION,
+                    connection=con,
+                )
+                con.commit()
+            finally:
+                con.close()
+
+            errors = harness._flush_dirty_local_db_manifests()
+
+            self.assertEqual(errors, [])
+            manifest_path = Path(temp_dir) / "manifest.json"
+            self.assertTrue(manifest_path.exists())
 
     def test_compare_db_tables_ignores_db_metadata_only_changes(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

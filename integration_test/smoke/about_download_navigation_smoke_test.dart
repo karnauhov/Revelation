@@ -52,7 +52,16 @@ void main() {
 
     expect(find.text(l10n.about_screen), findsOneWidget);
     expect(find.text(l10n.changelog), findsOneWidget);
+    expect(find.text(l10n.tools), findsOneWidget);
     expect(find.textContaining('1.0.0-test'), findsOneWidget);
+
+    await tester.ensureVisible(find.text(l10n.tools));
+    await tester.tap(find.text(l10n.tools));
+    await pumpAndSettleSmoke(tester);
+
+    expect(find.text(l10n.refresh_databases), findsOneWidget);
+    expect(find.text(l10n.show_local_folder), findsOneWidget);
+    expect(find.text(l10n.clear_cache), findsOneWidget);
   });
 
   testWidgets('Download smoke: renders download sections for core platforms', (
