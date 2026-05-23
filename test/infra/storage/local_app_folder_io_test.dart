@@ -29,7 +29,9 @@ void main() {
         },
       );
 
-      expect(calls, <String>['explorer.exe ${tempDir.path}']);
+      expect(calls, <String>[
+        'explorer.exe ${p.windows.normalize(tempDir.path)}',
+      ]);
     },
   );
 
@@ -46,9 +48,10 @@ void main() {
         }
       });
 
+      final folderPath = '${tempDir.path.replaceAll('\\', '/')}/nested';
+
       await showLocalAppFolderWith(
-        appFolderProvider: () async =>
-            '${tempDir.path.replaceAll('\\', '/')}/nested',
+        appFolderProvider: () async => folderPath,
         platformOverride: TargetPlatform.windows,
         processStarter:
             (executable, arguments, {mode = ProcessStartMode.normal}) async {
@@ -58,7 +61,7 @@ void main() {
       );
 
       expect(calls, <String>[
-        'explorer.exe ${p.windows.join(tempDir.path, 'nested')} detached',
+        'explorer.exe ${p.windows.normalize(folderPath)} detached',
       ]);
     },
   );

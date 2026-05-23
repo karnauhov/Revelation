@@ -41,4 +41,9 @@ jobs:
           api-level: 34
           arch: x86_64
           profile: pixel_7
-          script: flutter test integration_test/smoke
+          script: |
+            flutter devices
+            for test_file in integration_test/smoke/*_test.dart; do
+              echo "Running ${test_file}"
+              flutter test -d emulator-5554 "${test_file}"
+            done
