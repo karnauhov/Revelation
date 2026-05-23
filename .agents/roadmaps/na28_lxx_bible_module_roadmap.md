@@ -318,29 +318,29 @@ import_warnings(
 
 This phase must create and populate the physical source-of-truth module before any Strong usage rebuild.
 
-- [ ] Add a repeatable build script for `C:\Users\karna\Documents\revelation\db\bible_na28_lxx.sqlite`.
-- [ ] Build from the locked source cache, not from ad-hoc local files.
-- [ ] Create the Phase 3 Bible module schema with token tables.
-- [ ] Insert `db_metadata.schema_version`.
-- [ ] Insert `db_metadata.data_version`.
-- [ ] Insert `db_metadata.date`.
-- [ ] Set SQLite `PRAGMA user_version` to the Bible module schema version.
-- [ ] Insert `bible_modules` metadata for `NA28_LXX`.
-- [ ] Insert `module_sources` for TAGNT, LXX, and supporting source metadata.
-- [ ] Insert `source_texts` for NT `tagnt_na28_nt` and OT `crosswire_lxx_ot`.
-- [ ] Insert exactly the 66 canonical books and canonical verse rows.
-- [ ] Import TAGNT NA28 NT verses into `module_verses`.
-- [ ] Import CrossWire LXX OT verses into `module_verses`.
-- [ ] Insert `module_verse_links` using stable `canonical_verse_id`.
-- [ ] Insert `tokens`.
-- [ ] Insert `token_strongs`.
-- [ ] Insert `import_warnings`.
-- [ ] Store normalized `token_strongs.strong` without leading zeroes.
-- [ ] Preserve padded/source values only in `token_strongs.raw_strong`.
-- [ ] Create the DB transactionally and keep a backup before replacing an existing module.
-- [ ] Validate the finished file can be reopened and queried.
-- [ ] Add tests for build-script fixtures that create a small physical Bible module DB.
-- [ ] Add spot checks for `G746` in `Gen.1.1` and `G976` in `Mat.1.1`.
+- [x] Add a repeatable build script for `C:\Users\karna\Documents\revelation\db\bible_na28_lxx.sqlite`.
+- [x] Build from the locked source cache, not from ad-hoc local files.
+- [x] Create the Phase 3 Bible module schema with token tables.
+- [x] Insert `db_metadata.schema_version`.
+- [x] Insert `db_metadata.data_version`.
+- [x] Insert `db_metadata.date`.
+- [x] Set SQLite `PRAGMA user_version` to the Bible module schema version.
+- [x] Insert `bible_modules` metadata for `NA28_LXX`.
+- [x] Insert `module_sources` for TAGNT, LXX, and supporting source metadata.
+- [x] Insert `source_texts` for NT `tagnt_na28_nt` and OT `crosswire_lxx_ot`.
+- [x] Insert exactly the 66 canonical books and canonical verse rows.
+- [x] Import TAGNT NA28 NT verses into `module_verses`.
+- [x] Import CrossWire LXX OT verses into `module_verses`.
+- [x] Insert `module_verse_links` using stable `canonical_verse_id`.
+- [x] Insert `tokens`.
+- [x] Insert `token_strongs`.
+- [x] Insert `import_warnings`.
+- [x] Store normalized `token_strongs.strong` without leading zeroes.
+- [x] Preserve padded/source values only in `token_strongs.raw_strong`.
+- [x] Create the DB transactionally and keep a backup before replacing an existing module.
+- [x] Validate the finished file can be reopened and queried.
+- [x] Add tests for build-script fixtures that create a small physical Bible module DB.
+- [x] Add spot checks for `G746` in `Gen.1.1` and `G976` in `Mat.1.1`.
 
 ## Phase 9 - Extended Strong Dictionary Entries
 
