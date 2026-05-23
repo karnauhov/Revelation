@@ -45,26 +45,26 @@ Temporary working document. Delete this file after the `NA28_LXX` Bible module, 
 
 ## Phase 2 - Canon And Verse Identity
 
-- [ ] Define the canonical 66-book list in one source file.
-- [ ] Assign stable `book_id` values.
-- [ ] Assign stable `canonical_verse_id` values.
-- [ ] Define `canonical_ref` in the project reference style, for example `Gen.1.1`, `Mat.1.1`, `Rev.22.21`.
-- [ ] Store source-native references separately as `native_ref`.
-- [ ] Store optional OSIS references separately as `osis_ref`.
-- [ ] Create a canonical verse table that does not depend on any Bible module.
-- [ ] Decide the exact handling of Psalm titles and Psalm numbering before import.
-- [ ] Decide the exact handling of LXX Esther canonical text versus Greek additions.
-- [ ] Decide the exact handling of LXX Daniel canonical text versus Susanna, Bel, and Prayer of Azariah.
-- [ ] Create explicit exclusion ranges for all non-66-book material found in the SWORD LXX export.
-- [ ] Create explicit mapping rules for LXX book names to canonical book ids.
-- [ ] Create explicit mapping rules for Kingdoms/Paraleipomenon names:
-  - [ ] `1 Kingdoms -> 1 Samuel`
-  - [ ] `2 Kingdoms -> 2 Samuel`
-  - [ ] `3 Kingdoms -> 1 Kings`
-  - [ ] `4 Kingdoms -> 2 Kings`
-  - [ ] `1 Paraleipomenon -> 1 Chronicles`
-  - [ ] `2 Paraleipomenon -> 2 Chronicles`
-- [ ] Add tests proving no non-canonical book can enter `NA28_LXX`.
+- [x] Define the canonical 66-book list in one source file.
+- [x] Assign stable `book_id` values.
+- [x] Assign stable `canonical_verse_id` values.
+- [x] Define `canonical_ref` in the project reference style, for example `Gen.1.1`, `Mat.1.1`, `Rev.22.21`.
+- [x] Store source-native references separately as `native_ref`.
+- [x] Store optional OSIS references separately as `osis_ref`.
+- [x] Create a canonical verse table that does not depend on any Bible module.
+- [x] Decide the exact handling of Psalm titles and Psalm numbering before import.
+- [x] Decide the exact handling of LXX Esther canonical text versus Greek additions.
+- [x] Decide the exact handling of LXX Daniel canonical text versus Susanna, Bel, and Prayer of Azariah.
+- [x] Create explicit exclusion ranges for all non-66-book material found in the SWORD LXX export.
+- [x] Create explicit mapping rules for LXX book names to canonical book ids.
+- [x] Create explicit mapping rules for Kingdoms/Paraleipomenon names:
+  - [x] `1 Kingdoms -> 1 Samuel`
+  - [x] `2 Kingdoms -> 2 Samuel`
+  - [x] `3 Kingdoms -> 1 Kings`
+  - [x] `4 Kingdoms -> 2 Kings`
+  - [x] `1 Paraleipomenon -> 1 Chronicles`
+  - [x] `2 Paraleipomenon -> 2 Chronicles`
+- [x] Add tests proving no non-canonical book can enter `NA28_LXX`.
 
 ## Phase 3 - Bible Module Schema
 

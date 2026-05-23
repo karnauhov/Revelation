@@ -12,7 +12,15 @@ from scripts.bible_module.guards import (
 
 class BibleImportGuardTests(unittest.TestCase):
     def test_rejects_known_apocryphal_books(self) -> None:
-        for book in ("Tob", "Judith", "Wisdom of Solomon", "Psalm 151", "Odes"):
+        for book in (
+            "Tob",
+            "Judith",
+            "Wisdom of Solomon",
+            "Psalm 151",
+            "Odes",
+            "1 Maccabees",
+            "2 Esdras",
+        ):
             with self.subTest(book=book):
                 with self.assertRaises(ImportGuardError):
                     assert_canonical_import_book(book)
@@ -30,4 +38,3 @@ class BibleImportGuardTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

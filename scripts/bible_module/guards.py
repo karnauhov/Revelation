@@ -11,6 +11,22 @@ class ImportGuardError(ValueError):
 _BOOK_KEY_PATTERN = re.compile(r"[^0-9a-z]+")
 
 _FORBIDDEN_BOOK_KEYS = {
+    "1esd",
+    "1esdras",
+    "1macc",
+    "1maccabees",
+    "2esd",
+    "2esdras",
+    "2macc",
+    "2maccabees",
+    "3esd",
+    "3esdras",
+    "3macc",
+    "3maccabees",
+    "4esd",
+    "4esdras",
+    "4macc",
+    "4maccabees",
     "adddan",
     "addesth",
     "additionsdaniel",
@@ -29,6 +45,7 @@ _FORBIDDEN_BOOK_KEYS = {
     "greekestheradditions",
     "jdt",
     "judith",
+    "maccabees",
     "maccabees1",
     "maccabees2",
     "maccabees3",
@@ -90,4 +107,3 @@ def assert_source_allowed(
         raise ImportGuardError(
             "Refusing to import RVR1960 without explicit owner permission."
         )
-
