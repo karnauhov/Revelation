@@ -68,29 +68,29 @@ Temporary working document. Delete this file after the `NA28_LXX` Bible module, 
 
 ## Phase 3 - Bible Module Schema
 
-- [ ] Create a Drift/SQLite schema for Bible modules.
-- [ ] Keep this schema symmetric for original-language modules and translation modules.
-- [ ] Keep token-level tables optional for translations.
-- [ ] Do not add form occurrence tables to Bible modules.
-- [ ] Include `db_metadata`.
-- [ ] Include `bible_modules`.
-- [ ] Include `module_sources`.
-- [ ] Include `books`.
-- [ ] Include `canonical_verses`.
-- [ ] Include `source_texts`.
-- [ ] Include `module_verses`.
-- [ ] Include `module_verse_links`.
-- [ ] Include `tokens`.
-- [ ] Include `token_strongs`.
-- [ ] Include `import_warnings`.
-- [ ] Include indexes for:
-  - [ ] `canonical_verses(canonical_ref)`
-  - [ ] `canonical_verses(sort_key)`
-  - [ ] `module_verse_links(canonical_verse_id)`
-  - [ ] `module_verses(source_text_id, sort_key)`
-  - [ ] `tokens(module_verse_id, token_order)`
-  - [ ] `token_strongs(strong)`
-  - [ ] `token_strongs(token_id)`
+- [x] Create a Drift/SQLite schema for Bible modules.
+- [x] Keep this schema symmetric for original-language modules and translation modules.
+- [x] Keep token-level tables optional for translations.
+- [x] Do not add form occurrence tables to Bible modules.
+- [x] Include `db_metadata`.
+- [x] Include `bible_modules`.
+- [x] Include `module_sources`.
+- [x] Include `books`.
+- [x] Include `canonical_verses`.
+- [x] Include `source_texts`.
+- [x] Include `module_verses`.
+- [x] Include `module_verse_links`.
+- [x] Include `tokens`.
+- [x] Include `token_strongs`.
+- [x] Include `import_warnings`.
+- [x] Include indexes for:
+  - [x] `canonical_verses(canonical_ref)`
+  - [x] `canonical_verses(sort_key)`
+  - [x] `module_verse_links(canonical_verse_id)`
+  - [x] `module_verses(source_text_id, sort_key)`
+  - [x] `tokens(module_verse_id, token_order)`
+  - [x] `token_strongs(strong)`
+  - [x] `token_strongs(token_id)`
 
 ### Proposed Bible Module Tables
 
