@@ -405,7 +405,27 @@ This phase reads the completed `bible_na28_lxx.sqlite` and writes compact usage 
 - [ ] Add tests for words with several surface forms.
 - [ ] Add a test that old-style usage parsing still fails gracefully or falls back safely.
 
-## Phase 12 - Strong Usage V2 App UI
+## Phase 12 - Bible Module Size Audit And Runtime Optimization
+
+The Phase 8 `bible_na28_lxx.sqlite` is intentionally a full working/source-of-truth build and may stay large until Strong usage generation is complete. This phase defines the compact runtime/published artifact after owner review.
+
+- [ ] Keep the full working `bible_na28_lxx.sqlite` available until Phase 11 usage generation and validation are complete.
+- [ ] Produce a size report by table, index, and large text/payload columns.
+- [ ] Review every Bible module table and column with the owner before removing or compacting it.
+- [ ] For each column, record one decision: keep in runtime DB, drop from runtime DB, derive at build time, keep only in full working DB, or move to a sidecar/report.
+- [ ] Decide whether the project keeps two artifacts: a full working/source DB and a compact runtime/published DB.
+- [ ] Define the minimum runtime contract needed by the app: open verse by stable `canonical_verse_id`, show readable refs, support parallel reading, and support Strong usage links.
+- [ ] Define which token-level data remains needed after `greek_words.usage` has been generated.
+- [ ] Remove or omit owner-approved redundant payloads from the runtime artifact only after the column review.
+- [ ] Preserve required source/license/acknowledgement metadata somewhere even if verbose source columns are removed from the runtime DB.
+- [ ] Review indexes and remove working-only indexes from the runtime artifact.
+- [ ] Run `VACUUM`/`ANALYZE` or equivalent SQLite compaction after pruning.
+- [ ] Add a size budget for the runtime/published module after the column review.
+- [ ] Add tests proving the optimized DB still supports required app queries.
+- [ ] Add tests proving `usage` references still resolve through stable `canonical_verse_id` / `canonical_ref`.
+- [ ] Ensure publish/manifest flow ships the optimized artifact, not the full working DB, unless explicitly approved.
+
+## Phase 13 - Strong Usage V2 App UI
 
 - [ ] Add a parser for `usage` v2 lines in the Strong dictionary domain layer.
 - [ ] Keep support for legacy `usage` text while current published DBs still use it.
@@ -421,7 +441,7 @@ This phase reads the completed `bible_na28_lxx.sqlite` and writes compact usage 
 - [ ] Add unit tests for the `usage` v2 parser.
 - [ ] Add widget tests for hidden bracket payloads and clickable usage counts.
 
-## Phase 13 - Bible Module Database Integration
+## Phase 14 - Bible Module Database Integration
 
 - [ ] Decide whether `bible_na28_lxx.sqlite` is managed by the current common/localized DB sync flow or a new Bible module sync flow.
 - [ ] If managed by the current sync flow, update manifest generation.
@@ -433,7 +453,7 @@ This phase reads the completed `bible_na28_lxx.sqlite` and writes compact usage 
 - [ ] Ensure missing Bible module DB fails gracefully.
 - [ ] Ensure `greek_words.usage` can still display counts when the Bible module DB is missing.
 
-## Phase 14 - Content Tool Bible Tab Architecture
+## Phase 15 - Content Tool Bible Tab Architecture
 
 Current `scripts/content_tool` findings to preserve:
 
@@ -466,7 +486,7 @@ Planned implementation:
 - [ ] Ensure opening the content tool does not mutate `bible_*.sqlite` timestamps.
 - [ ] Ensure switching Bible modules prompts about unsaved Bible edits without forcing a localized article save.
 
-## Phase 15 - Content Tool Bible Module UI And Editing
+## Phase 16 - Content Tool Bible Module UI And Editing
 
 Goal: the `Библии` tab must be the main desktop UI for creating and maintaining `bible_na28_lxx.sqlite`, and later any `bible_*.sqlite` module.
 
@@ -551,7 +571,7 @@ Goal: the `Библии` tab must be the main desktop UI for creating and mainta
 - [ ] Add read-only safety mode for generated-source fields, with an explicit "unlock manual edit" confirmation.
 - [ ] Add status bar messages and message-log entries for Bible actions.
 
-## Phase 16 - Content Tool Bible Publish And Manifest Flow
+## Phase 17 - Content Tool Bible Publish And Manifest Flow
 
 Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 
@@ -582,7 +602,7 @@ Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 - [ ] Add tests that localized test-article warnings do not inspect Bible DB files.
 - [ ] Add tests that `db_metadata` touch and manifest refresh work for `bible_*.sqlite`.
 
-## Phase 17 - Bible App Code And Parallel Reading Contract
+## Phase 18 - Bible App Code And Parallel Reading Contract
 
 - [ ] Add `lib/infra/db/bible/` Drift database definitions.
 - [ ] Generate Drift code with `dart run build_runner build --delete-conflicting-outputs`.
@@ -608,7 +628,7 @@ Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 - [ ] Use BLoC/Cubit when presentation work begins.
 - [ ] Do not pass `BuildContext` into services or blocs.
 
-## Phase 18 - Tests And Quality Gates
+## Phase 19 - Tests And Quality Gates
 
 - [ ] Add parser unit tests.
 - [ ] Add source-cache manifest tests.
@@ -632,7 +652,7 @@ Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 - [ ] Run `rg "package:provider|ChangeNotifier|notifyListeners" lib test` if presentation/state code is touched.
 - [ ] Run `rg "BuildContext" lib/features --glob "**/application/**/*.dart" --glob "**/presentation/bloc/**/*.dart"` if state/presentation code is touched.
 
-## Phase 19 - Content Validation
+## Phase 20 - Content Validation
 
 - [ ] Count imported books: exactly 66.
 - [ ] Count OT books: exactly 39.
@@ -647,7 +667,7 @@ Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 - [ ] Verify every `usage` v2 bracket id can open the same verse in a mock translation module.
 - [ ] Produce an import report with counts and warning summaries.
 
-## Phase 20 - Acknowledgements
+## Phase 21 - Acknowledgements
 
 - [ ] Add adopted third-party Bible data sources to `assets/data/about_libraries.xml`.
 - [ ] Keep acknowledgements limited to sources actually redistributed or used as bundled/generated app data.
@@ -712,7 +732,7 @@ Use this as the source checklist when updating `assets/data/about_libraries.xml`
 </library>
 ```
 
-## Phase 21 - Documentation And Cleanup
+## Phase 22 - Documentation And Cleanup
 
 - [ ] Decide whether the Bible module architecture needs permanent RU/EN architecture docs.
 - [ ] If permanent architecture docs are added, update RU/EN twin documents together.
@@ -733,6 +753,8 @@ Use this as the source checklist when updating `assets/data/about_libraries.xml`
 - [ ] The updated Strong dictionary `usage` contains every attested form from `NA28_LXX`.
 - [ ] Every `usage` v2 occurrence reference links to a stable `canonical_verse_id`.
 - [ ] The same `canonical_verse_id` can open the matching verse in other Bible modules.
+- [ ] The runtime/published Bible module is size-optimized according to owner-approved keep/drop decisions.
+- [ ] Full working Bible module artifacts are not shipped unless explicitly approved.
 - [ ] The content tool Bible tab can open, edit, validate, rebuild, and backup `bible_na28_lxx.sqlite`.
 - [ ] The content tool publish and release flows include `bible_*.sqlite` files intentionally and visibly.
 - [ ] Tests and quality gates pass.
