@@ -68,7 +68,7 @@ void main() {
     expect(await resultFuture, 3303);
   });
 
-  testWidgets('keeps extended Strong numbers gated until dictionary rollout', (
+  testWidgets('accepts attested extended Strong numbers after rollout', (
     tester,
   ) async {
     final context = await pumpLocalizedContext(tester);
@@ -90,19 +90,25 @@ void main() {
 
     final fieldFinder = find.byType(TextField);
     final field = tester.widget<TextField>(fieldFinder);
-    expect(field.decoration?.hintText, '1 - 5624');
-    expect(find.text('5624'), findsOneWidget);
-    expect(find.text('classic-5624'), findsOneWidget);
+    expect(field.decoration?.hintText, '1 - 20833');
+    expect(find.text('6000'), findsOneWidget);
+    expect(find.text('extra-6000'), findsOneWidget);
 
-    await tester.enterText(fieldFinder, '6000');
+    await tester.enterText(fieldFinder, '20833');
     await tester.pumpAndSettle();
 
-    expect(find.text('classic-5624'), findsOneWidget);
+    expect(find.text('extra-20833'), findsOneWidget);
+
+    await tester.enterText(fieldFinder, '21502');
+    await tester.pumpAndSettle();
+
+    expect(find.text('20833'), findsOneWidget);
+    expect(find.text('extra-20833'), findsOneWidget);
 
     await tester.tap(find.text(l10n.ok));
     await tester.pumpAndSettle();
 
-    expect(await resultFuture, 5624);
+    expect(await resultFuture, 20833);
   });
 
   testWidgets('cancel and submit actions complete dialog result contract', (

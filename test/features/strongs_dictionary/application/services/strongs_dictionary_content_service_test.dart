@@ -227,8 +227,10 @@ void main() {
 
     expect(service.isAllowedStrongNumber(1), isTrue);
     expect(service.isAllowedStrongNumber(2717), isFalse);
-    expect(service.isAllowedStrongNumber(6000), isFalse);
-    expect(service.getNeighborStrongNumber(5624, forward: true), 1);
+    expect(service.isAllowedStrongNumber(6000), isTrue);
+    expect(service.isAllowedStrongNumber(6096), isFalse);
+    expect(service.isAllowedStrongNumber(21502), isFalse);
+    expect(service.getNeighborStrongNumber(5624, forward: true), 6000);
   });
 }
 

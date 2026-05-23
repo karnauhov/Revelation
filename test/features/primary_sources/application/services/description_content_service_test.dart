@@ -657,8 +657,9 @@ void main() {
     expect(service.doesStrongNumberExist(3303), isTrue);
     expect(service.doesStrongNumberExist(5624), isTrue);
     expect(service.doesStrongNumberExist(5625), isFalse);
-    expect(service.doesStrongNumberExist(6000), isFalse);
-    expect(service.doesStrongNumberExist(20833), isFalse);
+    expect(service.doesStrongNumberExist(6000), isTrue);
+    expect(service.doesStrongNumberExist(6096), isFalse);
+    expect(service.doesStrongNumberExist(20833), isTrue);
     expect(service.doesStrongNumberExist(21502), isFalse);
     expect(service.doesStrongNumberExist(21503), isFalse);
   });
@@ -731,8 +732,8 @@ void main() {
     expect(service.getNeighborStrongNumber(2716, forward: true), 2718);
     expect(service.getNeighborStrongNumber(3202, forward: true), 3303);
     expect(service.getNeighborStrongNumber(3303, forward: false), 3202);
-    expect(service.getNeighborStrongNumber(5624, forward: true), 1);
-    expect(service.getNeighborStrongNumber(1, forward: false), 5624);
+    expect(service.getNeighborStrongNumber(5624, forward: true), 6000);
+    expect(service.getNeighborStrongNumber(1, forward: false), 20833);
   });
 
   testWidgets('buildStrongContent formats origins, synonyms, usage and links', (

@@ -148,11 +148,14 @@ void main() {
 
     expect(repository.isAllowedStrongNumber(1), isTrue);
     expect(repository.isAllowedStrongNumber(2717), isFalse);
-    expect(repository.isAllowedStrongNumber(6000), isFalse);
-    expect(repository.getNeighborStrongNumber(5624, forward: true), 1);
+    expect(repository.isAllowedStrongNumber(6000), isTrue);
+    expect(repository.isAllowedStrongNumber(6096), isFalse);
+    expect(repository.isAllowedStrongNumber(21502), isFalse);
+    expect(repository.getNeighborStrongNumber(5624, forward: true), 6000);
     expect(repository.getPickerEntries().map((entry) => entry.number), [
       1,
       5624,
+      6000,
     ]);
   });
 }

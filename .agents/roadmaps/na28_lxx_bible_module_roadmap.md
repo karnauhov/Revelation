@@ -374,20 +374,20 @@ This phase adds only the STEP Greek extended Strong entries actually attested in
 
 This phase fills all four localized dictionary DBs for the 88 attested extended Strong entries.
 
-- [ ] Generate source description prompts/inputs for the 88 attested new entries.
-- [ ] Fill `revelation_en.sqlite -> greek_descs` for every attested new extended Strong entry.
-- [ ] Fill `revelation_es.sqlite -> greek_descs` for every attested new extended Strong entry.
-- [ ] Fill `revelation_ru.sqlite -> greek_descs` for every attested new extended Strong entry.
-- [ ] Fill `revelation_uk.sqlite -> greek_descs` for every attested new extended Strong entry.
-- [ ] Keep localized wording in `greek_descs`; do not store localized text in `revelation.sqlite`.
-- [ ] Use the Phase 7 attested extended content-tool group ranges for translation batches.
-- [ ] Add validation that every new `greek_words.id` has a non-empty row in all four localized DBs.
-- [ ] Back up all affected localized DBs before applying generated translations.
-- [ ] Touch each localized DB `db_metadata.data_version` and `date` only after a successful commit.
-- [ ] Enable runtime extended Strong navigation only after all four localized DBs pass validation.
-- [ ] Update runtime tests so `G6000` and `G20833` are accepted only after the extended navigation gate is enabled.
-- [ ] Update runtime tests so unused extended keys such as `G21502` remain rejected.
-- [ ] Add tests for missing localized descriptions in the extended range.
+- [x] Generate source description prompts/inputs for the 88 attested new entries.
+- [x] Fill `revelation_en.sqlite -> greek_descs` for every attested new extended Strong entry.
+- [x] Fill `revelation_es.sqlite -> greek_descs` for every attested new extended Strong entry.
+- [x] Fill `revelation_ru.sqlite -> greek_descs` for every attested new extended Strong entry.
+- [x] Fill `revelation_uk.sqlite -> greek_descs` for every attested new extended Strong entry.
+- [x] Keep localized wording in `greek_descs`; do not store localized text in `revelation.sqlite`.
+- [x] Use the Phase 7 attested extended content-tool group ranges for translation batches.
+- [x] Add validation that every new `greek_words.id` has a non-empty row in all four localized DBs.
+- [x] Back up all affected localized DBs before applying generated translations.
+- [x] Touch each localized DB `db_metadata.data_version` and `date` only after a successful commit.
+- [x] Enable runtime extended Strong navigation only after all four localized DBs pass validation.
+- [x] Update runtime tests so `G6000` and `G20833` are accepted only after the extended navigation gate is enabled.
+- [x] Update runtime tests so unused extended keys such as `G21502` remain rejected.
+- [x] Add tests for missing localized descriptions in the extended range.
 
 ## Phase 11 - Strong Usage V2 Builder
 

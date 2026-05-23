@@ -270,9 +270,11 @@ class _StrongNumberPickerDialogContentState
       return;
     }
 
-    context.read<StrongNumberPickerCubit>().updateInputText(
-      _numberController.text,
-    );
+    final cubit = context.read<StrongNumberPickerCubit>()
+      ..updateInputText(_numberController.text);
+    if (_numberController.text != cubit.state.inputText) {
+      _replaceInputText(cubit.state.inputText);
+    }
   }
 
   void _replaceInputText(String text) {

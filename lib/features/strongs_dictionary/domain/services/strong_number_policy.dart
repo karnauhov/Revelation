@@ -97,10 +97,9 @@ class StrongNumberPolicy {
   ];
   static const int attestedExtendedCount = 88;
 
-  /// Keep runtime navigation on the published classic dictionary range until
-  /// attested extended `greek_words` entries and localized descriptions are
-  /// populated.
-  static const bool extendedNavigationEnabled = false;
+  /// Extended navigation is enabled only for the 88 attested NA28_LXX keys.
+  /// Do not treat G6000..G20833 as a continuous range.
+  static const bool extendedNavigationEnabled = true;
 
   static const int maxNumber = extendedNavigationEnabled
       ? extendedMaxNumber
