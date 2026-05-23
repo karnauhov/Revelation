@@ -8,7 +8,15 @@ void main() {
     'keeps extended navigation gated until extended dictionary is ready',
     () {
       expect(StrongNumberPolicy.classicMaxNumber, 5624);
-      expect(StrongNumberPolicy.extendedMaxNumber, 21502);
+      expect(StrongNumberPolicy.extendedMinNumber, 6000);
+      expect(StrongNumberPolicy.extendedMaxNumber, 20833);
+      expect(StrongNumberPolicy.attestedExtendedCount, 88);
+      expect(StrongNumberPolicy.attestedExtendedNumbers, hasLength(88));
+      expect(StrongNumberPolicy.attestedExtendedNumbers.toSet(), hasLength(88));
+      expect(StrongNumberPolicy.isAttestedExtended(6000), isTrue);
+      expect(StrongNumberPolicy.isAttestedExtended(6087), isTrue);
+      expect(StrongNumberPolicy.isAttestedExtended(20833), isTrue);
+      expect(StrongNumberPolicy.isAttestedExtended(21502), isFalse);
       expect(StrongNumberPolicy.extendedNavigationEnabled, isFalse);
       expect(StrongNumberPolicy.maxNumber, StrongNumberPolicy.classicMaxNumber);
     },
@@ -24,6 +32,7 @@ void main() {
     expect(policy.isAllowed(5624), isTrue);
     expect(policy.isAllowed(5625), isFalse);
     expect(policy.isAllowed(6000), isFalse);
+    expect(policy.isAllowed(20833), isFalse);
     expect(policy.isAllowed(21502), isFalse);
     expect(policy.isAllowed(21503), isFalse);
   });
@@ -35,6 +44,7 @@ void main() {
     expect(policy.normalizeToAllowed(3302), 3303);
     expect(policy.normalizeToAllowed(5625), 5624);
     expect(policy.normalizeToAllowed(6000), 5624);
+    expect(policy.normalizeToAllowed(20833), 5624);
     expect(policy.normalizeToAllowed(30000), 5624);
   });
 
@@ -47,7 +57,7 @@ void main() {
   });
 
   test('neighborAvailable moves through real dictionary entries', () {
-    const available = <int>[1, 2718, 3303, 5624, 6000, 21502];
+    const available = <int>[1, 2718, 3303, 5624, 6000, 20833];
 
     expect(policy.neighborAvailable(2716, available, forward: true), 2718);
     expect(policy.neighborAvailable(5624, available, forward: true), 1);

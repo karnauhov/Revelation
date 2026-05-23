@@ -658,6 +658,7 @@ void main() {
     expect(service.doesStrongNumberExist(5624), isTrue);
     expect(service.doesStrongNumberExist(5625), isFalse);
     expect(service.doesStrongNumberExist(6000), isFalse);
+    expect(service.doesStrongNumberExist(20833), isFalse);
     expect(service.doesStrongNumberExist(21502), isFalse);
     expect(service.doesStrongNumberExist(21503), isFalse);
   });
@@ -716,8 +717,8 @@ void main() {
             usage: '',
           ),
           common_db.GreekWord(
-            id: 21502,
-            word: 'Extended max',
+            id: 20833,
+            word: 'Attested extended max',
             category: '',
             synonyms: '',
             origin: '',

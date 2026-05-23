@@ -81,7 +81,7 @@ void main() {
           StrongPickerEntry(number: 1, word: 'classic-1'),
           StrongPickerEntry(number: 5624, word: 'classic-5624'),
           StrongPickerEntry(number: 6000, word: 'extra-6000'),
-          StrongPickerEntry(number: 21502, word: 'extra-21502'),
+          StrongPickerEntry(number: 20833, word: 'extra-20833'),
         ],
         initialStrongNumber: 6000,
       ),

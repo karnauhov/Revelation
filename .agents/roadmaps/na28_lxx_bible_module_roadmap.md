@@ -14,6 +14,7 @@ Temporary working document. Delete this file after the `NA28_LXX` Bible module, 
 - [ ] Do not store `word_forms`, `word_form_occurrences`, `strong_forms`, or `strong_form_occurrences` inside Bible modules.
 - [ ] Do not add new Strong occurrence tables for the current implementation; rebuild compact Strong usage into `revelation.sqlite -> greek_words.usage`.
 - [ ] Make every stored usage reference point to a stable module-independent `canonical_verse_id`.
+- [ ] Add only Greek Strong keys actually attested in `NA28_LXX` beyond the classic `G1..G5624` dictionary; do not bulk-add unused STEP Extended Strong entries.
 
 ## Target Outputs
 
@@ -21,6 +22,7 @@ Temporary working document. Delete this file after the `NA28_LXX` Bible module, 
 - [ ] Optional web copy: `web/db/bible_na28_lxx.sqlite`
 - [ ] Updated DB manifest entries, if Bible modules are distributed through the same DB sync flow.
 - [ ] Updated Strong dictionary `usage` data in the existing `greek_words.usage` column.
+- [ ] Strong dictionary rows and localized descriptions for the 88 attested extended Greek Strong keys used by `NA28_LXX`.
 - [ ] Import/build scripts under `scripts/`, with repeatable source cache and deterministic output.
 - [ ] Updated `scripts/content_tool` Bible tab for creating, opening, editing, validating, and publishing `bible_*.sqlite` modules.
 - [ ] Tests for parsing, canon filtering, Strong normalization, verse linking, and dictionary `usage` generation.
@@ -300,18 +302,20 @@ import_warnings(
 - [x] Resolve `canonical_verse_id` to localized human-readable refs only at display time.
 - [x] Do not duplicate Bible verse text inside `usage`.
 - [x] Preserve legacy technical compatibility: old app versions may display bracketed ids, but must keep opening the DB.
-- [x] Defer appending LXX/STEP extra Greek Strong keys above current `G5624` to Phase 9, because current published dictionary DBs do not contain those entries yet.
+- [x] Defer appending attested STEP extended Greek Strong keys above current `G5624` to Phase 9, because current published dictionary DBs do not contain those entries yet.
 - [x] Keep current runtime Strong navigation on the classic range `G1..G5624`, while keeping `G2717` and `G3203..G3302` unavailable.
-- [x] Add an explicit runtime gate: extended navigation remains disabled until extended `greek_words` entries and localized descriptions are populated and validated.
-- [x] Extend content-tool Greek description group ranges through `G21502`.
-- [x] Count new extended lexicon entries: 5324 sparse new `greek_words` rows above `G5624`, ranging from `G6000` to `G21502`.
-- [x] Count currently attested extended keys in the NA28_LXX source pipeline: 88 keys above `G5624`.
+- [x] Add an explicit runtime gate: extended navigation remains disabled until attested extended `greek_words` entries and localized descriptions are populated and validated.
+- [x] Replace broad content-tool Greek description ranges above `G5624` with compact ranges for attested NA28_LXX extended keys only.
+- [x] Count full available STEP extended lexicon entries: 5324 sparse potential rows above `G5624`, ranging from `G6000` to `G21502`.
+- [x] Exclude unused STEP extended lexicon entries from the project dictionary rollout.
+- [x] Count currently attested extended keys in the NA28_LXX source pipeline: 88 keys above `G5624`, with 78 primary keys used for default usage counts.
 
 ### Strong Navigation Rollout Note
 
 - Current app runtime must keep the classic published navigation range: `G1..G5624`, excluding `G2717` and `G3203..G3302`.
-- Extended STEP Strong numbers are known source data, but remain navigation-gated until the common dictionary has real rows and all localized dictionary DBs have descriptions for them.
-- The extended upper bound is `G21502`, but the extended set is sparse; do not treat `G6000..G21502` as a continuous list.
+- Full STEP Extended Strong numbers are known source data, but unused entries must remain source-only unless they become attested in `NA28_LXX` or are explicitly approved later.
+- The current app rollout adds exactly 88 attested extended keys from `NA28_LXX`; the highest attested key is `G20833`.
+- Do not treat `G6000..G20833` as a continuous list; extended navigation must allow only the attested key set.
 - Flip `StrongNumberPolicy.extendedNavigationEnabled` only after Phase 9 and Phase 10 validation proves the extended dictionary content is present.
 
 ## Phase 8 - NA28_LXX Bible Module Builder
@@ -344,39 +348,44 @@ This phase must create and populate the physical source-of-truth module before a
 
 ## Phase 9 - Extended Strong Dictionary Entries
 
-This phase adds all STEP Greek extended Strong entries to the existing common dictionary before generated usage is applied.
+This phase adds only the STEP Greek extended Strong entries actually attested in `NA28_LXX` to the existing common dictionary before generated usage is applied.
 
 - [ ] Read TBESG, TFLSJ 0-5624, and TFLSJ extra from the locked source cache.
 - [ ] Build a normalized lexicon index keyed by `G###` without leading zeroes.
+- [ ] Read the attested extended Strong key set from `bible_na28_lxx.sqlite -> token_strongs` where normalized Strong is above `G5624`.
+- [ ] Verify the attested extended key set contains 88 keys total and 78 primary keys for default usage generation.
 - [ ] Preserve existing `greek_words` rows `G1..G5624` unless an explicit owner-approved refresh is requested.
-- [ ] Insert 5324 new `greek_words` rows above `G5624`.
+- [ ] Insert only the 88 attested new `greek_words` rows above `G5624`.
+- [ ] Do not insert unused STEP extended rows such as `G21502` unless they become attested or are explicitly approved later.
 - [ ] Use `TBESG` for the base Greek word, morphology/category, gloss, and compact source payload.
-- [ ] Use `TFLSJ extra` where available for richer source definition payloads.
+- [ ] Use `TFLSJ extra` where available for richer source definition payloads for the same 88 attested keys.
 - [ ] Keep `greek_words.usage` empty for new entries until Phase 11 usage generation runs.
 - [ ] Do not create localized descriptions in this phase.
 - [ ] Back up `revelation.sqlite` before applying new rows.
 - [ ] Touch `revelation.sqlite` `db_metadata.data_version` and `date` only after a successful commit.
-- [ ] Add tests proving `G6000` and `G21502` can be inserted.
+- [ ] Add tests proving `G6000` and `G20833` can be inserted.
+- [ ] Add tests proving unused extended keys such as `G21502` are not inserted by default.
 - [ ] Add tests proving no padded Strong key is stored as a dictionary id.
 - [ ] Add tests proving existing rows are preserved.
 - [ ] Keep runtime extended navigation disabled after insertion if localized descriptions are not complete yet.
 
 ## Phase 10 - Extended Strong Localized Descriptions
 
-This phase fills all four localized dictionary DBs for the new extended Strong entries.
+This phase fills all four localized dictionary DBs for the 88 attested extended Strong entries.
 
-- [ ] Generate source description prompts/inputs for the 5324 new entries.
-- [ ] Fill `revelation_en.sqlite -> greek_descs` for every new extended Strong entry.
-- [ ] Fill `revelation_es.sqlite -> greek_descs` for every new extended Strong entry.
-- [ ] Fill `revelation_ru.sqlite -> greek_descs` for every new extended Strong entry.
-- [ ] Fill `revelation_uk.sqlite -> greek_descs` for every new extended Strong entry.
+- [ ] Generate source description prompts/inputs for the 88 attested new entries.
+- [ ] Fill `revelation_en.sqlite -> greek_descs` for every attested new extended Strong entry.
+- [ ] Fill `revelation_es.sqlite -> greek_descs` for every attested new extended Strong entry.
+- [ ] Fill `revelation_ru.sqlite -> greek_descs` for every attested new extended Strong entry.
+- [ ] Fill `revelation_uk.sqlite -> greek_descs` for every attested new extended Strong entry.
 - [ ] Keep localized wording in `greek_descs`; do not store localized text in `revelation.sqlite`.
-- [ ] Use the Phase 7 extended content-tool group ranges for translation batches.
+- [ ] Use the Phase 7 attested extended content-tool group ranges for translation batches.
 - [ ] Add validation that every new `greek_words.id` has a non-empty row in all four localized DBs.
 - [ ] Back up all affected localized DBs before applying generated translations.
 - [ ] Touch each localized DB `db_metadata.data_version` and `date` only after a successful commit.
 - [ ] Enable runtime extended Strong navigation only after all four localized DBs pass validation.
-- [ ] Update runtime tests so `G6000` and `G21502` are accepted only after the extended navigation gate is enabled.
+- [ ] Update runtime tests so `G6000` and `G20833` are accepted only after the extended navigation gate is enabled.
+- [ ] Update runtime tests so unused extended keys such as `G21502` remain rejected.
 - [ ] Add tests for missing localized descriptions in the extended range.
 
 ## Phase 11 - Strong Usage V2 Builder
@@ -747,9 +756,9 @@ Use this as the source checklist when updating `assets/data/about_libraries.xml`
 - [ ] The module contains exactly the 66 canonical books.
 - [ ] The module contains LXX OT and NA28 NT text.
 - [ ] Strong numbers are stored without leading zeroes.
-- [ ] Runtime Strong-number navigation stays classic until extended dictionary content is complete, then accepts `G1..G21502` and skips unavailable/missing entries through the picker data.
-- [ ] The common Strong dictionary includes the 5324 new extended entries above `G5624`.
-- [ ] All four localized dictionary DBs include translations for the new extended entries.
+- [ ] Runtime Strong-number navigation stays classic until extended dictionary content is complete, then accepts classic entries plus the 88 attested extended entries and skips unavailable/missing entries through the picker data.
+- [ ] The common Strong dictionary includes the 88 attested new extended entries above `G5624`.
+- [ ] All four localized dictionary DBs include translations for the 88 attested new extended entries.
 - [ ] The updated Strong dictionary `usage` contains every attested form from `NA28_LXX`.
 - [ ] Every `usage` v2 occurrence reference links to a stable `canonical_verse_id`.
 - [ ] The same `canonical_verse_id` can open the matching verse in other Bible modules.

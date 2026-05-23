@@ -41,7 +41,7 @@ void main() {
           StrongPickerEntry(number: 1, word: 'word-1'),
           StrongPickerEntry(number: 5624, word: 'word-5624'),
           StrongPickerEntry(number: 6000, word: 'word-6000'),
-          StrongPickerEntry(number: 21502, word: 'word-21502'),
+          StrongPickerEntry(number: 20833, word: 'word-20833'),
         ],
         initialStrongNumber: 6000,
       );
@@ -51,7 +51,7 @@ void main() {
       expect(cubit.state.selectedStrongNumber, 5624);
       expect(cubit.state.selectedEntry?.word, 'word-5624');
 
-      cubit.updateInputText('21502');
+      cubit.updateInputText('20833');
 
       expect(cubit.state.inputText, '5624');
       expect(cubit.state.selectedStrongNumber, 5624);
