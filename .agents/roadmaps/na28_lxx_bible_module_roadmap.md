@@ -360,7 +360,7 @@ This phase adds only the STEP Greek extended Strong entries actually attested in
 - [x] Use `TBESG` for the base Greek word, morphology/category, gloss, and compact source payload.
   - Note: the existing `greek_words` schema stores only word/category/synonyms/origin/usage; gloss and source definitions remain available in the builder model for Phase 10 description work.
 - [x] Use `TFLSJ extra` where available for richer source definition payloads for the same 88 attested keys.
-- [x] Keep `greek_words.usage` empty for new entries until Phase 11 usage generation runs.
+- [x] Keep `greek_words.usage` empty for new entries until Phase 12 usage generation runs.
 - [x] Do not create localized descriptions in this phase.
 - [x] Back up `revelation.sqlite` before applying new rows.
 - [x] Touch `revelation.sqlite` `db_metadata.data_version` and `date` only after a successful commit.
@@ -389,13 +389,33 @@ This phase fills all four localized dictionary DBs for the 88 attested extended 
 - [x] Update runtime tests so unused extended keys such as `G21502` remain rejected.
 - [x] Add tests for missing localized descriptions in the extended range.
 
-## Phase 11 - Strong Usage V2 Builder
+## Phase 11 - Bible Module Size Audit And Runtime Optimization
 
-This phase reads the completed `bible_na28_lxx.sqlite` and writes compact usage lines into `revelation.sqlite -> greek_words.usage`.
+The Phase 8 `bible_na28_lxx.sqlite` is currently a full working/source-of-truth build and is too large for the runtime artifact. This phase now runs before Strong usage generation, so optimization must preserve or separately save every source field needed by Phase 12.
 
-- [ ] Read only `NA28_LXX` tokens from `bible_na28_lxx.sqlite`.
+- [ ] Produce a size report by table, index, and large text/payload columns.
+- [ ] Review every Bible module table and column with the owner before removing or compacting it.
+- [ ] For each column, record one decision: keep in runtime DB, drop from runtime DB, derive at build time, keep only in full working DB, or move to a sidecar/report.
+- [ ] Decide whether the project keeps two artifacts: a full working/source DB and a compact runtime/published DB.
+- [ ] Before destructive pruning, create and verify a full working/source backup or sidecar that can still feed Phase 12 usage generation.
+- [ ] Define the minimum runtime contract needed by the app: open verse by stable `canonical_verse_id`, show readable refs, support parallel reading, and support Strong usage links.
+- [ ] Define which token-level data remains needed before and after `greek_words.usage` has been generated.
+- [ ] Remove or omit owner-approved redundant payloads from the runtime artifact only after the column review.
+- [ ] Preserve required source/license/acknowledgement metadata somewhere even if verbose source columns are removed from the runtime DB.
+- [ ] Review indexes and remove working-only indexes from the runtime artifact.
+- [ ] Run `VACUUM`/`ANALYZE` or equivalent SQLite compaction after pruning.
+- [ ] Add a size budget for the runtime/published module after the column review.
+- [ ] Add tests proving the optimized DB still supports required app queries.
+- [ ] Add tests proving Phase 12 can still resolve usage references through stable `canonical_verse_id` / `canonical_ref`.
+- [ ] Ensure publish/manifest flow ships the optimized artifact, not the full working DB, unless explicitly approved.
+
+## Phase 12 - Strong Usage V2 Builder
+
+This phase reads the retained `NA28_LXX` source artifact from Phase 11 and writes compact usage lines into `revelation.sqlite -> greek_words.usage`.
+
+- [ ] Read only `NA28_LXX` tokens from the retained `bible_na28_lxx.sqlite` source artifact or an owner-approved equivalent sidecar.
 - [ ] Do not build usage directly from parser memory except in isolated tests.
-- [ ] Join `tokens`, `token_strongs`, `module_verses`, `module_verse_links`, and `canonical_verses`.
+- [ ] Join `tokens`, `token_strongs`, `module_verses`, `module_verse_links`, and `canonical_verses`, or their Phase 11 retained equivalents.
 - [ ] Use only `token_strongs.is_primary = 1` for default usage counts.
 - [ ] Decide whether alternate Strong tags create separate secondary usage lines or are excluded for now.
 - [ ] Normalize token surface forms consistently with existing TAGNT/LXX normalization helpers.
@@ -414,26 +434,6 @@ This phase reads the completed `bible_na28_lxx.sqlite` and writes compact usage 
 - [ ] Add tests for words occurring multiple times in one verse.
 - [ ] Add tests for words with several surface forms.
 - [ ] Add a test that old-style usage parsing still fails gracefully or falls back safely.
-
-## Phase 12 - Bible Module Size Audit And Runtime Optimization
-
-The Phase 8 `bible_na28_lxx.sqlite` is intentionally a full working/source-of-truth build and may stay large until Strong usage generation is complete. This phase defines the compact runtime/published artifact after owner review.
-
-- [ ] Keep the full working `bible_na28_lxx.sqlite` available until Phase 11 usage generation and validation are complete.
-- [ ] Produce a size report by table, index, and large text/payload columns.
-- [ ] Review every Bible module table and column with the owner before removing or compacting it.
-- [ ] For each column, record one decision: keep in runtime DB, drop from runtime DB, derive at build time, keep only in full working DB, or move to a sidecar/report.
-- [ ] Decide whether the project keeps two artifacts: a full working/source DB and a compact runtime/published DB.
-- [ ] Define the minimum runtime contract needed by the app: open verse by stable `canonical_verse_id`, show readable refs, support parallel reading, and support Strong usage links.
-- [ ] Define which token-level data remains needed after `greek_words.usage` has been generated.
-- [ ] Remove or omit owner-approved redundant payloads from the runtime artifact only after the column review.
-- [ ] Preserve required source/license/acknowledgement metadata somewhere even if verbose source columns are removed from the runtime DB.
-- [ ] Review indexes and remove working-only indexes from the runtime artifact.
-- [ ] Run `VACUUM`/`ANALYZE` or equivalent SQLite compaction after pruning.
-- [ ] Add a size budget for the runtime/published module after the column review.
-- [ ] Add tests proving the optimized DB still supports required app queries.
-- [ ] Add tests proving `usage` references still resolve through stable `canonical_verse_id` / `canonical_ref`.
-- [ ] Ensure publish/manifest flow ships the optimized artifact, not the full working DB, unless explicitly approved.
 
 ## Phase 13 - Strong Usage V2 App UI
 
