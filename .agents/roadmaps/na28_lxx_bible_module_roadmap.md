@@ -276,14 +276,14 @@ import_warnings(
 
 ## Phase 6 - Lexicon And Morphology Support
 
-- [ ] Import `TBESG` into a source lexicon staging table or dictionary build input.
-- [ ] Import `TFLSJ 0-5624`.
-- [ ] Import `TFLSJ extra`.
-- [ ] Import `TEGMC`.
-- [ ] Normalize every Greek Strong number to the same no-leading-zero format.
-- [ ] Verify all NT Strong keys from TAGNT resolve to lexicon entries or produce warnings.
-- [ ] Verify all LXX Strong keys resolve to lexicon entries or produce warnings.
-- [ ] Keep source definitions and morphology explanations separate from Bible module text if they belong to the dictionary DB.
+- [x] Import `TBESG` into a source lexicon staging table or dictionary build input.
+- [x] Import `TFLSJ 0-5624`.
+- [x] Import `TFLSJ extra`.
+- [x] Import `TEGMC`.
+- [x] Normalize every Greek Strong number to the same no-leading-zero format.
+- [x] Verify all NT Strong keys from TAGNT resolve to lexicon entries or produce warnings.
+- [x] Verify all LXX Strong keys resolve to lexicon entries or produce warnings.
+- [x] Keep source definitions and morphology explanations separate from Bible module text if they belong to the dictionary DB.
 
 ## Phase 7 - Strong Dictionary Target Model
 
