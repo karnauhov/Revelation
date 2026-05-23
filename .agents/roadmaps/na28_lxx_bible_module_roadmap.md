@@ -350,24 +350,25 @@ This phase must create and populate the physical source-of-truth module before a
 
 This phase adds only the STEP Greek extended Strong entries actually attested in `NA28_LXX` to the existing common dictionary before generated usage is applied.
 
-- [ ] Read TBESG, TFLSJ 0-5624, and TFLSJ extra from the locked source cache.
-- [ ] Build a normalized lexicon index keyed by `G###` without leading zeroes.
-- [ ] Read the attested extended Strong key set from `bible_na28_lxx.sqlite -> token_strongs` where normalized Strong is above `G5624`.
-- [ ] Verify the attested extended key set contains 88 keys total and 78 primary keys for default usage generation.
-- [ ] Preserve existing `greek_words` rows `G1..G5624` unless an explicit owner-approved refresh is requested.
-- [ ] Insert only the 88 attested new `greek_words` rows above `G5624`.
-- [ ] Do not insert unused STEP extended rows such as `G21502` unless they become attested or are explicitly approved later.
-- [ ] Use `TBESG` for the base Greek word, morphology/category, gloss, and compact source payload.
-- [ ] Use `TFLSJ extra` where available for richer source definition payloads for the same 88 attested keys.
-- [ ] Keep `greek_words.usage` empty for new entries until Phase 11 usage generation runs.
-- [ ] Do not create localized descriptions in this phase.
-- [ ] Back up `revelation.sqlite` before applying new rows.
-- [ ] Touch `revelation.sqlite` `db_metadata.data_version` and `date` only after a successful commit.
-- [ ] Add tests proving `G6000` and `G20833` can be inserted.
-- [ ] Add tests proving unused extended keys such as `G21502` are not inserted by default.
-- [ ] Add tests proving no padded Strong key is stored as a dictionary id.
-- [ ] Add tests proving existing rows are preserved.
-- [ ] Keep runtime extended navigation disabled after insertion if localized descriptions are not complete yet.
+- [x] Read TBESG, TFLSJ 0-5624, and TFLSJ extra from the locked source cache.
+- [x] Build a normalized lexicon index keyed by `G###` without leading zeroes.
+- [x] Read the attested extended Strong key set from `bible_na28_lxx.sqlite -> token_strongs` where normalized Strong is above `G5624`.
+- [x] Verify the attested extended key set contains 88 keys total and 78 primary keys for default usage generation.
+- [x] Preserve existing `greek_words` rows `G1..G5624` unless an explicit owner-approved refresh is requested.
+- [x] Insert only the 88 attested new `greek_words` rows above `G5624`.
+- [x] Do not insert unused STEP extended rows such as `G21502` unless they become attested or are explicitly approved later.
+- [x] Use `TBESG` for the base Greek word, morphology/category, gloss, and compact source payload.
+  - Note: the existing `greek_words` schema stores only word/category/synonyms/origin/usage; gloss and source definitions remain available in the builder model for Phase 10 description work.
+- [x] Use `TFLSJ extra` where available for richer source definition payloads for the same 88 attested keys.
+- [x] Keep `greek_words.usage` empty for new entries until Phase 11 usage generation runs.
+- [x] Do not create localized descriptions in this phase.
+- [x] Back up `revelation.sqlite` before applying new rows.
+- [x] Touch `revelation.sqlite` `db_metadata.data_version` and `date` only after a successful commit.
+- [x] Add tests proving `G6000` and `G20833` can be inserted.
+- [x] Add tests proving unused extended keys such as `G21502` are not inserted by default.
+- [x] Add tests proving no padded Strong key is stored as a dictionary id.
+- [x] Add tests proving existing rows are preserved.
+- [x] Keep runtime extended navigation disabled after insertion if localized descriptions are not complete yet.
 
 ## Phase 10 - Extended Strong Localized Descriptions
 
