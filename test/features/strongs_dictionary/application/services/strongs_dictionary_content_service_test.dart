@@ -194,12 +194,40 @@ void main() {
   test('delegates Strong number policy behavior', () {
     final service = StrongsDictionaryContentService(
       repository: StrongsDictionaryRepository(
-        databaseGateway: const _FakeLexiconDatabaseGateway(),
+        databaseGateway: const _FakeLexiconDatabaseGateway(
+          greekWords: <common_db.GreekWord>[
+            common_db.GreekWord(
+              id: 1,
+              word: 'Alpha',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+            common_db.GreekWord(
+              id: 5624,
+              word: 'Omega',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+            common_db.GreekWord(
+              id: 6000,
+              word: 'Extra',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+          ],
+        ),
       ),
     );
 
     expect(service.isAllowedStrongNumber(1), isTrue);
     expect(service.isAllowedStrongNumber(2717), isFalse);
+    expect(service.isAllowedStrongNumber(6000), isFalse);
     expect(service.getNeighborStrongNumber(5624, forward: true), 1);
   });
 }

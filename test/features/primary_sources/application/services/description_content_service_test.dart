@@ -657,11 +657,74 @@ void main() {
     expect(service.doesStrongNumberExist(3303), isTrue);
     expect(service.doesStrongNumberExist(5624), isTrue);
     expect(service.doesStrongNumberExist(5625), isFalse);
+    expect(service.doesStrongNumberExist(6000), isFalse);
+    expect(service.doesStrongNumberExist(21502), isFalse);
+    expect(service.doesStrongNumberExist(21503), isFalse);
   });
 
   test('getNeighborStrongNumber skips blocked values and wraps around', () {
     final service = DescriptionContentService(
-      dataSource: _FakeDescriptionDataSource(isInitialized: true),
+      dataSource: _FakeDescriptionDataSource(
+        isInitialized: true,
+        greekWords: const [
+          common_db.GreekWord(
+            id: 1,
+            word: 'Alpha',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 2718,
+            word: 'Allowed after blocked',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 3202,
+            word: 'Before blocked range',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 3303,
+            word: 'Allowed after range',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 5624,
+            word: 'Old max',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 6000,
+            word: 'Extended',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 21502,
+            word: 'Extended max',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+        ],
+      ),
     );
 
     expect(service.getNeighborStrongNumber(2716, forward: true), 2718);

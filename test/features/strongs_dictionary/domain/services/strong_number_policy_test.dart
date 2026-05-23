@@ -4,6 +4,16 @@ import 'package:revelation/features/strongs_dictionary/domain/services/strong_nu
 void main() {
   const policy = StrongNumberPolicy();
 
+  test(
+    'keeps extended navigation gated until extended dictionary is ready',
+    () {
+      expect(StrongNumberPolicy.classicMaxNumber, 5624);
+      expect(StrongNumberPolicy.extendedMaxNumber, 21502);
+      expect(StrongNumberPolicy.extendedNavigationEnabled, isFalse);
+      expect(StrongNumberPolicy.maxNumber, StrongNumberPolicy.classicMaxNumber);
+    },
+  );
+
   test('isAllowed validates boundaries and forbidden values', () {
     expect(policy.isAllowed(0), isFalse);
     expect(policy.isAllowed(1), isTrue);
@@ -13,6 +23,9 @@ void main() {
     expect(policy.isAllowed(3303), isTrue);
     expect(policy.isAllowed(5624), isTrue);
     expect(policy.isAllowed(5625), isFalse);
+    expect(policy.isAllowed(6000), isFalse);
+    expect(policy.isAllowed(21502), isFalse);
+    expect(policy.isAllowed(21503), isFalse);
   });
 
   test('normalizeToAllowed clamps values and skips forbidden values', () {
@@ -20,7 +33,9 @@ void main() {
     expect(policy.normalizeToAllowed(2717), 2718);
     expect(policy.normalizeToAllowed(3203), 3303);
     expect(policy.normalizeToAllowed(3302), 3303);
+    expect(policy.normalizeToAllowed(5625), 5624);
     expect(policy.normalizeToAllowed(6000), 5624);
+    expect(policy.normalizeToAllowed(30000), 5624);
   });
 
   test('neighbor skips forbidden values and wraps around', () {
@@ -29,6 +44,14 @@ void main() {
     expect(policy.neighbor(3303, forward: false), 3202);
     expect(policy.neighbor(5624, forward: true), 1);
     expect(policy.neighbor(1, forward: false), 5624);
+  });
+
+  test('neighborAvailable moves through real dictionary entries', () {
+    const available = <int>[1, 2718, 3303, 5624, 6000, 21502];
+
+    expect(policy.neighborAvailable(2716, available, forward: true), 2718);
+    expect(policy.neighborAvailable(5624, available, forward: true), 1);
+    expect(policy.neighborAvailable(1, available, forward: false), 5624);
   });
 
   test('closestAvailableNumber prefers nearest valid picker number', () {

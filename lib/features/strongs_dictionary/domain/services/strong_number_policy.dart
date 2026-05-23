@@ -2,7 +2,16 @@ class StrongNumberPolicy {
   const StrongNumberPolicy();
 
   static const int minNumber = 1;
-  static const int maxNumber = 5624;
+  static const int classicMaxNumber = 5624;
+  static const int extendedMaxNumber = 21502;
+
+  /// Keep runtime navigation on the published classic dictionary range until
+  /// extended `greek_words` entries and localized descriptions are populated.
+  static const bool extendedNavigationEnabled = false;
+
+  static const int maxNumber = extendedNavigationEnabled
+      ? extendedMaxNumber
+      : classicMaxNumber;
   static const int blockedSingleNumber = 2717;
   static const int blockedRangeStart = 3203;
   static const int blockedRangeEnd = 3302;
@@ -69,5 +78,35 @@ class StrongNumberPolicy {
     } while (isForbidden(candidate));
 
     return candidate;
+  }
+
+  int neighborAvailable(
+    int current,
+    Iterable<int> availableNumbers, {
+    required bool forward,
+  }) {
+    final numbers =
+        availableNumbers.where(isAllowed).toSet().toList(growable: false)
+          ..sort();
+    if (numbers.isEmpty) {
+      return neighbor(current, forward: forward);
+    }
+
+    final normalized = normalizeToAllowed(current);
+    if (forward) {
+      for (final number in numbers) {
+        if (number > normalized) {
+          return number;
+        }
+      }
+      return numbers.first;
+    }
+
+    for (final number in numbers.reversed) {
+      if (number < normalized) {
+        return number;
+      }
+    }
+    return numbers.last;
   }
 }

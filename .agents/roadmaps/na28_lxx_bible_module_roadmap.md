@@ -287,20 +287,32 @@ import_warnings(
 
 ## Phase 7 - Strong Dictionary Usage V2 Target Model
 
-- [ ] Keep the existing dictionary storage model: common `revelation.sqlite -> greek_words` plus localized `revelation_<lang>.sqlite -> greek_descs`.
-- [ ] Do not add `strong_forms` or `strong_form_occurrences` tables for the current implementation.
-- [ ] Keep localized dictionary descriptions separate from non-localized generated usage data.
-- [ ] Use normalized Strong as the stable key during generation: `G0746 -> G746`.
-- [ ] Store generated usage in `greek_words.usage`, keyed by the numeric `greek_words.id` part of `G###`.
-- [ ] Define `usage` v2 line grammar:
-  - [ ] `<surface_form>: [<canonical_verse_id>[x<count>];...], <occurrence_count>`
-  - [ ] `x<count>` is omitted when the form occurs once in that verse.
-  - [ ] `<occurrence_count>` counts token occurrences, not only unique verses.
-- [ ] Store only compact `canonical_verse_id` references inside square brackets.
-- [ ] Resolve `canonical_verse_id` to localized human-readable refs only at display time.
-- [ ] Do not duplicate Bible verse text inside `usage`.
-- [ ] Preserve legacy technical compatibility: old app versions may display bracketed ids, but must keep opening the DB.
-- [ ] Decide whether LXX extra Strong keys above current `G5624` are appended to `greek_words` now or deferred until Strong navigation policy is expanded.
+- [x] Keep the existing dictionary storage model: common `revelation.sqlite -> greek_words` plus localized `revelation_<lang>.sqlite -> greek_descs`.
+- [x] Do not add `strong_forms` or `strong_form_occurrences` tables for the current implementation.
+- [x] Keep localized dictionary descriptions separate from non-localized generated usage data.
+- [x] Use normalized Strong as the stable key during generation: `G0746 -> G746`.
+- [x] Store generated usage in `greek_words.usage`, keyed by the numeric `greek_words.id` part of `G###`.
+- [x] Define `usage` v2 line grammar:
+  - [x] `<surface_form>: [<canonical_verse_id>[x<count>];...], <occurrence_count>`
+  - [x] `x<count>` is omitted when the form occurs once in that verse.
+  - [x] `<occurrence_count>` counts token occurrences, not only unique verses.
+- [x] Store only compact `canonical_verse_id` references inside square brackets.
+- [x] Resolve `canonical_verse_id` to localized human-readable refs only at display time.
+- [x] Do not duplicate Bible verse text inside `usage`.
+- [x] Preserve legacy technical compatibility: old app versions may display bracketed ids, but must keep opening the DB.
+- [x] Defer appending LXX/STEP extra Greek Strong keys above current `G5624` to Phase 9, because current published dictionary DBs do not contain those entries yet.
+- [x] Keep current runtime Strong navigation on the classic range `G1..G5624`, while keeping `G2717` and `G3203..G3302` unavailable.
+- [x] Add an explicit runtime gate: extended navigation remains disabled until extended `greek_words` entries and localized descriptions are populated and validated.
+- [x] Extend content-tool Greek description group ranges through `G21502`.
+- [x] Count new extended lexicon entries: 5324 sparse new `greek_words` rows above `G5624`, ranging from `G6000` to `G21502`.
+- [x] Count currently attested extended keys in the NA28_LXX source pipeline: 88 keys above `G5624`.
+
+### Strong Navigation Rollout Note
+
+- Current app runtime must keep the classic published navigation range: `G1..G5624`, excluding `G2717` and `G3203..G3302`.
+- Extended STEP Strong numbers are known source data, but remain navigation-gated until the common dictionary has real rows and all localized dictionary DBs have descriptions for them.
+- The extended upper bound is `G21502`, but the extended set is sparse; do not treat `G6000..G21502` as a continuous list.
+- Flip `StrongNumberPolicy.extendedNavigationEnabled` only after Phase 9 and Phase 10 validation proves the extended dictionary content is present.
 
 ## Phase 8 - NA28_LXX Bible Module Builder
 
@@ -330,7 +342,44 @@ This phase must create and populate the physical source-of-truth module before a
 - [ ] Add tests for build-script fixtures that create a small physical Bible module DB.
 - [ ] Add spot checks for `G746` in `Gen.1.1` and `G976` in `Mat.1.1`.
 
-## Phase 9 - Strong Usage V2 Builder
+## Phase 9 - Extended Strong Dictionary Entries
+
+This phase adds all STEP Greek extended Strong entries to the existing common dictionary before generated usage is applied.
+
+- [ ] Read TBESG, TFLSJ 0-5624, and TFLSJ extra from the locked source cache.
+- [ ] Build a normalized lexicon index keyed by `G###` without leading zeroes.
+- [ ] Preserve existing `greek_words` rows `G1..G5624` unless an explicit owner-approved refresh is requested.
+- [ ] Insert 5324 new `greek_words` rows above `G5624`.
+- [ ] Use `TBESG` for the base Greek word, morphology/category, gloss, and compact source payload.
+- [ ] Use `TFLSJ extra` where available for richer source definition payloads.
+- [ ] Keep `greek_words.usage` empty for new entries until Phase 11 usage generation runs.
+- [ ] Do not create localized descriptions in this phase.
+- [ ] Back up `revelation.sqlite` before applying new rows.
+- [ ] Touch `revelation.sqlite` `db_metadata.data_version` and `date` only after a successful commit.
+- [ ] Add tests proving `G6000` and `G21502` can be inserted.
+- [ ] Add tests proving no padded Strong key is stored as a dictionary id.
+- [ ] Add tests proving existing rows are preserved.
+- [ ] Keep runtime extended navigation disabled after insertion if localized descriptions are not complete yet.
+
+## Phase 10 - Extended Strong Localized Descriptions
+
+This phase fills all four localized dictionary DBs for the new extended Strong entries.
+
+- [ ] Generate source description prompts/inputs for the 5324 new entries.
+- [ ] Fill `revelation_en.sqlite -> greek_descs` for every new extended Strong entry.
+- [ ] Fill `revelation_es.sqlite -> greek_descs` for every new extended Strong entry.
+- [ ] Fill `revelation_ru.sqlite -> greek_descs` for every new extended Strong entry.
+- [ ] Fill `revelation_uk.sqlite -> greek_descs` for every new extended Strong entry.
+- [ ] Keep localized wording in `greek_descs`; do not store localized text in `revelation.sqlite`.
+- [ ] Use the Phase 7 extended content-tool group ranges for translation batches.
+- [ ] Add validation that every new `greek_words.id` has a non-empty row in all four localized DBs.
+- [ ] Back up all affected localized DBs before applying generated translations.
+- [ ] Touch each localized DB `db_metadata.data_version` and `date` only after a successful commit.
+- [ ] Enable runtime extended Strong navigation only after all four localized DBs pass validation.
+- [ ] Update runtime tests so `G6000` and `G21502` are accepted only after the extended navigation gate is enabled.
+- [ ] Add tests for missing localized descriptions in the extended range.
+
+## Phase 11 - Strong Usage V2 Builder
 
 This phase reads the completed `bible_na28_lxx.sqlite` and writes compact usage lines into `revelation.sqlite -> greek_words.usage`.
 
@@ -356,7 +405,7 @@ This phase reads the completed `bible_na28_lxx.sqlite` and writes compact usage 
 - [ ] Add tests for words with several surface forms.
 - [ ] Add a test that old-style usage parsing still fails gracefully or falls back safely.
 
-## Phase 10 - Strong Usage V2 App UI
+## Phase 12 - Strong Usage V2 App UI
 
 - [ ] Add a parser for `usage` v2 lines in the Strong dictionary domain layer.
 - [ ] Keep support for legacy `usage` text while current published DBs still use it.
@@ -372,7 +421,7 @@ This phase reads the completed `bible_na28_lxx.sqlite` and writes compact usage 
 - [ ] Add unit tests for the `usage` v2 parser.
 - [ ] Add widget tests for hidden bracket payloads and clickable usage counts.
 
-## Phase 11 - Bible Module Database Integration
+## Phase 13 - Bible Module Database Integration
 
 - [ ] Decide whether `bible_na28_lxx.sqlite` is managed by the current common/localized DB sync flow or a new Bible module sync flow.
 - [ ] If managed by the current sync flow, update manifest generation.
@@ -384,7 +433,7 @@ This phase reads the completed `bible_na28_lxx.sqlite` and writes compact usage 
 - [ ] Ensure missing Bible module DB fails gracefully.
 - [ ] Ensure `greek_words.usage` can still display counts when the Bible module DB is missing.
 
-## Phase 12 - Content Tool Bible Tab Architecture
+## Phase 14 - Content Tool Bible Tab Architecture
 
 Current `scripts/content_tool` findings to preserve:
 
@@ -417,7 +466,7 @@ Planned implementation:
 - [ ] Ensure opening the content tool does not mutate `bible_*.sqlite` timestamps.
 - [ ] Ensure switching Bible modules prompts about unsaved Bible edits without forcing a localized article save.
 
-## Phase 13 - Content Tool Bible Module UI And Editing
+## Phase 15 - Content Tool Bible Module UI And Editing
 
 Goal: the `Библии` tab must be the main desktop UI for creating and maintaining `bible_na28_lxx.sqlite`, and later any `bible_*.sqlite` module.
 
@@ -502,7 +551,7 @@ Goal: the `Библии` tab must be the main desktop UI for creating and mainta
 - [ ] Add read-only safety mode for generated-source fields, with an explicit "unlock manual edit" confirmation.
 - [ ] Add status bar messages and message-log entries for Bible actions.
 
-## Phase 14 - Content Tool Bible Publish And Manifest Flow
+## Phase 16 - Content Tool Bible Publish And Manifest Flow
 
 Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 
@@ -533,7 +582,7 @@ Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 - [ ] Add tests that localized test-article warnings do not inspect Bible DB files.
 - [ ] Add tests that `db_metadata` touch and manifest refresh work for `bible_*.sqlite`.
 
-## Phase 15 - Bible App Code And Parallel Reading Contract
+## Phase 17 - Bible App Code And Parallel Reading Contract
 
 - [ ] Add `lib/infra/db/bible/` Drift database definitions.
 - [ ] Generate Drift code with `dart run build_runner build --delete-conflicting-outputs`.
@@ -559,7 +608,7 @@ Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 - [ ] Use BLoC/Cubit when presentation work begins.
 - [ ] Do not pass `BuildContext` into services or blocs.
 
-## Phase 16 - Tests And Quality Gates
+## Phase 18 - Tests And Quality Gates
 
 - [ ] Add parser unit tests.
 - [ ] Add source-cache manifest tests.
@@ -583,7 +632,7 @@ Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 - [ ] Run `rg "package:provider|ChangeNotifier|notifyListeners" lib test` if presentation/state code is touched.
 - [ ] Run `rg "BuildContext" lib/features --glob "**/application/**/*.dart" --glob "**/presentation/bloc/**/*.dart"` if state/presentation code is touched.
 
-## Phase 17 - Content Validation
+## Phase 19 - Content Validation
 
 - [ ] Count imported books: exactly 66.
 - [ ] Count OT books: exactly 39.
@@ -598,7 +647,7 @@ Current publish/release flow must be generalized beyond `revelation*.sqlite`.
 - [ ] Verify every `usage` v2 bracket id can open the same verse in a mock translation module.
 - [ ] Produce an import report with counts and warning summaries.
 
-## Phase 18 - Acknowledgements
+## Phase 20 - Acknowledgements
 
 - [ ] Add adopted third-party Bible data sources to `assets/data/about_libraries.xml`.
 - [ ] Keep acknowledgements limited to sources actually redistributed or used as bundled/generated app data.
@@ -663,7 +712,7 @@ Use this as the source checklist when updating `assets/data/about_libraries.xml`
 </library>
 ```
 
-## Phase 19 - Documentation And Cleanup
+## Phase 21 - Documentation And Cleanup
 
 - [ ] Decide whether the Bible module architecture needs permanent RU/EN architecture docs.
 - [ ] If permanent architecture docs are added, update RU/EN twin documents together.
@@ -678,6 +727,9 @@ Use this as the source checklist when updating `assets/data/about_libraries.xml`
 - [ ] The module contains exactly the 66 canonical books.
 - [ ] The module contains LXX OT and NA28 NT text.
 - [ ] Strong numbers are stored without leading zeroes.
+- [ ] Runtime Strong-number navigation stays classic until extended dictionary content is complete, then accepts `G1..G21502` and skips unavailable/missing entries through the picker data.
+- [ ] The common Strong dictionary includes the 5324 new extended entries above `G5624`.
+- [ ] All four localized dictionary DBs include translations for the new extended entries.
 - [ ] The updated Strong dictionary `usage` contains every attested form from `NA28_LXX`.
 - [ ] Every `usage` v2 occurrence reference links to a stable `canonical_verse_id`.
 - [ ] The same `canonical_verse_id` can open the matching verse in other Bible modules.

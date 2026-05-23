@@ -68,6 +68,43 @@ void main() {
     expect(await resultFuture, 3303);
   });
 
+  testWidgets('keeps extended Strong numbers gated until dictionary rollout', (
+    tester,
+  ) async {
+    final context = await pumpLocalizedContext(tester);
+    final l10n = AppLocalizations.of(context)!;
+
+    final resultFuture = showDialog<int>(
+      context: context,
+      builder: (_) => const StrongNumberPickerDialog(
+        entries: <StrongPickerEntry>[
+          StrongPickerEntry(number: 1, word: 'classic-1'),
+          StrongPickerEntry(number: 5624, word: 'classic-5624'),
+          StrongPickerEntry(number: 6000, word: 'extra-6000'),
+          StrongPickerEntry(number: 21502, word: 'extra-21502'),
+        ],
+        initialStrongNumber: 6000,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final fieldFinder = find.byType(TextField);
+    final field = tester.widget<TextField>(fieldFinder);
+    expect(field.decoration?.hintText, '1 - 5624');
+    expect(find.text('5624'), findsOneWidget);
+    expect(find.text('classic-5624'), findsOneWidget);
+
+    await tester.enterText(fieldFinder, '6000');
+    await tester.pumpAndSettle();
+
+    expect(find.text('classic-5624'), findsOneWidget);
+
+    await tester.tap(find.text(l10n.ok));
+    await tester.pumpAndSettle();
+
+    expect(await resultFuture, 5624);
+  });
+
   testWidgets('cancel and submit actions complete dialog result contract', (
     tester,
   ) async {
