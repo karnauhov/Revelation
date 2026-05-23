@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/infra/db/connectors/database_version_file_loader.dart';
+import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/connectors/local_database_sync_result.dart';
 import 'package:revelation/infra/db/connectors/web_db_manifest.dart';
+import 'package:revelation/infra/remote/supabase/server_manager.dart';
 import 'package:revelation/infra/storage/file_sync_utils.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -81,8 +85,20 @@ Future<LocalDatabaseFileSyncResult> _verifyAndUpdateLocalDatabaseFile(
       manifestEntry,
     );
     final localIsHealthy = localExists && isLocalDatabaseFileHealthy(localFile);
+    final localVersionIsNewerThanManifest =
+        localIsHealthy &&
+        _isLocalDatabaseVersionNewerThanManifest(localFile, manifestEntry);
 
-    if (!force && localExists && localSizeMatchesManifest && localIsHealthy) {
+    if (!force &&
+        localExists &&
+        localIsHealthy &&
+        (localSizeMatchesManifest || localVersionIsNewerThanManifest)) {
+      if (localVersionIsNewerThanManifest && !localSizeMatchesManifest) {
+        log.warning(
+          'Local database $dbFile is newer than the manifest entry; '
+          'keeping the local file.',
+        );
+      }
       return LocalDatabaseFileSyncResult(
         fileName: dbFile,
         existedBeforeSync: localExists,
@@ -231,13 +247,10 @@ Future<Map<String, WebDbManifestEntry>> _loadLocalManifestEntries({
   bool refreshFromServer = false,
 }) async {
   final manifestFile = await _getLocalDatabaseFile(_databaseManifestFile);
-  if (refreshFromServer || !isLocalDatabaseManifestHealthy(manifestFile)) {
-    await updateLocalFile(
-      _databaseFolder,
-      _databaseManifestFile,
-      downloadedFileValidator: isLocalDatabaseManifestHealthy,
-      refreshDbManifest: false,
-    );
+  if (refreshFromServer) {
+    await _refreshLocalManifestFromServer(manifestFile);
+  } else if (!isLocalDatabaseManifestHealthy(manifestFile)) {
+    await _downloadLocalManifestFile();
   }
 
   if (!manifestFile.existsSync()) {
@@ -251,9 +264,184 @@ Future<Map<String, WebDbManifestEntry>> _loadLocalManifestEntries({
   }
 }
 
+Future<void> _refreshLocalManifestFromServer(File manifestFile) async {
+  final localEntries = _readManifestEntriesOrEmpty(manifestFile);
+  final remoteEntries = await _downloadManifestEntriesFromServer();
+  if (remoteEntries == null) {
+    if (localEntries.isEmpty && !isLocalDatabaseManifestHealthy(manifestFile)) {
+      await _downloadLocalManifestFile();
+    }
+    return;
+  }
+
+  final mergedEntries = _mergeManifestEntries(
+    localEntries: localEntries,
+    remoteEntries: remoteEntries,
+  );
+  if (mergedEntries.isEmpty) {
+    return;
+  }
+
+  if (!manifestFile.existsSync() ||
+      !_manifestEntriesEqual(localEntries, mergedEntries)) {
+    await _writeManifestEntries(manifestFile, mergedEntries);
+  }
+}
+
+Future<void> _downloadLocalManifestFile() async {
+  await updateLocalFile(
+    _databaseFolder,
+    _databaseManifestFile,
+    downloadedFileValidator: isLocalDatabaseManifestHealthy,
+    refreshDbManifest: false,
+  );
+}
+
+Future<Map<String, WebDbManifestEntry>?>
+_downloadManifestEntriesFromServer() async {
+  try {
+    final bytes = await ServerManager().downloadDB(
+      _databaseFolder,
+      _databaseManifestFile,
+    );
+    if (bytes == null || bytes.isEmpty) {
+      return null;
+    }
+    final entries = parseWebDbManifestEntries(utf8.decode(bytes));
+    return entries.isEmpty ? null : entries;
+  } catch (error) {
+    log.warning('Remote database manifest refresh failed: $error');
+    return null;
+  }
+}
+
+Map<String, WebDbManifestEntry> _readManifestEntriesOrEmpty(File manifestFile) {
+  if (!manifestFile.existsSync()) {
+    return const {};
+  }
+  try {
+    return parseWebDbManifestEntries(manifestFile.readAsStringSync());
+  } catch (_) {
+    return const {};
+  }
+}
+
+Map<String, WebDbManifestEntry> _mergeManifestEntries({
+  required Map<String, WebDbManifestEntry> localEntries,
+  required Map<String, WebDbManifestEntry> remoteEntries,
+}) {
+  final merged = <String, WebDbManifestEntry>{};
+  final names = <String>{...localEntries.keys, ...remoteEntries.keys}.toList()
+    ..sort();
+  for (final name in names) {
+    final localEntry = localEntries[name];
+    final remoteEntry = remoteEntries[name];
+    if (localEntry == null) {
+      merged[name] = remoteEntry!;
+    } else if (remoteEntry == null) {
+      merged[name] = localEntry;
+    } else {
+      final remoteIsAtLeastAsNew =
+          _compareDatabaseReleaseVersion(
+            remoteEntry.versionInfo,
+            localEntry.versionInfo,
+          ) >=
+          0;
+      merged[name] = remoteIsAtLeastAsNew ? remoteEntry : localEntry;
+    }
+  }
+  return merged;
+}
+
+Future<void> _writeManifestEntries(
+  File manifestFile,
+  Map<String, WebDbManifestEntry> entries,
+) async {
+  await manifestFile.parent.create(recursive: true);
+  final databases = <String, Object?>{};
+  final sortedEntries = entries.entries.toList()
+    ..sort((a, b) => a.key.compareTo(b.key));
+  for (final entry in sortedEntries) {
+    databases[entry.key] = <String, Object?>{
+      'versionToken': entry.value.versionToken,
+      'schemaVersion': entry.value.versionInfo.schemaVersion,
+      'dataVersion': entry.value.versionInfo.dataVersion,
+      'date': entry.value.versionInfo.date.toUtc().toIso8601String(),
+      if (entry.value.fileSizeBytes != null)
+        'fileSizeBytes': entry.value.fileSizeBytes,
+    };
+  }
+
+  await manifestFile.writeAsString(
+    jsonEncode(<String, Object?>{
+          'version': 1,
+          'generatedAt': DateTime.now().toUtc().toIso8601String(),
+          'databases': databases,
+        }) +
+        '\n',
+    flush: true,
+  );
+}
+
 Future<File> _getLocalDatabaseFile(String fileName) async {
   final appFolder = await getAppFolder();
   return File(p.join(appFolder, _databaseFolder, fileName));
+}
+
+bool _isLocalDatabaseVersionNewerThanManifest(
+  File localFile,
+  WebDbManifestEntry? manifestEntry,
+) {
+  if (manifestEntry == null) {
+    return false;
+  }
+  final localVersion = loadDatabaseVersionInfoFromFile(localFile);
+  if (localVersion == null) {
+    return false;
+  }
+  return _compareDatabaseReleaseVersion(
+        localVersion,
+        manifestEntry.versionInfo,
+      ) >
+      0;
+}
+
+int _compareDatabaseReleaseVersion(
+  DatabaseVersionInfo left,
+  DatabaseVersionInfo right,
+) {
+  final schemaVersionComparison = left.schemaVersion.compareTo(
+    right.schemaVersion,
+  );
+  if (schemaVersionComparison != 0) {
+    return schemaVersionComparison;
+  }
+
+  final dataVersionComparison = left.dataVersion.compareTo(right.dataVersion);
+  if (dataVersionComparison != 0) {
+    return dataVersionComparison;
+  }
+
+  return 0;
+}
+
+bool _manifestEntriesEqual(
+  Map<String, WebDbManifestEntry> left,
+  Map<String, WebDbManifestEntry> right,
+) {
+  if (left.length != right.length) {
+    return false;
+  }
+  for (final entry in left.entries) {
+    final rightEntry = right[entry.key];
+    if (rightEntry == null ||
+        rightEntry.versionToken != entry.value.versionToken ||
+        rightEntry.versionInfo != entry.value.versionInfo ||
+        rightEntry.fileSizeBytes != entry.value.fileSizeBytes) {
+      return false;
+    }
+  }
+  return true;
 }
 
 bool _matchesManifestSize(File file, WebDbManifestEntry? manifestEntry) {
