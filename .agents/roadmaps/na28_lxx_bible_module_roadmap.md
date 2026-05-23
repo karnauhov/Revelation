@@ -220,34 +220,34 @@ import_warnings(
 
 ## Phase 4 - TAGNT Import
 
-- [ ] Parse headers and skip non-data rows.
-- [ ] Parse only data rows matching NT references such as `Mat.1.1#01=NKO`.
-- [ ] Parse source reference into:
-  - [ ] book code
-  - [ ] chapter
-  - [ ] verse
-  - [ ] token order
-  - [ ] text type
-- [ ] Import only tokens whose edition list contains `NA28`.
-- [ ] Preserve original source row in `tokens.raw_json`.
-- [ ] Parse Greek surface text.
-- [ ] Strip display punctuation into `surface_search`.
-- [ ] Parse transliteration when present in parentheses.
-- [ ] Parse `dStrong = Grammar`.
-- [ ] Normalize Strong keys:
-  - [ ] `G0001 -> G1`
-  - [ ] `G0011 -> G11`
-  - [ ] `G0976 -> G976`
-  - [ ] `G2424G -> G2424`.
-- [ ] Store raw padded value in `raw_strong`.
-- [ ] Parse morphology into `tokens.morphology`.
-- [ ] Parse lemma/gloss from dictionary field.
-- [ ] Parse alternate Strong values into `token_strongs(role = 'alt')`.
-- [ ] Preserve textual variants in `raw_json` or a future variants table, but do not include non-NA28 tokens in the main NA28 text.
-- [ ] Generate `module_verses.text_plain` by joining NA28 tokens in source order.
-- [ ] Add tests for Matthew 1:1 token import.
-- [ ] Add tests for a verse with TR/Byz-only extra tokens that must not appear in NA28 text.
-- [ ] Add tests for a verse with meaning/spelling variants.
+- [x] Parse headers and skip non-data rows.
+- [x] Parse only data rows matching NT references such as `Mat.1.1#01=NKO`.
+- [x] Parse source reference into:
+  - [x] book code
+  - [x] chapter
+  - [x] verse
+  - [x] token order
+  - [x] text type
+- [x] Import only tokens whose edition list contains `NA28`.
+- [x] Preserve original source row in `tokens.raw_json`.
+- [x] Parse Greek surface text.
+- [x] Strip display punctuation into `surface_search`.
+- [x] Parse transliteration when present in parentheses.
+- [x] Parse `dStrong = Grammar`.
+- [x] Normalize Strong keys:
+  - [x] `G0001 -> G1`
+  - [x] `G0011 -> G11`
+  - [x] `G0976 -> G976`
+  - [x] `G2424G -> G2424`.
+- [x] Store raw padded value in `raw_strong`.
+- [x] Parse morphology into `tokens.morphology`.
+- [x] Parse lemma/gloss from dictionary field.
+- [x] Parse alternate Strong values into `token_strongs(role = 'alt')`.
+- [x] Preserve textual variants in `raw_json` or a future variants table, but do not include non-NA28 tokens in the main NA28 text.
+- [x] Generate `module_verses.text_plain` by joining NA28 tokens in source order.
+- [x] Add tests for Matthew 1:1 token import.
+- [x] Add tests for a verse with TR/Byz-only extra tokens that must not appear in NA28 text.
+- [x] Add tests for a verse with meaning/spelling variants.
 
 ## Phase 5 - LXX Import
 
