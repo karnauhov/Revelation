@@ -216,10 +216,11 @@ class BibleModuleSchemaTests(unittest.TestCase):
             connection.close()
 
     def test_form_occurrence_tables_are_forbidden_in_bible_modules(self) -> None:
-        with self.assertRaisesRegex(ValueError, "form tables"):
-            assert_no_form_occurrence_tables(["books", "word_forms"])
+        for table_name in FORBIDDEN_FORM_OCCURRENCE_TABLES:
+            with self.subTest(table_name=table_name):
+                with self.assertRaisesRegex(ValueError, "form tables"):
+                    assert_no_form_occurrence_tables(["books", table_name])
 
 
 if __name__ == "__main__":
     unittest.main()
-
