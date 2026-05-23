@@ -251,28 +251,28 @@ import_warnings(
 
 ## Phase 5 - LXX Import
 
-- [ ] Export CrossWire SWORD `LXX` to an intermediate parseable format.
-- [ ] Preserve word-level Strong/morph tags from the SWORD module.
-- [ ] Store the exact CrossWire module version in `module_sources`.
-- [ ] Map LXX source book names to the 39 canonical OT books.
-- [ ] Exclude deuterocanonical/apocryphal books.
-- [ ] Exclude Psalm 151.
-- [ ] Exclude Odes and Prayer of Manasseh.
-- [ ] Exclude Greek additions to Daniel.
-- [ ] Exclude Greek additions to Esther unless manually confirmed as canonical Protestant verse text.
-- [ ] Parse each verse into `module_verses`.
-- [ ] Parse each word into `tokens`.
-- [ ] Parse Greek lemma into `tokens.lemma`.
-- [ ] Parse morphology into `tokens.morphology`.
-- [ ] Parse Strong values into `token_strongs`.
-- [ ] Normalize LXX Strong keys without leading zeroes.
-- [ ] Add import warnings for missing Strong values.
-- [ ] Add import warnings for unparseable morphology.
-- [ ] Add import warnings for ambiguous source-native verse mappings.
-- [ ] Add tests for Genesis 1:1.
-- [ ] Add tests for Psalms numbering.
-- [ ] Add tests proving apocryphal books are excluded.
-- [ ] Add tests proving Daniel/Esther additions do not enter the canonical module.
+- [x] Export CrossWire SWORD `LXX` to an intermediate parseable format.
+- [x] Preserve word-level Strong/morph tags from the SWORD module.
+- [x] Store the exact CrossWire module version in `module_sources`.
+- [x] Map LXX source book names to the 39 canonical OT books.
+- [x] Exclude deuterocanonical/apocryphal books.
+- [x] Exclude Psalm 151.
+- [x] Exclude Odes and Prayer of Manasseh.
+- [x] Exclude Greek additions to Daniel.
+- [x] Exclude Greek additions to Esther unless manually confirmed as canonical Protestant verse text.
+- [x] Parse each verse into `module_verses`.
+- [x] Parse each word into `tokens`.
+- [x] Parse Greek lemma into `tokens.lemma`.
+- [x] Parse morphology into `tokens.morphology`.
+- [x] Parse Strong values into `token_strongs`.
+- [x] Normalize LXX Strong keys without leading zeroes.
+- [x] Add import warnings for missing Strong values.
+- [x] Add import warnings for unparseable morphology.
+- [x] Add import warnings for ambiguous source-native verse mappings.
+- [x] Add tests for Genesis 1:1.
+- [x] Add tests for Psalms numbering.
+- [x] Add tests proving apocryphal books are excluded.
+- [x] Add tests proving Daniel/Esther additions do not enter the canonical module.
 
 ## Phase 6 - Lexicon And Morphology Support
 
