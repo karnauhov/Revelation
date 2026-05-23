@@ -1,40 +1,40 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-12T05:30:17Z",
+  "generatedAt": "2026-05-23T02:35:34Z",
   "databases": {
     "revelation.sqlite": {
-      "versionToken": "manifest:schema:4|data:5|date:2026-05-12T05:30:17Z|size:1630208",
+      "versionToken": "manifest:schema:4|data:6|date:2026-05-23T02:35:34Z|size:1142784",
       "schemaVersion": 4,
-      "dataVersion": 5,
-      "date": "2026-05-12T05:30:17Z",
-      "fileSizeBytes": 1630208
+      "dataVersion": 6,
+      "date": "2026-05-23T02:35:34Z",
+      "fileSizeBytes": 1142784
     },
     "revelation_en.sqlite": {
-      "versionToken": "manifest:schema:6|data:7|date:2026-05-03T10:21:15Z|size:593920",
+      "versionToken": "manifest:schema:6|data:8|date:2026-05-23T02:35:34Z|size:593920",
       "schemaVersion": 6,
-      "dataVersion": 7,
-      "date": "2026-05-03T10:21:15Z",
+      "dataVersion": 8,
+      "date": "2026-05-23T02:35:34Z",
       "fileSizeBytes": 593920
     },
     "revelation_es.sqlite": {
-      "versionToken": "manifest:schema:6|data:7|date:2026-05-03T10:21:15Z|size:626688",
+      "versionToken": "manifest:schema:6|data:8|date:2026-05-23T02:35:34Z|size:626688",
       "schemaVersion": 6,
-      "dataVersion": 7,
-      "date": "2026-05-03T10:21:15Z",
+      "dataVersion": 8,
+      "date": "2026-05-23T02:35:34Z",
       "fileSizeBytes": 626688
     },
     "revelation_ru.sqlite": {
-      "versionToken": "manifest:schema:6|data:10|date:2026-05-12T05:04:27Z|size:688128",
+      "versionToken": "manifest:schema:6|data:11|date:2026-05-23T02:35:34Z|size:688128",
       "schemaVersion": 6,
-      "dataVersion": 10,
-      "date": "2026-05-12T05:04:27Z",
+      "dataVersion": 11,
+      "date": "2026-05-23T02:35:34Z",
       "fileSizeBytes": 688128
     },
     "revelation_uk.sqlite": {
-      "versionToken": "manifest:schema:6|data:7|date:2026-05-03T10:21:15Z|size:692224",
+      "versionToken": "manifest:schema:6|data:8|date:2026-05-23T02:35:34Z|size:692224",
       "schemaVersion": 6,
-      "dataVersion": 7,
-      "date": "2026-05-03T10:21:15Z",
+      "dataVersion": 8,
+      "date": "2026-05-23T02:35:34Z",
       "fileSizeBytes": 692224
     }
   }
