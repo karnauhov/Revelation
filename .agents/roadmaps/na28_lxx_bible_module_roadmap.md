@@ -28,20 +28,20 @@ Temporary working document. Delete this file after the `NA28_LXX` Bible module, 
 
 ## Phase 1 - Source And License Lock
 
-- [ ] Record exact source URLs, module versions, download dates, and source commit hashes where available.
-- [ ] Create a local source cache directory for reproducible imports, for example `scripts/bible_module/source_cache/`.
-- [ ] Download STEPBible `TAGNT Mat-Jhn`.
-- [ ] Download STEPBible `TAGNT Act-Rev`.
-- [ ] Download STEPBible `TBESG`.
-- [ ] Download STEPBible `TFLSJ 0-5624`.
-- [ ] Download STEPBible `TFLSJ extra`.
-- [ ] Download STEPBible `TEGMC`.
-- [ ] Download CrossWire SWORD `LXX` module.
-- [ ] Save each source checksum in a machine-readable manifest.
-- [ ] Confirm all STEPBible sources are `CC BY 4.0`.
-- [ ] Confirm CrossWire `LXX` is allowed for this project under `Copyrighted; Free non-commercial distribution`.
-- [ ] Add a hard build-time guard that refuses to import deuterocanonical/apocryphal books.
-- [ ] Add a hard build-time guard that refuses to import RVR1960 without explicit permission, if future Spanish work resumes.
+- [x] Record exact source URLs, module versions, download dates, and source commit hashes where available.
+- [x] Create a local source cache directory for reproducible imports, for example `scripts/bible_module/source_cache/`.
+- [x] Download STEPBible `TAGNT Mat-Jhn`.
+- [x] Download STEPBible `TAGNT Act-Rev`.
+- [x] Download STEPBible `TBESG`.
+- [x] Download STEPBible `TFLSJ 0-5624`.
+- [x] Download STEPBible `TFLSJ extra`.
+- [x] Download STEPBible `TEGMC`.
+- [x] Download CrossWire SWORD `LXX` module.
+- [x] Save each source checksum in a machine-readable manifest.
+- [x] Confirm all STEPBible sources are `CC BY 4.0`.
+- [x] Confirm CrossWire `LXX` is allowed for this project under `Copyrighted; Free non-commercial distribution`.
+- [x] Add a hard build-time guard that refuses to import deuterocanonical/apocryphal books.
+- [x] Add a hard build-time guard that refuses to import RVR1960 without explicit permission, if future Spanish work resumes.
 
 ## Phase 2 - Canon And Verse Identity
 
