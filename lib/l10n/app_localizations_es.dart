@@ -800,4 +800,400 @@ class AppLocalizationsEs extends AppLocalizations {
   String markdown_images_loading_progress(int loaded, int total) {
     return 'Cargando imágenes: $loaded de $total';
   }
+
+  @override
+  String get book_code_1 => 'Gn';
+
+  @override
+  String get book_name_1 => 'Génesis';
+
+  @override
+  String get book_code_2 => 'Ex';
+
+  @override
+  String get book_name_2 => 'Éxodo';
+
+  @override
+  String get book_code_3 => 'Lv';
+
+  @override
+  String get book_name_3 => 'Levítico';
+
+  @override
+  String get book_code_4 => 'Nm';
+
+  @override
+  String get book_name_4 => 'Números';
+
+  @override
+  String get book_code_5 => 'Dt';
+
+  @override
+  String get book_name_5 => 'Deuteronomio';
+
+  @override
+  String get book_code_6 => 'Jos';
+
+  @override
+  String get book_name_6 => 'Josué';
+
+  @override
+  String get book_code_7 => 'Jue';
+
+  @override
+  String get book_name_7 => 'Jueces';
+
+  @override
+  String get book_code_8 => 'Rt';
+
+  @override
+  String get book_name_8 => 'Rut';
+
+  @override
+  String get book_code_9 => '1S';
+
+  @override
+  String get book_name_9 => '1 Samuel';
+
+  @override
+  String get book_code_10 => '2S';
+
+  @override
+  String get book_name_10 => '2 Samuel';
+
+  @override
+  String get book_code_11 => '1R';
+
+  @override
+  String get book_name_11 => '1 Reyes';
+
+  @override
+  String get book_code_12 => '2R';
+
+  @override
+  String get book_name_12 => '2 Reyes';
+
+  @override
+  String get book_code_13 => '1Cr';
+
+  @override
+  String get book_name_13 => '1 Crónicas';
+
+  @override
+  String get book_code_14 => '2Cr';
+
+  @override
+  String get book_name_14 => '2 Crónicas';
+
+  @override
+  String get book_code_15 => 'Esd';
+
+  @override
+  String get book_name_15 => 'Esdras';
+
+  @override
+  String get book_code_16 => 'Neh';
+
+  @override
+  String get book_name_16 => 'Nehemías';
+
+  @override
+  String get book_code_17 => 'Est';
+
+  @override
+  String get book_name_17 => 'Ester';
+
+  @override
+  String get book_code_18 => 'Job';
+
+  @override
+  String get book_name_18 => 'Job';
+
+  @override
+  String get book_code_19 => 'Sal';
+
+  @override
+  String get book_name_19 => 'Salmos';
+
+  @override
+  String get book_code_20 => 'Pr';
+
+  @override
+  String get book_name_20 => 'Proverbios';
+
+  @override
+  String get book_code_21 => 'Ec';
+
+  @override
+  String get book_name_21 => 'Eclesiastés';
+
+  @override
+  String get book_code_22 => 'Cnt';
+
+  @override
+  String get book_name_22 => 'Cantar de los Cantares';
+
+  @override
+  String get book_code_23 => 'Is';
+
+  @override
+  String get book_name_23 => 'Isaías';
+
+  @override
+  String get book_code_24 => 'Jer';
+
+  @override
+  String get book_name_24 => 'Jeremías';
+
+  @override
+  String get book_code_25 => 'Lm';
+
+  @override
+  String get book_name_25 => 'Lamentaciones';
+
+  @override
+  String get book_code_26 => 'Ez';
+
+  @override
+  String get book_name_26 => 'Ezequiel';
+
+  @override
+  String get book_code_27 => 'Dn';
+
+  @override
+  String get book_name_27 => 'Daniel';
+
+  @override
+  String get book_code_28 => 'Os';
+
+  @override
+  String get book_name_28 => 'Oseas';
+
+  @override
+  String get book_code_29 => 'Jl';
+
+  @override
+  String get book_name_29 => 'Joel';
+
+  @override
+  String get book_code_30 => 'Am';
+
+  @override
+  String get book_name_30 => 'Amós';
+
+  @override
+  String get book_code_31 => 'Abd';
+
+  @override
+  String get book_name_31 => 'Abdías';
+
+  @override
+  String get book_code_32 => 'Jon';
+
+  @override
+  String get book_name_32 => 'Jonás';
+
+  @override
+  String get book_code_33 => 'Mi';
+
+  @override
+  String get book_name_33 => 'Miqueas';
+
+  @override
+  String get book_code_34 => 'Nah';
+
+  @override
+  String get book_name_34 => 'Nahúm';
+
+  @override
+  String get book_code_35 => 'Hab';
+
+  @override
+  String get book_name_35 => 'Habacuc';
+
+  @override
+  String get book_code_36 => 'Sof';
+
+  @override
+  String get book_name_36 => 'Sofonías';
+
+  @override
+  String get book_code_37 => 'Hag';
+
+  @override
+  String get book_name_37 => 'Hageo';
+
+  @override
+  String get book_code_38 => 'Zac';
+
+  @override
+  String get book_name_38 => 'Zacarías';
+
+  @override
+  String get book_code_39 => 'Mal';
+
+  @override
+  String get book_name_39 => 'Malaquías';
+
+  @override
+  String get book_code_40 => 'Mt';
+
+  @override
+  String get book_name_40 => 'Mateo';
+
+  @override
+  String get book_code_41 => 'Mr';
+
+  @override
+  String get book_name_41 => 'Marcos';
+
+  @override
+  String get book_code_42 => 'Lc';
+
+  @override
+  String get book_name_42 => 'Lucas';
+
+  @override
+  String get book_code_43 => 'Jn';
+
+  @override
+  String get book_name_43 => 'Juan';
+
+  @override
+  String get book_code_44 => 'Hch';
+
+  @override
+  String get book_name_44 => 'Hechos';
+
+  @override
+  String get book_code_45 => 'Ro';
+
+  @override
+  String get book_name_45 => 'Romanos';
+
+  @override
+  String get book_code_46 => '1Co';
+
+  @override
+  String get book_name_46 => '1 Corintios';
+
+  @override
+  String get book_code_47 => '2Co';
+
+  @override
+  String get book_name_47 => '2 Corintios';
+
+  @override
+  String get book_code_48 => 'Gá';
+
+  @override
+  String get book_name_48 => 'Gálatas';
+
+  @override
+  String get book_code_49 => 'Ef';
+
+  @override
+  String get book_name_49 => 'Efesios';
+
+  @override
+  String get book_code_50 => 'Fil';
+
+  @override
+  String get book_name_50 => 'Filipenses';
+
+  @override
+  String get book_code_51 => 'Col';
+
+  @override
+  String get book_name_51 => 'Colosenses';
+
+  @override
+  String get book_code_52 => '1Ts';
+
+  @override
+  String get book_name_52 => '1 Tesalonicenses';
+
+  @override
+  String get book_code_53 => '2Ts';
+
+  @override
+  String get book_name_53 => '2 Tesalonicenses';
+
+  @override
+  String get book_code_54 => '1Ti';
+
+  @override
+  String get book_name_54 => '1 Timoteo';
+
+  @override
+  String get book_code_55 => '2Ti';
+
+  @override
+  String get book_name_55 => '2 Timoteo';
+
+  @override
+  String get book_code_56 => 'Tit';
+
+  @override
+  String get book_name_56 => 'Tito';
+
+  @override
+  String get book_code_57 => 'Flm';
+
+  @override
+  String get book_name_57 => 'Filemón';
+
+  @override
+  String get book_code_58 => 'Heb';
+
+  @override
+  String get book_name_58 => 'Hebreos';
+
+  @override
+  String get book_code_59 => 'Stg';
+
+  @override
+  String get book_name_59 => 'Santiago';
+
+  @override
+  String get book_code_60 => '1P';
+
+  @override
+  String get book_name_60 => '1 Pedro';
+
+  @override
+  String get book_code_61 => '2P';
+
+  @override
+  String get book_name_61 => '2 Pedro';
+
+  @override
+  String get book_code_62 => '1Jn';
+
+  @override
+  String get book_name_62 => '1 Juan';
+
+  @override
+  String get book_code_63 => '2Jn';
+
+  @override
+  String get book_name_63 => '2 Juan';
+
+  @override
+  String get book_code_64 => '3Jn';
+
+  @override
+  String get book_name_64 => '3 Juan';
+
+  @override
+  String get book_code_65 => 'Jud';
+
+  @override
+  String get book_name_65 => 'Judas';
+
+  @override
+  String get book_code_66 => 'Ap';
+
+  @override
+  String get book_name_66 => 'Apocalipsis';
 }

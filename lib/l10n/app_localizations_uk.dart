@@ -795,4 +795,400 @@ class AppLocalizationsUk extends AppLocalizations {
   String markdown_images_loading_progress(int loaded, int total) {
     return 'Завантаження зображень: $loaded із $total';
   }
+
+  @override
+  String get book_code_1 => 'Бут';
+
+  @override
+  String get book_name_1 => 'Буття';
+
+  @override
+  String get book_code_2 => 'Вих';
+
+  @override
+  String get book_name_2 => 'Вихід';
+
+  @override
+  String get book_code_3 => 'Лев';
+
+  @override
+  String get book_name_3 => 'Левит';
+
+  @override
+  String get book_code_4 => 'Чис';
+
+  @override
+  String get book_name_4 => 'Числа';
+
+  @override
+  String get book_code_5 => 'Втор';
+
+  @override
+  String get book_name_5 => 'Повторення Закону';
+
+  @override
+  String get book_code_6 => 'Нав';
+
+  @override
+  String get book_name_6 => 'Ісус Навин';
+
+  @override
+  String get book_code_7 => 'Суд';
+
+  @override
+  String get book_name_7 => 'Судді';
+
+  @override
+  String get book_code_8 => 'Рут';
+
+  @override
+  String get book_name_8 => 'Рут';
+
+  @override
+  String get book_code_9 => '1Сам';
+
+  @override
+  String get book_name_9 => '1 Самуїла';
+
+  @override
+  String get book_code_10 => '2Сам';
+
+  @override
+  String get book_name_10 => '2 Самуїла';
+
+  @override
+  String get book_code_11 => '1Цар';
+
+  @override
+  String get book_name_11 => '1 Царів';
+
+  @override
+  String get book_code_12 => '2Цар';
+
+  @override
+  String get book_name_12 => '2 Царів';
+
+  @override
+  String get book_code_13 => '1Хр';
+
+  @override
+  String get book_name_13 => '1 Хронік';
+
+  @override
+  String get book_code_14 => '2Хр';
+
+  @override
+  String get book_name_14 => '2 Хронік';
+
+  @override
+  String get book_code_15 => 'Езд';
+
+  @override
+  String get book_name_15 => 'Ездра';
+
+  @override
+  String get book_code_16 => 'Неєм';
+
+  @override
+  String get book_name_16 => 'Неємія';
+
+  @override
+  String get book_code_17 => 'Ест';
+
+  @override
+  String get book_name_17 => 'Естер';
+
+  @override
+  String get book_code_18 => 'Йов';
+
+  @override
+  String get book_name_18 => 'Йов';
+
+  @override
+  String get book_code_19 => 'Пс';
+
+  @override
+  String get book_name_19 => 'Псалми';
+
+  @override
+  String get book_code_20 => 'Прип';
+
+  @override
+  String get book_name_20 => 'Приповісті';
+
+  @override
+  String get book_code_21 => 'Екл';
+
+  @override
+  String get book_name_21 => 'Екклезіяст';
+
+  @override
+  String get book_code_22 => 'Пісн';
+
+  @override
+  String get book_name_22 => 'Пісня над піснями';
+
+  @override
+  String get book_code_23 => 'Іс';
+
+  @override
+  String get book_name_23 => 'Ісая';
+
+  @override
+  String get book_code_24 => 'Єр';
+
+  @override
+  String get book_name_24 => 'Єремія';
+
+  @override
+  String get book_code_25 => 'Плач';
+
+  @override
+  String get book_name_25 => 'Плач Єремії';
+
+  @override
+  String get book_code_26 => 'Єз';
+
+  @override
+  String get book_name_26 => 'Єзекіїль';
+
+  @override
+  String get book_code_27 => 'Дан';
+
+  @override
+  String get book_name_27 => 'Даниїл';
+
+  @override
+  String get book_code_28 => 'Ос';
+
+  @override
+  String get book_name_28 => 'Осія';
+
+  @override
+  String get book_code_29 => 'Йоіл';
+
+  @override
+  String get book_name_29 => 'Йоіл';
+
+  @override
+  String get book_code_30 => 'Ам';
+
+  @override
+  String get book_name_30 => 'Амос';
+
+  @override
+  String get book_code_31 => 'Авд';
+
+  @override
+  String get book_name_31 => 'Авдій';
+
+  @override
+  String get book_code_32 => 'Йона';
+
+  @override
+  String get book_name_32 => 'Йона';
+
+  @override
+  String get book_code_33 => 'Мих';
+
+  @override
+  String get book_name_33 => 'Михей';
+
+  @override
+  String get book_code_34 => 'Наум';
+
+  @override
+  String get book_name_34 => 'Наум';
+
+  @override
+  String get book_code_35 => 'Ав';
+
+  @override
+  String get book_name_35 => 'Авакум';
+
+  @override
+  String get book_code_36 => 'Соф';
+
+  @override
+  String get book_name_36 => 'Софонія';
+
+  @override
+  String get book_code_37 => 'Аг';
+
+  @override
+  String get book_name_37 => 'Аггей';
+
+  @override
+  String get book_code_38 => 'Зах';
+
+  @override
+  String get book_name_38 => 'Захарія';
+
+  @override
+  String get book_code_39 => 'Мал';
+
+  @override
+  String get book_name_39 => 'Малахія';
+
+  @override
+  String get book_code_40 => 'Мт';
+
+  @override
+  String get book_name_40 => 'Матвій';
+
+  @override
+  String get book_code_41 => 'Мк';
+
+  @override
+  String get book_name_41 => 'Марк';
+
+  @override
+  String get book_code_42 => 'Лк';
+
+  @override
+  String get book_name_42 => 'Лука';
+
+  @override
+  String get book_code_43 => 'Ів';
+
+  @override
+  String get book_name_43 => 'Іван';
+
+  @override
+  String get book_code_44 => 'Дії';
+
+  @override
+  String get book_name_44 => 'Дії';
+
+  @override
+  String get book_code_45 => 'Рим';
+
+  @override
+  String get book_name_45 => 'Римлян';
+
+  @override
+  String get book_code_46 => '1Кор';
+
+  @override
+  String get book_name_46 => '1 Коринтян';
+
+  @override
+  String get book_code_47 => '2Кор';
+
+  @override
+  String get book_name_47 => '2 Коринтян';
+
+  @override
+  String get book_code_48 => 'Гал';
+
+  @override
+  String get book_name_48 => 'Галатів';
+
+  @override
+  String get book_code_49 => 'Еф';
+
+  @override
+  String get book_name_49 => 'Ефесян';
+
+  @override
+  String get book_code_50 => 'Флп';
+
+  @override
+  String get book_name_50 => 'Филип’ян';
+
+  @override
+  String get book_code_51 => 'Кол';
+
+  @override
+  String get book_name_51 => 'Колосян';
+
+  @override
+  String get book_code_52 => '1Сол';
+
+  @override
+  String get book_name_52 => '1 Солунян';
+
+  @override
+  String get book_code_53 => '2Сол';
+
+  @override
+  String get book_name_53 => '2 Солунян';
+
+  @override
+  String get book_code_54 => '1Тим';
+
+  @override
+  String get book_name_54 => '1 Тимофію';
+
+  @override
+  String get book_code_55 => '2Тим';
+
+  @override
+  String get book_name_55 => '2 Тимофію';
+
+  @override
+  String get book_code_56 => 'Тит';
+
+  @override
+  String get book_name_56 => 'Титу';
+
+  @override
+  String get book_code_57 => 'Флм';
+
+  @override
+  String get book_name_57 => 'Филимону';
+
+  @override
+  String get book_code_58 => 'Євр';
+
+  @override
+  String get book_name_58 => 'Євреїв';
+
+  @override
+  String get book_code_59 => 'Як';
+
+  @override
+  String get book_name_59 => 'Якова';
+
+  @override
+  String get book_code_60 => '1Пет';
+
+  @override
+  String get book_name_60 => '1 Петра';
+
+  @override
+  String get book_code_61 => '2Пет';
+
+  @override
+  String get book_name_61 => '2 Петра';
+
+  @override
+  String get book_code_62 => '1Ів';
+
+  @override
+  String get book_name_62 => '1 Івана';
+
+  @override
+  String get book_code_63 => '2Ів';
+
+  @override
+  String get book_name_63 => '2 Івана';
+
+  @override
+  String get book_code_64 => '3Ів';
+
+  @override
+  String get book_name_64 => '3 Івана';
+
+  @override
+  String get book_code_65 => 'Юд';
+
+  @override
+  String get book_name_65 => 'Юди';
+
+  @override
+  String get book_code_66 => 'Об';
+
+  @override
+  String get book_name_66 => 'Об’явлення';
 }

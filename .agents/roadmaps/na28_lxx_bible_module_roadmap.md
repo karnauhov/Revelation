@@ -419,27 +419,28 @@ The Phase 8 `bible_na28_lxx.sqlite` is currently a full working/source-of-truth 
 
 This phase reads the retained `NA28_LXX` source artifact from Phase 11 and writes compact usage lines into `revelation.sqlite -> greek_words.usage`.
 
-- [ ] Read only `NA28_LXX` tokens from the retained `bible_na28_lxx.sqlite` source artifact or an owner-approved equivalent sidecar.
-- [ ] Do not build usage directly from parser memory except in isolated tests.
-- [ ] Join `tokens`, `token_strongs`, `module_verses`, `module_verse_links`, and `canonical_verses`, or their Phase 11 retained equivalents.
-- [ ] Use only `token_strongs.is_primary = 1` for default usage counts.
-- [ ] Decide whether alternate Strong tags create separate secondary usage lines or are excluded for now.
-- [ ] Normalize token surface forms consistently with existing TAGNT/LXX normalization helpers.
-- [ ] Group occurrences by normalized Strong and surface form.
-- [ ] For each form, group references by `canonical_verse_id` and append `x<count>` when a form appears multiple times in the same verse.
-- [ ] Generate deterministic `usage` v2 text sorted by normalized form and canonical order.
-- [ ] Verify every stored reference has a valid `canonical_verse_id`.
-- [ ] Verify every generated line count equals the number of token occurrences represented by its bracket payload.
-- [ ] Preserve `greek_words.word`, `category`, `synonyms`, and `origin`.
-- [ ] Preserve localized `greek_descs`.
-- [ ] Update only `greek_words.usage` unless a confirmed extra-Strong append policy requires adding `greek_words` rows.
-- [ ] Backup `revelation.sqlite` before applying generated usage.
-- [ ] Touch `revelation.sqlite` `db_metadata.data_version` and `date` only after a successful commit.
-- [ ] Add a test that `G0746` never appears as a stored generated key.
-- [ ] Add a test that `G746` usage can be generated from source `G0746`.
-- [ ] Add tests for words occurring multiple times in one verse.
-- [ ] Add tests for words with several surface forms.
-- [ ] Add a test that old-style usage parsing still fails gracefully or falls back safely.
+- [x] Read only `NA28_LXX` tokens from the retained `bible_na28_lxx.sqlite` source artifact or an owner-approved equivalent sidecar.
+- [x] Do not build usage directly from parser memory except in isolated tests.
+- [x] Join `tokens`, `token_strongs`, `module_verses`, `module_verse_links`, and `canonical_verses`, or their Phase 11 retained equivalents.
+- [x] Use only `token_strongs.is_primary = 1` for default usage counts.
+- [x] Decide whether alternate Strong tags create separate secondary usage lines or are excluded for now.
+  - Current Phase 12 implementation excludes alternate Strong tags from default usage; only `is_primary = 1` is counted.
+- [x] Normalize token surface forms consistently with existing TAGNT/LXX normalization helpers.
+- [x] Group occurrences by normalized Strong and surface form.
+- [x] For each form, group references by `canonical_verse_id` and append `x<count>` when a form appears multiple times in the same verse.
+- [x] Generate deterministic `usage` v2 text sorted by normalized form and canonical order.
+- [x] Verify every stored reference has a valid `canonical_verse_id`.
+- [x] Verify every generated line count equals the number of token occurrences represented by its bracket payload.
+- [x] Preserve `greek_words.word`, `category`, `synonyms`, and `origin`.
+- [x] Preserve localized `greek_descs`.
+- [x] Update only `greek_words.usage` unless a confirmed extra-Strong append policy requires adding `greek_words` rows.
+- [x] Backup `revelation.sqlite` before applying generated usage.
+- [x] Touch `revelation.sqlite` `db_metadata.data_version` and `date` only after a successful commit.
+- [x] Add a test that `G0746` never appears as a stored generated key.
+- [x] Add a test that `G746` usage can be generated from source `G0746`.
+- [x] Add tests for words occurring multiple times in one verse.
+- [x] Add tests for words with several surface forms.
+- [x] Add a test that old-style usage parsing still fails gracefully or falls back safely.
 
 ## Phase 13 - Strong Usage V2 App UI
 
