@@ -393,18 +393,24 @@ This phase fills all four localized dictionary DBs for the 88 attested extended 
 
 The Phase 8 `bible_na28_lxx.sqlite` is currently a full working/source-of-truth build and is too large for the runtime artifact. This phase now runs before Strong usage generation, so optimization must preserve or separately save every source field needed by Phase 12.
 
-- [ ] Produce a size report by table, index, and large text/payload columns.
+- [x] Produce a size report by table, index, and large text/payload columns.
+  - Phase 11 audit report: `.agents/roadmaps/na28_lxx_phase11_size_audit.md`.
 - [ ] Review every Bible module table and column with the owner before removing or compacting it.
+  - Prepared the owner-review table/column matrix in the Phase 11 audit report; destructive pruning is pending owner decisions.
 - [ ] For each column, record one decision: keep in runtime DB, drop from runtime DB, derive at build time, keep only in full working DB, or move to a sidecar/report.
+  - Recommended decisions are recorded in the Phase 11 audit report; final decisions are pending owner confirmation.
 - [ ] Decide whether the project keeps two artifacts: a full working/source DB and a compact runtime/published DB.
+  - Recommendation recorded: keep a full working/source DB and publish a compact runtime DB.
 - [ ] Before destructive pruning, create and verify a full working/source backup or sidecar that can still feed Phase 12 usage generation.
-- [ ] Define the minimum runtime contract needed by the app: open verse by stable `canonical_verse_id`, show readable refs, support parallel reading, and support Strong usage links.
-- [ ] Define which token-level data remains needed before and after `greek_words.usage` has been generated.
+- [x] Define the minimum runtime contract needed by the app: open verse by stable `canonical_verse_id`, show readable refs, support parallel reading, and support Strong usage links.
+- [x] Define which token-level data remains needed before and after `greek_words.usage` has been generated.
 - [ ] Remove or omit owner-approved redundant payloads from the runtime artifact only after the column review.
 - [ ] Preserve required source/license/acknowledgement metadata somewhere even if verbose source columns are removed from the runtime DB.
 - [ ] Review indexes and remove working-only indexes from the runtime artifact.
+  - Index review is recorded; actual index removal is pending compact runtime artifact implementation.
 - [ ] Run `VACUUM`/`ANALYZE` or equivalent SQLite compaction after pruning.
 - [ ] Add a size budget for the runtime/published module after the column review.
+  - Proposed budget recorded: target <= 25 MiB, stretch <= 16 MiB, pending owner confirmation.
 - [ ] Add tests proving the optimized DB still supports required app queries.
 - [ ] Add tests proving Phase 12 can still resolve usage references through stable `canonical_verse_id` / `canonical_ref`.
 - [ ] Ensure publish/manifest flow ships the optimized artifact, not the full working DB, unless explicitly approved.
