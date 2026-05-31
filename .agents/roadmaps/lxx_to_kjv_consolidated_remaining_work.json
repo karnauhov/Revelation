@@ -26,13 +26,13 @@
     ],
     "db_context": {
       "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_lxx_tr.sqlite",
-      "schema_version": "2",
-      "data_version": "4",
-      "date": "2026-05-30T17:10:10Z",
-      "filled_verses": 30819,
-      "empty_verses": 283,
-      "ot_filled_percent": 98.77727370922446,
-      "full_filled_percent": 99.09009066941033
+      "schema_version": "3",
+      "data_version": "12",
+      "date": "2026-05-31T05:52:51Z",
+      "filled_verses": 30889,
+      "empty_verses": 213,
+      "ot_filled_percent": 99.0797148412184,
+      "full_filled_percent": 99.31515658157032
     },
     "loader_note": "scripts/bible_module/build_lxx_tr.py can load this file directly as lxx_projection_rules_path; it reads projection_inputs.versification_candidate_map plus token_span_rules_generated/manual."
   },
@@ -28060,8 +28060,8 @@
           "rules_count": 251,
           "unmatched_count": "see lxx_to_kjv_token_span_rules_unmatched.generated.json",
           "daniel_note": "Daniel token-span rules are kept in lxx_to_kjv_token_span_rules.manual.json to enforce owner-selected Theodotion x-2 recension.",
-          "remaining_unmatched_after_manual_rules": 39,
-          "db_write_note": "Applied to bible_lxx_tr.sqlite together with candidate map and manual rules; DB date 2026-05-30T17:10:10Z."
+          "remaining_unmatched_after_manual_rules": 14,
+          "db_write_note": "Applied to bible_lxx_tr.sqlite together with candidate map and manual rules; DB date 2026-05-31T05:52:51Z."
         },
         "rules": [
           {
@@ -33274,7 +33274,15 @@
           "source": "CrossWire LXX source_cache/crosswire_lxx.zip; Daniel rules use owner-approved Theodotion x-2 as the primary displayed Daniel recension.",
           "generated_at_utc": "2026-05-30T00:00:00Z",
           "token_indexing": "zero_based_start_exclusive_end",
-          "rules_count": 3
+          "rules_count": 75,
+          "info_source_summary_notes": [
+            "Alternative ancient Greek source supplementation: Ps.116.17 suffix καὶ ἐν ὀνόματι κυρίου ἐπικαλέσομαι is attested by Theodoret of Cyrus, Interpretatio in Psalmos, PG 80.1805 (public-domain scan: https://commons.wikimedia.org/wiki/File:Patrologia_Graeca_Vol._080.pdf); CrossWire LXX supplies the prefix.",
+            "Owner-approved alternative-source supplementation from H. B. Swete, The Old Testament in Greek according to the Septuagint (public-domain scan: https://commons.wikimedia.org/wiki/File:The_Old_Testament_in_Greek,_according_to_the_Septuagint_(IA_cu31924012092437).pdf). Selected readings are stored as literal Greek for witness-sensitive refs Josh.20.4-6; 1Sam.23.12; 1Kgs.6.18; 1Kgs.14.7-9,14-16,19-20; Prov.8.33; Prov.23.23; Lam.3.22-24; Ezek.10.14, and CrossWire-specific omission refs Gen.35.21; Exod.25.6; 1Chr.1.11-23; 1Chr.16.24; 1Kgs.6.11-14; 1Kgs.15.32; Neh.3.7; Ps.116.14. GreekDoc polyglot pages were used only as alignment controls. Strong numbers are omitted for these literal rows pending reliable manual lexical mapping rather than guessed."
+          ],
+          "info_license_notes": [
+            "Patrologia Graeca Vol. 080 public-domain scan (Public Domain Mark 1.0): https://commons.wikimedia.org/wiki/File:Patrologia_Graeca_Vol._080.pdf, used to supplement Ps.116.17.",
+            "H. B. Swete, The Old Testament in Greek according to the Septuagint, public-domain scan: https://commons.wikimedia.org/wiki/File:The_Old_Testament_in_Greek,_according_to_the_Septuagint_(IA_cu31924012092437).pdf, used for owner-approved alternative-source supplementation."
+          ]
         },
         "rules": [
           {
@@ -33320,6 +33328,617 @@
                 "token_end": 16
               }
             ]
+          },
+          {
+            "target_ref": "Esth.5.1",
+            "status": "manual_owner_approved_full_crosswire_addition_d_row",
+            "note": "Owner approved storing the complete ancient Greek CrossWire Addition D presentation in the fixed KJV-grid row.",
+            "spans": [
+              {
+                "source_ref": "Esth.5.1"
+              }
+            ]
+          },
+          {
+            "target_ref": "Esth.5.2",
+            "status": "manual_owner_approved_full_crosswire_addition_d_row",
+            "note": "Owner approved storing the complete ancient Greek CrossWire Addition D continuation in the fixed KJV-grid row.",
+            "spans": [
+              {
+                "source_ref": "Esth.5.2"
+              }
+            ]
+          },
+          {
+            "target_ref": "Ps.116.17",
+            "status": "manual_external_ancient_greek_literal_with_reliable_strong_mapping",
+            "note": "CrossWire Ps.115.7 supplies the prefix only. Owner approved a full licensed ancient Greek fallback; the suffix is attested by Theodoret of Cyrus, Interpretatio in Psalmos, PG 80.1805. Strong numbers are manually mapped where reliable.",
+            "tagged_text": "σοὶ G4771 θύσω G2380 θυσίαν G2378 αἰνέσεως G133 καὶ G2532 ἐν G1722 ὀνόματι G3686 κυρίου G2962 ἐπικαλέσομαι G1941"
+          },
+          {
+            "target_ref": "Josh.20.4",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "Καὶ φεύξεται εἰς μίαν τῶν πόλεων τούτων καὶ στήσεται ἐπὶ τὴν θύραν τῆς πόλεως καὶ λαλήσει ἐν τοῖς ὠσὶ τῶν πρεσβυτέρων τῆς πόλεως ἐκείνης τοὺς λόγους τούτους καὶ ἐπιστρέψουσιν αὐτὸν ἡ συναγωγὴ πρὸς αὐτοὺς καὶ δώσουσιν αὐτῷ τόπον καὶ κατοικήσει μετ αὐτῶν"
+          },
+          {
+            "target_ref": "Josh.20.5",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ ὅτι διώξεται ὁ ἀγχιστεύων τὸ αἷμα ὀπίσω αὐτοῦ καὶ οὐ συγκλείσουσι τὸν φονεύσαντα ἐν τῇ χειρὶ αὐτοῦ ὅτι οὐκ εἰδὼς ἐπάταξε τὸν πλησίον αὐτοῦ καὶ οὐ μισῶν αὐτὸς αὐτὸν ἀπ ἐχθὲς καὶ τῆς τρίτης"
+          },
+          {
+            "target_ref": "Josh.20.6",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ κατοικήσει ἐν τῇ πόλει ἐκείνῃ ἕως στῇ κατὰ πρόσωπον τῆς συναγωγῆς εἰς κρίσιν ἕως ἀποθάνῃ ὁ ἱερεὺς ὁ μέγας ὃς ἔσται ἐν ταῖς ἡμέραις ἐκείναις τότε ἐπιστρέψει ὁ φονεύσας καὶ ἐλεύσεται εἰς τὴν πόλιν αὐτοῦ καὶ πρὸς τὸν οἶκον αὐτοῦ καὶ πρὸς πόλιν ὅθεν ἔφυγεν ἐκεῖθεν"
+          },
+          {
+            "target_ref": "1Sam.23.12",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ εἶπε Δαυίδ εἰ παραδώσουσι παρὰ τῆς Κεϊλὰ ἐμὲ καὶ τοὺς ἄνδρας μου εἰς χεῖρας Σαούλ καὶ εἶπε Κύριος παραδώσουσι"
+          },
+          {
+            "target_ref": "1Kgs.6.18",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ διὰ κέδρου πρὸς τὸν οἶκον ἔσω πλοκὴν ἐπαναστήσεις καὶ πέταλον καὶ ἀνάγλυφα πάντας κέδρινα οὐκ ἐφαίνετο λίθος"
+          },
+          {
+            "target_ref": "1Kgs.14.7",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "πορευθεῖσα εἰπὸν τῷ Ἱεροβοάμ τάδε λέγει Κύριος ὁ Θεὸς Ἰσραήλ ἀνθ οὗ ὅσον ὕψωσά σε ἀπὸ μέσου λαοῦ καὶ ἔδωκά σε ἡγούμενον ἐπὶ τὸν λαόν μου Ἰσραήλ"
+          },
+          {
+            "target_ref": "1Kgs.14.8",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ ἔρρηξα σὺν τὸ βασίλειον ἀπὸ τοῦ οἴκου Δαυὶδ καὶ ἔδωκα αὐτό σοι καὶ οὐκ ἐγένου ὡς ὁ δοῦλός μου Δαυίδ ὃς ἐφύλαξε τὰς ἔντολάς μου καὶ ὃς ἐπορεύθης ὀπίσω μου ἐν πάσῃ καρδίᾳ αὐτοῦ ποιῆσαι ἕκαστος τὸ εὐθὲς ἐν ὀφθαλμοῖς μου"
+          },
+          {
+            "target_ref": "1Kgs.14.9",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ ἐπονηρεύσω τοῦ ποιῆσαι παρὰ παντός ὅσοι ἐγένοντο εἰς πρόσωπόν σου καὶ ἐπορεύθης καὶ ἐποίησας σεαυτῷ θεοὺς ἑτέρους χωνευτὰ τοῦ παροργίσαι με καὶ ἐμὲ ἔρριψας ὀπίσω σώματός σου"
+          },
+          {
+            "target_ref": "1Kgs.14.14",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ ἀναστήσει Κύριος ἑαυτῷ βασιλέα ἐπὶ Ἰσραήλ ὃς πλήξει τὸν οἶκον Ἱεροβοάμ ταύτῃ τῇ ἡμέρᾳ καὶ τί καὶ νῦν"
+          },
+          {
+            "target_ref": "1Kgs.14.15",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "Κύριος πλήξει τὸν Ἰσραήλ καθὰ κινεῖται ὁ ἄνεμος ἐν τῷ ὕδατι καὶ ἐκτελεῖ τὸν Ἰσραὴλ ἀπὸ ἄνω τῆς χθονὸς τῆς ἀγαθῆς ταύτης ἧς ἔδωκε τοῖς πατράσιν αὐτῶν καὶ λικμήσει αὐτοὺς ἀπὸ πέραν τοῦ ποταμοῦ ἀνθ οὗ ὅσον ἐποίησαν τὰ ἄλση αὐτῶν παροργίζοντες τὸν Κύριον"
+          },
+          {
+            "target_ref": "1Kgs.14.16",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ παραδώσει Κύριος τὸν Ἰσραὴλ χάριν ἁμαρτιῶν Ἱεροβοάμ ὃς ἥμαρτε καὶ ὃς ἐξήμαρτε τὸν Ἰσραήλ"
+          },
+          {
+            "target_ref": "1Kgs.14.19",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ περισσὸν ῥημάτων Ἱεροβοάμ ὅσα ἐπολέμησε καὶ ὅσα ἐβασίλευσεν ἰδοὺ αὐτὰ γεγραμμένα ἐπὶ βιβλίου ῥημάτων τῶν ἡμερῶν τῶν βασιλέων Ἰσραὴλ"
+          },
+          {
+            "target_ref": "1Kgs.14.20",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ αἱ ἡμέραι ἃς ἐβασίλευσεν Ἱεροβοὰμ εἴκοσι δύο ἔτη καὶ ἐκοιμήθη μετὰ τῶν πατέρων αὐτοῦ καὶ ἐβασίλευσε Ναβὰτ υἱὸς αὐτοῦ ἀντ αὐτοῦ"
+          },
+          {
+            "target_ref": "Prov.8.33",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "ἀκούσατε παιδείαν καὶ σοφίσθητε καὶ μὴ ἀποφραγῆτε"
+          },
+          {
+            "target_ref": "Prov.23.23",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "ἀλήθειαν κτῆσαι καὶ μὴ ἀπώσῃ σοφίαν καὶ παιδείαν καὶ σύνεσιν"
+          },
+          {
+            "target_ref": "Lam.3.22",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected expanded Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "Τὰ ἐλέη Κυρίου ὅτι οὐκ ἐξέλιπέ με ὅτι οὐ συνετελέσθησαν οἱ οἰκτιρμοὶ αὐτοῦ μῆνας εἰς τὰς πρωΐας ἐλέησον Κύριε ὅτι οὐ συνετελέσθημεν ὅτι οὐ συνετελέσθησαν οἱ οἰκτιρμοὶ αὐτοῦ"
+          },
+          {
+            "target_ref": "Lam.3.23",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καινὰ εἰς τὰς πρωΐας πολλὴ ἡ πίστις σου"
+          },
+          {
+            "target_ref": "Lam.3.24",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "μερίς μου Κύριος εἶπε ἡ ψυχή μου διὰ τοῦτο ὑπομενῶ αὐτῷ"
+          },
+          {
+            "target_ref": "Ezek.10.14",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. The selected bracketed Swete witness reading is stored without guessed Strong numbers.",
+            "tagged_text": "καὶ τέσσαρα πρόσωπα τῷ ἑνί τὸ πρόσωπον τοῦ ἑνὸς πρόσωπον τοῦ Χερούβ καὶ τὸ πρόσωπον τοῦ δευτέρου πρόσωπον ἀνθρώπου καὶ τὸ τρίτον πρόσωπον λέοντος καὶ τὸ τέταρτον πρόσωπον ἀετοῦ"
+          },
+          {
+            "target_ref": "Gen.35.21",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "Ἀπάρας δὲ Ἰακὼβ ἐκ Βαιθὴλ ἔπηξεν τὴν σκηνὴν αὐτοῦ ἐπέκεινα τοῦ πύργου Γαδέρ"
+          },
+          {
+            "target_ref": "Exod.25.6",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ ἔλαιον εἰς τὴν φαῦσιν θυμιάματα εἰς τὸ ἔλαιον τῆς χρίσεως καὶ εἰς τὴν σύνθεσιν τοῦ θυμιάματος"
+          },
+          {
+            "target_ref": "1Chr.1.11",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ Μεσραῒμ ἐγέννησεν τοὺς Λωδιεὶμ καὶ τοὺς Ἀναμιεὶμ καὶ τοὺς Λαβεὶν καὶ τοὺς Νεφθαλὶμ"
+          },
+          {
+            "target_ref": "1Chr.1.12",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ τοὺς Πατροσωνιεὶμ καὶ τοὺς Χασλωνιείμ ὅθεν ἐξῆλθεν ἐκεῖθεν Φυλιστιείμ καὶ τοὺς Χαφοριεὶμ"
+          },
+          {
+            "target_ref": "1Chr.1.13",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ Χαναὰν ἐγέννησεν τὸν Σιδῶνα πρωτότοκον καὶ τὸν Χετταῖον"
+          },
+          {
+            "target_ref": "1Chr.1.14",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ τὸν Ἰεβουσαῖον καὶ τὸν Ἀμορραῖον καὶ τὸν Γεργεσαῖον"
+          },
+          {
+            "target_ref": "1Chr.1.15",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ τὸν Εὐαῖον καὶ τὸν Ἀρουκαῖον καὶ τὸν Ἀσενναῖον"
+          },
+          {
+            "target_ref": "1Chr.1.16",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ τὸν Ἀράδιον καὶ τὸν Σαμαραῖον καὶ τὸν Ἀμαθί"
+          },
+          {
+            "target_ref": "1Chr.1.17",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "Υἱοὶ Σήμ Αἰλάμ καὶ Ἀσσούρ καὶ Ἀρφαξάδ"
+          },
+          {
+            "target_ref": "1Chr.1.18",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ Ἀρφαξὰδ ἐγέννησεν τὸν Καϊνᾶν καὶ Καϊνᾶν ἐγέννησεν τὸν Σαλά καὶ Σαλὰ ἐγέννησεν τὸν Ἐβέρ"
+          },
+          {
+            "target_ref": "1Chr.1.19",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ τῷ Ἐβὲρ ἐγεννήθησαν δύο υἱοί ὄνομα τῷ ἑνὶ Φάλεκ ὅτι ἐν ταῖς ἡμέραις αὐτοῦ διεμερίσθη ἡ γῆ καὶ ὄνομα τῷ ἀδελφῷ αὐτοῦ Ἰεκτάν"
+          },
+          {
+            "target_ref": "1Chr.1.20",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ Ἰεκτὰν ἐγέννησεν τὸν Ἐλμωδὰδ καὶ τὸν Σαλὲφ καὶ τὸν Ἀραμὼθ"
+          },
+          {
+            "target_ref": "1Chr.1.21",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ τὸν Κεδουρὰν καὶ τὸν Αἰγὴν καὶ τὸν Δεκλὰμ"
+          },
+          {
+            "target_ref": "1Chr.1.22",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ τὸν Γεμιὰν καὶ τὸν Ἀβιμέκλ καὶ τὸν Σαβὰν"
+          },
+          {
+            "target_ref": "1Chr.1.23",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ τὸν Οὐφεὶρ καὶ τὸν Εὐὶ καὶ τὸν Ὠράμ πάντες οὗτοι υἱοὶ Ἰεκτάν"
+          },
+          {
+            "target_ref": "1Chr.16.24",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "Ἐξηγεῖσθε ἐν τοῖς ἔθνεσι τὴν δόξαν αὐτοῦ ἐν πᾶσι τοῖς λαοῖς τὰ θαυμάσια αὐτοῦ"
+          },
+          {
+            "target_ref": "1Kgs.6.11",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "Καὶ ἐγένετο λόγος Κυρίου πρὸς Σαλωμὼν λέγων"
+          },
+          {
+            "target_ref": "1Kgs.6.12",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "ὁ οἶκος οὗτος ὃν σὺ οἰκοδομεῖς ἐὰν ὁδεύῃς τοῖς προστάγμασί μου καὶ τὰ κρίματά μου ποιῇς καὶ φυλάσσῃς πάσας τὰς ἔντολάς μου ἀναστρέφεσθαι ἐν αὐταῖς στήσω τὸν λόγον μου ὃν ἐλάλησα πρὸς Δαυὶδ τὸν πατέρα σου"
+          },
+          {
+            "target_ref": "1Kgs.6.13",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ κατασκηνώσω ἐν μέσῳ υἱῶν Ἰσραὴλ καὶ οὐκ ἐγκαταλείψω τὸν λαόν μου Ἰσραήλ"
+          },
+          {
+            "target_ref": "1Kgs.6.14",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ ᾠκοδόμησε Σαλωμὼν τὸν οἶκον καὶ συνετέλεσε αὐτόν"
+          },
+          {
+            "target_ref": "1Kgs.15.32",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ πόλεμος ἦν ἀνὰ μέσον Ἀσὰ καὶ ἀνὰ μέσον Βαασὰ βασιλέως Ἰσραὴλ πάσας τὰς ἡμέρας αὐτῶν"
+          },
+          {
+            "target_ref": "Neh.3.7",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "καὶ ἐπὶ χεῖρα αὐτῶν ἐκράτησεν Μαλτίας ὁ Γαβαωνίτης καὶ Εὐάρων ὁ Μηρωνωθίτης ἄνδρες τῆς Γαβαὼν καὶ τῆς Μασφὰ ἕως θρόνου τοῦ ἄρχοντος τοῦ πέραν τοῦ ποταμοῦ"
+          },
+          {
+            "target_ref": "Ps.116.14",
+            "status": "manual_external_swete_crosswire_omission_literal_without_guessed_strong",
+            "note": "CrossWire omits the distinct row. Owner approved the Swete public-domain ancient Greek reading without guessed Strong numbers.",
+            "tagged_text": "τὰς εὐχάς μου τῷ κυρίῳ ἀποδώσω ἐναντίον παντὸς τοῦ λαοῦ αὐτοῦ"
+          },
+          {
+            "target_ref": "Num.6.23",
+            "status": "manual_preserve_canonical_prefix_before_tail_split",
+            "note": "Preserve the canonical Num.6.23 blessing-introduction prefix after splitting the appended Num.6.27 clause from the same CrossWire source row.",
+            "spans": [
+              {
+                "source_ref": "Num.6.23",
+                "token_start": 0,
+                "token_end": 14
+              }
+            ]
+          },
+          {
+            "target_ref": "Num.6.27",
+            "status": "manual_embedded_tail_token_span",
+            "note": "CrossWire Num.6.23 appends the canonical Num.6.27 putting-my-name-and-I-will-bless-them clause after its Num.6.23 prefix.",
+            "spans": [
+              {
+                "source_ref": "Num.6.23",
+                "token_start": 14,
+                "token_end": 28
+              }
+            ]
+          },
+          {
+            "target_ref": "Josh.15.59",
+            "status": "manual_canonical_prefix_before_lxx_only_milestone",
+            "note": "CrossWire Josh.15.59 contains the canonical six-city row followed by LXX-only 15.59a material. Keep only the canonical prefix in the fixed KJV-grid target.",
+            "spans": [
+              {
+                "source_ref": "Josh.15.59",
+                "token_start": 0,
+                "token_end": 12
+              }
+            ]
+          },
+          {
+            "target_ref": "1Kgs.11.3",
+            "status": "manual_embedded_wives_concubines_token_span",
+            "note": "CrossWire 1Kgs.11.1 embeds the alternate-witness 700 princesses and 300 concubines line corresponding to fixed KJV-grid target 1Kgs.11.3.",
+            "spans": [
+              {
+                "source_ref": "1Kgs.11.1",
+                "token_start": 7,
+                "token_end": 14
+              }
+            ]
+          },
+          {
+            "target_ref": "1Chr.1.24",
+            "status": "manual_compact_genealogy_merge",
+            "note": "CrossWire 1Chr.1.11 preserves the compact sons-of-Shem list and 1Chr.1.12 preserves Shelah; merge both source rows into fixed KJV-grid target 1Chr.1.24.",
+            "spans": [
+              {
+                "source_ref": "1Chr.1.11"
+              },
+              {
+                "source_ref": "1Chr.1.12"
+              }
+            ]
+          },
+          {
+            "target_ref": "Ps.11.1",
+            "status": "manual_psalm_heading_prefix_split",
+            "note": "CrossWire LXX Ps.10.1 begins with a six-token superscription before the canonical KJV-grid Ps.11.1 verse text.",
+            "spans": [
+              {
+                "source_ref": "Ps.10.1",
+                "token_start": 6,
+                "token_end": 21
+              }
+            ]
+          },
+          {
+            "target_ref": "Ps.29.1",
+            "status": "manual_psalm_heading_prefix_split",
+            "note": "CrossWire LXX Ps.28.1 begins with a five-token superscription before the canonical KJV-grid Ps.29.1 verse text.",
+            "spans": [
+              {
+                "source_ref": "Ps.28.1",
+                "token_start": 5,
+                "token_end": 21
+              }
+            ]
+          },
+          {
+            "target_ref": "Ps.116.10",
+            "status": "manual_psalm_heading_prefix_split",
+            "note": "CrossWire LXX Ps.115.1 begins with the alleluia heading before the canonical KJV-grid Ps.116.10 verse text.",
+            "spans": [
+              {
+                "source_ref": "Ps.115.1",
+                "token_start": 1,
+                "token_end": 8
+              }
+            ]
+          },
+          {
+            "target_ref": "Ps.138.1",
+            "status": "manual_psalm_heading_prefix_split",
+            "note": "CrossWire LXX Ps.137.1 begins with the to-David heading before the canonical KJV-grid Ps.138.1 verse text.",
+            "spans": [
+              {
+                "source_ref": "Ps.137.1",
+                "token_start": 2,
+                "token_end": 21
+              }
+            ]
+          },
+          {
+            "target_ref": "Prov.16.6",
+            "status": "manual_embedded_composite_tail_token_span",
+            "note": "CrossWire Prov.15.27 appends the mercy-faith-fear-of-the-Lord line corresponding to fixed KJV-grid target Prov.16.6.",
+            "spans": [
+              {
+                "source_ref": "Prov.15.27",
+                "token_start": 10,
+                "token_end": 23
+              }
+            ]
+          },
+          {
+            "target_ref": "Prov.16.7",
+            "status": "manual_embedded_composite_tail_token_span",
+            "note": "CrossWire Prov.15.28 appends the acceptable-righteous-ways and enemies-become-friends line corresponding to fixed KJV-grid target Prov.16.7.",
+            "spans": [
+              {
+                "source_ref": "Prov.15.28",
+                "token_start": 9,
+                "token_end": 23
+              }
+            ]
+          },
+          {
+            "target_ref": "Prov.16.8",
+            "status": "manual_embedded_composite_tail_token_span",
+            "note": "CrossWire Prov.15.29 appends the better-little-with-righteousness line corresponding to fixed KJV-grid target Prov.16.8.",
+            "spans": [
+              {
+                "source_ref": "Prov.15.29",
+                "token_start": 10,
+                "token_end": 20
+              }
+            ]
+          },
+          {
+            "target_ref": "Prov.16.9",
+            "status": "manual_embedded_composite_tail_token_span",
+            "note": "CrossWire Prov.15.29 appends the corrected-steps line corresponding to fixed KJV-grid target Prov.16.9.",
+            "spans": [
+              {
+                "source_ref": "Prov.15.29",
+                "token_start": 20,
+                "token_end": 32
+              }
+            ]
+          },
+          {
+            "target_ref": "Prov.20.20",
+            "status": "manual_embedded_milestone_token_span",
+            "note": "CrossWire Prov.20.9 milestone 9a contains the lamp-of-one-reviling-parents line corresponding to fixed KJV-grid target Prov.20.20.",
+            "spans": [
+              {
+                "source_ref": "Prov.20.9",
+                "token_start": 13,
+                "token_end": 27
+              }
+            ]
+          },
+          {
+            "target_ref": "Prov.20.21",
+            "status": "manual_embedded_milestone_token_span",
+            "note": "CrossWire Prov.20.9 milestone 9b contains the hastily-gotten-portion line corresponding to fixed KJV-grid target Prov.20.21.",
+            "spans": [
+              {
+                "source_ref": "Prov.20.9",
+                "token_start": 27,
+                "token_end": 36
+              }
+            ]
+          },
+          {
+            "target_ref": "Prov.20.22",
+            "status": "manual_embedded_milestone_token_span",
+            "note": "CrossWire Prov.20.9 milestone 9c contains the wait-on-the-Lord line corresponding to fixed KJV-grid target Prov.20.22.",
+            "spans": [
+              {
+                "source_ref": "Prov.20.9",
+                "token_start": 36,
+                "token_end": 48
+              }
+            ]
+          },
+          {
+            "target_ref": "Exod.35.17",
+            "status": "manual_embedded_compact_inventory_token_span",
+            "note": "CrossWire Exod.35.11 stores the court-hangings and pillars line between already selected neighboring compact-inventory spans.",
+            "spans": [
+              {
+                "source_ref": "Exod.35.11",
+                "token_start": 16,
+                "token_end": 25
+              }
+            ]
+          },
+          {
+            "target_ref": "Exod.35.19",
+            "status": "manual_compact_inventory_canonical_prefix",
+            "note": "CrossWire Exod.35.15 begins with the holy garments and sons-of-Aaron priesthood line. Exclude its appended anointing-oil and incense material from this fixed KJV-grid target.",
+            "spans": [
+              {
+                "source_ref": "Exod.35.15",
+                "token_start": 0,
+                "token_end": 24
+              }
+            ]
+          },
+          {
+            "target_ref": "1Kgs.2.35",
+            "status": "manual_canonical_prefix_before_long_lxx_supplement",
+            "note": "CrossWire 1Kgs.2.35 begins with the complete canonical Benaiah/Zadok row and then appends a long LXX supplement. Keep only the canonical prefix.",
+            "spans": [
+              {
+                "source_ref": "1Kgs.2.35",
+                "token_start": 0,
+                "token_end": 32
+              }
+            ]
+          },
+          {
+            "target_ref": "1Kgs.11.43",
+            "status": "manual_burial_succession_split_around_moved_narrative",
+            "note": "CrossWire 1Kgs.11.39 combines Solomon burial, a moved Jeroboam-return narrative, and Rehoboam succession. Join only the burial prefix and succession tail for fixed KJV-grid target 1Kgs.11.43.",
+            "spans": [
+              {
+                "source_ref": "1Kgs.11.39",
+                "token_start": 0,
+                "token_end": 16
+              },
+              {
+                "source_ref": "1Kgs.11.39",
+                "token_start": 62,
+                "token_end": 69
+              }
+            ]
+          },
+          {
+            "target_ref": "Gen.31.48",
+            "status": "manual_preserve_composite_native_row_before_embedded_repeat",
+            "note": "Preserve the complete native CrossWire Gen.31.48 composite row after reusing its embedded behold-this-heap-and-pillar span for fixed KJV-grid Gen.31.51.",
+            "spans": [
+              {
+                "source_ref": "Gen.31.48"
+              }
+            ]
+          },
+          {
+            "target_ref": "Gen.31.51",
+            "status": "manual_embedded_composite_repeat_token_span",
+            "note": "CrossWire Gen.31.48 embeds the behold-this-heap-and-pillar clause corresponding to separately retained fixed KJV-grid target Gen.31.51. Reuse only that opening span while preserving native Gen.31.48.",
+            "spans": [
+              {
+                "source_ref": "Gen.31.48",
+                "token_start": 0,
+                "token_end": 20
+              }
+            ]
+          },
+          {
+            "target_ref": "1Kgs.4.26",
+            "status": "manual_alexandrinus_like_embedded_horse_stall_token_span",
+            "note": "CrossWire 1Kgs.2.46 embeds the Alexandrinus-like 40,000 brood-mares and 12,000 horsemen row corresponding to fixed KJV-grid target 1Kgs.4.26. Prefer this controlled witness span over the 4,000 variant in source 1Kgs.10.26.",
+            "spans": [
+              {
+                "source_ref": "1Kgs.2.46",
+                "token_start": 234,
+                "token_end": 247
+              }
+            ]
+          },
+          {
+            "target_ref": "Exod.37.4",
+            "status": "manual_ark_staves_split_from_compact_ark_table_row",
+            "note": "CrossWire Exod.38.11 combines ark and table staves. Join the ark-staves prefix with the shared made-and-overlaid-gold tail, excluding the table-staves insertion.",
+            "spans": [
+              {
+                "source_ref": "Exod.38.11",
+                "token_start": 0,
+                "token_end": 5
+              },
+              {
+                "source_ref": "Exod.38.11",
+                "token_start": 8,
+                "token_end": 13
+              }
+            ]
+          },
+          {
+            "target_ref": "1Kgs.9.17",
+            "status": "manual_embedded_gezer_build_tail_token_span",
+            "note": "CrossWire 1Kgs.5.10 embeds Pharaoh/Gezer material for fixed KJV-grid 1Kgs.9.16 and appends Solomon-built-Gezer material corresponding to target 1Kgs.9.17.",
+            "spans": [
+              {
+                "source_ref": "1Kgs.5.10",
+                "token_start": 81,
+                "token_end": 86
+              }
+            ]
+          },
+          {
+            "target_ref": "1Kgs.11.25",
+            "status": "manual_alexandrinus_like_adversary_token_span",
+            "note": "CrossWire 1Kgs.11.13 embeds the Alexandrinus-like adversary-to-Israel-all-the-days-of-Solomon line corresponding to fixed KJV-grid target 1Kgs.11.25.",
+            "spans": [
+              {
+                "source_ref": "1Kgs.11.13",
+                "token_start": 36,
+                "token_end": 45
+              }
+            ]
+          },
+          {
+            "target_ref": "Jer.27.14",
+            "status": "manual_embedded_false_prophecy_tail_token_span",
+            "note": "CrossWire Jer.34.10 and the opening of Jer.34.11 form fixed KJV-grid Jer.27.12; the remaining Jer.34.11 tail is the false-prophecy clause corresponding to target Jer.27.14.",
+            "spans": [
+              {
+                "source_ref": "Jer.34.11",
+                "token_start": 5,
+                "token_end": 10
+              }
+            ]
           }
         ]
       }
@@ -33334,36 +33953,14 @@
           "method": "Normalize GreekDoc target Greek columns and CrossWire source tokens; keep only one exact contiguous source span, collapsing duplicate witness-column hits.",
           "token_indexing": "zero_based_start_exclusive_end",
           "rules_count": 252,
-          "unmatched_count": 39,
+          "unmatched_count": 14,
           "match_status_counts": {
-            "not_unique_exact_match": 37,
-            "no_anchor": 1,
-            "no_table": 1
+            "not_unique_exact_match": 14
           },
           "remaining_after_db_write": true,
-          "db_date": "2026-05-30T17:10:10Z"
+          "db_date": "2026-05-31T05:52:51Z"
         },
         "items": [
-          {
-            "target_ref": "Gen.31.51",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "Gen.31.48"
-            ],
-            "evidence_note": "CrossWire source Gen.31.48 combines its ordinary heap-witness material with the behold-this-heap-and-pillar clause corresponding to target Gen.31.51. GreekDoc retains numbered 31.51. Token-span extraction is required during import.",
-            "book_register": "genesis",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_genesis_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/genesis31.html",
-            "control_word_counts": [
-              14,
-              14
-            ],
-            "source_word_count": 37
-          },
           {
             "target_ref": "Exod.28.23",
             "status": "represented_in_compact_source_requires_token_span_review",
@@ -33431,63 +34028,6 @@
             "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex28.html",
             "control_word_counts": [],
             "source_word_count": 55
-          },
-          {
-            "target_ref": "Exod.35.17",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.35.11"
-            ],
-            "reason": "Court hangings and pillars occur inside the compressed source inventory.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex35.html",
-            "control_word_counts": [
-              10,
-              8
-            ],
-            "source_word_count": 38
-          },
-          {
-            "target_ref": "Exod.35.19",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.35.15"
-            ],
-            "reason": "Holy garments line is present at the start of the compressed source verse.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 2,
-            "unique_span_count": 2,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex35.html",
-            "control_word_counts": [
-              34,
-              18
-            ],
-            "source_word_count": 34
-          },
-          {
-            "target_ref": "Exod.37.4",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.38.11"
-            ],
-            "reason": "Ark staves are combined with table staves in one source line.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex37.html",
-            "control_word_counts": [],
-            "source_word_count": 13
           },
           {
             "target_ref": "Exod.37.11",
@@ -33613,158 +34153,6 @@
             "source_word_count": 39
           },
           {
-            "target_ref": "Num.6.27",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "Num.6.23"
-            ],
-            "evidence_note": "CrossWire source Num.6.23 contains its ordinary blessing-introduction material followed by the putting-my-name-and-I-will-bless-them clause corresponding to target Num.6.27. GreekDoc preserves numbered 6.27 separately. Token-span extraction is required during import.",
-            "book_register": "numbers",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_numbers_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/num06.html",
-            "control_word_counts": [
-              14,
-              14
-            ],
-            "source_word_count": 28
-          },
-          {
-            "target_ref": "Josh.15.59",
-            "status": "represented_in_composite_source_row_requires_canonical_token_span_split",
-            "source_refs": [
-              "Josh.15.59"
-            ],
-            "evidence_note": "CrossWire source Josh.15.59 contains canonical target 15.59 followed by OSIS milestone (59.a), matching GreekDoc 15:59a LXX-only city-list material. Keep target blank until canonical-prefix extraction.",
-            "book_register": "joshua",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_joshua_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 2,
-            "unique_span_count": 2,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/joshua15.html",
-            "control_word_counts": [
-              12,
-              12
-            ],
-            "source_word_count": 84
-          },
-          {
-            "target_ref": "1Kgs.2.35",
-            "status": "represented_in_composite_source_row_requires_canonical_token_span_split",
-            "source_refs": [
-              "1Kgs.2.35"
-            ],
-            "evidence_note": "Whole-row import is unsafe: CrossWire source 2.35 contains canonical 2.35 opening plus a large appended Solomon supplement. Extract only the approved canonical token span for target 2.35.",
-            "book_register": "1kings",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1kings_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "no_anchor",
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1kings02.html"
-          },
-          {
-            "target_ref": "1Kgs.4.26",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.2.46",
-              "1Kgs.10.26"
-            ],
-            "evidence_note": "The Solomon horse/stall row occurs inside composite source 2.46 and again as a prefix of composite source 10.26. Select an approved witness span during import; do not place either source row whole.",
-            "book_register": "1kings",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1kings_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 2,
-            "unique_span_count": 2,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1kings04.html",
-            "control_word_counts": [
-              14,
-              14
-            ],
-            "source_word_count": 320
-          },
-          {
-            "target_ref": "1Kgs.9.17",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.5.10"
-            ],
-            "evidence_note": "Pharaoh/Gezer material corresponding to KJV 9.16 and part of 9.17 is embedded inside CrossWire source 5.10.",
-            "book_register": "1kings",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1kings_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1kings09.html",
-            "control_word_counts": [
-              5,
-              10
-            ],
-            "source_word_count": 86
-          },
-          {
-            "target_ref": "1Kgs.11.3",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.11.1"
-            ],
-            "evidence_note": "CrossWire source 11.1 combines the KJV strange-women opening with the wives/concubines line.",
-            "book_register": "1kings",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1kings_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1kings11.html",
-            "control_word_counts": [],
-            "source_word_count": 30
-          },
-          {
-            "target_ref": "1Kgs.11.25",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.11.13",
-              "1Kgs.11.22"
-            ],
-            "evidence_note": "CrossWire source 11.13 combines Hadad introduction and Rezon adversary material; source 11.22 is an additional compact adversary summary.",
-            "book_register": "1kings",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1kings_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 2,
-            "unique_span_count": 2,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1kings11.html",
-            "control_word_counts": [
-              35,
-              15
-            ],
-            "source_word_count": 71
-          },
-          {
-            "target_ref": "1Kgs.11.43",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.11.39"
-            ],
-            "evidence_note": "CrossWire source 11.39 combines Solomon burial/succession with a moved Jeroboam-return narrative.",
-            "book_register": "1kings",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1kings_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1kings11.html",
-            "control_word_counts": [
-              25,
-              70
-            ],
-            "source_word_count": 69
-          },
-          {
             "target_ref": "1Kgs.14.5",
             "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
             "source_refs": [
@@ -33820,372 +34208,12 @@
               30
             ],
             "source_word_count": 1017
-          },
-          {
-            "target_ref": "1Chr.1.24",
-            "status": "represented_in_composite_source_rows_requires_merge",
-            "source_refs": [
-              "1Chr.1.11",
-              "1Chr.1.12"
-            ],
-            "evidence_note": "CrossWire source 1.11 preserves the compact sons-of-Shem list and source 1.12 preserves Shelah. Merge both source rows into target 1.24 during import. GreekDoc displays the same compact Alexandrinus-like list under target 1.24.",
-            "book_register": "1chronicles",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1chronicles_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1chron01.html",
-            "control_word_counts": [
-              8
-            ],
-            "source_word_count": 8
-          },
-          {
-            "target_ref": "Ps.11.1",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Ps.10.1"
-            ],
-            "evidence_note": "Mechanical DP alignment joins one or more source rows containing a Psalm title or superscription with the KJV-grid canonical verse token span.",
-            "book_register": "psalms",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_psalms_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ps11.html",
-            "control_word_counts": [
-              15,
-              15
-            ],
-            "source_word_count": 21
-          },
-          {
-            "target_ref": "Ps.29.1",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Ps.28.1"
-            ],
-            "evidence_note": "Mechanical DP alignment joins one or more source rows containing a Psalm title or superscription with the KJV-grid canonical verse token span.",
-            "book_register": "psalms",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_psalms_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "no_table",
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ps29.html"
-          },
-          {
-            "target_ref": "Ps.116.10",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Ps.115.1"
-            ],
-            "evidence_note": "Manual control-page review identified an embedded Psalm heading prefix before the canonical verse token span.",
-            "book_register": "psalms",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_psalms_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 2,
-            "unique_span_count": 2,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ps116.html",
-            "control_word_counts": [
-              7,
-              8
-            ],
-            "source_word_count": 8
-          },
-          {
-            "target_ref": "Ps.138.1",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Ps.137.1"
-            ],
-            "evidence_note": "Manual control-page review identified an embedded Psalm heading prefix before the canonical verse token span.",
-            "book_register": "psalms",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_psalms_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ps138.html",
-            "control_word_counts": [
-              25,
-              26
-            ],
-            "source_word_count": 21
-          },
-          {
-            "target_ref": "Prov.16.6",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.15.27"
-            ],
-            "evidence_note": "The mercy/truth and fear-of-the-Lord segment follows ordinary target 15.27 content inside CrossWire source 15.27. Extract the token span during import.",
-            "book_register": "proverbs",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_proverbs_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/prov16.html",
-            "control_word_counts": [],
-            "source_word_count": 23
-          },
-          {
-            "target_ref": "Prov.16.7",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.15.28"
-            ],
-            "evidence_note": "The ways-pleasing-the-Lord and enemies-becoming-friends segment follows ordinary target 15.28 content inside CrossWire source 15.28. Extract the token span during import.",
-            "book_register": "proverbs",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_proverbs_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/prov16.html",
-            "control_word_counts": [
-              15,
-              15
-            ],
-            "source_word_count": 23
-          },
-          {
-            "target_ref": "Prov.16.8",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.15.29"
-            ],
-            "evidence_note": "The little-with-righteousness segment follows ordinary target 15.29 content inside CrossWire source 15.29. Extract the token span during import.",
-            "book_register": "proverbs",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_proverbs_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/prov16.html",
-            "control_word_counts": [
-              15,
-              15
-            ],
-            "source_word_count": 32
-          },
-          {
-            "target_ref": "Prov.16.9",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.15.29"
-            ],
-            "evidence_note": "The heart-devising and God-directing-steps segment follows the target 16.8 segment inside CrossWire source 15.29. Extract the token span during import.",
-            "book_register": "proverbs",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_proverbs_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/prov16.html",
-            "control_word_counts": [
-              14,
-              14
-            ],
-            "source_word_count": 32
-          },
-          {
-            "target_ref": "Prov.20.20",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.20.9"
-            ],
-            "evidence_note": "The cursing-father-or-mother segment follows ordinary target 20.9 content inside CrossWire source 20.9. GreekDoc marks target 20.20 N/A as a separate row.",
-            "book_register": "proverbs",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_proverbs_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/prov20.html",
-            "control_word_counts": [],
-            "source_word_count": 48
-          },
-          {
-            "target_ref": "Prov.20.21",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.20.9"
-            ],
-            "evidence_note": "The hastily-gotten-inheritance segment follows the target 20.20 segment inside CrossWire source 20.9. GreekDoc marks target 20.21 N/A as a separate row.",
-            "book_register": "proverbs",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_proverbs_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/prov20.html",
-            "control_word_counts": [],
-            "source_word_count": 48
-          },
-          {
-            "target_ref": "Prov.20.22",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.20.9"
-            ],
-            "evidence_note": "The wait-on-the-Lord segment follows the target 20.21 segment inside CrossWire source 20.9. GreekDoc marks target 20.22 N/A as a separate row.",
-            "book_register": "proverbs",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_proverbs_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/prov20.html",
-            "control_word_counts": [],
-            "source_word_count": 48
-          },
-          {
-            "target_ref": "Jer.27.14",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Jer.34.10",
-              "Jer.34.11",
-              "Jer.34.13"
-            ],
-            "evidence_note": "CrossWire source 34.10 and the opening of 34.11 form target 27.12; the remainder of 34.11 forms target 27.14. Source 34.13 combines targets 27.16 and 27.17. GreekDoc marks target 27.13 N/A.",
-            "book_register": "jeremiah",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_jeremiah_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 4,
-            "unique_span_count": 2,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/jer27.html",
-            "control_word_counts": [
-              5,
-              5
-            ],
-            "source_word_count": 65
           }
         ]
       }
     }
   },
   "remaining_target_resolution_by_book": {
-    "1Chr": {
-      "source_file": "lxx_to_kjv_1chronicles_remaining_target_resolution.json",
-      "content": {
-        "metadata": {
-          "purpose": "Exhaustive classification of currently blank 1 Chronicles KJV target refs after conservative whole-verse candidate mapping.",
-          "source": "scripts/bible_module/source_cache/crosswire_lxx.zip",
-          "controls": [
-            "https://greekdoc.com/DOCUMENTS/polyglot/1chron01.html",
-            "https://greekdoc.com/DOCUMENTS/polyglot/1chron16.html",
-            "https://raw.githubusercontent.com/farskipper/kjv/master/json/verses-1769.json research-only KJV semantic reference"
-          ],
-          "sqlite_modified": false
-        },
-        "summary": {
-          "remaining_target_refs": 15,
-          "by_status": {
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control": 14,
-            "represented_in_composite_source_rows_requires_merge": 1
-          }
-        },
-        "items": [
-          {
-            "target_ref": "1Chr.1.11",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the Mizraim descendants row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.12",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the Pathrusim/Casluhim/Caphthorim row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.13",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the Canaan/Zidon/Heth row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.14",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the Jebusite/Amorite/Girgashite row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.15",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the Hivite/Arkite/Sinite row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.16",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the Arvadite/Zemarite/Hamathite row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.17",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire has no distinct target 1.17 row. Its later compact target 1.24 material overlaps the Shem list but must not be duplicated into this target. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.18",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire has no distinct Arphaxad/Shelah/Eber genealogy row. Its later compact target 1.24 material contains a Shelah segment but must not be duplicated into this target. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.19",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the Eber/Peleg/Joktan row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.20",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the first Joktan descendants row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.21",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the second Joktan descendants row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.22",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the third Joktan descendants row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.23",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the final Joktan descendants row. GreekDoc retains the LXX row."
-          },
-          {
-            "target_ref": "1Chr.1.24",
-            "status": "represented_in_composite_source_rows_requires_merge",
-            "source_refs": [
-              "1Chr.1.11",
-              "1Chr.1.12"
-            ],
-            "evidence_note": "CrossWire source 1.11 preserves the compact sons-of-Shem list and source 1.12 preserves Shelah. Merge both source rows into target 1.24 during import. GreekDoc displays the same compact Alexandrinus-like list under target 1.24."
-          },
-          {
-            "target_ref": "1Chr.16.24",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire source and target align through 16.23, then source 16.24 resumes with target 16.25 content. GreekDoc preserves the target 16.24 declare-glory-among-the-nations row in both displayed Greek columns."
-          }
-        ]
-      }
-    },
     "1Kgs": {
       "source_file": "lxx_to_kjv_1kings_remaining_target_resolution.json",
       "content": {
@@ -34200,26 +34228,16 @@
           "last_update_note": "GreekDoc polyglot audit resolved the former 36 probable rows and added six newly exposed hidden-composite canonical targets after unsafe whole-row exclusions."
         },
         "summary": {
-          "remaining_target_refs": 80,
+          "remaining_target_refs": 60,
           "by_status": {
-            "represented_in_composite_source_row_requires_canonical_token_span_split": 6,
-            "represented_in_composite_source_requires_token_span_split": 40,
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control": 5,
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness": 9,
+            "represented_in_composite_source_row_requires_canonical_token_span_split": 5,
+            "represented_in_composite_source_requires_token_span_split": 35,
             "confirmed_unrepresented_in_lxx_control": 7,
             "represented_in_long_lxx_supplement_requires_token_span_review": 1,
             "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review": 12
           }
         },
         "items": [
-          {
-            "target_ref": "1Kgs.2.35",
-            "status": "represented_in_composite_source_row_requires_canonical_token_span_split",
-            "source_refs": [
-              "1Kgs.2.35"
-            ],
-            "evidence_note": "Whole-row import is unsafe: CrossWire source 2.35 contains canonical 2.35 opening plus a large appended Solomon supplement. Extract only the approved canonical token span for target 2.35."
-          },
           {
             "target_ref": "1Kgs.2.46",
             "status": "represented_in_composite_source_row_requires_canonical_token_span_split",
@@ -34259,15 +34277,6 @@
               "1Kgs.2.46"
             ],
             "evidence_note": "CrossWire source 2.46 contains its ordinary 2.46 opening plus an appended Alexandrinus-style Solomon block. GreekDoc target text is present inside that composite row; token-span extraction is required."
-          },
-          {
-            "target_ref": "1Kgs.4.26",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.2.46",
-              "1Kgs.10.26"
-            ],
-            "evidence_note": "The Solomon horse/stall row occurs inside composite source 2.46 and again as a prefix of composite source 10.26. Select an approved witness span during import; do not place either source row whole."
           },
           {
             "target_ref": "1Kgs.4.27",
@@ -34318,36 +34327,6 @@
               "1Kgs.6.1"
             ],
             "evidence_note": "CrossWire source 6.1 contains the KJV 6.1 temple-start line together with moved foundation and completion material."
-          },
-          {
-            "target_ref": "1Kgs.6.11",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 6.11 in both displayed Greek witnesses, but no distinct CrossWire source row remains after sequence-aware review."
-          },
-          {
-            "target_ref": "1Kgs.6.12",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 6.12 in both displayed Greek witnesses, but no distinct CrossWire source row remains after sequence-aware review."
-          },
-          {
-            "target_ref": "1Kgs.6.13",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 6.13 in both displayed Greek witnesses, but no distinct CrossWire source row remains after sequence-aware review."
-          },
-          {
-            "target_ref": "1Kgs.6.14",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 6.14 in both displayed Greek witnesses, but no distinct CrossWire source row remains after sequence-aware review."
-          },
-          {
-            "target_ref": "1Kgs.6.18",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 6.18 in Alexandrinus while Vaticanus is N/A; CrossWire does not retain a distinct row."
           },
           {
             "target_ref": "1Kgs.6.36",
@@ -34444,14 +34423,6 @@
             "evidence_note": "Pharaoh/Gezer material corresponding to KJV 9.16 and part of 9.17 is embedded inside CrossWire source 5.10."
           },
           {
-            "target_ref": "1Kgs.9.17",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.5.10"
-            ],
-            "evidence_note": "Pharaoh/Gezer material corresponding to KJV 9.16 and part of 9.17 is embedded inside CrossWire source 5.10."
-          },
-          {
             "target_ref": "1Kgs.9.18",
             "status": "represented_in_composite_source_requires_token_span_split",
             "source_refs": [
@@ -34536,14 +34507,6 @@
             "evidence_note": "CrossWire source 11.1 combines the KJV strange-women opening with the wives/concubines line."
           },
           {
-            "target_ref": "1Kgs.11.3",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.11.1"
-            ],
-            "evidence_note": "CrossWire source 11.1 combines the KJV strange-women opening with the wives/concubines line."
-          },
-          {
             "target_ref": "1Kgs.11.14",
             "status": "represented_in_composite_source_requires_token_span_split",
             "source_refs": [
@@ -34571,27 +34534,10 @@
             "evidence_note": "CrossWire source 11.13 combines Hadad introduction and Rezon adversary material; source 11.22 is an additional compact adversary summary."
           },
           {
-            "target_ref": "1Kgs.11.25",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.11.13",
-              "1Kgs.11.22"
-            ],
-            "evidence_note": "CrossWire source 11.13 combines Hadad introduction and Rezon adversary material; source 11.22 is an additional compact adversary summary."
-          },
-          {
             "target_ref": "1Kgs.11.39",
             "status": "confirmed_unrepresented_in_lxx_control",
             "source_refs": [],
             "evidence_note": "GreekDoc polyglot marks target 11.39 N/A in both displayed Greek witnesses."
-          },
-          {
-            "target_ref": "1Kgs.11.43",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "1Kgs.11.39"
-            ],
-            "evidence_note": "CrossWire source 11.39 combines Solomon burial/succession with a moved Jeroboam-return narrative."
           },
           {
             "target_ref": "1Kgs.12.2",
@@ -34670,24 +34616,6 @@
             "evidence_note": "The long source 12.22 supplement includes parallels to the sick child, wife journey, and Ahijah encounter account."
           },
           {
-            "target_ref": "1Kgs.14.7",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 14.7 in Alexandrinus while Vaticanus is N/A; CrossWire does not retain a distinct row."
-          },
-          {
-            "target_ref": "1Kgs.14.8",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 14.8 in Alexandrinus while Vaticanus is N/A; CrossWire does not retain a distinct row."
-          },
-          {
-            "target_ref": "1Kgs.14.9",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 14.9 in Alexandrinus while Vaticanus is N/A; CrossWire does not retain a distinct row."
-          },
-          {
             "target_ref": "1Kgs.14.10",
             "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
             "source_refs": [
@@ -34720,24 +34648,6 @@
             "evidence_note": "The source 12.22 supplement compresses the cut-off-house, dogs/birds, return-home, and mourning lines corresponding to KJV 14.10-13."
           },
           {
-            "target_ref": "1Kgs.14.14",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 14.14 in Alexandrinus while Vaticanus is N/A; CrossWire does not retain a distinct row."
-          },
-          {
-            "target_ref": "1Kgs.14.15",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 14.15 in Alexandrinus while Vaticanus is N/A; CrossWire does not retain a distinct row."
-          },
-          {
-            "target_ref": "1Kgs.14.16",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 14.16 in Alexandrinus while Vaticanus is N/A; CrossWire does not retain a distinct row."
-          },
-          {
             "target_ref": "1Kgs.14.17",
             "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
             "source_refs": [
@@ -34754,28 +34664,10 @@
             "evidence_note": "The source 12.22 supplement includes the wife return, child death, and mourning parallel."
           },
           {
-            "target_ref": "1Kgs.14.19",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 14.19 in Alexandrinus while Vaticanus is N/A; CrossWire does not retain a distinct row."
-          },
-          {
-            "target_ref": "1Kgs.14.20",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 14.20 in Alexandrinus while Vaticanus is N/A; CrossWire does not retain a distinct row."
-          },
-          {
             "target_ref": "1Kgs.15.6",
             "status": "confirmed_unrepresented_in_lxx_control",
             "source_refs": [],
             "evidence_note": "GreekDoc polyglot marks target 15.6 N/A in both displayed Greek witnesses."
-          },
-          {
-            "target_ref": "1Kgs.15.32",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "GreekDoc polyglot preserves target 15.32 in both displayed Greek witnesses, but no distinct CrossWire source row remains after sequence-aware review."
           },
           {
             "target_ref": "1Kgs.16.28",
@@ -34830,12 +34722,11 @@
           "important_note": "The long MT/KJV plus material in 1 Samuel 17-18 must remain blank in an LXX module; it is not a versification error."
         },
         "summary": {
-          "remaining_target_refs": 40,
+          "remaining_target_refs": 39,
           "by_status": {
             "confirmed_unrepresented_in_lxx_control": 1,
-            "represented_in_milestone_source_row_requires_canonical_token_span_split": 1,
             "short_greek_recension_lacks_long_mt_kjv_material": 37,
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness": 1
+            "represented_in_milestone_source_row_requires_canonical_token_span_split": 1
           }
         },
         "resolutions": [
@@ -35030,11 +34921,6 @@
             "reason": "Known minus in the shorter Greek 1 Samuel 17-18 account followed by CrossWire: do not synthesize the longer MT/KJV material into LXX text."
           },
           {
-            "target_ref": "1Sam.23.12",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "reason": "CrossWire source 23.12 aligns with KJV 23.13. GreekDoc polyglot 1sam23.html marks target 23.12 N/A in Alexandrinus but preserves the second Keilah-delivery question and answer in Vaticanus."
-          },
-          {
             "target_ref": "1Sam.30.28",
             "status": "represented_in_milestone_source_row_requires_canonical_token_span_split",
             "source_refs": [
@@ -35126,10 +35012,9 @@
           "sqlite_modified": false
         },
         "summary": {
-          "remaining_target_refs": 10,
+          "remaining_target_refs": 8,
           "by_status": {
             "represented_in_composite_source_row_requires_canonical_token_span_split": 5,
-            "represented_in_expanded_lxx_source_row_requires_addition_policy": 2,
             "confirmed_unrepresented_in_lxx_control": 3
           }
         },
@@ -35173,22 +35058,6 @@
             "evidence_note": "GreekDoc marks target 4.6 N/A in all displayed controls. CrossWire source 4.6 resumes with target 4.7 content."
           },
           {
-            "target_ref": "Esth.5.1",
-            "status": "represented_in_expanded_lxx_source_row_requires_addition_policy",
-            "source_refs": [
-              "Esth.5.1"
-            ],
-            "evidence_note": "CrossWire source 5.1 preserves an expanded Addition D presentation of Esther approaching the king. Decide whether the canonical grid stores the expanded Greek row or a canonical span before import."
-          },
-          {
-            "target_ref": "Esth.5.2",
-            "status": "represented_in_expanded_lxx_source_row_requires_addition_policy",
-            "source_refs": [
-              "Esth.5.2"
-            ],
-            "evidence_note": "CrossWire source 5.2 continues the expanded Addition D scene around the king receiving Esther. Decide the canonical-grid representation together with target 5.1 before import."
-          },
-          {
             "target_ref": "Esth.8.12",
             "status": "represented_in_composite_source_row_requires_canonical_token_span_split",
             "source_refs": [
@@ -35221,10 +35090,9 @@
           "last_update_note": "GreekDoc Alexandrinus/Vaticanus primary-control audit resolved all 40 former probable absence/compression rows. High-risk compressed object rows remain explicit token-span review cases."
         },
         "summary": {
-          "remaining_target_refs": 69,
+          "remaining_target_refs": 65,
           "by_status": {
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control": 1,
-            "represented_in_compact_source_requires_token_span_review": 16,
+            "represented_in_compact_source_requires_token_span_review": 13,
             "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control": 3,
             "confirmed_unrepresented_in_lxx_control": 36,
             "represented_in_compact_source_requires_primary_placement": 3,
@@ -35234,12 +35102,6 @@
           }
         },
         "resolutions": [
-          {
-            "target_ref": "Exod.25.6",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "reason": "GreekDoc polyglot ex25.html preserves the oil-for-light and spices row in both displayed witnesses. Whole-ZIP search finds no equivalent CrossWire source row; nearby matches are only thematic tabernacle material."
-          },
           {
             "target_ref": "Exod.28.23",
             "status": "represented_in_compact_source_requires_token_span_review",
@@ -35326,26 +35188,10 @@
             "reason": "Incense altar/oil/incense material is partial and reordered across compressed inventory lines."
           },
           {
-            "target_ref": "Exod.35.17",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.35.11"
-            ],
-            "reason": "Court hangings and pillars occur inside the compressed source inventory."
-          },
-          {
             "target_ref": "Exod.35.18",
             "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [],
             "reason": "GreekDoc ex35.html fills the control cells with shifted LXX 35.17 inventory material, not the tabernacle/court pins and cords KJV semantic row."
-          },
-          {
-            "target_ref": "Exod.35.19",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.35.15"
-            ],
-            "reason": "Holy garments line is present at the start of the compressed source verse."
           },
           {
             "target_ref": "Exod.36.10",
@@ -35496,14 +35342,6 @@
             "status": "confirmed_unrepresented_in_lxx_control",
             "source_refs": [],
             "reason": "GreekDoc polyglot marks target 36.34 N/A in both displayed Greek witnesses."
-          },
-          {
-            "target_ref": "Exod.37.4",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.38.11"
-            ],
-            "reason": "Ark staves are combined with table staves in one source line."
           },
           {
             "target_ref": "Exod.37.10",
@@ -35731,10 +35569,9 @@
           "sqlite_modified": false
         },
         "summary": {
-          "remaining_target_refs": 6,
+          "remaining_target_refs": 5,
           "by_status": {
-            "confirmed_unrepresented_in_lxx_control": 5,
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness": 1
+            "confirmed_unrepresented_in_lxx_control": 5
           }
         },
         "items": [
@@ -35743,12 +35580,6 @@
             "status": "confirmed_unrepresented_in_lxx_control",
             "source_refs": [],
             "evidence_note": "GreekDoc marks target Ezek.1.14 N/A in both displayed Greek columns. CrossWire source 1.14 resumes with target 1.15 wheel content."
-          },
-          {
-            "target_ref": "Ezek.10.14",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "CrossWire source 10.14 resumes with target 10.15. GreekDoc shows witness variation: one Greek column marks 10.14 N/A while the other preserves bracketed four-faces text."
           },
           {
             "target_ref": "Ezek.27.31",
@@ -35773,44 +35604,6 @@
             "status": "confirmed_unrepresented_in_lxx_control",
             "source_refs": [],
             "evidence_note": "GreekDoc marks target Ezek.40.30 N/A in both displayed Greek columns. CrossWire source 40.29 aligns directly with target 40.29, and source 40.30 resumes with target 40.31 content."
-          }
-        ]
-      }
-    },
-    "Gen": {
-      "source_file": "lxx_to_kjv_genesis_remaining_target_resolution.json",
-      "content": {
-        "metadata": {
-          "purpose": "Exhaustive classification of currently blank Genesis KJV target refs after conservative whole-verse candidate mapping.",
-          "source": "scripts/bible_module/source_cache/crosswire_lxx.zip",
-          "controls": [
-            "https://greekdoc.com/DOCUMENTS/polyglot/genesis31.html",
-            "https://greekdoc.com/DOCUMENTS/polyglot/genesis35.html",
-            "https://raw.githubusercontent.com/farskipper/kjv/master/json/verses-1769.json research-only KJV semantic reference"
-          ],
-          "sqlite_modified": false
-        },
-        "summary": {
-          "remaining_target_refs": 2,
-          "by_status": {
-            "represented_in_composite_source_requires_token_span_split": 1,
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control": 1
-          }
-        },
-        "items": [
-          {
-            "target_ref": "Gen.31.51",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "Gen.31.48"
-            ],
-            "evidence_note": "CrossWire source Gen.31.48 combines its ordinary heap-witness material with the behold-this-heap-and-pillar clause corresponding to target Gen.31.51. GreekDoc retains numbered 31.51. Token-span extraction is required during import."
-          },
-          {
-            "target_ref": "Gen.35.21",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire source Gen.35.21 resumes with target 35.22 Reuben/Bilhah content. GreekDoc preserves the journey-and-tent-beyond-tower-of-Edar target 35.21 row in both displayed Greek columns, so this is source-specific."
           }
         ]
       }
@@ -35871,11 +35664,11 @@
           "sqlite_modified": false
         },
         "summary": {
-          "remaining_target_refs": 75,
+          "remaining_target_refs": 74,
           "by_status": {
-            "represented_in_composite_source_rows_requires_token_span_split_or_merge": 10,
+            "represented_in_composite_source_rows_requires_token_span_split_or_merge": 9,
             "confirmed_unrepresented_in_lxx_control": 64,
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control": 1
+            "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control": 1
           }
         },
         "items": [
@@ -35949,9 +35742,9 @@
           },
           {
             "target_ref": "Jer.10.10",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [],
-            "evidence_note": "GreekDoc preserves target 10.10 Greek text. CrossWire source 10.6 aligns with target 10.9 and source 10.7 resumes with target 10.11, so this is a source-specific omission."
+            "evidence_note": "GreekDoc displays an idol-description row under target 10.10, duplicating material semantically aligned elsewhere rather than the KJV living-God row. CrossWire source 10.6 aligns with target 10.9 and source 10.7 resumes with target 10.11. Keep the fixed KJV-grid row blank unless an ancient Greek source for the KJV-semantic row is found."
           },
           {
             "target_ref": "Jer.11.7",
@@ -36025,16 +35818,6 @@
             "status": "confirmed_unrepresented_in_lxx_control",
             "source_refs": [],
             "evidence_note": "GreekDoc marks target Jer.27.13 N/A in the displayed LXX controls. Keep the fixed KJV-grid row blank."
-          },
-          {
-            "target_ref": "Jer.27.14",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Jer.34.10",
-              "Jer.34.11",
-              "Jer.34.13"
-            ],
-            "evidence_note": "CrossWire source 34.10 and the opening of 34.11 form target 27.12; the remainder of 34.11 forms target 27.14. Source 34.13 combines targets 27.16 and 27.17. GreekDoc marks target 27.13 N/A."
           },
           {
             "target_ref": "Jer.27.16",
@@ -36379,9 +36162,9 @@
         "summary": {
           "remaining_target_refs": 6,
           "by_status": {
+            "represented_in_milestone_source_row_requires_canonical_token_span_split": 4,
             "confirmed_unrepresented_in_lxx_control": 1,
-            "represented_in_composite_source_row_requires_canonical_token_span_split": 1,
-            "represented_in_milestone_source_row_requires_canonical_token_span_split": 4
+            "represented_in_composite_source_row_requires_canonical_token_span_split": 1
           }
         },
         "items": [
@@ -36456,13 +36239,12 @@
           "sqlite_modified": false
         },
         "summary": {
-          "remaining_target_refs": 22,
+          "remaining_target_refs": 18,
           "by_status": {
-            "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control": 1,
             "confirmed_unrepresented_in_lxx_control": 5,
-            "represented_in_composite_source_row_requires_canonical_token_span_split": 7,
-            "represented_in_composite_source_row_requires_token_span_split": 6,
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control_witness": 3
+            "represented_in_composite_source_row_requires_canonical_token_span_split": 6,
+            "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control": 1,
+            "represented_in_composite_source_row_requires_token_span_split": 6
           }
         },
         "items": [
@@ -36485,14 +36267,6 @@
             "evidence_note": "GreekDoc marks the Levi-no-inheritance row 13.33 N/A in the displayed LXX controls. CrossWire source chapter 13 ends after target 13.32 content."
           },
           {
-            "target_ref": "Josh.15.59",
-            "status": "represented_in_composite_source_row_requires_canonical_token_span_split",
-            "source_refs": [
-              "Josh.15.59"
-            ],
-            "evidence_note": "CrossWire source Josh.15.59 contains canonical target 15.59 followed by OSIS milestone (59.a), matching GreekDoc 15:59a LXX-only city-list material. Keep target blank until canonical-prefix extraction."
-          },
-          {
             "target_ref": "Josh.19.47",
             "status": "represented_in_composite_source_row_requires_canonical_token_span_split",
             "source_refs": [
@@ -36507,24 +36281,6 @@
               "Josh.19.47"
             ],
             "evidence_note": "CrossWire source Josh.19.47 starts with KJV-grid target 19.48 inheritance content and then appends OSIS milestone (47.a) Amorite material. GreekDoc labels target 19:48 as [LXX 19:47]. Keep target blank until the reversed canonical prefix is extracted."
-          },
-          {
-            "target_ref": "Josh.20.4",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_witness",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the city-gate and elders procedure. GreekDoc is witness-sensitive: one displayed Greek column marks 20.4 N/A while another preserves the procedural row."
-          },
-          {
-            "target_ref": "Josh.20.5",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_witness",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the avenger-of-blood procedure. GreekDoc is witness-sensitive: one displayed Greek column marks 20.5 N/A while another preserves the procedural row."
-          },
-          {
-            "target_ref": "Josh.20.6",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_witness",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the congregation, high-priest-death, and return procedure. GreekDoc is witness-sensitive: one displayed Greek column marks 20.6 N/A while another preserves the procedural row."
           },
           {
             "target_ref": "Josh.21.42",
@@ -36641,31 +36397,12 @@
           "sqlite_modified": false
         },
         "summary": {
-          "remaining_target_refs": 4,
+          "remaining_target_refs": 1,
           "by_status": {
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness": 3,
             "confirmed_unrepresented_in_lxx_control": 1
           }
         },
         "items": [
-          {
-            "target_ref": "Lam.3.22",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "CrossWire source Lam.3.22 resumes with target 3.25. GreekDoc shows target 3.22 text in one displayed Greek witness and N/A in the other, so this is a selected-source omission rather than a universal LXX absence."
-          },
-          {
-            "target_ref": "Lam.3.23",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "CrossWire source Lam.3.22 resumes with target 3.25. GreekDoc shows target 3.23 text in one displayed Greek witness and N/A in the other, so this is a selected-source omission rather than a universal LXX absence."
-          },
-          {
-            "target_ref": "Lam.3.24",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_variant_witness",
-            "source_refs": [],
-            "evidence_note": "CrossWire source Lam.3.22 resumes with target 3.25. GreekDoc shows target 3.24 text in one displayed Greek witness and N/A in the other, so this is a selected-source omission rather than a universal LXX absence."
-          },
           {
             "target_ref": "Lam.3.29",
             "status": "confirmed_unrepresented_in_lxx_control",
@@ -36691,19 +36428,12 @@
           "sqlite_modified": false
         },
         "summary": {
-          "remaining_target_refs": 14,
+          "remaining_target_refs": 13,
           "by_status": {
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control": 1,
             "confirmed_unrepresented_in_lxx_control": 13
           }
         },
         "items": [
-          {
-            "target_ref": "Neh.3.7",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "CrossWire compact source 3.7 aligns with KJV 3.8. GreekDoc retains an LXX 3.7 row, so this is specifically a CrossWire source omission rather than a general LXX absence."
-          },
           {
             "target_ref": "Neh.4.6",
             "status": "confirmed_unrepresented_in_lxx_control",
@@ -36785,36 +36515,6 @@
         ]
       }
     },
-    "Num": {
-      "source_file": "lxx_to_kjv_numbers_remaining_target_resolution.json",
-      "content": {
-        "metadata": {
-          "purpose": "Exhaustive classification of currently blank Numbers KJV target refs after conservative whole-verse candidate mapping.",
-          "source": "scripts/bible_module/source_cache/crosswire_lxx.zip",
-          "controls": [
-            "https://greekdoc.com/DOCUMENTS/polyglot/num06.html",
-            "https://raw.githubusercontent.com/farskipper/kjv/master/json/verses-1769.json research-only KJV semantic reference"
-          ],
-          "sqlite_modified": false
-        },
-        "summary": {
-          "remaining_target_refs": 1,
-          "by_status": {
-            "represented_in_composite_source_requires_token_span_split": 1
-          }
-        },
-        "items": [
-          {
-            "target_ref": "Num.6.27",
-            "status": "represented_in_composite_source_requires_token_span_split",
-            "source_refs": [
-              "Num.6.23"
-            ],
-            "evidence_note": "CrossWire source Num.6.23 contains its ordinary blessing-introduction material followed by the putting-my-name-and-I-will-bless-them clause corresponding to target Num.6.27. GreekDoc preserves numbered 6.27 separately. Token-span extraction is required during import."
-          }
-        ]
-      }
-    },
     "Prov": {
       "source_file": "lxx_to_kjv_proverbs_remaining_target_resolution.json",
       "content": {
@@ -36838,13 +36538,11 @@
           "sqlite_modified": false
         },
         "summary": {
-          "remaining_target_refs": 60,
+          "remaining_target_refs": 51,
           "by_status": {
-            "confirmed_unrepresented_in_lxx_control": 17,
-            "represented_in_composite_source_row_requires_token_span_split": 7,
             "represented_in_milestone_source_row_requires_canonical_token_span_split": 33,
-            "unrepresented_as_kjv_semantic_row_lxx_variant_present": 1,
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control_witness": 2
+            "confirmed_unrepresented_in_lxx_control": 17,
+            "unrepresented_as_kjv_semantic_row_lxx_variant_present": 1
           }
         },
         "items": [
@@ -36953,38 +36651,6 @@
             "evidence_note": "GreekDoc marks the commit-thy-works row 16.3 N/A in the displayed LXX controls."
           },
           {
-            "target_ref": "Prov.16.6",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.15.27"
-            ],
-            "evidence_note": "The mercy/truth and fear-of-the-Lord segment follows ordinary target 15.27 content inside CrossWire source 15.27. Extract the token span during import."
-          },
-          {
-            "target_ref": "Prov.16.7",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.15.28"
-            ],
-            "evidence_note": "The ways-pleasing-the-Lord and enemies-becoming-friends segment follows ordinary target 15.28 content inside CrossWire source 15.28. Extract the token span during import."
-          },
-          {
-            "target_ref": "Prov.16.8",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.15.29"
-            ],
-            "evidence_note": "The little-with-righteousness segment follows ordinary target 15.29 content inside CrossWire source 15.29. Extract the token span during import."
-          },
-          {
-            "target_ref": "Prov.16.9",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.15.29"
-            ],
-            "evidence_note": "The heart-devising and God-directing-steps segment follows the target 16.8 segment inside CrossWire source 15.29. Extract the token span during import."
-          },
-          {
             "target_ref": "Prov.17.16",
             "status": "represented_in_milestone_source_row_requires_canonical_token_span_split",
             "source_refs": [
@@ -37069,30 +36735,6 @@
             "evidence_note": "GreekDoc marks the talebearer row 20.19 N/A."
           },
           {
-            "target_ref": "Prov.20.20",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.20.9"
-            ],
-            "evidence_note": "The cursing-father-or-mother segment follows ordinary target 20.9 content inside CrossWire source 20.9. GreekDoc marks target 20.20 N/A as a separate row."
-          },
-          {
-            "target_ref": "Prov.20.21",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.20.9"
-            ],
-            "evidence_note": "The hastily-gotten-inheritance segment follows the target 20.20 segment inside CrossWire source 20.9. GreekDoc marks target 20.21 N/A as a separate row."
-          },
-          {
-            "target_ref": "Prov.20.22",
-            "status": "represented_in_composite_source_row_requires_token_span_split",
-            "source_refs": [
-              "Prov.20.9"
-            ],
-            "evidence_note": "The wait-on-the-Lord segment follows the target 20.21 segment inside CrossWire source 20.9. GreekDoc marks target 20.22 N/A as a separate row."
-          },
-          {
             "target_ref": "Prov.20.9",
             "status": "represented_in_milestone_source_row_requires_canonical_token_span_split",
             "source_refs": [
@@ -37135,12 +36777,6 @@
               "Prov.22.8"
             ],
             "evidence_note": "Corrected raw-OSIS audit found sequential milestone material in Prov.22.8 milestones (9.a). The prior whole-row placement for target Prov.22.9 is unsafe. Keep the target blank until canonical token-span extraction or explicit relocation review is completed."
-          },
-          {
-            "target_ref": "Prov.23.23",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_witness",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the buy-truth row and source 23.23 resumes with target 23.24 content. GreekDoc is witness-sensitive: one displayed Greek column marks 23.23 N/A while another preserves the instruction."
           },
           {
             "target_ref": "Prov.24.22",
@@ -37261,12 +36897,6 @@
             "evidence_note": "Corrected raw-OSIS audit found sequential milestone material in Prov.8.21 milestones (21.a). The prior whole-row placement for target Prov.8.21 is unsafe. Keep the target blank until canonical token-span extraction or explicit relocation review is completed."
           },
           {
-            "target_ref": "Prov.8.33",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control_witness",
-            "source_refs": [],
-            "evidence_note": "CrossWire omits the hear-instruction row. GreekDoc is witness-sensitive: one displayed Greek column marks 8.33 N/A while another preserves the instruction. CrossWire source 8.33 instead combines the tail of target 8.32 with target 8.34 content."
-          },
-          {
             "target_ref": "Prov.9.10",
             "status": "represented_in_milestone_source_row_requires_canonical_token_span_split",
             "source_refs": [
@@ -37303,22 +36933,12 @@
           "sqlite_modified": false
         },
         "summary": {
-          "remaining_target_refs": 120,
+          "remaining_target_refs": 114,
           "by_status": {
-            "represented_in_composite_source_rows_requires_token_span_split_or_merge": 118,
-            "unrepresented_in_crosswire_source_but_present_in_lxx_control": 1,
-            "partially_represented_in_crosswire_source_missing_suffix": 1
+            "represented_in_composite_source_rows_requires_token_span_split_or_merge": 114
           }
         },
         "items": [
-          {
-            "target_ref": "Ps.11.1",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Ps.10.1"
-            ],
-            "evidence_note": "Mechanical DP alignment joins one or more source rows containing a Psalm title or superscription with the KJV-grid canonical verse token span."
-          },
           {
             "target_ref": "Ps.13.5",
             "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
@@ -37421,14 +37041,6 @@
             "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
             "source_refs": [
               "Ps.27.1"
-            ],
-            "evidence_note": "Mechanical DP alignment joins one or more source rows containing a Psalm title or superscription with the KJV-grid canonical verse token span."
-          },
-          {
-            "target_ref": "Ps.29.1",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Ps.28.1"
             ],
             "evidence_note": "Mechanical DP alignment joins one or more source rows containing a Psalm title or superscription with the KJV-grid canonical verse token span."
           },
@@ -37811,28 +37423,6 @@
             "evidence_note": "Mechanical DP alignment joins one or more source rows containing a Psalm title or superscription with the KJV-grid canonical verse token span."
           },
           {
-            "target_ref": "Ps.116.10",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Ps.115.1"
-            ],
-            "evidence_note": "Manual control-page review identified an embedded Psalm heading prefix before the canonical verse token span."
-          },
-          {
-            "target_ref": "Ps.116.14",
-            "status": "unrepresented_in_crosswire_source_but_present_in_lxx_control",
-            "source_refs": [],
-            "evidence_note": "GreekDoc Ps.116.14 preserves the vow-paying line, while CrossWire source Ps.115 skips that source row and resumes with target Ps.116.15."
-          },
-          {
-            "target_ref": "Ps.116.17",
-            "status": "partially_represented_in_crosswire_source_missing_suffix",
-            "source_refs": [
-              "Ps.115.7"
-            ],
-            "evidence_note": "CrossWire contains only the opening sacrifice-of-praise clause. GreekDoc Ps.116.17 also contains the call-on-the-name-of-the-Lord clause. Do not import the partial row as a complete target verse."
-          },
-          {
             "target_ref": "Ps.117.1",
             "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
             "source_refs": [
@@ -38175,14 +37765,6 @@
               "Ps.136.1"
             ],
             "evidence_note": "Mechanical DP alignment joins one or more source rows containing a Psalm title or superscription with the KJV-grid canonical verse token span."
-          },
-          {
-            "target_ref": "Ps.138.1",
-            "status": "represented_in_composite_source_rows_requires_token_span_split_or_merge",
-            "source_refs": [
-              "Ps.137.1"
-            ],
-            "evidence_note": "Manual control-page review identified an embedded Psalm heading prefix before the canonical verse token span."
           },
           {
             "target_ref": "Ps.139.1",

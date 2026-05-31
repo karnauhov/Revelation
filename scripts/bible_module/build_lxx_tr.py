@@ -37,8 +37,12 @@ DEFAULT_TARGET_PATH = (
     Path.home() / "Documents" / "revelation" / "db" / "bible_lxx_tr.sqlite"
 )
 
-LXX_TR_SCHEMA_VERSION = 2
+LXX_TR_SCHEMA_VERSION = 3
 LXX_TR_DATA_VERSION_INITIAL = 4
+MODULE_LICENSE_SUMMARY = (
+    "STEPBible CC BY 4.0 for TAGNT Textus Receptus data; "
+    "CrossWire LXX Copyrighted; Free non-commercial distribution for OT LXX data."
+)
 
 TAGNT_LOCKED_SOURCE_IDS = ("step_tagnt_mat_jhn", "step_tagnt_act_rev")
 
@@ -84,13 +88,8 @@ CREATE TABLE IF NOT EXISTS info (
   versification TEXT NOT NULL,
   license TEXT NOT NULL,
   source_summary TEXT NOT NULL,
-  schema_version INTEGER NOT NULL,
-  data_version INTEGER NOT NULL,
-  built_at TEXT NOT NULL,
   CHECK (length(trim(code)) > 0),
-  CHECK (length(trim(module_id)) > 0),
-  CHECK (schema_version > 0),
-  CHECK (data_version > 0)
+  CHECK (length(trim(module_id)) > 0)
 ) WITHOUT ROWID;
 
 CREATE TABLE IF NOT EXISTS verses (
@@ -140,7 +139,8 @@ class LxxProjectionSpan:
 @dataclass(frozen=True)
 class LxxProjectionRule:
     target_ref: str
-    spans: tuple[LxxProjectionSpan, ...]
+    spans: tuple[LxxProjectionSpan, ...] = ()
+    tagged_text: str | None = None
     status: str = "manual_token_span_projection"
     note: str = ""
 
@@ -149,6 +149,8 @@ class LxxProjectionRule:
 class LxxProjectionPlan:
     rules: tuple[LxxProjectionRule, ...]
     source_exclusions: tuple[str, ...] = ()
+    info_source_summary_notes: tuple[str, ...] = ()
+    info_license_notes: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -211,7 +213,11 @@ def build_lxx_tr_module(
         lxx_projection_rules=lxx_projection_plan.rules,
         lxx_source_exclusions=lxx_projection_plan.source_exclusions,
         include_identity_lxx_projection=True,
-        source_summary=_source_summary(manifest),
+        source_summary=_source_summary(
+            manifest,
+            additional_notes=lxx_projection_plan.info_source_summary_notes,
+        ),
+        license_summary=_license_summary(lxx_projection_plan.info_license_notes),
         data_version=data_version,
         built_at=built_at,
     )
@@ -314,6 +320,7 @@ def build_lxx_tr_module_from_tokens(
     lxx_source_exclusions: Sequence[str] = (),
     include_identity_lxx_projection: bool = False,
     source_summary: str,
+    license_summary: str = MODULE_LICENSE_SUMMARY,
     data_version: int = LXX_TR_DATA_VERSION_INITIAL,
     built_at: str | None = None,
 ) -> LxxTrBuildReport:
@@ -343,6 +350,7 @@ def build_lxx_tr_module_from_tokens(
                 data_version=data_version,
                 date_iso=actual_built_at,
                 source_summary=source_summary,
+                license_summary=license_summary,
             )
             _apply_verse_texts(connection, combined_texts)
             connection.commit()
@@ -391,6 +399,7 @@ def create_lxx_tr_schema(
     data_version: int,
     date_iso: str,
     source_summary: str,
+    license_summary: str = MODULE_LICENSE_SUMMARY,
 ) -> None:
     connection.execute("PRAGMA foreign_keys = ON")
     connection.execute(f"PRAGMA user_version = {LXX_TR_SCHEMA_VERSION}")
@@ -418,12 +427,9 @@ def create_lxx_tr_schema(
           canon,
           versification,
           license,
-          source_summary,
-          schema_version,
-          data_version,
-          built_at
+          source_summary
         )
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             MODULE_CODE,
@@ -438,12 +444,8 @@ def create_lxx_tr_schema(
             "grc",
             CANON_NAME,
             "kjv_protestant",
-            "STEPBible CC BY 4.0 for TAGNT Textus Receptus data; "
-            "CrossWire LXX Copyrighted; Free non-commercial distribution for OT LXX data.",
+            license_summary,
             source_summary,
-            LXX_TR_SCHEMA_VERSION,
-            data_version,
-            date_iso,
         ),
     )
     connection.executemany(
@@ -557,6 +559,7 @@ def build_lxx_verse_texts(
     }
 
     grouped: dict[int, list[LxxTaggedWord]] = defaultdict(list)
+    literal_texts: dict[int, str] = {}
     actual_refs: set[str] = set()
     extra_refs: set[str] = set()
     missing_refs: set[str] = set()
@@ -576,6 +579,30 @@ def build_lxx_verse_texts(
             continue
         if canonical_verse.canonical_ref in actual_refs:
             duplicate_target_refs.add(canonical_verse.canonical_ref)
+            continue
+
+        if rule.tagged_text is not None:
+            if rule.spans:
+                raise ValueError(
+                    "LXX projection rule must not mix spans and tagged_text: "
+                    f"{canonical_verse.canonical_ref}"
+                )
+            tagged_text = rule.tagged_text.strip()
+            if not tagged_text or not is_valid_tagged_text(tagged_text):
+                raise ValueError(
+                    "LXX projection tagged_text must use alternating word/Strong format: "
+                    f"{canonical_verse.canonical_ref}"
+                )
+            actual_refs.add(canonical_verse.canonical_ref)
+            literal_texts[canonical_verse.canonical_verse_id] = tagged_text
+            literal_words = _literal_tagged_words(tagged_text)
+            lxx_tokens_count += len(literal_words)
+            missing_strong_tokens.extend(
+                _literal_missing_strong_tokens(
+                    rule=rule,
+                    tagged_text=tagged_text,
+                )
+            )
             continue
 
         words: list[LxxTaggedWord] = []
@@ -646,6 +673,7 @@ def build_lxx_verse_texts(
         canonical_verse_id: _join_lxx_tagged_words(words)
         for canonical_verse_id, words in grouped.items()
     }
+    verse_texts.update(literal_texts)
     ordered_missing_refs = tuple(
         sorted(
             (expected_ot_ref_set - actual_refs) | missing_refs,
@@ -684,6 +712,14 @@ def load_lxx_projection_plan(path: Path | Sequence[Path] | None) -> LxxProjectio
                     }
                 )
             ),
+            info_source_summary_notes=_merge_projection_notes(
+                plans,
+                "info_source_summary_notes",
+            ),
+            info_license_notes=_merge_projection_notes(
+                plans,
+                "info_license_notes",
+            ),
         )
     data = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(data, Mapping) and isinstance(data.get("projection_inputs"), Mapping):
@@ -718,6 +754,14 @@ def _projection_plan_from_consolidated_mapping(
                 }
             )
         ),
+        info_source_summary_notes=_merge_projection_notes(
+            plans,
+            "info_source_summary_notes",
+        ),
+        info_license_notes=_merge_projection_notes(
+            plans,
+            "info_license_notes",
+        ),
     )
 
 
@@ -747,7 +791,44 @@ def _projection_plan_from_mapping(data: Mapping[str, object]) -> LxxProjectionPl
     return LxxProjectionPlan(
         rules=tuple(_parse_lxx_projection_rule(entry) for entry in rules_value),
         source_exclusions=source_exclusions,
+        info_source_summary_notes=_projection_metadata_notes(
+            data,
+            "info_source_summary_notes",
+        ),
+        info_license_notes=_projection_metadata_notes(
+            data,
+            "info_license_notes",
+        ),
     )
+
+
+def _merge_projection_notes(
+    plans: Sequence[LxxProjectionPlan],
+    attribute: str,
+) -> tuple[str, ...]:
+    return tuple(
+        dict.fromkeys(
+            note
+            for plan in plans
+            for note in getattr(plan, attribute)
+        )
+    )
+
+
+def _projection_metadata_notes(
+    data: Mapping[str, object],
+    key: str,
+) -> tuple[str, ...]:
+    metadata = data.get("metadata")
+    value = metadata.get(key) if isinstance(metadata, Mapping) else None
+    if value is None:
+        return ()
+    if not isinstance(value, list) or not all(
+        isinstance(item, str) and item.strip()
+        for item in value
+    ):
+        raise ValueError(f"LXX projection metadata {key} must contain strings")
+    return tuple(item.strip() for item in value)
 
 
 def validate_lxx_tr_database(db_path: Path) -> None:
@@ -780,6 +861,24 @@ def validate_lxx_tr_database(db_path: Path) -> None:
         ]
         if verse_columns != ["verse_key", "text"]:
             raise ValueError(f"LXX_TR verses columns mismatch: {verse_columns}")
+
+        info_columns = [
+            str(row[1])
+            for row in connection.execute("PRAGMA table_info(info)").fetchall()
+        ]
+        expected_info_columns = [
+            "code",
+            "module_id",
+            "title",
+            "description",
+            "language",
+            "canon",
+            "versification",
+            "license",
+            "source_summary",
+        ]
+        if info_columns != expected_info_columns:
+            raise ValueError(f"LXX_TR info columns mismatch: {info_columns}")
 
         metadata = dict(connection.execute("SELECT key, value FROM db_metadata"))
         if metadata.get(DB_METADATA_SCHEMA_VERSION_KEY) != str(LXX_TR_SCHEMA_VERSION):
@@ -1036,18 +1135,68 @@ def _join_lxx_tagged_words(words: Sequence[LxxTaggedWord]) -> str:
     return " ".join(parts)
 
 
+def _literal_tagged_words(tagged_text: str) -> tuple[str, ...]:
+    return tuple(
+        part
+        for part in tagged_text.split()
+        if not _STRONG_TOKEN_PATTERN.match(part)
+    )
+
+
+def _literal_missing_strong_tokens(
+    *,
+    rule: LxxProjectionRule,
+    tagged_text: str,
+) -> tuple[MissingStrongToken, ...]:
+    parts = tagged_text.split()
+    missing: list[MissingStrongToken] = []
+    word_order = 0
+    for index, part in enumerate(parts):
+        if _STRONG_TOKEN_PATTERN.match(part):
+            continue
+        word_order += 1
+        next_part = parts[index + 1] if index + 1 < len(parts) else None
+        if next_part is not None and _STRONG_TOKEN_PATTERN.match(next_part):
+            continue
+        missing.append(
+            MissingStrongToken(
+                source_ref=f"{rule.target_ref}#literal:{word_order}",
+                surface=part,
+                editions=(rule.status,),
+            )
+        )
+    return tuple(missing)
+
+
 def _parse_lxx_projection_rule(entry: object) -> LxxProjectionRule:
     if not isinstance(entry, Mapping):
         raise ValueError("LXX projection rule entries must be JSON objects")
     target_ref = entry.get("target_ref")
     spans_value = entry.get("spans")
+    tagged_text = _optional_str(entry.get("tagged_text"), "tagged_text")
     if not isinstance(target_ref, str) or not target_ref:
         raise ValueError("LXX projection rule target_ref must be a non-empty string")
-    if not isinstance(spans_value, list) or not spans_value:
-        raise ValueError(f"LXX projection rule {target_ref} must contain spans")
+    if tagged_text is not None:
+        if spans_value is not None:
+            raise ValueError(
+                f"LXX projection rule {target_ref} must not mix spans and tagged_text"
+            )
+        if not tagged_text.strip() or not is_valid_tagged_text(tagged_text):
+            raise ValueError(
+                f"LXX projection rule {target_ref} tagged_text is invalid"
+            )
+    elif not isinstance(spans_value, list) or not spans_value:
+        raise ValueError(
+            f"LXX projection rule {target_ref} must contain spans or tagged_text"
+        )
     return LxxProjectionRule(
         target_ref=target_ref,
-        spans=tuple(_parse_lxx_projection_span(span) for span in spans_value),
+        spans=(
+            tuple(_parse_lxx_projection_span(span) for span in spans_value)
+            if isinstance(spans_value, list)
+            else ()
+        ),
+        tagged_text=tagged_text,
         status=str(entry.get("status") or "manual_token_span_projection"),
         note=str(entry.get("note") or ""),
     )
@@ -1213,10 +1362,17 @@ def _source_paths_by_id(
     return paths
 
 
-def _source_summary(manifest: Mapping[str, object]) -> str:
+def _source_summary(
+    manifest: Mapping[str, object],
+    *,
+    additional_notes: Sequence[str] = (),
+) -> str:
     entries = manifest.get("sources")
     if not isinstance(entries, list):
-        return "NT: STEPBible TAGNT Textus Receptus; OT: pending LXX import."
+        return _append_summary_notes(
+            "NT: STEPBible TAGNT Textus Receptus; OT: pending LXX import.",
+            additional_notes,
+        )
     by_id = {
         str(entry.get("source_id")): entry
         for entry in entries
@@ -1224,11 +1380,24 @@ def _source_summary(manifest: Mapping[str, object]) -> str:
     }
     tagnt_entries = [by_id[source_id] for source_id in TAGNT_LOCKED_SOURCE_IDS]
     tagnt_versions = ", ".join(str(entry.get("version") or "") for entry in tagnt_entries)
-    return (
+    return _append_summary_notes(
         "NT: STEPBible TAGNT Textus Receptus from locked source chunks "
         f"{', '.join(TAGNT_LOCKED_SOURCE_IDS)} ({tagnt_versions}). "
-        "OT: CrossWire LXX via explicit KJV-versification projection rules."
+        "OT: CrossWire LXX via explicit KJV-versification projection rules, "
+        "including owner-approved full Addition D rows at Esth.5.1-2.",
+        additional_notes,
     )
+
+
+def _license_summary(additional_notes: Sequence[str] = ()) -> str:
+    return _append_summary_notes(MODULE_LICENSE_SUMMARY, additional_notes)
+
+
+def _append_summary_notes(summary: str, notes: Sequence[str]) -> str:
+    normalized_notes = tuple(note.strip() for note in notes if note.strip())
+    if not normalized_notes:
+        return summary
+    return f"{summary} {' '.join(normalized_notes)}"
 
 
 def _new_temp_db_path(target_path: Path) -> Path:
@@ -1281,7 +1450,7 @@ def _parse_args() -> argparse.Namespace:
         "--data-version",
         type=int,
         default=LXX_TR_DATA_VERSION_INITIAL,
-        help="db_metadata.data_version and info.data_version value.",
+        help="db_metadata.data_version value.",
     )
     parser.add_argument(
         "--lxx-projection-rules",

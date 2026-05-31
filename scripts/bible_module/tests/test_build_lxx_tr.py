@@ -15,6 +15,7 @@ from scripts.bible_module.build_lxx_tr import (
     build_tr_verse_texts,
     iter_lxx_tr_tagnt_tokens,
     is_valid_tagged_text,
+    load_lxx_projection_plan,
     load_lxx_projection_rules,
     validate_lxx_tr_database,
     verse_key_for,
@@ -126,6 +127,32 @@ class LxxTrBuilderTests(unittest.TestCase):
             "this G3778 heap G3037 pillar G2476",
         )
         self.assertNotIn("Gen.31.51", result.missing_lxx_verses)
+        self.assertEqual(result.missing_strong_tokens, ())
+
+    def test_lxx_text_builder_accepts_external_literal_with_manual_strong(self) -> None:
+        rule = LxxProjectionRule(
+            target_ref="Ps.116.17",
+            tagged_text=(
+                "soi G4771 thyso G2380 thysian G2378 aineseos G133 "
+                "kai G2532 en G1722 onomati G3686 kyriou G2962 "
+                "epikalesomai G1941"
+            ),
+            status="manual_external_ancient_greek_literal",
+        )
+
+        result = build_lxx_verse_texts([], projection_rules=(rule,))
+        ps_116_17 = get_canonical_verse("Ps", 116, 17)
+
+        self.assertEqual(result.lxx_tokens_count, 9)
+        self.assertEqual(
+            result.verse_texts_by_id[ps_116_17.canonical_verse_id],
+            (
+                "soi G4771 thyso G2380 thysian G2378 aineseos G133 "
+                "kai G2532 en G1722 onomati G3686 kyriou G2962 "
+                "epikalesomai G1941"
+            ),
+        )
+        self.assertNotIn("Ps.116.17", result.missing_lxx_verses)
         self.assertEqual(result.missing_strong_tokens, ())
 
     def test_lxx_text_builder_merges_multiple_source_spans(self) -> None:
@@ -261,6 +288,10 @@ class LxxTrBuilderTests(unittest.TestCase):
             ]
         }
         manual_content = {
+            "metadata": {
+                "info_source_summary_notes": ["fixture external source"],
+                "info_license_notes": ["fixture public domain license"],
+            },
             "rules": [
                 {
                     "target_ref": "Gen.1.3",
@@ -293,14 +324,22 @@ class LxxTrBuilderTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            rules = load_lxx_projection_rules(rules_path)
+            plan = load_lxx_projection_plan(rules_path)
 
         self.assertEqual(
-            [rule.target_ref for rule in rules],
+            [rule.target_ref for rule in plan.rules],
             ["Gen.1.1", "Gen.1.3"],
         )
-        self.assertEqual(rules[1].spans[0].token_start, 0)
-        self.assertEqual(rules[1].spans[0].token_end, 2)
+        self.assertEqual(plan.rules[1].spans[0].token_start, 0)
+        self.assertEqual(plan.rules[1].spans[0].token_end, 2)
+        self.assertEqual(
+            plan.info_source_summary_notes,
+            ("fixture external source",),
+        )
+        self.assertEqual(
+            plan.info_license_notes,
+            ("fixture public domain license",),
+        )
 
     def test_tagnt_iterator_maps_annotated_references_to_kjv_versification(self) -> None:
         lines = [
@@ -397,6 +436,7 @@ class LxxTrBuilderTests(unittest.TestCase):
                 target_path=target_path,
                 tr_source_tokens=[token],
                 source_summary="fixture source",
+                license_summary="fixture license",
                 built_at="2026-05-30T00:00:00Z",
             )
 
@@ -418,6 +458,12 @@ class LxxTrBuilderTests(unittest.TestCase):
                     1,
                 )
                 self.assertEqual(
+                    connection.execute(
+                        "SELECT license, source_summary FROM info"
+                    ).fetchone(),
+                    ("fixture license", "fixture source"),
+                )
+                self.assertEqual(
                     connection.execute("SELECT COUNT(*) FROM verses").fetchone()[0],
                     len(canonical_verses()),
                 )
@@ -436,6 +482,23 @@ class LxxTrBuilderTests(unittest.TestCase):
                         for row in connection.execute("PRAGMA table_info(verses)")
                     ],
                     ["verse_key", "text"],
+                )
+                self.assertEqual(
+                    [
+                        row[1]
+                        for row in connection.execute("PRAGMA table_info(info)")
+                    ],
+                    [
+                        "code",
+                        "module_id",
+                        "title",
+                        "description",
+                        "language",
+                        "canon",
+                        "versification",
+                        "license",
+                        "source_summary",
+                    ],
                 )
 
                 mat_1_1 = get_canonical_verse("Mat", 1, 1)
