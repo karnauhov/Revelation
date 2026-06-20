@@ -4,37 +4,78 @@
 
 ## Текущее состояние БД
 
-- Метаданные БД: `schema_version=3`, `data_version=12`, `date=2026-05-31T05:52:51Z`.
-- Покрытие всего модуля: `30889/31102` стихов = `99.315%`.
-- Покрытие OT/LXX: `22932/23145` стихов = `99.080%`.
-- Осталось пустых OT-ячеек: `213`.
+- Метаданные БД: `schema_version=3`, `data_version=13`, `date=2026-05-31T06:20:48Z`.
+- Покрытие всего модуля: `30892/31102` стихов = `99.325%`.
+- Покрытие OT/LXX: `22935/23145` стихов = `99.093%`.
+- Осталось пустых OT-ячеек: `210`.
 - `verse_key` проверены против `assets/data/bible_verse_map.json`: ключи БД совпадают с 3-символьной base36 KJV/protestant сеткой от `001` до `NZY`.
 
 ## Уже применённые входные данные переноса
 
 - `lxx_to_kjv_consolidated_remaining_work.json` -> `projection_inputs.versification_candidate_map`: whole-verse и source-exclusion карта проекции.
 - `lxx_to_kjv_consolidated_remaining_work.json` -> `projection_inputs.token_span_rules_generated`: уже применённые exact token-span/merge правила.
-- `lxx_to_kjv_consolidated_remaining_work.json` -> `projection_inputs.token_span_rules_manual`: уже применённые ручные правила Daniel Theodotion x-2, Isaiah canonical-prefix, Esther Addition D, Ps.116.17 external ancient-source repair, 42 Swete literals из альтернативного public-domain источника и 21 проверенное CrossWire span/merge-заполнение.
-- `lxx_to_kjv_consolidated_remaining_work.json` -> `projection_inputs.token_span_rules_unmatched`: оставшиеся случаи, где exact-pass не дал безопасной границы.
+- `lxx_to_kjv_consolidated_remaining_work.json` -> `projection_inputs.token_span_rules_manual`: уже применённые ручные правила Daniel Theodotion x-2, Isaiah canonical-prefix, Esther Addition D, Ps.116.17 external ancient-source repair, 45 Swete literals из альтернативного public-domain источника и 21 проверенное CrossWire span/merge-заполнение.
+- `lxx_to_kjv_consolidated_remaining_work.json` -> `projection_inputs.token_span_rules_unmatched`: `0` оставшихся случаев. Последние 14 мест разобраны вручную: `1Kgs.14.5,12-13` заполнены, 11 Exodus-мест переклассифицированы как отсутствие отдельной LXX-семантической строки.
 
 ## Категории оставшихся мест
 
-- `confirmed_control_absence_or_semantic_difference`: `199` - нет отдельной LXX-семантической строки в проверенных контролях.
+- `confirmed_control_absence_or_semantic_difference`: `210` - нет отдельной LXX-семантической строки в проверенных контролях.
   Смысл: Похоже на MT/KJV-семантическую строку без отдельного LXX/OG соответствия в проверенных контролях.
-- `token_span_merge_or_placement_required`: `14` - нужно вручную выбрать token-span/merge внутри CrossWire.
-  Смысл: Текст, скорее всего, уже находится в CrossWire LXX, но он склеен с соседним материалом, переставлен или требует точного ручного выбора границ токенов.
+- `token_span_merge_or_placement_required`: `0` - все ранее отмеченные span-случаи разобраны.
 
 ## Политика поиска замен и источников
 
-- Для `token_span_merge_or_placement_required` текст, вероятно, уже есть внутри CrossWire LXX. Следующая работа - не поиск нового источника, а ручной выбор границ токенов.
-- Для `confirmed_control_absence_or_semantic_difference` нельзя молча подставлять соседний LXX-стих. Это похоже на MT/KJV-семантические строки без отдельного LXX/OG эквивалента в проверенных контролях. Консервативная замена - пустая ячейка и обработка в UI. Не-LXX греческая замена требует отдельного решения владельца: например Hexaplaric fragments/Aquila/Symmachus/Theodotion там, где они реально сохранились, поздняя греческая библейская традиция или явно помеченная современная ретроверсия. Всё это нельзя смешивать с LXX без видимого provenance.
+- Для `confirmed_control_absence_or_semantic_difference` нельзя молча подставлять соседний LXX-стих или дублировать сжатую строку. Добавлять можно только засвидетельствованный греческий текст с точным provenance.
+- Допустимы другие древнегреческие свидетели: Codex Alexandrinus и другие LXX-рукописи, Lucianic/Antiochian tradition, Aquila, Symmachus, Theodotion и точные патристические цитаты. Такие строки должны быть явно отделены от Old Greek/LXX в rule-note и в `info.source_summary`; лицензия издания фиксируется в `info.license`.
+- Strong-номера для literal-строк не угадывать. Их можно добавить позднее только после надёжной ручной лексической разметки.
+- Современная ретроверсия с еврейского не является древним первоисточником. Она может закрыть техническую пустоту, но не цель «100% реального древнегреческого текста» и потому не применяется без нового явного решения владельца.
+
+## Результат разбора последних 14 span-мест
+
+- `1Kgs.14.5`, `1Kgs.14.12`, `1Kgs.14.13` добавлены как literal Greek из H. B. Swete, Vol. I, Alexandrinus-side witness. GreekDoc использован только для выравнивания. Strong-номера не подставлялись.
+- `info.source_summary` перечисляет новые refs и Swete Vol. I; `info.license` содержит public-domain ссылку на точное издание.
+- `Exod.28.23,26-28`; `37.11,14,20-22`; `38.2`; `39.39` не имеют отдельного безопасного token-span: проверенный CrossWire материал уже относится к соседним строкам либо выражает другую семантику. Они оставлены пустыми и перенесены в подтверждённые semantic differences.
+
+## Исследование источников для оставшихся 210 мест
+
+### Почему KJV содержит строки, отсутствующие в LXX
+
+- Ветхий Завет KJV переводился прежде всего с еврейского и арамейского текста, а не с LXX. Scrivener показывает, что примечания KJV 1611 систематически объясняют original Hebrew/Chaldee, обсуждают Masoretic `Keri/Chetiv` и ранние печатные еврейские Библии; LXX, Vulgate, Targum и Complutensian Polyglot выступали дополнительными свидетелями.
+- Поэтому часть KJV-grid строк отражает MT-содержание, которого не было в Old Greek или которое не сохранилось в проверенных LXX-рукописях. Для таких строк «найти другой LXX-стих» часто невозможно; нужен другой древнегреческий перевод или рецензия.
+- Историческая проверка основы KJV: F. H. A. Scrivener, *The Authorized Edition of the English Bible (1611)*, public domain: https://archive.org/details/authorizededitio00scri.
+
+### Очерёдность древнегреческих источников
+
+1. **Другие LXX-рукописные свидетели.** Сначала проверять Swete и Brooke-McLean-Thackeray: Codex Vaticanus как основной текст, Codex Alexandrinus и другие унциалы в аппарате. Это особенно перспективно для длинной версии `1Sam.17-18` и исторических книг.
+2. **Hexaplaric witnesses.** Затем искать точный сохранившийся фрагмент Aquila, Symmachus или Theodotion. Field, *Origenis Hexaplorum quae supersunt*, Vols. I-II, является public-domain сборником: https://archive.org/details/origenhexapla01unknuoft и https://archive.org/details/origenhexapla02unknuoft. Современный проект сверки фрагментов: https://hexapla.org/.
+3. **Lucianic/Antiochian и поздние рукописные рецензии.** Для Samuel-Kings проверять варианты в Cambridge apparatus, но хранить конкретную метку свидетеля, а не называть такую строку безусловно Old Greek.
+4. **Патристические цитаты.** Использовать только дословную греческую цитату с точным автором, сочинением, томом/страницей и public-domain или совместимой лицензией издания.
+5. **Современные критические издания.** Rahlfs-Hanhart, Göttingen и другие современные издания полезны как указатели, но их текст нельзя переносить в БД без отдельной проверки лицензии. Для фактического текста предпочтительны public-domain сканы первичных изданий.
+
+Полезные public-domain аппараты и сканы:
+
+- Swete Vol. I, Genesis-IV Kings, `NOT_IN_COPYRIGHT`: https://archive.org/details/oldtestamentingr01swet.
+- Brooke-McLean, Exodus-Leviticus: https://archive.org/details/02.-otgreek.-vat.v-1.-octat.p-2.-ex.-lev.-brooke.-mc-lean.-1909.
+- Brooke-McLean-Thackeray, I-II Samuel: https://archive.org/details/05.-otgreek.-vat.v-2.-lhb.p-1.-sam.-i.-ii.-brooke.-mc-lean.-thackeray.-1927.
+- Brooke-McLean-Thackeray, I-II Kings: https://archive.org/details/06.-otgreek.-vat.v-2.-lhb.p-2.-kings.-i.-ii.-brooke.-mc-lean.-1930.
+
+### Практические очереди до 100%
+
+- **Очередь A, вероятно максимальная отдача:** `1Sam` (`38` строк), прежде всего `17-18`. Проверить длинный Alexandrinus/Lucianic text в Swete и Cambridge apparatus; добавлять только явно засвидетельствованные строки.
+- **Очередь B, максимальная сложность:** `Jer` (`65` строк). LXX Jeremiah короче и иначе упорядочена; проверять Field/Hexapla по Aquila, Symmachus и Theodotion. Для многих строк может не сохраниться непрерывный древнегреческий текст.
+- **Очередь C:** `Exod` (`50` строк), особенно tabernacle sections `36-40`. Проверить Cambridge Exodus apparatus и Hexapla; не переносить MT-детали из соседней сжатой LXX-строки.
+- **Очередь D:** остальные `57` строк в Joshua, Kings, Chronicles, Nehemiah, Esther, Job, Proverbs, Isaiah, Lamentations и Ezekiel. Идти по одному стиху: manuscript apparatus -> Hexapla -> патристические цитаты.
+
+Для каждой найденной строки перед импортом зафиксировать: `target_ref`, класс свидетеля (`old_greek`, `codex_a`, `lucianic`, `aquila`, `symmachus`, `theodotion`, `patristic`), сиглум/издание/страницу, literal Greek, лицензию и решение по Strong. После добавления увеличить `db_metadata.data_version`, обновить `info`, пересобрать БД и удалить ref из этого MD и remaining-разделов JSON.
+
+**Ограничение цели:** 100% непустых строк технически достижимы только если для всех 210 мест найдётся сохранившийся греческий свидетель либо будет разрешена современная ретроверсия. 100% именно реального древнегреческого текста заранее гарантировать нельзя: Hexapla сохранилась фрагментарно. До отдельного решения строки без древнего свидетельства должны оставаться пустыми, а не маскироваться современным текстом.
 
 ## По книгам и главам
 
 - `Exod`: `50` мест(а) (28:4, 32:1, 35:2, 36:25, 37:11, 38:3, 39:1, 40:3)
 - `Josh`: `6` мест(а) (6:1, 8:2, 10:2, 13:1)
 - `1Sam`: `38` мест(а) (13:1, 17:26, 18:11)
-- `1Kgs`: `10` мест(а) (7:1, 9:2, 11:1, 12:1, 13:1, 14:3, 15:1)
+- `1Kgs`: `7` мест(а) (7:1, 9:2, 11:1, 12:1, 13:1, 15:1)
 - `2Chr`: `1` мест(а) (27:1)
 - `Neh`: `13` мест(а) (4:1, 11:9, 12:3)
 - `Esth`: `3` мест(а) (4:1, 9:2)
@@ -51,30 +92,30 @@
 
 #### Exod 28
 
-- `Exod.28.23` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.28.23.
-  Статус из исследования: `represented_in_compact_source_requires_token_span_review`.
-  Исследовательская заметка: Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
-- `Exod.28.26` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.28.23.
-  Статус из исследования: `represented_in_compact_source_requires_token_span_review`.
-  Исследовательская заметка: Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
-- `Exod.28.27` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.28.23.
-  Статус из исследования: `represented_in_compact_source_requires_token_span_review`.
-  Исследовательская заметка: Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
-- `Exod.28.28` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.28.23.
-  Статус из исследования: `represented_in_compact_source_requires_token_span_review`.
-  Исследовательская заметка: Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
+- `Exod.28.23` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex28 marks the row N/A; CrossWire Exod.28.23 tokens are already assigned to neighboring targets 28.24, 28.25 and 28.29.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
+- `Exod.28.26` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex28 marks the row N/A; CrossWire Exod.28.23 tokens are already assigned to neighboring targets 28.24, 28.25 and 28.29.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
+- `Exod.28.27` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex28 marks the row N/A; CrossWire Exod.28.23 tokens are already assigned to neighboring targets 28.24, 28.25 and 28.29.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
+- `Exod.28.28` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex28 marks the row N/A; CrossWire Exod.28.23 tokens are already assigned to neighboring targets 28.24, 28.25 and 28.29.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
 #### Exod 32
 
 - `Exod.32.9` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
@@ -251,42 +292,42 @@
   Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
 #### Exod 37
 
-- `Exod.37.11` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.38.9.
-  Статус из исследования: `represented_in_compact_source_not_distinct`.
-  Исследовательская заметка: Table gold overlay is folded into the same source line as target 37.10.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
+- `Exod.37.11` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex37 marks the row N/A; CrossWire Exod.38.9 is already used for target 37.10 and has no separable gold-overlay row.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
 - `Exod.37.12` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
   Source refs: не указаны.
   Статус из исследования: `confirmed_unrepresented_in_lxx_control`.
   Исследовательская заметка: GreekDoc polyglot marks target 37.12 N/A in both displayed Greek witnesses.
   Следующее действие: Пока оставлять пустым. Не подставлять соседний LXX-текст и не смешивать с не-LXX греческой заменой без отдельного решения владельца.
   Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
-- `Exod.37.14` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.38.10.
-  Статус из исследования: `represented_in_compact_source_not_distinct`.
-  Исследовательская заметка: Ring placement for carrying the table is folded into the source line mapped to target 37.13.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
-- `Exod.37.20` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.38.16.
-  Статус из исследования: `represented_in_compact_source_not_distinct`.
-  Исследовательская заметка: Lampstand bowl, knop, flower, and branch details are compressed into one source line.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
-- `Exod.37.21` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.38.16.
-  Статус из исследования: `represented_in_compact_source_not_distinct`.
-  Исследовательская заметка: Lampstand bowl, knop, flower, and branch details are compressed into one source line.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
-- `Exod.37.22` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.38.16.
-  Статус из исследования: `represented_in_compact_source_not_distinct`.
-  Исследовательская заметка: Lampstand bowl, knop, flower, and branch details are compressed into one source line.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
+- `Exod.37.14` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex37 marks the row N/A; CrossWire Exod.38.10 is already used for target 37.13 and has no separable ring-placement row.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
+- `Exod.37.20` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex37 marks the row N/A; compact CrossWire Exod.38.16 has no separable KJV rows 37.20-22.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
+- `Exod.37.21` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex37 marks the row N/A; compact CrossWire Exod.38.16 has no separable KJV rows 37.20-22.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
+- `Exod.37.22` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex37 marks the row N/A; compact CrossWire Exod.38.16 has no separable KJV rows 37.20-22.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
 - `Exod.37.24` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
   Source refs: не указаны.
   Статус из исследования: `confirmed_unrepresented_in_lxx_control`.
@@ -319,12 +360,12 @@
   Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
 #### Exod 38
 
-- `Exod.38.2` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.38.22.
-  Статус из исследования: `represented_in_compact_source_requires_primary_placement`.
-  Исследовательская заметка: Bronze altar construction is compressed into one source line spanning target 38.1-2.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
+- `Exod.38.2` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: CrossWire Exod.38.22 contains altar-from-censers material already assigned to target 38.1, not the horns/corners/staves KJV semantic row.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
 - `Exod.38.6` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
   Source refs: не указаны.
   Статус из исследования: `confirmed_unrepresented_in_lxx_control`.
@@ -339,12 +380,12 @@
   Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
 #### Exod 39
 
-- `Exod.39.39` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: Exod.39.9, Exod.39.15.
-  Статус из исследования: `represented_or_partly_represented_requires_token_span_review`.
-  Исследовательская заметка: Bronze altar/tool inventory is compressed or partially represented; exact placement requires reviewing source 39.9 and neighboring presentation lines.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (projection_inputs.token_span_rules_unmatched).
+- `Exod.39.39` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
+  Source refs: не указаны.
+  Статус из исследования: `confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control`.
+  Исследовательская заметка: GreekDoc ex39 has lampstand/oil material at 39.39, while the KJV row requires bronze altar/grate/staves/laver material; CrossWire has no separable matching row.
+  Следующее действие: Искать отдельный древнегреческий свидетель в Cambridge Exodus apparatus и Hexapla; соседний текст не дублировать.
+  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.Exod` (lxx_to_kjv_exodus_remaining_target_resolution.json).
 #### Exod 40
 
 - `Exod.40.7` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).
@@ -695,26 +736,6 @@
   Исследовательская заметка: GreekDoc polyglot marks target 13.27 N/A in both displayed Greek witnesses.
   Следующее действие: Пока оставлять пустым. Не подставлять соседний LXX-текст и не смешивать с не-LXX греческой заменой без отдельного решения владельца.
   Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.1Kgs` (lxx_to_kjv_1kings_remaining_target_resolution.json).
-#### 1Kgs 14
-
-- `1Kgs.14.5` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: 1Kgs.12.22.
-  Статус из исследования: `represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review`.
-  Исследовательская заметка: The long source 12.22 supplement includes parallels to the sick child, wife journey, and Ahijah encounter account.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.1Kgs` (projection_inputs.token_span_rules_unmatched).
-- `1Kgs.14.12` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: 1Kgs.12.22.
-  Статус из исследования: `represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review`.
-  Исследовательская заметка: The source 12.22 supplement compresses the cut-off-house, dogs/birds, return-home, and mourning lines corresponding to KJV 14.10-13.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.1Kgs` (projection_inputs.token_span_rules_unmatched).
-- `1Kgs.14.13` - нужно вручную выбрать token-span/merge внутри CrossWire (`token_span_merge_or_placement_required`; статус exact-pass: `not_unique_exact_match`).
-  Source refs: 1Kgs.12.22.
-  Статус из исследования: `represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review`.
-  Исследовательская заметка: The source 12.22 supplement compresses the cut-off-house, dogs/birds, return-home, and mourning lines corresponding to KJV 14.10-13.
-  Следующее действие: Вручную проверить указанные source_refs, выбрать точные token_start/token_end, добавить manual-rule в consolidated JSON и пересобрать БД.
-  Где искать детали в объединённом JSON: `remaining_target_resolution_by_book.1Kgs` (projection_inputs.token_span_rules_unmatched).
 #### 1Kgs 15
 
 - `1Kgs.15.6` - нет отдельной LXX-семантической строки в проверенных контролях (`confirmed_control_absence_or_semantic_difference`).

@@ -27,14 +27,102 @@
     "db_context": {
       "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_lxx_tr.sqlite",
       "schema_version": "3",
-      "data_version": "12",
-      "date": "2026-05-31T05:52:51Z",
-      "filled_verses": 30889,
-      "empty_verses": 213,
-      "ot_filled_percent": 99.0797148412184,
-      "full_filled_percent": 99.31515658157032
+      "data_version": "13",
+      "date": "2026-05-31T06:20:48Z",
+      "filled_verses": 30892,
+      "empty_verses": 210,
+      "ot_filled_percent": 99.09267660401815,
+      "full_filled_percent": 99.32480226352003
     },
-    "loader_note": "scripts/bible_module/build_lxx_tr.py can load this file directly as lxx_projection_rules_path; it reads projection_inputs.versification_candidate_map plus token_span_rules_generated/manual."
+    "loader_note": "scripts/bible_module/build_lxx_tr.py can load this file directly as lxx_projection_rules_path; it reads projection_inputs.versification_candidate_map plus token_span_rules_generated/manual.",
+    "remaining_ancient_greek_source_strategy": {
+      "as_of": "2026-06-20",
+      "confirmed_empty_targets": 210,
+      "token_span_targets": 0,
+      "kjv_ot_source_baseline": "The KJV Old Testament was translated primarily from Hebrew/Aramaic textual tradition, not from a single ancient Greek Old Testament. LXX, Vulgate, Targum and polyglot evidence were comparison witnesses. Consequently, some KJV-grid semantic rows have no distinct Old Greek counterpart.",
+      "kjv_history_source": "F. H. A. Scrivener, The Authorized Edition of the English Bible (1611), public-domain scan: https://archive.org/details/authorizededitio00scri",
+      "ancient_source_priority": [
+        "Other LXX manuscript witnesses in public-domain Swete and Brooke-McLean-Thackeray apparatuses, with the exact manuscript siglum recorded.",
+        "Preserved Hexaplaric fragments of Aquila, Symmachus or Theodotion in Field, checked against the Hexapla Institute where available.",
+        "Lucianic/Antiochian and other later Greek recensional witnesses, especially for Samuel-Kings, explicitly labelled as such rather than silently called Old Greek.",
+        "Exact patristic Greek quotations with work, location and compatible-edition license recorded.",
+        "No modern Hebrew-to-Greek retroversion unless the owner separately authorizes a clearly labelled non-ancient fallback."
+      ],
+      "priority_queues": [
+        {
+          "books": [
+            "1Sam"
+          ],
+          "targets": 38,
+          "focus": "Longer 1Sam.17-18 text in Codex Alexandrinus/Lucianic witnesses and Cambridge apparatus."
+        },
+        {
+          "books": [
+            "Jer"
+          ],
+          "targets": 65,
+          "focus": "MT material absent from the shorter/reordered LXX Jeremiah; search Field/Hexapla witness by witness."
+        },
+        {
+          "books": [
+            "Exod"
+          ],
+          "targets": 50,
+          "focus": "Tabernacle sections and other MT/LXX structural differences in Cambridge Exodus apparatus and Hexapla."
+        },
+        {
+          "books": [
+            "Josh",
+            "1Kgs",
+            "2Chr",
+            "Neh",
+            "Esth",
+            "Job",
+            "Prov",
+            "Isa",
+            "Lam",
+            "Ezek"
+          ],
+          "targets": 57,
+          "focus": "Per-verse manuscript apparatus, then Hexapla, then exact patristic quotations."
+        }
+      ],
+      "source_editions": [
+        {
+          "name": "H. B. Swete, The Old Testament in Greek, Vol. I",
+          "scope": "Genesis-IV Kings",
+          "license_status": "Internet Archive metadata: NOT_IN_COPYRIGHT",
+          "url": "https://archive.org/details/oldtestamentingr01swet"
+        },
+        {
+          "name": "F. Field, Origenis Hexaplorum quae supersunt, Vols. I-II",
+          "scope": "Preserved Hexaplaric fragments",
+          "license_status": "Internet Archive metadata for Vol. I: NOT_IN_COPYRIGHT",
+          "urls": [
+            "https://archive.org/details/origenhexapla01unknuoft",
+            "https://archive.org/details/origenhexapla02unknuoft",
+            "https://hexapla.org/"
+          ]
+        },
+        {
+          "name": "Brooke-McLean-Thackeray Cambridge Septuagint apparatus",
+          "scope": "Exodus-Leviticus, Samuel and Kings volumes relevant to current queues",
+          "license_status": "Public-domain-era editions; verify the exact scan metadata/jurisdiction before redistribution.",
+          "urls": [
+            "https://archive.org/details/02.-otgreek.-vat.v-1.-octat.p-2.-ex.-lev.-brooke.-mc-lean.-1909.",
+            "https://archive.org/details/05.-otgreek.-vat.v-2.-lhb.p-1.-sam.-i.-ii.-brooke.-mc-lean.-thackeray.-1927.",
+            "https://archive.org/details/06.-otgreek.-vat.v-2.-lhb.p-2.-kings.-i.-ii.-brooke.-mc-lean.-1930."
+          ]
+        }
+      ],
+      "import_requirements": [
+        "Record target_ref, witness_class, manuscript siglum, edition/page or fragment locator, literal Greek and license.",
+        "Append aggregate source and license provenance to info.source_summary and info.license.",
+        "Do not guess Strong numbers for literal rows.",
+        "Increment db_metadata.data_version, rebuild and validate SQLite, then remove the filled ref from remaining documentation."
+      ],
+      "coverage_limit": "One hundred percent non-empty coverage is possible only if every remaining row has a surviving Greek witness or a separately authorized modern retroversion. One hundred percent surviving ancient-Greek coverage cannot be guaranteed because Hexaplaric and other secondary witnesses are fragmentary."
+    }
   },
   "projection_inputs": {
     "versification_candidate_map": {
@@ -33274,14 +33362,14 @@
           "source": "CrossWire LXX source_cache/crosswire_lxx.zip; Daniel rules use owner-approved Theodotion x-2 as the primary displayed Daniel recension.",
           "generated_at_utc": "2026-05-30T00:00:00Z",
           "token_indexing": "zero_based_start_exclusive_end",
-          "rules_count": 75,
+          "rules_count": 78,
           "info_source_summary_notes": [
             "Alternative ancient Greek source supplementation: Ps.116.17 suffix καὶ ἐν ὀνόματι κυρίου ἐπικαλέσομαι is attested by Theodoret of Cyrus, Interpretatio in Psalmos, PG 80.1805 (public-domain scan: https://commons.wikimedia.org/wiki/File:Patrologia_Graeca_Vol._080.pdf); CrossWire LXX supplies the prefix.",
-            "Owner-approved alternative-source supplementation from H. B. Swete, The Old Testament in Greek according to the Septuagint (public-domain scan: https://commons.wikimedia.org/wiki/File:The_Old_Testament_in_Greek,_according_to_the_Septuagint_(IA_cu31924012092437).pdf). Selected readings are stored as literal Greek for witness-sensitive refs Josh.20.4-6; 1Sam.23.12; 1Kgs.6.18; 1Kgs.14.7-9,14-16,19-20; Prov.8.33; Prov.23.23; Lam.3.22-24; Ezek.10.14, and CrossWire-specific omission refs Gen.35.21; Exod.25.6; 1Chr.1.11-23; 1Chr.16.24; 1Kgs.6.11-14; 1Kgs.15.32; Neh.3.7; Ps.116.14. GreekDoc polyglot pages were used only as alignment controls. Strong numbers are omitted for these literal rows pending reliable manual lexical mapping rather than guessed."
+            "Owner-approved alternative-source supplementation from H. B. Swete, The Old Testament in Greek according to the Septuagint (public-domain scans include Vol. I, Genesis-IV Kings: https://archive.org/details/oldtestamentingr01swet, and Vol. II, Chronicles-Tobit: https://commons.wikimedia.org/wiki/File:The_Old_Testament_in_Greek,_according_to_the_Septuagint_(IA_cu31924012092437).pdf). Selected readings are stored as literal Greek for witness-sensitive refs Josh.20.4-6; 1Sam.23.12; 1Kgs.6.18; 1Kgs.14.5,7-9,12-16,19-20; Prov.8.33; Prov.23.23; Lam.3.22-24; Ezek.10.14, and CrossWire-specific omission refs Gen.35.21; Exod.25.6; 1Chr.1.11-23; 1Chr.16.24; 1Kgs.6.11-14; 1Kgs.15.32; Neh.3.7; Ps.116.14. GreekDoc polyglot pages were used only as alignment controls. Strong numbers are omitted for these literal rows pending reliable manual lexical mapping rather than guessed."
           ],
           "info_license_notes": [
             "Patrologia Graeca Vol. 080 public-domain scan (Public Domain Mark 1.0): https://commons.wikimedia.org/wiki/File:Patrologia_Graeca_Vol._080.pdf, used to supplement Ps.116.17.",
-            "H. B. Swete, The Old Testament in Greek according to the Septuagint, public-domain scan: https://commons.wikimedia.org/wiki/File:The_Old_Testament_in_Greek,_according_to_the_Septuagint_(IA_cu31924012092437).pdf, used for owner-approved alternative-source supplementation."
+            "H. B. Swete, The Old Testament in Greek according to the Septuagint, public-domain scans: Vol. I Genesis-IV Kings (Internet Archive, possible-copyright-status NOT_IN_COPYRIGHT) https://archive.org/details/oldtestamentingr01swet; Vol. II Chronicles-Tobit https://commons.wikimedia.org/wiki/File:The_Old_Testament_in_Greek,_according_to_the_Septuagint_(IA_cu31924012092437).pdf; used for owner-approved alternative-source supplementation."
           ]
         },
         "rules": [
@@ -33386,6 +33474,12 @@
             "tagged_text": "καὶ διὰ κέδρου πρὸς τὸν οἶκον ἔσω πλοκὴν ἐπαναστήσεις καὶ πέταλον καὶ ἀνάγλυφα πάντας κέδρινα οὐκ ἐφαίνετο λίθος"
           },
           {
+            "target_ref": "1Kgs.14.5",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. Swete Vol. I / Alexandrinus-side reading is stored without guessed Strong numbers; GreekDoc was used only as an alignment control.",
+            "tagged_text": "καὶ Κύριος εἶπε πρὸς Ἀχιά ἰδοὺ γυνὴ τοῦ Ἱεροβοὰμ εἰσέρχεται τοῦ ἐκζητῆσαι ῥῆμα παρὰ σοῦ περὶ υἱοῦ αὐτῆς ὅτι ἄρρωστός ἔστι κατὰ τοῦτο καὶ κατὰ τοῦτο λαλήσεις πρὸς αὐτήν καὶ ἐγένετο ἐν τῷ εἰσέρχεσθαι αὐτὴν καὶ αὐτὴ ἀπεξενοῦτο"
+          },
+          {
             "target_ref": "1Kgs.14.7",
             "status": "manual_external_swete_witness_literal_without_guessed_strong",
             "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
@@ -33402,6 +33496,18 @@
             "status": "manual_external_swete_witness_literal_without_guessed_strong",
             "note": "Owner approved an alternate ancient Greek witness after license review. The selected Swete witness reading is stored without guessed Strong numbers.",
             "tagged_text": "καὶ ἐπονηρεύσω τοῦ ποιῆσαι παρὰ παντός ὅσοι ἐγένοντο εἰς πρόσωπόν σου καὶ ἐπορεύθης καὶ ἐποίησας σεαυτῷ θεοὺς ἑτέρους χωνευτὰ τοῦ παροργίσαι με καὶ ἐμὲ ἔρριψας ὀπίσω σώματός σου"
+          },
+          {
+            "target_ref": "1Kgs.14.12",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. Swete Vol. I / Alexandrinus-side reading is stored without guessed Strong numbers; GreekDoc was used only as an alignment control.",
+            "tagged_text": "καὶ σὺ ἀναστᾶσα πορεύθητι εἰς τὸν οἶκόν σου ἐν τῷ εἰσέρχεσθαι πόδα σου τὴν πόλιν ἀποθανεῖται τὸ παιδάριον"
+          },
+          {
+            "target_ref": "1Kgs.14.13",
+            "status": "manual_external_swete_witness_literal_without_guessed_strong",
+            "note": "Owner approved an alternate ancient Greek witness after license review. Swete Vol. I / Alexandrinus-side reading is stored without guessed Strong numbers; GreekDoc was used only as an alignment control.",
+            "tagged_text": "καὶ κόψονται αὐτὸν πᾶς Ἰσραὴλ καὶ θάψουσιν αὐτόν ὅτι οὗτος μόνος εἰσελεύσεται τῷ Ἱεροβοὰμ πρὸς τάφον ὅτι εὑρέθη ἐν αὐτῷ ῥῆμα καλὸν περὶ τοῦ Κυρίου Θεοῦ Ἰσραὴλ ἐν οἴκῳ Ἱεροβοάμ"
           },
           {
             "target_ref": "1Kgs.14.14",
@@ -33952,264 +34058,14 @@
           "generated_at_utc": "2026-05-30T00:00:00Z",
           "method": "Normalize GreekDoc target Greek columns and CrossWire source tokens; keep only one exact contiguous source span, collapsing duplicate witness-column hits.",
           "token_indexing": "zero_based_start_exclusive_end",
-          "rules_count": 252,
-          "unmatched_count": 14,
-          "match_status_counts": {
-            "not_unique_exact_match": 14
-          },
-          "remaining_after_db_write": true,
-          "db_date": "2026-05-31T05:52:51Z"
+          "rules_count": 0,
+          "unmatched_count": 0,
+          "match_status_counts": {},
+          "remaining_after_db_write": false,
+          "db_date": "2026-05-31T06:20:48Z",
+          "last_update_note": "All 14 span leftovers were manually adjudicated on 2026-05-31: 1Kgs.14.5,12-13 were promoted to Swete literal rules; 11 Exodus rows were reclassified as confirmed non-distinct/semantic differences after GreekDoc and CrossWire token review."
         },
-        "items": [
-          {
-            "target_ref": "Exod.28.23",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.28.23"
-            ],
-            "reason": "Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex28.html",
-            "control_word_counts": [],
-            "source_word_count": 55
-          },
-          {
-            "target_ref": "Exod.28.26",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.28.23"
-            ],
-            "reason": "Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex28.html",
-            "control_word_counts": [],
-            "source_word_count": 55
-          },
-          {
-            "target_ref": "Exod.28.27",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.28.23"
-            ],
-            "reason": "Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex28.html",
-            "control_word_counts": [],
-            "source_word_count": 55
-          },
-          {
-            "target_ref": "Exod.28.28",
-            "status": "represented_in_compact_source_requires_token_span_review",
-            "source_refs": [
-              "Exod.28.23"
-            ],
-            "reason": "Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex28.html",
-            "control_word_counts": [],
-            "source_word_count": 55
-          },
-          {
-            "target_ref": "Exod.37.11",
-            "status": "represented_in_compact_source_not_distinct",
-            "source_refs": [
-              "Exod.38.9"
-            ],
-            "reason": "Table gold overlay is folded into the same source line as target 37.10.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex37.html",
-            "control_word_counts": [],
-            "source_word_count": 9
-          },
-          {
-            "target_ref": "Exod.37.14",
-            "status": "represented_in_compact_source_not_distinct",
-            "source_refs": [
-              "Exod.38.10"
-            ],
-            "reason": "Ring placement for carrying the table is folded into the source line mapped to target 37.13.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex37.html",
-            "control_word_counts": [],
-            "source_word_count": 25
-          },
-          {
-            "target_ref": "Exod.37.20",
-            "status": "represented_in_compact_source_not_distinct",
-            "source_refs": [
-              "Exod.38.16"
-            ],
-            "reason": "Lampstand bowl, knop, flower, and branch details are compressed into one source line.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex37.html",
-            "control_word_counts": [],
-            "source_word_count": 39
-          },
-          {
-            "target_ref": "Exod.37.21",
-            "status": "represented_in_compact_source_not_distinct",
-            "source_refs": [
-              "Exod.38.16"
-            ],
-            "reason": "Lampstand bowl, knop, flower, and branch details are compressed into one source line.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex37.html",
-            "control_word_counts": [],
-            "source_word_count": 39
-          },
-          {
-            "target_ref": "Exod.37.22",
-            "status": "represented_in_compact_source_not_distinct",
-            "source_refs": [
-              "Exod.38.16"
-            ],
-            "reason": "Lampstand bowl, knop, flower, and branch details are compressed into one source line.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex37.html",
-            "control_word_counts": [],
-            "source_word_count": 39
-          },
-          {
-            "target_ref": "Exod.38.2",
-            "status": "represented_in_compact_source_requires_primary_placement",
-            "source_refs": [
-              "Exod.38.22"
-            ],
-            "reason": "Bronze altar construction is compressed into one source line spanning target 38.1-2.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex38.html",
-            "control_word_counts": [],
-            "source_word_count": 21
-          },
-          {
-            "target_ref": "Exod.39.39",
-            "status": "represented_or_partly_represented_requires_token_span_review",
-            "source_refs": [
-              "Exod.39.9",
-              "Exod.39.15"
-            ],
-            "reason": "Bronze altar/tool inventory is compressed or partially represented; exact placement requires reviewing source 39.9 and neighboring presentation lines.",
-            "book_register": "exodus",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_exodus_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/ex39.html",
-            "control_word_counts": [
-              17,
-              27
-            ],
-            "source_word_count": 39
-          },
-          {
-            "target_ref": "1Kgs.14.5",
-            "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
-            "source_refs": [
-              "1Kgs.12.22"
-            ],
-            "evidence_note": "The long source 12.22 supplement includes parallels to the sick child, wife journey, and Ahijah encounter account.",
-            "book_register": "1kings",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1kings_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1kings14.html",
-            "control_word_counts": [
-              38
-            ],
-            "source_word_count": 1017
-          },
-          {
-            "target_ref": "1Kgs.14.12",
-            "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
-            "source_refs": [
-              "1Kgs.12.22"
-            ],
-            "evidence_note": "The source 12.22 supplement compresses the cut-off-house, dogs/birds, return-home, and mourning lines corresponding to KJV 14.10-13.",
-            "book_register": "1kings",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1kings_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1kings14.html",
-            "control_word_counts": [
-              18
-            ],
-            "source_word_count": 1017
-          },
-          {
-            "target_ref": "1Kgs.14.13",
-            "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
-            "source_refs": [
-              "1Kgs.12.22"
-            ],
-            "evidence_note": "The source 12.22 supplement compresses the cut-off-house, dogs/birds, return-home, and mourning lines corresponding to KJV 14.10-13.",
-            "book_register": "1kings",
-            "source_register": ".agents/roadmaps/lxx_to_kjv_1kings_remaining_target_resolution.json",
-            "import_category": "token_span_merge_or_placement_required",
-            "match_status": "not_unique_exact_match",
-            "candidate_count": 0,
-            "unique_span_count": 0,
-            "control_url": "https://greekdoc.com/DOCUMENTS/polyglot/1kings14.html",
-            "control_word_counts": [
-              30
-            ],
-            "source_word_count": 1017
-          }
-        ]
+        "items": []
       }
     }
   },
@@ -34225,16 +34081,16 @@
             "https://raw.githubusercontent.com/farskipper/kjv/master/json/verses-1769.json research-only KJV semantic reference"
           ],
           "sqlite_modified": false,
-          "last_update_note": "GreekDoc polyglot audit resolved the former 36 probable rows and added six newly exposed hidden-composite canonical targets after unsafe whole-row exclusions."
+          "last_update_note": "2026-05-31 follow-up: 1Kgs.14.5, 14.12, and 14.13 were filled from the owner-approved Swete Vol. I / Alexandrinus-side witness and removed from remaining items."
         },
         "summary": {
-          "remaining_target_refs": 60,
+          "remaining_target_refs": 57,
           "by_status": {
             "represented_in_composite_source_row_requires_canonical_token_span_split": 5,
             "represented_in_composite_source_requires_token_span_split": 35,
             "confirmed_unrepresented_in_lxx_control": 7,
             "represented_in_long_lxx_supplement_requires_token_span_review": 1,
-            "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review": 12
+            "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review": 9
           }
         },
         "items": [
@@ -34600,14 +34456,6 @@
             "evidence_note": "The long source 12.22 supplement includes parallels to the sick child, wife journey, and Ahijah encounter account."
           },
           {
-            "target_ref": "1Kgs.14.5",
-            "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
-            "source_refs": [
-              "1Kgs.12.22"
-            ],
-            "evidence_note": "The long source 12.22 supplement includes parallels to the sick child, wife journey, and Ahijah encounter account."
-          },
-          {
             "target_ref": "1Kgs.14.6",
             "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
             "source_refs": [
@@ -34625,22 +34473,6 @@
           },
           {
             "target_ref": "1Kgs.14.11",
-            "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
-            "source_refs": [
-              "1Kgs.12.22"
-            ],
-            "evidence_note": "The source 12.22 supplement compresses the cut-off-house, dogs/birds, return-home, and mourning lines corresponding to KJV 14.10-13."
-          },
-          {
-            "target_ref": "1Kgs.14.12",
-            "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
-            "source_refs": [
-              "1Kgs.12.22"
-            ],
-            "evidence_note": "The source 12.22 supplement compresses the cut-off-house, dogs/birds, return-home, and mourning lines corresponding to KJV 14.10-13."
-          },
-          {
-            "target_ref": "1Kgs.14.13",
             "status": "represented_or_partly_represented_in_long_lxx_supplement_requires_token_span_review",
             "source_refs": [
               "1Kgs.12.22"
@@ -35087,28 +34919,27 @@
           "purpose": "Exhaustive classification of Exodus target refs still absent after conservative whole-verse candidate overrides.",
           "status": "research_only_do_not_import",
           "important_note": "A missing target row is not automatically a missing LXX passage. Some KJV target verses are represented inside compact or merged CrossWire LXX source verses and need an explicit assembly policy before import.",
-          "last_update_note": "GreekDoc Alexandrinus/Vaticanus primary-control audit resolved all 40 former probable absence/compression rows. High-risk compressed object rows remain explicit token-span review cases."
+          "last_update_note": "2026-05-31 follow-up: the final 11 Exodus span-looking rows were reclassified as confirmed non-distinct/semantic differences after GreekDoc controls and CrossWire token review."
         },
         "summary": {
           "remaining_target_refs": 65,
           "by_status": {
-            "represented_in_compact_source_requires_token_span_review": 13,
-            "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control": 3,
+            "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control": 14,
+            "represented_in_compact_source_requires_token_span_review": 9,
             "confirmed_unrepresented_in_lxx_control": 36,
-            "represented_in_compact_source_requires_primary_placement": 3,
-            "represented_in_compact_source_not_distinct": 7,
+            "represented_in_compact_source_requires_primary_placement": 2,
             "represented_in_multiple_sources_requires_merge": 2,
-            "represented_or_partly_represented_requires_token_span_review": 1
+            "represented_in_compact_source_not_distinct": 2
           }
         },
         "resolutions": [
           {
             "target_ref": "Exod.28.23",
-            "status": "represented_in_compact_source_requires_token_span_review",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.28.23"
             ],
-            "reason": "Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex28 marks the row N/A in the displayed LXX controls, and CrossWire Exod.28.23 tokens are already assigned to neighboring KJV-grid targets 28.24, 28.25, and 28.29."
           },
           {
             "target_ref": "Exod.28.24",
@@ -35128,27 +34959,27 @@
           },
           {
             "target_ref": "Exod.28.26",
-            "status": "represented_in_compact_source_requires_token_span_review",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.28.23"
             ],
-            "reason": "Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex28 marks the row N/A in the displayed LXX controls, and CrossWire Exod.28.23 tokens are already assigned to neighboring KJV-grid targets 28.24, 28.25, and 28.29."
           },
           {
             "target_ref": "Exod.28.27",
-            "status": "represented_in_compact_source_requires_token_span_review",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.28.23"
             ],
-            "reason": "Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex28 marks the row N/A in the displayed LXX controls, and CrossWire Exod.28.23 tokens are already assigned to neighboring KJV-grid targets 28.24, 28.25, and 28.29."
           },
           {
             "target_ref": "Exod.28.28",
-            "status": "represented_in_compact_source_requires_token_span_review",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.28.23"
             ],
-            "reason": "Breastplate chain, names, and attachment material is compressed and reordered in one CrossWire source verse."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex28 marks the row N/A in the displayed LXX controls, and CrossWire Exod.28.23 tokens are already assigned to neighboring KJV-grid targets 28.24, 28.25, and 28.29."
           },
           {
             "target_ref": "Exod.28.29",
@@ -35353,11 +35184,11 @@
           },
           {
             "target_ref": "Exod.37.11",
-            "status": "represented_in_compact_source_not_distinct",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.38.9"
             ],
-            "reason": "Table gold overlay is folded into the same source line as target 37.10."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex37 marks the row N/A in the displayed LXX controls, and CrossWire Exod.38.9 is already used for target 37.10 without a separable gold-overlay row."
           },
           {
             "target_ref": "Exod.37.12",
@@ -35367,11 +35198,11 @@
           },
           {
             "target_ref": "Exod.37.14",
-            "status": "represented_in_compact_source_not_distinct",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.38.10"
             ],
-            "reason": "Ring placement for carrying the table is folded into the source line mapped to target 37.13."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex37 marks the row N/A in the displayed LXX controls, and CrossWire Exod.38.10 is already used for target 37.13 without a separable ring-placement row."
           },
           {
             "target_ref": "Exod.37.15",
@@ -35400,27 +35231,27 @@
           },
           {
             "target_ref": "Exod.37.20",
-            "status": "represented_in_compact_source_not_distinct",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.38.16"
             ],
-            "reason": "Lampstand bowl, knop, flower, and branch details are compressed into one source line."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex37 marks the row N/A in the displayed LXX controls, and CrossWire Exod.38.16 is a compact lampstand line without separable KJV rows 37.20-22."
           },
           {
             "target_ref": "Exod.37.21",
-            "status": "represented_in_compact_source_not_distinct",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.38.16"
             ],
-            "reason": "Lampstand bowl, knop, flower, and branch details are compressed into one source line."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex37 marks the row N/A in the displayed LXX controls, and CrossWire Exod.38.16 is a compact lampstand line without separable KJV rows 37.20-22."
           },
           {
             "target_ref": "Exod.37.22",
-            "status": "represented_in_compact_source_not_distinct",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.38.16"
             ],
-            "reason": "Lampstand bowl, knop, flower, and branch details are compressed into one source line."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex37 marks the row N/A in the displayed LXX controls, and CrossWire Exod.38.16 is a compact lampstand line without separable KJV rows 37.20-22."
           },
           {
             "target_ref": "Exod.37.24",
@@ -35462,11 +35293,11 @@
           },
           {
             "target_ref": "Exod.38.2",
-            "status": "represented_in_compact_source_requires_primary_placement",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.38.22"
             ],
-            "reason": "Bronze altar construction is compressed into one source line spanning target 38.1-2."
+            "reason": "Follow-up span review found no distinct target segment: CrossWire Exod.38.22 contains the bronze altar-from-censers material already assigned to target 38.1, not the horns/corners/staves KJV semantic row."
           },
           {
             "target_ref": "Exod.38.5",
@@ -35490,12 +35321,12 @@
           },
           {
             "target_ref": "Exod.39.39",
-            "status": "represented_or_partly_represented_requires_token_span_review",
+            "status": "confirmed_unrepresented_as_distinct_kjv_semantic_row_in_lxx_control",
             "source_refs": [
               "Exod.39.9",
               "Exod.39.15"
             ],
-            "reason": "Bronze altar/tool inventory is compressed or partially represented; exact placement requires reviewing source 39.9 and neighboring presentation lines."
+            "reason": "Follow-up span review found no distinct target segment: GreekDoc ex39 places lampstand/oil material at 39.39, while the KJV row requires bronze altar/grate/staves/laver material; CrossWire has no separable matching row in the checked source lines."
           },
           {
             "target_ref": "Exod.39.40",
