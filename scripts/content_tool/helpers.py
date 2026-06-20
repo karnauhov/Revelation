@@ -203,37 +203,6 @@ GREEK_DESC_GROUP_RANGES: list[tuple[int, int]] = [
     (5270, 5403),
     (5404, 5505),
     (5506, 5624),
-    # Attested NA28_LXX extended Greek Strong keys only. Do not expand this
-    # to the whole STEP Extended Strong lexicon unless those rows are added to
-    # the app dictionaries.
-    (6000, 6003),
-    (6005, 6008),
-    (6011, 6011),
-    (6013, 6013),
-    (6015, 6020),
-    (6022, 6022),
-    (6027, 6037),
-    (6041, 6041),
-    (6043, 6046),
-    (6048, 6053),
-    (6055, 6055),
-    (6058, 6061),
-    (6063, 6066),
-    (6068, 6081),
-    (6083, 6083),
-    (6085, 6085),
-    (6087, 6088),
-    (6090, 6095),
-    (6632, 6632),
-    (6897, 6897),
-    (7013, 7013),
-    (7530, 7530),
-    (9315, 9315),
-    (9402, 9402),
-    (9577, 9577),
-    (9990, 9996),
-    (20447, 20447),
-    (20833, 20833),
 ]
 GREEK_DESC_KJV_PATTERN = re.compile(r"; \[in KJV:.*?\]", re.DOTALL)
 

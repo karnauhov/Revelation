@@ -68,7 +68,7 @@ void main() {
     expect(await resultFuture, 3303);
   });
 
-  testWidgets('accepts attested extended Strong numbers after rollout', (
+  testWidgets('clamps out-of-range Strong numbers to classic boundary', (
     tester,
   ) async {
     final context = await pumpLocalizedContext(tester);
@@ -80,35 +80,30 @@ void main() {
         entries: <StrongPickerEntry>[
           StrongPickerEntry(number: 1, word: 'classic-1'),
           StrongPickerEntry(number: 5624, word: 'classic-5624'),
-          StrongPickerEntry(number: 6000, word: 'extra-6000'),
-          StrongPickerEntry(number: 20833, word: 'extra-20833'),
+          StrongPickerEntry(number: 5625, word: 'out-of-range-5625'),
         ],
-        initialStrongNumber: 6000,
+        initialStrongNumber: 5625,
       ),
     );
     await tester.pumpAndSettle();
 
     final fieldFinder = find.byType(TextField);
     final field = tester.widget<TextField>(fieldFinder);
-    expect(field.decoration?.hintText, '1 - 20833');
-    expect(find.text('6000'), findsOneWidget);
-    expect(find.text('extra-6000'), findsOneWidget);
+    expect(field.decoration?.hintText, '1 - 5624');
+    expect(find.text('5624'), findsOneWidget);
+    expect(find.text('classic-5624'), findsOneWidget);
+    expect(find.text('out-of-range-5625'), findsNothing);
 
-    await tester.enterText(fieldFinder, '20833');
+    await tester.enterText(fieldFinder, '99999');
     await tester.pumpAndSettle();
 
-    expect(find.text('extra-20833'), findsOneWidget);
-
-    await tester.enterText(fieldFinder, '21502');
-    await tester.pumpAndSettle();
-
-    expect(find.text('20833'), findsOneWidget);
-    expect(find.text('extra-20833'), findsOneWidget);
+    expect(find.text('5624'), findsOneWidget);
+    expect(find.text('classic-5624'), findsOneWidget);
 
     await tester.tap(find.text(l10n.ok));
     await tester.pumpAndSettle();
 
-    expect(await resultFuture, 20833);
+    expect(await resultFuture, 5624);
   });
 
   testWidgets('cancel and submit actions complete dialog result contract', (

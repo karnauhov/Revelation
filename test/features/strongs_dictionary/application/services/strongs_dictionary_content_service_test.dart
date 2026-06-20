@@ -213,8 +213,8 @@ void main() {
               usage: '',
             ),
             common_db.GreekWord(
-              id: 6000,
-              word: 'Extra',
+              id: 5625,
+              word: 'Out of range',
               category: '',
               synonyms: '',
               origin: '',
@@ -227,10 +227,9 @@ void main() {
 
     expect(service.isAllowedStrongNumber(1), isTrue);
     expect(service.isAllowedStrongNumber(2717), isFalse);
-    expect(service.isAllowedStrongNumber(6000), isTrue);
-    expect(service.isAllowedStrongNumber(6096), isFalse);
-    expect(service.isAllowedStrongNumber(21502), isFalse);
-    expect(service.getNeighborStrongNumber(5624, forward: true), 6000);
+    expect(service.isAllowedStrongNumber(5624), isTrue);
+    expect(service.isAllowedStrongNumber(5625), isFalse);
+    expect(service.getNeighborStrongNumber(5624, forward: true), 1);
   });
 }
 

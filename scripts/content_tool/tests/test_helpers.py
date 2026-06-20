@@ -6,22 +6,13 @@ from scripts.content_tool.helpers import GREEK_DESC_GROUP_RANGES
 
 
 class GreekDescGroupRangesTest(unittest.TestCase):
-    def test_extended_ranges_cover_only_attested_na28_lxx_keys(self) -> None:
-        extended_ranges = [
-            (start_id, end_id)
-            for start_id, end_id in GREEK_DESC_GROUP_RANGES
-            if start_id > 5624
-        ]
-
-        extended_count = sum(
-            end_id - start_id + 1 for start_id, end_id in extended_ranges
-        )
-
-        self.assertEqual(extended_count, 88)
-        self.assertIn((6000, 6003), extended_ranges)
-        self.assertIn((20833, 20833), extended_ranges)
+    def test_ranges_stop_at_classic_greek_strong_boundary(self) -> None:
+        self.assertEqual(GREEK_DESC_GROUP_RANGES[-1], (5506, 5624))
         self.assertFalse(
-            any(start_id <= 21502 <= end_id for start_id, end_id in extended_ranges)
+            any(start_id > 5624 for start_id, _ in GREEK_DESC_GROUP_RANGES)
+        )
+        self.assertFalse(
+            any(end_id > 5624 for _, end_id in GREEK_DESC_GROUP_RANGES)
         )
 
 
