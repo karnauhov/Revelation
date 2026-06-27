@@ -27,13 +27,29 @@ void main() {
     expect(cubit.state.status, BibleReaderStatus.ready);
     expect(cubit.state.selectedReference?.bookId, 1);
     expect(cubit.state.selectedReference?.chapter, 1);
+    expect(cubit.state.selectionStartVerse, 1);
+    expect(cubit.state.selectionEndVerse, 1);
     expect(cubit.state.verses, isNotEmpty);
     expect(cubit.state.showStrongNumbers, isTrue);
+
+    cubit.selectLoadedVerse(3);
+
+    expect(cubit.state.selectedReference?.verse, 3);
+    expect(cubit.state.selectionStartVerse, 3);
+    expect(cubit.state.selectionEndVerse, 3);
+
+    cubit.extendSelectionToVerse(5);
+
+    expect(cubit.state.selectedReference?.verse, 5);
+    expect(cubit.state.selectedVerseRangeStart, 3);
+    expect(cubit.state.selectedVerseRangeEnd, 5);
 
     await cubit.navigateChapter(forward: true);
 
     expect(cubit.state.status, BibleReaderStatus.ready);
     expect(cubit.state.selectedReference?.chapter, 2);
+    expect(cubit.state.selectionStartVerse, 1);
+    expect(cubit.state.selectionEndVerse, 1);
 
     cubit.toggleStrongNumbers();
 

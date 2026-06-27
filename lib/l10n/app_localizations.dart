@@ -522,6 +522,78 @@ abstract class AppLocalizations {
   /// **'Strong'**
   String get bible_strong_toggle_label;
 
+  /// No description provided for @bible_module_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Module information'**
+  String get bible_module_info;
+
+  /// No description provided for @bible_module_info_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get bible_module_info_code;
+
+  /// No description provided for @bible_module_info_module_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Module ID'**
+  String get bible_module_info_module_id;
+
+  /// No description provided for @bible_module_info_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get bible_module_info_title;
+
+  /// No description provided for @bible_module_info_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get bible_module_info_description;
+
+  /// No description provided for @bible_module_info_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get bible_module_info_language;
+
+  /// No description provided for @bible_module_info_canon.
+  ///
+  /// In en, this message translates to:
+  /// **'Canon'**
+  String get bible_module_info_canon;
+
+  /// No description provided for @bible_module_info_versification.
+  ///
+  /// In en, this message translates to:
+  /// **'Versification'**
+  String get bible_module_info_versification;
+
+  /// No description provided for @bible_module_info_license.
+  ///
+  /// In en, this message translates to:
+  /// **'License'**
+  String get bible_module_info_license;
+
+  /// No description provided for @bible_module_info_source_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get bible_module_info_source_summary;
+
+  /// No description provided for @bible_copy_selected_verses.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy selected verses'**
+  String get bible_copy_selected_verses;
+
+  /// No description provided for @bible_selected_verses_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected verses copied to the clipboard.'**
+  String get bible_selected_verses_copied;
+
   /// No description provided for @revelation_structure_screen.
   ///
   /// In en, this message translates to:

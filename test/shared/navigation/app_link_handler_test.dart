@@ -540,6 +540,22 @@ void main() {
       expect(find.text('bible:66:22:3'), findsOneWidget);
     });
 
+    testWidgets('bible link resolves database John abbreviation', (
+      tester,
+    ) async {
+      final fixture = await _pumpRouterFixture(tester);
+
+      final handled = await handleAppLink(
+        fixture.contexts['home']!,
+        'bible:Joh1:1',
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(handled, isTrue);
+      expect(find.text('bible:43:1:1'), findsOneWidget);
+    });
+
     testWidgets('bible link rejects malformed payload', (tester) async {
       final fixture = await _pumpRouterFixture(tester);
       final context = fixture.contexts['home']!;

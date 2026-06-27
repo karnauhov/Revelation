@@ -877,6 +877,66 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'bible_strong_toggle_label should not be empty',
   );
   expect(
+    l10n.bible_module_info,
+    isNotEmpty,
+    reason: 'bible_module_info should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_code,
+    isNotEmpty,
+    reason: 'bible_module_info_code should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_module_id,
+    isNotEmpty,
+    reason: 'bible_module_info_module_id should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_title,
+    isNotEmpty,
+    reason: 'bible_module_info_title should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_description,
+    isNotEmpty,
+    reason: 'bible_module_info_description should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_language,
+    isNotEmpty,
+    reason: 'bible_module_info_language should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_canon,
+    isNotEmpty,
+    reason: 'bible_module_info_canon should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_versification,
+    isNotEmpty,
+    reason: 'bible_module_info_versification should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_license,
+    isNotEmpty,
+    reason: 'bible_module_info_license should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_source_summary,
+    isNotEmpty,
+    reason: 'bible_module_info_source_summary should not be empty',
+  );
+  expect(
+    l10n.bible_copy_selected_verses,
+    isNotEmpty,
+    reason: 'bible_copy_selected_verses should not be empty',
+  );
+  expect(
+    l10n.bible_selected_verses_copied,
+    isNotEmpty,
+    reason: 'bible_selected_verses_copied should not be empty',
+  );
+  expect(
     l10n.strong_number,
     isNotEmpty,
     reason: 'strong_number should not be empty',

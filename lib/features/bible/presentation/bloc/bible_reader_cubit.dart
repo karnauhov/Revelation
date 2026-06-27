@@ -69,6 +69,10 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
           selectedModuleSet: true,
           selectedReference: data.reference,
           selectedReferenceSet: true,
+          selectionStartVerse: data.reference.verse,
+          selectionStartVerseSet: true,
+          selectionEndVerse: data.reference.verse,
+          selectionEndVerseSet: true,
           verses: data.verses,
           loadingMessage: null,
           loadingMessageSet: true,
@@ -136,6 +140,10 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
           selectedModuleSet: true,
           selectedReference: chapterData.reference,
           selectedReferenceSet: true,
+          selectionStartVerse: chapterData.reference.verse,
+          selectionStartVerseSet: true,
+          selectionEndVerse: chapterData.reference.verse,
+          selectionEndVerseSet: true,
           verses: chapterData.verses,
           loadingMessage: null,
           loadingMessageSet: true,
@@ -200,6 +208,68 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
     emit(state.copyWith(showStrongNumbers: !state.showStrongNumbers));
   }
 
+  void selectLoadedVerse(int verse) {
+    final map = state.verseMap;
+    final reference = state.selectedReference;
+    if (map == null || reference == null) {
+      return;
+    }
+    if (!map.containsReference(
+      bookId: reference.bookId,
+      chapter: reference.chapter,
+      verse: verse,
+    )) {
+      return;
+    }
+
+    final selectedReference = map.referenceFor(
+      bookId: reference.bookId,
+      chapter: reference.chapter,
+      verse: verse,
+    );
+    emit(
+      state.copyWith(
+        selectedReference: selectedReference,
+        selectedReferenceSet: true,
+        selectionStartVerse: selectedReference.verse,
+        selectionStartVerseSet: true,
+        selectionEndVerse: selectedReference.verse,
+        selectionEndVerseSet: true,
+      ),
+    );
+  }
+
+  void extendSelectionToVerse(int verse) {
+    final map = state.verseMap;
+    final reference = state.selectedReference;
+    if (map == null || reference == null) {
+      return;
+    }
+    if (!map.containsReference(
+      bookId: reference.bookId,
+      chapter: reference.chapter,
+      verse: verse,
+    )) {
+      return;
+    }
+
+    final selectedReference = map.referenceFor(
+      bookId: reference.bookId,
+      chapter: reference.chapter,
+      verse: verse,
+    );
+    emit(
+      state.copyWith(
+        selectedReference: selectedReference,
+        selectedReferenceSet: true,
+        selectionStartVerse: state.selectionStartVerse ?? reference.verse,
+        selectionStartVerseSet: true,
+        selectionEndVerse: selectedReference.verse,
+        selectionEndVerseSet: true,
+      ),
+    );
+  }
+
   Future<void> _loadReference({
     required int bookId,
     required int chapter,
@@ -238,6 +308,10 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
           status: BibleReaderStatus.ready,
           selectedReference: chapterData.reference,
           selectedReferenceSet: true,
+          selectionStartVerse: chapterData.reference.verse,
+          selectionStartVerseSet: true,
+          selectionEndVerse: chapterData.reference.verse,
+          selectionEndVerseSet: true,
           verses: chapterData.verses,
           loadingMessage: null,
           loadingMessageSet: true,

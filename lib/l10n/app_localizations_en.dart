@@ -234,6 +234,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bible_strong_toggle_label => 'Strong';
 
   @override
+  String get bible_module_info => 'Module information';
+
+  @override
+  String get bible_module_info_code => 'Code';
+
+  @override
+  String get bible_module_info_module_id => 'Module ID';
+
+  @override
+  String get bible_module_info_title => 'Title';
+
+  @override
+  String get bible_module_info_description => 'Description';
+
+  @override
+  String get bible_module_info_language => 'Language';
+
+  @override
+  String get bible_module_info_canon => 'Canon';
+
+  @override
+  String get bible_module_info_versification => 'Versification';
+
+  @override
+  String get bible_module_info_license => 'License';
+
+  @override
+  String get bible_module_info_source_summary => 'Source';
+
+  @override
+  String get bible_copy_selected_verses => 'Copy selected verses';
+
+  @override
+  String get bible_selected_verses_copied =>
+      'Selected verses copied to the clipboard.';
+
+  @override
   String get revelation_structure_screen => 'Revelation Structure';
 
   @override

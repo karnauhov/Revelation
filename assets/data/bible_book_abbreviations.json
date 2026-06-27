@@ -43,7 +43,7 @@
     {"id": 40, "code": "Mat", "aliases": {"en": ["Mat", "Matt", "Mt", "Matthew"], "es": ["Mt", "Mat", "Mateo"], "ru": ["Мф", "Матф", "Матфей"], "uk": ["Мт", "Матв", "Матвій"]}},
     {"id": 41, "code": "Mark", "aliases": {"en": ["Mark", "Mar", "Mk"], "es": ["Mr", "Mc", "Marcos"], "ru": ["Мк", "Марк"], "uk": ["Мр", "Марк"]}},
     {"id": 42, "code": "Luke", "aliases": {"en": ["Luke", "Luk", "Lk"], "es": ["Lc", "Lucas"], "ru": ["Лк", "Лука"], "uk": ["Лк", "Лука"]}},
-    {"id": 43, "code": "John", "aliases": {"en": ["John", "Jhn", "Jn"], "es": ["Jn", "Juan"], "ru": ["Ин", "Иоан", "Иоанн"], "uk": ["Ів", "Іван", "Івана"]}},
+    {"id": 43, "code": "John", "aliases": {"en": ["John", "Jhn", "Joh", "Jn"], "es": ["Jn", "Juan"], "ru": ["Ин", "Иоан", "Иоанн"], "uk": ["Ів", "Іван", "Івана"]}},
     {"id": 44, "code": "Acts", "aliases": {"en": ["Acts", "Act", "Ac"], "es": ["Hch", "Hechos"], "ru": ["Деян", "Деяния"], "uk": ["Дії", "Дії Апостолів"]}},
     {"id": 45, "code": "Rom", "aliases": {"en": ["Rom", "Ro", "Rm", "Romans"], "es": ["Ro", "Rom", "Romanos"], "ru": ["Рим", "Римлянам"], "uk": ["Рим", "Римлян"]}},
     {"id": 46, "code": "1Cor", "aliases": {"en": ["1Cor", "1 Co", "1 Corinthians"], "es": ["1Co", "1 Corintios"], "ru": ["1Кор", "1 Кор", "1 Коринфянам"], "uk": ["1Кор", "1 Кор", "1 Коринтян"]}},

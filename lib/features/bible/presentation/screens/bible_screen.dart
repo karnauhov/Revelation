@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
@@ -10,6 +11,7 @@ import 'package:revelation/features/bible/presentation/bloc/bible_reader_cubit.d
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_state.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/localization/bible_book_localization.dart';
+import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 
 class BibleScreen extends StatelessWidget {
@@ -121,8 +123,7 @@ class _BibleReaderToolbar extends StatelessWidget {
     final reference = state.selectedReference;
     final selectedModule = state.selectedModule;
     final localizations = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     if (map == null || reference == null || selectedModule == null) {
       return ColoredBox(
@@ -171,6 +172,15 @@ class _BibleReaderToolbar extends StatelessWidget {
                   );
                 }
               },
+            ),
+            IconButton(
+              key: const Key('bible_module_info_button'),
+              icon: const Icon(Icons.info_outline),
+              tooltip: localizations.bible_module_info,
+              color: colorScheme.primary,
+              onPressed: state.isBusy
+                  ? null
+                  : () => _showBibleModuleInfoDialog(context, selectedModule),
             ),
             const SizedBox(width: 8),
             _ToolbarDropdown<int>(
@@ -301,16 +311,15 @@ class _BibleReaderToolbar extends StatelessWidget {
                 context.read<BibleReaderCubit>().toggleStrongNumbers();
               },
             ),
-            if (state.showStrongNumbers) ...[
-              const SizedBox(width: 2),
-              Text(
-                localizations.bible_strong_toggle_label,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+            IconButton(
+              key: const Key('bible_copy_selection_button'),
+              icon: const Icon(Icons.content_copy),
+              tooltip: localizations.bible_copy_selected_verses,
+              color: colorScheme.primary,
+              onPressed: state.hasSelectedVerses
+                  ? () => unawaited(_copySelectedVerses(context, state))
+                  : null,
+            ),
           ],
         ),
       ),
@@ -400,7 +409,13 @@ class _BibleReaderBody extends StatelessWidget {
         _BibleChapterView(
           verses: state.verses,
           selectedVerseKey: state.selectedReference?.verseKey,
+          selectedVerseRangeStart: state.selectedVerseRangeStart,
+          selectedVerseRangeEnd: state.selectedVerseRangeEnd,
           showStrongNumbers: state.showStrongNumbers,
+          onVerseTap: context.read<BibleReaderCubit>().selectLoadedVerse,
+          onVerseLongPress: context
+              .read<BibleReaderCubit>()
+              .extendSelectionToVerse,
         ),
         if (state.isBusy)
           Align(
@@ -486,12 +501,20 @@ class _BibleChapterView extends StatefulWidget {
   const _BibleChapterView({
     required this.verses,
     required this.selectedVerseKey,
+    required this.selectedVerseRangeStart,
+    required this.selectedVerseRangeEnd,
     required this.showStrongNumbers,
+    required this.onVerseTap,
+    required this.onVerseLongPress,
   });
 
   final List<BibleChapterVerse> verses;
   final String? selectedVerseKey;
+  final int? selectedVerseRangeStart;
+  final int? selectedVerseRangeEnd;
   final bool showStrongNumbers;
+  final ValueChanged<int> onVerseTap;
+  final ValueChanged<int> onVerseLongPress;
 
   @override
   State<_BibleChapterView> createState() => _BibleChapterViewState();
@@ -524,26 +547,55 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    final visibleVerseKeys = {
+      for (final verse in widget.verses) verse.reference.verseKey,
+    };
+    _verseKeys.removeWhere(
+      (verseKey, _) => !visibleVerseKeys.contains(verseKey),
+    );
+
+    return SingleChildScrollView(
       key: const Key('bible_chapter_verses'),
       controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 20),
-      itemCount: widget.verses.length,
-      itemBuilder: (context, index) {
-        final verse = widget.verses[index];
-        final selected = verse.reference.verseKey == widget.selectedVerseKey;
-        final verseKey = _verseKeys.putIfAbsent(
-          verse.reference.verseKey,
-          () => GlobalKey(),
-        );
-        return _BibleVerseRow(
-          key: verseKey,
-          verse: verse,
-          selected: selected,
-          showStrongNumbers: widget.showStrongNumbers,
-        );
-      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final verse in widget.verses)
+            Builder(
+              builder: (context) {
+                final selected =
+                    verse.reference.verseKey == widget.selectedVerseKey;
+                final verseKey = _verseKeys.putIfAbsent(
+                  verse.reference.verseKey,
+                  () => GlobalKey(),
+                );
+                return _BibleVerseRow(
+                  key: verseKey,
+                  verse: verse,
+                  selected: selected,
+                  inSelectionRange: _isVerseInSelectionRange(
+                    verse.reference.verse,
+                    widget.selectedVerseRangeStart,
+                    widget.selectedVerseRangeEnd,
+                  ),
+                  showStrongNumbers: widget.showStrongNumbers,
+                  onTap: () => widget.onVerseTap(verse.reference.verse),
+                  onLongPress: () =>
+                      widget.onVerseLongPress(verse.reference.verse),
+                );
+              },
+            ),
+        ],
+      ),
     );
+  }
+
+  bool _isVerseInSelectionRange(int verse, int? start, int? end) {
+    if (start == null || end == null) {
+      return false;
+    }
+    return verse >= start && verse <= end;
   }
 
   void _scheduleScrollToSelected() {
@@ -574,12 +626,18 @@ class _BibleVerseRow extends StatelessWidget {
     required super.key,
     required this.verse,
     required this.selected,
+    required this.inSelectionRange,
     required this.showStrongNumbers,
+    required this.onTap,
+    required this.onLongPress,
   });
 
   final BibleChapterVerse verse;
   final bool selected;
+  final bool inSelectionRange;
   final bool showStrongNumbers;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -590,35 +648,55 @@ class _BibleVerseRow extends StatelessWidget {
       color: colorScheme.onSurface,
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: selected
-            ? colorScheme.primaryContainer.withValues(alpha: 0.28)
-            : Colors.transparent,
+    final backgroundColor = selected
+        ? colorScheme.primaryContainer.withValues(alpha: 0.42)
+        : inSelectionRange
+        ? colorScheme.primaryContainer.withValues(alpha: 0.24)
+        : Colors.transparent;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 1),
+      child: Material(
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(6),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        child: Text.rich(
-          TextSpan(
-            style: textStyle,
-            children: [
-              TextSpan(
-                text: '${verse.reference.verse}. ',
-                style: textStyle?.copyWith(
-                  color: colorScheme.primary,
-                  fontWeight: FontWeight.w700,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: onTap,
+          onLongPress: onLongPress,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: selected
+                  ? Border.all(
+                      color: colorScheme.primary.withValues(alpha: 0.5),
+                    )
+                  : null,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              child: Text.rich(
+                TextSpan(
+                  style: textStyle,
+                  children: [
+                    TextSpan(
+                      text: '${verse.reference.verse}. ',
+                      style: textStyle?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    ..._buildBibleTextSpans(
+                      context,
+                      verse.text,
+                      showStrongNumbers: showStrongNumbers,
+                      baseStyle: textStyle,
+                    ),
+                  ],
                 ),
+                key: Key('bible_verse_${verse.reference.verse}'),
               ),
-              ..._buildBibleTextSpans(
-                context,
-                verse.text,
-                showStrongNumbers: showStrongNumbers,
-                baseStyle: textStyle,
-              ),
-            ],
+            ),
           ),
-          key: Key('bible_verse_${verse.reference.verse}'),
         ),
       ),
     );
@@ -653,13 +731,26 @@ List<InlineSpan> _buildBibleTextSpans(
           baseline: TextBaseline.alphabetic,
           child: Padding(
             padding: const EdgeInsets.only(left: 1),
-            child: Text(
-              token.toUpperCase(),
-              style: baseStyle?.copyWith(
-                fontSize: (baseStyle.fontSize ?? 16) * 0.58,
-                height: 1,
-                color: colorScheme.primary,
-                fontWeight: FontWeight.w700,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  unawaited(
+                    handleAppLink(context, 'strong:${token.toUpperCase()}'),
+                  );
+                },
+                child: Text(
+                  token.toUpperCase(),
+                  style: baseStyle?.copyWith(
+                    fontSize: (baseStyle.fontSize ?? 16) * 0.58,
+                    height: 1,
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.w700,
+                    decoration: TextDecoration.underline,
+                    decorationColor: colorScheme.primary,
+                  ),
+                ),
               ),
             ),
           ),
@@ -672,4 +763,133 @@ List<InlineSpan> _buildBibleTextSpans(
     hasVisibleWord = true;
   }
   return spans;
+}
+
+Future<void> _copySelectedVerses(
+  BuildContext context,
+  BibleReaderState state,
+) async {
+  final selectedReference = state.selectedReference;
+  final start = state.selectedVerseRangeStart;
+  final end = state.selectedVerseRangeEnd;
+  if (selectedReference == null || start == null || end == null) {
+    return;
+  }
+
+  final localizations = AppLocalizations.of(context)!;
+  final label = _selectedVerseRangeLabel(localizations, state);
+  final selectedVerses = state.verses
+      .where((verse) {
+        final verseNumber = verse.reference.verse;
+        return verseNumber >= start && verseNumber <= end;
+      })
+      .toList(growable: false);
+  if (selectedVerses.isEmpty) {
+    return;
+  }
+
+  final buffer = StringBuffer(label);
+  for (final verse in selectedVerses) {
+    buffer
+      ..writeln()
+      ..write('${verse.reference.verse}. ${_plainBibleText(verse.text)}');
+  }
+
+  await Clipboard.setData(ClipboardData(text: buffer.toString()));
+  if (!context.mounted) {
+    return;
+  }
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(localizations.bible_selected_verses_copied)),
+  );
+}
+
+String _selectedVerseRangeLabel(
+  AppLocalizations localizations,
+  BibleReaderState state,
+) {
+  final reference = state.selectedReference!;
+  final start = state.selectedVerseRangeStart ?? reference.verse;
+  final end = state.selectedVerseRangeEnd ?? reference.verse;
+  final bookName = localizedBibleBookName(localizations, reference.bookId);
+  final versePart = start == end ? '$start' : '$start-$end';
+  return '$bookName ${reference.chapter}:$versePart';
+}
+
+String _plainBibleText(String text) {
+  final tokens = text.trim().split(RegExp(r'\s+'));
+  if (tokens.length == 1 && tokens.first.isEmpty) {
+    return '';
+  }
+  return tokens
+      .where((token) => !_strongTokenPattern.hasMatch(token))
+      .join(' ')
+      .trim();
+}
+
+void _showBibleModuleInfoDialog(BuildContext context, BibleModuleInfo module) {
+  final localizations = AppLocalizations.of(context)!;
+  final entries = <({String label, String value})>[
+    (label: localizations.bible_module_info_code, value: module.code),
+    (label: localizations.bible_module_info_module_id, value: module.moduleId),
+    (label: localizations.bible_module_info_title, value: module.title),
+    (
+      label: localizations.bible_module_info_description,
+      value: module.description,
+    ),
+    (label: localizations.bible_module_info_language, value: module.language),
+    (label: localizations.bible_module_info_canon, value: module.canon),
+    (
+      label: localizations.bible_module_info_versification,
+      value: module.versification,
+    ),
+    (label: localizations.bible_module_info_license, value: module.license),
+    (
+      label: localizations.bible_module_info_source_summary,
+      value: module.sourceSummary,
+    ),
+  ];
+
+  showDialog<void>(
+    context: context,
+    builder: (context) {
+      final theme = Theme.of(context);
+      return AlertDialog(
+        key: const Key('bible_module_info_dialog'),
+        title: Text(localizations.bible_module_info),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 560),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final entry in entries) ...[
+                  Text(
+                    entry.label,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  SelectableText(
+                    entry.value.isEmpty ? '-' : entry.value,
+                    key: Key('bible_module_info_${entry.label}'),
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(localizations.close),
+          ),
+        ],
+      );
+    },
+  );
 }

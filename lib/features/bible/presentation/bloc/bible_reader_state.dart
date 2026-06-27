@@ -11,6 +11,8 @@ class BibleReaderState {
     this.verseMap,
     this.selectedModule,
     this.selectedReference,
+    this.selectionStartVerse,
+    this.selectionEndVerse,
     this.showStrongNumbers = true,
     this.loadingMessage,
     this.errorMessage,
@@ -23,6 +25,8 @@ class BibleReaderState {
       verseMap = null,
       selectedModule = null,
       selectedReference = null,
+      selectionStartVerse = null,
+      selectionEndVerse = null,
       showStrongNumbers = true,
       loadingMessage = null,
       errorMessage = null;
@@ -32,10 +36,35 @@ class BibleReaderState {
   final List<BibleModuleInfo> modules;
   final BibleModuleInfo? selectedModule;
   final BibleVerseReference? selectedReference;
+  final int? selectionStartVerse;
+  final int? selectionEndVerse;
   final List<BibleChapterVerse> verses;
   final bool showStrongNumbers;
   final String? loadingMessage;
   final String? errorMessage;
+
+  bool get hasSelectedVerses =>
+      selectedReference != null &&
+      selectedVerseRangeStart != null &&
+      selectedVerseRangeEnd != null;
+
+  int? get selectedVerseRangeStart {
+    final start = selectionStartVerse;
+    final end = selectionEndVerse;
+    if (start == null || end == null) {
+      return null;
+    }
+    return start <= end ? start : end;
+  }
+
+  int? get selectedVerseRangeEnd {
+    final start = selectionStartVerse;
+    final end = selectionEndVerse;
+    if (start == null || end == null) {
+      return null;
+    }
+    return start <= end ? end : start;
+  }
 
   bool get isBusy =>
       status == BibleReaderStatus.initialLoading ||
@@ -78,6 +107,10 @@ class BibleReaderState {
     bool selectedModuleSet = false,
     BibleVerseReference? selectedReference,
     bool selectedReferenceSet = false,
+    int? selectionStartVerse,
+    bool selectionStartVerseSet = false,
+    int? selectionEndVerse,
+    bool selectionEndVerseSet = false,
     List<BibleChapterVerse>? verses,
     bool? showStrongNumbers,
     String? loadingMessage,
@@ -93,6 +126,12 @@ class BibleReaderState {
       selectedReference: selectedReferenceSet
           ? selectedReference
           : this.selectedReference,
+      selectionStartVerse: selectionStartVerseSet
+          ? selectionStartVerse
+          : this.selectionStartVerse,
+      selectionEndVerse: selectionEndVerseSet
+          ? selectionEndVerse
+          : this.selectionEndVerse,
       verses: verses ?? this.verses,
       showStrongNumbers: showStrongNumbers ?? this.showStrongNumbers,
       loadingMessage: loadingMessageSet ? loadingMessage : this.loadingMessage,
@@ -109,6 +148,8 @@ class BibleReaderState {
             _listEquals(other.modules, modules) &&
             other.selectedModule == selectedModule &&
             other.selectedReference == selectedReference &&
+            other.selectionStartVerse == selectionStartVerse &&
+            other.selectionEndVerse == selectionEndVerse &&
             _listEquals(other.verses, verses) &&
             other.showStrongNumbers == showStrongNumbers &&
             other.loadingMessage == loadingMessage &&
@@ -122,6 +163,8 @@ class BibleReaderState {
     Object.hashAll(modules),
     selectedModule,
     selectedReference,
+    selectionStartVerse,
+    selectionEndVerse,
     Object.hashAll(verses),
     showStrongNumbers,
     loadingMessage,

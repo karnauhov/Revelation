@@ -235,6 +235,43 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bible_strong_toggle_label => 'Стронґ';
 
   @override
+  String get bible_module_info => 'Інформація про модуль';
+
+  @override
+  String get bible_module_info_code => 'Код';
+
+  @override
+  String get bible_module_info_module_id => 'ID модуля';
+
+  @override
+  String get bible_module_info_title => 'Назва';
+
+  @override
+  String get bible_module_info_description => 'Опис';
+
+  @override
+  String get bible_module_info_language => 'Мова';
+
+  @override
+  String get bible_module_info_canon => 'Канон';
+
+  @override
+  String get bible_module_info_versification => 'Версифікація';
+
+  @override
+  String get bible_module_info_license => 'Ліцензія';
+
+  @override
+  String get bible_module_info_source_summary => 'Джерело';
+
+  @override
+  String get bible_copy_selected_verses => 'Копіювати вибрані вірші';
+
+  @override
+  String get bible_selected_verses_copied =>
+      'Вибрані вірші скопійовано в буфер обміну.';
+
+  @override
   String get revelation_structure_screen => 'Структура Об\'явлення';
 
   @override
