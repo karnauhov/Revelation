@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
@@ -9,10 +10,15 @@ import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart
 import 'package:revelation/features/bible/domain/models/bible_module_info.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_state.dart';
+import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubit.dart';
+import 'package:revelation/features/bible/presentation/bloc/bible_workspace_state.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/localization/bible_book_localization.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
+
+const double _kParallelPaneMinWidth = 420;
+const double _kParallelPaneGap = 10;
 
 class BibleScreen extends StatelessWidget {
   const BibleScreen({
@@ -36,11 +42,14 @@ class BibleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
+    final repository = bibleRepository;
 
-    return BlocProvider<BibleReaderCubit>(
+    return BlocProvider<BibleWorkspaceCubit>(
       create: (_) {
-        final cubit = BibleReaderCubit(
-          repository: bibleRepository ?? AppDi.createBibleRepository(),
+        final cubit = BibleWorkspaceCubit(
+          repositoryFactory: repository == null
+              ? AppDi.createBibleRepository
+              : () => repository,
           languageCode: locale.languageCode,
           initialBookId: initialBookId,
           initialChapter: initialChapter,
@@ -93,18 +102,25 @@ class _BibleScreenContent extends StatelessWidget {
           ],
         ),
         foregroundColor: colorScheme.primary,
+        actions: [
+          BlocBuilder<BibleWorkspaceCubit, BibleWorkspaceState>(
+            builder: (context, workspaceState) {
+              return IconButton(
+                key: const Key('bible_open_parallel_reader_button'),
+                icon: const Icon(Icons.add),
+                tooltip: localizations.bible_open_parallel_reader,
+                onPressed: workspaceState.canOpenParallelReader
+                    ? context.read<BibleWorkspaceCubit>().openParallelReader
+                    : null,
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
-        child: BlocBuilder<BibleReaderCubit, BibleReaderState>(
-          builder: (context, state) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _BibleReaderToolbar(state: state),
-                _BibleProgressLine(state: state),
-                Expanded(child: _BibleReaderBody(state: state)),
-              ],
-            );
+        child: BlocBuilder<BibleWorkspaceCubit, BibleWorkspaceState>(
+          builder: (context, workspaceState) {
+            return _BibleReadersArea(workspaceState: workspaceState);
           },
         ),
       ),
@@ -112,10 +128,169 @@ class _BibleScreenContent extends StatelessWidget {
   }
 }
 
+class _BibleReadersArea extends StatefulWidget {
+  const _BibleReadersArea({required this.workspaceState});
+
+  final BibleWorkspaceState workspaceState;
+
+  @override
+  State<_BibleReadersArea> createState() => _BibleReadersAreaState();
+}
+
+class _BibleReadersAreaState extends State<_BibleReadersArea> {
+  final _BibleLinkedScrollCoordinator _scrollCoordinator =
+      _BibleLinkedScrollCoordinator();
+
+  @override
+  Widget build(BuildContext context) {
+    final paneIds = widget.workspaceState.paneIds;
+    _scrollCoordinator.linkedNavigation =
+        widget.workspaceState.hasMultiplePanes &&
+        widget.workspaceState.linkedNavigation;
+
+    if (paneIds.isEmpty) {
+      return _BibleLoadingMessage(
+        message: AppLocalizations.of(context)!.bible_loading,
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (paneIds.length == 1) {
+          return _buildPane(context, paneIds.first);
+        }
+
+        final horizontal =
+            constraints.maxWidth >=
+            (_kParallelPaneMinWidth * paneIds.length) +
+                (_kParallelPaneGap * (paneIds.length - 1));
+        if (horizontal) {
+          return Row(
+            key: const Key('bible_parallel_layout_horizontal'),
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var index = 0; index < paneIds.length; index++) ...[
+                if (index > 0) const SizedBox(width: _kParallelPaneGap),
+                _buildExpandedPane(context, paneIds[index]),
+              ],
+            ],
+          );
+        }
+
+        return Column(
+          key: const Key('bible_parallel_layout_vertical'),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var index = 0; index < paneIds.length; index++) ...[
+              if (index > 0) const SizedBox(height: _kParallelPaneGap),
+              _buildExpandedPane(context, paneIds[index]),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildExpandedPane(BuildContext context, String paneId) {
+    return Expanded(child: _buildPane(context, paneId));
+  }
+
+  Widget _buildPane(BuildContext context, String paneId) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final workspaceCubit = context.read<BibleWorkspaceCubit>();
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        border: Border.all(color: colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: BlocProvider<BibleReaderCubit>.value(
+          value: workspaceCubit.readerCubitFor(paneId),
+          child: _BibleReaderPane(
+            paneId: paneId,
+            workspaceState: widget.workspaceState,
+            scrollCoordinator: _scrollCoordinator,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollCoordinator.dispose();
+    super.dispose();
+  }
+}
+
+class _BibleReaderPane extends StatelessWidget {
+  const _BibleReaderPane({
+    required this.paneId,
+    required this.workspaceState,
+    required this.scrollCoordinator,
+  });
+
+  final String paneId;
+  final BibleWorkspaceState workspaceState;
+  final _BibleLinkedScrollCoordinator scrollCoordinator;
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: Key('bible_reader_pane_$paneId'),
+      child: BlocBuilder<BibleReaderCubit, BibleReaderState>(
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _BibleReaderToolbar(
+                state: state,
+                showLinkedNavigationToggle: workspaceState.hasMultiplePanes,
+                linkedNavigation: workspaceState.linkedNavigation,
+                onToggleLinkedNavigation: context
+                    .read<BibleWorkspaceCubit>()
+                    .toggleLinkedNavigation,
+                canClosePane: paneId != BibleWorkspaceCubit.primaryPaneId,
+                onClosePane: () {
+                  unawaited(
+                    context.read<BibleWorkspaceCubit>().closeReaderPane(paneId),
+                  );
+                },
+              ),
+              _BibleProgressLine(state: state),
+              Expanded(
+                child: _BibleReaderBody(
+                  paneId: paneId,
+                  state: state,
+                  scrollCoordinator: scrollCoordinator,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
 class _BibleReaderToolbar extends StatelessWidget {
-  const _BibleReaderToolbar({required this.state});
+  const _BibleReaderToolbar({
+    required this.state,
+    required this.showLinkedNavigationToggle,
+    required this.linkedNavigation,
+    required this.onToggleLinkedNavigation,
+    required this.canClosePane,
+    required this.onClosePane,
+  });
 
   final BibleReaderState state;
+  final bool showLinkedNavigationToggle;
+  final bool linkedNavigation;
+  final VoidCallback onToggleLinkedNavigation;
+  final bool canClosePane;
+  final VoidCallback onClosePane;
 
   @override
   Widget build(BuildContext context) {
@@ -137,194 +312,585 @@ class _BibleReaderToolbar extends StatelessWidget {
       bookId: reference.bookId,
       chapter: reference.chapter,
     );
+    final readerCubit = context.read<BibleReaderCubit>();
+    final toolbarActions = <_BibleToolbarAction>[
+      _BibleToolbarAction(
+        id: 'module',
+        width: 124,
+        inline: _ToolbarDropdown<BibleModuleInfo>(
+          key: const Key('bible_module_dropdown'),
+          width: 116,
+          label: localizations.bible_module,
+          value: selectedModule,
+          enabled: !state.isBusy,
+          items: [
+            for (final module in state.modules)
+              DropdownMenuItem<BibleModuleInfo>(
+                value: module,
+                child: Tooltip(
+                  message: module.title,
+                  child: Text(
+                    module.displayTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+          ],
+          onChanged: (module) {
+            if (module != null) {
+              unawaited(readerCubit.selectModule(module));
+            }
+          },
+        ),
+        menuIcon: Icons.storage,
+        menuLabel: localizations.bible_module,
+        menuValue: selectedModule.displayTitle,
+        enabled: !state.isBusy,
+        onMenuSelected: (context) async {
+          final module = await _showToolbarChoiceDialog<BibleModuleInfo>(
+            context: context,
+            title: localizations.bible_module,
+            values: state.modules,
+            selectedValue: selectedModule,
+            labelFor: (module) => module.displayTitle,
+          );
+          if (module != null) {
+            unawaited(readerCubit.selectModule(module));
+          }
+        },
+      ),
+      _BibleToolbarAction(
+        id: 'module_info',
+        width: 44,
+        inline: IconButton(
+          key: const Key('bible_module_info_button'),
+          icon: const Icon(Icons.info_outline),
+          tooltip: localizations.bible_module_info,
+          color: colorScheme.primary,
+          onPressed: state.isBusy
+              ? null
+              : () => _showBibleModuleInfoDialog(context, selectedModule),
+        ),
+        menuIcon: Icons.info_outline,
+        menuLabel: localizations.bible_module_info,
+        enabled: !state.isBusy,
+        onMenuSelected: (context) {
+          _showBibleModuleInfoDialog(context, selectedModule);
+        },
+      ),
+      _BibleToolbarAction(
+        id: 'book',
+        width: 194,
+        inline: _ToolbarDropdown<int>(
+          key: const Key('bible_book_dropdown'),
+          width: 186,
+          label: localizations.bible_book,
+          value: reference.bookId,
+          enabled: !state.isBusy,
+          items: [
+            for (final bookId in map.bookIds)
+              DropdownMenuItem<int>(
+                value: bookId,
+                child: Text(
+                  localizedBibleBookName(localizations, bookId),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+          ],
+          onChanged: (bookId) {
+            if (bookId != null) {
+              unawaited(
+                readerCubit.selectReference(
+                  bookId: bookId,
+                  chapter: 1,
+                  verse: 1,
+                ),
+              );
+            }
+          },
+        ),
+        menuIcon: Icons.menu_book,
+        menuLabel: localizations.bible_book,
+        menuValue: localizedBibleBookName(localizations, reference.bookId),
+        enabled: !state.isBusy,
+        onMenuSelected: (context) async {
+          final bookId = await _showToolbarChoiceDialog<int>(
+            context: context,
+            title: localizations.bible_book,
+            values: map.bookIds,
+            selectedValue: reference.bookId,
+            labelFor: (bookId) => localizedBibleBookName(localizations, bookId),
+          );
+          if (bookId != null) {
+            unawaited(
+              readerCubit.selectReference(bookId: bookId, chapter: 1, verse: 1),
+            );
+          }
+        },
+      ),
+      _BibleToolbarAction(
+        id: 'chapter',
+        width: 104,
+        inline: _ToolbarDropdown<int>(
+          key: const Key('bible_chapter_dropdown'),
+          width: 96,
+          label: localizations.bible_chapter,
+          value: reference.chapter,
+          enabled: !state.isBusy,
+          items: [
+            for (var chapter = 1; chapter <= chapterCount; chapter++)
+              DropdownMenuItem<int>(
+                value: chapter,
+                child: Text(chapter.toString()),
+              ),
+          ],
+          onChanged: (chapter) {
+            if (chapter != null) {
+              unawaited(
+                readerCubit.selectReference(
+                  bookId: reference.bookId,
+                  chapter: chapter,
+                  verse: 1,
+                ),
+              );
+            }
+          },
+        ),
+        menuIcon: Icons.view_agenda_outlined,
+        menuLabel: localizations.bible_chapter,
+        menuValue: reference.chapter.toString(),
+        enabled: !state.isBusy,
+        onMenuSelected: (context) async {
+          final chapter = await _showToolbarChoiceDialog<int>(
+            context: context,
+            title: localizations.bible_chapter,
+            values: [
+              for (var chapter = 1; chapter <= chapterCount; chapter++) chapter,
+            ],
+            selectedValue: reference.chapter,
+            labelFor: (chapter) => chapter.toString(),
+          );
+          if (chapter != null) {
+            unawaited(
+              readerCubit.selectReference(
+                bookId: reference.bookId,
+                chapter: chapter,
+                verse: 1,
+              ),
+            );
+          }
+        },
+      ),
+      _BibleToolbarAction(
+        id: 'verse',
+        width: 96,
+        inline: _ToolbarDropdown<int>(
+          key: const Key('bible_verse_dropdown'),
+          width: 88,
+          label: localizations.bible_verse,
+          value: reference.verse,
+          enabled: !state.isBusy,
+          items: [
+            for (var verse = 1; verse <= verseCount; verse++)
+              DropdownMenuItem<int>(
+                value: verse,
+                child: Text(verse.toString()),
+              ),
+          ],
+          onChanged: (verse) {
+            if (verse != null) {
+              unawaited(
+                readerCubit.selectReference(
+                  bookId: reference.bookId,
+                  chapter: reference.chapter,
+                  verse: verse,
+                ),
+              );
+            }
+          },
+        ),
+        menuIcon: Icons.format_list_numbered,
+        menuLabel: localizations.bible_verse,
+        menuValue: reference.verse.toString(),
+        enabled: !state.isBusy,
+        onMenuSelected: (context) async {
+          final verse = await _showToolbarChoiceDialog<int>(
+            context: context,
+            title: localizations.bible_verse,
+            values: [for (var verse = 1; verse <= verseCount; verse++) verse],
+            selectedValue: reference.verse,
+            labelFor: (verse) => verse.toString(),
+          );
+          if (verse != null) {
+            unawaited(
+              readerCubit.selectReference(
+                bookId: reference.bookId,
+                chapter: reference.chapter,
+                verse: verse,
+              ),
+            );
+          }
+        },
+      ),
+      _BibleToolbarAction(
+        id: 'previous_chapter',
+        width: 44,
+        inline: IconButton(
+          key: const Key('bible_previous_chapter_button'),
+          icon: const Icon(Icons.chevron_left),
+          tooltip: localizations.bible_previous_chapter,
+          color: colorScheme.primary,
+          onPressed: !state.isBusy && state.canNavigateBackward
+              ? () {
+                  unawaited(readerCubit.navigateChapter(forward: false));
+                }
+              : null,
+        ),
+        menuIcon: Icons.chevron_left,
+        menuLabel: localizations.bible_previous_chapter,
+        enabled: !state.isBusy && state.canNavigateBackward,
+        onMenuSelected: (context) {
+          unawaited(readerCubit.navigateChapter(forward: false));
+        },
+      ),
+      _BibleToolbarAction(
+        id: 'next_chapter',
+        width: 44,
+        inline: IconButton(
+          key: const Key('bible_next_chapter_button'),
+          icon: const Icon(Icons.chevron_right),
+          tooltip: localizations.bible_next_chapter,
+          color: colorScheme.primary,
+          onPressed: !state.isBusy && state.canNavigateForward
+              ? () {
+                  unawaited(readerCubit.navigateChapter(forward: true));
+                }
+              : null,
+        ),
+        menuIcon: Icons.chevron_right,
+        menuLabel: localizations.bible_next_chapter,
+        enabled: !state.isBusy && state.canNavigateForward,
+        onMenuSelected: (context) {
+          unawaited(readerCubit.navigateChapter(forward: true));
+        },
+      ),
+      if (showLinkedNavigationToggle)
+        _BibleToolbarAction(
+          id: 'linked_navigation',
+          width: 44,
+          inline: IconButton(
+            key: const Key('bible_linked_navigation_button'),
+            icon: Icon(linkedNavigation ? Icons.link : Icons.link_off),
+            tooltip: linkedNavigation
+                ? localizations.bible_linked_navigation
+                : localizations.bible_unlinked_navigation,
+            color: colorScheme.primary,
+            style: IconButton.styleFrom(
+              backgroundColor: linkedNavigation
+                  ? colorScheme.secondaryContainer
+                  : Colors.transparent,
+              shape: const CircleBorder(),
+            ),
+            onPressed: onToggleLinkedNavigation,
+          ),
+          menuIcon: linkedNavigation ? Icons.link : Icons.link_off,
+          menuLabel: linkedNavigation
+              ? localizations.bible_linked_navigation
+              : localizations.bible_unlinked_navigation,
+          active: linkedNavigation,
+          onMenuSelected: (context) {
+            onToggleLinkedNavigation();
+          },
+        ),
+      _BibleToolbarAction(
+        id: 'strong_numbers',
+        width: 44,
+        inline: IconButton(
+          key: const Key('bible_strong_toggle_button'),
+          icon: const Icon(Icons.local_offer),
+          tooltip: localizations.toggle_show_strong_numbers,
+          color: colorScheme.primary,
+          style: IconButton.styleFrom(
+            backgroundColor: state.showStrongNumbers
+                ? colorScheme.secondaryContainer
+                : Colors.transparent,
+            shape: const CircleBorder(),
+          ),
+          onPressed: readerCubit.toggleStrongNumbers,
+        ),
+        menuIcon: Icons.local_offer,
+        menuLabel: localizations.toggle_show_strong_numbers,
+        active: state.showStrongNumbers,
+        onMenuSelected: (context) {
+          readerCubit.toggleStrongNumbers();
+        },
+      ),
+      _BibleToolbarAction(
+        id: 'copy_selection',
+        width: 44,
+        inline: IconButton(
+          key: const Key('bible_copy_selection_button'),
+          icon: const Icon(Icons.content_copy),
+          tooltip: localizations.bible_copy_selected_verses,
+          color: colorScheme.primary,
+          onPressed: state.hasSelectedVerses
+              ? () => unawaited(_copySelectedVerses(context, state))
+              : null,
+        ),
+        menuIcon: Icons.content_copy,
+        menuLabel: localizations.bible_copy_selected_verses,
+        enabled: state.hasSelectedVerses,
+        onMenuSelected: (context) {
+          unawaited(_copySelectedVerses(context, state));
+        },
+      ),
+      if (canClosePane)
+        _BibleToolbarAction(
+          id: 'close_pane',
+          width: 44,
+          inline: IconButton(
+            key: const Key('bible_close_parallel_reader_button'),
+            icon: const Icon(Icons.close),
+            tooltip: localizations.bible_close_parallel_reader,
+            color: colorScheme.primary,
+            onPressed: onClosePane,
+          ),
+          menuIcon: Icons.close,
+          menuLabel: localizations.bible_close_parallel_reader,
+          onMenuSelected: (context) {
+            onClosePane();
+          },
+        ),
+    ];
 
     return ColoredBox(
       color: colorScheme.surface,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
-        child: Row(
-          children: [
-            _ToolbarDropdown<BibleModuleInfo>(
-              key: const Key('bible_module_dropdown'),
-              width: 116,
-              label: localizations.bible_module,
-              value: selectedModule,
-              enabled: !state.isBusy,
-              items: [
-                for (final module in state.modules)
-                  DropdownMenuItem<BibleModuleInfo>(
-                    value: module,
-                    child: Tooltip(
-                      message: module.title,
-                      child: Text(
-                        module.displayTitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final visibleActions = _visibleToolbarActions(
+            toolbarActions,
+            constraints.maxWidth - 16,
+          );
+          final hiddenActions = toolbarActions
+              .where((action) => !visibleActions.contains(action))
+              .toList(growable: false);
+
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
+            child: Row(
+              children: [
+                for (final action in visibleActions)
+                  SizedBox(width: action.width, child: action.inline),
+                if (hiddenActions.isNotEmpty)
+                  _BibleToolbarOverflowMenuButton(actions: hiddenActions),
               ],
-              onChanged: (module) {
-                if (module != null) {
-                  unawaited(
-                    context.read<BibleReaderCubit>().selectModule(module),
-                  );
-                }
-              },
             ),
-            IconButton(
-              key: const Key('bible_module_info_button'),
-              icon: const Icon(Icons.info_outline),
-              tooltip: localizations.bible_module_info,
-              color: colorScheme.primary,
-              onPressed: state.isBusy
-                  ? null
-                  : () => _showBibleModuleInfoDialog(context, selectedModule),
+          );
+        },
+      ),
+    );
+  }
+}
+
+List<_BibleToolbarAction> _visibleToolbarActions(
+  List<_BibleToolbarAction> actions,
+  double maxWidth,
+) {
+  if (maxWidth.isInfinite) {
+    return actions;
+  }
+
+  final fullWidth = actions.fold<double>(
+    0,
+    (sum, action) => sum + action.width,
+  );
+  if (fullWidth <= maxWidth) {
+    return actions;
+  }
+
+  const overflowWidth = 44.0;
+  final availableWidth = maxWidth - overflowWidth;
+  var usedWidth = 0.0;
+  final visibleActions = <_BibleToolbarAction>[];
+  for (final action in actions) {
+    if (usedWidth + action.width <= availableWidth) {
+      visibleActions.add(action);
+      usedWidth += action.width;
+    }
+  }
+  return List<_BibleToolbarAction>.unmodifiable(visibleActions);
+}
+
+class _BibleToolbarAction {
+  const _BibleToolbarAction({
+    required this.id,
+    required this.width,
+    required this.inline,
+    required this.menuIcon,
+    required this.menuLabel,
+    required this.onMenuSelected,
+    this.menuValue,
+    this.enabled = true,
+    this.active = false,
+  });
+
+  final String id;
+  final double width;
+  final Widget inline;
+  final IconData menuIcon;
+  final String menuLabel;
+  final String? menuValue;
+  final bool enabled;
+  final bool active;
+  final FutureOr<void> Function(BuildContext context) onMenuSelected;
+}
+
+class _BibleToolbarOverflowMenuButton extends StatelessWidget {
+  const _BibleToolbarOverflowMenuButton({required this.actions});
+
+  final List<_BibleToolbarAction> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    final menuKey = GlobalKey();
+    final colorScheme = Theme.of(context).colorScheme;
+    return IconButton(
+      key: menuKey,
+      icon: const Icon(Icons.more_vert),
+      tooltip: AppLocalizations.of(context)!.menu,
+      color: colorScheme.primary,
+      onPressed: () async {
+        final button = menuKey.currentContext!.findRenderObject() as RenderBox;
+        final overlay =
+            Overlay.of(context).context.findRenderObject() as RenderBox;
+        final selectedActionId = await showMenu<String>(
+          context: context,
+          position: RelativeRect.fromRect(
+            Rect.fromPoints(
+              button.localToGlobal(Offset.zero, ancestor: overlay),
+              button.localToGlobal(
+                button.size.bottomRight(Offset.zero),
+                ancestor: overlay,
+              ),
             ),
-            const SizedBox(width: 8),
-            _ToolbarDropdown<int>(
-              key: const Key('bible_book_dropdown'),
-              width: 186,
-              label: localizations.bible_book,
-              value: reference.bookId,
-              enabled: !state.isBusy,
-              items: [
-                for (final bookId in map.bookIds)
-                  DropdownMenuItem<int>(
-                    value: bookId,
+            Offset.zero & overlay.size,
+          ),
+          items: [
+            for (final action in actions)
+              PopupMenuItem<String>(
+                value: action.id,
+                enabled: action.enabled,
+                child: _ToolbarMenuRow(action: action),
+              ),
+          ],
+        );
+        if (!context.mounted || selectedActionId == null) {
+          return;
+        }
+        final selectedAction = actions.firstWhere(
+          (action) => action.id == selectedActionId,
+        );
+        await selectedAction.onMenuSelected(context);
+      },
+    );
+  }
+}
+
+class _ToolbarMenuRow extends StatelessWidget {
+  const _ToolbarMenuRow({required this.action});
+
+  final _BibleToolbarAction action;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final iconColor = action.enabled
+        ? colorScheme.primary
+        : colorScheme.onSurface.withValues(alpha: 0.38);
+    final icon = Icon(action.menuIcon, color: iconColor);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (action.active && action.enabled)
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colorScheme.secondaryContainer,
+            ),
+            child: icon,
+          )
+        else
+          icon,
+        const SizedBox(width: 10),
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(action.menuLabel, overflow: TextOverflow.ellipsis),
+              if (action.menuValue != null)
+                Text(
+                  action.menuValue!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+Future<T?> _showToolbarChoiceDialog<T>({
+  required BuildContext context,
+  required String title,
+  required List<T> values,
+  required T selectedValue,
+  required String Function(T value) labelFor,
+}) {
+  final colorScheme = Theme.of(context).colorScheme;
+  return showDialog<T>(
+    context: context,
+    builder: (context) {
+      return SimpleDialog(
+        title: Text(title),
+        children: [
+          for (final value in values)
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(context).pop(value),
+              child: Row(
+                children: [
+                  Icon(
+                    value == selectedValue
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_unchecked,
+                    size: 18,
+                    color: value == selectedValue
+                        ? colorScheme.primary
+                        : colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
                     child: Text(
-                      localizedBibleBookName(localizations, bookId),
+                      labelFor(value),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-              ],
-              onChanged: (bookId) {
-                if (bookId != null) {
-                  unawaited(
-                    context.read<BibleReaderCubit>().selectReference(
-                      bookId: bookId,
-                      chapter: 1,
-                      verse: 1,
-                    ),
-                  );
-                }
-              },
-            ),
-            const SizedBox(width: 8),
-            _ToolbarDropdown<int>(
-              key: const Key('bible_chapter_dropdown'),
-              width: 96,
-              label: localizations.bible_chapter,
-              value: reference.chapter,
-              enabled: !state.isBusy,
-              items: [
-                for (var chapter = 1; chapter <= chapterCount; chapter++)
-                  DropdownMenuItem<int>(
-                    value: chapter,
-                    child: Text(chapter.toString()),
-                  ),
-              ],
-              onChanged: (chapter) {
-                if (chapter != null) {
-                  unawaited(
-                    context.read<BibleReaderCubit>().selectReference(
-                      bookId: reference.bookId,
-                      chapter: chapter,
-                      verse: 1,
-                    ),
-                  );
-                }
-              },
-            ),
-            const SizedBox(width: 8),
-            _ToolbarDropdown<int>(
-              key: const Key('bible_verse_dropdown'),
-              width: 88,
-              label: localizations.bible_verse,
-              value: reference.verse,
-              enabled: !state.isBusy,
-              items: [
-                for (var verse = 1; verse <= verseCount; verse++)
-                  DropdownMenuItem<int>(
-                    value: verse,
-                    child: Text(verse.toString()),
-                  ),
-              ],
-              onChanged: (verse) {
-                if (verse != null) {
-                  unawaited(
-                    context.read<BibleReaderCubit>().selectReference(
-                      bookId: reference.bookId,
-                      chapter: reference.chapter,
-                      verse: verse,
-                    ),
-                  );
-                }
-              },
-            ),
-            const SizedBox(width: 6),
-            IconButton(
-              key: const Key('bible_previous_chapter_button'),
-              icon: const Icon(Icons.chevron_left),
-              tooltip: localizations.bible_previous_chapter,
-              color: colorScheme.primary,
-              onPressed: !state.isBusy && state.canNavigateBackward
-                  ? () {
-                      unawaited(
-                        context.read<BibleReaderCubit>().navigateChapter(
-                          forward: false,
-                        ),
-                      );
-                    }
-                  : null,
-            ),
-            IconButton(
-              key: const Key('bible_next_chapter_button'),
-              icon: const Icon(Icons.chevron_right),
-              tooltip: localizations.bible_next_chapter,
-              color: colorScheme.primary,
-              onPressed: !state.isBusy && state.canNavigateForward
-                  ? () {
-                      unawaited(
-                        context.read<BibleReaderCubit>().navigateChapter(
-                          forward: true,
-                        ),
-                      );
-                    }
-                  : null,
-            ),
-            const SizedBox(width: 12),
-            IconButton(
-              key: const Key('bible_strong_toggle_button'),
-              icon: const Icon(Icons.local_offer),
-              tooltip: localizations.toggle_show_strong_numbers,
-              color: colorScheme.primary,
-              style: IconButton.styleFrom(
-                backgroundColor: state.showStrongNumbers
-                    ? colorScheme.secondaryContainer
-                    : Colors.transparent,
-                shape: const CircleBorder(),
+                ],
               ),
-              onPressed: () {
-                context.read<BibleReaderCubit>().toggleStrongNumbers();
-              },
             ),
-            IconButton(
-              key: const Key('bible_copy_selection_button'),
-              icon: const Icon(Icons.content_copy),
-              tooltip: localizations.bible_copy_selected_verses,
-              color: colorScheme.primary,
-              onPressed: state.hasSelectedVerses
-                  ? () => unawaited(_copySelectedVerses(context, state))
-                  : null,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+        ],
+      );
+    },
+  );
 }
 
 class _ToolbarDropdown<T> extends StatelessWidget {
@@ -387,9 +953,15 @@ class _BibleProgressLine extends StatelessWidget {
 }
 
 class _BibleReaderBody extends StatelessWidget {
-  const _BibleReaderBody({required this.state});
+  const _BibleReaderBody({
+    required this.paneId,
+    required this.state,
+    required this.scrollCoordinator,
+  });
 
+  final String paneId;
   final BibleReaderState state;
+  final _BibleLinkedScrollCoordinator scrollCoordinator;
 
   @override
   Widget build(BuildContext context) {
@@ -407,6 +979,7 @@ class _BibleReaderBody extends StatelessWidget {
     return Stack(
       children: [
         _BibleChapterView(
+          paneId: paneId,
           verses: state.verses,
           selectedVerseKey: state.selectedReference?.verseKey,
           selectedVerseRangeStart: state.selectedVerseRangeStart,
@@ -416,6 +989,7 @@ class _BibleReaderBody extends StatelessWidget {
           onVerseLongPress: context
               .read<BibleReaderCubit>()
               .extendSelectionToVerse,
+          scrollCoordinator: scrollCoordinator,
         ),
         if (state.isBusy)
           Align(
@@ -424,6 +998,74 @@ class _BibleReaderBody extends StatelessWidget {
           ),
       ],
     );
+  }
+}
+
+class _BibleLinkedScrollCoordinator {
+  final Map<String, ScrollController> _controllers =
+      <String, ScrollController>{};
+  final Map<String, VoidCallback> _listeners = <String, VoidCallback>{};
+  bool linkedNavigation = false;
+  bool _syncing = false;
+
+  void register(String paneId, ScrollController controller) {
+    unregister(paneId);
+    void listener() => _syncFrom(paneId, controller);
+    _controllers[paneId] = controller;
+    _listeners[paneId] = listener;
+    controller.addListener(listener);
+  }
+
+  void unregister(String paneId) {
+    final controller = _controllers.remove(paneId);
+    final listener = _listeners.remove(paneId);
+    if (controller != null && listener != null) {
+      controller.removeListener(listener);
+    }
+  }
+
+  void dispose() {
+    for (final paneId in _controllers.keys.toList(growable: false)) {
+      unregister(paneId);
+    }
+  }
+
+  void syncFrom(String sourcePaneId, ScrollController sourceController) {
+    _syncFrom(sourcePaneId, sourceController);
+  }
+
+  void _syncFrom(String sourcePaneId, ScrollController sourceController) {
+    if (!linkedNavigation || _syncing || !sourceController.hasClients) {
+      return;
+    }
+
+    final sourcePosition = sourceController.position;
+    final sourceMax = sourcePosition.maxScrollExtent;
+    final sourceOffset = sourceController.offset.clamp(
+      sourcePosition.minScrollExtent,
+      sourceMax,
+    );
+    final scrollRatio = sourceMax <= 0 ? 0.0 : sourceOffset / sourceMax;
+
+    _syncing = true;
+    try {
+      for (final entry in _controllers.entries) {
+        if (entry.key == sourcePaneId || !entry.value.hasClients) {
+          continue;
+        }
+
+        final targetPosition = entry.value.position;
+        final targetMax = targetPosition.maxScrollExtent;
+        final targetOffset = (targetMax * scrollRatio)
+            .clamp(targetPosition.minScrollExtent, targetMax)
+            .toDouble();
+        if ((entry.value.offset - targetOffset).abs() > 1) {
+          entry.value.jumpTo(targetOffset);
+        }
+      }
+    } finally {
+      _syncing = false;
+    }
   }
 }
 
@@ -499,6 +1141,7 @@ class _BibleBusyBanner extends StatelessWidget {
 
 class _BibleChapterView extends StatefulWidget {
   const _BibleChapterView({
+    required this.paneId,
     required this.verses,
     required this.selectedVerseKey,
     required this.selectedVerseRangeStart,
@@ -506,8 +1149,10 @@ class _BibleChapterView extends StatefulWidget {
     required this.showStrongNumbers,
     required this.onVerseTap,
     required this.onVerseLongPress,
+    required this.scrollCoordinator,
   });
 
+  final String paneId;
   final List<BibleChapterVerse> verses;
   final String? selectedVerseKey;
   final int? selectedVerseRangeStart;
@@ -515,6 +1160,7 @@ class _BibleChapterView extends StatefulWidget {
   final bool showStrongNumbers;
   final ValueChanged<int> onVerseTap;
   final ValueChanged<int> onVerseLongPress;
+  final _BibleLinkedScrollCoordinator scrollCoordinator;
 
   @override
   State<_BibleChapterView> createState() => _BibleChapterViewState();
@@ -527,12 +1173,18 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
   @override
   void initState() {
     super.initState();
+    widget.scrollCoordinator.register(widget.paneId, _scrollController);
     _scheduleScrollToSelected();
   }
 
   @override
   void didUpdateWidget(covariant _BibleChapterView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.paneId != widget.paneId ||
+        oldWidget.scrollCoordinator != widget.scrollCoordinator) {
+      oldWidget.scrollCoordinator.unregister(oldWidget.paneId);
+      widget.scrollCoordinator.register(widget.paneId, _scrollController);
+    }
     if (oldWidget.selectedVerseKey != widget.selectedVerseKey ||
         oldWidget.verses != widget.verses) {
       _scheduleScrollToSelected();
@@ -541,6 +1193,7 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
 
   @override
   void dispose() {
+    widget.scrollCoordinator.unregister(widget.paneId);
     _scrollController.dispose();
     super.dispose();
   }
@@ -554,39 +1207,49 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
       (verseKey, _) => !visibleVerseKeys.contains(verseKey),
     );
 
-    return SingleChildScrollView(
-      key: const Key('bible_chapter_verses'),
-      controller: _scrollController,
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (final verse in widget.verses)
-            Builder(
-              builder: (context) {
-                final selected =
-                    verse.reference.verseKey == widget.selectedVerseKey;
-                final verseKey = _verseKeys.putIfAbsent(
-                  verse.reference.verseKey,
-                  () => GlobalKey(),
-                );
-                return _BibleVerseRow(
-                  key: verseKey,
-                  verse: verse,
-                  selected: selected,
-                  inSelectionRange: _isVerseInSelectionRange(
-                    verse.reference.verse,
-                    widget.selectedVerseRangeStart,
-                    widget.selectedVerseRangeEnd,
-                  ),
-                  showStrongNumbers: widget.showStrongNumbers,
-                  onTap: () => widget.onVerseTap(verse.reference.verse),
-                  onLongPress: () =>
-                      widget.onVerseLongPress(verse.reference.verse),
-                );
-              },
-            ),
-        ],
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification.depth == 0 &&
+            (notification is ScrollUpdateNotification ||
+                notification is ScrollEndNotification)) {
+          widget.scrollCoordinator.syncFrom(widget.paneId, _scrollController);
+        }
+        return false;
+      },
+      child: SingleChildScrollView(
+        key: const Key('bible_chapter_verses'),
+        controller: _scrollController,
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (final verse in widget.verses)
+              Builder(
+                builder: (context) {
+                  final selected =
+                      verse.reference.verseKey == widget.selectedVerseKey;
+                  final verseKey = _verseKeys.putIfAbsent(
+                    verse.reference.verseKey,
+                    () => GlobalKey(),
+                  );
+                  return _BibleVerseRow(
+                    key: verseKey,
+                    verse: verse,
+                    selected: selected,
+                    inSelectionRange: _isVerseInSelectionRange(
+                      verse.reference.verse,
+                      widget.selectedVerseRangeStart,
+                      widget.selectedVerseRangeEnd,
+                    ),
+                    showStrongNumbers: widget.showStrongNumbers,
+                    onTap: () => widget.onVerseTap(verse.reference.verse),
+                    onLongPress: () =>
+                        widget.onVerseLongPress(verse.reference.verse),
+                  );
+                },
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -872,9 +1535,9 @@ void _showBibleModuleInfoDialog(BuildContext context, BibleModuleInfo module) {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  SelectableText(
-                    entry.value.isEmpty ? '-' : entry.value,
+                  _ModuleInfoValueText(
                     key: Key('bible_module_info_${entry.label}'),
+                    value: entry.value.isEmpty ? '-' : entry.value,
                     style: theme.textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 12),
@@ -892,4 +1555,104 @@ void _showBibleModuleInfoDialog(BuildContext context, BibleModuleInfo module) {
       );
     },
   );
+}
+
+final _httpLinkPattern = RegExp(r'https?:\/\/[^\s]+', caseSensitive: false);
+
+class _ModuleInfoValueText extends StatefulWidget {
+  const _ModuleInfoValueText({
+    required this.value,
+    required this.style,
+    super.key,
+  });
+
+  final String value;
+  final TextStyle? style;
+
+  @override
+  State<_ModuleInfoValueText> createState() => _ModuleInfoValueTextState();
+}
+
+class _ModuleInfoValueTextState extends State<_ModuleInfoValueText> {
+  final List<TapGestureRecognizer> _recognizers = <TapGestureRecognizer>[];
+  String? _cachedValue;
+  TextStyle? _cachedStyle;
+  List<InlineSpan>? _cachedSpans;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_cachedValue != widget.value || _cachedStyle != widget.style) {
+      _disposeRecognizers();
+      _cachedValue = widget.value;
+      _cachedStyle = widget.style;
+      _cachedSpans = _buildSpans(context, widget.value, widget.style);
+    }
+
+    return Text.rich(TextSpan(style: widget.style, children: _cachedSpans));
+  }
+
+  List<InlineSpan> _buildSpans(
+    BuildContext context,
+    String value,
+    TextStyle? style,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final spans = <InlineSpan>[];
+    var index = 0;
+    for (final match in _httpLinkPattern.allMatches(value)) {
+      if (match.start > index) {
+        spans.add(TextSpan(text: value.substring(index, match.start)));
+      }
+
+      final rawLink = match.group(0)!;
+      final link = _trimTrailingLinkPunctuation(rawLink);
+      final trailingText = rawLink.substring(link.length);
+      final recognizer = TapGestureRecognizer()
+        ..onTap = () {
+          unawaited(handleAppLink(context, link));
+        };
+      _recognizers.add(recognizer);
+      spans.add(
+        TextSpan(
+          text: link,
+          recognizer: recognizer,
+          style: style?.copyWith(
+            color: colorScheme.primary,
+            decoration: TextDecoration.underline,
+            decorationColor: colorScheme.primary,
+          ),
+        ),
+      );
+      if (trailingText.isNotEmpty) {
+        spans.add(TextSpan(text: trailingText));
+      }
+      index = match.end;
+    }
+
+    if (index < value.length) {
+      spans.add(TextSpan(text: value.substring(index)));
+    }
+    return spans.isEmpty ? [TextSpan(text: value)] : spans;
+  }
+
+  String _trimTrailingLinkPunctuation(String link) {
+    var end = link.length;
+    while (end > 0 && '.,;:)]}'.contains(link[end - 1])) {
+      end--;
+    }
+    return link.substring(0, end);
+  }
+
+  void _disposeRecognizers() {
+    for (final recognizer in _recognizers) {
+      recognizer.dispose();
+    }
+    _recognizers.clear();
+  }
+
+  @override
+  void dispose() {
+    _disposeRecognizers();
+    super.dispose();
+  }
 }

@@ -1,9 +1,11 @@
 @Tags(['widget'])
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/bible/bible.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
+import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubit.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
@@ -19,6 +21,9 @@ void main() {
   testWidgets('renders real Bible reader and toggles Strong numbers', (
     tester,
   ) async {
+    await tester.binding.setSurfaceSize(const Size(1700, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     int? openedStrongNumber;
     setDefaultGreekStrongTapHandler((strongNumber, context) {
       openedStrongNumber = strongNumber;
@@ -80,6 +85,10 @@ void main() {
     expect(find.text(localizations.bible_module_info), findsOneWidget);
     expect(find.text('Greek Bible'), findsOneWidget);
     expect(find.text('Greek Bible module'), findsOneWidget);
+    expect(
+      find.text('https://example.com/source', findRichText: true),
+      findsOneWidget,
+    );
 
     await tester.tap(find.text(localizations.close));
     await tester.pump();
@@ -99,6 +108,117 @@ void main() {
     expect(copiedData?.text, contains('2. Verse 2'));
     expect(copiedData?.text, contains('4. Verse 4'));
     expect(copiedData?.text, isNot(contains('G1')));
+
+    await tester.tap(
+      find.byKey(const Key('bible_open_parallel_reader_button')),
+    );
+    await tester.pump();
+    await _pumpUntilFound(
+      tester,
+      find.byKey(const Key('bible_reader_pane_parallel_2')),
+    );
+
+    expect(
+      find.byKey(const Key('bible_parallel_layout_horizontal')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('bible_reader_pane_primary')), findsOneWidget);
+    expect(
+      find.byKey(const Key('bible_reader_pane_parallel_2')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('bible_linked_navigation_button')),
+      findsNWidgets(2),
+    );
+
+    final workspaceContext = tester.element(
+      find.byKey(const Key('bible_reader_pane_primary')),
+    );
+    final workspaceCubit = workspaceContext.read<BibleWorkspaceCubit>();
+
+    await tester.drag(
+      find.byKey(const Key('bible_chapter_verses')).first,
+      const Offset(0, -320),
+    );
+    await tester.pump();
+
+    final scrollOffsets = tester
+        .widgetList<SingleChildScrollView>(
+          find.byKey(const Key('bible_chapter_verses')),
+        )
+        .map((scrollView) => scrollView.controller!.offset)
+        .toList(growable: false);
+    expect(scrollOffsets.first, greaterThan(0));
+    expect(scrollOffsets.last, closeTo(scrollOffsets.first, 2));
+
+    await tester.tap(find.byKey(const Key('bible_next_chapter_button')).first);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(
+      workspaceCubit.readerCubitFor('primary').state.selectedReference?.chapter,
+      2,
+    );
+    expect(
+      workspaceCubit
+          .readerCubitFor('parallel_2')
+          .state
+          .selectedReference
+          ?.chapter,
+      2,
+    );
+
+    await tester.tap(
+      find.byKey(const Key('bible_linked_navigation_button')).first,
+    );
+    await tester.pump();
+
+    await tester.tap(find.byKey(const Key('bible_next_chapter_button')).first);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(
+      workspaceCubit.readerCubitFor('primary').state.selectedReference?.chapter,
+      3,
+    );
+    expect(
+      workspaceCubit
+          .readerCubitFor('parallel_2')
+          .state
+          .selectedReference
+          ?.chapter,
+      2,
+    );
+
+    await tester.binding.setSurfaceSize(const Size(700, 900));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(
+      find.byKey(const Key('bible_parallel_layout_vertical')),
+      findsOneWidget,
+    );
+    expect(find.byIcon(Icons.more_vert), findsWidgets);
+
+    await tester.tap(find.byIcon(Icons.more_vert).last);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(
+      find.widgetWithText(
+        PopupMenuItem<String>,
+        localizations.bible_close_parallel_reader,
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(find.byKey(const Key('bible_reader_pane_parallel_2')), findsNothing);
+    expect(workspaceCubit.state.paneIds, ['primary']);
+
+    await tester.binding.setSurfaceSize(const Size(1700, 900));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
 
     await tester.tap(find.byKey(const Key('bible_strong_toggle_button')));
     await tester.pump();
@@ -134,9 +254,14 @@ class _FakeBibleRepository extends BibleRepository {
       canon: 'protestant_66',
       versification: 'kjv_protestant',
       license: 'CC BY 4.0',
-      sourceSummary: 'Test source',
+      sourceSummary: 'https://example.com/source',
     ),
   ];
+  @override
+  Future<List<String>> loadLastModuleFiles() async => const <String>[];
+
+  @override
+  Future<void> saveLastModuleFiles(List<String> moduleFiles) async {}
 
   @override
   Future<BibleInitialData> loadInitial({

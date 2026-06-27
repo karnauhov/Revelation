@@ -594,6 +594,30 @@ abstract class AppLocalizations {
   /// **'Selected verses copied to the clipboard.'**
   String get bible_selected_verses_copied;
 
+  /// No description provided for @bible_open_parallel_reader.
+  ///
+  /// In en, this message translates to:
+  /// **'Open parallel Bible reader'**
+  String get bible_open_parallel_reader;
+
+  /// No description provided for @bible_close_parallel_reader.
+  ///
+  /// In en, this message translates to:
+  /// **'Close parallel reader'**
+  String get bible_close_parallel_reader;
+
+  /// No description provided for @bible_linked_navigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked navigation and scrolling'**
+  String get bible_linked_navigation;
+
+  /// No description provided for @bible_unlinked_navigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Independent navigation and scrolling'**
+  String get bible_unlinked_navigation;
+
   /// No description provided for @revelation_structure_screen.
   ///
   /// In en, this message translates to:

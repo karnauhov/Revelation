@@ -275,6 +275,20 @@ class AppLocalizationsEs extends AppLocalizations {
       'Versículos seleccionados copiados al portapapeles.';
 
   @override
+  String get bible_open_parallel_reader => 'Abrir lectura bíblica paralela';
+
+  @override
+  String get bible_close_parallel_reader => 'Cerrar lectura paralela';
+
+  @override
+  String get bible_linked_navigation =>
+      'Navegación y desplazamiento vinculados';
+
+  @override
+  String get bible_unlinked_navigation =>
+      'Navegación y desplazamiento independientes';
+
+  @override
   String get revelation_structure_screen => 'Estructura de Apocalipsis';
 
   @override

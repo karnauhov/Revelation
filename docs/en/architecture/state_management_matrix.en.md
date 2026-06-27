@@ -1,7 +1,7 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.3.0`  
-Last-Updated: `2026-05-09`  
+Doc-Version: `2.4.0`
+Last-Updated: `2026-06-27`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
@@ -28,6 +28,8 @@ Show which cubit owns each runtime state slice.
 | `app/startup` | `AppStartupCubit` | Launch splash progress, startup locale/version metadata, readiness/failure state, and handoff to the initialized app shell |
 | `app/settings` | `SettingsCubit` | Current app settings, selected locale, theme, font size, loading and failure state |
 | `about` | `AboutCubit` | App/build versions, database metadata, changelog section state, expandable about sections |
+| `bible/workspace` | `BibleWorkspaceCubit` | Open Bible reader panes, linked navigation/scrolling mode, and persisted module pane set |
+| `bible/reader` | `BibleReaderCubit` | Per-pane Bible module, selected reference, chapter verses, verse selection range, Strong display toggle, and loading/failure state |
 | `shared/markdown/document` | `RevelationMarkdownImagesCubit` | Per-markdown-document remote image preload, local-first image state, progress counters, and stale-request protection shared across features |
 | `topics/catalog` | `TopicsCatalogCubit` | Topic list, language-bound reloads, topic icons |
 | `topics/content` | `TopicContentCubit` | Single topic markdown content, metadata fallback resolution, and loading/failure state |
@@ -51,3 +53,4 @@ Show which cubit owns each runtime state slice.
 - `StrongsDictionaryCubit` is the single source of truth for Strong dictionary selection state in page/dialog flows; `primary_sources` only delegates actions through the Strong feature API.
 - `PrimarySourceScreen` creates the detail cubits with `MultiBlocProvider`.
 - `PrimarySourceDetailCoordinator` adapts UI events to the detail cubits; it is not a state owner.
+- `BibleWorkspaceCubit` owns only page-level reader pane composition; each pane keeps its own Bible text and selection state in `BibleReaderCubit`.

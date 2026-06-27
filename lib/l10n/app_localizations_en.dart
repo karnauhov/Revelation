@@ -271,6 +271,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'Selected verses copied to the clipboard.';
 
   @override
+  String get bible_open_parallel_reader => 'Open parallel Bible reader';
+
+  @override
+  String get bible_close_parallel_reader => 'Close parallel reader';
+
+  @override
+  String get bible_linked_navigation => 'Linked navigation and scrolling';
+
+  @override
+  String get bible_unlinked_navigation =>
+      'Independent navigation and scrolling';
+
+  @override
   String get revelation_structure_screen => 'Revelation Structure';
 
   @override

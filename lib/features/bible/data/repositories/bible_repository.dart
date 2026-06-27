@@ -144,6 +144,14 @@ class BibleRepository {
     return _preferencesStore.saveLastModuleFile(moduleFile);
   }
 
+  Future<List<String>> loadLastModuleFiles() {
+    return _preferencesStore.loadLastModuleFiles();
+  }
+
+  Future<void> saveLastModuleFiles(List<String> moduleFiles) {
+    return _preferencesStore.saveLastModuleFiles(moduleFiles);
+  }
+
   Future<BibleVerseMap> _getVerseMap() async {
     return _verseMapCache ??= await _loadVerseMap();
   }

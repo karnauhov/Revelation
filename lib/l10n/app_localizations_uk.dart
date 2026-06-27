@@ -272,6 +272,18 @@ class AppLocalizationsUk extends AppLocalizations {
       'Вибрані вірші скопійовано в буфер обміну.';
 
   @override
+  String get bible_open_parallel_reader => 'Відкрити паралельне читання';
+
+  @override
+  String get bible_close_parallel_reader => 'Закрити паралельне читання';
+
+  @override
+  String get bible_linked_navigation => 'Пов\'язана навігація і прокрутка';
+
+  @override
+  String get bible_unlinked_navigation => 'Незалежна навігація і прокрутка';
+
+  @override
   String get revelation_structure_screen => 'Структура Об\'явлення';
 
   @override

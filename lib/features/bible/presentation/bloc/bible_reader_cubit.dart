@@ -170,6 +170,15 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
     required int chapter,
     required int verse,
   }) {
+    final reference = state.selectedReference;
+    if (reference != null &&
+        reference.bookId == bookId &&
+        reference.chapter == chapter &&
+        state.verses.isNotEmpty) {
+      selectLoadedVerse(verse);
+      return Future<void>.value();
+    }
+
     return _loadReference(
       bookId: bookId,
       chapter: chapter,
