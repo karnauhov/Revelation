@@ -175,6 +175,38 @@ void main() {
     expect(manifestEntry.versionInfo.dataVersion, 7);
     expect(await dbFile.readAsBytes(), newRemoteBytes);
   });
+
+  test('discovers Bible modules from refreshed database manifest', () async {
+    final bibleBytes = await _databaseBytes(
+      schemaVersion: 3,
+      dataVersion: 13,
+      date: '2026-05-31T06:20:48Z',
+      payloadBytes: 500,
+    );
+    storageServer.seedFile(
+      repository: 'db',
+      path: 'manifest.json',
+      bytes: _manifestBytes({
+        'bible_lxx_tr.sqlite': _ManifestEntry(
+          schemaVersion: 3,
+          dataVersion: 13,
+          date: '2026-05-31T06:20:48Z',
+          fileSizeBytes: bibleBytes.length,
+        ),
+        'bible_rst.sqlite': _ManifestEntry(
+          schemaVersion: 3,
+          dataVersion: 1,
+          date: '2026-05-31T06:20:48Z',
+          fileSizeBytes: bibleBytes.length,
+        ),
+      }),
+    );
+
+    final modules = await discoverKnownBibleModuleFiles();
+
+    expect(modules.first, 'bible_lxx_tr.sqlite');
+    expect(modules, contains('bible_rst.sqlite'));
+  });
 }
 
 Future<void> _writeDatabaseFile(

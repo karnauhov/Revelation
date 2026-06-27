@@ -216,12 +216,43 @@ void main() {
     expect(child.initialStrongNumber, 42);
   });
 
+  testWidgets('bible pageBuilder handles query route args', (tester) async {
+    final appRouter = AppRouter();
+    final context = await pumpContext(tester);
+    final route = _findGoRoute(appRouter: appRouter, path: '/bible');
+    final page = route.pageBuilder!(
+      context,
+      _buildGoRouterState(
+        appRouter: appRouter,
+        uri: Uri(
+          path: '/bible',
+          queryParameters: const <String, String>{
+            'book': '40',
+            'chapter': '17',
+            'verse': '5',
+            'module': 'bible_lxx_tr.sqlite',
+          },
+        ),
+        path: '/bible',
+        name: 'bible',
+      ),
+    );
+
+    expect(page, isA<CustomTransitionPage<void>>());
+    final transitionPage = page as CustomTransitionPage<void>;
+    expect(transitionPage.child, isA<BibleScreen>());
+    final child = transitionPage.child as BibleScreen;
+    expect(child.initialBookId, 40);
+    expect(child.initialChapter, 17);
+    expect(child.initialVerse, 5);
+    expect(child.initialModuleFile, 'bible_lxx_tr.sqlite');
+  });
+
   final plannedFeatureRoutes = <_PlannedFeatureRoute>[
     const _PlannedFeatureRoute(
       path: '/allusion_search',
       screenType: AllusionSearchScreen,
     ),
-    const _PlannedFeatureRoute(path: '/bible', screenType: BibleScreen),
     const _PlannedFeatureRoute(
       path: '/revelation_structure',
       screenType: RevelationStructureScreen,
@@ -421,11 +452,12 @@ GoRouterState _buildGoRouterState({
   required AppRouter appRouter,
   required String path,
   required String name,
+  Uri? uri,
   Object? extra,
 }) {
   return GoRouterState(
     appRouter.router.configuration,
-    uri: Uri(path: path),
+    uri: uri ?? Uri(path: path),
     matchedLocation: path,
     name: name,
     path: path,

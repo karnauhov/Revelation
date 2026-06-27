@@ -212,6 +212,54 @@ List<String> knownLocalDatabaseFiles({
   return files;
 }
 
+Future<List<String>> discoverKnownBibleModuleFiles({
+  String defaultModuleFile = AppConstants.defaultBibleModuleDB,
+}) async {
+  final files = <String>{};
+  final manifestEntries = await _loadLocalManifestEntries(
+    refreshFromServer: true,
+  );
+  files.addAll(manifestEntries.keys.where(_isBibleModuleDatabaseFileName));
+
+  try {
+    final appFolder = await getAppFolder();
+    final dbFolder = Directory(p.join(appFolder, _databaseFolder));
+    if (dbFolder.existsSync()) {
+      await for (final entity in dbFolder.list(
+        recursive: false,
+        followLinks: false,
+      )) {
+        if (entity is File) {
+          final fileName = p.basename(entity.path);
+          if (_isBibleModuleDatabaseFileName(fileName) &&
+              isLocalDatabaseFileHealthy(entity)) {
+            files.add(fileName);
+          }
+        }
+      }
+    }
+  } catch (error) {
+    log.warning('Local Bible module discovery failed: $error');
+  }
+
+  if (_isBibleModuleDatabaseFileName(defaultModuleFile)) {
+    files.add(defaultModuleFile);
+  }
+
+  final sortedFiles = files.toList()..sort();
+  if (sortedFiles.remove(defaultModuleFile)) {
+    sortedFiles.insert(0, defaultModuleFile);
+  }
+  return List<String>.unmodifiable(sortedFiles);
+}
+
+bool _isBibleModuleDatabaseFileName(String fileName) {
+  return RegExp(
+    r'^bible_[A-Za-z0-9_]+\.sqlite$',
+    caseSensitive: false,
+  ).hasMatch(fileName);
+}
+
 bool isLocalDatabaseFileHealthy(File file) {
   if (!file.existsSync()) {
     return false;

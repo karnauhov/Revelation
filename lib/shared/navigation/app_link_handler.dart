@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/models/primary_source_word_link_target.dart';
+import 'package:revelation/shared/services/bible_book_abbreviations.dart';
 import 'package:revelation/shared/utils/links_utils.dart';
 
 typedef GreekStrongTapHandler =
@@ -28,6 +29,8 @@ GreekStrongTapHandler? _defaultGreekStrongTapHandler;
 GreekStrongPickerTapHandler? _defaultGreekStrongPickerTapHandler;
 WordTapHandler? _defaultWordTapHandler;
 WordsTapHandler? _defaultWordsTapHandler;
+BibleBookAbbreviationCatalog? _bibleBookAbbreviationCatalog;
+Future<BibleBookAbbreviationCatalog>? _bibleBookAbbreviationCatalogFuture;
 
 void setDefaultGreekStrongTapHandler(GreekStrongTapHandler? handler) {
   _defaultGreekStrongTapHandler = handler;
@@ -108,7 +111,11 @@ Future<bool> handleAppLink(
   }
 
   if (_hasScheme(link, 'bible')) {
-    return _handleBibleLink(context, link);
+    return _handleBibleLink(
+      context,
+      link,
+      popBeforeScreenPush: popBeforeScreenPush,
+    );
   }
 
   return launchLink(link);
@@ -407,7 +414,11 @@ Future<bool> _handleWordsLink(
   return true;
 }
 
-Future<bool> _handleBibleLink(BuildContext context, String href) async {
+Future<bool> _handleBibleLink(
+  BuildContext context,
+  String href, {
+  required bool popBeforeScreenPush,
+}) async {
   final address = href.split(':');
   if (address.length < 2) {
     log.warning("Wrong Bible link: '$href'");
@@ -420,19 +431,73 @@ Future<bool> _handleBibleLink(BuildContext context, String href) async {
     return false;
   }
 
-  final locale = Localizations.localeOf(context);
-  final bibleTranslation =
-      AppConstants.onlineBibleBooks[locale.languageCode] ??
-      AppConstants.onlineBibleBooks['en'] ??
-      'kjv';
   final bookAndChapter = splitTrailingDigits(bookAndChapterRaw);
-  final bibleBook = bookAndChapter[0];
-  final bibleChapter = bookAndChapter[1];
-
-  var bibleLink =
-      "${AppConstants.onlineBibleUrl}?b=$bibleTranslation&bk=$bibleBook&ch=$bibleChapter";
-  if (address.length > 2 && address[2].trim().isNotEmpty) {
-    bibleLink += "&v=${address[2].trim()}";
+  final bibleBook = bookAndChapter[0].trim();
+  final bibleChapter = int.tryParse(bookAndChapter[1]);
+  if (bibleBook.isEmpty || bibleChapter == null || bibleChapter <= 0) {
+    log.warning("Wrong Bible link: '$href'");
+    return false;
   }
-  return launchLink(bibleLink);
+
+  final catalog = await _loadBibleBookAbbreviationCatalog();
+  if (!context.mounted) {
+    return false;
+  }
+  final bookId = catalog.bookIdForAlias(bibleBook);
+  if (bookId == null) {
+    log.warning("Unknown Bible book in link: '$href'");
+    return false;
+  }
+
+  var verse = 1;
+  if (address.length > 2 && address[2].trim().isNotEmpty) {
+    final parsedVerse = int.tryParse(address[2].trim());
+    if (parsedVerse == null || parsedVerse <= 0) {
+      log.warning("Wrong Bible verse in link: '$href'");
+      return false;
+    }
+    verse = parsedVerse;
+  }
+
+  if (popBeforeScreenPush && Navigator.of(context).canPop()) {
+    Navigator.pop(context);
+  }
+
+  context.push(
+    Uri(
+      path: '/bible',
+      queryParameters: <String, String>{
+        'book': bookId.toString(),
+        'chapter': bibleChapter.toString(),
+        'verse': verse.toString(),
+      },
+    ).toString(),
+  );
+  return true;
+}
+
+Future<BibleBookAbbreviationCatalog> _loadBibleBookAbbreviationCatalog() async {
+  final cachedCatalog = _bibleBookAbbreviationCatalog;
+  if (cachedCatalog != null) {
+    return cachedCatalog;
+  }
+
+  final inFlightFuture = _bibleBookAbbreviationCatalogFuture;
+  if (inFlightFuture != null) {
+    final catalog = await inFlightFuture;
+    _bibleBookAbbreviationCatalog = catalog;
+    return catalog;
+  }
+
+  final future = BibleBookAbbreviationCatalog.loadFromAssets();
+  _bibleBookAbbreviationCatalogFuture = future;
+  try {
+    final catalog = await future;
+    _bibleBookAbbreviationCatalog = catalog;
+    return catalog;
+  } finally {
+    if (identical(_bibleBookAbbreviationCatalogFuture, future)) {
+      _bibleBookAbbreviationCatalogFuture = null;
+    }
+  }
 }

@@ -204,6 +204,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bible_header => 'Lectura y estudio de la Escritura';
 
   @override
+  String get bible_module => 'Módulo';
+
+  @override
+  String get bible_book => 'Libro';
+
+  @override
+  String get bible_chapter => 'Capítulo';
+
+  @override
+  String get bible_verse => 'Versículo';
+
+  @override
+  String get bible_loading => 'Abriendo la Biblia...';
+
+  @override
+  String get bible_loading_chapter => 'Cargando capítulo...';
+
+  @override
+  String get bible_loading_module => 'Descargando y abriendo módulo...';
+
+  @override
+  String get bible_no_modules =>
+      'No se encontraron módulos bíblicos. Actualiza las bases de datos o añade bible_*.sqlite a la carpeta local de datos.';
+
+  @override
+  String get bible_previous_chapter => 'Capítulo anterior';
+
+  @override
+  String get bible_next_chapter => 'Capítulo siguiente';
+
+  @override
+  String get bible_strong_toggle_label => 'Strong';
+
+  @override
   String get revelation_structure_screen => 'Estructura de Apocalipsis';
 
   @override

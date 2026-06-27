@@ -164,6 +164,124 @@ class BibleVerseMap {
     return _verseKeysByReference[_referenceKey(bookId, chapter, verse)];
   }
 
+  List<int> get bookIds {
+    return List<int>.unmodifiable(
+      List<int>.generate(
+        _bookCodesById.length,
+        (index) => index,
+      ).where((bookId) => bookId > 0 && _bookCodesById[bookId].isNotEmpty),
+    );
+  }
+
+  bool containsReference({
+    required int bookId,
+    required int chapter,
+    required int verse,
+  }) {
+    return _containsReference(bookId: bookId, chapter: chapter, verse: verse);
+  }
+
+  BibleVerseReference referenceFor({
+    required int bookId,
+    required int chapter,
+    required int verse,
+  }) {
+    final verseKey = verseKeyFor(
+      bookId: bookId,
+      chapter: chapter,
+      verse: verse,
+    );
+    if (verseKey == null) {
+      throw RangeError(
+        'Unknown Bible reference: book $bookId, chapter $chapter, verse $verse',
+      );
+    }
+    return BibleVerseReference(
+      verseKey: verseKey,
+      bookId: bookId,
+      chapter: chapter,
+      verse: verse,
+    );
+  }
+
+  BibleVerseReference normalizedReference({
+    required int bookId,
+    required int chapter,
+    required int verse,
+  }) {
+    final normalizedBookId =
+        bookId >= 1 &&
+            bookId < _chapterVerseCountsByBookId.length &&
+            _chapterVerseCountsByBookId[bookId].isNotEmpty
+        ? bookId
+        : 1;
+    final chapterCount = _chapterVerseCountsByBookId[normalizedBookId].length;
+    final normalizedChapter = chapter.clamp(1, chapterCount).toInt();
+    final verseCount =
+        _chapterVerseCountsByBookId[normalizedBookId][normalizedChapter - 1];
+    final normalizedVerse = verse.clamp(1, verseCount).toInt();
+    return referenceFor(
+      bookId: normalizedBookId,
+      chapter: normalizedChapter,
+      verse: normalizedVerse,
+    );
+  }
+
+  BibleVerseReference firstReferenceInChapter({
+    required int bookId,
+    required int chapter,
+  }) {
+    return normalizedReference(bookId: bookId, chapter: chapter, verse: 1);
+  }
+
+  BibleVerseReference? adjacentChapterReference({
+    required int bookId,
+    required int chapter,
+    required bool forward,
+  }) {
+    _checkBookId(bookId);
+    final currentBookChapterCount = chapterCount(bookId);
+    if (chapter < 1 || chapter > currentBookChapterCount) {
+      throw RangeError.value(chapter, 'chapter');
+    }
+
+    if (forward) {
+      if (chapter < currentBookChapterCount) {
+        return firstReferenceInChapter(bookId: bookId, chapter: chapter + 1);
+      }
+      final nextBookId = bookId + 1;
+      if (nextBookId < _bookCodesById.length &&
+          _bookCodesById[nextBookId].isNotEmpty) {
+        return firstReferenceInChapter(bookId: nextBookId, chapter: 1);
+      }
+      return null;
+    }
+
+    if (chapter > 1) {
+      return firstReferenceInChapter(bookId: bookId, chapter: chapter - 1);
+    }
+    final previousBookId = bookId - 1;
+    if (previousBookId >= 1 && _bookCodesById[previousBookId].isNotEmpty) {
+      return firstReferenceInChapter(
+        bookId: previousBookId,
+        chapter: chapterCount(previousBookId),
+      );
+    }
+    return null;
+  }
+
+  List<String> verseKeysForChapter({
+    required int bookId,
+    required int chapter,
+  }) {
+    final verseTotal = verseCount(bookId: bookId, chapter: chapter);
+    return List<String>.unmodifiable(
+      List<String>.generate(verseTotal, (index) {
+        return verseKeyFor(bookId: bookId, chapter: chapter, verse: index + 1)!;
+      }),
+    );
+  }
+
   String bookCode(int bookId) {
     _checkBookId(bookId);
     return _bookCodesById[bookId];

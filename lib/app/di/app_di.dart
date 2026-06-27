@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nested/nested.dart';
 import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
+import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
@@ -72,6 +73,8 @@ class AppDi {
   }
 
   static PagesRepository createPagesRepository() => PagesRepository();
+
+  static BibleRepository createBibleRepository() => BibleRepository();
 
   static PrimarySourcePageSettingsOrchestrator
   createPrimarySourcePageSettingsOrchestrator({

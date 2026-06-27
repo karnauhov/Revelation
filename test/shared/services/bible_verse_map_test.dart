@@ -70,4 +70,32 @@ void main() {
     expect(verseMap.verseKeyFor(bookId: 43, chapter: 7, verse: 54), isNull);
     expect(verseMap.verseKeyFor(bookId: 67, chapter: 1, verse: 1), isNull);
   });
+
+  test('builds chapter verse keys and navigates between chapters', () {
+    expect(verseMap.bookIds.first, 1);
+    expect(verseMap.bookIds.last, 66);
+    expect(verseMap.verseKeysForChapter(bookId: 66, chapter: 22).last, 'NZY');
+    expect(
+      verseMap.adjacentChapterReference(bookId: 1, chapter: 1, forward: false),
+      isNull,
+    );
+    final exodusStartKey = verseMap.verseKeyFor(
+      bookId: 2,
+      chapter: 1,
+      verse: 1,
+    );
+    expect(
+      verseMap.adjacentChapterReference(bookId: 1, chapter: 50, forward: true),
+      BibleVerseReference(
+        verseKey: exodusStartKey!,
+        bookId: 2,
+        chapter: 1,
+        verse: 1,
+      ),
+    );
+    expect(
+      verseMap.adjacentChapterReference(bookId: 66, chapter: 22, forward: true),
+      isNull,
+    );
+  });
 }

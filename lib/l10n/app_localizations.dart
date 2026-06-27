@@ -456,6 +456,72 @@ abstract class AppLocalizations {
   /// **'Reading and studying Scripture'**
   String get bible_header;
 
+  /// No description provided for @bible_module.
+  ///
+  /// In en, this message translates to:
+  /// **'Module'**
+  String get bible_module;
+
+  /// No description provided for @bible_book.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get bible_book;
+
+  /// No description provided for @bible_chapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter'**
+  String get bible_chapter;
+
+  /// No description provided for @bible_verse.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse'**
+  String get bible_verse;
+
+  /// No description provided for @bible_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening Bible...'**
+  String get bible_loading;
+
+  /// No description provided for @bible_loading_chapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading chapter...'**
+  String get bible_loading_chapter;
+
+  /// No description provided for @bible_loading_module.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading and opening module...'**
+  String get bible_loading_module;
+
+  /// No description provided for @bible_no_modules.
+  ///
+  /// In en, this message translates to:
+  /// **'Bible modules were not found. Update databases or add bible_*.sqlite to the local data folder.'**
+  String get bible_no_modules;
+
+  /// No description provided for @bible_previous_chapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous chapter'**
+  String get bible_previous_chapter;
+
+  /// No description provided for @bible_next_chapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Next chapter'**
+  String get bible_next_chapter;
+
+  /// No description provided for @bible_strong_toggle_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong'**
+  String get bible_strong_toggle_label;
+
   /// No description provided for @revelation_structure_screen.
   ///
   /// In en, this message translates to:

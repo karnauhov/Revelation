@@ -201,6 +201,40 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bible_header => 'Чтение и изучение Писания';
 
   @override
+  String get bible_module => 'Модуль';
+
+  @override
+  String get bible_book => 'Книга';
+
+  @override
+  String get bible_chapter => 'Глава';
+
+  @override
+  String get bible_verse => 'Стих';
+
+  @override
+  String get bible_loading => 'Открываем Библию...';
+
+  @override
+  String get bible_loading_chapter => 'Загружаем главу...';
+
+  @override
+  String get bible_loading_module => 'Скачиваем и открываем модуль...';
+
+  @override
+  String get bible_no_modules =>
+      'Модули Библии не найдены. Обновите базы данных или добавьте bible_*.sqlite в локальную папку данных.';
+
+  @override
+  String get bible_previous_chapter => 'Предыдущая глава';
+
+  @override
+  String get bible_next_chapter => 'Следующая глава';
+
+  @override
+  String get bible_strong_toggle_label => 'Стронг';
+
+  @override
   String get revelation_structure_screen => 'Структура Откровения';
 
   @override

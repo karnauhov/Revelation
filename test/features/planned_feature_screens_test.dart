@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/allusion_search/presentation/screens/allusion_search_screen.dart';
-import 'package:revelation/features/bible/presentation/screens/bible_screen.dart';
 import 'package:revelation/features/historical_background/presentation/screens/historical_background_screen.dart';
 import 'package:revelation/features/practical_faith/presentation/screens/practical_faith_screen.dart';
 import 'package:revelation/features/revelation_structure/presentation/screens/revelation_structure_screen.dart';
@@ -18,14 +17,6 @@ void main() {
       titleOf: (l10n) => l10n.allusion_search_screen,
       subtitleOf: (l10n) => l10n.allusion_search_header,
       iconAssetPath: AllusionSearchScreen.iconAssetPath,
-    ),
-    _PlannedScreenCase(
-      description: 'Bible',
-      screen: const BibleScreen(),
-      screenType: BibleScreen,
-      titleOf: (l10n) => l10n.bible_screen,
-      subtitleOf: (l10n) => l10n.bible_header,
-      iconAssetPath: BibleScreen.iconAssetPath,
     ),
     _PlannedScreenCase(
       description: 'Revelation structure',

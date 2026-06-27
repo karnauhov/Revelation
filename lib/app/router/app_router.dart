@@ -126,10 +126,19 @@ class AppRouter {
         path: '/bible',
         name: 'bible',
         pageBuilder: (BuildContext context, GoRouterState state) {
+          final routeArgs = BibleRouteArgs.tryParse(
+            state.extra,
+            state.uri.queryParameters,
+          );
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
-            child: const BibleScreen(),
+            child: BibleScreen(
+              initialBookId: routeArgs.initialBookId,
+              initialChapter: routeArgs.initialChapter,
+              initialVerse: routeArgs.initialVerse,
+              initialModuleFile: routeArgs.initialModuleFile,
+            ),
           );
         },
       ),
@@ -274,6 +283,10 @@ String? _getRouteArgs(GoRouterState state) {
     final strongNumber =
         (state.extra as StrongDictionaryRouteArgs).initialStrongNumber;
     return strongNumber == null ? null : 'G$strongNumber';
+  }
+  if (state.extra is BibleRouteArgs) {
+    final args = state.extra as BibleRouteArgs;
+    return '${args.initialBookId}:${args.initialChapter}:${args.initialVerse}';
   }
   return null;
 }

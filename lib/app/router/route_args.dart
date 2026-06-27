@@ -92,3 +92,43 @@ class StrongDictionaryRouteArgs {
     return int.tryParse(numberText);
   }
 }
+
+class BibleRouteArgs {
+  const BibleRouteArgs({
+    this.initialBookId = 66,
+    this.initialChapter = 1,
+    this.initialVerse = 1,
+    this.initialModuleFile,
+  });
+
+  final int initialBookId;
+  final int initialChapter;
+  final int initialVerse;
+  final String? initialModuleFile;
+
+  static BibleRouteArgs tryParse(
+    Object? extra,
+    Map<String, String> queryParameters,
+  ) {
+    if (extra is BibleRouteArgs) {
+      return extra;
+    }
+
+    return BibleRouteArgs(
+      initialBookId: _parsePositiveInt(queryParameters['book']) ?? 66,
+      initialChapter: _parsePositiveInt(queryParameters['chapter']) ?? 1,
+      initialVerse: _parsePositiveInt(queryParameters['verse']) ?? 1,
+      initialModuleFile: _parseModuleFile(queryParameters['module']),
+    );
+  }
+
+  static int? _parsePositiveInt(String? value) {
+    final parsed = int.tryParse(value?.trim() ?? '');
+    return parsed == null || parsed <= 0 ? null : parsed;
+  }
+
+  static String? _parseModuleFile(String? value) {
+    final normalized = value?.trim();
+    return normalized == null || normalized.isEmpty ? null : normalized;
+  }
+}

@@ -826,6 +826,57 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'toggle_show_verse_numbers should not be empty',
   );
   expect(
+    l10n.bible_module,
+    isNotEmpty,
+    reason: 'bible_module should not be empty',
+  );
+  expect(l10n.bible_book, isNotEmpty, reason: 'bible_book should not be empty');
+  expect(
+    l10n.bible_chapter,
+    isNotEmpty,
+    reason: 'bible_chapter should not be empty',
+  );
+  expect(
+    l10n.bible_verse,
+    isNotEmpty,
+    reason: 'bible_verse should not be empty',
+  );
+  expect(
+    l10n.bible_loading,
+    isNotEmpty,
+    reason: 'bible_loading should not be empty',
+  );
+  expect(
+    l10n.bible_loading_chapter,
+    isNotEmpty,
+    reason: 'bible_loading_chapter should not be empty',
+  );
+  expect(
+    l10n.bible_loading_module,
+    isNotEmpty,
+    reason: 'bible_loading_module should not be empty',
+  );
+  expect(
+    l10n.bible_no_modules,
+    isNotEmpty,
+    reason: 'bible_no_modules should not be empty',
+  );
+  expect(
+    l10n.bible_previous_chapter,
+    isNotEmpty,
+    reason: 'bible_previous_chapter should not be empty',
+  );
+  expect(
+    l10n.bible_next_chapter,
+    isNotEmpty,
+    reason: 'bible_next_chapter should not be empty',
+  );
+  expect(
+    l10n.bible_strong_toggle_label,
+    isNotEmpty,
+    reason: 'bible_strong_toggle_label should not be empty',
+  );
+  expect(
     l10n.strong_number,
     isNotEmpty,
     reason: 'strong_number should not be empty',

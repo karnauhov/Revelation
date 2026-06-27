@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
+import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
@@ -96,6 +97,7 @@ void main() {
 
     final topicsRepository = AppDi.createTopicsRepository();
     final primarySourcesRepository = AppDi.createPrimarySourcesDbRepository();
+    final bibleRepository = AppDi.createBibleRepository();
     final pagesRepository = AppDi.createPagesRepository();
     final markdownImageLoader = AppDi.createMarkdownImageLoader();
     final explicitOrchestrator =
@@ -127,6 +129,7 @@ void main() {
 
     expect(topicsRepository, isA<TopicsRepository>());
     expect(primarySourcesRepository, isA<PrimarySourcesDbRepository>());
+    expect(bibleRepository, isA<BibleRepository>());
     expect(pagesRepository, isA<PagesRepository>());
     expect(markdownImageLoader, isA<MarkdownImageLoader>());
     expect(explicitOrchestrator, isA<PrimarySourcePageSettingsOrchestrator>());

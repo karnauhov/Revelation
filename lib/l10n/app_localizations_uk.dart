@@ -201,6 +201,40 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bible_header => 'Читання і вивчення Писання';
 
   @override
+  String get bible_module => 'Модуль';
+
+  @override
+  String get bible_book => 'Книга';
+
+  @override
+  String get bible_chapter => 'Розділ';
+
+  @override
+  String get bible_verse => 'Вірш';
+
+  @override
+  String get bible_loading => 'Відкриваємо Біблію...';
+
+  @override
+  String get bible_loading_chapter => 'Завантажуємо розділ...';
+
+  @override
+  String get bible_loading_module => 'Завантажуємо й відкриваємо модуль...';
+
+  @override
+  String get bible_no_modules =>
+      'Модулі Біблії не знайдено. Оновіть бази даних або додайте bible_*.sqlite до локальної папки даних.';
+
+  @override
+  String get bible_previous_chapter => 'Попередній розділ';
+
+  @override
+  String get bible_next_chapter => 'Наступний розділ';
+
+  @override
+  String get bible_strong_toggle_label => 'Стронґ';
+
+  @override
   String get revelation_structure_screen => 'Структура Об\'явлення';
 
   @override

@@ -200,6 +200,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bible_header => 'Reading and studying Scripture';
 
   @override
+  String get bible_module => 'Module';
+
+  @override
+  String get bible_book => 'Book';
+
+  @override
+  String get bible_chapter => 'Chapter';
+
+  @override
+  String get bible_verse => 'Verse';
+
+  @override
+  String get bible_loading => 'Opening Bible...';
+
+  @override
+  String get bible_loading_chapter => 'Loading chapter...';
+
+  @override
+  String get bible_loading_module => 'Downloading and opening module...';
+
+  @override
+  String get bible_no_modules =>
+      'Bible modules were not found. Update databases or add bible_*.sqlite to the local data folder.';
+
+  @override
+  String get bible_previous_chapter => 'Previous chapter';
+
+  @override
+  String get bible_next_chapter => 'Next chapter';
+
+  @override
+  String get bible_strong_toggle_label => 'Strong';
+
+  @override
   String get revelation_structure_screen => 'Revelation Structure';
 
   @override
