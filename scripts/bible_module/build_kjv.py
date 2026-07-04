@@ -10,7 +10,7 @@ import tempfile
 import zipfile
 import xml.etree.ElementTree as ET
 from collections import Counter
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -42,10 +42,11 @@ KJV_LICENSE_SUMMARY = (
 )
 KJV_SOURCE_SUMMARY = (
     "KJV 1769 protocanon text from eBible eng-kjv2006 USFX, courtesy of "
-    "CrossWire Bible Society and eBible.org. Strong's numbers, morphology, "
-    "footnotes, and study notes are omitted; canonical Psalm descriptors are "
-    "merged into Psalm verse 1 text. The eBible 2CH.14.1-15 boundary is "
-    "projected to the app canon as 2Chr.13.23 and 2Chr.14.1-14."
+    "CrossWire Bible Society and eBible.org. Strong's numbers are retained as "
+    "inline H/G tokens compatible with the Bible reader; morphology, footnotes, "
+    "and study notes are omitted. Canonical Psalm descriptors are merged into "
+    "Psalm verse 1 text. The eBible 2CH.14.1-15 boundary is projected to the "
+    "app canon as 2Chr.13.23 and 2Chr.14.1-14."
 )
 
 SCHEMA_SQL = """
@@ -154,6 +155,18 @@ USFX_REF_OVERRIDES = {
 
 _BASE36_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _WHITESPACE_PATTERN = re.compile(r"\s+")
+_STRONG_ATTR_PATTERN = re.compile(r"\s+")
+_STRONG_TOKEN_PATTERN = re.compile(r"^[GH]\d+$", re.IGNORECASE)
+_LEADING_PUNCTUATION_PATTERN = re.compile(
+    r"^([,.;:?!\)\]\}\"'\u2013\u2014\u201d\u2019]+)(.*)$",
+    re.DOTALL,
+)
+_TRAILING_STRONG_PUNCTUATION_PATTERN = re.compile(
+    r"\s+((?:[GH]\d+\s*)+)([,.;:?!\)\]\}\"'\u2013\u2014\u201d\u2019]+)",
+    re.IGNORECASE,
+)
+_WORD_SUFFIX_PATTERN = re.compile(r"^([A-Za-z0-9]+)(.*)$", re.DOTALL)
+_WORD_CONNECTOR_PATTERN = re.compile(r"^[-'\u2019]+$")
 _FOOTNOTE_TAGS = {"f", "x"}
 _PSALM_DESCRIPTOR_TAGS = {"d"}
 
@@ -168,6 +181,8 @@ class KjvBuildReport:
     verses_count: int
     filled_verses_count: int
     empty_verses_count: int
+    strong_tokens_count: int
+    verses_with_strong_numbers_count: int
     books_count: int
     chapters_count: int
     built_at: str
@@ -203,6 +218,10 @@ def build_kjv_module(
     source_text = read_usfx_xml_from_zip(source_zip_path)
     verse_texts = extract_kjv_verse_texts(source_text)
     validate_kjv_source_texts(verse_texts)
+    strong_tokens_count = _strong_tokens_count(verse_texts.values())
+    verses_with_strong_numbers_count = _verses_with_strong_numbers_count(
+        verse_texts.values()
+    )
 
     try:
         connection = sqlite3.connect(str(temp_path))
@@ -242,6 +261,8 @@ def build_kjv_module(
         verses_count=len(canonical_verses()),
         filled_verses_count=len(verse_texts),
         empty_verses_count=0,
+        strong_tokens_count=strong_tokens_count,
+        verses_with_strong_numbers_count=verses_with_strong_numbers_count,
         books_count=len(CANONICAL_BOOKS),
         chapters_count=sum(len(book.chapter_verse_counts) for book in CANONICAL_BOOKS),
         built_at=actual_built_at,
@@ -275,14 +296,22 @@ def validate_kjv_source_texts(verse_texts: Mapping[str, str]) -> KjvValidationRe
         verse.osis_ref for verse in canonical_verses() if verse.osis_ref not in actual_refs
     )
     extra_refs = tuple(sorted(actual_refs - expected_refs))
-    empty_refs = tuple(ref for ref, text in sorted(verse_texts.items()) if not text.strip())
+    empty_refs = tuple(
+        ref for ref, text in sorted(verse_texts.items()) if not plain_kjv_text(text)
+    )
     duplicate_refs = ()
+    padded_strong_refs = tuple(
+        ref
+        for ref, text in sorted(verse_texts.items())
+        if re.search(r"\b[GH]0\d+\b", text)
+    )
 
-    if missing_refs or extra_refs or empty_refs:
+    if missing_refs or extra_refs or empty_refs or padded_strong_refs:
         details = {
             "missing_refs": missing_refs,
             "extra_refs": extra_refs,
             "empty_refs": empty_refs,
+            "padded_strong_refs": padded_strong_refs,
         }
         raise ValueError(f"KJV source does not match the canonical verse map: {details}")
 
@@ -337,8 +366,8 @@ def create_kjv_schema(
             MODULE_ID,
             MODULE_TITLE,
             (
-                "Plain-text King James Version Bible module built from the "
-                "eBible/CrossWire eng-kjv2006 USFX source."
+                "King James Version Bible module with inline Strong's numbers "
+                "built from the eBible/CrossWire eng-kjv2006 USFX source."
             ),
             "en",
             CANON_NAME,
@@ -390,13 +419,17 @@ def validate_kjv_database(db_path: Path) -> KjvValidationReport:
         actual_keys = {str(row[0]) for row in rows}
         missing_keys = expected_keys - actual_keys
         extra_keys = actual_keys - expected_keys
-        empty_keys = {str(row[0]) for row in rows if not str(row[1]).strip()}
-        if missing_keys or extra_keys or empty_keys:
+        empty_keys = {str(row[0]) for row in rows if not plain_kjv_text(str(row[1]))}
+        padded_strong_keys = {
+            str(row[0]) for row in rows if re.search(r"\b[GH]0\d+\b", str(row[1]))
+        }
+        if missing_keys or extra_keys or empty_keys or padded_strong_keys:
             raise ValueError(
                 "KJV database verses do not match canonical keys: "
                 f"missing={sorted(missing_keys)[:10]} "
                 f"extra={sorted(extra_keys)[:10]} "
-                f"empty={sorted(empty_keys)[:10]}"
+                f"empty={sorted(empty_keys)[:10]} "
+                f"padded_strong={sorted(padded_strong_keys)[:10]}"
             )
 
         verse_texts = _read_database_osis_texts(connection)
@@ -407,26 +440,31 @@ def validate_kjv_database(db_path: Path) -> KjvValidationReport:
 
 def build_book_chapter_statistics(verse_texts: Mapping[str, str] | None = None) -> list[dict[str, object]]:
     text_lengths = _text_lengths_by_osis_ref(verse_texts or {})
+    strong_counts = _strong_counts_by_osis_ref(verse_texts or {})
     stats: list[dict[str, object]] = []
     for book in CANONICAL_BOOKS:
         chapters: list[dict[str, int]] = []
         book_verse_count = 0
         book_word_count = 0
+        book_strong_count = 0
         for chapter_index, verse_count in enumerate(book.chapter_verse_counts, start=1):
             chapter_refs = [
                 f"{book.osis_code}.{chapter_index}.{verse}"
                 for verse in range(1, verse_count + 1)
             ]
             chapter_word_count = sum(text_lengths.get(ref, 0) for ref in chapter_refs)
+            chapter_strong_count = sum(strong_counts.get(ref, 0) for ref in chapter_refs)
             chapters.append(
                 {
                     "chapter": chapter_index,
                     "verses": verse_count,
                     "words": chapter_word_count,
+                    "strong_tokens": chapter_strong_count,
                 }
             )
             book_verse_count += verse_count
             book_word_count += chapter_word_count
+            book_strong_count += chapter_strong_count
         stats.append(
             {
                 "book_id": book.book_id,
@@ -436,6 +474,7 @@ def build_book_chapter_statistics(verse_texts: Mapping[str, str] | None = None) 
                 "chapters_count": len(book.chapter_verse_counts),
                 "verses_count": book_verse_count,
                 "words_count": book_word_count,
+                "strong_tokens_count": book_strong_count,
                 "chapters": chapters,
             }
         )
@@ -504,7 +543,7 @@ class _UsfxVerseExtractor:
             return
 
         if tag in _PSALM_DESCRIPTOR_TAGS and self._current_ref is None:
-            descriptor = _normalize_text(_element_text(element))
+            descriptor = _normalize_kjv_display_text(_element_text_with_strongs(element))
             if descriptor:
                 self._pending_descriptors.append(descriptor)
             return
@@ -520,10 +559,25 @@ class _UsfxVerseExtractor:
         if self._current_ref is not None and element.text:
             self._current_parts.append(element.text)
 
-        for child in list(element):
+        children = list(element)
+        child_index = 0
+        while child_index < len(children):
+            child = children[child_index]
+            if self._current_ref is not None and _local_name(child.tag) == "w":
+                cluster, child_index = _collect_word_cluster(
+                    children,
+                    child_index,
+                )
+                _append_word_cluster_with_strongs(
+                    cluster,
+                    self._current_parts,
+                )
+                continue
+
             self.walk(child)
             if self._current_ref is not None and child.tail:
                 self._current_parts.append(child.tail)
+            child_index += 1
 
     def _start_verse(self, element: ET.Element) -> None:
         raw_ref = element.attrib.get("bcv", "").strip()
@@ -546,7 +600,9 @@ class _UsfxVerseExtractor:
     def _end_verse(self) -> None:
         if self._current_ref is None:
             raise ValueError("USFX verse end encountered without an open verse")
-        self.verse_texts[self._current_ref] = _normalize_text("".join(self._current_parts))
+        self.verse_texts[self._current_ref] = _normalize_kjv_display_text(
+            "".join(self._current_parts)
+        )
         self._current_ref = None
         self._current_parts = []
 
@@ -561,6 +617,162 @@ def _element_text(element: ET.Element) -> str:
         if child.tail:
             parts.append(child.tail)
     return "".join(parts)
+
+
+def _element_text_with_strongs(element: ET.Element) -> str:
+    parts: list[str] = []
+    _append_element_text_with_strongs(element, parts)
+    return "".join(parts)
+
+
+def _append_element_text_with_strongs(
+    element: ET.Element,
+    parts: list[str],
+) -> None:
+    tag = _local_name(element.tag)
+    if tag in _FOOTNOTE_TAGS:
+        return
+    if tag == "w":
+        _append_word_with_strongs(element, parts, tail="")
+        return
+
+    if element.text:
+        parts.append(element.text)
+    children = list(element)
+    child_index = 0
+    while child_index < len(children):
+        child = children[child_index]
+        if _local_name(child.tag) == "w":
+            cluster, child_index = _collect_word_cluster(children, child_index)
+            _append_word_cluster_with_strongs(
+                cluster,
+                parts,
+            )
+            continue
+        _append_element_text_with_strongs(child, parts)
+        if child.tail:
+            parts.append(child.tail)
+        child_index += 1
+
+
+@dataclass(frozen=True)
+class _WordCluster:
+    surface: str
+    strong_tokens: tuple[str, ...]
+    tail: str
+
+
+def _collect_word_cluster(
+    children: list[ET.Element],
+    start_index: int,
+) -> tuple[_WordCluster, int]:
+    surface_parts: list[str] = []
+    strong_tokens: list[str] = []
+    child_index = start_index
+    while child_index < len(children):
+        child = children[child_index]
+        surface_parts.append(_normalize_text(_element_text(child)))
+        strong_tokens.extend(_strong_tokens_for_word(child))
+        tail = child.tail or ""
+        next_is_word = (
+            child_index + 1 < len(children)
+            and _local_name(children[child_index + 1].tag) == "w"
+        )
+
+        if not tail and next_is_word:
+            child_index += 1
+            continue
+
+        if next_is_word and _WORD_CONNECTOR_PATTERN.fullmatch(tail):
+            surface_parts.append(tail)
+            child_index += 1
+            continue
+
+        suffix, remaining_tail = _split_leading_word_suffix(tail)
+        surface_parts.append(suffix)
+        return (
+            _WordCluster(
+                surface="".join(surface_parts),
+                strong_tokens=tuple(strong_tokens),
+                tail=remaining_tail,
+            ),
+            child_index + 1,
+        )
+
+    return (
+        _WordCluster(
+            surface="".join(surface_parts),
+            strong_tokens=tuple(strong_tokens),
+            tail="",
+        ),
+        child_index,
+    )
+
+
+def _append_word_with_strongs(
+    element: ET.Element,
+    parts: list[str],
+    *,
+    tail: str,
+) -> None:
+    suffix, remaining_tail = _split_leading_word_suffix(tail)
+    _append_word_cluster_with_strongs(
+        _WordCluster(
+            surface=_normalize_text(_element_text(element)) + suffix,
+            strong_tokens=_strong_tokens_for_word(element),
+            tail=remaining_tail,
+        ),
+        parts,
+    )
+
+
+def _append_word_cluster_with_strongs(
+    cluster: _WordCluster,
+    parts: list[str],
+) -> None:
+    surface = cluster.surface
+    leading_punctuation, remaining_tail = _split_leading_punctuation(cluster.tail)
+    if surface:
+        parts.append(surface + leading_punctuation)
+        if cluster.strong_tokens:
+            parts.append(" ")
+            parts.append(" ".join(cluster.strong_tokens))
+            parts.append(" ")
+    elif leading_punctuation:
+        parts.append(leading_punctuation)
+    if remaining_tail:
+        parts.append(remaining_tail)
+
+
+def _split_leading_punctuation(text: str) -> tuple[str, str]:
+    match = _LEADING_PUNCTUATION_PATTERN.match(text)
+    if match is None:
+        return "", text
+    return match.group(1), match.group(2)
+
+
+def _split_leading_word_suffix(text: str) -> tuple[str, str]:
+    match = _WORD_SUFFIX_PATTERN.match(text)
+    if match is None:
+        return "", text
+    suffix = match.group(1)
+    leading_punctuation, remaining_tail = _split_leading_punctuation(match.group(2))
+    return suffix + leading_punctuation, remaining_tail
+
+
+def _strong_tokens_for_word(element: ET.Element) -> tuple[str, ...]:
+    raw_value = element.attrib.get("s", "").strip()
+    if not raw_value:
+        return ()
+    return tuple(_normalize_strong(raw) for raw in _STRONG_ATTR_PATTERN.split(raw_value) if raw)
+
+
+def _normalize_strong(raw_strong: str) -> str:
+    value = raw_strong.strip().upper()
+    match = re.fullmatch(r"([GH])0*(\d+)", value)
+    if match is None:
+        raise ValueError(f"Invalid KJV Strong key: {raw_strong}")
+    return f"{match.group(1)}{int(match.group(2))}"
 
 
 def _usfx_ref_to_osis_ref(usfx_ref: str) -> str:
@@ -579,9 +791,44 @@ def _usfx_ref_to_osis_ref(usfx_ref: str) -> str:
 
 def _text_lengths_by_osis_ref(verse_texts: Mapping[str, str]) -> dict[str, int]:
     return {
-        osis_ref: len(_word_tokens(text))
+        osis_ref: len(_word_tokens(plain_kjv_text(text)))
         for osis_ref, text in verse_texts.items()
     }
+
+
+def _strong_counts_by_osis_ref(verse_texts: Mapping[str, str]) -> dict[str, int]:
+    return {
+        osis_ref: _strong_tokens_count((text,))
+        for osis_ref, text in verse_texts.items()
+    }
+
+
+def plain_kjv_text(text: str) -> str:
+    return " ".join(
+        token
+        for token in _normalize_text(text).split(" ")
+        if token and _STRONG_TOKEN_PATTERN.fullmatch(token) is None
+    ).strip()
+
+
+def _strong_tokens_count(texts: Iterable[str]) -> int:
+    return sum(
+        1
+        for text in texts
+        for token in _normalize_text(text).split(" ")
+        if _STRONG_TOKEN_PATTERN.fullmatch(token) is not None
+    )
+
+
+def _verses_with_strong_numbers_count(texts: Iterable[str]) -> int:
+    return sum(
+        1
+        for text in texts
+        if any(
+            _STRONG_TOKEN_PATTERN.fullmatch(token) is not None
+            for token in _normalize_text(text).split(" ")
+        )
+    )
 
 
 def _word_tokens(text: str) -> list[str]:
@@ -590,6 +837,18 @@ def _word_tokens(text: str) -> list[str]:
 
 def _normalize_text(text: str) -> str:
     return _WHITESPACE_PATTERN.sub(" ", text).strip()
+
+
+def _normalize_kjv_display_text(text: str) -> str:
+    return _normalize_text(_move_wrapped_punctuation_before_strongs(text))
+
+
+def _move_wrapped_punctuation_before_strongs(text: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        strongs = " ".join(match.group(1).split())
+        return f"{match.group(2)} {strongs}"
+
+    return _TRAILING_STRONG_PUNCTUATION_PATTERN.sub(replace, text)
 
 
 def _local_name(tag: str) -> str:
@@ -694,8 +953,17 @@ def main() -> int:
                         "verses": report.verses_count,
                         "filled_verses": report.filled_verses_count,
                         "empty_verses": report.empty_verses_count,
+                        "verses_with_strong_numbers": report.verses_with_strong_numbers_count,
+                        "verses_without_strong_numbers": (
+                            report.verses_count
+                            - report.verses_with_strong_numbers_count
+                        ),
+                        "strong_tokens": report.strong_tokens_count,
                         "words": sum(int(book["words_count"]) for book in stats),
                     },
+                    "verses_without_strong_number_refs": _refs_without_strong_numbers(
+                        verse_texts
+                    ),
                     "books": stats,
                 },
                 ensure_ascii=False,
@@ -721,10 +989,27 @@ def _report_json(report: KjvBuildReport) -> dict[str, object]:
         "verses_count": report.verses_count,
         "filled_verses_count": report.filled_verses_count,
         "empty_verses_count": report.empty_verses_count,
+        "strong_tokens_count": report.strong_tokens_count,
+        "verses_with_strong_numbers_count": report.verses_with_strong_numbers_count,
+        "verses_without_strong_numbers_count": (
+            report.verses_count - report.verses_with_strong_numbers_count
+        ),
         "books_count": report.books_count,
         "chapters_count": report.chapters_count,
         "built_at": report.built_at,
     }
+
+
+def _refs_without_strong_numbers(verse_texts: Mapping[str, str]) -> list[str]:
+    refs: list[str] = []
+    for verse in canonical_verses():
+        text = verse_texts[verse.osis_ref]
+        if not any(
+            _STRONG_TOKEN_PATTERN.fullmatch(token) is not None
+            for token in _normalize_text(text).split(" ")
+        ):
+            refs.append(verse.osis_ref)
+    return refs
 
 
 if __name__ == "__main__":

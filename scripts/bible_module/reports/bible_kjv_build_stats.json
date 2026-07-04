@@ -6,15 +6,23 @@
     "sha256": "8ee3739ba5ad3303d5af11bded32199829902b84127d09b9b9542edbb5f5d33d",
     "bytes": 2500338
   },
-  "built_at": "2026-07-04T13:38:52Z",
+  "built_at": "2026-07-04T14:08:25Z",
   "totals": {
     "books": 66,
     "chapters": 1189,
     "verses": 31102,
     "filled_verses": 31102,
     "empty_verses": 0,
+    "verses_with_strong_numbers": 31099,
+    "verses_without_strong_numbers": 3,
+    "strong_tokens": 349308,
     "words": 790769
   },
+  "verses_without_strong_number_refs": [
+    "Mark.9.43",
+    "Luke.6.41",
+    "Luke.17.36"
+  ],
   "books": [
     {
       "book_id": 1,
@@ -24,256 +32,307 @@
       "chapters_count": 50,
       "verses_count": 1533,
       "words_count": 38262,
+      "strong_tokens_count": 14927,
       "chapters": [
         {
           "chapter": 1,
           "verses": 31,
-          "words": 797
+          "words": 797,
+          "strong_tokens": 329
         },
         {
           "chapter": 2,
           "verses": 25,
-          "words": 632
+          "words": 632,
+          "strong_tokens": 260
         },
         {
           "chapter": 3,
           "verses": 24,
-          "words": 695
+          "words": 695,
+          "strong_tokens": 264
         },
         {
           "chapter": 4,
           "verses": 26,
-          "words": 632
+          "words": 632,
+          "strong_tokens": 264
         },
         {
           "chapter": 5,
           "verses": 32,
-          "words": 504
+          "words": 504,
+          "strong_tokens": 292
         },
         {
           "chapter": 6,
           "verses": 22,
-          "words": 579
+          "words": 579,
+          "strong_tokens": 224
         },
         {
           "chapter": 7,
           "verses": 24,
-          "words": 584
+          "words": 584,
+          "strong_tokens": 238
         },
         {
           "chapter": 8,
           "verses": 22,
-          "words": 586
+          "words": 586,
+          "strong_tokens": 228
         },
         {
           "chapter": 9,
           "verses": 29,
-          "words": 658
+          "words": 658,
+          "strong_tokens": 240
         },
         {
           "chapter": 10,
           "verses": 32,
-          "words": 495
+          "words": 495,
+          "strong_tokens": 220
         },
         {
           "chapter": 11,
           "verses": 32,
-          "words": 606
+          "words": 606,
+          "strong_tokens": 312
         },
         {
           "chapter": 12,
           "verses": 20,
-          "words": 536
+          "words": 536,
+          "strong_tokens": 193
         },
         {
           "chapter": 13,
           "verses": 18,
-          "words": 457
+          "words": 457,
+          "strong_tokens": 167
         },
         {
           "chapter": 14,
           "verses": 24,
-          "words": 606
+          "words": 606,
+          "strong_tokens": 259
         },
         {
           "chapter": 15,
           "verses": 21,
-          "words": 471
+          "words": 471,
+          "strong_tokens": 174
         },
         {
           "chapter": 16,
           "verses": 16,
-          "words": 412
+          "words": 412,
+          "strong_tokens": 166
         },
         {
           "chapter": 17,
           "verses": 27,
-          "words": 679
+          "words": 679,
+          "strong_tokens": 247
         },
         {
           "chapter": 18,
           "verses": 33,
-          "words": 867
+          "words": 867,
+          "strong_tokens": 324
         },
         {
           "chapter": 19,
           "verses": 38,
-          "words": 1108
+          "words": 1108,
+          "strong_tokens": 410
         },
         {
           "chapter": 20,
           "verses": 18,
-          "words": 498
+          "words": 498,
+          "strong_tokens": 179
         },
         {
           "chapter": 21,
           "verses": 34,
-          "words": 774
+          "words": 774,
+          "strong_tokens": 304
         },
         {
           "chapter": 22,
           "verses": 24,
-          "words": 629
+          "words": 629,
+          "strong_tokens": 257
         },
         {
           "chapter": 23,
           "verses": 20,
-          "words": 539
+          "words": 539,
+          "strong_tokens": 207
         },
         {
           "chapter": 24,
           "verses": 67,
-          "words": 1816
+          "words": 1816,
+          "strong_tokens": 692
         },
         {
           "chapter": 25,
           "verses": 34,
-          "words": 706
+          "words": 706,
+          "strong_tokens": 308
         },
         {
           "chapter": 26,
           "verses": 35,
-          "words": 889
+          "words": 889,
+          "strong_tokens": 336
         },
         {
           "chapter": 27,
           "verses": 46,
-          "words": 1262
+          "words": 1262,
+          "strong_tokens": 473
         },
         {
           "chapter": 28,
           "verses": 22,
-          "words": 621
+          "words": 621,
+          "strong_tokens": 225
         },
         {
           "chapter": 29,
           "verses": 35,
-          "words": 830
+          "words": 830,
+          "strong_tokens": 332
         },
         {
           "chapter": 30,
           "verses": 43,
-          "words": 1022
+          "words": 1022,
+          "strong_tokens": 416
         },
         {
           "chapter": 31,
           "verses": 55,
-          "words": 1417
+          "words": 1417,
+          "strong_tokens": 534
         },
         {
           "chapter": 32,
           "verses": 32,
-          "words": 794
+          "words": 794,
+          "strong_tokens": 309
         },
         {
           "chapter": 33,
           "verses": 20,
-          "words": 508
+          "words": 508,
+          "strong_tokens": 190
         },
         {
           "chapter": 34,
           "verses": 31,
-          "words": 790
+          "words": 790,
+          "strong_tokens": 284
         },
         {
           "chapter": 35,
           "verses": 29,
-          "words": 664
+          "words": 664,
+          "strong_tokens": 262
         },
         {
           "chapter": 36,
           "verses": 43,
-          "words": 845
+          "words": 845,
+          "strong_tokens": 400
         },
         {
           "chapter": 37,
           "verses": 36,
-          "words": 942
+          "words": 942,
+          "strong_tokens": 346
         },
         {
           "chapter": 38,
           "verses": 30,
-          "words": 819
+          "words": 819,
+          "strong_tokens": 287
         },
         {
           "chapter": 39,
           "verses": 23,
-          "words": 666
+          "words": 666,
+          "strong_tokens": 220
         },
         {
           "chapter": 40,
           "verses": 23,
-          "words": 580
+          "words": 580,
+          "strong_tokens": 217
         },
         {
           "chapter": 41,
           "verses": 57,
-          "words": 1404
+          "words": 1404,
+          "strong_tokens": 570
         },
         {
           "chapter": 42,
           "verses": 38,
-          "words": 977
+          "words": 977,
+          "strong_tokens": 347
         },
         {
           "chapter": 43,
           "verses": 34,
-          "words": 938
+          "words": 938,
+          "strong_tokens": 349
         },
         {
           "chapter": 44,
           "verses": 34,
-          "words": 874
+          "words": 874,
+          "strong_tokens": 306
         },
         {
           "chapter": 45,
           "verses": 28,
-          "words": 731
+          "words": 731,
+          "strong_tokens": 271
         },
         {
           "chapter": 46,
           "verses": 34,
-          "words": 766
+          "words": 766,
+          "strong_tokens": 320
         },
         {
           "chapter": 47,
           "verses": 31,
-          "words": 965
+          "words": 965,
+          "strong_tokens": 368
         },
         {
           "chapter": 48,
           "verses": 22,
-          "words": 639
+          "words": 639,
+          "strong_tokens": 244
         },
         {
           "chapter": 49,
           "verses": 33,
-          "words": 766
+          "words": 766,
+          "strong_tokens": 290
         },
         {
           "chapter": 50,
           "verses": 26,
-          "words": 687
+          "words": 687,
+          "strong_tokens": 273
         }
       ]
     },
@@ -285,206 +344,247 @@
       "chapters_count": 40,
       "verses_count": 1213,
       "words_count": 32685,
+      "strong_tokens_count": 12132,
       "chapters": [
         {
           "chapter": 1,
           "verses": 22,
-          "words": 457
+          "words": 457,
+          "strong_tokens": 175
         },
         {
           "chapter": 2,
           "verses": 25,
-          "words": 657
+          "words": 657,
+          "strong_tokens": 258
         },
         {
           "chapter": 3,
           "verses": 22,
-          "words": 791
+          "words": 791,
+          "strong_tokens": 281
         },
         {
           "chapter": 4,
           "verses": 31,
-          "words": 891
+          "words": 891,
+          "strong_tokens": 311
         },
         {
           "chapter": 5,
           "verses": 23,
-          "words": 594
+          "words": 594,
+          "strong_tokens": 224
         },
         {
           "chapter": 6,
           "verses": 30,
-          "words": 753
+          "words": 753,
+          "strong_tokens": 298
         },
         {
           "chapter": 7,
           "verses": 25,
-          "words": 692
+          "words": 692,
+          "strong_tokens": 268
         },
         {
           "chapter": 8,
           "verses": 32,
-          "words": 936
+          "words": 936,
+          "strong_tokens": 339
         },
         {
           "chapter": 9,
           "verses": 35,
-          "words": 982
+          "words": 982,
+          "strong_tokens": 352
         },
         {
           "chapter": 10,
           "verses": 29,
-          "words": 899
+          "words": 899,
+          "strong_tokens": 326
         },
         {
           "chapter": 11,
           "verses": 10,
-          "words": 324
+          "words": 324,
+          "strong_tokens": 121
         },
         {
           "chapter": 12,
           "verses": 51,
-          "words": 1493
+          "words": 1493,
+          "strong_tokens": 515
         },
         {
           "chapter": 13,
           "verses": 22,
-          "words": 675
+          "words": 675,
+          "strong_tokens": 238
         },
         {
           "chapter": 14,
           "verses": 31,
-          "words": 931
+          "words": 931,
+          "strong_tokens": 354
         },
         {
           "chapter": 15,
           "verses": 27,
-          "words": 713
+          "words": 713,
+          "strong_tokens": 271
         },
         {
           "chapter": 16,
           "verses": 36,
-          "words": 1062
+          "words": 1062,
+          "strong_tokens": 386
         },
         {
           "chapter": 17,
           "verses": 16,
-          "words": 465
+          "words": 465,
+          "strong_tokens": 183
         },
         {
           "chapter": 18,
           "verses": 27,
-          "words": 760
+          "words": 760,
+          "strong_tokens": 280
         },
         {
           "chapter": 19,
           "verses": 25,
-          "words": 702
+          "words": 702,
+          "strong_tokens": 269
         },
         {
           "chapter": 20,
           "verses": 26,
-          "words": 561
+          "words": 561,
+          "strong_tokens": 196
         },
         {
           "chapter": 21,
           "verses": 36,
-          "words": 893
+          "words": 893,
+          "strong_tokens": 299
         },
         {
           "chapter": 22,
           "verses": 31,
-          "words": 790
+          "words": 790,
+          "strong_tokens": 251
         },
         {
           "chapter": 23,
           "verses": 33,
-          "words": 827
+          "words": 827,
+          "strong_tokens": 287
         },
         {
           "chapter": 24,
           "verses": 18,
-          "words": 492
+          "words": 492,
+          "strong_tokens": 192
         },
         {
           "chapter": 25,
           "verses": 40,
-          "words": 926
+          "words": 926,
+          "strong_tokens": 336
         },
         {
           "chapter": 26,
           "verses": 37,
-          "words": 937
+          "words": 937,
+          "strong_tokens": 393
         },
         {
           "chapter": 27,
           "verses": 21,
-          "words": 558
+          "words": 558,
+          "strong_tokens": 220
         },
         {
           "chapter": 28,
           "verses": 43,
-          "words": 1235
+          "words": 1235,
+          "strong_tokens": 448
         },
         {
           "chapter": 29,
           "verses": 46,
-          "words": 1341
+          "words": 1341,
+          "strong_tokens": 454
         },
         {
           "chapter": 30,
           "verses": 38,
-          "words": 970
+          "words": 970,
+          "strong_tokens": 334
         },
         {
           "chapter": 31,
           "verses": 18,
-          "words": 438
+          "words": 438,
+          "strong_tokens": 162
         },
         {
           "chapter": 32,
           "verses": 35,
-          "words": 1093
+          "words": 1093,
+          "strong_tokens": 389
         },
         {
           "chapter": 33,
           "verses": 23,
-          "words": 710
+          "words": 710,
+          "strong_tokens": 242
         },
         {
           "chapter": 34,
           "verses": 35,
-          "words": 1004
+          "words": 1004,
+          "strong_tokens": 385
         },
         {
           "chapter": 35,
           "verses": 35,
-          "words": 820
+          "words": 820,
+          "strong_tokens": 324
         },
         {
           "chapter": 36,
           "verses": 38,
-          "words": 892
+          "words": 892,
+          "strong_tokens": 415
         },
         {
           "chapter": 37,
           "verses": 29,
-          "words": 738
+          "words": 738,
+          "strong_tokens": 287
         },
         {
           "chapter": 38,
           "verses": 31,
-          "words": 832
+          "words": 832,
+          "strong_tokens": 341
         },
         {
           "chapter": 39,
           "verses": 43,
-          "words": 1030
+          "words": 1030,
+          "strong_tokens": 423
         },
         {
           "chapter": 40,
           "verses": 38,
-          "words": 821
+          "words": 821,
+          "strong_tokens": 305
         }
       ]
     },
@@ -496,141 +596,169 @@
       "chapters_count": 27,
       "verses_count": 859,
       "words_count": 24541,
+      "strong_tokens_count": 8262,
       "chapters": [
         {
           "chapter": 1,
           "verses": 17,
-          "words": 525
+          "words": 525,
+          "strong_tokens": 176
         },
         {
           "chapter": 2,
           "verses": 16,
-          "words": 486
+          "words": 486,
+          "strong_tokens": 153
         },
         {
           "chapter": 3,
           "verses": 17,
-          "words": 511
+          "words": 511,
+          "strong_tokens": 165
         },
         {
           "chapter": 4,
           "verses": 35,
-          "words": 1157
+          "words": 1157,
+          "strong_tokens": 385
         },
         {
           "chapter": 5,
           "verses": 19,
-          "words": 723
+          "words": 723,
+          "strong_tokens": 216
         },
         {
           "chapter": 6,
           "verses": 30,
-          "words": 892
+          "words": 892,
+          "strong_tokens": 291
         },
         {
           "chapter": 7,
           "verses": 38,
-          "words": 1056
+          "words": 1056,
+          "strong_tokens": 345
         },
         {
           "chapter": 8,
           "verses": 36,
-          "words": 988
+          "words": 988,
+          "strong_tokens": 389
         },
         {
           "chapter": 9,
           "verses": 24,
-          "words": 624
+          "words": 624,
+          "strong_tokens": 235
         },
         {
           "chapter": 10,
           "verses": 20,
-          "words": 628
+          "words": 628,
+          "strong_tokens": 236
         },
         {
           "chapter": 11,
           "verses": 47,
-          "words": 1115
+          "words": 1115,
+          "strong_tokens": 334
         },
         {
           "chapter": 12,
           "verses": 8,
-          "words": 262
+          "words": 262,
+          "strong_tokens": 91
         },
         {
           "chapter": 13,
           "verses": 59,
-          "words": 1857
+          "words": 1857,
+          "strong_tokens": 619
         },
         {
           "chapter": 14,
           "verses": 57,
-          "words": 1713
+          "words": 1713,
+          "strong_tokens": 605
         },
         {
           "chapter": 15,
           "verses": 33,
-          "words": 919
+          "words": 919,
+          "strong_tokens": 310
         },
         {
           "chapter": 16,
           "verses": 34,
-          "words": 1157
+          "words": 1157,
+          "strong_tokens": 397
         },
         {
           "chapter": 17,
           "verses": 16,
-          "words": 553
+          "words": 553,
+          "strong_tokens": 187
         },
         {
           "chapter": 18,
           "verses": 30,
-          "words": 667
+          "words": 667,
+          "strong_tokens": 228
         },
         {
           "chapter": 19,
           "verses": 37,
-          "words": 898
+          "words": 898,
+          "strong_tokens": 295
         },
         {
           "chapter": 20,
           "verses": 27,
-          "words": 836
+          "words": 836,
+          "strong_tokens": 283
         },
         {
           "chapter": 21,
           "verses": 24,
-          "words": 587
+          "words": 587,
+          "strong_tokens": 192
         },
         {
           "chapter": 22,
           "verses": 33,
-          "words": 879
+          "words": 879,
+          "strong_tokens": 275
         },
         {
           "chapter": 23,
           "verses": 44,
-          "words": 1222
+          "words": 1222,
+          "strong_tokens": 457
         },
         {
           "chapter": 24,
           "verses": 23,
-          "words": 551
+          "words": 551,
+          "strong_tokens": 212
         },
         {
           "chapter": 25,
           "verses": 55,
-          "words": 1532
+          "words": 1532,
+          "strong_tokens": 475
         },
         {
           "chapter": 26,
           "verses": 46,
-          "words": 1247
+          "words": 1247,
+          "strong_tokens": 400
         },
         {
           "chapter": 27,
           "verses": 34,
-          "words": 956
+          "words": 956,
+          "strong_tokens": 311
         }
       ]
     },
@@ -642,186 +770,223 @@
       "chapters_count": 36,
       "verses_count": 1288,
       "words_count": 32896,
+      "strong_tokens_count": 12501,
       "chapters": [
         {
           "chapter": 1,
           "verses": 54,
-          "words": 1333
+          "words": 1333,
+          "strong_tokens": 510
         },
         {
           "chapter": 2,
           "verses": 34,
-          "words": 828
+          "words": 828,
+          "strong_tokens": 314
         },
         {
           "chapter": 3,
           "verses": 51,
-          "words": 1291
+          "words": 1291,
+          "strong_tokens": 476
         },
         {
           "chapter": 4,
           "verses": 49,
-          "words": 1416
+          "words": 1416,
+          "strong_tokens": 505
         },
         {
           "chapter": 5,
           "verses": 31,
-          "words": 898
+          "words": 898,
+          "strong_tokens": 320
         },
         {
           "chapter": 6,
           "verses": 27,
-          "words": 742
+          "words": 742,
+          "strong_tokens": 277
         },
         {
           "chapter": 7,
           "verses": 89,
-          "words": 1939
+          "words": 1939,
+          "strong_tokens": 969
         },
         {
           "chapter": 8,
           "verses": 26,
-          "words": 687
+          "words": 687,
+          "strong_tokens": 260
         },
         {
           "chapter": 9,
           "verses": 23,
-          "words": 722
+          "words": 722,
+          "strong_tokens": 253
         },
         {
           "chapter": 10,
           "verses": 36,
-          "words": 891
+          "words": 891,
+          "strong_tokens": 303
         },
         {
           "chapter": 11,
           "verses": 35,
-          "words": 1056
+          "words": 1056,
+          "strong_tokens": 378
         },
         {
           "chapter": 12,
           "verses": 16,
-          "words": 384
+          "words": 384,
+          "strong_tokens": 144
         },
         {
           "chapter": 13,
           "verses": 33,
-          "words": 741
+          "words": 741,
+          "strong_tokens": 290
         },
         {
           "chapter": 14,
           "verses": 45,
-          "words": 1181
+          "words": 1181,
+          "strong_tokens": 425
         },
         {
           "chapter": 15,
           "verses": 41,
-          "words": 1068
+          "words": 1068,
+          "strong_tokens": 364
         },
         {
           "chapter": 16,
           "verses": 50,
-          "words": 1341
+          "words": 1341,
+          "strong_tokens": 497
         },
         {
           "chapter": 17,
           "verses": 13,
-          "words": 335
+          "words": 335,
+          "strong_tokens": 130
         },
         {
           "chapter": 18,
           "verses": 32,
-          "words": 1112
+          "words": 1112,
+          "strong_tokens": 338
         },
         {
           "chapter": 19,
           "verses": 22,
-          "words": 683
+          "words": 683,
+          "strong_tokens": 248
         },
         {
           "chapter": 20,
           "verses": 29,
-          "words": 792
+          "words": 792,
+          "strong_tokens": 300
         },
         {
           "chapter": 21,
           "verses": 35,
-          "words": 931
+          "words": 931,
+          "strong_tokens": 356
         },
         {
           "chapter": 22,
           "verses": 41,
-          "words": 1201
+          "words": 1201,
+          "strong_tokens": 447
         },
         {
           "chapter": 23,
           "verses": 30,
-          "words": 743
+          "words": 743,
+          "strong_tokens": 280
         },
         {
           "chapter": 24,
           "verses": 25,
-          "words": 659
+          "words": 659,
+          "strong_tokens": 251
         },
         {
           "chapter": 25,
           "verses": 18,
-          "words": 445
+          "words": 445,
+          "strong_tokens": 183
         },
         {
           "chapter": 26,
           "verses": 65,
-          "words": 1446
+          "words": 1446,
+          "strong_tokens": 586
         },
         {
           "chapter": 27,
           "verses": 23,
-          "words": 610
+          "words": 610,
+          "strong_tokens": 227
         },
         {
           "chapter": 28,
           "verses": 31,
-          "words": 779
+          "words": 779,
+          "strong_tokens": 296
         },
         {
           "chapter": 29,
           "verses": 40,
-          "words": 954
+          "words": 954,
+          "strong_tokens": 372
         },
         {
           "chapter": 30,
           "verses": 16,
-          "words": 503
+          "words": 503,
+          "strong_tokens": 165
         },
         {
           "chapter": 31,
           "verses": 54,
-          "words": 1208
+          "words": 1208,
+          "strong_tokens": 508
         },
         {
           "chapter": 32,
           "verses": 42,
-          "words": 1009
+          "words": 1009,
+          "strong_tokens": 410
         },
         {
           "chapter": 33,
           "verses": 56,
-          "words": 928
+          "words": 928,
+          "strong_tokens": 369
         },
         {
           "chapter": 34,
           "verses": 29,
-          "words": 630
+          "words": 630,
+          "strong_tokens": 244
         },
         {
           "chapter": 35,
           "verses": 34,
-          "words": 965
+          "words": 965,
+          "strong_tokens": 335
         },
         {
           "chapter": 36,
           "verses": 13,
-          "words": 445
+          "words": 445,
+          "strong_tokens": 171
         }
       ]
     },
@@ -833,176 +998,211 @@
       "chapters_count": 34,
       "verses_count": 959,
       "words_count": 28352,
+      "strong_tokens_count": 9772,
       "chapters": [
         {
           "chapter": 1,
           "verses": 46,
-          "words": 1262
+          "words": 1262,
+          "strong_tokens": 459
         },
         {
           "chapter": 2,
           "verses": 37,
-          "words": 1021
+          "words": 1021,
+          "strong_tokens": 374
         },
         {
           "chapter": 3,
           "verses": 29,
-          "words": 815
+          "words": 815,
+          "strong_tokens": 315
         },
         {
           "chapter": 4,
           "verses": 49,
-          "words": 1503
+          "words": 1503,
+          "strong_tokens": 538
         },
         {
           "chapter": 5,
           "verses": 33,
-          "words": 921
+          "words": 921,
+          "strong_tokens": 307
         },
         {
           "chapter": 6,
           "verses": 25,
-          "words": 643
+          "words": 643,
+          "strong_tokens": 220
         },
         {
           "chapter": 7,
           "verses": 26,
-          "words": 843
+          "words": 843,
+          "strong_tokens": 282
         },
         {
           "chapter": 8,
           "verses": 20,
-          "words": 566
+          "words": 566,
+          "strong_tokens": 208
         },
         {
           "chapter": 9,
           "verses": 29,
-          "words": 963
+          "words": 963,
+          "strong_tokens": 353
         },
         {
           "chapter": 10,
           "verses": 22,
-          "words": 604
+          "words": 604,
+          "strong_tokens": 223
         },
         {
           "chapter": 11,
           "verses": 32,
-          "words": 950
+          "words": 950,
+          "strong_tokens": 329
         },
         {
           "chapter": 12,
           "verses": 32,
-          "words": 1055
+          "words": 1055,
+          "strong_tokens": 343
         },
         {
           "chapter": 13,
           "verses": 18,
-          "words": 627
+          "words": 627,
+          "strong_tokens": 214
         },
         {
           "chapter": 14,
           "verses": 29,
-          "words": 708
+          "words": 708,
+          "strong_tokens": 227
         },
         {
           "chapter": 15,
           "verses": 23,
-          "words": 707
+          "words": 707,
+          "strong_tokens": 228
         },
         {
           "chapter": 16,
           "verses": 22,
-          "words": 710
+          "words": 710,
+          "strong_tokens": 254
         },
         {
           "chapter": 17,
           "verses": 20,
-          "words": 707
+          "words": 707,
+          "strong_tokens": 227
         },
         {
           "chapter": 18,
           "verses": 22,
-          "words": 611
+          "words": 611,
+          "strong_tokens": 191
         },
         {
           "chapter": 19,
           "verses": 21,
-          "words": 608
+          "words": 608,
+          "strong_tokens": 229
         },
         {
           "chapter": 20,
           "verses": 20,
-          "words": 646
+          "words": 646,
+          "strong_tokens": 203
         },
         {
           "chapter": 21,
           "verses": 23,
-          "words": 731
+          "words": 731,
+          "strong_tokens": 237
         },
         {
           "chapter": 22,
           "verses": 30,
-          "words": 894
+          "words": 894,
+          "strong_tokens": 302
         },
         {
           "chapter": 23,
           "verses": 25,
-          "words": 685
+          "words": 685,
+          "strong_tokens": 223
         },
         {
           "chapter": 24,
           "verses": 22,
-          "words": 681
+          "words": 681,
+          "strong_tokens": 226
         },
         {
           "chapter": 25,
           "verses": 19,
-          "words": 562
+          "words": 562,
+          "strong_tokens": 179
         },
         {
           "chapter": 26,
           "verses": 19,
-          "words": 667
+          "words": 667,
+          "strong_tokens": 227
         },
         {
           "chapter": 27,
           "verses": 26,
-          "words": 599
+          "words": 599,
+          "strong_tokens": 240
         },
         {
           "chapter": 28,
           "verses": 68,
-          "words": 2075
+          "words": 2075,
+          "strong_tokens": 667
         },
         {
           "chapter": 29,
           "verses": 29,
-          "words": 851
+          "words": 851,
+          "strong_tokens": 297
         },
         {
           "chapter": 30,
           "verses": 20,
-          "words": 665
+          "words": 665,
+          "strong_tokens": 216
         },
         {
           "chapter": 31,
           "verses": 30,
-          "words": 1041
+          "words": 1041,
+          "strong_tokens": 356
         },
         {
           "chapter": 32,
           "verses": 52,
-          "words": 1306
+          "words": 1306,
+          "strong_tokens": 464
         },
         {
           "chapter": 33,
           "verses": 29,
-          "words": 805
+          "words": 805,
+          "strong_tokens": 287
         },
         {
           "chapter": 34,
           "verses": 12,
-          "words": 320
+          "words": 320,
+          "strong_tokens": 127
         }
       ]
     },
@@ -1014,126 +1214,151 @@
       "chapters_count": 24,
       "verses_count": 658,
       "words_count": 18854,
+      "strong_tokens_count": 7228,
       "chapters": [
         {
           "chapter": 1,
           "verses": 18,
-          "words": 573
+          "words": 573,
+          "strong_tokens": 199
         },
         {
           "chapter": 2,
           "verses": 24,
-          "words": 768
+          "words": 768,
+          "strong_tokens": 265
         },
         {
           "chapter": 3,
           "verses": 17,
-          "words": 566
+          "words": 566,
+          "strong_tokens": 219
         },
         {
           "chapter": 4,
           "verses": 24,
-          "words": 707
+          "words": 707,
+          "strong_tokens": 279
         },
         {
           "chapter": 5,
           "verses": 15,
-          "words": 550
+          "words": 550,
+          "strong_tokens": 197
         },
         {
           "chapter": 6,
           "verses": 27,
-          "words": 904
+          "words": 904,
+          "strong_tokens": 352
         },
         {
           "chapter": 7,
           "verses": 26,
-          "words": 927
+          "words": 927,
+          "strong_tokens": 362
         },
         {
           "chapter": 8,
           "verses": 35,
-          "words": 1221
+          "words": 1221,
+          "strong_tokens": 440
         },
         {
           "chapter": 9,
           "verses": 27,
-          "words": 800
+          "words": 800,
+          "strong_tokens": 284
         },
         {
           "chapter": 10,
           "verses": 43,
-          "words": 1393
+          "words": 1393,
+          "strong_tokens": 520
         },
         {
           "chapter": 11,
           "verses": 23,
-          "words": 717
+          "words": 717,
+          "strong_tokens": 267
         },
         {
           "chapter": 12,
           "verses": 24,
-          "words": 486
+          "words": 486,
+          "strong_tokens": 224
         },
         {
           "chapter": 13,
           "verses": 33,
-          "words": 825
+          "words": 825,
+          "strong_tokens": 327
         },
         {
           "chapter": 14,
           "verses": 15,
-          "words": 485
+          "words": 485,
+          "strong_tokens": 196
         },
         {
           "chapter": 15,
           "verses": 63,
-          "words": 1032
+          "words": 1032,
+          "strong_tokens": 447
         },
         {
           "chapter": 16,
           "verses": 10,
-          "words": 253
+          "words": 253,
+          "strong_tokens": 100
         },
         {
           "chapter": 17,
           "verses": 18,
-          "words": 660
+          "words": 660,
+          "strong_tokens": 251
         },
         {
           "chapter": 18,
           "verses": 28,
-          "words": 770
+          "words": 770,
+          "strong_tokens": 308
         },
         {
           "chapter": 19,
           "verses": 51,
-          "words": 944
+          "words": 944,
+          "strong_tokens": 388
         },
         {
           "chapter": 20,
           "verses": 9,
-          "words": 308
+          "words": 308,
+          "strong_tokens": 118
         },
         {
           "chapter": 21,
           "verses": 45,
-          "words": 1026
+          "words": 1026,
+          "strong_tokens": 402
         },
         {
           "chapter": 22,
           "verses": 34,
-          "words": 1321
+          "words": 1321,
+          "strong_tokens": 499
         },
         {
           "chapter": 23,
           "verses": 16,
-          "words": 574
+          "words": 574,
+          "strong_tokens": 185
         },
         {
           "chapter": 24,
           "verses": 33,
-          "words": 1044
+          "words": 1044,
+          "strong_tokens": 399
         }
       ]
     },
@@ -1145,111 +1370,133 @@
       "chapters_count": 21,
       "verses_count": 618,
       "words_count": 18966,
+      "strong_tokens_count": 7131,
       "chapters": [
         {
           "chapter": 1,
           "verses": 36,
-          "words": 962
+          "words": 962,
+          "strong_tokens": 376
         },
         {
           "chapter": 2,
           "verses": 23,
-          "words": 692
+          "words": 692,
+          "strong_tokens": 248
         },
         {
           "chapter": 3,
           "verses": 31,
-          "words": 842
+          "words": 842,
+          "strong_tokens": 350
         },
         {
           "chapter": 4,
           "verses": 24,
-          "words": 761
+          "words": 761,
+          "strong_tokens": 312
         },
         {
           "chapter": 5,
           "verses": 31,
-          "words": 755
+          "words": 755,
+          "strong_tokens": 315
         },
         {
           "chapter": 6,
           "verses": 40,
-          "words": 1295
+          "words": 1295,
+          "strong_tokens": 461
         },
         {
           "chapter": 7,
           "verses": 25,
-          "words": 952
+          "words": 952,
+          "strong_tokens": 356
         },
         {
           "chapter": 8,
           "verses": 35,
-          "words": 987
+          "words": 987,
+          "strong_tokens": 376
         },
         {
           "chapter": 9,
           "verses": 57,
-          "words": 1667
+          "words": 1667,
+          "strong_tokens": 633
         },
         {
           "chapter": 10,
           "verses": 18,
-          "words": 473
+          "words": 473,
+          "strong_tokens": 193
         },
         {
           "chapter": 11,
           "verses": 40,
-          "words": 1235
+          "words": 1235,
+          "strong_tokens": 468
         },
         {
           "chapter": 12,
           "verses": 15,
-          "words": 399
+          "words": 399,
+          "strong_tokens": 171
         },
         {
           "chapter": 13,
           "verses": 25,
-          "words": 765
+          "words": 765,
+          "strong_tokens": 273
         },
         {
           "chapter": 14,
           "verses": 20,
-          "words": 706
+          "words": 706,
+          "strong_tokens": 242
         },
         {
           "chapter": 15,
           "verses": 20,
-          "words": 648
+          "words": 648,
+          "strong_tokens": 234
         },
         {
           "chapter": 16,
           "verses": 31,
-          "words": 1110
+          "words": 1110,
+          "strong_tokens": 380
         },
         {
           "chapter": 17,
           "verses": 13,
-          "words": 385
+          "words": 385,
+          "strong_tokens": 131
         },
         {
           "chapter": 18,
           "verses": 31,
-          "words": 1035
+          "words": 1035,
+          "strong_tokens": 369
         },
         {
           "chapter": 19,
           "verses": 30,
-          "words": 1102
+          "words": 1102,
+          "strong_tokens": 381
         },
         {
           "chapter": 20,
           "verses": 48,
-          "words": 1455
+          "words": 1455,
+          "strong_tokens": 595
         },
         {
           "chapter": 21,
           "verses": 25,
-          "words": 740
+          "words": 740,
+          "strong_tokens": 267
         }
       ]
     },
@@ -1261,26 +1508,31 @@
       "chapters_count": 4,
       "verses_count": 85,
       "words_count": 2574,
+      "strong_tokens_count": 894,
       "chapters": [
         {
           "chapter": 1,
           "verses": 22,
-          "words": 649
+          "words": 649,
+          "strong_tokens": 226
         },
         {
           "chapter": 2,
           "verses": 23,
-          "words": 763
+          "words": 763,
+          "strong_tokens": 265
         },
         {
           "chapter": 3,
           "verses": 18,
-          "words": 541
+          "words": 541,
+          "strong_tokens": 163
         },
         {
           "chapter": 4,
           "verses": 22,
-          "words": 621
+          "words": 621,
+          "strong_tokens": 240
         }
       ]
     },
@@ -1292,161 +1544,193 @@
       "chapters_count": 31,
       "verses_count": 810,
       "words_count": 25048,
+      "strong_tokens_count": 9516,
       "chapters": [
         {
           "chapter": 1,
           "verses": 28,
-          "words": 782
+          "words": 782,
+          "strong_tokens": 309
         },
         {
           "chapter": 2,
           "verses": 36,
-          "words": 1104
+          "words": 1104,
+          "strong_tokens": 411
         },
         {
           "chapter": 3,
           "verses": 21,
-          "words": 549
+          "words": 549,
+          "strong_tokens": 211
         },
         {
           "chapter": 4,
           "verses": 22,
-          "words": 733
+          "words": 733,
+          "strong_tokens": 290
         },
         {
           "chapter": 5,
           "verses": 12,
-          "words": 439
+          "words": 439,
+          "strong_tokens": 162
         },
         {
           "chapter": 6,
           "verses": 21,
-          "words": 752
+          "words": 752,
+          "strong_tokens": 280
         },
         {
           "chapter": 7,
           "verses": 17,
-          "words": 510
+          "words": 510,
+          "strong_tokens": 211
         },
         {
           "chapter": 8,
           "verses": 22,
-          "words": 541
+          "words": 541,
+          "strong_tokens": 184
         },
         {
           "chapter": 9,
           "verses": 27,
-          "words": 990
+          "words": 990,
+          "strong_tokens": 354
         },
         {
           "chapter": 10,
           "verses": 27,
-          "words": 863
+          "words": 863,
+          "strong_tokens": 308
         },
         {
           "chapter": 11,
           "verses": 15,
-          "words": 503
+          "words": 503,
+          "strong_tokens": 193
         },
         {
           "chapter": 12,
           "verses": 25,
-          "words": 771
+          "words": 771,
+          "strong_tokens": 264
         },
         {
           "chapter": 13,
           "verses": 23,
-          "words": 697
+          "words": 697,
+          "strong_tokens": 272
         },
         {
           "chapter": 14,
           "verses": 52,
-          "words": 1606
+          "words": 1606,
+          "strong_tokens": 624
         },
         {
           "chapter": 15,
           "verses": 35,
-          "words": 981
+          "words": 981,
+          "strong_tokens": 389
         },
         {
           "chapter": 16,
           "verses": 23,
-          "words": 680
+          "words": 680,
+          "strong_tokens": 272
         },
         {
           "chapter": 17,
           "verses": 58,
-          "words": 1719
+          "words": 1719,
+          "strong_tokens": 682
         },
         {
           "chapter": 18,
           "verses": 30,
-          "words": 845
+          "words": 845,
+          "strong_tokens": 323
         },
         {
           "chapter": 19,
           "verses": 24,
-          "words": 696
+          "words": 696,
+          "strong_tokens": 288
         },
         {
           "chapter": 20,
           "verses": 42,
-          "words": 1289
+          "words": 1289,
+          "strong_tokens": 473
         },
         {
           "chapter": 21,
           "verses": 15,
-          "words": 499
+          "words": 499,
+          "strong_tokens": 190
         },
         {
           "chapter": 22,
           "verses": 23,
-          "words": 761
+          "words": 761,
+          "strong_tokens": 286
         },
         {
           "chapter": 23,
           "verses": 29,
-          "words": 831
+          "words": 831,
+          "strong_tokens": 342
         },
         {
           "chapter": 24,
           "verses": 22,
-          "words": 661
+          "words": 661,
+          "strong_tokens": 250
         },
         {
           "chapter": 25,
           "verses": 44,
-          "words": 1452
+          "words": 1452,
+          "strong_tokens": 535
         },
         {
           "chapter": 26,
           "verses": 25,
-          "words": 849
+          "words": 849,
+          "strong_tokens": 340
         },
         {
           "chapter": 27,
           "verses": 12,
-          "words": 385
+          "words": 385,
+          "strong_tokens": 157
         },
         {
           "chapter": 28,
           "verses": 25,
-          "words": 835
+          "words": 835,
+          "strong_tokens": 302
         },
         {
           "chapter": 29,
           "verses": 11,
-          "words": 421
+          "words": 421,
+          "strong_tokens": 141
         },
         {
           "chapter": 30,
           "verses": 31,
-          "words": 956
+          "words": 956,
+          "strong_tokens": 329
         },
         {
           "chapter": 31,
           "verses": 13,
-          "words": 348
+          "words": 348,
+          "strong_tokens": 144
         }
       ]
     },
@@ -1458,126 +1742,151 @@
       "chapters_count": 24,
       "verses_count": 695,
       "words_count": 20600,
+      "strong_tokens_count": 7978,
       "chapters": [
         {
           "chapter": 1,
           "verses": 27,
-          "words": 712
+          "words": 712,
+          "strong_tokens": 252
         },
         {
           "chapter": 2,
           "verses": 32,
-          "words": 911
+          "words": 911,
+          "strong_tokens": 376
         },
         {
           "chapter": 3,
           "verses": 39,
-          "words": 1143
+          "words": 1143,
+          "strong_tokens": 474
         },
         {
           "chapter": 4,
           "verses": 12,
-          "words": 434
+          "words": 434,
+          "strong_tokens": 174
         },
         {
           "chapter": 5,
           "verses": 25,
-          "words": 624
+          "words": 624,
+          "strong_tokens": 260
         },
         {
           "chapter": 6,
           "verses": 23,
-          "words": 713
+          "words": 713,
+          "strong_tokens": 283
         },
         {
           "chapter": 7,
           "verses": 29,
-          "words": 858
+          "words": 858,
+          "strong_tokens": 299
         },
         {
           "chapter": 8,
           "verses": 18,
-          "words": 447
+          "words": 447,
+          "strong_tokens": 207
         },
         {
           "chapter": 9,
           "verses": 13,
-          "words": 408
+          "words": 408,
+          "strong_tokens": 162
         },
         {
           "chapter": 10,
           "verses": 19,
-          "words": 608
+          "words": 608,
+          "strong_tokens": 250
         },
         {
           "chapter": 11,
           "verses": 27,
-          "words": 814
+          "words": 814,
+          "strong_tokens": 318
         },
         {
           "chapter": 12,
           "verses": 31,
-          "words": 992
+          "words": 992,
+          "strong_tokens": 378
         },
         {
           "chapter": 13,
           "verses": 39,
-          "words": 1149
+          "words": 1149,
+          "strong_tokens": 447
         },
         {
           "chapter": 14,
           "verses": 33,
-          "words": 1117
+          "words": 1117,
+          "strong_tokens": 418
         },
         {
           "chapter": 15,
           "verses": 37,
-          "words": 1118
+          "words": 1118,
+          "strong_tokens": 419
         },
         {
           "chapter": 16,
           "verses": 23,
-          "words": 738
+          "words": 738,
+          "strong_tokens": 268
         },
         {
           "chapter": 17,
           "verses": 29,
-          "words": 935
+          "words": 935,
+          "strong_tokens": 360
         },
         {
           "chapter": 18,
           "verses": 33,
-          "words": 1096
+          "words": 1096,
+          "strong_tokens": 443
         },
         {
           "chapter": 19,
           "verses": 43,
-          "words": 1473
+          "words": 1473,
+          "strong_tokens": 545
         },
         {
           "chapter": 20,
           "verses": 26,
-          "words": 848
+          "words": 848,
+          "strong_tokens": 331
         },
         {
           "chapter": 21,
           "verses": 22,
-          "words": 778
+          "words": 778,
+          "strong_tokens": 303
         },
         {
           "chapter": 22,
           "verses": 51,
-          "words": 951
+          "words": 951,
+          "strong_tokens": 307
         },
         {
           "chapter": 23,
           "verses": 39,
-          "words": 878
+          "words": 878,
+          "strong_tokens": 360
         },
         {
           "chapter": 24,
           "verses": 25,
-          "words": 855
+          "words": 855,
+          "strong_tokens": 344
         }
       ]
     },
@@ -1589,116 +1898,139 @@
       "chapters_count": 22,
       "verses_count": 816,
       "words_count": 24513,
+      "strong_tokens_count": 9587,
       "chapters": [
         {
           "chapter": 1,
           "verses": 53,
-          "words": 1500
+          "words": 1500,
+          "strong_tokens": 608
         },
         {
           "chapter": 2,
           "verses": 46,
-          "words": 1510
+          "words": 1510,
+          "strong_tokens": 590
         },
         {
           "chapter": 3,
           "verses": 28,
-          "words": 850
+          "words": 850,
+          "strong_tokens": 323
         },
         {
           "chapter": 4,
           "verses": 34,
-          "words": 706
+          "words": 706,
+          "strong_tokens": 298
         },
         {
           "chapter": 5,
           "verses": 18,
-          "words": 527
+          "words": 527,
+          "strong_tokens": 221
         },
         {
           "chapter": 6,
           "verses": 38,
-          "words": 1018
+          "words": 1018,
+          "strong_tokens": 425
         },
         {
           "chapter": 7,
           "verses": 51,
-          "words": 1482
+          "words": 1482,
+          "strong_tokens": 633
         },
         {
           "chapter": 8,
           "verses": 66,
-          "words": 2139
+          "words": 2139,
+          "strong_tokens": 789
         },
         {
           "chapter": 9,
           "verses": 28,
-          "words": 826
+          "words": 826,
+          "strong_tokens": 325
         },
         {
           "chapter": 10,
           "verses": 29,
-          "words": 839
+          "words": 839,
+          "strong_tokens": 360
         },
         {
           "chapter": 11,
           "verses": 43,
-          "words": 1253
+          "words": 1253,
+          "strong_tokens": 495
         },
         {
           "chapter": 12,
           "verses": 33,
-          "words": 1038
+          "words": 1038,
+          "strong_tokens": 409
         },
         {
           "chapter": 13,
           "verses": 34,
-          "words": 1138
+          "words": 1138,
+          "strong_tokens": 416
         },
         {
           "chapter": 14,
           "verses": 31,
-          "words": 987
+          "words": 987,
+          "strong_tokens": 370
         },
         {
           "chapter": 15,
           "verses": 34,
-          "words": 951
+          "words": 951,
+          "strong_tokens": 378
         },
         {
           "chapter": 16,
           "verses": 34,
-          "words": 1035
+          "words": 1035,
+          "strong_tokens": 416
         },
         {
           "chapter": 17,
           "verses": 24,
-          "words": 680
+          "words": 680,
+          "strong_tokens": 255
         },
         {
           "chapter": 18,
           "verses": 46,
-          "words": 1397
+          "words": 1397,
+          "strong_tokens": 532
         },
         {
           "chapter": 19,
           "verses": 21,
-          "words": 732
+          "words": 732,
+          "strong_tokens": 271
         },
         {
           "chapter": 20,
           "verses": 43,
-          "words": 1480
+          "words": 1480,
+          "strong_tokens": 535
         },
         {
           "chapter": 21,
           "verses": 29,
-          "words": 908
+          "words": 908,
+          "strong_tokens": 348
         },
         {
           "chapter": 22,
           "verses": 53,
-          "words": 1517
+          "words": 1517,
+          "strong_tokens": 590
         }
       ]
     },
@@ -1710,131 +2042,157 @@
       "chapters_count": 25,
       "verses_count": 719,
       "words_count": 23517,
+      "strong_tokens_count": 8986,
       "chapters": [
         {
           "chapter": 1,
           "verses": 18,
-          "words": 669
+          "words": 669,
+          "strong_tokens": 249
         },
         {
           "chapter": 2,
           "verses": 25,
-          "words": 848
+          "words": 848,
+          "strong_tokens": 293
         },
         {
           "chapter": 3,
           "verses": 27,
-          "words": 848
+          "words": 848,
+          "strong_tokens": 325
         },
         {
           "chapter": 4,
           "verses": 44,
-          "words": 1369
+          "words": 1369,
+          "strong_tokens": 477
         },
         {
           "chapter": 5,
           "verses": 27,
-          "words": 975
+          "words": 975,
+          "strong_tokens": 377
         },
         {
           "chapter": 6,
           "verses": 33,
-          "words": 1019
+          "words": 1019,
+          "strong_tokens": 370
         },
         {
           "chapter": 7,
           "verses": 20,
-          "words": 824
+          "words": 824,
+          "strong_tokens": 291
         },
         {
           "chapter": 8,
           "verses": 29,
-          "words": 953
+          "words": 953,
+          "strong_tokens": 391
         },
         {
           "chapter": 9,
           "verses": 37,
-          "words": 1205
+          "words": 1205,
+          "strong_tokens": 470
         },
         {
           "chapter": 10,
           "verses": 36,
-          "words": 1203
+          "words": 1203,
+          "strong_tokens": 445
         },
         {
           "chapter": 11,
           "verses": 21,
-          "words": 738
+          "words": 738,
+          "strong_tokens": 279
         },
         {
           "chapter": 12,
           "verses": 21,
-          "words": 688
+          "words": 688,
+          "strong_tokens": 272
         },
         {
           "chapter": 13,
           "verses": 25,
-          "words": 775
+          "words": 775,
+          "strong_tokens": 319
         },
         {
           "chapter": 14,
           "verses": 29,
-          "words": 881
+          "words": 881,
+          "strong_tokens": 366
         },
         {
           "chapter": 15,
           "verses": 38,
-          "words": 1092
+          "words": 1092,
+          "strong_tokens": 445
         },
         {
           "chapter": 16,
           "verses": 20,
-          "words": 656
+          "words": 656,
+          "strong_tokens": 270
         },
         {
           "chapter": 17,
           "verses": 41,
-          "words": 1245
+          "words": 1245,
+          "strong_tokens": 474
         },
         {
           "chapter": 18,
           "verses": 37,
-          "words": 1220
+          "words": 1220,
+          "strong_tokens": 470
         },
         {
           "chapter": 19,
           "verses": 37,
-          "words": 1147
+          "words": 1147,
+          "strong_tokens": 427
         },
         {
           "chapter": 20,
           "verses": 21,
-          "words": 660
+          "words": 660,
+          "strong_tokens": 252
         },
         {
           "chapter": 21,
           "verses": 26,
-          "words": 747
+          "words": 747,
+          "strong_tokens": 291
         },
         {
           "chapter": 22,
           "verses": 20,
-          "words": 712
+          "words": 712,
+          "strong_tokens": 271
         },
         {
           "chapter": 23,
           "verses": 37,
-          "words": 1477
+          "words": 1477,
+          "strong_tokens": 545
         },
         {
           "chapter": 24,
           "verses": 20,
-          "words": 584
+          "words": 584,
+          "strong_tokens": 233
         },
         {
           "chapter": 25,
           "verses": 30,
-          "words": 982
+          "words": 982,
+          "strong_tokens": 384
         }
       ]
     },
@@ -1846,151 +2204,181 @@
       "chapters_count": 29,
       "verses_count": 942,
       "words_count": 20365,
+      "strong_tokens_count": 8670,
       "chapters": [
         {
           "chapter": 1,
           "verses": 54,
-          "words": 683
+          "words": 683,
+          "strong_tokens": 358
         },
         {
           "chapter": 2,
           "verses": 55,
-          "words": 846
+          "words": 846,
+          "strong_tokens": 434
         },
         {
           "chapter": 3,
           "verses": 24,
-          "words": 347
+          "words": 347,
+          "strong_tokens": 183
         },
         {
           "chapter": 4,
           "verses": 43,
-          "words": 852
+          "words": 852,
+          "strong_tokens": 384
         },
         {
           "chapter": 5,
           "verses": 26,
-          "words": 664
+          "words": 664,
+          "strong_tokens": 281
         },
         {
           "chapter": 6,
           "verses": 81,
-          "words": 1341
+          "words": 1341,
+          "strong_tokens": 599
         },
         {
           "chapter": 7,
           "verses": 40,
-          "words": 831
+          "words": 831,
+          "strong_tokens": 384
         },
         {
           "chapter": 8,
           "verses": 40,
-          "words": 491
+          "words": 491,
+          "strong_tokens": 245
         },
         {
           "chapter": 9,
           "verses": 44,
-          "words": 960
+          "words": 960,
+          "strong_tokens": 402
         },
         {
           "chapter": 10,
           "verses": 14,
-          "words": 364
+          "words": 364,
+          "strong_tokens": 148
         },
         {
           "chapter": 11,
           "verses": 47,
-          "words": 944
+          "words": 944,
+          "strong_tokens": 410
         },
         {
           "chapter": 12,
           "verses": 40,
-          "words": 987
+          "words": 987,
+          "strong_tokens": 403
         },
         {
           "chapter": 13,
           "verses": 14,
-          "words": 386
+          "words": 386,
+          "strong_tokens": 147
         },
         {
           "chapter": 14,
           "verses": 17,
-          "words": 357
+          "words": 357,
+          "strong_tokens": 146
         },
         {
           "chapter": 15,
           "verses": 29,
-          "words": 714
+          "words": 714,
+          "strong_tokens": 301
         },
         {
           "chapter": 16,
           "verses": 43,
-          "words": 850
+          "words": 850,
+          "strong_tokens": 339
         },
         {
           "chapter": 17,
           "verses": 27,
-          "words": 779
+          "words": 779,
+          "strong_tokens": 260
         },
         {
           "chapter": 18,
           "verses": 17,
-          "words": 399
+          "words": 399,
+          "strong_tokens": 189
         },
         {
           "chapter": 19,
           "verses": 19,
-          "words": 630
+          "words": 630,
+          "strong_tokens": 247
         },
         {
           "chapter": 20,
           "verses": 8,
-          "words": 289
+          "words": 289,
+          "strong_tokens": 114
         },
         {
           "chapter": 21,
           "verses": 30,
-          "words": 914
+          "words": 914,
+          "strong_tokens": 378
         },
         {
           "chapter": 22,
           "verses": 19,
-          "words": 605
+          "words": 605,
+          "strong_tokens": 234
         },
         {
           "chapter": 23,
           "verses": 32,
-          "words": 681
+          "words": 681,
+          "strong_tokens": 287
         },
         {
           "chapter": 24,
           "verses": 31,
-          "words": 541
+          "words": 541,
+          "strong_tokens": 241
         },
         {
           "chapter": 25,
           "verses": 31,
-          "words": 543
+          "words": 543,
+          "strong_tokens": 235
         },
         {
           "chapter": 26,
           "verses": 32,
-          "words": 710
+          "words": 710,
+          "strong_tokens": 315
         },
         {
           "chapter": 27,
           "verses": 34,
-          "words": 805
+          "words": 805,
+          "strong_tokens": 349
         },
         {
           "chapter": 28,
           "verses": 21,
-          "words": 864
+          "words": 864,
+          "strong_tokens": 284
         },
         {
           "chapter": 29,
           "verses": 30,
-          "words": 988
+          "words": 988,
+          "strong_tokens": 373
         }
       ]
     },
@@ -2002,186 +2390,223 @@
       "chapters_count": 36,
       "verses_count": 822,
       "words_count": 26069,
+      "strong_tokens_count": 10144,
       "chapters": [
         {
           "chapter": 1,
           "verses": 17,
-          "words": 530
+          "words": 530,
+          "strong_tokens": 199
         },
         {
           "chapter": 2,
           "verses": 18,
-          "words": 645
+          "words": 645,
+          "strong_tokens": 261
         },
         {
           "chapter": 3,
           "verses": 17,
-          "words": 481
+          "words": 481,
+          "strong_tokens": 211
         },
         {
           "chapter": 4,
           "verses": 22,
-          "words": 595
+          "words": 595,
+          "strong_tokens": 251
         },
         {
           "chapter": 5,
           "verses": 14,
-          "words": 497
+          "words": 497,
+          "strong_tokens": 182
         },
         {
           "chapter": 6,
           "verses": 42,
-          "words": 1402
+          "words": 1402,
+          "strong_tokens": 504
         },
         {
           "chapter": 7,
           "verses": 22,
-          "words": 748
+          "words": 748,
+          "strong_tokens": 285
         },
         {
           "chapter": 8,
           "verses": 18,
-          "words": 536
+          "words": 536,
+          "strong_tokens": 207
         },
         {
           "chapter": 9,
           "verses": 31,
-          "words": 882
+          "words": 882,
+          "strong_tokens": 377
         },
         {
           "chapter": 10,
           "verses": 19,
-          "words": 560
+          "words": 560,
+          "strong_tokens": 216
         },
         {
           "chapter": 11,
           "verses": 23,
-          "words": 486
+          "words": 486,
+          "strong_tokens": 214
         },
         {
           "chapter": 12,
           "verses": 16,
-          "words": 481
+          "words": 481,
+          "strong_tokens": 192
         },
         {
           "chapter": 13,
           "verses": 23,
-          "words": 674
+          "words": 674,
+          "strong_tokens": 282
         },
         {
           "chapter": 14,
           "verses": 14,
-          "words": 416
+          "words": 416,
+          "strong_tokens": 164
         },
         {
           "chapter": 15,
           "verses": 19,
-          "words": 518
+          "words": 518,
+          "strong_tokens": 184
         },
         {
           "chapter": 16,
           "verses": 14,
-          "words": 479
+          "words": 479,
+          "strong_tokens": 184
         },
         {
           "chapter": 17,
           "verses": 19,
-          "words": 459
+          "words": 459,
+          "strong_tokens": 188
         },
         {
           "chapter": 18,
           "verses": 34,
-          "words": 1050
+          "words": 1050,
+          "strong_tokens": 397
         },
         {
           "chapter": 19,
           "verses": 11,
-          "words": 352
+          "words": 352,
+          "strong_tokens": 136
         },
         {
           "chapter": 20,
           "verses": 37,
-          "words": 1148
+          "words": 1148,
+          "strong_tokens": 442
         },
         {
           "chapter": 21,
           "verses": 20,
-          "words": 623
+          "words": 623,
+          "strong_tokens": 236
         },
         {
           "chapter": 22,
           "verses": 12,
-          "words": 444
+          "words": 444,
+          "strong_tokens": 187
         },
         {
           "chapter": 23,
           "verses": 21,
-          "words": 788
+          "words": 788,
+          "strong_tokens": 293
         },
         {
           "chapter": 24,
           "verses": 27,
-          "words": 933
+          "words": 933,
+          "strong_tokens": 359
         },
         {
           "chapter": 25,
           "verses": 28,
-          "words": 970
+          "words": 970,
+          "strong_tokens": 387
         },
         {
           "chapter": 26,
           "verses": 23,
-          "words": 721
+          "words": 721,
+          "strong_tokens": 288
         },
         {
           "chapter": 27,
           "verses": 9,
-          "words": 244
+          "words": 244,
+          "strong_tokens": 104
         },
         {
           "chapter": 28,
           "verses": 27,
-          "words": 896
+          "words": 896,
+          "strong_tokens": 341
         },
         {
           "chapter": 29,
           "verses": 36,
-          "words": 1157
+          "words": 1157,
+          "strong_tokens": 439
         },
         {
           "chapter": 30,
           "verses": 27,
-          "words": 869
+          "words": 869,
+          "strong_tokens": 342
         },
         {
           "chapter": 31,
           "verses": 21,
-          "words": 757
+          "words": 757,
+          "strong_tokens": 285
         },
         {
           "chapter": 32,
           "verses": 33,
-          "words": 1084
+          "words": 1084,
+          "strong_tokens": 410
         },
         {
           "chapter": 33,
           "verses": 25,
-          "words": 780
+          "words": 780,
+          "strong_tokens": 303
         },
         {
           "chapter": 34,
           "verses": 33,
-          "words": 1223
+          "words": 1223,
+          "strong_tokens": 455
         },
         {
           "chapter": 35,
           "verses": 27,
-          "words": 900
+          "words": 900,
+          "strong_tokens": 344
         },
         {
           "chapter": 36,
           "verses": 23,
-          "words": 741
+          "words": 741,
+          "strong_tokens": 295
         }
       ]
     },
@@ -2193,56 +2618,67 @@
       "chapters_count": 10,
       "verses_count": 280,
       "words_count": 7440,
+      "strong_tokens_count": 3214,
       "chapters": [
         {
           "chapter": 1,
           "verses": 11,
-          "words": 371
+          "words": 371,
+          "strong_tokens": 144
         },
         {
           "chapter": 2,
           "verses": 70,
-          "words": 998
+          "words": 998,
+          "strong_tokens": 505
         },
         {
           "chapter": 3,
           "verses": 13,
-          "words": 547
+          "words": 547,
+          "strong_tokens": 217
         },
         {
           "chapter": 4,
           "verses": 24,
-          "words": 769
+          "words": 769,
+          "strong_tokens": 348
         },
         {
           "chapter": 5,
           "verses": 17,
-          "words": 583
+          "words": 583,
+          "strong_tokens": 290
         },
         {
           "chapter": 6,
           "verses": 22,
-          "words": 778
+          "words": 778,
+          "strong_tokens": 354
         },
         {
           "chapter": 7,
           "verses": 28,
-          "words": 863
+          "words": 863,
+          "strong_tokens": 368
         },
         {
           "chapter": 8,
           "verses": 36,
-          "words": 990
+          "words": 990,
+          "strong_tokens": 384
         },
         {
           "chapter": 9,
           "verses": 15,
-          "words": 617
+          "words": 617,
+          "strong_tokens": 212
         },
         {
           "chapter": 10,
           "verses": 44,
-          "words": 924
+          "words": 924,
+          "strong_tokens": 392
         }
       ]
     },
@@ -2254,71 +2690,85 @@
       "chapters_count": 13,
       "verses_count": 406,
       "words_count": 10480,
+      "strong_tokens_count": 4204,
       "chapters": [
         {
           "chapter": 1,
           "verses": 11,
-          "words": 390
+          "words": 390,
+          "strong_tokens": 142
         },
         {
           "chapter": 2,
           "verses": 20,
-          "words": 718
+          "words": 718,
+          "strong_tokens": 247
         },
         {
           "chapter": 3,
           "verses": 32,
-          "words": 896
+          "words": 896,
+          "strong_tokens": 399
         },
         {
           "chapter": 4,
           "verses": 23,
-          "words": 716
+          "words": 716,
+          "strong_tokens": 248
         },
         {
           "chapter": 5,
           "verses": 19,
-          "words": 636
+          "words": 636,
+          "strong_tokens": 217
         },
         {
           "chapter": 6,
           "verses": 19,
-          "words": 602
+          "words": 602,
+          "strong_tokens": 207
         },
         {
           "chapter": 7,
           "verses": 73,
-          "words": 1176
+          "words": 1176,
+          "strong_tokens": 579
         },
         {
           "chapter": 8,
           "verses": 18,
-          "words": 686
+          "words": 686,
+          "strong_tokens": 283
         },
         {
           "chapter": 9,
           "verses": 38,
-          "words": 1328
+          "words": 1328,
+          "strong_tokens": 486
         },
         {
           "chapter": 10,
           "verses": 39,
-          "words": 652
+          "words": 652,
+          "strong_tokens": 283
         },
         {
           "chapter": 11,
           "verses": 36,
-          "words": 788
+          "words": 788,
+          "strong_tokens": 348
         },
         {
           "chapter": 12,
           "verses": 47,
-          "words": 930
+          "words": 930,
+          "strong_tokens": 414
         },
         {
           "chapter": 13,
           "verses": 31,
-          "words": 962
+          "words": 962,
+          "strong_tokens": 351
         }
       ]
     },
@@ -2330,56 +2780,67 @@
       "chapters_count": 10,
       "verses_count": 167,
       "words_count": 5633,
+      "strong_tokens_count": 2254,
       "chapters": [
         {
           "chapter": 1,
           "verses": 22,
-          "words": 716
+          "words": 716,
+          "strong_tokens": 294
         },
         {
           "chapter": 2,
           "verses": 23,
-          "words": 806
+          "words": 806,
+          "strong_tokens": 323
         },
         {
           "chapter": 3,
           "verses": 15,
-          "words": 552
+          "words": 552,
+          "strong_tokens": 220
         },
         {
           "chapter": 4,
           "verses": 17,
-          "words": 517
+          "words": 517,
+          "strong_tokens": 200
         },
         {
           "chapter": 5,
           "verses": 14,
-          "words": 494
+          "words": 494,
+          "strong_tokens": 190
         },
         {
           "chapter": 6,
           "verses": 14,
-          "words": 476
+          "words": 476,
+          "strong_tokens": 197
         },
         {
           "chapter": 7,
           "verses": 10,
-          "words": 345
+          "words": 345,
+          "strong_tokens": 140
         },
         {
           "chapter": 8,
           "verses": 17,
-          "words": 650
+          "words": 650,
+          "strong_tokens": 268
         },
         {
           "chapter": 9,
           "verses": 32,
-          "words": 984
+          "words": 984,
+          "strong_tokens": 385
         },
         {
           "chapter": 10,
           "verses": 3,
-          "words": 93
+          "words": 93,
+          "strong_tokens": 37
         }
       ]
     },
@@ -2391,216 +2852,259 @@
       "chapters_count": 42,
       "verses_count": 1070,
       "words_count": 18098,
+      "strong_tokens_count": 6238,
       "chapters": [
         {
           "chapter": 1,
           "verses": 22,
-          "words": 641
+          "words": 641,
+          "strong_tokens": 250
         },
         {
           "chapter": 2,
           "verses": 13,
-          "words": 387
+          "words": 387,
+          "strong_tokens": 151
         },
         {
           "chapter": 3,
           "verses": 26,
-          "words": 434
+          "words": 434,
+          "strong_tokens": 145
         },
         {
           "chapter": 4,
           "verses": 21,
-          "words": 336
+          "words": 336,
+          "strong_tokens": 123
         },
         {
           "chapter": 5,
           "verses": 27,
-          "words": 446
+          "words": 446,
+          "strong_tokens": 160
         },
         {
           "chapter": 6,
           "verses": 30,
-          "words": 482
+          "words": 482,
+          "strong_tokens": 158
         },
         {
           "chapter": 7,
           "verses": 21,
-          "words": 394
+          "words": 394,
+          "strong_tokens": 121
         },
         {
           "chapter": 8,
           "verses": 22,
-          "words": 340
+          "words": 340,
+          "strong_tokens": 120
         },
         {
           "chapter": 9,
           "verses": 35,
-          "words": 544
+          "words": 544,
+          "strong_tokens": 174
         },
         {
           "chapter": 10,
           "verses": 22,
-          "words": 402
+          "words": 402,
+          "strong_tokens": 122
         },
         {
           "chapter": 11,
           "verses": 20,
-          "words": 337
+          "words": 337,
+          "strong_tokens": 113
         },
         {
           "chapter": 12,
           "verses": 25,
-          "words": 399
+          "words": 399,
+          "strong_tokens": 140
         },
         {
           "chapter": 13,
           "verses": 28,
-          "words": 413
+          "words": 413,
+          "strong_tokens": 134
         },
         {
           "chapter": 14,
           "verses": 22,
-          "words": 410
+          "words": 410,
+          "strong_tokens": 136
         },
         {
           "chapter": 15,
           "verses": 35,
-          "words": 549
+          "words": 549,
+          "strong_tokens": 194
         },
         {
           "chapter": 16,
           "verses": 22,
-          "words": 375
+          "words": 375,
+          "strong_tokens": 125
         },
         {
           "chapter": 17,
           "verses": 16,
-          "words": 262
+          "words": 262,
+          "strong_tokens": 85
         },
         {
           "chapter": 18,
           "verses": 21,
-          "words": 342
+          "words": 342,
+          "strong_tokens": 113
         },
         {
           "chapter": 19,
           "verses": 29,
-          "words": 475
+          "words": 475,
+          "strong_tokens": 159
         },
         {
           "chapter": 20,
           "verses": 29,
-          "words": 521
+          "words": 521,
+          "strong_tokens": 166
         },
         {
           "chapter": 21,
           "verses": 34,
-          "words": 522
+          "words": 522,
+          "strong_tokens": 181
         },
         {
           "chapter": 22,
           "verses": 30,
-          "words": 482
+          "words": 482,
+          "strong_tokens": 163
         },
         {
           "chapter": 23,
           "verses": 17,
-          "words": 280
+          "words": 280,
+          "strong_tokens": 88
         },
         {
           "chapter": 24,
           "verses": 25,
-          "words": 481
+          "words": 481,
+          "strong_tokens": 166
         },
         {
           "chapter": 25,
           "verses": 6,
-          "words": 90
+          "words": 90,
+          "strong_tokens": 30
         },
         {
           "chapter": 26,
           "verses": 14,
-          "words": 206
+          "words": 206,
+          "strong_tokens": 75
         },
         {
           "chapter": 27,
           "verses": 23,
-          "words": 373
+          "words": 373,
+          "strong_tokens": 124
         },
         {
           "chapter": 28,
           "verses": 28,
-          "words": 455
+          "words": 455,
+          "strong_tokens": 162
         },
         {
           "chapter": 29,
           "verses": 25,
-          "words": 404
+          "words": 404,
+          "strong_tokens": 140
         },
         {
           "chapter": 30,
           "verses": 31,
-          "words": 514
+          "words": 514,
+          "strong_tokens": 172
         },
         {
           "chapter": 31,
           "verses": 40,
-          "words": 691
+          "words": 691,
+          "strong_tokens": 228
         },
         {
           "chapter": 32,
           "verses": 22,
-          "words": 375
+          "words": 375,
+          "strong_tokens": 135
         },
         {
           "chapter": 33,
           "verses": 33,
-          "words": 525
+          "words": 525,
+          "strong_tokens": 185
         },
         {
           "chapter": 34,
           "verses": 37,
-          "words": 615
+          "words": 615,
+          "strong_tokens": 207
         },
         {
           "chapter": 35,
           "verses": 16,
-          "words": 254
+          "words": 254,
+          "strong_tokens": 81
         },
         {
           "chapter": 36,
           "verses": 33,
-          "words": 495
+          "words": 495,
+          "strong_tokens": 177
         },
         {
           "chapter": 37,
           "verses": 24,
-          "words": 402
+          "words": 402,
+          "strong_tokens": 149
         },
         {
           "chapter": 38,
           "verses": 41,
-          "words": 659
+          "words": 659,
+          "strong_tokens": 234
         },
         {
           "chapter": 39,
           "verses": 30,
-          "words": 477
+          "words": 477,
+          "strong_tokens": 179
         },
         {
           "chapter": 40,
           "verses": 24,
-          "words": 361
+          "words": 361,
+          "strong_tokens": 127
         },
         {
           "chapter": 41,
           "verses": 34,
-          "words": 507
+          "words": 507,
+          "strong_tokens": 179
         },
         {
           "chapter": 42,
           "verses": 17,
-          "words": 441
+          "words": 441,
+          "strong_tokens": 167
         }
       ]
     },
@@ -2612,756 +3116,907 @@
       "chapters_count": 150,
       "verses_count": 2461,
       "words_count": 43716,
+      "strong_tokens_count": 15835,
       "chapters": [
         {
           "chapter": 1,
           "verses": 6,
-          "words": 130
+          "words": 130,
+          "strong_tokens": 46
         },
         {
           "chapter": 2,
           "verses": 12,
-          "words": 206
+          "words": 206,
+          "strong_tokens": 72
         },
         {
           "chapter": 3,
           "verses": 8,
-          "words": 150
+          "words": 150,
+          "strong_tokens": 54
         },
         {
           "chapter": 4,
           "verses": 8,
-          "words": 175
+          "words": 175,
+          "strong_tokens": 65
         },
         {
           "chapter": 5,
           "verses": 12,
-          "words": 255
+          "words": 255,
+          "strong_tokens": 87
         },
         {
           "chapter": 6,
           "verses": 10,
-          "words": 171
+          "words": 171,
+          "strong_tokens": 64
         },
         {
           "chapter": 7,
           "verses": 17,
-          "words": 343
+          "words": 343,
+          "strong_tokens": 120
         },
         {
           "chapter": 8,
           "verses": 9,
-          "words": 176
+          "words": 176,
+          "strong_tokens": 60
         },
         {
           "chapter": 9,
           "verses": 20,
-          "words": 377
+          "words": 377,
+          "strong_tokens": 142
         },
         {
           "chapter": 10,
           "verses": 18,
-          "words": 350
+          "words": 350,
+          "strong_tokens": 134
         },
         {
           "chapter": 11,
           "verses": 7,
-          "words": 136
+          "words": 136,
+          "strong_tokens": 59
         },
         {
           "chapter": 12,
           "verses": 8,
-          "words": 157
+          "words": 157,
+          "strong_tokens": 65
         },
         {
           "chapter": 13,
           "verses": 6,
-          "words": 115
+          "words": 115,
+          "strong_tokens": 38
         },
         {
           "chapter": 14,
           "verses": 7,
-          "words": 157
+          "words": 157,
+          "strong_tokens": 58
         },
         {
           "chapter": 15,
           "verses": 5,
-          "words": 103
+          "words": 103,
+          "strong_tokens": 41
         },
         {
           "chapter": 16,
           "verses": 11,
-          "words": 209
+          "words": 209,
+          "strong_tokens": 70
         },
         {
           "chapter": 17,
           "verses": 15,
-          "words": 315
+          "words": 315,
+          "strong_tokens": 113
         },
         {
           "chapter": 18,
           "verses": 50,
-          "words": 965
+          "words": 965,
+          "strong_tokens": 320
         },
         {
           "chapter": 19,
           "verses": 14,
-          "words": 280
+          "words": 280,
+          "strong_tokens": 108
         },
         {
           "chapter": 20,
           "verses": 9,
-          "words": 152
+          "words": 152,
+          "strong_tokens": 59
         },
         {
           "chapter": 21,
           "verses": 13,
-          "words": 254
+          "words": 254,
+          "strong_tokens": 87
         },
         {
           "chapter": 22,
           "verses": 31,
-          "words": 591
+          "words": 591,
+          "strong_tokens": 196
         },
         {
           "chapter": 23,
           "verses": 6,
-          "words": 122
+          "words": 122,
+          "strong_tokens": 43
         },
         {
           "chapter": 24,
           "verses": 10,
-          "words": 182
+          "words": 182,
+          "strong_tokens": 71
         },
         {
           "chapter": 25,
           "verses": 22,
-          "words": 346
+          "words": 346,
+          "strong_tokens": 119
         },
         {
           "chapter": 26,
           "verses": 12,
-          "words": 187
+          "words": 187,
+          "strong_tokens": 67
         },
         {
           "chapter": 27,
           "verses": 14,
-          "words": 344
+          "words": 344,
+          "strong_tokens": 116
         },
         {
           "chapter": 28,
           "verses": 9,
-          "words": 205
+          "words": 205,
+          "strong_tokens": 69
         },
         {
           "chapter": 29,
           "verses": 11,
-          "words": 183
+          "words": 183,
+          "strong_tokens": 83
         },
         {
           "chapter": 30,
           "verses": 12,
-          "words": 243
+          "words": 243,
+          "strong_tokens": 79
         },
         {
           "chapter": 31,
           "verses": 24,
-          "words": 506
+          "words": 506,
+          "strong_tokens": 175
         },
         {
           "chapter": 32,
           "verses": 11,
-          "words": 246
+          "words": 246,
+          "strong_tokens": 85
         },
         {
           "chapter": 33,
           "verses": 22,
-          "words": 350
+          "words": 350,
+          "strong_tokens": 130
         },
         {
           "chapter": 34,
           "verses": 22,
-          "words": 365
+          "words": 365,
+          "strong_tokens": 136
         },
         {
           "chapter": 35,
           "verses": 28,
-          "words": 568
+          "words": 568,
+          "strong_tokens": 189
         },
         {
           "chapter": 36,
           "verses": 12,
-          "words": 236
+          "words": 236,
+          "strong_tokens": 84
         },
         {
           "chapter": 37,
           "verses": 40,
-          "words": 706
+          "words": 706,
+          "strong_tokens": 250
         },
         {
           "chapter": 38,
           "verses": 22,
-          "words": 369
+          "words": 369,
+          "strong_tokens": 125
         },
         {
           "chapter": 39,
           "verses": 13,
-          "words": 281
+          "words": 281,
+          "strong_tokens": 94
         },
         {
           "chapter": 40,
           "verses": 17,
-          "words": 408
+          "words": 408,
+          "strong_tokens": 149
         },
         {
           "chapter": 41,
           "verses": 13,
-          "words": 248
+          "words": 248,
+          "strong_tokens": 86
         },
         {
           "chapter": 42,
           "verses": 11,
-          "words": 290
+          "words": 290,
+          "strong_tokens": 98
         },
         {
           "chapter": 43,
           "verses": 5,
-          "words": 130
+          "words": 130,
+          "strong_tokens": 44
         },
         {
           "chapter": 44,
           "verses": 26,
-          "words": 461
+          "words": 461,
+          "strong_tokens": 153
         },
         {
           "chapter": 45,
           "verses": 17,
-          "words": 343
+          "words": 343,
+          "strong_tokens": 138
         },
         {
           "chapter": 46,
           "verses": 11,
-          "words": 217
+          "words": 217,
+          "strong_tokens": 87
         },
         {
           "chapter": 47,
           "verses": 9,
-          "words": 154
+          "words": 154,
+          "strong_tokens": 62
         },
         {
           "chapter": 48,
           "verses": 14,
-          "words": 238
+          "words": 238,
+          "strong_tokens": 95
         },
         {
           "chapter": 49,
           "verses": 20,
-          "words": 348
+          "words": 348,
+          "strong_tokens": 131
         },
         {
           "chapter": 50,
           "verses": 23,
-          "words": 404
+          "words": 404,
+          "strong_tokens": 141
         },
         {
           "chapter": 51,
           "verses": 19,
-          "words": 344
+          "words": 344,
+          "strong_tokens": 127
         },
         {
           "chapter": 52,
           "verses": 9,
-          "words": 194
+          "words": 194,
+          "strong_tokens": 77
         },
         {
           "chapter": 53,
           "verses": 6,
-          "words": 163
+          "words": 163,
+          "strong_tokens": 60
         },
         {
           "chapter": 54,
           "verses": 7,
-          "words": 136
+          "words": 136,
+          "strong_tokens": 50
         },
         {
           "chapter": 55,
           "verses": 23,
-          "words": 446
+          "words": 446,
+          "strong_tokens": 153
         },
         {
           "chapter": 56,
           "verses": 13,
-          "words": 241
+          "words": 241,
+          "strong_tokens": 86
         },
         {
           "chapter": 57,
           "verses": 11,
-          "words": 246
+          "words": 246,
+          "strong_tokens": 91
         },
         {
           "chapter": 58,
           "verses": 11,
-          "words": 226
+          "words": 226,
+          "strong_tokens": 82
         },
         {
           "chapter": 59,
           "verses": 17,
-          "words": 358
+          "words": 358,
+          "strong_tokens": 122
         },
         {
           "chapter": 60,
           "verses": 12,
-          "words": 244
+          "words": 244,
+          "strong_tokens": 89
         },
         {
           "chapter": 61,
           "verses": 8,
-          "words": 143
+          "words": 143,
+          "strong_tokens": 55
         },
         {
           "chapter": 62,
           "verses": 12,
-          "words": 238
+          "words": 238,
+          "strong_tokens": 83
         },
         {
           "chapter": 63,
           "verses": 11,
-          "words": 206
+          "words": 206,
+          "strong_tokens": 71
         },
         {
           "chapter": 64,
           "verses": 10,
-          "words": 192
+          "words": 192,
+          "strong_tokens": 71
         },
         {
           "chapter": 65,
           "verses": 13,
-          "words": 277
+          "words": 277,
+          "strong_tokens": 99
         },
         {
           "chapter": 66,
           "verses": 20,
-          "words": 335
+          "words": 335,
+          "strong_tokens": 127
         },
         {
           "chapter": 67,
           "verses": 7,
-          "words": 121
+          "words": 121,
+          "strong_tokens": 46
         },
         {
           "chapter": 68,
           "verses": 35,
-          "words": 708
+          "words": 708,
+          "strong_tokens": 285
         },
         {
           "chapter": 69,
           "verses": 36,
-          "words": 680
+          "words": 680,
+          "strong_tokens": 224
         },
         {
           "chapter": 70,
           "verses": 5,
-          "words": 114
+          "words": 114,
+          "strong_tokens": 40
         },
         {
           "chapter": 71,
           "verses": 24,
-          "words": 471
+          "words": 471,
+          "strong_tokens": 152
         },
         {
           "chapter": 72,
           "verses": 20,
-          "words": 373
+          "words": 373,
+          "strong_tokens": 140
         },
         {
           "chapter": 73,
           "verses": 28,
-          "words": 427
+          "words": 427,
+          "strong_tokens": 148
         },
         {
           "chapter": 74,
           "verses": 23,
-          "words": 416
+          "words": 416,
+          "strong_tokens": 159
         },
         {
           "chapter": 75,
           "verses": 10,
-          "words": 200
+          "words": 200,
+          "strong_tokens": 67
         },
         {
           "chapter": 76,
           "verses": 12,
-          "words": 205
+          "words": 205,
+          "strong_tokens": 78
         },
         {
           "chapter": 77,
           "verses": 20,
-          "words": 340
+          "words": 340,
+          "strong_tokens": 135
         },
         {
           "chapter": 78,
           "verses": 72,
-          "words": 1228
+          "words": 1228,
+          "strong_tokens": 457
         },
         {
           "chapter": 79,
           "verses": 13,
-          "words": 281
+          "words": 281,
+          "strong_tokens": 104
         },
         {
           "chapter": 80,
           "verses": 19,
-          "words": 344
+          "words": 344,
+          "strong_tokens": 119
         },
         {
           "chapter": 81,
           "verses": 16,
-          "words": 298
+          "words": 298,
+          "strong_tokens": 103
         },
         {
           "chapter": 82,
           "verses": 8,
-          "words": 120
+          "words": 120,
+          "strong_tokens": 50
         },
         {
           "chapter": 83,
           "verses": 18,
-          "words": 279
+          "words": 279,
+          "strong_tokens": 101
         },
         {
           "chapter": 84,
           "verses": 12,
-          "words": 239
+          "words": 239,
+          "strong_tokens": 98
         },
         {
           "chapter": 85,
           "verses": 13,
-          "words": 218
+          "words": 218,
+          "strong_tokens": 81
         },
         {
           "chapter": 86,
           "verses": 17,
-          "words": 316
+          "words": 316,
+          "strong_tokens": 111
         },
         {
           "chapter": 87,
           "verses": 7,
-          "words": 122
+          "words": 122,
+          "strong_tokens": 41
         },
         {
           "chapter": 88,
           "verses": 18,
-          "words": 317
+          "words": 317,
+          "strong_tokens": 114
         },
         {
           "chapter": 89,
           "verses": 52,
-          "words": 884
+          "words": 884,
+          "strong_tokens": 312
         },
         {
           "chapter": 90,
           "verses": 17,
-          "words": 328
+          "words": 328,
+          "strong_tokens": 113
         },
         {
           "chapter": 91,
           "verses": 16,
-          "words": 288
+          "words": 288,
+          "strong_tokens": 87
         },
         {
           "chapter": 92,
           "verses": 15,
-          "words": 266
+          "words": 266,
+          "strong_tokens": 88
         },
         {
           "chapter": 93,
           "verses": 5,
-          "words": 92
+          "words": 92,
+          "strong_tokens": 41
         },
         {
           "chapter": 94,
           "verses": 23,
-          "words": 356
+          "words": 356,
+          "strong_tokens": 131
         },
         {
           "chapter": 95,
           "verses": 11,
-          "words": 199
+          "words": 199,
+          "strong_tokens": 67
         },
         {
           "chapter": 96,
           "verses": 13,
-          "words": 226
+          "words": 226,
+          "strong_tokens": 94
         },
         {
           "chapter": 97,
           "verses": 12,
-          "words": 189
+          "words": 189,
+          "strong_tokens": 83
         },
         {
           "chapter": 98,
           "verses": 9,
-          "words": 172
+          "words": 172,
+          "strong_tokens": 68
         },
         {
           "chapter": 99,
           "verses": 9,
-          "words": 157
+          "words": 157,
+          "strong_tokens": 66
         },
         {
           "chapter": 100,
           "verses": 5,
-          "words": 90
+          "words": 90,
+          "strong_tokens": 33
         },
         {
           "chapter": 101,
           "verses": 8,
-          "words": 177
+          "words": 177,
+          "strong_tokens": 64
         },
         {
           "chapter": 102,
           "verses": 28,
-          "words": 472
+          "words": 472,
+          "strong_tokens": 171
         },
         {
           "chapter": 103,
           "verses": 22,
-          "words": 346
+          "words": 346,
+          "strong_tokens": 129
         },
         {
           "chapter": 104,
           "verses": 35,
-          "words": 598
+          "words": 598,
+          "strong_tokens": 226
         },
         {
           "chapter": 105,
           "verses": 45,
-          "words": 632
+          "words": 632,
+          "strong_tokens": 249
         },
         {
           "chapter": 106,
           "verses": 48,
-          "words": 762
+          "words": 762,
+          "strong_tokens": 277
         },
         {
           "chapter": 107,
           "verses": 43,
-          "words": 685
+          "words": 685,
+          "strong_tokens": 246
         },
         {
           "chapter": 108,
           "verses": 13,
-          "words": 212
+          "words": 212,
+          "strong_tokens": 78
         },
         {
           "chapter": 109,
           "verses": 31,
-          "words": 542
+          "words": 542,
+          "strong_tokens": 175
         },
         {
           "chapter": 110,
           "verses": 7,
-          "words": 146
+          "words": 146,
+          "strong_tokens": 54
         },
         {
           "chapter": 111,
           "verses": 10,
-          "words": 177
+          "words": 177,
+          "strong_tokens": 69
         },
         {
           "chapter": 112,
           "verses": 10,
-          "words": 172
+          "words": 172,
+          "strong_tokens": 70
         },
         {
           "chapter": 113,
           "verses": 9,
-          "words": 142
+          "words": 142,
+          "strong_tokens": 51
         },
         {
           "chapter": 114,
           "verses": 8,
-          "words": 106
+          "words": 106,
+          "strong_tokens": 46
         },
         {
           "chapter": 115,
           "verses": 18,
-          "words": 274
+          "words": 274,
+          "strong_tokens": 92
         },
         {
           "chapter": 116,
           "verses": 19,
-          "words": 287
+          "words": 287,
+          "strong_tokens": 103
         },
         {
           "chapter": 117,
           "verses": 2,
-          "words": 33
+          "words": 33,
+          "strong_tokens": 13
         },
         {
           "chapter": 118,
           "verses": 29,
-          "words": 465
+          "words": 465,
+          "strong_tokens": 153
         },
         {
           "chapter": 119,
           "verses": 176,
-          "words": 2423
+          "words": 2423,
+          "strong_tokens": 851
         },
         {
           "chapter": 120,
           "verses": 7,
-          "words": 92
+          "words": 92,
+          "strong_tokens": 36
         },
         {
           "chapter": 121,
           "verses": 8,
-          "words": 114
+          "words": 114,
+          "strong_tokens": 44
         },
         {
           "chapter": 122,
           "verses": 9,
-          "words": 130
+          "words": 130,
+          "strong_tokens": 51
         },
         {
           "chapter": 123,
           "verses": 4,
-          "words": 98
+          "words": 98,
+          "strong_tokens": 31
         },
         {
           "chapter": 124,
           "verses": 8,
-          "words": 127
+          "words": 127,
+          "strong_tokens": 46
         },
         {
           "chapter": 125,
           "verses": 5,
-          "words": 112
+          "words": 112,
+          "strong_tokens": 40
         },
         {
           "chapter": 126,
           "verses": 6,
-          "words": 98
+          "words": 98,
+          "strong_tokens": 41
         },
         {
           "chapter": 127,
           "verses": 5,
-          "words": 116
+          "words": 116,
+          "strong_tokens": 45
         },
         {
           "chapter": 128,
           "verses": 6,
-          "words": 105
+          "words": 105,
+          "strong_tokens": 39
         },
         {
           "chapter": 129,
           "verses": 8,
-          "words": 123
+          "words": 123,
+          "strong_tokens": 43
         },
         {
           "chapter": 130,
           "verses": 8,
-          "words": 120
+          "words": 120,
+          "strong_tokens": 41
         },
         {
           "chapter": 131,
           "verses": 3,
-          "words": 66
+          "words": 66,
+          "strong_tokens": 23
         },
         {
           "chapter": 132,
           "verses": 18,
-          "words": 280
+          "words": 280,
+          "strong_tokens": 103
         },
         {
           "chapter": 133,
           "verses": 3,
-          "words": 75
+          "words": 75,
+          "strong_tokens": 29
         },
         {
           "chapter": 134,
           "verses": 3,
-          "words": 48
+          "words": 48,
+          "strong_tokens": 21
         },
         {
           "chapter": 135,
           "verses": 21,
-          "words": 329
+          "words": 329,
+          "strong_tokens": 133
         },
         {
           "chapter": 136,
           "verses": 26,
-          "words": 353
+          "words": 353,
+          "strong_tokens": 133
         },
         {
           "chapter": 137,
           "verses": 9,
-          "words": 165
+          "words": 165,
+          "strong_tokens": 56
         },
         {
           "chapter": 138,
           "verses": 8,
-          "words": 176
+          "words": 176,
+          "strong_tokens": 59
         },
         {
           "chapter": 139,
           "verses": 24,
-          "words": 418
+          "words": 418,
+          "strong_tokens": 132
         },
         {
           "chapter": 140,
           "verses": 13,
-          "words": 247
+          "words": 247,
+          "strong_tokens": 98
         },
         {
           "chapter": 141,
           "verses": 10,
-          "words": 207
+          "words": 207,
+          "strong_tokens": 77
         },
         {
           "chapter": 142,
           "verses": 7,
-          "words": 162
+          "words": 162,
+          "strong_tokens": 56
         },
         {
           "chapter": 143,
           "verses": 12,
-          "words": 256
+          "words": 256,
+          "strong_tokens": 93
         },
         {
           "chapter": 144,
           "verses": 15,
-          "words": 306
+          "words": 306,
+          "strong_tokens": 114
         },
         {
           "chapter": 145,
           "verses": 21,
-          "words": 335
+          "words": 335,
+          "strong_tokens": 124
         },
         {
           "chapter": 146,
           "verses": 10,
-          "words": 178
+          "words": 178,
+          "strong_tokens": 72
         },
         {
           "chapter": 147,
           "verses": 20,
-          "words": 299
+          "words": 299,
+          "strong_tokens": 124
         },
         {
           "chapter": 148,
           "verses": 14,
-          "words": 202
+          "words": 202,
+          "strong_tokens": 85
         },
         {
           "chapter": 149,
           "verses": 9,
-          "words": 143
+          "words": 143,
+          "strong_tokens": 57
         },
         {
           "chapter": 150,
           "verses": 6,
-          "words": 85
+          "words": 85,
+          "strong_tokens": 36
         }
       ]
     },
@@ -3373,161 +4028,193 @@
       "chapters_count": 31,
       "verses_count": 915,
       "words_count": 15038,
+      "strong_tokens_count": 5878,
       "chapters": [
         {
           "chapter": 1,
           "verses": 33,
-          "words": 519
+          "words": 519,
+          "strong_tokens": 194
         },
         {
           "chapter": 2,
           "verses": 22,
-          "words": 309
+          "words": 309,
+          "strong_tokens": 120
         },
         {
           "chapter": 3,
           "verses": 35,
-          "words": 541
+          "words": 541,
+          "strong_tokens": 196
         },
         {
           "chapter": 4,
           "verses": 27,
-          "words": 418
+          "words": 418,
+          "strong_tokens": 154
         },
         {
           "chapter": 5,
           "verses": 23,
-          "words": 354
+          "words": 354,
+          "strong_tokens": 132
         },
         {
           "chapter": 6,
           "verses": 35,
-          "words": 546
+          "words": 546,
+          "strong_tokens": 219
         },
         {
           "chapter": 7,
           "verses": 27,
-          "words": 411
+          "words": 411,
+          "strong_tokens": 158
         },
         {
           "chapter": 8,
           "verses": 36,
-          "words": 562
+          "words": 562,
+          "strong_tokens": 211
         },
         {
           "chapter": 9,
           "verses": 18,
-          "words": 288
+          "words": 288,
+          "strong_tokens": 104
         },
         {
           "chapter": 10,
           "verses": 32,
-          "words": 527
+          "words": 527,
+          "strong_tokens": 221
         },
         {
           "chapter": 11,
           "verses": 31,
-          "words": 524
+          "words": 524,
+          "strong_tokens": 205
         },
         {
           "chapter": 12,
           "verses": 28,
-          "words": 476
+          "words": 476,
+          "strong_tokens": 189
         },
         {
           "chapter": 13,
           "verses": 25,
-          "words": 400
+          "words": 400,
+          "strong_tokens": 169
         },
         {
           "chapter": 14,
           "verses": 35,
-          "words": 572
+          "words": 572,
+          "strong_tokens": 231
         },
         {
           "chapter": 15,
           "verses": 33,
-          "words": 544
+          "words": 544,
+          "strong_tokens": 235
         },
         {
           "chapter": 16,
           "verses": 33,
-          "words": 543
+          "words": 543,
+          "strong_tokens": 227
         },
         {
           "chapter": 17,
           "verses": 28,
-          "words": 476
+          "words": 476,
+          "strong_tokens": 199
         },
         {
           "chapter": 18,
           "verses": 24,
-          "words": 381
+          "words": 381,
+          "strong_tokens": 157
         },
         {
           "chapter": 19,
           "verses": 29,
-          "words": 506
+          "words": 506,
+          "strong_tokens": 199
         },
         {
           "chapter": 20,
           "verses": 30,
-          "words": 498
+          "words": 498,
+          "strong_tokens": 195
         },
         {
           "chapter": 21,
           "verses": 31,
-          "words": 501
+          "words": 501,
+          "strong_tokens": 207
         },
         {
           "chapter": 22,
           "verses": 29,
-          "words": 495
+          "words": 495,
+          "strong_tokens": 183
         },
         {
           "chapter": 23,
           "verses": 35,
-          "words": 566
+          "words": 566,
+          "strong_tokens": 200
         },
         {
           "chapter": 24,
           "verses": 34,
-          "words": 580
+          "words": 580,
+          "strong_tokens": 208
         },
         {
           "chapter": 25,
           "verses": 28,
-          "words": 522
+          "words": 522,
+          "strong_tokens": 202
         },
         {
           "chapter": 26,
           "verses": 28,
-          "words": 459
+          "words": 459,
+          "strong_tokens": 176
         },
         {
           "chapter": 27,
           "verses": 27,
-          "words": 460
+          "words": 460,
+          "strong_tokens": 186
         },
         {
           "chapter": 28,
           "verses": 28,
-          "words": 528
+          "words": 528,
+          "strong_tokens": 203
         },
         {
           "chapter": 29,
           "verses": 27,
-          "words": 425
+          "words": 425,
+          "strong_tokens": 186
         },
         {
           "chapter": 30,
           "verses": 33,
-          "words": 640
+          "words": 640,
+          "strong_tokens": 228
         },
         {
           "chapter": 31,
           "verses": 31,
-          "words": 467
+          "words": 467,
+          "strong_tokens": 184
         }
       ]
     },
@@ -3539,66 +4226,79 @@
       "chapters_count": 12,
       "verses_count": 222,
       "words_count": 5579,
+      "strong_tokens_count": 2027,
       "chapters": [
         {
           "chapter": 1,
           "verses": 18,
-          "words": 380
+          "words": 380,
+          "strong_tokens": 142
         },
         {
           "chapter": 2,
           "verses": 26,
-          "words": 734
+          "words": 734,
+          "strong_tokens": 253
         },
         {
           "chapter": 3,
           "verses": 22,
-          "words": 517
+          "words": 517,
+          "strong_tokens": 189
         },
         {
           "chapter": 4,
           "verses": 16,
-          "words": 380
+          "words": 380,
+          "strong_tokens": 132
         },
         {
           "chapter": 5,
           "verses": 20,
-          "words": 533
+          "words": 533,
+          "strong_tokens": 197
         },
         {
           "chapter": 6,
           "verses": 12,
-          "words": 301
+          "words": 301,
+          "strong_tokens": 110
         },
         {
           "chapter": 7,
           "verses": 29,
-          "words": 617
+          "words": 617,
+          "strong_tokens": 227
         },
         {
           "chapter": 8,
           "verses": 17,
-          "words": 515
+          "words": 515,
+          "strong_tokens": 178
         },
         {
           "chapter": 9,
           "verses": 18,
-          "words": 555
+          "words": 555,
+          "strong_tokens": 203
         },
         {
           "chapter": 10,
           "verses": 20,
-          "words": 402
+          "words": 402,
+          "strong_tokens": 155
         },
         {
           "chapter": 11,
           "verses": 10,
-          "words": 273
+          "words": 273,
+          "strong_tokens": 97
         },
         {
           "chapter": 12,
           "verses": 14,
-          "words": 372
+          "words": 372,
+          "strong_tokens": 144
         }
       ]
     },
@@ -3610,46 +4310,55 @@
       "chapters_count": 8,
       "verses_count": 117,
       "words_count": 2658,
+      "strong_tokens_count": 987,
       "chapters": [
         {
           "chapter": 1,
           "verses": 17,
-          "words": 326
+          "words": 326,
+          "strong_tokens": 116
         },
         {
           "chapter": 2,
           "verses": 17,
-          "words": 351
+          "words": 351,
+          "strong_tokens": 133
         },
         {
           "chapter": 3,
           "verses": 11,
-          "words": 287
+          "words": 287,
+          "strong_tokens": 104
         },
         {
           "chapter": 4,
           "verses": 16,
-          "words": 363
+          "words": 363,
+          "strong_tokens": 150
         },
         {
           "chapter": 5,
           "verses": 16,
-          "words": 397
+          "words": 397,
+          "strong_tokens": 155
         },
         {
           "chapter": 6,
           "verses": 13,
-          "words": 282
+          "words": 282,
+          "strong_tokens": 101
         },
         {
           "chapter": 7,
           "verses": 13,
-          "words": 292
+          "words": 292,
+          "strong_tokens": 106
         },
         {
           "chapter": 8,
           "verses": 14,
-          "words": 360
+          "words": 360,
+          "strong_tokens": 122
         }
       ]
     },
@@ -3661,336 +4370,403 @@
       "chapters_count": 66,
       "verses_count": 1292,
       "words_count": 37036,
+      "strong_tokens_count": 13008,
       "chapters": [
         {
           "chapter": 1,
           "verses": 31,
-          "words": 758
+          "words": 758,
+          "strong_tokens": 291
         },
         {
           "chapter": 2,
           "verses": 22,
-          "words": 567
+          "words": 567,
+          "strong_tokens": 195
         },
         {
           "chapter": 3,
           "verses": 26,
-          "words": 587
+          "words": 587,
+          "strong_tokens": 208
         },
         {
           "chapter": 4,
           "verses": 6,
-          "words": 209
+          "words": 209,
+          "strong_tokens": 71
         },
         {
           "chapter": 5,
           "verses": 30,
-          "words": 863
+          "words": 863,
+          "strong_tokens": 309
         },
         {
           "chapter": 6,
           "verses": 13,
-          "words": 366
+          "words": 366,
+          "strong_tokens": 141
         },
         {
           "chapter": 7,
           "verses": 25,
-          "words": 693
+          "words": 693,
+          "strong_tokens": 254
         },
         {
           "chapter": 8,
           "verses": 22,
-          "words": 558
+          "words": 558,
+          "strong_tokens": 197
         },
         {
           "chapter": 9,
           "verses": 21,
-          "words": 599
+          "words": 599,
+          "strong_tokens": 217
         },
         {
           "chapter": 10,
           "verses": 34,
-          "words": 928
+          "words": 928,
+          "strong_tokens": 319
         },
         {
           "chapter": 11,
           "verses": 16,
-          "words": 519
+          "words": 519,
+          "strong_tokens": 187
         },
         {
           "chapter": 12,
           "verses": 6,
-          "words": 134
+          "words": 134,
+          "strong_tokens": 48
         },
         {
           "chapter": 13,
           "verses": 22,
-          "words": 576
+          "words": 576,
+          "strong_tokens": 201
         },
         {
           "chapter": 14,
           "verses": 32,
-          "words": 856
+          "words": 856,
+          "strong_tokens": 290
         },
         {
           "chapter": 15,
           "verses": 9,
-          "words": 266
+          "words": 266,
+          "strong_tokens": 94
         },
         {
           "chapter": 16,
           "verses": 14,
-          "words": 415
+          "words": 415,
+          "strong_tokens": 151
         },
         {
           "chapter": 17,
           "verses": 14,
-          "words": 428
+          "words": 428,
+          "strong_tokens": 147
         },
         {
           "chapter": 18,
           "verses": 7,
-          "words": 255
+          "words": 255,
+          "strong_tokens": 100
         },
         {
           "chapter": 19,
           "verses": 25,
-          "words": 730
+          "words": 730,
+          "strong_tokens": 267
         },
         {
           "chapter": 20,
           "verses": 6,
-          "words": 169
+          "words": 169,
+          "strong_tokens": 77
         },
         {
           "chapter": 21,
           "verses": 17,
-          "words": 417
+          "words": 417,
+          "strong_tokens": 169
         },
         {
           "chapter": 22,
           "verses": 25,
-          "words": 676
+          "words": 676,
+          "strong_tokens": 238
         },
         {
           "chapter": 23,
           "verses": 18,
-          "words": 469
+          "words": 469,
+          "strong_tokens": 173
         },
         {
           "chapter": 24,
           "verses": 23,
-          "words": 592
+          "words": 592,
+          "strong_tokens": 212
         },
         {
           "chapter": 25,
           "verses": 12,
-          "words": 381
+          "words": 381,
+          "strong_tokens": 126
         },
         {
           "chapter": 26,
           "verses": 21,
-          "words": 550
+          "words": 550,
+          "strong_tokens": 190
         },
         {
           "chapter": 27,
           "verses": 13,
-          "words": 405
+          "words": 405,
+          "strong_tokens": 133
         },
         {
           "chapter": 28,
           "verses": 29,
-          "words": 814
+          "words": 814,
+          "strong_tokens": 296
         },
         {
           "chapter": 29,
           "verses": 24,
-          "words": 742
+          "words": 742,
+          "strong_tokens": 242
         },
         {
           "chapter": 30,
           "verses": 33,
-          "words": 1059
+          "words": 1059,
+          "strong_tokens": 376
         },
         {
           "chapter": 31,
           "verses": 9,
-          "words": 322
+          "words": 322,
+          "strong_tokens": 112
         },
         {
           "chapter": 32,
           "verses": 20,
-          "words": 436
+          "words": 436,
+          "strong_tokens": 172
         },
         {
           "chapter": 33,
           "verses": 24,
-          "words": 585
+          "words": 585,
+          "strong_tokens": 224
         },
         {
           "chapter": 34,
           "verses": 17,
-          "words": 522
+          "words": 522,
+          "strong_tokens": 174
         },
         {
           "chapter": 35,
           "verses": 10,
-          "words": 277
+          "words": 277,
+          "strong_tokens": 101
         },
         {
           "chapter": 36,
           "verses": 22,
-          "words": 690
+          "words": 690,
+          "strong_tokens": 258
         },
         {
           "chapter": 37,
           "verses": 38,
-          "words": 1131
+          "words": 1131,
+          "strong_tokens": 422
         },
         {
           "chapter": 38,
           "verses": 22,
-          "words": 592
+          "words": 592,
+          "strong_tokens": 205
         },
         {
           "chapter": 39,
           "verses": 8,
-          "words": 268
+          "words": 268,
+          "strong_tokens": 96
         },
         {
           "chapter": 40,
           "verses": 31,
-          "words": 796
+          "words": 796,
+          "strong_tokens": 282
         },
         {
           "chapter": 41,
           "verses": 29,
-          "words": 804
+          "words": 804,
+          "strong_tokens": 269
         },
         {
           "chapter": 42,
           "verses": 25,
-          "words": 676
+          "words": 676,
+          "strong_tokens": 233
         },
         {
           "chapter": 43,
           "verses": 28,
-          "words": 711
+          "words": 711,
+          "strong_tokens": 223
         },
         {
           "chapter": 44,
           "verses": 28,
-          "words": 886
+          "words": 886,
+          "strong_tokens": 300
         },
         {
           "chapter": 45,
           "verses": 25,
-          "words": 774
+          "words": 774,
+          "strong_tokens": 260
         },
         {
           "chapter": 46,
           "verses": 13,
-          "words": 342
+          "words": 342,
+          "strong_tokens": 111
         },
         {
           "chapter": 47,
           "verses": 15,
-          "words": 471
+          "words": 471,
+          "strong_tokens": 155
         },
         {
           "chapter": 48,
           "verses": 22,
-          "words": 627
+          "words": 627,
+          "strong_tokens": 192
         },
         {
           "chapter": 49,
           "verses": 26,
-          "words": 867
+          "words": 867,
+          "strong_tokens": 273
         },
         {
           "chapter": 50,
           "verses": 11,
-          "words": 365
+          "words": 365,
+          "strong_tokens": 121
         },
         {
           "chapter": 51,
           "verses": 23,
-          "words": 771
+          "words": 771,
+          "strong_tokens": 267
         },
         {
           "chapter": 52,
           "verses": 15,
-          "words": 405
+          "words": 405,
+          "strong_tokens": 153
         },
         {
           "chapter": 53,
           "verses": 12,
-          "words": 387
+          "words": 387,
+          "strong_tokens": 127
         },
         {
           "chapter": 54,
           "verses": 17,
-          "words": 493
+          "words": 493,
+          "strong_tokens": 164
         },
         {
           "chapter": 55,
           "verses": 13,
-          "words": 399
+          "words": 399,
+          "strong_tokens": 134
         },
         {
           "chapter": 56,
           "verses": 12,
-          "words": 361
+          "words": 361,
+          "strong_tokens": 135
         },
         {
           "chapter": 57,
           "verses": 21,
-          "words": 569
+          "words": 569,
+          "strong_tokens": 196
         },
         {
           "chapter": 58,
           "verses": 14,
-          "words": 521
+          "words": 521,
+          "strong_tokens": 188
         },
         {
           "chapter": 59,
           "verses": 21,
-          "words": 590
+          "words": 590,
+          "strong_tokens": 225
         },
         {
           "chapter": 60,
           "verses": 22,
-          "words": 665
+          "words": 665,
+          "strong_tokens": 233
         },
         {
           "chapter": 61,
           "verses": 11,
-          "words": 380
+          "words": 380,
+          "strong_tokens": 137
         },
         {
           "chapter": 62,
           "verses": 12,
-          "words": 362
+          "words": 362,
+          "strong_tokens": 128
         },
         {
           "chapter": 63,
           "verses": 19,
-          "words": 538
+          "words": 538,
+          "strong_tokens": 177
         },
         {
           "chapter": 64,
           "verses": 12,
-          "words": 308
+          "words": 308,
+          "strong_tokens": 98
         },
         {
           "chapter": 65,
           "verses": 25,
-          "words": 753
+          "words": 753,
+          "strong_tokens": 261
         },
         {
           "chapter": 66,
           "verses": 24,
-          "words": 811
+          "words": 811,
+          "strong_tokens": 283
         }
       ]
     },
@@ -4002,266 +4778,319 @@
       "chapters_count": 52,
       "verses_count": 1364,
       "words_count": 42654,
+      "strong_tokens_count": 15270,
       "chapters": [
         {
           "chapter": 1,
           "verses": 19,
-          "words": 528
+          "words": 528,
+          "strong_tokens": 185
         },
         {
           "chapter": 2,
           "verses": 37,
-          "words": 1019
+          "words": 1019,
+          "strong_tokens": 362
         },
         {
           "chapter": 3,
           "verses": 25,
-          "words": 802
+          "words": 802,
+          "strong_tokens": 283
         },
         {
           "chapter": 4,
           "verses": 31,
-          "words": 861
+          "words": 861,
+          "strong_tokens": 309
         },
         {
           "chapter": 5,
           "verses": 31,
-          "words": 874
+          "words": 874,
+          "strong_tokens": 301
         },
         {
           "chapter": 6,
           "verses": 30,
-          "words": 827
+          "words": 827,
+          "strong_tokens": 309
         },
         {
           "chapter": 7,
           "verses": 34,
-          "words": 970
+          "words": 970,
+          "strong_tokens": 346
         },
         {
           "chapter": 8,
           "verses": 22,
-          "words": 706
+          "words": 706,
+          "strong_tokens": 235
         },
         {
           "chapter": 9,
           "verses": 26,
-          "words": 772
+          "words": 772,
+          "strong_tokens": 282
         },
         {
           "chapter": 10,
           "verses": 25,
-          "words": 674
+          "words": 674,
+          "strong_tokens": 226
         },
         {
           "chapter": 11,
           "verses": 23,
-          "words": 749
+          "words": 749,
+          "strong_tokens": 261
         },
         {
           "chapter": 12,
           "verses": 17,
-          "words": 544
+          "words": 544,
+          "strong_tokens": 181
         },
         {
           "chapter": 13,
           "verses": 27,
-          "words": 739
+          "words": 739,
+          "strong_tokens": 259
         },
         {
           "chapter": 14,
           "verses": 22,
-          "words": 688
+          "words": 688,
+          "strong_tokens": 235
         },
         {
           "chapter": 15,
           "verses": 21,
-          "words": 702
+          "words": 702,
+          "strong_tokens": 220
         },
         {
           "chapter": 16,
           "verses": 21,
-          "words": 699
+          "words": 699,
+          "strong_tokens": 229
         },
         {
           "chapter": 17,
           "verses": 27,
-          "words": 829
+          "words": 829,
+          "strong_tokens": 296
         },
         {
           "chapter": 18,
           "verses": 23,
-          "words": 659
+          "words": 659,
+          "strong_tokens": 234
         },
         {
           "chapter": 19,
           "verses": 15,
-          "words": 541
+          "words": 541,
+          "strong_tokens": 193
         },
         {
           "chapter": 20,
           "verses": 18,
-          "words": 594
+          "words": 594,
+          "strong_tokens": 200
         },
         {
           "chapter": 21,
           "verses": 14,
-          "words": 498
+          "words": 498,
+          "strong_tokens": 174
         },
         {
           "chapter": 22,
           "verses": 30,
-          "words": 837
+          "words": 837,
+          "strong_tokens": 313
         },
         {
           "chapter": 23,
           "verses": 40,
-          "words": 1186
+          "words": 1186,
+          "strong_tokens": 420
         },
         {
           "chapter": 24,
           "verses": 10,
-          "words": 361
+          "words": 361,
+          "strong_tokens": 126
         },
         {
           "chapter": 25,
           "verses": 38,
-          "words": 1138
+          "words": 1138,
+          "strong_tokens": 405
         },
         {
           "chapter": 26,
           "verses": 24,
-          "words": 800
+          "words": 800,
+          "strong_tokens": 292
         },
         {
           "chapter": 27,
           "verses": 22,
-          "words": 762
+          "words": 762,
+          "strong_tokens": 268
         },
         {
           "chapter": 28,
           "verses": 17,
-          "words": 540
+          "words": 540,
+          "strong_tokens": 220
         },
         {
           "chapter": 29,
           "verses": 32,
-          "words": 1005
+          "words": 1005,
+          "strong_tokens": 355
         },
         {
           "chapter": 30,
           "verses": 24,
-          "words": 717
+          "words": 717,
+          "strong_tokens": 222
         },
         {
           "chapter": 31,
           "verses": 40,
-          "words": 1294
+          "words": 1294,
+          "strong_tokens": 465
         },
         {
           "chapter": 32,
           "verses": 44,
-          "words": 1432
+          "words": 1432,
+          "strong_tokens": 507
         },
         {
           "chapter": 33,
           "verses": 26,
-          "words": 842
+          "words": 842,
+          "strong_tokens": 286
         },
         {
           "chapter": 34,
           "verses": 22,
-          "words": 824
+          "words": 824,
+          "strong_tokens": 296
         },
         {
           "chapter": 35,
           "verses": 19,
-          "words": 657
+          "words": 657,
+          "strong_tokens": 254
         },
         {
           "chapter": 36,
           "verses": 32,
-          "words": 1110
+          "words": 1110,
+          "strong_tokens": 435
         },
         {
           "chapter": 37,
           "verses": 21,
-          "words": 611
+          "words": 611,
+          "strong_tokens": 237
         },
         {
           "chapter": 38,
           "verses": 28,
-          "words": 984
+          "words": 984,
+          "strong_tokens": 354
         },
         {
           "chapter": 39,
           "verses": 18,
-          "words": 545
+          "words": 545,
+          "strong_tokens": 217
         },
         {
           "chapter": 40,
           "verses": 16,
-          "words": 681
+          "words": 681,
+          "strong_tokens": 253
         },
         {
           "chapter": 41,
           "verses": 18,
-          "words": 664
+          "words": 664,
+          "strong_tokens": 259
         },
         {
           "chapter": 42,
           "verses": 22,
-          "words": 774
+          "words": 774,
+          "strong_tokens": 247
         },
         {
           "chapter": 43,
           "verses": 13,
-          "words": 460
+          "words": 460,
+          "strong_tokens": 169
         },
         {
           "chapter": 44,
           "verses": 30,
-          "words": 1228
+          "words": 1228,
+          "strong_tokens": 429
         },
         {
           "chapter": 45,
           "verses": 5,
-          "words": 152
+          "words": 152,
+          "strong_tokens": 56
         },
         {
           "chapter": 46,
           "verses": 28,
-          "words": 821
+          "words": 821,
+          "strong_tokens": 313
         },
         {
           "chapter": 47,
           "verses": 7,
-          "words": 215
+          "words": 215,
+          "strong_tokens": 77
         },
         {
           "chapter": 48,
           "verses": 47,
-          "words": 1172
+          "words": 1172,
+          "strong_tokens": 440
         },
         {
           "chapter": 49,
           "verses": 39,
-          "words": 1180
+          "words": 1180,
+          "strong_tokens": 428
         },
         {
           "chapter": 50,
           "verses": 46,
-          "words": 1460
+          "words": 1460,
+          "strong_tokens": 502
         },
         {
           "chapter": 51,
           "verses": 64,
-          "words": 1853
+          "words": 1853,
+          "strong_tokens": 674
         },
         {
           "chapter": 52,
           "verses": 34,
-          "words": 1074
+          "words": 1074,
+          "strong_tokens": 431
         }
       ]
     },
@@ -4273,31 +5102,37 @@
       "chapters_count": 5,
       "verses_count": 154,
       "words_count": 3411,
+      "strong_tokens_count": 1230,
       "chapters": [
         {
           "chapter": 1,
           "verses": 22,
-          "words": 758
+          "words": 758,
+          "strong_tokens": 273
         },
         {
           "chapter": 2,
           "verses": 22,
-          "words": 883
+          "words": 883,
+          "strong_tokens": 326
         },
         {
           "chapter": 3,
           "verses": 66,
-          "words": 876
+          "words": 876,
+          "strong_tokens": 301
         },
         {
           "chapter": 4,
           "verses": 22,
-          "words": 598
+          "words": 598,
+          "strong_tokens": 216
         },
         {
           "chapter": 5,
           "verses": 22,
-          "words": 296
+          "words": 296,
+          "strong_tokens": 114
         }
       ]
     },
@@ -4309,246 +5144,295 @@
       "chapters_count": 48,
       "verses_count": 1273,
       "words_count": 39401,
+      "strong_tokens_count": 13648,
       "chapters": [
         {
           "chapter": 1,
           "verses": 28,
-          "words": 870
+          "words": 870,
+          "strong_tokens": 313
         },
         {
           "chapter": 2,
           "verses": 10,
-          "words": 273
+          "words": 273,
+          "strong_tokens": 87
         },
         {
           "chapter": 3,
           "verses": 27,
-          "words": 809
+          "words": 809,
+          "strong_tokens": 280
         },
         {
           "chapter": 4,
           "verses": 17,
-          "words": 519
+          "words": 519,
+          "strong_tokens": 190
         },
         {
           "chapter": 5,
           "verses": 17,
-          "words": 628
+          "words": 628,
+          "strong_tokens": 192
         },
         {
           "chapter": 6,
           "verses": 14,
-          "words": 470
+          "words": 470,
+          "strong_tokens": 155
         },
         {
           "chapter": 7,
           "verses": 27,
-          "words": 768
+          "words": 768,
+          "strong_tokens": 245
         },
         {
           "chapter": 8,
           "verses": 18,
-          "words": 655
+          "words": 655,
+          "strong_tokens": 235
         },
         {
           "chapter": 9,
           "verses": 11,
-          "words": 400
+          "words": 400,
+          "strong_tokens": 154
         },
         {
           "chapter": 10,
           "verses": 22,
-          "words": 659
+          "words": 659,
+          "strong_tokens": 248
         },
         {
           "chapter": 11,
           "verses": 25,
-          "words": 721
+          "words": 721,
+          "strong_tokens": 241
         },
         {
           "chapter": 12,
           "verses": 28,
-          "words": 799
+          "words": 799,
+          "strong_tokens": 272
         },
         {
           "chapter": 13,
           "verses": 23,
-          "words": 738
+          "words": 738,
+          "strong_tokens": 251
         },
         {
           "chapter": 14,
           "verses": 23,
-          "words": 746
+          "words": 746,
+          "strong_tokens": 265
         },
         {
           "chapter": 15,
           "verses": 8,
-          "words": 205
+          "words": 205,
+          "strong_tokens": 69
         },
         {
           "chapter": 16,
           "verses": 63,
-          "words": 1820
+          "words": 1820,
+          "strong_tokens": 581
         },
         {
           "chapter": 17,
           "verses": 24,
-          "words": 773
+          "words": 773,
+          "strong_tokens": 279
         },
         {
           "chapter": 18,
           "verses": 32,
-          "words": 919
+          "words": 919,
+          "strong_tokens": 335
         },
         {
           "chapter": 19,
           "verses": 14,
-          "words": 356
+          "words": 356,
+          "strong_tokens": 128
         },
         {
           "chapter": 20,
           "verses": 49,
-          "words": 1601
+          "words": 1601,
+          "strong_tokens": 519
         },
         {
           "chapter": 21,
           "verses": 32,
-          "words": 945
+          "words": 945,
+          "strong_tokens": 333
         },
         {
           "chapter": 22,
           "verses": 31,
-          "words": 840
+          "words": 840,
+          "strong_tokens": 287
         },
         {
           "chapter": 23,
           "verses": 49,
-          "words": 1322
+          "words": 1322,
+          "strong_tokens": 452
         },
         {
           "chapter": 24,
           "verses": 27,
-          "words": 774
+          "words": 774,
+          "strong_tokens": 261
         },
         {
           "chapter": 25,
           "verses": 17,
-          "words": 507
+          "words": 507,
+          "strong_tokens": 184
         },
         {
           "chapter": 26,
           "verses": 21,
-          "words": 727
+          "words": 727,
+          "strong_tokens": 237
         },
         {
           "chapter": 27,
           "verses": 36,
-          "words": 907
+          "words": 907,
+          "strong_tokens": 337
         },
         {
           "chapter": 28,
           "verses": 26,
-          "words": 809
+          "words": 809,
+          "strong_tokens": 269
         },
         {
           "chapter": 29,
           "verses": 21,
-          "words": 714
+          "words": 714,
+          "strong_tokens": 240
         },
         {
           "chapter": 30,
           "verses": 26,
-          "words": 760
+          "words": 760,
+          "strong_tokens": 270
         },
         {
           "chapter": 31,
           "verses": 18,
-          "words": 680
+          "words": 680,
+          "strong_tokens": 224
         },
         {
           "chapter": 32,
           "verses": 32,
-          "words": 1077
+          "words": 1077,
+          "strong_tokens": 358
         },
         {
           "chapter": 33,
           "verses": 33,
-          "words": 1071
+          "words": 1071,
+          "strong_tokens": 376
         },
         {
           "chapter": 34,
           "verses": 31,
-          "words": 958
+          "words": 958,
+          "strong_tokens": 310
         },
         {
           "chapter": 35,
           "verses": 15,
-          "words": 402
+          "words": 402,
+          "strong_tokens": 129
         },
         {
           "chapter": 36,
           "verses": 38,
-          "words": 1180
+          "words": 1180,
+          "strong_tokens": 386
         },
         {
           "chapter": 37,
           "verses": 28,
-          "words": 870
+          "words": 870,
+          "strong_tokens": 289
         },
         {
           "chapter": 38,
           "verses": 23,
-          "words": 776
+          "words": 776,
+          "strong_tokens": 275
         },
         {
           "chapter": 39,
           "verses": 29,
-          "words": 928
+          "words": 928,
+          "strong_tokens": 313
         },
         {
           "chapter": 40,
           "verses": 49,
-          "words": 1530
+          "words": 1530,
+          "strong_tokens": 578
         },
         {
           "chapter": 41,
           "verses": 26,
-          "words": 802
+          "words": 802,
+          "strong_tokens": 301
         },
         {
           "chapter": 42,
           "verses": 20,
-          "words": 568
+          "words": 568,
+          "strong_tokens": 223
         },
         {
           "chapter": 43,
           "verses": 27,
-          "words": 907
+          "words": 907,
+          "strong_tokens": 315
         },
         {
           "chapter": 44,
           "verses": 31,
-          "words": 1031
+          "words": 1031,
+          "strong_tokens": 336
         },
         {
           "chapter": 45,
           "verses": 25,
-          "words": 882
+          "words": 882,
+          "strong_tokens": 316
         },
         {
           "chapter": 46,
           "verses": 24,
-          "words": 880
+          "words": 880,
+          "strong_tokens": 301
         },
         {
           "chapter": 47,
           "verses": 23,
-          "words": 780
+          "words": 780,
+          "strong_tokens": 268
         },
         {
           "chapter": 48,
           "verses": 35,
-          "words": 1045
+          "words": 1045,
+          "strong_tokens": 441
         }
       ]
     },
@@ -4560,66 +5444,79 @@
       "chapters_count": 12,
       "verses_count": 357,
       "words_count": 11602,
+      "strong_tokens_count": 4966,
       "chapters": [
         {
           "chapter": 1,
           "verses": 21,
-          "words": 589
+          "words": 589,
+          "strong_tokens": 238
         },
         {
           "chapter": 2,
           "verses": 49,
-          "words": 1500
+          "words": 1500,
+          "strong_tokens": 734
         },
         {
           "chapter": 3,
           "verses": 30,
-          "words": 992
+          "words": 992,
+          "strong_tokens": 530
         },
         {
           "chapter": 4,
           "verses": 37,
-          "words": 1290
+          "words": 1290,
+          "strong_tokens": 567
         },
         {
           "chapter": 5,
           "verses": 31,
-          "words": 995
+          "words": 995,
+          "strong_tokens": 464
         },
         {
           "chapter": 6,
           "verses": 28,
-          "words": 905
+          "words": 905,
+          "strong_tokens": 470
         },
         {
           "chapter": 7,
           "verses": 28,
-          "words": 926
+          "words": 926,
+          "strong_tokens": 440
         },
         {
           "chapter": 8,
           "verses": 27,
-          "words": 852
+          "words": 852,
+          "strong_tokens": 294
         },
         {
           "chapter": 9,
           "verses": 27,
-          "words": 966
+          "words": 966,
+          "strong_tokens": 353
         },
         {
           "chapter": 10,
           "verses": 21,
-          "words": 647
+          "words": 647,
+          "strong_tokens": 239
         },
         {
           "chapter": 11,
           "verses": 45,
-          "words": 1529
+          "words": 1529,
+          "strong_tokens": 495
         },
         {
           "chapter": 12,
           "verses": 13,
-          "words": 411
+          "words": 411,
+          "strong_tokens": 142
         }
       ]
     },
@@ -4631,76 +5528,91 @@
       "chapters_count": 14,
       "verses_count": 197,
       "words_count": 5174,
+      "strong_tokens_count": 1762,
       "chapters": [
         {
           "chapter": 1,
           "verses": 11,
-          "words": 355
+          "words": 355,
+          "strong_tokens": 128
         },
         {
           "chapter": 2,
           "verses": 23,
-          "words": 678
+          "words": 678,
+          "strong_tokens": 206
         },
         {
           "chapter": 3,
           "verses": 5,
-          "words": 156
+          "words": 156,
+          "strong_tokens": 57
         },
         {
           "chapter": 4,
           "verses": 19,
-          "words": 465
+          "words": 465,
+          "strong_tokens": 161
         },
         {
           "chapter": 5,
           "verses": 15,
-          "words": 368
+          "words": 368,
+          "strong_tokens": 129
         },
         {
           "chapter": 6,
           "verses": 11,
-          "words": 254
+          "words": 254,
+          "strong_tokens": 84
         },
         {
           "chapter": 7,
           "verses": 16,
-          "words": 398
+          "words": 398,
+          "strong_tokens": 133
         },
         {
           "chapter": 8,
           "verses": 14,
-          "words": 330
+          "words": 330,
+          "strong_tokens": 111
         },
         {
           "chapter": 9,
           "verses": 17,
-          "words": 468
+          "words": 468,
+          "strong_tokens": 161
         },
         {
           "chapter": 10,
           "verses": 15,
-          "words": 425
+          "words": 425,
+          "strong_tokens": 158
         },
         {
           "chapter": 11,
           "verses": 12,
-          "words": 308
+          "words": 308,
+          "strong_tokens": 106
         },
         {
           "chapter": 12,
           "verses": 14,
-          "words": 311
+          "words": 311,
+          "strong_tokens": 114
         },
         {
           "chapter": 13,
           "verses": 16,
-          "words": 426
+          "words": 426,
+          "strong_tokens": 138
         },
         {
           "chapter": 14,
           "verses": 9,
-          "words": 232
+          "words": 232,
+          "strong_tokens": 76
         }
       ]
     },
@@ -4712,21 +5624,25 @@
       "chapters_count": 3,
       "verses_count": 73,
       "words_count": 2033,
+      "strong_tokens_count": 751,
       "chapters": [
         {
           "chapter": 1,
           "verses": 20,
-          "words": 508
+          "words": 508,
+          "strong_tokens": 192
         },
         {
           "chapter": 2,
           "verses": 32,
-          "words": 958
+          "words": 958,
+          "strong_tokens": 355
         },
         {
           "chapter": 3,
           "verses": 21,
-          "words": 567
+          "words": 567,
+          "strong_tokens": 204
         }
       ]
     },
@@ -4738,51 +5654,61 @@
       "chapters_count": 9,
       "verses_count": 146,
       "words_count": 4216,
+      "strong_tokens_count": 1542,
       "chapters": [
         {
           "chapter": 1,
           "verses": 15,
-          "words": 455
+          "words": 455,
+          "strong_tokens": 176
         },
         {
           "chapter": 2,
           "verses": 16,
-          "words": 441
+          "words": 441,
+          "strong_tokens": 160
         },
         {
           "chapter": 3,
           "verses": 15,
-          "words": 397
+          "words": 397,
+          "strong_tokens": 153
         },
         {
           "chapter": 4,
           "verses": 13,
-          "words": 432
+          "words": 432,
+          "strong_tokens": 160
         },
         {
           "chapter": 5,
           "verses": 27,
-          "words": 658
+          "words": 658,
+          "strong_tokens": 242
         },
         {
           "chapter": 6,
           "verses": 14,
-          "words": 399
+          "words": 399,
+          "strong_tokens": 143
         },
         {
           "chapter": 7,
           "verses": 17,
-          "words": 471
+          "words": 471,
+          "strong_tokens": 177
         },
         {
           "chapter": 8,
           "verses": 14,
-          "words": 414
+          "words": 414,
+          "strong_tokens": 148
         },
         {
           "chapter": 9,
           "verses": 15,
-          "words": 549
+          "words": 549,
+          "strong_tokens": 183
         }
       ]
     },
@@ -4794,11 +5720,13 @@
       "chapters_count": 1,
       "verses_count": 21,
       "words_count": 669,
+      "strong_tokens_count": 215,
       "chapters": [
         {
           "chapter": 1,
           "verses": 21,
-          "words": 669
+          "words": 669,
+          "strong_tokens": 215
         }
       ]
     },
@@ -4810,26 +5738,31 @@
       "chapters_count": 4,
       "verses_count": 48,
       "words_count": 1320,
+      "strong_tokens_count": 489,
       "chapters": [
         {
           "chapter": 1,
           "verses": 17,
-          "words": 514
+          "words": 514,
+          "strong_tokens": 181
         },
         {
           "chapter": 2,
           "verses": 10,
-          "words": 214
+          "words": 214,
+          "strong_tokens": 77
         },
         {
           "chapter": 3,
           "verses": 10,
-          "words": 260
+          "words": 260,
+          "strong_tokens": 110
         },
         {
           "chapter": 4,
           "verses": 11,
-          "words": 332
+          "words": 332,
+          "strong_tokens": 121
         }
       ]
     },
@@ -4841,41 +5774,49 @@
       "chapters_count": 7,
       "verses_count": 105,
       "words_count": 3152,
+      "strong_tokens_count": 1068,
       "chapters": [
         {
           "chapter": 1,
           "verses": 16,
-          "words": 452
+          "words": 452,
+          "strong_tokens": 159
         },
         {
           "chapter": 2,
           "verses": 13,
-          "words": 400
+          "words": 400,
+          "strong_tokens": 137
         },
         {
           "chapter": 3,
           "verses": 12,
-          "words": 354
+          "words": 354,
+          "strong_tokens": 121
         },
         {
           "chapter": 4,
           "verses": 13,
-          "words": 476
+          "words": 476,
+          "strong_tokens": 162
         },
         {
           "chapter": 5,
           "verses": 15,
-          "words": 447
+          "words": 447,
+          "strong_tokens": 138
         },
         {
           "chapter": 6,
           "verses": 16,
-          "words": 440
+          "words": 440,
+          "strong_tokens": 157
         },
         {
           "chapter": 7,
           "verses": 20,
-          "words": 583
+          "words": 583,
+          "strong_tokens": 194
         }
       ]
     },
@@ -4887,21 +5828,25 @@
       "chapters_count": 3,
       "verses_count": 47,
       "words_count": 1284,
+      "strong_tokens_count": 453,
       "chapters": [
         {
           "chapter": 1,
           "verses": 15,
-          "words": 394
+          "words": 394,
+          "strong_tokens": 138
         },
         {
           "chapter": 2,
           "verses": 13,
-          "words": 371
+          "words": 371,
+          "strong_tokens": 131
         },
         {
           "chapter": 3,
           "verses": 19,
-          "words": 519
+          "words": 519,
+          "strong_tokens": 184
         }
       ]
     },
@@ -4913,21 +5858,25 @@
       "chapters_count": 3,
       "verses_count": 56,
       "words_count": 1475,
+      "strong_tokens_count": 525,
       "chapters": [
         {
           "chapter": 1,
           "verses": 17,
-          "words": 423
+          "words": 423,
+          "strong_tokens": 147
         },
         {
           "chapter": 2,
           "verses": 20,
-          "words": 563
+          "words": 563,
+          "strong_tokens": 188
         },
         {
           "chapter": 3,
           "verses": 19,
-          "words": 489
+          "words": 489,
+          "strong_tokens": 190
         }
       ]
     },
@@ -4939,21 +5888,25 @@
       "chapters_count": 3,
       "verses_count": 53,
       "words_count": 1616,
+      "strong_tokens_count": 579,
       "chapters": [
         {
           "chapter": 1,
           "verses": 18,
-          "words": 555
+          "words": 555,
+          "strong_tokens": 203
         },
         {
           "chapter": 2,
           "verses": 15,
-          "words": 463
+          "words": 463,
+          "strong_tokens": 168
         },
         {
           "chapter": 3,
           "verses": 20,
-          "words": 598
+          "words": 598,
+          "strong_tokens": 208
         }
       ]
     },
@@ -4965,16 +5918,19 @@
       "chapters_count": 2,
       "verses_count": 38,
       "words_count": 1130,
+      "strong_tokens_count": 439,
       "chapters": [
         {
           "chapter": 1,
           "verses": 15,
-          "words": 451
+          "words": 451,
+          "strong_tokens": 184
         },
         {
           "chapter": 2,
           "verses": 23,
-          "words": 679
+          "words": 679,
+          "strong_tokens": 255
         }
       ]
     },
@@ -4986,76 +5942,91 @@
       "chapters_count": 14,
       "verses_count": 211,
       "words_count": 6443,
+      "strong_tokens_count": 2262,
       "chapters": [
         {
           "chapter": 1,
           "verses": 21,
-          "words": 622
+          "words": 622,
+          "strong_tokens": 235
         },
         {
           "chapter": 2,
           "verses": 13,
-          "words": 317
+          "words": 317,
+          "strong_tokens": 118
         },
         {
           "chapter": 3,
           "verses": 10,
-          "words": 296
+          "words": 296,
+          "strong_tokens": 118
         },
         {
           "chapter": 4,
           "verses": 14,
-          "words": 365
+          "words": 365,
+          "strong_tokens": 122
         },
         {
           "chapter": 5,
           "verses": 11,
-          "words": 338
+          "words": 338,
+          "strong_tokens": 107
         },
         {
           "chapter": 6,
           "verses": 15,
-          "words": 424
+          "words": 424,
+          "strong_tokens": 160
         },
         {
           "chapter": 7,
           "verses": 14,
-          "words": 378
+          "words": 378,
+          "strong_tokens": 137
         },
         {
           "chapter": 8,
           "verses": 23,
-          "words": 703
+          "words": 703,
+          "strong_tokens": 260
         },
         {
           "chapter": 9,
           "verses": 17,
-          "words": 537
+          "words": 537,
+          "strong_tokens": 178
         },
         {
           "chapter": 10,
           "verses": 12,
-          "words": 408
+          "words": 408,
+          "strong_tokens": 128
         },
         {
           "chapter": 11,
           "verses": 17,
-          "words": 502
+          "words": 502,
+          "strong_tokens": 185
         },
         {
           "chapter": 12,
           "verses": 14,
-          "words": 462
+          "words": 462,
+          "strong_tokens": 159
         },
         {
           "chapter": 13,
           "verses": 9,
-          "words": 337
+          "words": 337,
+          "strong_tokens": 103
         },
         {
           "chapter": 14,
           "verses": 21,
-          "words": 754
+          "words": 754,
+          "strong_tokens": 252
         }
       ]
     },
@@ -5067,26 +6038,31 @@
       "chapters_count": 4,
       "verses_count": 55,
       "words_count": 1781,
+      "strong_tokens_count": 624,
       "chapters": [
         {
           "chapter": 1,
           "verses": 14,
-          "words": 487
+          "words": 487,
+          "strong_tokens": 176
         },
         {
           "chapter": 2,
           "verses": 17,
-          "words": 546
+          "words": 546,
+          "strong_tokens": 189
         },
         {
           "chapter": 3,
           "verses": 18,
-          "words": 565
+          "words": 565,
+          "strong_tokens": 192
         },
         {
           "chapter": 4,
           "verses": 6,
-          "words": 183
+          "words": 183,
+          "strong_tokens": 67
         }
       ]
     },
@@ -5098,146 +6074,175 @@
       "chapters_count": 28,
       "verses_count": 1071,
       "words_count": 23688,
+      "strong_tokens_count": 16239,
       "chapters": [
         {
           "chapter": 1,
           "verses": 25,
-          "words": 473
+          "words": 473,
+          "strong_tokens": 369
         },
         {
           "chapter": 2,
           "verses": 23,
-          "words": 619
+          "words": 619,
+          "strong_tokens": 401
         },
         {
           "chapter": 3,
           "verses": 17,
-          "words": 387
+          "words": 387,
+          "strong_tokens": 284
         },
         {
           "chapter": 4,
           "verses": 25,
-          "words": 557
+          "words": 557,
+          "strong_tokens": 377
         },
         {
           "chapter": 5,
           "verses": 48,
-          "words": 1081
+          "words": 1081,
+          "strong_tokens": 720
         },
         {
           "chapter": 6,
           "verses": 34,
-          "words": 794
+          "words": 794,
+          "strong_tokens": 581
         },
         {
           "chapter": 7,
           "verses": 29,
-          "words": 626
+          "words": 626,
+          "strong_tokens": 444
         },
         {
           "chapter": 8,
           "verses": 34,
-          "words": 773
+          "words": 773,
+          "strong_tokens": 523
         },
         {
           "chapter": 9,
           "verses": 38,
-          "words": 837
+          "words": 837,
+          "strong_tokens": 571
         },
         {
           "chapter": 10,
           "verses": 42,
-          "words": 919
+          "words": 919,
+          "strong_tokens": 648
         },
         {
           "chapter": 11,
           "verses": 30,
-          "words": 668
+          "words": 668,
+          "strong_tokens": 445
         },
         {
           "chapter": 12,
           "verses": 50,
-          "words": 1168
+          "words": 1168,
+          "strong_tokens": 811
         },
         {
           "chapter": 13,
           "verses": 58,
-          "words": 1367
+          "words": 1367,
+          "strong_tokens": 899
         },
         {
           "chapter": 14,
           "verses": 36,
-          "words": 721
+          "words": 721,
+          "strong_tokens": 478
         },
         {
           "chapter": 15,
           "verses": 39,
-          "words": 785
+          "words": 785,
+          "strong_tokens": 536
         },
         {
           "chapter": 16,
           "verses": 28,
-          "words": 688
+          "words": 688,
+          "strong_tokens": 462
         },
         {
           "chapter": 17,
           "verses": 27,
-          "words": 620
+          "words": 620,
+          "strong_tokens": 466
         },
         {
           "chapter": 18,
           "verses": 35,
-          "words": 869
+          "words": 869,
+          "strong_tokens": 614
         },
         {
           "chapter": 19,
           "verses": 30,
-          "words": 719
+          "words": 719,
+          "strong_tokens": 504
         },
         {
           "chapter": 20,
           "verses": 34,
-          "words": 779
+          "words": 779,
+          "strong_tokens": 509
         },
         {
           "chapter": 21,
           "verses": 46,
-          "words": 1126
+          "words": 1126,
+          "strong_tokens": 753
         },
         {
           "chapter": 22,
           "verses": 46,
-          "words": 831
+          "words": 831,
+          "strong_tokens": 571
         },
         {
           "chapter": 23,
           "verses": 39,
-          "words": 833
+          "words": 833,
+          "strong_tokens": 579
         },
         {
           "chapter": 24,
           "verses": 51,
-          "words": 1047
+          "words": 1047,
+          "strong_tokens": 720
         },
         {
           "chapter": 25,
           "verses": 46,
-          "words": 995
+          "words": 995,
+          "strong_tokens": 698
         },
         {
           "chapter": 26,
           "verses": 75,
-          "words": 1625
+          "words": 1625,
+          "strong_tokens": 1093
         },
         {
           "chapter": 27,
           "verses": 66,
-          "words": 1360
+          "words": 1360,
+          "strong_tokens": 891
         },
         {
           "chapter": 28,
           "verses": 20,
-          "words": 421
+          "words": 421,
+          "strong_tokens": 292
         }
       ]
     },
@@ -5249,86 +6254,103 @@
       "chapters_count": 16,
       "verses_count": 678,
       "words_count": 15179,
+      "strong_tokens_count": 10121,
       "chapters": [
         {
           "chapter": 1,
           "verses": 45,
-          "words": 931
+          "words": 931,
+          "strong_tokens": 632
         },
         {
           "chapter": 2,
           "verses": 28,
-          "words": 725
+          "words": 725,
+          "strong_tokens": 477
         },
         {
           "chapter": 3,
           "verses": 35,
-          "words": 664
+          "words": 664,
+          "strong_tokens": 467
         },
         {
           "chapter": 4,
           "verses": 41,
-          "words": 923
+          "words": 923,
+          "strong_tokens": 607
         },
         {
           "chapter": 5,
           "verses": 43,
-          "words": 952
+          "words": 952,
+          "strong_tokens": 619
         },
         {
           "chapter": 6,
           "verses": 56,
-          "words": 1323
+          "words": 1323,
+          "strong_tokens": 878
         },
         {
           "chapter": 7,
           "verses": 37,
-          "words": 806
+          "words": 806,
+          "strong_tokens": 537
         },
         {
           "chapter": 8,
           "verses": 38,
-          "words": 843
+          "words": 843,
+          "strong_tokens": 572
         },
         {
           "chapter": 9,
           "verses": 50,
-          "words": 1164
+          "words": 1164,
+          "strong_tokens": 791
         },
         {
           "chapter": 10,
           "verses": 52,
-          "words": 1221
+          "words": 1221,
+          "strong_tokens": 810
         },
         {
           "chapter": 11,
           "verses": 33,
-          "words": 778
+          "words": 778,
+          "strong_tokens": 529
         },
         {
           "chapter": 12,
           "verses": 44,
-          "words": 1062
+          "words": 1062,
+          "strong_tokens": 731
         },
         {
           "chapter": 13,
           "verses": 37,
-          "words": 829
+          "words": 829,
+          "strong_tokens": 552
         },
         {
           "chapter": 14,
           "verses": 72,
-          "words": 1595
+          "words": 1595,
+          "strong_tokens": 1050
         },
         {
           "chapter": 15,
           "verses": 47,
-          "words": 914
+          "words": 914,
+          "strong_tokens": 601
         },
         {
           "chapter": 16,
           "verses": 20,
-          "words": 449
+          "words": 449,
+          "strong_tokens": 268
         }
       ]
     },
@@ -5340,126 +6362,151 @@
       "chapters_count": 24,
       "verses_count": 1151,
       "words_count": 25964,
+      "strong_tokens_count": 17458,
       "chapters": [
         {
           "chapter": 1,
           "verses": 80,
-          "words": 1585
+          "words": 1585,
+          "strong_tokens": 1051
         },
         {
           "chapter": 2,
           "verses": 52,
-          "words": 1096
+          "words": 1096,
+          "strong_tokens": 748
         },
         {
           "chapter": 3,
           "verses": 38,
-          "words": 1019
+          "words": 1019,
+          "strong_tokens": 532
         },
         {
           "chapter": 4,
           "verses": 44,
-          "words": 1021
+          "words": 1021,
+          "strong_tokens": 690
         },
         {
           "chapter": 5,
           "verses": 39,
-          "words": 950
+          "words": 950,
+          "strong_tokens": 652
         },
         {
           "chapter": 6,
           "verses": 49,
-          "words": 1231
+          "words": 1231,
+          "strong_tokens": 805
         },
         {
           "chapter": 7,
           "verses": 50,
-          "words": 1210
+          "words": 1210,
+          "strong_tokens": 814
         },
         {
           "chapter": 8,
           "verses": 56,
-          "words": 1431
+          "words": 1431,
+          "strong_tokens": 963
         },
         {
           "chapter": 9,
           "verses": 62,
-          "words": 1457
+          "words": 1457,
+          "strong_tokens": 1075
         },
         {
           "chapter": 10,
           "verses": 42,
-          "words": 992
+          "words": 992,
+          "strong_tokens": 708
         },
         {
           "chapter": 11,
           "verses": 54,
-          "words": 1331
+          "words": 1331,
+          "strong_tokens": 905
         },
         {
           "chapter": 12,
           "verses": 59,
-          "words": 1407
+          "words": 1407,
+          "strong_tokens": 945
         },
         {
           "chapter": 13,
           "verses": 35,
-          "words": 867
+          "words": 867,
+          "strong_tokens": 587
         },
         {
           "chapter": 14,
           "verses": 35,
-          "words": 812
+          "words": 812,
+          "strong_tokens": 550
         },
         {
           "chapter": 15,
           "verses": 32,
-          "words": 725
+          "words": 725,
+          "strong_tokens": 494
         },
         {
           "chapter": 16,
           "verses": 31,
-          "words": 752
+          "words": 752,
+          "strong_tokens": 522
         },
         {
           "chapter": 17,
           "verses": 37,
-          "words": 809
+          "words": 809,
+          "strong_tokens": 512
         },
         {
           "chapter": 18,
           "verses": 43,
-          "words": 868
+          "words": 868,
+          "strong_tokens": 598
         },
         {
           "chapter": 19,
           "verses": 48,
-          "words": 1050
+          "words": 1050,
+          "strong_tokens": 691
         },
         {
           "chapter": 20,
           "verses": 47,
-          "words": 958
+          "words": 958,
+          "strong_tokens": 628
         },
         {
           "chapter": 21,
           "verses": 38,
-          "words": 821
+          "words": 821,
+          "strong_tokens": 530
         },
         {
           "chapter": 22,
           "verses": 71,
-          "words": 1397
+          "words": 1397,
+          "strong_tokens": 953
         },
         {
           "chapter": 23,
           "verses": 56,
-          "words": 1120
+          "words": 1120,
+          "strong_tokens": 772
         },
         {
           "chapter": 24,
           "verses": 53,
-          "words": 1055
+          "words": 1055,
+          "strong_tokens": 733
         }
       ]
     },
@@ -5471,111 +6518,133 @@
       "chapters_count": 21,
       "verses_count": 879,
       "words_count": 19104,
+      "strong_tokens_count": 13709,
       "chapters": [
         {
           "chapter": 1,
           "verses": 51,
-          "words": 1004
+          "words": 1004,
+          "strong_tokens": 737
         },
         {
           "chapter": 2,
           "verses": 25,
-          "words": 510
+          "words": 510,
+          "strong_tokens": 363
         },
         {
           "chapter": 3,
           "verses": 36,
-          "words": 764
+          "words": 764,
+          "strong_tokens": 555
         },
         {
           "chapter": 4,
           "verses": 54,
-          "words": 1098
+          "words": 1098,
+          "strong_tokens": 816
         },
         {
           "chapter": 5,
           "verses": 47,
-          "words": 1001
+          "words": 1001,
+          "strong_tokens": 708
         },
         {
           "chapter": 6,
           "verses": 71,
-          "words": 1506
+          "words": 1506,
+          "strong_tokens": 1080
         },
         {
           "chapter": 7,
           "verses": 53,
-          "words": 1003
+          "words": 1003,
+          "strong_tokens": 761
         },
         {
           "chapter": 8,
           "verses": 59,
-          "words": 1307
+          "words": 1307,
+          "strong_tokens": 965
         },
         {
           "chapter": 9,
           "verses": 41,
-          "words": 876
+          "words": 876,
+          "strong_tokens": 619
         },
         {
           "chapter": 10,
           "verses": 42,
-          "words": 820
+          "words": 820,
+          "strong_tokens": 610
         },
         {
           "chapter": 11,
           "verses": 57,
-          "words": 1158
+          "words": 1158,
+          "strong_tokens": 817
         },
         {
           "chapter": 12,
           "verses": 50,
-          "words": 1060
+          "words": 1060,
+          "strong_tokens": 762
         },
         {
           "chapter": 13,
           "verses": 38,
-          "words": 826
+          "words": 826,
+          "strong_tokens": 585
         },
         {
           "chapter": 14,
           "verses": 31,
-          "words": 731
+          "words": 731,
+          "strong_tokens": 526
         },
         {
           "chapter": 15,
           "verses": 27,
-          "words": 613
+          "words": 613,
+          "strong_tokens": 435
         },
         {
           "chapter": 16,
           "verses": 33,
-          "words": 789
+          "words": 789,
+          "strong_tokens": 546
         },
         {
           "chapter": 17,
           "verses": 26,
-          "words": 636
+          "words": 636,
+          "strong_tokens": 456
         },
         {
           "chapter": 18,
           "verses": 40,
-          "words": 947
+          "words": 947,
+          "strong_tokens": 673
         },
         {
           "chapter": 19,
           "verses": 42,
-          "words": 1013
+          "words": 1013,
+          "strong_tokens": 684
         },
         {
           "chapter": 20,
           "verses": 31,
-          "words": 749
+          "words": 749,
+          "strong_tokens": 532
         },
         {
           "chapter": 21,
           "verses": 25,
-          "words": 693
+          "words": 693,
+          "strong_tokens": 479
         }
       ]
     },
@@ -5587,146 +6656,175 @@
       "chapters_count": 28,
       "verses_count": 1007,
       "words_count": 24289,
+      "strong_tokens_count": 16195,
       "chapters": [
         {
           "chapter": 1,
           "verses": 26,
-          "words": 662
+          "words": 662,
+          "strong_tokens": 452
         },
         {
           "chapter": 2,
           "verses": 47,
-          "words": 1024
+          "words": 1024,
+          "strong_tokens": 737
         },
         {
           "chapter": 3,
           "verses": 26,
-          "words": 634
+          "words": 634,
+          "strong_tokens": 443
         },
         {
           "chapter": 4,
           "verses": 37,
-          "words": 867
+          "words": 867,
+          "strong_tokens": 600
         },
         {
           "chapter": 5,
           "verses": 42,
-          "words": 1027
+          "words": 1027,
+          "strong_tokens": 694
         },
         {
           "chapter": 6,
           "verses": 15,
-          "words": 355
+          "words": 355,
+          "strong_tokens": 240
         },
         {
           "chapter": 7,
           "verses": 60,
-          "words": 1431
+          "words": 1431,
+          "strong_tokens": 995
         },
         {
           "chapter": 8,
           "verses": 40,
-          "words": 885
+          "words": 885,
+          "strong_tokens": 600
         },
         {
           "chapter": 9,
           "verses": 43,
-          "words": 1048
+          "words": 1048,
+          "strong_tokens": 727
         },
         {
           "chapter": 10,
           "verses": 48,
-          "words": 1111
+          "words": 1111,
+          "strong_tokens": 762
         },
         {
           "chapter": 11,
           "verses": 30,
-          "words": 671
+          "words": 671,
+          "strong_tokens": 460
         },
         {
           "chapter": 12,
           "verses": 25,
-          "words": 664
+          "words": 664,
+          "strong_tokens": 414
         },
         {
           "chapter": 13,
           "verses": 52,
-          "words": 1272
+          "words": 1272,
+          "strong_tokens": 810
         },
         {
           "chapter": 14,
           "verses": 28,
-          "words": 627
+          "words": 627,
+          "strong_tokens": 396
         },
         {
           "chapter": 15,
           "verses": 41,
-          "words": 926
+          "words": 926,
+          "strong_tokens": 609
         },
         {
           "chapter": 16,
           "verses": 40,
-          "words": 943
+          "words": 943,
+          "strong_tokens": 614
         },
         {
           "chapter": 17,
           "verses": 34,
-          "words": 856
+          "words": 856,
+          "strong_tokens": 571
         },
         {
           "chapter": 18,
           "verses": 28,
-          "words": 665
+          "words": 665,
+          "strong_tokens": 442
         },
         {
           "chapter": 19,
           "verses": 41,
-          "words": 975
+          "words": 975,
+          "strong_tokens": 647
         },
         {
           "chapter": 20,
           "verses": 38,
-          "words": 882
+          "words": 882,
+          "strong_tokens": 600
         },
         {
           "chapter": 21,
           "verses": 40,
-          "words": 1070
+          "words": 1070,
+          "strong_tokens": 691
         },
         {
           "chapter": 22,
           "verses": 30,
-          "words": 773
+          "words": 773,
+          "strong_tokens": 517
         },
         {
           "chapter": 23,
           "verses": 35,
-          "words": 923
+          "words": 923,
+          "strong_tokens": 586
         },
         {
           "chapter": 24,
           "verses": 27,
-          "words": 640
+          "words": 640,
+          "strong_tokens": 430
         },
         {
           "chapter": 25,
           "verses": 27,
-          "words": 721
+          "words": 721,
+          "strong_tokens": 469
         },
         {
           "chapter": 26,
           "verses": 32,
-          "words": 783
+          "words": 783,
+          "strong_tokens": 518
         },
         {
           "chapter": 27,
           "verses": 44,
-          "words": 1034
+          "words": 1034,
+          "strong_tokens": 639
         },
         {
           "chapter": 28,
           "verses": 31,
-          "words": 820
+          "words": 820,
+          "strong_tokens": 532
         }
       ]
     },
@@ -5738,86 +6836,103 @@
       "chapters_count": 16,
       "verses_count": 433,
       "words_count": 9422,
+      "strong_tokens_count": 6209,
       "chapters": [
         {
           "chapter": 1,
           "verses": 32,
-          "words": 714
+          "words": 714,
+          "strong_tokens": 478
         },
         {
           "chapter": 2,
           "verses": 29,
-          "words": 604
+          "words": 604,
+          "strong_tokens": 371
         },
         {
           "chapter": 3,
           "verses": 31,
-          "words": 562
+          "words": 562,
+          "strong_tokens": 359
         },
         {
           "chapter": 4,
           "verses": 25,
-          "words": 546
+          "words": 546,
+          "strong_tokens": 350
         },
         {
           "chapter": 5,
           "verses": 21,
-          "words": 480
+          "words": 480,
+          "strong_tokens": 366
         },
         {
           "chapter": 6,
           "verses": 23,
-          "words": 484
+          "words": 484,
+          "strong_tokens": 319
         },
         {
           "chapter": 7,
           "verses": 25,
-          "words": 605
+          "words": 605,
+          "strong_tokens": 402
         },
         {
           "chapter": 8,
           "verses": 39,
-          "words": 903
+          "words": 903,
+          "strong_tokens": 580
         },
         {
           "chapter": 9,
           "verses": 33,
-          "words": 719
+          "words": 719,
+          "strong_tokens": 464
         },
         {
           "chapter": 10,
           "verses": 21,
-          "words": 461
+          "words": 461,
+          "strong_tokens": 304
         },
         {
           "chapter": 11,
           "verses": 36,
-          "words": 818
+          "words": 818,
+          "strong_tokens": 520
         },
         {
           "chapter": 12,
           "verses": 21,
-          "words": 397
+          "words": 397,
+          "strong_tokens": 260
         },
         {
           "chapter": 13,
           "verses": 14,
-          "words": 361
+          "words": 361,
+          "strong_tokens": 232
         },
         {
           "chapter": 14,
           "verses": 23,
-          "words": 525
+          "words": 525,
+          "strong_tokens": 346
         },
         {
           "chapter": 15,
           "verses": 33,
-          "words": 742
+          "words": 742,
+          "strong_tokens": 487
         },
         {
           "chapter": 16,
           "verses": 27,
-          "words": 501
+          "words": 501,
+          "strong_tokens": 371
         }
       ]
     },
@@ -5829,86 +6944,103 @@
       "chapters_count": 16,
       "verses_count": 437,
       "words_count": 9462,
+      "strong_tokens_count": 6183,
       "chapters": [
         {
           "chapter": 1,
           "verses": 31,
-          "words": 649
+          "words": 649,
+          "strong_tokens": 430
         },
         {
           "chapter": 2,
           "verses": 16,
-          "words": 373
+          "words": 373,
+          "strong_tokens": 252
         },
         {
           "chapter": 3,
           "verses": 23,
-          "words": 459
+          "words": 459,
+          "strong_tokens": 314
         },
         {
           "chapter": 4,
           "verses": 21,
-          "words": 509
+          "words": 509,
+          "strong_tokens": 325
         },
         {
           "chapter": 5,
           "verses": 13,
-          "words": 321
+          "words": 321,
+          "strong_tokens": 209
         },
         {
           "chapter": 6,
           "verses": 20,
-          "words": 465
+          "words": 465,
+          "strong_tokens": 306
         },
         {
           "chapter": 7,
           "verses": 40,
-          "words": 959
+          "words": 959,
+          "strong_tokens": 619
         },
         {
           "chapter": 8,
           "verses": 13,
-          "words": 309
+          "words": 309,
+          "strong_tokens": 202
         },
         {
           "chapter": 9,
           "verses": 27,
-          "words": 671
+          "words": 671,
+          "strong_tokens": 402
         },
         {
           "chapter": 10,
           "verses": 33,
-          "words": 667
+          "words": 667,
+          "strong_tokens": 429
         },
         {
           "chapter": 11,
           "verses": 34,
-          "words": 718
+          "words": 718,
+          "strong_tokens": 474
         },
         {
           "chapter": 12,
           "verses": 31,
-          "words": 593
+          "words": 593,
+          "strong_tokens": 415
         },
         {
           "chapter": 13,
           "verses": 13,
-          "words": 270
+          "words": 270,
+          "strong_tokens": 184
         },
         {
           "chapter": 14,
           "verses": 40,
-          "words": 887
+          "words": 887,
+          "strong_tokens": 569
         },
         {
           "chapter": 15,
           "verses": 58,
-          "words": 1166
+          "words": 1166,
+          "strong_tokens": 759
         },
         {
           "chapter": 16,
           "verses": 24,
-          "words": 446
+          "words": 446,
+          "strong_tokens": 294
         }
       ]
     },
@@ -5920,71 +7052,85 @@
       "chapters_count": 13,
       "verses_count": 257,
       "words_count": 6065,
+      "strong_tokens_count": 3984,
       "chapters": [
         {
           "chapter": 1,
           "verses": 24,
-          "words": 591
+          "words": 591,
+          "strong_tokens": 418
         },
         {
           "chapter": 2,
           "verses": 17,
-          "words": 401
+          "words": 401,
+          "strong_tokens": 260
         },
         {
           "chapter": 3,
           "verses": 18,
-          "words": 389
+          "words": 389,
+          "strong_tokens": 257
         },
         {
           "chapter": 4,
           "verses": 18,
-          "words": 406
+          "words": 406,
+          "strong_tokens": 267
         },
         {
           "chapter": 5,
           "verses": 21,
-          "words": 487
+          "words": 487,
+          "strong_tokens": 302
         },
         {
           "chapter": 6,
           "verses": 18,
-          "words": 357
+          "words": 357,
+          "strong_tokens": 258
         },
         {
           "chapter": 7,
           "verses": 16,
-          "words": 452
+          "words": 452,
+          "strong_tokens": 295
         },
         {
           "chapter": 8,
           "verses": 24,
-          "words": 568
+          "words": 568,
+          "strong_tokens": 343
         },
         {
           "chapter": 9,
           "verses": 15,
-          "words": 355
+          "words": 355,
+          "strong_tokens": 237
         },
         {
           "chapter": 10,
           "verses": 18,
-          "words": 437
+          "words": 437,
+          "strong_tokens": 288
         },
         {
           "chapter": 11,
           "verses": 33,
-          "words": 718
+          "words": 718,
+          "strong_tokens": 458
         },
         {
           "chapter": 12,
           "verses": 21,
-          "words": 589
+          "words": 589,
+          "strong_tokens": 384
         },
         {
           "chapter": 13,
           "verses": 14,
-          "words": 315
+          "words": 315,
+          "strong_tokens": 217
         }
       ]
     },
@@ -5996,36 +7142,43 @@
       "chapters_count": 6,
       "verses_count": 149,
       "words_count": 3084,
+      "strong_tokens_count": 2052,
       "chapters": [
         {
           "chapter": 1,
           "verses": 24,
-          "words": 453
+          "words": 453,
+          "strong_tokens": 328
         },
         {
           "chapter": 2,
           "verses": 21,
-          "words": 573
+          "words": 573,
+          "strong_tokens": 356
         },
         {
           "chapter": 3,
           "verses": 29,
-          "words": 648
+          "words": 648,
+          "strong_tokens": 419
         },
         {
           "chapter": 4,
           "verses": 31,
-          "words": 610
+          "words": 610,
+          "strong_tokens": 402
         },
         {
           "chapter": 5,
           "verses": 26,
-          "words": 447
+          "words": 447,
+          "strong_tokens": 307
         },
         {
           "chapter": 6,
           "verses": 18,
-          "words": 353
+          "words": 353,
+          "strong_tokens": 240
         }
       ]
     },
@@ -6037,36 +7190,43 @@
       "chapters_count": 6,
       "verses_count": 155,
       "words_count": 3022,
+      "strong_tokens_count": 2066,
       "chapters": [
         {
           "chapter": 1,
           "verses": 23,
-          "words": 508
+          "words": 508,
+          "strong_tokens": 333
         },
         {
           "chapter": 2,
           "verses": 22,
-          "words": 453
+          "words": 453,
+          "strong_tokens": 305
         },
         {
           "chapter": 3,
           "verses": 21,
-          "words": 410
+          "words": 410,
+          "strong_tokens": 273
         },
         {
           "chapter": 4,
           "verses": 32,
-          "words": 617
+          "words": 617,
+          "strong_tokens": 422
         },
         {
           "chapter": 5,
           "verses": 33,
-          "words": 564
+          "words": 564,
+          "strong_tokens": 407
         },
         {
           "chapter": 6,
           "verses": 24,
-          "words": 470
+          "words": 470,
+          "strong_tokens": 326
         }
       ]
     },
@@ -6078,26 +7238,31 @@
       "chapters_count": 4,
       "verses_count": 104,
       "words_count": 2183,
+      "strong_tokens_count": 1494,
       "chapters": [
         {
           "chapter": 1,
           "verses": 30,
-          "words": 632
+          "words": 632,
+          "strong_tokens": 453
         },
         {
           "chapter": 2,
           "verses": 30,
-          "words": 601
+          "words": 601,
+          "strong_tokens": 405
         },
         {
           "chapter": 3,
           "verses": 21,
-          "words": 483
+          "words": 483,
+          "strong_tokens": 312
         },
         {
           "chapter": 4,
           "verses": 23,
-          "words": 467
+          "words": 467,
+          "strong_tokens": 324
         }
       ]
     },
@@ -6109,26 +7274,31 @@
       "chapters_count": 4,
       "verses_count": 95,
       "words_count": 1981,
+      "strong_tokens_count": 1379,
       "chapters": [
         {
           "chapter": 1,
           "verses": 29,
-          "words": 656
+          "words": 656,
+          "strong_tokens": 458
         },
         {
           "chapter": 2,
           "verses": 23,
-          "words": 503
+          "words": 503,
+          "strong_tokens": 339
         },
         {
           "chapter": 3,
           "verses": 25,
-          "words": 459
+          "words": 459,
+          "strong_tokens": 324
         },
         {
           "chapter": 4,
           "verses": 18,
-          "words": 363
+          "words": 363,
+          "strong_tokens": 258
         }
       ]
     },
@@ -6140,31 +7310,37 @@
       "chapters_count": 5,
       "verses_count": 89,
       "words_count": 1837,
+      "strong_tokens_count": 1337,
       "chapters": [
         {
           "chapter": 1,
           "verses": 10,
-          "words": 253
+          "words": 253,
+          "strong_tokens": 191
         },
         {
           "chapter": 2,
           "verses": 20,
-          "words": 479
+          "words": 479,
+          "strong_tokens": 347
         },
         {
           "chapter": 3,
           "verses": 13,
-          "words": 295
+          "words": 295,
+          "strong_tokens": 227
         },
         {
           "chapter": 4,
           "verses": 18,
-          "words": 396
+          "words": 396,
+          "strong_tokens": 278
         },
         {
           "chapter": 5,
           "verses": 28,
-          "words": 414
+          "words": 414,
+          "strong_tokens": 294
         }
       ]
     },
@@ -6176,21 +7352,25 @@
       "chapters_count": 3,
       "verses_count": 47,
       "words_count": 1022,
+      "strong_tokens_count": 733,
       "chapters": [
         {
           "chapter": 1,
           "verses": 12,
-          "words": 291
+          "words": 291,
+          "strong_tokens": 204
         },
         {
           "chapter": 2,
           "verses": 17,
-          "words": 381
+          "words": 381,
+          "strong_tokens": 274
         },
         {
           "chapter": 3,
           "verses": 18,
-          "words": 350
+          "words": 350,
+          "strong_tokens": 255
         }
       ]
     },
@@ -6202,36 +7382,43 @@
       "chapters_count": 6,
       "verses_count": 113,
       "words_count": 2247,
+      "strong_tokens_count": 1502,
       "chapters": [
         {
           "chapter": 1,
           "verses": 20,
-          "words": 432
+          "words": 432,
+          "strong_tokens": 287
         },
         {
           "chapter": 2,
           "verses": 15,
-          "words": 248
+          "words": 248,
+          "strong_tokens": 187
         },
         {
           "chapter": 3,
           "verses": 16,
-          "words": 324
+          "words": 324,
+          "strong_tokens": 196
         },
         {
           "chapter": 4,
           "verses": 16,
-          "words": 310
+          "words": 310,
+          "strong_tokens": 201
         },
         {
           "chapter": 5,
           "verses": 25,
-          "words": 471
+          "words": 471,
+          "strong_tokens": 315
         },
         {
           "chapter": 6,
           "verses": 21,
-          "words": 462
+          "words": 462,
+          "strong_tokens": 316
         }
       ]
     },
@@ -6243,26 +7430,31 @@
       "chapters_count": 4,
       "verses_count": 83,
       "words_count": 1669,
+      "strong_tokens_count": 1128,
       "chapters": [
         {
           "chapter": 1,
           "verses": 18,
-          "words": 439
+          "words": 439,
+          "strong_tokens": 292
         },
         {
           "chapter": 2,
           "verses": 26,
-          "words": 508
+          "words": 508,
+          "strong_tokens": 333
         },
         {
           "chapter": 3,
           "verses": 17,
-          "words": 297
+          "words": 297,
+          "strong_tokens": 209
         },
         {
           "chapter": 4,
           "verses": 22,
-          "words": 425
+          "words": 425,
+          "strong_tokens": 294
         }
       ]
     },
@@ -6274,21 +7466,25 @@
       "chapters_count": 3,
       "verses_count": 46,
       "words_count": 896,
+      "strong_tokens_count": 618,
       "chapters": [
         {
           "chapter": 1,
           "verses": 16,
-          "words": 337
+          "words": 337,
+          "strong_tokens": 234
         },
         {
           "chapter": 2,
           "verses": 15,
-          "words": 265
+          "words": 265,
+          "strong_tokens": 176
         },
         {
           "chapter": 3,
           "verses": 15,
-          "words": 294
+          "words": 294,
+          "strong_tokens": 208
         }
       ]
     },
@@ -6300,11 +7496,13 @@
       "chapters_count": 1,
       "verses_count": 25,
       "words_count": 430,
+      "strong_tokens_count": 313,
       "chapters": [
         {
           "chapter": 1,
           "verses": 25,
-          "words": 430
+          "words": 430,
+          "strong_tokens": 313
         }
       ]
     },
@@ -6316,71 +7514,85 @@
       "chapters_count": 13,
       "verses_count": 303,
       "words_count": 6899,
+      "strong_tokens_count": 4460,
       "chapters": [
         {
           "chapter": 1,
           "verses": 14,
-          "words": 338
+          "words": 338,
+          "strong_tokens": 224
         },
         {
           "chapter": 2,
           "verses": 18,
-          "words": 472
+          "words": 472,
+          "strong_tokens": 302
         },
         {
           "chapter": 3,
           "verses": 19,
-          "words": 362
+          "words": 362,
+          "strong_tokens": 249
         },
         {
           "chapter": 4,
           "verses": 16,
-          "words": 404
+          "words": 404,
+          "strong_tokens": 258
         },
         {
           "chapter": 5,
           "verses": 14,
-          "words": 321
+          "words": 321,
+          "strong_tokens": 212
         },
         {
           "chapter": 6,
           "verses": 20,
-          "words": 426
+          "words": 426,
+          "strong_tokens": 272
         },
         {
           "chapter": 7,
           "verses": 28,
-          "words": 607
+          "words": 607,
+          "strong_tokens": 403
         },
         {
           "chapter": 8,
           "verses": 13,
-          "words": 387
+          "words": 387,
+          "strong_tokens": 246
         },
         {
           "chapter": 9,
           "verses": 28,
-          "words": 679
+          "words": 679,
+          "strong_tokens": 443
         },
         {
           "chapter": 10,
           "verses": 39,
-          "words": 784
+          "words": 784,
+          "strong_tokens": 499
         },
         {
           "chapter": 11,
           "verses": 40,
-          "words": 922
+          "words": 922,
+          "strong_tokens": 574
         },
         {
           "chapter": 12,
           "verses": 29,
-          "words": 696
+          "words": 696,
+          "strong_tokens": 445
         },
         {
           "chapter": 13,
           "verses": 25,
-          "words": 501
+          "words": 501,
+          "strong_tokens": 333
         }
       ]
     },
@@ -6392,31 +7604,37 @@
       "chapters_count": 5,
       "verses_count": 108,
       "words_count": 2304,
+      "strong_tokens_count": 1546,
       "chapters": [
         {
           "chapter": 1,
           "verses": 27,
-          "words": 544
+          "words": 544,
+          "strong_tokens": 360
         },
         {
           "chapter": 2,
           "verses": 26,
-          "words": 528
+          "words": 528,
+          "strong_tokens": 381
         },
         {
           "chapter": 3,
           "verses": 18,
-          "words": 378
+          "words": 378,
+          "strong_tokens": 254
         },
         {
           "chapter": 4,
           "verses": 17,
-          "words": 369
+          "words": 369,
+          "strong_tokens": 250
         },
         {
           "chapter": 5,
           "verses": 20,
-          "words": 485
+          "words": 485,
+          "strong_tokens": 301
         }
       ]
     },
@@ -6428,31 +7646,37 @@
       "chapters_count": 5,
       "verses_count": 105,
       "words_count": 2476,
+      "strong_tokens_count": 1542,
       "chapters": [
         {
           "chapter": 1,
           "verses": 25,
-          "words": 597
+          "words": 597,
+          "strong_tokens": 387
         },
         {
           "chapter": 2,
           "verses": 25,
-          "words": 549
+          "words": 549,
+          "strong_tokens": 352
         },
         {
           "chapter": 3,
           "verses": 22,
-          "words": 551
+          "words": 551,
+          "strong_tokens": 338
         },
         {
           "chapter": 4,
           "verses": 19,
-          "words": 479
+          "words": 479,
+          "strong_tokens": 283
         },
         {
           "chapter": 5,
           "verses": 14,
-          "words": 300
+          "words": 300,
+          "strong_tokens": 182
         }
       ]
     },
@@ -6464,21 +7688,25 @@
       "chapters_count": 3,
       "verses_count": 61,
       "words_count": 1553,
+      "strong_tokens_count": 1005,
       "chapters": [
         {
           "chapter": 1,
           "verses": 21,
-          "words": 488
+          "words": 488,
+          "strong_tokens": 345
         },
         {
           "chapter": 2,
           "verses": 22,
-          "words": 581
+          "words": 581,
+          "strong_tokens": 349
         },
         {
           "chapter": 3,
           "verses": 18,
-          "words": 484
+          "words": 484,
+          "strong_tokens": 311
         }
       ]
     },
@@ -6490,31 +7718,37 @@
       "chapters_count": 5,
       "verses_count": 105,
       "words_count": 2517,
+      "strong_tokens_count": 1822,
       "chapters": [
         {
           "chapter": 1,
           "verses": 10,
-          "words": 247
+          "words": 247,
+          "strong_tokens": 185
         },
         {
           "chapter": 2,
           "verses": 29,
-          "words": 736
+          "words": 736,
+          "strong_tokens": 508
         },
         {
           "chapter": 3,
           "verses": 24,
-          "words": 534
+          "words": 534,
+          "strong_tokens": 395
         },
         {
           "chapter": 4,
           "verses": 21,
-          "words": 480
+          "words": 480,
+          "strong_tokens": 369
         },
         {
           "chapter": 5,
           "verses": 21,
-          "words": 520
+          "words": 520,
+          "strong_tokens": 365
         }
       ]
     },
@@ -6526,11 +7760,13 @@
       "chapters_count": 1,
       "verses_count": 13,
       "words_count": 298,
+      "strong_tokens_count": 219,
       "chapters": [
         {
           "chapter": 1,
           "verses": 13,
-          "words": 298
+          "words": 298,
+          "strong_tokens": 219
         }
       ]
     },
@@ -6542,11 +7778,13 @@
       "chapters_count": 1,
       "verses_count": 14,
       "words_count": 294,
+      "strong_tokens_count": 195,
       "chapters": [
         {
           "chapter": 1,
           "verses": 14,
-          "words": 294
+          "words": 294,
+          "strong_tokens": 195
         }
       ]
     },
@@ -6558,11 +7796,13 @@
       "chapters_count": 1,
       "verses_count": 25,
       "words_count": 608,
+      "strong_tokens_count": 413,
       "chapters": [
         {
           "chapter": 1,
           "verses": 25,
-          "words": 608
+          "words": 608,
+          "strong_tokens": 413
         }
       ]
     },
@@ -6574,116 +7814,139 @@
       "chapters_count": 22,
       "verses_count": 404,
       "words_count": 11995,
+      "strong_tokens_count": 8190,
       "chapters": [
         {
           "chapter": 1,
           "verses": 20,
-          "words": 592
+          "words": 592,
+          "strong_tokens": 421
         },
         {
           "chapter": 2,
           "verses": 29,
-          "words": 802
+          "words": 802,
+          "strong_tokens": 524
         },
         {
           "chapter": 3,
           "verses": 22,
-          "words": 658
+          "words": 658,
+          "strong_tokens": 454
         },
         {
           "chapter": 4,
           "verses": 11,
-          "words": 348
+          "words": 348,
+          "strong_tokens": 249
         },
         {
           "chapter": 5,
           "verses": 14,
-          "words": 435
+          "words": 435,
+          "strong_tokens": 296
         },
         {
           "chapter": 6,
           "verses": 17,
-          "words": 540
+          "words": 540,
+          "strong_tokens": 356
         },
         {
           "chapter": 7,
           "verses": 17,
-          "words": 491
+          "words": 491,
+          "strong_tokens": 347
         },
         {
           "chapter": 8,
           "verses": 13,
-          "words": 397
+          "words": 397,
+          "strong_tokens": 243
         },
         {
           "chapter": 9,
           "verses": 21,
-          "words": 592
+          "words": 592,
+          "strong_tokens": 412
         },
         {
           "chapter": 10,
           "verses": 11,
-          "words": 353
+          "words": 353,
+          "strong_tokens": 240
         },
         {
           "chapter": 11,
           "verses": 19,
-          "words": 580
+          "words": 580,
+          "strong_tokens": 402
         },
         {
           "chapter": 12,
           "verses": 17,
-          "words": 497
+          "words": 497,
+          "strong_tokens": 342
         },
         {
           "chapter": 13,
           "verses": 18,
-          "words": 538
+          "words": 538,
+          "strong_tokens": 372
         },
         {
           "chapter": 14,
           "verses": 20,
-          "words": 651
+          "words": 651,
+          "strong_tokens": 448
         },
         {
           "chapter": 15,
           "verses": 8,
-          "words": 252
+          "words": 252,
+          "strong_tokens": 175
         },
         {
           "chapter": 16,
           "verses": 21,
-          "words": 567
+          "words": 567,
+          "strong_tokens": 380
         },
         {
           "chapter": 17,
           "verses": 18,
-          "words": 522
+          "words": 522,
+          "strong_tokens": 365
         },
         {
           "chapter": 18,
           "verses": 24,
-          "words": 747
+          "words": 747,
+          "strong_tokens": 544
         },
         {
           "chapter": 19,
           "verses": 21,
-          "words": 634
+          "words": 634,
+          "strong_tokens": 433
         },
         {
           "chapter": 20,
           "verses": 15,
-          "words": 477
+          "words": 477,
+          "strong_tokens": 323
         },
         {
           "chapter": 21,
           "verses": 27,
-          "words": 749
+          "words": 749,
+          "strong_tokens": 503
         },
         {
           "chapter": 22,
           "verses": 21,
-          "words": 573
+          "words": 573,
+          "strong_tokens": 361
         }
       ]
     }

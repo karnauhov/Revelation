@@ -9,6 +9,7 @@ from scripts.bible_module.build_kjv import (
     KJV_SCHEMA_VERSION,
     create_kjv_schema,
     extract_kjv_verse_texts,
+    plain_kjv_text,
     validate_kjv_database,
     validate_kjv_source_texts,
     verse_key_for,
@@ -17,7 +18,7 @@ from scripts.bible_module.canon import get_canonical_verse
 
 
 class KjvBuilderTests(unittest.TestCase):
-    def test_usfx_parser_flattens_kjv_text_without_notes_or_strongs(self) -> None:
+    def test_usfx_parser_flattens_kjv_text_with_strongs(self) -> None:
         texts = extract_kjv_verse_texts(
             """
             <usfx>
@@ -49,9 +50,37 @@ class KjvBuilderTests(unittest.TestCase):
                 <c id="3" />
                 <p style="p">
                   <v id="16" bcv="JHN.3.16" />
-                  <wj>¶
+                  <wj>&#182;
                     <w s="G1063">For</w> God so loved the world.
                   </wj>
+                  <ve />
+                </p>
+              </book>
+              <book id="MAT">
+                <c id="11" />
+                <p style="p">
+                  <v id="6" bcv="MAT.11.6" />
+                  <w s="G3739">who</w><w s="G1437">soever</w>
+                  <w s="G4624">shall</w>
+                  <w s="G3361">not</w>
+                  <w s="G4624">be offended</w>.
+                  <ve />
+                </p>
+              </book>
+              <book id="MRK">
+                <c id="4" />
+                <p style="p">
+                  <v id="24" bcv="MRK.4.24" />
+                  <w s="G4369">shall more be give</w>n.
+                  <ve />
+                </p>
+              </book>
+              <book id="ACT">
+                <c id="1" />
+                <p style="p">
+                  <v id="12" bcv="ACT.1.12" />a sabbath
+                  <w s="G4521">day</w>&#8217;<w s="G2192">s</w>
+                  <w s="G3598">journey</w>.
                   <ve />
                 </p>
               </book>
@@ -70,14 +99,55 @@ class KjvBuilderTests(unittest.TestCase):
 
         self.assertEqual(
             texts["Gen.1.2"],
+            "And the earth H776 was H1961 without form, H8414 and void; "
+            "H922 and darkness H2822 was upon the face of the deep.",
+        )
+        self.assertEqual(
+            plain_kjv_text(texts["Gen.1.2"]),
             "And the earth was without form, and void; and darkness was upon "
             "the face of the deep.",
         )
         self.assertEqual(
             texts["Ps.23.1"],
+            "A Psalm H4210 of David. The LORD H3068 is my shepherd; I shall "
+            "not want.",
+        )
+        self.assertEqual(
+            plain_kjv_text(texts["Ps.23.1"]),
             "A Psalm of David. The LORD is my shepherd; I shall not want.",
         )
-        self.assertEqual(texts["John.3.16"], "¶ For God so loved the world.")
+        self.assertEqual(
+            texts["John.3.16"],
+            "\u00b6 For G1063 God so loved the world.",
+        )
+        self.assertEqual(
+            plain_kjv_text(texts["John.3.16"]),
+            "\u00b6 For God so loved the world.",
+        )
+        self.assertEqual(
+            texts["Matt.11.6"],
+            "whosoever G3739 G1437 shall G4624 not G3361 be offended. G4624",
+        )
+        self.assertEqual(
+            plain_kjv_text(texts["Matt.11.6"]),
+            "whosoever shall not be offended.",
+        )
+        self.assertEqual(
+            texts["Mark.4.24"],
+            "shall more be given. G4369",
+        )
+        self.assertEqual(
+            plain_kjv_text(texts["Mark.4.24"]),
+            "shall more be given.",
+        )
+        self.assertEqual(
+            texts["Acts.1.12"],
+            "a sabbath day\u2019s G4521 G2192 journey. G3598",
+        )
+        self.assertEqual(
+            plain_kjv_text(texts["Acts.1.12"]),
+            "a sabbath day\u2019s journey.",
+        )
         self.assertEqual(
             texts["2Chr.13.23"],
             "So Abijah slept with his fathers.",
