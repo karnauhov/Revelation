@@ -1,0 +1,6691 @@
+{
+  "source": {
+    "url": "https://ebible.org/Scriptures/eng-kjv2006_usfx.zip",
+    "page_url": "https://ebible.org/find/show.php?id=eng-kjv2006",
+    "version": "eBible eng-kjv2006, last updated 2026-05-16",
+    "sha256": "8ee3739ba5ad3303d5af11bded32199829902b84127d09b9b9542edbb5f5d33d",
+    "bytes": 2500338
+  },
+  "built_at": "2026-07-04T13:38:52Z",
+  "totals": {
+    "books": 66,
+    "chapters": 1189,
+    "verses": 31102,
+    "filled_verses": 31102,
+    "empty_verses": 0,
+    "words": 790769
+  },
+  "books": [
+    {
+      "book_id": 1,
+      "code": "Gen",
+      "osis_code": "Gen",
+      "title": "Genesis",
+      "chapters_count": 50,
+      "verses_count": 1533,
+      "words_count": 38262,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 31,
+          "words": 797
+        },
+        {
+          "chapter": 2,
+          "verses": 25,
+          "words": 632
+        },
+        {
+          "chapter": 3,
+          "verses": 24,
+          "words": 695
+        },
+        {
+          "chapter": 4,
+          "verses": 26,
+          "words": 632
+        },
+        {
+          "chapter": 5,
+          "verses": 32,
+          "words": 504
+        },
+        {
+          "chapter": 6,
+          "verses": 22,
+          "words": 579
+        },
+        {
+          "chapter": 7,
+          "verses": 24,
+          "words": 584
+        },
+        {
+          "chapter": 8,
+          "verses": 22,
+          "words": 586
+        },
+        {
+          "chapter": 9,
+          "verses": 29,
+          "words": 658
+        },
+        {
+          "chapter": 10,
+          "verses": 32,
+          "words": 495
+        },
+        {
+          "chapter": 11,
+          "verses": 32,
+          "words": 606
+        },
+        {
+          "chapter": 12,
+          "verses": 20,
+          "words": 536
+        },
+        {
+          "chapter": 13,
+          "verses": 18,
+          "words": 457
+        },
+        {
+          "chapter": 14,
+          "verses": 24,
+          "words": 606
+        },
+        {
+          "chapter": 15,
+          "verses": 21,
+          "words": 471
+        },
+        {
+          "chapter": 16,
+          "verses": 16,
+          "words": 412
+        },
+        {
+          "chapter": 17,
+          "verses": 27,
+          "words": 679
+        },
+        {
+          "chapter": 18,
+          "verses": 33,
+          "words": 867
+        },
+        {
+          "chapter": 19,
+          "verses": 38,
+          "words": 1108
+        },
+        {
+          "chapter": 20,
+          "verses": 18,
+          "words": 498
+        },
+        {
+          "chapter": 21,
+          "verses": 34,
+          "words": 774
+        },
+        {
+          "chapter": 22,
+          "verses": 24,
+          "words": 629
+        },
+        {
+          "chapter": 23,
+          "verses": 20,
+          "words": 539
+        },
+        {
+          "chapter": 24,
+          "verses": 67,
+          "words": 1816
+        },
+        {
+          "chapter": 25,
+          "verses": 34,
+          "words": 706
+        },
+        {
+          "chapter": 26,
+          "verses": 35,
+          "words": 889
+        },
+        {
+          "chapter": 27,
+          "verses": 46,
+          "words": 1262
+        },
+        {
+          "chapter": 28,
+          "verses": 22,
+          "words": 621
+        },
+        {
+          "chapter": 29,
+          "verses": 35,
+          "words": 830
+        },
+        {
+          "chapter": 30,
+          "verses": 43,
+          "words": 1022
+        },
+        {
+          "chapter": 31,
+          "verses": 55,
+          "words": 1417
+        },
+        {
+          "chapter": 32,
+          "verses": 32,
+          "words": 794
+        },
+        {
+          "chapter": 33,
+          "verses": 20,
+          "words": 508
+        },
+        {
+          "chapter": 34,
+          "verses": 31,
+          "words": 790
+        },
+        {
+          "chapter": 35,
+          "verses": 29,
+          "words": 664
+        },
+        {
+          "chapter": 36,
+          "verses": 43,
+          "words": 845
+        },
+        {
+          "chapter": 37,
+          "verses": 36,
+          "words": 942
+        },
+        {
+          "chapter": 38,
+          "verses": 30,
+          "words": 819
+        },
+        {
+          "chapter": 39,
+          "verses": 23,
+          "words": 666
+        },
+        {
+          "chapter": 40,
+          "verses": 23,
+          "words": 580
+        },
+        {
+          "chapter": 41,
+          "verses": 57,
+          "words": 1404
+        },
+        {
+          "chapter": 42,
+          "verses": 38,
+          "words": 977
+        },
+        {
+          "chapter": 43,
+          "verses": 34,
+          "words": 938
+        },
+        {
+          "chapter": 44,
+          "verses": 34,
+          "words": 874
+        },
+        {
+          "chapter": 45,
+          "verses": 28,
+          "words": 731
+        },
+        {
+          "chapter": 46,
+          "verses": 34,
+          "words": 766
+        },
+        {
+          "chapter": 47,
+          "verses": 31,
+          "words": 965
+        },
+        {
+          "chapter": 48,
+          "verses": 22,
+          "words": 639
+        },
+        {
+          "chapter": 49,
+          "verses": 33,
+          "words": 766
+        },
+        {
+          "chapter": 50,
+          "verses": 26,
+          "words": 687
+        }
+      ]
+    },
+    {
+      "book_id": 2,
+      "code": "Exod",
+      "osis_code": "Exod",
+      "title": "Exodus",
+      "chapters_count": 40,
+      "verses_count": 1213,
+      "words_count": 32685,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 22,
+          "words": 457
+        },
+        {
+          "chapter": 2,
+          "verses": 25,
+          "words": 657
+        },
+        {
+          "chapter": 3,
+          "verses": 22,
+          "words": 791
+        },
+        {
+          "chapter": 4,
+          "verses": 31,
+          "words": 891
+        },
+        {
+          "chapter": 5,
+          "verses": 23,
+          "words": 594
+        },
+        {
+          "chapter": 6,
+          "verses": 30,
+          "words": 753
+        },
+        {
+          "chapter": 7,
+          "verses": 25,
+          "words": 692
+        },
+        {
+          "chapter": 8,
+          "verses": 32,
+          "words": 936
+        },
+        {
+          "chapter": 9,
+          "verses": 35,
+          "words": 982
+        },
+        {
+          "chapter": 10,
+          "verses": 29,
+          "words": 899
+        },
+        {
+          "chapter": 11,
+          "verses": 10,
+          "words": 324
+        },
+        {
+          "chapter": 12,
+          "verses": 51,
+          "words": 1493
+        },
+        {
+          "chapter": 13,
+          "verses": 22,
+          "words": 675
+        },
+        {
+          "chapter": 14,
+          "verses": 31,
+          "words": 931
+        },
+        {
+          "chapter": 15,
+          "verses": 27,
+          "words": 713
+        },
+        {
+          "chapter": 16,
+          "verses": 36,
+          "words": 1062
+        },
+        {
+          "chapter": 17,
+          "verses": 16,
+          "words": 465
+        },
+        {
+          "chapter": 18,
+          "verses": 27,
+          "words": 760
+        },
+        {
+          "chapter": 19,
+          "verses": 25,
+          "words": 702
+        },
+        {
+          "chapter": 20,
+          "verses": 26,
+          "words": 561
+        },
+        {
+          "chapter": 21,
+          "verses": 36,
+          "words": 893
+        },
+        {
+          "chapter": 22,
+          "verses": 31,
+          "words": 790
+        },
+        {
+          "chapter": 23,
+          "verses": 33,
+          "words": 827
+        },
+        {
+          "chapter": 24,
+          "verses": 18,
+          "words": 492
+        },
+        {
+          "chapter": 25,
+          "verses": 40,
+          "words": 926
+        },
+        {
+          "chapter": 26,
+          "verses": 37,
+          "words": 937
+        },
+        {
+          "chapter": 27,
+          "verses": 21,
+          "words": 558
+        },
+        {
+          "chapter": 28,
+          "verses": 43,
+          "words": 1235
+        },
+        {
+          "chapter": 29,
+          "verses": 46,
+          "words": 1341
+        },
+        {
+          "chapter": 30,
+          "verses": 38,
+          "words": 970
+        },
+        {
+          "chapter": 31,
+          "verses": 18,
+          "words": 438
+        },
+        {
+          "chapter": 32,
+          "verses": 35,
+          "words": 1093
+        },
+        {
+          "chapter": 33,
+          "verses": 23,
+          "words": 710
+        },
+        {
+          "chapter": 34,
+          "verses": 35,
+          "words": 1004
+        },
+        {
+          "chapter": 35,
+          "verses": 35,
+          "words": 820
+        },
+        {
+          "chapter": 36,
+          "verses": 38,
+          "words": 892
+        },
+        {
+          "chapter": 37,
+          "verses": 29,
+          "words": 738
+        },
+        {
+          "chapter": 38,
+          "verses": 31,
+          "words": 832
+        },
+        {
+          "chapter": 39,
+          "verses": 43,
+          "words": 1030
+        },
+        {
+          "chapter": 40,
+          "verses": 38,
+          "words": 821
+        }
+      ]
+    },
+    {
+      "book_id": 3,
+      "code": "Lev",
+      "osis_code": "Lev",
+      "title": "Leviticus",
+      "chapters_count": 27,
+      "verses_count": 859,
+      "words_count": 24541,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 17,
+          "words": 525
+        },
+        {
+          "chapter": 2,
+          "verses": 16,
+          "words": 486
+        },
+        {
+          "chapter": 3,
+          "verses": 17,
+          "words": 511
+        },
+        {
+          "chapter": 4,
+          "verses": 35,
+          "words": 1157
+        },
+        {
+          "chapter": 5,
+          "verses": 19,
+          "words": 723
+        },
+        {
+          "chapter": 6,
+          "verses": 30,
+          "words": 892
+        },
+        {
+          "chapter": 7,
+          "verses": 38,
+          "words": 1056
+        },
+        {
+          "chapter": 8,
+          "verses": 36,
+          "words": 988
+        },
+        {
+          "chapter": 9,
+          "verses": 24,
+          "words": 624
+        },
+        {
+          "chapter": 10,
+          "verses": 20,
+          "words": 628
+        },
+        {
+          "chapter": 11,
+          "verses": 47,
+          "words": 1115
+        },
+        {
+          "chapter": 12,
+          "verses": 8,
+          "words": 262
+        },
+        {
+          "chapter": 13,
+          "verses": 59,
+          "words": 1857
+        },
+        {
+          "chapter": 14,
+          "verses": 57,
+          "words": 1713
+        },
+        {
+          "chapter": 15,
+          "verses": 33,
+          "words": 919
+        },
+        {
+          "chapter": 16,
+          "verses": 34,
+          "words": 1157
+        },
+        {
+          "chapter": 17,
+          "verses": 16,
+          "words": 553
+        },
+        {
+          "chapter": 18,
+          "verses": 30,
+          "words": 667
+        },
+        {
+          "chapter": 19,
+          "verses": 37,
+          "words": 898
+        },
+        {
+          "chapter": 20,
+          "verses": 27,
+          "words": 836
+        },
+        {
+          "chapter": 21,
+          "verses": 24,
+          "words": 587
+        },
+        {
+          "chapter": 22,
+          "verses": 33,
+          "words": 879
+        },
+        {
+          "chapter": 23,
+          "verses": 44,
+          "words": 1222
+        },
+        {
+          "chapter": 24,
+          "verses": 23,
+          "words": 551
+        },
+        {
+          "chapter": 25,
+          "verses": 55,
+          "words": 1532
+        },
+        {
+          "chapter": 26,
+          "verses": 46,
+          "words": 1247
+        },
+        {
+          "chapter": 27,
+          "verses": 34,
+          "words": 956
+        }
+      ]
+    },
+    {
+      "book_id": 4,
+      "code": "Num",
+      "osis_code": "Num",
+      "title": "Numbers",
+      "chapters_count": 36,
+      "verses_count": 1288,
+      "words_count": 32896,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 54,
+          "words": 1333
+        },
+        {
+          "chapter": 2,
+          "verses": 34,
+          "words": 828
+        },
+        {
+          "chapter": 3,
+          "verses": 51,
+          "words": 1291
+        },
+        {
+          "chapter": 4,
+          "verses": 49,
+          "words": 1416
+        },
+        {
+          "chapter": 5,
+          "verses": 31,
+          "words": 898
+        },
+        {
+          "chapter": 6,
+          "verses": 27,
+          "words": 742
+        },
+        {
+          "chapter": 7,
+          "verses": 89,
+          "words": 1939
+        },
+        {
+          "chapter": 8,
+          "verses": 26,
+          "words": 687
+        },
+        {
+          "chapter": 9,
+          "verses": 23,
+          "words": 722
+        },
+        {
+          "chapter": 10,
+          "verses": 36,
+          "words": 891
+        },
+        {
+          "chapter": 11,
+          "verses": 35,
+          "words": 1056
+        },
+        {
+          "chapter": 12,
+          "verses": 16,
+          "words": 384
+        },
+        {
+          "chapter": 13,
+          "verses": 33,
+          "words": 741
+        },
+        {
+          "chapter": 14,
+          "verses": 45,
+          "words": 1181
+        },
+        {
+          "chapter": 15,
+          "verses": 41,
+          "words": 1068
+        },
+        {
+          "chapter": 16,
+          "verses": 50,
+          "words": 1341
+        },
+        {
+          "chapter": 17,
+          "verses": 13,
+          "words": 335
+        },
+        {
+          "chapter": 18,
+          "verses": 32,
+          "words": 1112
+        },
+        {
+          "chapter": 19,
+          "verses": 22,
+          "words": 683
+        },
+        {
+          "chapter": 20,
+          "verses": 29,
+          "words": 792
+        },
+        {
+          "chapter": 21,
+          "verses": 35,
+          "words": 931
+        },
+        {
+          "chapter": 22,
+          "verses": 41,
+          "words": 1201
+        },
+        {
+          "chapter": 23,
+          "verses": 30,
+          "words": 743
+        },
+        {
+          "chapter": 24,
+          "verses": 25,
+          "words": 659
+        },
+        {
+          "chapter": 25,
+          "verses": 18,
+          "words": 445
+        },
+        {
+          "chapter": 26,
+          "verses": 65,
+          "words": 1446
+        },
+        {
+          "chapter": 27,
+          "verses": 23,
+          "words": 610
+        },
+        {
+          "chapter": 28,
+          "verses": 31,
+          "words": 779
+        },
+        {
+          "chapter": 29,
+          "verses": 40,
+          "words": 954
+        },
+        {
+          "chapter": 30,
+          "verses": 16,
+          "words": 503
+        },
+        {
+          "chapter": 31,
+          "verses": 54,
+          "words": 1208
+        },
+        {
+          "chapter": 32,
+          "verses": 42,
+          "words": 1009
+        },
+        {
+          "chapter": 33,
+          "verses": 56,
+          "words": 928
+        },
+        {
+          "chapter": 34,
+          "verses": 29,
+          "words": 630
+        },
+        {
+          "chapter": 35,
+          "verses": 34,
+          "words": 965
+        },
+        {
+          "chapter": 36,
+          "verses": 13,
+          "words": 445
+        }
+      ]
+    },
+    {
+      "book_id": 5,
+      "code": "Deut",
+      "osis_code": "Deut",
+      "title": "Deuteronomy",
+      "chapters_count": 34,
+      "verses_count": 959,
+      "words_count": 28352,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 46,
+          "words": 1262
+        },
+        {
+          "chapter": 2,
+          "verses": 37,
+          "words": 1021
+        },
+        {
+          "chapter": 3,
+          "verses": 29,
+          "words": 815
+        },
+        {
+          "chapter": 4,
+          "verses": 49,
+          "words": 1503
+        },
+        {
+          "chapter": 5,
+          "verses": 33,
+          "words": 921
+        },
+        {
+          "chapter": 6,
+          "verses": 25,
+          "words": 643
+        },
+        {
+          "chapter": 7,
+          "verses": 26,
+          "words": 843
+        },
+        {
+          "chapter": 8,
+          "verses": 20,
+          "words": 566
+        },
+        {
+          "chapter": 9,
+          "verses": 29,
+          "words": 963
+        },
+        {
+          "chapter": 10,
+          "verses": 22,
+          "words": 604
+        },
+        {
+          "chapter": 11,
+          "verses": 32,
+          "words": 950
+        },
+        {
+          "chapter": 12,
+          "verses": 32,
+          "words": 1055
+        },
+        {
+          "chapter": 13,
+          "verses": 18,
+          "words": 627
+        },
+        {
+          "chapter": 14,
+          "verses": 29,
+          "words": 708
+        },
+        {
+          "chapter": 15,
+          "verses": 23,
+          "words": 707
+        },
+        {
+          "chapter": 16,
+          "verses": 22,
+          "words": 710
+        },
+        {
+          "chapter": 17,
+          "verses": 20,
+          "words": 707
+        },
+        {
+          "chapter": 18,
+          "verses": 22,
+          "words": 611
+        },
+        {
+          "chapter": 19,
+          "verses": 21,
+          "words": 608
+        },
+        {
+          "chapter": 20,
+          "verses": 20,
+          "words": 646
+        },
+        {
+          "chapter": 21,
+          "verses": 23,
+          "words": 731
+        },
+        {
+          "chapter": 22,
+          "verses": 30,
+          "words": 894
+        },
+        {
+          "chapter": 23,
+          "verses": 25,
+          "words": 685
+        },
+        {
+          "chapter": 24,
+          "verses": 22,
+          "words": 681
+        },
+        {
+          "chapter": 25,
+          "verses": 19,
+          "words": 562
+        },
+        {
+          "chapter": 26,
+          "verses": 19,
+          "words": 667
+        },
+        {
+          "chapter": 27,
+          "verses": 26,
+          "words": 599
+        },
+        {
+          "chapter": 28,
+          "verses": 68,
+          "words": 2075
+        },
+        {
+          "chapter": 29,
+          "verses": 29,
+          "words": 851
+        },
+        {
+          "chapter": 30,
+          "verses": 20,
+          "words": 665
+        },
+        {
+          "chapter": 31,
+          "verses": 30,
+          "words": 1041
+        },
+        {
+          "chapter": 32,
+          "verses": 52,
+          "words": 1306
+        },
+        {
+          "chapter": 33,
+          "verses": 29,
+          "words": 805
+        },
+        {
+          "chapter": 34,
+          "verses": 12,
+          "words": 320
+        }
+      ]
+    },
+    {
+      "book_id": 6,
+      "code": "Josh",
+      "osis_code": "Josh",
+      "title": "Joshua",
+      "chapters_count": 24,
+      "verses_count": 658,
+      "words_count": 18854,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 18,
+          "words": 573
+        },
+        {
+          "chapter": 2,
+          "verses": 24,
+          "words": 768
+        },
+        {
+          "chapter": 3,
+          "verses": 17,
+          "words": 566
+        },
+        {
+          "chapter": 4,
+          "verses": 24,
+          "words": 707
+        },
+        {
+          "chapter": 5,
+          "verses": 15,
+          "words": 550
+        },
+        {
+          "chapter": 6,
+          "verses": 27,
+          "words": 904
+        },
+        {
+          "chapter": 7,
+          "verses": 26,
+          "words": 927
+        },
+        {
+          "chapter": 8,
+          "verses": 35,
+          "words": 1221
+        },
+        {
+          "chapter": 9,
+          "verses": 27,
+          "words": 800
+        },
+        {
+          "chapter": 10,
+          "verses": 43,
+          "words": 1393
+        },
+        {
+          "chapter": 11,
+          "verses": 23,
+          "words": 717
+        },
+        {
+          "chapter": 12,
+          "verses": 24,
+          "words": 486
+        },
+        {
+          "chapter": 13,
+          "verses": 33,
+          "words": 825
+        },
+        {
+          "chapter": 14,
+          "verses": 15,
+          "words": 485
+        },
+        {
+          "chapter": 15,
+          "verses": 63,
+          "words": 1032
+        },
+        {
+          "chapter": 16,
+          "verses": 10,
+          "words": 253
+        },
+        {
+          "chapter": 17,
+          "verses": 18,
+          "words": 660
+        },
+        {
+          "chapter": 18,
+          "verses": 28,
+          "words": 770
+        },
+        {
+          "chapter": 19,
+          "verses": 51,
+          "words": 944
+        },
+        {
+          "chapter": 20,
+          "verses": 9,
+          "words": 308
+        },
+        {
+          "chapter": 21,
+          "verses": 45,
+          "words": 1026
+        },
+        {
+          "chapter": 22,
+          "verses": 34,
+          "words": 1321
+        },
+        {
+          "chapter": 23,
+          "verses": 16,
+          "words": 574
+        },
+        {
+          "chapter": 24,
+          "verses": 33,
+          "words": 1044
+        }
+      ]
+    },
+    {
+      "book_id": 7,
+      "code": "Judg",
+      "osis_code": "Judg",
+      "title": "Judges",
+      "chapters_count": 21,
+      "verses_count": 618,
+      "words_count": 18966,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 36,
+          "words": 962
+        },
+        {
+          "chapter": 2,
+          "verses": 23,
+          "words": 692
+        },
+        {
+          "chapter": 3,
+          "verses": 31,
+          "words": 842
+        },
+        {
+          "chapter": 4,
+          "verses": 24,
+          "words": 761
+        },
+        {
+          "chapter": 5,
+          "verses": 31,
+          "words": 755
+        },
+        {
+          "chapter": 6,
+          "verses": 40,
+          "words": 1295
+        },
+        {
+          "chapter": 7,
+          "verses": 25,
+          "words": 952
+        },
+        {
+          "chapter": 8,
+          "verses": 35,
+          "words": 987
+        },
+        {
+          "chapter": 9,
+          "verses": 57,
+          "words": 1667
+        },
+        {
+          "chapter": 10,
+          "verses": 18,
+          "words": 473
+        },
+        {
+          "chapter": 11,
+          "verses": 40,
+          "words": 1235
+        },
+        {
+          "chapter": 12,
+          "verses": 15,
+          "words": 399
+        },
+        {
+          "chapter": 13,
+          "verses": 25,
+          "words": 765
+        },
+        {
+          "chapter": 14,
+          "verses": 20,
+          "words": 706
+        },
+        {
+          "chapter": 15,
+          "verses": 20,
+          "words": 648
+        },
+        {
+          "chapter": 16,
+          "verses": 31,
+          "words": 1110
+        },
+        {
+          "chapter": 17,
+          "verses": 13,
+          "words": 385
+        },
+        {
+          "chapter": 18,
+          "verses": 31,
+          "words": 1035
+        },
+        {
+          "chapter": 19,
+          "verses": 30,
+          "words": 1102
+        },
+        {
+          "chapter": 20,
+          "verses": 48,
+          "words": 1455
+        },
+        {
+          "chapter": 21,
+          "verses": 25,
+          "words": 740
+        }
+      ]
+    },
+    {
+      "book_id": 8,
+      "code": "Ruth",
+      "osis_code": "Ruth",
+      "title": "Ruth",
+      "chapters_count": 4,
+      "verses_count": 85,
+      "words_count": 2574,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 22,
+          "words": 649
+        },
+        {
+          "chapter": 2,
+          "verses": 23,
+          "words": 763
+        },
+        {
+          "chapter": 3,
+          "verses": 18,
+          "words": 541
+        },
+        {
+          "chapter": 4,
+          "verses": 22,
+          "words": 621
+        }
+      ]
+    },
+    {
+      "book_id": 9,
+      "code": "1Sam",
+      "osis_code": "1Sam",
+      "title": "1 Samuel",
+      "chapters_count": 31,
+      "verses_count": 810,
+      "words_count": 25048,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 28,
+          "words": 782
+        },
+        {
+          "chapter": 2,
+          "verses": 36,
+          "words": 1104
+        },
+        {
+          "chapter": 3,
+          "verses": 21,
+          "words": 549
+        },
+        {
+          "chapter": 4,
+          "verses": 22,
+          "words": 733
+        },
+        {
+          "chapter": 5,
+          "verses": 12,
+          "words": 439
+        },
+        {
+          "chapter": 6,
+          "verses": 21,
+          "words": 752
+        },
+        {
+          "chapter": 7,
+          "verses": 17,
+          "words": 510
+        },
+        {
+          "chapter": 8,
+          "verses": 22,
+          "words": 541
+        },
+        {
+          "chapter": 9,
+          "verses": 27,
+          "words": 990
+        },
+        {
+          "chapter": 10,
+          "verses": 27,
+          "words": 863
+        },
+        {
+          "chapter": 11,
+          "verses": 15,
+          "words": 503
+        },
+        {
+          "chapter": 12,
+          "verses": 25,
+          "words": 771
+        },
+        {
+          "chapter": 13,
+          "verses": 23,
+          "words": 697
+        },
+        {
+          "chapter": 14,
+          "verses": 52,
+          "words": 1606
+        },
+        {
+          "chapter": 15,
+          "verses": 35,
+          "words": 981
+        },
+        {
+          "chapter": 16,
+          "verses": 23,
+          "words": 680
+        },
+        {
+          "chapter": 17,
+          "verses": 58,
+          "words": 1719
+        },
+        {
+          "chapter": 18,
+          "verses": 30,
+          "words": 845
+        },
+        {
+          "chapter": 19,
+          "verses": 24,
+          "words": 696
+        },
+        {
+          "chapter": 20,
+          "verses": 42,
+          "words": 1289
+        },
+        {
+          "chapter": 21,
+          "verses": 15,
+          "words": 499
+        },
+        {
+          "chapter": 22,
+          "verses": 23,
+          "words": 761
+        },
+        {
+          "chapter": 23,
+          "verses": 29,
+          "words": 831
+        },
+        {
+          "chapter": 24,
+          "verses": 22,
+          "words": 661
+        },
+        {
+          "chapter": 25,
+          "verses": 44,
+          "words": 1452
+        },
+        {
+          "chapter": 26,
+          "verses": 25,
+          "words": 849
+        },
+        {
+          "chapter": 27,
+          "verses": 12,
+          "words": 385
+        },
+        {
+          "chapter": 28,
+          "verses": 25,
+          "words": 835
+        },
+        {
+          "chapter": 29,
+          "verses": 11,
+          "words": 421
+        },
+        {
+          "chapter": 30,
+          "verses": 31,
+          "words": 956
+        },
+        {
+          "chapter": 31,
+          "verses": 13,
+          "words": 348
+        }
+      ]
+    },
+    {
+      "book_id": 10,
+      "code": "2Sam",
+      "osis_code": "2Sam",
+      "title": "2 Samuel",
+      "chapters_count": 24,
+      "verses_count": 695,
+      "words_count": 20600,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 27,
+          "words": 712
+        },
+        {
+          "chapter": 2,
+          "verses": 32,
+          "words": 911
+        },
+        {
+          "chapter": 3,
+          "verses": 39,
+          "words": 1143
+        },
+        {
+          "chapter": 4,
+          "verses": 12,
+          "words": 434
+        },
+        {
+          "chapter": 5,
+          "verses": 25,
+          "words": 624
+        },
+        {
+          "chapter": 6,
+          "verses": 23,
+          "words": 713
+        },
+        {
+          "chapter": 7,
+          "verses": 29,
+          "words": 858
+        },
+        {
+          "chapter": 8,
+          "verses": 18,
+          "words": 447
+        },
+        {
+          "chapter": 9,
+          "verses": 13,
+          "words": 408
+        },
+        {
+          "chapter": 10,
+          "verses": 19,
+          "words": 608
+        },
+        {
+          "chapter": 11,
+          "verses": 27,
+          "words": 814
+        },
+        {
+          "chapter": 12,
+          "verses": 31,
+          "words": 992
+        },
+        {
+          "chapter": 13,
+          "verses": 39,
+          "words": 1149
+        },
+        {
+          "chapter": 14,
+          "verses": 33,
+          "words": 1117
+        },
+        {
+          "chapter": 15,
+          "verses": 37,
+          "words": 1118
+        },
+        {
+          "chapter": 16,
+          "verses": 23,
+          "words": 738
+        },
+        {
+          "chapter": 17,
+          "verses": 29,
+          "words": 935
+        },
+        {
+          "chapter": 18,
+          "verses": 33,
+          "words": 1096
+        },
+        {
+          "chapter": 19,
+          "verses": 43,
+          "words": 1473
+        },
+        {
+          "chapter": 20,
+          "verses": 26,
+          "words": 848
+        },
+        {
+          "chapter": 21,
+          "verses": 22,
+          "words": 778
+        },
+        {
+          "chapter": 22,
+          "verses": 51,
+          "words": 951
+        },
+        {
+          "chapter": 23,
+          "verses": 39,
+          "words": 878
+        },
+        {
+          "chapter": 24,
+          "verses": 25,
+          "words": 855
+        }
+      ]
+    },
+    {
+      "book_id": 11,
+      "code": "1Kgs",
+      "osis_code": "1Kgs",
+      "title": "1 Kings",
+      "chapters_count": 22,
+      "verses_count": 816,
+      "words_count": 24513,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 53,
+          "words": 1500
+        },
+        {
+          "chapter": 2,
+          "verses": 46,
+          "words": 1510
+        },
+        {
+          "chapter": 3,
+          "verses": 28,
+          "words": 850
+        },
+        {
+          "chapter": 4,
+          "verses": 34,
+          "words": 706
+        },
+        {
+          "chapter": 5,
+          "verses": 18,
+          "words": 527
+        },
+        {
+          "chapter": 6,
+          "verses": 38,
+          "words": 1018
+        },
+        {
+          "chapter": 7,
+          "verses": 51,
+          "words": 1482
+        },
+        {
+          "chapter": 8,
+          "verses": 66,
+          "words": 2139
+        },
+        {
+          "chapter": 9,
+          "verses": 28,
+          "words": 826
+        },
+        {
+          "chapter": 10,
+          "verses": 29,
+          "words": 839
+        },
+        {
+          "chapter": 11,
+          "verses": 43,
+          "words": 1253
+        },
+        {
+          "chapter": 12,
+          "verses": 33,
+          "words": 1038
+        },
+        {
+          "chapter": 13,
+          "verses": 34,
+          "words": 1138
+        },
+        {
+          "chapter": 14,
+          "verses": 31,
+          "words": 987
+        },
+        {
+          "chapter": 15,
+          "verses": 34,
+          "words": 951
+        },
+        {
+          "chapter": 16,
+          "verses": 34,
+          "words": 1035
+        },
+        {
+          "chapter": 17,
+          "verses": 24,
+          "words": 680
+        },
+        {
+          "chapter": 18,
+          "verses": 46,
+          "words": 1397
+        },
+        {
+          "chapter": 19,
+          "verses": 21,
+          "words": 732
+        },
+        {
+          "chapter": 20,
+          "verses": 43,
+          "words": 1480
+        },
+        {
+          "chapter": 21,
+          "verses": 29,
+          "words": 908
+        },
+        {
+          "chapter": 22,
+          "verses": 53,
+          "words": 1517
+        }
+      ]
+    },
+    {
+      "book_id": 12,
+      "code": "2Kgs",
+      "osis_code": "2Kgs",
+      "title": "2 Kings",
+      "chapters_count": 25,
+      "verses_count": 719,
+      "words_count": 23517,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 18,
+          "words": 669
+        },
+        {
+          "chapter": 2,
+          "verses": 25,
+          "words": 848
+        },
+        {
+          "chapter": 3,
+          "verses": 27,
+          "words": 848
+        },
+        {
+          "chapter": 4,
+          "verses": 44,
+          "words": 1369
+        },
+        {
+          "chapter": 5,
+          "verses": 27,
+          "words": 975
+        },
+        {
+          "chapter": 6,
+          "verses": 33,
+          "words": 1019
+        },
+        {
+          "chapter": 7,
+          "verses": 20,
+          "words": 824
+        },
+        {
+          "chapter": 8,
+          "verses": 29,
+          "words": 953
+        },
+        {
+          "chapter": 9,
+          "verses": 37,
+          "words": 1205
+        },
+        {
+          "chapter": 10,
+          "verses": 36,
+          "words": 1203
+        },
+        {
+          "chapter": 11,
+          "verses": 21,
+          "words": 738
+        },
+        {
+          "chapter": 12,
+          "verses": 21,
+          "words": 688
+        },
+        {
+          "chapter": 13,
+          "verses": 25,
+          "words": 775
+        },
+        {
+          "chapter": 14,
+          "verses": 29,
+          "words": 881
+        },
+        {
+          "chapter": 15,
+          "verses": 38,
+          "words": 1092
+        },
+        {
+          "chapter": 16,
+          "verses": 20,
+          "words": 656
+        },
+        {
+          "chapter": 17,
+          "verses": 41,
+          "words": 1245
+        },
+        {
+          "chapter": 18,
+          "verses": 37,
+          "words": 1220
+        },
+        {
+          "chapter": 19,
+          "verses": 37,
+          "words": 1147
+        },
+        {
+          "chapter": 20,
+          "verses": 21,
+          "words": 660
+        },
+        {
+          "chapter": 21,
+          "verses": 26,
+          "words": 747
+        },
+        {
+          "chapter": 22,
+          "verses": 20,
+          "words": 712
+        },
+        {
+          "chapter": 23,
+          "verses": 37,
+          "words": 1477
+        },
+        {
+          "chapter": 24,
+          "verses": 20,
+          "words": 584
+        },
+        {
+          "chapter": 25,
+          "verses": 30,
+          "words": 982
+        }
+      ]
+    },
+    {
+      "book_id": 13,
+      "code": "1Chr",
+      "osis_code": "1Chr",
+      "title": "1 Chronicles",
+      "chapters_count": 29,
+      "verses_count": 942,
+      "words_count": 20365,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 54,
+          "words": 683
+        },
+        {
+          "chapter": 2,
+          "verses": 55,
+          "words": 846
+        },
+        {
+          "chapter": 3,
+          "verses": 24,
+          "words": 347
+        },
+        {
+          "chapter": 4,
+          "verses": 43,
+          "words": 852
+        },
+        {
+          "chapter": 5,
+          "verses": 26,
+          "words": 664
+        },
+        {
+          "chapter": 6,
+          "verses": 81,
+          "words": 1341
+        },
+        {
+          "chapter": 7,
+          "verses": 40,
+          "words": 831
+        },
+        {
+          "chapter": 8,
+          "verses": 40,
+          "words": 491
+        },
+        {
+          "chapter": 9,
+          "verses": 44,
+          "words": 960
+        },
+        {
+          "chapter": 10,
+          "verses": 14,
+          "words": 364
+        },
+        {
+          "chapter": 11,
+          "verses": 47,
+          "words": 944
+        },
+        {
+          "chapter": 12,
+          "verses": 40,
+          "words": 987
+        },
+        {
+          "chapter": 13,
+          "verses": 14,
+          "words": 386
+        },
+        {
+          "chapter": 14,
+          "verses": 17,
+          "words": 357
+        },
+        {
+          "chapter": 15,
+          "verses": 29,
+          "words": 714
+        },
+        {
+          "chapter": 16,
+          "verses": 43,
+          "words": 850
+        },
+        {
+          "chapter": 17,
+          "verses": 27,
+          "words": 779
+        },
+        {
+          "chapter": 18,
+          "verses": 17,
+          "words": 399
+        },
+        {
+          "chapter": 19,
+          "verses": 19,
+          "words": 630
+        },
+        {
+          "chapter": 20,
+          "verses": 8,
+          "words": 289
+        },
+        {
+          "chapter": 21,
+          "verses": 30,
+          "words": 914
+        },
+        {
+          "chapter": 22,
+          "verses": 19,
+          "words": 605
+        },
+        {
+          "chapter": 23,
+          "verses": 32,
+          "words": 681
+        },
+        {
+          "chapter": 24,
+          "verses": 31,
+          "words": 541
+        },
+        {
+          "chapter": 25,
+          "verses": 31,
+          "words": 543
+        },
+        {
+          "chapter": 26,
+          "verses": 32,
+          "words": 710
+        },
+        {
+          "chapter": 27,
+          "verses": 34,
+          "words": 805
+        },
+        {
+          "chapter": 28,
+          "verses": 21,
+          "words": 864
+        },
+        {
+          "chapter": 29,
+          "verses": 30,
+          "words": 988
+        }
+      ]
+    },
+    {
+      "book_id": 14,
+      "code": "2Chr",
+      "osis_code": "2Chr",
+      "title": "2 Chronicles",
+      "chapters_count": 36,
+      "verses_count": 822,
+      "words_count": 26069,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 17,
+          "words": 530
+        },
+        {
+          "chapter": 2,
+          "verses": 18,
+          "words": 645
+        },
+        {
+          "chapter": 3,
+          "verses": 17,
+          "words": 481
+        },
+        {
+          "chapter": 4,
+          "verses": 22,
+          "words": 595
+        },
+        {
+          "chapter": 5,
+          "verses": 14,
+          "words": 497
+        },
+        {
+          "chapter": 6,
+          "verses": 42,
+          "words": 1402
+        },
+        {
+          "chapter": 7,
+          "verses": 22,
+          "words": 748
+        },
+        {
+          "chapter": 8,
+          "verses": 18,
+          "words": 536
+        },
+        {
+          "chapter": 9,
+          "verses": 31,
+          "words": 882
+        },
+        {
+          "chapter": 10,
+          "verses": 19,
+          "words": 560
+        },
+        {
+          "chapter": 11,
+          "verses": 23,
+          "words": 486
+        },
+        {
+          "chapter": 12,
+          "verses": 16,
+          "words": 481
+        },
+        {
+          "chapter": 13,
+          "verses": 23,
+          "words": 674
+        },
+        {
+          "chapter": 14,
+          "verses": 14,
+          "words": 416
+        },
+        {
+          "chapter": 15,
+          "verses": 19,
+          "words": 518
+        },
+        {
+          "chapter": 16,
+          "verses": 14,
+          "words": 479
+        },
+        {
+          "chapter": 17,
+          "verses": 19,
+          "words": 459
+        },
+        {
+          "chapter": 18,
+          "verses": 34,
+          "words": 1050
+        },
+        {
+          "chapter": 19,
+          "verses": 11,
+          "words": 352
+        },
+        {
+          "chapter": 20,
+          "verses": 37,
+          "words": 1148
+        },
+        {
+          "chapter": 21,
+          "verses": 20,
+          "words": 623
+        },
+        {
+          "chapter": 22,
+          "verses": 12,
+          "words": 444
+        },
+        {
+          "chapter": 23,
+          "verses": 21,
+          "words": 788
+        },
+        {
+          "chapter": 24,
+          "verses": 27,
+          "words": 933
+        },
+        {
+          "chapter": 25,
+          "verses": 28,
+          "words": 970
+        },
+        {
+          "chapter": 26,
+          "verses": 23,
+          "words": 721
+        },
+        {
+          "chapter": 27,
+          "verses": 9,
+          "words": 244
+        },
+        {
+          "chapter": 28,
+          "verses": 27,
+          "words": 896
+        },
+        {
+          "chapter": 29,
+          "verses": 36,
+          "words": 1157
+        },
+        {
+          "chapter": 30,
+          "verses": 27,
+          "words": 869
+        },
+        {
+          "chapter": 31,
+          "verses": 21,
+          "words": 757
+        },
+        {
+          "chapter": 32,
+          "verses": 33,
+          "words": 1084
+        },
+        {
+          "chapter": 33,
+          "verses": 25,
+          "words": 780
+        },
+        {
+          "chapter": 34,
+          "verses": 33,
+          "words": 1223
+        },
+        {
+          "chapter": 35,
+          "verses": 27,
+          "words": 900
+        },
+        {
+          "chapter": 36,
+          "verses": 23,
+          "words": 741
+        }
+      ]
+    },
+    {
+      "book_id": 15,
+      "code": "Ezra",
+      "osis_code": "Ezra",
+      "title": "Ezra",
+      "chapters_count": 10,
+      "verses_count": 280,
+      "words_count": 7440,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 11,
+          "words": 371
+        },
+        {
+          "chapter": 2,
+          "verses": 70,
+          "words": 998
+        },
+        {
+          "chapter": 3,
+          "verses": 13,
+          "words": 547
+        },
+        {
+          "chapter": 4,
+          "verses": 24,
+          "words": 769
+        },
+        {
+          "chapter": 5,
+          "verses": 17,
+          "words": 583
+        },
+        {
+          "chapter": 6,
+          "verses": 22,
+          "words": 778
+        },
+        {
+          "chapter": 7,
+          "verses": 28,
+          "words": 863
+        },
+        {
+          "chapter": 8,
+          "verses": 36,
+          "words": 990
+        },
+        {
+          "chapter": 9,
+          "verses": 15,
+          "words": 617
+        },
+        {
+          "chapter": 10,
+          "verses": 44,
+          "words": 924
+        }
+      ]
+    },
+    {
+      "book_id": 16,
+      "code": "Neh",
+      "osis_code": "Neh",
+      "title": "Nehemiah",
+      "chapters_count": 13,
+      "verses_count": 406,
+      "words_count": 10480,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 11,
+          "words": 390
+        },
+        {
+          "chapter": 2,
+          "verses": 20,
+          "words": 718
+        },
+        {
+          "chapter": 3,
+          "verses": 32,
+          "words": 896
+        },
+        {
+          "chapter": 4,
+          "verses": 23,
+          "words": 716
+        },
+        {
+          "chapter": 5,
+          "verses": 19,
+          "words": 636
+        },
+        {
+          "chapter": 6,
+          "verses": 19,
+          "words": 602
+        },
+        {
+          "chapter": 7,
+          "verses": 73,
+          "words": 1176
+        },
+        {
+          "chapter": 8,
+          "verses": 18,
+          "words": 686
+        },
+        {
+          "chapter": 9,
+          "verses": 38,
+          "words": 1328
+        },
+        {
+          "chapter": 10,
+          "verses": 39,
+          "words": 652
+        },
+        {
+          "chapter": 11,
+          "verses": 36,
+          "words": 788
+        },
+        {
+          "chapter": 12,
+          "verses": 47,
+          "words": 930
+        },
+        {
+          "chapter": 13,
+          "verses": 31,
+          "words": 962
+        }
+      ]
+    },
+    {
+      "book_id": 17,
+      "code": "Esth",
+      "osis_code": "Esth",
+      "title": "Esther",
+      "chapters_count": 10,
+      "verses_count": 167,
+      "words_count": 5633,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 22,
+          "words": 716
+        },
+        {
+          "chapter": 2,
+          "verses": 23,
+          "words": 806
+        },
+        {
+          "chapter": 3,
+          "verses": 15,
+          "words": 552
+        },
+        {
+          "chapter": 4,
+          "verses": 17,
+          "words": 517
+        },
+        {
+          "chapter": 5,
+          "verses": 14,
+          "words": 494
+        },
+        {
+          "chapter": 6,
+          "verses": 14,
+          "words": 476
+        },
+        {
+          "chapter": 7,
+          "verses": 10,
+          "words": 345
+        },
+        {
+          "chapter": 8,
+          "verses": 17,
+          "words": 650
+        },
+        {
+          "chapter": 9,
+          "verses": 32,
+          "words": 984
+        },
+        {
+          "chapter": 10,
+          "verses": 3,
+          "words": 93
+        }
+      ]
+    },
+    {
+      "book_id": 18,
+      "code": "Job",
+      "osis_code": "Job",
+      "title": "Job",
+      "chapters_count": 42,
+      "verses_count": 1070,
+      "words_count": 18098,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 22,
+          "words": 641
+        },
+        {
+          "chapter": 2,
+          "verses": 13,
+          "words": 387
+        },
+        {
+          "chapter": 3,
+          "verses": 26,
+          "words": 434
+        },
+        {
+          "chapter": 4,
+          "verses": 21,
+          "words": 336
+        },
+        {
+          "chapter": 5,
+          "verses": 27,
+          "words": 446
+        },
+        {
+          "chapter": 6,
+          "verses": 30,
+          "words": 482
+        },
+        {
+          "chapter": 7,
+          "verses": 21,
+          "words": 394
+        },
+        {
+          "chapter": 8,
+          "verses": 22,
+          "words": 340
+        },
+        {
+          "chapter": 9,
+          "verses": 35,
+          "words": 544
+        },
+        {
+          "chapter": 10,
+          "verses": 22,
+          "words": 402
+        },
+        {
+          "chapter": 11,
+          "verses": 20,
+          "words": 337
+        },
+        {
+          "chapter": 12,
+          "verses": 25,
+          "words": 399
+        },
+        {
+          "chapter": 13,
+          "verses": 28,
+          "words": 413
+        },
+        {
+          "chapter": 14,
+          "verses": 22,
+          "words": 410
+        },
+        {
+          "chapter": 15,
+          "verses": 35,
+          "words": 549
+        },
+        {
+          "chapter": 16,
+          "verses": 22,
+          "words": 375
+        },
+        {
+          "chapter": 17,
+          "verses": 16,
+          "words": 262
+        },
+        {
+          "chapter": 18,
+          "verses": 21,
+          "words": 342
+        },
+        {
+          "chapter": 19,
+          "verses": 29,
+          "words": 475
+        },
+        {
+          "chapter": 20,
+          "verses": 29,
+          "words": 521
+        },
+        {
+          "chapter": 21,
+          "verses": 34,
+          "words": 522
+        },
+        {
+          "chapter": 22,
+          "verses": 30,
+          "words": 482
+        },
+        {
+          "chapter": 23,
+          "verses": 17,
+          "words": 280
+        },
+        {
+          "chapter": 24,
+          "verses": 25,
+          "words": 481
+        },
+        {
+          "chapter": 25,
+          "verses": 6,
+          "words": 90
+        },
+        {
+          "chapter": 26,
+          "verses": 14,
+          "words": 206
+        },
+        {
+          "chapter": 27,
+          "verses": 23,
+          "words": 373
+        },
+        {
+          "chapter": 28,
+          "verses": 28,
+          "words": 455
+        },
+        {
+          "chapter": 29,
+          "verses": 25,
+          "words": 404
+        },
+        {
+          "chapter": 30,
+          "verses": 31,
+          "words": 514
+        },
+        {
+          "chapter": 31,
+          "verses": 40,
+          "words": 691
+        },
+        {
+          "chapter": 32,
+          "verses": 22,
+          "words": 375
+        },
+        {
+          "chapter": 33,
+          "verses": 33,
+          "words": 525
+        },
+        {
+          "chapter": 34,
+          "verses": 37,
+          "words": 615
+        },
+        {
+          "chapter": 35,
+          "verses": 16,
+          "words": 254
+        },
+        {
+          "chapter": 36,
+          "verses": 33,
+          "words": 495
+        },
+        {
+          "chapter": 37,
+          "verses": 24,
+          "words": 402
+        },
+        {
+          "chapter": 38,
+          "verses": 41,
+          "words": 659
+        },
+        {
+          "chapter": 39,
+          "verses": 30,
+          "words": 477
+        },
+        {
+          "chapter": 40,
+          "verses": 24,
+          "words": 361
+        },
+        {
+          "chapter": 41,
+          "verses": 34,
+          "words": 507
+        },
+        {
+          "chapter": 42,
+          "verses": 17,
+          "words": 441
+        }
+      ]
+    },
+    {
+      "book_id": 19,
+      "code": "Ps",
+      "osis_code": "Ps",
+      "title": "Psalms",
+      "chapters_count": 150,
+      "verses_count": 2461,
+      "words_count": 43716,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 6,
+          "words": 130
+        },
+        {
+          "chapter": 2,
+          "verses": 12,
+          "words": 206
+        },
+        {
+          "chapter": 3,
+          "verses": 8,
+          "words": 150
+        },
+        {
+          "chapter": 4,
+          "verses": 8,
+          "words": 175
+        },
+        {
+          "chapter": 5,
+          "verses": 12,
+          "words": 255
+        },
+        {
+          "chapter": 6,
+          "verses": 10,
+          "words": 171
+        },
+        {
+          "chapter": 7,
+          "verses": 17,
+          "words": 343
+        },
+        {
+          "chapter": 8,
+          "verses": 9,
+          "words": 176
+        },
+        {
+          "chapter": 9,
+          "verses": 20,
+          "words": 377
+        },
+        {
+          "chapter": 10,
+          "verses": 18,
+          "words": 350
+        },
+        {
+          "chapter": 11,
+          "verses": 7,
+          "words": 136
+        },
+        {
+          "chapter": 12,
+          "verses": 8,
+          "words": 157
+        },
+        {
+          "chapter": 13,
+          "verses": 6,
+          "words": 115
+        },
+        {
+          "chapter": 14,
+          "verses": 7,
+          "words": 157
+        },
+        {
+          "chapter": 15,
+          "verses": 5,
+          "words": 103
+        },
+        {
+          "chapter": 16,
+          "verses": 11,
+          "words": 209
+        },
+        {
+          "chapter": 17,
+          "verses": 15,
+          "words": 315
+        },
+        {
+          "chapter": 18,
+          "verses": 50,
+          "words": 965
+        },
+        {
+          "chapter": 19,
+          "verses": 14,
+          "words": 280
+        },
+        {
+          "chapter": 20,
+          "verses": 9,
+          "words": 152
+        },
+        {
+          "chapter": 21,
+          "verses": 13,
+          "words": 254
+        },
+        {
+          "chapter": 22,
+          "verses": 31,
+          "words": 591
+        },
+        {
+          "chapter": 23,
+          "verses": 6,
+          "words": 122
+        },
+        {
+          "chapter": 24,
+          "verses": 10,
+          "words": 182
+        },
+        {
+          "chapter": 25,
+          "verses": 22,
+          "words": 346
+        },
+        {
+          "chapter": 26,
+          "verses": 12,
+          "words": 187
+        },
+        {
+          "chapter": 27,
+          "verses": 14,
+          "words": 344
+        },
+        {
+          "chapter": 28,
+          "verses": 9,
+          "words": 205
+        },
+        {
+          "chapter": 29,
+          "verses": 11,
+          "words": 183
+        },
+        {
+          "chapter": 30,
+          "verses": 12,
+          "words": 243
+        },
+        {
+          "chapter": 31,
+          "verses": 24,
+          "words": 506
+        },
+        {
+          "chapter": 32,
+          "verses": 11,
+          "words": 246
+        },
+        {
+          "chapter": 33,
+          "verses": 22,
+          "words": 350
+        },
+        {
+          "chapter": 34,
+          "verses": 22,
+          "words": 365
+        },
+        {
+          "chapter": 35,
+          "verses": 28,
+          "words": 568
+        },
+        {
+          "chapter": 36,
+          "verses": 12,
+          "words": 236
+        },
+        {
+          "chapter": 37,
+          "verses": 40,
+          "words": 706
+        },
+        {
+          "chapter": 38,
+          "verses": 22,
+          "words": 369
+        },
+        {
+          "chapter": 39,
+          "verses": 13,
+          "words": 281
+        },
+        {
+          "chapter": 40,
+          "verses": 17,
+          "words": 408
+        },
+        {
+          "chapter": 41,
+          "verses": 13,
+          "words": 248
+        },
+        {
+          "chapter": 42,
+          "verses": 11,
+          "words": 290
+        },
+        {
+          "chapter": 43,
+          "verses": 5,
+          "words": 130
+        },
+        {
+          "chapter": 44,
+          "verses": 26,
+          "words": 461
+        },
+        {
+          "chapter": 45,
+          "verses": 17,
+          "words": 343
+        },
+        {
+          "chapter": 46,
+          "verses": 11,
+          "words": 217
+        },
+        {
+          "chapter": 47,
+          "verses": 9,
+          "words": 154
+        },
+        {
+          "chapter": 48,
+          "verses": 14,
+          "words": 238
+        },
+        {
+          "chapter": 49,
+          "verses": 20,
+          "words": 348
+        },
+        {
+          "chapter": 50,
+          "verses": 23,
+          "words": 404
+        },
+        {
+          "chapter": 51,
+          "verses": 19,
+          "words": 344
+        },
+        {
+          "chapter": 52,
+          "verses": 9,
+          "words": 194
+        },
+        {
+          "chapter": 53,
+          "verses": 6,
+          "words": 163
+        },
+        {
+          "chapter": 54,
+          "verses": 7,
+          "words": 136
+        },
+        {
+          "chapter": 55,
+          "verses": 23,
+          "words": 446
+        },
+        {
+          "chapter": 56,
+          "verses": 13,
+          "words": 241
+        },
+        {
+          "chapter": 57,
+          "verses": 11,
+          "words": 246
+        },
+        {
+          "chapter": 58,
+          "verses": 11,
+          "words": 226
+        },
+        {
+          "chapter": 59,
+          "verses": 17,
+          "words": 358
+        },
+        {
+          "chapter": 60,
+          "verses": 12,
+          "words": 244
+        },
+        {
+          "chapter": 61,
+          "verses": 8,
+          "words": 143
+        },
+        {
+          "chapter": 62,
+          "verses": 12,
+          "words": 238
+        },
+        {
+          "chapter": 63,
+          "verses": 11,
+          "words": 206
+        },
+        {
+          "chapter": 64,
+          "verses": 10,
+          "words": 192
+        },
+        {
+          "chapter": 65,
+          "verses": 13,
+          "words": 277
+        },
+        {
+          "chapter": 66,
+          "verses": 20,
+          "words": 335
+        },
+        {
+          "chapter": 67,
+          "verses": 7,
+          "words": 121
+        },
+        {
+          "chapter": 68,
+          "verses": 35,
+          "words": 708
+        },
+        {
+          "chapter": 69,
+          "verses": 36,
+          "words": 680
+        },
+        {
+          "chapter": 70,
+          "verses": 5,
+          "words": 114
+        },
+        {
+          "chapter": 71,
+          "verses": 24,
+          "words": 471
+        },
+        {
+          "chapter": 72,
+          "verses": 20,
+          "words": 373
+        },
+        {
+          "chapter": 73,
+          "verses": 28,
+          "words": 427
+        },
+        {
+          "chapter": 74,
+          "verses": 23,
+          "words": 416
+        },
+        {
+          "chapter": 75,
+          "verses": 10,
+          "words": 200
+        },
+        {
+          "chapter": 76,
+          "verses": 12,
+          "words": 205
+        },
+        {
+          "chapter": 77,
+          "verses": 20,
+          "words": 340
+        },
+        {
+          "chapter": 78,
+          "verses": 72,
+          "words": 1228
+        },
+        {
+          "chapter": 79,
+          "verses": 13,
+          "words": 281
+        },
+        {
+          "chapter": 80,
+          "verses": 19,
+          "words": 344
+        },
+        {
+          "chapter": 81,
+          "verses": 16,
+          "words": 298
+        },
+        {
+          "chapter": 82,
+          "verses": 8,
+          "words": 120
+        },
+        {
+          "chapter": 83,
+          "verses": 18,
+          "words": 279
+        },
+        {
+          "chapter": 84,
+          "verses": 12,
+          "words": 239
+        },
+        {
+          "chapter": 85,
+          "verses": 13,
+          "words": 218
+        },
+        {
+          "chapter": 86,
+          "verses": 17,
+          "words": 316
+        },
+        {
+          "chapter": 87,
+          "verses": 7,
+          "words": 122
+        },
+        {
+          "chapter": 88,
+          "verses": 18,
+          "words": 317
+        },
+        {
+          "chapter": 89,
+          "verses": 52,
+          "words": 884
+        },
+        {
+          "chapter": 90,
+          "verses": 17,
+          "words": 328
+        },
+        {
+          "chapter": 91,
+          "verses": 16,
+          "words": 288
+        },
+        {
+          "chapter": 92,
+          "verses": 15,
+          "words": 266
+        },
+        {
+          "chapter": 93,
+          "verses": 5,
+          "words": 92
+        },
+        {
+          "chapter": 94,
+          "verses": 23,
+          "words": 356
+        },
+        {
+          "chapter": 95,
+          "verses": 11,
+          "words": 199
+        },
+        {
+          "chapter": 96,
+          "verses": 13,
+          "words": 226
+        },
+        {
+          "chapter": 97,
+          "verses": 12,
+          "words": 189
+        },
+        {
+          "chapter": 98,
+          "verses": 9,
+          "words": 172
+        },
+        {
+          "chapter": 99,
+          "verses": 9,
+          "words": 157
+        },
+        {
+          "chapter": 100,
+          "verses": 5,
+          "words": 90
+        },
+        {
+          "chapter": 101,
+          "verses": 8,
+          "words": 177
+        },
+        {
+          "chapter": 102,
+          "verses": 28,
+          "words": 472
+        },
+        {
+          "chapter": 103,
+          "verses": 22,
+          "words": 346
+        },
+        {
+          "chapter": 104,
+          "verses": 35,
+          "words": 598
+        },
+        {
+          "chapter": 105,
+          "verses": 45,
+          "words": 632
+        },
+        {
+          "chapter": 106,
+          "verses": 48,
+          "words": 762
+        },
+        {
+          "chapter": 107,
+          "verses": 43,
+          "words": 685
+        },
+        {
+          "chapter": 108,
+          "verses": 13,
+          "words": 212
+        },
+        {
+          "chapter": 109,
+          "verses": 31,
+          "words": 542
+        },
+        {
+          "chapter": 110,
+          "verses": 7,
+          "words": 146
+        },
+        {
+          "chapter": 111,
+          "verses": 10,
+          "words": 177
+        },
+        {
+          "chapter": 112,
+          "verses": 10,
+          "words": 172
+        },
+        {
+          "chapter": 113,
+          "verses": 9,
+          "words": 142
+        },
+        {
+          "chapter": 114,
+          "verses": 8,
+          "words": 106
+        },
+        {
+          "chapter": 115,
+          "verses": 18,
+          "words": 274
+        },
+        {
+          "chapter": 116,
+          "verses": 19,
+          "words": 287
+        },
+        {
+          "chapter": 117,
+          "verses": 2,
+          "words": 33
+        },
+        {
+          "chapter": 118,
+          "verses": 29,
+          "words": 465
+        },
+        {
+          "chapter": 119,
+          "verses": 176,
+          "words": 2423
+        },
+        {
+          "chapter": 120,
+          "verses": 7,
+          "words": 92
+        },
+        {
+          "chapter": 121,
+          "verses": 8,
+          "words": 114
+        },
+        {
+          "chapter": 122,
+          "verses": 9,
+          "words": 130
+        },
+        {
+          "chapter": 123,
+          "verses": 4,
+          "words": 98
+        },
+        {
+          "chapter": 124,
+          "verses": 8,
+          "words": 127
+        },
+        {
+          "chapter": 125,
+          "verses": 5,
+          "words": 112
+        },
+        {
+          "chapter": 126,
+          "verses": 6,
+          "words": 98
+        },
+        {
+          "chapter": 127,
+          "verses": 5,
+          "words": 116
+        },
+        {
+          "chapter": 128,
+          "verses": 6,
+          "words": 105
+        },
+        {
+          "chapter": 129,
+          "verses": 8,
+          "words": 123
+        },
+        {
+          "chapter": 130,
+          "verses": 8,
+          "words": 120
+        },
+        {
+          "chapter": 131,
+          "verses": 3,
+          "words": 66
+        },
+        {
+          "chapter": 132,
+          "verses": 18,
+          "words": 280
+        },
+        {
+          "chapter": 133,
+          "verses": 3,
+          "words": 75
+        },
+        {
+          "chapter": 134,
+          "verses": 3,
+          "words": 48
+        },
+        {
+          "chapter": 135,
+          "verses": 21,
+          "words": 329
+        },
+        {
+          "chapter": 136,
+          "verses": 26,
+          "words": 353
+        },
+        {
+          "chapter": 137,
+          "verses": 9,
+          "words": 165
+        },
+        {
+          "chapter": 138,
+          "verses": 8,
+          "words": 176
+        },
+        {
+          "chapter": 139,
+          "verses": 24,
+          "words": 418
+        },
+        {
+          "chapter": 140,
+          "verses": 13,
+          "words": 247
+        },
+        {
+          "chapter": 141,
+          "verses": 10,
+          "words": 207
+        },
+        {
+          "chapter": 142,
+          "verses": 7,
+          "words": 162
+        },
+        {
+          "chapter": 143,
+          "verses": 12,
+          "words": 256
+        },
+        {
+          "chapter": 144,
+          "verses": 15,
+          "words": 306
+        },
+        {
+          "chapter": 145,
+          "verses": 21,
+          "words": 335
+        },
+        {
+          "chapter": 146,
+          "verses": 10,
+          "words": 178
+        },
+        {
+          "chapter": 147,
+          "verses": 20,
+          "words": 299
+        },
+        {
+          "chapter": 148,
+          "verses": 14,
+          "words": 202
+        },
+        {
+          "chapter": 149,
+          "verses": 9,
+          "words": 143
+        },
+        {
+          "chapter": 150,
+          "verses": 6,
+          "words": 85
+        }
+      ]
+    },
+    {
+      "book_id": 20,
+      "code": "Prov",
+      "osis_code": "Prov",
+      "title": "Proverbs",
+      "chapters_count": 31,
+      "verses_count": 915,
+      "words_count": 15038,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 33,
+          "words": 519
+        },
+        {
+          "chapter": 2,
+          "verses": 22,
+          "words": 309
+        },
+        {
+          "chapter": 3,
+          "verses": 35,
+          "words": 541
+        },
+        {
+          "chapter": 4,
+          "verses": 27,
+          "words": 418
+        },
+        {
+          "chapter": 5,
+          "verses": 23,
+          "words": 354
+        },
+        {
+          "chapter": 6,
+          "verses": 35,
+          "words": 546
+        },
+        {
+          "chapter": 7,
+          "verses": 27,
+          "words": 411
+        },
+        {
+          "chapter": 8,
+          "verses": 36,
+          "words": 562
+        },
+        {
+          "chapter": 9,
+          "verses": 18,
+          "words": 288
+        },
+        {
+          "chapter": 10,
+          "verses": 32,
+          "words": 527
+        },
+        {
+          "chapter": 11,
+          "verses": 31,
+          "words": 524
+        },
+        {
+          "chapter": 12,
+          "verses": 28,
+          "words": 476
+        },
+        {
+          "chapter": 13,
+          "verses": 25,
+          "words": 400
+        },
+        {
+          "chapter": 14,
+          "verses": 35,
+          "words": 572
+        },
+        {
+          "chapter": 15,
+          "verses": 33,
+          "words": 544
+        },
+        {
+          "chapter": 16,
+          "verses": 33,
+          "words": 543
+        },
+        {
+          "chapter": 17,
+          "verses": 28,
+          "words": 476
+        },
+        {
+          "chapter": 18,
+          "verses": 24,
+          "words": 381
+        },
+        {
+          "chapter": 19,
+          "verses": 29,
+          "words": 506
+        },
+        {
+          "chapter": 20,
+          "verses": 30,
+          "words": 498
+        },
+        {
+          "chapter": 21,
+          "verses": 31,
+          "words": 501
+        },
+        {
+          "chapter": 22,
+          "verses": 29,
+          "words": 495
+        },
+        {
+          "chapter": 23,
+          "verses": 35,
+          "words": 566
+        },
+        {
+          "chapter": 24,
+          "verses": 34,
+          "words": 580
+        },
+        {
+          "chapter": 25,
+          "verses": 28,
+          "words": 522
+        },
+        {
+          "chapter": 26,
+          "verses": 28,
+          "words": 459
+        },
+        {
+          "chapter": 27,
+          "verses": 27,
+          "words": 460
+        },
+        {
+          "chapter": 28,
+          "verses": 28,
+          "words": 528
+        },
+        {
+          "chapter": 29,
+          "verses": 27,
+          "words": 425
+        },
+        {
+          "chapter": 30,
+          "verses": 33,
+          "words": 640
+        },
+        {
+          "chapter": 31,
+          "verses": 31,
+          "words": 467
+        }
+      ]
+    },
+    {
+      "book_id": 21,
+      "code": "Eccl",
+      "osis_code": "Eccl",
+      "title": "Ecclesiastes",
+      "chapters_count": 12,
+      "verses_count": 222,
+      "words_count": 5579,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 18,
+          "words": 380
+        },
+        {
+          "chapter": 2,
+          "verses": 26,
+          "words": 734
+        },
+        {
+          "chapter": 3,
+          "verses": 22,
+          "words": 517
+        },
+        {
+          "chapter": 4,
+          "verses": 16,
+          "words": 380
+        },
+        {
+          "chapter": 5,
+          "verses": 20,
+          "words": 533
+        },
+        {
+          "chapter": 6,
+          "verses": 12,
+          "words": 301
+        },
+        {
+          "chapter": 7,
+          "verses": 29,
+          "words": 617
+        },
+        {
+          "chapter": 8,
+          "verses": 17,
+          "words": 515
+        },
+        {
+          "chapter": 9,
+          "verses": 18,
+          "words": 555
+        },
+        {
+          "chapter": 10,
+          "verses": 20,
+          "words": 402
+        },
+        {
+          "chapter": 11,
+          "verses": 10,
+          "words": 273
+        },
+        {
+          "chapter": 12,
+          "verses": 14,
+          "words": 372
+        }
+      ]
+    },
+    {
+      "book_id": 22,
+      "code": "Song",
+      "osis_code": "Song",
+      "title": "Song of Songs",
+      "chapters_count": 8,
+      "verses_count": 117,
+      "words_count": 2658,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 17,
+          "words": 326
+        },
+        {
+          "chapter": 2,
+          "verses": 17,
+          "words": 351
+        },
+        {
+          "chapter": 3,
+          "verses": 11,
+          "words": 287
+        },
+        {
+          "chapter": 4,
+          "verses": 16,
+          "words": 363
+        },
+        {
+          "chapter": 5,
+          "verses": 16,
+          "words": 397
+        },
+        {
+          "chapter": 6,
+          "verses": 13,
+          "words": 282
+        },
+        {
+          "chapter": 7,
+          "verses": 13,
+          "words": 292
+        },
+        {
+          "chapter": 8,
+          "verses": 14,
+          "words": 360
+        }
+      ]
+    },
+    {
+      "book_id": 23,
+      "code": "Isa",
+      "osis_code": "Isa",
+      "title": "Isaiah",
+      "chapters_count": 66,
+      "verses_count": 1292,
+      "words_count": 37036,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 31,
+          "words": 758
+        },
+        {
+          "chapter": 2,
+          "verses": 22,
+          "words": 567
+        },
+        {
+          "chapter": 3,
+          "verses": 26,
+          "words": 587
+        },
+        {
+          "chapter": 4,
+          "verses": 6,
+          "words": 209
+        },
+        {
+          "chapter": 5,
+          "verses": 30,
+          "words": 863
+        },
+        {
+          "chapter": 6,
+          "verses": 13,
+          "words": 366
+        },
+        {
+          "chapter": 7,
+          "verses": 25,
+          "words": 693
+        },
+        {
+          "chapter": 8,
+          "verses": 22,
+          "words": 558
+        },
+        {
+          "chapter": 9,
+          "verses": 21,
+          "words": 599
+        },
+        {
+          "chapter": 10,
+          "verses": 34,
+          "words": 928
+        },
+        {
+          "chapter": 11,
+          "verses": 16,
+          "words": 519
+        },
+        {
+          "chapter": 12,
+          "verses": 6,
+          "words": 134
+        },
+        {
+          "chapter": 13,
+          "verses": 22,
+          "words": 576
+        },
+        {
+          "chapter": 14,
+          "verses": 32,
+          "words": 856
+        },
+        {
+          "chapter": 15,
+          "verses": 9,
+          "words": 266
+        },
+        {
+          "chapter": 16,
+          "verses": 14,
+          "words": 415
+        },
+        {
+          "chapter": 17,
+          "verses": 14,
+          "words": 428
+        },
+        {
+          "chapter": 18,
+          "verses": 7,
+          "words": 255
+        },
+        {
+          "chapter": 19,
+          "verses": 25,
+          "words": 730
+        },
+        {
+          "chapter": 20,
+          "verses": 6,
+          "words": 169
+        },
+        {
+          "chapter": 21,
+          "verses": 17,
+          "words": 417
+        },
+        {
+          "chapter": 22,
+          "verses": 25,
+          "words": 676
+        },
+        {
+          "chapter": 23,
+          "verses": 18,
+          "words": 469
+        },
+        {
+          "chapter": 24,
+          "verses": 23,
+          "words": 592
+        },
+        {
+          "chapter": 25,
+          "verses": 12,
+          "words": 381
+        },
+        {
+          "chapter": 26,
+          "verses": 21,
+          "words": 550
+        },
+        {
+          "chapter": 27,
+          "verses": 13,
+          "words": 405
+        },
+        {
+          "chapter": 28,
+          "verses": 29,
+          "words": 814
+        },
+        {
+          "chapter": 29,
+          "verses": 24,
+          "words": 742
+        },
+        {
+          "chapter": 30,
+          "verses": 33,
+          "words": 1059
+        },
+        {
+          "chapter": 31,
+          "verses": 9,
+          "words": 322
+        },
+        {
+          "chapter": 32,
+          "verses": 20,
+          "words": 436
+        },
+        {
+          "chapter": 33,
+          "verses": 24,
+          "words": 585
+        },
+        {
+          "chapter": 34,
+          "verses": 17,
+          "words": 522
+        },
+        {
+          "chapter": 35,
+          "verses": 10,
+          "words": 277
+        },
+        {
+          "chapter": 36,
+          "verses": 22,
+          "words": 690
+        },
+        {
+          "chapter": 37,
+          "verses": 38,
+          "words": 1131
+        },
+        {
+          "chapter": 38,
+          "verses": 22,
+          "words": 592
+        },
+        {
+          "chapter": 39,
+          "verses": 8,
+          "words": 268
+        },
+        {
+          "chapter": 40,
+          "verses": 31,
+          "words": 796
+        },
+        {
+          "chapter": 41,
+          "verses": 29,
+          "words": 804
+        },
+        {
+          "chapter": 42,
+          "verses": 25,
+          "words": 676
+        },
+        {
+          "chapter": 43,
+          "verses": 28,
+          "words": 711
+        },
+        {
+          "chapter": 44,
+          "verses": 28,
+          "words": 886
+        },
+        {
+          "chapter": 45,
+          "verses": 25,
+          "words": 774
+        },
+        {
+          "chapter": 46,
+          "verses": 13,
+          "words": 342
+        },
+        {
+          "chapter": 47,
+          "verses": 15,
+          "words": 471
+        },
+        {
+          "chapter": 48,
+          "verses": 22,
+          "words": 627
+        },
+        {
+          "chapter": 49,
+          "verses": 26,
+          "words": 867
+        },
+        {
+          "chapter": 50,
+          "verses": 11,
+          "words": 365
+        },
+        {
+          "chapter": 51,
+          "verses": 23,
+          "words": 771
+        },
+        {
+          "chapter": 52,
+          "verses": 15,
+          "words": 405
+        },
+        {
+          "chapter": 53,
+          "verses": 12,
+          "words": 387
+        },
+        {
+          "chapter": 54,
+          "verses": 17,
+          "words": 493
+        },
+        {
+          "chapter": 55,
+          "verses": 13,
+          "words": 399
+        },
+        {
+          "chapter": 56,
+          "verses": 12,
+          "words": 361
+        },
+        {
+          "chapter": 57,
+          "verses": 21,
+          "words": 569
+        },
+        {
+          "chapter": 58,
+          "verses": 14,
+          "words": 521
+        },
+        {
+          "chapter": 59,
+          "verses": 21,
+          "words": 590
+        },
+        {
+          "chapter": 60,
+          "verses": 22,
+          "words": 665
+        },
+        {
+          "chapter": 61,
+          "verses": 11,
+          "words": 380
+        },
+        {
+          "chapter": 62,
+          "verses": 12,
+          "words": 362
+        },
+        {
+          "chapter": 63,
+          "verses": 19,
+          "words": 538
+        },
+        {
+          "chapter": 64,
+          "verses": 12,
+          "words": 308
+        },
+        {
+          "chapter": 65,
+          "verses": 25,
+          "words": 753
+        },
+        {
+          "chapter": 66,
+          "verses": 24,
+          "words": 811
+        }
+      ]
+    },
+    {
+      "book_id": 24,
+      "code": "Jer",
+      "osis_code": "Jer",
+      "title": "Jeremiah",
+      "chapters_count": 52,
+      "verses_count": 1364,
+      "words_count": 42654,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 19,
+          "words": 528
+        },
+        {
+          "chapter": 2,
+          "verses": 37,
+          "words": 1019
+        },
+        {
+          "chapter": 3,
+          "verses": 25,
+          "words": 802
+        },
+        {
+          "chapter": 4,
+          "verses": 31,
+          "words": 861
+        },
+        {
+          "chapter": 5,
+          "verses": 31,
+          "words": 874
+        },
+        {
+          "chapter": 6,
+          "verses": 30,
+          "words": 827
+        },
+        {
+          "chapter": 7,
+          "verses": 34,
+          "words": 970
+        },
+        {
+          "chapter": 8,
+          "verses": 22,
+          "words": 706
+        },
+        {
+          "chapter": 9,
+          "verses": 26,
+          "words": 772
+        },
+        {
+          "chapter": 10,
+          "verses": 25,
+          "words": 674
+        },
+        {
+          "chapter": 11,
+          "verses": 23,
+          "words": 749
+        },
+        {
+          "chapter": 12,
+          "verses": 17,
+          "words": 544
+        },
+        {
+          "chapter": 13,
+          "verses": 27,
+          "words": 739
+        },
+        {
+          "chapter": 14,
+          "verses": 22,
+          "words": 688
+        },
+        {
+          "chapter": 15,
+          "verses": 21,
+          "words": 702
+        },
+        {
+          "chapter": 16,
+          "verses": 21,
+          "words": 699
+        },
+        {
+          "chapter": 17,
+          "verses": 27,
+          "words": 829
+        },
+        {
+          "chapter": 18,
+          "verses": 23,
+          "words": 659
+        },
+        {
+          "chapter": 19,
+          "verses": 15,
+          "words": 541
+        },
+        {
+          "chapter": 20,
+          "verses": 18,
+          "words": 594
+        },
+        {
+          "chapter": 21,
+          "verses": 14,
+          "words": 498
+        },
+        {
+          "chapter": 22,
+          "verses": 30,
+          "words": 837
+        },
+        {
+          "chapter": 23,
+          "verses": 40,
+          "words": 1186
+        },
+        {
+          "chapter": 24,
+          "verses": 10,
+          "words": 361
+        },
+        {
+          "chapter": 25,
+          "verses": 38,
+          "words": 1138
+        },
+        {
+          "chapter": 26,
+          "verses": 24,
+          "words": 800
+        },
+        {
+          "chapter": 27,
+          "verses": 22,
+          "words": 762
+        },
+        {
+          "chapter": 28,
+          "verses": 17,
+          "words": 540
+        },
+        {
+          "chapter": 29,
+          "verses": 32,
+          "words": 1005
+        },
+        {
+          "chapter": 30,
+          "verses": 24,
+          "words": 717
+        },
+        {
+          "chapter": 31,
+          "verses": 40,
+          "words": 1294
+        },
+        {
+          "chapter": 32,
+          "verses": 44,
+          "words": 1432
+        },
+        {
+          "chapter": 33,
+          "verses": 26,
+          "words": 842
+        },
+        {
+          "chapter": 34,
+          "verses": 22,
+          "words": 824
+        },
+        {
+          "chapter": 35,
+          "verses": 19,
+          "words": 657
+        },
+        {
+          "chapter": 36,
+          "verses": 32,
+          "words": 1110
+        },
+        {
+          "chapter": 37,
+          "verses": 21,
+          "words": 611
+        },
+        {
+          "chapter": 38,
+          "verses": 28,
+          "words": 984
+        },
+        {
+          "chapter": 39,
+          "verses": 18,
+          "words": 545
+        },
+        {
+          "chapter": 40,
+          "verses": 16,
+          "words": 681
+        },
+        {
+          "chapter": 41,
+          "verses": 18,
+          "words": 664
+        },
+        {
+          "chapter": 42,
+          "verses": 22,
+          "words": 774
+        },
+        {
+          "chapter": 43,
+          "verses": 13,
+          "words": 460
+        },
+        {
+          "chapter": 44,
+          "verses": 30,
+          "words": 1228
+        },
+        {
+          "chapter": 45,
+          "verses": 5,
+          "words": 152
+        },
+        {
+          "chapter": 46,
+          "verses": 28,
+          "words": 821
+        },
+        {
+          "chapter": 47,
+          "verses": 7,
+          "words": 215
+        },
+        {
+          "chapter": 48,
+          "verses": 47,
+          "words": 1172
+        },
+        {
+          "chapter": 49,
+          "verses": 39,
+          "words": 1180
+        },
+        {
+          "chapter": 50,
+          "verses": 46,
+          "words": 1460
+        },
+        {
+          "chapter": 51,
+          "verses": 64,
+          "words": 1853
+        },
+        {
+          "chapter": 52,
+          "verses": 34,
+          "words": 1074
+        }
+      ]
+    },
+    {
+      "book_id": 25,
+      "code": "Lam",
+      "osis_code": "Lam",
+      "title": "Lamentations",
+      "chapters_count": 5,
+      "verses_count": 154,
+      "words_count": 3411,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 22,
+          "words": 758
+        },
+        {
+          "chapter": 2,
+          "verses": 22,
+          "words": 883
+        },
+        {
+          "chapter": 3,
+          "verses": 66,
+          "words": 876
+        },
+        {
+          "chapter": 4,
+          "verses": 22,
+          "words": 598
+        },
+        {
+          "chapter": 5,
+          "verses": 22,
+          "words": 296
+        }
+      ]
+    },
+    {
+      "book_id": 26,
+      "code": "Ezek",
+      "osis_code": "Ezek",
+      "title": "Ezekiel",
+      "chapters_count": 48,
+      "verses_count": 1273,
+      "words_count": 39401,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 28,
+          "words": 870
+        },
+        {
+          "chapter": 2,
+          "verses": 10,
+          "words": 273
+        },
+        {
+          "chapter": 3,
+          "verses": 27,
+          "words": 809
+        },
+        {
+          "chapter": 4,
+          "verses": 17,
+          "words": 519
+        },
+        {
+          "chapter": 5,
+          "verses": 17,
+          "words": 628
+        },
+        {
+          "chapter": 6,
+          "verses": 14,
+          "words": 470
+        },
+        {
+          "chapter": 7,
+          "verses": 27,
+          "words": 768
+        },
+        {
+          "chapter": 8,
+          "verses": 18,
+          "words": 655
+        },
+        {
+          "chapter": 9,
+          "verses": 11,
+          "words": 400
+        },
+        {
+          "chapter": 10,
+          "verses": 22,
+          "words": 659
+        },
+        {
+          "chapter": 11,
+          "verses": 25,
+          "words": 721
+        },
+        {
+          "chapter": 12,
+          "verses": 28,
+          "words": 799
+        },
+        {
+          "chapter": 13,
+          "verses": 23,
+          "words": 738
+        },
+        {
+          "chapter": 14,
+          "verses": 23,
+          "words": 746
+        },
+        {
+          "chapter": 15,
+          "verses": 8,
+          "words": 205
+        },
+        {
+          "chapter": 16,
+          "verses": 63,
+          "words": 1820
+        },
+        {
+          "chapter": 17,
+          "verses": 24,
+          "words": 773
+        },
+        {
+          "chapter": 18,
+          "verses": 32,
+          "words": 919
+        },
+        {
+          "chapter": 19,
+          "verses": 14,
+          "words": 356
+        },
+        {
+          "chapter": 20,
+          "verses": 49,
+          "words": 1601
+        },
+        {
+          "chapter": 21,
+          "verses": 32,
+          "words": 945
+        },
+        {
+          "chapter": 22,
+          "verses": 31,
+          "words": 840
+        },
+        {
+          "chapter": 23,
+          "verses": 49,
+          "words": 1322
+        },
+        {
+          "chapter": 24,
+          "verses": 27,
+          "words": 774
+        },
+        {
+          "chapter": 25,
+          "verses": 17,
+          "words": 507
+        },
+        {
+          "chapter": 26,
+          "verses": 21,
+          "words": 727
+        },
+        {
+          "chapter": 27,
+          "verses": 36,
+          "words": 907
+        },
+        {
+          "chapter": 28,
+          "verses": 26,
+          "words": 809
+        },
+        {
+          "chapter": 29,
+          "verses": 21,
+          "words": 714
+        },
+        {
+          "chapter": 30,
+          "verses": 26,
+          "words": 760
+        },
+        {
+          "chapter": 31,
+          "verses": 18,
+          "words": 680
+        },
+        {
+          "chapter": 32,
+          "verses": 32,
+          "words": 1077
+        },
+        {
+          "chapter": 33,
+          "verses": 33,
+          "words": 1071
+        },
+        {
+          "chapter": 34,
+          "verses": 31,
+          "words": 958
+        },
+        {
+          "chapter": 35,
+          "verses": 15,
+          "words": 402
+        },
+        {
+          "chapter": 36,
+          "verses": 38,
+          "words": 1180
+        },
+        {
+          "chapter": 37,
+          "verses": 28,
+          "words": 870
+        },
+        {
+          "chapter": 38,
+          "verses": 23,
+          "words": 776
+        },
+        {
+          "chapter": 39,
+          "verses": 29,
+          "words": 928
+        },
+        {
+          "chapter": 40,
+          "verses": 49,
+          "words": 1530
+        },
+        {
+          "chapter": 41,
+          "verses": 26,
+          "words": 802
+        },
+        {
+          "chapter": 42,
+          "verses": 20,
+          "words": 568
+        },
+        {
+          "chapter": 43,
+          "verses": 27,
+          "words": 907
+        },
+        {
+          "chapter": 44,
+          "verses": 31,
+          "words": 1031
+        },
+        {
+          "chapter": 45,
+          "verses": 25,
+          "words": 882
+        },
+        {
+          "chapter": 46,
+          "verses": 24,
+          "words": 880
+        },
+        {
+          "chapter": 47,
+          "verses": 23,
+          "words": 780
+        },
+        {
+          "chapter": 48,
+          "verses": 35,
+          "words": 1045
+        }
+      ]
+    },
+    {
+      "book_id": 27,
+      "code": "Dan",
+      "osis_code": "Dan",
+      "title": "Daniel",
+      "chapters_count": 12,
+      "verses_count": 357,
+      "words_count": 11602,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 21,
+          "words": 589
+        },
+        {
+          "chapter": 2,
+          "verses": 49,
+          "words": 1500
+        },
+        {
+          "chapter": 3,
+          "verses": 30,
+          "words": 992
+        },
+        {
+          "chapter": 4,
+          "verses": 37,
+          "words": 1290
+        },
+        {
+          "chapter": 5,
+          "verses": 31,
+          "words": 995
+        },
+        {
+          "chapter": 6,
+          "verses": 28,
+          "words": 905
+        },
+        {
+          "chapter": 7,
+          "verses": 28,
+          "words": 926
+        },
+        {
+          "chapter": 8,
+          "verses": 27,
+          "words": 852
+        },
+        {
+          "chapter": 9,
+          "verses": 27,
+          "words": 966
+        },
+        {
+          "chapter": 10,
+          "verses": 21,
+          "words": 647
+        },
+        {
+          "chapter": 11,
+          "verses": 45,
+          "words": 1529
+        },
+        {
+          "chapter": 12,
+          "verses": 13,
+          "words": 411
+        }
+      ]
+    },
+    {
+      "book_id": 28,
+      "code": "Hos",
+      "osis_code": "Hos",
+      "title": "Hosea",
+      "chapters_count": 14,
+      "verses_count": 197,
+      "words_count": 5174,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 11,
+          "words": 355
+        },
+        {
+          "chapter": 2,
+          "verses": 23,
+          "words": 678
+        },
+        {
+          "chapter": 3,
+          "verses": 5,
+          "words": 156
+        },
+        {
+          "chapter": 4,
+          "verses": 19,
+          "words": 465
+        },
+        {
+          "chapter": 5,
+          "verses": 15,
+          "words": 368
+        },
+        {
+          "chapter": 6,
+          "verses": 11,
+          "words": 254
+        },
+        {
+          "chapter": 7,
+          "verses": 16,
+          "words": 398
+        },
+        {
+          "chapter": 8,
+          "verses": 14,
+          "words": 330
+        },
+        {
+          "chapter": 9,
+          "verses": 17,
+          "words": 468
+        },
+        {
+          "chapter": 10,
+          "verses": 15,
+          "words": 425
+        },
+        {
+          "chapter": 11,
+          "verses": 12,
+          "words": 308
+        },
+        {
+          "chapter": 12,
+          "verses": 14,
+          "words": 311
+        },
+        {
+          "chapter": 13,
+          "verses": 16,
+          "words": 426
+        },
+        {
+          "chapter": 14,
+          "verses": 9,
+          "words": 232
+        }
+      ]
+    },
+    {
+      "book_id": 29,
+      "code": "Joel",
+      "osis_code": "Joel",
+      "title": "Joel",
+      "chapters_count": 3,
+      "verses_count": 73,
+      "words_count": 2033,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 20,
+          "words": 508
+        },
+        {
+          "chapter": 2,
+          "verses": 32,
+          "words": 958
+        },
+        {
+          "chapter": 3,
+          "verses": 21,
+          "words": 567
+        }
+      ]
+    },
+    {
+      "book_id": 30,
+      "code": "Amos",
+      "osis_code": "Amos",
+      "title": "Amos",
+      "chapters_count": 9,
+      "verses_count": 146,
+      "words_count": 4216,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 15,
+          "words": 455
+        },
+        {
+          "chapter": 2,
+          "verses": 16,
+          "words": 441
+        },
+        {
+          "chapter": 3,
+          "verses": 15,
+          "words": 397
+        },
+        {
+          "chapter": 4,
+          "verses": 13,
+          "words": 432
+        },
+        {
+          "chapter": 5,
+          "verses": 27,
+          "words": 658
+        },
+        {
+          "chapter": 6,
+          "verses": 14,
+          "words": 399
+        },
+        {
+          "chapter": 7,
+          "verses": 17,
+          "words": 471
+        },
+        {
+          "chapter": 8,
+          "verses": 14,
+          "words": 414
+        },
+        {
+          "chapter": 9,
+          "verses": 15,
+          "words": 549
+        }
+      ]
+    },
+    {
+      "book_id": 31,
+      "code": "Obad",
+      "osis_code": "Obad",
+      "title": "Obadiah",
+      "chapters_count": 1,
+      "verses_count": 21,
+      "words_count": 669,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 21,
+          "words": 669
+        }
+      ]
+    },
+    {
+      "book_id": 32,
+      "code": "Jonah",
+      "osis_code": "Jonah",
+      "title": "Jonah",
+      "chapters_count": 4,
+      "verses_count": 48,
+      "words_count": 1320,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 17,
+          "words": 514
+        },
+        {
+          "chapter": 2,
+          "verses": 10,
+          "words": 214
+        },
+        {
+          "chapter": 3,
+          "verses": 10,
+          "words": 260
+        },
+        {
+          "chapter": 4,
+          "verses": 11,
+          "words": 332
+        }
+      ]
+    },
+    {
+      "book_id": 33,
+      "code": "Mic",
+      "osis_code": "Mic",
+      "title": "Micah",
+      "chapters_count": 7,
+      "verses_count": 105,
+      "words_count": 3152,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 16,
+          "words": 452
+        },
+        {
+          "chapter": 2,
+          "verses": 13,
+          "words": 400
+        },
+        {
+          "chapter": 3,
+          "verses": 12,
+          "words": 354
+        },
+        {
+          "chapter": 4,
+          "verses": 13,
+          "words": 476
+        },
+        {
+          "chapter": 5,
+          "verses": 15,
+          "words": 447
+        },
+        {
+          "chapter": 6,
+          "verses": 16,
+          "words": 440
+        },
+        {
+          "chapter": 7,
+          "verses": 20,
+          "words": 583
+        }
+      ]
+    },
+    {
+      "book_id": 34,
+      "code": "Nah",
+      "osis_code": "Nah",
+      "title": "Nahum",
+      "chapters_count": 3,
+      "verses_count": 47,
+      "words_count": 1284,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 15,
+          "words": 394
+        },
+        {
+          "chapter": 2,
+          "verses": 13,
+          "words": 371
+        },
+        {
+          "chapter": 3,
+          "verses": 19,
+          "words": 519
+        }
+      ]
+    },
+    {
+      "book_id": 35,
+      "code": "Hab",
+      "osis_code": "Hab",
+      "title": "Habakkuk",
+      "chapters_count": 3,
+      "verses_count": 56,
+      "words_count": 1475,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 17,
+          "words": 423
+        },
+        {
+          "chapter": 2,
+          "verses": 20,
+          "words": 563
+        },
+        {
+          "chapter": 3,
+          "verses": 19,
+          "words": 489
+        }
+      ]
+    },
+    {
+      "book_id": 36,
+      "code": "Zeph",
+      "osis_code": "Zeph",
+      "title": "Zephaniah",
+      "chapters_count": 3,
+      "verses_count": 53,
+      "words_count": 1616,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 18,
+          "words": 555
+        },
+        {
+          "chapter": 2,
+          "verses": 15,
+          "words": 463
+        },
+        {
+          "chapter": 3,
+          "verses": 20,
+          "words": 598
+        }
+      ]
+    },
+    {
+      "book_id": 37,
+      "code": "Hag",
+      "osis_code": "Hag",
+      "title": "Haggai",
+      "chapters_count": 2,
+      "verses_count": 38,
+      "words_count": 1130,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 15,
+          "words": 451
+        },
+        {
+          "chapter": 2,
+          "verses": 23,
+          "words": 679
+        }
+      ]
+    },
+    {
+      "book_id": 38,
+      "code": "Zech",
+      "osis_code": "Zech",
+      "title": "Zechariah",
+      "chapters_count": 14,
+      "verses_count": 211,
+      "words_count": 6443,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 21,
+          "words": 622
+        },
+        {
+          "chapter": 2,
+          "verses": 13,
+          "words": 317
+        },
+        {
+          "chapter": 3,
+          "verses": 10,
+          "words": 296
+        },
+        {
+          "chapter": 4,
+          "verses": 14,
+          "words": 365
+        },
+        {
+          "chapter": 5,
+          "verses": 11,
+          "words": 338
+        },
+        {
+          "chapter": 6,
+          "verses": 15,
+          "words": 424
+        },
+        {
+          "chapter": 7,
+          "verses": 14,
+          "words": 378
+        },
+        {
+          "chapter": 8,
+          "verses": 23,
+          "words": 703
+        },
+        {
+          "chapter": 9,
+          "verses": 17,
+          "words": 537
+        },
+        {
+          "chapter": 10,
+          "verses": 12,
+          "words": 408
+        },
+        {
+          "chapter": 11,
+          "verses": 17,
+          "words": 502
+        },
+        {
+          "chapter": 12,
+          "verses": 14,
+          "words": 462
+        },
+        {
+          "chapter": 13,
+          "verses": 9,
+          "words": 337
+        },
+        {
+          "chapter": 14,
+          "verses": 21,
+          "words": 754
+        }
+      ]
+    },
+    {
+      "book_id": 39,
+      "code": "Mal",
+      "osis_code": "Mal",
+      "title": "Malachi",
+      "chapters_count": 4,
+      "verses_count": 55,
+      "words_count": 1781,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 14,
+          "words": 487
+        },
+        {
+          "chapter": 2,
+          "verses": 17,
+          "words": 546
+        },
+        {
+          "chapter": 3,
+          "verses": 18,
+          "words": 565
+        },
+        {
+          "chapter": 4,
+          "verses": 6,
+          "words": 183
+        }
+      ]
+    },
+    {
+      "book_id": 40,
+      "code": "Mat",
+      "osis_code": "Matt",
+      "title": "Matthew",
+      "chapters_count": 28,
+      "verses_count": 1071,
+      "words_count": 23688,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 25,
+          "words": 473
+        },
+        {
+          "chapter": 2,
+          "verses": 23,
+          "words": 619
+        },
+        {
+          "chapter": 3,
+          "verses": 17,
+          "words": 387
+        },
+        {
+          "chapter": 4,
+          "verses": 25,
+          "words": 557
+        },
+        {
+          "chapter": 5,
+          "verses": 48,
+          "words": 1081
+        },
+        {
+          "chapter": 6,
+          "verses": 34,
+          "words": 794
+        },
+        {
+          "chapter": 7,
+          "verses": 29,
+          "words": 626
+        },
+        {
+          "chapter": 8,
+          "verses": 34,
+          "words": 773
+        },
+        {
+          "chapter": 9,
+          "verses": 38,
+          "words": 837
+        },
+        {
+          "chapter": 10,
+          "verses": 42,
+          "words": 919
+        },
+        {
+          "chapter": 11,
+          "verses": 30,
+          "words": 668
+        },
+        {
+          "chapter": 12,
+          "verses": 50,
+          "words": 1168
+        },
+        {
+          "chapter": 13,
+          "verses": 58,
+          "words": 1367
+        },
+        {
+          "chapter": 14,
+          "verses": 36,
+          "words": 721
+        },
+        {
+          "chapter": 15,
+          "verses": 39,
+          "words": 785
+        },
+        {
+          "chapter": 16,
+          "verses": 28,
+          "words": 688
+        },
+        {
+          "chapter": 17,
+          "verses": 27,
+          "words": 620
+        },
+        {
+          "chapter": 18,
+          "verses": 35,
+          "words": 869
+        },
+        {
+          "chapter": 19,
+          "verses": 30,
+          "words": 719
+        },
+        {
+          "chapter": 20,
+          "verses": 34,
+          "words": 779
+        },
+        {
+          "chapter": 21,
+          "verses": 46,
+          "words": 1126
+        },
+        {
+          "chapter": 22,
+          "verses": 46,
+          "words": 831
+        },
+        {
+          "chapter": 23,
+          "verses": 39,
+          "words": 833
+        },
+        {
+          "chapter": 24,
+          "verses": 51,
+          "words": 1047
+        },
+        {
+          "chapter": 25,
+          "verses": 46,
+          "words": 995
+        },
+        {
+          "chapter": 26,
+          "verses": 75,
+          "words": 1625
+        },
+        {
+          "chapter": 27,
+          "verses": 66,
+          "words": 1360
+        },
+        {
+          "chapter": 28,
+          "verses": 20,
+          "words": 421
+        }
+      ]
+    },
+    {
+      "book_id": 41,
+      "code": "Mark",
+      "osis_code": "Mark",
+      "title": "Mark",
+      "chapters_count": 16,
+      "verses_count": 678,
+      "words_count": 15179,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 45,
+          "words": 931
+        },
+        {
+          "chapter": 2,
+          "verses": 28,
+          "words": 725
+        },
+        {
+          "chapter": 3,
+          "verses": 35,
+          "words": 664
+        },
+        {
+          "chapter": 4,
+          "verses": 41,
+          "words": 923
+        },
+        {
+          "chapter": 5,
+          "verses": 43,
+          "words": 952
+        },
+        {
+          "chapter": 6,
+          "verses": 56,
+          "words": 1323
+        },
+        {
+          "chapter": 7,
+          "verses": 37,
+          "words": 806
+        },
+        {
+          "chapter": 8,
+          "verses": 38,
+          "words": 843
+        },
+        {
+          "chapter": 9,
+          "verses": 50,
+          "words": 1164
+        },
+        {
+          "chapter": 10,
+          "verses": 52,
+          "words": 1221
+        },
+        {
+          "chapter": 11,
+          "verses": 33,
+          "words": 778
+        },
+        {
+          "chapter": 12,
+          "verses": 44,
+          "words": 1062
+        },
+        {
+          "chapter": 13,
+          "verses": 37,
+          "words": 829
+        },
+        {
+          "chapter": 14,
+          "verses": 72,
+          "words": 1595
+        },
+        {
+          "chapter": 15,
+          "verses": 47,
+          "words": 914
+        },
+        {
+          "chapter": 16,
+          "verses": 20,
+          "words": 449
+        }
+      ]
+    },
+    {
+      "book_id": 42,
+      "code": "Luke",
+      "osis_code": "Luke",
+      "title": "Luke",
+      "chapters_count": 24,
+      "verses_count": 1151,
+      "words_count": 25964,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 80,
+          "words": 1585
+        },
+        {
+          "chapter": 2,
+          "verses": 52,
+          "words": 1096
+        },
+        {
+          "chapter": 3,
+          "verses": 38,
+          "words": 1019
+        },
+        {
+          "chapter": 4,
+          "verses": 44,
+          "words": 1021
+        },
+        {
+          "chapter": 5,
+          "verses": 39,
+          "words": 950
+        },
+        {
+          "chapter": 6,
+          "verses": 49,
+          "words": 1231
+        },
+        {
+          "chapter": 7,
+          "verses": 50,
+          "words": 1210
+        },
+        {
+          "chapter": 8,
+          "verses": 56,
+          "words": 1431
+        },
+        {
+          "chapter": 9,
+          "verses": 62,
+          "words": 1457
+        },
+        {
+          "chapter": 10,
+          "verses": 42,
+          "words": 992
+        },
+        {
+          "chapter": 11,
+          "verses": 54,
+          "words": 1331
+        },
+        {
+          "chapter": 12,
+          "verses": 59,
+          "words": 1407
+        },
+        {
+          "chapter": 13,
+          "verses": 35,
+          "words": 867
+        },
+        {
+          "chapter": 14,
+          "verses": 35,
+          "words": 812
+        },
+        {
+          "chapter": 15,
+          "verses": 32,
+          "words": 725
+        },
+        {
+          "chapter": 16,
+          "verses": 31,
+          "words": 752
+        },
+        {
+          "chapter": 17,
+          "verses": 37,
+          "words": 809
+        },
+        {
+          "chapter": 18,
+          "verses": 43,
+          "words": 868
+        },
+        {
+          "chapter": 19,
+          "verses": 48,
+          "words": 1050
+        },
+        {
+          "chapter": 20,
+          "verses": 47,
+          "words": 958
+        },
+        {
+          "chapter": 21,
+          "verses": 38,
+          "words": 821
+        },
+        {
+          "chapter": 22,
+          "verses": 71,
+          "words": 1397
+        },
+        {
+          "chapter": 23,
+          "verses": 56,
+          "words": 1120
+        },
+        {
+          "chapter": 24,
+          "verses": 53,
+          "words": 1055
+        }
+      ]
+    },
+    {
+      "book_id": 43,
+      "code": "John",
+      "osis_code": "John",
+      "title": "John",
+      "chapters_count": 21,
+      "verses_count": 879,
+      "words_count": 19104,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 51,
+          "words": 1004
+        },
+        {
+          "chapter": 2,
+          "verses": 25,
+          "words": 510
+        },
+        {
+          "chapter": 3,
+          "verses": 36,
+          "words": 764
+        },
+        {
+          "chapter": 4,
+          "verses": 54,
+          "words": 1098
+        },
+        {
+          "chapter": 5,
+          "verses": 47,
+          "words": 1001
+        },
+        {
+          "chapter": 6,
+          "verses": 71,
+          "words": 1506
+        },
+        {
+          "chapter": 7,
+          "verses": 53,
+          "words": 1003
+        },
+        {
+          "chapter": 8,
+          "verses": 59,
+          "words": 1307
+        },
+        {
+          "chapter": 9,
+          "verses": 41,
+          "words": 876
+        },
+        {
+          "chapter": 10,
+          "verses": 42,
+          "words": 820
+        },
+        {
+          "chapter": 11,
+          "verses": 57,
+          "words": 1158
+        },
+        {
+          "chapter": 12,
+          "verses": 50,
+          "words": 1060
+        },
+        {
+          "chapter": 13,
+          "verses": 38,
+          "words": 826
+        },
+        {
+          "chapter": 14,
+          "verses": 31,
+          "words": 731
+        },
+        {
+          "chapter": 15,
+          "verses": 27,
+          "words": 613
+        },
+        {
+          "chapter": 16,
+          "verses": 33,
+          "words": 789
+        },
+        {
+          "chapter": 17,
+          "verses": 26,
+          "words": 636
+        },
+        {
+          "chapter": 18,
+          "verses": 40,
+          "words": 947
+        },
+        {
+          "chapter": 19,
+          "verses": 42,
+          "words": 1013
+        },
+        {
+          "chapter": 20,
+          "verses": 31,
+          "words": 749
+        },
+        {
+          "chapter": 21,
+          "verses": 25,
+          "words": 693
+        }
+      ]
+    },
+    {
+      "book_id": 44,
+      "code": "Acts",
+      "osis_code": "Acts",
+      "title": "Acts",
+      "chapters_count": 28,
+      "verses_count": 1007,
+      "words_count": 24289,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 26,
+          "words": 662
+        },
+        {
+          "chapter": 2,
+          "verses": 47,
+          "words": 1024
+        },
+        {
+          "chapter": 3,
+          "verses": 26,
+          "words": 634
+        },
+        {
+          "chapter": 4,
+          "verses": 37,
+          "words": 867
+        },
+        {
+          "chapter": 5,
+          "verses": 42,
+          "words": 1027
+        },
+        {
+          "chapter": 6,
+          "verses": 15,
+          "words": 355
+        },
+        {
+          "chapter": 7,
+          "verses": 60,
+          "words": 1431
+        },
+        {
+          "chapter": 8,
+          "verses": 40,
+          "words": 885
+        },
+        {
+          "chapter": 9,
+          "verses": 43,
+          "words": 1048
+        },
+        {
+          "chapter": 10,
+          "verses": 48,
+          "words": 1111
+        },
+        {
+          "chapter": 11,
+          "verses": 30,
+          "words": 671
+        },
+        {
+          "chapter": 12,
+          "verses": 25,
+          "words": 664
+        },
+        {
+          "chapter": 13,
+          "verses": 52,
+          "words": 1272
+        },
+        {
+          "chapter": 14,
+          "verses": 28,
+          "words": 627
+        },
+        {
+          "chapter": 15,
+          "verses": 41,
+          "words": 926
+        },
+        {
+          "chapter": 16,
+          "verses": 40,
+          "words": 943
+        },
+        {
+          "chapter": 17,
+          "verses": 34,
+          "words": 856
+        },
+        {
+          "chapter": 18,
+          "verses": 28,
+          "words": 665
+        },
+        {
+          "chapter": 19,
+          "verses": 41,
+          "words": 975
+        },
+        {
+          "chapter": 20,
+          "verses": 38,
+          "words": 882
+        },
+        {
+          "chapter": 21,
+          "verses": 40,
+          "words": 1070
+        },
+        {
+          "chapter": 22,
+          "verses": 30,
+          "words": 773
+        },
+        {
+          "chapter": 23,
+          "verses": 35,
+          "words": 923
+        },
+        {
+          "chapter": 24,
+          "verses": 27,
+          "words": 640
+        },
+        {
+          "chapter": 25,
+          "verses": 27,
+          "words": 721
+        },
+        {
+          "chapter": 26,
+          "verses": 32,
+          "words": 783
+        },
+        {
+          "chapter": 27,
+          "verses": 44,
+          "words": 1034
+        },
+        {
+          "chapter": 28,
+          "verses": 31,
+          "words": 820
+        }
+      ]
+    },
+    {
+      "book_id": 45,
+      "code": "Rom",
+      "osis_code": "Rom",
+      "title": "Romans",
+      "chapters_count": 16,
+      "verses_count": 433,
+      "words_count": 9422,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 32,
+          "words": 714
+        },
+        {
+          "chapter": 2,
+          "verses": 29,
+          "words": 604
+        },
+        {
+          "chapter": 3,
+          "verses": 31,
+          "words": 562
+        },
+        {
+          "chapter": 4,
+          "verses": 25,
+          "words": 546
+        },
+        {
+          "chapter": 5,
+          "verses": 21,
+          "words": 480
+        },
+        {
+          "chapter": 6,
+          "verses": 23,
+          "words": 484
+        },
+        {
+          "chapter": 7,
+          "verses": 25,
+          "words": 605
+        },
+        {
+          "chapter": 8,
+          "verses": 39,
+          "words": 903
+        },
+        {
+          "chapter": 9,
+          "verses": 33,
+          "words": 719
+        },
+        {
+          "chapter": 10,
+          "verses": 21,
+          "words": 461
+        },
+        {
+          "chapter": 11,
+          "verses": 36,
+          "words": 818
+        },
+        {
+          "chapter": 12,
+          "verses": 21,
+          "words": 397
+        },
+        {
+          "chapter": 13,
+          "verses": 14,
+          "words": 361
+        },
+        {
+          "chapter": 14,
+          "verses": 23,
+          "words": 525
+        },
+        {
+          "chapter": 15,
+          "verses": 33,
+          "words": 742
+        },
+        {
+          "chapter": 16,
+          "verses": 27,
+          "words": 501
+        }
+      ]
+    },
+    {
+      "book_id": 46,
+      "code": "1Cor",
+      "osis_code": "1Cor",
+      "title": "1 Corinthians",
+      "chapters_count": 16,
+      "verses_count": 437,
+      "words_count": 9462,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 31,
+          "words": 649
+        },
+        {
+          "chapter": 2,
+          "verses": 16,
+          "words": 373
+        },
+        {
+          "chapter": 3,
+          "verses": 23,
+          "words": 459
+        },
+        {
+          "chapter": 4,
+          "verses": 21,
+          "words": 509
+        },
+        {
+          "chapter": 5,
+          "verses": 13,
+          "words": 321
+        },
+        {
+          "chapter": 6,
+          "verses": 20,
+          "words": 465
+        },
+        {
+          "chapter": 7,
+          "verses": 40,
+          "words": 959
+        },
+        {
+          "chapter": 8,
+          "verses": 13,
+          "words": 309
+        },
+        {
+          "chapter": 9,
+          "verses": 27,
+          "words": 671
+        },
+        {
+          "chapter": 10,
+          "verses": 33,
+          "words": 667
+        },
+        {
+          "chapter": 11,
+          "verses": 34,
+          "words": 718
+        },
+        {
+          "chapter": 12,
+          "verses": 31,
+          "words": 593
+        },
+        {
+          "chapter": 13,
+          "verses": 13,
+          "words": 270
+        },
+        {
+          "chapter": 14,
+          "verses": 40,
+          "words": 887
+        },
+        {
+          "chapter": 15,
+          "verses": 58,
+          "words": 1166
+        },
+        {
+          "chapter": 16,
+          "verses": 24,
+          "words": 446
+        }
+      ]
+    },
+    {
+      "book_id": 47,
+      "code": "2Cor",
+      "osis_code": "2Cor",
+      "title": "2 Corinthians",
+      "chapters_count": 13,
+      "verses_count": 257,
+      "words_count": 6065,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 24,
+          "words": 591
+        },
+        {
+          "chapter": 2,
+          "verses": 17,
+          "words": 401
+        },
+        {
+          "chapter": 3,
+          "verses": 18,
+          "words": 389
+        },
+        {
+          "chapter": 4,
+          "verses": 18,
+          "words": 406
+        },
+        {
+          "chapter": 5,
+          "verses": 21,
+          "words": 487
+        },
+        {
+          "chapter": 6,
+          "verses": 18,
+          "words": 357
+        },
+        {
+          "chapter": 7,
+          "verses": 16,
+          "words": 452
+        },
+        {
+          "chapter": 8,
+          "verses": 24,
+          "words": 568
+        },
+        {
+          "chapter": 9,
+          "verses": 15,
+          "words": 355
+        },
+        {
+          "chapter": 10,
+          "verses": 18,
+          "words": 437
+        },
+        {
+          "chapter": 11,
+          "verses": 33,
+          "words": 718
+        },
+        {
+          "chapter": 12,
+          "verses": 21,
+          "words": 589
+        },
+        {
+          "chapter": 13,
+          "verses": 14,
+          "words": 315
+        }
+      ]
+    },
+    {
+      "book_id": 48,
+      "code": "Gal",
+      "osis_code": "Gal",
+      "title": "Galatians",
+      "chapters_count": 6,
+      "verses_count": 149,
+      "words_count": 3084,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 24,
+          "words": 453
+        },
+        {
+          "chapter": 2,
+          "verses": 21,
+          "words": 573
+        },
+        {
+          "chapter": 3,
+          "verses": 29,
+          "words": 648
+        },
+        {
+          "chapter": 4,
+          "verses": 31,
+          "words": 610
+        },
+        {
+          "chapter": 5,
+          "verses": 26,
+          "words": 447
+        },
+        {
+          "chapter": 6,
+          "verses": 18,
+          "words": 353
+        }
+      ]
+    },
+    {
+      "book_id": 49,
+      "code": "Eph",
+      "osis_code": "Eph",
+      "title": "Ephesians",
+      "chapters_count": 6,
+      "verses_count": 155,
+      "words_count": 3022,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 23,
+          "words": 508
+        },
+        {
+          "chapter": 2,
+          "verses": 22,
+          "words": 453
+        },
+        {
+          "chapter": 3,
+          "verses": 21,
+          "words": 410
+        },
+        {
+          "chapter": 4,
+          "verses": 32,
+          "words": 617
+        },
+        {
+          "chapter": 5,
+          "verses": 33,
+          "words": 564
+        },
+        {
+          "chapter": 6,
+          "verses": 24,
+          "words": 470
+        }
+      ]
+    },
+    {
+      "book_id": 50,
+      "code": "Phil",
+      "osis_code": "Phil",
+      "title": "Philippians",
+      "chapters_count": 4,
+      "verses_count": 104,
+      "words_count": 2183,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 30,
+          "words": 632
+        },
+        {
+          "chapter": 2,
+          "verses": 30,
+          "words": 601
+        },
+        {
+          "chapter": 3,
+          "verses": 21,
+          "words": 483
+        },
+        {
+          "chapter": 4,
+          "verses": 23,
+          "words": 467
+        }
+      ]
+    },
+    {
+      "book_id": 51,
+      "code": "Col",
+      "osis_code": "Col",
+      "title": "Colossians",
+      "chapters_count": 4,
+      "verses_count": 95,
+      "words_count": 1981,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 29,
+          "words": 656
+        },
+        {
+          "chapter": 2,
+          "verses": 23,
+          "words": 503
+        },
+        {
+          "chapter": 3,
+          "verses": 25,
+          "words": 459
+        },
+        {
+          "chapter": 4,
+          "verses": 18,
+          "words": 363
+        }
+      ]
+    },
+    {
+      "book_id": 52,
+      "code": "1Thess",
+      "osis_code": "1Thess",
+      "title": "1 Thessalonians",
+      "chapters_count": 5,
+      "verses_count": 89,
+      "words_count": 1837,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 10,
+          "words": 253
+        },
+        {
+          "chapter": 2,
+          "verses": 20,
+          "words": 479
+        },
+        {
+          "chapter": 3,
+          "verses": 13,
+          "words": 295
+        },
+        {
+          "chapter": 4,
+          "verses": 18,
+          "words": 396
+        },
+        {
+          "chapter": 5,
+          "verses": 28,
+          "words": 414
+        }
+      ]
+    },
+    {
+      "book_id": 53,
+      "code": "2Thess",
+      "osis_code": "2Thess",
+      "title": "2 Thessalonians",
+      "chapters_count": 3,
+      "verses_count": 47,
+      "words_count": 1022,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 12,
+          "words": 291
+        },
+        {
+          "chapter": 2,
+          "verses": 17,
+          "words": 381
+        },
+        {
+          "chapter": 3,
+          "verses": 18,
+          "words": 350
+        }
+      ]
+    },
+    {
+      "book_id": 54,
+      "code": "1Tim",
+      "osis_code": "1Tim",
+      "title": "1 Timothy",
+      "chapters_count": 6,
+      "verses_count": 113,
+      "words_count": 2247,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 20,
+          "words": 432
+        },
+        {
+          "chapter": 2,
+          "verses": 15,
+          "words": 248
+        },
+        {
+          "chapter": 3,
+          "verses": 16,
+          "words": 324
+        },
+        {
+          "chapter": 4,
+          "verses": 16,
+          "words": 310
+        },
+        {
+          "chapter": 5,
+          "verses": 25,
+          "words": 471
+        },
+        {
+          "chapter": 6,
+          "verses": 21,
+          "words": 462
+        }
+      ]
+    },
+    {
+      "book_id": 55,
+      "code": "2Tim",
+      "osis_code": "2Tim",
+      "title": "2 Timothy",
+      "chapters_count": 4,
+      "verses_count": 83,
+      "words_count": 1669,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 18,
+          "words": 439
+        },
+        {
+          "chapter": 2,
+          "verses": 26,
+          "words": 508
+        },
+        {
+          "chapter": 3,
+          "verses": 17,
+          "words": 297
+        },
+        {
+          "chapter": 4,
+          "verses": 22,
+          "words": 425
+        }
+      ]
+    },
+    {
+      "book_id": 56,
+      "code": "Titus",
+      "osis_code": "Titus",
+      "title": "Titus",
+      "chapters_count": 3,
+      "verses_count": 46,
+      "words_count": 896,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 16,
+          "words": 337
+        },
+        {
+          "chapter": 2,
+          "verses": 15,
+          "words": 265
+        },
+        {
+          "chapter": 3,
+          "verses": 15,
+          "words": 294
+        }
+      ]
+    },
+    {
+      "book_id": 57,
+      "code": "Phlm",
+      "osis_code": "Phlm",
+      "title": "Philemon",
+      "chapters_count": 1,
+      "verses_count": 25,
+      "words_count": 430,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 25,
+          "words": 430
+        }
+      ]
+    },
+    {
+      "book_id": 58,
+      "code": "Heb",
+      "osis_code": "Heb",
+      "title": "Hebrews",
+      "chapters_count": 13,
+      "verses_count": 303,
+      "words_count": 6899,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 14,
+          "words": 338
+        },
+        {
+          "chapter": 2,
+          "verses": 18,
+          "words": 472
+        },
+        {
+          "chapter": 3,
+          "verses": 19,
+          "words": 362
+        },
+        {
+          "chapter": 4,
+          "verses": 16,
+          "words": 404
+        },
+        {
+          "chapter": 5,
+          "verses": 14,
+          "words": 321
+        },
+        {
+          "chapter": 6,
+          "verses": 20,
+          "words": 426
+        },
+        {
+          "chapter": 7,
+          "verses": 28,
+          "words": 607
+        },
+        {
+          "chapter": 8,
+          "verses": 13,
+          "words": 387
+        },
+        {
+          "chapter": 9,
+          "verses": 28,
+          "words": 679
+        },
+        {
+          "chapter": 10,
+          "verses": 39,
+          "words": 784
+        },
+        {
+          "chapter": 11,
+          "verses": 40,
+          "words": 922
+        },
+        {
+          "chapter": 12,
+          "verses": 29,
+          "words": 696
+        },
+        {
+          "chapter": 13,
+          "verses": 25,
+          "words": 501
+        }
+      ]
+    },
+    {
+      "book_id": 59,
+      "code": "Jas",
+      "osis_code": "Jas",
+      "title": "James",
+      "chapters_count": 5,
+      "verses_count": 108,
+      "words_count": 2304,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 27,
+          "words": 544
+        },
+        {
+          "chapter": 2,
+          "verses": 26,
+          "words": 528
+        },
+        {
+          "chapter": 3,
+          "verses": 18,
+          "words": 378
+        },
+        {
+          "chapter": 4,
+          "verses": 17,
+          "words": 369
+        },
+        {
+          "chapter": 5,
+          "verses": 20,
+          "words": 485
+        }
+      ]
+    },
+    {
+      "book_id": 60,
+      "code": "1Pet",
+      "osis_code": "1Pet",
+      "title": "1 Peter",
+      "chapters_count": 5,
+      "verses_count": 105,
+      "words_count": 2476,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 25,
+          "words": 597
+        },
+        {
+          "chapter": 2,
+          "verses": 25,
+          "words": 549
+        },
+        {
+          "chapter": 3,
+          "verses": 22,
+          "words": 551
+        },
+        {
+          "chapter": 4,
+          "verses": 19,
+          "words": 479
+        },
+        {
+          "chapter": 5,
+          "verses": 14,
+          "words": 300
+        }
+      ]
+    },
+    {
+      "book_id": 61,
+      "code": "2Pet",
+      "osis_code": "2Pet",
+      "title": "2 Peter",
+      "chapters_count": 3,
+      "verses_count": 61,
+      "words_count": 1553,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 21,
+          "words": 488
+        },
+        {
+          "chapter": 2,
+          "verses": 22,
+          "words": 581
+        },
+        {
+          "chapter": 3,
+          "verses": 18,
+          "words": 484
+        }
+      ]
+    },
+    {
+      "book_id": 62,
+      "code": "1John",
+      "osis_code": "1John",
+      "title": "1 John",
+      "chapters_count": 5,
+      "verses_count": 105,
+      "words_count": 2517,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 10,
+          "words": 247
+        },
+        {
+          "chapter": 2,
+          "verses": 29,
+          "words": 736
+        },
+        {
+          "chapter": 3,
+          "verses": 24,
+          "words": 534
+        },
+        {
+          "chapter": 4,
+          "verses": 21,
+          "words": 480
+        },
+        {
+          "chapter": 5,
+          "verses": 21,
+          "words": 520
+        }
+      ]
+    },
+    {
+      "book_id": 63,
+      "code": "2John",
+      "osis_code": "2John",
+      "title": "2 John",
+      "chapters_count": 1,
+      "verses_count": 13,
+      "words_count": 298,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 13,
+          "words": 298
+        }
+      ]
+    },
+    {
+      "book_id": 64,
+      "code": "3John",
+      "osis_code": "3John",
+      "title": "3 John",
+      "chapters_count": 1,
+      "verses_count": 14,
+      "words_count": 294,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 14,
+          "words": 294
+        }
+      ]
+    },
+    {
+      "book_id": 65,
+      "code": "Jude",
+      "osis_code": "Jude",
+      "title": "Jude",
+      "chapters_count": 1,
+      "verses_count": 25,
+      "words_count": 608,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 25,
+          "words": 608
+        }
+      ]
+    },
+    {
+      "book_id": 66,
+      "code": "Rev",
+      "osis_code": "Rev",
+      "title": "Revelation",
+      "chapters_count": 22,
+      "verses_count": 404,
+      "words_count": 11995,
+      "chapters": [
+        {
+          "chapter": 1,
+          "verses": 20,
+          "words": 592
+        },
+        {
+          "chapter": 2,
+          "verses": 29,
+          "words": 802
+        },
+        {
+          "chapter": 3,
+          "verses": 22,
+          "words": 658
+        },
+        {
+          "chapter": 4,
+          "verses": 11,
+          "words": 348
+        },
+        {
+          "chapter": 5,
+          "verses": 14,
+          "words": 435
+        },
+        {
+          "chapter": 6,
+          "verses": 17,
+          "words": 540
+        },
+        {
+          "chapter": 7,
+          "verses": 17,
+          "words": 491
+        },
+        {
+          "chapter": 8,
+          "verses": 13,
+          "words": 397
+        },
+        {
+          "chapter": 9,
+          "verses": 21,
+          "words": 592
+        },
+        {
+          "chapter": 10,
+          "verses": 11,
+          "words": 353
+        },
+        {
+          "chapter": 11,
+          "verses": 19,
+          "words": 580
+        },
+        {
+          "chapter": 12,
+          "verses": 17,
+          "words": 497
+        },
+        {
+          "chapter": 13,
+          "verses": 18,
+          "words": 538
+        },
+        {
+          "chapter": 14,
+          "verses": 20,
+          "words": 651
+        },
+        {
+          "chapter": 15,
+          "verses": 8,
+          "words": 252
+        },
+        {
+          "chapter": 16,
+          "verses": 21,
+          "words": 567
+        },
+        {
+          "chapter": 17,
+          "verses": 18,
+          "words": 522
+        },
+        {
+          "chapter": 18,
+          "verses": 24,
+          "words": 747
+        },
+        {
+          "chapter": 19,
+          "verses": 21,
+          "words": 634
+        },
+        {
+          "chapter": 20,
+          "verses": 15,
+          "words": 477
+        },
+        {
+          "chapter": 21,
+          "verses": 27,
+          "words": 749
+        },
+        {
+          "chapter": 22,
+          "verses": 21,
+          "words": 573
+        }
+      ]
+    }
+  ]
+}
