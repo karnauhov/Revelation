@@ -155,6 +155,7 @@ USFX_REF_OVERRIDES = {
 
 _BASE36_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _WHITESPACE_PATTERN = re.compile(r"\s+")
+_PARAGRAPH_MARK = "\u00b6"
 _STRONG_ATTR_PATTERN = re.compile(r"\s+")
 _STRONG_TOKEN_PATTERN = re.compile(r"^[GH]\d+$", re.IGNORECASE)
 _LEADING_PUNCTUATION_PATTERN = re.compile(
@@ -840,7 +841,11 @@ def _normalize_text(text: str) -> str:
 
 
 def _normalize_kjv_display_text(text: str) -> str:
-    return _normalize_text(_move_wrapped_punctuation_before_strongs(text))
+    return _normalize_text(
+        _move_wrapped_punctuation_before_strongs(
+            text.replace(_PARAGRAPH_MARK, " "),
+        )
+    )
 
 
 def _move_wrapped_punctuation_before_strongs(text: str) -> str:

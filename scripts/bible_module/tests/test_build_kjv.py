@@ -118,11 +118,11 @@ class KjvBuilderTests(unittest.TestCase):
         )
         self.assertEqual(
             texts["John.3.16"],
-            "\u00b6 For G1063 God so loved the world.",
+            "For G1063 God so loved the world.",
         )
         self.assertEqual(
             plain_kjv_text(texts["John.3.16"]),
-            "\u00b6 For God so loved the world.",
+            "For God so loved the world.",
         )
         self.assertEqual(
             texts["Matt.11.6"],
