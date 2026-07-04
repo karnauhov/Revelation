@@ -105,4 +105,22 @@ class BibleModuleDB extends GeneratedDatabase {
         )
         .toList(growable: false);
   }
+
+  Future<List<BibleVerseText>> readAllVerses() async {
+    final rows = await customSelect('''
+      SELECT verse_key, text
+      FROM verses
+      WHERE trim(text) <> ''
+      ORDER BY verse_key
+      ''').get();
+
+    return rows
+        .map(
+          (row) => BibleVerseText(
+            verseKey: row.read<String>('verse_key'),
+            text: row.read<String>('text'),
+          ),
+        )
+        .toList(growable: false);
+  }
 }

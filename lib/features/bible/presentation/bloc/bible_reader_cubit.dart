@@ -37,6 +37,8 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
   final String loadingModuleMessage;
   final String modulesUnavailableMessage;
 
+  BibleRepository get repository => _repository;
+
   Future<void> loadInitial() async {
     final token = _requestGuard.start();
     emit(

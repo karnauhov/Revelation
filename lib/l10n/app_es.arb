@@ -86,6 +86,47 @@
   "bible_close_parallel_reader": "Cerrar lectura paralela",
   "bible_linked_navigation": "Navegación vinculada",
   "bible_unlinked_navigation": "Navegación independiente",
+  "bible_search_in_module": "Buscar en este módulo",
+  "bible_search_dialog_title": "Búsqueda en la Biblia",
+  "bible_search_query_label": "Texto de búsqueda",
+  "bible_search_query_hint": "Frase",
+  "bible_search_button": "Buscar",
+  "bible_search_result_action": "Acción al tocar",
+  "bible_search_action_copy": "Copiar versículo",
+  "bible_search_action_open": "Abrir versículo",
+  "bible_search_copy_results": "Copiar resultados",
+  "bible_search_loading": "Buscando...",
+  "bible_search_failed": "No se pudo buscar.",
+  "bible_search_no_results": "No se encontraron coincidencias.",
+  "bible_search_match_count": "Coincidencias: {matches}; versículos: {verses}",
+  "@bible_search_match_count": {
+    "description": "Search result count label with total occurrences and verses",
+    "placeholders": {
+      "matches": {
+        "type": "int"
+      },
+      "verses": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_search_page_label": "Página {current} de {total}",
+  "@bible_search_page_label": {
+    "description": "Search results pager label",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_search_previous_page": "Página anterior",
+  "bible_search_next_page": "Página siguiente",
+  "bible_search_verse_copied": "Versículo copiado al portapapeles.",
+  "bible_search_references_copied": "Referencias copiadas al portapapeles.",
+  "bible_search_verses_copied": "Versículos copiados al portapapeles.",
   "revelation_structure_screen": "Estructura de Apocalipsis",
   "revelation_structure_header": "Plan del libro y estructura narrativa",
   "historical_background_screen": "Contexto histórico",

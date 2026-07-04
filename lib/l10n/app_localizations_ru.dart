@@ -284,6 +284,68 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bible_unlinked_navigation => 'Независимая навигация';
 
   @override
+  String get bible_search_in_module => 'Искать в этом модуле';
+
+  @override
+  String get bible_search_dialog_title => 'Поиск по Библии';
+
+  @override
+  String get bible_search_query_label => 'Текст поиска';
+
+  @override
+  String get bible_search_query_hint => 'Фраза';
+
+  @override
+  String get bible_search_button => 'Искать';
+
+  @override
+  String get bible_search_result_action => 'Действие при нажатии';
+
+  @override
+  String get bible_search_action_copy => 'Копировать стих';
+
+  @override
+  String get bible_search_action_open => 'Открыть стих';
+
+  @override
+  String get bible_search_copy_results => 'Копировать результаты';
+
+  @override
+  String get bible_search_loading => 'Ищем...';
+
+  @override
+  String get bible_search_failed => 'Не удалось выполнить поиск.';
+
+  @override
+  String get bible_search_no_results => 'Совпадения не найдены.';
+
+  @override
+  String bible_search_match_count(int matches, int verses) {
+    return 'Совпадений: $matches; стихов: $verses';
+  }
+
+  @override
+  String bible_search_page_label(int current, int total) {
+    return 'Страница $current из $total';
+  }
+
+  @override
+  String get bible_search_previous_page => 'Предыдущая страница';
+
+  @override
+  String get bible_search_next_page => 'Следующая страница';
+
+  @override
+  String get bible_search_verse_copied => 'Стих скопирован в буфер обмена.';
+
+  @override
+  String get bible_search_references_copied =>
+      'Ссылки скопированы в буфер обмена.';
+
+  @override
+  String get bible_search_verses_copied => 'Стихи скопированы в буфер обмена.';
+
+  @override
   String get revelation_structure_screen => 'Структура Откровения';
 
   @override

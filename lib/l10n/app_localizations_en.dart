@@ -283,6 +283,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bible_unlinked_navigation => 'Independent navigation';
 
   @override
+  String get bible_search_in_module => 'Search this module';
+
+  @override
+  String get bible_search_dialog_title => 'Bible search';
+
+  @override
+  String get bible_search_query_label => 'Search text';
+
+  @override
+  String get bible_search_query_hint => 'Phrase';
+
+  @override
+  String get bible_search_button => 'Search';
+
+  @override
+  String get bible_search_result_action => 'Tap action';
+
+  @override
+  String get bible_search_action_copy => 'Copy verse';
+
+  @override
+  String get bible_search_action_open => 'Open verse';
+
+  @override
+  String get bible_search_copy_results => 'Copy results';
+
+  @override
+  String get bible_search_loading => 'Searching...';
+
+  @override
+  String get bible_search_failed => 'Couldn\'t search.';
+
+  @override
+  String get bible_search_no_results => 'No matches found.';
+
+  @override
+  String bible_search_match_count(int matches, int verses) {
+    return 'Matches: $matches; verses: $verses';
+  }
+
+  @override
+  String bible_search_page_label(int current, int total) {
+    return 'Page $current of $total';
+  }
+
+  @override
+  String get bible_search_previous_page => 'Previous page';
+
+  @override
+  String get bible_search_next_page => 'Next page';
+
+  @override
+  String get bible_search_verse_copied => 'Verse copied to the clipboard.';
+
+  @override
+  String get bible_search_references_copied =>
+      'References copied to the clipboard.';
+
+  @override
+  String get bible_search_verses_copied => 'Verses copied to the clipboard.';
+
+  @override
   String get revelation_structure_screen => 'Revelation Structure';
 
   @override

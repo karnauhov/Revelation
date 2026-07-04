@@ -66,6 +66,7 @@ void main() {
     expect(find.byType(PlannedFeatureScreen), findsNothing);
     expect(find.text(localizations.bible_screen), findsOneWidget);
     expect(find.byKey(const Key('bible_module_dropdown')), findsOneWidget);
+    expect(find.byKey(const Key('bible_search_button')), findsOneWidget);
     expect(find.byKey(const Key('bible_book_dropdown')), findsOneWidget);
     expect(find.byKey(const Key('bible_chapter_dropdown')), findsOneWidget);
     expect(find.byKey(const Key('bible_verse_dropdown')), findsOneWidget);

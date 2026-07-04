@@ -284,6 +284,68 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bible_unlinked_navigation => 'Незалежна навігація';
 
   @override
+  String get bible_search_in_module => 'Шукати в цьому модулі';
+
+  @override
+  String get bible_search_dialog_title => 'Пошук у Біблії';
+
+  @override
+  String get bible_search_query_label => 'Текст пошуку';
+
+  @override
+  String get bible_search_query_hint => 'Фраза';
+
+  @override
+  String get bible_search_button => 'Шукати';
+
+  @override
+  String get bible_search_result_action => 'Дія після натискання';
+
+  @override
+  String get bible_search_action_copy => 'Копіювати вірш';
+
+  @override
+  String get bible_search_action_open => 'Відкрити вірш';
+
+  @override
+  String get bible_search_copy_results => 'Копіювати результати';
+
+  @override
+  String get bible_search_loading => 'Шукаємо...';
+
+  @override
+  String get bible_search_failed => 'Не вдалося виконати пошук.';
+
+  @override
+  String get bible_search_no_results => 'Збігів не знайдено.';
+
+  @override
+  String bible_search_match_count(int matches, int verses) {
+    return 'Збігів: $matches; віршів: $verses';
+  }
+
+  @override
+  String bible_search_page_label(int current, int total) {
+    return 'Сторінка $current з $total';
+  }
+
+  @override
+  String get bible_search_previous_page => 'Попередня сторінка';
+
+  @override
+  String get bible_search_next_page => 'Наступна сторінка';
+
+  @override
+  String get bible_search_verse_copied => 'Вірш скопійовано в буфер обміну.';
+
+  @override
+  String get bible_search_references_copied =>
+      'Посилання скопійовано в буфер обміну.';
+
+  @override
+  String get bible_search_verses_copied => 'Вірші скопійовано в буфер обміну.';
+
+  @override
   String get revelation_structure_screen => 'Структура Об\'явлення';
 
   @override

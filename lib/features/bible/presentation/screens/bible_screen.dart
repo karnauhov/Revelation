@@ -8,10 +8,13 @@ import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
 import 'package:revelation/features/bible/domain/models/bible_module_info.dart';
+import 'package:revelation/features/bible/domain/models/bible_search_result.dart';
+import 'package:revelation/features/bible/domain/services/bible_text_search.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_state.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_state.dart';
+import 'package:revelation/features/bible/presentation/widgets/bible_search_dialog.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/localization/bible_book_localization.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
@@ -431,6 +434,29 @@ class _BibleReaderToolbar extends StatelessWidget {
         },
       ),
       _BibleToolbarAction(
+        id: 'search',
+        width: 44,
+        inline: IconButton(
+          key: const Key('bible_search_button'),
+          icon: const Icon(Icons.manage_search),
+          tooltip: localizations.bible_search_in_module,
+          color: colorScheme.primary,
+          onPressed: state.isBusy
+              ? null
+              : () => unawaited(
+                  _showBibleSearchDialog(context, selectedModule, readerCubit),
+                ),
+        ),
+        menuIcon: Icons.manage_search,
+        menuLabel: localizations.bible_search_in_module,
+        enabled: !state.isBusy,
+        onMenuSelected: (context) {
+          unawaited(
+            _showBibleSearchDialog(context, selectedModule, readerCubit),
+          );
+        },
+      ),
+      _BibleToolbarAction(
         id: 'book',
         width: 194,
         inline: _ToolbarDropdown<int>(
@@ -803,6 +829,7 @@ class _BibleToolbarOverflowMenuButton extends StatelessWidget {
           items: [
             for (final action in actions)
               PopupMenuItem<String>(
+                key: Key('bible_toolbar_menu_${action.id}'),
                 value: action.id,
                 enabled: action.enabled,
                 child: _ToolbarMenuRow(action: action),
@@ -1588,8 +1615,6 @@ class _BibleVerseRow extends StatelessWidget {
   }
 }
 
-final _strongTokenPattern = RegExp(r'^[GH]\d+$', caseSensitive: false);
-
 List<InlineSpan> _buildBibleTextSpans(
   BuildContext context,
   String text, {
@@ -1605,7 +1630,7 @@ List<InlineSpan> _buildBibleTextSpans(
   final spans = <InlineSpan>[];
   var hasVisibleWord = false;
   for (final token in tokens) {
-    final isStrongToken = _strongTokenPattern.hasMatch(token);
+    final isStrongToken = bibleStrongTokenPattern.hasMatch(token);
     if (isStrongToken) {
       if (!showStrongNumbers || !hasVisibleWord) {
         continue;
@@ -1677,7 +1702,7 @@ Future<void> _copySelectedVerses(
   for (final verse in selectedVerses) {
     buffer
       ..writeln()
-      ..write('${verse.reference.verse}. ${_plainBibleText(verse.text)}');
+      ..write('${verse.reference.verse}. ${plainBibleText(verse.text)}');
   }
 
   await Clipboard.setData(ClipboardData(text: buffer.toString()));
@@ -1686,6 +1711,30 @@ Future<void> _copySelectedVerses(
   }
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(content: Text(localizations.bible_selected_verses_copied)),
+  );
+}
+
+Future<void> _showBibleSearchDialog(
+  BuildContext context,
+  BibleModuleInfo module,
+  BibleReaderCubit readerCubit,
+) async {
+  final result = await showDialog<BibleSearchResult>(
+    context: context,
+    builder: (context) {
+      return BibleSearchDialog(
+        repository: readerCubit.repository,
+        module: module,
+      );
+    },
+  );
+  if (result == null || readerCubit.isClosed) {
+    return;
+  }
+  await readerCubit.selectReference(
+    bookId: result.reference.bookId,
+    chapter: result.reference.chapter,
+    verse: result.reference.verse,
   );
 }
 
@@ -1699,17 +1748,6 @@ String _selectedVerseRangeLabel(
   final bookName = localizedBibleBookName(localizations, reference.bookId);
   final versePart = start == end ? '$start' : '$start-$end';
   return '$bookName ${reference.chapter}:$versePart';
-}
-
-String _plainBibleText(String text) {
-  final tokens = text.trim().split(RegExp(r'\s+'));
-  if (tokens.length == 1 && tokens.first.isEmpty) {
-    return '';
-  }
-  return tokens
-      .where((token) => !_strongTokenPattern.hasMatch(token))
-      .join(' ')
-      .trim();
 }
 
 void _showBibleModuleInfoDialog(BuildContext context, BibleModuleInfo module) {

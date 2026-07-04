@@ -33,5 +33,31 @@ void main() {
         ]);
       },
     );
+
+    test('stores last search query separately for each module', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      const store = SharedPreferencesBiblePreferencesStore();
+
+      await store.saveLastSearchQuery(
+        moduleFile: 'bible_lxx_tr.sqlite',
+        query: 'logos',
+      );
+      await store.saveLastSearchQuery(
+        moduleFile: 'bible_alt.sqlite',
+        query: 'grace',
+      );
+
+      expect(await store.loadLastSearchQuery('bible_lxx_tr.sqlite'), 'logos');
+      expect(await store.loadLastSearchQuery('bible_alt.sqlite'), 'grace');
+    });
+
+    test('normalizes search history values on save', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      const store = SharedPreferencesBiblePreferencesStore();
+
+      await store.saveSearchHistory(['  logos  ', '', 'grace']);
+
+      expect(await store.loadSearchHistory(), ['logos', 'grace']);
+    });
   });
 }

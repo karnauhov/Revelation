@@ -618,6 +618,120 @@ abstract class AppLocalizations {
   /// **'Independent navigation'**
   String get bible_unlinked_navigation;
 
+  /// No description provided for @bible_search_in_module.
+  ///
+  /// In en, this message translates to:
+  /// **'Search this module'**
+  String get bible_search_in_module;
+
+  /// No description provided for @bible_search_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Bible search'**
+  String get bible_search_dialog_title;
+
+  /// No description provided for @bible_search_query_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Search text'**
+  String get bible_search_query_label;
+
+  /// No description provided for @bible_search_query_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Phrase'**
+  String get bible_search_query_hint;
+
+  /// No description provided for @bible_search_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get bible_search_button;
+
+  /// No description provided for @bible_search_result_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap action'**
+  String get bible_search_result_action;
+
+  /// No description provided for @bible_search_action_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy verse'**
+  String get bible_search_action_copy;
+
+  /// No description provided for @bible_search_action_open.
+  ///
+  /// In en, this message translates to:
+  /// **'Open verse'**
+  String get bible_search_action_open;
+
+  /// No description provided for @bible_search_copy_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy results'**
+  String get bible_search_copy_results;
+
+  /// No description provided for @bible_search_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching...'**
+  String get bible_search_loading;
+
+  /// No description provided for @bible_search_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t search.'**
+  String get bible_search_failed;
+
+  /// No description provided for @bible_search_no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches found.'**
+  String get bible_search_no_results;
+
+  /// Search result count label with total occurrences and verses
+  ///
+  /// In en, this message translates to:
+  /// **'Matches: {matches}; verses: {verses}'**
+  String bible_search_match_count(int matches, int verses);
+
+  /// Search results pager label
+  ///
+  /// In en, this message translates to:
+  /// **'Page {current} of {total}'**
+  String bible_search_page_label(int current, int total);
+
+  /// No description provided for @bible_search_previous_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get bible_search_previous_page;
+
+  /// No description provided for @bible_search_next_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get bible_search_next_page;
+
+  /// No description provided for @bible_search_verse_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse copied to the clipboard.'**
+  String get bible_search_verse_copied;
+
+  /// No description provided for @bible_search_references_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'References copied to the clipboard.'**
+  String get bible_search_references_copied;
+
+  /// No description provided for @bible_search_verses_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Verses copied to the clipboard.'**
+  String get bible_search_verses_copied;
+
   /// No description provided for @revelation_structure_screen.
   ///
   /// In en, this message translates to:

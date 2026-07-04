@@ -14,7 +14,7 @@ void main() {
   testWidgets('opens toolbar chapter chooser from overflow menu', (
     tester,
   ) async {
-    await tester.binding.setSurfaceSize(const Size(450, 900));
+    await tester.binding.setSurfaceSize(const Size(375, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(
@@ -39,9 +39,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.more_vert).last);
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.widgetWithText(PopupMenuItem<String>, localizations.bible_chapter),
-    );
+    await tester.tap(find.byKey(const Key('bible_toolbar_menu_chapter')));
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);

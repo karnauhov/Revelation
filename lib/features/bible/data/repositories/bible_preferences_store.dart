@@ -8,6 +8,17 @@ abstract class BiblePreferencesStore {
   Future<List<String>> loadLastModuleFiles();
 
   Future<void> saveLastModuleFiles(List<String> moduleFiles);
+
+  Future<String?> loadLastSearchQuery(String moduleFile);
+
+  Future<void> saveLastSearchQuery({
+    required String moduleFile,
+    required String query,
+  });
+
+  Future<List<String>> loadSearchHistory();
+
+  Future<void> saveSearchHistory(List<String> queries);
 }
 
 class SharedPreferencesBiblePreferencesStore implements BiblePreferencesStore {
@@ -15,6 +26,8 @@ class SharedPreferencesBiblePreferencesStore implements BiblePreferencesStore {
 
   static const String lastModuleFileKey = 'bible.last_module_file';
   static const String lastModuleFilesKey = 'bible.last_module_files';
+  static const String searchHistoryKey = 'bible.search.history';
+  static const String _lastSearchQueryPrefix = 'bible.search.last_query.';
 
   @override
   Future<String?> loadLastModuleFile() async {
@@ -54,5 +67,54 @@ class SharedPreferencesBiblePreferencesStore implements BiblePreferencesStore {
     if (normalized.isNotEmpty) {
       await preferences.setString(lastModuleFileKey, normalized.first);
     }
+  }
+
+  @override
+  Future<String?> loadLastSearchQuery(String moduleFile) async {
+    final preferences = await SharedPreferences.getInstance();
+    final value = preferences
+        .getString(_lastSearchQueryKey(moduleFile))
+        ?.trim();
+    return value == null || value.isEmpty ? null : value;
+  }
+
+  @override
+  Future<void> saveLastSearchQuery({
+    required String moduleFile,
+    required String query,
+  }) async {
+    final preferences = await SharedPreferences.getInstance();
+    final normalized = query.trim();
+    final key = _lastSearchQueryKey(moduleFile);
+    if (normalized.isEmpty) {
+      await preferences.remove(key);
+      return;
+    }
+    await preferences.setString(key, normalized);
+  }
+
+  @override
+  Future<List<String>> loadSearchHistory() async {
+    final preferences = await SharedPreferences.getInstance();
+    final values = preferences.getStringList(searchHistoryKey);
+    if (values == null || values.isEmpty) {
+      return const <String>[];
+    }
+    return List<String>.unmodifiable(
+      values.map((value) => value.trim()).where((value) => value.isNotEmpty),
+    );
+  }
+
+  @override
+  Future<void> saveSearchHistory(List<String> queries) async {
+    final normalized = List<String>.unmodifiable(
+      queries.map((query) => query.trim()).where((query) => query.isNotEmpty),
+    );
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setStringList(searchHistoryKey, normalized);
+  }
+
+  String _lastSearchQueryKey(String moduleFile) {
+    return '$_lastSearchQueryPrefix${moduleFile.trim()}';
   }
 }

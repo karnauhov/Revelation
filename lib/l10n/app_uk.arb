@@ -86,6 +86,47 @@
   "bible_close_parallel_reader": "Закрити паралельне читання",
   "bible_linked_navigation": "Пов'язана навігація",
   "bible_unlinked_navigation": "Незалежна навігація",
+  "bible_search_in_module": "Шукати в цьому модулі",
+  "bible_search_dialog_title": "Пошук у Біблії",
+  "bible_search_query_label": "Текст пошуку",
+  "bible_search_query_hint": "Фраза",
+  "bible_search_button": "Шукати",
+  "bible_search_result_action": "Дія після натискання",
+  "bible_search_action_copy": "Копіювати вірш",
+  "bible_search_action_open": "Відкрити вірш",
+  "bible_search_copy_results": "Копіювати результати",
+  "bible_search_loading": "Шукаємо...",
+  "bible_search_failed": "Не вдалося виконати пошук.",
+  "bible_search_no_results": "Збігів не знайдено.",
+  "bible_search_match_count": "Збігів: {matches}; віршів: {verses}",
+  "@bible_search_match_count": {
+    "description": "Search result count label with total occurrences and verses",
+    "placeholders": {
+      "matches": {
+        "type": "int"
+      },
+      "verses": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_search_page_label": "Сторінка {current} з {total}",
+  "@bible_search_page_label": {
+    "description": "Search results pager label",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_search_previous_page": "Попередня сторінка",
+  "bible_search_next_page": "Наступна сторінка",
+  "bible_search_verse_copied": "Вірш скопійовано в буфер обміну.",
+  "bible_search_references_copied": "Посилання скопійовано в буфер обміну.",
+  "bible_search_verses_copied": "Вірші скопійовано в буфер обміну.",
   "revelation_structure_screen": "Структура Об'явлення",
   "revelation_structure_header": "План книги та структура оповіді",
   "historical_background_screen": "Історична довідка",

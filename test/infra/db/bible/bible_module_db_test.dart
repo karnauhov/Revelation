@@ -80,10 +80,12 @@ void main() {
       final info = await db.readInfo('bible_lxx_tr.sqlite');
       final versionInfo = await db.readVersionInfo();
       final verses = await db.readVersesByKeys(const ['002', '001']);
+      final allVerses = await db.readAllVerses();
 
       expect(info.fileName, 'bible_lxx_tr.sqlite');
       expect(info.code, 'LXX_TR');
       expect(info.displayTitle, 'LXX_TR');
+      expect(allVerses.map((verse) => verse.verseKey), ['001', '002']);
       expect(versionInfo?.schemaVersion, 3);
       expect(versionInfo?.dataVersion, 13);
       expect(

@@ -287,6 +287,69 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bible_unlinked_navigation => 'Navegación independiente';
 
   @override
+  String get bible_search_in_module => 'Buscar en este módulo';
+
+  @override
+  String get bible_search_dialog_title => 'Búsqueda en la Biblia';
+
+  @override
+  String get bible_search_query_label => 'Texto de búsqueda';
+
+  @override
+  String get bible_search_query_hint => 'Frase';
+
+  @override
+  String get bible_search_button => 'Buscar';
+
+  @override
+  String get bible_search_result_action => 'Acción al tocar';
+
+  @override
+  String get bible_search_action_copy => 'Copiar versículo';
+
+  @override
+  String get bible_search_action_open => 'Abrir versículo';
+
+  @override
+  String get bible_search_copy_results => 'Copiar resultados';
+
+  @override
+  String get bible_search_loading => 'Buscando...';
+
+  @override
+  String get bible_search_failed => 'No se pudo buscar.';
+
+  @override
+  String get bible_search_no_results => 'No se encontraron coincidencias.';
+
+  @override
+  String bible_search_match_count(int matches, int verses) {
+    return 'Coincidencias: $matches; versículos: $verses';
+  }
+
+  @override
+  String bible_search_page_label(int current, int total) {
+    return 'Página $current de $total';
+  }
+
+  @override
+  String get bible_search_previous_page => 'Página anterior';
+
+  @override
+  String get bible_search_next_page => 'Página siguiente';
+
+  @override
+  String get bible_search_verse_copied => 'Versículo copiado al portapapeles.';
+
+  @override
+  String get bible_search_references_copied =>
+      'Referencias copiadas al portapapeles.';
+
+  @override
+  String get bible_search_verses_copied =>
+      'Versículos copiados al portapapeles.';
+
+  @override
   String get revelation_structure_screen => 'Estructura de Apocalipsis';
 
   @override

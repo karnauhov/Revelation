@@ -116,6 +116,47 @@
   "bible_close_parallel_reader": "Close parallel reader",
   "bible_linked_navigation": "Linked navigation",
   "bible_unlinked_navigation": "Independent navigation",
+  "bible_search_in_module": "Search this module",
+  "bible_search_dialog_title": "Bible search",
+  "bible_search_query_label": "Search text",
+  "bible_search_query_hint": "Phrase",
+  "bible_search_button": "Search",
+  "bible_search_result_action": "Tap action",
+  "bible_search_action_copy": "Copy verse",
+  "bible_search_action_open": "Open verse",
+  "bible_search_copy_results": "Copy results",
+  "bible_search_loading": "Searching...",
+  "bible_search_failed": "Couldn't search.",
+  "bible_search_no_results": "No matches found.",
+  "bible_search_match_count": "Matches: {matches}; verses: {verses}",
+  "@bible_search_match_count": {
+    "description": "Search result count label with total occurrences and verses",
+    "placeholders": {
+      "matches": {
+        "type": "int"
+      },
+      "verses": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_search_page_label": "Page {current} of {total}",
+  "@bible_search_page_label": {
+    "description": "Search results pager label",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_search_previous_page": "Previous page",
+  "bible_search_next_page": "Next page",
+  "bible_search_verse_copied": "Verse copied to the clipboard.",
+  "bible_search_references_copied": "References copied to the clipboard.",
+  "bible_search_verses_copied": "Verses copied to the clipboard.",
   "revelation_structure_screen": "Revelation Structure",
   "revelation_structure_header": "Book outline and narrative structure",
   "historical_background_screen": "Historical Background",

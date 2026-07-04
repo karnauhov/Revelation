@@ -2,7 +2,9 @@ import 'package:revelation/features/bible/data/repositories/bible_module_data_so
 import 'package:revelation/features/bible/data/repositories/bible_preferences_store.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
 import 'package:revelation/features/bible/domain/models/bible_module_info.dart';
+import 'package:revelation/features/bible/domain/models/bible_search_result.dart';
 import 'package:revelation/features/bible/domain/models/bible_verse_text.dart';
+import 'package:revelation/features/bible/domain/services/bible_text_search.dart';
 import 'package:revelation/shared/models/bible_verse_reference.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
 
@@ -152,6 +154,69 @@ class BibleRepository {
     return _preferencesStore.saveLastModuleFiles(moduleFiles);
   }
 
+  Future<List<BibleSearchResult>> searchModule({
+    required String moduleFile,
+    required String query,
+  }) async {
+    final normalizedQuery = normalizeBibleSearchQuery(query);
+    if (normalizedQuery.isEmpty) {
+      return const <BibleSearchResult>[];
+    }
+
+    final verseMap = await _getVerseMap();
+    final verseTexts = await _readAllVerseTexts(moduleFile);
+    final results = <BibleSearchResult>[];
+    for (final verseText in verseTexts) {
+      final reference = verseMap.referenceForKey(verseText.verseKey);
+      if (reference == null) {
+        continue;
+      }
+      final text = plainBibleText(verseText.text);
+      final matches = findBibleTextMatches(text, normalizedQuery);
+      if (matches.isEmpty) {
+        continue;
+      }
+      results.add(
+        BibleSearchResult(reference: reference, text: text, matches: matches),
+      );
+    }
+    return List<BibleSearchResult>.unmodifiable(results);
+  }
+
+  Future<String?> loadLastSearchQuery(String moduleFile) {
+    return _preferencesStore.loadLastSearchQuery(moduleFile);
+  }
+
+  Future<void> saveLastSearchQuery({
+    required String moduleFile,
+    required String query,
+  }) {
+    return _preferencesStore.saveLastSearchQuery(
+      moduleFile: moduleFile,
+      query: normalizeBibleSearchQuery(query),
+    );
+  }
+
+  Future<List<String>> loadSearchHistory() {
+    return _preferencesStore.loadSearchHistory();
+  }
+
+  Future<void> rememberSearchQuery(String query) async {
+    final normalizedQuery = normalizeBibleSearchQuery(query);
+    if (normalizedQuery.isEmpty) {
+      return;
+    }
+
+    final history = await _preferencesStore.loadSearchHistory();
+    final normalizedLower = normalizedQuery.toLowerCase();
+    final nextHistory = <String>[
+      normalizedQuery,
+      for (final previous in history)
+        if (previous.toLowerCase() != normalizedLower) previous,
+    ];
+    await _preferencesStore.saveSearchHistory(nextHistory);
+  }
+
   Future<BibleVerseMap> _getVerseMap() async {
     return _verseMapCache ??= await _loadVerseMap();
   }
@@ -212,6 +277,15 @@ class BibleRepository {
     final database = _moduleDataSource.openModule(moduleFile);
     try {
       return await database.readVersesByKeys(verseKeys);
+    } finally {
+      await database.close();
+    }
+  }
+
+  Future<List<BibleVerseText>> _readAllVerseTexts(String moduleFile) async {
+    final database = _moduleDataSource.openModule(moduleFile);
+    try {
+      return await database.readAllVerses();
     } finally {
       await database.close();
     }
