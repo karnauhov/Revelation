@@ -5,6 +5,7 @@ import 'package:revelation/features/bible/data/repositories/bible_repository.dar
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_state.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_state.dart';
+import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/models/bible_verse_reference.dart';
 
 typedef BibleRepositoryFactory = BibleRepository Function();
@@ -93,11 +94,14 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     if (normalizedStored.isEmpty) {
       return <String?>[_initialModuleFile];
     }
-    return List<String?>.unmodifiable(normalizedStored);
+    return List<String?>.unmodifiable(
+      normalizedStored.take(AppConstants.maxParallelBibleReaders),
+    );
   }
 
   void openParallelReader() {
-    if (!state.canOpenParallelReader) {
+    if (!state.canOpenParallelReader ||
+        state.paneIds.length >= AppConstants.maxParallelBibleReaders) {
       return;
     }
 
@@ -127,12 +131,12 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     final nextPaneIds = state.paneIds
         .where((candidatePaneId) => candidatePaneId != paneId)
         .toList(growable: false);
+    final subscription = _subscriptions.remove(paneId);
+    final readerCubit = _readerCubits.remove(paneId);
     emit(state.copyWith(paneIds: List<String>.unmodifiable(nextPaneIds)));
 
-    final subscription = _subscriptions.remove(paneId);
-    await subscription?.cancel();
-    final readerCubit = _readerCubits.remove(paneId);
-    await readerCubit?.close();
+    unawaited(subscription?.cancel());
+    unawaited(readerCubit?.close());
     await _saveOpenModuleFiles();
   }
 

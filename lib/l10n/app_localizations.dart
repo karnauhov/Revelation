@@ -609,13 +609,13 @@ abstract class AppLocalizations {
   /// No description provided for @bible_linked_navigation.
   ///
   /// In en, this message translates to:
-  /// **'Linked navigation and scrolling'**
+  /// **'Linked navigation'**
   String get bible_linked_navigation;
 
   /// No description provided for @bible_unlinked_navigation.
   ///
   /// In en, this message translates to:
-  /// **'Independent navigation and scrolling'**
+  /// **'Independent navigation'**
   String get bible_unlinked_navigation;
 
   /// No description provided for @revelation_structure_screen.

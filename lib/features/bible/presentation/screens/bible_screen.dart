@@ -19,6 +19,10 @@ import 'package:revelation/shared/ui/widgets/error_message.dart';
 
 const double _kParallelPaneMinWidth = 420;
 const double _kParallelPaneGap = 10;
+const double _kToolbarChoiceDialogMaxWidth = 420;
+const double _kToolbarChoiceDialogMinWidth = 280;
+const double _kToolbarChoiceDialogHorizontalMargin = 96;
+const double _kToolbarChoiceRowHeight = 44;
 
 class BibleScreen extends StatelessWidget {
   const BibleScreen({
@@ -105,13 +109,36 @@ class _BibleScreenContent extends StatelessWidget {
         actions: [
           BlocBuilder<BibleWorkspaceCubit, BibleWorkspaceState>(
             builder: (context, workspaceState) {
-              return IconButton(
-                key: const Key('bible_open_parallel_reader_button'),
-                icon: const Icon(Icons.add),
-                tooltip: localizations.bible_open_parallel_reader,
-                onPressed: workspaceState.canOpenParallelReader
-                    ? context.read<BibleWorkspaceCubit>().openParallelReader
-                    : null,
+              final workspaceCubit = context.read<BibleWorkspaceCubit>();
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (workspaceState.hasMultiplePanes)
+                    IconButton(
+                      key: const Key('bible_linked_navigation_button'),
+                      icon: Icon(
+                        workspaceState.linkedNavigation
+                            ? Icons.link
+                            : Icons.link_off,
+                      ),
+                      tooltip: localizations.bible_linked_navigation,
+                      style: IconButton.styleFrom(
+                        backgroundColor: workspaceState.linkedNavigation
+                            ? colorScheme.secondaryContainer
+                            : Colors.transparent,
+                        shape: const CircleBorder(),
+                      ),
+                      onPressed: workspaceCubit.toggleLinkedNavigation,
+                    ),
+                  IconButton(
+                    key: const Key('bible_open_parallel_reader_button'),
+                    icon: const Icon(Icons.add),
+                    tooltip: localizations.bible_open_parallel_reader,
+                    onPressed: workspaceState.canOpenParallelReader
+                        ? workspaceCubit.openParallelReader
+                        : null,
+                  ),
+                ],
               );
             },
           ),
@@ -140,6 +167,9 @@ class _BibleReadersArea extends StatefulWidget {
 class _BibleReadersAreaState extends State<_BibleReadersArea> {
   final _BibleLinkedScrollCoordinator _scrollCoordinator =
       _BibleLinkedScrollCoordinator();
+  double? _lastLayoutWidth;
+  double? _lastLayoutHeight;
+  bool? _lastLinkedNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +186,7 @@ class _BibleReadersAreaState extends State<_BibleReadersArea> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        _schedulePostLayoutScrollSyncIfNeeded(constraints, paneIds.length);
         if (paneIds.length == 1) {
           return _buildPane(context, paneIds.first);
         }
@@ -192,26 +223,32 @@ class _BibleReadersAreaState extends State<_BibleReadersArea> {
   }
 
   Widget _buildExpandedPane(BuildContext context, String paneId) {
-    return Expanded(child: _buildPane(context, paneId));
+    return Expanded(
+      key: Key('bible_reader_slot_$paneId'),
+      child: _buildPane(context, paneId),
+    );
   }
 
   Widget _buildPane(BuildContext context, String paneId) {
     final colorScheme = Theme.of(context).colorScheme;
     final workspaceCubit = context.read<BibleWorkspaceCubit>();
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        border: Border.all(color: colorScheme.outlineVariant),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: BlocProvider<BibleReaderCubit>.value(
-          value: workspaceCubit.readerCubitFor(paneId),
-          child: _BibleReaderPane(
-            paneId: paneId,
-            workspaceState: widget.workspaceState,
-            scrollCoordinator: _scrollCoordinator,
+    return KeyedSubtree(
+      key: Key('bible_reader_root_$paneId'),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          border: Border.all(color: colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: BlocProvider<BibleReaderCubit>.value(
+            value: workspaceCubit.readerCubitFor(paneId),
+            child: _BibleReaderPane(
+              paneId: paneId,
+              workspaceState: widget.workspaceState,
+              scrollCoordinator: _scrollCoordinator,
+            ),
           ),
         ),
       ),
@@ -222,6 +259,31 @@ class _BibleReadersAreaState extends State<_BibleReadersArea> {
   void dispose() {
     _scrollCoordinator.dispose();
     super.dispose();
+  }
+
+  void _schedulePostLayoutScrollSyncIfNeeded(
+    BoxConstraints constraints,
+    int paneCount,
+  ) {
+    final linkedNavigation = _scrollCoordinator.linkedNavigation;
+    if (!linkedNavigation || paneCount <= 1) {
+      _lastLinkedNavigation = linkedNavigation;
+      _lastLayoutWidth = constraints.maxWidth;
+      _lastLayoutHeight = constraints.maxHeight;
+      return;
+    }
+
+    final layoutChanged =
+        _lastLayoutWidth != constraints.maxWidth ||
+        _lastLayoutHeight != constraints.maxHeight ||
+        _lastLinkedNavigation != linkedNavigation;
+    _lastLinkedNavigation = linkedNavigation;
+    _lastLayoutWidth = constraints.maxWidth;
+    _lastLayoutHeight = constraints.maxHeight;
+
+    if (layoutChanged) {
+      _scrollCoordinator.scheduleSyncFromLastSource();
+    }
   }
 }
 
@@ -247,11 +309,6 @@ class _BibleReaderPane extends StatelessWidget {
             children: [
               _BibleReaderToolbar(
                 state: state,
-                showLinkedNavigationToggle: workspaceState.hasMultiplePanes,
-                linkedNavigation: workspaceState.linkedNavigation,
-                onToggleLinkedNavigation: context
-                    .read<BibleWorkspaceCubit>()
-                    .toggleLinkedNavigation,
                 canClosePane: paneId != BibleWorkspaceCubit.primaryPaneId,
                 onClosePane: () {
                   unawaited(
@@ -278,17 +335,11 @@ class _BibleReaderPane extends StatelessWidget {
 class _BibleReaderToolbar extends StatelessWidget {
   const _BibleReaderToolbar({
     required this.state,
-    required this.showLinkedNavigationToggle,
-    required this.linkedNavigation,
-    required this.onToggleLinkedNavigation,
     required this.canClosePane,
     required this.onClosePane,
   });
 
   final BibleReaderState state;
-  final bool showLinkedNavigationToggle;
-  final bool linkedNavigation;
-  final VoidCallback onToggleLinkedNavigation;
   final bool canClosePane;
   final VoidCallback onClosePane;
 
@@ -576,34 +627,6 @@ class _BibleReaderToolbar extends StatelessWidget {
           unawaited(readerCubit.navigateChapter(forward: true));
         },
       ),
-      if (showLinkedNavigationToggle)
-        _BibleToolbarAction(
-          id: 'linked_navigation',
-          width: 44,
-          inline: IconButton(
-            key: const Key('bible_linked_navigation_button'),
-            icon: Icon(linkedNavigation ? Icons.link : Icons.link_off),
-            tooltip: linkedNavigation
-                ? localizations.bible_linked_navigation
-                : localizations.bible_unlinked_navigation,
-            color: colorScheme.primary,
-            style: IconButton.styleFrom(
-              backgroundColor: linkedNavigation
-                  ? colorScheme.secondaryContainer
-                  : Colors.transparent,
-              shape: const CircleBorder(),
-            ),
-            onPressed: onToggleLinkedNavigation,
-          ),
-          menuIcon: linkedNavigation ? Icons.link : Icons.link_off,
-          menuLabel: linkedNavigation
-              ? localizations.bible_linked_navigation
-              : localizations.bible_unlinked_navigation,
-          active: linkedNavigation,
-          onMenuSelected: (context) {
-            onToggleLinkedNavigation();
-          },
-        ),
       _BibleToolbarAction(
         id: 'strong_numbers',
         width: 44,
@@ -859,35 +882,70 @@ Future<T?> _showToolbarChoiceDialog<T>({
   return showDialog<T>(
     context: context,
     builder: (context) {
-      return SimpleDialog(
-        title: Text(title),
-        children: [
-          for (final value in values)
-            SimpleDialogOption(
-              onPressed: () => Navigator.of(context).pop(value),
-              child: Row(
-                children: [
-                  Icon(
-                    value == selectedValue
-                        ? Icons.radio_button_checked
-                        : Icons.radio_button_unchecked,
-                    size: 18,
-                    color: value == selectedValue
-                        ? colorScheme.primary
-                        : colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      labelFor(value),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+      final mediaSize = MediaQuery.sizeOf(context);
+      final availableWidth =
+          mediaSize.width - _kToolbarChoiceDialogHorizontalMargin;
+      final contentWidth =
+          (availableWidth < _kToolbarChoiceDialogMinWidth
+                  ? _kToolbarChoiceDialogMinWidth
+                  : availableWidth > _kToolbarChoiceDialogMaxWidth
+                  ? _kToolbarChoiceDialogMaxWidth
+                  : availableWidth)
+              .toDouble();
+      final maxHeight = mediaSize.height * 0.72;
+      final valuesHeight = values.isEmpty
+          ? _kToolbarChoiceRowHeight
+          : values.length * _kToolbarChoiceRowHeight;
+      final contentHeight =
+          (valuesHeight > maxHeight ? maxHeight : valuesHeight).toDouble();
+      return AlertDialog(
+        title: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
+        contentPadding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
+        content: SizedBox(
+          width: contentWidth,
+          height: contentHeight,
+          child: ListView.builder(
+            itemExtent: _kToolbarChoiceRowHeight,
+            itemCount: values.length,
+            itemBuilder: (context, index) {
+              final value = values[index];
+              final selected = value == selectedValue;
+              return InkWell(
+                onTap: () => Navigator.of(context).pop(value),
+                child: SizedBox(
+                  height: _kToolbarChoiceRowHeight,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 8,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          selected
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_unchecked,
+                          size: 18,
+                          color: selected
+                              ? colorScheme.primary
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            labelFor(value),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-        ],
+                ),
+              );
+            },
+          ),
+        ),
       );
     },
   );
@@ -977,8 +1035,10 @@ class _BibleReaderBody extends StatelessWidget {
     }
 
     return Stack(
+      fit: StackFit.expand,
       children: [
         _BibleChapterView(
+          key: Key('bible_chapter_view_$paneId'),
           paneId: paneId,
           verses: state.verses,
           selectedVerseKey: state.selectedReference?.verseKey,
@@ -1002,71 +1062,133 @@ class _BibleReaderBody extends StatelessWidget {
 }
 
 class _BibleLinkedScrollCoordinator {
-  final Map<String, ScrollController> _controllers =
-      <String, ScrollController>{};
+  final Map<String, _BibleScrollPaneRegistration> _panes =
+      <String, _BibleScrollPaneRegistration>{};
   final Map<String, VoidCallback> _listeners = <String, VoidCallback>{};
+  final Set<String> _programmaticScrollPaneIds = <String>{};
+  final Set<String> _scheduledSourcePaneIds = <String>{};
   bool linkedNavigation = false;
   bool _syncing = false;
+  bool _postFrameSyncScheduled = false;
+  String? _lastSourcePaneId;
 
-  void register(String paneId, ScrollController controller) {
+  void register({
+    required String paneId,
+    required ScrollController controller,
+    required int? Function() topVisibleVerse,
+    required bool Function(int verse) scrollToVerse,
+  }) {
     unregister(paneId);
-    void listener() => _syncFrom(paneId, controller);
-    _controllers[paneId] = controller;
+    void listener() => scheduleSyncFrom(paneId);
+    _panes[paneId] = _BibleScrollPaneRegistration(
+      controller: controller,
+      topVisibleVerse: topVisibleVerse,
+      scrollToVerse: scrollToVerse,
+    );
     _listeners[paneId] = listener;
     controller.addListener(listener);
   }
 
-  void unregister(String paneId) {
-    final controller = _controllers.remove(paneId);
+  void unregister(String paneId, [ScrollController? controller]) {
+    final pane = _panes[paneId];
+    if (controller != null && pane != null && pane.controller != controller) {
+      return;
+    }
+    final removedPane = _panes.remove(paneId);
     final listener = _listeners.remove(paneId);
-    if (controller != null && listener != null) {
-      controller.removeListener(listener);
+    if (removedPane != null && listener != null) {
+      removedPane.controller.removeListener(listener);
     }
   }
 
   void dispose() {
-    for (final paneId in _controllers.keys.toList(growable: false)) {
+    for (final paneId in _panes.keys.toList(growable: false)) {
       unregister(paneId);
     }
   }
 
-  void syncFrom(String sourcePaneId, ScrollController sourceController) {
-    _syncFrom(sourcePaneId, sourceController);
+  void scheduleSyncFromLastSource() {
+    if (_postFrameSyncScheduled) {
+      return;
+    }
+    _postFrameSyncScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _postFrameSyncScheduled = false;
+      if (!linkedNavigation) {
+        return;
+      }
+      final sourcePaneId =
+          _lastSourcePaneId != null && _panes.containsKey(_lastSourcePaneId)
+          ? _lastSourcePaneId!
+          : _panes.isEmpty
+          ? null
+          : _panes.keys.first;
+      if (sourcePaneId == null) {
+        return;
+      }
+      syncFrom(sourcePaneId);
+    });
   }
 
-  void _syncFrom(String sourcePaneId, ScrollController sourceController) {
-    if (!linkedNavigation || _syncing || !sourceController.hasClients) {
+  void scheduleSyncFrom(String sourcePaneId) {
+    if (_scheduledSourcePaneIds.contains(sourcePaneId)) {
+      return;
+    }
+    _scheduledSourcePaneIds.add(sourcePaneId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scheduledSourcePaneIds.remove(sourcePaneId);
+      syncFrom(sourcePaneId);
+    });
+  }
+
+  void syncFrom(String sourcePaneId) {
+    final sourcePane = _panes[sourcePaneId];
+    if (!linkedNavigation ||
+        _syncing ||
+        _programmaticScrollPaneIds.contains(sourcePaneId) ||
+        sourcePane == null ||
+        !sourcePane.controller.hasClients) {
       return;
     }
 
-    final sourcePosition = sourceController.position;
-    final sourceMax = sourcePosition.maxScrollExtent;
-    final sourceOffset = sourceController.offset.clamp(
-      sourcePosition.minScrollExtent,
-      sourceMax,
-    );
-    final scrollRatio = sourceMax <= 0 ? 0.0 : sourceOffset / sourceMax;
+    final sourceVerse = sourcePane.topVisibleVerse();
+    if (sourceVerse == null) {
+      return;
+    }
+    _lastSourcePaneId = sourcePaneId;
 
     _syncing = true;
     try {
-      for (final entry in _controllers.entries) {
-        if (entry.key == sourcePaneId || !entry.value.hasClients) {
+      for (final entry in _panes.entries) {
+        if (entry.key == sourcePaneId || !entry.value.controller.hasClients) {
           continue;
         }
-
-        final targetPosition = entry.value.position;
-        final targetMax = targetPosition.maxScrollExtent;
-        final targetOffset = (targetMax * scrollRatio)
-            .clamp(targetPosition.minScrollExtent, targetMax)
-            .toDouble();
-        if ((entry.value.offset - targetOffset).abs() > 1) {
-          entry.value.jumpTo(targetOffset);
-        }
+        _programmaticScrollPaneIds.add(entry.key);
+        entry.value.scrollToVerse(sourceVerse);
+        _releaseProgrammaticScroll(entry.key);
       }
     } finally {
       _syncing = false;
     }
   }
+
+  void _releaseProgrammaticScroll(String paneId) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _programmaticScrollPaneIds.remove(paneId);
+    });
+  }
+}
+
+class _BibleScrollPaneRegistration {
+  const _BibleScrollPaneRegistration({
+    required this.controller,
+    required this.topVisibleVerse,
+    required this.scrollToVerse,
+  });
+
+  final ScrollController controller;
+  final int? Function() topVisibleVerse;
+  final bool Function(int verse) scrollToVerse;
 }
 
 class _BibleLoadingMessage extends StatelessWidget {
@@ -1141,6 +1263,7 @@ class _BibleBusyBanner extends StatelessWidget {
 
 class _BibleChapterView extends StatefulWidget {
   const _BibleChapterView({
+    super.key,
     required this.paneId,
     required this.verses,
     required this.selectedVerseKey,
@@ -1168,12 +1291,13 @@ class _BibleChapterView extends StatefulWidget {
 
 class _BibleChapterViewState extends State<_BibleChapterView> {
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey _viewportKey = GlobalKey();
   final Map<String, GlobalKey> _verseKeys = <String, GlobalKey>{};
 
   @override
   void initState() {
     super.initState();
-    widget.scrollCoordinator.register(widget.paneId, _scrollController);
+    _registerScrollPane();
     _scheduleScrollToSelected();
   }
 
@@ -1182,8 +1306,11 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.paneId != widget.paneId ||
         oldWidget.scrollCoordinator != widget.scrollCoordinator) {
-      oldWidget.scrollCoordinator.unregister(oldWidget.paneId);
-      widget.scrollCoordinator.register(widget.paneId, _scrollController);
+      oldWidget.scrollCoordinator.unregister(
+        oldWidget.paneId,
+        _scrollController,
+      );
+      _registerScrollPane();
     }
     if (oldWidget.selectedVerseKey != widget.selectedVerseKey ||
         oldWidget.verses != widget.verses) {
@@ -1193,13 +1320,14 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
 
   @override
   void dispose() {
-    widget.scrollCoordinator.unregister(widget.paneId);
+    widget.scrollCoordinator.unregister(widget.paneId, _scrollController);
     _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    _registerScrollPane();
     final visibleVerseKeys = {
       for (final verse in widget.verses) verse.reference.verseKey,
     };
@@ -1207,50 +1335,62 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
       (verseKey, _) => !visibleVerseKeys.contains(verseKey),
     );
 
-    return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
-        if (notification.depth == 0 &&
-            (notification is ScrollUpdateNotification ||
-                notification is ScrollEndNotification)) {
-          widget.scrollCoordinator.syncFrom(widget.paneId, _scrollController);
-        }
-        return false;
-      },
-      child: SingleChildScrollView(
-        key: const Key('bible_chapter_verses'),
-        controller: _scrollController,
-        padding: const EdgeInsets.fromLTRB(14, 12, 14, 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (final verse in widget.verses)
-              Builder(
-                builder: (context) {
-                  final selected =
-                      verse.reference.verseKey == widget.selectedVerseKey;
-                  final verseKey = _verseKeys.putIfAbsent(
-                    verse.reference.verseKey,
-                    () => GlobalKey(),
-                  );
-                  return _BibleVerseRow(
-                    key: verseKey,
-                    verse: verse,
-                    selected: selected,
-                    inSelectionRange: _isVerseInSelectionRange(
-                      verse.reference.verse,
-                      widget.selectedVerseRangeStart,
-                      widget.selectedVerseRangeEnd,
-                    ),
-                    showStrongNumbers: widget.showStrongNumbers,
-                    onTap: () => widget.onVerseTap(verse.reference.verse),
-                    onLongPress: () =>
-                        widget.onVerseLongPress(verse.reference.verse),
-                  );
-                },
-              ),
-          ],
+    return SizedBox.expand(
+      key: _viewportKey,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification.depth == 0 &&
+              (notification is ScrollUpdateNotification ||
+                  notification is ScrollEndNotification)) {
+            widget.scrollCoordinator.scheduleSyncFrom(widget.paneId);
+          }
+          return false;
+        },
+        child: SingleChildScrollView(
+          key: const Key('bible_chapter_verses'),
+          controller: _scrollController,
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final verse in widget.verses)
+                Builder(
+                  builder: (context) {
+                    final selected =
+                        verse.reference.verseKey == widget.selectedVerseKey;
+                    final verseKey = _verseKeys.putIfAbsent(
+                      verse.reference.verseKey,
+                      () => GlobalKey(),
+                    );
+                    return _BibleVerseRow(
+                      key: verseKey,
+                      verse: verse,
+                      selected: selected,
+                      inSelectionRange: _isVerseInSelectionRange(
+                        verse.reference.verse,
+                        widget.selectedVerseRangeStart,
+                        widget.selectedVerseRangeEnd,
+                      ),
+                      showStrongNumbers: widget.showStrongNumbers,
+                      onTap: () => widget.onVerseTap(verse.reference.verse),
+                      onLongPress: () =>
+                          widget.onVerseLongPress(verse.reference.verse),
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  void _registerScrollPane() {
+    widget.scrollCoordinator.register(
+      paneId: widget.paneId,
+      controller: _scrollController,
+      topVisibleVerse: _topVisibleVerse,
+      scrollToVerse: _scrollToVerse,
     );
   }
 
@@ -1270,17 +1410,99 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
       if (selectedVerseKey == null) {
         return;
       }
-      final keyContext = _verseKeys[selectedVerseKey]?.currentContext;
-      if (keyContext == null) {
+      final selectedVerse = _verseForKey(selectedVerseKey);
+      if (selectedVerse == null) {
         return;
       }
-      Scrollable.ensureVisible(
-        keyContext,
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOutCubic,
-        alignment: 0.2,
-      );
+      _scrollToVerse(selectedVerse, alignment: 0.2);
     });
+  }
+
+  int? _topVisibleVerse() {
+    final viewportBox = _viewportRenderBox();
+    if (viewportBox == null) {
+      return null;
+    }
+
+    final viewportTop = viewportBox.localToGlobal(Offset.zero).dy;
+    final viewportBottom = viewportTop + viewportBox.size.height;
+    for (final verse in widget.verses) {
+      final verseBox = _verseRenderBox(verse.reference.verseKey);
+      if (verseBox == null) {
+        continue;
+      }
+
+      final verseTop = verseBox.localToGlobal(Offset.zero).dy;
+      final verseBottom = verseTop + verseBox.size.height;
+      if (verseBottom > viewportTop + 1 && verseTop < viewportBottom - 1) {
+        return verse.reference.verse;
+      }
+    }
+    return null;
+  }
+
+  bool _scrollToVerse(int verse, {double alignment = 0}) {
+    if (!_scrollController.hasClients) {
+      return false;
+    }
+
+    final verseKey = _verseKeyForVerse(verse);
+    final viewportBox = _viewportRenderBox();
+    final verseBox = verseKey == null ? null : _verseRenderBox(verseKey);
+    if (viewportBox == null || verseBox == null) {
+      return false;
+    }
+
+    final viewportTop = viewportBox.localToGlobal(Offset.zero).dy;
+    final verseTop = verseBox.localToGlobal(Offset.zero).dy;
+    final alignmentOffset = viewportBox.size.height * alignment;
+    final targetOffset =
+        (_scrollController.offset + verseTop - viewportTop - alignmentOffset)
+            .clamp(
+              _scrollController.position.minScrollExtent,
+              _scrollController.position.maxScrollExtent,
+            )
+            .toDouble();
+    if ((_scrollController.offset - targetOffset).abs() <= 1) {
+      return true;
+    }
+    _scrollController.jumpTo(targetOffset);
+    return true;
+  }
+
+  RenderBox? _viewportRenderBox() {
+    final renderObject = _viewportKey.currentContext?.findRenderObject();
+    if (renderObject is RenderBox && renderObject.attached) {
+      return renderObject;
+    }
+    return null;
+  }
+
+  RenderBox? _verseRenderBox(String verseKey) {
+    final renderObject = _verseKeys[verseKey]?.currentContext
+        ?.findRenderObject();
+    if (renderObject is RenderBox && renderObject.attached) {
+      return renderObject;
+    }
+    return null;
+  }
+
+  String? _verseKeyForVerse(int verse) {
+    for (final chapterVerse in widget.verses) {
+      if (chapterVerse.reference.verse == verse) {
+        return chapterVerse.reference.verseKey;
+      }
+    }
+    return null;
+  }
+
+  int? _verseForKey(String verseKey) {
+    for (final chapterVerse in widget.verses) {
+      if (chapterVerse.reference.verseKey == verseKey) {
+        return chapterVerse.reference.verse;
+      }
+    }
+    return null;
   }
 }
 

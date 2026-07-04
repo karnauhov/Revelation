@@ -33,6 +33,7 @@ void main() {
       await cubit.loadInitial();
 
       expect(cubit.state.paneIds, ['primary', 'parallel_2', 'parallel_3']);
+      expect(cubit.state.canOpenParallelReader, isFalse);
       expect(
         cubit.readerCubitFor('parallel_2').state.selectedModule?.fileName,
         'bible_alt.sqlite',
@@ -41,6 +42,11 @@ void main() {
         cubit.readerCubitFor('parallel_3').state.selectedModule?.fileName,
         'bible_third.sqlite',
       );
+
+      cubit.openParallelReader();
+      await _drainAsyncWork();
+
+      expect(cubit.state.paneIds, ['primary', 'parallel_2', 'parallel_3']);
 
       await cubit
           .readerCubitFor('primary')

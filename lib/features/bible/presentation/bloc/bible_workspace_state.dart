@@ -1,3 +1,5 @@
+import 'package:revelation/shared/config/app_constants.dart';
+
 class BibleWorkspaceState {
   const BibleWorkspaceState({
     required this.paneIds,
@@ -12,7 +14,9 @@ class BibleWorkspaceState {
   final bool linkedNavigation;
 
   bool get hasMultiplePanes => paneIds.length > 1;
-  bool get canOpenParallelReader => paneIds.isNotEmpty;
+  bool get canOpenParallelReader =>
+      paneIds.isNotEmpty &&
+      paneIds.length < AppConstants.maxParallelBibleReaders;
 
   BibleWorkspaceState copyWith({
     List<String>? paneIds,

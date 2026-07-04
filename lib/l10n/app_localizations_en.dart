@@ -277,11 +277,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bible_close_parallel_reader => 'Close parallel reader';
 
   @override
-  String get bible_linked_navigation => 'Linked navigation and scrolling';
+  String get bible_linked_navigation => 'Linked navigation';
 
   @override
-  String get bible_unlinked_navigation =>
-      'Independent navigation and scrolling';
+  String get bible_unlinked_navigation => 'Independent navigation';
 
   @override
   String get revelation_structure_screen => 'Revelation Structure';

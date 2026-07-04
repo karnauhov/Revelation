@@ -236,6 +236,11 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
       chapter: reference.chapter,
       verse: verse,
     );
+    if (reference.verse == selectedReference.verse &&
+        state.selectionStartVerse == selectedReference.verse &&
+        state.selectionEndVerse == selectedReference.verse) {
+      return;
+    }
     emit(
       state.copyWith(
         selectedReference: selectedReference,

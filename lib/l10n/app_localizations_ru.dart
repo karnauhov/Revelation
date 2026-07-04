@@ -278,10 +278,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bible_close_parallel_reader => 'Закрыть параллельное чтение';
 
   @override
-  String get bible_linked_navigation => 'Связанная навигация и прокрутка';
+  String get bible_linked_navigation => 'Связанная навигация';
 
   @override
-  String get bible_unlinked_navigation => 'Независимая навигация и прокрутка';
+  String get bible_unlinked_navigation => 'Независимая навигация';
 
   @override
   String get revelation_structure_screen => 'Структура Откровения';

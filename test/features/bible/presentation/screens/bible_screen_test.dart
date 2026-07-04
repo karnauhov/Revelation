@@ -129,28 +129,100 @@ void main() {
     );
     expect(
       find.byKey(const Key('bible_linked_navigation_button')),
-      findsNWidgets(2),
+      findsOneWidget,
     );
 
     final workspaceContext = tester.element(
       find.byKey(const Key('bible_reader_pane_primary')),
     );
     final workspaceCubit = workspaceContext.read<BibleWorkspaceCubit>();
+    final parallelCubit = workspaceCubit.readerCubitFor('parallel_2');
 
-    await tester.drag(
-      find.byKey(const Key('bible_chapter_verses')).first,
-      const Offset(0, -320),
+    await tester.tap(
+      find.byKey(const Key('bible_open_parallel_reader_button')),
+    );
+    await tester.pump();
+    await _pumpUntilFound(
+      tester,
+      find.byKey(const Key('bible_reader_pane_parallel_3')),
     );
     await tester.pump();
 
-    final scrollOffsets = tester
-        .widgetList<SingleChildScrollView>(
-          find.byKey(const Key('bible_chapter_verses')),
-        )
-        .map((scrollView) => scrollView.controller!.offset)
-        .toList(growable: false);
-    expect(scrollOffsets.first, greaterThan(0));
-    expect(scrollOffsets.last, closeTo(scrollOffsets.first, 2));
+    expect(workspaceCubit.state.paneIds, [
+      'primary',
+      'parallel_2',
+      'parallel_3',
+    ]);
+    final openParallelButton = tester.widget<IconButton>(
+      find.byKey(const Key('bible_open_parallel_reader_button')),
+    );
+    expect(openParallelButton.onPressed, isNull);
+
+    await workspaceCubit.closeReaderPane('parallel_3');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(find.byKey(const Key('bible_reader_pane_parallel_3')), findsNothing);
+    expect(workspaceCubit.state.paneIds, ['primary', 'parallel_2']);
+
+    await workspaceCubit
+        .readerCubitFor('primary')
+        .selectReference(bookId: 1, chapter: 1, verse: 1);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    await parallelCubit.selectModule(parallelCubit.state.modules.last);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(workspaceCubit.state.linkedNavigation, isTrue);
+
+    await tester.drag(
+      find.descendant(
+        of: find.byKey(const Key('bible_reader_pane_primary')),
+        matching: find.byKey(const Key('bible_chapter_verses')),
+      ),
+      const Offset(0, -320),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pump();
+
+    expect(
+      _topVisibleVerse(tester, 'parallel_2'),
+      _topVisibleVerse(tester, 'primary'),
+    );
+
+    await tester.binding.setSurfaceSize(const Size(700, 900));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(
+      find.byKey(const Key('bible_parallel_layout_vertical')),
+      findsOneWidget,
+    );
+    expect(
+      _topVisibleVerse(tester, 'parallel_2'),
+      _topVisibleVerse(tester, 'primary'),
+    );
+
+    await tester.drag(
+      find.descendant(
+        of: find.byKey(const Key('bible_reader_pane_parallel_2')),
+        matching: find.byKey(const Key('bible_chapter_verses')),
+      ),
+      const Offset(0, -240),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(
+      _topVisibleVerse(tester, 'primary'),
+      _topVisibleVerse(tester, 'parallel_2'),
+    );
+
+    await tester.binding.setSurfaceSize(const Size(1700, 900));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
 
     await tester.tap(find.byKey(const Key('bible_next_chapter_button')).first);
     await tester.pump();
@@ -240,8 +312,35 @@ Future<void> _pumpUntilFound(WidgetTester tester, Finder finder) async {
   fail('Widget was not found before pump timeout: $finder');
 }
 
+int? _topVisibleVerse(WidgetTester tester, String paneId) {
+  final pane = find.byKey(Key('bible_reader_pane_$paneId'));
+  final scrollView = find.descendant(
+    of: pane,
+    matching: find.byKey(const Key('bible_chapter_verses')),
+  );
+  final viewportTop = tester.getTopLeft(scrollView).dy;
+  final viewportBottom = tester.getBottomLeft(scrollView).dy;
+  for (var verse = 1; verse <= 31; verse++) {
+    final verseFinder = find.descendant(
+      of: pane,
+      matching: find.byKey(Key('bible_verse_$verse')),
+    );
+    if (verseFinder.evaluate().isEmpty) {
+      continue;
+    }
+    final verseTop = tester.getTopLeft(verseFinder).dy;
+    final verseBottom = tester.getBottomLeft(verseFinder).dy;
+    if (verseBottom > viewportTop + 1 && verseTop < viewportBottom - 1) {
+      return verse;
+    }
+  }
+  return null;
+}
+
 class _FakeBibleRepository extends BibleRepository {
   _FakeBibleRepository() : super();
+
+  BibleVerseMap? _map;
 
   final _modules = const <BibleModuleInfo>[
     BibleModuleInfo(
@@ -255,6 +354,18 @@ class _FakeBibleRepository extends BibleRepository {
       versification: 'kjv_protestant',
       license: 'CC BY 4.0',
       sourceSummary: 'https://example.com/source',
+    ),
+    BibleModuleInfo(
+      fileName: 'bible_alt.sqlite',
+      code: 'ALT',
+      moduleId: 'alt',
+      title: 'Alternative Bible',
+      description: 'Alternative Bible module',
+      language: 'en',
+      canon: 'protestant_66',
+      versification: 'kjv_protestant',
+      license: 'CC BY 4.0',
+      sourceSummary: 'https://example.com/alt',
     ),
   ];
   @override
@@ -271,19 +382,25 @@ class _FakeBibleRepository extends BibleRepository {
     int initialVerse = 1,
     String? initialModuleFile,
   }) async {
-    final map = await BibleVerseMap.loadFromAssets();
+    final map = await _loadVerseMap();
     final reference = map.normalizedReference(
       bookId: initialBookId,
       chapter: initialChapter,
       verse: initialVerse,
     );
+    final module = _moduleFor(initialModuleFile) ?? _modules.first;
     return BibleInitialData(
       verseMap: map,
       modules: _modules,
-      selectedModule: _modules.first,
+      selectedModule: module,
       reference: reference,
-      verses: _buildChapter(map, reference.bookId, reference.chapter),
+      verses: _buildChapter(map, reference.bookId, reference.chapter, module),
     );
+  }
+
+  @override
+  Future<BibleModuleInfo> loadModuleInfo(String moduleFile) async {
+    return _moduleFor(moduleFile) ?? _modules.first;
   }
 
   @override
@@ -293,25 +410,31 @@ class _FakeBibleRepository extends BibleRepository {
     required int chapter,
     required int verse,
   }) async {
-    final map = await BibleVerseMap.loadFromAssets();
+    final map = await _loadVerseMap();
     final reference = map.normalizedReference(
       bookId: bookId,
       chapter: chapter,
       verse: verse,
     );
+    final module = _moduleFor(moduleFile) ?? _modules.first;
     return BibleChapterData(
       reference: reference,
-      verses: _buildChapter(map, reference.bookId, reference.chapter),
+      verses: _buildChapter(map, reference.bookId, reference.chapter, module),
     );
   }
 
   @override
   Future<void> saveLastModuleFile(String moduleFile) async {}
 
+  Future<BibleVerseMap> _loadVerseMap() async {
+    return _map ??= await BibleVerseMap.loadFromAssets();
+  }
+
   List<BibleChapterVerse> _buildChapter(
     BibleVerseMap map,
     int bookId,
     int chapter,
+    BibleModuleInfo module,
   ) {
     final verseKeys = map.verseKeysForChapter(bookId: bookId, chapter: chapter);
     return [
@@ -322,8 +445,31 @@ class _FakeBibleRepository extends BibleRepository {
             chapter: chapter,
             verse: index + 1,
           ),
-          text: index == 0 ? 'ἐν G1722 ἀρχῇ G746' : 'Verse ${index + 1} G1',
+          text: _verseText(module, index + 1),
         ),
     ];
+  }
+
+  BibleModuleInfo? _moduleFor(String? moduleFile) {
+    if (moduleFile == null) {
+      return null;
+    }
+    for (final module in _modules) {
+      if (module.fileName == moduleFile) {
+        return module;
+      }
+    }
+    return null;
+  }
+
+  String _verseText(BibleModuleInfo module, int verse) {
+    if (verse == 1) {
+      return 'ἐν G1722 ἀρχῇ G746';
+    }
+    if (module.fileName == 'bible_alt.sqlite') {
+      return 'Alternative verse $verse with a deliberately longer reading '
+          'that wraps across more lines in the parallel pane G1';
+    }
+    return 'Verse $verse G1';
   }
 }
