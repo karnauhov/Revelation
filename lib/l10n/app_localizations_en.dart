@@ -345,6 +345,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bible_search_verses_copied => 'Verses copied to the clipboard.';
 
   @override
+  String get bible_reference_preview_loading_hint =>
+      'Long-press a verse link to load and copy the verse text.';
+
+  @override
+  String get bible_reference_preview_loading => 'Loading verse text...';
+
+  @override
+  String get bible_reference_preview_unavailable =>
+      'Verse text is unavailable.';
+
+  @override
   String get revelation_structure_screen => 'Revelation Structure';
 
   @override

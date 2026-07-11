@@ -556,6 +556,54 @@ void main() {
       expect(find.text('bible:43:1:1'), findsOneWidget);
     });
 
+    testWidgets('bible link closes nested popup routes before pushing route', (
+      tester,
+    ) async {
+      final fixture = await _pumpRouterFixture(tester);
+      BuildContext? innerDialogContext;
+
+      unawaited(
+        showDialog<void>(
+          context: fixture.contexts['home']!,
+          builder: (outerContext) {
+            return AlertDialog(
+              content: TextButton(
+                onPressed: () {
+                  unawaited(
+                    showDialog<void>(
+                      context: outerContext,
+                      builder: (context) {
+                        innerDialogContext = context;
+                        return const AlertDialog(content: Text('inner-dialog'));
+                      },
+                    ),
+                  );
+                },
+                child: const Text('open-inner'),
+              ),
+            );
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('open-inner'));
+      await tester.pumpAndSettle();
+      expect(find.text('inner-dialog'), findsOneWidget);
+
+      final handled = await handleAppLink(
+        innerDialogContext!,
+        'bible:Rev22:3',
+        popBeforeScreenPush: true,
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(handled, isTrue);
+      expect(find.text('inner-dialog'), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.text('bible:66:22:3'), findsOneWidget);
+    });
+
     testWidgets('bible link rejects malformed payload', (tester) async {
       final fixture = await _pumpRouterFixture(tester);
       final context = fixture.contexts['home']!;

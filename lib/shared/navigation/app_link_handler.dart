@@ -459,11 +459,18 @@ Future<bool> _handleBibleLink(
     verse = parsedVerse;
   }
 
-  if (popBeforeScreenPush && Navigator.of(context).canPop()) {
-    Navigator.pop(context);
+  final router = GoRouter.of(context);
+  final navigator = Navigator.of(context);
+  final currentRoute = ModalRoute.of(context);
+  if (popBeforeScreenPush && navigator.canPop()) {
+    if (currentRoute is PopupRoute) {
+      navigator.popUntil((route) => route is! PopupRoute);
+    } else {
+      navigator.pop();
+    }
   }
 
-  context.push(
+  router.push(
     Uri(
       path: '/bible',
       queryParameters: <String, String>{

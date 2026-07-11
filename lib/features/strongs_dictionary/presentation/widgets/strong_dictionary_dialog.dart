@@ -183,6 +183,7 @@ class _StrongDictionaryDialogContentState
                 );
               },
               onStrongNumberPickerRequested: _openStrongNumberPicker,
+              popBeforeBibleNavigation: true,
               onNavigateBackward: () {
                 context.read<StrongsDictionaryCubit>().navigate(
                   localizations: localizations,

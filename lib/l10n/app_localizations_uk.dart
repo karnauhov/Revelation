@@ -346,6 +346,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bible_search_verses_copied => 'Вірші скопійовано в буфер обміну.';
 
   @override
+  String get bible_reference_preview_loading_hint =>
+      'Утримуйте посилання на вірш, щоб завантажити й скопіювати текст вірша.';
+
+  @override
+  String get bible_reference_preview_loading => 'Завантажуємо текст вірша...';
+
+  @override
+  String get bible_reference_preview_unavailable => 'Текст вірша недоступний.';
+
+  @override
   String get revelation_structure_screen => 'Структура Об\'явлення';
 
   @override

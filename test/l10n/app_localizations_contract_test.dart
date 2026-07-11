@@ -937,6 +937,21 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'bible_selected_verses_copied should not be empty',
   );
   expect(
+    l10n.bible_reference_preview_loading_hint,
+    isNotEmpty,
+    reason: 'bible_reference_preview_loading_hint should not be empty',
+  );
+  expect(
+    l10n.bible_reference_preview_loading,
+    isNotEmpty,
+    reason: 'bible_reference_preview_loading should not be empty',
+  );
+  expect(
+    l10n.bible_reference_preview_unavailable,
+    isNotEmpty,
+    reason: 'bible_reference_preview_unavailable should not be empty',
+  );
+  expect(
     l10n.bible_open_parallel_reader,
     isNotEmpty,
     reason: 'bible_open_parallel_reader should not be empty',

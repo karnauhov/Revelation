@@ -350,6 +350,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'Versículos copiados al portapapeles.';
 
   @override
+  String get bible_reference_preview_loading_hint =>
+      'Mantén pulsado un enlace de versículo para cargar y copiar el texto.';
+
+  @override
+  String get bible_reference_preview_loading =>
+      'Cargando texto del versículo...';
+
+  @override
+  String get bible_reference_preview_unavailable =>
+      'El texto del versículo no está disponible.';
+
+  @override
   String get revelation_structure_screen => 'Estructura de Apocalipsis';
 
   @override

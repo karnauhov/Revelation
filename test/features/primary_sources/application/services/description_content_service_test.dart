@@ -784,8 +784,30 @@ void main() {
     expect(content.markdown, contains('**Alpha** ([G2](strong:G2))'));
     expect(content.markdown, contains('[H123](strong:H123)'));
     expect(content.markdown, contains('**Beta** ([G3](strong:G3))'));
-    expect(content.markdown, contains('**sample**: Gen 1:1; Gen 1:2'));
-    expect(content.markdown, contains('**other**: Rev 22:21 x3'));
+    expect(
+      content.markdown,
+      contains('${localizations.strong_usage}:$strongUsageInfoMarkdownMarker'),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '**sample** (2): [Gen 1:1](bible:Gen1:1 "strong_usage_ref:001"); '
+        '[Gen 1:2](bible:Gen1:2 "strong_usage_ref:002")',
+      ),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '**other** (3): [Rev 22:21 x3](bible:Rev22:21 "strong_usage_ref:NZY")',
+      ),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '[Gen 1:2](bible:Gen1:2 "strong_usage_ref:002");\n\r'
+        '**other** (3):',
+      ),
+    );
     expect(content.markdown, isNot(contains('@noun')));
   });
 

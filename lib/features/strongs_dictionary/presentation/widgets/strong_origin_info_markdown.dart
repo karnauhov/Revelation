@@ -4,13 +4,17 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 
-List<md.InlineSyntax> buildStrongOriginInfoInlineSyntaxes() {
-  return <md.InlineSyntax>[StrongOriginInfoMarkdownSyntax()];
+List<md.InlineSyntax> buildStrongArticleInfoInlineSyntaxes() {
+  return <md.InlineSyntax>[
+    StrongOriginInfoMarkdownSyntax(),
+    StrongUsageInfoMarkdownSyntax(),
+  ];
 }
 
-Map<String, MarkdownElementBuilder> buildStrongOriginInfoMarkdownBuilders() {
+Map<String, MarkdownElementBuilder> buildStrongArticleInfoMarkdownBuilders() {
   return <String, MarkdownElementBuilder>{
     strongOriginInfoMarkdownTag: StrongOriginInfoMarkdownElementBuilder(),
+    strongUsageInfoMarkdownTag: StrongUsageInfoMarkdownElementBuilder(),
   };
 }
 
@@ -25,7 +29,45 @@ class StrongOriginInfoMarkdownSyntax extends md.InlineSyntax {
   }
 }
 
-class StrongOriginInfoMarkdownElementBuilder extends MarkdownElementBuilder {
+class StrongUsageInfoMarkdownSyntax extends md.InlineSyntax {
+  StrongUsageInfoMarkdownSyntax()
+    : super(RegExp.escape(strongUsageInfoMarkdownMarker));
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    parser.addNode(md.Element.empty(strongUsageInfoMarkdownTag));
+    return true;
+  }
+}
+
+class StrongOriginInfoMarkdownElementBuilder
+    extends _StrongInfoMarkdownElementBuilder {
+  StrongOriginInfoMarkdownElementBuilder()
+    : super(
+        buttonKey: const Key('description_markdown_strong_origin_info_button'),
+        messageBuilder: (localizations) => localizations.strong_origin_tooltip,
+      );
+}
+
+class StrongUsageInfoMarkdownElementBuilder
+    extends _StrongInfoMarkdownElementBuilder {
+  StrongUsageInfoMarkdownElementBuilder()
+    : super(
+        buttonKey: const Key('description_markdown_strong_usage_info_button'),
+        messageBuilder: (localizations) =>
+            localizations.bible_reference_preview_loading_hint,
+      );
+}
+
+class _StrongInfoMarkdownElementBuilder extends MarkdownElementBuilder {
+  _StrongInfoMarkdownElementBuilder({
+    required this.buttonKey,
+    required this.messageBuilder,
+  });
+
+  final Key buttonKey;
+  final String Function(AppLocalizations localizations) messageBuilder;
+
   @override
   Widget? visitElementAfterWithContext(
     BuildContext context,
@@ -41,7 +83,7 @@ class StrongOriginInfoMarkdownElementBuilder extends MarkdownElementBuilder {
 
     return Tooltip(
       key: tooltipKey,
-      message: localizations.strong_origin_tooltip,
+      message: messageBuilder(localizations),
       constraints: BoxConstraints(maxWidth: tooltipMaxWidth),
       showDuration: const Duration(seconds: 12),
       preferBelow: false,
@@ -51,7 +93,7 @@ class StrongOriginInfoMarkdownElementBuilder extends MarkdownElementBuilder {
           tooltipKey.currentState?.ensureTooltipVisible();
         },
         child: SizedBox(
-          key: const Key('description_markdown_strong_origin_info_button'),
+          key: buttonKey,
           width: 32,
           height: 32,
           child: Center(

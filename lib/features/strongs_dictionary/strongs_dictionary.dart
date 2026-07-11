@@ -1,4 +1,6 @@
 export 'application/services/strongs_dictionary_content_service.dart';
+export 'application/services/strong_usage_bible_text_provider.dart';
+export 'application/services/strong_usage_reference_detail_registry.dart';
 export 'data/repositories/strongs_dictionary_repository.dart';
 export 'domain/models/strong_dictionary_entry.dart';
 export 'domain/models/strong_picker_entry.dart';

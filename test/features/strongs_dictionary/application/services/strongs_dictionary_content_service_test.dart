@@ -20,6 +20,10 @@ void main() {
     verseMap = await BibleVerseMap.loadFromAssets();
   });
 
+  setUp(() {
+    StrongUsageReferenceDetailRegistry.instance.clearForTesting();
+  });
+
   testWidgets('buildStrongContent returns null when lexicon is unavailable', (
     tester,
   ) async {
@@ -171,10 +175,78 @@ void main() {
     expect(content.markdown, contains('**Alpha** ([G2](strong:G2))'));
     expect(content.markdown, contains('[H123](strong:H123)'));
     expect(content.markdown, contains('**Beta** ([G3](strong:G3))'));
-    expect(content.markdown, contains('**sample**: Gen 1:1; Gen 1:2 x2'));
-    expect(content.markdown, contains('**other**: Rev 22:21'));
+    expect(
+      content.markdown,
+      contains('${l10n.strong_usage}:$strongUsageInfoMarkdownMarker'),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '**sample** (3): [Gen 1:1](bible:Gen1:1 "strong_usage_ref:001"); '
+        '[Gen 1:2 x2](bible:Gen1:2 "strong_usage_ref:002")',
+      ),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '**other** (1): [Rev 22:21](bible:Rev22:21 "strong_usage_ref:NZY")',
+      ),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '[Gen 1:2 x2](bible:Gen1:2 "strong_usage_ref:002");\n\r'
+        '**other** (1):',
+      ),
+    );
     expect(content.markdown, isNot(contains('@noun')));
   });
+
+  testWidgets(
+    'buildStrongContent collapses usage references after three links',
+    (tester) async {
+      final l10n = await _loadLocalizations(tester);
+      final service = StrongsDictionaryContentService(
+        repository: StrongsDictionaryRepository(
+          databaseGateway: const _FakeLexiconDatabaseGateway(
+            greekWords: <common_db.GreekWord>[
+              common_db.GreekWord(
+                id: 1,
+                word: 'Logos',
+                category: '',
+                synonyms: '',
+                origin: '',
+                usage: 'sample: [001;002;003;004], 4',
+              ),
+            ],
+          ),
+        ),
+        verseMap: verseMap,
+      );
+
+      final content = service.buildStrongContent(l10n, 1);
+      final detail = StrongUsageReferenceDetailRegistry.instance.find('1');
+
+      expect(content, isNotNull);
+      expect(
+        content!.markdown,
+        contains(
+          '**sample** (4): [Gen 1:1](bible:Gen1:1 "strong_usage_ref:001"); '
+          '[Gen 1:2](bible:Gen1:2 "strong_usage_ref:002"); '
+          '[Gen 1:3](bible:Gen1:3 "strong_usage_ref:003"); '
+          '[...](strong_usage_more:1 "strong_usage_more:1")',
+        ),
+      );
+      expect(content.markdown, isNot(contains('Gen 1:4')));
+      expect(detail, isNotNull);
+      expect(detail!.surface, 'sample');
+      expect(detail.count, 4);
+      expect(
+        detail.referencesMarkdown,
+        contains('[Gen 1:4](bible:Gen1:4 "strong_usage_ref:004")'),
+      );
+    },
+  );
 
   testWidgets('buildStrongContent returns null when word is absent or blank', (
     tester,

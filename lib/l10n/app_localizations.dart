@@ -732,6 +732,24 @@ abstract class AppLocalizations {
   /// **'Verses copied to the clipboard.'**
   String get bible_search_verses_copied;
 
+  /// No description provided for @bible_reference_preview_loading_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press a verse link to load and copy the verse text.'**
+  String get bible_reference_preview_loading_hint;
+
+  /// No description provided for @bible_reference_preview_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading verse text...'**
+  String get bible_reference_preview_loading;
+
+  /// No description provided for @bible_reference_preview_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse text is unavailable.'**
+  String get bible_reference_preview_unavailable;
+
   /// No description provided for @revelation_structure_screen.
   ///
   /// In en, this message translates to:

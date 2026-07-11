@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
+import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_bible_reference_markdown_tokens.dart';
+import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_bible_text_provider.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_origin_info_markdown.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_usage_bible_reference_markdown.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 
@@ -19,6 +23,9 @@ class StrongDictionaryEntryView extends StatelessWidget {
     this.backButtonKey = const Key('strong_dictionary_nav_back'),
     this.pickerButtonKey = const Key('strong_dictionary_nav_picker'),
     this.forwardButtonKey = const Key('strong_dictionary_nav_forward'),
+    this.bibleTextProvider,
+    this.copyBibleText,
+    this.popBeforeBibleNavigation = false,
     super.key,
   });
 
@@ -36,18 +43,36 @@ class StrongDictionaryEntryView extends StatelessWidget {
   final Key backButtonKey;
   final Key pickerButtonKey;
   final Key forwardButtonKey;
+  final StrongUsageBibleTextProvider? bibleTextProvider;
+  final StrongUsageBibleTextCopyHandler? copyBibleText;
+  final bool popBeforeBibleNavigation;
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final actionMarkdown = stripStrongOriginInfoMarkdownMarker(markdown);
+    final actionMarkdown = stripStrongUsageBibleReferenceTitles(
+      stripStrongArticleInfoMarkdownMarkers(markdown),
+    );
 
     return DescriptionMarkdownView(
       data: markdown,
       exportPdfMarkdown: actionMarkdown,
       copyMarkdown: actionMarkdown,
-      inlineSyntaxes: buildStrongOriginInfoInlineSyntaxes(),
-      elementBuilders: buildStrongOriginInfoMarkdownBuilders(),
+      inlineSyntaxes: buildStrongArticleInfoInlineSyntaxes(),
+      elementBuilders: <String, MarkdownElementBuilder>{
+        ...buildStrongArticleInfoMarkdownBuilders(),
+        ...buildStrongUsageBibleReferenceBuilders(
+          onGreekStrongTap: (selectedStrongNumber, _) {
+            onStrongNumberSelected(selectedStrongNumber);
+          },
+          onGreekStrongPickerTap: (selectedStrongNumber, linkContext) {
+            onStrongNumberPickerRequested(linkContext, selectedStrongNumber);
+          },
+          bibleTextProvider: bibleTextProvider,
+          copyBibleText: copyBibleText,
+          popBeforeBibleNavigation: popBeforeBibleNavigation,
+        ),
+      },
       padding: padding,
       toolbarButtonExtent: 36,
       exportPdfEnabled: exportPdfEnabled,

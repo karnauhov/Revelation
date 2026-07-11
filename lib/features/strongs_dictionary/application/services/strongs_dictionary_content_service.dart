@@ -1,4 +1,6 @@
 import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
+import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_bible_reference_markdown_tokens.dart';
+import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_reference_detail_registry.dart';
 import 'package:revelation/features/strongs_dictionary/data/repositories/strongs_dictionary_repository.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_dictionary_entry.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
@@ -11,6 +13,8 @@ import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:revelation/shared/services/pronunciation_service.dart';
 
 class StrongsDictionaryContentService {
+  static const int _maxInlineUsageReferenceLinks = 3;
+
   StrongsDictionaryContentService({
     StrongsDictionaryRepository? repository,
     PronunciationService? pronunciation,
@@ -127,7 +131,9 @@ class StrongsDictionaryContentService {
 
     if (entry.usage.isNotEmpty) {
       buffer.write(localizations.strong_usage);
-      buffer.write(': ');
+      buffer.write(':');
+      buffer.write(strongUsageInfoMarkdownMarker);
+      buffer.write(' ');
       buffer.write(_getUsage(localizations, entry.usage));
       buffer.write('\n\r');
     }
@@ -246,7 +252,7 @@ class StrongsDictionaryContentService {
       return '';
     }
 
-    return '$total\n\r${lines.join('; ')}';
+    return '$total\n\r${lines.join(';\n\r')}';
   }
 
   _FormattedUsageLine? _formatUsageLine(
@@ -279,15 +285,33 @@ class StrongsDictionaryContentService {
       return null;
     }
 
-    final count = refs.fold<int>(0, (sum, ref) => sum + ref.count);
+    final refsCount = refs.fold<int>(0, (sum, ref) => sum + ref.count);
+    final count =
+        _parseUsageLineCount(line.substring(closeBracket + 1)) ?? refsCount;
     final references = refs
         .map((ref) => _formatUsageVerseReference(localizations, ref))
-        .join('; ');
+        .toList(growable: false);
+    final visibleReferences = references.length > _maxInlineUsageReferenceLinks
+        ? <String>[
+            ...references.take(_maxInlineUsageReferenceLinks),
+            _formatUsageMoreReference(surface, count, references),
+          ]
+        : references;
 
     return _FormattedUsageLine(
       count: count,
-      markdown: '**$surface**: $references',
+      markdown:
+          '**${_escapeMarkdownText(surface)}** ($count): '
+          '${visibleReferences.join('; ')}',
     );
+  }
+
+  int? _parseUsageLineCount(String value) {
+    final match = RegExp(r'^\s*,\s*([1-9]\d*)\s*$').firstMatch(value);
+    if (match == null) {
+      return null;
+    }
+    return int.tryParse(match.group(1)!);
   }
 
   _UsageVerseReference? _parseUsageVerseReference(String value) {
@@ -310,11 +334,46 @@ class StrongsDictionaryContentService {
         ? usageReference.verseKey
         : '${localizedBibleBookCode(localizations, reference.bookId)} '
               '${reference.chapter}:${reference.verse}';
-    if (usageReference.count <= 1) {
-      return label;
+    final displayLabel = usageReference.count <= 1
+        ? label
+        : '$label x${usageReference.count}';
+    if (reference == null) {
+      return displayLabel;
     }
-    return '$label x${usageReference.count}';
+    final href =
+        'bible:${_verseMap!.bookCode(reference.bookId)}'
+        '${reference.chapter}:${reference.verse}';
+    final title = strongUsageBibleReferenceTitle(usageReference.verseKey);
+    final escapedLabel = _escapeMarkdownText(displayLabel);
+    return '[$escapedLabel]($href "$title")';
   }
+
+  String _formatUsageMoreReference(
+    String surface,
+    int count,
+    List<String> references,
+  ) {
+    final id = StrongUsageReferenceDetailRegistry.instance.register(
+      StrongUsageReferenceDetail(
+        surface: surface,
+        count: count,
+        referencesMarkdown: references.join('; '),
+      ),
+    );
+    final href = strongUsageMoreReferenceHref(id);
+    final title = strongUsageMoreReferenceTitle(id);
+    return '[...]($href "$title")';
+  }
+}
+
+String _escapeMarkdownText(String value) {
+  return value
+      .replaceAll(r'\', r'\\')
+      .replaceAll('[', r'\[')
+      .replaceAll(']', r'\]')
+      .replaceAll('*', r'\*')
+      .replaceAll('_', r'\_')
+      .replaceAll('`', r'\`');
 }
 
 class _FormattedUsageLine {

@@ -346,6 +346,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bible_search_verses_copied => 'Стихи скопированы в буфер обмена.';
 
   @override
+  String get bible_reference_preview_loading_hint =>
+      'Удерживайте ссылку на стих, чтобы загрузить и скопировать текст стиха.';
+
+  @override
+  String get bible_reference_preview_loading => 'Загружаем текст стиха...';
+
+  @override
+  String get bible_reference_preview_unavailable => 'Текст стиха недоступен.';
+
+  @override
   String get revelation_structure_screen => 'Структура Откровения';
 
   @override
