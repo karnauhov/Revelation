@@ -17,6 +17,7 @@ import 'package:revelation/features/topics/data/repositories/topics_repository.d
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/bloc/topics_catalog_cubit.dart';
 import 'package:revelation/shared/models/app_settings.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../test_harness/test_harness.dart';
@@ -138,6 +139,16 @@ void main() {
     expect(cubitFromFallback, isA<PrimarySourcePageSettingsCubit>());
     expect(topicCubitWithExplicitRepo, isA<TopicContentCubit>());
     expect(topicCubitWithFallbackRepo, isA<TopicContentCubit>());
+  });
+
+  test('registerBibleVerseMap exposes the startup verse map', () async {
+    final verseMap = await BibleVerseMap.loadFromAssets();
+
+    expect(AppDi.bibleVerseMapOrNull, isNull);
+
+    AppDi.registerBibleVerseMap(verseMap);
+
+    expect(AppDi.bibleVerseMapOrNull, same(verseMap));
   });
 }
 

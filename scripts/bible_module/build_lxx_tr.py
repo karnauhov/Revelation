@@ -28,7 +28,8 @@ from .schema import (
     now_utc_iso,
 )
 from .sources import DEFAULT_SOURCE_LOCK_PATH
-from .tagnt import TagntToken, normalize_strong, parse_tagnt_row
+from .strong_numbers import classic_greek_strong_or_none
+from .tagnt import TagntToken, parse_tagnt_row
 
 MODULE_ID = "lxx_tr"
 MODULE_CODE = "LXX_TR"
@@ -593,6 +594,7 @@ def build_lxx_verse_texts(
                     "LXX projection tagged_text must use alternating word/Strong format: "
                     f"{canonical_verse.canonical_ref}"
                 )
+            tagged_text = _replace_extended_strongs_in_tagged_text(tagged_text)
             actual_refs.add(canonical_verse.canonical_ref)
             literal_texts[canonical_verse.canonical_verse_id] = tagged_text
             literal_words = _literal_tagged_words(tagged_text)
@@ -1121,7 +1123,7 @@ def _primary_strong_for_lxx_word(element: ET.Element) -> str | None:
     match = _LXX_STRONG_ATTR_PATTERN.search(lemma_attr)
     if match is None:
         return None
-    return normalize_strong(match.group(1))
+    return classic_greek_strong_or_none(match.group(1))
 
 
 def _join_lxx_tagged_words(words: Sequence[LxxTaggedWord]) -> str:
@@ -1306,10 +1308,25 @@ def _word_surface(surface: str) -> str:
 def _primary_strong_for_token(token: TagntToken) -> str | None:
     for segment in token.strong_segments:
         if segment.is_primary:
-            return segment.strong
-    if token.strong_segments:
-        return token.strong_segments[0].strong
+            return classic_greek_strong_or_none(segment.strong)
+    for segment in token.strong_segments:
+        strong = classic_greek_strong_or_none(segment.strong)
+        if strong is not None:
+            return strong
     return None
+
+
+def _replace_extended_strongs_in_tagged_text(tagged_text: str) -> str:
+    parts: list[str] = []
+    for part in tagged_text.split():
+        if _STRONG_TOKEN_PATTERN.match(part):
+            replacement = classic_greek_strong_or_none(part)
+            if replacement is None:
+                continue
+            parts.append(replacement)
+            continue
+        parts.append(part)
+    return " ".join(parts)
 
 
 def _is_textus_receptus_token(token: TagntToken) -> bool:

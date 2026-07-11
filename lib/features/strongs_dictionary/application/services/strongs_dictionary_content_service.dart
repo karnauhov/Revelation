@@ -3,20 +3,25 @@ import 'package:revelation/features/strongs_dictionary/data/repositories/strongs
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_dictionary_entry.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/localization/bible_book_localization.dart';
 import 'package:revelation/shared/localization/localization_utils.dart';
 import 'package:revelation/shared/models/description_content.dart';
 import 'package:revelation/shared/models/description_kind.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:revelation/shared/services/pronunciation_service.dart';
 
 class StrongsDictionaryContentService {
   StrongsDictionaryContentService({
     StrongsDictionaryRepository? repository,
     PronunciationService? pronunciation,
+    BibleVerseMap? verseMap,
   }) : _repository = repository ?? StrongsDictionaryRepository(),
-       _pronunciation = pronunciation ?? PronunciationService();
+       _pronunciation = pronunciation ?? PronunciationService(),
+       _verseMap = verseMap;
 
   final StrongsDictionaryRepository _repository;
   final PronunciationService _pronunciation;
+  final BibleVerseMap? _verseMap;
 
   List<StrongPickerEntry>? _pickerEntriesCache;
 
@@ -123,7 +128,7 @@ class StrongsDictionaryContentService {
     if (entry.usage.isNotEmpty) {
       buffer.write(localizations.strong_usage);
       buffer.write(': ');
-      buffer.write(_getUsage(entry.usage));
+      buffer.write(_getUsage(localizations, entry.usage));
       buffer.write('\n\r');
     }
 
@@ -221,30 +226,107 @@ class StrongsDictionaryContentService {
     });
   }
 
-  String _getUsage(String content) {
+  String _getUsage(AppLocalizations localizations, String content) {
     if (content.isEmpty) {
       return '';
     }
 
-    var sum = 0;
-    for (final line in content.split('\n')) {
-      final index = line.lastIndexOf('], ');
-      if (index == -1) {
+    var total = 0;
+    final lines = <String>[];
+    for (final rawLine in content.split('\n')) {
+      final formattedLine = _formatUsageLine(localizations, rawLine.trim());
+      if (formattedLine == null) {
         continue;
       }
-      final wordUsages = int.tryParse(line.substring(index + 3));
-      if (wordUsages != null) {
-        sum += wordUsages;
-      }
+      total += formattedLine.count;
+      lines.add(formattedLine.markdown);
     }
 
-    var result =
-        '$sum\n\r**${content.trim().replaceAll(" [], ", " ").replaceAll("\n", "; **").replaceAll(":", "**:")}';
-
-    if (result.endsWith('**')) {
-      result = result.substring(0, result.length - 2);
+    if (lines.isEmpty) {
+      return '';
     }
 
-    return result;
+    return '$total\n\r${lines.join('; ')}';
   }
+
+  _FormattedUsageLine? _formatUsageLine(
+    AppLocalizations localizations,
+    String line,
+  ) {
+    if (line.isEmpty) {
+      return null;
+    }
+
+    final openBracket = line.indexOf('[');
+    final labelSeparator = openBracket == -1
+        ? -1
+        : line.lastIndexOf(':', openBracket);
+    final closeBracket = line.indexOf(']', openBracket + 1);
+    if (labelSeparator <= 0 || openBracket == -1 || closeBracket == -1) {
+      return null;
+    }
+
+    final surface = line.substring(0, labelSeparator).trim();
+    final refsText = line.substring(openBracket + 1, closeBracket).trim();
+    final refs = refsText.isEmpty
+        ? const <_UsageVerseReference>[]
+        : refsText
+              .split(';')
+              .map((value) => _parseUsageVerseReference(value.trim()))
+              .whereType<_UsageVerseReference>()
+              .toList(growable: false);
+    if (surface.isEmpty || refs.isEmpty) {
+      return null;
+    }
+
+    final count = refs.fold<int>(0, (sum, ref) => sum + ref.count);
+    final references = refs
+        .map((ref) => _formatUsageVerseReference(localizations, ref))
+        .join('; ');
+
+    return _FormattedUsageLine(
+      count: count,
+      markdown: '**$surface**: $references',
+    );
+  }
+
+  _UsageVerseReference? _parseUsageVerseReference(String value) {
+    final match = RegExp(r'^([0-9A-Z]{3})(?:x([1-9]\d*))?$').firstMatch(value);
+    if (match == null) {
+      return null;
+    }
+    return _UsageVerseReference(
+      verseKey: match.group(1)!,
+      count: int.tryParse(match.group(2) ?? '1') ?? 1,
+    );
+  }
+
+  String _formatUsageVerseReference(
+    AppLocalizations localizations,
+    _UsageVerseReference usageReference,
+  ) {
+    final reference = _verseMap?.referenceForKey(usageReference.verseKey);
+    final label = reference == null
+        ? usageReference.verseKey
+        : '${localizedBibleBookCode(localizations, reference.bookId)} '
+              '${reference.chapter}:${reference.verse}';
+    if (usageReference.count <= 1) {
+      return label;
+    }
+    return '$label x${usageReference.count}';
+  }
+}
+
+class _FormattedUsageLine {
+  const _FormattedUsageLine({required this.count, required this.markdown});
+
+  final int count;
+  final String markdown;
+}
+
+class _UsageVerseReference {
+  const _UsageVerseReference({required this.verseKey, required this.count});
+
+  final String verseKey;
+  final int count;
 }

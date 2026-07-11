@@ -8,9 +8,15 @@ import 'package:revelation/features/strongs_dictionary/presentation/widgets/stro
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_number_picker_dialog.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_reference_info_icon.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:revelation/shared/ui/widgets/greek_keyboard.dart';
 
 const _strongDictionaryEntryExtent = 36.0;
+Future<BibleVerseMap>? _strongDictionaryVerseMapFuture;
+
+Future<BibleVerseMap> _loadStrongDictionaryVerseMap() {
+  return _strongDictionaryVerseMapFuture ??= BibleVerseMap.loadFromAssets();
+}
 
 class StrongsDictionaryScreen extends StatelessWidget {
   const StrongsDictionaryScreen({
@@ -27,7 +33,56 @@ class StrongsDictionaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final explicitContentService = contentService;
+    if (explicitContentService != null) {
+      return _StrongsDictionaryScreenProvider(
+        initialStrongNumber: initialStrongNumber,
+        localizations: localizations,
+        contentService: explicitContentService,
+      );
+    }
 
+    return FutureBuilder<BibleVerseMap>(
+      future: _loadStrongDictionaryVerseMap(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return _StrongsDictionaryScreenProvider(
+            initialStrongNumber: initialStrongNumber,
+            localizations: localizations,
+            contentService: StrongsDictionaryContentService(
+              verseMap: snapshot.requireData,
+            ),
+          );
+        }
+        if (snapshot.hasError) {
+          return _StrongsDictionaryScreenProvider(
+            initialStrongNumber: initialStrongNumber,
+            localizations: localizations,
+            contentService: StrongsDictionaryContentService(),
+          );
+        }
+        return Scaffold(
+          appBar: AppBar(title: Text(localizations.strongs_dictionary_screen)),
+          body: const Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+  }
+}
+
+class _StrongsDictionaryScreenProvider extends StatelessWidget {
+  const _StrongsDictionaryScreenProvider({
+    required this.initialStrongNumber,
+    required this.localizations,
+    required this.contentService,
+  });
+
+  final int initialStrongNumber;
+  final AppLocalizations localizations;
+  final StrongsDictionaryContentService contentService;
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider<StrongsDictionaryCubit>(
       create: (_) => StrongsDictionaryCubit(
         initialStrongNumber: initialStrongNumber,

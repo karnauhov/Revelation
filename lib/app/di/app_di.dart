@@ -14,6 +14,7 @@ import 'package:revelation/features/topics/topics.dart'
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/infra/content/markdown_images/default_markdown_image_loader.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class AppDi {
@@ -75,6 +76,20 @@ class AppDi {
   static PagesRepository createPagesRepository() => PagesRepository();
 
   static BibleRepository createBibleRepository() => BibleRepository();
+
+  static void registerBibleVerseMap(BibleVerseMap verseMap) {
+    if (_getIt.isRegistered<BibleVerseMap>()) {
+      _getIt.unregister<BibleVerseMap>();
+    }
+    _getIt.registerSingleton<BibleVerseMap>(verseMap);
+  }
+
+  static BibleVerseMap? get bibleVerseMapOrNull {
+    if (_getIt.isRegistered<BibleVerseMap>()) {
+      return _getIt<BibleVerseMap>();
+    }
+    return null;
+  }
 
   static PrimarySourcePageSettingsOrchestrator
   createPrimarySourcePageSettingsOrchestrator({

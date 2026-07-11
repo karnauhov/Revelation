@@ -8,10 +8,18 @@ import 'package:revelation/infra/db/localized/db_localized.dart'
 import 'package:revelation/infra/db/runtime/gateways/lexicon_database_gateway.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_kind.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 
 import '../../../../test_harness/test_harness.dart';
 
 void main() {
+  late BibleVerseMap verseMap;
+
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    verseMap = await BibleVerseMap.loadFromAssets();
+  });
+
   testWidgets('buildStrongContent returns null when lexicon is unavailable', (
     tester,
   ) async {
@@ -126,7 +134,7 @@ void main() {
               category: '@noun',
               synonyms: '2,2717,3',
               origin: 'G2,H123,G2717',
-              usage: 'sample [], 2\nother [], 3',
+              usage: 'sample: [001;002x2], 3\nother: [NZY], 1',
             ),
             common_db.GreekWord(
               id: 2,
@@ -150,6 +158,7 @@ void main() {
           ],
         ),
       ),
+      verseMap: verseMap,
     );
 
     final content = service.buildStrongContent(l10n, 1);
@@ -162,7 +171,8 @@ void main() {
     expect(content.markdown, contains('**Alpha** ([G2](strong:G2))'));
     expect(content.markdown, contains('[H123](strong:H123)'));
     expect(content.markdown, contains('**Beta** ([G3](strong:G3))'));
-    expect(content.markdown, contains('sample 2; **other 3'));
+    expect(content.markdown, contains('**sample**: Gen 1:1; Gen 1:2 x2'));
+    expect(content.markdown, contains('**other**: Rev 22:21'));
     expect(content.markdown, isNot(contains('@noun')));
   });
 

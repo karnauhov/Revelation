@@ -83,6 +83,19 @@ class LxxTrBuilderTests(unittest.TestCase):
         self.assertEqual(result.missing_strong_tokens, ())
         self.assertTrue(is_valid_tagged_text(result.verse_texts_by_id[mat_1_1.canonical_verse_id]))
 
+    def test_tr_text_builder_replaces_extended_strongs_with_classic_keys(self) -> None:
+        token = parse_tagnt_row(
+            tr_row("Mat.6.8#01=NKO", "Oiden", "G6063=V-RAI-3S")
+        )
+        self.assertIsNotNone(token)
+        assert token is not None
+
+        result = build_tr_verse_texts([token])
+        mat_6_8 = get_canonical_verse("Mat", 6, 8)
+
+        self.assertEqual(result.verse_texts_by_id[mat_6_8.canonical_verse_id], "Oiden G1492")
+        self.assertEqual(result.missing_strong_tokens, ())
+
     def test_tr_text_builder_reports_words_without_strong(self) -> None:
         token = parse_tagnt_row(
             tr_row("Mat.1.2#01=NKO", "NoStrong", "N-NSF")

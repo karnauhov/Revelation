@@ -8,6 +8,7 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/primary_source.dart';
+import 'package:revelation/features/primary_sources/application/services/description_content_service.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_attributes_footer.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_description_panel.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_words_dialog.dart';
@@ -127,7 +128,11 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           create: (_) => AppDi.createPrimarySourcePageSettingsCubit(),
         ),
         BlocProvider<PrimarySourceDescriptionCubit>(
-          create: (_) => PrimarySourceDescriptionCubit(),
+          create: (_) => PrimarySourceDescriptionCubit(
+            descriptionService: DescriptionContentService(
+              verseMap: AppDi.bibleVerseMapOrNull,
+            ),
+          ),
         ),
         BlocProvider<PrimarySourceViewportCubit>(
           create: (_) => PrimarySourceViewportCubit(),

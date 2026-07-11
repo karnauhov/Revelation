@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:revelation/core/analytics/app_analytics_reporter.dart';
@@ -23,6 +24,7 @@ import 'package:revelation/infra/remote/supabase/server_manager.dart';
 import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/models/primary_source_word_link_target.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -43,6 +45,7 @@ typedef AppBootstrapAudioInitializer =
 typedef AppBootstrapManuscriptGreekConfigLoader = Future<void> Function();
 typedef AppBootstrapNominaSacraConfigLoader = Future<void> Function();
 typedef AppBootstrapPackageInfoLoader = Future<PackageInfo> Function();
+typedef AppBootstrapBibleVerseMapLoader = Future<BibleVerseMap> Function();
 typedef AppBootstrapDatabaseVersionInfoLoader =
     Future<DatabaseVersionInfo?> Function(String dbFile);
 typedef AppBootstrapDatabaseMaintenanceRunner =
@@ -112,6 +115,7 @@ class AppBootstrap {
     AppBootstrapAudioInitializer? initializeAudio,
     AppBootstrapManuscriptGreekConfigLoader? loadManuscriptGreekTextConfig,
     AppBootstrapNominaSacraConfigLoader? loadNominaSacraPronunciationConfig,
+    AppBootstrapBibleVerseMapLoader? loadBibleVerseMap,
     AppAnalyticsReporter? analyticsReporter,
     AppBootstrapPackageInfoLoader? packageInfoLoader,
     AppBootstrapDatabaseVersionInfoLoader? databaseVersionInfoLoader,
@@ -132,6 +136,7 @@ class AppBootstrap {
        _loadNominaSacraPronunciationConfig =
            loadNominaSacraPronunciationConfig ??
            NominaSacraPronunciationService.loadDefaultConfig,
+       _loadBibleVerseMap = loadBibleVerseMap ?? BibleVerseMap.loadFromAssets,
        _analyticsReporter =
            analyticsReporter ?? _resolveDefaultAnalyticsReporter(),
        _packageInfoLoader = packageInfoLoader ?? PackageInfo.fromPlatform,
@@ -149,6 +154,7 @@ class AppBootstrap {
   final AppBootstrapAudioInitializer _initializeAudio;
   final AppBootstrapManuscriptGreekConfigLoader _loadManuscriptGreekTextConfig;
   final AppBootstrapNominaSacraConfigLoader _loadNominaSacraPronunciationConfig;
+  final AppBootstrapBibleVerseMapLoader _loadBibleVerseMap;
   final AppAnalyticsReporter _analyticsReporter;
   final AppBootstrapPackageInfoLoader _packageInfoLoader;
   final AppBootstrapDatabaseVersionInfoLoader _databaseVersionInfoLoader;
@@ -202,6 +208,7 @@ class AppBootstrap {
       _configureGlobalErrorHandling();
       await _initializeManuscriptGreekTextConfigSafely();
       await _initializeNominaSacraPronunciationConfigSafely();
+      await _initializeBibleVerseMap();
       await _initializePlatform();
 
       onProgress?.call(
@@ -318,6 +325,10 @@ class AppBootstrap {
         'Failed to load nomina sacra pronunciation config',
       );
     }
+  }
+
+  Future<void> _initializeBibleVerseMap() async {
+    AppDi.registerBibleVerseMap(await _loadBibleVerseMap());
   }
 
   Future<void> _initializeDatabases(SettingsCubit settingsCubit) async {

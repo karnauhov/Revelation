@@ -13,6 +13,7 @@ import 'package:revelation/features/settings/settings.dart' show SettingsCubit;
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -68,6 +69,7 @@ void main() {
 
       final audioInitCalls = <String>[];
       final configLoadCalls = <String>[];
+      final verseMap = await BibleVerseMap.loadFromAssets();
       final bootstrap = AppBootstrap(
         talker: talker,
         databaseRuntime: runtime,
@@ -79,6 +81,10 @@ void main() {
         },
         loadNominaSacraPronunciationConfig: () async {
           configLoadCalls.add('nomina-sacra');
+        },
+        loadBibleVerseMap: () async {
+          configLoadCalls.add('verse-map');
+          return verseMap;
         },
         analyticsReporter: analyticsReporter,
         packageInfoLoader: _loadTestPackageInfo,
@@ -97,7 +103,12 @@ void main() {
       expect(settingsCubit.state.settings.selectedLanguage, 'ru');
       expect(runtime.initializedLanguages, <String>['ru']);
       expect(audioInitCalls, <String>['ru']);
-      expect(configLoadCalls, <String>['manuscript-greek', 'nomina-sacra']);
+      expect(configLoadCalls, <String>[
+        'manuscript-greek',
+        'nomina-sacra',
+        'verse-map',
+      ]);
+      expect(AppDi.bibleVerseMapOrNull, same(verseMap));
       expect(analyticsReporter.appContexts, <AppAnalyticsAppContext>[
         const AppAnalyticsAppContext(
           appName: 'Revelation',
