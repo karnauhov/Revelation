@@ -27,6 +27,15 @@ void main() {
     );
   });
 
+  test('resolves every canonical Bible book id', () {
+    final en = lookupAppLocalizations(const Locale('en'));
+
+    for (var bookId = 1; bookId <= 66; bookId++) {
+      expect(localizedBibleBookCode(en, bookId), isNotEmpty);
+      expect(localizedBibleBookName(en, bookId), isNotEmpty);
+    }
+  });
+
   test('rejects out-of-range canonical book ids', () {
     final en = lookupAppLocalizations(const Locale('en'));
 
