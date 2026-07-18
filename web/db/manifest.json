@@ -1,20 +1,20 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-18T04:25:15Z",
+  "generatedAt": "2026-07-18T05:59:19Z",
   "databases": {
     "bible_kjv.sqlite": {
-      "versionToken": "manifest:schema:3|data:3|date:2026-07-04T14:24:30Z|size:6725632",
+      "versionToken": "manifest:schema:3|data:4|date:2026-07-18T05:59:19Z|size:6725632",
       "schemaVersion": 3,
-      "dataVersion": 3,
-      "date": "2026-07-04T14:24:30Z",
+      "dataVersion": 4,
+      "date": "2026-07-18T05:59:19Z",
       "fileSizeBytes": 6725632
     },
     "bible_lxx_tr.sqlite": {
-      "versionToken": "manifest:schema:3|data:14|date:2026-07-11T05:30:21Z|size:12840960",
+      "versionToken": "manifest:schema:3|data:15|date:2026-07-18T05:59:19Z|size:12836864",
       "schemaVersion": 3,
-      "dataVersion": 14,
-      "date": "2026-07-11T05:30:21Z",
-      "fileSizeBytes": 12840960
+      "dataVersion": 15,
+      "date": "2026-07-18T05:59:19Z",
+      "fileSizeBytes": 12836864
     },
     "revelation.sqlite": {
       "versionToken": "manifest:schema:4|data:11|date:2026-07-18T04:25:15Z|size:3813376",
