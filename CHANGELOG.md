@@ -2,15 +2,16 @@
 
 All notable changes to this application will be documented here.
 
-## [1.0.7] - Under development
+## [1.0.7](https://github.com/karnauhov/Revelation/releases/tag/v1.0.7%2B170) - 18.07.26
 
 ### Added
 
 - Analytics and crash reporting support with Sentry
 - Expanded the left menu with more study sections.
 - Added a Strong's Dictionary page with Greek word lookup, linked dictionary entries.
-- Added an in-app Bible reader with local Bible modules, chapter navigation, and Strong's number toggling.
+- Added an in-app Bible reader with local Bible modules, chapter navigation, parallel reading, Bible search, and Strong's number toggling.
 - Added KJV and LXX/Textus Receptus Bible modules to the Bible reader.
+- Added Bible passage references and usage data to Strong's Dictionary articles.
 - Uploaded primary-source images to supabase.com (0207, 0229, P98);
 - Added refresh DB, show local folder, cache clearing from the About screen.
 - Page 404 for web
