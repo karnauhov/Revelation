@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "source": {
+    "database": "revelation.sqlite",
+    "table": "greek_words",
+    "category_column": "category"
+  },
+  "description": "Greek Strong numbers treated as low-semantic-load grammatical words for verse comparison.",
+  "selection_policy": {
+    "included_categories": [
+      "@artDef",
+      "@prep",
+      "@conj",
+      "@particle (except negative particles)"
+    ],
+    "excluded_from_this_list": [
+      "pronouns: they identify participants or references",
+      "negative particles and negative conjunctions: they can change the meaning of a proposition",
+      "verbs, nouns, adjectives, and semantically meaningful adverbs"
+    ],
+    "manual_candidate_exclusions": {
+      "numbers": [
+        "G1508",
+        "G1509",
+        "G3362",
+        "G3363",
+        "G3364",
+        "G3385",
+        "G3386"
+      ],
+      "reason": "These entries are conjunction/particle forms containing an explicit negative marker and are retained for semantic comparison."
+    }
+  },
+  "excluded_strong_numbers_by_category": {
+    "definite_article": [
+      "G3588"
+    ],
+    "prepositions": [
+      "G303",
+      "G427",
+      "G473",
+      "G575",
+      "G817",
+      "G891",
+      "G1223",
+      "G1519",
+      "G1537",
+      "G1715",
+      "G1722",
+      "G1752",
+      "G1909",
+      "G2596",
+      "G3326",
+      "G3844",
+      "G4012",
+      "G4253",
+      "G4314",
+      "G4862",
+      "G5228",
+      "G5259"
+    ],
+    "conjunctions_and_non_negative_particles": [
+      "G235",
+      "G302",
+      "G686",
+      "G687",
+      "G1063",
+      "G1065",
+      "G1161",
+      "G1211",
+      "G1221",
+      "G1352",
+      "G1355",
+      "G1360",
+      "G1437",
+      "G1487",
+      "G1488",
+      "G1489",
+      "G1499",
+      "G1512",
+      "G1513",
+      "G1535",
+      "G1875",
+      "G1893",
+      "G1894",
+      "G1895",
+      "G1897",
+      "G2228",
+      "G2229",
+      "G2260",
+      "G2273",
+      "G2443",
+      "G2532",
+      "G2534",
+      "G2539",
+      "G2543",
+      "G2544",
+      "G2579",
+      "G3303",
+      "G3304",
+      "G3305",
+      "G3375",
+      "G3483",
+      "G3513",
+      "G3676",
+      "G3752",
+      "G3754",
+      "G3767",
+      "G4007",
+      "G4218",
+      "G4219",
+      "G5037",
+      "G5104",
+      "G5105",
+      "G5106",
+      "G5620"
+    ]
+  }
+}
