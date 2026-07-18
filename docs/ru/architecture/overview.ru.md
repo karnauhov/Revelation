@@ -1,7 +1,7 @@
 # Обзор архитектуры (RU)
 
-Doc-Version: `2.3.0`  
-Last-Updated: `2026-05-09`  
+Doc-Version: `2.4.0`
+Last-Updated: `2026-06-27`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
@@ -21,10 +21,11 @@ Source-Commit: `working-tree`
 - `AppStartupCubit` владеет состоянием стартового splash-экрана, метаданными версии/сборки для нижнего блока splash, прогрессом запуска, failure/retry-потоком и переключением в готовую оболочку приложения.
 - `AppBootstrap` инициализирует Flutter bindings, глобальную обработку ошибок, платформенную среду, настройки, Supabase, локальные базы данных и дефолтные обработчики `word:` и Strong-ссылок, параллельно публикуя прогресс запуска.
 - `RevelationApp` собирает `MaterialApp.router`, применяет locale/theme/font из `SettingsCubit` и поддерживает `en`, `es`, `uk`, `ru`.
-- `AppRouter` использует `go_router` и обслуживает экраны main, topic, список первоисточников, detail первоисточника, страницу словаря Стронга, settings, about и download.
+- `AppRouter` использует `go_router` и обслуживает экраны main, topic, чтения Библии, список первоисточников, detail первоисточника, страницу словаря Стронга, settings, about и download.
 - `AppDi.appBlocProviders` подключает глобальный app-state: `SettingsCubit`, `TopicsCatalogCubit`, `PrimarySourcesCubit`.
 - `AppDi.registerCore` регистрирует кросс-срезные runtime-сервисы, включая `Talker` и общий `MarkdownImageLoader`.
 - `PrimarySourceScreen` создаёт feature-scoped detail-state через cubit-срезы `session`, `image`, `page-settings`, `description`, `viewport`, `orchestration`. `PrimarySourceDetailCoordinator` выступает экранным адаптером, но не хранит source of truth.
+- `BibleScreen` создаёт feature-scoped состояние чтения Библии: `BibleWorkspaceCubit` для композиции открытых панелей и `BibleReaderCubit` для каждой панели модуля.
 - `strongs_dictionary` является самостоятельной feature со своими domain/data/presentation-слоями, UI страницы/диалога, picker-flow и API интеграции с первоисточниками.
 
 ## Данные и сервисы

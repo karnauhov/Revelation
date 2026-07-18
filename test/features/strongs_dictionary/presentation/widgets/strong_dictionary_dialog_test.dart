@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/models/description_content.dart';
+import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 
 import '../../../../test_harness/test_harness.dart';
@@ -16,7 +18,13 @@ void main() {
     final context = await pumpLocalizedContext(tester);
     final l10n = AppLocalizations.of(context)!;
 
-    unawaited(showStrongDictionaryDialog(context, 1));
+    unawaited(
+      showStrongDictionaryDialog(
+        context,
+        1,
+        contentService: _FakeStrongsDictionaryContentService(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.byType(StrongDictionaryDialog), findsOneWidget);
@@ -31,9 +39,14 @@ void main() {
     tester,
   ) async {
     final context = await pumpLocalizedContext(tester);
-    final l10n = AppLocalizations.of(context)!;
 
-    unawaited(showStrongDictionaryDialog(context, 1));
+    unawaited(
+      showStrongDictionaryDialog(
+        context,
+        1,
+        contentService: _FakeStrongsDictionaryContentService(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     final markdownView = tester.widget<DescriptionMarkdownView>(
@@ -45,12 +58,8 @@ void main() {
 
     expect(find.byType(StrongNumberPickerDialog), findsOneWidget);
 
-    await tester.tap(
-      find.descendant(
-        of: find.byType(StrongNumberPickerDialog),
-        matching: find.text(l10n.close),
-      ),
-    );
+    final pickerContext = tester.element(find.byType(StrongNumberPickerDialog));
+    Navigator.of(pickerContext).pop();
     await tester.pumpAndSettle();
     expect(find.byType(StrongNumberPickerDialog), findsNothing);
   });
@@ -61,7 +70,13 @@ void main() {
     final context = await pumpLocalizedContext(tester);
     final l10n = AppLocalizations.of(context)!;
 
-    unawaited(showStrongDictionaryDialog(context, 1));
+    unawaited(
+      showStrongDictionaryDialog(
+        context,
+        1,
+        contentService: _FakeStrongsDictionaryContentService(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     var markdown = tester.widget<DescriptionMarkdownView>(
@@ -94,12 +109,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(StrongNumberPickerDialog), findsOneWidget);
 
-    await tester.tap(
-      find.descendant(
-        of: find.byType(StrongNumberPickerDialog),
-        matching: find.text(l10n.close),
-      ),
+    final secondPickerContext = tester.element(
+      find.byType(StrongNumberPickerDialog),
     );
+    Navigator.of(secondPickerContext).pop();
     await tester.pumpAndSettle();
     await tester.tap(find.text(l10n.close).first);
     await tester.pumpAndSettle();
@@ -111,7 +124,13 @@ void main() {
     final context = await pumpLocalizedContext(tester);
     final l10n = AppLocalizations.of(context)!;
 
-    unawaited(showStrongDictionaryDialog(context, 1));
+    unawaited(
+      showStrongDictionaryDialog(
+        context,
+        1,
+        contentService: _FakeStrongsDictionaryContentService(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     final markdown = tester.widget<DescriptionMarkdownView>(
@@ -167,12 +186,50 @@ void main() {
     await tester.tap(find.byKey(const Key('strong_dictionary_nav_picker')));
     await tester.pumpAndSettle();
     expect(find.byType(StrongNumberPickerDialog), findsOneWidget);
-    await tester.tap(
-      find.descendant(
-        of: find.byType(StrongNumberPickerDialog),
-        matching: find.text(l10n.close),
-      ),
-    );
+    final pickerContext = tester.element(find.byType(StrongNumberPickerDialog));
+    Navigator.of(pickerContext).pop();
     await tester.pumpAndSettle();
   });
+}
+
+class _FakeStrongsDictionaryContentService
+    extends StrongsDictionaryContentService {
+  static const _entries = <StrongPickerEntry>[
+    StrongPickerEntry(number: 1, word: 'Alpha'),
+    StrongPickerEntry(number: 2, word: 'Beta'),
+    StrongPickerEntry(number: 42, word: 'Answer'),
+  ];
+
+  @override
+  List<StrongPickerEntry> getPickerEntries() {
+    return _entries;
+  }
+
+  @override
+  DescriptionContent? buildStrongContent(
+    AppLocalizations localizations,
+    int strongNumber,
+  ) {
+    final entry = _entries.firstWhere(
+      (entry) => entry.number == strongNumber,
+      orElse: () =>
+          StrongPickerEntry(number: strongNumber, word: 'G$strongNumber'),
+    );
+    return DescriptionContent(
+      markdown: '## ${entry.word}\n\r${entry.code}',
+      kind: DescriptionKind.strongNumber,
+    );
+  }
+
+  @override
+  int getNeighborStrongNumber(int current, {bool forward = true}) {
+    final index = _entries.indexWhere((entry) => entry.number == current);
+    if (index == -1) {
+      return _entries.first.number;
+    }
+    final nextIndex = forward
+        ? (index + 1) % _entries.length
+        : (index - 1 + _entries.length) % _entries.length;
+    return _entries[nextIndex].number;
+  }
 }

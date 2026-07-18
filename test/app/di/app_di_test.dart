@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
+import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
@@ -16,6 +17,7 @@ import 'package:revelation/features/topics/data/repositories/topics_repository.d
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/bloc/topics_catalog_cubit.dart';
 import 'package:revelation/shared/models/app_settings.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../test_harness/test_harness.dart';
@@ -96,6 +98,7 @@ void main() {
 
     final topicsRepository = AppDi.createTopicsRepository();
     final primarySourcesRepository = AppDi.createPrimarySourcesDbRepository();
+    final bibleRepository = AppDi.createBibleRepository();
     final pagesRepository = AppDi.createPagesRepository();
     final markdownImageLoader = AppDi.createMarkdownImageLoader();
     final explicitOrchestrator =
@@ -127,6 +130,7 @@ void main() {
 
     expect(topicsRepository, isA<TopicsRepository>());
     expect(primarySourcesRepository, isA<PrimarySourcesDbRepository>());
+    expect(bibleRepository, isA<BibleRepository>());
     expect(pagesRepository, isA<PagesRepository>());
     expect(markdownImageLoader, isA<MarkdownImageLoader>());
     expect(explicitOrchestrator, isA<PrimarySourcePageSettingsOrchestrator>());
@@ -135,6 +139,16 @@ void main() {
     expect(cubitFromFallback, isA<PrimarySourcePageSettingsCubit>());
     expect(topicCubitWithExplicitRepo, isA<TopicContentCubit>());
     expect(topicCubitWithFallbackRepo, isA<TopicContentCubit>());
+  });
+
+  test('registerBibleVerseMap exposes the startup verse map', () async {
+    final verseMap = await BibleVerseMap.loadFromAssets();
+
+    expect(AppDi.bibleVerseMapOrNull, isNull);
+
+    AppDi.registerBibleVerseMap(verseMap);
+
+    expect(AppDi.bibleVerseMapOrNull, same(verseMap));
   });
 }
 

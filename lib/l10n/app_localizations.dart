@@ -456,6 +456,300 @@ abstract class AppLocalizations {
   /// **'Reading and studying Scripture'**
   String get bible_header;
 
+  /// No description provided for @bible_module.
+  ///
+  /// In en, this message translates to:
+  /// **'Module'**
+  String get bible_module;
+
+  /// No description provided for @bible_book.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get bible_book;
+
+  /// No description provided for @bible_chapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter'**
+  String get bible_chapter;
+
+  /// No description provided for @bible_verse.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse'**
+  String get bible_verse;
+
+  /// No description provided for @bible_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening Bible...'**
+  String get bible_loading;
+
+  /// No description provided for @bible_loading_chapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading chapter...'**
+  String get bible_loading_chapter;
+
+  /// No description provided for @bible_loading_module.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading and opening module...'**
+  String get bible_loading_module;
+
+  /// No description provided for @bible_no_modules.
+  ///
+  /// In en, this message translates to:
+  /// **'Bible modules were not found. Update databases or add bible_*.sqlite to the local data folder.'**
+  String get bible_no_modules;
+
+  /// No description provided for @bible_previous_chapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous chapter'**
+  String get bible_previous_chapter;
+
+  /// No description provided for @bible_next_chapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Next chapter'**
+  String get bible_next_chapter;
+
+  /// No description provided for @bible_strong_toggle_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong'**
+  String get bible_strong_toggle_label;
+
+  /// No description provided for @bible_module_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Module information'**
+  String get bible_module_info;
+
+  /// No description provided for @bible_module_info_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get bible_module_info_code;
+
+  /// No description provided for @bible_module_info_module_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Module ID'**
+  String get bible_module_info_module_id;
+
+  /// No description provided for @bible_module_info_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get bible_module_info_title;
+
+  /// No description provided for @bible_module_info_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get bible_module_info_description;
+
+  /// No description provided for @bible_module_info_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get bible_module_info_language;
+
+  /// No description provided for @bible_module_info_canon.
+  ///
+  /// In en, this message translates to:
+  /// **'Canon'**
+  String get bible_module_info_canon;
+
+  /// No description provided for @bible_module_info_versification.
+  ///
+  /// In en, this message translates to:
+  /// **'Versification'**
+  String get bible_module_info_versification;
+
+  /// No description provided for @bible_module_info_license.
+  ///
+  /// In en, this message translates to:
+  /// **'License'**
+  String get bible_module_info_license;
+
+  /// No description provided for @bible_module_info_source_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get bible_module_info_source_summary;
+
+  /// No description provided for @bible_copy_selected_verses.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy selected verses'**
+  String get bible_copy_selected_verses;
+
+  /// No description provided for @bible_selected_verses_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected verses copied to the clipboard.'**
+  String get bible_selected_verses_copied;
+
+  /// No description provided for @bible_open_parallel_reader.
+  ///
+  /// In en, this message translates to:
+  /// **'Open parallel Bible reader'**
+  String get bible_open_parallel_reader;
+
+  /// No description provided for @bible_close_parallel_reader.
+  ///
+  /// In en, this message translates to:
+  /// **'Close parallel reader'**
+  String get bible_close_parallel_reader;
+
+  /// No description provided for @bible_linked_navigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked navigation'**
+  String get bible_linked_navigation;
+
+  /// No description provided for @bible_unlinked_navigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Independent navigation'**
+  String get bible_unlinked_navigation;
+
+  /// No description provided for @bible_search_in_module.
+  ///
+  /// In en, this message translates to:
+  /// **'Search this module'**
+  String get bible_search_in_module;
+
+  /// No description provided for @bible_search_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Bible search'**
+  String get bible_search_dialog_title;
+
+  /// No description provided for @bible_search_query_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Search text'**
+  String get bible_search_query_label;
+
+  /// No description provided for @bible_search_query_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Phrase'**
+  String get bible_search_query_hint;
+
+  /// No description provided for @bible_search_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get bible_search_button;
+
+  /// No description provided for @bible_search_result_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap action'**
+  String get bible_search_result_action;
+
+  /// No description provided for @bible_search_action_copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy verse'**
+  String get bible_search_action_copy;
+
+  /// No description provided for @bible_search_action_open.
+  ///
+  /// In en, this message translates to:
+  /// **'Open verse'**
+  String get bible_search_action_open;
+
+  /// No description provided for @bible_search_copy_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy results'**
+  String get bible_search_copy_results;
+
+  /// No description provided for @bible_search_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching...'**
+  String get bible_search_loading;
+
+  /// No description provided for @bible_search_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t search.'**
+  String get bible_search_failed;
+
+  /// No description provided for @bible_search_no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches found.'**
+  String get bible_search_no_results;
+
+  /// Search result count label with total occurrences and verses
+  ///
+  /// In en, this message translates to:
+  /// **'Matches: {matches}; verses: {verses}'**
+  String bible_search_match_count(int matches, int verses);
+
+  /// Search results pager label
+  ///
+  /// In en, this message translates to:
+  /// **'Page {current} of {total}'**
+  String bible_search_page_label(int current, int total);
+
+  /// No description provided for @bible_search_previous_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get bible_search_previous_page;
+
+  /// No description provided for @bible_search_next_page.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get bible_search_next_page;
+
+  /// No description provided for @bible_search_verse_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse copied to the clipboard.'**
+  String get bible_search_verse_copied;
+
+  /// No description provided for @bible_search_references_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'References copied to the clipboard.'**
+  String get bible_search_references_copied;
+
+  /// No description provided for @bible_search_verses_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Verses copied to the clipboard.'**
+  String get bible_search_verses_copied;
+
+  /// No description provided for @bible_reference_preview_loading_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press a verse link to load and copy the verse text.'**
+  String get bible_reference_preview_loading_hint;
+
+  /// No description provided for @bible_reference_preview_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading verse text...'**
+  String get bible_reference_preview_loading;
+
+  /// No description provided for @bible_reference_preview_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse text is unavailable.'**
+  String get bible_reference_preview_unavailable;
+
   /// No description provided for @revelation_structure_screen.
   ///
   /// In en, this message translates to:
@@ -1595,6 +1889,798 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading images: {loaded} of {total}'**
   String markdown_images_loading_progress(int loaded, int total);
+
+  /// No description provided for @book_code_1.
+  ///
+  /// In en, this message translates to:
+  /// **'Gen'**
+  String get book_code_1;
+
+  /// No description provided for @book_name_1.
+  ///
+  /// In en, this message translates to:
+  /// **'Genesis'**
+  String get book_name_1;
+
+  /// No description provided for @book_code_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Exod'**
+  String get book_code_2;
+
+  /// No description provided for @book_name_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Exodus'**
+  String get book_name_2;
+
+  /// No description provided for @book_code_3.
+  ///
+  /// In en, this message translates to:
+  /// **'Lev'**
+  String get book_code_3;
+
+  /// No description provided for @book_name_3.
+  ///
+  /// In en, this message translates to:
+  /// **'Leviticus'**
+  String get book_name_3;
+
+  /// No description provided for @book_code_4.
+  ///
+  /// In en, this message translates to:
+  /// **'Num'**
+  String get book_code_4;
+
+  /// No description provided for @book_name_4.
+  ///
+  /// In en, this message translates to:
+  /// **'Numbers'**
+  String get book_name_4;
+
+  /// No description provided for @book_code_5.
+  ///
+  /// In en, this message translates to:
+  /// **'Deut'**
+  String get book_code_5;
+
+  /// No description provided for @book_name_5.
+  ///
+  /// In en, this message translates to:
+  /// **'Deuteronomy'**
+  String get book_name_5;
+
+  /// No description provided for @book_code_6.
+  ///
+  /// In en, this message translates to:
+  /// **'Josh'**
+  String get book_code_6;
+
+  /// No description provided for @book_name_6.
+  ///
+  /// In en, this message translates to:
+  /// **'Joshua'**
+  String get book_name_6;
+
+  /// No description provided for @book_code_7.
+  ///
+  /// In en, this message translates to:
+  /// **'Judg'**
+  String get book_code_7;
+
+  /// No description provided for @book_name_7.
+  ///
+  /// In en, this message translates to:
+  /// **'Judges'**
+  String get book_name_7;
+
+  /// No description provided for @book_code_8.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruth'**
+  String get book_code_8;
+
+  /// No description provided for @book_name_8.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruth'**
+  String get book_name_8;
+
+  /// No description provided for @book_code_9.
+  ///
+  /// In en, this message translates to:
+  /// **'1Sam'**
+  String get book_code_9;
+
+  /// No description provided for @book_name_9.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Samuel'**
+  String get book_name_9;
+
+  /// No description provided for @book_code_10.
+  ///
+  /// In en, this message translates to:
+  /// **'2Sam'**
+  String get book_code_10;
+
+  /// No description provided for @book_name_10.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Samuel'**
+  String get book_name_10;
+
+  /// No description provided for @book_code_11.
+  ///
+  /// In en, this message translates to:
+  /// **'1Kgs'**
+  String get book_code_11;
+
+  /// No description provided for @book_name_11.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Kings'**
+  String get book_name_11;
+
+  /// No description provided for @book_code_12.
+  ///
+  /// In en, this message translates to:
+  /// **'2Kgs'**
+  String get book_code_12;
+
+  /// No description provided for @book_name_12.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Kings'**
+  String get book_name_12;
+
+  /// No description provided for @book_code_13.
+  ///
+  /// In en, this message translates to:
+  /// **'1Chr'**
+  String get book_code_13;
+
+  /// No description provided for @book_name_13.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Chronicles'**
+  String get book_name_13;
+
+  /// No description provided for @book_code_14.
+  ///
+  /// In en, this message translates to:
+  /// **'2Chr'**
+  String get book_code_14;
+
+  /// No description provided for @book_name_14.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Chronicles'**
+  String get book_name_14;
+
+  /// No description provided for @book_code_15.
+  ///
+  /// In en, this message translates to:
+  /// **'Ezra'**
+  String get book_code_15;
+
+  /// No description provided for @book_name_15.
+  ///
+  /// In en, this message translates to:
+  /// **'Ezra'**
+  String get book_name_15;
+
+  /// No description provided for @book_code_16.
+  ///
+  /// In en, this message translates to:
+  /// **'Neh'**
+  String get book_code_16;
+
+  /// No description provided for @book_name_16.
+  ///
+  /// In en, this message translates to:
+  /// **'Nehemiah'**
+  String get book_name_16;
+
+  /// No description provided for @book_code_17.
+  ///
+  /// In en, this message translates to:
+  /// **'Esth'**
+  String get book_code_17;
+
+  /// No description provided for @book_name_17.
+  ///
+  /// In en, this message translates to:
+  /// **'Esther'**
+  String get book_name_17;
+
+  /// No description provided for @book_code_18.
+  ///
+  /// In en, this message translates to:
+  /// **'Job'**
+  String get book_code_18;
+
+  /// No description provided for @book_name_18.
+  ///
+  /// In en, this message translates to:
+  /// **'Job'**
+  String get book_name_18;
+
+  /// No description provided for @book_code_19.
+  ///
+  /// In en, this message translates to:
+  /// **'Ps'**
+  String get book_code_19;
+
+  /// No description provided for @book_name_19.
+  ///
+  /// In en, this message translates to:
+  /// **'Psalms'**
+  String get book_name_19;
+
+  /// No description provided for @book_code_20.
+  ///
+  /// In en, this message translates to:
+  /// **'Prov'**
+  String get book_code_20;
+
+  /// No description provided for @book_name_20.
+  ///
+  /// In en, this message translates to:
+  /// **'Proverbs'**
+  String get book_name_20;
+
+  /// No description provided for @book_code_21.
+  ///
+  /// In en, this message translates to:
+  /// **'Eccl'**
+  String get book_code_21;
+
+  /// No description provided for @book_name_21.
+  ///
+  /// In en, this message translates to:
+  /// **'Ecclesiastes'**
+  String get book_name_21;
+
+  /// No description provided for @book_code_22.
+  ///
+  /// In en, this message translates to:
+  /// **'Song'**
+  String get book_code_22;
+
+  /// No description provided for @book_name_22.
+  ///
+  /// In en, this message translates to:
+  /// **'Song of Songs'**
+  String get book_name_22;
+
+  /// No description provided for @book_code_23.
+  ///
+  /// In en, this message translates to:
+  /// **'Isa'**
+  String get book_code_23;
+
+  /// No description provided for @book_name_23.
+  ///
+  /// In en, this message translates to:
+  /// **'Isaiah'**
+  String get book_name_23;
+
+  /// No description provided for @book_code_24.
+  ///
+  /// In en, this message translates to:
+  /// **'Jer'**
+  String get book_code_24;
+
+  /// No description provided for @book_name_24.
+  ///
+  /// In en, this message translates to:
+  /// **'Jeremiah'**
+  String get book_name_24;
+
+  /// No description provided for @book_code_25.
+  ///
+  /// In en, this message translates to:
+  /// **'Lam'**
+  String get book_code_25;
+
+  /// No description provided for @book_name_25.
+  ///
+  /// In en, this message translates to:
+  /// **'Lamentations'**
+  String get book_name_25;
+
+  /// No description provided for @book_code_26.
+  ///
+  /// In en, this message translates to:
+  /// **'Ezek'**
+  String get book_code_26;
+
+  /// No description provided for @book_name_26.
+  ///
+  /// In en, this message translates to:
+  /// **'Ezekiel'**
+  String get book_name_26;
+
+  /// No description provided for @book_code_27.
+  ///
+  /// In en, this message translates to:
+  /// **'Dan'**
+  String get book_code_27;
+
+  /// No description provided for @book_name_27.
+  ///
+  /// In en, this message translates to:
+  /// **'Daniel'**
+  String get book_name_27;
+
+  /// No description provided for @book_code_28.
+  ///
+  /// In en, this message translates to:
+  /// **'Hos'**
+  String get book_code_28;
+
+  /// No description provided for @book_name_28.
+  ///
+  /// In en, this message translates to:
+  /// **'Hosea'**
+  String get book_name_28;
+
+  /// No description provided for @book_code_29.
+  ///
+  /// In en, this message translates to:
+  /// **'Joel'**
+  String get book_code_29;
+
+  /// No description provided for @book_name_29.
+  ///
+  /// In en, this message translates to:
+  /// **'Joel'**
+  String get book_name_29;
+
+  /// No description provided for @book_code_30.
+  ///
+  /// In en, this message translates to:
+  /// **'Amos'**
+  String get book_code_30;
+
+  /// No description provided for @book_name_30.
+  ///
+  /// In en, this message translates to:
+  /// **'Amos'**
+  String get book_name_30;
+
+  /// No description provided for @book_code_31.
+  ///
+  /// In en, this message translates to:
+  /// **'Obad'**
+  String get book_code_31;
+
+  /// No description provided for @book_name_31.
+  ///
+  /// In en, this message translates to:
+  /// **'Obadiah'**
+  String get book_name_31;
+
+  /// No description provided for @book_code_32.
+  ///
+  /// In en, this message translates to:
+  /// **'Jonah'**
+  String get book_code_32;
+
+  /// No description provided for @book_name_32.
+  ///
+  /// In en, this message translates to:
+  /// **'Jonah'**
+  String get book_name_32;
+
+  /// No description provided for @book_code_33.
+  ///
+  /// In en, this message translates to:
+  /// **'Mic'**
+  String get book_code_33;
+
+  /// No description provided for @book_name_33.
+  ///
+  /// In en, this message translates to:
+  /// **'Micah'**
+  String get book_name_33;
+
+  /// No description provided for @book_code_34.
+  ///
+  /// In en, this message translates to:
+  /// **'Nah'**
+  String get book_code_34;
+
+  /// No description provided for @book_name_34.
+  ///
+  /// In en, this message translates to:
+  /// **'Nahum'**
+  String get book_name_34;
+
+  /// No description provided for @book_code_35.
+  ///
+  /// In en, this message translates to:
+  /// **'Hab'**
+  String get book_code_35;
+
+  /// No description provided for @book_name_35.
+  ///
+  /// In en, this message translates to:
+  /// **'Habakkuk'**
+  String get book_name_35;
+
+  /// No description provided for @book_code_36.
+  ///
+  /// In en, this message translates to:
+  /// **'Zeph'**
+  String get book_code_36;
+
+  /// No description provided for @book_name_36.
+  ///
+  /// In en, this message translates to:
+  /// **'Zephaniah'**
+  String get book_name_36;
+
+  /// No description provided for @book_code_37.
+  ///
+  /// In en, this message translates to:
+  /// **'Hag'**
+  String get book_code_37;
+
+  /// No description provided for @book_name_37.
+  ///
+  /// In en, this message translates to:
+  /// **'Haggai'**
+  String get book_name_37;
+
+  /// No description provided for @book_code_38.
+  ///
+  /// In en, this message translates to:
+  /// **'Zech'**
+  String get book_code_38;
+
+  /// No description provided for @book_name_38.
+  ///
+  /// In en, this message translates to:
+  /// **'Zechariah'**
+  String get book_name_38;
+
+  /// No description provided for @book_code_39.
+  ///
+  /// In en, this message translates to:
+  /// **'Mal'**
+  String get book_code_39;
+
+  /// No description provided for @book_name_39.
+  ///
+  /// In en, this message translates to:
+  /// **'Malachi'**
+  String get book_name_39;
+
+  /// No description provided for @book_code_40.
+  ///
+  /// In en, this message translates to:
+  /// **'Mat'**
+  String get book_code_40;
+
+  /// No description provided for @book_name_40.
+  ///
+  /// In en, this message translates to:
+  /// **'Matthew'**
+  String get book_name_40;
+
+  /// No description provided for @book_code_41.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark'**
+  String get book_code_41;
+
+  /// No description provided for @book_name_41.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark'**
+  String get book_name_41;
+
+  /// No description provided for @book_code_42.
+  ///
+  /// In en, this message translates to:
+  /// **'Luke'**
+  String get book_code_42;
+
+  /// No description provided for @book_name_42.
+  ///
+  /// In en, this message translates to:
+  /// **'Luke'**
+  String get book_name_42;
+
+  /// No description provided for @book_code_43.
+  ///
+  /// In en, this message translates to:
+  /// **'John'**
+  String get book_code_43;
+
+  /// No description provided for @book_name_43.
+  ///
+  /// In en, this message translates to:
+  /// **'John'**
+  String get book_name_43;
+
+  /// No description provided for @book_code_44.
+  ///
+  /// In en, this message translates to:
+  /// **'Acts'**
+  String get book_code_44;
+
+  /// No description provided for @book_name_44.
+  ///
+  /// In en, this message translates to:
+  /// **'Acts'**
+  String get book_name_44;
+
+  /// No description provided for @book_code_45.
+  ///
+  /// In en, this message translates to:
+  /// **'Rom'**
+  String get book_code_45;
+
+  /// No description provided for @book_name_45.
+  ///
+  /// In en, this message translates to:
+  /// **'Romans'**
+  String get book_name_45;
+
+  /// No description provided for @book_code_46.
+  ///
+  /// In en, this message translates to:
+  /// **'1Cor'**
+  String get book_code_46;
+
+  /// No description provided for @book_name_46.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Corinthians'**
+  String get book_name_46;
+
+  /// No description provided for @book_code_47.
+  ///
+  /// In en, this message translates to:
+  /// **'2Cor'**
+  String get book_code_47;
+
+  /// No description provided for @book_name_47.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Corinthians'**
+  String get book_name_47;
+
+  /// No description provided for @book_code_48.
+  ///
+  /// In en, this message translates to:
+  /// **'Gal'**
+  String get book_code_48;
+
+  /// No description provided for @book_name_48.
+  ///
+  /// In en, this message translates to:
+  /// **'Galatians'**
+  String get book_name_48;
+
+  /// No description provided for @book_code_49.
+  ///
+  /// In en, this message translates to:
+  /// **'Eph'**
+  String get book_code_49;
+
+  /// No description provided for @book_name_49.
+  ///
+  /// In en, this message translates to:
+  /// **'Ephesians'**
+  String get book_name_49;
+
+  /// No description provided for @book_code_50.
+  ///
+  /// In en, this message translates to:
+  /// **'Phil'**
+  String get book_code_50;
+
+  /// No description provided for @book_name_50.
+  ///
+  /// In en, this message translates to:
+  /// **'Philippians'**
+  String get book_name_50;
+
+  /// No description provided for @book_code_51.
+  ///
+  /// In en, this message translates to:
+  /// **'Col'**
+  String get book_code_51;
+
+  /// No description provided for @book_name_51.
+  ///
+  /// In en, this message translates to:
+  /// **'Colossians'**
+  String get book_name_51;
+
+  /// No description provided for @book_code_52.
+  ///
+  /// In en, this message translates to:
+  /// **'1Thess'**
+  String get book_code_52;
+
+  /// No description provided for @book_name_52.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Thessalonians'**
+  String get book_name_52;
+
+  /// No description provided for @book_code_53.
+  ///
+  /// In en, this message translates to:
+  /// **'2Thess'**
+  String get book_code_53;
+
+  /// No description provided for @book_name_53.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Thessalonians'**
+  String get book_name_53;
+
+  /// No description provided for @book_code_54.
+  ///
+  /// In en, this message translates to:
+  /// **'1Tim'**
+  String get book_code_54;
+
+  /// No description provided for @book_name_54.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Timothy'**
+  String get book_name_54;
+
+  /// No description provided for @book_code_55.
+  ///
+  /// In en, this message translates to:
+  /// **'2Tim'**
+  String get book_code_55;
+
+  /// No description provided for @book_name_55.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Timothy'**
+  String get book_name_55;
+
+  /// No description provided for @book_code_56.
+  ///
+  /// In en, this message translates to:
+  /// **'Titus'**
+  String get book_code_56;
+
+  /// No description provided for @book_name_56.
+  ///
+  /// In en, this message translates to:
+  /// **'Titus'**
+  String get book_name_56;
+
+  /// No description provided for @book_code_57.
+  ///
+  /// In en, this message translates to:
+  /// **'Phlm'**
+  String get book_code_57;
+
+  /// No description provided for @book_name_57.
+  ///
+  /// In en, this message translates to:
+  /// **'Philemon'**
+  String get book_name_57;
+
+  /// No description provided for @book_code_58.
+  ///
+  /// In en, this message translates to:
+  /// **'Heb'**
+  String get book_code_58;
+
+  /// No description provided for @book_name_58.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrews'**
+  String get book_name_58;
+
+  /// No description provided for @book_code_59.
+  ///
+  /// In en, this message translates to:
+  /// **'Jas'**
+  String get book_code_59;
+
+  /// No description provided for @book_name_59.
+  ///
+  /// In en, this message translates to:
+  /// **'James'**
+  String get book_name_59;
+
+  /// No description provided for @book_code_60.
+  ///
+  /// In en, this message translates to:
+  /// **'1Pet'**
+  String get book_code_60;
+
+  /// No description provided for @book_name_60.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Peter'**
+  String get book_name_60;
+
+  /// No description provided for @book_code_61.
+  ///
+  /// In en, this message translates to:
+  /// **'2Pet'**
+  String get book_code_61;
+
+  /// No description provided for @book_name_61.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Peter'**
+  String get book_name_61;
+
+  /// No description provided for @book_code_62.
+  ///
+  /// In en, this message translates to:
+  /// **'1John'**
+  String get book_code_62;
+
+  /// No description provided for @book_name_62.
+  ///
+  /// In en, this message translates to:
+  /// **'1 John'**
+  String get book_name_62;
+
+  /// No description provided for @book_code_63.
+  ///
+  /// In en, this message translates to:
+  /// **'2John'**
+  String get book_code_63;
+
+  /// No description provided for @book_name_63.
+  ///
+  /// In en, this message translates to:
+  /// **'2 John'**
+  String get book_name_63;
+
+  /// No description provided for @book_code_64.
+  ///
+  /// In en, this message translates to:
+  /// **'3John'**
+  String get book_code_64;
+
+  /// No description provided for @book_name_64.
+  ///
+  /// In en, this message translates to:
+  /// **'3 John'**
+  String get book_name_64;
+
+  /// No description provided for @book_code_65.
+  ///
+  /// In en, this message translates to:
+  /// **'Jude'**
+  String get book_code_65;
+
+  /// No description provided for @book_name_65.
+  ///
+  /// In en, this message translates to:
+  /// **'Jude'**
+  String get book_name_65;
+
+  /// No description provided for @book_code_66.
+  ///
+  /// In en, this message translates to:
+  /// **'Rev'**
+  String get book_code_66;
+
+  /// No description provided for @book_name_66.
+  ///
+  /// In en, this message translates to:
+  /// **'Revelation'**
+  String get book_name_66;
 }
 
 class _AppLocalizationsDelegate

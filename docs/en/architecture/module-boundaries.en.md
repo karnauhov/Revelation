@@ -1,7 +1,7 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.3.0`  
-Last-Updated: `2026-05-09`  
+Doc-Version: `2.4.0`
+Last-Updated: `2026-06-27`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
@@ -46,6 +46,7 @@ A smaller feature may omit layers that it does not need, but the dependency dire
 - Features do not own markdown image caching or preload policy; they only pass markdown content and feature-specific link handlers into the shared markdown widgets.
 - `features/strongs_dictionary` owns Strong dictionary domain/data/presentation logic, including picker/dialog/page flows and the embedded primary-source dictionary entry UI.
 - `shared/ui/markdown` must remain Strong-agnostic: no Strong-specific markers, syntax handlers, or feature tooltip renderers.
+- `features/bible` owns Bible module discovery, local module preferences, per-pane reading state, and the Bible reader screen; shared link handling may route `bible:` links into this feature but must not own reader state.
 
 ## State Rules
 

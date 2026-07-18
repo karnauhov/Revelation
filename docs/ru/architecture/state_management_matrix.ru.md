@@ -1,7 +1,7 @@
 # Матрица управления состоянием (RU)
 
-Doc-Version: `2.3.0`  
-Last-Updated: `2026-05-09`  
+Doc-Version: `2.4.0`
+Last-Updated: `2026-06-27`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
@@ -28,6 +28,8 @@ Source-Commit: `working-tree`
 | `app/startup` | `AppStartupCubit` | Прогресс стартового splash-экрана, locale/version-метаданные splash, readiness/failure state и переключение в инициализированную оболочку приложения |
 | `app/settings` | `SettingsCubit` | Текущие настройки приложения, выбранные locale/theme/font size, loading и failure state |
 | `about` | `AboutCubit` | Версии приложения и сборки, метаданные БД, состояние changelog-блока и раскрываемых секций about-экрана |
+| `bible/workspace` | `BibleWorkspaceCubit` | Открытые панели чтения Библии, режим связанной навигации/прокрутки и сохраненный набор модулей панелей |
+| `bible/reader` | `BibleReaderCubit` | Модуль Библии в отдельной панели, выбранная ссылка, стихи главы, диапазон выбранных стихов, переключатель номеров Стронга и loading/failure state |
 | `shared/markdown/document` | `RevelationMarkdownImagesCubit` | Предзагрузка remote-изображений для одного markdown-документа, local-first image-state, progress counters и stale-request protection, общие для всех feature-ов |
 | `topics/catalog` | `TopicsCatalogCubit` | Список тем, reload при смене языка, иконки тем |
 | `topics/content` | `TopicContentCubit` | Markdown-контент одной темы, fallback-вычисление метаданных и loading/failure state |
@@ -51,3 +53,4 @@ Source-Commit: `working-tree`
 - `StrongsDictionaryCubit` является единственным source of truth для состояния выбора словаря Стронга в page/dialog-потоках; `primary_sources` только делегирует действия через API Strong-feature.
 - `PrimarySourceScreen` поднимает detail cubit-ы через `MultiBlocProvider`.
 - `PrimarySourceDetailCoordinator` адаптирует UI-события к detail cubit-ам и не владеет состоянием.
+- `BibleWorkspaceCubit` владеет только page-level композицией панелей чтения; каждая панель хранит собственный текст Библии и выбор стихов в `BibleReaderCubit`.

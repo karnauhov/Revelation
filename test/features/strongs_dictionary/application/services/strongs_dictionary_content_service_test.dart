@@ -8,10 +8,22 @@ import 'package:revelation/infra/db/localized/db_localized.dart'
 import 'package:revelation/infra/db/runtime/gateways/lexicon_database_gateway.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/description_kind.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 
 import '../../../../test_harness/test_harness.dart';
 
 void main() {
+  late BibleVerseMap verseMap;
+
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    verseMap = await BibleVerseMap.loadFromAssets();
+  });
+
+  setUp(() {
+    StrongUsageReferenceDetailRegistry.instance.clearForTesting();
+  });
+
   testWidgets('buildStrongContent returns null when lexicon is unavailable', (
     tester,
   ) async {
@@ -126,7 +138,7 @@ void main() {
               category: '@noun',
               synonyms: '2,2717,3',
               origin: 'G2,H123,G2717',
-              usage: 'sample [], 2\nother [], 3',
+              usage: 'sample: [001;002x2], 3\nother: [NZY], 1',
             ),
             common_db.GreekWord(
               id: 2,
@@ -150,6 +162,7 @@ void main() {
           ],
         ),
       ),
+      verseMap: verseMap,
     );
 
     final content = service.buildStrongContent(l10n, 1);
@@ -162,9 +175,78 @@ void main() {
     expect(content.markdown, contains('**Alpha** ([G2](strong:G2))'));
     expect(content.markdown, contains('[H123](strong:H123)'));
     expect(content.markdown, contains('**Beta** ([G3](strong:G3))'));
-    expect(content.markdown, contains('sample 2; **other 3'));
+    expect(
+      content.markdown,
+      contains('${l10n.strong_usage}:$strongUsageInfoMarkdownMarker'),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '**sample** (3): [Gen 1:1](bible:Gen1:1 "strong_usage_ref:001"); '
+        '[Gen 1:2 x2](bible:Gen1:2 "strong_usage_ref:002")',
+      ),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '**other** (1): [Rev 22:21](bible:Rev22:21 "strong_usage_ref:NZY")',
+      ),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '[Gen 1:2 x2](bible:Gen1:2 "strong_usage_ref:002");\n\r'
+        '**other** (1):',
+      ),
+    );
     expect(content.markdown, isNot(contains('@noun')));
   });
+
+  testWidgets(
+    'buildStrongContent collapses usage references after three links',
+    (tester) async {
+      final l10n = await _loadLocalizations(tester);
+      final service = StrongsDictionaryContentService(
+        repository: StrongsDictionaryRepository(
+          databaseGateway: const _FakeLexiconDatabaseGateway(
+            greekWords: <common_db.GreekWord>[
+              common_db.GreekWord(
+                id: 1,
+                word: 'Logos',
+                category: '',
+                synonyms: '',
+                origin: '',
+                usage: 'sample: [001;002;003;004], 4',
+              ),
+            ],
+          ),
+        ),
+        verseMap: verseMap,
+      );
+
+      final content = service.buildStrongContent(l10n, 1);
+      final detail = StrongUsageReferenceDetailRegistry.instance.find('1');
+
+      expect(content, isNotNull);
+      expect(
+        content!.markdown,
+        contains(
+          '**sample** (4): [Gen 1:1](bible:Gen1:1 "strong_usage_ref:001"); '
+          '[Gen 1:2](bible:Gen1:2 "strong_usage_ref:002"); '
+          '[Gen 1:3](bible:Gen1:3 "strong_usage_ref:003"); '
+          '[...](strong_usage_more:1 "strong_usage_more:1")',
+        ),
+      );
+      expect(content.markdown, isNot(contains('Gen 1:4')));
+      expect(detail, isNotNull);
+      expect(detail!.surface, 'sample');
+      expect(detail.count, 4);
+      expect(
+        detail.referencesMarkdown,
+        contains('[Gen 1:4](bible:Gen1:4 "strong_usage_ref:004")'),
+      );
+    },
+  );
 
   testWidgets('buildStrongContent returns null when word is absent or blank', (
     tester,
@@ -194,12 +276,41 @@ void main() {
   test('delegates Strong number policy behavior', () {
     final service = StrongsDictionaryContentService(
       repository: StrongsDictionaryRepository(
-        databaseGateway: const _FakeLexiconDatabaseGateway(),
+        databaseGateway: const _FakeLexiconDatabaseGateway(
+          greekWords: <common_db.GreekWord>[
+            common_db.GreekWord(
+              id: 1,
+              word: 'Alpha',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+            common_db.GreekWord(
+              id: 5624,
+              word: 'Omega',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+            common_db.GreekWord(
+              id: 5625,
+              word: 'Out of range',
+              category: '',
+              synonyms: '',
+              origin: '',
+              usage: '',
+            ),
+          ],
+        ),
       ),
     );
 
     expect(service.isAllowedStrongNumber(1), isTrue);
     expect(service.isAllowedStrongNumber(2717), isFalse);
+    expect(service.isAllowedStrongNumber(5624), isTrue);
+    expect(service.isAllowedStrongNumber(5625), isFalse);
     expect(service.getNeighborStrongNumber(5624, forward: true), 1);
   });
 }

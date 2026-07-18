@@ -1,7 +1,7 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.3.0`  
-Last-Updated: `2026-05-09`  
+Doc-Version: `2.4.0`
+Last-Updated: `2026-06-27`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
@@ -21,10 +21,11 @@ Describe the current Revelation runtime architecture.
 - `AppStartupCubit` owns the launch splash state, app/build metadata for the splash footer, startup progress, failure/retry flow, and the handoff to the ready app shell.
 - `AppBootstrap` initializes Flutter bindings, global error handling, platform setup, settings, Supabase, local databases, and the default handlers for `word:` and Strong links while reporting startup progress.
 - `RevelationApp` builds `MaterialApp.router`, applies locale/theme/font settings from `SettingsCubit`, and exposes `en`, `es`, `uk`, and `ru`.
-- `AppRouter` uses `go_router` and routes to the main, topic, primary source list, primary source detail, Strong's dictionary page, settings, about, and download screens.
+- `AppRouter` uses `go_router` and routes to the main, topic, Bible reader, primary source list, primary source detail, Strong's dictionary page, settings, about, and download screens.
 - `AppDi.appBlocProviders` wires the global app state: `SettingsCubit`, `TopicsCatalogCubit`, and `PrimarySourcesCubit`.
 - `AppDi.registerCore` registers cross-cutting runtime services such as `Talker` and the shared `MarkdownImageLoader`.
 - `PrimarySourceScreen` creates feature-scoped detail state with `session`, `image`, `page-settings`, `description`, `viewport`, and `orchestration` cubits. `PrimarySourceDetailCoordinator` is a screen helper, not the source of truth.
+- `BibleScreen` creates feature-scoped Bible reader state with `BibleWorkspaceCubit` for open pane composition and `BibleReaderCubit` for each module pane.
 - `strongs_dictionary` is a self-contained feature with its own domain/data/presentation layers, dialog/page UI, picker flow, and primary-source integration API.
 
 ## Data and Services

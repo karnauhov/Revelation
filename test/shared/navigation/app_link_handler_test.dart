@@ -508,45 +508,109 @@ void main() {
   });
 
   group('bible links', () {
-    testWidgets('bible link uses locale-aware translation and verse', (
+    testWidgets('bible link pushes internal Bible route with canonical ids', (
       tester,
     ) async {
-      final context = await pumpLocalizedContext(
-        tester,
-        locale: const Locale('uk'),
-      );
+      final fixture = await _pumpRouterFixture(tester);
 
-      final handled = await handleAppLink(context, 'bible:Rev22:3');
+      final handled = await handleAppLink(
+        fixture.contexts['home']!,
+        'bible:Rev22:3',
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
 
       expect(handled, isTrue);
-      expect(
-        fakeUrlLauncherPlatform.launchedUrls.last,
-        'https://on-bible.com/bible?b=ubo&bk=Rev&ch=22&v=3',
-      );
+      expect(find.text('bible:66:22:3'), findsOneWidget);
     });
 
-    testWidgets(
-      'bible link falls back to english translation for unknown locale',
-      (tester) async {
-        final context = await pumpLocalizedContext(
-          tester,
-          locale: const Locale('de'),
-        );
+    testWidgets('bible link resolves localized book abbreviations', (
+      tester,
+    ) async {
+      final fixture = await _pumpRouterFixture(tester);
 
-        final handled = await handleAppLink(context, 'bible:John3');
+      final handled = await handleAppLink(
+        fixture.contexts['home']!,
+        'bible:Об22:3',
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
 
-        expect(handled, isTrue);
-        expect(
-          fakeUrlLauncherPlatform.launchedUrls.last,
-          'https://on-bible.com/bible?b=kjv&bk=John&ch=3',
-        );
-      },
-    );
+      expect(handled, isTrue);
+      expect(find.text('bible:66:22:3'), findsOneWidget);
+    });
+
+    testWidgets('bible link resolves database John abbreviation', (
+      tester,
+    ) async {
+      final fixture = await _pumpRouterFixture(tester);
+
+      final handled = await handleAppLink(
+        fixture.contexts['home']!,
+        'bible:Joh1:1',
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(handled, isTrue);
+      expect(find.text('bible:43:1:1'), findsOneWidget);
+    });
+
+    testWidgets('bible link closes nested popup routes before pushing route', (
+      tester,
+    ) async {
+      final fixture = await _pumpRouterFixture(tester);
+      BuildContext? innerDialogContext;
+
+      unawaited(
+        showDialog<void>(
+          context: fixture.contexts['home']!,
+          builder: (outerContext) {
+            return AlertDialog(
+              content: TextButton(
+                onPressed: () {
+                  unawaited(
+                    showDialog<void>(
+                      context: outerContext,
+                      builder: (context) {
+                        innerDialogContext = context;
+                        return const AlertDialog(content: Text('inner-dialog'));
+                      },
+                    ),
+                  );
+                },
+                child: const Text('open-inner'),
+              ),
+            );
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('open-inner'));
+      await tester.pumpAndSettle();
+      expect(find.text('inner-dialog'), findsOneWidget);
+
+      final handled = await handleAppLink(
+        innerDialogContext!,
+        'bible:Rev22:3',
+        popBeforeScreenPush: true,
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(handled, isTrue);
+      expect(find.text('inner-dialog'), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.text('bible:66:22:3'), findsOneWidget);
+    });
 
     testWidgets('bible link rejects malformed payload', (tester) async {
-      final context = await pumpContext(tester);
+      final fixture = await _pumpRouterFixture(tester);
+      final context = fixture.contexts['home']!;
 
       expect(await handleAppLink(context, 'bible:'), isFalse);
+      expect(await handleAppLink(context, 'bible:Unknown3'), isFalse);
+      expect(await handleAppLink(context, 'bible:Rev22:x'), isFalse);
     });
   });
 }
@@ -584,8 +648,23 @@ Future<_RouterFixture> _pumpRouterFixture(WidgetTester tester) async {
           return Scaffold(body: Text('topic:$file'));
         },
       ),
+      GoRoute(
+        path: '/bible',
+        builder: (context, state) {
+          contexts['bible'] = context;
+          final book = state.uri.queryParameters['book'] ?? '';
+          final chapter = state.uri.queryParameters['chapter'] ?? '';
+          final verse = state.uri.queryParameters['verse'] ?? '';
+          return Scaffold(body: Text('bible:$book:$chapter:$verse'));
+        },
+      ),
     ],
   );
+  addTearDown(() async {
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    router.dispose();
+  });
 
   await tester.pumpWidget(
     MaterialApp.router(
@@ -594,7 +673,8 @@ Future<_RouterFixture> _pumpRouterFixture(WidgetTester tester) async {
       supportedLocales: AppLocalizations.supportedLocales,
     ),
   );
-  await tester.pumpAndSettle();
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 100));
 
   return _RouterFixture(contexts: contexts);
 }

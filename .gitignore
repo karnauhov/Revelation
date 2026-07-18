@@ -58,5 +58,9 @@ scripts/content_tool/models/ocr/datasets/
 scripts/content_tool/models/ocr/**/model_state.json
 scripts/content_tool/models/ocr/**/last_training_report.json
 
+# Local Bible source data cache for repeatable imports
+scripts/bible_module/source_cache/*
+!scripts/bible_module/source_cache/.gitkeep
+
 sentry.properties
 sentry.read

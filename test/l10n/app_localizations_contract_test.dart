@@ -826,6 +826,152 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'toggle_show_verse_numbers should not be empty',
   );
   expect(
+    l10n.bible_module,
+    isNotEmpty,
+    reason: 'bible_module should not be empty',
+  );
+  expect(l10n.bible_book, isNotEmpty, reason: 'bible_book should not be empty');
+  expect(
+    l10n.bible_chapter,
+    isNotEmpty,
+    reason: 'bible_chapter should not be empty',
+  );
+  expect(
+    l10n.bible_verse,
+    isNotEmpty,
+    reason: 'bible_verse should not be empty',
+  );
+  expect(
+    l10n.bible_loading,
+    isNotEmpty,
+    reason: 'bible_loading should not be empty',
+  );
+  expect(
+    l10n.bible_loading_chapter,
+    isNotEmpty,
+    reason: 'bible_loading_chapter should not be empty',
+  );
+  expect(
+    l10n.bible_loading_module,
+    isNotEmpty,
+    reason: 'bible_loading_module should not be empty',
+  );
+  expect(
+    l10n.bible_no_modules,
+    isNotEmpty,
+    reason: 'bible_no_modules should not be empty',
+  );
+  expect(
+    l10n.bible_previous_chapter,
+    isNotEmpty,
+    reason: 'bible_previous_chapter should not be empty',
+  );
+  expect(
+    l10n.bible_next_chapter,
+    isNotEmpty,
+    reason: 'bible_next_chapter should not be empty',
+  );
+  expect(
+    l10n.bible_strong_toggle_label,
+    isNotEmpty,
+    reason: 'bible_strong_toggle_label should not be empty',
+  );
+  expect(
+    l10n.bible_module_info,
+    isNotEmpty,
+    reason: 'bible_module_info should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_code,
+    isNotEmpty,
+    reason: 'bible_module_info_code should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_module_id,
+    isNotEmpty,
+    reason: 'bible_module_info_module_id should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_title,
+    isNotEmpty,
+    reason: 'bible_module_info_title should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_description,
+    isNotEmpty,
+    reason: 'bible_module_info_description should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_language,
+    isNotEmpty,
+    reason: 'bible_module_info_language should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_canon,
+    isNotEmpty,
+    reason: 'bible_module_info_canon should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_versification,
+    isNotEmpty,
+    reason: 'bible_module_info_versification should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_license,
+    isNotEmpty,
+    reason: 'bible_module_info_license should not be empty',
+  );
+  expect(
+    l10n.bible_module_info_source_summary,
+    isNotEmpty,
+    reason: 'bible_module_info_source_summary should not be empty',
+  );
+  expect(
+    l10n.bible_copy_selected_verses,
+    isNotEmpty,
+    reason: 'bible_copy_selected_verses should not be empty',
+  );
+  expect(
+    l10n.bible_selected_verses_copied,
+    isNotEmpty,
+    reason: 'bible_selected_verses_copied should not be empty',
+  );
+  expect(
+    l10n.bible_reference_preview_loading_hint,
+    isNotEmpty,
+    reason: 'bible_reference_preview_loading_hint should not be empty',
+  );
+  expect(
+    l10n.bible_reference_preview_loading,
+    isNotEmpty,
+    reason: 'bible_reference_preview_loading should not be empty',
+  );
+  expect(
+    l10n.bible_reference_preview_unavailable,
+    isNotEmpty,
+    reason: 'bible_reference_preview_unavailable should not be empty',
+  );
+  expect(
+    l10n.bible_open_parallel_reader,
+    isNotEmpty,
+    reason: 'bible_open_parallel_reader should not be empty',
+  );
+  expect(
+    l10n.bible_close_parallel_reader,
+    isNotEmpty,
+    reason: 'bible_close_parallel_reader should not be empty',
+  );
+  expect(
+    l10n.bible_linked_navigation,
+    isNotEmpty,
+    reason: 'bible_linked_navigation should not be empty',
+  );
+  expect(
+    l10n.bible_unlinked_navigation,
+    isNotEmpty,
+    reason: 'bible_unlinked_navigation should not be empty',
+  );
+  expect(
     l10n.strong_number,
     isNotEmpty,
     reason: 'strong_number should not be empty',

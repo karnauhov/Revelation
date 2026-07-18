@@ -80,6 +80,48 @@ void main() {
       expect(parsed, isNull);
     });
   });
+
+  group('BibleRouteArgs.tryParse', () {
+    test('parses typed args as-is', () {
+      const args = BibleRouteArgs(
+        initialBookId: 40,
+        initialChapter: 17,
+        initialVerse: 5,
+        initialModuleFile: 'bible_lxx_tr.sqlite',
+      );
+
+      final parsed = BibleRouteArgs.tryParse(args, const <String, String>{});
+
+      expect(parsed, same(args));
+    });
+
+    test('parses positive query parameters with defaults', () {
+      final parsed = BibleRouteArgs.tryParse(null, const <String, String>{
+        'book': '40',
+        'chapter': '17',
+        'verse': '5',
+        'module': 'bible_lxx_tr.sqlite',
+      });
+
+      expect(parsed.initialBookId, 40);
+      expect(parsed.initialChapter, 17);
+      expect(parsed.initialVerse, 5);
+      expect(parsed.initialModuleFile, 'bible_lxx_tr.sqlite');
+    });
+
+    test('falls back to Revelation 1:1 for invalid values', () {
+      final parsed = BibleRouteArgs.tryParse(null, const <String, String>{
+        'book': '0',
+        'chapter': '-1',
+        'verse': 'x',
+      });
+
+      expect(parsed.initialBookId, 66);
+      expect(parsed.initialChapter, 1);
+      expect(parsed.initialVerse, 1);
+      expect(parsed.initialModuleFile, isNull);
+    });
+  });
 }
 
 PrimarySource _buildSource(String id) {

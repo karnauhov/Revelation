@@ -503,7 +503,7 @@ void _seedDbManifest(
         'databases': <String, Object?>{
           for (final entry in fileSizes.entries)
             entry.key: <String, Object?>{
-              'schemaVersion': 1,
+              'schemaVersion': 4,
               'dataVersion': 1,
               'date': generatedAt,
               'fileSizeBytes': entry.value,

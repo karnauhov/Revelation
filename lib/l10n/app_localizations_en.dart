@@ -200,6 +200,162 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bible_header => 'Reading and studying Scripture';
 
   @override
+  String get bible_module => 'Module';
+
+  @override
+  String get bible_book => 'Book';
+
+  @override
+  String get bible_chapter => 'Chapter';
+
+  @override
+  String get bible_verse => 'Verse';
+
+  @override
+  String get bible_loading => 'Opening Bible...';
+
+  @override
+  String get bible_loading_chapter => 'Loading chapter...';
+
+  @override
+  String get bible_loading_module => 'Downloading and opening module...';
+
+  @override
+  String get bible_no_modules =>
+      'Bible modules were not found. Update databases or add bible_*.sqlite to the local data folder.';
+
+  @override
+  String get bible_previous_chapter => 'Previous chapter';
+
+  @override
+  String get bible_next_chapter => 'Next chapter';
+
+  @override
+  String get bible_strong_toggle_label => 'Strong';
+
+  @override
+  String get bible_module_info => 'Module information';
+
+  @override
+  String get bible_module_info_code => 'Code';
+
+  @override
+  String get bible_module_info_module_id => 'Module ID';
+
+  @override
+  String get bible_module_info_title => 'Title';
+
+  @override
+  String get bible_module_info_description => 'Description';
+
+  @override
+  String get bible_module_info_language => 'Language';
+
+  @override
+  String get bible_module_info_canon => 'Canon';
+
+  @override
+  String get bible_module_info_versification => 'Versification';
+
+  @override
+  String get bible_module_info_license => 'License';
+
+  @override
+  String get bible_module_info_source_summary => 'Source';
+
+  @override
+  String get bible_copy_selected_verses => 'Copy selected verses';
+
+  @override
+  String get bible_selected_verses_copied =>
+      'Selected verses copied to the clipboard.';
+
+  @override
+  String get bible_open_parallel_reader => 'Open parallel Bible reader';
+
+  @override
+  String get bible_close_parallel_reader => 'Close parallel reader';
+
+  @override
+  String get bible_linked_navigation => 'Linked navigation';
+
+  @override
+  String get bible_unlinked_navigation => 'Independent navigation';
+
+  @override
+  String get bible_search_in_module => 'Search this module';
+
+  @override
+  String get bible_search_dialog_title => 'Bible search';
+
+  @override
+  String get bible_search_query_label => 'Search text';
+
+  @override
+  String get bible_search_query_hint => 'Phrase';
+
+  @override
+  String get bible_search_button => 'Search';
+
+  @override
+  String get bible_search_result_action => 'Tap action';
+
+  @override
+  String get bible_search_action_copy => 'Copy verse';
+
+  @override
+  String get bible_search_action_open => 'Open verse';
+
+  @override
+  String get bible_search_copy_results => 'Copy results';
+
+  @override
+  String get bible_search_loading => 'Searching...';
+
+  @override
+  String get bible_search_failed => 'Couldn\'t search.';
+
+  @override
+  String get bible_search_no_results => 'No matches found.';
+
+  @override
+  String bible_search_match_count(int matches, int verses) {
+    return 'Matches: $matches; verses: $verses';
+  }
+
+  @override
+  String bible_search_page_label(int current, int total) {
+    return 'Page $current of $total';
+  }
+
+  @override
+  String get bible_search_previous_page => 'Previous page';
+
+  @override
+  String get bible_search_next_page => 'Next page';
+
+  @override
+  String get bible_search_verse_copied => 'Verse copied to the clipboard.';
+
+  @override
+  String get bible_search_references_copied =>
+      'References copied to the clipboard.';
+
+  @override
+  String get bible_search_verses_copied => 'Verses copied to the clipboard.';
+
+  @override
+  String get bible_reference_preview_loading_hint =>
+      'Long-press a verse link to load and copy the verse text.';
+
+  @override
+  String get bible_reference_preview_loading => 'Loading verse text...';
+
+  @override
+  String get bible_reference_preview_unavailable =>
+      'Verse text is unavailable.';
+
+  @override
   String get revelation_structure_screen => 'Revelation Structure';
 
   @override
@@ -793,4 +949,400 @@ class AppLocalizationsEn extends AppLocalizations {
   String markdown_images_loading_progress(int loaded, int total) {
     return 'Loading images: $loaded of $total';
   }
+
+  @override
+  String get book_code_1 => 'Gen';
+
+  @override
+  String get book_name_1 => 'Genesis';
+
+  @override
+  String get book_code_2 => 'Exod';
+
+  @override
+  String get book_name_2 => 'Exodus';
+
+  @override
+  String get book_code_3 => 'Lev';
+
+  @override
+  String get book_name_3 => 'Leviticus';
+
+  @override
+  String get book_code_4 => 'Num';
+
+  @override
+  String get book_name_4 => 'Numbers';
+
+  @override
+  String get book_code_5 => 'Deut';
+
+  @override
+  String get book_name_5 => 'Deuteronomy';
+
+  @override
+  String get book_code_6 => 'Josh';
+
+  @override
+  String get book_name_6 => 'Joshua';
+
+  @override
+  String get book_code_7 => 'Judg';
+
+  @override
+  String get book_name_7 => 'Judges';
+
+  @override
+  String get book_code_8 => 'Ruth';
+
+  @override
+  String get book_name_8 => 'Ruth';
+
+  @override
+  String get book_code_9 => '1Sam';
+
+  @override
+  String get book_name_9 => '1 Samuel';
+
+  @override
+  String get book_code_10 => '2Sam';
+
+  @override
+  String get book_name_10 => '2 Samuel';
+
+  @override
+  String get book_code_11 => '1Kgs';
+
+  @override
+  String get book_name_11 => '1 Kings';
+
+  @override
+  String get book_code_12 => '2Kgs';
+
+  @override
+  String get book_name_12 => '2 Kings';
+
+  @override
+  String get book_code_13 => '1Chr';
+
+  @override
+  String get book_name_13 => '1 Chronicles';
+
+  @override
+  String get book_code_14 => '2Chr';
+
+  @override
+  String get book_name_14 => '2 Chronicles';
+
+  @override
+  String get book_code_15 => 'Ezra';
+
+  @override
+  String get book_name_15 => 'Ezra';
+
+  @override
+  String get book_code_16 => 'Neh';
+
+  @override
+  String get book_name_16 => 'Nehemiah';
+
+  @override
+  String get book_code_17 => 'Esth';
+
+  @override
+  String get book_name_17 => 'Esther';
+
+  @override
+  String get book_code_18 => 'Job';
+
+  @override
+  String get book_name_18 => 'Job';
+
+  @override
+  String get book_code_19 => 'Ps';
+
+  @override
+  String get book_name_19 => 'Psalms';
+
+  @override
+  String get book_code_20 => 'Prov';
+
+  @override
+  String get book_name_20 => 'Proverbs';
+
+  @override
+  String get book_code_21 => 'Eccl';
+
+  @override
+  String get book_name_21 => 'Ecclesiastes';
+
+  @override
+  String get book_code_22 => 'Song';
+
+  @override
+  String get book_name_22 => 'Song of Songs';
+
+  @override
+  String get book_code_23 => 'Isa';
+
+  @override
+  String get book_name_23 => 'Isaiah';
+
+  @override
+  String get book_code_24 => 'Jer';
+
+  @override
+  String get book_name_24 => 'Jeremiah';
+
+  @override
+  String get book_code_25 => 'Lam';
+
+  @override
+  String get book_name_25 => 'Lamentations';
+
+  @override
+  String get book_code_26 => 'Ezek';
+
+  @override
+  String get book_name_26 => 'Ezekiel';
+
+  @override
+  String get book_code_27 => 'Dan';
+
+  @override
+  String get book_name_27 => 'Daniel';
+
+  @override
+  String get book_code_28 => 'Hos';
+
+  @override
+  String get book_name_28 => 'Hosea';
+
+  @override
+  String get book_code_29 => 'Joel';
+
+  @override
+  String get book_name_29 => 'Joel';
+
+  @override
+  String get book_code_30 => 'Amos';
+
+  @override
+  String get book_name_30 => 'Amos';
+
+  @override
+  String get book_code_31 => 'Obad';
+
+  @override
+  String get book_name_31 => 'Obadiah';
+
+  @override
+  String get book_code_32 => 'Jonah';
+
+  @override
+  String get book_name_32 => 'Jonah';
+
+  @override
+  String get book_code_33 => 'Mic';
+
+  @override
+  String get book_name_33 => 'Micah';
+
+  @override
+  String get book_code_34 => 'Nah';
+
+  @override
+  String get book_name_34 => 'Nahum';
+
+  @override
+  String get book_code_35 => 'Hab';
+
+  @override
+  String get book_name_35 => 'Habakkuk';
+
+  @override
+  String get book_code_36 => 'Zeph';
+
+  @override
+  String get book_name_36 => 'Zephaniah';
+
+  @override
+  String get book_code_37 => 'Hag';
+
+  @override
+  String get book_name_37 => 'Haggai';
+
+  @override
+  String get book_code_38 => 'Zech';
+
+  @override
+  String get book_name_38 => 'Zechariah';
+
+  @override
+  String get book_code_39 => 'Mal';
+
+  @override
+  String get book_name_39 => 'Malachi';
+
+  @override
+  String get book_code_40 => 'Mat';
+
+  @override
+  String get book_name_40 => 'Matthew';
+
+  @override
+  String get book_code_41 => 'Mark';
+
+  @override
+  String get book_name_41 => 'Mark';
+
+  @override
+  String get book_code_42 => 'Luke';
+
+  @override
+  String get book_name_42 => 'Luke';
+
+  @override
+  String get book_code_43 => 'John';
+
+  @override
+  String get book_name_43 => 'John';
+
+  @override
+  String get book_code_44 => 'Acts';
+
+  @override
+  String get book_name_44 => 'Acts';
+
+  @override
+  String get book_code_45 => 'Rom';
+
+  @override
+  String get book_name_45 => 'Romans';
+
+  @override
+  String get book_code_46 => '1Cor';
+
+  @override
+  String get book_name_46 => '1 Corinthians';
+
+  @override
+  String get book_code_47 => '2Cor';
+
+  @override
+  String get book_name_47 => '2 Corinthians';
+
+  @override
+  String get book_code_48 => 'Gal';
+
+  @override
+  String get book_name_48 => 'Galatians';
+
+  @override
+  String get book_code_49 => 'Eph';
+
+  @override
+  String get book_name_49 => 'Ephesians';
+
+  @override
+  String get book_code_50 => 'Phil';
+
+  @override
+  String get book_name_50 => 'Philippians';
+
+  @override
+  String get book_code_51 => 'Col';
+
+  @override
+  String get book_name_51 => 'Colossians';
+
+  @override
+  String get book_code_52 => '1Thess';
+
+  @override
+  String get book_name_52 => '1 Thessalonians';
+
+  @override
+  String get book_code_53 => '2Thess';
+
+  @override
+  String get book_name_53 => '2 Thessalonians';
+
+  @override
+  String get book_code_54 => '1Tim';
+
+  @override
+  String get book_name_54 => '1 Timothy';
+
+  @override
+  String get book_code_55 => '2Tim';
+
+  @override
+  String get book_name_55 => '2 Timothy';
+
+  @override
+  String get book_code_56 => 'Titus';
+
+  @override
+  String get book_name_56 => 'Titus';
+
+  @override
+  String get book_code_57 => 'Phlm';
+
+  @override
+  String get book_name_57 => 'Philemon';
+
+  @override
+  String get book_code_58 => 'Heb';
+
+  @override
+  String get book_name_58 => 'Hebrews';
+
+  @override
+  String get book_code_59 => 'Jas';
+
+  @override
+  String get book_name_59 => 'James';
+
+  @override
+  String get book_code_60 => '1Pet';
+
+  @override
+  String get book_name_60 => '1 Peter';
+
+  @override
+  String get book_code_61 => '2Pet';
+
+  @override
+  String get book_name_61 => '2 Peter';
+
+  @override
+  String get book_code_62 => '1John';
+
+  @override
+  String get book_name_62 => '1 John';
+
+  @override
+  String get book_code_63 => '2John';
+
+  @override
+  String get book_name_63 => '2 John';
+
+  @override
+  String get book_code_64 => '3John';
+
+  @override
+  String get book_name_64 => '3 John';
+
+  @override
+  String get book_code_65 => 'Jude';
+
+  @override
+  String get book_name_65 => 'Jude';
+
+  @override
+  String get book_code_66 => 'Rev';
+
+  @override
+  String get book_name_66 => 'Revelation';
 }

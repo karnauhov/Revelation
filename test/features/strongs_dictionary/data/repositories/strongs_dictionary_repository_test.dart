@@ -116,12 +116,45 @@ void main() {
 
   test('exposes number policy decisions through repository facade', () {
     final repository = StrongsDictionaryRepository(
-      databaseGateway: const _FakeLexiconDatabaseGateway(),
+      databaseGateway: const _FakeLexiconDatabaseGateway(
+        greekWords: <common_db.GreekWord>[
+          common_db.GreekWord(
+            id: 1,
+            word: 'Alpha',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 5624,
+            word: 'Omega',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 5625,
+            word: 'Out of range',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+        ],
+      ),
     );
 
     expect(repository.isAllowedStrongNumber(1), isTrue);
     expect(repository.isAllowedStrongNumber(2717), isFalse);
+    expect(repository.isAllowedStrongNumber(5624), isTrue);
+    expect(repository.isAllowedStrongNumber(5625), isFalse);
     expect(repository.getNeighborStrongNumber(5624, forward: true), 1);
+    expect(repository.getPickerEntries().map((entry) => entry.number), [
+      1,
+      5624,
+    ]);
   });
 }
 

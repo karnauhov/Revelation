@@ -63,6 +63,7 @@ class LibraryCard extends StatelessWidget {
     return name
         .replaceAll('@Vectors', loc.vectors)
         .replaceAll('@Icons', loc.icons)
+        .replaceAll('@BibleModule', loc.bible_module)
         .replaceAll('@StrongsConcordance', loc.strongs_dictionary_screen)
         .replaceAll('@Package', loc.package)
         .replaceAll('@Font', loc.font)

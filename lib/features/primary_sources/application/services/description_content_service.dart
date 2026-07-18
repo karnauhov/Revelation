@@ -16,6 +16,7 @@ import 'package:revelation/features/primary_sources/application/services/nomina_
 import 'package:revelation/features/primary_sources/application/services/primary_source_reference_service.dart';
 import 'package:revelation/features/primary_sources/application/services/primary_source_word_text_formatter.dart';
 import 'package:revelation/shared/services/pronunciation_service.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 
 class DescriptionContentService {
   DescriptionContentService({
@@ -26,6 +27,7 @@ class DescriptionContentService {
     ManuscriptGreekTextConverter? manuscriptGreekTextConverter,
     PrimarySourceWordTextFormatter? wordTextFormatter,
     StrongsDictionaryContentService? strongsDictionaryContentService,
+    BibleVerseMap? verseMap,
   }) : this._(
          dataSource ?? DbManagerDescriptionDataSource(),
          pronunciation: pronunciation,
@@ -34,6 +36,7 @@ class DescriptionContentService {
          manuscriptGreekTextConverter: manuscriptGreekTextConverter,
          wordTextFormatter: wordTextFormatter,
          strongsDictionaryContentService: strongsDictionaryContentService,
+         verseMap: verseMap,
        );
 
   DescriptionContentService._(
@@ -44,6 +47,7 @@ class DescriptionContentService {
     ManuscriptGreekTextConverter? manuscriptGreekTextConverter,
     PrimarySourceWordTextFormatter? wordTextFormatter,
     StrongsDictionaryContentService? strongsDictionaryContentService,
+    BibleVerseMap? verseMap,
   }) : _dataSource = dataSource,
        _pronunciation = pronunciation ?? PronunciationService(),
        _nominaSacraPronunciation =
@@ -67,6 +71,7 @@ class DescriptionContentService {
                ),
              ),
              pronunciation: pronunciation,
+             verseMap: verseMap,
            );
 
   final DescriptionDataSource _dataSource;

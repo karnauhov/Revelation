@@ -29,7 +29,11 @@ class StrongsDictionaryRepository {
   bool isAllowedStrongNumber(int number) => _numberPolicy.isAllowed(number);
 
   int getNeighborStrongNumber(int current, {required bool forward}) {
-    return _numberPolicy.neighbor(current, forward: forward);
+    return _numberPolicy.neighborAvailable(
+      current,
+      getPickerEntries().map((entry) => entry.number),
+      forward: forward,
+    );
   }
 
   List<StrongDictionaryEntry> getEntries() {

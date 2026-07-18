@@ -7,6 +7,14 @@ import 'package:revelation/features/strongs_dictionary/presentation/widgets/stro
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_number_picker_dialog.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_reference_info_icon.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
+
+Future<BibleVerseMap>? _strongDictionaryDialogVerseMapFuture;
+
+Future<BibleVerseMap> _loadStrongDictionaryDialogVerseMap() {
+  return _strongDictionaryDialogVerseMapFuture ??=
+      BibleVerseMap.loadFromAssets();
+}
 
 Future<void> showStrongDictionaryDialog(
   BuildContext context,
@@ -36,7 +44,59 @@ class StrongDictionaryDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final explicitContentService = contentService;
+    if (explicitContentService != null) {
+      return _StrongDictionaryDialogProvider(
+        initialStrongNumber: initialStrongNumber,
+        localizations: localizations,
+        contentService: explicitContentService,
+      );
+    }
 
+    return FutureBuilder<BibleVerseMap>(
+      future: _loadStrongDictionaryDialogVerseMap(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return _StrongDictionaryDialogProvider(
+            initialStrongNumber: initialStrongNumber,
+            localizations: localizations,
+            contentService: StrongsDictionaryContentService(
+              verseMap: snapshot.requireData,
+            ),
+          );
+        }
+        if (snapshot.hasError) {
+          return _StrongDictionaryDialogProvider(
+            initialStrongNumber: initialStrongNumber,
+            localizations: localizations,
+            contentService: StrongsDictionaryContentService(),
+          );
+        }
+        return const AlertDialog(
+          content: SizedBox(
+            width: 96,
+            height: 96,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _StrongDictionaryDialogProvider extends StatelessWidget {
+  const _StrongDictionaryDialogProvider({
+    required this.initialStrongNumber,
+    required this.localizations,
+    required this.contentService,
+  });
+
+  final int initialStrongNumber;
+  final AppLocalizations localizations;
+  final StrongsDictionaryContentService contentService;
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider<StrongsDictionaryCubit>(
       create: (_) => StrongsDictionaryCubit(
         initialStrongNumber: initialStrongNumber,
@@ -123,6 +183,7 @@ class _StrongDictionaryDialogContentState
                 );
               },
               onStrongNumberPickerRequested: _openStrongNumberPicker,
+              popBeforeBibleNavigation: true,
               onNavigateBackward: () {
                 context.read<StrongsDictionaryCubit>().navigate(
                   localizations: localizations,

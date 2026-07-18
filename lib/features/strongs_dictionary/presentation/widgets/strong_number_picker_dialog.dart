@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
+import 'package:revelation/features/strongs_dictionary/domain/services/strong_number_policy.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strong_number_picker_cubit.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strong_number_picker_state.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -195,12 +196,15 @@ class _StrongNumberPickerDialogContentState
                     textInputAction: TextInputAction.done,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(4),
+                      LengthLimitingTextInputFormatter(
+                        StrongNumberPolicy.maxNumber.toString().length,
+                      ),
                     ],
                     onSubmitted: (_) => _submitSelection(context),
                     decoration: InputDecoration(
                       labelText: localizations.strong_number,
-                      hintText: '1 - 5624',
+                      hintText:
+                          '${StrongNumberPolicy.minNumber} - ${StrongNumberPolicy.maxNumber}',
                       helperText: showHelperText ? helperText : null,
                       helperMaxLines: 1,
                       border: const OutlineInputBorder(),
@@ -266,9 +270,11 @@ class _StrongNumberPickerDialogContentState
       return;
     }
 
-    context.read<StrongNumberPickerCubit>().updateInputText(
-      _numberController.text,
-    );
+    final cubit = context.read<StrongNumberPickerCubit>()
+      ..updateInputText(_numberController.text);
+    if (_numberController.text != cubit.state.inputText) {
+      _replaceInputText(cubit.state.inputText);
+    }
   }
 
   void _replaceInputText(String text) {

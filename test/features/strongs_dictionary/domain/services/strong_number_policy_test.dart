@@ -4,6 +4,11 @@ import 'package:revelation/features/strongs_dictionary/domain/services/strong_nu
 void main() {
   const policy = StrongNumberPolicy();
 
+  test('uses classic Greek Strong boundaries', () {
+    expect(StrongNumberPolicy.minNumber, 1);
+    expect(StrongNumberPolicy.maxNumber, 5624);
+  });
+
   test('isAllowed validates boundaries and forbidden values', () {
     expect(policy.isAllowed(0), isFalse);
     expect(policy.isAllowed(1), isTrue);
@@ -20,7 +25,8 @@ void main() {
     expect(policy.normalizeToAllowed(2717), 2718);
     expect(policy.normalizeToAllowed(3203), 3303);
     expect(policy.normalizeToAllowed(3302), 3303);
-    expect(policy.normalizeToAllowed(6000), 5624);
+    expect(policy.normalizeToAllowed(5625), 5624);
+    expect(policy.normalizeToAllowed(99999), 5624);
   });
 
   test('neighbor skips forbidden values and wraps around', () {
@@ -31,13 +37,21 @@ void main() {
     expect(policy.neighbor(1, forward: false), 5624);
   });
 
+  test('neighborAvailable moves through real dictionary entries', () {
+    const available = <int>[1, 2718, 3303, 5624, 5625];
+
+    expect(policy.neighborAvailable(2716, available, forward: true), 2718);
+    expect(policy.neighborAvailable(5624, available, forward: true), 1);
+    expect(policy.neighborAvailable(1, available, forward: false), 5624);
+  });
+
   test('closestAvailableNumber prefers nearest valid picker number', () {
     const available = <int>[1, 2718, 3303, 5000];
 
     expect(policy.closestAvailableNumber(2717, available), 2718);
     expect(policy.closestAvailableNumber(3203, available), 3303);
     expect(policy.closestAvailableNumber(4999, available), 5000);
-    expect(policy.closestAvailableNumber(6000, available), 5000);
+    expect(policy.closestAvailableNumber(99999, available), 5000);
     expect(policy.closestAvailableNumber(10, const <int>[]), 1);
   });
 }

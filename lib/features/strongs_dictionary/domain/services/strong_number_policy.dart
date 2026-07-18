@@ -8,7 +8,10 @@ class StrongNumberPolicy {
   static const int blockedRangeEnd = 3302;
 
   bool isAllowed(int value) {
-    return value >= minNumber && value <= maxNumber && !isForbidden(value);
+    if (isForbidden(value)) {
+      return false;
+    }
+    return value >= minNumber && value <= maxNumber;
   }
 
   bool isForbidden(int value) {
@@ -17,6 +20,10 @@ class StrongNumberPolicy {
   }
 
   int normalizeToAllowed(int value) {
+    if (isAllowed(value)) {
+      return value;
+    }
+
     var normalized = value.clamp(minNumber, maxNumber);
 
     if (normalized == blockedSingleNumber) {
@@ -66,8 +73,38 @@ class StrongNumberPolicy {
       if (candidate < minNumber) {
         candidate = maxNumber;
       }
-    } while (isForbidden(candidate));
+    } while (!isAllowed(candidate));
 
     return candidate;
+  }
+
+  int neighborAvailable(
+    int current,
+    Iterable<int> availableNumbers, {
+    required bool forward,
+  }) {
+    final numbers =
+        availableNumbers.where(isAllowed).toSet().toList(growable: false)
+          ..sort();
+    if (numbers.isEmpty) {
+      return neighbor(current, forward: forward);
+    }
+
+    final normalized = normalizeToAllowed(current);
+    if (forward) {
+      for (final number in numbers) {
+        if (number > normalized) {
+          return number;
+        }
+      }
+      return numbers.first;
+    }
+
+    for (final number in numbers.reversed) {
+      if (number < normalized) {
+        return number;
+      }
+    }
+    return numbers.last;
   }
 }

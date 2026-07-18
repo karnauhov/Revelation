@@ -1,40 +1,54 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-23T03:51:25Z",
+  "generatedAt": "2026-07-18T06:03:42Z",
   "databases": {
+    "bible_kjv.sqlite": {
+      "versionToken": "manifest:schema:3|data:5|date:2026-07-18T06:03:42Z|size:6725632",
+      "schemaVersion": 3,
+      "dataVersion": 5,
+      "date": "2026-07-18T06:03:42Z",
+      "fileSizeBytes": 6725632
+    },
+    "bible_lxx_tr.sqlite": {
+      "versionToken": "manifest:schema:3|data:16|date:2026-07-18T06:03:42Z|size:12840960",
+      "schemaVersion": 3,
+      "dataVersion": 16,
+      "date": "2026-07-18T06:03:42Z",
+      "fileSizeBytes": 12840960
+    },
     "revelation.sqlite": {
-      "versionToken": "manifest:schema:4|data:6|date:2026-05-23T02:35:34Z|size:1142784",
+      "versionToken": "manifest:schema:4|data:11|date:2026-07-18T04:25:15Z|size:3813376",
       "schemaVersion": 4,
-      "dataVersion": 6,
-      "date": "2026-05-23T02:35:34Z",
-      "fileSizeBytes": 1142784
+      "dataVersion": 11,
+      "date": "2026-07-18T04:25:15Z",
+      "fileSizeBytes": 3813376
     },
     "revelation_en.sqlite": {
-      "versionToken": "manifest:schema:6|data:10|date:2026-05-23T03:51:25Z|size:593920",
+      "versionToken": "manifest:schema:6|data:12|date:2026-06-20T05:18:31Z|size:593920",
       "schemaVersion": 6,
-      "dataVersion": 10,
-      "date": "2026-05-23T03:51:25Z",
+      "dataVersion": 12,
+      "date": "2026-06-20T05:18:31Z",
       "fileSizeBytes": 593920
     },
     "revelation_es.sqlite": {
-      "versionToken": "manifest:schema:6|data:10|date:2026-05-23T03:51:25Z|size:626688",
+      "versionToken": "manifest:schema:6|data:12|date:2026-06-20T05:18:31Z|size:626688",
       "schemaVersion": 6,
-      "dataVersion": 10,
-      "date": "2026-05-23T03:51:25Z",
+      "dataVersion": 12,
+      "date": "2026-06-20T05:18:31Z",
       "fileSizeBytes": 626688
     },
     "revelation_ru.sqlite": {
-      "versionToken": "manifest:schema:6|data:13|date:2026-05-23T03:51:25Z|size:688128",
+      "versionToken": "manifest:schema:6|data:15|date:2026-06-20T05:18:31Z|size:688128",
       "schemaVersion": 6,
-      "dataVersion": 13,
-      "date": "2026-05-23T03:51:25Z",
+      "dataVersion": 15,
+      "date": "2026-06-20T05:18:31Z",
       "fileSizeBytes": 688128
     },
     "revelation_uk.sqlite": {
-      "versionToken": "manifest:schema:6|data:10|date:2026-05-23T03:51:25Z|size:692224",
+      "versionToken": "manifest:schema:6|data:12|date:2026-06-20T05:18:31Z|size:692224",
       "schemaVersion": 6,
-      "dataVersion": 10,
-      "date": "2026-05-23T03:51:25Z",
+      "dataVersion": 12,
+      "date": "2026-06-20T05:18:31Z",
       "fileSizeBytes": 692224
     }
   }

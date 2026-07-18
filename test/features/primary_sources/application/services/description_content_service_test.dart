@@ -17,10 +17,18 @@ import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/models/verse.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 
 import '../../../../test_harness/test_harness.dart';
 
 void main() {
+  late BibleVerseMap verseMap;
+
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    verseMap = await BibleVerseMap.loadFromAssets();
+  });
+
   testWidgets('buildContent returns null when data source not initialized', (
     tester,
   ) async {
@@ -661,7 +669,59 @@ void main() {
 
   test('getNeighborStrongNumber skips blocked values and wraps around', () {
     final service = DescriptionContentService(
-      dataSource: _FakeDescriptionDataSource(isInitialized: true),
+      dataSource: _FakeDescriptionDataSource(
+        isInitialized: true,
+        greekWords: const [
+          common_db.GreekWord(
+            id: 1,
+            word: 'Alpha',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 2718,
+            word: 'Allowed after blocked',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 3202,
+            word: 'Before blocked range',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 3303,
+            word: 'Allowed after range',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 5624,
+            word: 'Old max',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+          common_db.GreekWord(
+            id: 5625,
+            word: 'Out of range',
+            category: '',
+            synonyms: '',
+            origin: '',
+            usage: '',
+          ),
+        ],
+      ),
     );
 
     expect(service.getNeighborStrongNumber(2716, forward: true), 2718);
@@ -684,7 +744,7 @@ void main() {
           category: '@noun',
           synonyms: '2,2717,3',
           origin: 'G2,H123,G2717',
-          usage: 'sample [], 2\nother [], 3',
+          usage: 'sample: [001;002], 2\nother: [NZYx3], 3',
         ),
         common_db.GreekWord(
           id: 2,
@@ -707,7 +767,10 @@ void main() {
         localized_db.GreekDesc(id: 1, desc: 'See [G2](strong:G2) and text'),
       ],
     );
-    final service = DescriptionContentService(dataSource: dataSource);
+    final service = DescriptionContentService(
+      dataSource: dataSource,
+      verseMap: verseMap,
+    );
 
     final content = service.buildStrongContent(localizations, 1);
 
@@ -721,7 +784,30 @@ void main() {
     expect(content.markdown, contains('**Alpha** ([G2](strong:G2))'));
     expect(content.markdown, contains('[H123](strong:H123)'));
     expect(content.markdown, contains('**Beta** ([G3](strong:G3))'));
-    expect(content.markdown, contains('sample 2; **other 3'));
+    expect(
+      content.markdown,
+      contains('${localizations.strong_usage}:$strongUsageInfoMarkdownMarker'),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '**sample** (2): [Gen 1:1](bible:Gen1:1 "strong_usage_ref:001"); '
+        '[Gen 1:2](bible:Gen1:2 "strong_usage_ref:002")',
+      ),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '**other** (3): [Rev 22:21 x3](bible:Rev22:21 "strong_usage_ref:NZY")',
+      ),
+    );
+    expect(
+      content.markdown,
+      contains(
+        '[Gen 1:2](bible:Gen1:2 "strong_usage_ref:002");\n\r'
+        '**other** (3):',
+      ),
+    );
     expect(content.markdown, isNot(contains('@noun')));
   });
 

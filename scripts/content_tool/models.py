@@ -34,6 +34,27 @@ class StrongRow:
 
 
 @dataclass
+class BibleModuleRow:
+    file_name: str
+    code: str
+    module_id: str
+    title: str
+    description: str
+    language: str
+    canon: str
+    versification: str
+    license: str
+    source_summary: str
+
+
+@dataclass
+class BibleVerseRow:
+    verse_key: str
+    reference: str
+    text: str
+
+
+@dataclass
 class PrimarySourceSummary:
     id: str
     family: str
