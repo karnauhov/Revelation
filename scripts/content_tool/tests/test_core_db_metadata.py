@@ -17,6 +17,7 @@ from scripts.content_tool.mixins.core_db import (
     CoreDbMixin,
     LOCALIZED_DB_SCHEMA_VERSION,
 )
+from scripts.content_tool.mixins.bibles import BIBLE_MODULE_DB_SCHEMA_VERSION
 
 
 class _CoreDbHarness(CoreDbMixin):
@@ -121,6 +122,24 @@ class CoreDbMetadataTests(unittest.TestCase):
             assert updated is not None
             self.assertEqual(updated["data_version"], 12)
 
+    def test_bible_modules_use_their_own_schema_version_and_publish_discovery(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            (root / "revelation.sqlite").touch()
+            (root / "revelation_ru.sqlite").touch()
+            bible_path = root / "bible_kjv.sqlite"
+            bible_path.touch()
+
+            harness = _CoreDbHarness()
+            discovered = harness._content_db_paths(root)
+
+            self.assertEqual([path.name for path in discovered], [
+                "bible_kjv.sqlite",
+                "revelation.sqlite",
+                "revelation_ru.sqlite",
+            ])
+            self.assertEqual(harness._db_schema_version_for_path(bible_path), BIBLE_MODULE_DB_SCHEMA_VERSION)
+
     def test_touch_updates_local_manifest_next_to_db_file(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             db_path = Path(temp_dir) / "revelation_ru.sqlite"
@@ -142,6 +161,26 @@ class CoreDbMetadataTests(unittest.TestCase):
             payload = json.loads(manifest_path.read_text(encoding="utf-8"))
             entry = payload["databases"][db_path.name]
             self.assertEqual(entry["fileSizeBytes"], db_path.stat().st_size)
+
+    def test_touch_updates_local_manifest_for_bible_module(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "bible_kjv.sqlite"
+            self._create_db(
+                db_path,
+                schema_version=BIBLE_MODULE_DB_SCHEMA_VERSION,
+                data_version=3,
+                date_iso="2026-03-21T00:00:00Z",
+            )
+            harness = _CoreDbHarness()
+
+            harness._touch_db_data_version(
+                db_path,
+                schema_version=BIBLE_MODULE_DB_SCHEMA_VERSION,
+            )
+
+            manifest_path = Path(temp_dir) / "manifest.json"
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self.assertIn("bible_kjv.sqlite", payload["databases"])
 
     def test_connection_touch_flushes_pending_local_manifest_after_commit(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

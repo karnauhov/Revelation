@@ -540,6 +540,9 @@ class CoreUiMixin:
             common_db_var: tk.StringVar,
             show_db_labels: bool = True,
         ) -> None:
+            if parent is getattr(self, "bibles_section", None):
+                self._build_bibles_tab(parent)
+                return
             parent.columnconfigure(0, weight=1)
             parent.rowconfigure(1, weight=1)
 
@@ -1222,6 +1225,10 @@ class CoreUiMixin:
             self.btn_delete_primary_source_verse.pack(side="left", padx=(8, 0))
 
         def _on_main_section_changed(self, _event: object | None = None) -> None:
+            if self._active_section_key() == "bibles":
+                reload_bibles = getattr(self, "_reload_bibles_section", None)
+                if callable(reload_bibles):
+                    reload_bibles()
             self._update_file_info()
 
         def _active_section_key(self) -> str:
@@ -1271,7 +1278,8 @@ class CoreUiMixin:
             if self.current_db_path is not None:
                 local_text = self.current_db_path.stem
             self.strong_local_db_var.set(local_text)
-            self.bibles_local_db_var.set(local_text)
+            bible_path = getattr(self, "current_bible_path", None)
+            self.bibles_local_db_var.set(bible_path.stem if bible_path is not None else "-")
 
             common_text = "-"
             if self.common_db_path is not None:
@@ -1570,6 +1578,12 @@ class CoreUiMixin:
                 strong_enabled=has_common_db,
                 sources_enabled=has_loaded_db and has_common_db,
             )
+            set_bibles_enabled = getattr(self, "_set_bibles_controls_enabled", None)
+            if callable(set_bibles_enabled):
+                set_bibles_enabled(
+                    self.current_bible_path is not None
+                    and self.bible_connection is not None
+                )
 
         def _show_centered_info(self, title: str, message: str) -> None:
             dialog = tk.Toplevel(self)
@@ -1740,6 +1754,17 @@ class CoreUiMixin:
                 seen.add(resolved)
                 paths.append(db_path.resolve())
 
+            content_db_paths = getattr(self, "_content_db_paths", None)
+            if callable(content_db_paths):
+                for db_path in content_db_paths(self.work_dir):
+                    if not db_path.exists():
+                        continue
+                    resolved = str(db_path.resolve())
+                    if resolved in seen:
+                        continue
+                    seen.add(resolved)
+                    paths.append(db_path.resolve())
+
             return paths
 
         def _db_version_detail_lines(self, paths: list[Path]) -> list[str]:
@@ -1862,6 +1887,13 @@ class CoreUiMixin:
                         ]
                     )
                 )
+                return
+
+            if section == "bibles":
+                bible_path = getattr(self, "current_bible_path", None)
+                bible_exists = bible_path is not None and bible_path.exists()
+                self._set_status_indicator(dirty_like=not bible_exists)
+                self._set_file_info(self._compose_db_info_line([bible_path]))
                 return
 
             self._set_status_indicator(dirty_like=not (has_common and bool(localized_paths)))

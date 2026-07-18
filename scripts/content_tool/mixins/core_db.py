@@ -19,6 +19,7 @@ from typing import Any
 from ..helpers import LANGUAGE_NAME_RU_BY_CODE
 from ..models import ArticleRow, PrimarySourceSummary, ResourceRow, StrongRow
 from ..web_db_manifest import build_web_db_manifest_payload_from_paths, write_web_db_manifest
+from .bibles import BIBLE_MODULE_DB_SCHEMA_VERSION
 
 COMMON_DB_SCHEMA_VERSION = 4
 LOCALIZED_DB_SCHEMA_VERSION = 6
@@ -36,6 +37,8 @@ DB_METADATA_DATE_KEY = "date"
 
 class CoreDbMixin:
         def _db_schema_version_for_path(self, db_path: Path) -> int:
+            if db_path.name.lower().startswith("bible_"):
+                return BIBLE_MODULE_DB_SCHEMA_VERSION
             if db_path.name.lower() == "revelation.sqlite":
                 return COMMON_DB_SCHEMA_VERSION
             return LOCALIZED_DB_SCHEMA_VERSION
@@ -292,6 +295,9 @@ class CoreDbMixin:
             self._load_common_resources()
             self._load_strong_rows()
             self._update_section_db_labels()
+            refresh_bibles = getattr(self, "_refresh_bible_list", None)
+            if callable(refresh_bibles):
+                refresh_bibles(initial_select=initial_select)
 
             values = list(self.db_files.keys())
             self.db_combo["values"] = values
@@ -390,6 +396,17 @@ class CoreDbMixin:
                 if resolved not in unique:
                     unique.append(resolved)
             return unique
+
+        def _content_db_paths(self, directory: Path) -> list[Path]:
+            paths = [
+                *directory.glob("revelation*.sqlite"),
+                *directory.glob("bible_*.sqlite"),
+            ]
+            unique: dict[str, Path] = {}
+            for path in paths:
+                if path.is_file():
+                    unique[path.name.lower()] = path
+            return sorted(unique.values(), key=lambda path: path.name.lower())
 
         def _ensure_schema(self) -> None:
             if self.connection is None:
@@ -735,40 +752,50 @@ class CoreDbMixin:
 
 
         def _save_all(self, *, status_text: str | None = None, silent: bool = False) -> bool:
-            if self.connection is None or self.current_db_path is None:
-                messagebox.showwarning("Нет БД", "Сначала откройте локализованную БД.", parent=self)
+            save_bible_pending = getattr(self, "_save_bible_pending_changes", None)
+            has_bible_changes = bool(getattr(self, "bible_pending_changes", False))
+            has_local_changes = self.connection is not None and self.current_db_path is not None
+            if not has_local_changes and not (callable(save_bible_pending) and has_bible_changes):
+                messagebox.showwarning("Нет БД", "Откройте БД с несохранёнными изменениями.", parent=self)
                 return False
 
-            try:
-                with self.connection:
-                    self.connection.execute("DELETE FROM articles")
-                    self.connection.executemany(
-                        """
-                        INSERT INTO articles(route, name, description, id_icon, sort_order, is_visible, markdown)
-                        VALUES(?, ?, ?, ?, ?, ?, ?)
-                        """,
-                        [
-                            (
-                                row.route,
-                                row.name,
-                                row.description,
-                                row.id_icon,
-                                row.sort_order,
-                                1 if row.is_visible else 0,
-                                row.markdown,
-                            )
-                            for row in self.articles
-                        ],
-                    )
-                    self._touch_localized_db_data_version(connection=self.connection)
-            except sqlite3.DatabaseError as exc:
-                messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить изменения:\n{exc}", parent=self)
-                return False
+            if has_local_changes:
+                try:
+                    with self.connection:
+                        self.connection.execute("DELETE FROM articles")
+                        self.connection.executemany(
+                            """
+                            INSERT INTO articles(route, name, description, id_icon, sort_order, is_visible, markdown)
+                            VALUES(?, ?, ?, ?, ?, ?, ?)
+                            """,
+                            [
+                                (
+                                    row.route,
+                                    row.name,
+                                    row.description,
+                                    row.id_icon,
+                                    row.sort_order,
+                                    1 if row.is_visible else 0,
+                                    row.markdown,
+                                )
+                                for row in self.articles
+                            ],
+                        )
+                        self._touch_localized_db_data_version(connection=self.connection)
+                except sqlite3.DatabaseError as exc:
+                    messagebox.showerror("Ошибка сохранения", f"Не удалось сохранить изменения:\n{exc}", parent=self)
+                    return False
+
+            if callable(save_bible_pending) and has_bible_changes:
+                if not save_bible_pending(silent=True):
+                    return False
 
             self._set_dirty(False)
             self._update_file_info()
             if not silent:
-                self._set_status(status_text or f"Сохранено: {self.current_db_path.stem}")
+                saved_path = self.current_db_path or getattr(self, "current_bible_path", None)
+                saved_name = saved_path.stem if saved_path is not None else "БД"
+                self._set_status(status_text or f"Сохранено: {saved_name}")
             return True
 
         def _add_localized_language_db(self) -> None:
@@ -1086,15 +1113,15 @@ class CoreDbMixin:
         def _mark_local_db_manifest_dirty(self, db_path: Path | None) -> None:
             if db_path is None or db_path.suffix.lower() != ".sqlite":
                 return
-            if not db_path.name.lower().startswith("revelation"):
+            if not (
+                db_path.name.lower().startswith("revelation")
+                or db_path.name.lower().startswith("bible_")
+            ):
                 return
             self._local_db_manifest_dirty_dirs().add(db_path.parent.resolve())
 
         def _refresh_local_db_manifest_for_dir(self, target_dir: Path) -> Path | None:
-            db_paths = sorted(
-                target_dir.glob("revelation*.sqlite"),
-                key=lambda path: path.name.lower(),
-            )
+            db_paths = self._content_db_paths(target_dir)
             if not db_paths:
                 return None
             manifest_path = self._web_db_manifest_path(target_dir)
@@ -2966,9 +2993,9 @@ class CoreDbMixin:
                 if answer and not self._save_all():
                     return
 
-            files = sorted(source_dir.glob("revelation*.sqlite"))
+            files = self._content_db_paths(source_dir)
             if not files:
-                messagebox.showwarning("Нет БД", "В рабочей папке не найдены файлы revelation*.sqlite.", parent=self)
+                messagebox.showwarning("Нет БД", "В рабочей папке не найдены файлы revelation*.sqlite или bible_*.sqlite.", parent=self)
                 return
 
             prepare_error: str | None = None
@@ -3168,9 +3195,9 @@ class CoreDbMixin:
                 if answer and not self._save_all():
                     return
 
-            source_files = sorted(source_dir.glob("revelation*.sqlite"))
+            source_files = self._content_db_paths(source_dir)
             if not source_files:
-                messagebox.showwarning("Нет БД", "В рабочей папке не найдены файлы revelation*.sqlite.", parent=self)
+                messagebox.showwarning("Нет БД", "В рабочей папке не найдены файлы revelation*.sqlite или bible_*.sqlite.", parent=self)
                 return
 
             local_sync_plan: list[dict[str, Any]] = []
@@ -3203,7 +3230,7 @@ class CoreDbMixin:
                 extra_target_db_paths = sorted(
                     (
                         path
-                        for path in target_dir.glob("revelation*.sqlite")
+                        for path in self._content_db_paths(target_dir)
                         if path.name not in source_file_names
                     ),
                     key=lambda path: path.name.lower(),
@@ -3228,7 +3255,7 @@ class CoreDbMixin:
                 local_manifest_path = self._web_db_manifest_path(target_dir)
                 try:
                     actual_manifest_payload = self._build_manifest_payload_for_db_paths(
-                        sorted(target_dir.glob("revelation*.sqlite"), key=lambda path: path.name.lower())
+                        self._content_db_paths(target_dir)
                     )
                     actual_manifest_entries = self._manifest_entries_from_payload(
                         actual_manifest_payload,
@@ -3558,5 +3585,8 @@ class CoreDbMixin:
                 self.common_connection.close()
                 self.common_connection = None
                 self.common_db_path = None
+            close_bible = getattr(self, "_close_bible_connection", None)
+            if callable(close_bible):
+                close_bible()
             self._update_section_db_labels()
             self._update_ui_availability()

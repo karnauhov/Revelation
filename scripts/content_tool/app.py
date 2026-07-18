@@ -4,10 +4,11 @@ import tkinter as tk
 from pathlib import Path
 
 from .icons import CONTENT_TOOL_ICONS
-from .mixins import ArticlesMixin, CoreDbMixin, CoreUiMixin, PrimarySourcesMixin, ResourcesMixin, StrongsMixin
+from .mixins import ArticlesMixin, BiblesMixin, CoreDbMixin, CoreUiMixin, PrimarySourcesMixin, ResourcesMixin, StrongsMixin
 
 
 class TopicContentTool(
+    BiblesMixin,
     PrimarySourcesMixin,
     ResourcesMixin,
     ArticlesMixin,
