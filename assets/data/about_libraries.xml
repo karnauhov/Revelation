@@ -71,6 +71,55 @@
         <licenseLink></licenseLink>
     </library>
     <library>
+        <name>@BibleModule 'KJV' @by eBible.org / CrossWire</name>
+        <idIcon>bible</idIcon>
+        <license>Public Domain outside the UK; UK Crown Letters Patent restrictions apply</license>
+        <officialSite>https://ebible.org/eng-kjv2006/</officialSite>
+        <licenseLink>https://ebible.org/eng-kjv2006/copyright.htm</licenseLink>
+    </library>
+    <library>
+        <name>@BibleModule 'LXX_TR' @by STEPBible TAGNT (Mat–Jhn)</name>
+        <idIcon>bible</idIcon>
+        <license>Creative Commons Attribution 4.0 International (CC BY 4.0)</license>
+        <officialSite>https://github.com/STEPBible/STEPBible-Data/blob/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAGNT%20Mat-Jhn%20-%20Translators%20Amalgamated%20Greek%20NT%20-%20STEPBible.org%20CC-BY.txt</officialSite>
+        <licenseLink>https://creativecommons.org/licenses/by/4.0/</licenseLink>
+    </library>
+    <library>
+        <name>@BibleModule 'LXX_TR' @by STEPBible TAGNT (Act–Rev)</name>
+        <idIcon>bible</idIcon>
+        <license>Creative Commons Attribution 4.0 International (CC BY 4.0)</license>
+        <officialSite>https://github.com/STEPBible/STEPBible-Data/blob/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAGNT%20Act-Rev%20-%20Translators%20Amalgamated%20Greek%20NT%20-%20STEPBible.org%20CC-BY.txt</officialSite>
+        <licenseLink>https://creativecommons.org/licenses/by/4.0/</licenseLink>
+    </library>
+    <library>
+        <name>@BibleModule 'LXX_TR' @by CrossWire SWORD LXX</name>
+        <idIcon>bible</idIcon>
+        <license>Copyrighted; Free non-commercial distribution</license>
+        <officialSite>https://crosswire.org/sword/modules/ModInfo.jsp?modName=LXX</officialSite>
+        <licenseLink>https://www.crosswire.org/sword/copyright/ModInfoCopyright.jsp?modName=LXX</licenseLink>
+    </library>
+    <library>
+        <name>@BibleModule 'LXX_TR' @by Patrologia Graeca Vol. 080</name>
+        <idIcon>bible</idIcon>
+        <license>Public Domain Mark 1.0</license>
+        <officialSite>https://commons.wikimedia.org/wiki/File:Patrologia_Graeca_Vol._080.pdf</officialSite>
+        <licenseLink>https://creativecommons.org/publicdomain/mark/1.0/</licenseLink>
+    </library>
+    <library>
+        <name>@BibleModule 'LXX_TR' @by H. B. Swete, Vol. I</name>
+        <idIcon>bible</idIcon>
+        <license>Not in copyright (Internet Archive metadata)</license>
+        <officialSite>https://archive.org/details/oldtestamentingr01swet</officialSite>
+        <licenseLink>https://archive.org/details/oldtestamentingr01swet</licenseLink>
+    </library>
+    <library>
+        <name>@BibleModule 'LXX_TR' @by H. B. Swete, Vol. II</name>
+        <idIcon>bible</idIcon>
+        <license>Public Domain Mark 1.0</license>
+        <officialSite>https://commons.wikimedia.org/wiki/File:The_Old_Testament_in_Greek,_according_to_the_Septuagint_(IA_cu31924012092437).pdf</officialSite>
+        <licenseLink>https://creativecommons.org/publicdomain/mark/1.0/</licenseLink>
+    </library>
+    <library>
         <name>@Package 'cupertino_icons'</name>
         <idIcon></idIcon>
         <license>MIT</license>

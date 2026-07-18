@@ -262,7 +262,7 @@ void main() {
       'assets/images/UI/code.svg': _bytes(_svg),
     });
     final linkedLibrary = LibraryInfo(
-      name: 'Sample @Package @and @Icons @by Team',
+      name: 'Sample @BibleModule @Package @and @Icons @by Team',
       idIcon: '',
       license: 'MIT',
       officialSite: 'https://example.com/library',
@@ -278,7 +278,7 @@ void main() {
     final l10n = AppLocalizations.of(context)!;
     expect(
       find.text(
-        'Sample ${l10n.package} ${l10n.and} ${l10n.icons} ${l10n.by} Team',
+        'Sample ${l10n.bible_module} ${l10n.package} ${l10n.and} ${l10n.icons} ${l10n.by} Team',
       ),
       findsOneWidget,
     );
