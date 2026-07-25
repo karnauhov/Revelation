@@ -7,11 +7,28 @@ from pathlib import Path
 
 from scripts.bible_module.update_lxx_tr_strong_usage import (
     apply_lxx_tr_strong_usage,
+    collect_lxx_tr_strong_usage,
     count_usage_line_occurrences,
 )
 
 
 class UpdateLxxTrStrongUsageTests(unittest.TestCase):
+    def test_subscription_brackets_do_not_change_usage_surface_or_counts(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            lxx_db_path = Path(temp_dir) / "bible_lxx_tr.sqlite"
+            _create_lxx_tr_fixture(
+                lxx_db_path,
+                {"001": "[πρός G4314 Τιμοθέου] G5095"},
+            )
+
+            usage_by_id, token_count = collect_lxx_tr_strong_usage(lxx_db_path)
+
+            self.assertEqual(token_count, 2)
+            self.assertEqual(usage_by_id[4314]["πρός"]["001"], 1)
+            self.assertEqual(usage_by_id[5095]["Τιμοθέου"]["001"], 1)
+
     def test_replaces_extended_tags_and_rebuilds_common_usage(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)

@@ -8,6 +8,8 @@ from unittest import mock
 
 from scripts.bible_module import fetch_sources
 from scripts.bible_module.sources import (
+    CROSSWIRE_KJV_COMMIT,
+    CROSSWIRE_KJV_LICENSE_NAME,
     CROSSWIRE_LXX_LICENSE_NAME,
     SOURCE_SPECS,
     STEPBIBLE_DATA_COMMIT,
@@ -26,6 +28,7 @@ class BibleSourceManifestTests(unittest.TestCase):
                 "step_tflsj_0_5624",
                 "step_tflsj_extra",
                 "step_tegmc",
+                "crosswire_kjv_3_1",
                 "crosswire_lxx",
             ],
         )
@@ -50,6 +53,13 @@ class BibleSourceManifestTests(unittest.TestCase):
         )
         self.assertEqual(crosswire.license_name, CROSSWIRE_LXX_LICENSE_NAME)
         self.assertIn("LXX.zip", crosswire.source_url)
+
+        crosswire_kjv = next(
+            source for source in SOURCE_SPECS if source.source_id == "crosswire_kjv_3_1"
+        )
+        self.assertEqual(crosswire_kjv.license_name, CROSSWIRE_KJV_LICENSE_NAME)
+        self.assertEqual(crosswire_kjv.source_commit, CROSSWIRE_KJV_COMMIT)
+        self.assertIn(CROSSWIRE_KJV_COMMIT, crosswire_kjv.source_url)
 
     def test_build_source_manifest_records_checksums(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

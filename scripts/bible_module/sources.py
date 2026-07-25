@@ -16,6 +16,19 @@ CROSSWIRE_LXX_MODINFO_URL = "https://crosswire.org/sword/modules/ModInfo.jsp?mod
 CROSSWIRE_LXX_LICENSE_URL = (
     "https://www.crosswire.org/sword/copyright/ModInfoCopyright.jsp?modName=LXX"
 )
+CROSSWIRE_KJV_COMMIT = "d490be7e34762deb2c76cb2c1306d4808e27890d"
+CROSSWIRE_KJV_VERSION = "3.1 (2023-07-19)"
+CROSSWIRE_KJV_MODINFO_URL = (
+    "https://crosswire.org/sword/modules/ModInfo.jsp?modName=KJV"
+)
+CROSSWIRE_KJV_LICENSE_NAME = (
+    "GNU General Public License / CrossWire general public use grant"
+)
+CROSSWIRE_KJV_LICENSE_URL = CROSSWIRE_KJV_MODINFO_URL
+CROSSWIRE_KJV_SOURCE_URL = (
+    "https://gitlab.com/crosswire-bible-society/kjv/-/raw/"
+    f"{CROSSWIRE_KJV_COMMIT}/kjvfull.xml"
+)
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 DEFAULT_SOURCE_CACHE_DIR = PACKAGE_DIR / "source_cache"
@@ -136,6 +149,21 @@ SOURCE_SPECS: tuple[SourceSpec, ...] = (
             "STEPBible.org CC BY.txt"
         ),
         notes="Greek morphology code explanations.",
+    ),
+    SourceSpec(
+        source_id="crosswire_kjv_3_1",
+        title="CrossWire KJV 3.1 OSIS with word-level Strong markup",
+        filename="crosswire_kjvfull.xml",
+        source_url=CROSSWIRE_KJV_SOURCE_URL,
+        source_page_url=CROSSWIRE_KJV_MODINFO_URL,
+        version=CROSSWIRE_KJV_VERSION,
+        source_commit=CROSSWIRE_KJV_COMMIT,
+        license_name=CROSSWIRE_KJV_LICENSE_NAME,
+        license_url=CROSSWIRE_KJV_LICENSE_URL,
+        notes=(
+            "Owner-approved control source for 16 evidence-confirmed NT "
+            "Strong-markup corrections; not used to replace the KJV plain text."
+        ),
     ),
     SourceSpec(
         source_id="crosswire_lxx",

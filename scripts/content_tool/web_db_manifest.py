@@ -33,8 +33,12 @@ def read_web_db_manifest_entry(db_path: Path) -> dict[str, Any]:
     if not db_path.exists():
         raise FileNotFoundError(f"Файл БД не найден: {db_path}")
 
-    connection = sqlite3.connect(str(db_path))
+    connection = sqlite3.connect(
+        f"{db_path.resolve().as_uri()}?mode=ro",
+        uri=True,
+    )
     try:
+        connection.execute("PRAGMA query_only=ON")
         metadata_values = _read_db_metadata_values(connection)
         schema_version = _read_schema_version(connection, metadata_values)
     finally:

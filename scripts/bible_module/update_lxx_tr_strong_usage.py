@@ -284,9 +284,13 @@ def collect_lxx_tr_strong_usage(
     usage_by_id: StrongUsageById = defaultdict(lambda: defaultdict(Counter))
     source_token_count = 0
     out_of_scope: Counter[str] = Counter()
-    connection = sqlite3.connect(str(bible_module_path))
+    connection = sqlite3.connect(
+        f"{bible_module_path.as_uri()}?mode=ro",
+        uri=True,
+    )
     try:
         connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA query_only=ON")
         _validate_lxx_tr_schema(connection)
         for row in connection.execute("SELECT verse_key, text FROM verses ORDER BY verse_key"):
             verse_key = str(row["verse_key"])
@@ -303,7 +307,7 @@ def collect_lxx_tr_strong_usage(
                         source_token_count += 1
                     previous_surface = None
                     continue
-                previous_surface = part
+                previous_surface = _usage_surface(part)
     finally:
         connection.close()
 
@@ -317,6 +321,11 @@ def collect_lxx_tr_strong_usage(
         strong_id: dict(surface_counts)
         for strong_id, surface_counts in usage_by_id.items()
     }, source_token_count
+
+
+def _usage_surface(part: str) -> str | None:
+    surface = part.strip("[]")
+    return surface or None
 
 
 def format_strong_usage(surface_counts: Mapping[str, Counter[str]]) -> str:

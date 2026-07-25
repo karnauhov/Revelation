@@ -6,8 +6,11 @@ import unittest
 from pathlib import Path
 
 from scripts.bible_module.build_kjv import (
+    KJV_STRONG_CORRECTION_REFS,
     KJV_SCHEMA_VERSION,
+    apply_kjv_strong_corrections,
     create_kjv_schema,
+    extract_crosswire_kjv_strong_corrections,
     extract_kjv_verse_texts,
     plain_kjv_text,
     validate_kjv_database,
@@ -18,6 +21,69 @@ from scripts.bible_module.canon import get_canonical_verse
 
 
 class KjvBuilderTests(unittest.TestCase):
+    def test_crosswire_parser_builds_phrase_level_reader_markup(self) -> None:
+        corrections = extract_crosswire_kjv_strong_corrections(
+            """
+            <osis>
+              <verse osisID="Mark.9.43" sID="Mark.9.43"/>
+              <w lemma="strong:G2532">And</w>
+              <w lemma="strong:G1437">if</w>
+              <w lemma="strong:G1510">it is</w>
+              <w lemma="strong:G3588 strong:G2222">the life</w>.
+              <verse eID="Mark.9.43"/>
+            </osis>
+            """,
+            correction_refs=("Mark.9.43",),
+        )
+
+        self.assertEqual(
+            corrections,
+            {
+                "Mark.9.43": (
+                    "And G2532 if G1437 it is G1510 the life. G3588 G2222"
+                )
+            },
+        )
+
+    def test_strong_corrections_preserve_plain_english_for_all_locked_refs(
+        self,
+    ) -> None:
+        source = {
+            verse_ref: f"Plain text for {verse_ref}."
+            for verse_ref in KJV_STRONG_CORRECTION_REFS
+        }
+        corrections = {
+            verse_ref: f"Plain text for {verse_ref}. G1"
+            for verse_ref in KJV_STRONG_CORRECTION_REFS
+        }
+
+        result = apply_kjv_strong_corrections(
+            source,
+            correction_texts=corrections,
+        )
+
+        self.assertEqual(set(result), set(KJV_STRONG_CORRECTION_REFS))
+        for verse_ref in KJV_STRONG_CORRECTION_REFS:
+            self.assertEqual(plain_kjv_text(result[verse_ref]), source[verse_ref])
+            self.assertTrue(result[verse_ref].endswith(" G1"))
+
+    def test_strong_correction_rejects_english_text_change(self) -> None:
+        source = {
+            verse_ref: f"Plain text for {verse_ref}."
+            for verse_ref in KJV_STRONG_CORRECTION_REFS
+        }
+        corrections = {
+            verse_ref: f"Plain text for {verse_ref}. G1"
+            for verse_ref in KJV_STRONG_CORRECTION_REFS
+        }
+        corrections["Mark.9.43"] = "Different text. G1"
+
+        with self.assertRaisesRegex(ValueError, "changes English text"):
+            apply_kjv_strong_corrections(
+                source,
+                correction_texts=corrections,
+            )
+
     def test_usfx_parser_flattens_kjv_text_with_strongs(self) -> None:
         texts = extract_kjv_verse_texts(
             """

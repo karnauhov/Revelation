@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-05-23T10:04:11Z",
+  "generated_at_utc": "2026-07-25T06:49:40Z",
   "source_cache_dir": "source_cache",
   "policy": {
     "canon": "canonical_protestant_66_only",
     "strong_format": "no_leading_zeroes",
     "rvr1960_requires_explicit_owner_permission": true,
-    "crosswire_lxx_owner_permission_confirmed": true
+    "crosswire_lxx_owner_permission_confirmed": true,
+    "crosswire_kjv_strong_corrections_scope": "16_confirmed_nt_verses"
   },
   "sources": [
     {
@@ -98,6 +99,21 @@
       "sha256": "5f0416f7617019a6082285214903bde569a980d5fd3b88b8d7020d944e94de82",
       "bytes": 467056,
       "notes": "Greek morphology code explanations."
+    },
+    {
+      "source_id": "crosswire_kjv_3_1",
+      "title": "CrossWire KJV 3.1 OSIS with word-level Strong markup",
+      "version": "3.1 (2023-07-19)",
+      "source_commit": "d490be7e34762deb2c76cb2c1306d4808e27890d",
+      "downloaded_at_utc": "2026-07-25T06:49:40Z",
+      "source_url": "https://gitlab.com/crosswire-bible-society/kjv/-/raw/d490be7e34762deb2c76cb2c1306d4808e27890d/kjvfull.xml",
+      "source_page_url": "https://crosswire.org/sword/modules/ModInfo.jsp?modName=KJV",
+      "license": "GNU General Public License / CrossWire general public use grant",
+      "license_url": "https://crosswire.org/sword/modules/ModInfo.jsp?modName=KJV",
+      "local_path": "source_cache/crosswire_kjvfull.xml",
+      "sha256": "d5114fc1ab17b1e141ff5c035ef3a4354437fd24b4b8ee34f4c925915c0374ef",
+      "bytes": 28630975,
+      "notes": "Owner-approved control source for 16 evidence-confirmed NT Strong-markup corrections; not used to replace the KJV plain text."
     },
     {
       "source_id": "crosswire_lxx",

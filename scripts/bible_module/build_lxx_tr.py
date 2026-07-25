@@ -73,6 +73,31 @@ _TRAILING_MARKS = set(",.;:!?])}\"'") | {
     "\u2026",
 }
 
+
+@dataclass(frozen=True)
+class TrSubscriptionBoundary:
+    first_token_order: int
+    first_surface: str
+    last_surface: str
+
+
+TR_SUBSCRIPTION_BOUNDARIES: Mapping[str, TrSubscriptionBoundary] = {
+    "1Cor.16.24": TrSubscriptionBoundary(11, "πρός", "Τιμοθέου"),
+    "Gal.6.18": TrSubscriptionBoundary(14, "πρός", "Ῥώμης"),
+    "Eph.6.24": TrSubscriptionBoundary(14, "ἀμήν", "τυχικοῦ"),
+    "Col.4.18": TrSubscriptionBoundary(16, "πρός", "Ὀνησίμου"),
+    "1Thess.5.28": TrSubscriptionBoundary(11, "πρός", "Ἀθηνῶν"),
+    "2Thess.3.18": TrSubscriptionBoundary(12, "πρός", "Ἀθηνῶν"),
+    "2Tim.4.22": TrSubscriptionBoundary(14, "πρός", "Νέρωνι"),
+    "Titus.3.15": TrSubscriptionBoundary(19, "πρός", "Κρητῶν"),
+    "Phlm.1.25": TrSubscriptionBoundary(13, "Πρός", "οἰκέτου"),
+    "Heb.13.25": TrSubscriptionBoundary(7, "πρός", "Τιμοθέου"),
+}
+TR_SUBSCRIPTION_BOUNDARY_SOURCE = (
+    "Robinson/Sandborg-Petersen Scrivener 1894 text-only, "
+    "commit 6049a43b135ed870f843b83eb6a04764fc796678"
+)
+
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS db_metadata (
   key TEXT PRIMARY KEY,
@@ -122,6 +147,7 @@ class TrTextBuildResult:
     missing_tr_verses: tuple[str, ...]
     extra_tr_verses: tuple[str, ...]
     missing_strong_tokens: tuple[MissingStrongToken, ...]
+    bracketed_subscription_refs: tuple[str, ...]
 
     @property
     def filled_verses_count(self) -> int:
@@ -191,6 +217,7 @@ class LxxTrBuildReport:
     extra_lxx_verses: tuple[str, ...]
     missing_strong_tokens: tuple[MissingStrongToken, ...]
     duplicate_lxx_target_refs: tuple[str, ...]
+    bracketed_subscription_refs: tuple[str, ...]
     built_at: str
 
 
@@ -390,6 +417,7 @@ def build_lxx_tr_module_from_tokens(
             tr_texts.missing_strong_tokens + lxx_texts.missing_strong_tokens
         ),
         duplicate_lxx_target_refs=lxx_texts.duplicate_target_refs,
+        bracketed_subscription_refs=tr_texts.bracketed_subscription_refs,
         built_at=actual_built_at,
     )
 
@@ -439,6 +467,8 @@ def create_lxx_tr_schema(
             (
                 "KJV/protestant 66-book Greek Bible module scaffold. "
                 "New Testament is filled from STEPBible TAGNT Textus Receptus; "
+                "ten traditional subscriptions are retained in square brackets "
+                "as explicit paratext inside their final verse rows. "
                 "Old Testament LXX text is filled from owner-approved CrossWire "
                 "LXX projection rules when those rules are supplied."
             ),
@@ -476,6 +506,7 @@ def build_tr_verse_texts(tokens: Iterable[TagntToken]) -> TrTextBuildResult:
     actual_refs: set[str] = set()
     extra_refs: set[str] = set()
     missing_strong_tokens: list[MissingStrongToken] = []
+    bracketed_subscription_refs: list[str] = []
     tr_tokens_count = 0
 
     for token in tokens:
@@ -509,7 +540,15 @@ def build_tr_verse_texts(tokens: Iterable[TagntToken]) -> TrTextBuildResult:
                 item[0].source_ref,
             )
         )
-        verse_texts[canonical_verse_id] = _join_tagged_tokens(verse_tokens)
+        canonical_ref = canonical_by_id[canonical_verse_id].canonical_ref
+        boundary = TR_SUBSCRIPTION_BOUNDARIES.get(canonical_ref)
+        rendered, subscription_bracketed = _join_tagged_tokens(
+            verse_tokens,
+            subscription_boundary=boundary,
+        )
+        verse_texts[canonical_verse_id] = rendered
+        if subscription_bracketed:
+            bracketed_subscription_refs.append(canonical_ref)
 
     missing_refs = tuple(
         sorted(
@@ -526,12 +565,25 @@ def build_tr_verse_texts(tokens: Iterable[TagntToken]) -> TrTextBuildResult:
             ).sort_key,
         )
     )
+    if not missing_refs and set(bracketed_subscription_refs) != set(
+        TR_SUBSCRIPTION_BOUNDARIES
+    ):
+        raise ValueError(
+            "Complete TAGNT TR input must bracket every locked subscription: "
+            f"actual={sorted(bracketed_subscription_refs)}"
+        )
     return TrTextBuildResult(
         verse_texts_by_id=verse_texts,
         tr_tokens_count=tr_tokens_count,
         missing_tr_verses=missing_refs,
         extra_tr_verses=extra_ref_values,
         missing_strong_tokens=tuple(missing_strong_tokens),
+        bracketed_subscription_refs=tuple(
+            sorted(
+                bracketed_subscription_refs,
+                key=lambda ref: expected_nt_refs[ref].sort_key,
+            )
+        ),
     )
 
 
@@ -1032,16 +1084,46 @@ def _apply_verse_texts(
 
 def _join_tagged_tokens(
     verse_tokens: Sequence[tuple[TagntToken, str | None]],
-) -> str:
+    *,
+    subscription_boundary: TrSubscriptionBoundary | None = None,
+) -> tuple[str, bool]:
+    subscription_start_index: int | None = None
+    if subscription_boundary is not None:
+        for index, (token, _primary_strong) in enumerate(verse_tokens):
+            if token.reference.token_order == subscription_boundary.first_token_order:
+                subscription_start_index = index
+                break
+        if subscription_start_index is not None:
+            subscription_tokens = verse_tokens[subscription_start_index:]
+            first_surface = _word_surface(subscription_tokens[0][0].surface)
+            last_surface = _word_surface(subscription_tokens[-1][0].surface)
+            if (
+                first_surface != subscription_boundary.first_surface
+                or last_surface != subscription_boundary.last_surface
+                or any(
+                    token.reference.text_type != "K"
+                    for token, _primary_strong in subscription_tokens
+                )
+            ):
+                raise ValueError(
+                    "TAGNT subscription boundary no longer matches locked evidence: "
+                    f"first={first_surface!r}, last={last_surface!r}"
+                )
+
     parts: list[str] = []
-    for token, primary_strong in verse_tokens:
+    last_index = len(verse_tokens) - 1
+    for index, (token, primary_strong) in enumerate(verse_tokens):
         surface = _word_surface(token.surface)
         if not surface:
             continue
+        if subscription_start_index is not None and index == subscription_start_index:
+            surface = f"[{surface}"
+        if subscription_start_index is not None and index == last_index:
+            surface = f"{surface}]"
         parts.append(surface)
         if primary_strong is not None:
             parts.append(primary_strong)
-    return " ".join(parts)
+    return " ".join(parts), subscription_start_index is not None
 
 
 def _extract_lxx_span_words(
@@ -1400,6 +1482,9 @@ def _source_summary(
     return _append_summary_notes(
         "NT: STEPBible TAGNT Textus Receptus from locked source chunks "
         f"{', '.join(TAGNT_LOCKED_SOURCE_IDS)} ({tagnt_versions}). "
+        "Ten traditional TAGNT subscriptions are retained in square brackets "
+        "as explicit paratext; their canonical boundaries were checked against "
+        f"{TR_SUBSCRIPTION_BOUNDARY_SOURCE}. "
         "OT: CrossWire LXX via explicit KJV-versification projection rules, "
         "including owner-approved full Addition D rows at Esth.5.1-2.",
         additional_notes,
@@ -1516,6 +1601,13 @@ def _report_json(report: LxxTrBuildReport) -> dict[str, object]:
         "extra_lxx_verses": list(report.extra_lxx_verses),
         "duplicate_lxx_target_refs_count": len(report.duplicate_lxx_target_refs),
         "duplicate_lxx_target_refs": list(report.duplicate_lxx_target_refs),
+        "bracketed_subscription_refs_count": len(
+            report.bracketed_subscription_refs
+        ),
+        "bracketed_subscription_refs": list(
+            report.bracketed_subscription_refs
+        ),
+        "subscription_boundary_source": TR_SUBSCRIPTION_BOUNDARY_SOURCE,
         "missing_strong_tokens_count": len(report.missing_strong_tokens),
         "missing_strong_tokens": [
             token.as_json() for token in report.missing_strong_tokens

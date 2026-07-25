@@ -22,12 +22,22 @@ from .schema import (
     DB_METADATA_SCHEMA_VERSION_KEY,
     now_utc_iso,
 )
+from .sources import (
+    CROSSWIRE_KJV_COMMIT,
+    CROSSWIRE_KJV_LICENSE_NAME,
+    CROSSWIRE_KJV_MODINFO_URL,
+    CROSSWIRE_KJV_SOURCE_URL,
+    CROSSWIRE_KJV_VERSION,
+)
 
 MODULE_ID = "kjv"
 MODULE_CODE = "KJV"
 MODULE_TITLE = "King James Version (1769)"
 DEFAULT_TARGET_PATH = Path.home() / "Documents" / "revelation" / "db" / "bible_kjv.sqlite"
 DEFAULT_SOURCE_ZIP_PATH = Path(__file__).resolve().parent / "source_cache" / "eng-kjv2006_usfx.zip"
+DEFAULT_STRONG_CORRECTION_OSIS_PATH = (
+    Path(__file__).resolve().parent / "source_cache" / "crosswire_kjvfull.xml"
+)
 SOURCE_ZIP_MEMBER = "eng-kjv2006_usfx.xml"
 
 KJV_SCHEMA_VERSION = 3
@@ -35,10 +45,34 @@ KJV_DATA_VERSION_INITIAL = 1
 KJV_SOURCE_URL = "https://ebible.org/Scriptures/eng-kjv2006_usfx.zip"
 KJV_SOURCE_PAGE_URL = "https://ebible.org/find/show.php?id=eng-kjv2006"
 KJV_SOURCE_VERSION = "eBible eng-kjv2006, last updated 2026-05-16"
+KJV_STRONG_CORRECTION_SOURCE_SHA256 = (
+    "d5114fc1ab17b1e141ff5c035ef3a4354437fd24b4b8ee34f4c925915c0374ef"
+)
+KJV_STRONG_CORRECTION_REFS = (
+    "Mark.9.43",
+    "Luke.6.41",
+    "Luke.17.36",
+    "Acts.20.32",
+    "Acts.21.4",
+    "Acts.26.3",
+    "Acts.27.22",
+    "Rom.1.27",
+    "1Cor.7.29",
+    "2Cor.5.4",
+    "2Cor.7.16",
+    "2Cor.8.14",
+    "Rev.15.3",
+    "Rev.16.14",
+    "Rev.17.8",
+    "Rev.18.1",
+)
 KJV_LICENSE_SUMMARY = (
     "Public Domain outside the United Kingdom; UK Crown Letters Patent "
     "restrictions apply to printing, publishing, and importing the Authorized "
-    "Version in the UK. CrossWire/eBible KJV text is provided for free use."
+    "Version in the UK. CrossWire/eBible KJV text is provided for free use. "
+    "The 16 source-locked word-level Strong corrections are attributed to "
+    f"CrossWire KJV {CROSSWIRE_KJV_VERSION} under "
+    f"{CROSSWIRE_KJV_LICENSE_NAME}; {CROSSWIRE_KJV_MODINFO_URL}."
 )
 KJV_SOURCE_SUMMARY = (
     "KJV 1769 protocanon text from eBible eng-kjv2006 USFX, courtesy of "
@@ -46,7 +80,11 @@ KJV_SOURCE_SUMMARY = (
     "inline H/G tokens compatible with the Bible reader; morphology, footnotes, "
     "and study notes are omitted. Canonical Psalm descriptors are merged into "
     "Psalm verse 1 text. The eBible 2CH.14.1-15 boundary is projected to the "
-    "app canon as 2Chr.13.23 and 2Chr.14.1-14."
+    "app canon as 2Chr.13.23 and 2Chr.14.1-14. Sixteen evidence-confirmed NT "
+    "Strong omissions or cascading word-alignment defects are corrected from "
+    f"CrossWire KJV {CROSSWIRE_KJV_VERSION}, commit {CROSSWIRE_KJV_COMMIT}, "
+    f"locked SHA-256 {KJV_STRONG_CORRECTION_SOURCE_SHA256}; the English text "
+    "is not replaced."
 )
 
 SCHEMA_SQL = """
@@ -179,6 +217,9 @@ class KjvBuildReport:
     source_path: Path
     source_sha256: str
     source_size_bytes: int
+    strong_correction_source_path: Path
+    strong_correction_source_sha256: str
+    strong_correction_verses_count: int
     verses_count: int
     filled_verses_count: int
     empty_verses_count: int
@@ -203,11 +244,13 @@ def build_kjv_module(
     *,
     target_path: Path = DEFAULT_TARGET_PATH,
     source_zip_path: Path = DEFAULT_SOURCE_ZIP_PATH,
+    strong_correction_osis_path: Path = DEFAULT_STRONG_CORRECTION_OSIS_PATH,
     data_version: int = KJV_DATA_VERSION_INITIAL,
     built_at: str | None = None,
 ) -> KjvBuildReport:
     target_path = target_path.resolve()
     source_zip_path = source_zip_path.resolve()
+    strong_correction_osis_path = strong_correction_osis_path.resolve()
     target_path.parent.mkdir(parents=True, exist_ok=True)
     actual_built_at = built_at or now_utc_iso()
     timestamp = _filesystem_timestamp(actual_built_at)
@@ -216,8 +259,17 @@ def build_kjv_module(
 
     source_bytes = source_zip_path.read_bytes()
     source_sha256 = hashlib.sha256(source_bytes).hexdigest()
-    source_text = read_usfx_xml_from_zip(source_zip_path)
-    verse_texts = extract_kjv_verse_texts(source_text)
+    correction_source_bytes = strong_correction_osis_path.read_bytes()
+    correction_source_sha256 = hashlib.sha256(correction_source_bytes).hexdigest()
+    if correction_source_sha256 != KJV_STRONG_CORRECTION_SOURCE_SHA256:
+        raise ValueError(
+            "CrossWire KJV Strong correction source checksum mismatch: "
+            f"{correction_source_sha256} != {KJV_STRONG_CORRECTION_SOURCE_SHA256}"
+        )
+    verse_texts = load_corrected_kjv_verse_texts(
+        source_zip_path=source_zip_path,
+        strong_correction_osis_path=strong_correction_osis_path,
+    )
     validate_kjv_source_texts(verse_texts)
     strong_tokens_count = _strong_tokens_count(verse_texts.values())
     verses_with_strong_numbers_count = _verses_with_strong_numbers_count(
@@ -259,6 +311,9 @@ def build_kjv_module(
         source_path=source_zip_path,
         source_sha256=source_sha256,
         source_size_bytes=len(source_bytes),
+        strong_correction_source_path=strong_correction_osis_path,
+        strong_correction_source_sha256=correction_source_sha256,
+        strong_correction_verses_count=len(KJV_STRONG_CORRECTION_REFS),
         verses_count=len(canonical_verses()),
         filled_verses_count=len(verse_texts),
         empty_verses_count=0,
@@ -288,6 +343,80 @@ def extract_kjv_verse_texts(usfx_xml: str) -> dict[str, str]:
     extractor = _UsfxVerseExtractor()
     extractor.walk(root)
     return extractor.verse_texts
+
+
+def load_corrected_kjv_verse_texts(
+    *,
+    source_zip_path: Path,
+    strong_correction_osis_path: Path,
+) -> dict[str, str]:
+    verse_texts = extract_kjv_verse_texts(
+        read_usfx_xml_from_zip(source_zip_path),
+    )
+    correction_texts = extract_crosswire_kjv_strong_corrections(
+        strong_correction_osis_path.read_text(encoding="utf-8"),
+    )
+    return apply_kjv_strong_corrections(
+        verse_texts,
+        correction_texts=correction_texts,
+    )
+
+
+def extract_crosswire_kjv_strong_corrections(
+    osis_xml: str,
+    *,
+    correction_refs: Iterable[str] = KJV_STRONG_CORRECTION_REFS,
+) -> dict[str, str]:
+    expected_refs = tuple(correction_refs)
+    if len(set(expected_refs)) != len(expected_refs):
+        raise ValueError("KJV Strong correction references must be unique")
+    root = ET.fromstring(osis_xml)
+    extractor = _CrosswireKjvCorrectionExtractor(frozenset(expected_refs))
+    extractor.walk(root)
+    actual_refs = set(extractor.verse_texts)
+    missing_refs = set(expected_refs) - actual_refs
+    extra_refs = actual_refs - set(expected_refs)
+    if missing_refs or extra_refs:
+        raise ValueError(
+            "CrossWire KJV Strong correction coverage mismatch: "
+            f"missing={sorted(missing_refs)}, extra={sorted(extra_refs)}"
+        )
+    return {
+        verse_ref: extractor.verse_texts[verse_ref]
+        for verse_ref in expected_refs
+    }
+
+
+def apply_kjv_strong_corrections(
+    verse_texts: Mapping[str, str],
+    *,
+    correction_texts: Mapping[str, str],
+) -> dict[str, str]:
+    expected_refs = set(KJV_STRONG_CORRECTION_REFS)
+    actual_refs = set(correction_texts)
+    if actual_refs != expected_refs:
+        raise ValueError(
+            "KJV Strong correction set mismatch: "
+            f"missing={sorted(expected_refs - actual_refs)}, "
+            f"extra={sorted(actual_refs - expected_refs)}"
+        )
+
+    corrected = dict(verse_texts)
+    for verse_ref in KJV_STRONG_CORRECTION_REFS:
+        source_text = corrected.get(verse_ref)
+        if source_text is None:
+            raise ValueError(f"KJV source is missing correction verse {verse_ref}")
+        correction_text = correction_texts[verse_ref]
+        if plain_kjv_text(source_text) != plain_kjv_text(correction_text):
+            raise ValueError(
+                f"KJV Strong correction changes English text at {verse_ref}"
+            )
+        if not _contains_strong_number(correction_text):
+            raise ValueError(
+                f"KJV Strong correction has no Strong markup at {verse_ref}"
+            )
+        corrected[verse_ref] = correction_text
+    return corrected
 
 
 def validate_kjv_source_texts(verse_texts: Mapping[str, str]) -> KjvValidationReport:
@@ -608,6 +737,103 @@ class _UsfxVerseExtractor:
         self._current_parts = []
 
 
+class _CrosswireKjvCorrectionExtractor:
+    _SKIPPED_TAGS = {
+        "header",
+        "note",
+        "reference",
+        "catchWord",
+        "rdg",
+        "figure",
+    }
+
+    def __init__(self, correction_refs: frozenset[str]) -> None:
+        self.correction_refs = correction_refs
+        self.verse_texts: dict[str, str] = {}
+        self._current_ref: str | None = None
+        self._current_parts: list[str] = []
+        self._seen_refs: Counter[str] = Counter()
+
+    def walk(self, element: ET.Element, *, skipped: bool = False) -> None:
+        tag = _local_name(element.tag)
+        is_skipped = skipped or tag in self._SKIPPED_TAGS
+        if tag == "verse":
+            if element.attrib.get("eID"):
+                self._finish_verse()
+                return
+            start_ref = element.attrib.get("osisID") or element.attrib.get("sID")
+            if start_ref in self.correction_refs:
+                self._start_verse(str(start_ref))
+            else:
+                self._current_ref = None
+                self._current_parts = []
+
+        if is_skipped:
+            return
+
+        if tag == "w" and self._current_ref is not None:
+            self._append_word(element)
+            return
+
+        if self._current_ref is not None and element.text:
+            self._current_parts.append(element.text)
+        for child in list(element):
+            self.walk(child, skipped=is_skipped)
+            if (
+                self._current_ref is not None
+                and _local_name(child.tag) != "w"
+                and child.tail
+            ):
+                self._current_parts.append(child.tail)
+
+        if (
+            tag == "verse"
+            and element.attrib.get("osisID")
+            and not element.attrib.get("sID")
+        ):
+            self._finish_verse()
+
+    def _start_verse(self, verse_ref: str) -> None:
+        self._seen_refs[verse_ref] += 1
+        if self._seen_refs[verse_ref] > 1:
+            raise ValueError(
+                f"Duplicate CrossWire KJV correction verse: {verse_ref}"
+            )
+        self._current_ref = verse_ref
+        self._current_parts = []
+
+    def _finish_verse(self) -> None:
+        if self._current_ref is None:
+            return
+        self.verse_texts[self._current_ref] = _normalize_kjv_display_text(
+            "".join(self._current_parts)
+        )
+        self._current_ref = None
+        self._current_parts = []
+
+    def _append_word(self, element: ET.Element) -> None:
+        surface = _normalize_text(_element_text(element))
+        leading_punctuation, remaining_tail = _split_leading_punctuation(
+            element.tail or ""
+        )
+        strong_tokens = _crosswire_strong_tokens_for_word(element)
+        if surface:
+            self._current_parts.append(surface + leading_punctuation)
+            if strong_tokens:
+                self._current_parts.append(" ")
+                self._current_parts.append(" ".join(strong_tokens))
+                self._current_parts.append(" ")
+        else:
+            if leading_punctuation:
+                self._current_parts.append(leading_punctuation)
+            if strong_tokens:
+                self._current_parts.append(" ")
+                self._current_parts.append(" ".join(strong_tokens))
+                self._current_parts.append(" ")
+        if remaining_tail:
+            self._current_parts.append(remaining_tail)
+
+
 def _element_text(element: ET.Element) -> str:
     parts: list[str] = []
     if element.text:
@@ -768,6 +994,15 @@ def _strong_tokens_for_word(element: ET.Element) -> tuple[str, ...]:
     return tuple(_normalize_strong(raw) for raw in _STRONG_ATTR_PATTERN.split(raw_value) if raw)
 
 
+def _crosswire_strong_tokens_for_word(element: ET.Element) -> tuple[str, ...]:
+    raw_tokens = re.findall(
+        r"strong:([GH]\d+)",
+        element.attrib.get("lemma", ""),
+        flags=re.IGNORECASE,
+    )
+    return tuple(_normalize_strong(raw) for raw in raw_tokens)
+
+
 def _normalize_strong(raw_strong: str) -> str:
     value = raw_strong.strip().upper()
     match = re.fullmatch(r"([GH])0*(\d+)", value)
@@ -810,6 +1045,13 @@ def plain_kjv_text(text: str) -> str:
         for token in _normalize_text(text).split(" ")
         if token and _STRONG_TOKEN_PATTERN.fullmatch(token) is None
     ).strip()
+
+
+def _contains_strong_number(text: str) -> bool:
+    return any(
+        _STRONG_TOKEN_PATTERN.fullmatch(token) is not None
+        for token in _normalize_text(text).split(" ")
+    )
 
 
 def _strong_tokens_count(texts: Iterable[str]) -> int:
@@ -915,6 +1157,12 @@ def _parse_args() -> argparse.Namespace:
         help="Source eng-kjv2006_usfx.zip path.",
     )
     parser.add_argument(
+        "--strong-correction-osis",
+        type=Path,
+        default=DEFAULT_STRONG_CORRECTION_OSIS_PATH,
+        help="Locked CrossWire KJV 3.1 OSIS control for 16 Strong corrections.",
+    )
+    parser.add_argument(
         "--data-version",
         type=int,
         default=KJV_DATA_VERSION_INITIAL,
@@ -934,10 +1182,13 @@ def main() -> int:
     report = build_kjv_module(
         target_path=args.target,
         source_zip_path=args.source_zip,
+        strong_correction_osis_path=args.strong_correction_osis,
         data_version=args.data_version,
     )
-    source_text = read_usfx_xml_from_zip(args.source_zip)
-    verse_texts = extract_kjv_verse_texts(source_text)
+    verse_texts = load_corrected_kjv_verse_texts(
+        source_zip_path=args.source_zip,
+        strong_correction_osis_path=args.strong_correction_osis,
+    )
     stats = build_book_chapter_statistics(verse_texts)
     if args.stats_json is not None:
         args.stats_json.parent.mkdir(parents=True, exist_ok=True)
@@ -950,6 +1201,14 @@ def main() -> int:
                         "version": KJV_SOURCE_VERSION,
                         "sha256": report.source_sha256,
                         "bytes": report.source_size_bytes,
+                    },
+                    "strong_correction_source": {
+                        "url": CROSSWIRE_KJV_SOURCE_URL,
+                        "page_url": CROSSWIRE_KJV_MODINFO_URL,
+                        "version": CROSSWIRE_KJV_VERSION,
+                        "commit": CROSSWIRE_KJV_COMMIT,
+                        "sha256": report.strong_correction_source_sha256,
+                        "corrected_verses": list(KJV_STRONG_CORRECTION_REFS),
                     },
                     "built_at": report.built_at,
                     "totals": {
@@ -991,6 +1250,20 @@ def _report_json(report: KjvBuildReport) -> dict[str, object]:
         "source_version": KJV_SOURCE_VERSION,
         "source_sha256": report.source_sha256,
         "source_size_bytes": report.source_size_bytes,
+        "strong_correction_source_path": str(
+            report.strong_correction_source_path
+        ),
+        "strong_correction_source_url": CROSSWIRE_KJV_SOURCE_URL,
+        "strong_correction_source_page_url": CROSSWIRE_KJV_MODINFO_URL,
+        "strong_correction_source_version": CROSSWIRE_KJV_VERSION,
+        "strong_correction_source_commit": CROSSWIRE_KJV_COMMIT,
+        "strong_correction_source_sha256": (
+            report.strong_correction_source_sha256
+        ),
+        "strong_correction_verses_count": (
+            report.strong_correction_verses_count
+        ),
+        "strong_correction_refs": list(KJV_STRONG_CORRECTION_REFS),
         "verses_count": report.verses_count,
         "filled_verses_count": report.filled_verses_count,
         "empty_verses_count": report.empty_verses_count,

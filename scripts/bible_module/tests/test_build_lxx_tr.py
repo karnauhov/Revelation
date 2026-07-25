@@ -83,6 +83,76 @@ class LxxTrBuilderTests(unittest.TestCase):
         self.assertEqual(result.missing_strong_tokens, ())
         self.assertTrue(is_valid_tagged_text(result.verse_texts_by_id[mat_1_1.canonical_verse_id]))
 
+    def test_tr_text_builder_brackets_locked_subscription_without_removing_tags(
+        self,
+    ) -> None:
+        tokens = [
+            parse_tagnt_row(
+                tr_row(
+                    "1Co.16.24#10=KO",
+                    "ἀμήν.",
+                    "G0281=HEB",
+                    editions="TR",
+                )
+            ),
+            parse_tagnt_row(
+                tr_row(
+                    "1Co.16.24#11=K",
+                    "πρός",
+                    "G4314=PREP",
+                    editions="TR",
+                )
+            ),
+            parse_tagnt_row(
+                tr_row(
+                    "1Co.16.24#24=K",
+                    "Τιμοθέου.¶",
+                    "G5095=N-GSM",
+                    editions="TR",
+                )
+            ),
+        ]
+        parsed_tokens = [token for token in tokens if token is not None]
+
+        result = build_tr_verse_texts(parsed_tokens)
+        verse = get_canonical_verse("1Cor", 16, 24)
+
+        self.assertEqual(
+            result.verse_texts_by_id[verse.canonical_verse_id],
+            "ἀμήν G281 [πρός G4314 Τιμοθέου] G5095",
+        )
+        self.assertEqual(
+            result.bracketed_subscription_refs,
+            ("1Cor.16.24",),
+        )
+
+    def test_tr_text_builder_rejects_changed_locked_subscription_boundary(
+        self,
+    ) -> None:
+        tokens = [
+            parse_tagnt_row(
+                tr_row(
+                    "1Co.16.24#11=K",
+                    "unexpected",
+                    "G4314=PREP",
+                    editions="TR",
+                )
+            ),
+            parse_tagnt_row(
+                tr_row(
+                    "1Co.16.24#24=K",
+                    "Τιμοθέου",
+                    "G5095=N-GSM",
+                    editions="TR",
+                )
+            ),
+        ]
+
+        with self.assertRaisesRegex(ValueError, "boundary no longer matches"):
+            build_tr_verse_texts(
+                [token for token in tokens if token is not None]
+            )
+
     def test_tr_text_builder_replaces_extended_strongs_with_classic_keys(self) -> None:
         token = parse_tagnt_row(
             tr_row("Mat.6.8#01=NKO", "Oiden", "G6063=V-RAI-3S")
