@@ -21,29 +21,45 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - Localization: `flutter_localizations`, `intl`
 
 ## Model and Reasoning Selection
+
+- Official guidance: [ChatGPT/Codex models](https://learn.chatgpt.com/docs/models) and [GPT-5.6 prompting guidance](https://developers.openai.com/api/docs/guides/prompt-guidance-gpt-5p6).
 - The assistant cannot switch the model in the current session on its own; model switching is performed by the user.
-- Before each new task, the assistant must recommend a pair: `model + reasoning level`, with a short rationale.
+- Before each new task, the assistant must recommend a pair: `model + reasoning level`, with a short rationale. This recommendation is advisory and must not pause safe in-scope work unless the owner explicitly asks to switch first.
 - After the user switches the model, the assistant must continue the same task without losing context.
-- If task complexity/risk increases during execution, escalate reasoning to `high` or `xhigh` and explain why.
+- Recommend only models and reasoning levels available in the current ChatGPT/Codex model picker; availability can vary by surface and account.
+- Use the lowest reasoning level that reliably produces the required result. Increase it when the task needs more planning, analysis, trade-off evaluation, or verification.
+- If task complexity or risk increases during execution, recommend escalating to `high`, `xhigh`, or, for the hardest single-agent tasks, `max`, and explain why.
 
 ### Model Selection Matrix
+
 | Model | Use Cases |
 | --- | --- |
-| `GPT-5.4` | Architecture work, deep code review, complex bugs, system-level logic. |
-| `GPT-5.3-Codex` | Main development, refactoring, tests, CI/CD, databases, API integrations. |
-| `GPT-5.4-Mini` | Translations, UI/UX copy, changelog/release notes, simple JSON edits. |
-| `GPT-5.2-Codex` | Boilerplate and minor local edits. |
+| `GPT-5.6 Sol` (`gpt-5.6-sol`) | Complex, ambiguous, open-ended, or high-value work: architecture, cross-cutting implementation, difficult debugging, deep code review, security, migrations, and polished final artifacts. If unsure which model to use, start here. |
+| `GPT-5.6 Terra` (`gpt-5.6-terra`) | Everyday development where strong reasoning and tool use are needed without Sol's full depth: focused Flutter implementation, refactoring, tests, CI/CD, databases, API integrations, documentation, and read-heavy repository scans. |
+| `GPT-5.6 Luna` (`gpt-5.6-luna`) | Clear, repeatable, high-volume work with an explicit success criterion: extraction, classification, mechanical transformations, structured summaries, boilerplate, translations, changelog copy, and simple data edits. Use only when it is available; otherwise use Terra at `low`. |
+
+- Do not recommend deprecated `gpt-5.2` or `gpt-5.3-codex` models for Codex sessions authenticated with ChatGPT.
+- Use older models such as `gpt-5.4` only when a workflow is intentionally pinned to them or the owner explicitly requests them; verify availability before recommending them.
 
 ### Reasoning Matrix
+
 | Reasoning | When to Use |
 | --- | --- |
-| `low` | Very simple or template-based tasks. |
-| `medium` | Most everyday implementation tasks. |
-| `high` | Complex logic, non-trivial bugs, architectural decisions. |
-| `xhigh` | Critical incidents, high uncertainty, high cost of error. |
+| `low` (`Light` in some UI surfaces) | Quick, well-scoped, mechanical, or template-based tasks where speed matters. |
+| `medium` | Balanced default for most implementation tasks that need some planning and checking. |
+| `high` | Difficult multi-step work involving complex logic, non-trivial bugs, architecture, several sources, or meaningful trade-offs. |
+| `xhigh` (`Extra High` in some UI surfaces) | Long, agentic, reasoning-heavy work, deep reviews, critical incidents, high uncertainty, or a high cost of error. |
+| `max` | The hardest single-agent problems when depth matters more than latency or usage. Do not use as a global default. |
+
+- `ultra` is a multi-agent mode, not merely a higher single-agent reasoning level. Use it only when the owner explicitly requests delegation and the task can be split into meaningful independent parts.
+- There is no exact reasoning-level mapping from older model families to GPT-5.6. For repeatable workflows, establish a baseline, then test the same level and one level lower on representative tasks.
 
 ### Default Recommendation
-- If task type is unclear, recommend `GPT-5.3-Codex + high`.
+
+- If task type is unclear, recommend `GPT-5.6 Sol + medium`, matching the official default Power profile.
+- For ordinary, well-scoped development, recommend `GPT-5.6 Terra + medium`.
+- For complex architecture, difficult debugging, security, migrations, or high-risk state-management work, recommend `GPT-5.6 Sol + high`; use `xhigh` only when the additional depth is justified.
+- For simple, repeatable edits, recommend `GPT-5.6 Luna + low` when available, otherwise `GPT-5.6 Terra + low`.
 
 ## Repository Layout
 - `lib/app/`: app bootstrap, DI, router, composition root
