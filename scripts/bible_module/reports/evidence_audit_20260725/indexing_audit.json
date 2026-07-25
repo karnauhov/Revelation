@@ -1,0 +1,44 @@
+[
+  {
+    "data_version": "5",
+    "distinct_verse_keys": 31102,
+    "duplicate_keys": [],
+    "extra_keys": [],
+    "integrity_check": "ok",
+    "invalid_key_lengths": [],
+    "keys_are_exact_base36_sequence": true,
+    "metadata_date": "2026-07-18T06:03:42Z",
+    "missing_keys": [],
+    "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_kjv.sqlite",
+    "query_only": 1,
+    "schema_version": "3",
+    "tables": [
+      "db_metadata",
+      "info",
+      "verses"
+    ],
+    "user_version": 3,
+    "verse_rows": 31102
+  },
+  {
+    "data_version": "16",
+    "distinct_verse_keys": 31102,
+    "duplicate_keys": [],
+    "extra_keys": [],
+    "integrity_check": "ok",
+    "invalid_key_lengths": [],
+    "keys_are_exact_base36_sequence": true,
+    "metadata_date": "2026-07-18T06:03:42Z",
+    "missing_keys": [],
+    "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_lxx_tr.sqlite",
+    "query_only": 1,
+    "schema_version": "3",
+    "tables": [
+      "db_metadata",
+      "info",
+      "verses"
+    ],
+    "user_version": 3,
+    "verse_rows": 31102
+  }
+]

@@ -1,0 +1,347 @@
+{
+  "accessed_on": "2026-07-25",
+  "input_files": {
+    "crosswire_kjv_osis": {
+      "bytes": 28630975,
+      "modified_utc": "2026-07-04T13:26:49.537822Z",
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\crosswire_kjvfull.xml",
+      "sha256": "d5114fc1ab17b1e141ff5c035ef3a4354437fd24b4b8ee34f4c925915c0374ef"
+    },
+    "crosswire_lxx_zip": {
+      "bytes": 6807506,
+      "modified_utc": "2026-05-23T10:03:45.497052Z",
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\crosswire_lxx.zip",
+      "sha256": "3180ff1f86f72ecb15f0ed6cff008cd66bb13dfa2048ab11aa69c7b381d10114"
+    },
+    "kjv_sqlite": {
+      "bytes": 6725632,
+      "modified_utc": "2026-07-18T07:36:44.144615Z",
+      "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_kjv.sqlite",
+      "sha256": "4faab7f1c70f18f6d828e4ff418372025a697e24cf2d9395519d3eec1c006190"
+    },
+    "kjv_usfx_zip": {
+      "bytes": 2500338,
+      "modified_utc": "2026-07-04T13:30:11.680789Z",
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\eng-kjv2006_usfx.zip",
+      "sha256": "8ee3739ba5ad3303d5af11bded32199829902b84127d09b9b9542edbb5f5d33d"
+    },
+    "lxx_projection_plan": {
+      "bytes": 1443375,
+      "modified_utc": "2026-07-18T06:29:01.045537Z",
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\.agents\\roadmaps\\lxx_to_kjv_consolidated_remaining_work.json",
+      "sha256": "edca8a288c4e72a4726615af0a59a9ab04b08f5ab4c7115459988a393d6e4201"
+    },
+    "lxx_tr_sqlite": {
+      "bytes": 12840960,
+      "modified_utc": "2026-07-18T07:36:44.532972Z",
+      "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_lxx_tr.sqlite",
+      "sha256": "b5dbb9cbb7a630a79f6143ae8abb6f9141817d13d5b265359e9004ef271198d0"
+    },
+    "open_bibles_kjv_osis": {
+      "bytes": 10096487,
+      "modified_utc": "2026-07-04T13:29:11.563435Z",
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\open_bibles_eng_kjv.osis.xml",
+      "sha256": "eeeae647fc28360ce47f9c0d5cc3b397b7fdd9913fe53dc9f44eb6deee50e253"
+    },
+    "original_report": {
+      "bytes": 3818077,
+      "modified_utc": "2026-07-18T15:50:36.015582Z",
+      "path": "C:\\Users\\karna\\Downloads\\Revelation\\revelation_bible_module_audit_kjv_tr_20260718.txt",
+      "sha256": "aa54aca7efd69be98141688fa4747aeafc2f6cf9ea6e1e5c6560417dcea24c4c"
+    },
+    "project_gutenberg_kjv": {
+      "bytes": 4455950,
+      "modified_utc": "2026-07-25T05:41:01.585162Z",
+      "path": "C:\\Users\\karna\\AppData\\Local\\Temp\\project_gutenberg_kjv_ebook_10.txt",
+      "sha256": "0204adaed1f25700aa854218cae63c7172228c41088f335e99167a071eed83c0"
+    },
+    "scrivener_text_dir": {
+      "bytes": 1032718,
+      "files": [
+        {
+          "bytes": 50334,
+          "relative_path": "1CO.SCV",
+          "sha256": "19af963ebc99759936ba56e2c7aff0570da1b0390e6b32a6a8b6081c1466fcab"
+        },
+        {
+          "bytes": 14459,
+          "relative_path": "1JO.SCV",
+          "sha256": "7699f58795392da58a1fa5b434bbc0857d5e5a59f9c872fb3c612cc2f7f3064d"
+        },
+        {
+          "bytes": 13532,
+          "relative_path": "1PE.SCV",
+          "sha256": "de8c039b285b92f639b63bfc68ffe7181e6e1fda20e220ce5fc2e26bc37f203f"
+        },
+        {
+          "bytes": 11142,
+          "relative_path": "1TH.SCV",
+          "sha256": "fa82cd93f2f695cfd759021091d9b5c2ef4ba02c31ac72d68cc357e6ead6d30e"
+        },
+        {
+          "bytes": 13296,
+          "relative_path": "1TI.SCV",
+          "sha256": "0150fa41518cedbba33ef65329bf29dd7843ff156cec0dcc3ac36f9d7195d423"
+        },
+        {
+          "bytes": 33273,
+          "relative_path": "2CO.SCV",
+          "sha256": "f90463bcabf3b18560c59f22467a36cfc9cc7679a97dbc3667ef2d1c8edf099e"
+        },
+        {
+          "bytes": 1781,
+          "relative_path": "2JO.SCV",
+          "sha256": "a1209c57cd8f58b40387edc3cb05f5684d8462f1d7159abf1a7cd2dd346de867"
+        },
+        {
+          "bytes": 8790,
+          "relative_path": "2PE.SCV",
+          "sha256": "205c5f82d62cb44c557021b01330f748c001002173394ec6b657fdd21982bfcf"
+        },
+        {
+          "bytes": 6147,
+          "relative_path": "2TH.SCV",
+          "sha256": "09b0b92411a8db801b4e4acc74abec6a749e681eec62d9c75562ac85cd9d7322"
+        },
+        {
+          "bytes": 9846,
+          "relative_path": "2TI.SCV",
+          "sha256": "c3afa6e396bd60bde4df0e95788ca725dd41dc63c7649af84665cdd77a2d460b"
+        },
+        {
+          "bytes": 1718,
+          "relative_path": "3JO.SCV",
+          "sha256": "a53f4b694798fbe7280370721c32d29341236285fcebdf122f849b9b01825239"
+        },
+        {
+          "bytes": 142429,
+          "relative_path": "AC.SCV",
+          "sha256": "e4ba78cde68cee2b31a23e459469f8a8a75f6446838fedddd16dfddf84290a05"
+        },
+        {
+          "bytes": 11938,
+          "relative_path": "COL.SCV",
+          "sha256": "5278a15874ce2ed8ba7f3b78dc3a4336ba1712df91f5d8de300f082598393f67"
+        },
+        {
+          "bytes": 18282,
+          "relative_path": "EPH.SCV",
+          "sha256": "ce7d99c295348b505ee31450470d7a9d1ea1788e1aef4d7367efb0461f64152e"
+        },
+        {
+          "bytes": 16832,
+          "relative_path": "GA.SCV",
+          "sha256": "a22f8efa787f88fcd9792ebffa146fe55a4ede507fc230f7151698f03ece0138"
+        },
+        {
+          "bytes": 39108,
+          "relative_path": "HEB.SCV",
+          "sha256": "64168bdbeb9901ff9540a2fa944ee85bccb45e77e8cc46ee362b3287e2d0857d"
+        },
+        {
+          "bytes": 13269,
+          "relative_path": "JAS.SCV",
+          "sha256": "a3147f8c8e585428012b187c0cc8195b61a71374023b47831bbb1499585a332f"
+        },
+        {
+          "bytes": 109762,
+          "relative_path": "JOH.SCV",
+          "sha256": "8eeaea1cc32b7559d68691b408d45f69780eeee782aa05eb49b0526107d601b8"
+        },
+        {
+          "bytes": 3675,
+          "relative_path": "JUDE.SCV",
+          "sha256": "dcb4d44026cf725f834af94158c936d0f422ab6fd465a1c383d25de7c313c480"
+        },
+        {
+          "bytes": 146381,
+          "relative_path": "LU.SCV",
+          "sha256": "98691cf08a155f742fed28e5e69b6bb92b1aa2c684f7b5c66cd2369d5ed8b00d"
+        },
+        {
+          "bytes": 86426,
+          "relative_path": "MR.SCV",
+          "sha256": "7fe8267676568ab61d1e97ae1e2cdcd605613fd5853b0e452473bb6bf3b19919"
+        },
+        {
+          "bytes": 137440,
+          "relative_path": "MT.SCV",
+          "sha256": "ac09657841358fe278cdc8e725b5f7301ca267f9427352a98ffd3f01c3091ace"
+        },
+        {
+          "bytes": 2503,
+          "relative_path": "PHM.SCV",
+          "sha256": "d0195aaaa67e464d1de1ec6f10ed5b5d59b17d30ac09d0bac8f4242b58c5646f"
+        },
+        {
+          "bytes": 12102,
+          "relative_path": "PHP.SCV",
+          "sha256": "56d814765e25cc7fe6c3009bc8839e27b64b7b4ba3353175e6754134316dd190"
+        },
+        {
+          "bytes": 68006,
+          "relative_path": "RE.SCV",
+          "sha256": "fdaef7bc014830b5d82596eef5a27cf0d1dc174d2a1b9825d7a2bdf696ad562b"
+        },
+        {
+          "bytes": 915,
+          "relative_path": "REVISION.LST",
+          "sha256": "5b005cee4445d5325c11e3237a138d685dc76690d822c2baac419c795f28afc3"
+        },
+        {
+          "bytes": 52515,
+          "relative_path": "RO.SCV",
+          "sha256": "77a46cb1299660dded4b1ba04e9d2249469f801a44e3059c939715bb52885398"
+        },
+        {
+          "bytes": 5523,
+          "relative_path": "TIT.SCV",
+          "sha256": "db1095ca8d81aa4c8ac5c594c37249a9d18dd5a6f7dd846e6269148703479751"
+        },
+        {
+          "bytes": 1294,
+          "relative_path": "TITLES.SCV",
+          "sha256": "c193fcf84741519e2a2fab1f9e2c087f67a000e41d95a1e3d4b8f8ffce292456"
+        }
+      ],
+      "files_count": 29,
+      "path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_bible_audit_sources_20260725\\greektext-scrivener\\textonly",
+      "sha256": "2c1e74f4c74d61ee01af16d61d19dd0e34da2ef4e1ac22c17f293d5a1bb0308f"
+    },
+    "tagnt": [
+      {
+        "bytes": 14189032,
+        "modified_utc": "2026-05-23T10:03:28.595520Z",
+        "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\step_tagnt_mat_jhn.txt",
+        "sha256": "ab8eaaeb68e17a1dcfa34e1e9350358f22f03bc2a97244d848750ad81044bc8e"
+      },
+      {
+        "bytes": 15939932,
+        "modified_utc": "2026-05-23T10:03:30.292598Z",
+        "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\step_tagnt_act_rev.txt",
+        "sha256": "524e32375361e6d3fa2f7ef00b87605fdc4317a762f395651a05fdc31ad031b7"
+      }
+    ],
+    "weak_strongs": {
+      "bytes": 2322,
+      "modified_utc": "2026-07-18T15:14:16.846495Z",
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\assets\\data\\greek_weak_strong_numbers.json",
+      "sha256": "b8a9c146e38cd0e40342f7ff79c7c3863d8b8398b6b7591041ae4a48d8b16e4e"
+    }
+  },
+  "schema_version": 1,
+  "sources": [
+    {
+      "accessed_on": "2026-07-25",
+      "edition": "King James Version, standardized 1769 protocanon, eng-kjv2006 source dated 2026-05-16",
+      "license": "Public Domain outside the United Kingdom; UK Crown Letters Patent restrictions apply",
+      "organization_or_editor": "eBible.org / CrossWire Bible Society",
+      "purpose": "KJV text and source Strong markup",
+      "sha256": "8ee3739ba5ad3303d5af11bded32199829902b84127d09b9b9542edbb5f5d33d",
+      "source_id": "ebible_eng_kjv2006",
+      "source_page_url": "https://ebible.org/eng-kjv2006/copyright.htm",
+      "source_url": "https://ebible.org/Scriptures/eng-kjv2006_usfx.zip"
+    },
+    {
+      "accessed_on": "2026-07-25",
+      "checksum_note": "Local file is the repository content normalized to LF.",
+      "edition": "KJV 3.1 (2023-07-19), commit d490be7e34762deb2c76cb2c1306d4808e27890d",
+      "license": "GPL / general public use grant from CrossWire",
+      "organization_or_editor": "CrossWire Bible Society",
+      "purpose": "Versioned KJV text and word-level Strong control; provenance is related to eng-kjv2006",
+      "sha256": "d5114fc1ab17b1e141ff5c035ef3a4354437fd24b4b8ee34f4c925915c0374ef",
+      "source_id": "crosswire_kjv_3_1",
+      "source_page_url": "https://crosswire.org/sword/modules/ModInfo.jsp?modName=KJV",
+      "source_url": "https://gitlab.com/crosswire-bible-society/kjv/-/raw/d490be7e34762deb2c76cb2c1306d4808e27890d/kjvfull.xml"
+    },
+    {
+      "accessed_on": "2026-07-25",
+      "checksum_note": "Local file is the repository content normalized to LF.",
+      "edition": "eng-kjv OSIS, repository commit f257a3559025c3f873b48a75019f53a9354ed7de",
+      "license": "Public Domain",
+      "organization_or_editor": "seven1m/open-bibles; eBible.org source",
+      "purpose": "Second machine-readable KJV text control",
+      "sha256": "eeeae647fc28360ce47f9c0d5cc3b397b7fdd9913fe53dc9f44eb6deee50e253",
+      "source_id": "open_bibles_eng_kjv",
+      "source_page_url": "https://github.com/seven1m/open-bibles",
+      "source_url": "https://raw.githubusercontent.com/seven1m/open-bibles/f257a3559025c3f873b48a75019f53a9354ed7de/eng-kjv.osis.xml"
+    },
+    {
+      "accessed_on": "2026-07-25",
+      "edition": "TAGNT, STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0; TR selection identified by TAGNT as Scrivener 1894",
+      "files": [
+        {
+          "bytes": 14189032,
+          "modified_utc": "2026-05-23T10:03:28.595520Z",
+          "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\step_tagnt_mat_jhn.txt",
+          "sha256": "ab8eaaeb68e17a1dcfa34e1e9350358f22f03bc2a97244d848750ad81044bc8e"
+        },
+        {
+          "bytes": 15939932,
+          "modified_utc": "2026-05-23T10:03:30.292598Z",
+          "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\step_tagnt_act_rev.txt",
+          "sha256": "524e32375361e6d3fa2f7ef00b87605fdc4317a762f395651a05fdc31ad031b7"
+        }
+      ],
+      "license": "CC BY 4.0",
+      "organization_or_editor": "STEPBible / Tyndale House, Cambridge",
+      "purpose": "TR tokens, morphology, primary and alternate Strong",
+      "source_id": "step_tagnt_scrivener_1894",
+      "source_url": "https://github.com/STEPBible/STEPBible-Data/tree/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT"
+    },
+    {
+      "accessed_on": "2026-07-25",
+      "edition": "The King James Version of the Bible, eBook 10; updated 2024-10-29",
+      "license": "Public domain in the USA; Project Gutenberg License and territorial notice apply",
+      "organization_or_editor": "Project Gutenberg",
+      "purpose": "Independent machine-readable KJV text and verse-boundary control; no Strong markup",
+      "sha256": "0204adaed1f25700aa854218cae63c7172228c41088f335e99167a071eed83c0",
+      "source_id": "project_gutenberg_kjv_ebook_10",
+      "source_page_url": "https://www.gutenberg.org/ebooks/10",
+      "source_url": "https://www.gutenberg.org/cache/epub/10/pg10.txt"
+    },
+    {
+      "accessed_on": "2026-07-25",
+      "directory_sha256": "2c1e74f4c74d61ee01af16d61d19dd0e34da2ef4e1ac22c17f293d5a1bb0308f",
+      "edition": "Scrivener 1894 TR text-only, commit 6049a43b135ed870f843b83eb6a04764fc796678",
+      "license": "Public Domain; copy freely",
+      "organization_or_editor": "Dr Maurice A. Robinson; Dr Ulrik Sandborg-Petersen",
+      "purpose": "Independent TR text and verse-boundary control",
+      "source_id": "robinson_scrivener_1894_textonly",
+      "source_url": "https://github.com/byztxt/greektext-scrivener/tree/6049a43b135ed870f843b83eb6a04764fc796678/textonly"
+    },
+    {
+      "accessed_on": "2026-07-25",
+      "edition": "CrossWire LXX 3.2 (2025-03-15)",
+      "license": "Copyrighted; Free non-commercial distribution",
+      "organization_or_editor": "CrossWire; CATSS/R. Kraft; source edition Alfred Rahlfs",
+      "purpose": "Primary LXX text, morphology and Strong source",
+      "sha256": "3180ff1f86f72ecb15f0ed6cff008cd66bb13dfa2048ab11aa69c7b381d10114",
+      "source_id": "crosswire_lxx_3_2",
+      "source_page_url": "https://crosswire.org/sword/modules/ModInfo.jsp?modName=LXX",
+      "source_url": "https://crosswire.org/ftpmirror/pub/sword/packages/rawzip/LXX.zip"
+    },
+    {
+      "accessed_on": "2026-07-25",
+      "edition": "The Old Testament in Greek according to the Septuagint, Vols. I-II",
+      "license": "Public Domain / NOT_IN_COPYRIGHT scan metadata",
+      "organization_or_editor": "H. B. Swete",
+      "purpose": "Independent public-domain LXX manuscript/verse control used by the projection plan",
+      "sha256": null,
+      "source_id": "swete_ot_greek",
+      "source_page_url": "https://archive.org/details/oldtestamentingr01swet",
+      "usage_note": "Consulted through the existing projection evidence; no downloaded scan is redistributed by this audit."
+    },
+    {
+      "accessed_on": "2026-07-25",
+      "edition": "Rahlfs-Hanhart, Septuaginta, 2nd ed. 2006",
+      "license": "Copyright © 2006 Deutsche Bibelgesellschaft",
+      "organization_or_editor": "German Bible Society",
+      "purpose": "Edition identification and licensed text control",
+      "sha256": null,
+      "source_id": "rahlfs_hanhart_2006_online",
+      "source_page_url": "https://www.die-bibel.de/en/bible/LXX/GEN.1",
+      "usage_note": "Not bulk-downloaded or redistributed; used as an online edition control."
+    }
+  ]
+}

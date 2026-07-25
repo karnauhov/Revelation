@@ -17,6 +17,7 @@ from scripts.bible_module.audit_kjv_tr_strongs import (
     read_module,
     read_strong_filter,
     strong_counter,
+    strong_sequence,
 )
 
 
@@ -96,6 +97,32 @@ class AuditKjvTrStrongsTests(unittest.TestCase):
                 excluded_strongs=frozenset({"G3588"}),
             ),
             Counter({"G25": 1}),
+        )
+
+    def test_symmetric_and_ordered_metrics_preserve_multiplicity(self) -> None:
+        score = StrongVerseScore(
+            verse_key="001",
+            verse_ref="Mat.1.1",
+            kjv_counts=Counter({"G1": 2, "G2": 1}),
+            tr_counts=Counter({"G1": 1, "G2": 1, "G3": 1}),
+            kjv_sequence=("G1", "G2", "G1"),
+            tr_sequence=("G2", "G1", "G3"),
+        )
+
+        self.assertEqual(score.matched_count, 2)
+        self.assertAlmostEqual(score.kjv_precision_ratio, 2 / 3)
+        self.assertAlmostEqual(score.f1_ratio, 2 / 3)
+        self.assertAlmostEqual(score.multiset_jaccard_ratio, 1 / 2)
+        self.assertEqual(score.ordered_matched_count, 2)
+        self.assertAlmostEqual(score.ordered_f1_ratio, 2 / 3)
+
+    def test_strong_sequence_normalizes_but_preserves_order(self) -> None:
+        self.assertEqual(
+            strong_sequence(
+                "first G002 second G1 third G2a",
+                excluded_strongs=frozenset({"G1"}),
+            ),
+            ("G2", "G2"),
         )
 
     def test_compare_ignores_order_but_reports_count_difference(self) -> None:

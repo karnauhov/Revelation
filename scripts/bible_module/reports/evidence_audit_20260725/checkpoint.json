@@ -1,0 +1,153 @@
+{
+  "checkpoint_date": "2026-07-25",
+  "status": "resumed_and_completed",
+  "read_only_contract": {
+    "sqlite_access": "URI mode=ro plus PRAGMA query_only=ON",
+    "sqlite_or_published_database_changes_made": false
+  },
+  "verified_inputs": {
+    "original_report": {
+      "path": "C:\\Users\\karna\\Downloads\\Revelation\\revelation_bible_module_audit_kjv_tr_20260718.txt",
+      "bytes": 3818077,
+      "sha256": "aa54aca7efd69be98141688fa4747aeafc2f6cf9ea6e1e5c6560417dcea24c4c"
+    },
+    "kjv_sqlite": {
+      "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_kjv.sqlite",
+      "bytes": 6725632,
+      "sha256": "4faab7f1c70f18f6d828e4ff418372025a697e24cf2d9395519d3eec1c006190"
+    },
+    "lxx_tr_sqlite": {
+      "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_lxx_tr.sqlite",
+      "bytes": 12840960,
+      "sha256": "b5dbb9cbb7a630a79f6143ae8abb6f9141817d13d5b265359e9004ef271198d0"
+    },
+    "weak_strongs": {
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\assets\\data\\greek_weak_strong_numbers.json",
+      "bytes": 2322,
+      "sha256": "b8a9c146e38cd0e40342f7ff79c7c3863d8b8398b6b7591041ae4a48d8b16e4e"
+    }
+  },
+  "reproduction": {
+    "original_report_reproduced_byte_for_byte": true,
+    "reproduced_sha256": "aa54aca7efd69be98141688fa4747aeafc2f6cf9ea6e1e5c6560417dcea24c4c",
+    "nt_compared": 7957,
+    "mismatched_verses": 6403,
+    "tr_total_after_77_exclusions": 88214,
+    "matched": 78404,
+    "tr_only": 9810,
+    "kjv_only": 14532,
+    "full_discrepancy": 24342
+  },
+  "completed_evidence": {
+    "priority_rows": 1354,
+    "priority_classification_counts": {
+      "3": 10,
+      "4": 14,
+      "6": 15,
+      "8": 18,
+      "9": 1297
+    },
+    "confirmed_technical_findings_total": 26,
+    "kjv_strong_anomalies": {
+      "rows": 16,
+      "complete_omissions": 3,
+      "partial_omissions": 1,
+      "cascading_word_misalignments": 12,
+      "outside_original_below_80_list": [
+        "Acts.21.4",
+        "2Cor.5.4"
+      ]
+    },
+    "tr_subscription_or_colophon_rows": 10,
+    "lxx_empty_positions": {
+      "rows": 210,
+      "historically_attested_short_greek_text": 37,
+      "insufficient_data": 173,
+      "projection_rules": 5606,
+      "source_exclusions": 297,
+      "filled_ot_positions": 22935,
+      "projection_rebuild_differences": 0
+    },
+    "project_gutenberg_kjv": {
+      "path": "C:\\Users\\karna\\AppData\\Local\\Temp\\project_gutenberg_kjv_ebook_10.txt",
+      "bytes": 4455950,
+      "sha256": "0204adaed1f25700aa854218cae63c7172228c41088f335e99167a071eed83c0",
+      "parsed_verses": 31102,
+      "coverage_delta": "missing local-grid 2Chr.13.23 and extra standard-grid 2Chr.14.15"
+    },
+    "scrivener_checkout": {
+      "path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_bible_audit_sources_20260725\\greektext-scrivener",
+      "commit": "6049a43b135ed870f843b83eb6a04764fc796678"
+    }
+  },
+  "generated_artifacts_directory": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\evidence_audit_20260725",
+  "important_generated_files": [
+    "report.ru.md",
+    "audit_summary.json",
+    "source_manifest.json",
+    "priority_below_80.json",
+    "priority_below_80.csv",
+    "lxx_empty_positions.json",
+    "lxx_empty_positions.csv",
+    "kjv_strong_alignment_anomalies.json",
+    "kjv_strong_alignment_anomalies.csv",
+    "confirmed_technical_findings.json",
+    "probable_technical_findings.json",
+    "strong_metrics_by_scope.json",
+    "strong_metrics_by_scope.csv",
+    "indexing_audit.json",
+    "original_reproduced.txt"
+  ],
+  "resolved_resume_state": {
+    "description": "The paused neighbor_index_check/probable_verse_shift patch was compiled, tested, classified conservatively, and included in every regenerated priority artifact.",
+    "validated_after_resume": [
+      "py_compile passed for both audit scripts",
+      "16 focused audit unit tests passed",
+      "all 1354 priority rows contain neighbor_index_check",
+      "probable_verse_shift count is zero",
+      "full evidence artifacts were regenerated twice after the final wording change",
+      "all 15 generated artifact SHA-256 values were identical across the two final passes"
+    ],
+    "classification_guard": "An automatic probable shift is category 5 with medium confidence, never confirmed category 2 without source evidence."
+  },
+  "final_validation": {
+    "artifact_determinism": {
+      "files_compared_excluding_checkpoint": 15,
+      "changed_files": 0,
+      "report_sha256": "e795e6b0e3477bc3749c3aadd261a8309b188249cf8212b0e2b3876337b6f8b3"
+    },
+    "final_sqlite_hashes_unchanged": true,
+    "targeted_python_tests": {
+      "tests": 16,
+      "result": "passed"
+    },
+    "python_unittest_discovery": {
+      "tests": 93,
+      "result": "failed_in_unmodified_unrelated_tests",
+      "failures": 1,
+      "errors": 2,
+      "cause": "Existing apply_extended_strong_descriptions fixtures G6000 and G20833 are outside current content-tool translation ranges.",
+      "unrelated_files_modified_by_audit": false
+    },
+    "dart_format_check": "475 files, 0 changed",
+    "forbidden_patterns": "passed",
+    "docs_sync": "passed",
+    "flutter_analyze": "passed, no issues",
+    "flutter_test": "passed, 920 tests",
+    "git_diff_check": "passed"
+  },
+  "resume_sequence": [
+    "Read this checkpoint and current git diff; do not restart the research.",
+    "Compile scripts/bible_module/evidence_audit.py and audit_kjv_tr_strongs.py.",
+    "Run the Python bible_module unit tests; add focused tests for neighbor_index_check and probable shift behavior.",
+    "Run the full CLI with the existing Scrivener and Project Gutenberg paths.",
+    "Inspect every probable_verse_shift result manually; expected count is probably zero for NT priority rows. Do not accept category 2 without source evidence.",
+    "Confirm final counts, CSV/JSON row counts, source licenses, direct links and report coverage.",
+    "Run a second deterministic full pass and compare output hashes where inputs and paths are identical.",
+    "Re-hash both SQLite inputs and confirm their hashes remain unchanged.",
+    "Run repository-required validation: Python unittest discovery, forbidden-pattern check, docs sync check, flutter analyze and flutter test; inspect the change checklist.",
+    "Review git diff/status, preserve unrelated user changes, and deliver the final Russian report and machine-readable links."
+  ],
+  "resume_sequence_completed": true,
+  "resume_prompt": "Продолжи приостановленный доказательный read-only аудит библейских модулей строго с контрольной точки scripts/bible_module/reports/evidence_audit_20260725/checkpoint.json. Сначала прочитай checkpoint.json и текущий git diff, не начинай исследование заново. Учти, что последний патч neighbor_index_check/probable_verse_shift ещё не компилировался, не тестировался и не отражён в артефактах. Выполни resume_sequence из checkpoint.json полностью, сохрани SQLite только для чтения, обнови детерминированные CSV/JSON и report.ru.md, проверь неизменность SHA-256 баз и заверши итоговой валидацией и русским отчётом. Ничего из уже выполненных проверок не пропускай и не повторяй без необходимости."
+}

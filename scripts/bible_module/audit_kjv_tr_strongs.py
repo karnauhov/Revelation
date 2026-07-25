@@ -26,6 +26,8 @@ DEFAULT_WEAK_STRONGS_PATH = (
     / "data"
     / "greek_weak_strong_numbers.json"
 )
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+SOURCE_CACHE = Path(__file__).resolve().parent / "source_cache"
 
 _STRONG_TOKEN_PATTERN = re.compile(
     r"(?<![A-Za-z0-9])"
@@ -64,6 +66,8 @@ class StrongVerseScore:
     verse_ref: str
     kjv_counts: Counter[str]
     tr_counts: Counter[str]
+    kjv_sequence: tuple[str, ...] = ()
+    tr_sequence: tuple[str, ...] = ()
 
     @property
     def tr_total_count(self) -> int:
@@ -110,6 +114,51 @@ class StrongVerseScore:
         return self.tr_unmatched_count / self.tr_total_count
 
     @property
+    def kjv_precision_ratio(self) -> float:
+        if self.kjv_total_count == 0:
+            return 1.0 if self.tr_total_count == 0 else 0.0
+        return self.matched_count / self.kjv_total_count
+
+    @property
+    def f1_ratio(self) -> float:
+        denominator = self.tr_total_count + self.kjv_total_count
+        if denominator == 0:
+            return 1.0
+        return 2 * self.matched_count / denominator
+
+    @property
+    def multiset_jaccard_ratio(self) -> float:
+        union_count = (
+            self.tr_total_count + self.kjv_total_count - self.matched_count
+        )
+        if union_count == 0:
+            return 1.0
+        return self.matched_count / union_count
+
+    @property
+    def ordered_matched_count(self) -> int:
+        return _lcs_length(self.kjv_sequence, self.tr_sequence)
+
+    @property
+    def ordered_recall_ratio(self) -> float:
+        if self.tr_total_count == 0:
+            return 1.0 if self.kjv_total_count == 0 else 0.0
+        return self.ordered_matched_count / self.tr_total_count
+
+    @property
+    def ordered_precision_ratio(self) -> float:
+        if self.kjv_total_count == 0:
+            return 1.0 if self.tr_total_count == 0 else 0.0
+        return self.ordered_matched_count / self.kjv_total_count
+
+    @property
+    def ordered_f1_ratio(self) -> float:
+        denominator = self.tr_total_count + self.kjv_total_count
+        if denominator == 0:
+            return 1.0
+        return 2 * self.ordered_matched_count / denominator
+
+    @property
     def full_discrepancy_ratio(self) -> float:
         if self.tr_total_count == 0:
             return 0.0 if self.kjv_total_count == 0 else 1.0
@@ -144,6 +193,32 @@ class StrongAggregateScore:
         if self.tr_total_count == 0:
             return 0.0
         return self.tr_unmatched_count / self.tr_total_count
+
+    @property
+    def kjv_total_count(self) -> int:
+        return self.matched_count + self.kjv_extra_count
+
+    @property
+    def kjv_precision_ratio(self) -> float:
+        if self.kjv_total_count == 0:
+            return 1.0 if self.tr_total_count == 0 else 0.0
+        return self.matched_count / self.kjv_total_count
+
+    @property
+    def f1_ratio(self) -> float:
+        denominator = self.tr_total_count + self.kjv_total_count
+        if denominator == 0:
+            return 1.0
+        return 2 * self.matched_count / denominator
+
+    @property
+    def multiset_jaccard_ratio(self) -> float:
+        union_count = (
+            self.tr_total_count + self.kjv_total_count - self.matched_count
+        )
+        if union_count == 0:
+            return 1.0
+        return self.matched_count / union_count
 
     @property
     def full_discrepancy_ratio(self) -> float:
@@ -210,6 +285,32 @@ class StrongComparison:
         if self.tr_total_count == 0:
             return 0.0
         return self.tr_unmatched_count / self.tr_total_count
+
+    @property
+    def kjv_total_count(self) -> int:
+        return self.matched_count + self.kjv_extra_count
+
+    @property
+    def kjv_precision_ratio(self) -> float:
+        if self.kjv_total_count == 0:
+            return 1.0 if self.tr_total_count == 0 else 0.0
+        return self.matched_count / self.kjv_total_count
+
+    @property
+    def f1_ratio(self) -> float:
+        denominator = self.tr_total_count + self.kjv_total_count
+        if denominator == 0:
+            return 1.0
+        return 2 * self.matched_count / denominator
+
+    @property
+    def multiset_jaccard_ratio(self) -> float:
+        union_count = (
+            self.tr_total_count + self.kjv_total_count - self.matched_count
+        )
+        if union_count == 0:
+            return 1.0
+        return self.matched_count / union_count
 
     @property
     def full_discrepancy_ratio(self) -> float:
@@ -313,6 +414,19 @@ def strong_counter(
     )
 
 
+def strong_sequence(
+    text: str,
+    *,
+    excluded_strongs: frozenset[str] = frozenset(),
+) -> tuple[str, ...]:
+    """Extract normalized Strong keys in source order."""
+    return tuple(
+        strong
+        for raw in _STRONG_TOKEN_PATTERN.findall(text)
+        if (strong := normalize_strong(raw)) not in excluded_strongs
+    )
+
+
 def build_canonical_indexes() -> tuple[dict[str, str], tuple[str, ...]]:
     """Return verse-key labels and canonical-order NT keys."""
     testament_by_book_id = {book.book_id: book.testament for book in CANONICAL_BOOKS}
@@ -336,11 +450,11 @@ def compare_new_testaments(
 ) -> StrongComparison:
     verse_scores: list[StrongVerseScore] = []
     for key in nt_keys:
-        kjv_counts = strong_counter(
+        kjv_sequence = strong_sequence(
             kjv.verses.get(key, ""),
             excluded_strongs=excluded_strongs,
         )
-        lxx_tr_counts = strong_counter(
+        lxx_tr_sequence = strong_sequence(
             lxx_tr.verses.get(key, ""),
             excluded_strongs=excluded_strongs,
         )
@@ -349,8 +463,10 @@ def compare_new_testaments(
             StrongVerseScore(
                 verse_key=key,
                 verse_ref=refs_by_key.get(key, key),
-                kjv_counts=kjv_counts,
-                tr_counts=lxx_tr_counts,
+                kjv_counts=Counter(kjv_sequence),
+                tr_counts=Counter(lxx_tr_sequence),
+                kjv_sequence=kjv_sequence,
+                tr_sequence=lxx_tr_sequence,
             )
         )
 
@@ -683,6 +799,26 @@ def _counter_excess(left: Counter[str], right: Counter[str]) -> Counter[str]:
     )
 
 
+def _lcs_length(left: Sequence[str], right: Sequence[str]) -> int:
+    """Return the longest-common-subsequence length using linear memory."""
+    if len(left) < len(right):
+        shorter = left
+        longer = right
+    else:
+        shorter = right
+        longer = left
+    previous = [0] * (len(shorter) + 1)
+    for longer_value in longer:
+        current = [0]
+        for index, shorter_value in enumerate(shorter, start=1):
+            if longer_value == shorter_value:
+                current.append(previous[index - 1] + 1)
+            else:
+                current.append(max(previous[index], current[index - 1]))
+        previous = current
+    return previous[-1]
+
+
 def _ordered_keys(keys: Sequence[str], refs_by_key: Mapping[str, str]) -> list[str]:
     known_order = {key: index for index, key in enumerate(refs_by_key)}
     return sorted(keys, key=lambda key: (known_order.get(key, len(known_order)), key))
@@ -727,6 +863,58 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         type=Path,
         help="Write the full UTF-8 report to this file instead of printing it.",
     )
+    parser.add_argument(
+        "--evidence-output-dir",
+        type=Path,
+        help="Also run the extended evidence audit into this directory.",
+    )
+    parser.add_argument("--original-report", type=Path)
+    parser.add_argument(
+        "--kjv-usfx-source",
+        type=Path,
+        default=SOURCE_CACHE / "eng-kjv2006_usfx.zip",
+    )
+    parser.add_argument(
+        "--crosswire-kjv-osis",
+        type=Path,
+        default=SOURCE_CACHE / "crosswire_kjvfull.xml",
+    )
+    parser.add_argument(
+        "--open-bibles-kjv-osis",
+        type=Path,
+        default=SOURCE_CACHE / "open_bibles_eng_kjv.osis.xml",
+    )
+    parser.add_argument(
+        "--project-gutenberg-kjv",
+        type=Path,
+        help="Downloaded Project Gutenberg eBook 10 UTF-8 text.",
+    )
+    parser.add_argument(
+        "--tagnt-source",
+        action="append",
+        type=Path,
+        help="TAGNT input; repeat for each locked chunk.",
+    )
+    parser.add_argument(
+        "--crosswire-lxx-source",
+        type=Path,
+        default=SOURCE_CACHE / "crosswire_lxx.zip",
+    )
+    parser.add_argument(
+        "--lxx-projection-plan",
+        type=Path,
+        default=(
+            REPOSITORY_ROOT
+            / ".agents"
+            / "roadmaps"
+            / "lxx_to_kjv_consolidated_remaining_work.json"
+        ),
+    )
+    parser.add_argument("--scrivener-text-dir", type=Path)
+    parser.add_argument(
+        "--accessed-on",
+        help="Evidence-source access date in YYYY-MM-DD form.",
+    )
     return parser.parse_args(argv)
 
 
@@ -766,6 +954,57 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"Несовпадающих стихов НЗ: {comparison.mismatched_verses_count} "
             f"из {comparison.compared_verses_count} "
             f"({mismatched_percentage}%)."
+        )
+    if args.evidence_output_dir is not None:
+        missing_arguments = [
+            name
+            for name, value in (
+                ("--original-report", args.original_report),
+                ("--scrivener-text-dir", args.scrivener_text_dir),
+                ("--project-gutenberg-kjv", args.project_gutenberg_kjv),
+                ("--accessed-on", args.accessed_on),
+            )
+            if value is None
+        ]
+        if missing_arguments:
+            print(
+                "Extended evidence audit requires: "
+                + ", ".join(missing_arguments),
+                file=sys.stderr,
+            )
+            return 2
+        from .evidence_audit import EvidenceAuditInputs, run_evidence_audit
+
+        tagnt_paths = tuple(
+            args.tagnt_source
+            or (
+                SOURCE_CACHE / "step_tagnt_mat_jhn.txt",
+                SOURCE_CACHE / "step_tagnt_act_rev.txt",
+            )
+        )
+        evidence = run_evidence_audit(
+            EvidenceAuditInputs(
+                kjv_db=args.kjv,
+                lxx_tr_db=args.lxx_tr,
+                original_report=args.original_report,
+                weak_strongs=args.weak_strongs,
+                kjv_usfx_zip=args.kjv_usfx_source,
+                crosswire_kjv_osis=args.crosswire_kjv_osis,
+                open_bibles_kjv_osis=args.open_bibles_kjv_osis,
+                project_gutenberg_kjv=args.project_gutenberg_kjv,
+                tagnt_paths=tagnt_paths,
+                crosswire_lxx_zip=args.crosswire_lxx_source,
+                lxx_projection_plan=args.lxx_projection_plan,
+                scrivener_text_dir=args.scrivener_text_dir,
+                output_dir=args.evidence_output_dir,
+                accessed_on=args.accessed_on,
+            )
+        )
+        print(
+            "Расширенный доказательный аудит сохранён: "
+            f"{args.evidence_output_dir} "
+            f"({evidence['summary']['priority_below_80']['rows']} "
+            "приоритетных стихов)."
         )
     return 0
 
