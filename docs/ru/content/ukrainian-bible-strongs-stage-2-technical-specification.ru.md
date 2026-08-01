@@ -1,13 +1,13 @@
 # Украинский библейский модуль со Strong: техническая спецификация и целевой эталон
 
-Doc-Version: `1.2.0`
+Doc-Version: `1.3.0`
 Last-Updated: `2026-08-01`
 Source-Commit: `working-tree`
 
 ## Статус и область
 
 Этап 2 фиксирует технический контракт для утверждённого на этапе 1 перевода.
-Эта спецификация является нормативной для этапов 3–12.
+Эта спецификация является нормативной для этапов 3–13.
 
 После первоначального закрытия этапа владелец добавил обязательное требование:
 сохранять печатные сноски в отдельном комментарии к соответствующему стиху,
@@ -530,7 +530,7 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
 - документированное отсутствие Strong у служебного украинского слова;
 - редакционный paratext с однозначным disposition.
 
-Этапы 6 и 8 не закрываются при любом нерешённом `critical/high`. `medium/low`
+Этапы 6, 7 и 9 не закрываются при любом нерешённом `critical/high`. `medium/low`
 должны иметь решение или явную приёмку владельца по правилам roadmap.
 
 ## Форматы и расположение отчётов
@@ -557,12 +557,15 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
   `source_diff.csv`, `report.ru.md`;
 - этап 5: `versification_map.jsonl`, `projection_rules.json`,
   `coverage.json`, `anomalies.jsonl`, `manual_review.md`;
-- этап 6: `aligned_corpus.jsonl`, `strong_overrides.jsonl`,
-  `comment_overrides.jsonl`, `strong_stats.json`, `footnote_stats.json`,
+- этап 6: `synthesized_text.jsonl`, `synthesis_overrides.jsonl`,
+  `footnote_comment_stats.json`, `plain_text_preservation_report.json`,
+  `manual_review.jsonl`;
+- этап 7: `strong_aligned_text.jsonl`, `alignment_overrides.jsonl`,
+  `strong_coverage_report.json`, `strong_control_audit.jsonl`,
   `strong_diff.csv`;
-- этапы 7–8: `build_stats.json`, `audit_summary.json`,
+- этапы 8–9: `build_stats.json`, `audit_summary.json`,
   `verse_metrics.csv`, `anomalies.jsonl`, `report.ru.md`;
-- этапы 9–12: `validation_log.md` и предусмотренные roadmap отчёты.
+- этапы 10–13: `validation_log.md` и предусмотренные roadmap отчёты.
 
 Полные защищённые исходники не добавляются в Git без отдельной проверки
 права и необходимости. Отчёты не должны случайно дублировать полный текст.
@@ -596,8 +599,8 @@ python -m unittest scripts.bible_module.tests.test_ukrainian_stage_2_contract
 
 На повторном закрытии этапа 2 эти тесты фиксируют два разных schema profile,
 но не подменяют будущие поведенческие тесты. Реальное чтение/редактирование
-версий 3/4 в content tool проверяется на этапе 9, а чтение и показ комментариев
-во Flutter runtime — на этапе 10.
+версий 3/4 в content tool проверяется на этапе 10, а чтение и показ комментариев
+во Flutter runtime — на этапе 11.
 
 ## Текущее состояние и gate следующего этапа
 

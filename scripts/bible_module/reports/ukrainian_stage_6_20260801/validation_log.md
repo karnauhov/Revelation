@@ -1,0 +1,30 @@
+# Ukrainian stage 6 text-synthesis validation log
+
+- Date: 2026-08-01
+- Contract: `ukrainian-stage-6-text-synthesis-v1`
+- Mapping SHA-256 forward: `5959d3af5422dbf8a8bed95e106c4379a55883a4f9972708c330355aed3e866f`
+- Mapping SHA-256 reverse: `0870dd982d4eed3212610e8d1d127e55015568c11e8c0dcdcb26ddb38a27e40a`
+- Target texts: 31102 / 31102
+- Source spans: 31171 / 31171
+- Footnote uses: 1329 / 1329
+- Plain-text mismatches: 0
+- Unresolved critical/high: 0 / 0
+- Stage 3 `--check`: PASS — source lock/cache verified
+- Stage 4 `--check`: PASS — 14 sources verified
+- Stage 5 `--check`: PASS — fixed mapping and footnote SHA-256 verified
+- Stage 6 `--check`: PASS — text synthesis verified complete
+- Targeted stage-6 unit/invariant/regression tests: PASS — 16 tests
+- Double deterministic generation: PASS — 22 artifacts, two isolated generations, identical inventory and SHA-256
+- Bible-module test suite: PASS — 174 commit-scope tests; 198 tests with the uncommitted stage-7 experiment present
+- Content-tool test suite: PASS — 30 tests
+- `dart format .`: PASS — 475 files checked, 0 changed
+- `flutter analyze`: PASS — no issues found (225.3 s)
+- `flutter test`: PASS — 920 tests
+- Forbidden-pattern checks: PASS
+- RU/EN docs-sync checks: PASS — 4 approved pairs
+- `git diff --check`: PASS
+- Secrets/binaries/full-corpus/gitignore audit: PASS — 22 commit-scope files, no secrets, binaries, NUL bytes, or files over 2 MiB; full derivative corpora remain ignored under `scripts/bible_module/work/*`
+- Smoke: N/A — no runtime, routes, deep links, Flutter, or database changes
+- Stage status: complete
+- Stage 7 Strong alignment: not part of this validation
+- SQLite / stage 8: not executed
