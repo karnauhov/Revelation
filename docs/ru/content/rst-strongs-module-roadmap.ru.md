@@ -23,9 +23,9 @@ Source-Commit: `working-tree`
 
 Рабочие идентификаторы, которые должны быть подтверждены на этапе 2:
 
-- файл: `bible_rst_strongs.sqlite`;
-- `code`: `RST_STRONGS`;
-- `module_id`: `rst_strongs`;
+- файл: `bible_rst.sqlite`;
+- `code`: `RST`;
+- `module_id`: `rst`;
 - язык: `ru`;
 - канон: `protestant_66`;
 - версификация: `kjv_protestant`;
@@ -99,7 +99,7 @@ Source-Commit: `working-tree`
 **Цель:** до импорта данных зафиксировать формат результата, эталонную KJV-сетку и измеримые критерии качества.
 
 - [ ] Проверить актуальные схемы `bible_kjv.sqlite`, `bible_lxx_tr.sqlite`, `BibleModuleDB` и редактора контента; не копировать устаревшую внутреннюю схему из другого инструмента.
-- [ ] Подтвердить или скорректировать рабочие идентификаторы `bible_rst_strongs.sqlite`, `RST_STRONGS`, `rst_strongs`, `ru`, `protestant_66`, `kjv_protestant`.
+- [ ] Подтвердить или скорректировать рабочие идентификаторы `bible_rst.sqlite`, `RST`, `rst`, `ru`, `protestant_66`, `kjv_protestant`.
 - [ ] Зафиксировать SHA-256 используемого `bible_kjv.sqlite`, его `db_metadata`, `PRAGMA user_version`, единственную строку `info` и точную последовательность `verse_key`.
 - [ ] Сверить KJV-сетку одновременно с `scripts/bible_module/canon.py` и картой, которую использует приложение/редактор; любое расхождение устранить до продолжения.
 - [ ] Зафиксировать ожидаемые количества: 66 книг, 31 102 стиха, уникальные трёхсимвольные base36-ключи без пропусков и дубликатов.
@@ -271,12 +271,12 @@ Source-Commit: `working-tree`
 **Цель:** только после чистой проверки установить один и тот же утверждённый файл в оба требуемых каталога и корректно описать его в manifest.
 
 - [ ] Повторно подтвердить SHA-256 утверждённого кандидата и отсутствие изменений после этапа 8.
-- [ ] Создать восстановимую резервную копию существующего `bible_rst_strongs.sqlite`, если файл уже есть в целевом каталоге.
-- [ ] Атомарно установить модуль в `C:\Users\karna\Documents\revelation\db\bible_rst_strongs.sqlite`.
-- [ ] Скопировать тот же байтовый файл в `C:\Users\karna\Projects\Revelation\web\db\bible_rst_strongs.sqlite`.
+- [ ] Создать восстановимую резервную копию существующего `bible_rst.sqlite`, если файл уже есть в целевом каталоге.
+- [ ] Атомарно установить модуль в `C:\Users\karna\Documents\revelation\db\bible_rst.sqlite`.
+- [ ] Скопировать тот же байтовый файл в `C:\Users\karna\Projects\Revelation\web\db\bible_rst.sqlite`.
 - [ ] Проверить побайтовое равенство и одинаковый SHA-256 обеих копий.
 - [ ] Перегенерировать оба `manifest.json` штатным `scripts/content_tool/web_db_manifest.py`/content tool, а не вычислять поля вручную.
-- [ ] Проверить запись `bible_rst_strongs.sqlite`: `schemaVersion`, `dataVersion`, `date`, `fileSizeBytes` и `versionToken` точно соответствуют БД.
+- [ ] Проверить запись `bible_rst.sqlite`: `schemaVersion`, `dataVersion`, `date`, `fileSizeBytes` и `versionToken` точно соответствуют БД.
 - [ ] Убедиться, что перегенерация сохранила все существующие записи KJV, LXX_TR и локализованных БД без непреднамеренных изменений.
 - [ ] Запустить тесты `test_web_db_manifest.py` и связанные тесты sync/discovery с новым именем файла.
 - [ ] Не выполнять удалённую публикацию в Supabase или отдельный `Revelation.website` без явно подтверждённого владельцем release-действия; при подтверждении публиковать сначала БД, затем manifest и проверять удалённые размеры/версии.
