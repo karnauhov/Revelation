@@ -49,7 +49,7 @@ Application entry point: `lib/main.dart`.
 - [Матрица управления состоянием](./docs/ru/architecture/state_management_matrix.ru.md)
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
 - [Руководство по расширению Markdown](./docs/ru/content/markdown-extension-guide.ru.md)
-- [Дорожная карта модуля РСТ с номерами Стронга](./docs/ru/content/rst-strongs-module-roadmap.ru.md)
+- [Дорожная карта модуля RST с номерами Стронга](./docs/ru/content/rst-strongs-module-roadmap.ru.md)
 
 ### Additional Notes
 
