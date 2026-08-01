@@ -1,13 +1,20 @@
 # Украинский библейский модуль со Strong: техническая спецификация и целевой эталон
 
-Doc-Version: `1.0.0`
+Doc-Version: `1.1.0`
 Last-Updated: `2026-08-01`
 Source-Commit: `working-tree`
 
 ## Статус и область
 
-Этап 2 завершает выбор технического контракта для утверждённого на этапе 1
-перевода. Эта спецификация является нормативной для этапов 3–12.
+Этап 2 фиксирует технический контракт для утверждённого на этапе 1 перевода.
+Эта спецификация является нормативной для этапов 3–12.
+
+После первоначального закрытия этапа владелец добавил обязательное требование:
+сохранять печатные сноски в отдельном комментарии к соответствующему стиху,
+редактировать их в content tool и показывать в приложении. Поэтому этап 2
+переоткрыт до синхронизации baseline и contract-тестов с описанным ниже
+schema contract версии 4. Зафиксированные входные файлы этапа 3 от этого не
+изменяются.
 
 В рамках этапа 2 не загружались и не фиксировались украинские исходные файлы,
 не создавался украинский корпус и не собирался итоговый SQLite-модуль.
@@ -90,7 +97,7 @@ Strong создаётся как отдельная производная ра�
 Полная строка `info` KJV, точные SQL определения таблиц и metadata сохранены
 в baseline manifest.
 
-Актуальная прикладная схема версии 3 состоит ровно из:
+Фактическая legacy-схема версии 3 существующих KJV/LXX_TR состоит ровно из:
 
 - `db_metadata(key TEXT PRIMARY KEY, value TEXT NOT NULL) WITHOUT ROWID`;
 - `info(code, module_id, title, description, language, canon, versification,
@@ -117,6 +124,40 @@ Strong создаётся как отдельная производная ра�
 последовательность base36-ключей. LXX_TR подтверждает допустимость явных
 merge/split/range-проекций и хранения явно обозначенного paratext, но его
 конкретные греческие правила не переносятся на украинский текст.
+
+### Целевая схема комментариев к стихам
+
+Украинский `bible_ohienko_1988.sqlite` использует прикладную schema version 4.
+Таблицы `db_metadata` и `info` сохраняют контракт версии 3, а таблица стихов
+имеет точную форму:
+
+```sql
+CREATE TABLE verses (
+  verse_key TEXT NOT NULL PRIMARY KEY CHECK(length(verse_key) = 3),
+  text TEXT NOT NULL DEFAULT '',
+  comment TEXT NOT NULL DEFAULT ''
+) WITHOUT ROWID;
+```
+
+Для кандидата обязательны `PRAGMA user_version = 4` и
+`db_metadata.schema_version = '4'`. Столбец `comment` существует в каждой из
+31 102 строк: пустая строка означает отсутствие сноски, `NULL` запрещён.
+
+В рамках этой roadmap файлы KJV/LXX_TR не переписываются и остаются на
+schema version 3 без `comment`. Runtime и content tool должны поддерживать
+обе версии и определять возможность комментариев по фактическим столбцам
+`verses`, а не по `module_id`. Legacy-модуль без столбца читается как модуль с
+пустыми комментариями; попытка записать комментарий в него не должна молча
+менять его схему.
+
+`comment` содержит только отображаемый Unicode plain text печатных сносок,
+связанных со стихом. При нескольких сносках блоки записываются в исходном
+порядке и разделяются двумя LF. Печатный маркер, если он есть, сохраняется в
+начале соответствующего блока; отсутствующий маркер не создаётся. Полные raw
+значения, anchor offsets и provenance остаются в промежуточном корпусе, чтобы
+значение SQLite можно было воспроизвести. `comment` не содержит Strong-токены,
+не входит в `verses.text`, библейский plain-text поиск или обычное копирование
+стиха.
 
 ## Окончательные идентификаторы
 
@@ -228,18 +269,20 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
 | `target_refs` | упорядоченный непустой массив целевых `canonical_ref`/`verse_key` либо пустой только для paratext |
 | `target_spans` | точные диапазоны Unicode scalar/token для `split`/`range_transfer` |
 | `tokens` | упорядоченный массив токенов по описанному ниже контракту |
+| `footnotes` | упорядоченный массив объектов с полным raw/norm-текстом, печатным маркером, anchor offsets, `source_id`, `source_order` и статусом привязки |
+| `target_comment` | итоговая строка для `verses.comment`, пустая до завершённой проекции сносок |
 | `text_source_ids` | источники украинского текста |
 | `strong_source_ids` | источники Strong/оригинального языка |
 | `transformation` | `1:1`, `merge`, `split`, `range_transfer`, `outside_grid` |
 | `confidence` | число `[0,1]`, метод вычисления фиксируется версией выравнивателя |
-| `comment` | обязательное объяснение для любого не-`1:1` случая |
+| `decision_comment` | обязательное объяснение для любого не-`1:1` случая; не является текстом сноски |
 | `disposition` | решение для paratext или `included_in_target` |
 
 Токен содержит:
 
 `token_id`, `kind`, `surface`, `start_scalar`, `end_scalar`,
 `alignment_form`, `strong_raw`, `strong_relation`, `strong_candidates`,
-`strong_final`, `strong_source_ids`, `confidence`, `comment`.
+`strong_final`, `strong_source_ids`, `confidence`, `alignment_comment`.
 
 `start_scalar:end_scalar` ссылается на диапазон Unicode scalar в
 `source_plain_nfc`. `strong_raw` всегда сохраняет исходное значение.
@@ -271,7 +314,9 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
 4. точное равенство исходной и целевой plain-text конкатенации после NFC и
    нормализации только пробельных границ;
 5. обратимость карты target → source;
-6. отсутствие потери или дублирования разрешённых Strong-связей.
+6. отсутствие потери или дублирования разрешённых Strong-связей;
+7. отсутствие потери, дублирования и переноса сносок к неверному
+   `verse_key`.
 
 ## Заголовки, сноски и материал вне сетки
 
@@ -282,9 +327,18 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
   `psalm_superscription`, привязывается к следующему целевому стиху и
   включается перед его текстом в квадратных скобках. Исходная ссылка и
   граница сохраняются отдельно; искусственный `verse_key` не создаётся.
-- Сноска сохраняется отдельно с anchor offsets и полным текстом. Маркер и
-  текст сноски не входят в runtime plain text; исключение из SQLite имеет
-  disposition `preserved_external_footnote`.
+- Сноска сохраняется отдельно с полным raw/norm-текстом, печатным маркером,
+  anchor offsets, исходным порядком и provenance, затем привязывается к
+  соответствующему исходному стиху и проецируется в `verses.comment`.
+- При `1:1` сноска остаётся у того же смыслового стиха. При `merge` блоки
+  объединяются в исходном порядке. При `split` сноска назначается по anchor
+  range; неоднозначный или отсутствующий anchor требует ручного решения и не
+  разрешает автоматический перенос к ближайшему стиху.
+- Маркер и текст сноски не входят в `verses.text`, runtime plain text или
+  Strong-разметку. `preserved_external_footnote` допустим только для материала,
+  который доказанно не относится ни к одному стиху; он требует причины, теста
+  и ручного решения, а не используется как обычный способ исключить сноску из
+  SQLite.
 - Вариант чтения в основном печатном тексте сохраняется дословно. Вариант
   только в сноске не заменяет основной текст и хранится как `variant`.
 - Квадратные, круглые и другие скобки основного текста сохраняются
@@ -399,6 +453,10 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
   `ordered_F1`;
 - собственный F1 и F1 с предыдущим/следующим стихом;
 - согласие базовой транскрипции с печатным эталоном и независимым контролем;
+- количество сносок, exact equality их нормализованного текста, маркеров и
+  порядка, статус anchors и соответствие итогового `comment` целевому стиху;
+- подтверждение, что комментарий не попал в `verses.text`, Strong-набор,
+  библейский plain-text поиск или обычное копирование стиха;
 - применённые projection/override и их confidence.
 
 Для пустых множеств: два пустых множества дают precision/recall/F1/Jaccard
@@ -434,7 +492,8 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
 - канонический материал вне утверждённой сетки;
 - неразрешённый межкнижный/межзаветный перенос;
 - недействительная лицензия/атрибуция;
-- invalid/out-of-range Strong или молчаливая потеря extended/composite данных.
+- invalid/out-of-range Strong или молчаливая потеря extended/composite данных;
+- потеря, дублирование или попадание сноски в канонический `verses.text`.
 
 ### `high`
 
@@ -443,6 +502,8 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
 - unresolved extended/alternative Strong;
 - Strong без украинского слова или связь с явно неверным стихом;
 - сильный соседний сдвиг или высокий Strong-триаж-сигнал;
+- сноска, привязанная к неверному стиху, или неразрешённая неоднозначность
+  anchor при `split`/`range_transfer`;
 - paratext без disposition;
 - конфликт независимых источников, влияющий на текст или разметку.
 
@@ -488,7 +549,8 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
 - этап 5: `versification_map.jsonl`, `projection_rules.json`,
   `coverage.json`, `anomalies.jsonl`, `manual_review.md`;
 - этап 6: `aligned_corpus.jsonl`, `strong_overrides.jsonl`,
-  `strong_stats.json`, `strong_diff.csv`;
+  `comment_overrides.jsonl`, `strong_stats.json`, `footnote_stats.json`,
+  `strong_diff.csv`;
 - этапы 7–8: `build_stats.json`, `audit_summary.json`,
   `verse_metrics.csv`, `anomalies.jsonl`, `report.ru.md`;
 - этапы 9–12: `validation_log.md` и предусмотренные roadmap отчёты.
@@ -502,11 +564,16 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
 падает при:
 
 - изменении SHA-256 эталонного KJV;
-- изменении прикладной схемы, `PRAGMA user_version`, metadata или `info`;
+- неожиданном изменении legacy reference schema либо целевой украинской схемы,
+  `PRAGMA user_version`, metadata или `info`;
 - изменении набора или порядка всех 31 102 ключей;
 - расхождении `canon.py`, app verse map и content tool;
 - изменении окончательных идентификаторов или шаблонов `info`;
 - конфликте ID с KJV/LXX_TR;
+- отсутствии schema version 4 или точного `comment TEXT NOT NULL DEFAULT ''`
+  в целевой украинской схеме;
+- смешении фактической legacy-схемы KJV/LXX_TR версии 3 с целевой украинской
+  схемой версии 4 в baseline contract;
 - изменении classic Strong ranges/mappings;
 - молчаливом принятии неизвестного extended, alternative или composite
   Strong.
@@ -518,18 +585,30 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline --check
 python -m unittest scripts.bible_module.tests.test_ukrainian_stage_2_contract
 ```
 
-## Ограничения и gate следующего этапа
+На повторном закрытии этапа 2 эти тесты фиксируют два разных schema profile,
+но не подменяют будущие поведенческие тесты. Реальное чтение/редактирование
+версий 3/4 в content tool проверяется на этапе 9, а чтение и показ комментариев
+во Flutter runtime — на этапе 10.
 
-- Commons SHA-256 точного 83,6-МБ бинарника ещё не закреплён: это задача
-  этапа 3, уже зафиксированная этапом 1.
+## Текущее состояние и gate следующего этапа
+
+- Этап 3 закрепил точный Commons DjVu: 83 637 482 байта, SHA-256
+  `0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34`.
+- Полный Wikisource lock содержит 1 540 ревизий; SHA-256 списка revision ID —
+  `ecce2e6d48a07f7baac96b393b1147a4f3b28c5eba6ac757f4de8f5b8a697dc9`,
+  SHA-256 bundle —
+  `c7bc09ffdb232ded0abae6b631e382d896396750e3d3931ba5ee07e22c3e0702`.
 - OpenPGP-манифесты eBible не проверялись из-за отсутствия `gpg`; эти наборы
-  не являются базой выбранного текста, а ограничение остаётся для этапа 3.
-- Фактические украинские revision ID, файлы, corpus counts и полный diff
-  версификации ещё не получались. Они не нужны для выбора представимой
-  целевой модели, но обязательны для этапов 3–5.
+  не являются базой выбранного текста, а ограничение сохранено в отчёте
+  этапа 3 и не отменяет source lock.
+- Полные corpus counts, разбор сносок и diff версификации ещё не выполнялись;
+  они обязательны для этапов 4–5.
 - Итогового `bible_ohienko_1988.sqlite` не существует и на этапе 2 он не
   должен создаваться.
 
-Открытых решений этапа 2 нет. Если checked-in baseline и contract-тесты
-проходят, следующим разрешён этап 3: только воспроизводимое получение и
-фиксация утверждённых источников, без парсинга/сборки следующих этапов.
+Семантика столбца `comment` и совместимости schema versions 3/4 определена.
+Этап 2 остаётся переоткрытым, пока checked-in baseline и contract-тесты не
+будут обновлены и не пройдут с этим контрактом. После повторного закрытия
+этапа 2 уже завершённый source-lock этапа 3 остаётся действительным, а
+следующим разрешается этап 4 — независимый парсинг, включая извлечение и
+привязку всех найденных сносок.
