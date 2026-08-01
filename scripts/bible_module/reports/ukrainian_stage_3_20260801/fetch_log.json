@@ -1,0 +1,1891 @@
+{
+  "schema_version": 1,
+  "stage": 3,
+  "source_lock": "source_lock.json",
+  "tool_versions": {
+    "python": "3.12.2",
+    "python_implementation": "CPython",
+    "openssl": "OpenSSL 3.0.13 30 Jan 2024",
+    "curl": "curl 8.21.0 (Windows) libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "fetcher": "scripts.bible_module.ukrainian_stage_3_sources schema 1",
+    "user_agent": "Revelation Ukrainian Bible source locker/3"
+  },
+  "network_policy": {
+    "https_only": true,
+    "max_attempts": 4,
+    "retry_backoff_seconds": [
+      2,
+      4,
+      8
+    ],
+    "retryable_http_statuses": [
+      429,
+      500,
+      502,
+      503,
+      504
+    ],
+    "max_redirects": 5,
+    "https_downgrade_redirects_rejected": true,
+    "atomic_replace_after_size_and_sha256": true
+  },
+  "known_limitations": [
+    "gpg is not installed; no new dependency was added because the approved stage-3 inputs are pinned by exact revision plus SHA-256 and the rejected eBible candidates are not inputs.",
+    "Tanach.us exposes UXLC 2.5 build 27.6 at a mutable product URL; exact version metadata, byte size and SHA-256 are locked, so any upstream replacement fails closed.",
+    "curl/Schannel verifies TLS on this Windows host because the bundled Python/OpenSSL trust path rejected Wikimedia's valid 2026 chain; peer-certificate dates and ssl_verify_result are recorded, but Schannel does not expose the negotiated cipher through curl write-out."
+  ],
+  "runs": [
+    {
+      "started_at_utc": "2026-08-01T05:59:18Z",
+      "finished_at_utc": "2026-08-01T06:03:53Z",
+      "mode": "normal",
+      "cache_dir_override": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c",
+      "status": "pass",
+      "sources": [
+        {
+          "source_id": "commons_ohienko_1988_scan",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\commons_ohienko_1988.djvu",
+          "bytes": 83637482,
+          "sha256": "0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:18Z",
+              "finished_at_utc": "2026-08-01T05:59:22Z",
+              "result": "success",
+              "requested_url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Ivan_Ohienko_Bible.djvu",
+              "final_url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Ivan_Ohienko_Bible.djvu",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 83637482,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "image/vnd.djvu",
+                "content_length": "83637482",
+                "etag": "e8c3845e13fcd626b46c97f14bc95da0",
+                "last_modified": "Sat, 13 Jan 2018 12:51:16 GMT"
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=upload.wikimedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE2",
+                  "serial_number": "05:5c:b7:a4:9a:32:c4:4a:d3:8a:03:08:e3:71:5b:92:33:9e:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-12 05:24:58 GMT",
+                  "expire_date": "2026-09-10 05:24:57 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::2:b",
+              "http_version": "1.1",
+              "elapsed_seconds": 3.131312
+            }
+          ]
+        },
+        {
+          "source_id": "crosswire_kjv_3_1",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\crosswire_kjvfull.xml",
+          "bytes": 28630975,
+          "sha256": "d5114fc1ab17b1e141ff5c035ef3a4354437fd24b4b8ee34f4c925915c0374ef",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:22Z",
+              "finished_at_utc": "2026-08-01T05:59:25Z",
+              "result": "success",
+              "requested_url": "https://gitlab.com/crosswire-bible-society/kjv/-/raw/d490be7e34762deb2c76cb2c1306d4808e27890d/kjvfull.xml",
+              "final_url": "https://gitlab.com/crosswire-bible-society/kjv/-/raw/d490be7e34762deb2c76cb2c1306d4808e27890d/kjvfull.xml",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 28630975,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "text/plain; charset=utf-8",
+                "content_length": "28630975",
+                "etag": "\"9d96f725e05e7b197328c3a95929f097\"",
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=gitlab.com",
+                  "issuer": "C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication CA DV R36",
+                  "serial_number": "01:34:16:ee:0a:6d:91:ca:06:11:ba:3a:4d:db:76:f6:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2026-04-26 00:00:00 GMT",
+                  "expire_date": "2026-11-10 23:59:59 GMT"
+                }
+              },
+              "remote_ip": "2606:4700:90:0:f22e:fbec:5bed:a9b9",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.630985
+            }
+          ]
+        },
+        {
+          "source_id": "internet_archive_ohienko_1988_scan",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\internet_archive_ohienko_1988.djvu",
+          "bytes": 41818741,
+          "sha256": "39d34d366554a2c798e180d0fce05a4ca11fc8c10901c174848e37f30468cee8",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:25Z",
+              "finished_at_utc": "2026-08-01T05:59:36Z",
+              "result": "success",
+              "requested_url": "https://archive.org/download/BibleOhienko/Ohienko_Bible.djvu",
+              "final_url": "https://dn721308.ca.archive.org/0/items/BibleOhienko/Ohienko_Bible.djvu",
+              "status": 200,
+              "redirect_chain": [
+                {
+                  "status": 302,
+                  "location": "https://dn721308.ca.archive.org/0/items/BibleOhienko/Ohienko_Bible.djvu",
+                  "content_type": "text/html; charset=UTF-8",
+                  "content_length": null,
+                  "etag": null,
+                  "last_modified": null
+                }
+              ],
+              "redirect_count": 1,
+              "downloaded_bytes": 41818741,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "image/x.djvu",
+                "content_length": "41818741",
+                "etag": "\"53bd97ac-27e1a75\"",
+                "last_modified": "Wed, 09 Jul 2014 19:27:40 GMT"
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=dn721308.ca.archive.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:03:9b:1a:89:47:d0:8d:15:9e:52:e3:d3:85:ed:5d:f7:b2:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-15 19:12:28 GMT",
+                  "expire_date": "2026-09-13 19:12:27 GMT"
+                }
+              },
+              "remote_ip": "204.62.246.220",
+              "http_version": "1.1",
+              "elapsed_seconds": 9.833897
+            }
+          ]
+        },
+        {
+          "source_id": "openscriptures_oshb_v2_2",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\openscriptures_morphhb_v2_2.zip",
+          "bytes": 20869248,
+          "sha256": "dac2d0325c59f6cd22839f2ef6345544a85b50c9d657788672e7638fa11abecb",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:36Z",
+              "finished_at_utc": "2026-08-01T05:59:40Z",
+              "result": "success",
+              "requested_url": "https://codeload.github.com/openscriptures/morphhb/zip/6a5db284c715c18b239422e57bb89684e6a19f00",
+              "final_url": "https://codeload.github.com/openscriptures/morphhb/zip/6a5db284c715c18b239422e57bb89684e6a19f00",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 20869248,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/zip",
+                "content_length": null,
+                "etag": "\"91a67cc7686dcec605937b3d614c5576a9522d8922c14d6cb87570ad4c5317d1\"",
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.github.com",
+                  "issuer": "C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication CA DV E36",
+                  "serial_number": "3a:53:7a:9c:95:88:2f:f9:b7:5f:2c:10:4c:2a:91:57:",
+                  "signature_algorithm": "ecdsa-with-SHA256",
+                  "start_date": "2026-07-02 00:00:00 GMT",
+                  "expire_date": "2026-09-29 23:59:59 GMT"
+                }
+              },
+              "remote_ip": "140.82.121.9",
+              "http_version": "1.1",
+              "elapsed_seconds": 4.316791
+            }
+          ]
+        },
+        {
+          "source_id": "step_tagnt_act_rev",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tagnt_act_rev.txt",
+          "bytes": 15939932,
+          "sha256": "524e32375361e6d3fa2f7ef00b87605fdc4317a762f395651a05fdc31ad031b7",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:40Z",
+              "finished_at_utc": "2026-08-01T05:59:42Z",
+              "result": "success",
+              "requested_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAGNT%20Act-Rev%20-%20Translators%20Amalgamated%20Greek%20NT%20-%20STEPBible.org%20CC-BY.txt",
+              "final_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAGNT%20Act-Rev%20-%20Translators%20Amalgamated%20Greek%20NT%20-%20STEPBible.org%20CC-BY.txt",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 15939932,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "text/plain; charset=utf-8",
+                "content_length": "15939932",
+                "etag": "\"2785a882e031022f993863fb493d131e03e4d994b3c7990c9742341c80af6186\"",
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.github.io",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YR2",
+                  "serial_number": "06:df:c8:c4:30:ac:ff:cd:74:40:5b:df:ed:03:74:f6:28:1d:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2026-06-04 23:26:07 GMT",
+                  "expire_date": "2026-09-02 23:26:06 GMT"
+                }
+              },
+              "remote_ip": "2606:50c0:8002::154",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.340121
+            }
+          ]
+        },
+        {
+          "source_id": "step_tagnt_mat_jhn",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tagnt_mat_jhn.txt",
+          "bytes": 14189032,
+          "sha256": "ab8eaaeb68e17a1dcfa34e1e9350358f22f03bc2a97244d848750ad81044bc8e",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:42Z",
+              "finished_at_utc": "2026-08-01T05:59:43Z",
+              "result": "success",
+              "requested_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAGNT%20Mat-Jhn%20-%20Translators%20Amalgamated%20Greek%20NT%20-%20STEPBible.org%20CC-BY.txt",
+              "final_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAGNT%20Mat-Jhn%20-%20Translators%20Amalgamated%20Greek%20NT%20-%20STEPBible.org%20CC-BY.txt",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 14189032,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "text/plain; charset=utf-8",
+                "content_length": "14189032",
+                "etag": "\"17c49e9b4bc8f3d823a16ba909bb727cd2cc20866315d869900e00203115aa2b\"",
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.github.io",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YR2",
+                  "serial_number": "06:df:c8:c4:30:ac:ff:cd:74:40:5b:df:ed:03:74:f6:28:1d:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2026-06-04 23:26:07 GMT",
+                  "expire_date": "2026-09-02 23:26:06 GMT"
+                }
+              },
+              "remote_ip": "2606:50c0:8002::154",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.206071
+            }
+          ]
+        },
+        {
+          "source_id": "step_tahot_gen_deu",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tahot_gen_deu.txt",
+          "bytes": 18190455,
+          "sha256": "e9b8546ee48fe0bfc57c3b70f5f40e98d96580e803526d19026224e31753368b",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:43Z",
+              "finished_at_utc": "2026-08-01T05:59:45Z",
+              "result": "success",
+              "requested_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAHOT%20Gen-Deu%20-%20Translators%20Amalgamated%20Hebrew%20OT%20-%20STEPBible.org%20CC%20BY.txt",
+              "final_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAHOT%20Gen-Deu%20-%20Translators%20Amalgamated%20Hebrew%20OT%20-%20STEPBible.org%20CC%20BY.txt",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 18190455,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "text/plain; charset=utf-8",
+                "content_length": "18190455",
+                "etag": "\"0327e4e2e048d5e5f2692e0dcb0ae577d4e8dfa5a3129293e476ee9a4ae36f8b\"",
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.github.io",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YR2",
+                  "serial_number": "06:df:c8:c4:30:ac:ff:cd:74:40:5b:df:ed:03:74:f6:28:1d:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2026-06-04 23:26:07 GMT",
+                  "expire_date": "2026-09-02 23:26:06 GMT"
+                }
+              },
+              "remote_ip": "2606:50c0:8002::154",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.629663
+            }
+          ]
+        },
+        {
+          "source_id": "step_tahot_isa_mal",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tahot_isa_mal.txt",
+          "bytes": 17977518,
+          "sha256": "f3ded203d2a74d6368932c97ae550d1d0754b271af491dc0dedf36fe3ba0bcc5",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:45Z",
+              "finished_at_utc": "2026-08-01T05:59:46Z",
+              "result": "success",
+              "requested_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAHOT%20Isa-Mal%20-%20Translators%20Amalgamated%20Hebrew%20OT%20-%20STEPBible.org%20CC%20BY.txt",
+              "final_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAHOT%20Isa-Mal%20-%20Translators%20Amalgamated%20Hebrew%20OT%20-%20STEPBible.org%20CC%20BY.txt",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 17977518,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "text/plain; charset=utf-8",
+                "content_length": "17977518",
+                "etag": "\"48152c49fcd06f546038b0e2f7f5f9835d2e22db5656f16aa1b37b988fad3f96\"",
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.github.io",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YR2",
+                  "serial_number": "06:df:c8:c4:30:ac:ff:cd:74:40:5b:df:ed:03:74:f6:28:1d:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2026-06-04 23:26:07 GMT",
+                  "expire_date": "2026-09-02 23:26:06 GMT"
+                }
+              },
+              "remote_ip": "2606:50c0:8002::154",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.767213
+            }
+          ]
+        },
+        {
+          "source_id": "step_tahot_job_sng",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tahot_job_sng.txt",
+          "bytes": 9540133,
+          "sha256": "84e118a97e5725e3847cdfdd593873513021c790c63cc91a0d41fca2b5db2ed5",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:46Z",
+              "finished_at_utc": "2026-08-01T05:59:47Z",
+              "result": "success",
+              "requested_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAHOT%20Job-Sng%20-%20Translators%20Amalgamated%20Hebrew%20OT%20-%20STEPBible.org%20CC%20BY.txt",
+              "final_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAHOT%20Job-Sng%20-%20Translators%20Amalgamated%20Hebrew%20OT%20-%20STEPBible.org%20CC%20BY.txt",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 9540133,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "text/plain; charset=utf-8",
+                "content_length": "9540133",
+                "etag": "\"269bb9724a09b9160bb37a4ef62424d549998bc81462a4b1d4a47caf6d71eb1a\"",
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.github.io",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YR2",
+                  "serial_number": "06:df:c8:c4:30:ac:ff:cd:74:40:5b:df:ed:03:74:f6:28:1d:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2026-06-04 23:26:07 GMT",
+                  "expire_date": "2026-09-02 23:26:06 GMT"
+                }
+              },
+              "remote_ip": "2606:50c0:8002::154",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.309355
+            }
+          ]
+        },
+        {
+          "source_id": "step_tahot_jos_est",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tahot_jos_est.txt",
+          "bytes": 24500317,
+          "sha256": "195fee1dc3653bab33701f170734eb894ed647c10cd08cc61749375fe8b73775",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:47Z",
+              "finished_at_utc": "2026-08-01T05:59:49Z",
+              "result": "success",
+              "requested_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAHOT%20Jos-Est%20-%20Translators%20Amalgamated%20Hebrew%20OT%20-%20STEPBible.org%20CC%20BY.txt",
+              "final_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Translators%20Amalgamated%20OT%2BNT/TAHOT%20Jos-Est%20-%20Translators%20Amalgamated%20Hebrew%20OT%20-%20STEPBible.org%20CC%20BY.txt",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 24500317,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "text/plain; charset=utf-8",
+                "content_length": "24500317",
+                "etag": "\"1be433d7584db6dfbf4fec939afd58a9d6dc23b011e23cc95de11af1e727c046\"",
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.github.io",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YR2",
+                  "serial_number": "06:df:c8:c4:30:ac:ff:cd:74:40:5b:df:ed:03:74:f6:28:1d:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2026-06-04 23:26:07 GMT",
+                  "expire_date": "2026-09-02 23:26:06 GMT"
+                }
+              },
+              "remote_ip": "2606:50c0:8002::154",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.984957
+            }
+          ]
+        },
+        {
+          "source_id": "step_tvtms",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tvtms.txt",
+          "bytes": 5790928,
+          "sha256": "8851a8b5a2575b2be9cc6a1bb57284c91c610154a7a259397fbfaffe37db796a",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:49Z",
+              "finished_at_utc": "2026-08-01T05:59:50Z",
+              "result": "success",
+              "requested_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Versification/TVTMS%20-%20Translators%20Versification%20Traditions%20with%20Methodology%20for%20Standardisation%20for%20Eng%2BHeb%2BLat%2BGrk%2BOthers%20-%20STEPBible.org%20CC%20BY.txt",
+              "final_url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/b9dcc831a98e0fd6f3c7e122be9ff68377c310c0/Versification/TVTMS%20-%20Translators%20Versification%20Traditions%20with%20Methodology%20for%20Standardisation%20for%20Eng%2BHeb%2BLat%2BGrk%2BOthers%20-%20STEPBible.org%20CC%20BY.txt",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 5790928,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "text/plain; charset=utf-8",
+                "content_length": "5790928",
+                "etag": "\"588a580c9b3a3670f9baf49a0a3eae9f478fb89848aedae3328c7dd32804b54d\"",
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.github.io",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YR2",
+                  "serial_number": "06:df:c8:c4:30:ac:ff:cd:74:40:5b:df:ed:03:74:f6:28:1d:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2026-06-04 23:26:07 GMT",
+                  "expire_date": "2026-09-02 23:26:06 GMT"
+                }
+              },
+              "remote_ip": "2606:50c0:8002::154",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.725452
+            }
+          ]
+        },
+        {
+          "source_id": "tanach_us_uxlc_2_5_27_6",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\tanach_us_uxlc_2_5_27_6.zip",
+          "bytes": 2365002,
+          "sha256": "1bc6e006f43d3b18f2f718cefa3aa4774cac2c54092c28d173dd61996c43a050",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:52Z",
+              "finished_at_utc": "2026-08-01T05:59:54Z",
+              "result": "success",
+              "requested_url": "https://www.tanach.us/Books/Tanach.xml.zip",
+              "final_url": "https://www.tanach.us/Books/Tanach.xml.zip",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 2365002,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/zip",
+                "content_length": "2365002",
+                "etag": "\"24164a-657ed9fc60804\"",
+                "last_modified": "Fri, 31 Jul 2026 19:59:19 GMT"
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=www.tanach.us",
+                  "issuer": "C=US, O=DigiCert Inc, OU=www.digicert.com, CN=RapidSSL TLS RSA CA G1",
+                  "serial_number": "0b:b6:d9:08:73:24:55:4e:1b:cf:75:fe:35:2c:d3:a1:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2026-05-12 00:00:00 GMT",
+                  "expire_date": "2026-11-26 23:59:59 GMT"
+                }
+              },
+              "remote_ip": "68.169.52.176",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.571664
+            }
+          ]
+        },
+        {
+          "source_id": "unfoldingword_ugnt_v0_34",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\unfoldingword_ugnt_v0_34.zip",
+          "bytes": 1252605,
+          "sha256": "07318be27d0027146a62363c20ffedd0db695d7680f4b32c8ae8bd3020a29d00",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:54Z",
+              "finished_at_utc": "2026-08-01T05:59:57Z",
+              "result": "success",
+              "requested_url": "https://git.door43.org/unfoldingWord/el-x-koine_ugnt/archive/fc95b2b8aad08bb65ab54628ab685413a1139e97.zip",
+              "final_url": "https://git.door43.org/unfoldingWord/el-x-koine_ugnt/archive/fc95b2b8aad08bb65ab54628ab685413a1139e97.zip",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 1252605,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/octet-stream",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.door43.org",
+                  "issuer": "C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication CA DV R36",
+                  "serial_number": "00:b3:fb:db:01:05:f6:2a:61:a7:20:2a:a5:e7:1e:7e:54:",
+                  "signature_algorithm": "sha256WithRSAEncryption",
+                  "start_date": "2025-12-19 00:00:00 GMT",
+                  "expire_date": "2026-10-11 23:59:59 GMT"
+                }
+              },
+              "remote_ip": "52.89.122.151",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.79373
+            }
+          ]
+        },
+        {
+          "source_id": "wikisource_ohienko_1988_revisions",
+          "status": "downloaded",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\wikisource_ohienko_1988_revisions.json",
+          "bytes": 8372816,
+          "sha256": "c7bc09ffdb232ded0abae6b631e382d896396750e3d3931ba5ee07e22c3e0702",
+          "attempts": [
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T05:59:57Z",
+              "finished_at_utc": "2026-08-01T05:59:58Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=442425%7C960013%7C107971%7C108617%7C108728%7C108839%7C442394%7C109061%7C109170%7C109281%7C109392%7C107972%7C108083%7C108193%7C108303%7C986112%7C108524%7C93080%7C145764%7C108595%7C108606%7C108618%7C108629%7C108640%7C108651%7C108662%7C108673%7C108684%7C108695%7C108706%7C108717%7C108729%7C108740%7C108751%7C108762%7C108773%7C108784%7C108795%7C108806%7C108817%7C108828%7C108840%7C108851%7C108862%7C108873%7C108884%7C108895%7C108906%7C108917%7C108928&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=442425%7C960013%7C107971%7C108617%7C108728%7C108839%7C442394%7C109061%7C109170%7C109281%7C109392%7C107972%7C108083%7C108193%7C108303%7C986112%7C108524%7C93080%7C145764%7C108595%7C108606%7C108618%7C108629%7C108640%7C108651%7C108662%7C108673%7C108684%7C108695%7C108706%7C108717%7C108729%7C108740%7C108751%7C108762%7C108773%7C108784%7C108795%7C108806%7C108817%7C108828%7C108840%7C108851%7C108862%7C108873%7C108884%7C108895%7C108906%7C108917%7C108928&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 246568,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.836172
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:00:04Z",
+              "finished_at_utc": "2026-08-01T06:00:05Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108939%7C108951%7C108962%7C108973%7C108984%7C108995%7C109006%7C109017%7C109028%7C109039%7C109050%7C109062%7C109073%7C109084%7C109093%7C602824%7C109115%7C109126%7C109137%7C109148%7C109159%7C109171%7C109182%7C109193%7C109204%7C109215%7C109226%7C109237%7C109248%7C109259%7C737467%7C539154%7C109293%7C109304%7C537028%7C109326%7C109337%7C109348%7C109359%7C611147%7C109381%7C109393%7C109404%7C109415%7C602829%7C66885%7C93634%7C130163%7C132250%7C665496&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108939%7C108951%7C108962%7C108973%7C108984%7C108995%7C109006%7C109017%7C109028%7C109039%7C109050%7C109062%7C109073%7C109084%7C109093%7C602824%7C109115%7C109126%7C109137%7C109148%7C109159%7C109171%7C109182%7C109193%7C109204%7C109215%7C109226%7C109237%7C109248%7C109259%7C737467%7C539154%7C109293%7C109304%7C537028%7C109326%7C109337%7C109348%7C109359%7C611147%7C109381%7C109393%7C109404%7C109415%7C602829%7C66885%7C93634%7C130163%7C132250%7C665496&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 290674,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.204414
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:00:12Z",
+              "finished_at_utc": "2026-08-01T06:00:13Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=670419%7C107973%7C107984%7C107995%7C108006%7C108017%7C657849%7C108039%7C108050%7C108061%7C108072%7C108084%7C108095%7C145763%7C108117%7C108128%7C665207%7C665208%7C108160%7C146306%7C108182%7C665209%7C108205%7C108216%7C108227%7C108238%7C108249%7C108260%7C665243%7C108281%7C108292%7C611146%7C108315%7C108326%7C108337%7C108348%7C108359%7C108370%7C536986%7C108392%7C74425%7C108414%7C108425%7C108436%7C108447%7C602826%7C108469%7C108480%7C108491%7C108502&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=670419%7C107973%7C107984%7C107995%7C108006%7C108017%7C657849%7C108039%7C108050%7C108061%7C108072%7C108084%7C108095%7C145763%7C108117%7C108128%7C665207%7C665208%7C108160%7C146306%7C108182%7C665209%7C108205%7C108216%7C108227%7C108238%7C108249%7C108260%7C665243%7C108281%7C108292%7C611146%7C108315%7C108326%7C108337%7C108348%7C108359%7C108370%7C536986%7C108392%7C74425%7C108414%7C108425%7C108436%7C108447%7C602826%7C108469%7C108480%7C108491%7C108502&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 293147,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.119278
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:00:20Z",
+              "finished_at_utc": "2026-08-01T06:00:21Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108513%7C108525%7C108536%7C108547%7C108558%7C108568%7C108569%7C108570%7C108571%7C108572%7C108573%7C108574%7C108575%7C602825%7C108577%7C108578%7C108579%7C536985%7C108581%7C108582%7C108583%7C108585%7C108586%7C108587%7C108588%7C108589%7C108590%7C108591%7C108592%7C108593%7C108594%7C108596%7C108597%7C108598%7C108599%7C108600%7C108601%7C108602%7C108603%7C108604%7C108605%7C108607%7C108608%7C108609%7C108610%7C108611%7C108612%7C108613%7C108614%7C108615&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108513%7C108525%7C108536%7C108547%7C108558%7C108568%7C108569%7C108570%7C108571%7C108572%7C108573%7C108574%7C108575%7C602825%7C108577%7C108578%7C108579%7C536985%7C108581%7C108582%7C108583%7C108585%7C108586%7C108587%7C108588%7C108589%7C108590%7C108591%7C108592%7C108593%7C108594%7C108596%7C108597%7C108598%7C108599%7C108600%7C108601%7C108602%7C108603%7C108604%7C108605%7C108607%7C108608%7C108609%7C108610%7C108611%7C108612%7C108613%7C108614%7C108615&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 295667,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.255629
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:00:27Z",
+              "finished_at_utc": "2026-08-01T06:00:28Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108616%7C108619%7C108620%7C108621%7C108622%7C108623%7C108624%7C108625%7C108626%7C108627%7C108628%7C108630%7C108631%7C108632%7C108633%7C108634%7C108635%7C108636%7C108637%7C108638%7C108639%7C108641%7C108642%7C108643%7C108644%7C108645%7C108646%7C108647%7C108648%7C108649%7C108650%7C108652%7C108653%7C108654%7C108655%7C108656%7C108657%7C108658%7C108659%7C602830%7C108661%7C108663%7C108664%7C108665%7C108666%7C108667%7C108668%7C108669%7C108670%7C108671&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108616%7C108619%7C108620%7C108621%7C108622%7C108623%7C108624%7C108625%7C108626%7C108627%7C108628%7C108630%7C108631%7C108632%7C108633%7C108634%7C108635%7C108636%7C108637%7C108638%7C108639%7C108641%7C108642%7C108643%7C108644%7C108645%7C108646%7C108647%7C108648%7C108649%7C108650%7C108652%7C108653%7C108654%7C108655%7C108656%7C108657%7C108658%7C108659%7C602830%7C108661%7C108663%7C108664%7C108665%7C108666%7C108667%7C108668%7C108669%7C108670%7C108671&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 290982,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.92402
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:00:35Z",
+              "finished_at_utc": "2026-08-01T06:00:36Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108672%7C108674%7C108675%7C108676%7C108677%7C108678%7C108679%7C108680%7C108681%7C108682%7C108683%7C108685%7C108686%7C108687%7C108688%7C108689%7C108690%7C108691%7C108692%7C108693%7C108694%7C108696%7C108697%7C108698%7C108699%7C108700%7C108701%7C145765%7C108703%7C108704%7C108705%7C108707%7C1006161%7C108709%7C108710%7C108711%7C108712%7C108713%7C108714%7C108715%7C108716%7C108718%7C108719%7C108720%7C108721%7C108722%7C108723%7C538657%7C108725%7C108726&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108672%7C108674%7C108675%7C108676%7C108677%7C108678%7C108679%7C108680%7C108681%7C108682%7C108683%7C108685%7C108686%7C108687%7C108688%7C108689%7C108690%7C108691%7C108692%7C108693%7C108694%7C108696%7C108697%7C108698%7C108699%7C108700%7C108701%7C145765%7C108703%7C108704%7C108705%7C108707%7C1006161%7C108709%7C108710%7C108711%7C108712%7C108713%7C108714%7C108715%7C108716%7C108718%7C108719%7C108720%7C108721%7C108722%7C108723%7C538657%7C108725%7C108726&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 289779,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.201957
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:00:43Z",
+              "finished_at_utc": "2026-08-01T06:00:44Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108727%7C108730%7C108731%7C108732%7C108733%7C108734%7C108735%7C108736%7C108737%7C108738%7C108739%7C108741%7C108742%7C108743%7C108744%7C108745%7C108746%7C108747%7C108748%7C108749%7C538656%7C108752%7C108753%7C108754%7C108755%7C108756%7C108757%7C108758%7C108759%7C108760%7C108761%7C108763%7C108764%7C108765%7C108766%7C108767%7C108768%7C108769%7C108770%7C108771%7C108772%7C108774%7C108775%7C108776%7C108777%7C108778%7C108779%7C108780%7C108781%7C108782&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108727%7C108730%7C108731%7C108732%7C108733%7C108734%7C108735%7C108736%7C108737%7C108738%7C108739%7C108741%7C108742%7C108743%7C108744%7C108745%7C108746%7C108747%7C108748%7C108749%7C538656%7C108752%7C108753%7C108754%7C108755%7C108756%7C108757%7C108758%7C108759%7C108760%7C108761%7C108763%7C108764%7C108765%7C108766%7C108767%7C108768%7C108769%7C108770%7C108771%7C108772%7C108774%7C108775%7C108776%7C108777%7C108778%7C108779%7C108780%7C108781%7C108782&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 291609,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.869431
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:00:50Z",
+              "finished_at_utc": "2026-08-01T06:00:51Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108783%7C108785%7C108786%7C108787%7C108788%7C108789%7C108790%7C108791%7C108792%7C108793%7C602831%7C108796%7C108797%7C108798%7C108799%7C108800%7C108801%7C108802%7C108803%7C108804%7C108805%7C538208%7C108808%7C108809%7C108810%7C108811%7C108812%7C108813%7C108814%7C108815%7C108816%7C108818%7C536984%7C108820%7C108821%7C108822%7C108823%7C108824%7C108825%7C108826%7C108827%7C108829%7C108830%7C108831%7C108832%7C108833%7C108834%7C108835%7C108836%7C108837&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108783%7C108785%7C108786%7C108787%7C108788%7C108789%7C108790%7C108791%7C108792%7C108793%7C602831%7C108796%7C108797%7C108798%7C108799%7C108800%7C108801%7C108802%7C108803%7C108804%7C108805%7C538208%7C108808%7C108809%7C108810%7C108811%7C108812%7C108813%7C108814%7C108815%7C108816%7C108818%7C536984%7C108820%7C108821%7C108822%7C108823%7C108824%7C108825%7C108826%7C108827%7C108829%7C108830%7C108831%7C108832%7C108833%7C108834%7C108835%7C108836%7C108837&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 297352,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.822734
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:00:58Z",
+              "finished_at_utc": "2026-08-01T06:00:59Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108838%7C108841%7C108842%7C108843%7C108844%7C648291%7C108846%7C108847%7C108848%7C108849%7C108850%7C108852%7C108853%7C108854%7C108855%7C108856%7C108857%7C108858%7C108859%7C108860%7C108861%7C108863%7C108864%7C108865%7C108866%7C108867%7C108868%7C108869%7C108870%7C108871%7C108872%7C108874%7C108875%7C108876%7C108877%7C108878%7C108879%7C108880%7C108881%7C108882%7C108883%7C108885%7C108886%7C108887%7C108888%7C108889%7C108890%7C108891%7C108892%7C108893&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108838%7C108841%7C108842%7C108843%7C108844%7C648291%7C108846%7C108847%7C108848%7C108849%7C108850%7C108852%7C108853%7C108854%7C108855%7C108856%7C108857%7C108858%7C108859%7C108860%7C108861%7C108863%7C108864%7C108865%7C108866%7C108867%7C108868%7C108869%7C108870%7C108871%7C108872%7C108874%7C108875%7C108876%7C108877%7C108878%7C108879%7C108880%7C108881%7C108882%7C108883%7C108885%7C108886%7C108887%7C108888%7C108889%7C108890%7C108891%7C108892%7C108893&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 293584,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.049574
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:01:05Z",
+              "finished_at_utc": "2026-08-01T06:01:06Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108894%7C108896%7C108897%7C108898%7C108899%7C108900%7C108901%7C108902%7C538207%7C108904%7C108905%7C108907%7C108908%7C108909%7C108910%7C108911%7C108912%7C108913%7C108914%7C108915%7C108916%7C108918%7C108919%7C108920%7C108921%7C108922%7C108923%7C108924%7C108925%7C108926%7C108927%7C108929%7C108930%7C108931%7C108932%7C108933%7C108934%7C108935%7C108936%7C108937%7C108938%7C108940%7C108941%7C108942%7C108943%7C108944%7C108945%7C108946%7C108947%7C108948&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108894%7C108896%7C108897%7C108898%7C108899%7C108900%7C108901%7C108902%7C538207%7C108904%7C108905%7C108907%7C108908%7C108909%7C108910%7C108911%7C108912%7C108913%7C108914%7C108915%7C108916%7C108918%7C108919%7C108920%7C108921%7C108922%7C108923%7C108924%7C108925%7C108926%7C108927%7C108929%7C108930%7C108931%7C108932%7C108933%7C108934%7C108935%7C108936%7C108937%7C108938%7C108940%7C108941%7C108942%7C108943%7C108944%7C108945%7C108946%7C108947%7C108948&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 297603,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.034858
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:01:13Z",
+              "finished_at_utc": "2026-08-01T06:01:14Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108949%7C108952%7C108953%7C108954%7C108955%7C108956%7C108957%7C108958%7C108959%7C108960%7C108961%7C108963%7C108964%7C108965%7C108966%7C108967%7C108968%7C108969%7C108970%7C108971%7C108972%7C108974%7C108975%7C108976%7C108977%7C108978%7C108979%7C108980%7C108981%7C108982%7C108983%7C108985%7C108986%7C108987%7C108988%7C108989%7C108990%7C108991%7C108992%7C108993%7C108994%7C108996%7C108997%7C108998%7C108999%7C109000%7C109001%7C109002%7C109003%7C109004&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108949%7C108952%7C108953%7C108954%7C108955%7C108956%7C108957%7C108958%7C108959%7C108960%7C108961%7C108963%7C108964%7C108965%7C108966%7C108967%7C108968%7C108969%7C108970%7C108971%7C108972%7C108974%7C108975%7C108976%7C108977%7C108978%7C108979%7C108980%7C108981%7C108982%7C108983%7C108985%7C108986%7C108987%7C108988%7C108989%7C108990%7C108991%7C108992%7C108993%7C108994%7C108996%7C108997%7C108998%7C108999%7C109000%7C109001%7C109002%7C109003%7C109004&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 293085,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.166845
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:01:21Z",
+              "finished_at_utc": "2026-08-01T06:01:22Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109005%7C109007%7C109008%7C538206%7C109010%7C109011%7C109012%7C109013%7C109014%7C109015%7C109016%7C109018%7C109019%7C109020%7C109021%7C109022%7C538205%7C109024%7C109025%7C109026%7C109027%7C109029%7C109030%7C109031%7C109032%7C109033%7C109034%7C538204%7C109036%7C109037%7C109038%7C109040%7C109041%7C109042%7C109043%7C109044%7C109045%7C109046%7C109047%7C109048%7C109049%7C109051%7C109052%7C109053%7C109054%7C109055%7C109056%7C109057%7C109058%7C109059&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109005%7C109007%7C109008%7C538206%7C109010%7C109011%7C109012%7C109013%7C109014%7C109015%7C109016%7C109018%7C109019%7C109020%7C109021%7C109022%7C538205%7C109024%7C109025%7C109026%7C109027%7C109029%7C109030%7C109031%7C109032%7C109033%7C109034%7C538204%7C109036%7C109037%7C109038%7C109040%7C109041%7C109042%7C109043%7C109044%7C109045%7C109046%7C109047%7C109048%7C109049%7C109051%7C109052%7C109053%7C109054%7C109055%7C109056%7C109057%7C109058%7C109059&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 298684,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.003442
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:01:28Z",
+              "finished_at_utc": "2026-08-01T06:01:29Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109060%7C538203%7C109064%7C109065%7C109066%7C109067%7C109068%7C109069%7C109070%7C109071%7C109072%7C109074%7C109075%7C109076%7C109077%7C109078%7C109079%7C109080%7C109081%7C109082%7C109083%7C82100%7C109085%7C109086%7C109087%7C82101%7C109088%7C109089%7C109090%7C109091%7C109092%7C109094%7C109095%7C536777%7C109097%7C109098%7C109099%7C109100%7C109101%7C109102%7C109103%7C538743%7C109106%7C109107%7C109108%7C109109%7C109110%7C109111%7C109112%7C536776&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109060%7C538203%7C109064%7C109065%7C109066%7C109067%7C109068%7C109069%7C109070%7C109071%7C109072%7C109074%7C109075%7C109076%7C109077%7C109078%7C109079%7C109080%7C109081%7C109082%7C109083%7C82100%7C109085%7C109086%7C109087%7C82101%7C109088%7C109089%7C109090%7C109091%7C109092%7C109094%7C109095%7C536777%7C109097%7C109098%7C109099%7C109100%7C109101%7C109102%7C109103%7C538743%7C109106%7C109107%7C109108%7C109109%7C109110%7C109111%7C109112%7C536776&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 263586,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.849901
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:01:36Z",
+              "finished_at_utc": "2026-08-01T06:01:37Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109114%7C109116%7C109117%7C109118%7C109119%7C109120%7C109121%7C109122%7C109123%7C538202%7C109125%7C109127%7C109128%7C109129%7C109130%7C109131%7C109132%7C536775%7C109134%7C109135%7C444258%7C442063%7C442066%7C442068%7C442073%7C109142%7C442076%7C442078%7C443716%7C538742%7C444100%7C444102%7C444116%7C444135%7C444136%7C444119%7C444120%7C444121%7C444122%7C444123%7C444124%7C444125%7C444126%7C534653%7C444128%7C444129%7C444130%7C444131%7C444132%7C444133&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109114%7C109116%7C109117%7C109118%7C109119%7C109120%7C109121%7C109122%7C109123%7C538202%7C109125%7C109127%7C109128%7C109129%7C109130%7C109131%7C109132%7C536775%7C109134%7C109135%7C444258%7C442063%7C442066%7C442068%7C442073%7C109142%7C442076%7C442078%7C443716%7C538742%7C444100%7C444102%7C444116%7C444135%7C444136%7C444119%7C444120%7C444121%7C444122%7C444123%7C444124%7C444125%7C444126%7C534653%7C444128%7C444129%7C444130%7C444131%7C444132%7C444133&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 228535,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.976591
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:01:43Z",
+              "finished_at_utc": "2026-08-01T06:01:44Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=444134%7C444194%7C444261%7C444262%7C444263%7C444264%7C444265%7C444266%7C444267%7C444268%7C109181%7C444269%7C444270%7C444271%7C444272%7C444273%7C444274%7C444275%7C444276%7C109191%7C444277%7C109194%7C444278%7C444279%7C444281%7C444444%7C444445%7C444446%7C444447%7C109202%7C109203%7C444448%7C444449%7C444450%7C444451%7C444452%7C444453%7C444454%7C444455%7C109213%7C444457%7C444482%7C444483%7C444484%7C444485%7C444486%7C444487%7C444488%7C444489%7C444490&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=444134%7C444194%7C444261%7C444262%7C444263%7C444264%7C444265%7C444266%7C444267%7C444268%7C109181%7C444269%7C444270%7C444271%7C444272%7C444273%7C444274%7C444275%7C444276%7C109191%7C444277%7C109194%7C444278%7C444279%7C444281%7C444444%7C444445%7C444446%7C444447%7C109202%7C109203%7C444448%7C444449%7C444450%7C444451%7C444452%7C444453%7C444454%7C444455%7C109213%7C444457%7C444482%7C444483%7C444484%7C444485%7C444486%7C444487%7C444488%7C444489%7C444490&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 227798,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.973461
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:01:51Z",
+              "finished_at_utc": "2026-08-01T06:01:52Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=444491%7C109227%7C444492%7C109229%7C444589%7C109231%7C444494%7C109233%7C444495%7C444496%7C444497%7C444498%7C444499%7C109240%7C109241%7C109242%7C109243%7C109244%7C109245%7C536899%7C444504%7C444520%7C444507%7C444508%7C444509%7C444510%7C444511%7C444512%7C532784%7C444514%7C444515%7C444516%7C444517%7C444518%7C444524%7C109264%7C109265%7C109266%7C109267%7C109268%7C109269%7C109271%7C109272%7C109273%7C109274%7C109275%7C109276%7C109277%7C109278%7C109279&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=444491%7C109227%7C444492%7C109229%7C444589%7C109231%7C444494%7C109233%7C444495%7C444496%7C444497%7C444498%7C444499%7C109240%7C109241%7C109242%7C109243%7C109244%7C109245%7C536899%7C444504%7C444520%7C444507%7C444508%7C444509%7C444510%7C444511%7C444512%7C532784%7C444514%7C444515%7C444516%7C444517%7C444518%7C444524%7C109264%7C109265%7C109266%7C109267%7C109268%7C109269%7C109271%7C109272%7C109273%7C109274%7C109275%7C109276%7C109277%7C109278%7C109279&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 223788,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.957967
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:01:58Z",
+              "finished_at_utc": "2026-08-01T06:01:59Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109280%7C109283%7C109284%7C109285%7C109286%7C109287%7C109288%7C109289%7C109290%7C109291%7C109292%7C109294%7C109295%7C109296%7C109297%7C109298%7C109299%7C109300%7C109301%7C109302%7C109303%7C109305%7C109306%7C109307%7C109308%7C109309%7C109310%7C109311%7C109312%7C109313%7C109314%7C109316%7C109317%7C109318%7C109319%7C109320%7C109321%7C534652%7C109323%7C109324%7C109325%7C109327%7C109328%7C109329%7C109330%7C109331%7C109332%7C109333%7C109334%7C536774&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109280%7C109283%7C109284%7C109285%7C109286%7C109287%7C109288%7C109289%7C109290%7C109291%7C109292%7C109294%7C109295%7C109296%7C109297%7C109298%7C109299%7C109300%7C109301%7C109302%7C109303%7C109305%7C109306%7C109307%7C109308%7C109309%7C109310%7C109311%7C109312%7C109313%7C109314%7C109316%7C109317%7C109318%7C109319%7C109320%7C109321%7C534652%7C109323%7C109324%7C109325%7C109327%7C109328%7C109329%7C109330%7C109331%7C109332%7C109333%7C109334%7C536774&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 219307,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.873684
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:02:06Z",
+              "finished_at_utc": "2026-08-01T06:02:07Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109336%7C109338%7C109339%7C109340%7C109341%7C109342%7C109343%7C109344%7C109345%7C109346%7C109347%7C109349%7C109350%7C109351%7C109352%7C109353%7C109354%7C109355%7C109356%7C109357%7C109358%7C109360%7C109361%7C109362%7C109363%7C109364%7C109365%7C109366%7C537887%7C109368%7C109369%7C109371%7C109372%7C109373%7C109374%7C109375%7C540995%7C109377%7C109378%7C109379%7C1017832%7C109382%7C109383%7C109384%7C109385%7C109386%7C109387%7C109388%7C109389%7C109390&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109336%7C109338%7C109339%7C109340%7C109341%7C109342%7C109343%7C109344%7C109345%7C109346%7C109347%7C109349%7C109350%7C109351%7C109352%7C109353%7C109354%7C109355%7C109356%7C109357%7C109358%7C109360%7C109361%7C109362%7C109363%7C109364%7C109365%7C109366%7C537887%7C109368%7C109369%7C109371%7C109372%7C109373%7C109374%7C109375%7C540995%7C109377%7C109378%7C109379%7C1017832%7C109382%7C109383%7C109384%7C109385%7C109386%7C109387%7C109388%7C109389%7C109390&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 229181,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.9222
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:02:13Z",
+              "finished_at_utc": "2026-08-01T06:02:14Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109391%7C109394%7C109395%7C109396%7C109397%7C109398%7C109399%7C109400%7C109401%7C536773%7C109403%7C109405%7C109406%7C109407%7C545337%7C109409%7C109410%7C109411%7C109412%7C109413%7C109414%7C109416%7C109417%7C109418%7C109419%7C109420%7C109421%7C109422%7C109423%7C109424%7C109425%7C109427%7C109428%7C109429%7C109430%7C109431%7C109432%7C109433%7C109434%7C109435%7C109436%7C109437%7C109438%7C538201%7C109440%7C109441%7C109442%7C109443%7C109444%7C109445&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109391%7C109394%7C109395%7C109396%7C109397%7C109398%7C109399%7C109400%7C109401%7C536773%7C109403%7C109405%7C109406%7C109407%7C545337%7C109409%7C109410%7C109411%7C109412%7C109413%7C109414%7C109416%7C109417%7C109418%7C109419%7C109420%7C109421%7C109422%7C109423%7C109424%7C109425%7C109427%7C109428%7C109429%7C109430%7C109431%7C109432%7C109433%7C109434%7C109435%7C109436%7C109437%7C109438%7C538201%7C109440%7C109441%7C109442%7C109443%7C109444%7C109445&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 216463,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.8359
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:02:21Z",
+              "finished_at_utc": "2026-08-01T06:02:22Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109446%7C109447%7C109448%7C109449%7C109450%7C109451%7C109452%7C109453%7C109454%7C109455%7C109456%7C109458%7C109459%7C109460%7C109461%7C109462%7C109463%7C109464%7C109465%7C109466%7C109467%7C109469%7C109470%7C109471%7C109472%7C536772%7C109474%7C109475%7C109476%7C109477%7C109478%7C109480%7C109481%7C109482%7C109483%7C109484%7C109485%7C109486%7C109487%7C109488%7C109489%7C109491%7C109492%7C109493%7C109494%7C109495%7C109496%7C109497%7C109498%7C109499&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109446%7C109447%7C109448%7C109449%7C109450%7C109451%7C109452%7C109453%7C109454%7C109455%7C109456%7C109458%7C109459%7C109460%7C109461%7C109462%7C109463%7C109464%7C109465%7C109466%7C109467%7C109469%7C109470%7C109471%7C109472%7C536772%7C109474%7C109475%7C109476%7C109477%7C109478%7C109480%7C109481%7C109482%7C109483%7C109484%7C109485%7C109486%7C109487%7C109488%7C109489%7C109491%7C109492%7C109493%7C109494%7C109495%7C109496%7C109497%7C109498%7C109499&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 246409,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.908913
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:02:28Z",
+              "finished_at_utc": "2026-08-01T06:02:29Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109500%7C107974%7C107975%7C107976%7C538212%7C107978%7C107979%7C107980%7C107981%7C107982%7C545338%7C107985%7C107986%7C107987%7C536781%7C107989%7C538211%7C107991%7C107992%7C107993%7C107994%7C107996%7C107997%7C536901%7C107999%7C108000%7C108001%7C511213%7C108003%7C108004%7C108005%7C108007%7C108008%7C108009%7C108010%7C108011%7C108012%7C108013%7C108014%7C108015%7C536849%7C108018%7C145767%7C108020%7C108021%7C108022%7C108023%7C108024%7C108025%7C108026&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=109500%7C107974%7C107975%7C107976%7C538212%7C107978%7C107979%7C107980%7C107981%7C107982%7C545338%7C107985%7C107986%7C107987%7C536781%7C107989%7C538211%7C107991%7C107992%7C107993%7C107994%7C107996%7C107997%7C536901%7C107999%7C108000%7C108001%7C511213%7C108003%7C108004%7C108005%7C108007%7C108008%7C108009%7C108010%7C108011%7C108012%7C108013%7C108014%7C108015%7C536849%7C108018%7C145767%7C108020%7C108021%7C108022%7C108023%7C108024%7C108025%7C108026&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 256016,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.820783
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:02:36Z",
+              "finished_at_utc": "2026-08-01T06:02:37Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108027%7C108029%7C108030%7C108031%7C108032%7C108033%7C108034%7C108035%7C108036%7C108037%7C108038%7C108040%7C108041%7C108042%7C108043%7C108044%7C108045%7C108046%7C108047%7C108048%7C108049%7C108051%7C108052%7C108053%7C108054%7C108055%7C108056%7C108057%7C108058%7C108059%7C108060%7C108062%7C108063%7C538210%7C108065%7C108066%7C108067%7C108068%7C108069%7C108070%7C108071%7C108073%7C108074%7C108075%7C108076%7C108077%7C108078%7C108079%7C108080%7C108081&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108027%7C108029%7C108030%7C108031%7C108032%7C108033%7C108034%7C108035%7C108036%7C108037%7C108038%7C108040%7C108041%7C108042%7C108043%7C108044%7C108045%7C108046%7C108047%7C108048%7C108049%7C108051%7C108052%7C108053%7C108054%7C108055%7C108056%7C108057%7C108058%7C108059%7C108060%7C108062%7C108063%7C538210%7C108065%7C108066%7C108067%7C108068%7C108069%7C108070%7C108071%7C108073%7C108074%7C108075%7C108076%7C108077%7C108078%7C108079%7C108080%7C108081&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 289826,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.926387
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:02:43Z",
+              "finished_at_utc": "2026-08-01T06:02:45Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108082%7C108085%7C108086%7C108087%7C108088%7C108089%7C108090%7C108091%7C108092%7C108093%7C108094%7C108096%7C108097%7C108098%7C108099%7C108100%7C108101%7C108102%7C108103%7C108104%7C108105%7C108107%7C108108%7C108109%7C108110%7C108111%7C108112%7C536780%7C108114%7C108115%7C108116%7C108118%7C108119%7C108120%7C108121%7C108122%7C108123%7C108124%7C108125%7C108126%7C108127%7C108129%7C108130%7C108131%7C108132%7C108133%7C108134%7C108135%7C108136%7C108137&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108082%7C108085%7C108086%7C108087%7C108088%7C108089%7C108090%7C108091%7C108092%7C108093%7C108094%7C108096%7C108097%7C108098%7C108099%7C108100%7C108101%7C108102%7C108103%7C108104%7C108105%7C108107%7C108108%7C108109%7C108110%7C108111%7C108112%7C536780%7C108114%7C108115%7C108116%7C108118%7C108119%7C108120%7C108121%7C108122%7C108123%7C108124%7C108125%7C108126%7C108127%7C108129%7C108130%7C108131%7C108132%7C108133%7C108134%7C108135%7C108136%7C108137&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 253326,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.328485
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:02:51Z",
+              "finished_at_utc": "2026-08-01T06:02:52Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=125033%7C108140%7C108141%7C108142%7C536779%7C108144%7C108145%7C108146%7C538209%7C108148%7C108149%7C108151%7C516455%7C108153%7C108154%7C108155%7C108156%7C108157%7C108158%7C108159%7C74426%7C108161%7C108162%7C108163%7C108164%7C108165%7C108166%7C108167%7C108168%7C108169%7C108170%7C536778%7C108173%7C108174%7C108175%7C108176%7C108177%7C108178%7C108179%7C108180%7C108181%7C108183%7C108184%7C137103%7C108186%7C108187%7C108188%7C108189%7C108190%7C108191&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=125033%7C108140%7C108141%7C108142%7C536779%7C108144%7C108145%7C108146%7C538209%7C108148%7C108149%7C108151%7C516455%7C108153%7C108154%7C108155%7C108156%7C108157%7C108158%7C108159%7C74426%7C108161%7C108162%7C108163%7C108164%7C108165%7C108166%7C108167%7C108168%7C108169%7C108170%7C536778%7C108173%7C108174%7C108175%7C108176%7C108177%7C108178%7C108179%7C108180%7C108181%7C108183%7C108184%7C137103%7C108186%7C108187%7C108188%7C108189%7C108190%7C108191&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 231908,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.995711
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:02:59Z",
+              "finished_at_utc": "2026-08-01T06:03:00Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108192%7C108195%7C137143%7C108197%7C108198%7C137150%7C108200%7C108201%7C108202%7C108203%7C108204%7C234985%7C108207%7C108208%7C108209%7C108210%7C108211%7C108212%7C108213%7C108214%7C108215%7C137679%7C108218%7C108219%7C108220%7C108221%7C108222%7C108223%7C108224%7C108225%7C108226%7C108228%7C108229%7C108230%7C108231%7C108232%7C108233%7C108234%7C108235%7C108236%7C108237%7C108239%7C108240%7C108241%7C108242%7C108243%7C138494%7C108245%7C108246%7C108247&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108192%7C108195%7C137143%7C108197%7C108198%7C137150%7C108200%7C108201%7C108202%7C108203%7C108204%7C234985%7C108207%7C108208%7C108209%7C108210%7C108211%7C108212%7C108213%7C108214%7C108215%7C137679%7C108218%7C108219%7C108220%7C108221%7C108222%7C108223%7C108224%7C108225%7C108226%7C108228%7C108229%7C108230%7C108231%7C108232%7C108233%7C108234%7C108235%7C108236%7C108237%7C108239%7C108240%7C108241%7C108242%7C108243%7C138494%7C108245%7C108246%7C108247&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 289041,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.815567
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:03:06Z",
+              "finished_at_utc": "2026-08-01T06:03:07Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108248%7C108250%7C108251%7C108252%7C108253%7C138700%7C138701%7C138702%7C108257%7C108258%7C108259%7C108261%7C108262%7C108263%7C108264%7C74427%7C108265%7C108266%7C108267%7C108268%7C108269%7C108271%7C108272%7C108273%7C108274%7C108275%7C108276%7C108277%7C108278%7C108279%7C108280%7C108282%7C138966%7C138967%7C536900%7C108286%7C108287%7C108288%7C108289%7C139021%7C139022%7C108293%7C108294%7C108295%7C108296%7C108297%7C108298%7C108299%7C108300%7C108301&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108248%7C108250%7C108251%7C108252%7C108253%7C138700%7C138701%7C138702%7C108257%7C108258%7C108259%7C108261%7C108262%7C108263%7C108264%7C74427%7C108265%7C108266%7C108267%7C108268%7C108269%7C108271%7C108272%7C108273%7C108274%7C108275%7C108276%7C108277%7C108278%7C108279%7C108280%7C108282%7C138966%7C138967%7C536900%7C108286%7C108287%7C108288%7C108289%7C139021%7C139022%7C108293%7C108294%7C108295%7C108296%7C108297%7C108298%7C108299%7C108300%7C108301&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 286328,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.914462
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:03:14Z",
+              "finished_at_utc": "2026-08-01T06:03:16Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108302%7C108305%7C108306%7C108307%7C139066%7C139065%7C108310%7C108311%7C108312%7C108313%7C108314%7C108316%7C108317%7C108318%7C108319%7C108320%7C108321%7C108322%7C108323%7C139358%7C139361%7C139414%7C139415%7C108329%7C108330%7C108331%7C108332%7C108333%7C108334%7C108335%7C108336%7C108338%7C108339%7C108340%7C108341%7C108342%7C108343%7C108344%7C108345%7C108346%7C108347%7C108349%7C108350%7C108351%7C139690%7C108353%7C108354%7C108355%7C108356%7C108357&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108302%7C108305%7C108306%7C108307%7C139066%7C139065%7C108310%7C108311%7C108312%7C108313%7C108314%7C108316%7C108317%7C108318%7C108319%7C108320%7C108321%7C108322%7C108323%7C139358%7C139361%7C139414%7C139415%7C108329%7C108330%7C108331%7C108332%7C108333%7C108334%7C108335%7C108336%7C108338%7C108339%7C108340%7C108341%7C108342%7C108343%7C108344%7C108345%7C108346%7C108347%7C108349%7C108350%7C108351%7C139690%7C108353%7C108354%7C108355%7C108356%7C108357&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 284386,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 1.982155
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:03:22Z",
+              "finished_at_utc": "2026-08-01T06:03:24Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108358%7C108360%7C108361%7C108362%7C230538%7C108364%7C108365%7C108366%7C108367%7C108368%7C108369%7C108371%7C108372%7C108373%7C108374%7C108375%7C108376%7C108377%7C108378%7C108379%7C108380%7C108382%7C108383%7C108384%7C918830%7C140834%7C108387%7C108388%7C108389%7C108390%7C108391%7C108393%7C108394%7C108395%7C141210%7C108397%7C141279%7C108399%7C108400%7C108401%7C108402%7C108403%7C108404%7C108405%7C108406%7C108407%7C143279%7C108409%7C108410%7C108411&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108358%7C108360%7C108361%7C108362%7C230538%7C108364%7C108365%7C108366%7C108367%7C108368%7C108369%7C108371%7C108372%7C108373%7C108374%7C108375%7C108376%7C108377%7C108378%7C108379%7C108380%7C108382%7C108383%7C108384%7C918830%7C140834%7C108387%7C108388%7C108389%7C108390%7C108391%7C108393%7C108394%7C108395%7C141210%7C108397%7C141279%7C108399%7C108400%7C108401%7C108402%7C108403%7C108404%7C108405%7C108406%7C108407%7C143279%7C108409%7C108410%7C108411&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 288884,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.946869
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:03:30Z",
+              "finished_at_utc": "2026-08-01T06:03:31Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108412%7C108415%7C108416%7C144286%7C144288%7C108419%7C108420%7C108421%7C108422%7C108423%7C108424%7C108426%7C144831%7C108428%7C108429%7C108430%7C145139%7C108432%7C108433%7C145442%7C108435%7C108437%7C108438%7C108439%7C108440%7C108441%7C108442%7C108443%7C108444%7C145850%7C108446%7C108448%7C108449%7C538950%7C108451%7C108452%7C108453%7C108454%7C146352%7C108456%7C108457%7C108459%7C146376%7C108461%7C515465%7C108463%7C108464%7C108465%7C108466%7C108467&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108412%7C108415%7C108416%7C144286%7C144288%7C108419%7C108420%7C108421%7C108422%7C108423%7C108424%7C108426%7C144831%7C108428%7C108429%7C108430%7C145139%7C108432%7C108433%7C145442%7C108435%7C108437%7C108438%7C108439%7C108440%7C108441%7C108442%7C108443%7C108444%7C145850%7C108446%7C108448%7C108449%7C538950%7C108451%7C108452%7C108453%7C108454%7C146352%7C108456%7C108457%7C108459%7C146376%7C108461%7C515465%7C108463%7C108464%7C108465%7C108466%7C108467&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 285373,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.886568
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:03:38Z",
+              "finished_at_utc": "2026-08-01T06:03:39Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108468%7C108470%7C137042%7C108472%7C108473%7C108474%7C108475%7C108476%7C108477%7C108478%7C108479%7C108481%7C108482%7C108483%7C108484%7C108485%7C108486%7C540947%7C108488%7C540946%7C108490%7C137043%7C108493%7C108494%7C108495%7C108496%7C108497%7C108498%7C108499%7C108500%7C108501%7C137047%7C137048%7C108505%7C137049%7C108507%7C108508%7C108509%7C108510%7C137051%7C108512%7C108514%7C137052%7C108516%7C108517%7C137054%7C108519%7C108520%7C540945%7C108522&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108468%7C108470%7C137042%7C108472%7C108473%7C108474%7C108475%7C108476%7C108477%7C108478%7C108479%7C108481%7C108482%7C108483%7C108484%7C108485%7C108486%7C540947%7C108488%7C540946%7C108490%7C137043%7C108493%7C108494%7C108495%7C108496%7C108497%7C108498%7C108499%7C108500%7C108501%7C137047%7C137048%7C108505%7C137049%7C108507%7C108508%7C108509%7C108510%7C137051%7C108512%7C108514%7C137052%7C108516%7C108517%7C137054%7C108519%7C108520%7C540945%7C108522&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 275935,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.878142
+            },
+            {
+              "attempt": 1,
+              "started_at_utc": "2026-08-01T06:03:45Z",
+              "finished_at_utc": "2026-08-01T06:03:46Z",
+              "result": "success",
+              "requested_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108523%7C108526%7C108527%7C108528%7C108529%7C108530%7C108531%7C108532%7C108533%7C137065%7C137067%7C137070%7C108538%7C108539%7C108540%7C137072%7C137074%7C108543%7C108544%7C108545%7C108546%7C137082%7C108549%7C108550%7C137087%7C108552%7C137091%7C108554%7C108555%7C108556%7C442401%7C442402%7C442403%7C442404%7C108562%7C108563%7C108564%7C108565%7C108566%7C108567&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "final_url": "https://uk.wikisource.org/w/api.php?action=query&prop=revisions&revids=108523%7C108526%7C108527%7C108528%7C108529%7C108530%7C108531%7C108532%7C108533%7C137065%7C137067%7C137070%7C108538%7C108539%7C108540%7C137072%7C137074%7C108543%7C108544%7C108545%7C108546%7C137082%7C108549%7C108550%7C137087%7C108552%7C137091%7C108554%7C108555%7C108556%7C442401%7C442402%7C442403%7C442404%7C108562%7C108563%7C108564%7C108565%7C108566%7C108567&rvprop=ids%7Ctimestamp%7Csha1%7Csize%7Ccontent&rvslots=main&format=json&formatversion=2",
+              "status": 200,
+              "redirect_chain": [],
+              "redirect_count": 0,
+              "downloaded_bytes": 161963,
+              "response_headers": {
+                "status": 200,
+                "location": null,
+                "content_type": "application/json; charset=utf-8",
+                "content_length": null,
+                "etag": null,
+                "last_modified": null
+              },
+              "tls": {
+                "backend": "libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP",
+                "verify_result": 0,
+                "peer_certificate": {
+                  "available": true,
+                  "subject": "CN=*.wikipedia.org",
+                  "issuer": "C=US, O=Let's Encrypt, CN=YE1",
+                  "serial_number": "05:bd:1c:5b:46:87:5a:0b:3e:c7:23:bd:ac:a4:64:92:be:ed:",
+                  "signature_algorithm": "ecdsa-with-SHA384",
+                  "start_date": "2026-06-06 20:06:44 GMT",
+                  "expire_date": "2026-09-04 20:06:43 GMT"
+                }
+              },
+              "remote_ip": "2a02:ec80:600:ed1a::1",
+              "http_version": "1.1",
+              "elapsed_seconds": 0.965258
+            }
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "started_at_utc": "2026-08-01T06:03:53Z",
+      "finished_at_utc": "2026-08-01T06:03:54Z",
+      "mode": "offline",
+      "cache_dir_override": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c",
+      "status": "pass",
+      "sources": [
+        {
+          "source_id": "commons_ohienko_1988_scan",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\commons_ohienko_1988.djvu",
+          "bytes": 83637482,
+          "sha256": "0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34",
+          "attempts": []
+        },
+        {
+          "source_id": "crosswire_kjv_3_1",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\crosswire_kjvfull.xml",
+          "bytes": 28630975,
+          "sha256": "d5114fc1ab17b1e141ff5c035ef3a4354437fd24b4b8ee34f4c925915c0374ef",
+          "attempts": []
+        },
+        {
+          "source_id": "internet_archive_ohienko_1988_scan",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\internet_archive_ohienko_1988.djvu",
+          "bytes": 41818741,
+          "sha256": "39d34d366554a2c798e180d0fce05a4ca11fc8c10901c174848e37f30468cee8",
+          "attempts": []
+        },
+        {
+          "source_id": "openscriptures_oshb_v2_2",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\openscriptures_morphhb_v2_2.zip",
+          "bytes": 20869248,
+          "sha256": "dac2d0325c59f6cd22839f2ef6345544a85b50c9d657788672e7638fa11abecb",
+          "attempts": []
+        },
+        {
+          "source_id": "step_tagnt_act_rev",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tagnt_act_rev.txt",
+          "bytes": 15939932,
+          "sha256": "524e32375361e6d3fa2f7ef00b87605fdc4317a762f395651a05fdc31ad031b7",
+          "attempts": []
+        },
+        {
+          "source_id": "step_tagnt_mat_jhn",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tagnt_mat_jhn.txt",
+          "bytes": 14189032,
+          "sha256": "ab8eaaeb68e17a1dcfa34e1e9350358f22f03bc2a97244d848750ad81044bc8e",
+          "attempts": []
+        },
+        {
+          "source_id": "step_tahot_gen_deu",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tahot_gen_deu.txt",
+          "bytes": 18190455,
+          "sha256": "e9b8546ee48fe0bfc57c3b70f5f40e98d96580e803526d19026224e31753368b",
+          "attempts": []
+        },
+        {
+          "source_id": "step_tahot_isa_mal",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tahot_isa_mal.txt",
+          "bytes": 17977518,
+          "sha256": "f3ded203d2a74d6368932c97ae550d1d0754b271af491dc0dedf36fe3ba0bcc5",
+          "attempts": []
+        },
+        {
+          "source_id": "step_tahot_job_sng",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tahot_job_sng.txt",
+          "bytes": 9540133,
+          "sha256": "84e118a97e5725e3847cdfdd593873513021c790c63cc91a0d41fca2b5db2ed5",
+          "attempts": []
+        },
+        {
+          "source_id": "step_tahot_jos_est",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tahot_jos_est.txt",
+          "bytes": 24500317,
+          "sha256": "195fee1dc3653bab33701f170734eb894ed647c10cd08cc61749375fe8b73775",
+          "attempts": []
+        },
+        {
+          "source_id": "step_tvtms",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\step_tvtms.txt",
+          "bytes": 5790928,
+          "sha256": "8851a8b5a2575b2be9cc6a1bb57284c91c610154a7a259397fbfaffe37db796a",
+          "attempts": []
+        },
+        {
+          "source_id": "tanach_us_uxlc_2_5_27_6",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\tanach_us_uxlc_2_5_27_6.zip",
+          "bytes": 2365002,
+          "sha256": "1bc6e006f43d3b18f2f718cefa3aa4774cac2c54092c28d173dd61996c43a050",
+          "attempts": []
+        },
+        {
+          "source_id": "unfoldingword_ugnt_v0_34",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\unfoldingword_ugnt_v0_34.zip",
+          "bytes": 1252605,
+          "sha256": "07318be27d0027146a62363c20ffedd0db695d7680f4b32c8ae8bd3020a29d00",
+          "attempts": []
+        },
+        {
+          "source_id": "wikisource_ohienko_1988_revisions",
+          "status": "cache_hit",
+          "local_path": "C:\\Users\\karna\\AppData\\Local\\Temp\\revelation_ukrainian_stage3_e8o0w_7c\\wikisource_ohienko_1988_revisions.json",
+          "bytes": 8372816,
+          "sha256": "c7bc09ffdb232ded0abae6b631e382d896396750e3d3931ba5ee07e22c3e0702",
+          "attempts": []
+        }
+      ],
+      "errors": []
+    }
+  ]
+}
