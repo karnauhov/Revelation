@@ -1,6 +1,6 @@
 # Дорожная карта создания украинского библейского модуля с номерами Стронга
 
-Doc-Version: `1.8.0`
+Doc-Version: `1.9.0`
 Last-Updated: `2026-08-01`
 Source-Commit: `working-tree`
 
@@ -74,7 +74,7 @@ Source-Commit: `working-tree`
 
 ## Общий трекер
 
-Этапы 1–6 последовательно проверены и закрыты с учётом контракта печатных сносок и `verses.comment`. Исходный объединённый этап 6 разделён на завершённый синтез текста и отдельное Strong-выравнивание. Следующий незавершённый этап: **этап 7**. Этапы 8–13 заблокированы до отдельного завершения этапа 7.
+Этапы 1–6 последовательно проверены и закрыты с учётом контракта печатных сносок и `verses.comment`. Исходный объединённый этап 6 разделён на завершённый синтез текста и отдельное Strong-выравнивание. **Этап 7 перепроектирован и не начат:** прежний позиционный алгоритм изолирован как отклонённый эксперимент, его привязки не являются результатом этапа. Этапы 8–13 заблокированы до отдельного завершения этапа 7.
 
 - [x] Этап 1. Доступность украинских переводов, источники и лицензии
 - [x] Этап 2. Выбор перевода, техническая спецификация и целевой эталон
@@ -227,22 +227,30 @@ Source-Commit: `working-tree`
 
 **Цель:** добавить к утверждённому plain-тексту этапа 6 проверенную пословную Strong-разметку с воспроизводимым provenance, не изменяя украинский текст и комментарии.
 
-- [ ] Зафиксировать stage-6 `synthesized_text` и его SHA-256 как неизменяемый plain-text вход; хранить Strong markup отдельно и проверять точный round-trip после удаления маркеров.
-- [ ] Назначить утверждённые оригинально-языковые источники: OSHB/TAHOT/UXLC/Tanach controls для OT и TAGNT/UGNT controls для NT; документировать primary/secondary authority по каждому случаю версификации.
-- [ ] Реализовать и независимо проверить воспроизводимое пословное выравнивание украинских surface tokens с оригинально-языковыми токенами.
-- [ ] Не переносить Strong из KJV, TR, RST, другого перевода или соседнего стиха автоматически как замену пословному украинскому выравниванию.
-- [ ] Проверить связь каждого Strong с украинским словом, включая свободный порядок, опущения и добавления, повторы, составные выражения и несколько Strong на один surface token.
-- [ ] Сравнить Strong sequence, multiset и ordered metrics каждого стиха минимум с двумя утверждёнными независимыми контрольными цепочками.
-- [ ] Нормализовать только доказанные source encodings в совместимый классический формат; raw value и каждое extended/alternative преобразование сохранить в evidence.
-- [ ] Для каждого конфликта определить категорию: вариант оригинала, alternative Strong, ошибка источника/парсинга/версификации, неоднозначность выравнивания либо нерешённый случай.
-- [ ] Все ручные Strong-решения сохранить в машиночитаемом versioned override-файле с target/source ref, исходными значениями, итогом, обоснованием, evidence и digests; override без regression-теста запрещён.
-- [ ] Проверить отсутствие dangling/invalid Strong, Strong без украинского surface token, повреждённой пунктуации, потери plain-текста и автоматического nearest/neighbor binding.
-- [ ] Сформировать coverage по OT/NT, книгам и главам, полный список tokens без Strong и manual-review inventory для всех неоднозначных привязок.
-- [ ] Добавить CC0 unit/property/invariant/regression tests для OT/NT, reordered/omitted/repeated words, multiple Strong per token, round-trip, invalid numbers и неоднозначных bindings.
-- [ ] Повторить генерацию и независимые сравнения после всех разрешённых решений; не закрывать этап при любом недоказанном `critical/high` binding.
+- [ ] 7.0. Побайтно закрепить входы этапа 6, создать реестр всех alignment/lexical источников с точными версиями, лицензиями, SHA-256, зависимостями и разрешённым способом использования.
+- [ ] 7.0. Получить отдельное решение владельца до использования условных CC BY-SA/NC/NC-SA источников; не загружать и не производить из них данные молча.
+- [ ] 7.1. Установить текстологическую основу перевода Огиенко по первичным историческим документам и диагностическим местам OT/NT; не считать автоматически, что одна современная редакция MT или Greek NT точно совпадает с основой каждого места OH1988.
+- [ ] 7.1. Для каждого locus назначить основной original token universe и отдельно сохранить альтернативные чтения, textual-variant provenance и нерешённые случаи.
+- [ ] 7.2. Зафиксировать точную токенизацию всех 31 102 текстов этапа 6 и построить occurrence ledger и нормализованный украинский lexeme ledger без изменения исторической орфографии surface text.
+- [ ] 7.3. Построить единый OT/NT original-token слой из утверждённых TAHOT/OSHB/UXLC/Tanach и TAGNT/UGNT controls, сохраняя source token IDs, lemma, morphology, raw и нормализованный Strong.
+- [ ] 7.3. Импортировать только лицензированное ручное original→translation выравнивание как независимые мосты; приоритетно проверить RUSSYN и YLT, а KJV/TR и иные переводы использовать только как дополнительные evidence-каналы, не как verse-level Strong bags.
+- [ ] 7.4. До настройки алгоритма создать стратифицированный gold-набор не менее 2 000 стихов и 25 000 решений links/nulls, покрывающий OT/NT, поэзию, прозу, варианты, merge/split, reordered/omitted/repeated и multiword/multiple-Strong случаи.
+- [ ] 7.4. Оценить на gold-наборе изолированный прежний позиционный эксперимент и все новые методы; его прежние bindings не считать обучающей истиной или выполненной частью этапа.
+- [ ] 7.5. Реализовать несколько независимых генераторов кандидатов: лексико-морфологический, переводные мосты, статистическое word alignment и multilingual contextual alignment; для каждого инструмента/модели закрепить версию, лицензию и digest.
+- [ ] 7.6. Объединять кандидаты в verse-local many-to-many hypergraph с явными null links, compounds и альтернативами; запретить nearest/neighbor, пропорциональное, позиционное и простое majority-only присваивание.
+- [ ] 7.6. Применять украинский lexeme ledger только как leakage-free out-of-fold prior с распределением `lemma/context/morphology → Strong`, а не как глобальную замену доказательства конкретного употребления.
+- [ ] 7.7. Калибровать классы `A_auto`, `B_review`, `C_unresolved` на отложенных данных; автоматический класс разрешить только при односторонней нижней границе precision не ниже 99,5% и отсутствии провала по книгам/жанрам/типам аномалий.
+- [ ] 7.8. Проверить вручную все `B_review`, `C_unresolved`, textual variants и конфликтующие источники; каждое принятое решение хранить в versioned override с original/OH1988 token spans, evidence, rationale и input digests.
+- [ ] 7.9. Только после приёмки links сформировать Strong markup отдельно от immutable plain text/comment этапа 6 и доказать точный plain-text round-trip для всех 31 102 позиций.
+- [ ] 7.9. Подтвердить полный учёт original tokens и украинских surface tokens, отсутствие dangling/invalid Strong, недоказанных привязок, межстихового переноса и нерешённых `critical/high`; выполнить двойную детерминированную генерацию и полный набор проверок.
+- [ ] 7.9. Сохранить полные производные corpora только в gitignored work-каталоге; SQLite, content tool, Flutter runtime, working/web DB и этап 8 не изменять.
 - [ ] **Критерий выхода:** каждый Strong имеет доказанную связь с конкретным украинским surface token; plain text и comments этапа 6 побайтно сохранены; все control differences классифицированы; нерешённых `critical/high` нет.
 
-**Доказательства этапа:** отдельный stage-7 генератор и модель выравнивания, Strong-only override-журнал, полный ignored alignment corpus, manifests/hashes, coverage/control audit, manual review, тесты и validation log.
+**Нормативный план:** [подробный план доказательного Strong-выравнивания](./ukrainian-bible-strongs-stage-7-alignment-plan.ru.md).
+
+**Подготовительный задел, не прогресс этапа:** [отклонённый эксперимент и правила его повторного использования](../../../scripts/bible_module/reports/ukrainian_stage_7_experiment_20260801/README.ru.md), [замороженный snapshot](../../../scripts/bible_module/reports/ukrainian_stage_7_experiment_20260801/experiment_snapshot.manifest.json). Из эксперимента разрешено переиспользовать только чистые парсеры, нормализацию, сериализацию, negative fixtures и диагностические метрики после независимой проверки. Его 440 280 Strong occurrences и surface bindings не приняты.
+
+**Будущие доказательства этапа:** новый stage-7 source registry, textual fingerprint, gold corpus manifest, immutable token/lexeme ledgers, независимые candidate manifests, calibrated evaluation, Strong-only override-журнал, полный ignored alignment corpus, coverage/control audit, manual review, тесты и validation log.
 
 ## Этап 8. Сборщик и кандидат SQLite-модуля
 
@@ -402,7 +410,7 @@ dart run scripts/coverage_baseline.dart --min-effective=90.0
 | 4 | Завершён | 2026-08-01 | После fail-closed проверки 14 locked inputs реализованы независимые парсеры DjVu hidden text, ProofreadPage/MediaWiki, STEPBible TAHOT/TAGNT/TVTMS, OSHB OSIS ZIP, UXLC XML ZIP, UGNT USFM ZIP и CrossWire KJV milestone OSIS. Полные source-native `unprojected` JSONL воспроизводимо созданы в gitignored work-каталоге; 37 generated/work artifacts совпали побайтно после повторной генерации. Все 1 329 `<ref>` carriers учтены как 1 204 определения и 1 329 uses: 1 318 uses однозначно связаны с исходными стихами, 11 сносок в заголовочных шаблонах сохранены как `missing` anomalies, дубликатов uses, конфликтов текста определения, неверных anchor ranges и преждевременных target-полей нет. Commons выявлен как два одинаковых DjVu-контейнера; его логический контейнер и зависимый IA-контроль дают одинаковые 1 538 OCR-страниц. Полный безопасный diff содержит 91 569 классифицированных строк и ноль unresolved `critical/high`; 149 текстов сносок требуют последующей визуальной сверки из-за шумного hidden OCR, но не потеряны и имеют Commons page/revision provenance. [Отчёт и manifests](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/report.ru.md), [статистики](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/source_stats.json), [footnote audit](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/footnote_stats.json) и [validation log](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/validation_log.md) закрывают этап. Следующим разрешён этап 5; он не выполнялся. |
 | 5 | Завершён | 2026-08-01 | Построен детерминированный двунаправленный контракт `oh1988-kjv-protestant-v1`: все 31 160 source records представлены 31 171 непересекающимися span, все 31 102 `verse_key` точно равны baseline и имеют ровно один reverse result; дублей, необъяснённых пустых target и расхождений forward/reverse нет. 31 099 правил включают 31 026 `1:1`, 68 `merge`, 4 `split` и 1 явный source-only `range_transfer`; все 73 non-1:1 и 3 369 нестандартных/смещённых решений проверены по baseline, TVTMS и source-native digests. Для 575 target сосед формально совпадал лучше: они включены в manual review, автоматических перепривязок нет. Из 1 329 uses/markers 1 318 спроецированы (`1:1` 1 310, `merge` 8), а 11 heading footnotes сохранены как `non_verse_source_material`; `target_anchor_pending` не подменён выдуманным offset, `target_comment` не создавался. Двойная генерация 19 артефактов совпала побайтно; 158 bible_module, 30 content_tool и 920 Flutter tests, analyze, forbidden-pattern и docs-sync checks прошли. [Отчёт](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/report.ru.md), [карты и manifests](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/source_to_target_map.manifest.json), [manual review](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/manual_review.jsonl) и [validation log](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/validation_log.md) закрывают этап. |
 | 6 | Завершён | 2026-08-01 | Синтезированы ровно 31 102 непустых OH1988 target text по неизменённой карте этапа 5. Учтены 31 171 source spans и 595 095 source word tokens: 595 077 в target text и 18 в отдельном source-only `2Chr.14.14`; потерь, перекрытий и дублей нет. 31 026 `1:1`, 68 `merge` и 4 доказанных split дали 31 102 targets; 64 merge состоят из двух частей, 4 — из трёх, документированы 72 вставки U+0020 и 4 исключённых split-разделителя. Все 1 329 footnote uses/markers сохранены: 1 318 anchors разрешены через доказанные intervals, 11 heading uses оставлены non-verse; сформированы 31 102 comments. Все 149 OCR-review сносок визуально сверены с Commons scan без исправлений. Plain-text/source/footnote preservation точен, нерешённых `critical/high` нет. Двойная генерация 22 артефактов совпала по inventory/SHA-256; 16 целевых, 174 commit-scope bible-module, 30 content-tool и 920 Flutter tests, analyze, forbidden-pattern, docs-sync и staged-scope audits прошли. Strong-разметка вынесена в отдельный этап 7; SQLite не создавался. [Отчёт](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/report.ru.md), [manifests](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/synthesized_text.manifest.json), [preservation](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/plain_text_preservation_report.json), [footnote stats](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/footnote_comment_stats.json), [manual review](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/manual_review.jsonl) и [validation log](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/validation_log.md) закрывают этап. |
-| 7 | Не начат | — | — |
+| 7 | Не начат | 2026-08-01 | Подготовлен новый доказательный план: сначала текстологический fingerprint OH1988 и immutable token/lexeme ledgers, затем ручные RUSSYN/YLT и другие лицензированные original→translation мосты, независимые candidate generators, стратифицированный gold-набор, leakage-free украинский lexical prior, калибровка и ручные overrides. Прежний позиционный алгоритм изолирован как отклонённый эксперимент: его 440 280 occurrences и surface bindings не приняты, четыре ручных контрпримера подтверждают непригодность результата. Допускается повторное использование только проверяемой инфраструктуры и negative fixtures. Финальная генерация не запускалась; этап остаётся полностью открытым. |
 | 8 | Не начат | — | — |
 | 9 | Не начат | — | — |
 | 10 | Не начат | — | — |
@@ -414,6 +422,7 @@ dart run scripts/coverage_baseline.dart --min-effective=90.0
 
 - [`ukrainian-bible-strongs-stage-1-translations-and-licenses.ru.md`](./ukrainian-bible-strongs-stage-1-translations-and-licenses.ru.md) — отчёт исследования переводов, цифровых источников, Strong и лицензий этапа 1.
 - [`ukrainian-bible-strongs-stage-2-technical-specification.ru.md`](./ukrainian-bible-strongs-stage-2-technical-specification.ru.md) — нормативный технический контракт, эталонная сетка, схема комментариев к стихам, правила проекции, токенизации, Strong и аудита этапа 2.
+- [`ukrainian-bible-strongs-stage-7-alignment-plan.ru.md`](./ukrainian-bible-strongs-stage-7-alignment-plan.ru.md) — нормативный план доказательного пословного Strong-выравнивания, реестр кандидатов источников и правила повторного использования отклонённого эксперимента.
 - [`rst-strongs-module-roadmap.ru.md`](./rst-strongs-module-roadmap.ru.md) — исходная модель последовательного roadmap для отдельного перевода.
 - [`scripts/bible_module/canon.py`](../../../scripts/bible_module/canon.py) — текущая KJV/протестантская 66-книжная сетка и порядок стихов; её применимость подтверждается на этапе 2.
 - [`scripts/bible_module/build_kjv.py`](../../../scripts/bible_module/build_kjv.py) — прикладной формат и сборка KJV-модуля.
