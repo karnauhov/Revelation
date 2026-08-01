@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-08-01",
+  "accessed_on": "2026-08-01",
+  "stage": 1,
+  "status": "stage_1_complete",
+  "recommended_candidate": {
+    "translation": "Біблія або Книги Святого Письма Старого і Нового Заповіту, переклад Івана Огієнка",
+    "edition": "ювілейне видання 1988 року",
+    "scope": "точный текст издания до 1991 года; более поздние правки УБТ не входят",
+    "license": "Creative Commons Attribution-ShareAlike 4.0 International",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "permission_page": "https://commons.wikimedia.org/wiki/File:Ivan_Ohienko_Bible.djvu",
+    "permission_ticket": "2013112610015211",
+    "owner_confirmation": true,
+    "owner_confirmation_date": "2026-08-01",
+    "owner_confirmation_scope": "Exact 1988 jubilee edition; derivative text and Strong data under CC BY-SA 4.0; no mixing with later UBS editions; source roles approved."
+  },
+  "ukrainian_source_probes": [
+    {
+      "source_id": "ebible_ukr1871_usfm",
+      "url": "https://ebible.org/Scriptures/ukr1871_usfm.zip",
+      "bytes": 1730372,
+      "sha256": "ab9bdb429c452b8c2489f701004cfabd00a31ce12c3a8e81522f2991f92f9e6e",
+      "utf8_usfm_book_files": 66,
+      "chapters": 1189,
+      "verse_markers": 31082,
+      "strong_markers": 0,
+      "signed_manifest_entries_checked": 68,
+      "signed_manifest_mismatches": 0
+    },
+    {
+      "source_id": "ebible_ukrfb_usfm",
+      "url": "https://ebible.org/Scriptures/ukrfb_usfm.zip",
+      "bytes": 1730073,
+      "sha256": "4c41c8beb7fefe9cf79d66338442bf0ae35210d4253f8635596b61abd6cd75cc",
+      "utf8_usfm_book_files": 66,
+      "chapters": 1189,
+      "verse_markers": 31082,
+      "strong_markers": 0,
+      "signed_manifest_entries_checked": 68,
+      "signed_manifest_mismatches": 0,
+      "dependency_finding": "All 31082 parsed verse-text records are byte-identical to ebible_ukr1871_usfm; this is not an independent textual source."
+    },
+    {
+      "source_id": "ebible_ukr1996_usfm",
+      "url": "https://ebible.org/Scriptures/ukr1996_usfm.zip",
+      "bytes": 1731930,
+      "sha256": "12081f27b773ec033a58eb3cba29deeba4c9ea8e94a32009e11697ee6d3c586c",
+      "utf8_usfm_book_files": 66,
+      "chapters": 1189,
+      "verse_markers": 31082,
+      "strong_markers": 0,
+      "signed_manifest_entries_checked": 68,
+      "signed_manifest_mismatches": 0,
+      "dependency_finding": "The reference key set equals ukr1871; 30899 of 31082 verse-text records are identical and 183 differ."
+    },
+    {
+      "source_id": "ebible_ukronpu_usfm",
+      "url": "https://ebible.org/Scriptures/ukronpu_usfm.zip",
+      "bytes": 609600,
+      "sha256": "110fde076f4f8b19c26825190d58e24e936a169403629feba3e78c9c6f5025e8",
+      "utf8_usfm_book_files": 28,
+      "chapters": 410,
+      "verse_markers": 10483,
+      "strong_markers": 0,
+      "signed_manifest_entries_checked": 30,
+      "signed_manifest_mismatches": 0,
+      "scope": "Psalms and New Testament only"
+    },
+    {
+      "source_id": "commons_ohienko_1988_scan",
+      "url": "https://commons.wikimedia.org/wiki/File:Ivan_Ohienko_Bible.djvu",
+      "bytes": 83637482,
+      "sha1": "8995dec8cfd20c212dc48e91868f115d3b8d17cc",
+      "pages": 1538,
+      "mediawiki_file_timestamp": "2014-07-10T17:11:34Z",
+      "checksum_source": "Wikimedia Commons imageinfo API and structured file metadata",
+      "sha256_status": "Exact Commons binary download returned HTTP 429 during this stage; stage 3 must retry and lock its SHA-256 before import."
+    },
+    {
+      "source_id": "internet_archive_ohienko_scan_derivative",
+      "url": "https://archive.org/download/BibleOhienko/Ohienko_Bible.djvu",
+      "bytes": 41818741,
+      "sha1": "baf96568afa4c964f692cbf6509f50d69fbf4289",
+      "sha256": "39d34d366554a2c798e180d0fce05a4ca11fc8c10901c174848e37f30468cee8",
+      "dependency_finding": "This is the Internet Archive derivative cited by Commons, but it is not byte-identical to the larger Commons file and is a control scan, not an independent edition."
+    }
+  ],
+  "mediawiki_revisions": [
+    {
+      "site": "https://uk.wikisource.org/",
+      "title": "Індекс:Ivan Ohienko Bible.djvu",
+      "page_id": 18118,
+      "revision_id": 960013,
+      "parent_revision_id": 684940,
+      "revision_sha1": "df15efbb743e004621cf199b5f45638ea7305d4a",
+      "timestamp": "2025-08-05T11:32:36Z",
+      "observed_status": "all index pages proofread, not all validated; fully transcluded"
+    },
+    {
+      "site": "https://uk.wikisource.org/",
+      "title": "Біблія",
+      "page_id": 9609,
+      "revision_id": 442425,
+      "parent_revision_id": 442424,
+      "revision_sha1": "060ad713036e90f4aa9fb6b5875ebf541e57e6a7",
+      "timestamp": "2022-05-26T17:10:05Z"
+    }
+  ],
+  "original_language_source_probes": [
+    {
+      "source_id": "stepbible_tahot_tagnt",
+      "repository": "https://github.com/STEPBible/STEPBible-Data",
+      "commit": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "license": "CC BY 4.0",
+      "role": "primary Hebrew OT and Greek NT token, morphology, and extended-Strong source",
+      "dependency_note": "TAHOT incorporates WLC/OpenScriptures work; OSHB must not be counted as an independent OT Strong chain."
+    },
+    {
+      "source_id": "openscriptures_oshb",
+      "repository": "https://github.com/openscriptures/morphhb",
+      "tag": "v.2.2",
+      "commit": "6a5db284c715c18b239422e57bb89684e6a19f00",
+      "license": "WLC text public domain; lemma and morphology CC BY 4.0",
+      "role": "OT augmented-Strong and morphology cross-check; dependency cross-check only"
+    },
+    {
+      "source_id": "tanach_us_uxlc",
+      "source_page": "https://www.tanach.us/Pages/About.html",
+      "license_page": "https://www.tanach.us/License.html",
+      "version_observed": "UXLC 2.5 (27.6), April 2026",
+      "license": "biblical Hebrew text may be copied without restriction",
+      "role": "independently corrected OT surface, verse-boundary, and manuscript-image control"
+    },
+    {
+      "source_id": "unfoldingword_ugnt",
+      "repository": "https://git.door43.org/unfoldingWord/el-x-koine_ugnt",
+      "tag": "v0.34",
+      "commit": "fc95b2b8aad08bb65ab54628ab685413a1139e97",
+      "license": "CC BY-SA 4.0",
+      "role": "independent Greek NT lemma, morphology, and Strong control",
+      "sample_probe": {
+        "path": "41-MAT.usfm",
+        "git_blob_sha1": "3ed1a8136c901a837999949b16dcf58b97f5fb47",
+        "bytes": 1409269,
+        "sha256": "ca69b9dac4561e4da036c3ee99a5b624c9465889895f23dd4c05a7077042397f",
+        "word_markers": 18383,
+        "lemma_attributes": 18383,
+        "strong_attributes": 18383,
+        "verse_markers": 1071
+      }
+    }
+  ],
+  "probe_limitations": [
+    "The OpenPGP signatures embedded in the eBible archives were not cryptographically verified because gpg is not installed; every file hash listed in each signed manifest was checked and had zero mismatches.",
+    "The exact Commons binary SHA-256 remains to be locked in stage 3 after the transient HTTP 429 is resolved.",
+    "This artifact records stage-1 qualification probes, not the stage-3 source lock manifest and not a finished Ukrainian corpus."
+  ]
+}
