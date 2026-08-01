@@ -50,6 +50,7 @@ Application entry point: `lib/main.dart`.
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
 - [Руководство по расширению Markdown](./docs/ru/content/markdown-extension-guide.ru.md)
 - [Дорожная карта модуля RST с номерами Стронга](./docs/ru/content/rst-strongs-module-roadmap.ru.md)
+- [Дорожная карта украинского библейского модуля с номерами Стронга](./docs/ru/content/ukrainian-bible-strongs-module-roadmap.ru.md)
 
 ### Additional Notes
 
