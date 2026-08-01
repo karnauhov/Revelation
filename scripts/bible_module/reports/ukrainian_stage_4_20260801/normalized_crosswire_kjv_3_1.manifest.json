@@ -1,0 +1,47 @@
+{
+  "accounting": {
+    "counters": {
+      "books": 66,
+      "chapters": 1189,
+      "footnotes": 0,
+      "morphology": 216251,
+      "records": 31102,
+      "strong": 373501,
+      "tokens": 355295,
+      "tokens_with_multiple_strong": 18129,
+      "verses": 31102,
+      "words": 355295
+    },
+    "errors": 0,
+    "processed": 31102,
+    "skipped": 0,
+    "skipped_by_class": {}
+  },
+  "format_details": {
+    "family": "CROSSWIRE_KJV_OSIS",
+    "milestone_verses": true
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 28630975,
+    "path": "scripts/bible_module/source_cache/crosswire_kjvfull.xml",
+    "sha256": "d5114fc1ab17b1e141ff5c035ef3a4354437fd24b4b8ee34f4c925915c0374ef"
+  },
+  "normalized_artifact": {
+    "bytes": 172802358,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_crosswire_kjv_3_1.jsonl",
+    "records": 31102,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "d69eb3a44fe507c833d367f76f135bb9d4493e1d30466c60bb88721ede0c2d32",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "crosswire_kjv_3_1",
+  "source_revision": "d490be7e34762deb2c76cb2c1306d4808e27890d",
+  "source_role": "Дополнительный независимый classic-Strong multiset-аудит; не источник украинского текста.",
+  "source_version": "3.1 (2023-07-19); commit d490be7e34762deb2c76cb2c1306d4808e27890d",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

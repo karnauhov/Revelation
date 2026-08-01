@@ -1,0 +1,52 @@
+{
+  "accounting": {
+    "counters": {
+      "archive_members": 142,
+      "books": 39,
+      "canonical_members": 39,
+      "chapters": 929,
+      "footnotes": 0,
+      "morphology": 471674,
+      "records": 23213,
+      "skipped_members": 103,
+      "strong": 300007,
+      "tokens": 311284,
+      "tokens_without_strong": 6778,
+      "verses": 23213,
+      "words": 306785
+    },
+    "errors": 0,
+    "processed": 23213,
+    "skipped": 103,
+    "skipped_by_class": {
+      "archive_metadata_members": 103
+    }
+  },
+  "format_details": {
+    "canonical_member_count": 39,
+    "family": "OSHB_OSIS_ZIP"
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 20869248,
+    "path": "scripts/bible_module/source_cache/openscriptures_morphhb_v2_2.zip",
+    "sha256": "dac2d0325c59f6cd22839f2ef6345544a85b50c9d657788672e7638fa11abecb"
+  },
+  "normalized_artifact": {
+    "bytes": 159476108,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_openscriptures_oshb_v2_2.jsonl",
+    "records": 23213,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "171d7d8567b59ac20c32f4bc5202000b239842b6c4c2ddda992786fa28253844",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "openscriptures_oshb_v2_2",
+  "source_revision": "6a5db284c715c18b239422e57bb89684e6a19f00",
+  "source_role": "Зависимая OT-проверка augmented Strong, lemma и morphology.",
+  "source_version": "tag v.2.2; commit 6a5db284c715c18b239422e57bb89684e6a19f00",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

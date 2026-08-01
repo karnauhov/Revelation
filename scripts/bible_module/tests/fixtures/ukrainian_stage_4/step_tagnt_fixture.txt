@@ -1,0 +1,3 @@
+Synthetic TAGNT fixture; CC0-1.0
+Word & Type	Greek	English translation	dStrongs = Grammar	Dictionary form = Gloss	editions	Meaning variants	Spelling variants	Spanish translation	Sub-meaning	Conjoin word	sStrong+Instance	Alt Strongs				extra_17
+Mat.1.1#01=NKO	λόγος (logos)	word	G3056=N-NSM	λόγος=word	SYN			palabra	word	#01	G3056				_	_

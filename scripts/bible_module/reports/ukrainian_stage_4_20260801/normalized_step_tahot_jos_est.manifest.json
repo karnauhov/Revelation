@@ -1,0 +1,55 @@
+{
+  "accounting": {
+    "counters": {
+      "books": 12,
+      "chapters": 239,
+      "footnotes": 0,
+      "input_lines": 183814,
+      "morphology": 158619,
+      "processed_data_lines": 102210,
+      "records": 6653,
+      "skipped_lines": 81604,
+      "strong": 210825,
+      "strong_classic": 51772,
+      "strong_extended_unresolved": 77063,
+      "strong_out_of_range": 81990,
+      "tokens": 102210,
+      "tokens_with_multiple_strong": 74838,
+      "verses": 6653,
+      "words": 102210
+    },
+    "errors": 0,
+    "processed": 6653,
+    "skipped": 81604,
+    "skipped_by_class": {
+      "metadata_or_blank_line": 81604
+    }
+  },
+  "format_details": {
+    "column_count": 17,
+    "family": "TAHOT"
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 24500317,
+    "path": "scripts/bible_module/source_cache/step_tahot_jos_est.txt",
+    "sha256": "195fee1dc3653bab33701f170734eb894ed647c10cd08cc61749375fe8b73775"
+  },
+  "normalized_artifact": {
+    "bytes": 101489382,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_step_tahot_jos_est.jsonl",
+    "records": 6653,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "7ca28c957dff55bc6f9fdfef646936c489f019274b8f8ce596b8663d0040e6a5",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "step_tahot_jos_est",
+  "source_revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "source_role": "Основная Hebrew OT цепочка токенов, морфологии и extended Strong (Joshua–Esther).",
+  "source_version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

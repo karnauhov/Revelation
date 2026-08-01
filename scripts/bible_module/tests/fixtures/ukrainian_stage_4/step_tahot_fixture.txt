@@ -1,0 +1,4 @@
+Synthetic TAHOT fixture; CC0-1.0
+Eng (Heb) Ref & Type	Hebrew	Transliteration	Translation	dStrongs	Grammar	Meaning Variants	Spelling Variants	Root dStrong+Instance	Alternative Strongs+Instance	Conjoin word	Expanded Strong tags				extra_16	_
+Gen.1.1#01=L	אב	ab	word	H0001/{H0002A}	HNcmsa			H0001	H0002A						_	_
+Gen.1.1#02=L	גד	gd	missing		HNcmsa										_	_

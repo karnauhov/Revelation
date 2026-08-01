@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "warnings": [
+    {
+      "duplicate_containers": true,
+      "logical_container_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/tool_inputs/_commons_ohienko_1988_scan_logical_container.djvu",
+      "logical_container_sha256": "39d34d366554a2c798e180d0fce05a4ca11fc8c10901c174848e37f30468cee8",
+      "physical_container_count": 2,
+      "physical_container_sha256": [
+        "7f06c921900be1f3aa52576d14d12489373338bfa2f2bd58fadf9f990db87b3b",
+        "7f06c921900be1f3aa52576d14d12489373338bfa2f2bd58fadf9f990db87b3b"
+      ],
+      "severity": "low",
+      "source_id": "commons_ohienko_1988_scan",
+      "status": "classified_manual_or_informational",
+      "type": "duplicate_physical_djvu_container"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:028fd7c37a244066d909e8d2",
+      "page": 208,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:2c29b8d4b7a061b7d0081410",
+      "page": 347,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:7911922c905b509b50e9b37b",
+      "page": 389,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:9addccfc4cca7b077f62ef8c",
+      "page": 425,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:197dd092d67e3805b44ae6d3",
+      "page": 466,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:790e2d43651a7155b9da760b",
+      "page": 504,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:03cce9c64ad2101025717eca",
+      "page": 540,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:9a2f8ad86002844a09ddd05b",
+      "page": 614,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:0c19a441f1c58f694209292d",
+      "page": 669,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:03f4dc9ce9dd8cd423cf5451",
+      "page": 761,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    },
+    {
+      "footnote_id": "wikisource_ohienko_1988_revisions:footnote:c0cab024413304f1c700af51",
+      "page": 1021,
+      "severity": "low",
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "status": "classified_manual_or_informational",
+      "type": "heading_footnote_without_source_verse"
+    }
+  ]
+}

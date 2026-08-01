@@ -1,0 +1,49 @@
+{
+  "accounting": {
+    "counters": {
+      "archive_members": 53,
+      "books": 39,
+      "canonical_members": 39,
+      "chapters": 929,
+      "footnotes": 0,
+      "records": 23213,
+      "skipped_members": 14,
+      "tokens": 306782,
+      "verses": 23213,
+      "words": 306771
+    },
+    "errors": 0,
+    "processed": 23213,
+    "skipped": 14,
+    "skipped_by_class": {
+      "archive_metadata_or_dependent_members": 14
+    }
+  },
+  "format_details": {
+    "canonical_member_count": 39,
+    "family": "UXLC_XML_ZIP"
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 2365002,
+    "path": "scripts/bible_module/source_cache/tanach_us_uxlc_2_5_27_6.zip",
+    "sha256": "1bc6e006f43d3b18f2f718cefa3aa4774cac2c54092c28d173dd61996c43a050"
+  },
+  "normalized_artifact": {
+    "bytes": 122660752,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_tanach_us_uxlc_2_5_27_6.jsonl",
+    "records": 23213,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "5055cb633d928996e0562733fdf62bb9c25c05286ad8679bb4389eba410e6221",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "tanach_us_uxlc_2_5_27_6",
+  "source_revision": "UXLC 2.5; build 27.6",
+  "source_role": "Независимый OT-контроль поверхности, границ и соответствия рукописным снимкам; не Strong-слой.",
+  "source_version": "UXLC 2.5; build 27.6; text date 1 Apr 2026; build time 31 Mar 2026 12:00",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

@@ -1,0 +1,55 @@
+{
+  "accounting": {
+    "counters": {
+      "books": 4,
+      "chapters": 89,
+      "footnotes": 0,
+      "input_lines": 112009,
+      "morphology": 66931,
+      "processed_data_lines": 66931,
+      "records": 3778,
+      "skipped_lines": 45078,
+      "strong": 104985,
+      "strong_classic": 76219,
+      "strong_extended_unresolved": 28589,
+      "strong_out_of_range": 177,
+      "tokens": 66931,
+      "tokens_with_multiple_strong": 32948,
+      "verses": 3778,
+      "words": 66931
+    },
+    "errors": 0,
+    "processed": 3778,
+    "skipped": 45078,
+    "skipped_by_class": {
+      "metadata_or_blank_line": 45078
+    }
+  },
+  "format_details": {
+    "column_count": 17,
+    "family": "TAGNT"
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 14189032,
+    "path": "scripts/bible_module/source_cache/step_tagnt_mat_jhn.txt",
+    "sha256": "ab8eaaeb68e17a1dcfa34e1e9350358f22f03bc2a97244d848750ad81044bc8e"
+  },
+  "normalized_artifact": {
+    "bytes": 65446435,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_step_tagnt_mat_jhn.jsonl",
+    "records": 3778,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "b95a6734fd584cc5c56bbe9e12d07924d1c3070ab34cbf1bc89cbb23b57c126b",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "step_tagnt_mat_jhn",
+  "source_revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "source_role": "Основная Greek NT цепочка токенов, морфологии и extended Strong (Matthew–John).",
+  "source_version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

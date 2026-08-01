@@ -1,0 +1,55 @@
+{
+  "accounting": {
+    "counters": {
+      "books": 17,
+      "chapters": 235,
+      "footnotes": 0,
+      "input_lines": 137444,
+      "morphology": 113753,
+      "processed_data_lines": 75051,
+      "records": 5189,
+      "skipped_lines": 62393,
+      "strong": 147565,
+      "strong_classic": 41341,
+      "strong_extended_unresolved": 49734,
+      "strong_out_of_range": 56490,
+      "tokens": 75051,
+      "tokens_with_multiple_strong": 50895,
+      "verses": 5189,
+      "words": 75051
+    },
+    "errors": 0,
+    "processed": 5189,
+    "skipped": 62393,
+    "skipped_by_class": {
+      "metadata_or_blank_line": 62393
+    }
+  },
+  "format_details": {
+    "column_count": 17,
+    "family": "TAHOT"
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 17977518,
+    "path": "scripts/bible_module/source_cache/step_tahot_isa_mal.txt",
+    "sha256": "f3ded203d2a74d6368932c97ae550d1d0754b271af491dc0dedf36fe3ba0bcc5"
+  },
+  "normalized_artifact": {
+    "bytes": 73965813,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_step_tahot_isa_mal.jsonl",
+    "records": 5189,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "f8933846036e5fe1393d64d655bfc09c8a781c1edf2abc79ad0b56abf4d08371",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "step_tahot_isa_mal",
+  "source_revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "source_role": "Основная Hebrew OT цепочка токенов, морфологии и extended Strong (Isaiah–Malachi).",
+  "source_version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

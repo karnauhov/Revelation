@@ -1,0 +1,55 @@
+{
+  "accounting": {
+    "counters": {
+      "books": 5,
+      "chapters": 178,
+      "footnotes": 0,
+      "input_lines": 140041,
+      "morphology": 118686,
+      "processed_data_lines": 76490,
+      "records": 5607,
+      "skipped_lines": 63551,
+      "strong": 156426,
+      "strong_classic": 41019,
+      "strong_extended_unresolved": 53930,
+      "strong_out_of_range": 61477,
+      "tokens": 76490,
+      "tokens_with_multiple_strong": 55654,
+      "verses": 5607,
+      "words": 76490
+    },
+    "errors": 0,
+    "processed": 5607,
+    "skipped": 63551,
+    "skipped_by_class": {
+      "metadata_or_blank_line": 63551
+    }
+  },
+  "format_details": {
+    "column_count": 17,
+    "family": "TAHOT"
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 18190455,
+    "path": "scripts/bible_module/source_cache/step_tahot_gen_deu.txt",
+    "sha256": "e9b8546ee48fe0bfc57c3b70f5f40e98d96580e803526d19026224e31753368b"
+  },
+  "normalized_artifact": {
+    "bytes": 76227772,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_step_tahot_gen_deu.jsonl",
+    "records": 5607,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "f52d68e12cbeced4c6f1ceeb7ec725b4afbd9703fe69dedb3727c5e56f368a65",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "step_tahot_gen_deu",
+  "source_revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "source_role": "Основная Hebrew OT цепочка токенов, морфологии и extended Strong (Genesis–Deuteronomy).",
+  "source_version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

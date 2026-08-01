@@ -1,0 +1,457 @@
+{
+  "comparisons": {
+    "commons_vs_internet_archive_pages": {
+      "differences": 0,
+      "pages_compared": 1538,
+      "relation": "same scan; Internet Archive is dependent control"
+    },
+    "oshb_vs_uxlc": {
+      "common_records": 23213,
+      "surface_differences": 23213
+    },
+    "tagnt_vs_crosswire_kjv": {
+      "common_records": 7948,
+      "missing_records": 9,
+      "strong_differences": 7929
+    },
+    "tagnt_vs_ugnt": {
+      "common_records": 7948,
+      "missing_records": 10,
+      "strong_differences": 7920,
+      "surface_differences": 7948
+    },
+    "tahot_vs_oshb": {
+      "common_records": 21178,
+      "missing_records": 2035,
+      "strong_differences": 21178,
+      "surface_differences": 21178
+    },
+    "wikisource_footnotes_vs_commons_hidden_ocr": {
+      "exact_normalized_ocr_containment": 641,
+      "manual_print_check_needed": 149,
+      "partial_ocr_evidence": 414
+    }
+  },
+  "diff_row_count": 91569,
+  "error_count": 0,
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "sources": {
+    "commons_ohienko_1988_scan": {
+      "counters": {
+        "books": 0,
+        "chapters": 0,
+        "footnotes": 0,
+        "ocr_lines": 148602,
+        "pages_without_hidden_text": 17,
+        "records": 1538,
+        "source_comment_candidates": 7059,
+        "tokens": 148602,
+        "verses": 0,
+        "warnings": 1,
+        "words": 648109
+      },
+      "errors": 0,
+      "revision": "8995dec8cfd20c212dc48e91868f115d3b8d17cc",
+      "role": "Основной печатный эталон точного юбилейного издания 1988 года.",
+      "skipped": {},
+      "version": "MediaWiki file timestamp 2014-07-10T17:11:34Z; 1538 pages",
+      "warnings": 1
+    },
+    "crosswire_kjv_3_1": {
+      "counters": {
+        "books": 66,
+        "chapters": 1189,
+        "footnotes": 0,
+        "morphology": 216251,
+        "records": 31102,
+        "strong": 373501,
+        "tokens": 355295,
+        "tokens_with_multiple_strong": 18129,
+        "verses": 31102,
+        "words": 355295
+      },
+      "errors": 0,
+      "revision": "d490be7e34762deb2c76cb2c1306d4808e27890d",
+      "role": "Дополнительный независимый classic-Strong multiset-аудит; не источник украинского текста.",
+      "skipped": {},
+      "version": "3.1 (2023-07-19); commit d490be7e34762deb2c76cb2c1306d4808e27890d",
+      "warnings": 0
+    },
+    "internet_archive_ohienko_1988_scan": {
+      "counters": {
+        "books": 0,
+        "chapters": 0,
+        "footnotes": 0,
+        "ocr_lines": 148602,
+        "pages_without_hidden_text": 17,
+        "records": 1538,
+        "source_comment_candidates": 7059,
+        "tokens": 148602,
+        "verses": 0,
+        "words": 648109
+      },
+      "errors": 0,
+      "revision": "baf96568afa4c964f692cbf6509f50d69fbf4289",
+      "role": "Зависимый контроль скана/OCR; не независимая редакция.",
+      "skipped": {},
+      "version": "Internet Archive item BibleOhienko; file mtime 1404934060; public date 2014-07-08",
+      "warnings": 0
+    },
+    "openscriptures_oshb_v2_2": {
+      "counters": {
+        "archive_members": 142,
+        "books": 39,
+        "canonical_members": 39,
+        "chapters": 929,
+        "footnotes": 0,
+        "morphology": 471674,
+        "records": 23213,
+        "skipped_members": 103,
+        "strong": 300007,
+        "tokens": 311284,
+        "tokens_without_strong": 6778,
+        "verses": 23213,
+        "words": 306785
+      },
+      "errors": 0,
+      "revision": "6a5db284c715c18b239422e57bb89684e6a19f00",
+      "role": "Зависимая OT-проверка augmented Strong, lemma и morphology.",
+      "skipped": {
+        "archive_metadata_members": 103
+      },
+      "version": "tag v.2.2; commit 6a5db284c715c18b239422e57bb89684e6a19f00",
+      "warnings": 0
+    },
+    "step_tagnt_act_rev": {
+      "counters": {
+        "books": 23,
+        "chapters": 171,
+        "footnotes": 0,
+        "input_lines": 125231,
+        "morphology": 74789,
+        "processed_data_lines": 74789,
+        "records": 4170,
+        "skipped_lines": 50442,
+        "strong": 113174,
+        "strong_classic": 82809,
+        "strong_extended_unresolved": 30134,
+        "strong_out_of_range": 231,
+        "tokens": 74789,
+        "tokens_with_multiple_strong": 34393,
+        "verses": 4170,
+        "words": 74789
+      },
+      "errors": 0,
+      "revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "role": "Основная Greek NT цепочка токенов, морфологии и extended Strong (Acts–Revelation).",
+      "skipped": {
+        "metadata_or_blank_line": 50442
+      },
+      "version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "warnings": 0
+    },
+    "step_tagnt_mat_jhn": {
+      "counters": {
+        "books": 4,
+        "chapters": 89,
+        "footnotes": 0,
+        "input_lines": 112009,
+        "morphology": 66931,
+        "processed_data_lines": 66931,
+        "records": 3778,
+        "skipped_lines": 45078,
+        "strong": 104985,
+        "strong_classic": 76219,
+        "strong_extended_unresolved": 28589,
+        "strong_out_of_range": 177,
+        "tokens": 66931,
+        "tokens_with_multiple_strong": 32948,
+        "verses": 3778,
+        "words": 66931
+      },
+      "errors": 0,
+      "revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "role": "Основная Greek NT цепочка токенов, морфологии и extended Strong (Matthew–John).",
+      "skipped": {
+        "metadata_or_blank_line": 45078
+      },
+      "version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "warnings": 0
+    },
+    "step_tahot_gen_deu": {
+      "counters": {
+        "books": 5,
+        "chapters": 178,
+        "footnotes": 0,
+        "input_lines": 140041,
+        "morphology": 118686,
+        "processed_data_lines": 76490,
+        "records": 5607,
+        "skipped_lines": 63551,
+        "strong": 156426,
+        "strong_classic": 41019,
+        "strong_extended_unresolved": 53930,
+        "strong_out_of_range": 61477,
+        "tokens": 76490,
+        "tokens_with_multiple_strong": 55654,
+        "verses": 5607,
+        "words": 76490
+      },
+      "errors": 0,
+      "revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "role": "Основная Hebrew OT цепочка токенов, морфологии и extended Strong (Genesis–Deuteronomy).",
+      "skipped": {
+        "metadata_or_blank_line": 63551
+      },
+      "version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "warnings": 0
+    },
+    "step_tahot_isa_mal": {
+      "counters": {
+        "books": 17,
+        "chapters": 235,
+        "footnotes": 0,
+        "input_lines": 137444,
+        "morphology": 113753,
+        "processed_data_lines": 75051,
+        "records": 5189,
+        "skipped_lines": 62393,
+        "strong": 147565,
+        "strong_classic": 41341,
+        "strong_extended_unresolved": 49734,
+        "strong_out_of_range": 56490,
+        "tokens": 75051,
+        "tokens_with_multiple_strong": 50895,
+        "verses": 5189,
+        "words": 75051
+      },
+      "errors": 0,
+      "revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "role": "Основная Hebrew OT цепочка токенов, морфологии и extended Strong (Isaiah–Malachi).",
+      "skipped": {
+        "metadata_or_blank_line": 62393
+      },
+      "version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "warnings": 0
+    },
+    "step_tahot_job_sng": {
+      "counters": {
+        "books": 5,
+        "chapters": 178,
+        "footnotes": 0,
+        "input_lines": 76190,
+        "morphology": 44659,
+        "processed_data_lines": 29983,
+        "records": 3729,
+        "skipped_lines": 46207,
+        "strong": 56359,
+        "strong_classic": 16816,
+        "strong_extended_unresolved": 15978,
+        "strong_out_of_range": 23565,
+        "tokens": 29983,
+        "tokens_with_multiple_strong": 19350,
+        "verses": 3729,
+        "words": 29983
+      },
+      "errors": 0,
+      "revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "role": "Основная Hebrew OT цепочка токенов, морфологии и extended Strong (Job–Song).",
+      "skipped": {
+        "metadata_or_blank_line": 46207
+      },
+      "version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "warnings": 0
+    },
+    "step_tahot_jos_est": {
+      "counters": {
+        "books": 12,
+        "chapters": 239,
+        "footnotes": 0,
+        "input_lines": 183814,
+        "morphology": 158619,
+        "processed_data_lines": 102210,
+        "records": 6653,
+        "skipped_lines": 81604,
+        "strong": 210825,
+        "strong_classic": 51772,
+        "strong_extended_unresolved": 77063,
+        "strong_out_of_range": 81990,
+        "tokens": 102210,
+        "tokens_with_multiple_strong": 74838,
+        "verses": 6653,
+        "words": 102210
+      },
+      "errors": 0,
+      "revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "role": "Основная Hebrew OT цепочка токенов, морфологии и extended Strong (Joshua–Esther).",
+      "skipped": {
+        "metadata_or_blank_line": 81604
+      },
+      "version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "warnings": 0
+    },
+    "step_tvtms": {
+      "counters": {
+        "books": 0,
+        "chapters": 0,
+        "footnotes": 0,
+        "input_lines": 29896,
+        "metadata": 382,
+        "records": 28770,
+        "skipped_lines": 1126,
+        "tokens": 0,
+        "verses": 0,
+        "versification_mapping_expression": 27583,
+        "versification_section": 429,
+        "versification_test": 376,
+        "words": 671898
+      },
+      "errors": 0,
+      "revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "role": "Контроль традиций версификации; не доказывает карту Огиенко без постиховой проверки.",
+      "skipped": {
+        "blank_line": 1064,
+        "document_metadata": 62
+      },
+      "version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+      "warnings": 0
+    },
+    "tanach_us_uxlc_2_5_27_6": {
+      "counters": {
+        "archive_members": 53,
+        "books": 39,
+        "canonical_members": 39,
+        "chapters": 929,
+        "footnotes": 0,
+        "records": 23213,
+        "skipped_members": 14,
+        "tokens": 306782,
+        "verses": 23213,
+        "words": 306771
+      },
+      "errors": 0,
+      "revision": "UXLC 2.5; build 27.6",
+      "role": "Независимый OT-контроль поверхности, границ и соответствия рукописным снимкам; не Strong-слой.",
+      "skipped": {
+        "archive_metadata_or_dependent_members": 14
+      },
+      "version": "UXLC 2.5; build 27.6; text date 1 Apr 2026; build time 31 Mar 2026 12:00",
+      "warnings": 0
+    },
+    "unfoldingword_ugnt_v0_34": {
+      "counters": {
+        "archive_members": 32,
+        "books": 27,
+        "canonical_members": 27,
+        "chapters": 260,
+        "footnotes": 0,
+        "morphology": 137990,
+        "records": 7958,
+        "skipped_members": 5,
+        "strong": 137990,
+        "tokens": 137990,
+        "verses": 7958,
+        "words": 137990
+      },
+      "errors": 0,
+      "revision": "fc95b2b8aad08bb65ab54628ab685413a1139e97",
+      "role": "Независимый NT-контроль lemma, morphology и Strong.",
+      "skipped": {
+        "archive_metadata_members": 5
+      },
+      "version": "tag v0.34; commit fc95b2b8aad08bb65ab54628ab685413a1139e97; manifest version 0.34",
+      "warnings": 0
+    },
+    "wikisource_ohienko_1988_revisions": {
+      "counters": {
+        "books": 66,
+        "chapters": 1192,
+        "footnote_binding_missing": 11,
+        "footnote_binding_unambiguous": 1318,
+        "footnote_definitions": 1204,
+        "footnote_uses": 1329,
+        "footnotes": 1329,
+        "headings": 2484,
+        "named_ref_definitions": 99,
+        "named_ref_uses": 224,
+        "printed_markers_resolved": 1329,
+        "proofread_pages": 1538,
+        "raw_carrier_anchor": 2201,
+        "raw_carrier_ref_closing": 1204,
+        "raw_carrier_ref_opening": 1329,
+        "raw_carrier_ref_self_closing": 125,
+        "raw_carrier_references_tag": 0,
+        "raw_carrier_reflist": 735,
+        "raw_ref_closing": 1204,
+        "raw_ref_opening": 1329,
+        "raw_ref_paired": 1204,
+        "raw_ref_self_closing": 125,
+        "records": 31171,
+        "resolved_footnote_uses": 1318,
+        "section_end_markers": 342,
+        "section_markers": 343,
+        "template_anchor": 2201,
+        "template_block center/e": 1,
+        "template_block center/s": 1,
+        "template_c": 2476,
+        "template_dhr": 5,
+        "template_dropinitial": 1035,
+        "template_errata": 1,
+        "template_hwe": 9,
+        "template_hws": 9,
+        "template_inventory_anchor": 2201,
+        "template_inventory_block center/e": 1,
+        "template_inventory_block center/s": 1,
+        "template_inventory_c": 2476,
+        "template_inventory_dhr": 5,
+        "template_inventory_dropinitial": 1035,
+        "template_inventory_errata": 1,
+        "template_inventory_hwe": 9,
+        "template_inventory_hws": 9,
+        "template_inventory_larger": 90,
+        "template_inventory_nop": 770,
+        "template_inventory_pline": 30134,
+        "template_inventory_reflist": 735,
+        "template_inventory_rh": 1500,
+        "template_inventory_rule": 4,
+        "template_inventory_sp": 695,
+        "template_inventory_toc line": 66,
+        "template_inventory_toc page listing": 1,
+        "template_inventory_uc": 1660,
+        "template_inventory_x-larger": 4,
+        "template_inventory_xx-larger": 66,
+        "template_inventory_xxx-larger": 5,
+        "template_inventory_—": 34,
+        "template_larger": 4,
+        "template_nop": 770,
+        "template_pline": 30134,
+        "template_rule": 4,
+        "template_sp": 22,
+        "template_toc line": 66,
+        "template_toc page listing": 1,
+        "template_x-larger": 1,
+        "template_xxx-larger": 3,
+        "template_—": 3,
+        "tokens": 605969,
+        "unique_footnote_definitions": 1204,
+        "verses": 31160,
+        "verses_with_footnotes": 1222,
+        "verses_with_multiple_footnotes": 90,
+        "warnings": 11,
+        "words": 665975
+      },
+      "errors": 0,
+      "revision": "ecce2e6d48a07f7baac96b393b1147a4f3b28c5eba6ac757f4de8f5b8a697dc9",
+      "role": "Базовая машинная транскрипция, проверяемая по Commons DjVu.",
+      "skipped": {
+        "root_or_index_revision": 2
+      },
+      "version": "1540 pinned revisions: root, index, and ProofreadPage pages 1-1538",
+      "warnings": 11
+    }
+  },
+  "stage": 4,
+  "target_projection": "not_performed",
+  "warning_count": 12
+}

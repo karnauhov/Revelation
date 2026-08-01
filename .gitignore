@@ -62,5 +62,9 @@ scripts/content_tool/models/ocr/**/last_training_report.json
 scripts/bible_module/source_cache/*
 !scripts/bible_module/source_cache/.gitkeep
 
+# Full normalized Ukrainian stage artifacts are reproducible but too large for Git.
+scripts/bible_module/work/*
+!scripts/bible_module/work/.gitkeep
+
 sentry.properties
 sentry.read

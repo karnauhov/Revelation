@@ -1,0 +1,55 @@
+{
+  "accounting": {
+    "counters": {
+      "books": 5,
+      "chapters": 178,
+      "footnotes": 0,
+      "input_lines": 76190,
+      "morphology": 44659,
+      "processed_data_lines": 29983,
+      "records": 3729,
+      "skipped_lines": 46207,
+      "strong": 56359,
+      "strong_classic": 16816,
+      "strong_extended_unresolved": 15978,
+      "strong_out_of_range": 23565,
+      "tokens": 29983,
+      "tokens_with_multiple_strong": 19350,
+      "verses": 3729,
+      "words": 29983
+    },
+    "errors": 0,
+    "processed": 3729,
+    "skipped": 46207,
+    "skipped_by_class": {
+      "metadata_or_blank_line": 46207
+    }
+  },
+  "format_details": {
+    "column_count": 17,
+    "family": "TAHOT"
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 9540133,
+    "path": "scripts/bible_module/source_cache/step_tahot_job_sng.txt",
+    "sha256": "84e118a97e5725e3847cdfdd593873513021c790c63cc91a0d41fca2b5db2ed5"
+  },
+  "normalized_artifact": {
+    "bytes": 31372085,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_step_tahot_job_sng.jsonl",
+    "records": 3729,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "ee00ecd21c8c66f16c1bd996554997539f7cf81a5c9c627dcd04edc3ae3538a8",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "step_tahot_job_sng",
+  "source_revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "source_role": "Основная Hebrew OT цепочка токенов, морфологии и extended Strong (Job–Song).",
+  "source_version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

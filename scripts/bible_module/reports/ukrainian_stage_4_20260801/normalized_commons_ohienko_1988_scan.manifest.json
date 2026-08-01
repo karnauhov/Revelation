@@ -1,0 +1,58 @@
+{
+  "accounting": {
+    "counters": {
+      "books": 0,
+      "chapters": 0,
+      "footnotes": 0,
+      "ocr_lines": 148602,
+      "pages_without_hidden_text": 17,
+      "records": 1538,
+      "source_comment_candidates": 7059,
+      "tokens": 148602,
+      "verses": 0,
+      "warnings": 1,
+      "words": 648109
+    },
+    "errors": 0,
+    "processed": 1538,
+    "skipped": 0,
+    "skipped_by_class": {}
+  },
+  "format_details": {
+    "djvutxt_path": "djvutxt.exe",
+    "djvutxt_sha256": "20987b00bed44cdd5d0cb136c8f9cdb65a319af21b49009ac7cb3205fe1f6a23",
+    "duplicate_containers": true,
+    "family": "DJVU_HIDDEN_TEXT_S_EXPRESSION",
+    "logical_container_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/tool_inputs/_commons_ohienko_1988_scan_logical_container.djvu",
+    "logical_container_sha256": "39d34d366554a2c798e180d0fce05a4ca11fc8c10901c174848e37f30468cee8",
+    "logical_page_count": 1538,
+    "physical_container_count": 2,
+    "physical_container_sha256": [
+      "7f06c921900be1f3aa52576d14d12489373338bfa2f2bd58fadf9f990db87b3b",
+      "7f06c921900be1f3aa52576d14d12489373338bfa2f2bd58fadf9f990db87b3b"
+    ]
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 83637482,
+    "path": "scripts/bible_module/source_cache/commons_ohienko_1988.djvu",
+    "sha256": "0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34"
+  },
+  "normalized_artifact": {
+    "bytes": 66257395,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_commons_ohienko_1988_scan.jsonl",
+    "records": 1538,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "92ccdba5bab38214e8bae6bc40bcab991fc77834ca5ec33040897560bf13f8ce",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "commons_ohienko_1988_scan",
+  "source_revision": "8995dec8cfd20c212dc48e91868f115d3b8d17cc",
+  "source_role": "Основной печатный эталон точного юбилейного издания 1988 года.",
+  "source_version": "MediaWiki file timestamp 2014-07-10T17:11:34Z; 1538 pages",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

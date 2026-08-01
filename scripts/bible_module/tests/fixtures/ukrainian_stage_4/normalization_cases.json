@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "ordinary_verse",
+      "text": "На початку було слово."
+    },
+    {
+      "id": "apostrophes_hyphens",
+      "text": "Пам’ять, п'ять і південно-західний."
+    },
+    {
+      "id": "complex_punctuation",
+      "text": "Він сказав: „Так!“ — і пішов; чи ні?.."
+    },
+    {
+      "id": "known_source_numbering_difference",
+      "source_ref": "Ps.3.0",
+      "classification": "source_native_only_unprojected"
+    },
+    {
+      "id": "chapter_boundary",
+      "before": "Gen.1.2",
+      "after": "Gen.2.1"
+    },
+    {
+      "id": "footnote_without_printed_marker",
+      "printed_marker": null,
+      "printed_marker_present": false
+    }
+  ]
+}

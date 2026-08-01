@@ -1,0 +1,55 @@
+{
+  "accounting": {
+    "counters": {
+      "books": 23,
+      "chapters": 171,
+      "footnotes": 0,
+      "input_lines": 125231,
+      "morphology": 74789,
+      "processed_data_lines": 74789,
+      "records": 4170,
+      "skipped_lines": 50442,
+      "strong": 113174,
+      "strong_classic": 82809,
+      "strong_extended_unresolved": 30134,
+      "strong_out_of_range": 231,
+      "tokens": 74789,
+      "tokens_with_multiple_strong": 34393,
+      "verses": 4170,
+      "words": 74789
+    },
+    "errors": 0,
+    "processed": 4170,
+    "skipped": 50442,
+    "skipped_by_class": {
+      "metadata_or_blank_line": 50442
+    }
+  },
+  "format_details": {
+    "column_count": 17,
+    "family": "TAGNT"
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 15939932,
+    "path": "scripts/bible_module/source_cache/step_tagnt_act_rev.txt",
+    "sha256": "524e32375361e6d3fa2f7ef00b87605fdc4317a762f395651a05fdc31ad031b7"
+  },
+  "normalized_artifact": {
+    "bytes": 72945057,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_step_tagnt_act_rev.jsonl",
+    "records": 4170,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "fc36e5ba24ef68e31d34be8665875523d79f114f52292bd67278a10484b571ed",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "step_tagnt_act_rev",
+  "source_revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "source_role": "Основная Greek NT цепочка токенов, морфологии и extended Strong (Acts–Revelation).",
+  "source_version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

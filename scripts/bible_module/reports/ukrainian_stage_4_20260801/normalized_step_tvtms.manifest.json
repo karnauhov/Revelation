@@ -1,0 +1,53 @@
+{
+  "accounting": {
+    "counters": {
+      "books": 0,
+      "chapters": 0,
+      "footnotes": 0,
+      "input_lines": 29896,
+      "metadata": 382,
+      "records": 28770,
+      "skipped_lines": 1126,
+      "tokens": 0,
+      "verses": 0,
+      "versification_mapping_expression": 27583,
+      "versification_section": 429,
+      "versification_test": 376,
+      "words": 671898
+    },
+    "errors": 0,
+    "processed": 28770,
+    "skipped": 1126,
+    "skipped_by_class": {
+      "blank_line": 1064,
+      "document_metadata": 62
+    }
+  },
+  "format_details": {
+    "family": "TVTMS",
+    "target_projection_performed": false
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 5790928,
+    "path": "scripts/bible_module/source_cache/step_tvtms.txt",
+    "sha256": "8851a8b5a2575b2be9cc6a1bb57284c91c610154a7a259397fbfaffe37db796a"
+  },
+  "normalized_artifact": {
+    "bytes": 51105318,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_step_tvtms.jsonl",
+    "records": 28770,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "2acfc0f6100c15da546ce21a4bc9f26d4541ead13e677894684f85a0e125c6b3",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "step_tvtms",
+  "source_revision": "b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "source_role": "Контроль традиций версификации; не доказывает карту Огиенко без постиховой проверки.",
+  "source_version": "STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

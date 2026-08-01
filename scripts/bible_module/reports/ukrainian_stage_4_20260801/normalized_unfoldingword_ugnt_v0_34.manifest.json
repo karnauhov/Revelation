@@ -1,0 +1,51 @@
+{
+  "accounting": {
+    "counters": {
+      "archive_members": 32,
+      "books": 27,
+      "canonical_members": 27,
+      "chapters": 260,
+      "footnotes": 0,
+      "morphology": 137990,
+      "records": 7958,
+      "skipped_members": 5,
+      "strong": 137990,
+      "tokens": 137990,
+      "verses": 7958,
+      "words": 137990
+    },
+    "errors": 0,
+    "processed": 7958,
+    "skipped": 5,
+    "skipped_by_class": {
+      "archive_metadata_members": 5
+    }
+  },
+  "format_details": {
+    "canonical_member_count": 27,
+    "family": "UGNT_USFM_ZIP"
+  },
+  "generator_version": "1",
+  "input": {
+    "bytes": 1252605,
+    "path": "scripts/bible_module/source_cache/unfoldingword_ugnt_v0_34.zip",
+    "sha256": "07318be27d0027146a62363c20ffedd0db695d7680f4b32c8ae8bd3020a29d00"
+  },
+  "normalized_artifact": {
+    "bytes": 69757930,
+    "gitignored_path": "scripts/bible_module/work/ukrainian_stage_4_20260801/normalized_unfoldingword_ugnt_v0_34.jsonl",
+    "records": 7958,
+    "serialization": "UTF-8 JSON Lines; keys sorted; compact separators; LF",
+    "sha256": "530ca5c4f1a46cb4b67f07da6077c62e01bac53d25d5c4aec5e2f008d1888032",
+    "stable_order": "source_order ascending"
+  },
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "schema_version": 1,
+  "source_id": "unfoldingword_ugnt_v0_34",
+  "source_revision": "fc95b2b8aad08bb65ab54628ab685413a1139e97",
+  "source_role": "Независимый NT-контроль lemma, morphology и Strong.",
+  "source_version": "tag v0.34; commit fc95b2b8aad08bb65ab54628ab685413a1139e97; manifest version 0.34",
+  "stage": 4,
+  "status": "source_normalized_unprojected",
+  "target_projection": "not_performed"
+}

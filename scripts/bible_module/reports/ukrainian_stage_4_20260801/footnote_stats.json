@@ -1,0 +1,30 @@
+{
+  "binding": {
+    "ambiguous": 0,
+    "missing": 11,
+    "unambiguous": 1318,
+    "unresolved": 0
+  },
+  "carrier_inventory_is_not_final_footnote_count": true,
+  "footnotes_without_printed_marker": 0,
+  "print_ocr_comparison": {
+    "exact_normalized_ocr_containment": 641,
+    "manual_print_check_needed": 149,
+    "partial_ocr_evidence": 414
+  },
+  "printed_markers_resolved": 1329,
+  "raw_carriers": {
+    "anchor": 2201,
+    "ref_closing": 1204,
+    "ref_opening": 1329,
+    "ref_self_closing": 125,
+    "reflist": 735
+  },
+  "resolved_named_and_self_closing_uses": 1318,
+  "schema_version": 1,
+  "unique_definitions": 1204,
+  "unresolved_or_missing_entries": 11,
+  "uses": 1329,
+  "verses_with_footnotes": 1222,
+  "verses_with_multiple_footnotes": 90
+}

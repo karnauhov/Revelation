@@ -1,0 +1,72 @@
+{
+  "generated_on": "2026-08-01",
+  "generator_version": "1",
+  "manual_controls": [
+    {
+      "control_id": "physical_or_library_ohienko_1988",
+      "independence": "independent_copy_of_same_exact_print_edition",
+      "machine_input": false,
+      "restriction": "Не допускает подмену текстом поздних редакций УБТ.",
+      "role": "Независимое разрешение спорных чтений после сравнения машинных источников.",
+      "title": "Физический или библиотечный экземпляр точного юбилейного издания 1988 года"
+    },
+    {
+      "control_id": "leningrad_codex_color_images",
+      "independence": "manuscript_image_control",
+      "machine_input": false,
+      "role": "Ручной контроль спорных чтений поверхности UXLC; не загружаемый Strong-вход.",
+      "source_page_url": "https://www.tanach.us/Pages/LC%20images.html",
+      "title": "Цветные снимки Ленинградского кодекса, доступные через ссылки Tanach.us"
+    }
+  ],
+  "manual_controls_policy": "not_machine_inputs; provenance locators only for later human review",
+  "normalized_manifests": [
+    "normalized_commons_ohienko_1988_scan.manifest.json",
+    "normalized_crosswire_kjv_3_1.manifest.json",
+    "normalized_internet_archive_ohienko_1988_scan.manifest.json",
+    "normalized_openscriptures_oshb_v2_2.manifest.json",
+    "normalized_step_tagnt_act_rev.manifest.json",
+    "normalized_step_tagnt_mat_jhn.manifest.json",
+    "normalized_step_tahot_gen_deu.manifest.json",
+    "normalized_step_tahot_isa_mal.manifest.json",
+    "normalized_step_tahot_job_sng.manifest.json",
+    "normalized_step_tahot_jos_est.manifest.json",
+    "normalized_step_tvtms.manifest.json",
+    "normalized_tanach_us_uxlc_2_5_27_6.manifest.json",
+    "normalized_unfoldingword_ugnt_v0_34.manifest.json",
+    "normalized_wikisource_ohienko_1988_revisions.manifest.json"
+  ],
+  "parser_contract_version": "ukrainian-stage-4-source-native-v1",
+  "parser_independence": {
+    "commons": "DjVu IFF + DjVuLibre hidden-text path from Commons bytes",
+    "crosswire_kjv": "milestone OSIS XML parser",
+    "internet_archive": "separate DjVu IFF + DjVuLibre invocation from IA bytes",
+    "oshb": "ZIP + OSIS XML parser",
+    "step_tagnt": "17-column TSV parser",
+    "step_tahot": "17-column TSV parser",
+    "step_tvtms": "line/section/mapping TSV parser without projection",
+    "ugnt": "ZIP + USFM parser",
+    "uxlc": "ZIP + native UXLC XML parser",
+    "wikisource": "MediaWiki/ProofreadPage JSON and balanced markup parser"
+  },
+  "schema_version": 1,
+  "source_lock": {
+    "machine_source_count": 14,
+    "path": "scripts/bible_module/reports/ukrainian_stage_3_20260801/source_lock.json",
+    "sha256": "3146257ddfe64ce7b20a2a06887f82ad6578dab3cbaac9a8cfd39b008534c346"
+  },
+  "stage": 4,
+  "stage_5_started": false,
+  "status": "complete",
+  "target_projection": "not_performed",
+  "tools": {
+    "djvulibre": {
+      "executable": "djvutxt.exe",
+      "license": "GPL-2.0-or-later (local development tool; not redistributed)",
+      "product_version": "3.5.29+4.12",
+      "sha256": "20987b00bed44cdd5d0cb136c8f9cdb65a319af21b49009ac7cb3205fe1f6a23"
+    },
+    "python": "3.12.2",
+    "third_party_python_dependencies_added": false
+  }
+}
