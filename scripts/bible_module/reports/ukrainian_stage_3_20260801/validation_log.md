@@ -30,6 +30,10 @@ Runtime/UI/state-management код, маршруты, локализация, с
   ошибки и ограничения.
 - [`source_files.csv`](source_files.csv) — стабильная табличная сводка всех
   машинных файлов.
+- [`footnote_source_sufficiency.json`](footnote_source_sufficiency.json) —
+  компактная read-only проверка того, что точный скан и все закреплённые
+  ProofreadPage revisions сохраняют данные, необходимые для будущего
+  извлечения печатных сносок; текст сносок в отчёт не копируется.
 - [`test_ukrainian_stage_3_sources.py`](../../tests/test_ukrainian_stage_3_sources.py)
   — contract и fail-closed тесты.
 - [`ukrainian_stage_3_sources.py`](../../ukrainian_stage_3_sources.py) —
@@ -59,6 +63,29 @@ DjVu, ZIP и generated Wikisource bundle находятся только в giti
 защищённый content bundle — только в кэше. Stage-2 template не подменялся
 непроверенным кратким диапазоном: в stage-3 evidence сохранены и полный список,
 и его digest.
+
+## Повторная read-only проверка источников сносок
+
+После добавления контракта `verses.comment` source lock не изменялся: те же
+14 машинных файлов уже содержат оба необходимых представления точного
+издания. Commons DjVu сохраняет все 1 538 печатных страниц, а закреплённый
+Wikisource bundle содержит root, index и содержимое каждой страницы
+`1–1538` в точных ревизиях.
+
+Агрегатная проверка carrier-разметки, не извлекающая сами сноски, получила:
+
+- 1 329 открывающих `<ref...>` на 723 страницах;
+- 1 204 закрывающих `</ref>` и 125 self-closing `<ref.../>`; сумма точно
+  равна числу открывающих маркеров;
+- 735 `{{reflist...}}` на 735 страницах;
+- 2 201 `{{anchor...}}` на 1 071 странице;
+- непустое wikitext-content у всех 1 538 ProofreadPage revisions.
+
+Эти числа не являются количеством итоговых сносок и не заменяют парсер:
+извлечение, нормализация, определение печатного маркера/anchor и привязка к
+стиху относятся к этапу 4. Проверка доказывает только достаточность и
+сохранность зафиксированных входов. Дополнительный файл или revision для
+начала этапа 4 не требуется.
 
 ## Зафиксированные наборы и независимость
 
@@ -148,40 +175,40 @@ Clean-cache run `2026-08-01T05:59:18Z`–`06:03:53Z` скачал и прове�
 | Команда | Результат |
 | --- | --- |
 | `python -m scripts.bible_module.ukrainian_stage_3_sources --check` | PASS; lock и 14 cache-файлов совпали по размеру/SHA-256 |
+| `python -m scripts.bible_module.ukrainian_stage_3_sources --write-footnote-source-audit` | PASS; сохранён агрегатный read-only отчёт по 1 538 страницам без извлечения сносок |
 | `verify_source_manifest(manifest_path=.../source_lock.json)` из существующего `fetch_sources.py` | PASS; stage-3 lock совместим с текущей checksum-проверкой |
 | `python -m scripts.bible_module.ukrainian_stage_3_sources --verify-clean-cache` | PASS; 14 downloads + 14 offline cache hits |
-| `python -m unittest scripts.bible_module.tests.test_sources scripts.bible_module.tests.test_ukrainian_stage_3_sources` | PASS; 13 тестов |
-| `python -m unittest discover -s scripts/bible_module/tests` | KNOWN PRE-EXISTING FAILURE; 118 тестов, 1 failure + 2 errors только в старом extended-Strong тесте |
+| `python -m unittest scripts.bible_module.tests.test_sources scripts.bible_module.tests.test_ukrainian_stage_3_sources` | PASS; 14 тестов |
+| `python -m unittest discover -s scripts/bible_module/tests` | PASS; 121 тест |
 | `python -m unittest discover -s scripts/content_tool/tests` | PASS; 30 тестов |
 | `dart format .` | PASS; 475 файлов, 0 изменений |
 | `flutter analyze` | PASS; `No issues found`, 203,6 с |
 | `flutter test` | PASS; 920 тестов |
 | `dart run scripts/check_forbidden_patterns.dart` | PASS |
 | `dart run scripts/check_docs_sync.dart` | PASS |
-| `flutter test integration_test/smoke/bible_navigation_smoke_test.dart -d windows` | KNOWN PRE-EXISTING FAILURE; тот же finder `bible_module_dropdown`, что в этапе 2 |
+| Integration smoke | N/A; runtime, маршруты, deep links и пользовательские сценарии не менялись |
 | `git diff --check` + проверка whitespace во всех новых файлах | PASS; CSV нормализован на LF |
 | Итоговый аудит Git/кэша/секретов | PASS; в change set нет исходных бинарников и высокодостоверных секретов, все 23 payload-файла общего локального кэша игнорируются Git |
 
-## Предсуществующие отклонения
+## Повторная общая проверка
 
 ### Python discovery
 
-Результат точно совпал с validation log этапа 2: старый fixture
-`test_apply_extended_strong_descriptions.py` использует `G6000` и `G20833`,
-тогда как актуальные content-tool ranges заканчиваются на `G5624`. Получены те
-же 2 `ValueError` и 1 несовпавшее ожидаемое сообщение. Изменённые stage-3
-файлы не импортируются этим старым тестом; все 10 новых тестов прошли.
+Обязательный полный discovery первоначально воспроизвёл три старых сбоя:
+fixtures в `test_apply_extended_strong_descriptions.py` ожидали успешного
+применения `G6000/G20833`, хотя актуальные content-tool ranges после удаления
+extended Strong заканчиваются на `G5624`. Эти сценарии исправлены под текущий
+fail-closed контракт и теперь дополнительно подтверждают отсутствие изменений
+локализованной БД при отклонении удалённых диапазонов. Runtime-код и quality
+gates не менялись; итоговый discovery проходит: 121 тест.
 
 ### Bible smoke
 
-Результат точно совпал с этапом 2: строка 54 ожидает один
-`bible_module_dropdown`, неизменённый runtime создаёт два. Этап 3 не меняет
-runtime/UI/route/smoke. Этот несвязанный дефект не исправлялся и quality gate
-не ослаблялся.
-
-Другой smoke не является релевантным: stage-3 change set содержит только
-Python source acquisition, его тесты, machine reports и roadmap. Startup,
-route, deep link или пользовательский flow не менялся.
+Integration smoke не запускался в повторной итерации: change set содержит
+только Python contracts/source acquisition, тесты, машинные доказательства и
+документацию. Startup, runtime/UI, маршруты, deep links и пользовательские
+сценарии не менялись; реализация и UI-контракт `verses.comment` оставлены
+этапам 9–10.
 
 ## Ограничения
 
@@ -201,4 +228,8 @@ route, deep link или пользовательский flow не менялс�
 
 Лицензия, версия и происхождение каждого обязательного машинного входа
 однозначны. Неприкреплённого `latest` нет; поздней УБТ нет; все обязательные
-входы повторно получены и проверены. Критерий выхода этапа 3 выполнен.
+входы повторно получены и проверены. Повторная read-only проверка подтвердила,
+что существующих 14 машинных файлов достаточно и для будущего извлечения
+печатных сносок; source lock не изменялся, поэтому повторное сетевое получение
+clean-cache не требовалось. Критерий выхода этапа 3 выполнен; следующим
+разрешён этап 4.

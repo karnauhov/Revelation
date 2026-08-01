@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "stage": 3,
+  "generated_on": "2026-08-01",
+  "status": "sources_sufficient_for_future_footnote_extraction",
+  "source_lock": "source_lock.json",
+  "source_lock_sha256": "3146257ddfe64ce7b20a2a06887f82ad6578dab3cbaac9a8cfd39b008534c346",
+  "source_lock_unchanged": true,
+  "machine_source_count": 14,
+  "print_reference": {
+    "source_id": "commons_ohienko_1988_scan",
+    "edition_year": 1988,
+    "locked_pages": 1538,
+    "bytes": 83637482,
+    "sha256": "0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34",
+    "license": "Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)",
+    "license_url": "https://commons.wikimedia.org/wiki/File:Ivan_Ohienko_Bible.djvu#Licensing",
+    "coverage": "Complete exact-edition scan preserves printed page content, including verse footnotes."
+  },
+  "machine_transcription": {
+    "source_id": "wikisource_ohienko_1988_revisions",
+    "edition_year": 1988,
+    "revision_count": 1540,
+    "proofread_page_revision_count": 1538,
+    "first_page_title": "Сторінка:Ivan Ohienko Bible.djvu/1",
+    "last_page_title": "Сторінка:Ivan Ohienko Bible.djvu/1538",
+    "revision_lock_sha256": "ecce2e6d48a07f7baac96b393b1147a4f3b28c5eba6ac757f4de8f5b8a697dc9",
+    "bytes": 8372816,
+    "sha256": "c7bc09ffdb232ded0abae6b631e382d896396750e3d3931ba5ee07e22c3e0702",
+    "all_revision_contents_present": true,
+    "marker_inventory": {
+      "opening_ref": {
+        "occurrences": 1329,
+        "pages_with_marker": 723
+      },
+      "closing_ref": {
+        "occurrences": 1204,
+        "pages_with_marker": 723
+      },
+      "self_closing_ref": {
+        "occurrences": 125,
+        "pages_with_marker": 95
+      },
+      "reflist": {
+        "occurrences": 735,
+        "pages_with_marker": 735
+      },
+      "anchor": {
+        "occurrences": 2201,
+        "pages_with_marker": 1071
+      }
+    }
+  },
+  "sufficiency": {
+    "exact_print_pages_locked": true,
+    "all_proofread_page_revisions_locked_with_content": true,
+    "footnote_carriers_present": true,
+    "additional_source_required": false
+  },
+  "scope_limit": "Read-only source-capability audit only: no footnote was extracted, normalized, assigned to a verse, or written to an intermediate corpus."
+}

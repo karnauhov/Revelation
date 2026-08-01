@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import copy
 import hashlib
 import io
 import json
@@ -12,13 +13,13 @@ from pathlib import Path
 from scripts.bible_module import build_kjv, build_lxx_tr
 from scripts.bible_module.canon import CANONICAL_BOOKS, canonical_verses
 from scripts.bible_module.ukrainian_stage_2_contract import (
-    APPLICATION_SCHEMA_VERSION,
     DEFAULT_BASELINE_PATH,
     FINAL_IDENTIFIERS,
     INFO_DESCRIPTION,
     INFO_LICENSE,
     INFO_SOURCE_SUMMARY_PLACEHOLDERS,
     INFO_SOURCE_SUMMARY_TEMPLATE,
+    LEGACY_APPLICATION_SCHEMA_VERSION,
     MODULE_CODE,
     MODULE_FILENAME,
     MODULE_ID,
@@ -26,10 +27,13 @@ from scripts.bible_module.ukrainian_stage_2_contract import (
     TARGET_CHAPTERS_COUNT,
     TARGET_VERSE_KEYS_COUNT,
     TARGET_VERSES_COUNT,
+    UKRAINIAN_APPLICATION_SCHEMA_VERSION,
     build_baseline_manifest,
+    build_ukrainian_schema_contract,
     load_baseline_manifest,
     render_final_identifiers_csv,
     schema_snapshot,
+    validate_schema_contracts,
 )
 from scripts.bible_module.ukrainian_strong import (
     StrongContractError,
@@ -53,6 +57,7 @@ class UkrainianStage2ContractTests(unittest.TestCase):
         self,
     ) -> None:
         reference = self.baseline["reference_database"]
+        legacy_lxx_tr = self.baseline["legacy_lxx_tr_database"]
         target_grid = self.baseline["target_grid"]
 
         self.assertEqual(
@@ -84,6 +89,30 @@ class UkrainianStage2ContractTests(unittest.TestCase):
             reference["nonempty_verse_rows"],
             TARGET_VERSES_COUNT,
         )
+        self.assertEqual(
+            legacy_lxx_tr["sha256"],
+            "443ab95f6fe54c3a803665e935a21bb862cdc97346ace6fa03d1d9c100bf3926",
+        )
+        self.assertEqual(legacy_lxx_tr["integrity_check"], "ok")
+        self.assertEqual(legacy_lxx_tr["pragma_user_version"], 3)
+        self.assertEqual(
+            legacy_lxx_tr["db_metadata"],
+            {
+                "data_version": "17",
+                "date": "2026-07-25T07:16:08Z",
+                "schema_version": "3",
+            },
+        )
+        self.assertEqual(legacy_lxx_tr["info"]["code"], "LXX_TR")
+        self.assertEqual(legacy_lxx_tr["info"]["module_id"], "lxx_tr")
+        self.assertEqual(legacy_lxx_tr["info"]["canon"], "protestant_66")
+        self.assertEqual(
+            legacy_lxx_tr["info"]["versification"],
+            "kjv_protestant",
+        )
+        self.assertEqual(legacy_lxx_tr["verse_rows"], TARGET_VERSES_COUNT)
+        self.assertEqual(legacy_lxx_tr["nonempty_verse_rows"], 30_892)
+        self.assertEqual(legacy_lxx_tr["schema"], reference["schema"])
         self.assertEqual(
             len(target_grid["verse_keys"]),
             TARGET_VERSE_KEYS_COUNT,
@@ -134,7 +163,7 @@ class UkrainianStage2ContractTests(unittest.TestCase):
         self.assertEqual(canon_refs, map_refs)
         self.assertEqual(content_tool_keys, target_grid["verse_keys"])
 
-    def test_builders_runtime_and_editor_share_application_schema(self) -> None:
+    def test_legacy_builders_runtime_and_editor_remain_on_schema_v3(self) -> None:
         baseline_schema = self.baseline["reference_database"]["schema"]
 
         for create_schema in (
@@ -189,6 +218,154 @@ class UkrainianStage2ContractTests(unittest.TestCase):
             with self.subTest(column=column):
                 self.assertIn(column, runtime_source)
 
+    def test_ukrainian_target_schema_v4_is_exact_and_separate(self) -> None:
+        contracts = self.baseline["schema_contracts"]
+        legacy = contracts["legacy_v3"]
+        target = contracts["ukrainian_v4"]
+
+        self.assertEqual(LEGACY_APPLICATION_SCHEMA_VERSION, 3)
+        self.assertEqual(UKRAINIAN_APPLICATION_SCHEMA_VERSION, 4)
+        self.assertEqual(legacy["schema_version"], 3)
+        self.assertEqual(legacy["pragma_user_version"], 3)
+        self.assertEqual(legacy["db_metadata_schema_version"], "3")
+        self.assertFalse(legacy["comment_column_supported"])
+        self.assertEqual(
+            legacy["shared_schema"],
+            self.baseline["reference_database"]["schema"],
+        )
+        self.assertEqual(
+            legacy["databases"],
+            {
+                "kjv": {
+                    "filename": "bible_kjv.sqlite",
+                    "sha256": (
+                        "b105f174c37c6703b71831a99ff838fed3439b84132c743bd3b58b37a326c780"
+                    ),
+                    "bytes": 6_733_824,
+                    "info_code": "KJV",
+                    "module_id": "kjv",
+                    "verse_rows": 31_102,
+                },
+                "lxx_tr": {
+                    "filename": "bible_lxx_tr.sqlite",
+                    "sha256": (
+                        "443ab95f6fe54c3a803665e935a21bb862cdc97346ace6fa03d1d9c100bf3926"
+                    ),
+                    "bytes": 12_840_960,
+                    "info_code": "LXX_TR",
+                    "module_id": "lxx_tr",
+                    "verse_rows": 31_102,
+                },
+            },
+        )
+
+        self.assertEqual(build_ukrainian_schema_contract(), target)
+        self.assertEqual(target["schema_version"], 4)
+        self.assertEqual(target["pragma_user_version"], 4)
+        self.assertEqual(target["db_metadata_schema_version"], "4")
+        self.assertTrue(target["comment_column_supported"])
+        self.assertEqual(
+            target["schema"]["fingerprint_sha256"],
+            "b46dc7c39ddf8ec5d4ccbbf80d774dd94505baf7f43c33250869852ad0950954",
+        )
+        self.assertEqual(
+            target["schema"]["tables"]["verses"]["sql"],
+            "CREATE TABLE verses (\n"
+            "  verse_key TEXT NOT NULL PRIMARY KEY CHECK(length(verse_key) = 3),\n"
+            "  text TEXT NOT NULL DEFAULT '',\n"
+            "  comment TEXT NOT NULL DEFAULT ''\n"
+            ") WITHOUT ROWID",
+        )
+        self.assertEqual(
+            target["schema"]["tables"]["verses"]["columns"],
+            [
+                {
+                    "cid": 0,
+                    "name": "verse_key",
+                    "type": "TEXT",
+                    "not_null": True,
+                    "default": None,
+                    "primary_key_position": 1,
+                },
+                {
+                    "cid": 1,
+                    "name": "text",
+                    "type": "TEXT",
+                    "not_null": True,
+                    "default": "''",
+                    "primary_key_position": 0,
+                },
+                {
+                    "cid": 2,
+                    "name": "comment",
+                    "type": "TEXT",
+                    "not_null": True,
+                    "default": "''",
+                    "primary_key_position": 0,
+                },
+            ],
+        )
+        self.assertNotIn(
+            "comment",
+            {
+                column["name"]
+                for column in legacy["shared_schema"]["tables"]["verses"][
+                    "columns"
+                ]
+            },
+        )
+
+    def test_schema_contract_validation_rejects_version_comment_or_profile_drift(
+        self,
+    ) -> None:
+        legacy_kjv = self.baseline["reference_database"]
+        legacy_lxx_tr = self.baseline["legacy_lxx_tr_database"]
+        target = self.baseline["schema_contracts"]["ukrainian_v4"]
+
+        mutations = []
+        for field, value in (
+            ("schema_version", 3),
+            ("pragma_user_version", 3),
+            ("db_metadata_schema_version", "3"),
+            ("comment_column_supported", False),
+        ):
+            mutated_target = copy.deepcopy(target)
+            mutated_target[field] = value
+            mutations.append(
+                (f"target_{field}", legacy_kjv, legacy_lxx_tr, mutated_target)
+            )
+
+        missing_comment = copy.deepcopy(target)
+        missing_comment["schema"]["tables"]["verses"]["columns"].pop()
+        mutations.append(
+            ("missing_comment", legacy_kjv, legacy_lxx_tr, missing_comment)
+        )
+
+        changed_comment = copy.deepcopy(target)
+        changed_comment["schema"]["tables"]["verses"]["columns"][2][
+            "default"
+        ] = None
+        mutations.append(
+            ("changed_comment", legacy_kjv, legacy_lxx_tr, changed_comment)
+        )
+
+        mixed_legacy = copy.deepcopy(legacy_kjv)
+        mixed_legacy["pragma_user_version"] = 4
+        mixed_legacy["db_metadata"]["schema_version"] = "4"
+        mixed_legacy["schema"]["tables"]["verses"]["columns"].append(
+            copy.deepcopy(target["schema"]["tables"]["verses"]["columns"][2])
+        )
+        mutations.append(("mixed_legacy", mixed_legacy, legacy_lxx_tr, target))
+
+        for name, mutated_kjv, mutated_lxx_tr, mutated_target in mutations:
+            with self.subTest(name=name):
+                with self.assertRaises(ValueError):
+                    validate_schema_contracts(
+                        legacy_kjv=mutated_kjv,
+                        legacy_lxx_tr=mutated_lxx_tr,
+                        ukrainian_target=mutated_target,
+                    )
+
     def test_final_identifiers_and_info_templates_are_exact(self) -> None:
         final_module = self.baseline["final_module"]
         expected_identifiers = {
@@ -204,7 +381,7 @@ class UkrainianStage2ContractTests(unittest.TestCase):
             "edition": "ювілейне видання 1988 року",
             "canon": "protestant_66",
             "target_versification": "kjv_protestant",
-            "schema_version": 3,
+            "schema_version": 4,
             "target_books": 66,
             "target_chapters": 1189,
             "target_verses": 31_102,
@@ -228,13 +405,13 @@ class UkrainianStage2ContractTests(unittest.TestCase):
         )
         self.assertEqual(
             hashlib.sha256(INFO_LICENSE.encode("utf-8")).hexdigest(),
-            "ad3e3ce1d5b276664e80ef562065b4867eae75be924e066310e27571bfe63471",
+            "177ac3cdcb600bcc740d73569a1332bc259b0ff28d30feea552756411403019a",
         )
         self.assertEqual(
             hashlib.sha256(
                 INFO_SOURCE_SUMMARY_TEMPLATE.encode("utf-8")
             ).hexdigest(),
-            "d1ecd3825f3aab9eb0a3fd0fc1585a3a7cb4e659f742c1c3c9cb5cc3f4ea7ca4",
+            "a30c1d60a57cc55ea114a7f0eca96c43f36b6b96b3731de1714b71036d20f39b",
         )
 
         placeholders = {
@@ -371,6 +548,19 @@ class UkrainianStage2ContractTests(unittest.TestCase):
             "no mixing with later UBS editions",
             selected["owner_confirmation_scope"],
         )
+        footnotes = selected["printed_footnotes"]
+        self.assertEqual(
+            footnotes["status"],
+            "covered_as_part_of_exact_licensed_1988_edition",
+        )
+        self.assertIn("extract", footnotes["permitted_project_actions"])
+        self.assertIn(
+            "store_in_verses_comment",
+            footnotes["permitted_project_actions"],
+        )
+        self.assertIn("edit", footnotes["permitted_project_actions"])
+        self.assertIn("redistribute", footnotes["permitted_project_actions"])
+        self.assertTrue(footnotes["no_separate_exclusion_identified"])
 
 
 if __name__ == "__main__":

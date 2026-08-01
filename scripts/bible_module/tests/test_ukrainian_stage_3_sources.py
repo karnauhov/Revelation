@@ -166,6 +166,62 @@ class UkrainianStage3SourceLockTests(unittest.TestCase):
             any("must not masquerade as a locked file" in error for error in errors)
         )
 
+    def test_locked_exact_edition_sources_are_sufficient_for_future_footnotes(
+        self,
+    ) -> None:
+        audit = json.loads(
+            stage3.FOOTNOTE_SOURCE_AUDIT_PATH.read_text(encoding="utf-8")
+        )
+        by_id = {
+            source["source_id"]: source for source in self.lock["sources"]
+        }
+        self.assertEqual(
+            audit["status"],
+            "sources_sufficient_for_future_footnote_extraction",
+        )
+        self.assertTrue(audit["source_lock_unchanged"])
+        self.assertEqual(audit["machine_source_count"], 14)
+        self.assertEqual(
+            audit["source_lock_sha256"],
+            stage3.sha256_file(stage3.SOURCE_LOCK_PATH),
+        )
+
+        scan = audit["print_reference"]
+        locked_scan = by_id[scan["source_id"]]
+        self.assertEqual(scan["edition_year"], 1988)
+        self.assertEqual(scan["locked_pages"], 1538)
+        self.assertEqual(scan["bytes"], locked_scan["bytes"])
+        self.assertEqual(scan["sha256"], locked_scan["sha256"])
+
+        transcription = audit["machine_transcription"]
+        locked_transcription = by_id[transcription["source_id"]]
+        self.assertEqual(transcription["revision_count"], 1540)
+        self.assertEqual(transcription["proofread_page_revision_count"], 1538)
+        self.assertEqual(
+            transcription["revision_lock_sha256"],
+            locked_transcription["pin"]["revision_lock_sha256"],
+        )
+        self.assertEqual(transcription["sha256"], locked_transcription["sha256"])
+        self.assertTrue(transcription["all_revision_contents_present"])
+        markers = transcription["marker_inventory"]
+        self.assertEqual(
+            markers["opening_ref"]["occurrences"],
+            markers["closing_ref"]["occurrences"]
+            + markers["self_closing_ref"]["occurrences"],
+        )
+        self.assertGreater(markers["reflist"]["occurrences"], 0)
+        self.assertGreater(markers["anchor"]["occurrences"], 0)
+        self.assertEqual(
+            audit["sufficiency"],
+            {
+                "exact_print_pages_locked": True,
+                "all_proofread_page_revisions_locked_with_content": True,
+                "footnote_carriers_present": True,
+                "additional_source_required": False,
+            },
+        )
+        self.assertIn("no footnote was extracted", audit["scope_limit"])
+
 
 class UkrainianStage3FailClosedFetchTests(unittest.TestCase):
     def _entry(self, payload: bytes) -> dict[str, object]:

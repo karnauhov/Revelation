@@ -1,6 +1,6 @@
 # Украинский библейский модуль со Strong: техническая спецификация и целевой эталон
 
-Doc-Version: `1.1.0`
+Doc-Version: `1.2.0`
 Last-Updated: `2026-08-01`
 Source-Commit: `working-tree`
 
@@ -12,9 +12,9 @@ Source-Commit: `working-tree`
 После первоначального закрытия этапа владелец добавил обязательное требование:
 сохранять печатные сноски в отдельном комментарии к соответствующему стиху,
 редактировать их в content tool и показывать в приложении. Поэтому этап 2
-переоткрыт до синхронизации baseline и contract-тестов с описанным ниже
-schema contract версии 4. Зафиксированные входные файлы этапа 3 от этого не
-изменяются.
+был переоткрыт. Baseline, таблица идентификаторов, генератор и contract-тесты
+синхронизированы с описанным ниже schema contract версии 4; этап повторно
+закрыт. Зафиксированные входные файлы этапа 3 не изменились.
 
 В рамках этапа 2 не загружались и не фиксировались украинские исходные файлы,
 не создавался украинский корпус и не собирался итоговый SQLite-модуль.
@@ -172,7 +172,7 @@ schema version 3 без `comment`. Runtime и content tool должны подд
 | Редакция | `ювілейне видання 1988 року` |
 | Канон | `protestant_66` |
 | Целевая версификация | `kjv_protestant` |
-| Прикладная схема | `3` |
+| Прикладная схема | `4` |
 
 `ohienko_1988`, `OH1988` и имя файла не конфликтуют с существующими
 `kjv`/`KJV` и `lxx_tr`/`LXX_TR`. Год в ID обязателен: общее имя `ukrainian`
@@ -234,6 +234,15 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
   `b105f174c37c6703b71831a99ff838fed3439b84132c743bd3b58b37a326c780`;
 - schema fingerprint:
   `e14d4e2b2727122240f3765104cf4e2d63f789d5904be6aa3766cf761f5583b8`;
+- фактический legacy LXX_TR SHA-256:
+  `443ab95f6fe54c3a803665e935a21bb862cdc97346ace6fa03d1d9c100bf3926`;
+- два раздельных schema profile: `legacy_v3` для неизменённых KJV/LXX_TR и
+  `ukrainian_v4` для целевого `bible_ohienko_1988.sqlite`;
+- target schema fingerprint версии 4:
+  `b46dc7c39ddf8ec5d4ccbbf80d774dd94505baf7f43c33250869852ad0950954`;
+- для `ukrainian_v4`: schema version `4`, `PRAGMA user_version = 4`,
+  `db_metadata.schema_version = '4'` и точные столбцы `verses` —
+  `verse_key`, `text`, `comment TEXT NOT NULL DEFAULT ''`;
 - SHA-256 `assets/data/bible_verse_map.json`:
   `e3f3f069b13dadda6fbb194004d48f35b1c74a237f8505bc4cd30dfd22fb4a0b`;
 - 66 книг, 1 189 глав, 31 102 стиховых позиции;
@@ -417,13 +426,13 @@ python -m scripts.bible_module.generate_ukrainian_stage_2_baseline
 ### `info.license`
 
 ```text
-Текст ювілейного видання перекладу Івана Огієнка 1988 року та похідний текстовий/Strong-модуль ліцензовано за Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0): https://creativecommons.org/licenses/by-sa/4.0/. Автор перекладу: Іван Огієнко. Дозвіл на видання до 1991 року надано Українським Біблійним Товариством; Wikimedia VRT ticket 2013112610015211. Зміни: технічна нормалізація, токенізація, явна реверсифікація та додавання Strong. Пізніші редакції й правки УБТ після 1990 року не включено. Атрибуція не означає схвалення модуля УБТ, Wikimedia або Wikisource.
+Текст і друковані виноски ювілейного видання перекладу Івана Огієнка 1988 року та похідний текстовий/Strong-модуль ліцензовано за Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0): https://creativecommons.org/licenses/by-sa/4.0/. Автор перекладу: Іван Огієнко. Дозвіл на видання до 1991 року надано Українським Біблійним Товариством; Wikimedia VRT ticket 2013112610015211. Зміни: технічна нормалізація, токенізація, явна реверсифікація, структурування друкованих виносок і додавання Strong. Пізніші редакції й правки УБТ після 1990 року не включено. Атрибуція не означає схвалення модуля УБТ, Wikimedia або Wikisource.
 ```
 
 ### `info.source_summary`
 
 ```text
-Базовий текст: закріплені ревізії Українських Вікіджерел для точного ювілейного видання 1988 року ({wikisource_revision_lock}), звірені зі сканом Wikimedia Commons SHA-256 {commons_scan_sha256} та залежним контрольним сканом Internet Archive SHA-256 39d34d366554a2c798e180d0fce05a4ca11fc8c10901c174848e37f30468cee8. Strong створено як похідне послівне вирівнювання: STEPBible TAHOT/TAGNT commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0 — основний Hebrew OT/Greek NT ланцюжок; Open Scriptures Hebrew Bible v.2.2 commit 6a5db284c715c18b239422e57bb89684e6a19f00 — залежна OT-перевірка; Tanach.us UXLC 2.5 (27.6), April 2026 — незалежний OT-контроль поверхні й меж; unfoldingWord UGNT v0.34 commit fc95b2b8aad08bb65ab54628ab685413a1139e97 — незалежний NT Strong-контроль; CrossWire KJV 3.1 commit d490be7e34762deb2c76cb2c1306d4808e27890d — лише додатковий classic-Strong аудит. Жоден контрольний текст не замінює український текст видання 1988 року.
+Базовий текст і друковані виноски: закріплені ревізії Українських Вікіджерел для точного ювілейного видання 1988 року ({wikisource_revision_lock}), звірені зі сканом Wikimedia Commons SHA-256 {commons_scan_sha256} та залежним контрольним сканом Internet Archive SHA-256 39d34d366554a2c798e180d0fce05a4ca11fc8c10901c174848e37f30468cee8. Strong створено як похідне послівне вирівнювання: STEPBible TAHOT/TAGNT commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0 — основний Hebrew OT/Greek NT ланцюжок; Open Scriptures Hebrew Bible v.2.2 commit 6a5db284c715c18b239422e57bb89684e6a19f00 — залежна OT-перевірка; Tanach.us UXLC 2.5 (27.6), April 2026 — незалежний OT-контроль поверхні й меж; unfoldingWord UGNT v0.34 commit fc95b2b8aad08bb65ab54628ab685413a1139e97 — незалежний NT Strong-контроль; CrossWire KJV 3.1 commit d490be7e34762deb2c76cb2c1306d4808e27890d — лише додатковий classic-Strong аудит. Жоден контрольний текст не замінює український текст видання 1988 року.
 ```
 
 Разрешены ровно два обязательных factual placeholder:
@@ -607,8 +616,11 @@ python -m unittest scripts.bible_module.tests.test_ukrainian_stage_2_contract
   должен создаваться.
 
 Семантика столбца `comment` и совместимости schema versions 3/4 определена.
-Этап 2 остаётся переоткрытым, пока checked-in baseline и contract-тесты не
-будут обновлены и не пройдут с этим контрактом. После повторного закрытия
-этапа 2 уже завершённый source-lock этапа 3 остаётся действительным, а
-следующим разрешается этап 4 — независимый парсинг, включая извлечение и
-привязку всех найденных сносок.
+Checked-in baseline, CSV идентификаторов и contract-тесты обновлены и
+проверяют профили раздельно. Legacy-файлы KJV/LXX_TR сохранили schema version
+3 и исходные SHA-256; целевой украинский профиль фиксирует только будущий
+контракт версии 4 и не создаёт итоговую БД или UI.
+
+Этап 2 повторно закрыт. Source lock этапа 3 остаётся действительным и также
+повторно проверен read-only; следующим разрешается этап 4 — независимый
+парсинг, включая извлечение и привязку всех найденных сносок.

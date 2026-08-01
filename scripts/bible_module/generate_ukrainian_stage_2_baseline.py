@@ -7,6 +7,7 @@ from pathlib import Path
 from scripts.bible_module.ukrainian_stage_2_contract import (
     DEFAULT_BASELINE_PATH,
     DEFAULT_IDENTIFIERS_PATH,
+    DEFAULT_LEGACY_LXX_TR_DB_PATH,
     DEFAULT_REFERENCE_DB_PATH,
     DEFAULT_VERSE_MAP_PATH,
     STAGE_2_GENERATED_ON,
@@ -20,8 +21,9 @@ from scripts.bible_module.ukrainian_stage_2_contract import (
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Generate or verify the Ukrainian Bible stage-2 KJV baseline. "
-            "The command reads only repository-local KJV and verse-map files."
+            "Generate or verify the Ukrainian Bible stage-2 target baseline. "
+            "The command reads only repository-local legacy KJV/LXX_TR and "
+            "verse-map files."
         )
     )
     parser.add_argument(
@@ -33,6 +35,11 @@ def _parse_args() -> argparse.Namespace:
         "--verse-map",
         type=Path,
         default=DEFAULT_VERSE_MAP_PATH,
+    )
+    parser.add_argument(
+        "--legacy-lxx-tr-db",
+        type=Path,
+        default=DEFAULT_LEGACY_LXX_TR_DB_PATH,
     )
     parser.add_argument(
         "--baseline",
@@ -57,6 +64,7 @@ def main() -> int:
     args = _parse_args()
     manifest = build_baseline_manifest(
         reference_db_path=args.reference_db,
+        legacy_lxx_tr_db_path=args.legacy_lxx_tr_db,
         verse_map_path=args.verse_map,
         generated_on=args.generated_on,
     )
@@ -82,6 +90,7 @@ def main() -> int:
     else:
         write_stage_2_evidence(
             reference_db_path=args.reference_db,
+            legacy_lxx_tr_db_path=args.legacy_lxx_tr_db,
             verse_map_path=args.verse_map,
             baseline_path=args.baseline,
             identifiers_path=args.identifiers,
@@ -97,6 +106,15 @@ def main() -> int:
                 "schema_fingerprint_sha256": manifest["reference_database"][
                     "schema"
                 ]["fingerprint_sha256"],
+                "legacy_lxx_tr_sha256": manifest["legacy_lxx_tr_database"][
+                    "sha256"
+                ],
+                "ukrainian_schema_version": manifest["schema_contracts"][
+                    "ukrainian_v4"
+                ]["schema_version"],
+                "ukrainian_schema_fingerprint_sha256": manifest[
+                    "schema_contracts"
+                ]["ukrainian_v4"]["schema"]["fingerprint_sha256"],
                 "verse_key_sequence_sha256": manifest["target_grid"][
                     "verse_key_sequence_sha256"
                 ],

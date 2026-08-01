@@ -59,7 +59,9 @@ class ApplyExtendedStrongDescriptionsTests(unittest.TestCase):
                 self.assertNotEqual(localized["ru"], localized["en"])
                 self.assertNotEqual(localized["uk"], localized["en"])
 
-    def test_builds_source_description_inputs_from_attested_rows(self) -> None:
+    def test_source_inputs_fail_closed_after_extended_ranges_were_removed(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             source_paths = _write_lexicon_sources(root)
@@ -68,21 +70,22 @@ class ApplyExtendedStrongDescriptionsTests(unittest.TestCase):
             _create_bible_module_fixture(bible_module_path)
             _create_common_dictionary_fixture(common_db_path)
 
-            inputs = build_source_description_inputs(
-                common_db_path=common_db_path,
-                bible_module_path=bible_module_path,
-                source_paths=source_paths,
-                descriptions=DESCRIPTIONS,
-                expected_count=2,
-                expected_primary_count=1,
-            )
+            with self.assertRaisesRegex(
+                ValueError,
+                "Extended ids are missing from content-tool translation ranges",
+            ):
+                build_source_description_inputs(
+                    common_db_path=common_db_path,
+                    bible_module_path=bible_module_path,
+                    source_paths=source_paths,
+                    descriptions=DESCRIPTIONS,
+                    expected_count=2,
+                    expected_primary_count=1,
+                )
 
-            self.assertEqual([row.id for row in inputs], [6000, 20833])
-            self.assertEqual(inputs[0].source_gloss, "to report")
-            self.assertEqual(inputs[0].translation_batch_range, (6000, 6003))
-            self.assertEqual(inputs[1].translation_batch_range, (20833, 20833))
-
-    def test_applies_translations_to_all_localized_dbs_and_updates_metadata(self) -> None:
+    def test_apply_fails_before_mutating_dbs_after_extended_ranges_were_removed(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             common_db_path = root / "revelation.sqlite"
@@ -94,23 +97,16 @@ class ApplyExtendedStrongDescriptionsTests(unittest.TestCase):
             for locale, path in localized_db_paths.items():
                 _create_localized_dictionary_fixture(path, data_version=10 + len(locale))
 
-            report = apply_extended_strong_descriptions(
-                common_db_path=common_db_path,
-                localized_db_paths=localized_db_paths,
-                descriptions=DESCRIPTIONS,
-                expected_count=2,
-                applied_at="2026-05-23T12:00:00Z",
-            )
-
-            self.assertEqual(report.expected_count, 2)
-            self.assertEqual(len(report.locale_reports), 4)
-            for locale_report in report.locale_reports:
-                self.assertEqual(locale_report.changed_count, 2)
-                self.assertEqual(locale_report.existing_extended_count_before, 0)
-                self.assertEqual(locale_report.extended_count_after, 2)
-                self.assertTrue(
-                    locale_report.backup_path is not None
-                    and locale_report.backup_path.exists()
+            with self.assertRaisesRegex(
+                ValueError,
+                "Extended ids are missing from content-tool translation ranges",
+            ):
+                apply_extended_strong_descriptions(
+                    common_db_path=common_db_path,
+                    localized_db_paths=localized_db_paths,
+                    descriptions=DESCRIPTIONS,
+                    expected_count=2,
+                    applied_at="2026-05-23T12:00:00Z",
                 )
 
             for locale, path in localized_db_paths.items():
@@ -118,16 +114,16 @@ class ApplyExtendedStrongDescriptionsTests(unittest.TestCase):
                 try:
                     connection.row_factory = sqlite3.Row
                     self.assertEqual(
-                        connection.execute(
-                            "SELECT desc FROM greek_descs WHERE id = 6000"
-                        ).fetchone()["desc"],
-                        DESCRIPTIONS[6000][locale],
+                        connection.execute("SELECT COUNT(*) FROM greek_descs").fetchone()[
+                            0
+                        ],
+                        0,
                     )
                     self.assertEqual(
                         connection.execute(
                             "SELECT value FROM db_metadata WHERE key = 'date'"
                         ).fetchone()["value"],
-                        "2026-05-23T12:00:00Z",
+                        "2026-05-23T00:00:00Z",
                     )
                 finally:
                     connection.close()
@@ -143,7 +139,9 @@ class ApplyExtendedStrongDescriptionsTests(unittest.TestCase):
             finally:
                 common_connection.close()
 
-    def test_validation_rejects_missing_localized_descriptions(self) -> None:
+    def test_validation_fails_closed_after_extended_ranges_were_removed(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             common_db_path = root / "revelation.sqlite"
@@ -152,15 +150,13 @@ class ApplyExtendedStrongDescriptionsTests(unittest.TestCase):
                 for locale in SUPPORTED_LOCALES
             }
             _create_common_dictionary_fixture(common_db_path)
-            for locale, path in localized_db_paths.items():
+            for path in localized_db_paths.values():
                 _create_localized_dictionary_fixture(path)
-                _insert_localized_descriptions(
-                    path,
-                    locale,
-                    skip_id=20833 if locale == "uk" else None,
-                )
 
-            with self.assertRaisesRegex(ValueError, "revelation_uk.sqlite"):
+            with self.assertRaisesRegex(
+                ValueError,
+                "Extended ids are missing from content-tool translation ranges",
+            ):
                 validate_localized_extended_descriptions(
                     common_db_path=common_db_path,
                     localized_db_paths=localized_db_paths,
@@ -319,22 +315,6 @@ def _create_localized_dictionary_fixture(path: Path, *, data_version: int = 10) 
               desc TEXT NOT NULL
             )
             """
-        )
-        connection.commit()
-    finally:
-        connection.close()
-
-
-def _insert_localized_descriptions(path: Path, locale: str, *, skip_id: int | None = None) -> None:
-    connection = sqlite3.connect(path)
-    try:
-        connection.executemany(
-            "INSERT INTO greek_descs(id, desc) VALUES(?, ?)",
-            [
-                (strong_id, localized[locale])
-                for strong_id, localized in DESCRIPTIONS.items()
-                if strong_id != skip_id
-            ],
         )
         connection.commit()
     finally:

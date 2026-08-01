@@ -25,6 +25,7 @@ REPORT_DIR = PACKAGE_DIR / "reports" / "ukrainian_stage_3_20260801"
 SOURCE_LOCK_PATH = REPORT_DIR / "source_lock.json"
 FETCH_LOG_PATH = REPORT_DIR / "fetch_log.json"
 SOURCE_FILES_CSV_PATH = REPORT_DIR / "source_files.csv"
+FOOTNOTE_SOURCE_AUDIT_PATH = REPORT_DIR / "footnote_source_sufficiency.json"
 SOURCE_CACHE_DIR = PACKAGE_DIR / "source_cache"
 
 LOCK_SCHEMA_VERSION = 1
@@ -1814,6 +1815,177 @@ def verify_locked_cache(
     return errors
 
 
+def build_footnote_source_sufficiency_report(
+    *,
+    manifest_path: Path = SOURCE_LOCK_PATH,
+    cache_dir_override: Path | None = None,
+) -> dict[str, object]:
+    """Audit that locked exact-edition inputs retain future footnote data.
+
+    This is intentionally not a stage-4 footnote parser: it records only
+    complete-page coverage, immutable hashes, and aggregate wikitext carrier
+    counts. It does not extract, normalize, or associate any footnote text.
+    """
+
+    manifest = load_source_lock(manifest_path)
+    validation_errors = validate_source_lock(manifest)
+    if validation_errors:
+        raise SourceLockError(
+            "invalid source lock:\n- " + "\n- ".join(validation_errors)
+        )
+    sources = manifest.get("sources")
+    assert isinstance(sources, list)
+    by_id = {
+        str(entry["source_id"]): entry
+        for entry in sources
+        if isinstance(entry, Mapping)
+    }
+    scan = by_id["commons_ohienko_1988_scan"]
+    transcription = by_id["wikisource_ohienko_1988_revisions"]
+    scan_path = _resolve_local_path(
+        scan,
+        manifest_path=manifest_path,
+        cache_dir_override=cache_dir_override,
+    )
+    bundle_path = _resolve_local_path(
+        transcription,
+        manifest_path=manifest_path,
+        cache_dir_override=cache_dir_override,
+    )
+    _verify_locked_file(scan_path, scan)
+    _verify_locked_file(bundle_path, transcription)
+
+    bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
+    if not isinstance(bundle, Mapping):
+        raise SourceLockError("Wikisource content bundle must be an object")
+    revisions = bundle.get("revisions")
+    if not isinstance(revisions, list) or len(revisions) != 1540:
+        raise SourceLockError("Wikisource content bundle must contain 1540 revisions")
+    if bundle.get("source_id") != transcription["source_id"]:
+        raise SourceLockError("Wikisource content bundle source_id changed")
+    if bundle.get("revision_count") != len(revisions):
+        raise SourceLockError("Wikisource content bundle revision_count changed")
+    if (
+        bundle.get("revision_lock_sha256")
+        != transcription["pin"]["revision_lock_sha256"]
+    ):
+        raise SourceLockError("Wikisource content bundle revision lock changed")
+    expected_titles = _expected_wikisource_titles()
+    actual_titles = [
+        str(revision.get("title"))
+        for revision in revisions
+        if isinstance(revision, Mapping)
+    ]
+    if actual_titles != expected_titles:
+        raise SourceLockError("Wikisource content bundle page coverage changed")
+    contents = [
+        revision.get("content")
+        for revision in revisions
+        if isinstance(revision, Mapping)
+    ]
+    if len(contents) != len(revisions) or not all(
+        isinstance(content, str) and content for content in contents
+    ):
+        raise SourceLockError("Wikisource content bundle has missing page content")
+    page_contents = [str(content) for content in contents[2:]]
+
+    marker_patterns = {
+        "opening_ref": re.compile(r"<ref(?:\s|>)", re.IGNORECASE),
+        "closing_ref": re.compile(r"</ref\s*>", re.IGNORECASE),
+        "self_closing_ref": re.compile(r"<ref\b[^>]*?/\s*>", re.IGNORECASE),
+        "reflist": re.compile(r"\{\{\s*reflist(?:\s|\||\}\})", re.IGNORECASE),
+        "anchor": re.compile(r"\{\{\s*anchor(?:\s|\||\}\})", re.IGNORECASE),
+    }
+    marker_inventory: dict[str, dict[str, int]] = {}
+    for marker_name, pattern in marker_patterns.items():
+        per_page_counts = [len(pattern.findall(content)) for content in page_contents]
+        marker_inventory[marker_name] = {
+            "occurrences": sum(per_page_counts),
+            "pages_with_marker": sum(1 for count in per_page_counts if count),
+        }
+    opening_count = marker_inventory["opening_ref"]["occurrences"]
+    closing_count = marker_inventory["closing_ref"]["occurrences"]
+    self_closing_count = marker_inventory["self_closing_ref"]["occurrences"]
+    if opening_count <= 0 or opening_count != closing_count + self_closing_count:
+        raise SourceLockError("Wikisource ref carrier inventory is incomplete")
+    if marker_inventory["reflist"]["occurrences"] <= 0:
+        raise SourceLockError("Wikisource reflist carrier inventory is empty")
+
+    return {
+        "schema_version": 1,
+        "stage": 3,
+        "generated_on": LOCKED_ON,
+        "status": "sources_sufficient_for_future_footnote_extraction",
+        "source_lock": _manifest_local_path(manifest_path, FOOTNOTE_SOURCE_AUDIT_PATH),
+        "source_lock_sha256": sha256_file(manifest_path),
+        "source_lock_unchanged": True,
+        "machine_source_count": len(sources),
+        "print_reference": {
+            "source_id": scan["source_id"],
+            "edition_year": scan["edition_year"],
+            "locked_pages": WIKISOURCE_PAGE_COUNT,
+            "bytes": scan["bytes"],
+            "sha256": scan["sha256"],
+            "license": scan["license"],
+            "license_url": scan["license_url"],
+            "coverage": (
+                "Complete exact-edition scan preserves printed page content, "
+                "including verse footnotes."
+            ),
+        },
+        "machine_transcription": {
+            "source_id": transcription["source_id"],
+            "edition_year": transcription["edition_year"],
+            "revision_count": len(revisions),
+            "proofread_page_revision_count": len(page_contents),
+            "first_page_title": revisions[2]["title"],
+            "last_page_title": revisions[-1]["title"],
+            "revision_lock_sha256": transcription["pin"][
+                "revision_lock_sha256"
+            ],
+            "bytes": transcription["bytes"],
+            "sha256": transcription["sha256"],
+            "all_revision_contents_present": True,
+            "marker_inventory": marker_inventory,
+        },
+        "sufficiency": {
+            "exact_print_pages_locked": True,
+            "all_proofread_page_revisions_locked_with_content": True,
+            "footnote_carriers_present": True,
+            "additional_source_required": False,
+        },
+        "scope_limit": (
+            "Read-only source-capability audit only: no footnote was extracted, "
+            "normalized, assigned to a verse, or written to an intermediate corpus."
+        ),
+    }
+
+
+def render_footnote_source_sufficiency_report(
+    report: Mapping[str, object],
+) -> str:
+    return json.dumps(report, ensure_ascii=False, indent=2) + "\n"
+
+
+def write_footnote_source_sufficiency_report(
+    *,
+    manifest_path: Path = SOURCE_LOCK_PATH,
+    report_path: Path = FOOTNOTE_SOURCE_AUDIT_PATH,
+    cache_dir_override: Path | None = None,
+) -> dict[str, object]:
+    report = build_footnote_source_sufficiency_report(
+        manifest_path=manifest_path,
+        cache_dir_override=cache_dir_override,
+    )
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(
+        render_footnote_source_sufficiency_report(report),
+        encoding="utf-8",
+        newline="\n",
+    )
+    return report
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Lock and fail-closed fetch approved Ukrainian Bible stage-3 sources."
@@ -1826,6 +1998,7 @@ def _parse_args() -> argparse.Namespace:
     action.add_argument("--fetch", action="store_true")
     action.add_argument("--check", action="store_true")
     action.add_argument("--verify-clean-cache", action="store_true")
+    action.add_argument("--write-footnote-source-audit", action="store_true")
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--offline", action="store_true")
     return parser.parse_args()
@@ -1843,11 +2016,38 @@ def main() -> int:
             return 0
         if args.check:
             errors = verify_locked_cache(manifest_path=args.manifest)
+            if not errors:
+                expected_report = render_footnote_source_sufficiency_report(
+                    build_footnote_source_sufficiency_report(
+                        manifest_path=args.manifest
+                    )
+                )
+                if not FOOTNOTE_SOURCE_AUDIT_PATH.is_file():
+                    errors.append(
+                        f"missing footnote source audit: {FOOTNOTE_SOURCE_AUDIT_PATH}"
+                    )
+                elif (
+                    FOOTNOTE_SOURCE_AUDIT_PATH.read_text(encoding="utf-8")
+                    != expected_report
+                ):
+                    errors.append(
+                        f"stale footnote source audit: {FOOTNOTE_SOURCE_AUDIT_PATH}"
+                    )
             if errors:
                 for error in errors:
                     print(error)
                 return 1
             print(f"Verified Ukrainian stage-3 source lock and cache: {args.manifest}")
+            return 0
+        if args.write_footnote_source_audit:
+            report = write_footnote_source_sufficiency_report(
+                manifest_path=args.manifest,
+            )
+            print(
+                "Recorded Ukrainian stage-3 footnote source sufficiency: "
+                f"{report['machine_transcription']['proofread_page_revision_count']} "
+                "ProofreadPage revisions"
+            )
             return 0
         if args.verify_clean_cache:
             with tempfile.TemporaryDirectory(

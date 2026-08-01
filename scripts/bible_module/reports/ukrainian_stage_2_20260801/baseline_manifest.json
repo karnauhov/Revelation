@@ -21,18 +21,308 @@
     "edition": "ювілейне видання 1988 року",
     "canon": "protestant_66",
     "target_versification": "kjv_protestant",
-    "schema_version": 3,
+    "schema_version": 4,
     "target_books": 66,
     "target_chapters": 1189,
     "target_verses": 31102,
     "target_verse_keys": 31102,
     "info_description": "Біблія або Книги Святого Письма Старого і Нового Заповіту, переклад Івана Огієнка; ювілейне видання 1988 року. Повний 66-книжний Старий і Новий Завіти. Посилання модуля подано в цільовій KJV/протестантській версифікації Revelation; вони можуть відрізнятися від нумерації друкованого видання, а відповідність збережено у відтворюваній карті проєкції.",
-    "info_license": "Текст ювілейного видання перекладу Івана Огієнка 1988 року та похідний текстовий/Strong-модуль ліцензовано за Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0): https://creativecommons.org/licenses/by-sa/4.0/. Автор перекладу: Іван Огієнко. Дозвіл на видання до 1991 року надано Українським Біблійним Товариством; Wikimedia VRT ticket 2013112610015211. Зміни: технічна нормалізація, токенізація, явна реверсифікація та додавання Strong. Пізніші редакції й правки УБТ після 1990 року не включено. Атрибуція не означає схвалення модуля УБТ, Wikimedia або Wikisource.",
-    "info_source_summary_template": "Базовий текст: закріплені ревізії Українських Вікіджерел для точного ювілейного видання 1988 року ({wikisource_revision_lock}), звірені зі сканом Wikimedia Commons SHA-256 {commons_scan_sha256} та залежним контрольним сканом Internet Archive SHA-256 39d34d366554a2c798e180d0fce05a4ca11fc8c10901c174848e37f30468cee8. Strong створено як похідне послівне вирівнювання: STEPBible TAHOT/TAGNT commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0 — основний Hebrew OT/Greek NT ланцюжок; Open Scriptures Hebrew Bible v.2.2 commit 6a5db284c715c18b239422e57bb89684e6a19f00 — залежна OT-перевірка; Tanach.us UXLC 2.5 (27.6), April 2026 — незалежний OT-контроль поверхні й меж; unfoldingWord UGNT v0.34 commit fc95b2b8aad08bb65ab54628ab685413a1139e97 — незалежний NT Strong-контроль; CrossWire KJV 3.1 commit d490be7e34762deb2c76cb2c1306d4808e27890d — лише додатковий classic-Strong аудит. Жоден контрольний текст не замінює український текст видання 1988 року.",
+    "info_license": "Текст і друковані виноски ювілейного видання перекладу Івана Огієнка 1988 року та похідний текстовий/Strong-модуль ліцензовано за Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0): https://creativecommons.org/licenses/by-sa/4.0/. Автор перекладу: Іван Огієнко. Дозвіл на видання до 1991 року надано Українським Біблійним Товариством; Wikimedia VRT ticket 2013112610015211. Зміни: технічна нормалізація, токенізація, явна реверсифікація, структурування друкованих виносок і додавання Strong. Пізніші редакції й правки УБТ після 1990 року не включено. Атрибуція не означає схвалення модуля УБТ, Wikimedia або Wikisource.",
+    "info_source_summary_template": "Базовий текст і друковані виноски: закріплені ревізії Українських Вікіджерел для точного ювілейного видання 1988 року ({wikisource_revision_lock}), звірені зі сканом Wikimedia Commons SHA-256 {commons_scan_sha256} та залежним контрольним сканом Internet Archive SHA-256 39d34d366554a2c798e180d0fce05a4ca11fc8c10901c174848e37f30468cee8. Strong створено як похідне послівне вирівнювання: STEPBible TAHOT/TAGNT commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0 — основний Hebrew OT/Greek NT ланцюжок; Open Scriptures Hebrew Bible v.2.2 commit 6a5db284c715c18b239422e57bb89684e6a19f00 — залежна OT-перевірка; Tanach.us UXLC 2.5 (27.6), April 2026 — незалежний OT-контроль поверхні й меж; unfoldingWord UGNT v0.34 commit fc95b2b8aad08bb65ab54628ab685413a1139e97 — незалежний NT Strong-контроль; CrossWire KJV 3.1 commit d490be7e34762deb2c76cb2c1306d4808e27890d — лише додатковий classic-Strong аудит. Жоден контрольний текст не замінює український текст видання 1988 року.",
     "info_source_summary_placeholders": [
       "commons_scan_sha256",
       "wikisource_revision_lock"
     ]
+  },
+  "schema_contracts": {
+    "legacy_v3": {
+      "profile_id": "legacy_modules_v3",
+      "schema_version": 3,
+      "pragma_user_version": 3,
+      "db_metadata_schema_version": "3",
+      "comment_column_supported": false,
+      "shared_schema": {
+        "tables": {
+          "db_metadata": {
+            "sql": "CREATE TABLE db_metadata (\n  key TEXT PRIMARY KEY,\n  value TEXT NOT NULL\n) WITHOUT ROWID",
+            "columns": [
+              {
+                "cid": 0,
+                "name": "key",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 1
+              },
+              {
+                "cid": 1,
+                "name": "value",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              }
+            ]
+          },
+          "info": {
+            "sql": "CREATE TABLE info (\n  code TEXT PRIMARY KEY,\n  module_id TEXT NOT NULL UNIQUE,\n  title TEXT NOT NULL,\n  description TEXT NOT NULL,\n  language TEXT NOT NULL,\n  canon TEXT NOT NULL,\n  versification TEXT NOT NULL,\n  license TEXT NOT NULL,\n  source_summary TEXT NOT NULL,\n  CHECK (length(trim(code)) > 0),\n  CHECK (length(trim(module_id)) > 0)\n) WITHOUT ROWID",
+            "columns": [
+              {
+                "cid": 0,
+                "name": "code",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 1
+              },
+              {
+                "cid": 1,
+                "name": "module_id",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 2,
+                "name": "title",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 3,
+                "name": "description",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 4,
+                "name": "language",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 5,
+                "name": "canon",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 6,
+                "name": "versification",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 7,
+                "name": "license",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 8,
+                "name": "source_summary",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              }
+            ]
+          },
+          "verses": {
+            "sql": "CREATE TABLE verses (\n  verse_key TEXT PRIMARY KEY,\n  text TEXT NOT NULL DEFAULT '',\n  CHECK (length(trim(verse_key)) = 3)\n) WITHOUT ROWID",
+            "columns": [
+              {
+                "cid": 0,
+                "name": "verse_key",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 1
+              },
+              {
+                "cid": 1,
+                "name": "text",
+                "type": "TEXT",
+                "not_null": true,
+                "default": "''",
+                "primary_key_position": 0
+              }
+            ]
+          }
+        },
+        "fingerprint_sha256": "e14d4e2b2727122240f3765104cf4e2d63f789d5904be6aa3766cf761f5583b8"
+      },
+      "databases": {
+        "kjv": {
+          "filename": "bible_kjv.sqlite",
+          "sha256": "b105f174c37c6703b71831a99ff838fed3439b84132c743bd3b58b37a326c780",
+          "bytes": 6733824,
+          "info_code": "KJV",
+          "module_id": "kjv",
+          "verse_rows": 31102
+        },
+        "lxx_tr": {
+          "filename": "bible_lxx_tr.sqlite",
+          "sha256": "443ab95f6fe54c3a803665e935a21bb862cdc97346ace6fa03d1d9c100bf3926",
+          "bytes": 12840960,
+          "info_code": "LXX_TR",
+          "module_id": "lxx_tr",
+          "verse_rows": 31102
+        }
+      }
+    },
+    "ukrainian_v4": {
+      "profile_id": "ukrainian_module_v4",
+      "schema_version": 4,
+      "pragma_user_version": 4,
+      "db_metadata_schema_version": "4",
+      "comment_column_supported": true,
+      "schema": {
+        "tables": {
+          "db_metadata": {
+            "sql": "CREATE TABLE db_metadata (\n  key TEXT PRIMARY KEY,\n  value TEXT NOT NULL\n) WITHOUT ROWID",
+            "columns": [
+              {
+                "cid": 0,
+                "name": "key",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 1
+              },
+              {
+                "cid": 1,
+                "name": "value",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              }
+            ]
+          },
+          "info": {
+            "sql": "CREATE TABLE info (\n  code TEXT PRIMARY KEY,\n  module_id TEXT NOT NULL UNIQUE,\n  title TEXT NOT NULL,\n  description TEXT NOT NULL,\n  language TEXT NOT NULL,\n  canon TEXT NOT NULL,\n  versification TEXT NOT NULL,\n  license TEXT NOT NULL,\n  source_summary TEXT NOT NULL,\n  CHECK (length(trim(code)) > 0),\n  CHECK (length(trim(module_id)) > 0)\n) WITHOUT ROWID",
+            "columns": [
+              {
+                "cid": 0,
+                "name": "code",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 1
+              },
+              {
+                "cid": 1,
+                "name": "module_id",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 2,
+                "name": "title",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 3,
+                "name": "description",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 4,
+                "name": "language",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 5,
+                "name": "canon",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 6,
+                "name": "versification",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 7,
+                "name": "license",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              },
+              {
+                "cid": 8,
+                "name": "source_summary",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 0
+              }
+            ]
+          },
+          "verses": {
+            "sql": "CREATE TABLE verses (\n  verse_key TEXT NOT NULL PRIMARY KEY CHECK(length(verse_key) = 3),\n  text TEXT NOT NULL DEFAULT '',\n  comment TEXT NOT NULL DEFAULT ''\n) WITHOUT ROWID",
+            "columns": [
+              {
+                "cid": 0,
+                "name": "verse_key",
+                "type": "TEXT",
+                "not_null": true,
+                "default": null,
+                "primary_key_position": 1
+              },
+              {
+                "cid": 1,
+                "name": "text",
+                "type": "TEXT",
+                "not_null": true,
+                "default": "''",
+                "primary_key_position": 0
+              },
+              {
+                "cid": 2,
+                "name": "comment",
+                "type": "TEXT",
+                "not_null": true,
+                "default": "''",
+                "primary_key_position": 0
+              }
+            ]
+          }
+        },
+        "fingerprint_sha256": "b46dc7c39ddf8ec5d4ccbbf80d774dd94505baf7f43c33250869852ad0950954"
+      }
+    }
   },
   "target_fit_decision": {
     "result": "kjv_protestant_approved",
@@ -189,6 +479,156 @@
     },
     "verse_rows": 31102,
     "nonempty_verse_rows": 31102
+  },
+  "legacy_lxx_tr_database": {
+    "path": "web/db/bible_lxx_tr.sqlite",
+    "filename": "bible_lxx_tr.sqlite",
+    "bytes": 12840960,
+    "sha256": "443ab95f6fe54c3a803665e935a21bb862cdc97346ace6fa03d1d9c100bf3926",
+    "integrity_check": "ok",
+    "pragma_user_version": 3,
+    "db_metadata": {
+      "data_version": "17",
+      "date": "2026-07-25T07:16:08Z",
+      "schema_version": "3"
+    },
+    "info": {
+      "code": "LXX_TR",
+      "module_id": "lxx_tr",
+      "title": "LXX / Textus Receptus Greek Bible Module",
+      "description": "KJV/protestant 66-book Greek Bible module scaffold. New Testament is filled from STEPBible TAGNT Textus Receptus; ten traditional subscriptions are retained in square brackets as explicit paratext inside their final verse rows. Old Testament LXX text is filled from owner-approved CrossWire LXX projection rules when those rules are supplied.",
+      "language": "grc",
+      "canon": "protestant_66",
+      "versification": "kjv_protestant",
+      "license": "STEPBible CC BY 4.0 for TAGNT Textus Receptus data; CrossWire LXX Copyrighted; Free non-commercial distribution for OT LXX data. Patrologia Graeca Vol. 080 public-domain scan (Public Domain Mark 1.0): https://commons.wikimedia.org/wiki/File:Patrologia_Graeca_Vol._080.pdf, used to supplement Ps.116.17. H. B. Swete, The Old Testament in Greek according to the Septuagint, public-domain scans: Vol. I Genesis-IV Kings (Internet Archive, possible-copyright-status NOT_IN_COPYRIGHT) https://archive.org/details/oldtestamentingr01swet; Vol. II Chronicles-Tobit https://commons.wikimedia.org/wiki/File:The_Old_Testament_in_Greek,_according_to_the_Septuagint_(IA_cu31924012092437).pdf; used for owner-approved alternative-source supplementation.",
+      "source_summary": "NT: STEPBible TAGNT Textus Receptus from locked source chunks step_tagnt_mat_jhn, step_tagnt_act_rev (STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0, STEPBible-Data commit b9dcc831a98e0fd6f3c7e122be9ff68377c310c0). Ten traditional TAGNT subscriptions are retained in square brackets as explicit paratext; their canonical boundaries were checked against Robinson/Sandborg-Petersen Scrivener 1894 text-only, commit 6049a43b135ed870f843b83eb6a04764fc796678. OT: CrossWire LXX via explicit KJV-versification projection rules, including owner-approved full Addition D rows at Esth.5.1-2. Alternative ancient Greek source supplementation: Ps.116.17 suffix καὶ ἐν ὀνόματι κυρίου ἐπικαλέσομαι is attested by Theodoret of Cyrus, Interpretatio in Psalmos, PG 80.1805 (public-domain scan: https://commons.wikimedia.org/wiki/File:Patrologia_Graeca_Vol._080.pdf); CrossWire LXX supplies the prefix. Owner-approved alternative-source supplementation from H. B. Swete, The Old Testament in Greek according to the Septuagint (public-domain scans include Vol. I, Genesis-IV Kings: https://archive.org/details/oldtestamentingr01swet, and Vol. II, Chronicles-Tobit: https://commons.wikimedia.org/wiki/File:The_Old_Testament_in_Greek,_according_to_the_Septuagint_(IA_cu31924012092437).pdf). Selected readings are stored as literal Greek for witness-sensitive refs Josh.20.4-6; 1Sam.23.12; 1Kgs.6.18; 1Kgs.14.5,7-9,12-16,19-20; Prov.8.33; Prov.23.23; Lam.3.22-24; Ezek.10.14, and CrossWire-specific omission refs Gen.35.21; Exod.25.6; 1Chr.1.11-23; 1Chr.16.24; 1Kgs.6.11-14; 1Kgs.15.32; Neh.3.7; Ps.116.14. GreekDoc polyglot pages were used only as alignment controls. Strong numbers are omitted for these literal rows pending reliable manual lexical mapping rather than guessed."
+    },
+    "schema": {
+      "tables": {
+        "db_metadata": {
+          "sql": "CREATE TABLE db_metadata (\n  key TEXT PRIMARY KEY,\n  value TEXT NOT NULL\n) WITHOUT ROWID",
+          "columns": [
+            {
+              "cid": 0,
+              "name": "key",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 1
+            },
+            {
+              "cid": 1,
+              "name": "value",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 0
+            }
+          ]
+        },
+        "info": {
+          "sql": "CREATE TABLE info (\n  code TEXT PRIMARY KEY,\n  module_id TEXT NOT NULL UNIQUE,\n  title TEXT NOT NULL,\n  description TEXT NOT NULL,\n  language TEXT NOT NULL,\n  canon TEXT NOT NULL,\n  versification TEXT NOT NULL,\n  license TEXT NOT NULL,\n  source_summary TEXT NOT NULL,\n  CHECK (length(trim(code)) > 0),\n  CHECK (length(trim(module_id)) > 0)\n) WITHOUT ROWID",
+          "columns": [
+            {
+              "cid": 0,
+              "name": "code",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 1
+            },
+            {
+              "cid": 1,
+              "name": "module_id",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 0
+            },
+            {
+              "cid": 2,
+              "name": "title",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 0
+            },
+            {
+              "cid": 3,
+              "name": "description",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 0
+            },
+            {
+              "cid": 4,
+              "name": "language",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 0
+            },
+            {
+              "cid": 5,
+              "name": "canon",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 0
+            },
+            {
+              "cid": 6,
+              "name": "versification",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 0
+            },
+            {
+              "cid": 7,
+              "name": "license",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 0
+            },
+            {
+              "cid": 8,
+              "name": "source_summary",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 0
+            }
+          ]
+        },
+        "verses": {
+          "sql": "CREATE TABLE verses (\n  verse_key TEXT PRIMARY KEY,\n  text TEXT NOT NULL DEFAULT '',\n  CHECK (length(trim(verse_key)) = 3)\n) WITHOUT ROWID",
+          "columns": [
+            {
+              "cid": 0,
+              "name": "verse_key",
+              "type": "TEXT",
+              "not_null": true,
+              "default": null,
+              "primary_key_position": 1
+            },
+            {
+              "cid": 1,
+              "name": "text",
+              "type": "TEXT",
+              "not_null": true,
+              "default": "''",
+              "primary_key_position": 0
+            }
+          ]
+        }
+      },
+      "fingerprint_sha256": "e14d4e2b2727122240f3765104cf4e2d63f789d5904be6aa3766cf761f5583b8"
+    },
+    "verse_rows": 31102,
+    "nonempty_verse_rows": 30892
   },
   "target_grid": {
     "verse_map_path": "assets/data/bible_verse_map.json",

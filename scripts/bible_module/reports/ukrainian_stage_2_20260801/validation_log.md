@@ -1,110 +1,113 @@
-# Журнал проверок этапа 2 украинского библейского модуля
+# Журнал повторного закрытия этапа 2 украинского библейского модуля
 
 Дата: `2026-08-01`
 
-Рабочий commit до изменений: `d7f6b9a` (`Qualify Ukrainian translation sources`)
+Исходное состояние: ветка `main`, рабочее дерево до задачи чистое.
 
 Статус этапа: `Завершён`
 
-## Объём
+## Объём и ограничения
 
-Проверена и зафиксирована только техническая спецификация этапа 2. Украинские
-исходные файлы не загружались, source lock этапа 3 не создавался, украинский
-SQLite-модуль не собирался и существующие SQLite-файлы не изменялись.
+Повторно проверены этап 1 и технический контракт этапа 2 после добавления
+печатных сносок и `verses.comment`. Обновлены только нормативная модель,
+генератор baseline, checked-in доказательства, contract-тесты и связанные
+отчёты. Украинский корпус и итоговый `bible_ohienko_1988.sqlite` не создавались.
+Парсинг сносок, UI редактора и Flutter runtime не реализовывались: это этапы
+4, 9 и 10 соответственно.
 
-## Нормативный baseline
+Ни один файл не публиковался в Supabase, `Revelation.website` или другую
+удалённую систему. Commit не создавался.
 
-- `bible_kjv.sqlite` SHA-256:
-  `b105f174c37c6703b71831a99ff838fed3439b84132c743bd3b58b37a326c780`;
-- schema fingerprint:
-  `e14d4e2b2727122240f3765104cf4e2d63f789d5904be6aa3766cf761f5583b8`;
-- SHA-256 последовательности 31 102 `verse_key`:
-  `43324c450e6158f77ea92eedbc9d6dc0df60184dee43ce14eac27baa0dae6e60`;
-- количество книг/глав/целевых стихов/ключей:
-  `66 / 1 189 / 31 102 / 31 102`;
-- первый/последний ключ: `001 / NZY`;
-- полный упорядоченный список ключей, metadata, `PRAGMA user_version`, строка
-  `info` и SQL-схема находятся в `baseline_manifest.json`.
+## Повторная проверка этапа 1
+
+Страница точного 1538-страничного Commons DjVu применяет CC BY-SA 4.0 ко всему
+файлу и подтверждает разрешение правообладателя VRT-билетом
+`2013112610015211`. Сообщение Wikimedia Ukraine фиксирует разрешение УБТ на
+тексты изданий Огиенко до 1991 года, производные работы и передачу точного
+юбилейного издания 1988 года. Отдельного исключения для напечатанных в этом
+файле стиховых сносок не найдено.
+
+Поэтому в пределах этих доказательств сноски можно извлекать, преобразовывать,
+хранить в `verses.comment`, воспроизводимо редактировать и распространять в
+составе производного модуля при атрибуции, указании изменений и ShareAlike.
+Вывод не распространяется на поздние редакции УБТ, внешние комментарии или
+материал с отдельным уведомлением о правах. Результат сохранён в отчёте этапа
+1 и `source_probe.json`.
+
+## Разделённые schema profiles
+
+Baseline больше не использует одно неоднозначное значение прикладной схемы:
+
+- `legacy_v3` — фактическая общая схема существующих KJV/LXX_TR:
+  `PRAGMA user_version = 3`, `db_metadata.schema_version = '3'`,
+  `verses(verse_key, text)` без `comment`;
+- `ukrainian_v4` — целевой контракт будущего украинского модуля:
+  schema version `4`, `PRAGMA user_version = 4`,
+  `db_metadata.schema_version = '4'` и точная таблица
+  `verses(verse_key, text, comment)`, где
+  `comment TEXT NOT NULL DEFAULT ''`.
+
+Target schema fingerprint:
+`b46dc7c39ddf8ec5d4ccbbf80d774dd94505baf7f43c33250869852ad0950954`.
+Legacy schema fingerprint остался
+`e14d4e2b2727122240f3765104cf4e2d63f789d5904be6aa3766cf761f5583b8`.
+
+Генератор читает оба фактических legacy-файла, но только read-only, и
+фиксирует их независимо от целевой украинской схемы. Contract-тесты
+отрицательными мутациями подтверждают отказ при schema version 3 у
+украинского профиля, schema version 4/`comment` у legacy-профиля, отсутствии
+или изменении точного столбца `comment` и смешении профилей. Прежние ключи,
+идентификаторы, metadata, info templates, целевая сетка и Strong-контракт
+остаются зафиксированными.
+
+## Неизменность legacy SQLite
+
+До и после изменений попарно совпадают копии в `web/db` и
+`%Documents%/revelation/db`:
+
+| Файл | Размер | SHA-256 | Схема |
+| --- | ---: | --- | ---: |
+| `bible_kjv.sqlite` | 6 733 824 | `b105f174c37c6703b71831a99ff838fed3439b84132c743bd3b58b37a326c780` | 3 |
+| `bible_lxx_tr.sqlite` | 12 840 960 | `443ab95f6fe54c3a803665e935a21bb862cdc97346ace6fa03d1d9c100bf3926` | 3 |
+
+Файлы не пересобирались и не редактировались; столбца `comment` в них нет.
+
+## Исправленная общая тестовая регрессия
+
+Обязательный полный Python discovery первоначально воспроизвёл три старых
+сбоя `test_apply_extended_strong_descriptions.py`: fixtures ожидали успешное
+применение `G6000/G20833`, хотя актуальные content-tool ranges после удаления
+extended Strong заканчиваются на `G5624`. Quality gate не был ослаблен и сбой
+не был принят как допустимый. Три устаревших сценария переписаны под текущий
+fail-closed контракт и теперь проверяют, что удалённые extended ranges
+отклоняются до изменения локализованных БД. Runtime-код не менялся.
 
 ## Выполненные команды
 
 | Команда | Результат |
 | --- | --- |
-| `python -m scripts.bible_module.generate_ukrainian_stage_2_baseline --check` | PASS; артефакты совпали с воспроизводимой генерацией |
-| `python -m unittest scripts.bible_module.tests.test_ukrainian_stage_2_contract` | PASS; 9 тестов |
+| `python -m scripts.bible_module.generate_ukrainian_stage_2_baseline --check` | PASS; baseline и CSV точно воспроизводятся |
+| `python -m unittest scripts.bible_module.tests.test_ukrainian_stage_2_contract` | PASS; 11 тестов |
+| `python -m scripts.bible_module.ukrainian_stage_3_sources --check` | PASS; неизменённый lock, 14 cache-файлов и footnote-source evidence совпали |
+| `python -m unittest scripts.bible_module.tests.test_sources scripts.bible_module.tests.test_ukrainian_stage_3_sources` | PASS; 14 тестов |
+| `python -m unittest discover -s scripts/bible_module/tests` | PASS; 121 тест |
 | `python -m unittest discover -s scripts/content_tool/tests` | PASS; 30 тестов |
-| `python -m compileall -q scripts/bible_module/generate_ukrainian_stage_2_baseline.py scripts/bible_module/ukrainian_stage_2_contract.py scripts/bible_module/ukrainian_strong.py scripts/bible_module/tests/test_ukrainian_stage_2_contract.py` | PASS |
-| `python -m unittest discover -s scripts/bible_module/tests` | KNOWN PRE-EXISTING FAILURE; 108 тестов, 1 failure и 2 errors в неизменённом `test_apply_extended_strong_descriptions.py` |
+| `python -m compileall -q ...` для изменённых Python-файлов | PASS |
 | `dart format .` | PASS; 475 файлов, 0 изменений |
-| `flutter analyze` | PASS; `No issues found`, 80,5 с |
+| `flutter analyze` | PASS; `No issues found`, 31,4 с |
 | `flutter test` | PASS; 920 тестов |
 | `dart run scripts/check_forbidden_patterns.dart` | PASS |
-| `dart run scripts/check_docs_sync.dart` | PASS |
-| `flutter test integration_test/smoke -d windows` | PARTIAL; первый файл и 3 теста прошли, следующие runners не стартовали повторно (`log reader stopped unexpectedly`) |
-| изолированные Windows smoke-файлы | 8 PASS, 1 предсуществующий FAIL; подробности ниже |
+| `dart run scripts/check_docs_sync.dart` | PASS; все обязательные RU/EN пары синхронны |
 | `git diff --check` | PASS |
 
-Первый объединённый запуск `flutter analyze` вместе с двумя Dart-проверками
-превысил лимит 240 секунд без результата. Оставшийся процесс конкретного
-запуска был завершён по его PID; все три команды затем выполнены отдельно и
-прошли. Это не считается результатом проверки и сохранено здесь только для
-воспроизводимости журнала.
-
-## Предсуществующие отклонения
-
-### Python discovery
-
-Полная discovery падает только в старых сценариях
-`test_apply_extended_strong_descriptions.py`: fixture использует `G6000` и
-`G20833`, а `GREEK_DESC_GROUP_RANGES` после commit `6981496`
-(`Removed extended Strong Numbers`) заканчивается на `G5624`. Те же 1 failure
-и 2 errors уже зафиксированы до этапа 2 в
-`scripts/bible_module/reports/evidence_audit_20260725/checkpoint.json`.
-
-Ни `scripts/content_tool/helpers.py`, ни
-`scripts/bible_module/apply_extended_strong_descriptions.py`, ни его старый
-тест в этом change set не изменялись. Ремонт удалённого extended-слоя не
-входит в этап 2. Новые правила украинского модуля проверяются отдельными
-fail-closed contract-тестами и проходят.
-
-### Windows smoke
-
-После неуспешного пакетного перезапуска каждый smoke-файл запускался отдельно:
-
-- `about_download_navigation_smoke_test.dart`: PASS, 3 теста;
-- `app_startup_smoke_test.dart`: PASS, 1 тест;
-- `planned_features_navigation_smoke_test.dart`: PASS, 1 тест;
-- `primary_sources_navigation_smoke_test.dart`: PASS, 1 тест;
-- `settings_topics_language_sync_smoke_test.dart`: PASS, 1 тест;
-- `strongs_dictionary_navigation_smoke_test.dart`: PASS, 1 тест;
-- `bible_navigation_smoke_test.dart`: FAIL, 1 тест; существующий finder
-  ожидал один `bible_module_dropdown`, текущий неизменённый runtime отрисовал
-  два.
-
-Этап 2 не меняет runtime, маршруты, UI или smoke coverage. Этот старый
-UI/smoke-конфликт не ослабляет автоматические контракты целевой сетки, схемы,
-порядка ключей, идентификаторов и Strong, но должен исправляться отдельным
-change set, а не внутри технической спецификации.
-
-## Проверяемые контракты этапа
-
-Новые тесты аварийно завершаются при изменении:
-
-- SHA-256 KJV-эталона, `PRAGMA user_version`, metadata, строки `info` или
-  SQL-схемы;
-- канона, количества книг/глав/стихов, JSON-карты или любого места и порядка
-  31 102 ключей;
-- `bible_ohienko_1988.sqlite`, `OH1988`, `ohienko_1988`, языка, названия,
-  канона, версификации или шаблонов `info`;
-- диапазонов classic Strong, удаления ведущих нулей, утверждённой таблицы
-  extended→classic, обработки альтернативных/составных значений или попытки
-  молча отбросить неизвестный extended Strong;
-- подтверждения закрытого этапа 1 или запрета начинать этап 3 в рамках этого
-  change set.
+Integration smoke и coverage не запускались: runtime, маршруты, deep links,
+state management и пользовательские сценарии не менялись; roadmap прямо
+оставляет реализацию/проверку комментариев в content tool и Flutter на этапы
+9–10. Новая локализация, зависимости и acknowledgements не требовались.
 
 ## Выход
 
-Все решения этапа 2 однозначны, baseline воспроизводим, контрактные проверки
-проходят. Фактическая сохраняющая проекция полного корпуса должна быть доказана
-на этапе 5; её невозможность является `critical`, блокирует сборку и повторно
-открывает этап 2 для отдельного архитектурного согласования.
+Точный schema contract версии 4, целевой baseline и контракт комментариев
+зафиксированы и автоматически проверяются. Фактические legacy-модули версии 3
+изолированы от целевого профиля и не изменены. Этап 2 повторно закрыт; после
+read-only перепроверки уже закрытого этапа 3 следующим разрешён этап 4.

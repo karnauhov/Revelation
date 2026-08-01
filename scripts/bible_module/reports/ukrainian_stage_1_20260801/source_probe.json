@@ -12,6 +12,31 @@
     "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
     "permission_page": "https://commons.wikimedia.org/wiki/File:Ivan_Ohienko_Bible.djvu",
     "permission_ticket": "2013112610015211",
+    "printed_footnotes": {
+      "status": "covered_as_part_of_exact_licensed_1988_edition",
+      "licensed_material": "The exact 1538-page Commons DjVu of the 1988 jubilee edition, including printed verse footnotes present in that file.",
+      "permission_basis": [
+        "The Wikimedia Commons file page applies CC BY-SA 4.0 to the complete exact-edition file and records VRT ticket 2013112610015211.",
+        "The Wikimedia Ukraine permission report states that texts of Ohienko editions before 1991 may be distributed under CC BY-SA and that the 1988 jubilee edition was supplied for publication.",
+        "CC BY-SA 4.0 permits reproduction and sharing in whole or in part, production and sharing of adapted material, and technical changes of media or format."
+      ],
+      "permitted_project_actions": [
+        "extract",
+        "transform",
+        "store_in_verses_comment",
+        "edit",
+        "redistribute"
+      ],
+      "conditions": [
+        "attribution",
+        "license_link",
+        "change_notice",
+        "share_alike",
+        "no_endorsement"
+      ],
+      "no_separate_exclusion_identified": true,
+      "scope_limit": "This finding does not cover later UBT editions, external commentaries, or annotations not contained in the exact licensed 1988 edition."
+    },
     "owner_confirmation": true,
     "owner_confirmation_date": "2026-08-01",
     "owner_confirmation_scope": "Exact 1988 jubilee edition; derivative text and Strong data under CC BY-SA 4.0; no mixing with later UBS editions; source roles approved."
