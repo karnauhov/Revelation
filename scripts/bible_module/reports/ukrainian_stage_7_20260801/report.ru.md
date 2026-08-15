@@ -1,7 +1,7 @@
 # Этап 7: evidence-first Strong alignment OH1988
 
 Doc-Version: `1.0.0`
-Last-Updated: `2026-08-08`
+Last-Updated: `2026-08-15`
 Source-Commit: `working-tree`
 Schema-Version: `1`
 Contract-Version: `ukrainian-stage-7-evidence-alignment-v1`
@@ -13,8 +13,10 @@ Processed/Skipped/Errors: `31102 / 682836 / 0`
 Этап **не закрыт**. Доказаны immutable input freeze, точная украинская
 токенизация, raw primary/alternative component reparse, native-token control
 layer, source/license registry и аудит первичных исторических документов.
-Exact-edition textual adjudication, target-side bridge proof и gold остаются
-частичными и fail-closed. Нормативный gold-набор содержит
+Исторический и 53-locus textual fingerprint завершён; пять прежних локальных
+choices получили двухпроходные post-candidate manual dispositions, причём три
+неразличимых места намеренно не выводят Strong. Target-side bridge proof и gold
+остаются частичными и fail-closed. Нормативный gold-набор содержит
 `0 / 25 000` принятых assignment/null решений и ни одно решение не прошло два
 независимых слепых прохода. Поэтому candidate tuning, A/B/C calibration и
 production Strong markup намеренно не выполнялись.
@@ -24,16 +26,45 @@ production Strong markup намеренно не выполнялись.
 - exact stage-6 texts/comments: 31,102 позиций;
 - украинские surface tokens: 595,077;
 - raw original components (включая 14 primary-null) после повторного чтения TAHOT/TAGNT: 682,836;
-- отдельно адресуемые TAHOT/TAGNT apparatus alternatives: 28,542;
+- отдельно адресуемые TAHOT/TAGNT apparatus alternatives: 28,543;
 - raw OSHB/UXLC/UGNT control tokens: 751,557;
 - exact unique control→TAHOT/TAGNT crosswalks: 632,592; unresolved/service: 118,965;
 - покрытие original refs application grid: 31,102 / 31 102;
 - RUSSYN/YLT manual bridge records audited: 836,745;
 - украинские comparison lexemes: 44,721;
+- авторские сноски exact OH1988: 1,329
+  uses (verse + heading), все как zero-vote corroboration/manual-review evidence;
 - book-balanced annotation panel: 2,171 стихов,
-  45,596 projected original decisions;
+  45,831 projected original decisions;
 - закреплённые legacy negative counterexamples: 12;
+- fail-closed candidate rows across all independent generators: 872,025
+  (first-party 501,518; bidirectional statistical
+  163,140; multilingual contextual
+  207,367; resolver-eligible `0`);
 - accepted production Strong links/markers: `0` (fail-closed).
+
+## Авторские сноски как evidence
+
+Все 1,329 стиховые и заголовочные uses
+exact OH1988 разобраны отдельно от текста стиха; затронуто
+1,222 target refs; все
+1,204 определения учтены хотя бы одним
+use. Категории: `{"cross_reference":196,"edition_or_translation_note":15,"explicit_original_language_claim":333,"general_author_commentary":581,"lexical_semantic_claim":478,"morphology_grammar_claim":7,"original_script_source_form":139,"textual_variant_claim":7,"transliteration_or_source_form":288}`.
+Языковые указатели: `{"aramaic":23,"greek":185,"hebrew":142,"latin":6}`;
+review-состояния: `{"author_original_form_matches_multiple_selected_tokens":27,"author_original_form_uniquely_corroborates_selected_token":83,"context_only_no_original_token_claim":910,"explicit_original_claim_without_exact_selected_token_match":222,"manual_textual_review_required":7,"partial_original_form_match_requires_manual_scope":80}`.
+Найдено 267 exact
+transliteration/original-script совпадений; ещё
+355 упоминаний сохранены
+неразрешёнными. Совпадения только подтверждают stable original IDs и имеют
+автоматический вес `0`. Все
+336 partial/ambiguous/
+unmatched/variant uses получили безопасные manual-review records. Найденные
+7 явные variant-note uses
+добавлены в manual review; до component-level решения и gold span/null review
+они не могут вывести Strong. Ни одна сноска не поступает на вход
+statistical/contextual alignment и stage-6 comments не изменяются. Exact
+`target_comment` доступен blind gold-reviewer как предкандидатное первичное
+пояснение переводчика, но не считается независимым вторым witness.
 
 ## Source integrity
 
@@ -62,10 +93,14 @@ Exact 1 538-листовой OH1988 scan и его front/back matter полно�
 неизменность 1962→1988. Диагностическая панель расширена до
 53 loci. TAHOT `X` хранится только как
 реконструированная LXX-alternative, а Treg+TR/Byz без NA/SBL/WH больше не
-считается modern-critical reading. Остаются
-1,970 unresolved source-apparatus refs /
-4,008 components; соответствующие
-loci блокируют автоматическое назначение до adjudication и gold calibration.
+считается modern-critical reading. Из 53 diagnostic loci
+53 получили fail-closed component-level
+selection/disposition, включая 5
+post-candidate manual choices; unresolved critical/high среди этих loci:
+0. Отдельно во всём raw apparatus остаются
+1,970 fail-closed refs /
+4,008 components; они блокируют
+только соответствующие loci до adjudication и gold calibration.
 
 ## Почему markup не создан
 

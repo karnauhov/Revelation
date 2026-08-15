@@ -54,6 +54,7 @@ from scripts.bible_module.ukrainian_stage_7_model import (
 
 
 ROOT = Path(__file__).resolve().parents[3]
+WORK = ROOT / "scripts/bible_module/work/ukrainian_stage_7_20260801"
 FIXTURE = (
     Path(__file__).resolve().parent
     / "fixtures"
@@ -1914,7 +1915,7 @@ class GeneratedFailClosedArtifactTest(unittest.TestCase):
         )
         self.assertEqual(
             acts["proven_omitted_original_ids"],
-            ["bezae05-v1.03:B05K15V34:w16"],
+            _acts_15_34_external_evidence()["proven_omitted_original_ids"],
         )
         self.assertEqual(len(acts["supplemental_original_crosswalk"]), 4)
         self.assertEqual(acts["forbidden_strong_on_versional_addition"], ["G2419"])
