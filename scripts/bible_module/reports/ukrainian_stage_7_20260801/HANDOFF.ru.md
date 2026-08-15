@@ -1,4 +1,4 @@
-# Этап 7 — текущий HANDOFF, пауза 2026-08-15 после `Judg`
+# Этап 7 — текущий HANDOFF, рабочая точка 2026-08-15 после `Ruth`
 
 > **CURRENT PAUSE POINT.** Этот файл полностью заменяет предыдущий HANDOFF.
 > Этап 7 остаётся в работе. Активных stage-7 Python-процессов и работающих
@@ -7,10 +7,11 @@
 
 ## Состояние репозитория
 
-- Сеанс начат с чистого коммита `e0acc66` (`Advance Ukrainian Strong stage 7
-  evidence pipeline [skip ci]`).
-- Текущие незакоммиченные изменения — regenerated stage-7 reports, roadmap,
-  два новых versioned manifest и regression-правка stage-7 теста.
+- Предыдущий stage-7 batch сохранён в коммите `ed21bbc` (`Integrate Ukrainian
+  Strong evidence and gold reviews [skip ci]`).
+- Текущие незакоммиченные изменения включают roadmap/HANDOFF, руководство по
+  fail-closed внешней помощи ChatGPT и versioned manifest принятого внешнего
+  пилота; production candidates/links/Strong не менялись.
 - Полные corpora/candidates/gold packets и completed reviewer submissions
   находятся только в gitignored `scripts/bible_module/work/`.
 - Пользовательские изменения не удалять; commit/push выполняет только владелец.
@@ -66,25 +67,60 @@
 
 - Answer-free panel: 2 171 verses, 45 831 original и 41 807 target decisions на
   каждый pass; по 66 exact book-shards.
-- Оба независимых blind passes завершены для первых семи книг `Gen–Judg`:
-  228 стихов, 5 832 original и 4 825 target decisions exact-once на каждый pass.
-- Все 14 compact expansions имеют разные reviewer IDs, `blind=true`, прошли
+- Оба рабочих независимых blind passes завершены для первых восьми книг
+  `Gen–Ruth`: 260 стихов, 6 683 original и 5 559 target decisions exact-once на
+  каждый pass.
+- Все рабочие compact expansions имеют разные reviewer IDs, `blind=true`, прошли
   merge-ready check с `error_count=0`; расхождения не сглажены.
 - Последние завершённые shards:
   - `Josh` pass 1 raw SHA `17bfc8fe3b3c9b10bf2c71b314cb6b2f031b02b0cda1318929c9eaec9706d2f0`;
   - `Josh` pass 2 raw SHA `f12d0812d20e669f1dea89bf7b92d75d8fb110160b9b03bff5976b62e86d3480`;
   - `Judg` pass 1 raw SHA `653ea270cd27eeadffcb45fdb099ae6243d054356a4d81356b356c27bf6fe8b5`;
   - `Judg` pass 2 raw SHA `0048ca624619e9d17d2ef52e190a3a094c296456bb005848d117dd3fed319603`.
-- Осталось 59 книг. Следующая — `Ruth`, shard `008` в обоих проходах.
+  - `Ruth` external pass 1 raw SHA
+    `64bf678323be913aef1d20cdf18ba15388533c7adbf648b7bcbc844909e47da4`;
+  - `Ruth` QC pass 2 raw SHA
+    `f052a81dd29b364567c428a24a2e5697bd69400c7dd3795eb5f4573cc644b228`.
+- `Ruth` exact link/null agreement: 84,101% overall, 82,139% original и
+  86,376% target; внутренняя база `Gen–Judg` — 80,191%. Все три critical Ruth
+  решения совпали. Первый Codex Ruth pass 2 (`85757ee7…`) отклонён как
+  аномальный over-grouping: только 4/851 original-null (0,47%) против обычных
+  19–25%; его не использовать при merge/finalize.
+- Осталось 58 книг. Следующая — `1Sam`, shard `009` в обоих проходах.
 - Finalized gold, merge/adjudication, evaluator metrics, calibration и production
   links отсутствуют; оба пункта 7.4 поэтому остаются открытыми.
-- Владелец явно разрешил продолжать два независимых blind gold-прохода
-  подагентами. При возобновлении создать два изолированных reviewer tasks для
-  `Ruth`: pass 1 не читает pass 2, pass 2 не читает pass 1; обоим запрещены
-  candidates, legacy, reports и completed answers других книг.
+- Владелец явно разрешил продолжать независимые blind gold-проходы. Для `1Sam`
+  pass 1 можно использовать готовый внешний пакет; pass 2 выполняется отдельным
+  Codex reviewer. Ни один проход не читает другой, candidates, legacy, reports
+  или completed answers других книг.
 - Текущий versioned artifact inventory создан до completed `Josh/Judg`; это не
   повреждение input lock. Regenerate main reports после следующего разумного
   batch reviewer-книг, а не после каждого shard.
+
+## Внешняя помощь ChatGPT
+
+- Добавлено подробное руководство
+  `docs/ru/content/ukrainian-bible-strongs-stage-7-external-chatgpt-workflow.ru.md`.
+- Deep Research разрешён только для небольших source-heavy досье, а не для
+  массового alignment или присвоения Strong.
+- Пилот экономии `Ruth` завершён положительно: обычный ChatGPT pass 1 принят как
+  merge-ready blind submission после v1/v2 rejection, v3 structural/semantic
+  аудита и сравнения с повторным независимым QC-pass 2. Это не final gold;
+  расхождения остаются adjudication.
+- ChatGPT Work не использовать для экономии: официальный OpenAI Pricing
+  подтверждает, что Work и Codex имеют общие credits и usage limits. Перед
+  внешним запуском явно проверять режим `Chat` или `Deep Research`, не Work/Codex.
+- Внешний pass не считается gold до локальных `expand`, `gold_compact check`,
+  сравнения, adjudication и проверки отсутствия position bias/leakage.
+- Подготовлены exact-metadata пакеты `1Sam`/`2Sam`/`1Kgs` в
+  `work/ukrainian_stage_7_20260801/external_chatgpt/`; каждый запускать в новом
+  обычном ChatGPT Chat, начиная с `1Sam`, и возвращать по одному.
+- Versioned audit: `external_research.manifest.json`. Пакеты требуют непустые
+  applicable `phenomena`, single-original omission cardinality и явную обработку
+  функциональной замены; metadata templates прошли preflight validator.
+- Полные внешние ответы хранить только в gitignored
+  `work/ukrainian_stage_7_20260801/external_chatgpt/`; в Git допускаются только
+  принятые safe manifests/hashes и минимальные stable-ID annotations.
 
 ## Исправленный regression-контракт
 
@@ -106,14 +142,23 @@
 - `py_compile`: PASS;
 - `git diff --check`: PASS, кроме информационных Windows LF→CRLF warnings;
 - `Josh` и `Judg` pass 1/pass 2 independently rechecked: PASS, errors 0.
+- `Ruth` external v3 expand/check: PASS, 1 617 decisions, errors 0;
+- `Ruth` QC pass 2 expand/check: PASS, 1 617 decisions, errors 0;
+- Ruth comparison: 84,101% exact link/null agreement; position-only signal не
+  найден (94/481 one-to-one links имеют одинаковый local index);
+- future external package metadata preflight: `1Sam`/`2Sam`/`1Kgs` PASS; каждый
+  дошёл до ожидаемого answer-free gate «every verse exactly once».
 
 ## Точная следующая последовательность
 
 1. Проверить `git status` и сохранить текущие пользовательские изменения.
-2. Запустить два независимых blind reviewer-подагента только для `Ruth` shard
-   `008`, с отдельными reviewer IDs и запретом cross-pass/candidate leakage.
-3. После завершения независимо выполнить оба `gold_compact check`, обновить
-   cumulative counts в roadmap и перейти к `1Sam` shard `009`.
+2. Для `1Sam` shard `009` использовать готовый внешний pass-1 пакет
+   `work/.../external_chatgpt/uk7ext_gold_1Sam_pass1_009/` и отдельный blind
+   Codex pass 2; сохранить exact reviewer provenance и запретить cross-pass,
+   candidates, legacy и repository leakage.
+3. После возврата внешнего файла независимо выполнить SHA/metadata/schema audit,
+   `expand`, `gold_compact check`, semantic comparison и position-bias audit.
+   Невалидное не исправлять догадками; спорное передать adjudication.
 4. Продолжить книги по порядку до `Rev`; не считать заготовленные packets gold
    до фактических двух проходов.
 5. После всех 66 книг выполнить deterministic merge каждого pass, сравнение,
