@@ -1,0 +1,146 @@
+{
+  "license": "CC0-1.0",
+  "schema_version": 1,
+  "expectations": {
+    "Mark.1.2": {
+      "overlay_original_token_id": "cc0:overlay:mark-1-2",
+      "member_original_token_ids": ["cc0:member:mark-1-2:c01", "cc0:member:mark-1-2:c06"],
+      "excluded_lexical_candidate_ids": ["cc0:member:mark-1-2:c12"],
+      "target_span": {"token_id": "cc0:target:mark-1-2", "surface": "zuq", "start_scalar": 0, "end_scalar": 3, "start_byte": 0, "end_byte": 3},
+      "disposition": "resolved_manual_textual_alternative_group_no_rendered_strong",
+      "rendered_strong": []
+    },
+    "Mark.16.9": {
+      "overlay_original_token_id": "cc0:overlay:mark-16-9",
+      "member_original_token_ids": ["cc0:member:mark-16-9:c01", "cc0:member:mark-16-9:c06"],
+      "excluded_lexical_candidate_ids": ["cc0:member:mark-16-9:c12"],
+      "target_span": {"token_id": "cc0:target:mark-16-9", "surface": "tev", "start_scalar": 5, "end_scalar": 8, "start_byte": 5, "end_byte": 8},
+      "disposition": "resolved_manual_textual_alternative_group_no_rendered_strong",
+      "rendered_strong": []
+    },
+    "Acts.2.38": {
+      "overlay_original_token_id": "cc0:member:acts-2-38:c01",
+      "member_original_token_ids": ["cc0:member:acts-2-38:c01", "cc0:member:acts-2-38:c06"],
+      "excluded_lexical_candidate_ids": ["cc0:member:acts-2-38:c12"],
+      "target_span": {"token_id": "cc0:target:acts-2-38", "surface": "dak", "start_scalar": 10, "end_scalar": 13, "start_byte": 10, "end_byte": 13},
+      "disposition": "resolved_manual_b_primary_component",
+      "rendered_strong": ["G1909"]
+    },
+    "1Cor.14.34": {
+      "overlay_original_token_id": "cc0:overlay:1cor-14-34",
+      "member_original_token_ids": ["cc0:member:1cor-14-34:c01", "cc0:member:1cor-14-34:c06"],
+      "excluded_lexical_candidate_ids": [],
+      "target_span": {"token_id": "cc0:target:1cor-14-34", "surface": "mel", "start_scalar": 15, "end_scalar": 18, "start_byte": 15, "end_byte": 18},
+      "disposition": "resolved_manual_textual_alternative_group_strong_equivalent",
+      "rendered_strong": ["G2010"]
+    },
+    "Rev.22.19": {
+      "overlay_original_token_id": "cc0:overlay:rev-22-19",
+      "member_original_token_ids": ["cc0:member:rev-22-19:c01", "cc0:member:rev-22-19:c06"],
+      "excluded_lexical_candidate_ids": ["cc0:member:rev-22-19:c12"],
+      "target_span": {"token_id": "cc0:target:rev-22-19", "surface": "for", "start_scalar": 20, "end_scalar": 23, "start_byte": 20, "end_byte": 23},
+      "disposition": "resolved_manual_textual_alternative_group_no_rendered_strong",
+      "rendered_strong": []
+    }
+  },
+  "selected_original_layer": [
+    {
+      "schema_version": 1,
+      "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+      "original_token_id": "cc0:overlay:mark-1-2",
+      "target_ref": "Mark.1.2",
+      "component_kind": "manual_textual_alternative_group",
+      "reading_status": "primary_manual_textual_choice_group",
+      "manual_textual_disposition": "resolved_manual_textual_alternative_group_no_rendered_strong",
+      "manual_textual_member_ids": ["cc0:member:mark-1-2:c01", "cc0:member:mark-1-2:c06"],
+      "excluded_lexical_candidate_ids": ["cc0:member:mark-1-2:c12"],
+      "textual_variant_raw": {"member_original_token_ids": ["cc0:member:mark-1-2:c01", "cc0:member:mark-1-2:c06"], "exact_form_selected": false},
+      "reviewed_target_span": {"token_id": "cc0:target:mark-1-2", "surface": "zuq", "start_scalar": 0, "end_scalar": 3, "start_byte": 0, "end_byte": 3},
+      "strong_raw": [],
+      "strong_normalized": [],
+      "strong_classic": [],
+      "strong_status": "textual_group_no_render",
+      "rendered_strong": []
+    },
+    {
+      "schema_version": 1,
+      "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+      "original_token_id": "cc0:overlay:mark-16-9",
+      "target_ref": "Mark.16.9",
+      "component_kind": "manual_textual_alternative_group",
+      "reading_status": "primary_manual_textual_choice_group",
+      "manual_textual_disposition": "resolved_manual_textual_alternative_group_no_rendered_strong",
+      "manual_textual_member_ids": ["cc0:member:mark-16-9:c01", "cc0:member:mark-16-9:c06"],
+      "excluded_lexical_candidate_ids": ["cc0:member:mark-16-9:c12"],
+      "textual_variant_raw": {"member_original_token_ids": ["cc0:member:mark-16-9:c01", "cc0:member:mark-16-9:c06"], "exact_form_selected": false},
+      "reviewed_target_span": {"token_id": "cc0:target:mark-16-9", "surface": "tev", "start_scalar": 5, "end_scalar": 8, "start_byte": 5, "end_byte": 8},
+      "strong_raw": [],
+      "strong_normalized": [],
+      "strong_classic": [],
+      "strong_status": "textual_group_no_render",
+      "rendered_strong": []
+    },
+    {
+      "schema_version": 1,
+      "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+      "original_token_id": "cc0:member:acts-2-38:c01",
+      "target_ref": "Acts.2.38",
+      "reading_status": "primary_manual_textual_choice_b",
+      "manual_textual_disposition": "resolved_manual_b_primary_component",
+      "manual_textual_member_ids": ["cc0:member:acts-2-38:c01", "cc0:member:acts-2-38:c06"],
+      "excluded_textual_member_ids": ["cc0:member:acts-2-38:c06"],
+      "excluded_lexical_candidate_ids": ["cc0:member:acts-2-38:c12"],
+      "reviewed_target_span": {"token_id": "cc0:target:acts-2-38", "surface": "dak", "start_scalar": 10, "end_scalar": 13, "start_byte": 10, "end_byte": 13},
+      "strong_classic": ["G1909"],
+      "rendered_strong": ["G1909"]
+    },
+    {
+      "schema_version": 1,
+      "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+      "original_token_id": "cc0:overlay:1cor-14-34",
+      "target_ref": "1Cor.14.34",
+      "component_kind": "manual_textual_alternative_group",
+      "reading_status": "primary_manual_textual_choice_group",
+      "manual_textual_disposition": "resolved_manual_textual_alternative_group_strong_equivalent",
+      "manual_textual_member_ids": ["cc0:member:1cor-14-34:c01", "cc0:member:1cor-14-34:c06"],
+      "excluded_lexical_candidate_ids": [],
+      "textual_variant_raw": {"member_original_token_ids": ["cc0:member:1cor-14-34:c01", "cc0:member:1cor-14-34:c06"], "exact_form_selected": false},
+      "reviewed_target_span": {"token_id": "cc0:target:1cor-14-34", "surface": "mel", "start_scalar": 15, "end_scalar": 18, "start_byte": 15, "end_byte": 18},
+      "strong_raw": ["G2010"],
+      "strong_normalized": ["G2010"],
+      "strong_classic": ["G2010"],
+      "strong_status": "classic_textual_group_equivalent",
+      "rendered_strong": ["G2010"]
+    },
+    {
+      "schema_version": 1,
+      "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+      "original_token_id": "cc0:overlay:rev-22-19",
+      "target_ref": "Rev.22.19",
+      "component_kind": "manual_textual_alternative_group",
+      "reading_status": "primary_manual_textual_choice_group",
+      "manual_textual_disposition": "resolved_manual_textual_alternative_group_no_rendered_strong",
+      "manual_textual_member_ids": ["cc0:member:rev-22-19:c01", "cc0:member:rev-22-19:c06"],
+      "excluded_lexical_candidate_ids": ["cc0:member:rev-22-19:c12"],
+      "textual_variant_raw": {"member_original_token_ids": ["cc0:member:rev-22-19:c01", "cc0:member:rev-22-19:c06"], "exact_form_selected": false},
+      "reviewed_target_span": {"token_id": "cc0:target:rev-22-19", "surface": "for", "start_scalar": 20, "end_scalar": 23, "start_byte": 20, "end_byte": 23},
+      "strong_raw": [],
+      "strong_normalized": [],
+      "strong_classic": [],
+      "strong_status": "textual_group_no_render",
+      "rendered_strong": []
+    }
+  ],
+  "finalized_gold": [
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "hyperedge", "status": "reviewed_accepted", "edge_id": "cc0:edge:mark-1-2", "target_ref": "Mark.1.2", "relation": "one_to_one", "original_token_ids": ["cc0:overlay:mark-1-2"], "target_token_ids": ["cc0:target:mark-1-2"], "null_reason": null},
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "target_accounting", "status": "reviewed_accepted", "accounting_id": "cc0:accounting:mark-1-2", "target_ref": "Mark.1.2", "target_token_id": "cc0:target:mark-1-2", "target_status": "aligned", "linked_original_token_ids": ["cc0:overlay:mark-1-2"], "target_span": {"start_scalar": 0, "end_scalar": 3, "start_byte": 0, "end_byte": 3, "surface_sha256": "3bac575f48d5713ccee0a4a8e960bba9690611690c5e8f90410fa4d8372be681"}},
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "hyperedge", "status": "reviewed_accepted", "edge_id": "cc0:edge:mark-16-9", "target_ref": "Mark.16.9", "relation": "one_to_one", "original_token_ids": ["cc0:overlay:mark-16-9"], "target_token_ids": ["cc0:target:mark-16-9"], "null_reason": null},
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "target_accounting", "status": "reviewed_accepted", "accounting_id": "cc0:accounting:mark-16-9", "target_ref": "Mark.16.9", "target_token_id": "cc0:target:mark-16-9", "target_status": "aligned", "linked_original_token_ids": ["cc0:overlay:mark-16-9"], "target_span": {"start_scalar": 5, "end_scalar": 8, "start_byte": 5, "end_byte": 8, "surface_sha256": "499a7fffbbadda60ba31bbd1c7ca3790d66df81667a3941050565e064b93f998"}},
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "hyperedge", "status": "reviewed_accepted", "edge_id": "cc0:edge:acts-2-38", "target_ref": "Acts.2.38", "relation": "one_to_one", "original_token_ids": ["cc0:member:acts-2-38:c01"], "target_token_ids": ["cc0:target:acts-2-38"], "null_reason": null},
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "target_accounting", "status": "reviewed_accepted", "accounting_id": "cc0:accounting:acts-2-38", "target_ref": "Acts.2.38", "target_token_id": "cc0:target:acts-2-38", "target_status": "aligned", "linked_original_token_ids": ["cc0:member:acts-2-38:c01"], "target_span": {"start_scalar": 10, "end_scalar": 13, "start_byte": 10, "end_byte": 13, "surface_sha256": "7fd357322a6707a720e3a71ef1aa3be8eed879e01fd317626415f0281a68833c"}},
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "hyperedge", "status": "reviewed_accepted", "edge_id": "cc0:edge:1cor-14-34", "target_ref": "1Cor.14.34", "relation": "one_to_one", "original_token_ids": ["cc0:overlay:1cor-14-34"], "target_token_ids": ["cc0:target:1cor-14-34"], "null_reason": null},
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "target_accounting", "status": "reviewed_accepted", "accounting_id": "cc0:accounting:1cor-14-34", "target_ref": "1Cor.14.34", "target_token_id": "cc0:target:1cor-14-34", "target_status": "aligned", "linked_original_token_ids": ["cc0:overlay:1cor-14-34"], "target_span": {"start_scalar": 15, "end_scalar": 18, "start_byte": 15, "end_byte": 18, "surface_sha256": "03cdf3e00e74fb35b47208a6ea70a93f71aee892e0dceb0b273fa5c07b47f91c"}},
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "hyperedge", "status": "reviewed_accepted", "edge_id": "cc0:edge:rev-22-19", "target_ref": "Rev.22.19", "relation": "one_to_one", "original_token_ids": ["cc0:overlay:rev-22-19"], "target_token_ids": ["cc0:target:rev-22-19"], "null_reason": null},
+    {"schema_version": 1, "contract_version": "ukrainian-stage-7-evidence-alignment-v1", "record_type": "target_accounting", "status": "reviewed_accepted", "accounting_id": "cc0:accounting:rev-22-19", "target_ref": "Rev.22.19", "target_token_id": "cc0:target:rev-22-19", "target_status": "aligned", "linked_original_token_ids": ["cc0:overlay:rev-22-19"], "target_span": {"start_scalar": 20, "end_scalar": 23, "start_byte": 20, "end_byte": 23, "surface_sha256": "10c22bcf4c768b515be4e94bcafc71bf3e8fb5f70b2584bcc8c7533217f2e7f9"}}
+  ]
+}

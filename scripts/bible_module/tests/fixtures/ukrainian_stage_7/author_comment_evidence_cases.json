@@ -1,0 +1,39 @@
+{
+  "license": "CC0-1.0",
+  "cases": [
+    {
+      "id": "hebrew_transliteration_and_morphology",
+      "text": "По-гебрейському šamajim уживається в множині.",
+      "expected_languages": ["hebrew"],
+      "expected_categories": [
+        "explicit_original_language_claim",
+        "morphology_grammar_claim",
+        "transliteration_or_source_form"
+      ],
+      "expected_transliteration": "shamayim"
+    },
+    {
+      "id": "explicit_original_lexical_claim",
+      "text": "В ориґіналі tehom — це глибина.",
+      "expected_languages": [],
+      "expected_categories": [
+        "explicit_original_language_claim",
+        "lexical_semantic_claim",
+        "transliteration_or_source_form"
+      ],
+      "expected_transliteration": "tehom"
+    },
+    {
+      "id": "variant_requires_review",
+      "text": "В іншому рукописі інше читання.",
+      "expected_languages": [],
+      "expected_categories": ["textual_variant_claim"]
+    },
+    {
+      "id": "general_comment_only",
+      "text": "Коротке пояснення образу.",
+      "expected_languages": [],
+      "expected_categories": ["general_author_commentary"]
+    }
+  ]
+}

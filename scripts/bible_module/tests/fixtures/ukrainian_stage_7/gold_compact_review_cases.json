@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "license": "CC0-1.0",
+  "description": "Synthetic answer-free compact gold-review fixture; no biblical text or third-party alignment data.",
+  "plain_text": "Один два три чотири п’ять шість сім.",
+  "originals": [
+    {"original_token_id": "cc0:compact:orig:1", "surface_normalized": "alpha", "transliteration_raw": "alpha-translit", "gloss_raw": "first synthetic gloss", "source_locator": "CC0.1.1#01", "strong_classic": ["H1"]},
+    {"original_token_id": "cc0:compact:orig:2", "surface_normalized": "beta", "strong_classic": ["H2"]},
+    {"original_token_id": "cc0:compact:orig:3", "surface_normalized": "gamma", "strong_classic": ["H3"]},
+    {"original_token_id": "cc0:compact:orig:4", "surface_normalized": "delta", "strong_classic": ["H4"]},
+    {"original_token_id": "cc0:compact:orig:5", "surface_normalized": "epsilon", "strong_classic": ["H5"]},
+    {"original_token_id": "cc0:compact:orig:6", "surface_normalized": "zeta", "strong_classic": ["H6"]},
+    {"original_token_id": "cc0:compact:orig:7", "surface_normalized": "eta", "strong_classic": ["H7"]}
+  ],
+  "groups": [
+    {"original_indices": ["o001"], "target_indices": ["t001"], "relation": "one_to_one", "null_reason": null, "phenomena": []},
+    {"original_indices": ["o002"], "target_indices": ["t002", "t003"], "relation": "one_to_many", "null_reason": null, "phenomena": ["merge_split"]},
+    {"original_indices": ["o003", "o004"], "target_indices": ["t004"], "relation": "many_to_one", "null_reason": null, "phenomena": ["compound"]},
+    {"original_indices": ["o005", "o006"], "target_indices": ["t005", "t006"], "relation": "many_to_many", "null_reason": null, "phenomena": ["reorder"]},
+    {"original_indices": ["o007"], "target_indices": [], "relation": "original_omitted", "null_reason": "translation_omission", "phenomena": ["omission"]}
+  ],
+  "target_nulls": [
+    {"target_index": "t007", "target_status": "translation_addition", "phenomena": ["addition"]}
+  ]
+}

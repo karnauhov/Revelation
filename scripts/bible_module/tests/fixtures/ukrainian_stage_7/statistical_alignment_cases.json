@@ -1,0 +1,33 @@
+{
+  "license": "CC0-1.0",
+  "schema_version": 1,
+  "description": "Synthetic token-type parallel verses for leakage, reorder, repetition, compound and unknown-pair tests; no biblical text.",
+  "folds": 3,
+  "verses": [
+    {"target_ref":"Tst.1.1","expected_fold":2,"originals":[["a","TAHOT:אדם","TAHOT","H120"]],"targets":[["адам","адам"]]},
+    {"target_ref":"Tst.1.2","expected_fold":0,"originals":[["a","TAHOT:אדם","TAHOT","H120"]],"targets":[["адам","адам"]]},
+    {"target_ref":"Tst.1.4","expected_fold":1,"originals":[["a","TAHOT:אדם","TAHOT","H120"]],"targets":[["адам","адам"]]},
+
+    {"target_ref":"Tst.1.3","expected_fold":2,"originals":[["b","TAHOT:אור","TAHOT","H216"]],"targets":[["світло","світло"]]},
+    {"target_ref":"Tst.1.5","expected_fold":0,"originals":[["b","TAHOT:אור","TAHOT","H216"]],"targets":[["світло","світло"]]},
+    {"target_ref":"Tst.1.10","expected_fold":1,"originals":[["b","TAHOT:אור","TAHOT","H216"]],"targets":[["світло","світло"]]},
+
+    {"target_ref":"Tst.1.6","expected_fold":2,"originals":[["c","TAHOT:בית","TAHOT","H1004"]],"targets":[["дім","дім"]]},
+    {"target_ref":"Tst.1.7","expected_fold":0,"originals":[["c","TAHOT:בית","TAHOT","H1004"]],"targets":[["дім","дім"]]},
+    {"target_ref":"Tst.1.11","expected_fold":1,"originals":[["c","TAHOT:בית","TAHOT","H1004"]],"targets":[["дім","дім"]]},
+
+    {"target_ref":"Tst.1.9","expected_fold":2,"originals":[["d","TAHOT:טוב","TAHOT","H2896"]],"targets":[["добре","добре"]]},
+    {"target_ref":"Tst.1.8","expected_fold":0,"originals":[["d","TAHOT:טוב","TAHOT","H2896"]],"targets":[["добре","добре"]]},
+    {"target_ref":"Tst.1.13","expected_fold":1,"originals":[["d","TAHOT:טוב","TAHOT","H2896"]],"targets":[["добре","добре"]]},
+
+    {"target_ref":"Tst.1.12","expected_fold":0,"originals":[["a","TAHOT:אדם","TAHOT","H120"],["b","TAHOT:אור","TAHOT","H216"]],"targets":[["світло","світло"],["адам","адам"]]},
+    {"target_ref":"Tst.1.15","expected_fold":1,"originals":[["b","TAHOT:אור","TAHOT","H216"],["a","TAHOT:אדם","TAHOT","H120"]],"targets":[["адам","адам"],["світло","світло"]]},
+    {"target_ref":"Tst.1.16","expected_fold":2,"originals":[["a1","TAHOT:אדם","TAHOT","H120"],["a2","TAHOT:אדם","TAHOT","H120"]],"targets":[["адам1","адам"],["адам2","адам"]]},
+
+    {"target_ref":"Tst.1.17","expected_fold":2,"originals":[["k1","TAGNT:βασιλεια","TAGNT","G932"],["k2","TAGNT:βασιλεια","TAGNT","G935"]],"targets":[["царство","царство"]]},
+    {"target_ref":"Tst.1.22","expected_fold":0,"originals":[["k1","TAGNT:βασιλεια","TAGNT","G932"],["k2","TAGNT:βασιλεια","TAGNT","G935"]],"targets":[["царство","царство"]]},
+    {"target_ref":"Tst.1.21","expected_fold":1,"originals":[["k1","TAGNT:βασιλεια","TAGNT","G932"],["k2","TAGNT:βασιλεια","TAGNT","G935"]],"targets":[["царство","царство"]]},
+
+    {"target_ref":"Tst.1.14","expected_fold":0,"originals":[["a","TAHOT:אדם","TAHOT","H120"]],"targets":[["unknown","невідоме"]]}
+  ]
+}

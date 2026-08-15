@@ -1,7 +1,7 @@
 # План доказательного Strong-выравнивания OH1988
 
-Doc-Version: `1.0.0`
-Last-Updated: `2026-08-01`
+Doc-Version: `1.1.0`
+Last-Updated: `2026-08-15`
 Source-Commit: `working-tree`
 
 ## Статус документа
@@ -29,6 +29,28 @@ Source-Commit: `working-tree`
 - классифицировать фактическое чтение OH1988 по каждому месту и сохранить scan/page/revision evidence;
 - назначать основной оригинальный token universe по книге/перикопе/стиху, сохраняя альтернативные чтения отдельно;
 - отправлять неразрешённые текстологические случаи в manual review, не подменяя их наиболее близким современным текстом.
+
+Печатные авторские сноски exact OH1988 образуют отдельный первичный
+evidence-канал. Все стиховые и заголовочные uses нужно учесть ровно по одному
+разу и классифицировать как original-language form/transliteration,
+grammar/morphology, lexical semantics, textual variant, cross-reference или
+общий комментарий. Упомянутые еврейские и греческие формы можно сопоставлять
+только с source-qualified stable IDs того же locus; точный footnote anchor
+сохраняется отдельно от украинского текста. Сноска помогает выбрать или
+проверить исходное чтение, но не является дополнительным текстом стиха,
+translation bridge или самостоятельным доказательством original→OH1988 span.
+Она не поступает на вход statistical/contextual aligner, имеет нулевой
+автоматический вес, а явный textual-variant note обязательно проходит
+component-level manual review до вывода Strong.
+Замороженный `target_comment` разрешено показывать blind gold-reviewer как
+первичное предкандидатное пояснение переводчика; он не превращается в
+независимый witness и не используется для обучения candidate generator.
+
+Например, печатные формы `al pnej/pnei tehom` в сносках к `Gen.1.2`
+допускают exact same-locus corroboration `עַל / H5921`, `פְּנֵי / H6440`,
+`תְהוֹם / H8415`. Повторяющееся в стихе `עַל־פְּנֵי` остаётся набором
+равноправных кандидатов до доказанного span-level решения: marker anchor не
+разрешает выбрать ближайший original или украинский token по позиции.
 
 Первичный исторический источник для проверки методологии: [НБУВ — «Методологія перекладу Святого Письма…», 1927](https://irbis-nbuv.gov.ua/ulib/item/ukr0000030085). Современное исследование, которое прямо называет масоретскую основу OT и издание Nestle для NT, должно использоваться как вторичное свидетельство, а не вместо оригинальных документов: [«Особливості паратекстів українських перекладів Святого Письма»](https://www.researchgate.net/publication/382116933_Osoblivosti_paratekstiv_ukrainskih_perekladiv_Svatogo_Pisma).
 
@@ -247,6 +269,8 @@ Override хранит решение на stable token/span IDs и digests вс�
 
 - `source_registry.json`;
 - `textual_fingerprint.manifest.json` и безопасный report;
+- `author_comment_evidence.manifest.json`; полный построчный разбор авторских
+  сносок хранится только в gitignored work-каталоге;
 - `original_token_universe.manifest.json`;
 - `parallel_bridge_alignment.manifest.json`;
 - `ukrainian_token_inventory.manifest.json`;

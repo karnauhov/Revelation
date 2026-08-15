@@ -1,0 +1,36 @@
+{
+  "license": "CC0-1.0",
+  "schema_version": 1,
+  "description": "Invented stable IDs, Strong values and hyperedges for exact frozen-gold candidate evaluation; no biblical text.",
+  "target_tokens": [
+    {"token_id":"cc0:uk:sealed:1","target_ref":"Gen.1.3","genre":"torah_prose_law"},
+    {"token_id":"cc0:uk:sealed:2","target_ref":"Gen.1.3","genre":"torah_prose_law"},
+    {"token_id":"cc0:uk:sealed:3","target_ref":"Gen.1.3","genre":"torah_prose_law"},
+    {"token_id":"cc0:uk:sealed:4","target_ref":"Gen.1.3","genre":"torah_prose_law"},
+    {"token_id":"cc0:uk:unsealed:1","target_ref":"Exod.1.2","genre":"torah_prose_law"}
+  ],
+  "original_tokens": [
+    {"original_token_id":"cc0:orig:sealed:1","target_ref":"Gen.1.3","strong_classic":["H1"]},
+    {"original_token_id":"cc0:orig:sealed:2","target_ref":"Gen.1.3","strong_classic":["H1"]},
+    {"original_token_id":"cc0:orig:sealed:3","target_ref":"Gen.1.3","strong_classic":["H2"]},
+    {"original_token_id":"cc0:orig:sealed:4","target_ref":"Gen.1.3","strong_classic":["H4"]},
+    {"original_token_id":"cc0:orig:unsealed:1","target_ref":"Exod.1.2","strong_classic":["H5"]}
+  ],
+  "gold_hyperedges": [
+    {"edge_id":"cc0:gold:sealed:many","target_ref":"Gen.1.3","relation":"many_to_many","original_token_ids":["cc0:orig:sealed:1","cc0:orig:sealed:2"],"target_token_ids":["cc0:uk:sealed:1","cc0:uk:sealed:2"],"null_reason":null,"severity":"high","phenomena":["compound","reorder"]},
+    {"edge_id":"cc0:gold:sealed:one","target_ref":"Gen.1.3","relation":"one_to_one","original_token_ids":["cc0:orig:sealed:3"],"target_token_ids":["cc0:uk:sealed:3"],"null_reason":null,"severity":"normal","phenomena":["frequent_lemma"]},
+    {"edge_id":"cc0:gold:sealed:omitted","target_ref":"Gen.1.3","relation":"original_omitted","original_token_ids":["cc0:orig:sealed:4"],"target_token_ids":[],"null_reason":"translation_omission","severity":"normal","phenomena":["omission"]},
+    {"edge_id":"cc0:gold:sealed:addition","target_ref":"Gen.1.3","relation":"translation_addition","original_token_ids":[],"target_token_ids":["cc0:uk:sealed:4"],"null_reason":"function_token","severity":"normal","phenomena":["addition","particle"]},
+    {"edge_id":"cc0:gold:unsealed:one","target_ref":"Exod.1.2","relation":"one_to_one","original_token_ids":["cc0:orig:unsealed:1"],"target_token_ids":["cc0:uk:unsealed:1"],"null_reason":null,"severity":"normal","phenomena":["rare_lemma"]}
+  ],
+  "candidates": [
+    {"candidate_id":"cc0:candidate:exact-many","generator_id":"cc0-generator-v1","target_ref":"Gen.1.3","relation":"many_to_many","original_token_ids":["cc0:orig:sealed:1","cc0:orig:sealed:2"],"target_token_ids":["cc0:uk:sealed:1","cc0:uk:sealed:2"],"strong_classic":["H1"],"null_reason":null,"generator_score":{"name":"fixture-many","value":0.91,"calibrated":false},"candidate_only":true,"calibrated":false,"auto_acceptance":false,"resolver_eligible":false},
+    {"candidate_id":"cc0:candidate:partial-many","generator_id":"cc0-generator-v1","target_ref":"Gen.1.3","relation":"one_to_one","original_token_ids":["cc0:orig:sealed:1"],"target_token_ids":["cc0:uk:sealed:1"],"strong_classic":["H1"],"null_reason":null,"generator_score":{"name":"fixture-partial","raw":0.99,"calibrated":false},"candidate_only":true,"calibrated":false,"auto_acceptance":false,"resolver_eligible":false},
+    {"candidate_id":"cc0:candidate:exact-omitted","generator_id":"cc0-generator-v1","target_ref":"Gen.1.3","relation":"original_omitted","original_token_ids":["cc0:orig:sealed:4"],"target_token_ids":[],"strong_classic":["H4"],"null_reason":"translation_omission","generator_score":null,"candidate_only":true,"calibrated":false,"auto_acceptance":false,"resolver_eligible":false},
+    {"candidate_id":"cc0:candidate:exact-addition","generator_id":"cc0-generator-v1","target_ref":"Gen.1.3","relation":"translation_addition","original_token_ids":[],"target_token_ids":["cc0:uk:sealed:4"],"strong_classic":[],"null_reason":"function_token","generator_score":{"name":"fixture-null","value":0.4,"calibrated":false},"candidate_only":true,"calibrated":false,"auto_acceptance":false,"resolver_eligible":false},
+    {"candidate_id":"cc0:candidate:legacy-correct","generator_id":"legacy-zero-vote-v1","target_ref":"Gen.1.3","relation":"legacy_unproven_feature","original_token_ids":[],"target_token_ids":["cc0:uk:sealed:3"],"strong_classic":["H2"],"generator_score":{"kind":"rejected_legacy_zero_vote","raw":0.0,"calibrated":false},"vote_weight":0,"candidate_only":true,"calibrated":false,"auto_acceptance":false,"resolver_eligible":false},
+    {"candidate_id":"cc0:candidate:legacy-incorrect","generator_id":"legacy-zero-vote-v1","target_ref":"Gen.1.3","relation":"legacy_unproven_feature","original_token_ids":[],"target_token_ids":["cc0:uk:sealed:4"],"strong_classic":["H2"],"generator_score":{"kind":"rejected_legacy_zero_vote","raw":0.0,"calibrated":false},"vote_weight":0,"candidate_only":true,"calibrated":false,"auto_acceptance":false,"resolver_eligible":false},
+    {"candidate_id":"cc0:candidate:legacy-ambiguous","generator_id":"legacy-zero-vote-v1","target_ref":"Gen.1.3","relation":"legacy_unproven_feature","original_token_ids":[],"target_token_ids":["cc0:uk:sealed:1"],"strong_classic":["H1"],"generator_score":{"kind":"rejected_legacy_zero_vote","raw":0.0,"calibrated":false},"vote_weight":0,"candidate_only":true,"calibrated":false,"auto_acceptance":false,"resolver_eligible":false},
+    {"candidate_id":"cc0:candidate:unsealed","generator_id":"cc0-generator-v1","target_ref":"Exod.1.2","relation":"one_to_one","original_token_ids":["cc0:orig:unsealed:1"],"target_token_ids":["cc0:uk:unsealed:1"],"strong_classic":["H5"],"null_reason":null,"generator_score":{"name":"fixture-unsealed","value":0.8,"calibrated":false},"candidate_only":true,"calibrated":false,"auto_acceptance":false,"resolver_eligible":false}
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "license": "CC0-1.0",
+  "schema_version": 1,
+  "tokenization": {
+    "text": "Їжак каже: пів‑слова й ім’я́.",
+    "tokens": [
+      {
+        "comparison": "їжак",
+        "end_byte": 8,
+        "end_scalar": 4,
+        "order": 1,
+        "start_byte": 0,
+        "start_scalar": 0,
+        "surface": "Їжак"
+      },
+      {
+        "comparison": "каже",
+        "end_byte": 17,
+        "end_scalar": 9,
+        "order": 2,
+        "start_byte": 9,
+        "start_scalar": 5,
+        "surface": "каже"
+      },
+      {
+        "comparison": "пів-слова",
+        "end_byte": 38,
+        "end_scalar": 20,
+        "order": 3,
+        "start_byte": 19,
+        "start_scalar": 11,
+        "surface": "пів‑слова"
+      },
+      {
+        "comparison": "й",
+        "end_byte": 41,
+        "end_scalar": 22,
+        "order": 4,
+        "start_byte": 39,
+        "start_scalar": 21,
+        "surface": "й"
+      },
+      {
+        "comparison": "ім'я",
+        "end_byte": 53,
+        "end_scalar": 28,
+        "order": 5,
+        "start_byte": 42,
+        "start_scalar": 23,
+        "surface": "ім’я́"
+      }
+    ]
+  },
+  "markup": [
+    {
+      "plain": "Перше друге.",
+      "strong_by_token": {
+        "1": ["H1", "H2", "H2"],
+        "2": ["H3"]
+      }
+    },
+    {
+      "plain": "Додане слово",
+      "strong_by_token": {
+        "2": ["G3056", "G2198"]
+      }
+    },
+    {
+      "plain": "Слово, знак!",
+      "strong_by_token": {
+        "1": ["G1"],
+        "2": ["G2"]
+      }
+    }
+  ],
+  "raw_references": [
+    {
+      "family": "TAHOT",
+      "raw": "Isa.9.1(8.23)#04=L",
+      "target_ref": "Isa.9.1",
+      "annotation_kind": "round"
+    },
+    {
+      "family": "TAGNT",
+      "raw": "Act.2.11[2.10]#01=NKO",
+      "target_ref": "Acts.2.10",
+      "annotation_kind": "square"
+    },
+    {
+      "family": "TAGNT",
+      "raw": "Mat.15.6{15.5}#08=KO",
+      "target_ref": "Mat.15.6",
+      "annotation_kind": "curly"
+    }
+  ],
+  "lexeme_tokens": [
+    {
+      "book": "Gen",
+      "comparison": "слово",
+      "context_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fold_id": 0,
+      "genre": "torah_prose_law",
+      "left_context": [],
+      "lemma_pos_morphology_candidates": [{"confidence": 0.1, "lemma": "слово", "method": "fixture", "morphology": "unresolved", "pos": "X"}],
+      "right_context": ["поруч"],
+      "surface": "Слово",
+      "target_ref": "Gen.1.1",
+      "testament": "OT",
+      "token_id": "fake:1"
+    },
+    {
+      "book": "Gen",
+      "comparison": "слово",
+      "context_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fold_id": 0,
+      "genre": "torah_prose_law",
+      "left_context": ["поруч"],
+      "lemma_pos_morphology_candidates": [{"confidence": 0.1, "lemma": "слово", "method": "fixture", "morphology": "unresolved", "pos": "X"}],
+      "right_context": [],
+      "surface": "слово",
+      "target_ref": "Gen.1.2",
+      "testament": "OT",
+      "token_id": "fake:2"
+    },
+    {
+      "book": "Mat",
+      "comparison": "слово",
+      "context_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "fold_id": 3,
+      "genre": "gospel_narrative",
+      "left_context": ["інше"],
+      "lemma_pos_morphology_candidates": [{"confidence": 0.1, "lemma": "слово", "method": "fixture", "morphology": "unresolved", "pos": "X"}],
+      "right_context": [],
+      "surface": "слово",
+      "target_ref": "Mat.1.1",
+      "testament": "NT",
+      "token_id": "fake:3"
+    },
+    {
+      "book": "Mat",
+      "comparison": "інше",
+      "context_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "fold_id": 3,
+      "genre": "gospel_narrative",
+      "left_context": [],
+      "lemma_pos_morphology_candidates": [{"confidence": 0.35, "lemma": "інше", "method": "fixture", "morphology": "proper-name-candidate", "pos": "PROPN"}],
+      "right_context": ["слово"],
+      "surface": "Інше",
+      "target_ref": "Mat.1.1",
+      "testament": "NT",
+      "token_id": "fake:4"
+    },
+    {
+      "book": "Acts",
+      "comparison": "",
+      "context_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "fold_id": 4,
+      "genre": "acts_narrative",
+      "left_context": ["слово"],
+      "lemma_pos_morphology_candidates": [],
+      "right_context": [],
+      "surface": "́",
+      "target_ref": "Acts.1.1",
+      "testament": "NT",
+      "token_id": "fake:5",
+      "token_kind": "nonlexical_orthographic_mark"
+    }
+  ],
+  "hyperedges": [
+    {
+      "edge_id": "edge:many-to-many",
+      "evidence_channels": ["lexical", "manual_bridge_russyn"],
+      "original_token_ids": ["orig:1", "orig:2"],
+      "relation": "many_to_many",
+      "target_ref": "Gen.1.1",
+      "target_token_ids": ["uk:1", "uk:2"],
+      "top_k_alternatives": []
+    },
+    {
+      "edge_id": "edge:null",
+      "evidence_channels": ["manual_oh1988_review"],
+      "original_token_ids": ["orig:3"],
+      "relation": "original_omitted",
+      "target_ref": "Gen.1.1",
+      "target_token_ids": [],
+      "top_k_alternatives": []
+    },
+    {
+      "edge_id": "edge:addition",
+      "evidence_channels": ["manual_oh1988_review"],
+      "original_token_ids": [],
+      "relation": "translation_addition",
+      "target_ref": "Gen.1.1",
+      "target_token_ids": ["uk:3"],
+      "top_k_alternatives": []
+    }
+  ]
+}

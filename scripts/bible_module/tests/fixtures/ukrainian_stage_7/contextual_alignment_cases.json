@@ -1,0 +1,39 @@
+{
+  "license": "CC0-1.0",
+  "schema_version": 1,
+  "target_tokens": [
+    {"token_id":"uk7:CTX1:001:0:6","verse_key":"CTX1","target_ref":"Gen.1.1","order":1,"comparison":"світло","surface":"Світло","start_scalar":0,"end_scalar":6,"start_byte":0,"end_byte":12,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"token_id":"uk7:CTX1:002:7:10","verse_key":"CTX1","target_ref":"Gen.1.1","order":2,"comparison":"сяє","surface":"сяє","start_scalar":7,"end_scalar":10,"start_byte":13,"end_byte":19,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"token_id":"uk7:CTX1:003:11:15","verse_key":"CTX1","target_ref":"Gen.1.1","order":3,"comparison":"ім'я","surface":"ім’я","start_scalar":11,"end_scalar":15,"start_byte":20,"end_byte":29,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"token_id":"uk7:CTX1:004:16:20","verse_key":"CTX1","target_ref":"Gen.1.1","order":4,"comparison":"ім'я","surface":"ім’я","start_scalar":16,"end_scalar":20,"start_byte":30,"end_byte":39,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"token_id":"uk7:CTX2:001:0:5","verse_key":"CTX2","target_ref":"Gen.1.2","order":1,"comparison":"слово","surface":"слово","start_scalar":0,"end_scalar":5,"start_byte":0,"end_byte":10,"plain_text_sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+  ],
+  "original_tokens": [
+    {"original_token_id":"orig:light","target_ref":"Gen.1.1","order":1,"source_family":"TAHOT","reading_status":"primary_mt","morphology_raw":"HNcmsa","transliteration_raw":"or","strong_classic":["H216"],"surface_raw":"אור"},
+    {"original_token_id":"orig:shine","target_ref":"Gen.1.1","order":2,"source_family":"TAHOT","reading_status":"primary_mt","morphology_raw":"HVqp3ms","transliteration_raw":"zarach","strong_classic":["H2224"],"surface_raw":"זרח"},
+    {"original_token_id":"orig:name-a","target_ref":"Gen.1.1","order":3,"source_family":"TAHOT","reading_status":"primary_mt","morphology_raw":"HNcmsa","transliteration_raw":"shem","strong_classic":["H8034"],"surface_raw":"שם"},
+    {"original_token_id":"orig:name-b","target_ref":"Gen.1.1","order":4,"source_family":"TAHOT","reading_status":"primary_mt","morphology_raw":"HNcmsa","transliteration_raw":"shem","strong_classic":["H8034"],"surface_raw":"שם"},
+    {"original_token_id":"orig:unresolved","target_ref":"Gen.1.1","order":5,"source_family":"TAHOT","reading_status":"unresolved_textual_variant","morphology_raw":"HNcmsa","transliteration_raw":"other","strong_classic":["H999"],"surface_raw":"אחר"},
+    {"original_token_id":"orig:second-verse","target_ref":"Gen.1.2","order":1,"source_family":"TAHOT","reading_status":"primary_mt","morphology_raw":"HNcmsa","transliteration_raw":"dabar","strong_classic":["H1697"],"surface_raw":"דבר"}
+  ],
+  "observations": {
+    "Gen.1.1": {
+      "original_wordpiece_count": 6,
+      "target_wordpiece_count": 8,
+      "links": [
+        {"original_word_index":0,"target_word_index":0,"original_subword_index":0,"target_subword_index":0,"original_subword":"אור","target_subword":"Світло","source_to_target_probability":0.91,"target_to_source_probability":0.88,"dot_product":12.0},
+        {"original_word_index":1,"target_word_index":1,"original_subword_index":1,"target_subword_index":1,"original_subword":"זרח","target_subword":"сяє","source_to_target_probability":0.83,"target_to_source_probability":0.79,"dot_product":11.0},
+        {"original_word_index":2,"target_word_index":2,"original_subword_index":2,"target_subword_index":2,"original_subword":"שם","target_subword":"ім","source_to_target_probability":0.71,"target_to_source_probability":0.68,"dot_product":10.0},
+        {"original_word_index":2,"target_word_index":3,"original_subword_index":3,"target_subword_index":4,"original_subword":"שם","target_subword":"ім","source_to_target_probability":0.66,"target_to_source_probability":0.65,"dot_product":9.0},
+        {"original_word_index":3,"target_word_index":3,"original_subword_index":4,"target_subword_index":5,"original_subword":"שם","target_subword":"я","source_to_target_probability":0.62,"target_to_source_probability":0.61,"dot_product":8.0},
+        {"original_word_index":1,"target_word_index":0,"original_subword_index":1,"target_subword_index":0,"original_subword":"זרח","target_subword":"Світло","source_to_target_probability":0.70,"target_to_source_probability":0.001,"dot_product":3.0},
+        {"original_word_index":3,"target_word_index":2,"original_subword_index":5,"target_subword_index":3,"original_subword":"[UNK]","target_subword":"я","source_to_target_probability":0.70,"target_to_source_probability":0.70,"dot_product":7.0}
+      ]
+    },
+    "Gen.1.2": {
+      "original_wordpiece_count": 1,
+      "target_wordpiece_count": 1,
+      "links": []
+    }
+  }
+}

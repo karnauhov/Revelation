@@ -1,0 +1,55 @@
+{
+  "current": {
+    "fingerprint": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "fingerprint_selected_original_layer": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "legacy_snapshot": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "source_apparatus_by_original_id": {
+      "orig:alternative": "7777777777777777777777777777777777777777777777777777777777777777",
+      "orig:primary": "7777777777777777777777777777777777777777777777777777777777777777"
+    },
+    "source_registry": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "stage6_text": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "verse_by_target_id": {
+      "uk7:AAA:001:0:4": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  },
+  "legacy": {
+    "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+    "decision": "reject_legacy_link",
+    "input_digests": {
+      "legacy_snapshot": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "stage6_text": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "verse": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "override_id": "fixture-legacy-v1",
+    "schema_version": 1,
+    "stable_oh1988_token_ids": [
+      "uk7:AAA:001:0:4"
+    ],
+    "stale": false,
+    "supersedes": null
+  },
+  "textual": {
+    "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+    "decision": "resolved_manual_textual_alternative_group_strong_equivalent",
+    "input_digests": {
+      "fingerprint": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "fingerprint_selected_original_layer": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "source_apparatus": "7777777777777777777777777777777777777777777777777777777777777777",
+      "source_registry": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "stage6_text": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "stage6_verse": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "override_id": "fixture-textual-v1",
+    "schema_version": 1,
+    "stable_oh1988_token_ids": [
+      "uk7:AAA:001:0:4"
+    ],
+    "stale": false,
+    "supersedes": null,
+    "textual_alternative_member_ids": [
+      "orig:primary",
+      "orig:alternative"
+    ]
+  }
+}

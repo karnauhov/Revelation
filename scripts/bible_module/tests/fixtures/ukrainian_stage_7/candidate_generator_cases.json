@@ -1,0 +1,37 @@
+{
+  "license": "CC0-1.0",
+  "schema_version": 1,
+  "target_tokens": [
+    {"token_id":"uk7:AAA:001:0:4","verse_key":"AAA","target_ref":"Gen.1.1","order":1,"comparison":"адам","surface":"Адам","start_scalar":0,"end_scalar":4,"start_byte":0,"end_byte":8,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"token_id":"uk7:AAA:002:5:11","verse_key":"AAA","target_ref":"Gen.1.1","order":2,"comparison":"бачить","surface":"бачить","start_scalar":5,"end_scalar":11,"start_byte":9,"end_byte":21,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"token_id":"uk7:AAA:003:12:16","verse_key":"AAA","target_ref":"Gen.1.1","order":3,"comparison":"ясне","surface":"ясне","start_scalar":12,"end_scalar":16,"start_byte":22,"end_byte":30,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"token_id":"uk7:AAA:004:17:21","verse_key":"AAA","target_ref":"Gen.1.1","order":4,"comparison":"ім'я","surface":"ім’я","start_scalar":17,"end_scalar":21,"start_byte":31,"end_byte":39,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"token_id":"uk7:AAA:005:22:26","verse_key":"AAA","target_ref":"Gen.1.1","order":5,"comparison":"адам","surface":"Адам","start_scalar":22,"end_scalar":26,"start_byte":40,"end_byte":48,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"token_id":"uk7:AAA:006:27:28","verse_key":"AAA","target_ref":"Gen.1.1","order":6,"comparison":"","surface":"́","start_scalar":27,"end_scalar":28,"start_byte":49,"end_byte":51,"plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+  ],
+  "original_tokens": [
+    {"original_token_id":"orig:adam","target_ref":"Gen.1.1","order":1,"source_family":"TAHOT","reading_status":"primary_mt","morphology_raw":"HNpm","transliteration_raw":"Adam","strong_classic":["H100"]},
+    {"original_token_id":"orig:light","target_ref":"Gen.1.1","order":2,"source_family":"TAHOT","reading_status":"primary_mt","morphology_raw":"Aamsa","transliteration_raw":"or","strong_classic":["H200"]},
+    {"original_token_id":"orig:greek-see","target_ref":"Gen.1.1","order":3,"source_family":"TAGNT","reading_status":"primary_shared_critical","morphology_raw":"V-PAI-3S","transliteration_raw":"blepei","strong_classic":["G123"]},
+    {"original_token_id":"orig:alternative","target_ref":"Gen.1.1","order":4,"source_family":"TAGNT","reading_status":"unresolved_textual_variant","morphology_raw":"N-NSM-P","transliteration_raw":"Adam","strong_classic":["G124"]}
+  ],
+  "bridge_records": [
+    {"bridge_id":"bridge:group","bridge_family":"RUSSYN","scope":"OT","status":"accepted_manual_bridge","explicit_null_source":false,"explicit_null_target":false,"original_token_ids":["orig:adam","orig:light"],"target_token_ids":["01001001001","01001001002"]},
+    {"bridge_id":"bridge:repeat","bridge_family":"RUSSYN","scope":"OT","status":"accepted_manual_bridge","explicit_null_source":false,"explicit_null_target":false,"original_token_ids":["orig:adam"],"target_token_ids":["01001001003"]},
+    {"bridge_id":"bridge:repeat-duplicate-evidence","bridge_family":"RUSSYN","scope":"OT","status":"accepted_manual_bridge","explicit_null_source":false,"explicit_null_target":false,"original_token_ids":["orig:adam"],"target_token_ids":["01001001005"]},
+    {"bridge_id":"bridge:partial","bridge_family":"RUSSYN","scope":"OT","status":"accepted_manual_bridge","explicit_null_source":false,"explicit_null_target":false,"original_token_ids":["orig:light"],"target_token_ids":["01001001001","01001001004"]},
+    {"bridge_id":"bridge:cross-verse","bridge_family":"RUSSYN","scope":"OT","status":"accepted_manual_bridge","explicit_null_source":false,"explicit_null_target":false,"original_token_ids":["orig:adam"],"target_token_ids":["01001002001"]},
+    {"bridge_id":"bridge:unresolved","bridge_family":"RUSSYN","scope":"OT","status":"accepted_manual_bridge","explicit_null_source":false,"explicit_null_target":false,"original_token_ids":["orig:alternative"],"target_token_ids":["01001001003"]}
+  ],
+  "bridge_target_tsv": [
+    ["id","source_verse","text"],
+    ["01001001001","01001001","ясне"],
+    ["01001001002","01001001","ім’я"],
+    ["01001001003","01001001","Адам"],
+    ["01001001004","01001001","відсутнє"],
+    ["01001001005","01001001","Адам"],
+    ["01001002001","01001002","Адам"]
+  ],
+  "legacy_verse": {"verse_key":"AAA","target_ref":"Gen.1.1","plain_text_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","alignments":[{"target_token_order":2,"strong":"G123","confidence":"high","evidence":{"source_token_id":"legacy-source-1","alignment_method":"global_corpus_lexical_assignment"}}]},
+  "greek_descriptions": [[123,"бачить; вигаданий опис"]]
+}
