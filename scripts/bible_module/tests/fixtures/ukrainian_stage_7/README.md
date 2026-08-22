@@ -27,6 +27,11 @@ reordering, repetition, exact ties, compounds and an unseen held-out pair.
 answers, verse-local `oNNN`/`tNNN` indices, target nulls, and both full-packet
 and frozen-shard expansion/merge contracts with reviewer provenance.
 
+`external_wrapper_normalization_cases.json` covers the one permitted external
+ChatGPT wrapper migration: byte-exact metadata, unchanged answer-free context,
+verbatim `groups`/`target_nulls`, reviewer provenance, and fail-closed rejection
+of context edits or extra answer channels.
+
 `textual_render_contract_cases.json` covers five invented post-candidate
 textual-overlay shapes, including three no-render alternatives, one selected
 primary component, one Strong-equivalent alternative group, and their exact

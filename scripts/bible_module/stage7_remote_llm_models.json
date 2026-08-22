@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+  "registry_version": "ukrainian-stage-7-remote-llm-models-v1",
+  "status": "frozen_remote_pilot_candidates",
+  "target_host_contract": {
+    "gpu": "NVIDIA GeForce RTX 4070 SUPER",
+    "minimum_vram_mib": 12200,
+    "minimum_ram_bytes": 17000000000,
+    "storage_root": "D:\\RevelationStage7LLM",
+    "owner_laptop_ipv4": "192.168.1.251",
+    "service_host_ipv4": "192.168.1.188"
+  },
+  "runtime": {
+    "name": "llama.cpp",
+    "release": "b10545",
+    "commit": "a30273376",
+    "license": "MIT",
+    "license_url": "https://github.com/ggml-org/llama.cpp/blob/b10545/LICENSE",
+    "archives": [
+      {
+        "filename": "llama-b10545-bin-win-cuda-12.4-x64.zip",
+        "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10545/llama-b10545-bin-win-cuda-12.4-x64.zip",
+        "size_bytes": 250962586,
+        "sha256": "7caaceb18f9b3af89ff06482f6142c68d2fe384e1f55a352a129fdeb41529121"
+      },
+      {
+        "filename": "cudart-llama-bin-win-cuda-12.4-x64.zip",
+        "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10545/cudart-llama-bin-win-cuda-12.4-x64.zip",
+        "size_bytes": 391443627,
+        "sha256": "8c79a9b226de4b3cacfd1f83d24f962d0773be79f1e7b75c6af4ded7e32ae1d6"
+      }
+    ]
+  },
+  "models": [
+    {
+      "model_id": "qwen35_9b_q8_reasoning1024",
+      "role": "primary_multilingual_high_precision_candidate",
+      "repository": "unsloth/Qwen3.5-9B-GGUF",
+      "commit": "3885219b6810b007914f3a7950a8d1b469d598a5",
+      "upstream": "Qwen/Qwen3.5-9B",
+      "license": "Apache-2.0",
+      "license_url": "https://huggingface.co/Qwen/Qwen3.5-9B/blob/main/LICENSE",
+      "reasoning": "on",
+      "reasoning_budget": 1024,
+      "context_tokens": 8192,
+      "files": [
+        {
+          "kind": "model",
+          "filename": "Qwen3.5-9B-Q8_0.gguf",
+          "url": "https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/3885219b6810b007914f3a7950a8d1b469d598a5/Qwen3.5-9B-Q8_0.gguf",
+          "size_bytes": 9527502048,
+          "sha256": "809626574d0cb43d4becfa56169980da2bb448f2299270f7be443cb89d0a6ae4"
+        },
+        {
+          "kind": "mmproj",
+          "filename": "mmproj-BF16.gguf",
+          "url": "https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/3885219b6810b007914f3a7950a8d1b469d598a5/mmproj-BF16.gguf",
+          "size_bytes": 921705024,
+          "sha256": "853698ce7aa6c7ba732478bad280240969ddf7b0fcbf93900046f63903a83383"
+        }
+      ]
+    },
+    {
+      "model_id": "ministral3_14b_reasoning_q4km",
+      "role": "independent_architecture_reasoning_candidate",
+      "repository": "mistralai/Ministral-3-14B-Reasoning-2512-GGUF",
+      "commit": "fe3b038f30334729263d860d5dadbaa34e0f2a18",
+      "upstream": "mistralai/Ministral-3-14B-Reasoning-2512",
+      "license": "Apache-2.0",
+      "license_url": "https://huggingface.co/mistralai/Ministral-3-14B-Reasoning-2512/blob/main/LICENSE",
+      "reasoning": "on",
+      "reasoning_budget": 1024,
+      "context_tokens": 8192,
+      "files": [
+        {
+          "kind": "model",
+          "filename": "Ministral-3-14B-Reasoning-2512-Q4_K_M.gguf",
+          "url": "https://huggingface.co/mistralai/Ministral-3-14B-Reasoning-2512-GGUF/resolve/fe3b038f30334729263d860d5dadbaa34e0f2a18/Ministral-3-14B-Reasoning-2512-Q4_K_M.gguf",
+          "size_bytes": 8239591488,
+          "sha256": "fe08ca2158cd7438211ec6a4e5256d31bc980f016e3f5b635fe91fe6848d461c"
+        },
+        {
+          "kind": "mmproj",
+          "filename": "Ministral-3-14B-Reasoning-2512-BF16-mmproj.gguf",
+          "url": "https://huggingface.co/mistralai/Ministral-3-14B-Reasoning-2512-GGUF/resolve/fe3b038f30334729263d860d5dadbaa34e0f2a18/Ministral-3-14B-Reasoning-2512-BF16-mmproj.gguf",
+          "size_bytes": 879258784,
+          "sha256": "d2be75b7f374b964656ca69e7f5b0e8a99729c0a3a9e4c163b6de01551558adb"
+        }
+      ]
+    },
+    {
+      "model_id": "qwen35_27b_iq2xxs_reasoning1024",
+      "role": "experimental_large_model_quantization_control",
+      "repository": "unsloth/Qwen3.5-27B-GGUF",
+      "commit": "3221f178a6b842d04f1fb42f1c413534adcc0a6a",
+      "upstream": "Qwen/Qwen3.5-27B",
+      "license": "Apache-2.0",
+      "license_url": "https://huggingface.co/Qwen/Qwen3.5-27B/blob/main/LICENSE",
+      "reasoning": "on",
+      "reasoning_budget": 1024,
+      "context_tokens": 8192,
+      "warning": "IQ2_XXS is a severe quantization; benchmark only and never assume it beats 9B Q8.",
+      "files": [
+        {
+          "kind": "model",
+          "filename": "Qwen3.5-27B-UD-IQ2_XXS.gguf",
+          "url": "https://huggingface.co/unsloth/Qwen3.5-27B-GGUF/resolve/3221f178a6b842d04f1fb42f1c413534adcc0a6a/Qwen3.5-27B-UD-IQ2_XXS.gguf",
+          "size_bytes": 8573593504,
+          "sha256": "097435ea0befcd2edca4934b5ff387388d0396dea6b5c4c17a02ed8c696ae958"
+        },
+        {
+          "kind": "mmproj",
+          "filename": "mmproj-BF16.gguf",
+          "url": "https://huggingface.co/unsloth/Qwen3.5-27B-GGUF/resolve/3221f178a6b842d04f1fb42f1c413534adcc0a6a/mmproj-BF16.gguf",
+          "size_bytes": 931145984,
+          "sha256": "29fe388bf3a45b981b2b38b966834f90cbabf998158d75ff1dd1b70a9f5f121c"
+        }
+      ]
+    }
+  ],
+  "processed_count": 3,
+  "skipped_count": 0,
+  "error_count": 0
+}

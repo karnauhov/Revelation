@@ -362,6 +362,32 @@ gold: связь с независимым QC-pass составила 84,101%, p
 после тех же локальных проверок. Deep Research не применяется к массовому
 alignment или подбору Strong.
 
+### Локальные LLM как дополнительный blind/candidate-канал
+
+- [x] Подготовить воспроизводимый answer-free local-LLM harness, sealed evaluator,
+  возобновляемую OT-очередь и поэтапный progress: запланированы 30 запусков,
+  1 018 verse-runs, 954 production-стиха, 21 779 original и 19 453 target
+  decisions; все полные prompts/answers остаются в gitignored `work/`.
+- [x] Проверить CPU-baseline на ноутбуке и не повышать его доверие после провала:
+  Qwen3.5 9B Q4 reasoning-off дал `0/17`, Ministral 3 8B Instruct Q4 после только
+  формального JSON-normalization — `6/17` (`35,294%`); оба варианта остаются
+  candidate-only и не открывают production queue.
+- [x] Развернуть управляемый LAN-only GPU-узел на `COMP_NAZARA`: RTX 4070 SUPER
+  12 GiB, runtime/models только на `D:`, pinned llama.cpp и три Apache-2.0
+  model candidates, SSH/API firewall только для ноутбука, LLM без автозапуска,
+  SHA-проверка и fail-closed weekly gate. Команды и пути закреплены в
+  [инструкции оператора](ukrainian-bible-strongs-stage-7-remote-llm-operator-guide.ru.md),
+  а исследовательский контракт — в
+  [плане пилота](ukrainian-bible-strongs-stage-7-local-llm-pilot.ru.md).
+- [ ] Выполнить sealed remote GPU benchmark трёх замороженных моделей, проверить
+  exact link/null agreement, reasoning, position signal и ошибки; только после
+  независимой приёмки записать gitignored `remote_pilot_verdict.json` для одной
+  допустимой модели либо оставить все модели candidate-only.
+- [ ] Для модели с разрешающим remote verdict выполнить два полных Ruth-прохода
+  и автоматические ворота; только при их успехе завершить возобновляемую очередь
+  28 OT-книг и затем провести независимый импорт/adjudication. Этот вспомогательный
+  workflow сам по себе не закрывает основной пункт 7.4.
+
 - [ ] **Критерий выхода:** каждый Strong имеет доказанную связь с конкретным украинским surface token; plain text и comments этапа 6 побайтно сохранены; все control differences классифицированы; нерешённых `critical/high` нет.
 
 **Нормативный план:** [подробный план доказательного Strong-выравнивания](./ukrainian-bible-strongs-stage-7-alignment-plan.ru.md). **Внешняя помощь:** [порционный fail-closed workflow ChatGPT/Deep Research](./ukrainian-bible-strongs-stage-7-external-chatgpt-workflow.ru.md).
