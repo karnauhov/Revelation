@@ -1,172 +1,145 @@
-# Этап 7 — текущий HANDOFF, рабочая точка 2026-08-15 после `Ruth`
+# Этап 7 — текущий HANDOFF, пауза 2026-08-22 после remote LLM pilot
 
 > **CURRENT PAUSE POINT.** Этот файл полностью заменяет предыдущий HANDOFF.
-> Этап 7 остаётся в работе. Активных stage-7 Python-процессов и работающих
-> подагентов нет. Этап 8 и SQLite не начинались. Commit/push автоматически не
-> выполнять.
+> Этап 7 остаётся в работе. Активных stage-7 Python-процессов, локальных или
+> удалённых LLM и работающих подагентов нет. Этап 8 и SQLite не начинались.
+> Commit/push автоматически не выполнять.
 
 ## Состояние репозитория
 
-- Предыдущий stage-7 batch сохранён в коммите `ed21bbc` (`Integrate Ukrainian
-  Strong evidence and gold reviews [skip ci]`).
-- Текущие незакоммиченные изменения включают roadmap/HANDOFF, руководство по
-  fail-closed внешней помощи ChatGPT и versioned manifest принятого внешнего
-  пилота; production candidates/links/Strong не менялись.
-- Полные corpora/candidates/gold packets и completed reviewer submissions
-  находятся только в gitignored `scripts/bible_module/work/`.
+- Последний коммит владельца: `ace68d4` (`Add stage 7 external gold and local
+  LLM workflows [skip ci]`).
+- После него изменены только remote/local LLM controller/harness/tests и
+  документация/checkpoint текущего пилота. Production candidates, gold labels,
+  Strong links, markup, stage-6 text/comment и mapping не менялись.
+- Полные ответы моделей находятся только в gitignored
+  `scripts/bible_module/work/ukrainian_stage_7_20260801/local_llm/`.
 - Пользовательские изменения не удалять; commit/push выполняет только владелец.
 
-## Неизменяемые входы
+## Неизменяемые входы и основной stage-7 контракт
 
 - edition/module/code: `ohienko_1988` / `ohienko_1988` / `OH1988`;
 - canon/versification/mapping: `protestant_66` / `kjv_protestant` /
   `oh1988-kjv-protestant-v1`;
 - target positions: `31 102`;
-- stage-6 text: `e55156cd4c201077de3c2e1d44b06dd1035a7a8db7c26321869f860768671bcf`;
-- stage-6 manifest: `75d1f0199a528a662a69d55629ecebafa3264122d1b7b2c8df3e3dc8a92ea4af`;
-- stage-6 comments: `5c1cf56e94410b6ab6e418dda7be7a6b385cb72221dfb8ca943e3419de42c9f4`;
-- fingerprint-selected layer: 678 144 rows / SHA-256
-  `a2f8b017b702b8217ce4242e2578082f134b615be64968f190c066c0d4692c82`;
-- Ukrainian token inventory SHA-256
-  `62caa29ff269c9ca8dad4b64c656728a645b3d09210034ddcc953c5363c567e1`;
-- source registry SHA-256
-  `b1f7e2bc82929bdd40c5701f4d16ff00387da8645c5279cf311adc12973ffebd`;
-- gold-selected layer / panel / workbench SHA-256:
-  `500482d4b1ce58f9749fe9e53b58bf8bce6be1558df926dacfbe0df29cf09ca4` /
-  `6f6ce4ce4eb8a941ae8fa4328798873141743889efb386cae15375db3fe0245c` /
-  `d5d1aa78368520a152cd869aaa8c729a6008e86f5af359c2d9aac29138d934c2`.
+- stage-6 text SHA-256:
+  `e55156cd4c201077de3c2e1d44b06dd1035a7a8db7c26321869f860768671bcf`;
+- stage-6 manifest SHA-256:
+  `75d1f0199a528a662a69d55629ecebafa3264122d1b7b2c8df3e3dc8a92ea4af`;
+- stage-6 comments SHA-256:
+  `5c1cf56e94410b6ab6e418dda7be7a6b385cb72221dfb8ca943e3419de42c9f4`;
+- production assignment/Strong markers остаются `0` до finalized gold и
+  calibration; `resolver_eligible=0`.
 
-## Интегрированный candidate/report bundle
+## Основной прогресс этапа 7
 
-- Main generation и независимый `--check` завершены.
-- Всего 872 025 candidate-only rows:
-  - first-party: 501 518;
-  - bidirectional statistical OOF: 163 140;
-  - multilingual contextual: 207 367.
-- `resolver_eligible=0`, automatic acceptance `0`, accepted links/Strong markers
-  `0` до finalized gold/calibration.
-- Двойная integrated generation совпала по 46 файлам; aggregate SHA-256
+- Source/license registry, исторический и 53-locus textual fingerprint,
+  токенизация 31 102 текстов, original-token universe, RUSSYN/YLT bridges,
+  author-comment evidence и candidate generators уже реализованы.
+- Общий regenerated bundle: 872 025 candidate-only rows; оба statistical OOF и
+  оба contextual прогона детерминированы. Aggregate integrated SHA-256:
   `f874ad0bc1227220db0307e45e4f020188cc2c1a5efc0a095deff2adc6648aae`.
-- Оба statistical и оба contextual full bundle ранее побайтно совпали;
-  contextual JSONL SHA-256
-  `0e1e90dd1c2ffa2c907861a5eeba551bed00038015a0823ebc673446198a3881`.
-- Stage-3/4/5/6 `--check` после integrated generation прошли.
+- Gold panel: 2 171 стих, 45 831 original и 41 807 target-accounting requests на
+  каждый pass. Оба blind passes завершены для `Gen–Ruth`.
+- Внешний pass 1 для 40 книг `1Sam–Gal` локально нормализован, развёрнут и
+  принят только как merge-ready submission: 1 380 стихов, 29 962 original и
+  27 192 target-accounting решений. Aggregate SHA-256:
+  `a59ea192278f15feebcb8e9b9f02c0d67dbd7242e45dbdf91e1ee2f27c95ac2b`.
+  Для этих книг всё ещё обязательны независимый blind pass 2 и adjudication.
+- Оставшиеся внешние pass-1 пакеты: ordinals 49–66. Их наличие не заменяет
+  pass 2, локальный audit или finalize gold.
+- Основные пункты 7.4, 7.6–7.9 и критерий выхода этапа остаются открытыми.
 
-## Авторские сноски OH1988
+## Remote LLM pilot 2026-08-22
 
-- Пункт 7.1 закрыт как отдельный zero-vote evidence-канал: 1 204 определения,
-  1 329 uses, 1 222 target refs, 267 exact same-locus matches, 355 unmatched
-  original-form mentions и 7 textual-variant notes.
-- Versioned `author_comment_evidence.manifest.json` включён в artifact inventory;
-  work JSONL SHA-256
-  `0cc59c16c4b61e65ffc260c4401204d26b49a5ec28e90575421ed8f01f09dea3`.
-- Manual review получил 329 medium + 7 high records. Сноски не меняют
-  `target_comment`, candidate selection или Strong автоматически.
+Узел: `COMP_NAZARA`, `192.168.1.188`, RTX 4070 SUPER 12 282 MiB, pinned
+`llama.cpp b10545 (a30273376)`. Все модели и runtime находятся на
+`D:\RevelationStage7LLM`; LLM не имеет автозапуска. Sealed sample:
+`Ruth.4.18,Ruth.3.5,Ruth.4.8`, одинаковые prompt/reference, seed 7,
+temperature 0 и exact evaluator.
 
-## Gold 7.4
+1. `qwen35_9b_q8_reasoning1024` завершил все 3 стиха:
+   - exact link/null agreement `12 / 67` = `17,910%`;
+   - по стихам: `7/17`, `5/24`, `0/26`;
+   - same-local-index ratio `2/3` = `66,667%`;
+   - 5 responses, 19 161 prompt tokens, 14 533 completion tokens,
+     generation wall time 348,242 s;
+   - провалены ворота agreement `>=80%` и position signal `<50%`;
+   - manifest SHA-256
+     `02328e6ff18643d347e51d5664c71d37e501ca8f7fc60b772842e1d27ad43771`;
+     accepted answers SHA-256
+     `6753edafcd04b861293d7229d6861341cd7ab0e7e7144aa209d5f4e7e0188e1f`.
+2. `ministral3_14b_reasoning_q4km` трижды ответил на `Ruth.4.18`, но каждый
+   ответ повторно использовал target local index в нескольких группах. Exact
+   accounting нарушен, догадочная коррекция запрещена; 0 принятых стихов.
+3. `qwen35_27b_iq2xxs_reasoning1024` в каждой из трёх повторных попыток
+   исчерпал контекст, зациклился на рассуждении и не завершил JSON; 0 принятых
+   стихов. Первый технический прогон отдельно сохранён, затем исправлена потеря
+   последнего непустого retry-контекста и выполнен чистый повтор, подтвердивший
+   модельный fail.
 
-- Answer-free panel: 2 171 verses, 45 831 original и 41 807 target decisions на
-  каждый pass; по 66 exact book-shards.
-- Оба рабочих независимых blind passes завершены для первых восьми книг
-  `Gen–Ruth`: 260 стихов, 6 683 original и 5 559 target decisions exact-once на
-  каждый pass.
-- Все рабочие compact expansions имеют разные reviewer IDs, `blind=true`, прошли
-  merge-ready check с `error_count=0`; расхождения не сглажены.
-- Последние завершённые shards:
-  - `Josh` pass 1 raw SHA `17bfc8fe3b3c9b10bf2c71b314cb6b2f031b02b0cda1318929c9eaec9706d2f0`;
-  - `Josh` pass 2 raw SHA `f12d0812d20e669f1dea89bf7b92d75d8fb110160b9b03bff5976b62e86d3480`;
-  - `Judg` pass 1 raw SHA `653ea270cd27eeadffcb45fdb099ae6243d054356a4d81356b356c27bf6fe8b5`;
-  - `Judg` pass 2 raw SHA `0048ca624619e9d17d2ef52e190a3a094c296456bb005848d117dd3fed319603`.
-  - `Ruth` external pass 1 raw SHA
-    `64bf678323be913aef1d20cdf18ba15388533c7adbf648b7bcbc844909e47da4`;
-  - `Ruth` QC pass 2 raw SHA
-    `f052a81dd29b364567c428a24a2e5697bd69400c7dd3795eb5f4573cc644b228`.
-- `Ruth` exact link/null agreement: 84,101% overall, 82,139% original и
-  86,376% target; внутренняя база `Gen–Judg` — 80,191%. Все три critical Ruth
-  решения совпали. Первый Codex Ruth pass 2 (`85757ee7…`) отклонён как
-  аномальный over-grouping: только 4/851 original-null (0,47%) против обычных
-  19–25%; его не использовать при merge/finalize.
-- Осталось 58 книг. Следующая — `1Sam`, shard `009` в обоих проходах.
-- Finalized gold, merge/adjudication, evaluator metrics, calibration и production
-  links отсутствуют; оба пункта 7.4 поэтому остаются открытыми.
-- Владелец явно разрешил продолжать независимые blind gold-проходы. Для `1Sam`
-  pass 1 можно использовать готовый внешний пакет; pass 2 выполняется отдельным
-  Codex reviewer. Ни один проход не читает другой, candidates, legacy, reports
-  или completed answers других книг.
-- Текущий versioned artifact inventory создан до completed `Josh/Judg`; это не
-  повреждение input lock. Regenerate main reports после следующего разумного
-  batch reviewer-книг, а не после каждого shard.
+Итог: все три модели `candidate-only`. Разрешающий gitignored
+`remote_pilot_verdict.json` не создан, `RunWeekQueue` остаётся заблокирован,
+полные Ruth-проходы и недельная очередь не запускались. Safe checkpoint:
+`scripts/bible_module/reports/ukrainian_stage_7_20260801/local_llm_remote_pilot_checkpoint.manifest.json`.
 
-## Внешняя помощь ChatGPT
+Полные gitignored пути результатов:
 
-- Добавлено подробное руководство
-  `docs/ru/content/ukrainian-bible-strongs-stage-7-external-chatgpt-workflow.ru.md`.
-- Deep Research разрешён только для небольших source-heavy досье, а не для
-  массового alignment или присвоения Strong.
-- Пилот экономии `Ruth` завершён положительно: обычный ChatGPT pass 1 принят как
-  merge-ready blind submission после v1/v2 rejection, v3 structural/semantic
-  аудита и сравнения с повторным независимым QC-pass 2. Это не final gold;
-  расхождения остаются adjudication.
-- ChatGPT Work не использовать для экономии: официальный OpenAI Pricing
-  подтверждает, что Work и Codex имеют общие credits и usage limits. Перед
-  внешним запуском явно проверять режим `Chat` или `Deep Research`, не Work/Codex.
-- Внешний pass не считается gold до локальных `expand`, `gold_compact check`,
-  сравнения, adjudication и проверки отсутствия position bias/leakage.
-- Подготовлены exact-metadata пакеты `1Sam`/`2Sam`/`1Kgs` в
-  `work/ukrainian_stage_7_20260801/external_chatgpt/`; каждый запускать в новом
-  обычном ChatGPT Chat, начиная с `1Sam`, и возвращать по одному.
-- Versioned audit: `external_research.manifest.json`. Пакеты требуют непустые
-  applicable `phenomena`, single-original omission cardinality и явную обработку
-  функциональной замены; metadata templates прошли preflight validator.
-- Полные внешние ответы хранить только в gitignored
-  `work/ukrainian_stage_7_20260801/external_chatgpt/`; в Git допускаются только
-  принятые safe manifests/hashes и минимальные stable-ID annotations.
+- `work/.../local_llm/remote_benchmarks/20260822T121634Z/` — основная матрица;
+- `work/.../local_llm/remote_benchmarks/20260822T125710Z_qwen27_retry_fix1/` —
+  Qwen 27B после исправления retry harness.
 
-## Исправленный regression-контракт
+## Исправления, сделанные во время пилота
 
-- В `test_ukrainian_stage_7.py` добавлен отсутствовавший `WORK` для проверки
-  ignored author evidence.
-- Generated Acts.15.34 test теперь сверяет proven-omitted production token с
-  закреплённым UGNT control ID из D05→UGNT crosswalk, а не ошибочно принимает
-  внешний D05 locator за production token ID.
+- PowerShell 5.1-compatible `SetThreadExecutionState` теперь получает явные
+  `[uint32]2147483649` / `[uint32]2147483648`, а не отрицательно
+  интерпретируемые hex literals.
+- Startup health timeout увеличен с 5 до 15 минут, потому что SHA-256 больших
+  GGUF и загрузка на этом узле штатно занимают более пяти минут.
+- Benchmark retry сохраняет последний непустой completion, если следующий
+  truncated ответ содержит только reasoning и пустой text body.
+- Добавлены regression tests и versioned safe checkpoint; quality gates,
+  evaluator и sealed reference не ослаблялись.
 
-## Проверки текущего сеанса
+## Состояние компьютера сына на паузе
 
-- integrated main generation: PASS;
-- main `--check`: PASS;
-- integrated `--determinism`: PASS, 46 files / `f874ad0b…`;
-- stage-3/4/5/6 `--check`: PASS;
-- stage-7 discovery: 189/189 PASS после regression fix;
-- полный `scripts/bible_module/tests`: 363/363 PASS;
-- `scripts/content_tool/tests`: 30/30 PASS;
-- `py_compile`: PASS;
-- `git diff --check`: PASS, кроме информационных Windows LF→CRLF warnings;
-- `Josh` и `Judg` pass 1/pass 2 independently rechecked: PASS, errors 0.
-- `Ruth` external v3 expand/check: PASS, 1 617 decisions, errors 0;
-- `Ruth` QC pass 2 expand/check: PASS, 1 617 decisions, errors 0;
-- Ruth comparison: 84,101% exact link/null agreement; position-only signal не
-  найден (94/481 one-to-one links имеют одинаковый local index);
-- future external package metadata preflight: `1Sam`/`2Sam`/`1Kgs` PASS; каждый
-  дошёл до ожидаемого answer-free gate «every verse exactly once».
+Последняя двойная проверка после `Stop`:
+
+- `status=stopped`;
+- `scheduled_task_state=Ready`;
+- `served_model_id=null`;
+- GPU memory used: 1 221 MiB, utilization 3%;
+- updated at UTC: `2026-08-22T13:01:42.3732757Z`.
+
+Не запускать `Start`, `BenchmarkAll` или `RunWeekQueue`, пока владелец снова
+явно не подтвердит, что компьютер свободен.
+
+## Проверки текущего изменения
+
+- До remote pilot полный репозиторный набор прошёл: `bible_module` 390/390,
+  `content_tool` 30/30, `flutter analyze`, 920 Flutter tests, docs sync,
+  forbidden patterns, secret/binary audit и `git diff --check`.
+- После retry regression fix targeted local/remote LLM tests прошли 21/21.
+- После добавления checkpoint необходимо при возобновлении сначала повторить
+  targeted tests и `git diff --check`; удалённый узел для этого не нужен.
 
 ## Точная следующая последовательность
 
-1. Проверить `git status` и сохранить текущие пользовательские изменения.
-2. Для `1Sam` shard `009` использовать готовый внешний pass-1 пакет
-   `work/.../external_chatgpt/uk7ext_gold_1Sam_pass1_009/` и отдельный blind
-   Codex pass 2; сохранить exact reviewer provenance и запретить cross-pass,
-   candidates, legacy и repository leakage.
-3. После возврата внешнего файла независимо выполнить SHA/metadata/schema audit,
-   `expand`, `gold_compact check`, semantic comparison и position-bias audit.
-   Невалидное не исправлять догадками; спорное передать adjudication.
-4. Продолжить книги по порядку до `Rev`; не считать заготовленные packets gold
-   до фактических двух проходов.
-5. После всех 66 книг выполнить deterministic merge каждого pass, сравнение,
-   adjudication и finalize gold.
-6. Затем запустить streaming evaluator для legacy и новых методов, calibration
-   A/B/C, constrained hypergraph, B/C review, overrides, полный accounting и
-   отдельный Strong markup с exact 31 102 text/comment round-trip.
-7. Не начинать этап 8, не создавать SQLite, не менять Flutter/content tool/DB.
+1. Проверить `git status`, сохранить пользовательские изменения и прочитать
+   safe checkpoint вместе с gitignored response summaries.
+2. Не перезапускать три уже отклонённые конфигурации. Локально перепроверить
+   checkpoint schema/hashes, targeted tests и документацию; при необходимости
+   выпустить отдельный versioned v2 pilot только для действительно нового
+   model/parameter contract и только когда владелец освободит GPU-узел.
+3. Не создавать `remote_pilot_verdict.json` для текущих результатов и не
+   запускать недельную очередь.
+4. Вернуться к основному gold 7.4: выполнить независимые blind pass 2 для
+   `1Sam–Gal`, импортировать оставшиеся внешние pass 1 ordinals 49–66 после их
+   появления, затем comparison/adjudication/finalize без cross-pass leakage.
+5. После finalized gold выполнить evaluator legacy/new methods, calibration
+   A/B/C, constrained hypergraph, B/C review, overrides и только затем Strong
+   markup с exact 31 102 text/comment round-trip.
+6. Не начинать этап 8, не создавать SQLite и не менять Flutter/content tool/DB.
 
 ## Короткая команда возобновления
 

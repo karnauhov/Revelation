@@ -20,6 +20,9 @@ from scripts.bible_module.ukrainian_stage_7_local_llm_batch import (
     _link_null_signature,
     _same_index_signal,
 )
+from scripts.bible_module.ukrainian_stage_7_local_llm_benchmark import (
+    _preserve_last_nonempty_completion,
+)
 
 
 def _evidence(identifier: str) -> list[dict[str, str]]:
@@ -207,6 +210,16 @@ class UkrainianStage7LocalLlmTest(unittest.TestCase):
         self.assertIn("missing t002", messages[-1]["content"])
         with self.assertRaisesRegex(ValueError, "previous completion"):
             _completion_messages(user_prompt="verse", validation_error="invalid")
+
+    def test_truncated_empty_retry_preserves_last_nonempty_completion(self) -> None:
+        previous = '{"groups":[],"target_nulls":[]}'
+        self.assertEqual(
+            _preserve_last_nonempty_completion(previous, ""), previous
+        )
+        self.assertEqual(
+            _preserve_last_nonempty_completion(previous, '{"groups":[1]}'),
+            '{"groups":[1]}',
+        )
 
     def test_prompt_view_keeps_linguistic_context_and_removes_strong_and_ids(self) -> None:
         template = {

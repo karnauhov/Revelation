@@ -261,6 +261,33 @@ Web UI вручную: на 16 ГиБ RAM слишком легко получи
 каждая следующая книга всё равно проходит второй независимый reviewer и
 adjudication; массовая автоматическая приёмка запрещена.
 
+### Фактический remote GPU pilot 2026-08-22
+
+Замороженная матрица запущена на `COMP_NAZARA` с RTX 4070 SUPER и pinned
+`llama.cpp b10545`. Во всех случаях использовались одинаковые sealed Ruth
+inputs, `temperature=0`, seed `7`, exact link/null evaluator и fail-closed
+проверка полного original/target accounting.
+
+- `qwen35_9b_q8_reasoning1024` единственный сформировал три валидных ответа, но
+  совпал с независимым эталоном лишь в `12 / 67` решений (`17,910%`) и дал
+  same-local-index signal `66,667%`, то есть провалил как порог agreement `80%`,
+  так и запрет position-like signal `>= 50%`.
+- `ministral3_14b_reasoning_q4km` трижды включил одну target-позицию
+  `Ruth.4.18` в несколько групп. Это нарушает exact accounting; догадочная
+  нормализация такого содержательного конфликта запрещена.
+- `qwen35_27b_iq2xxs_reasoning1024` во всех трёх попытках исчерпал контекст в
+  повторяющемся рассуждении и не завершил JSON. Отдельно обнаруженная потеря
+  последнего непустого retry-контекста в harness исправлена регрессионным
+  тестом; повтор после исправления подтвердил именно модельный fail.
+
+Итог: все три модели остаются `candidate-only`; разрешающий
+`remote_pilot_verdict.json` не создан, недельная очередь заблокирована и два
+полных Ruth-прохода не запускаются. Полные ответы находятся только в gitignored
+`work/`, а безопасные пути, hashes и метрики закреплены в
+[`local_llm_remote_pilot_checkpoint.manifest.json`](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/local_llm_remote_pilot_checkpoint.manifest.json).
+После пилота удалённый статус подтверждён как `stopped`, scheduled task —
+`Ready`; LLM не имеет автозапуска.
+
 ## Что фиксировать для каждого запуска
 
 - точный Hugging Face repository и commit;

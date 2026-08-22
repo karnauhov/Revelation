@@ -44,7 +44,7 @@ function Invoke-RemoteService {
 }
 
 function Wait-RemoteHealth {
-    $deadline = [datetime]::UtcNow.AddMinutes(5)
+    $deadline = [datetime]::UtcNow.AddMinutes(15)
     do {
         try {
             $health = Invoke-RestMethod -Uri "$endpoint/health" -TimeoutSec 3
@@ -102,7 +102,7 @@ public static class Stage7RemoteExecutionState {
 }
 '@
 Add-Type -TypeDefinition $executionStateType
-[Stage7RemoteExecutionState]::SetThreadExecutionState(0x80000001) | Out-Null
+[Stage7RemoteExecutionState]::SetThreadExecutionState([uint32]2147483649) | Out-Null
 try {
     if ($Action -eq 'BenchmarkAll') {
         $stamp = [datetime]::UtcNow.ToString('yyyyMMddTHHmmssZ')
@@ -152,5 +152,5 @@ try {
 }
 finally {
     if ($Action -eq 'RunWeekQueue') { Stop-RemoteModel }
-    [Stage7RemoteExecutionState]::SetThreadExecutionState(0x80000000) | Out-Null
+    [Stage7RemoteExecutionState]::SetThreadExecutionState([uint32]2147483648) | Out-Null
 }

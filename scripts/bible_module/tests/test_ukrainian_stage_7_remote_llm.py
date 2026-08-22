@@ -9,6 +9,12 @@ import unittest
 ROOT = Path(__file__).resolve().parents[3]
 SCRIPT_ROOT = ROOT / "scripts" / "bible_module"
 REGISTRY_PATH = SCRIPT_ROOT / "stage7_remote_llm_models.json"
+PILOT_CHECKPOINT_PATH = (
+    SCRIPT_ROOT
+    / "reports"
+    / "ukrainian_stage_7_20260801"
+    / "local_llm_remote_pilot_checkpoint.manifest.json"
+)
 
 
 class UkrainianStage7RemoteLlmTest(unittest.TestCase):
@@ -49,6 +55,11 @@ class UkrainianStage7RemoteLlmTest(unittest.TestCase):
         self.assertIn("'--reasoning-format', 'deepseek'", task)
         self.assertIn("'-dev', 'CUDA0'", task)
         self.assertIn("'-ngl', '99'", task)
+        host_service = (
+            SCRIPT_ROOT / "stage7_remote_llm_host_service.ps1"
+        ).read_text(encoding="utf-8")
+        self.assertIn("$startupTimeoutMinutes = 15", host_service)
+        self.assertIn("AddMinutes($startupTimeoutMinutes)", host_service)
 
     def test_setup_restricts_ports_and_uses_only_public_ssh_key(self) -> None:
         setup = (SCRIPT_ROOT / "setup_stage7_remote_llm_host.ps1").read_text(
@@ -88,6 +99,27 @@ class UkrainianStage7RemoteLlmTest(unittest.TestCase):
         self.assertIn("$verdict.model_id -ne $ModelId", controller)
         self.assertIn("finally", controller)
         self.assertIn("Stop-RemoteModel", controller)
+        self.assertIn("[uint32]2147483649", controller)
+        self.assertIn("[uint32]2147483648", controller)
+        self.assertNotIn("SetThreadExecutionState(0x", controller)
+
+    def test_remote_pilot_checkpoint_keeps_failed_models_candidate_only(self) -> None:
+        checkpoint = json.loads(PILOT_CHECKPOINT_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(checkpoint["schema_version"], 1)
+        self.assertEqual(checkpoint["processed_count"], 3)
+        self.assertEqual(checkpoint["error_count"], 2)
+        self.assertEqual(
+            checkpoint["status"],
+            "complete_remote_gpu_pilot_all_models_candidate_only",
+        )
+        self.assertEqual(checkpoint["host"]["final_status"], "stopped")
+        self.assertFalse(checkpoint["verdict"]["remote_pilot_verdict_created"])
+        self.assertFalse(checkpoint["verdict"]["weekly_queue_authorized"])
+        self.assertIsNone(checkpoint["verdict"]["gold_review_capable_model_id"])
+        qwen9 = checkpoint["models"][0]
+        self.assertEqual(qwen9["matching_decisions"], 12)
+        self.assertEqual(qwen9["total_decisions"], 67)
+        self.assertLess(qwen9["exact_link_null_agreement"], 0.8)
 
     def test_remote_workflow_has_no_stage8_or_sqlite_action(self) -> None:
         names = [

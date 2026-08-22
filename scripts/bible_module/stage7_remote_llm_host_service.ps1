@@ -12,6 +12,7 @@ $activePath = Join-Path $serviceRoot 'config\active_model.json'
 $runtimePath = Join-Path $serviceRoot 'runtime\llama-server.exe'
 $statePath = Join-Path $serviceRoot 'state\server_state.json'
 $taskName = 'RevelationStage7LlamaServer'
+$startupTimeoutMinutes = 15
 
 function Write-StableJsonOutput {
     param([object]$Value)
@@ -228,7 +229,7 @@ if ($Action -eq 'Start') {
             selected_at_utc = [datetime]::UtcNow.ToString('o')
         })
     Start-ScheduledTask -TaskName $taskName
-    $deadline = [datetime]::UtcNow.AddMinutes(5)
+    $deadline = [datetime]::UtcNow.AddMinutes($startupTimeoutMinutes)
     do {
         Start-Sleep -Seconds 2
         $status = Get-ServiceStatus
@@ -240,5 +241,5 @@ if ($Action -eq 'Start') {
             throw 'Remote llama-server task stopped before becoming ready; inspect D:\RevelationStage7LLM\logs.'
         }
     } while ([datetime]::UtcNow -lt $deadline)
-    throw 'Remote llama-server did not become ready within five minutes.'
+    throw "Remote llama-server did not become ready within $startupTimeoutMinutes minutes."
 }

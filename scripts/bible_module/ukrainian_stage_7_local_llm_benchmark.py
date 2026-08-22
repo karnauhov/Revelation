@@ -37,6 +37,11 @@ BENCHMARK_VERSION = "ukrainian-stage-7-local-llm-sealed-benchmark-v1"
 DEFAULT_REFS = ("Ruth.4.18", "Ruth.3.5", "Ruth.4.8")
 
 
+def _preserve_last_nonempty_completion(previous: str, current: str) -> str:
+    """Keep usable retry context when a truncated completion has no text body."""
+    return current if current else previous
+
+
 def _sha256_file(path: Path) -> str:
     digest = sha256()
     with path.open("rb") as stream:
@@ -214,7 +219,9 @@ def run_benchmark(
                     completion_details.get("reasoning_tokens", 0)
                 )
             content = _response_content(response)
-            previous_content = content
+            previous_content = _preserve_last_nonempty_completion(
+                previous_content, content
+            )
             _write_json(
                 output_dir / "responses" / f"{verse_ordinal:03d}.attempt-{attempt}.json",
                 {

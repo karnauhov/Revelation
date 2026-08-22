@@ -61,7 +61,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $serverWasStarted = $false
 $serverProcess = $null
 Add-Type -TypeDefinition $executionStateType
-[Stage7ExecutionState]::SetThreadExecutionState(0x80000001) | Out-Null
+[Stage7ExecutionState]::SetThreadExecutionState([uint32]2147483649) | Out-Null
 try {
     $serverReady = $false
     try {
@@ -137,7 +137,7 @@ finally {
         Stop-Process -Id $serverProcess.Id
         $serverProcess.WaitForExit()
     }
-    [Stage7ExecutionState]::SetThreadExecutionState(0x80000000) | Out-Null
+    [Stage7ExecutionState]::SetThreadExecutionState([uint32]2147483648) | Out-Null
 }
 
 python -B -m scripts.bible_module.ukrainian_stage_7_local_llm_batch status --batch-root $batchRoot
