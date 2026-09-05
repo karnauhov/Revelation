@@ -20,6 +20,10 @@ from scripts.bible_module.ukrainian_stage_7_gold import (
     prepare_reviewer_packets,
     validated_finalized_gold_lock,
 )
+from scripts.bible_module.ukrainian_stage_7_gold_compare import (
+    compare_review_files,
+    validate_adjudication_shard,
+)
 from scripts.bible_module.ukrainian_stage_7_model import (
     CONTRACT_VERSION,
     exact_word_tokens,
@@ -201,6 +205,31 @@ class GoldWorkflowTest(unittest.TestCase):
             )
         return rows
 
+    @staticmethod
+    def _change_first_link_to_null(rows: list[dict[str, object]]) -> None:
+        original = next(
+            row for row in rows if row.get("original_token_id") == "cc0:orig:1"
+        )
+        original.update(
+            {
+                "relation": "original_omitted",
+                "target_token_ids": [],
+                "null_reason": "translation_omission",
+            }
+        )
+        target = next(
+            row
+            for row in rows
+            if row.get("record_type") == "target_accounting"
+            and row.get("linked_original_token_ids") == ["cc0:orig:1"]
+        )
+        target.update(
+            {
+                "target_status": "translation_addition",
+                "linked_original_token_ids": [],
+            }
+        )
+
     def test_prepare_is_deterministic_answer_free_and_exactly_accounted(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -289,7 +318,7 @@ class GoldWorkflowTest(unittest.TestCase):
                     output_path=root / "out.jsonl",
                 )
 
-    def test_finalize_requires_distinct_reviewers_and_adjudication(self) -> None:
+    def test_finalize_requires_distinct_reviewers_and_alignment_adjudication(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             packet1, packet2, manifest = self._prepare(root)
@@ -311,8 +340,57 @@ class GoldWorkflowTest(unittest.TestCase):
                     minimum_decisions=1,
                 )
 
-            _write_jsonl(raw2, self._submission(packet2, manifest, reviewer="reviewer-b", review_pass=2, severity_override="normal"))
+            rows2 = self._submission(
+                packet2,
+                manifest,
+                reviewer="reviewer-b",
+                review_pass=2,
+                severity_override="normal",
+            )
+            next(
+                row
+                for row in rows2
+                if row.get("original_token_id") == "cc0:orig:1"
+            )["phenomena"] = []
+            _write_jsonl(raw2, rows2)
             ingest_review_pass(review_pass=2, packet_path=packet2, packet_manifest_path=manifest, submission_path=raw2, output_path=pass2)
+            result = finalize_gold(
+                pass1_path=pass1,
+                pass2_path=pass2,
+                packet_manifest_path=manifest,
+                report_dir=root / "metadata-consensus",
+                minimum_verses=1,
+                minimum_decisions=1,
+            )
+            self.assertEqual(result["counts"]["review_disagreements"], 0)
+            self.assertEqual(
+                result["counts"]["review_metadata_differences_merged"], 1
+            )
+            accepted = [
+                row
+                for row in json.loads(
+                    "["
+                    + ",".join(
+                        (root / "metadata-consensus" / "gold_alignment.annotations.jsonl")
+                        .read_text(encoding="utf-8")
+                        .splitlines()
+                    )
+                    + "]"
+                )
+                if row.get("original_token_id") == "cc0:orig:1"
+            ][0]
+            self.assertEqual(accepted["severity"], "high")
+            self.assertEqual(accepted["phenomena"], sorted(self.fixture["phenomena"]))
+
+            self._change_first_link_to_null(rows2)
+            _write_jsonl(raw2, rows2)
+            ingest_review_pass(
+                review_pass=2,
+                packet_path=packet2,
+                packet_manifest_path=manifest,
+                submission_path=raw2,
+                output_path=pass2,
+            )
             with self.assertRaisesRegex(ValueError, "require explicit adjudication"):
                 finalize_gold(
                     pass1_path=pass1,
@@ -353,7 +431,15 @@ class GoldWorkflowTest(unittest.TestCase):
             raw1 = root / "raw1.jsonl"
             raw2 = root / "raw2.jsonl"
             _write_jsonl(raw1, self._submission(packet1, manifest, reviewer="reviewer-a", review_pass=1))
-            _write_jsonl(raw2, self._submission(packet2, manifest, reviewer="reviewer-b", review_pass=2, severity_override="normal"))
+            rows2 = self._submission(
+                packet2,
+                manifest,
+                reviewer="reviewer-b",
+                review_pass=2,
+                severity_override="normal",
+            )
+            self._change_first_link_to_null(rows2)
+            _write_jsonl(raw2, rows2)
             pass1 = root / "pass1.jsonl"
             pass2 = root / "pass2.jsonl"
             ingest_review_pass(review_pass=1, packet_path=packet1, packet_manifest_path=manifest, submission_path=raw1, output_path=pass1)
@@ -363,11 +449,28 @@ class GoldWorkflowTest(unittest.TestCase):
                 for row in json.loads("[" + ",".join(pass1.read_text(encoding="utf-8").splitlines()) + "]")
                 if row.get("original_token_id") == "cc0:orig:1"
             )
+            first_target = next(
+                row
+                for row in json.loads(
+                    "[" + ",".join(pass1.read_text(encoding="utf-8").splitlines()) + "]"
+                )
+                if row.get("record_type") == "target_accounting"
+                and row.get("linked_original_token_ids") == ["cc0:orig:1"]
+            )
             adjudication = root / "adjudication.jsonl"
             adjudicated = dict(first_decision)
-            adjudicated["severity"] = "normal"
             adjudicated["evidence"] = [{"kind": "manual_adjudication", "evidence_id": "cc0:adjudication:1"}]
             adjudicated["rationale"] = "CC0 synthetic adjudication rationale."
+            adjudicated_target = dict(first_target)
+            adjudicated_target["evidence"] = [
+                {
+                    "kind": "manual_adjudication",
+                    "evidence_id": "cc0:adjudication:2",
+                }
+            ]
+            adjudicated_target["rationale"] = (
+                "CC0 synthetic target-accounting adjudication rationale."
+            )
             _write_jsonl(
                 adjudication,
                 [
@@ -379,6 +482,7 @@ class GoldWorkflowTest(unittest.TestCase):
                         "packet_manifest_sha256": _sha(manifest),
                     },
                     adjudicated,
+                    adjudicated_target,
                 ],
             )
             report = root / "report"
@@ -425,14 +529,134 @@ class GoldWorkflowTest(unittest.TestCase):
             self.assertEqual(len(target_rows), 7)
             self.assertTrue(
                 all(
-                    {"start_scalar", "end_scalar", "start_byte", "end_byte", "surface_sha256"}
+                    {
+                        "start_scalar",
+                        "end_scalar",
+                        "start_byte",
+                        "end_byte",
+                        "surface_sha256",
+                    }
                     <= set(row["target_span"])
                     for row in target_rows
                 )
             )
-            annotations.write_text(annotations.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+            annotations.write_text(
+                annotations.read_text(encoding="utf-8") + "\n", encoding="utf-8"
+            )
             with self.assertRaisesRegex(ValueError, "changed after review"):
                 validated_finalized_gold_lock(report)
+
+    def test_pair_comparison_and_shard_adjudication_are_exact(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            packet1, packet2, manifest = self._prepare(root)
+            raw1 = root / "raw1.jsonl"
+            raw2 = root / "raw2.jsonl"
+            rows1 = self._submission(
+                packet1, manifest, reviewer="reviewer-a", review_pass=1
+            )
+            rows2 = self._submission(
+                packet2,
+                manifest,
+                reviewer="reviewer-b",
+                review_pass=2,
+                severity_override="normal",
+            )
+            _write_jsonl(raw1, rows1)
+            _write_jsonl(raw2, rows2)
+            pass1 = root / "pass1.jsonl"
+            pass2 = root / "pass2.jsonl"
+            ingest_review_pass(
+                review_pass=1,
+                packet_path=packet1,
+                packet_manifest_path=manifest,
+                submission_path=raw1,
+                output_path=pass1,
+            )
+            ingest_review_pass(
+                review_pass=2,
+                packet_path=packet2,
+                packet_manifest_path=manifest,
+                submission_path=raw2,
+                output_path=pass2,
+            )
+            metadata_only = root / "metadata-only.jsonl"
+            metadata_result = compare_review_files(
+                pass1_path=pass1,
+                pass2_path=pass2,
+                output_path=metadata_only,
+            )
+            self.assertEqual(metadata_result["counts"]["alignment_disagreements"], 0)
+            self.assertEqual(metadata_result["counts"]["metadata_only_differences"], 1)
+
+            self._change_first_link_to_null(rows2)
+            _write_jsonl(raw2, rows2)
+            ingest_review_pass(
+                review_pass=2,
+                packet_path=packet2,
+                packet_manifest_path=manifest,
+                submission_path=raw2,
+                output_path=pass2,
+            )
+            comparison = root / "comparison.jsonl"
+            comparison_result = compare_review_files(
+                pass1_path=pass1,
+                pass2_path=pass2,
+                output_path=comparison,
+            )
+            self.assertEqual(comparison_result["counts"]["alignment_disagreements"], 2)
+            normalized1 = [
+                json.loads(line)
+                for line in pass1.read_text(encoding="utf-8").splitlines()
+            ]
+            decisions = [
+                dict(row)
+                for row in normalized1
+                if row.get("original_token_id") == "cc0:orig:1"
+                or (
+                    row.get("record_type") == "target_accounting"
+                    and row.get("linked_original_token_ids") == ["cc0:orig:1"]
+                )
+            ]
+            for index, row in enumerate(decisions, 1):
+                row["evidence"] = [
+                    {
+                        "kind": "manual_adjudication",
+                        "evidence_id": f"cc0:adjudication:{index}",
+                    }
+                ]
+                row["rationale"] = "Independent CC0 adjudication rationale."
+            adjudication = root / "adjudication-shard.jsonl"
+            header = {
+                "record_type": "adjudication_shard_metadata",
+                "status": "complete_manual_adjudication_shard",
+                "adjudicator_id": "adjudicator-c",
+                "comparison_version": "ukrainian-stage-7-gold-comparison-v1",
+                "comparison_sha256": _sha(comparison),
+                "pass_1_sha256": _sha(pass1),
+                "pass_2_sha256": _sha(pass2),
+            }
+            _write_jsonl(adjudication, [header, *decisions])
+            checked = validate_adjudication_shard(
+                pass1_path=pass1,
+                pass2_path=pass2,
+                comparison_path=comparison,
+                adjudication_path=adjudication,
+            )
+            self.assertEqual(checked["processed_count"], 2)
+            agreed = next(
+                row
+                for row in normalized1
+                if row.get("original_token_id") == "cc0:orig:2"
+            )
+            _write_jsonl(adjudication, [header, *decisions, agreed])
+            with self.assertRaisesRegex(ValueError, "agreed, unknown or duplicate"):
+                validate_adjudication_shard(
+                    pass1_path=pass1,
+                    pass2_path=pass2,
+                    comparison_path=comparison,
+                    adjudication_path=adjudication,
+                )
 
     def test_prepare_manifest_uses_exact_immutable_stage6_locks(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

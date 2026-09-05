@@ -23,6 +23,7 @@ from scripts.bible_module.ukrainian_stage_7_model import (
 )
 
 
+ROOT = Path(__file__).resolve().parents[3]
 FIXTURE = (
     Path(__file__).resolve().parent
     / "fixtures"
@@ -40,6 +41,71 @@ def _write_jsonl(path: Path, rows: list[dict[str, object]]) -> None:
 
 
 class ExternalGoldWrapperNormalizationTest(unittest.TestCase):
+    def test_pass2_comparison_progress_manifest_is_nonfinal_and_exact(self) -> None:
+        manifest_path = (
+            ROOT
+            / "scripts"
+            / "bible_module"
+            / "reports"
+            / "ukrainian_stage_7_20260801"
+            / "gold_review_batch_009_011.manifest.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            manifest["status"],
+            "partial_pass2_complete_pending_adjudication_and_remaining_books",
+        )
+        self.assertEqual(
+            manifest["counts"],
+            {
+                "alignment_agreements": 2_793,
+                "alignment_disagreements": 2_481,
+                "books": 3,
+                "metadata_only_differences": 2_413,
+                "original_decisions": 2_862,
+                "selected_verses": 101,
+                "stable_decisions": 5_274,
+                "target_accounting_decisions": 2_412,
+            },
+        )
+        self.assertEqual(manifest["processed_count"], 5_274)
+        self.assertEqual(manifest["error_count"], 0)
+        for digest in manifest["output_sha256"].values():
+            self.assertEqual(len(digest), 64)
+            int(digest, 16)
+        self.assertTrue(manifest["acceptance_limits"])
+
+    def test_completed_pass1_manifest_remains_nonfinal_and_exact(self) -> None:
+        manifest_path = (
+            ROOT
+            / "scripts"
+            / "bible_module"
+            / "reports"
+            / "ukrainian_stage_7_20260801"
+            / "gold_alignment.pass1.manifest.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["schema_version"], 1)
+        self.assertEqual(
+            manifest["status"],
+            "complete_blind_pass_1_pending_independent_pass_2_and_adjudication",
+        )
+        self.assertEqual(
+            manifest["counts"],
+            {
+                "books": 66,
+                "original_decisions": 45_831,
+                "reviewers": 66,
+                "selected_verses": 2_171,
+                "shards": 66,
+                "target_accounting_decisions": 41_807,
+            },
+        )
+        self.assertEqual(manifest["processed_count"], 87_638)
+        self.assertEqual(manifest["error_count"], 0)
+        self.assertTrue(manifest["determinism"]["merged_data_identical"])
+        self.assertTrue(manifest["acceptance_limits"])
+
     def setUp(self) -> None:
         self.fixture = json.loads(FIXTURE.read_text(encoding="utf-8"))
         self.assertEqual(self.fixture["license"], "CC0-1.0")

@@ -91,6 +91,7 @@ ALLOWED_NULL_REASONS = {
 }
 ALLOWED_TARGET_STATUSES = {"aligned", "translation_addition", "function_token"}
 ALLOWED_SEVERITIES = {"normal", "high", "critical"}
+SEVERITY_RANK = {"normal": 0, "high": 1, "critical": 2}
 REQUIRED_PHENOMENA = {
     "textual_variant",
     "merge_split",
@@ -1093,6 +1094,39 @@ def _semantic_for_key(row: Mapping[str, Any]) -> dict[str, Any]:
     return _semantic_target(row)
 
 
+def _alignment_for_key(row: Mapping[str, Any]) -> dict[str, Any]:
+    """Return only the substantive link/null decision for pass comparison.
+
+    ``severity`` and ``phenomena`` are conservative review metadata, not a
+    different token alignment.  Requiring adjudication for vocabulary-only
+    differences in those fields would obscure the actual link/null
+    disagreements and make independently worded passes appear incompatible.
+    """
+
+    value = _semantic_for_key(row)
+    value.pop("severity")
+    value.pop("phenomena")
+    return value
+
+
+def _merge_agreed_review_metadata(
+    pass1: Mapping[str, Any], pass2: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Keep an agreed alignment and conservatively retain both review tags."""
+
+    if _alignment_for_key(pass1) != _alignment_for_key(pass2):
+        raise ValueError("Cannot merge metadata for a disputed alignment")
+    value = dict(pass1)
+    value["severity"] = max(
+        (str(pass1["severity"]), str(pass2["severity"])),
+        key=SEVERITY_RANK.__getitem__,
+    )
+    value["phenomena"] = sorted(
+        set(pass1.get("phenomena", [])) | set(pass2.get("phenomena", []))
+    )
+    return value
+
+
 def _load_adjudication(
     path: Path,
     *,
@@ -1128,13 +1162,15 @@ def _load_adjudication(
             key = "target:" + str(row.get("accounting_id", ""))
         else:
             raise ValueError("Adjudication contains an unknown record type")
-        if key not in all_keys or key in values:
-            raise ValueError("Adjudication contains an unknown or duplicate decision")
+        if key not in all_keys or key not in disagreement_keys or key in values:
+            raise ValueError(
+                "Adjudication contains an agreed, unknown or duplicate decision"
+            )
         if not _evidence_ok(row.get("evidence")) or not str(row.get("rationale", "")).strip():
             raise ValueError("Adjudication lacks evidence/rationale")
         values[key] = dict(row)
-    if not disagreement_keys <= set(values):
-        raise ValueError("Not every pass disagreement was adjudicated")
+    if set(values) != disagreement_keys:
+        raise ValueError("Adjudication must account exactly once for every disagreement")
     return adjudicator, values
 
 
@@ -1345,10 +1381,20 @@ def finalize_gold(
             + ", ".join(same_reviewer_keys[:5])
         )
     disagreements = {
-        key for key in pass1 if _semantic_for_key(pass1[key]) != _semantic_for_key(pass2[key])
+        key
+        for key in pass1
+        if _alignment_for_key(pass1[key]) != _alignment_for_key(pass2[key])
+    }
+    metadata_differences = {
+        key
+        for key in pass1
+        if key not in disagreements
+        and _semantic_for_key(pass1[key]) != _semantic_for_key(pass2[key])
     }
     final_values: dict[str, Mapping[str, Any]] = {
-        key: dict(pass1[key]) for key in pass1 if key not in disagreements
+        key: _merge_agreed_review_metadata(pass1[key], pass2[key])
+        for key in pass1
+        if key not in disagreements
     }
     adjudicator: str | None = None
     adjudicated: dict[str, dict[str, Any]] = {}
@@ -1461,12 +1507,14 @@ def finalize_gold(
             "hyperedges": sum(relation_counts.values()),
             "review_disagreements": len(disagreements),
             "adjudicated_decisions": len(adjudicated),
+            "review_metadata_differences_merged": len(metadata_differences),
             "unresolved_critical_high": 0,
         },
         notes=(
             "Every resolved primary original ID has exactly one reviewed link/null decision.",
             "Every Ukrainian token is aligned or has a reviewed addition/function-token status.",
             "Distinct blind passes are retained; disagreements are accepted only through a distinct adjudicator.",
+            "For an agreed link/null decision, phenomena are unioned and the higher severity is retained without creating a false alignment disagreement.",
         ),
     )
     manifest["reviewers"] = {
