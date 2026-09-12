@@ -9,6 +9,21 @@ Finalization writes ``gold_alignment.annotations.jsonl`` together with a
 cryptographic lock.  Call :func:`validated_finalized_gold_lock` before an
 ordinary generator writes that artifact; a valid lock means the reviewed file
 and its manifest must be preserved byte-for-byte.
+
+Production ``finalize`` requires ``--correction-registry``. Its canonical JSON
+has ``artifact=gold_finalization_correction_registry``, the v1 registry/status
+constants below, exact global input SHA locks, and a ``books`` object covering
+the frozen 66-book packet roster. Each book points to a SHA-locked versioned
+accepted adjudication/QC manifest. A manifest reporting correction rows must
+also have a seven-artifact ``chain`` (pass1, pass2, comparison, adjudication,
+blocking_qc, correction, final_qc); each artifact has ``path``, ``sha256`` and
+``manifest_sha256``. An uncorrected book instead needs ``baseline`` with
+pass1, pass2, comparison, adjudication, qc and answer_free_template artifacts;
+each baseline artifact additionally names its ``manifest_path``. Relative
+paths resolve from the registry directory.
+Corrected rows override the ordinary exact-disagreement adjudication last,
+including rows on which the blind passes originally agreed. CC0 fixtures may
+omit this registry.
 """
 
 from __future__ import annotations
@@ -45,6 +60,15 @@ EXPECTED_STAGE6_COMMENT_SHA256 = (
 GOLD_WORKFLOW_VERSION = "ukrainian-stage-7-gold-workflow-v2"
 SHARD_CONTRACT_VERSION = "ukrainian-stage-7-gold-shards-v1"
 GOLD_PREPARATION_MANIFEST = "gold_alignment.preparation.manifest.json"
+CORRECTION_REGISTRY_VERSION = "ukrainian-stage-7-final-correction-registry-v1"
+CORRECTION_CHAIN_NAMES = (
+    "pass1", "pass2", "comparison", "adjudication", "blocking_qc",
+    "correction", "final_qc",
+)
+UNCORRECTED_BASELINE_NAMES = (
+    "pass1", "pass2", "comparison", "adjudication", "qc",
+    "answer_free_template",
+)
 
 PRODUCTION_PACKET_INPUT_KEYS = frozenset(
     {
@@ -1174,6 +1198,339 @@ def _load_adjudication(
     return adjudicator, values
 
 
+def _registry_path(registry_path: Path, value: Any, label: str) -> Path:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"Correction registry {label} path is missing")
+    path = Path(value)
+    return path if path.is_absolute() else registry_path.parent / path
+
+
+def _checked_book_baseline(
+    *,
+    book: str,
+    local_pass1: Mapping[str, Mapping[str, Any]],
+    local_pass2: Mapping[str, Mapping[str, Any]],
+    local_base: Mapping[str, Mapping[str, Any]],
+    local_adjudicated: set[str],
+    global_pass1: Mapping[str, Mapping[str, Any]],
+    global_pass2: Mapping[str, Mapping[str, Any]],
+    global_base: Mapping[str, Mapping[str, Any]],
+    global_adjudicated: set[str],
+) -> set[str]:
+    global_keys = {
+        key for key, row in global_pass1.items()
+        if str(row["target_ref"]).split(".", 1)[0] == book
+    }
+    if (
+        set(local_pass1) != global_keys
+        or set(local_pass2) != global_keys
+        or set(local_base) != global_keys
+        or local_adjudicated != (global_keys & global_adjudicated)
+    ):
+        raise ValueError(f"Correction registry {book} per-book/global stable ID scope differs")
+    for key in global_keys:
+        if (
+            _semantic_for_key(global_pass1[key]) != _semantic_for_key(local_pass1[key])
+            or _semantic_for_key(global_pass2[key]) != _semantic_for_key(local_pass2[key])
+            or global_pass1[key].get("reviewer_id") != local_pass1[key].get("reviewer_id")
+            or global_pass2[key].get("reviewer_id") != local_pass2[key].get("reviewer_id")
+            or _semantic_for_key(global_base[key]) != _semantic_for_key(local_base[key])
+        ):
+            raise ValueError(f"Correction registry {book} global/per-book baseline differs: {key}")
+    return global_keys
+
+
+def _validated_correction_overrides(
+    *,
+    registry_path: Path | None,
+    corpus_contract: str,
+    packet_manifest: Mapping[str, Any],
+    packet_manifest_path: Path,
+    pass1_path: Path,
+    pass2_path: Path,
+    adjudication_path: Path | None,
+    pass1: Mapping[str, Mapping[str, Any]],
+    pass2: Mapping[str, Mapping[str, Any]],
+    base_values: Mapping[str, Mapping[str, Any]],
+    adjudicated_keys: set[str],
+) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]], dict[str, str], list[dict[str, Any]]]:
+    """Validate a complete production roster and exact per-book correction chains.
+
+    The registry is a mandatory production trust root: accepted versioned
+    book manifests, rather than a self-declared empty correction list, decide
+    whether a chain is required. CC0 fixtures may omit the registry entirely.
+    """
+
+    if registry_path is None:
+        if corpus_contract == "ohienko_1988_production":
+            raise ValueError("Production finalization requires a correction registry")
+        return {}, {}, {}, []
+    if registry_path.read_bytes() != (stable_json(_read_json(registry_path)) + "\n").encode("utf-8"):
+        raise ValueError("Correction registry must use canonical UTF-8 JSON/LF")
+    registry = _read_json(registry_path)
+    if (
+        not isinstance(registry, Mapping)
+        or registry.get("schema_version") != SCHEMA_VERSION
+        or registry.get("contract_version") != CONTRACT_VERSION
+        or registry.get("gold_workflow_version") != GOLD_WORKFLOW_VERSION
+        or registry.get("registry_version") != CORRECTION_REGISTRY_VERSION
+        or registry.get("artifact") != "gold_finalization_correction_registry"
+        or registry.get("status") != "complete_sha_locked_book_roster"
+        or registry.get("corpus_contract") != corpus_contract
+    ):
+        raise ValueError("Correction registry contract/status is invalid")
+    expected_global_locks = {
+        "review_pass_1": _sha256_file(pass1_path),
+        "review_pass_2": _sha256_file(pass2_path),
+        "reviewer_packets_manifest": _sha256_file(packet_manifest_path),
+        "adjudication": _sha256_file(adjudication_path) if adjudication_path else None,
+    }
+    if registry.get("global_input_sha256") != expected_global_locks:
+        raise ValueError("Correction registry global input SHA locks differ")
+    books = registry.get("books")
+    selected_books = {str(row["target_ref"]).split(".", 1)[0] for row in pass1.values()}
+    if not isinstance(books, Mapping) or set(books) != selected_books:
+        raise ValueError("Correction registry book roster differs from frozen pass grid")
+    if corpus_contract == "ohienko_1988_production" and (
+        selected_books != set(BOOKS)
+        or packet_manifest.get("counts", {}).get("books") != len(BOOKS)
+    ):
+        raise ValueError("Production correction registry requires the frozen 66-book roster")
+
+    # Imported lazily: the per-book comparator itself imports gold primitives.
+    from scripts.bible_module.ukrainian_stage_7_gold_compare import (
+        _key as book_key,
+        _validated_post_adjudication_values,
+        validate_adjudication_qc,
+        validate_post_consensus_correction_qc,
+    )
+
+    overrides: dict[str, dict[str, Any]] = {}
+    provenance: dict[str, dict[str, Any]] = {}
+    input_locks: dict[str, str] = {"correction_registry": _sha256_file(registry_path)}
+    summaries: list[dict[str, Any]] = []
+    for book in sorted(selected_books, key=BOOK_NUMBER.__getitem__):
+        entry = books[book]
+        if not isinstance(entry, Mapping) or set(entry) - {"accepted_manifest", "chain", "baseline"}:
+            raise ValueError(f"Correction registry {book} entry contract is invalid")
+        acceptance: Mapping[str, Any] | None = None
+        accepted_sha: str | None = None
+        if corpus_contract == "ohienko_1988_production":
+            accepted_spec = entry.get("accepted_manifest")
+            if not isinstance(accepted_spec, Mapping) or set(accepted_spec) != {"path", "sha256"}:
+                raise ValueError(f"Correction registry {book} lacks accepted book manifest")
+            accepted_path = _registry_path(registry_path, accepted_spec["path"], f"{book} accepted manifest")
+            if accepted_path.resolve().parent != DEFAULT_REPORT.resolve():
+                raise ValueError(f"Correction registry {book} accepted manifest is outside versioned report directory")
+            if not re.fullmatch(r"gold_adjudication_batch_\d+(?:_\d+)?\.manifest\.json", accepted_path.name):
+                raise ValueError(f"Correction registry {book} accepted manifest is not versioned")
+            accepted_sha = _require_sha256(accepted_spec["sha256"], f"{book} accepted manifest SHA")
+            if _sha256_file(accepted_path) != accepted_sha:
+                raise ValueError(f"Correction registry {book} accepted manifest SHA differs")
+            acceptance = _read_json(accepted_path)
+            if accepted_path.read_bytes() != (stable_json(acceptance) + "\n").encode("utf-8"):
+                raise ValueError(f"Correction registry {book} accepted manifest is not canonical")
+            accepted_books = acceptance.get("books") if isinstance(acceptance, Mapping) else None
+            if (
+                not isinstance(accepted_books, Mapping)
+                or acceptance.get("artifact") != "gold_review_adjudication_progress"
+                or acceptance.get("status") != "partial_gold_adjudication_complete_qc_accepted"
+                or acceptance.get("schema_version") != SCHEMA_VERSION
+                or acceptance.get("contract_version") != CONTRACT_VERSION
+                or acceptance.get("gold_workflow_version") != GOLD_WORKFLOW_VERSION
+                or acceptance.get("error_count") != 0
+                or book not in accepted_books
+            ):
+                raise ValueError(f"Correction registry {book} manifest is not accepted")
+            book_counts = acceptance["books"][book]
+            if not isinstance(book_counts, Mapping) or book_counts.get("qc_errors") != 0 or book_counts.get("qc_uncertain") != 0:
+                raise ValueError(f"Correction registry {book} accepted QC counts differ")
+            book_keys = {
+                key for key, row in pass1.items()
+                if str(row["target_ref"]).split(".", 1)[0] == book
+            }
+            expected_counts = {
+                "stable_decisions": len(book_keys),
+                "adjudicated_decisions": len(book_keys & adjudicated_keys),
+                "alignment_agreements": len(book_keys - adjudicated_keys),
+            }
+            if any(book_counts.get(name) != count for name, count in expected_counts.items()):
+                raise ValueError(f"Correction registry {book} accepted grid counts differ")
+            input_locks[f"accepted_manifest.{book}"] = accepted_sha
+            correction_count = book_counts.get("correction_rows", 0)
+            if not isinstance(correction_count, int) or isinstance(correction_count, bool) or correction_count < 0:
+                raise ValueError(f"Correction registry {book} correction count is invalid")
+            book_outputs = acceptance.get("output_sha256", {})
+            if not isinstance(book_outputs, Mapping):
+                raise ValueError(f"Correction registry {book} accepted output locks are invalid")
+            has_correction_output = any(
+                name in book_outputs
+                for name in (f"{book}.correction", f"{book}.consensus_correction")
+            )
+            if (correction_count > 0) != has_correction_output:
+                raise ValueError(f"Correction registry {book} accepted correction evidence conflicts")
+            needs_chain = correction_count > 0
+        else:
+            needs_chain = "chain" in entry
+        if not needs_chain:
+            if "chain" in entry:
+                raise ValueError(f"Correction registry {book} has an unrequired chain")
+            if corpus_contract == "ohienko_1988_production":
+                baseline = entry.get("baseline")
+                if not isinstance(baseline, Mapping) or set(baseline) != set(UNCORRECTED_BASELINE_NAMES):
+                    raise ValueError(f"Correction registry {book} lacks complete uncorrected baseline evidence")
+                baseline_paths: dict[str, Path] = {}
+                baseline_sidecars: dict[str, Path] = {}
+                accepted_locks = {
+                    **acceptance.get("input_sha256", {}),
+                    **acceptance.get("output_sha256", {}),
+                }
+                for name in UNCORRECTED_BASELINE_NAMES:
+                    spec = baseline[name]
+                    if not isinstance(spec, Mapping) or set(spec) != {
+                        "path", "sha256", "manifest_path", "manifest_sha256"
+                    }:
+                        raise ValueError(f"Correction registry {book}/{name} baseline SHA contract is incomplete")
+                    path = _registry_path(registry_path, spec["path"], f"{book}/{name}")
+                    sidecar = _registry_path(registry_path, spec["manifest_path"], f"{book}/{name} sidecar")
+                    sha = _require_sha256(spec["sha256"], f"{book}/{name} SHA")
+                    sidecar_sha = _require_sha256(spec["manifest_sha256"], f"{book}/{name} sidecar SHA")
+                    if _sha256_file(path) != sha or _sha256_file(sidecar) != sidecar_sha:
+                        raise ValueError(f"Correction registry {book}/{name} baseline artifact/sidecar SHA differs")
+                    if name != "answer_free_template":
+                        label = {"pass1": "pass_1", "pass2": "pass_2"}.get(name, name)
+                        if (accepted_locks.get(f"{book}.{label}") != sha
+                                or accepted_locks.get(f"{book}.{label}_manifest") != sidecar_sha):
+                            raise ValueError(f"Correction registry {book}/{name} differs from accepted manifest")
+                    baseline_paths[name] = path
+                    baseline_sidecars[name] = sidecar
+                    input_locks[f"baseline.{book}.{name}"] = sha
+                    input_locks[f"baseline.{book}.{name}_manifest"] = sidecar_sha
+                qc_result = validate_adjudication_qc(
+                    pass1_path=baseline_paths["pass1"],
+                    pass2_path=baseline_paths["pass2"],
+                    comparison_path=baseline_paths["comparison"],
+                    adjudication_path=baseline_paths["adjudication"],
+                    answer_free_template_path=baseline_paths["answer_free_template"],
+                    answer_free_template_manifest_path=baseline_sidecars["answer_free_template"],
+                    qc_path=baseline_paths["qc"],
+                    qc_manifest_sha256=_sha256_file(baseline_sidecars["qc"]),
+                )
+                if qc_result.get("status") != "valid_complete_independent_adjudication_qc_accepted":
+                    raise ValueError(f"Correction registry {book} independent QC is not accepted")
+                _, _, local_pass1, local_pass2, local_base, _ = _validated_post_adjudication_values(
+                    pass1_path=baseline_paths["pass1"],
+                    pass2_path=baseline_paths["pass2"],
+                    comparison_path=baseline_paths["comparison"],
+                    adjudication_path=baseline_paths["adjudication"],
+                )
+                local_adjudicated = {
+                    book_key(row) for row in _read_jsonl(baseline_paths["adjudication"])
+                    if row.get("record_type") != "adjudication_shard_metadata"
+                }
+                _checked_book_baseline(
+                    book=book, local_pass1=local_pass1, local_pass2=local_pass2,
+                    local_base=local_base, local_adjudicated=local_adjudicated,
+                    global_pass1=pass1, global_pass2=pass2, global_base=base_values,
+                    global_adjudicated=adjudicated_keys,
+                )
+            elif "baseline" in entry:
+                raise ValueError(f"Correction registry {book} CC0 baseline is unnecessary")
+            summaries.append({"book": book, "corrected_stable_keys": [], "correction_rows": 0,
+                              **({"accepted_manifest_sha256": accepted_sha} if accepted_sha else {})})
+            continue
+        if "baseline" in entry:
+            raise ValueError(f"Correction registry {book} corrected book has an unrequired baseline")
+        chain = entry.get("chain")
+        if not isinstance(chain, Mapping) or set(chain) != set(CORRECTION_CHAIN_NAMES):
+            raise ValueError(f"Correction registry {book} chain is missing an exact artifact")
+        paths: dict[str, Path] = {}
+        digests: dict[str, str] = {}
+        for name in CORRECTION_CHAIN_NAMES:
+            spec = chain[name]
+            if not isinstance(spec, Mapping) or set(spec) != {"path", "sha256", "manifest_sha256"}:
+                raise ValueError(f"Correction registry {book}/{name} SHA contract is incomplete")
+            path = _registry_path(registry_path, spec["path"], f"{book}/{name}")
+            sha = _require_sha256(spec["sha256"], f"{book}/{name} SHA")
+            sidecar_sha = _require_sha256(spec["manifest_sha256"], f"{book}/{name} sidecar SHA")
+            if _sha256_file(path) != sha or _sha256_file(Path(str(path) + ".manifest.json")) != sidecar_sha:
+                raise ValueError(f"Correction registry {book}/{name} artifact/sidecar SHA differs")
+            if acceptance is not None:
+                labels = (
+                    ("correction", "consensus_correction") if name == "correction"
+                    else ("pass_1",) if name == "pass1"
+                    else ("pass_2",) if name == "pass2"
+                    else (name,)
+                )
+                accepted_locks = {**acceptance.get("input_sha256", {}), **acceptance.get("output_sha256", {})}
+                if not any(
+                    accepted_locks.get(f"{book}.{label}") == sha
+                    and accepted_locks.get(f"{book}.{label}_manifest") == sidecar_sha
+                    for label in labels
+                ):
+                    raise ValueError(f"Correction registry {book}/{name} differs from accepted manifest")
+            paths[name] = path
+            digests[name] = sha
+            digests[name + "_manifest"] = sidecar_sha
+            input_locks[f"correction.{book}.{name}"] = sha
+            input_locks[f"correction.{book}.{name}_manifest"] = sidecar_sha
+        qc_result = validate_post_consensus_correction_qc(
+            pass1_path=paths["pass1"], pass2_path=paths["pass2"],
+            comparison_path=paths["comparison"], adjudication_path=paths["adjudication"],
+            blocking_qc_path=paths["blocking_qc"], correction_path=paths["correction"],
+            final_qc_path=paths["final_qc"],
+        )
+        if qc_result.get("status") != "valid_complete_independent_post_consensus_qc_accepted":
+            raise ValueError(f"Correction registry {book} final QC is not accepted")
+        _, _, local_pass1, local_pass2, local_base, _ = _validated_post_adjudication_values(
+            pass1_path=paths["pass1"], pass2_path=paths["pass2"],
+            comparison_path=paths["comparison"], adjudication_path=paths["adjudication"],
+        )
+        local_rows = [
+            row for row in _read_jsonl(paths["correction"])
+            if row.get("record_type") != "consensus_correction_metadata"
+        ]
+        local_overrides = {book_key(row): dict(row) for row in local_rows}
+        local_adjudicated = {
+            book_key(row) for row in _read_jsonl(paths["adjudication"])
+            if row.get("record_type") != "adjudication_shard_metadata"
+        }
+        global_book_keys = _checked_book_baseline(
+            book=book, local_pass1=local_pass1, local_pass2=local_pass2,
+            local_base=local_base, local_adjudicated=local_adjudicated,
+            global_pass1=pass1, global_pass2=pass2, global_base=base_values,
+            global_adjudicated=adjudicated_keys,
+        )
+        if len(local_overrides) != len(local_rows) or not set(local_overrides) <= global_book_keys:
+            raise ValueError(f"Correction registry {book} correction stable ID scope differs")
+        if acceptance is not None and len(local_overrides) != correction_count:
+            raise ValueError(f"Correction registry {book} correction count differs from accepted manifest")
+        for key, row in local_overrides.items():
+            if key in overrides:
+                raise ValueError("Correction registry repeats a stable ID across books")
+            overrides[key] = row
+            provenance[key] = {
+                "book": book,
+                "correction_sha256": digests["correction"],
+                "correction_manifest_sha256": digests["correction_manifest"],
+                "final_qc_sha256": digests["final_qc"],
+                "final_qc_manifest_sha256": digests["final_qc_manifest"],
+                "correction_reviewer_id": row["reviewer_id"],
+                "originally_agreed": key not in local_adjudicated,
+            }
+        summaries.append({
+            "book": book,
+            "correction_rows": len(local_overrides),
+            "corrected_stable_keys": sorted(local_overrides),
+            "corrected_agreed_stable_keys": sorted(set(local_overrides) - local_adjudicated),
+            "chain_sha256": digests,
+            **({"accepted_manifest_sha256": accepted_sha} if accepted_sha else {}),
+        })
+    if set(overrides) - set(base_values):
+        raise ValueError("Correction registry contains a global dangling stable ID")
+    return overrides, provenance, input_locks, summaries
+
+
 def _make_final_rows(
     final_values: Mapping[str, Mapping[str, Any]],
     pass1: Mapping[str, Mapping[str, Any]],
@@ -1181,6 +1538,7 @@ def _make_final_rows(
     *,
     adjudicator: str | None,
     adjudicated_keys: set[str],
+    correction_provenance_by_key: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     originals = {
         key.removeprefix("original:"): value
@@ -1303,6 +1661,36 @@ def _make_final_rows(
                 "accounting_ids": [value["accounting_id"]],
                 "status": "reviewed_accepted",
             })
+    if correction_provenance_by_key:
+        target_key_by_id = {
+            str(value["target_token_id"]): "target:" + key
+            for key, value in targets.items()
+        }
+        for row in rows:
+            if row["record_type"] == "original_decision":
+                stable_key = "original:" + str(row["decision_id"])
+            elif row["record_type"] == "target_accounting":
+                stable_key = "target:" + str(row["accounting_id"])
+            else:
+                affected_keys = {
+                    "original:" + str(decision_id)
+                    for decision_id in row.get("decision_ids", [])
+                } | {
+                    target_key_by_id[str(token_id)]
+                    for token_id in row.get("target_token_ids", [])
+                }
+                affected = sorted(affected_keys & correction_provenance_by_key.keys())
+                if affected:
+                    row["correction_provenance"] = [
+                        {"stable_key": key, **correction_provenance_by_key[key]}
+                        for key in affected
+                    ]
+                continue
+            if stable_key in correction_provenance_by_key:
+                row["correction_provenance"] = dict(correction_provenance_by_key[stable_key])
+                row["review"]["correction_applied"] = True
+                row["evidence"]["correction"] = final_values[stable_key].get("evidence")
+                row["rationale"]["correction"] = final_values[stable_key].get("rationale")
     order = {"hyperedge": 0, "original_decision": 1, "target_accounting": 2}
     return sorted(
         rows,
@@ -1322,6 +1710,7 @@ def finalize_gold(
     packet_manifest_path: Path,
     report_dir: Path,
     adjudication_path: Path | None = None,
+    correction_registry_path: Path | None = None,
     minimum_verses: int = 2_000,
     minimum_decisions: int = 25_000,
     required_phenomena: set[str] = REQUIRED_PHENOMENA,
@@ -1418,6 +1807,22 @@ def finalize_gold(
         raise ValueError("Adjudication is forbidden when the blind passes agree")
     if set(final_values) != set(pass1):
         raise ValueError("Adjudication did not produce exact decision accounting")
+    corrections, correction_provenance, correction_input_locks, correction_summary = (
+        _validated_correction_overrides(
+            registry_path=correction_registry_path,
+            corpus_contract=corpus_contract,
+            packet_manifest=packet_manifest,
+            packet_manifest_path=packet_manifest_path,
+            pass1_path=pass1_path,
+            pass2_path=pass2_path,
+            adjudication_path=adjudication_path,
+            pass1=pass1,
+            pass2=pass2,
+            base_values=final_values,
+            adjudicated_keys=set(adjudicated),
+        )
+    )
+    final_values.update(corrections)
     _validate_final_grid(final_values, pass1)
     if any(row.get("severity") in {"critical", "high"} for row in final_values.values()):
         # Both complete pass files necessarily contain each of these IDs.  This
@@ -1455,6 +1860,7 @@ def finalize_gold(
         pass2,
         adjudicator=adjudicator,
         adjudicated_keys=set(adjudicated),
+        correction_provenance_by_key=correction_provenance,
     )
     report_dir.mkdir(parents=True, exist_ok=True)
     annotations_path = report_dir / "gold_alignment.annotations.jsonl"
@@ -1477,6 +1883,7 @@ def finalize_gold(
                 if adjudication_path is not None
                 else {}
             ),
+            **correction_input_locks,
         },
         outputs={
             "gold_selection_panel.jsonl": packet_manifest["input_sha256"][
@@ -1508,6 +1915,16 @@ def finalize_gold(
             "review_disagreements": len(disagreements),
             "adjudicated_decisions": len(adjudicated),
             "review_metadata_differences_merged": len(metadata_differences),
+            **(
+                {
+                    "consensus_correction_rows": len(corrections),
+                    "corrected_agreed_decisions": sum(
+                        key not in adjudicated for key in corrections
+                    ),
+                    "correction_registry_books": len(correction_summary),
+                }
+                if correction_registry_path is not None else {}
+            ),
             "unresolved_critical_high": 0,
         },
         notes=(
@@ -1527,6 +1944,13 @@ def finalize_gold(
     manifest["relation_counts"] = dict(sorted(relation_counts.items()))
     manifest["phenomena"] = sorted(phenomena)
     manifest["corpus_contract"] = corpus_contract
+    if correction_registry_path is not None:
+        manifest["correction_registry"] = {
+            "version": CORRECTION_REGISTRY_VERSION,
+            "sha256": correction_input_locks["correction_registry"],
+            "books": correction_summary,
+            "merge_order": "blind agreement, exact disagreement adjudication, then sealed corrections",
+        }
     manifest_path = report_dir / "gold_alignment.manifest.json"
     _write_json(manifest_path, manifest)
     lock = {
@@ -1589,6 +2013,9 @@ def validated_finalized_gold_lock(report_dir: Path) -> dict[str, Any] | None:
             PRODUCTION_PACKET_INPUT_KEYS
         ) <= set(locked_inputs):
             raise ValueError("Finalized production gold lacks immutable input locks")
+        _require_sha256(locked_inputs.get("correction_registry"), "Production correction registry lock")
+        if manifest_value.get("correction_registry", {}).get("sha256") != locked_inputs["correction_registry"]:
+            raise ValueError("Finalized production correction registry lock differs")
         if (
             manifest_value.get("output_sha256", {}).get(
                 "gold_selected_original_layer.jsonl"
@@ -1623,6 +2050,10 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     finalize.add_argument("--pass2", type=Path, required=True)
     finalize.add_argument("--packet-manifest", type=Path, required=True)
     finalize.add_argument("--adjudication", type=Path)
+    finalize.add_argument(
+        "--correction-registry", type=Path,
+        help="SHA-locked complete per-book correction/accepted-manifest roster (required for production)",
+    )
     finalize.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT)
     check = subparsers.add_parser("check-final", help="verify finalized gold lock")
     check.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT)
@@ -1655,6 +2086,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             packet_manifest_path=args.packet_manifest,
             report_dir=args.report_dir,
             adjudication_path=args.adjudication,
+            correction_registry_path=args.correction_registry,
         )
     else:
         result = validated_finalized_gold_lock(args.report_dir)

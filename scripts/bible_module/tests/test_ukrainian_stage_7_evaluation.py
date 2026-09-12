@@ -131,6 +131,7 @@ class FrozenGoldCandidateEvaluationTest(unittest.TestCase):
                 **{key: "a" * 64 for key in PRODUCTION_PACKET_INPUT_KEYS},
                 "ukrainian_token_inventory": _sha(token_inventory),
                 "gold_selected_original_layer": _sha(original_universe),
+                "correction_registry": "b" * 64,
             }
             if production_lock
             else {}
@@ -154,6 +155,8 @@ class FrozenGoldCandidateEvaluationTest(unittest.TestCase):
             "skipped_count": 0,
             "error_count": 0,
         }
+        if production_lock:
+            manifest["correction_registry"] = {"sha256": "b" * 64}
         _write_json(manifest_path, manifest)
         lock = {
             "schema_version": SCHEMA_VERSION,

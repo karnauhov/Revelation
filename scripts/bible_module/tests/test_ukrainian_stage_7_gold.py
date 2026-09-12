@@ -15,13 +15,17 @@ from scripts.bible_module.ukrainian_stage_7 import (
 from scripts.bible_module.ukrainian_stage_7_gold import (
     EXPECTED_STAGE6_COMMENT_SHA256,
     EXPECTED_STAGE6_TEXT_SHA256,
+    _load_normalized_pass,
     _semantic_for_key,
+    _validated_correction_overrides,
     finalize_gold,
     ingest_review_pass,
     prepare_reviewer_packets,
     validated_finalized_gold_lock,
 )
 from scripts.bible_module.ukrainian_stage_7_gold_compare import (
+    _correction_scope_from_qc,
+    _validated_post_adjudication_values,
     compare_review_files,
     main as gold_compare_main,
     seal_consensus_correction_shard,
@@ -62,6 +66,175 @@ class GoldWorkflowTest(unittest.TestCase):
     def setUp(self) -> None:
         self.fixture = json.loads(FIXTURE.read_text(encoding="utf-8"))
         self.assertEqual(self.fixture["license"], "CC0-1.0")
+
+    def test_blocking_agreement_qc_requires_exact_verse_local_correction_scope(self) -> None:
+        original = "original:cc0:o1"
+        target = "target:cc0:t1"
+        unchanged = "original:cc0:o2"
+        values = {
+            key: {"target_ref": "Gen.1.1"}
+            for key in (original, target, unchanged)
+        }
+        changed = [original, target]
+        manifest = {
+            "error_count": 2,
+            "error_stable_keys": changed,
+            "agreed_link_audit": {
+                "error_count": 2,
+                "error_stable_keys": changed,
+            },
+            "correction_proposals": [{
+                "target_ref": "Gen.1.1",
+                "proposal_only_no_mutation_performed": True,
+                "required_workflow": (
+                    "separate_fail_closed_consensus_correction_and_independent_re_qc"
+                ),
+                "rows_requiring_semantic_change": changed,
+                "recommended_semantics_by_stable_key": {
+                    key: {"target_ref": "Gen.1.1"} for key in changed
+                },
+            }],
+        }
+        self.assertEqual(
+            _correction_scope_from_qc(manifest, values),
+            ({original, target}, {"Gen.1.1"}, {unchanged}),
+        )
+        for mutation in (
+            lambda value: value["agreed_link_audit"].update(error_count=1),
+            lambda value: value["correction_proposals"][0].update(
+                rows_requiring_semantic_change=[original]
+            ),
+            lambda value: value["correction_proposals"][0][
+                "recommended_semantics_by_stable_key"
+            ].pop(target),
+            lambda value: value["correction_proposals"][0].update(
+                target_ref="Exod.1.1"
+            ),
+            lambda value: value["correction_proposals"][0].update(
+                required_workflow="majority_only"
+            ),
+        ):
+            invalid = json.loads(json.dumps(manifest))
+            mutation(invalid)
+            with self.assertRaises(ValueError):
+                _correction_scope_from_qc(invalid, values)
+
+    def test_blocking_adjudication_qc_requires_exact_reciprocal_scope(self) -> None:
+        original = "original:cc0:o1"
+        target = "target:cc0:t1"
+        unchanged = "target:cc0:t2"
+        values = {
+            key: {"target_ref": "Joel.2.27"}
+            for key in (original, target, unchanged)
+        }
+        changed = [original, target]
+        manifest = {
+            "error_count": 2,
+            "error_stable_keys": changed,
+            "agreed_link_audit": {"error_count": 0, "error_stable_keys": []},
+            "correction_proposals": [{
+                "target_ref": "Joel.2.27",
+                "proposal_only_no_mutation_performed": True,
+                "required_workflow": (
+                    "separate_fail_closed_consensus_correction_and_independent_re_qc"
+                ),
+                "rows_requiring_semantic_change": changed,
+                "unchanged_reciprocal_revalidation": [unchanged],
+                "recommended_semantics_by_stable_key": {
+                    key: {"target_ref": "Joel.2.27"} for key in changed
+                },
+            }],
+        }
+        self.assertEqual(
+            _correction_scope_from_qc(manifest, values),
+            ({original, target}, {"Joel.2.27"}, {unchanged}),
+        )
+        for mutation in (
+            lambda value: value.update(error_count=1),
+            lambda value: value["correction_proposals"][0].update(
+                unchanged_reciprocal_revalidation=[]
+            ),
+            lambda value: value["correction_proposals"][0].update(
+                unchanged_reciprocal_revalidation=[original]
+            ),
+            lambda value: value["correction_proposals"][0].update(
+                target_ref="Joel.2.26"
+            ),
+        ):
+            invalid = json.loads(json.dumps(manifest))
+            mutation(invalid)
+            with self.assertRaises(ValueError):
+                _correction_scope_from_qc(invalid, values)
+
+    def test_mixed_agreed_and_adjudicated_error_requires_exact_union(self) -> None:
+        adjudicated = "original:cc0:o1"
+        agreed = "target:cc0:t1"
+        unchanged = "target:cc0:t2"
+        unrelated = "target:cc0:t3"
+        values = {
+            adjudicated: {
+                "target_ref": "Acts.13.29",
+                "group_original_token_ids": ["cc0:original:1"],
+                "target_token_ids": ["cc0:target:1", "cc0:target:2"],
+            },
+            agreed: {
+                "target_ref": "Acts.13.29",
+                "target_token_id": "cc0:target:1",
+                "linked_original_token_ids": ["cc0:original:1"],
+            },
+            unchanged: {
+                "target_ref": "Acts.13.29",
+                "target_token_id": "cc0:target:2",
+                "linked_original_token_ids": ["cc0:original:1"],
+            },
+            unrelated: {
+                "target_ref": "Acts.13.29",
+                "target_token_id": "cc0:target:3",
+                "linked_original_token_ids": ["cc0:original:3"],
+            },
+        }
+        changed = [adjudicated, agreed]
+        manifest = {
+            "error_count": 2,
+            "error_stable_keys": changed,
+            "verdict_stable_keys": {"error": [adjudicated]},
+            "agreed_link_audit": {"error_count": 1, "error_stable_keys": [agreed]},
+            "correction_proposals": [{
+                "target_ref": "Acts.13.29",
+                "proposal_only_no_mutation_performed": True,
+                "required_workflow": "separate_fail_closed_consensus_correction_and_independent_re_qc",
+                "rows_requiring_semantic_change": changed,
+                "unchanged_reciprocal_revalidation": [unchanged],
+                "recommended_semantics_by_stable_key": {
+                    adjudicated: {
+                        "target_ref": "Acts.13.29",
+                        "target_token_ids": ["cc0:target:2"],
+                    },
+                    agreed: {
+                        "target_ref": "Acts.13.29",
+                        "linked_original_token_ids": [],
+                    },
+                },
+            }],
+        }
+        self.assertEqual(
+            _correction_scope_from_qc(manifest, values),
+            ({adjudicated, agreed}, {"Acts.13.29"}, {unchanged}),
+        )
+        for mutation in (
+            lambda value: value["agreed_link_audit"].update(error_stable_keys=[adjudicated]),
+            lambda value: value.update(error_count=1),
+            lambda value: value.update(error_stable_keys=[agreed, agreed]),
+            lambda value: value["correction_proposals"][0].update(rows_requiring_semantic_change=[agreed]),
+            lambda value: value["correction_proposals"][0].update(unchanged_reciprocal_revalidation=[]),
+            lambda value: value["correction_proposals"][0].update(unchanged_reciprocal_revalidation=[unrelated]),
+            lambda value: value["correction_proposals"][0]["recommended_semantics_by_stable_key"].pop(agreed),
+            lambda value: value["correction_proposals"][0].update(target_ref="Acts.13.28"),
+        ):
+            invalid = json.loads(json.dumps(manifest))
+            mutation(invalid)
+            with self.assertRaises(ValueError):
+                _correction_scope_from_qc(invalid, values)
 
     def _prepare(self, root: Path) -> tuple[Path, Path, Path]:
         text = self.fixture["plain_text"]
@@ -1394,6 +1567,142 @@ class GoldWorkflowTest(unittest.TestCase):
                     adjudication_path=adjudication,
                 )
 
+    def test_production_uncorrected_roster_requires_real_qc_chain(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            fixture = self._adjudication_qc_fixture(root, schema_variant="josh")
+            pass1 = fixture["pass1"]
+            pass2 = fixture["pass2"]
+            comparison = fixture["comparison"]
+            adjudication = fixture["adjudication"]
+            qc = fixture["qc"]
+            template = fixture["template"]
+            assert all(isinstance(path, Path) for path in (
+                pass1, pass2, comparison, adjudication, qc, template
+            ))
+            _, global_pass1 = _load_normalized_pass(pass1)
+            _, global_pass2 = _load_normalized_pass(pass2)
+            _, _, _, _, global_base, _ = _validated_post_adjudication_values(
+                pass1_path=pass1, pass2_path=pass2,
+                comparison_path=comparison, adjudication_path=adjudication,
+            )
+            adjudicated_keys = {
+                ("original:" + row["decision_id"]
+                 if row["record_type"] == "original_decision"
+                 else "target:" + row["accounting_id"])
+                for row in map(json.loads, adjudication.read_text(encoding="utf-8").splitlines())
+                if row["record_type"] != "adjudication_shard_metadata"
+            }
+
+            def evidence(path: Path, sidecar: Path) -> dict[str, str]:
+                return {
+                    "path": str(path), "sha256": _sha(path),
+                    "manifest_path": str(sidecar), "manifest_sha256": _sha(sidecar),
+                }
+
+            baseline = {
+                "pass1": evidence(pass1, Path(str(pass1) + ".manifest.json")),
+                "pass2": evidence(pass2, Path(str(pass2) + ".manifest.json")),
+                "comparison": evidence(comparison, Path(str(comparison) + ".manifest.json")),
+                "adjudication": evidence(adjudication, Path(str(adjudication) + ".manifest.json")),
+                "qc": evidence(qc, fixture["qc_manifest"]),
+                "answer_free_template": evidence(template, fixture["template_manifest"]),
+            }
+            accepted_manifest = root / "gold_adjudication_batch_001.manifest.json"
+            output_locks = {}
+            for name in ("pass1", "pass2", "comparison", "adjudication", "qc"):
+                label = {"pass1": "pass_1", "pass2": "pass_2"}.get(name, name)
+                output_locks[f"Gen.{label}"] = baseline[name]["sha256"]
+                output_locks[f"Gen.{label}_manifest"] = baseline[name]["manifest_sha256"]
+            accepted = {
+                "schema_version": 1,
+                "artifact": "gold_review_adjudication_progress",
+                "status": "partial_gold_adjudication_complete_qc_accepted",
+                "contract_version": CONTRACT_VERSION,
+                "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+                "error_count": 0,
+                "books": {"Gen": {
+                    "correction_rows": 0, "qc_errors": 0, "qc_uncertain": 0,
+                    "stable_decisions": len(global_pass1),
+                    "adjudicated_decisions": len(adjudicated_keys),
+                    "alignment_agreements": len(global_pass1) - len(adjudicated_keys),
+                }},
+                "output_sha256": output_locks,
+            }
+            accepted_manifest.write_text(
+                stable_json(accepted) + "\n", encoding="utf-8", newline="\n"
+            )
+            registry = {
+                "schema_version": 1,
+                "contract_version": CONTRACT_VERSION,
+                "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+                "registry_version": "ukrainian-stage-7-final-correction-registry-v1",
+                "artifact": "gold_finalization_correction_registry",
+                "status": "complete_sha_locked_book_roster",
+                "corpus_contract": "ohienko_1988_production",
+                "global_input_sha256": {
+                    "review_pass_1": _sha(pass1), "review_pass_2": _sha(pass2),
+                    "reviewer_packets_manifest": _sha(fixture["template_manifest"]),
+                    "adjudication": _sha(adjudication),
+                },
+                "books": {"Gen": {
+                    "accepted_manifest": {
+                        "path": str(accepted_manifest), "sha256": _sha(accepted_manifest)
+                    },
+                    "baseline": baseline,
+                }},
+            }
+            registry_path = root / "registry.json"
+
+            def check(
+                value: dict[str, object], *, base: dict | None = None
+            ) -> tuple[dict, dict, dict, list]:
+                registry_path.write_text(
+                    stable_json(value) + "\n", encoding="utf-8", newline="\n"
+                )
+                with patch("scripts.bible_module.ukrainian_stage_7_gold.BOOKS", ("Gen",)), patch(
+                    "scripts.bible_module.ukrainian_stage_7_gold.DEFAULT_REPORT", root
+                ):
+                    return _validated_correction_overrides(
+                        registry_path=registry_path,
+                        corpus_contract="ohienko_1988_production",
+                        packet_manifest={"counts": {"books": 1}},
+                        packet_manifest_path=fixture["template_manifest"],
+                        pass1_path=pass1, pass2_path=pass2,
+                        adjudication_path=adjudication,
+                        pass1=global_pass1, pass2=global_pass2,
+                        base_values=base if base is not None else global_base,
+                        adjudicated_keys=adjudicated_keys,
+                    )
+
+            overrides, provenance, locks, summaries = check(registry)
+            self.assertEqual(overrides, {})
+            self.assertEqual(provenance, {})
+            self.assertIn("baseline.Gen.qc_manifest", locks)
+            self.assertEqual(summaries[0]["correction_rows"], 0)
+            drifted_base = json.loads(json.dumps(global_base))
+            drifted_key = next(iter(drifted_base))
+            drifted_base[drifted_key]["target_ref"] = "Gen.99.99"
+            with self.assertRaisesRegex(ValueError, "global/per-book baseline differs"):
+                check(registry, base=drifted_base)
+            missing = json.loads(json.dumps(registry))
+            del missing["books"]["Gen"]["baseline"]
+            with self.assertRaisesRegex(ValueError, "lacks complete uncorrected baseline"):
+                check(missing)
+            forged = json.loads(json.dumps(registry))
+            forged["books"]["Gen"]["baseline"]["qc"]["sha256"] = "0" * 64
+            with self.assertRaisesRegex(ValueError, "baseline artifact/sidecar SHA differs"):
+                check(forged)
+            forged_acceptance = json.loads(json.dumps(accepted))
+            forged_acceptance["books"]["Gen"]["correction_rows"] = 1
+            accepted_manifest.write_text(
+                stable_json(forged_acceptance) + "\n", encoding="utf-8", newline="\n"
+            )
+            forged = json.loads(json.dumps(registry))
+            forged["books"]["Gen"]["accepted_manifest"]["sha256"] = _sha(accepted_manifest)
+            with self.assertRaisesRegex(ValueError, "accepted correction evidence conflicts"):
+                check(forged)
+
     def test_consensus_correction_is_exact_independent_and_fail_closed(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -1908,6 +2217,287 @@ class GoldWorkflowTest(unittest.TestCase):
             )
             self.assertEqual(accepted_qc["processed_count"], 5)
             self.assertEqual(accepted_qc["error_count"], 0)
+
+            # Global finalization uses the old exact-disagreement adjudication
+            # format. The per-book correction must also override an originally
+            # agreed ID; otherwise the two agreed rows remain stale.
+            global_adjudication = root / "global-adjudication.jsonl"
+            _write_jsonl(
+                global_adjudication,
+                [
+                    {
+                        "record_type": "adjudication_metadata",
+                        "adjudicator_id": "adjudicator-c",
+                        "pass_1_sha256": _sha(pass1),
+                        "pass_2_sha256": _sha(pass2),
+                        "packet_manifest_sha256": _sha(manifest),
+                    },
+                    *adjudicated,
+                ],
+            )
+
+            def chain_entry(path: Path) -> dict[str, str]:
+                return {
+                    "path": str(path),
+                    "sha256": _sha(path),
+                    "manifest_sha256": _sha(
+                        Path(str(path) + ".manifest.json")
+                    ),
+                }
+
+            registry_value = {
+                "schema_version": 1,
+                "contract_version": CONTRACT_VERSION,
+                "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+                "registry_version": (
+                    "ukrainian-stage-7-final-correction-registry-v1"
+                ),
+                "artifact": "gold_finalization_correction_registry",
+                "status": "complete_sha_locked_book_roster",
+                "corpus_contract": "cc0_fixture",
+                "global_input_sha256": {
+                    "review_pass_1": _sha(pass1),
+                    "review_pass_2": _sha(pass2),
+                    "reviewer_packets_manifest": _sha(manifest),
+                    "adjudication": _sha(global_adjudication),
+                },
+                "books": {
+                    "Gen": {
+                        "chain": {
+                            "pass1": chain_entry(pass1),
+                            "pass2": chain_entry(pass2),
+                            "comparison": chain_entry(comparison),
+                            "adjudication": chain_entry(adjudication),
+                            "blocking_qc": chain_entry(blocking_qc),
+                            "correction": chain_entry(correction),
+                            "final_qc": chain_entry(final_qc),
+                        }
+                    }
+                },
+            }
+            registry_path = root / "correction-registry.json"
+            registry_path.write_text(
+                stable_json(registry_value) + "\n", encoding="utf-8", newline="\n"
+            )
+
+            corrected_report = root / "corrected-final"
+            corrected_result = finalize_gold(
+                pass1_path=pass1,
+                pass2_path=pass2,
+                packet_manifest_path=manifest,
+                report_dir=corrected_report,
+                adjudication_path=global_adjudication,
+                correction_registry_path=registry_path,
+                minimum_verses=1,
+                minimum_decisions=1,
+                required_relations=set(),
+            )
+            final_rows = [
+                json.loads(line)
+                for line in (corrected_report / "gold_alignment.annotations.jsonl")
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            final_by_key = {
+                (
+                    "original:" + row["decision_id"]
+                    if row["record_type"] == "original_decision"
+                    else "target:" + row["accounting_id"]
+                ): row
+                for row in final_rows
+                if row["record_type"] in {"original_decision", "target_accounting"}
+            }
+            self.assertEqual(final_by_key[original_key]["target_token_ids"], ["cc0:uk:7"])
+            self.assertEqual(
+                final_by_key[target_key]["linked_original_token_ids"], ["cc0:orig:7"]
+            )
+            self.assertTrue(final_by_key[target_key]["review"]["agreement"])
+            self.assertTrue(final_by_key[target_key]["review"]["correction_applied"])
+            self.assertTrue(
+                final_by_key[target_key]["correction_provenance"]["originally_agreed"]
+            )
+            unrelated_key = "original:" + next(
+                row["decision_id"]
+                for row in normalized1
+                if row.get("original_token_id") == "cc0:orig:2"
+            )
+            self.assertEqual(
+                _semantic_for_key(final_by_key[unrelated_key]),
+                _semantic_for_key(base_values[unrelated_key]),
+            )
+            self.assertNotIn("correction_provenance", final_by_key[unrelated_key])
+            self.assertEqual(corrected_result["counts"]["consensus_correction_rows"], 2)
+            self.assertEqual(corrected_result["counts"]["corrected_agreed_decisions"], 2)
+            self.assertIsNotNone(validated_finalized_gold_lock(corrected_report))
+            second_report = root / "corrected-final-second"
+            finalize_gold(
+                pass1_path=pass1,
+                pass2_path=pass2,
+                packet_manifest_path=manifest,
+                report_dir=second_report,
+                adjudication_path=global_adjudication,
+                correction_registry_path=registry_path,
+                minimum_verses=1,
+                minimum_decisions=1,
+                required_relations=set(),
+            )
+            for name in (
+                "gold_alignment.annotations.jsonl",
+                "gold_alignment.manifest.json",
+                "gold_alignment.finalized.lock.json",
+            ):
+                self.assertEqual(
+                    (corrected_report / name).read_bytes(),
+                    (second_report / name).read_bytes(),
+                )
+
+            missing_chain = json.loads(json.dumps(registry_value))
+            del missing_chain["books"]["Gen"]["chain"]["final_qc"]
+            registry_path.write_text(
+                stable_json(missing_chain) + "\n", encoding="utf-8", newline="\n"
+            )
+            with self.assertRaisesRegex(ValueError, "missing an exact artifact"):
+                finalize_gold(
+                    pass1_path=pass1,
+                    pass2_path=pass2,
+                    packet_manifest_path=manifest,
+                    report_dir=root / "missing-chain-final",
+                    adjudication_path=global_adjudication,
+                    correction_registry_path=registry_path,
+                    minimum_verses=1,
+                    minimum_decisions=1,
+                    required_relations=set(),
+                )
+            stale_chain = json.loads(json.dumps(registry_value))
+            stale_chain["books"]["Gen"]["chain"]["correction"]["sha256"] = "0" * 64
+            registry_path.write_text(
+                stable_json(stale_chain) + "\n", encoding="utf-8", newline="\n"
+            )
+            with self.assertRaisesRegex(ValueError, "artifact/sidecar SHA differs"):
+                finalize_gold(
+                    pass1_path=pass1,
+                    pass2_path=pass2,
+                    packet_manifest_path=manifest,
+                    report_dir=root / "stale-chain-final",
+                    adjudication_path=global_adjudication,
+                    correction_registry_path=registry_path,
+                    minimum_verses=1,
+                    minimum_decisions=1,
+                    required_relations=set(),
+                )
+
+            # Production cannot self-declare an empty correction list: a
+            # SHA-locked, versioned accepted book manifest is the roster gate.
+            accepted_manifest = root / "gold_adjudication_batch_001.manifest.json"
+            output_locks = {}
+            for name, spec in registry_value["books"]["Gen"]["chain"].items():
+                label = {"pass1": "pass_1", "pass2": "pass_2"}.get(name, name)
+                output_locks[f"Gen.{label}"] = spec["sha256"]
+                output_locks[f"Gen.{label}_manifest"] = spec["manifest_sha256"]
+            accepted_manifest_value = {
+                "schema_version": 1,
+                "artifact": "gold_review_adjudication_progress",
+                "status": "partial_gold_adjudication_complete_qc_accepted",
+                "contract_version": CONTRACT_VERSION,
+                "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+                "error_count": 0,
+                "books": {
+                    "Gen": {
+                        "correction_rows": 2,
+                        "qc_errors": 0,
+                        "qc_uncertain": 0,
+                        "stable_decisions": len(base_values),
+                        "adjudicated_decisions": len(adjudication_keys),
+                        "alignment_agreements": len(base_values) - len(adjudication_keys),
+                    }
+                },
+                "output_sha256": output_locks,
+            }
+            accepted_manifest.write_text(
+                stable_json(accepted_manifest_value) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            production_registry = json.loads(json.dumps(registry_value))
+            production_registry["corpus_contract"] = "ohienko_1988_production"
+            production_registry["books"]["Gen"]["accepted_manifest"] = {
+                "path": str(accepted_manifest),
+                "sha256": _sha(accepted_manifest),
+            }
+            _, global_pass1 = _load_normalized_pass(pass1)
+            _, global_pass2 = _load_normalized_pass(pass2)
+            _, _, _, _, global_base, _ = _validated_post_adjudication_values(
+                pass1_path=pass1,
+                pass2_path=pass2,
+                comparison_path=comparison,
+                adjudication_path=adjudication,
+            )
+            helper_args = {
+                "registry_path": registry_path,
+                "corpus_contract": "ohienko_1988_production",
+                "packet_manifest": {"counts": {"books": 1}},
+                "packet_manifest_path": manifest,
+                "pass1_path": pass1,
+                "pass2_path": pass2,
+                "adjudication_path": global_adjudication,
+                "pass1": global_pass1,
+                "pass2": global_pass2,
+                "base_values": global_base,
+                "adjudicated_keys": set(adjudication_keys),
+            }
+            with self.assertRaisesRegex(ValueError, "requires a correction registry"):
+                _validated_correction_overrides(
+                    **{**helper_args, "registry_path": None}
+                )
+            no_chain = json.loads(json.dumps(production_registry))
+            del no_chain["books"]["Gen"]["chain"]
+            registry_path.write_text(
+                stable_json(no_chain) + "\n", encoding="utf-8", newline="\n"
+            )
+            with patch(
+                "scripts.bible_module.ukrainian_stage_7_gold.BOOKS", ("Gen",)
+            ), patch(
+                "scripts.bible_module.ukrainian_stage_7_gold.DEFAULT_REPORT", root
+            ), self.assertRaisesRegex(ValueError, "missing an exact artifact"):
+                _validated_correction_overrides(**helper_args)
+            missing_acceptance = json.loads(json.dumps(production_registry))
+            del missing_acceptance["books"]["Gen"]["accepted_manifest"]
+            registry_path.write_text(
+                stable_json(missing_acceptance) + "\n",
+                encoding="utf-8", newline="\n",
+            )
+            with patch(
+                "scripts.bible_module.ukrainian_stage_7_gold.BOOKS", ("Gen",)
+            ), patch(
+                "scripts.bible_module.ukrainian_stage_7_gold.DEFAULT_REPORT", root
+            ), self.assertRaisesRegex(ValueError, "lacks accepted book manifest"):
+                _validated_correction_overrides(**helper_args)
+            registry_path.write_text(
+                stable_json(production_registry) + "\n",
+                encoding="utf-8", newline="\n",
+            )
+            with patch("scripts.bible_module.ukrainian_stage_7_gold.BOOKS", ("Gen",)), patch(
+                "scripts.bible_module.ukrainian_stage_7_gold.DEFAULT_REPORT", root
+            ):
+                production_overrides, _, _, _ = _validated_correction_overrides(
+                    **helper_args
+                )
+            self.assertEqual(set(production_overrides), {original_key, target_key})
+            fake_report = root / "ignored-work-copy"
+            fake_report.mkdir()
+            fake_manifest = fake_report / accepted_manifest.name
+            fake_manifest.write_bytes(accepted_manifest.read_bytes())
+            outside_registry = json.loads(json.dumps(production_registry))
+            outside_registry["books"]["Gen"]["accepted_manifest"]["path"] = str(
+                fake_manifest
+            )
+            registry_path.write_text(
+                stable_json(outside_registry) + "\n", encoding="utf-8", newline="\n"
+            )
+            with patch("scripts.bible_module.ukrainian_stage_7_gold.BOOKS", ("Gen",)), patch(
+                "scripts.bible_module.ukrainian_stage_7_gold.DEFAULT_REPORT", root
+            ), self.assertRaisesRegex(ValueError, "outside versioned report directory"):
+                _validated_correction_overrides(**helper_args)
 
             tampered_observations = json.loads(
                 json.dumps(final_qc_observations)

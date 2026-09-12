@@ -965,6 +965,204 @@ def _correction_scope_from_qc(
     proposals = qc_manifest.get("correction_proposals")
     if not isinstance(proposals, list) or not proposals:
         raise ValueError("Blocking QC manifest lacks correction proposals")
+    # An error can be found in the independent audit of decisions on which
+    # both blind passes agreed.  Such rows have no adjudication observation;
+    # the frozen QC sidecar records them in agreed_link_audit instead.  Keep
+    # this scope distinct from the older adjudication-error proposal format.
+    agreed_audit = qc_manifest.get("agreed_link_audit")
+    if isinstance(agreed_audit, Mapping) and agreed_audit.get("error_count"):
+        agreed_errors = agreed_audit.get("error_stable_keys")
+        adjudication_errors = qc_manifest.get("verdict_stable_keys", {}).get(
+            "error", []
+        )
+        if adjudication_errors:
+            # One reciprocal error can span an adjudicated original and an
+            # originally agreed target. Require their exact same-verse union
+            # and full revalidation of the remaining verse-local grid.
+            reported_errors = qc_manifest.get("error_stable_keys")
+            if (
+                not isinstance(agreed_errors, list)
+                or not agreed_errors
+                or len(agreed_errors) != len(set(agreed_errors))
+                or not isinstance(adjudication_errors, list)
+                or len(adjudication_errors) != len(set(adjudication_errors))
+                or set(agreed_errors) & set(adjudication_errors)
+                or agreed_audit.get("error_count") != len(agreed_errors)
+                or qc_manifest.get("error_count")
+                != len(agreed_errors) + len(adjudication_errors)
+                or not isinstance(reported_errors, list)
+                or len(reported_errors) != len(set(reported_errors))
+                or set(reported_errors) != set(agreed_errors) | set(adjudication_errors)
+                or len(proposals) != 1
+            ):
+                raise ValueError("Mixed blocking QC error classes differ")
+            proposal = proposals[0]
+            if not isinstance(proposal, Mapping):
+                raise ValueError("Mixed blocking QC correction proposal differs")
+            changed = proposal.get("rows_requiring_semantic_change")
+            unchanged = proposal.get("unchanged_reciprocal_revalidation")
+            recommended = proposal.get("recommended_semantics_by_stable_key")
+            target_ref = proposal.get("target_ref")
+            error_union = set(agreed_errors) | set(adjudication_errors)
+            if (
+                proposal.get("proposal_only_no_mutation_performed") is not True
+                or proposal.get("required_workflow")
+                != "separate_fail_closed_consensus_correction_and_independent_re_qc"
+                or not isinstance(changed, list)
+                or len(changed) != len(set(changed))
+                or set(changed) != error_union
+                or not isinstance(unchanged, list)
+                or len(unchanged) != len(set(unchanged))
+                or not unchanged
+                or not isinstance(recommended, Mapping)
+                or set(recommended) != error_union
+                or not isinstance(target_ref, str)
+                or not target_ref
+                or any(
+                    key not in final_values
+                    or final_values[key].get("target_ref") != target_ref
+                    or not isinstance(recommended[key], Mapping)
+                    or recommended[key].get("target_ref") != target_ref
+                    for key in changed
+                )
+            ):
+                raise ValueError("Mixed blocking QC correction proposal differs")
+            # Revalidate the unchanged reciprocal neighbors of changed
+            # hyperedges, not every unrelated token in the verse. The
+            # post-correction QC separately audits the entire final grid.
+            affected_targets: set[str] = set()
+            affected_originals: set[str] = set()
+            for key in changed:
+                before = final_values[key]
+                after = recommended[key]
+                if key.startswith("original:"):
+                    old_targets = before.get("target_token_ids")
+                    new_targets = after.get("target_token_ids")
+                    source_ids = before.get("group_original_token_ids")
+                    if (
+                        not isinstance(old_targets, list)
+                        or not isinstance(new_targets, list)
+                        or not isinstance(source_ids, list)
+                    ):
+                        raise ValueError("Mixed blocking QC original neighbor scope differs")
+                    affected_targets.update(old_targets)
+                    affected_targets.update(new_targets)
+                    affected_originals.update(source_ids)
+                elif key.startswith("target:"):
+                    old_sources = before.get("linked_original_token_ids")
+                    new_sources = after.get("linked_original_token_ids")
+                    target_id = before.get("target_token_id")
+                    if (
+                        not isinstance(old_sources, list)
+                        or not isinstance(new_sources, list)
+                        or not isinstance(target_id, str)
+                    ):
+                        raise ValueError("Mixed blocking QC target neighbor scope differs")
+                    affected_originals.update(old_sources)
+                    affected_originals.update(new_sources)
+                    affected_targets.add(target_id)
+                else:
+                    raise ValueError("Mixed blocking QC stable-key type differs")
+            reciprocal_neighbors = {
+                key
+                for key, value in final_values.items()
+                if (
+                    value.get("target_ref") == target_ref
+                    and key not in error_union
+                    and (
+                        (key.startswith("target:") and value.get("target_token_id") in affected_targets)
+                        or (
+                            key.startswith("original:")
+                            and bool(set(value.get("group_original_token_ids", [])) & affected_originals)
+                        )
+                    )
+                )
+            }
+            if set(unchanged) != reciprocal_neighbors:
+                raise ValueError("Mixed blocking QC reciprocal revalidation differs")
+            return error_union, {target_ref}, set(unchanged)
+        if (
+            not isinstance(agreed_errors, list)
+            or not agreed_errors
+            or len(agreed_errors) != len(set(agreed_errors))
+            or agreed_audit.get("error_count") != len(agreed_errors)
+            or qc_manifest.get("error_count") != len(agreed_errors)
+            or set(qc_manifest.get("error_stable_keys", [])) != set(agreed_errors)
+            or len(proposals) != 1
+        ):
+            raise ValueError("Blocking agreement audit error scope is invalid")
+        proposal = proposals[0]
+        changed = proposal.get("rows_requiring_semantic_change")
+        recommended = proposal.get("recommended_semantics_by_stable_key")
+        target_ref = proposal.get("target_ref")
+        if (
+            proposal.get("proposal_only_no_mutation_performed") is not True
+            or proposal.get("required_workflow")
+            != "separate_fail_closed_consensus_correction_and_independent_re_qc"
+            or not isinstance(changed, list)
+            or set(changed) != set(agreed_errors)
+            or len(changed) != len(set(changed))
+            or not isinstance(recommended, Mapping)
+            or set(recommended) != set(changed)
+            or not isinstance(target_ref, str)
+            or not target_ref
+            or any(
+                key not in final_values
+                or final_values[key].get("target_ref") != target_ref
+                or not isinstance(recommended[key], Mapping)
+                or recommended[key].get("target_ref") != target_ref
+                for key in changed
+            )
+        ):
+            raise ValueError("Blocking agreement audit correction proposal differs")
+        revalidate_only = {
+            key
+            for key, value in final_values.items()
+            if value.get("target_ref") == target_ref and key not in changed
+        }
+        if not revalidate_only:
+            raise ValueError("Blocking agreement audit lacks verse-local revalidation")
+        return set(changed), {target_ref}, revalidate_only
+    if (
+        len(proposals) == 1
+        and proposals[0].get("required_workflow")
+        == "separate_fail_closed_consensus_correction_and_independent_re_qc"
+    ):
+        proposal = proposals[0]
+        changed = proposal.get("rows_requiring_semantic_change")
+        unchanged = proposal.get("unchanged_reciprocal_revalidation")
+        recommended = proposal.get("recommended_semantics_by_stable_key")
+        target_ref = proposal.get("target_ref")
+        reported = qc_manifest.get("error_stable_keys")
+        if (
+            proposal.get("proposal_only_no_mutation_performed") is not True
+            or not isinstance(changed, list)
+            or not changed
+            or len(changed) != len(set(changed))
+            or not isinstance(unchanged, list)
+            or not unchanged
+            or len(unchanged) != len(set(unchanged))
+            or set(changed) & set(unchanged)
+            or not isinstance(recommended, Mapping)
+            or set(recommended) != set(changed)
+            or not isinstance(reported, list)
+            or set(reported) != set(changed)
+            or qc_manifest.get("error_count") != len(changed)
+            or not isinstance(target_ref, str)
+            or not target_ref
+            or any(
+                key not in final_values
+                or final_values[key].get("target_ref") != target_ref
+                for key in (*changed, *unchanged)
+            )
+            or any(
+                not isinstance(recommended[key], Mapping)
+                or recommended[key].get("target_ref") != target_ref
+                for key in changed
+            )
+        ):
+            raise ValueError("Blocking adjudication QC correction scope differs")
+        return set(changed), {target_ref}, set(unchanged)
     expected: list[str] = []
     affected_refs: set[str] = set()
     revalidate_only: set[str] = set()
@@ -1072,7 +1270,12 @@ def validate_consensus_correction_shard(
         and row.get("verdict") == "error"
     }
     manifest_error_keys = set(
-        qc_manifest.get("verdict_stable_keys", {}).get("error", [])
+        qc_manifest.get("verdict_stable_keys", {}).get(
+            "error", qc_manifest.get("error_stable_keys", [])
+        )
+    )
+    agreed_errors = set(
+        qc_manifest.get("agreed_link_audit", {}).get("error_stable_keys", [])
     )
     if (
         qc_header.get("status") != "complete_qc_errors_found"
@@ -1081,11 +1284,16 @@ def validate_consensus_correction_shard(
         or qc_header.get("reviewer_id") != qc_manifest.get("reviewer_id")
         or qc_header.get("input_sha256") != qc_manifest.get("input_sha256")
         or qc_error_keys != manifest_error_keys
+        or not (manifest_error_keys or agreed_errors)
     ):
         raise ValueError("Blocking QC payload and manifest disagree")
     expected_keys, affected_refs, revalidate_only = _correction_scope_from_qc(
         qc_manifest, final_values
     )
+    if (
+        not (manifest_error_keys | agreed_errors) <= expected_keys
+    ):
+        raise ValueError("Blocking QC error keys differ from correction scope")
 
     rows = list(_read_jsonl(correction_path))
     headers = [
