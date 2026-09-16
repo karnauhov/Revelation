@@ -1,7 +1,7 @@
 # Этап 7: evidence-first Strong alignment OH1988
 
 Doc-Version: `1.0.0`
-Last-Updated: `2026-09-12`
+Last-Updated: `2026-09-16`
 Source-Commit: `working-tree`
 Schema-Version: `1`
 Contract-Version: `ukrainian-stage-7-evidence-alignment-v1`
@@ -18,10 +18,13 @@ choices получили двухпроходные post-candidate manual dispos
 неразличимых места намеренно не выводят Strong. Target-side bridge proof и gold
 остаются частичными и fail-closed. Первый blind gold-проход завершён по всем
 66 книгам: 2 171 стих, 45 831 original и 41 807 target-accounting decisions.
-Оба независимых прохода и post-blind comparison завершены для `Gen–Phlm`
-(1 923 стиха, 41 128 original и 37 209 target). Для `1Sam–1Kgs` завершены
+Оба независимых прохода и post-blind comparison завершены для `Gen–Heb`
+(1 955 стихов, 41 636 original и 37 740 target). Для `1Sam–1Kgs` завершены
 distinct third adjudication и независимый QC; `Deut`, `Ezra`, `Neh` и `Esth`
-также полностью приняты. Pass 2 для `Heb–Rev` ещё не выполнен.
+также полностью приняты. Pass 2 для `Jas–Rev` ещё не выполнен.
+В общей строгой лестнице distinct adjudication завершена для `52/66`
+(`Gen–1Thess`), independent full-grid QC выполнен для `51/66` (`Gen–Col`),
+но без error/uncertain приняты только `36/66`.
 Для `Isa` третья адъюдикация 252/252 substantive disagreement закончена и
 прошла double deterministic `check-adjudication`; независимый content-QC нашёл
 одну ошибку, затрагивающую три stable ID в `Isa.66.15`, и заблокировал книгу.
@@ -662,8 +665,12 @@ accepted, две reciprocal originally-agreed content errors `5.2`
 Три выпуска побайтно одинаковы, физические QC/sidecar SHA
 `27b7ffec…` / `6c0091df…` в
 `gold_adjudication_batch_049.manifest.json`; root validator ожидаемо
-отклонил blocking status. Требуются exact two-row correction,
-source resolution и distinct post-correction QC; книга не принята.
+отклонил blocking status. Exact two-row correction затем сняла
+`ἡμᾶς/G3165 → «вас»`, не продвигая альтернативный `ὑμᾶς` Strong:
+три эмиссии побайтно совпали (`f4c41395…`), correction sidecar
+`db1fa3cd…`, `seal-correction` и двойной `check-correction` прошли.
+Source resolution и distinct independent post-correction QC ещё нужны;
+книга не принята.
 `Phil` завершила blind pass 2 на 32 стихах (499 original + 536 target =
 1 035 решений). Root compact check прошёл с `error_count=0`; два
 byte-identical comparison/sidecar выпуска дали 821 agreements, 214
@@ -678,7 +685,11 @@ adjudication/sidecar SHA `2539e53a…` / `a3cc7e28…` в
 `gold_adjudication_batch_050.manifest.json`. `2.7`, `2.26`, `4.13`,
 `4.23` остаются source/verse-boundary blockers; согласованные target
 additions в `2.7`/`4.13` не получили чужой Strong. Independent
-full-grid QC и source resolution обязательны; книга не принята.
+full-grid QC затем проверил все 1 035 решений: 999 accepted, `error=0`,
+`uncertain=36` в 13 source/variant loci. Два byte-identical выпуска дали
+QC/sidecar SHA `eab7e55f…` / `fe8b07b5…`; acceptance-validator ожидаемо
+отклонил blocked status. Source resolution и новый independent re-QC
+обязательны; книга не принята.
 `Col` завершила blind pass 2 на 33 стихах (526 original + 491 target =
 1 017 решений). Root compact check прошёл с `error_count=0`; два
 byte-identical comparison выпуска дали 803 agreements, 214 substantive
@@ -696,7 +707,11 @@ adjudication/sidecar SHA `023c7533…` / `d12d2920…` в
 mismatch loci `1.12`, `3.4`, `3.15`, `3.16`, `3.22` остаются critical;
 аттестованные альтернативы не доказывают точный Vorlage Огиенко.
 Переставленные группы `1.16` связаны reciprocal token evidence,
-а не позицией. Independent full-grid QC нужна; книга не принята.
+а не позицией. Independent full-grid QC затем проверил все 1 017 решений:
+995 accepted, `error=0`, `uncertain=22` в 10 source/variant loci. Три
+byte-identical выпуска дали QC/sidecar SHA `dc4c9d31…` / `5d6dad53…`;
+acceptance-validator ожидаемо отклонил blocked status. Source resolution и
+новый independent re-QC обязательны; книга не принята.
 `1Thess` завершила blind pass 2 на 32 стихах (531 original + 506 target =
 1 037 решений). Root compact check прошёл с `error_count=0`; два
 byte-identical comparison выпуска дали 874 agreements, 163 substantive
@@ -758,6 +773,17 @@ disagreements (79 original + 50 target), 429 metadata-only differences.
 `1.20`, `1.21`, `1.25` остаются source/lexical watchpoints; raw
 `G6063` не превращён в выдуманный classic Strong. Distinct
 adjudication/QC нужны; книга не принята.
+
+`Heb` завершила blind pass 2 на 32 стихах (508 original + 531 target =
+1 039 решений). Root compact check прошёл с `error_count=0`; два
+byte-identical comparison выпуска дали 810 agreements, 229 substantive
+disagreements (144 original + 85 target), 621 metadata-only differences.
+Физические comparison/sidecar SHA `42d7c9af…` / `305def40…`, pass-2/sidecar
+SHA `b7db4598…` / `51234eea…` закреплены в
+`gold_review_batch_058.manifest.json`. `Heb.7.21`, `8.11`, `9.18`, `10.6`,
+`10.12`, `11.15`, `12.3` и `13.23` остаются source/textual watchpoints;
+альтернативный Strong по отсутствию selected-layer token не импортировался.
+Distinct adjudication/QC нужны; книга не принята.
 
 В замороженных blind pass 2 для `Mark`/`Luke`/`John` найден отдельный
 provenance-дефект общего renderer: текст `Independent blind Mat pass 2` и

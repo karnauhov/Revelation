@@ -1039,3 +1039,48 @@ Errors: `0` generator errors
   выше; дальнейшее принятие этих книг требует отдельных проверок.
 - Stage 8, SQLite, commit и push не выполнялись. Новая точка и очередь
   записаны в `HANDOFF.ru.md`.
+
+## Возобновление — 2026-09-12
+
+- Чистый committed checkpoint `578f98c` принят; stage-7 `--check` перед
+  новыми book jobs — PASS (`31 102`, `accepted_links=0`, `error_count=0`).
+- `Eph.5.2` exact correction — PASS FOR CORRECTION SCOPE ONLY: исправлены
+  ровно две reciprocal stable-ID строки, выбранная `ἡμᾶς/G3165` отвязана
+  от «вас», альтернативный Strong не импортирован. Три эмиссии дали SHA
+  `f4c4139506e71a701a332e284b58dea9f7e4d546819350c1ff317bce61878f2d`;
+  sidecar SHA `db1fa3cd0aa1dbe067a76b9a848895741698f40c154b53f8f56ba9b2b11ac2c7`.
+  `seal-correction` и два `check-correction` — PASS, grid остаётся 990.
+  Книга заблокирована до distinct post-correction QC и разрешения 18
+  source uncertainties.
+
+## Ревизия рабочей точки 7.4 — 2026-09-16
+
+- Строгая граница подтверждена по tracked manifests и gitignored frozen
+  outputs: pass 1 `66/66`; pass 2/comparison `58/66` (`Gen–Heb`), 1 955
+  стихов, 41 636 original и 37 740 target; adjudication `52/66`
+  (`Gen–1Thess`); independent full-grid QC выполнен для `51/66`
+  (`Gen–Col`); приняты без error/uncertain только `36/66`.
+- `Phil` full-grid QC — BLOCKED: 1 035/1 035 audited, 999 accepted,
+  `error=0`, `uncertain=36` в 13 loci; два byte-identical выпуска,
+  QC/sidecar SHA `eab7e55f…` / `fe8b07b5…`.
+- `Col` full-grid QC — BLOCKED: 1 017/1 017 audited, 995 accepted,
+  `error=0`, `uncertain=22` в 10 loci; три byte-identical выпуска,
+  QC/sidecar SHA `dc4c9d31…` / `5d6dad53…`.
+- `Heb` pass 2/comparison — PASS FOR SHARD ONLY: 32 стиха, 508 original +
+  531 target, 810 agreements, 229 substantive disagreements, 621
+  metadata-only differences; comparison/sidecar SHA `42d7c9af…` /
+  `305def40…`. Adjudication и QC не выполнены.
+- `2Thess` manual checkpoint содержит решения всех 252 disagreement в 123
+  компонентах, но adjudication JSONL/sidecar не emitted и validator не
+  запускался. Шесть critical/high loci остаются unresolved; checkpoint не
+  засчитан как adjudication/QC. Frozen validator chain использует pass-2
+  `manual-v1`, а не sidecar `manual-v2`.
+- `Jas` имеет answer-free shard 059 на 32 стиха и ручной draft из 32 mappings
+  (505 original, 503 target), но draft не expanded, не прошёл exact accounting
+  и post-blind comparison; pass-2 счётчик остаётся `58/66`.
+- Ревизионные проверки: `python -m unittest discover -s
+  scripts/bible_module/tests` — `393/393` PASS; forbidden-pattern — PASS;
+  docs-sync — PASS; `git diff --check` — PASS. После механического обновления
+  artifact inventory полный stage-7 `--check` — PASS: `processed_count=31 102`,
+  `accepted_links=0`, `error_count=0`; frozen stage-6 text SHA подтверждён.
+- Production Strong, finalized global gold, Stage 8 и SQLite не создавались.
