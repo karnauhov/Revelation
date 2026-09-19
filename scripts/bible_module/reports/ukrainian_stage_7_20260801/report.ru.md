@@ -28,7 +28,7 @@ distinct third adjudication и независимый QC; `Deut`, `Ezra`, `Neh` 
 оставшиеся книги; теперь все 22 204 substantive disagreement прошли distinct
 structural adjudication. В общей строгой лестнице distinct adjudication
 завершена для `66/66` (`Gen–Rev`), independent full-grid QC выполнен для
-`56/66` (`Gen–Titus`),
+`65/66` (`Gen–Jude`),
 но без error/uncertain приняты только `36/66`.
 Для `Isa` третья адъюдикация 252/252 substantive disagreement закончена и
 прошла double deterministic `check-adjudication`; независимый content-QC нашёл
@@ -61,7 +61,7 @@ Strong markup намеренно не выполнялись.
 `gold_adjudication_complete.manifest.json` SHA-locks 62 batch-manifests и доказывает
 exact учёт 22 204 adjudicated + 65 434 agreed = 87 638 stable decisions
 во всех 66 книгах, `error_count=0`. Это structural completeness, не
-book acceptance: independent QC `Phlm–Rev` и source resolution всех
+book acceptance: independent QC `Rev` и source resolution всех
 сохранённых critical/high loci остаются обязательными.
 Повторный физический аудит подтвердил SHA всех `62/62` versioned batch
 manifests, `132/132` adjudication/sidecar файлов и root validator `66/66`;
@@ -827,8 +827,16 @@ disagreements (79 original + 50 target), 429 metadata-only differences.
 Физические comparison/sidecar SHA `72865f9d…` / `7044fb2f…` в
 `gold_review_batch_057.manifest.json`. `1.2`, `1.7`, `1.10`, `1.16`,
 `1.20`, `1.21`, `1.25` остаются source/lexical watchpoints; raw
-`G6063` не превращён в выдуманный classic Strong. Distinct
-adjudication/QC нужны; книга не принята.
+`G6063` не превращён в выдуманный classic Strong. Distinct adjudication
+разрешила 129/129 расхождений в 72 компонентах при сохранении 567 agreements
+и grid 696/696; adjudication/sidecar SHA `0476855b…` / `0fa1d10e…`.
+Independent reviewer затем проверил весь grid: 685 accepted, `error=2`,
+`uncertain=9`. `1.25` выявил traditional-only `ἀμήν/G0281`, ошибочно
+классифицированный frozen selected layer как primary/shared и автоматически
+связанный с `Амі́нь`; `1.2`, `1.7`, `1.11`, `1.21` сохранены fail-closed.
+Три byte-identical выпуска дали QC/sidecar SHA `7cd55d57…` / `6c13c878…`;
+scoped source-layer correction/resolution и distinct re-QC обязательны.
+Книга не принята.
 
 `Heb` завершила blind pass 2 на 32 стихах (508 original + 531 target =
 1 039 решений). Root compact check прошёл с `error_count=0`; два
@@ -839,7 +847,14 @@ SHA `b7db4598…` / `51234eea…` закреплены в
 `gold_review_batch_058.manifest.json`. `Heb.7.21`, `8.11`, `9.18`, `10.6`,
 `10.12`, `11.15`, `12.3` и `13.23` остаются source/textual watchpoints;
 альтернативный Strong по отсутствию selected-layer token не импортировался.
-Distinct adjudication/QC нужны; книга не принята.
+Distinct adjudication разрешила 229/229 расхождений в 118 компонентах при
+сохранении 810 agreements и grid 1 039/1 039; adjudication/sidecar SHA
+`93adc2f2…` / `4362c253…`. Independent reviewer затем проверил весь grid:
+1 030 accepted, `error=0`, `uncertain=9` в `6.19`, `7.21`, `10.12`, `11.15`.
+Первый pre-seal draft superseded до batch lock из-за недостаточно явного
+учёта двух строк high semantic component `6.19`; три исправленных v2-выпуска
+побайтно совпали, QC/sidecar SHA `d90989e1…` / `b72b93e0…`. Source/semantic
+resolution и distinct re-QC обязательны; книга не принята.
 
 `Jas` завершила blind pass 2 на 32 стихах (505 original + 503 target =
 1 008 решений). Ручной blind draft был заморожен до открытия pass 1; два
@@ -850,8 +865,16 @@ Pass-2/sidecar SHA `a20b522d…` / `38025a78…`, comparison/sidecar SHA
 `25ceb067…` / `79a8033f…` закреплены в
 `gold_review_batch_059.manifest.json`. `3.3` и `3.5` остаются critical
 source watchpoints; raw `G6063`/`G6060` не превращены в выдуманные classic
-Strong, добавленное `Слово` в `5.12` не получило соседний Strong.
-Adjudication/QC нужны; книга не принята.
+Strong, добавленное `Слово` в `5.12` не получило соседний Strong. Distinct
+adjudication разрешила 179/179 расхождений в 119 компонентах при сохранении
+829 agreements и grid 1 008/1 008; adjudication/sidecar SHA `81a0f93f…` /
+`c900c53d…`. Independent reviewer затем проверил весь grid: 994 accepted,
+`error=0`, `uncertain=14` (7 adjudicated + 7 agreed) в `2.3`, `3.3`, `3.5`,
+`4.9`, `5.12`. Три repro и authoritative completed-выпуск побайтно совпали,
+QC/sidecar SHA `ee43e14b…` / `7f0d1a10…`; acceptance-validator ожидаемо
+отклонил blocking status. Exact source forms и Strong не подменялись
+альтернативами; source resolution и distinct re-QC обязательны. Книга не
+принята.
 
 Последние семь книг `1Pet–Rev` завершили независимый blind pass 2 и
 post-blind comparison на 184 стихах: 3 690 original + 3 564 target = 7 254
@@ -864,7 +887,50 @@ agreements/disagreements, `2Pet` — 993/225, `1John` — 1 074/220, `2John` —
 agreements, 1 202 substantive disagreement и 4 358 metadata-only differences.
 SHA каждого book artifact закреплены в `gold_review_batch_060_066.manifest.json`;
 alternative Strong из отсутствующих selected-source readings, соседние слова и
-позиционный перенос не применялись. Все семь книг ждут adjudication/QC.
+позиционный перенос не применялись. Structural adjudication всех семи книг
+завершена. Для `1Pet` distinct adjudication разрешила 229/229 расхождений в
+115 компонентах при сохранении 873 agreements и grid 1 102/1 102;
+adjudication/sidecar SHA `63307d66…` / `4205c582…`. Independent reviewer
+проверил весь grid: 1 092 accepted, `error=0`, `uncertain=10`
+(6 adjudicated + 4 agreed) в `1.7`, `1.16`, `2.21`, `4.1`, `5.9`.
+Три QC-эмиссии побайтно совпали, QC/sidecar SHA `47a20b06…` / `6122c9e5…`;
+acceptance-validator ожидаемо отклонил blocking status. Traditional-only и
+alternative Strong не продвигались; source resolution и distinct re-QC
+обязательны. Книга не принята. Для `2Pet` distinct adjudication разрешила
+225/225 расхождений в 118 компонентах при сохранении 993 agreements и grid
+1 218/1 218. Independent reviewer проверил весь grid: 1 201 accepted,
+`error=0`, `uncertain=17` (10 adjudicated + 7 agreed) в `1.4`, `1.17`,
+`1.21`, `2.6`, `2.12`, `2.13`, `3.10`. Три QC-эмиссии побайтно совпали,
+QC/sidecar SHA `1caa41e9…` / `6bf3bb6b…`; acceptance-validator ожидаемо
+отклонил blocking status. Competing Strong не продвигались; source resolution
+и distinct re-QC обязательны. Книга не принята. Для `1John` distinct
+adjudication разрешила 220/220 расхождений в 171 компоненте при сохранении
+1 074 agreements и grid 1 294/1 294. Independent reviewer проверил весь grid:
+1 278 accepted, `error=2`, `uncertain=14`. Обе agreed-row ошибки `4.20`
+связывали selected `οὐ/G3756` с OH «як», соответствующим TR/Byz `πῶς/G4459`;
+семь других source/traditional loci оставлены fail-closed. Три QC-эмиссии
+побайтно совпали, QC/sidecar SHA `c9b72e4d…` / `17ba3d8f…`; competing Strong
+не продвигались. Книга не принята. Для `2John` distinct adjudication
+разрешила 48/48 расхождений в 37 компонентах при сохранении 443 agreements и
+grid 491/491. Independent reviewer проверил весь grid: 472 accepted,
+`error=5`, `uncertain=14`. Agreed-row ошибки `1.7` и `1.9` связали selected
+`ἐξῆλθον/G1831` и `προάγων/G4254` с OH-чтениями, соответствующими TR/Byz
+`εἰσῆλθον/G1525` и `παραβαίνων/G3845`; loci `1.1`, `1.3`, `1.8`, `1.9`,
+`1.12`, `1.13` оставлены fail-closed. Три QC-эмиссии побайтно совпали,
+QC/sidecar SHA `f3b43b49…` / `1d0af73e…`; competing Strong не продвигались.
+Книга не принята. Для `3John` distinct adjudication разрешила 61/61
+расхождение в 36 компонентах при сохранении 385 agreements и grid 446/446.
+Independent reviewer проверил весь grid: 429 accepted, `error=0`,
+`uncertain=17` (5 adjudicated + 12 agreed) в `1.4`, `1.5`, `1.7`, `1.8`,
+`1.9`, `1.11`, `1.12`, `1.13`. Три QC-эмиссии побайтно совпали,
+QC/sidecar SHA `008f419b…` / `bb17fa45…`; competing Strong не продвигались.
+Книга не принята. Для `Jude` distinct adjudication разрешила 180/180
+расхождений в 90 компонентах при сохранении 754 agreements и grid 934/934.
+Independent reviewer проверил весь grid: 926 accepted, `error=0`,
+`uncertain=8` (4 adjudicated + 4 agreed) в `1.12`, `1.15`, `1.25`. Три
+QC-эмиссии побайтно совпали, QC/sidecar SHA `08c7952e…` / `eb06329b…`;
+competing `G4064`, `G0765`, `G4680` не продвигались. Книга не принята;
+`Rev` ещё ждёт independent full-grid QC.
 
 После завершения book shards pass 2 объединён дважды и ingest выполнен дважды:
 оба выпуска побайтно совпали и содержат ровно 2 171 стих, 45 831 original,

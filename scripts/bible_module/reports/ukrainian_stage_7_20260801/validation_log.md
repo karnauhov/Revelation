@@ -1287,3 +1287,177 @@ Errors: `0` generator errors
   all-66 aggregate физически пересобран и снова проверил `62/62` batch SHA.
   Текущая граница: QC `56/66` (`Gen–Titus`), строго приняты `36/66`;
   следующая книга — `Phlm`.
+
+## Independent full-grid QC Phlm — 2026-09-19
+
+- Independent review охватил все `25/25` выбранных стихов и полный reciprocal
+  grid: 129 adjudicated + 567 agreed = `696/696` решений. Итог: 685 accepted,
+  `error=2`, `uncertain=9` (6 adjudicated + 3 agreed uncertainties; обе error
+  строки находились в agreed grid).
+- Definite error `Phlm.1.25`: TAGNT `Phm.1.25#12=KO` помечает
+  `ἀμήν/G0281` как Tyn/TR/Byz-only, тогда как frozen selected layer ошибочно
+  классифицирует его `primary_shared_reading` и автоматически связывает с
+  украинским `Амі́нь`. G0281 не продвигался: требуется scoped source-layer
+  correction/resolution и distinct re-QC.
+- `Phlm.1.2`, `1.7`, `1.11`, `1.21` сохранены bounded source/textual
+  uncertainties; selected/alternative forms и Strong не подменялись. Три
+  QC JSONL и sidecar выпуска побайтно одинаковы: QC SHA-256
+  `7cd55d579f4ab53e5424576e0f66abce579e087024ea4a913deffc54d402d3d4`,
+  sidecar SHA-256
+  `6c13c878e31cd993e13db1e8d0ce8d27ed492a038f73ffbb949673183e83e1a2`.
+  Acceptance-validator ожидаемо завершился exit 1 на blocking-status gate.
+- `gold_adjudication_batch_057.manifest.json` обновлён QC SHA/счётчиками
+  (SHA-256 `7a35ca6a…`), all-66 aggregate пересобран (SHA-256 `f8235594…`) и
+  физически проверил `62/62` batch locks. Текущая граница: QC `57/66`
+  (`Gen–Phlm`), строго приняты `36/66`; следующая книга — `Heb`.
+
+## Independent full-grid QC Heb — 2026-09-19
+
+- Independent review охватил все `32/32` выбранных стиха и полный reciprocal
+  grid: 229 adjudicated + 810 agreed = `1 039/1 039` решений. Authoritative
+  v2 итог: 1 030 accepted, `error=0`, `uncertain=9` (2 adjudicated + 7 agreed).
+- `Heb.6.19` сохраняет declared high semantic null/addition component без
+  выдуманной связи `ἔχομεν/G2192 → вони`; `7.21` сохраняет traditional-only
+  phrase `κατὰ τὴν τάξιν Μελχισεδέκ` как target additions без Strong;
+  `10.12` и `11.15` сохраняют неразличимые source-form/lexeme variants.
+- Первый pre-seal draft с семью uncertainty был superseded до batch lock,
+  поскольку недостаточно явно сохранил две строки `6.19`. Три исправленных
+  v2-выпуска побайтно одинаковы: QC SHA-256
+  `d90989e139d4fb6c170f21b48afae7b9a78252c3aca23c56961f914a93ebc2af`,
+  sidecar SHA-256
+  `b72b93e0ad29f4b3b5f91066b1a43946271f117562a0f608665de495115dd665`.
+  Acceptance-validator ожидаемо завершился exit 1 на blocking-status gate.
+- `gold_adjudication_batch_058.manifest.json` обновлён authoritative v2 SHA
+  и счётчиками (SHA-256 `ca5465c4…`), all-66 aggregate пересобран (SHA-256
+  `e120b23c…`). Текущая граница: QC `58/66` (`Gen–Heb`), строго приняты
+  `36/66`; следующая книга — `Jas`.
+
+## Independent full-grid QC Jas — 2026-09-19
+
+- Independent review охватил все `32/32` выбранных стиха и полный reciprocal
+  grid: 179 adjudicated + 829 agreed = `1 008/1 008` решений. Итог:
+  994 accepted, `error=0`, `uncertain=14` (7 adjudicated + 7 agreed).
+- `Jas.2.3`, `3.3`, `3.5`, `4.9`, `5.12` оставлены fail-closed: украинский
+  текст не доказывает точную конкурирующую греческую форму/лемму/предлог;
+  alternative Strong не продвигались.
+- Три repro и authoritative completed-эмиссия побайтно одинаковы: QC SHA-256
+  `ee43e14b9b72fc098032f2a9c1141f517b7c499a694b79db73141e16c71a20e9`,
+  sidecar SHA-256
+  `7f0d1a10fad8f6c78cfb4e1953e7fc4a8af79dc1bd41893ac1c8b6ab54738a86`.
+  Acceptance-validator ожидаемо завершился exit 1 на blocking-status gate.
+- `gold_adjudication_batch_059.manifest.json` обновлён QC SHA/счётчиками
+  (SHA-256 `6330d86b…`), all-66 aggregate пересобран (SHA-256 `f38ad0f3…`) и
+  физически проверил `62/62` batch locks. Текущая граница: QC `59/66`
+  (`Gen–Jas`), строго приняты `36/66`; следующая книга — `1Pet`.
+
+## Independent full-grid QC 1Pet — 2026-09-19
+
+- Independent review охватил все `32/32` выбранных стиха и полный reciprocal
+  grid: 229 adjudicated + 873 agreed = `1 102/1 102` решений. Итог:
+  1 092 accepted, `error=0`, `uncertain=10` (6 adjudicated + 4 agreed).
+- `1.7`, `1.16`, `2.21`, `4.1`, `5.9` оставлены fail-closed; traditional-only
+  `ὑπὲρ ἡμῶν`, competing pronoun/verb forms и их Strong не продвигались.
+- Три эмиссии побайтно одинаковы: QC SHA-256
+  `47a20b06e86af9bbd17b1d8be4a5b9b717fd5a894daf45b8b55714de497fcd2b`,
+  sidecar SHA-256
+  `6122c9e535beaec8b21d8a981a8c7417adb556990ee444fa5b8d251a25c1fba4`.
+  Acceptance-validator ожидаемо завершился exit 1 на blocking-status gate.
+- `gold_adjudication_batch_060.manifest.json` обновлён QC SHA/счётчиками
+  (SHA-256 `b3d041ae…`), aggregate пересобран (SHA-256 `db9fb5c2…`) и проверил
+  `62/62` batch locks. Текущая граница: QC `60/66` (`Gen–1Pet`), строго
+  приняты `36/66`; следующая книга — `2Pet`.
+
+## Independent full-grid QC 2Pet — 2026-09-19
+
+- Independent review охватил все `32/32` выбранных стиха и полный reciprocal
+  grid: 225 adjudicated + 993 agreed = `1 218/1 218` решений. Итог:
+  1 201 accepted, `error=0`, `uncertain=17` (10 adjudicated + 7 agreed).
+- `1.4`, `1.17`, `1.21`, `2.6`, `2.12`, `2.13`, `3.10` оставлены
+  fail-closed: украинский текст не доказывает точную конкурирующую форму,
+  лемму или присутствие чтения; traditional-only/alternative Strong не
+  продвигались.
+- Три эмиссии побайтно одинаковы: QC SHA-256
+  `1caa41e9caf196e4df35b96c6b6d47216cba9514e0fd5a8079eae9d93a442456`,
+  sidecar SHA-256
+  `6bf3bb6b9ae122678925f3fdb8c659c1a45820e6cb6f03723b1372abd442e586`.
+  Acceptance-validator ожидаемо завершился exit 1 на blocking-status gate.
+- `gold_adjudication_batch_061.manifest.json` обновлён QC SHA/счётчиками
+  (SHA-256 `cfd73283…`), aggregate пересобран (SHA-256 `53cc1d24…`) и проверил
+  `62/62` batch locks. Текущая граница: QC `61/66` (`Gen–2Pet`), строго
+  приняты `36/66`; следующая книга — `1John`.
+
+## Independent full-grid QC 1John — 2026-09-19
+
+- Independent review охватил все `33/33` выбранных стиха и полный reciprocal
+  grid: 220 adjudicated + 1 074 agreed = `1 294/1 294` решений. Итог:
+  1 278 accepted, `error=2`, `uncertain=14` (1 adjudicated + 13 agreed).
+- Definite agreed-row error `4.20` затрагивает original+target решения:
+  selected `οὐ/G3756` не может поддерживать OH «як», которое соответствует
+  TR/Byz `πῶς/G4459`. `1.7`, `3.13`, `3.14`, `3.19`, `4.19`, `5.8`, `5.9`
+  оставлены source/traditional-reading uncertainties; competing Strong не
+  продвигались.
+- Три QC/sidecar эмиссии побайтно одинаковы: QC SHA-256
+  `c9b72e4df58742a39cdf287c55c482c887033b3999305b731c0c205bf0bfc947`,
+  sidecar SHA-256
+  `17ba3d8f76180c3de59fe4b25b230775196fbf44fd8a28a28db1b08d688900f0`.
+  Acceptance-validator ожидаемо блокирует книгу из-за error/uncertain.
+- `gold_adjudication_batch_062.manifest.json` обновлён QC SHA/счётчиками
+  (SHA-256 `fd4a78d5…`), aggregate пересобран (SHA-256 `de0baa13…`) и проверил
+  `62/62` batch locks. Текущая граница: QC `62/66` (`Gen–1John`), строго
+  приняты `36/66`; следующая книга — `2John`.
+
+### 2026-09-19 — 2John independent full-grid QC
+
+- Independent review охватил все `13/13` выбранных стихов и полный reciprocal
+  grid: 48 adjudicated + 443 agreed = `491/491` решение. Итог:
+  472 accepted, `error=5`, `uncertain=14` (6 adjudicated + 8 agreed uncertain;
+  все пять error — agreed).
+- Definite agreed-row errors `1.7` и `1.9` затрагивают reciprocal scopes
+  `o004+t004` и `o003+t003+t004`: selected `ἐξῆλθον/G1831` и
+  `προάγων/G4254` не поддерживают украинские `увійшло` и `робить переступ`,
+  соответствующие TR/Byz `εἰσῆλθον/G1525` и `παραβαίνων/G3845`.
+  Loci `1.1`, `1.3`, `1.8`, `1.9`, `1.12`, `1.13` сохранены как bounded
+  source/textual uncertainties; competing Strong не продвигались.
+- Три QC/sidecar эмиссии побайтно одинаковы: QC SHA-256
+  `f3b43b4903a52bf94e9372c60ee8461c279012eecf2b4b9b1bd68560a5ac4363`,
+  sidecar SHA-256
+  `1d0af73efa55ab800e26b83287a64e2242daf754955ce93a124b8eda60abf4fa`.
+- `gold_adjudication_batch_063.manifest.json` обновлён QC SHA/счётчиками
+  (SHA-256 `ff6f5549…`), aggregate пересобран (SHA-256 `da07a6ab…`) и проверил
+  `62/62` batch locks. Текущая граница: QC `63/66` (`Gen–2John`), строго
+  приняты `36/66`; следующая книга — `3John`.
+
+### 2026-09-19 — 3John independent full-grid QC
+
+- Independent review охватил все `14/14` выбранных стихов и полный reciprocal
+  grid: 61 adjudicated + 385 agreed = `446/446` решений. Итог:
+  429 accepted, `error=0`, `uncertain=17` (5 adjudicated + 12 agreed).
+- Bounded uncertainty сохранена в `1.4`, `1.5`, `1.7`, `1.8`, `1.9`, `1.11`,
+  `1.12`, `1.13`: украинский текст не доказывает exact article/lexeme/form
+  selected reading либо поддерживает competing omission/traditional reading.
+  Ни один competing Strong не продвинут.
+- Три QC/sidecar эмиссии побайтно одинаковы: QC SHA-256
+  `008f419b01cc1117a6cf704941c56ec650bfa31ebf8024eeade95add54b9b0ef`,
+  sidecar SHA-256
+  `bb17fa45e8c6f10259f9d607cdbb619b91940e249baf4fea91f564648588703b`.
+- `gold_adjudication_batch_064.manifest.json` обновлён QC SHA/счётчиками
+  (SHA-256 `1e36a51a…`), aggregate пересобран (SHA-256 `2f8b8f0c…`) и проверил
+  `62/62` batch locks. Текущая граница: QC `64/66` (`Gen–3John`), строго
+  приняты `36/66`; следующая книга — `Jude`.
+
+### 2026-09-19 — Jude independent full-grid QC
+
+- Independent review охватил все `25/25` выбранных стихов и полный reciprocal
+  grid: 180 adjudicated + 754 agreed = `934/934` решения. Итог:
+  926 accepted, `error=0`, `uncertain=8` (4 adjudicated + 4 agreed).
+- Bounded uncertainty сохранена в `1.12`, `1.15`, `1.25`: exact article,
+  verb lexeme, `πᾶσαν ψυχὴν`/`πάντας τοὺς ἀσεβεῖς` и TR/Byz-only
+  `σοφῷ/G4680` не разрешены догадкой. Competing Strong не продвигались.
+- Три QC/sidecar эмиссии побайтно одинаковы: QC SHA-256
+  `08c7952e78b64a04a4102b1f7ae432fb6fcf74f5dd521ebf3d23fc1808d392d8`,
+  sidecar SHA-256
+  `eb06329bf4181553f4d8a88261da8571e5c98516892d583ecb80792fa7b8bf7e`.
+- `gold_adjudication_batch_065.manifest.json` обновлён QC SHA/счётчиками
+  (SHA-256 `3b844532…`), aggregate пересобран (SHA-256 `fea440fa…`) и проверил
+  `62/62` batch locks. Текущая граница: QC `65/66` (`Gen–Jude`), строго
+  приняты `36/66`; следующая книга — `Rev`.

@@ -12,7 +12,7 @@
   independence 87 638/87 638; global comparison 65 434 agreements / 22 204
   substantive disagreement);
   distinct adjudication `66/66` (`Gen–Rev`); independent full-grid QC
-  выполнен для `56/66` (`Gen–Titus`), но без ошибок и unresolved полностью
+  выполнен для `65/66` (`Gen–Jude`), но без ошибок и unresolved полностью
   приняты только `36/66`. Наличие pass 2, adjudication или blocking QC само
   по себе книгу не принимает.
 - `Eph.5.2` exact two-row correction завершена: связь
@@ -38,7 +38,7 @@
   decisions в 1 346 verse-local компонентах при сохранении 10 709
   agreements; каждая книга прошла root `check-adjudication`, а повторные
   выпуски совпали побайтно. Все critical/high uncertainties сохранены
-  fail-closed. Independent full-grid QC для `Phlm–Rev` ещё не выполнялся,
+  fail-closed. Independent full-grid QC для `Rev` ещё не выполнялся,
   поэтому строгий счётчик accepted books не изменился.
 - `1Tim` independent full-grid QC завершён: проверены `33/33` стиха и
   `1 013/1 013` решений; 1 001 accepted, `error=0`, `uncertain=12`
@@ -64,8 +64,64 @@
   byte-identical, QC/sidecar SHA `d6d83835…` / `95454c74…`; acceptance-validator
   ожидаемо отклонил blocking status. Книга не принята; обязательны scoped
   selected-source/full-grid correction и distinct re-QC.
-- **Текущая точка продолжения:** independent full-grid QC `Phlm` (shard 057).
-  Для `Phlm–Rev` structural adjudication уже завершена и не повторяется.
+- `Phlm` independent full-grid QC завершён: проверены все `25/25` выбранных
+  стихов и 129 adjudicated + 567 agreed = `696/696` решений. Итог:
+  685 accepted, `error=2`, `uncertain=9`. Definite agreed-row error `1.25`
+  обнаружил traditional-only `ἀμήν/G0281`, ошибочно классифицированный frozen
+  selected layer как primary/shared и автоматически связанный с `Амі́нь`;
+  `1.2`, `1.7`, `1.11`, `1.21` сохранены source/textual uncertainties.
+  Три выпуска byte-identical, QC/sidecar SHA `7cd55d57…` / `6c13c878…`;
+  acceptance-validator ожидаемо отклонил blocking status. Книга не принята,
+  Strong alternatives не продвигались.
+- `Heb` independent full-grid QC завершён: проверены все `32/32` выбранных
+  стиха и 229 adjudicated + 810 agreed = `1 039/1 039` решений. Итог:
+  1 030 accepted, `error=0`, `uncertain=9` в `6.19`, `7.21`, `10.12`,
+  `11.15`. Первый pre-seal draft superseded до batch lock, потому что не
+  сохранил две строки уже объявленного high semantic component `6.19`;
+  три исправленных v2-выпуска byte-identical, QC/sidecar SHA
+  `d90989e1…` / `b72b93e0…`. Книга не принята, alternative Strong не
+  продвигались.
+- `Jas` independent full-grid QC завершён: проверены все `32/32` выбранных
+  стиха и 179 adjudicated + 829 agreed = `1 008/1 008` решений. Итог:
+  994 accepted, `error=0`, `uncertain=14` (7 adjudicated + 7 agreed) в
+  `2.3`, `3.3`, `3.5`, `4.9`, `5.12`. Три repro и authoritative completed-
+  выпуск byte-identical, QC/sidecar SHA `ee43e14b…` / `7f0d1a10…`;
+  acceptance-validator ожидаемо отклонил blocking status. Книга не принята,
+  competing Strong не продвигались.
+- `1Pet` independent full-grid QC завершён: проверены все `32/32` выбранных
+  стиха и 229 adjudicated + 873 agreed = `1 102/1 102` решений. Итог:
+  1 092 accepted, `error=0`, `uncertain=10` (6 adjudicated + 4 agreed) в
+  `1.7`, `1.16`, `2.21`, `4.1`, `5.9`. Три выпуска byte-identical,
+  QC/sidecar SHA `47a20b06…` / `6122c9e5…`; acceptance-validator ожидаемо
+  отклонил blocking status. Книга не принята, competing Strong не продвигались.
+- `2Pet` independent full-grid QC завершён: проверены все `32/32` выбранных
+  стиха и 225 adjudicated + 993 agreed = `1 218/1 218` решений. Итог:
+  1 201 accepted, `error=0`, `uncertain=17` (10 adjudicated + 7 agreed) в
+  `1.4`, `1.17`, `1.21`, `2.6`, `2.12`, `2.13`, `3.10`. Три выпуска
+  byte-identical, QC/sidecar SHA `1caa41e9…` / `6bf3bb6b…`;
+  acceptance-validator ожидаемо отклонил blocking status. Книга не принята,
+  competing Strong не продвигались.
+- `2John` independent full-grid QC завершён: проверены все `13/13` выбранных
+  стихов и 48 adjudicated + 443 agreed = `491/491` решение. Итог:
+  472 accepted, `error=5`, `uncertain=14`; ошибки `1.7` и `1.9` затрагивают
+  selected `G1831`/`G4254`, тогда как OH поддерживает competing
+  `G1525`/`G3845`. Три выпуска byte-identical, QC/sidecar SHA
+  `f3b43b49…` / `1d0af73e…`; книга не принята и competing Strong не продвигались.
+- `3John` independent full-grid QC завершён: проверены все `14/14` выбранных
+  стихов и 61 adjudicated + 385 agreed = `446/446` решений. Итог:
+  429 accepted, `error=0`, `uncertain=17` в восьми loci. Три выпуска
+  byte-identical, QC/sidecar SHA `008f419b…` / `bb17fa45…`; книга не принята,
+  competing Strong не продвигались.
+- `Jude` independent full-grid QC завершён: проверены все `25/25` выбранных
+  стихов и 180 adjudicated + 754 agreed = `934/934` решения. Итог:
+  926 accepted, `error=0`, `uncertain=8` в трёх loci. Три выпуска
+  byte-identical, QC/sidecar SHA `08c7952e…` / `eb06329b…`; книга не принята,
+  competing Strong не продвигались.
+- **Текущая точка продолжения:** запечатывание independent full-grid QC `Rev`
+  (shard 066). Полный grid уже вручную прочитан `1 769/1 769`; structural
+  adjudication завершена и не повторяется. Ещё не созданы authoritative QC spec,
+  три deterministic выпуска и batch SHA-lock, поэтому официальный счётчик пока
+  остаётся `65/66`.
 - Сводный `gold_adjudication_complete.manifest.json` SHA-locks все 62
   versioned batch-manifests и доказывает exact покрытие всех `66/66` книг:
   22 204 adjudicated + 65 434 agreed = 87 638 stable decisions, `error_count=0`.
@@ -80,8 +136,8 @@
 
 ## Состояние репозитория
 
-- Последний commit на старте этой рабочей точки: `aeffd9e`
-  (`Advance stage 7 gold review and retire local LLM pilot [skip ci]`).
+- Последний commit на старте этой рабочей точки: `6bdf8ed`
+  (`Advance Ukrainian stage 7 gold adjudication and QC through Titus [skip ci]`).
   Текущий worktree содержит только сохраняемые stage-7 gold/QC/документные
   изменения и новые versioned manifests 052/053/059/060–066/all-66. Перед продолжением
   проверить `git status` и не перезаписывать эти изменения, если владелец ещё
@@ -277,7 +333,7 @@ Versioned доказательства текущей точки:
 - `gold_review_batch_034.manifest.json`, `gold_adjudication_batch_034.manifest.json` и `textual_fingerprint_nah_1_8.manifest.json` — `Nah` заблокирована unresolved critical textual locus;
 - `gold_review_batch_035.manifest.json` и `gold_adjudication_batch_035.manifest.json` — `Hab` full-grid QC принят;
 - `gold_review_batch_036.manifest.json` и `gold_adjudication_batch_036.manifest.json` — `Zeph` QC выявил четыре unresolved high textual cases;
-- `gold_review_batch_037.manifest.json`–`gold_review_batch_059.manifest.json` — `Hag`–`Jas` blind pass 2/comparison; `Hag` independent full-grid QC принята, `Zech` заблокирована семью textual uncertainties, `Mat` прошла independent full-grid QC с 15 critical uncertain IDs и ждёт source resolution/re-QC, `Mark`/`Luke`/`John` прошли блокирующий QC с 4/14/10 uncertain IDs, `Acts` прошла blocking QC с 2 error/35 uncertain, two-row correction и distinct post-correction QC с 0 error/35 uncertain, `Rom`/`1Cor`/`2Cor`/`Gal` прошли блокирующий QC (19/20/31/18 uncertain), `Eph` прошла blocking QC с 2 errors/18 uncertain, `Phil`/`Col` прошли blocking full-grid QC с 36/22 uncertain, `1Thess` — с 27 uncertain, `2Thess` — с 31 uncertain, `1Tim` — с 12 uncertain, `2Tim` — с 11 uncertain, `Titus` — с 1 error/10 uncertain; `Phlm–Jas` structural adjudication завершена, но ждёт independent QC;
+- `gold_review_batch_037.manifest.json`–`gold_review_batch_059.manifest.json` — `Hag`–`Jas` blind pass 2/comparison; `Hag` independent full-grid QC принята, `Zech` заблокирована семью textual uncertainties, `Mat` прошла independent full-grid QC с 15 critical uncertain IDs и ждёт source resolution/re-QC, `Mark`/`Luke`/`John` прошли блокирующий QC с 4/14/10 uncertain IDs, `Acts` прошла blocking QC с 2 error/35 uncertain, two-row correction и distinct post-correction QC с 0 error/35 uncertain, `Rom`/`1Cor`/`2Cor`/`Gal` прошли блокирующий QC (19/20/31/18 uncertain), `Eph` прошла blocking QC с 2 errors/18 uncertain, `Phil`/`Col` прошли blocking full-grid QC с 36/22 uncertain, `1Thess` — с 27 uncertain, `2Thess` — с 31 uncertain, `1Tim` — с 12 uncertain, `2Tim` — с 11 uncertain, `Titus` — с 1 error/10 uncertain, `Phlm` — с 2 errors/9 uncertain, `Heb` — с 9 uncertain, `Jas` — с 14 uncertain; все `Hag–Jas` structural adjudication и full-grid QC завершены, но blocked-книги ждут resolution/correction и re-QC;
 - `gold_review_batch_060_066.manifest.json` — frozen blind pass 2/comparison последних семи книг `1Pet–Rev`: 184 стиха, 7 254 решения, 6 052 agreements и 1 202 disagreement; structural adjudication завершена, independent QC ещё не выполнялся;
 - `gold_adjudication_batch_053.manifest.json`–`gold_adjudication_batch_056.manifest.json` — exact `2Thess`/`1Tim`/`2Tim`/`Titus` adjudication + blocking full-grid QC SHA и счётчики; `gold_adjudication_batch_057.manifest.json`–`gold_adjudication_batch_066.manifest.json` — exact book-level SHA structural adjudication `Phlm–Rev`;
 - `gold_adjudication_complete.manifest.json` — сводный all-66 SHA-locked adjudication contract: 62 batch-manifests, 66 книг, 87 638 stable decisions, `error_count=0`; повторный физический аудит подтвердил `62/62` batch SHA, `132/132` adjudication/sidecar SHA и root validator `66/66`;
@@ -1028,7 +1084,7 @@ python -m scripts.bible_module.ukrainian_stage_7_gold_compare check-adjudication
   out-of-scope тестам; после стабилизации окружения/исходного Flutter baseline
   он должен быть чисто повторён перед закрытием этапа.
 
-## Checkpoint остановки 2026-09-19: Phlm full-grid QC начат, но не запечатан
+## Исторический checkpoint 2026-09-19: Phlm full-grid QC был начат, но не запечатан
 
 - Текущий подтверждённый счётчик не изменился: pass 1 `66/66`, pass 2/comparison
   `66/66`, adjudication `66/66`, independent full-grid QC `56/66`
@@ -1072,20 +1128,166 @@ python -m scripts.bible_module.ukrainian_stage_7_gold_compare check-adjudication
   текущую QC-серию и затем воспроизводимо обновить `artifact_inventory`, не
   трактовать это как drift Stage-6 или frozen gold semantics.
 
+## Актуальный checkpoint 2026-09-19: Phlm QC запечатан
+
+- Bounded решения завершены: `Phlm.1.11` сохранён как один agreed source-null
+  uncertainty; `Phlm.1.25` — как две definite agreed-row ошибки selected-layer
+  classification/link. Вместе с `1.2`, `1.7`, `1.21` полный результат равен
+  685 accepted + 2 error + 9 uncertain = `696/696`.
+- Три QC-эмиссии побайтно одинаковы: JSONL SHA-256
+  `7cd55d579f4ab53e5424576e0f66abce579e087024ea4a913deffc54d402d3d4`,
+  sidecar SHA-256
+  `6c13c878e31cd993e13db1e8d0ce8d27ed492a038f73ffbb949673183e83e1a2`.
+  Batch 057 SHA-256 `7a35ca6a1911800a5e461b2e2d96eeb5f794ae9a277c3bcc29297695d427de55`;
+  all-66 aggregate SHA-256
+  `f82355940f64b256626594cf07680a09ff36369ed95f3eb6528bb4580a6bd850`,
+  физические batch locks `62/62` совпали.
+- Текущий подтверждённый счётчик: QC `57/66` (`Gen–Phlm`), строго приняты
+  `36/66`. Следующая книга — `Heb` shard 058; `Phlm` не повторять до scoped
+  source correction/resolution и distinct re-QC.
+
+## Актуальный checkpoint 2026-09-19: Heb QC запечатан
+
+- Полный grid `Heb` проверен `1 039/1 039`: 1 030 accepted, `error=0`,
+  `uncertain=9` (2 adjudicated + 7 agreed) в четырёх loci. `6.19` сохраняет
+  declared high semantic null/addition decomposition, `7.21` — traditional-only
+  phrase без автоматического Strong, `10.12` и `11.15` — неразличимые
+  source-form/lexeme variants.
+- Authoritative v2 QC/sidecar SHA-256:
+  `d90989e139d4fb6c170f21b48afae7b9a78252c3aca23c56961f914a93ebc2af` /
+  `b72b93e0ad29f4b3b5f91066b1a43946271f117562a0f608665de495115dd665`.
+  Batch 058 SHA-256 `ca5465c4e37d47d3d17d07c0729d81d959ea792bff62095f78c2cf68a0e8925f`;
+  aggregate SHA-256 `e120b23cf8437955f81c27e07a4057897c861dca36a5fd79a12b66ed8f3e30e9`.
+- Текущий подтверждённый счётчик: QC `59/66` (`Gen–Jas`), строго приняты
+  `36/66`. Следующая книга — `1Pet` shard 060; `Jas` не повторять до source
+  resolution и distinct re-QC.
+
+## Актуальный checkpoint 2026-09-19: Jas QC запечатан
+
+- Полный grid `Jas` проверен `1 008/1 008`: 994 accepted, `error=0`,
+  `uncertain=14` (7 adjudicated + 7 agreed) в `2.3`, `3.3`, `3.5`, `4.9`,
+  `5.12`. Ни один alternative Strong не продвинут.
+- Authoritative QC/sidecar SHA-256:
+  `ee43e14b9b72fc098032f2a9c1141f517b7c499a694b79db73141e16c71a20e9` /
+  `7f0d1a10fad8f6c78cfb4e1953e7fc4a8af79dc1bd41893ac1c8b6ab54738a86`.
+  Batch 059 SHA-256 `6330d86ba327ff3f30b30070faed03598dd6e17c09120378ebe94c2daefa2f94`;
+  aggregate SHA-256 `f38ad0f3f0d63edaecf2eaa385bb6c68b71be3f576cd875700e067e942fab260`,
+  физические batch locks `62/62` совпали.
+- Текущий подтверждённый счётчик: QC `59/66` (`Gen–Jas`), строго приняты
+  `36/66`. Следующая книга — `1Pet` shard 060.
+
+## Актуальный checkpoint 2026-09-19: 1Pet QC запечатан
+
+- Полный grid `1Pet` проверен `1 102/1 102`: 1 092 accepted, `error=0`,
+  `uncertain=10` (6 adjudicated + 4 agreed) в `1.7`, `1.16`, `2.21`, `4.1`,
+  `5.9`. Traditional-only/alternative Strong не продвинуты.
+- Authoritative QC/sidecar SHA-256:
+  `47a20b06e86af9bbd17b1d8be4a5b9b717fd5a894daf45b8b55714de497fcd2b` /
+  `6122c9e535beaec8b21d8a981a8c7417adb556990ee444fa5b8d251a25c1fba4`.
+  Batch 060 SHA-256 `b3d041ae766f185af680d62c625e620c0440328878e0f3bf4fd8c6573728b0ab`;
+  aggregate SHA-256 `db9fb5c2fa7c0ebff388ce67e8de5a31d3a613ca3a58bb903e01047a0eee6d74`,
+  физические batch locks `62/62` совпали.
+- Текущий подтверждённый счётчик: QC `60/66` (`Gen–1Pet`), строго приняты
+  `36/66`. Следующая книга — `2Pet` shard 061.
+
+## Актуальный checkpoint 2026-09-19: 2Pet QC запечатан
+
+- Полный grid `2Pet` проверен `1 218/1 218`: 1 201 accepted, `error=0`,
+  `uncertain=17` (10 adjudicated + 7 agreed) в `1.4`, `1.17`, `1.21`, `2.6`,
+  `2.12`, `2.13`, `3.10`. Traditional-only/alternative Strong не продвинуты.
+- Authoritative QC/sidecar SHA-256:
+  `1caa41e9caf196e4df35b96c6b6d47216cba9514e0fd5a8079eae9d93a442456` /
+  `6bf3bb6b9ae122678925f3fdb8c659c1a45820e6cb6f03723b1372abd442e586`.
+  Batch 061 SHA-256 `cfd732838a07cfdef35fb078b94fc763514a32b7b559913b21e3325ec3fc289e`;
+  aggregate SHA-256 `53cc1d248c8cc48e9feb57d95998c14740ed60423dd307d009adcfbb452bac40`,
+  физические batch locks `62/62` совпали.
+- Текущий подтверждённый счётчик: QC `61/66` (`Gen–2Pet`), строго приняты
+  `36/66`. Следующая книга — `1John` shard 062.
+
+## Актуальный checkpoint 2026-09-19: 1John QC запечатан
+
+- `inspect_remaining_full_grid 1John 062` подтвердил полный reciprocal grid:
+  220 adjudicated + 1 074 agreed = `1 294/1 294` решений в `33/33` выбранных
+  стихах. Все 33 verse grids прочитаны и запечатаны.
+- Предварительно приняты без нового blocker обычные lexical/null/merge-split
+  решения, а также controlled traditional fingerprint `1John.5.7`.
+- Bounded verdict scope включает следующие loci:
+  - `1.7`: target `t020` «Христа» соответствует TR/Byz-only
+    `Χριστοῦ/G5547`, отсутствующему в selected layer;
+  - `3.13`: selected critical initial `o001 Καὶ/G2532` не отражён, а target
+    `t004` «мої» соответствует TR/Byz-only `μου/G3165`;
+  - `3.14`: target `t015` «брата» соответствует TR/Byz-only
+    `ἀδελφόν/G0080`;
+  - `3.19`: проверить точную competing форму `γνωσόμεθα` при сохранении
+    G1097 и решить, требует ли она bounded source-form uncertainty;
+  - `4.19`: target `t003` «Його» соответствует TR/Byz-only
+    `αὐτόν/G0846`;
+  - `4.20`: definite reciprocal content error на `o029` + `t021`:
+    selected `οὐ/G3756` ошибочно связан с «як», тогда как украинский текст
+    точно соответствует TR/Byz `πῶς/G4459`; G4459 пока не продвигать;
+  - `5.8`: target `t001–t005` «І троє свідкують на землі» соответствует
+    TR-only alternative block `καὶ τρεῖς εἰσιν οἱ μαρτυροῦντες ἐν τῇ γῇ`;
+    определить bounded uncertainty/error scope без автоматического Strong;
+  - `5.9`: selected `o020 ὅτι/G3754` связан с `t014` «яким», тогда как OH
+    поддерживает TR/Byz `ἥν/G3739`; оставить source-choice fail-closed.
+- Итог: 1 278 accepted, `error=2`, `uncertain=14` (1 adjudicated + 13 agreed
+  uncertain; обе error — agreed). Три QC/sidecar выпуска побайтно совпали:
+  `c9b72e4df58742a39cdf287c55c482c887033b3999305b731c0c205bf0bfc947` /
+  `17ba3d8f76180c3de59fe4b25b230775196fbf44fd8a28a28db1b08d688900f0`.
+  Batch 062 SHA `fd4a78d5c0037b8f5b7603c956ad8883320e140ea82e61d0bbba324b9d1b982d`;
+  aggregate SHA `de0baa13aa9dc90c97d97864833678d509b61b6e9ca107dab7c922c48977fcb7`.
+  Официальный счётчик QC `62/66`; следующая книга — `2John` shard 063.
+
+## Актуальный checkpoint 2026-09-19: 2John QC запечатан
+
+- Полный grid `2John` проверен `491/491`: 472 accepted, `error=5`,
+  `uncertain=14` (6 adjudicated + 8 agreed uncertain; все пять errors — agreed).
+  `1.7` и `1.9` обнаружили ошибочные selected-layer связи G1831/G4254;
+  loci `1.1`, `1.3`, `1.8`, `1.9`, `1.12`, `1.13` оставлены fail-closed.
+- Три QC/sidecar выпуска побайтно совпали: SHA-256
+  `f3b43b4903a52bf94e9372c60ee8461c279012eecf2b4b9b1bd68560a5ac4363` /
+  `1d0af73efa55ab800e26b83287a64e2242daf754955ce93a124b8eda60abf4fa`.
+  Batch 063 SHA `ff6f55498a2966face04c001eea3c1d6ecfae97b39a8af3edd87753fd03c5537`;
+  aggregate SHA `da07a6ab36c90967bdc8d64efb5f757c629e996e54cfc6638c495e0252eb4b5a`.
+  Официальный счётчик QC `63/66`; следующая книга — `3John` shard 064.
+
+## Актуальный checkpoint 2026-09-19: 3John QC запечатан
+
+- Полный grid `3John` проверен `446/446`: 429 accepted, `error=0`,
+  `uncertain=17` (5 adjudicated + 12 agreed) в `1.4`, `1.5`, `1.7`, `1.8`,
+  `1.9`, `1.11`, `1.12`, `1.13`. Exact source reading оставлен fail-closed;
+  competing Strong не продвигались.
+- Три QC/sidecar выпуска побайтно совпали: SHA-256
+  `008f419b01cc1117a6cf704941c56ec650bfa31ebf8024eeade95add54b9b0ef` /
+  `bb17fa45e8c6f10259f9d607cdbb619b91940e249baf4fea91f564648588703b`.
+  Batch 064 SHA `1e36a51a2b5b47f8d8b184b82af275a0e33dc271f1f84b360ae15751af120dbd`;
+  aggregate SHA `2f8b8f0ceaeab35d38453c46f1037df2e201e92230cfba9aea1c9799eb72bb39`.
+  Официальный счётчик QC `64/66`; следующая книга — `Jude` shard 065.
+
+## Актуальный checkpoint 2026-09-19: Jude QC запечатан
+
+- Полный grid `Jude` проверен `934/934`: 926 accepted, `error=0`,
+  `uncertain=8` (4 adjudicated + 4 agreed) в `1.12`, `1.15`, `1.25`.
+  Exact source reading оставлен fail-closed; competing Strong не продвигались.
+- Три QC/sidecar выпуска побайтно совпали: SHA-256
+  `08c7952e78b64a04a4102b1f7ae432fb6fcf74f5dd521ebf3d23fc1808d392d8` /
+  `eb06329bf4181553f4d8a88261da8571e5c98516892d583ecb80792fa7b8bf7e`.
+  Batch 065 SHA `3b8445320c43720a8584601cad810da1f3cac6461f7d2e1d375beb13ed89c06a`;
+  aggregate SHA `fea440fa7ab970cf7275609becb472923e91485ee1422bade010738d0ab1cf26`.
+  Официальный счётчик QC `65/66`; следующая книга — `Rev` shard 066.
+
 ## Точная следующая последовательность
 
 1. После commit владельца проверить чистый `git status`, exact stage-6 SHA,
    versioned batch SHA locks и полный stage-7 `--check`; не регенерировать
    frozen book semantics.
-2. `2Thess`, `1Tim`, `2Tim` и `Titus` full-grid QC завершены и SHA-locked; их не повторять.
+2. `2Thess–Jude` full-grid QC завершены и SHA-locked; их не повторять.
    Все unresolved loci оставить блокирующими до source resolution и distinct re-QC.
-3. Distinct adjudication завершена для всех `66/66`; её не повторять.
-   Завершить bounded классификацию `Phlm.1.11`/`1.25`, создать и трижды
-   детерминированно проверить `Phlm` QC spec/artifacts, обновить batch 057,
-   aggregate, roadmap/report/log и только затем повысить счётчик до `57/66`.
-   После этого full-grid QC по порядку
-   `Heb`, `Jas`, `1Pet`, `2Pet`, `1John`,
-   `2John`, `3John`, `Jude`, `Rev`; frozen reviewer identities не смешивать.
+3. Distinct adjudication завершена для всех `66/66`; её не повторять. Для `Rev`
+   не перечитывать уже проверенные 35 стихов: оформить bounded uncertainty/error
+   scope из checkpoint ниже, посчитать adjudicated/agreed verdict counts, создать
+   `qc/qc_spec.json`, выполнить три byte-identical `emit_full_grid_qc`, обновить
+   batch 066 и aggregate; frozen reviewer identities не смешивать.
 4. Параллельная очередь source resolution/re-QC: `Nah`/`Zeph`/`Zech`,
    `Mat`/`Mark`/`Luke`/`John`/`Acts`/`Rom`/`1Cor`/`2Cor`/`Gal`/`Eph`/
    `Phil`/`Col`; structural adjudication всех этих книг уже завершена.
@@ -1101,4 +1303,30 @@ python -m scripts.bible_module.ukrainian_stage_7_gold_compare check-adjudication
 
 ## Короткая команда возобновления
 
-`Продолжи 7.4 строго из актуального HANDOFF: Phlm grid 696/696 уже прочитан; заверши bounded решения 1.11/1.25, запечатай и проверь Phlm QC как 57/66, затем продолжай full-grid QC Heb–Rev; этап 8 и SQLite не начинай.`
+`Продолжи 7.4 строго из актуального HANDOFF: Rev grid 1 769/1 769 уже прочитан; оформи bounded verdicts, запечатай QC shard 066 тремя deterministic выпусками и заверши первичную QC-очередь, не переходя к этапу 8 или SQLite.`
+
+## Pause checkpoint 2026-09-19: Rev full-grid прочитан, QC ещё не запечатан
+
+- Проверены все `35/35` выбранных стихов и все 239 adjudicated + 1 530 agreed =
+  `1 769/1 769` original/target решений. Последними дочитаны `12.1`, `13.1–3`,
+  `16.7`, `16.16`, `17.1`, `17.18`, `18.16`, `18.22`, `19.10`, `20.6`,
+  `21.4`, `22.8`, `22.19`; повторный full-grid просмотр не нужен.
+- Обязательные fail-closed loci: `1.3` — девять source-not-rendered original rows
+  `o012–o020` из-за обрезанного immutable stage-6 текста; `1.5` — selected
+  `λύσαντι/G3089` против OH «обмив» и competing `λούσαντι/G3068`; `13.1` —
+  selected 3-е лицо `ἐστάθη` против OH «я став» и competing `ἐστάθην`; `22.19` —
+  unresolved alternative `καί/G2532` без target rendering. Ни один competing Strong
+  не продвигать.
+- До создания spec окончательно сверить bounded дополнительные loci, уже выявленные
+  полным QC: `1.5` (`ἐκ/G1537` ↔ `ἀπό/G0575`), `2.13` (OH «діла твої, і» и
+  repeated `μου`), `3.7` (participle/finite `κλείων/κλείει`), `4.7`
+  (`ἔχων/ἔχον`), `8.13` (accusative/dative `τοὺς κατοικοῦντας` / `τοῖς
+  κατοικοῦσιν`), `9.2` (`G4656/G4654`), `9.21` (`G5333/G5331`), `18.16`
+  (OH initial «і», `G5553/G5557`, singular/plural pearl), `20.6` (critical
+  article), `21.4` (TR-only `θεός` and `ἐκ/G1537` ↔ `ἀπό/G0575`). Эти строки
+  пока являются checkpoint-кандидатами uncertainty, а не запечатанными verdicts.
+- QC spec/result directories для `Rev` ещё не создавались. Не обновлять
+  `gold_adjudication_batch_066.manifest.json` и aggregate до трёх совпавших
+  эмиссий. Официальный прогресс остаётся QC `65/66`, accepted `36/66`.
+- Активных агентов, book jobs и фоновых команд нет. Этап 8, SQLite, production
+  Strong, commit и push не выполнялись.
