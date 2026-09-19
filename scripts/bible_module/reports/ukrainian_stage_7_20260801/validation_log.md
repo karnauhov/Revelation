@@ -26,8 +26,10 @@ Errors: `0` generator errors
   `41807` target decisions, 66 distinct shard reviewers, `error_count=0` — PASS
   AS NONFINAL INPUT
 - frozen finalized gold accepted decisions: `0` — BLOCKER
-- independent gold pass 2 and comparison: complete for `Gen–Isa` (`814`
-  verses / `19207` original / `16692` target); `Jer–Rev` missing — BLOCKER
+- independent gold pass 2 and comparison: complete for all `66/66` books:
+  `2171` verses / `45831` original / `41807` target / `87638` stable
+  decisions; reviewer independence `87638/87638`, error count `0` — PASS AS
+  NONFINAL INPUT; `22204` disagreements still require adjudication — BLOCKER
 - repeated post-blind comparison `Deut`: `1562` stable decisions, `1363`
   alignment agreements and `199` substantive disagreements; two independent
   outputs and manifests are byte-identical, all four physical SHA locks match
@@ -1084,3 +1086,204 @@ Errors: `0` generator errors
   artifact inventory полный stage-7 `--check` — PASS: `processed_count=31 102`,
   `accepted_links=0`, `error_count=0`; frozen stage-6 text SHA подтверждён.
 - Production Strong, finalized global gold, Stage 8 и SQLite не создавались.
+
+- Post-pass2 regression rerun: stages 3/4/5/6 `--check` — PASS; полный
+  `python -m scripts.bible_module.ukrainian_stage_7 --check` после обновления
+  artifact inventory — PASS (`31 102`, `accepted_links=0`, `error_count=0`);
+  `python -m unittest discover -s scripts/bible_module/tests` — 393/393 PASS;
+  `python -m unittest discover -s scripts/content_tool/tests` — 30/30 PASS;
+  forbidden-pattern, docs-sync и `git diff --check` — PASS. Flutter/runtime,
+  маршруты, DB и content tool не менялись; отдельный smoke N/A.
+
+## Продолжение 7.4 — 2026-09-19
+
+- Работа начата от чистого committed checkpoint `aeffd9e`; до book-level
+  операций повторно подтверждены immutable stage-6 SHA: text
+  `e55156cd4c201077de3c2e1d44b06dd1035a7a8db7c26321869f860768671bcf`,
+  manifest `75d1f0199a528a662a69d55629ecebafa3264122d1b7b2c8df3e3dc8a92ea4af`,
+  comments `5c1cf56e94410b6ab6e418dda7be7a6b385cb72221dfb8ca943e3419de42c9f4`.
+- `2Thess` distinct adjudication — PASS STRUCTURALLY, BOOK BLOCKED: frozen
+  pass-2 `manual-v1`, 252/252 disagreements in 123 components, 948 agreements
+  untouched, grid 1 200/1 200. Три независимые эмиссии byte-identical;
+  adjudication/sidecar SHA `08342fe0…` / `840a0366…`; root
+  `check-adjudication` трижды дал `error_count=0`. Два critical и четыре high
+  loci остаются unresolved; `gold_adjudication_batch_053.manifest.json`.
+- `1Thess` independent full-grid QC — EXPECTED SOURCE BLOCK: 163 adjudicated
+  + 874 agreed = 1 037/1 037; 1 010 accepted, `error=0`, `uncertain=27`
+  (14 adjudicated + 13 agreed) в семи loci. Три QC/sidecar эмиссии
+  byte-identical, SHA `74206231…` / `0c3d8207…`; structural validator PASS,
+  acceptance-validator ожидаемо отклонил blocked status. Exact TAGNT
+  decomposition `3.5` принят; `gold_adjudication_batch_052.manifest.json`.
+- `Jas` blind pass 2/comparison — PASS FOR SHARD ONLY: 32 стиха, 505 original
+  + 503 target = 1 008 решений. Два expand/check выпуска byte-identical и
+  дали `error_count=0`; три post-blind comparison выпуска byte-identical:
+  829 agreements, 179 substantive disagreement (119 original + 60 target),
+  478 metadata-only differences. Pass-2/sidecar SHA `a20b522d…` /
+  `38025a78…`, comparison/sidecar `25ceb067…` / `79a8033f…`;
+  `gold_review_batch_059.manifest.json`. Structural adjudication впоследствии
+  завершена; independent QC pending.
+- Обязательные predecessor checks: stages 3/4/5/6 `--check` — PASS.
+  Targeted gold suites — 47/47 PASS; `python -m unittest discover -s
+  scripts/bible_module/tests` — 393/393 PASS; content-tool — 30/30 PASS;
+  forbidden-pattern и docs-sync — PASS.
+- При ручном повторе `1Thess` acceptance-QC первая диагностическая команда
+  намеренно получила fail-closed `stale input SHA locks`, потому что ей был
+  передан pass-1 compact template вместо зафиксированного в sidecar pass-2
+  template. После выбора точных входов sidecar structural SHA gate прошёл,
+  а validator ожидаемо завершился `status or reviewer independence differs`
+  из-за `uncertain=27`/blocked status. Артефакты этой диагностикой не менялись.
+- После механического обновления `artifact_inventory.manifest.json` полный
+  `python -m scripts.bible_module.ukrainian_stage_7 --check` — PASS:
+  `processed_count=31 102`, `accepted_links=0`, `error_count=0`, status
+  `blocked_before_gold_and_alignment_acceptance`.
+- Blind pass 2/comparison последних `1Pet–Rev` — PASS FOR SHARDS ONLY:
+  184 стиха, 3 690 original + 3 564 target = 7 254 stable decisions; 6 052
+  agreements, 1 202 substantive disagreement и 4 358 metadata-only differences.
+  Completed/repro raw и sidecars побайтно идентичны, root compact checks
+  `14/14` дали `error_count=0`, три comparison выпуска на книгу совпали.
+  Versioned SHA закреплены в `gold_review_batch_060_066.manifest.json`;
+  structural adjudication впоследствии завершена, independent QC pending, книги
+  не приняты.
+- All-66 pass-2 merge/ingest/global comparison — PASS AS NONFINAL INPUT:
+  два merge и два ingest выпуска побайтно идентичны; exact 66 books / 2 171
+  verses / 45 831 original / 41 807 target / 87 638 stable decisions / 66
+  reviewer IDs. Reviewer independence прошла `87 638/87 638`. Три global
+  comparison выпуска побайтно идентичны: 65 434 agreements, 22 204
+  disagreements (14 455 original + 7 749 target), 45 967 metadata-only;
+  merged/validated/comparison SHA `18d41023…` / `6af366a7…` / `5b656a49…`.
+  `gold_review_pass2_complete.manifest.json`; adjudication впоследствии завершена,
+  finalized gold pending.
+- Актуальная граница: pass 1 `66/66`; pass 2/comparison `66/66`;
+  adjudication `66/66` (`Gen–Rev`); independent full-grid QC
+  выполнен для `53/66` (`Gen–2Thess`); строго приняты `36/66`.
+- Production Strong, finalized global gold, Stage 8 и SQLite не создавались.
+
+## Завершение distinct adjudication 66/66 — 2026-09-19
+
+- После восстановления прерванной рабочей точки подтверждено, что
+  `1Tim–Rev` физически имеют frozen adjudication JSONL/sidecar в gitignored
+  `work`, а versioned `gold_adjudication_batch_054.manifest.json`–
+  `gold_adjudication_batch_066.manifest.json` фиксируют exact входные и выходные SHA.
+- Для последних 13 книг `1Tim–Rev` разобраны 2 254/2 254 substantive
+  disagreement в 1 346 verse-local компонентах, не изменены 10 709
+  agreements. Каждая книга прошла root `check-adjudication` с
+  `error_count=0`; повторные генерации и sidecars совпали побайтно.
+- Отдельный повтор root validator: `3John` 61/61, grid 446; `Jude`
+  180/180, grid 934; `Rev` 239/239, grid 1 769 — все три PASS с
+  `error_count=0` и exact pass/comparison/adjudication SHA locks.
+- Сводный `gold_adjudication_complete.manifest.json` прошёл отдельный
+  физический аудит: 62/62 manifest SHA, 66 book entries, 66 unique books,
+  пропусков 0; суммы 22 204 adjudicated + 65 434 agreed = 87 638 stable.
+  Каноническая UTF-8/sorted-key/compact/LF сериализация совпала побайтно.
+- Обязательные stages 3/4/5/6 `--check` — PASS. Targeted gold suites —
+  47/47 PASS. `python -m unittest discover -s scripts/bible_module/tests` —
+  393/393 PASS; `python -m unittest discover -s scripts/content_tool/tests` —
+  30/30 PASS.
+- `dart run scripts/check_forbidden_patterns.dart` — PASS; `dart run
+  scripts/check_docs_sync.dart` — PASS; `git diff --check` — PASS с безвредными
+  Windows LF/CRLF warnings.
+- Штатный полный механический refresh `artifact_inventory.manifest.json`
+  зафиксировал 3 244 файла: 154 report и 3 090 gitignored work; в него
+  вошли batch 054–066 и all-66 manifest. После refresh полный
+  `python -m scripts.bible_module.ukrainian_stage_7 --check` — PASS:
+  `processed_count=31 102`, `accepted_links=0`, `error_count=0`, status
+  `blocked_before_gold_and_alignment_acceptance`.
+- Все unresolved critical/high оставлены fail-closed; structural adjudication не
+  подменяет independent QC/book acceptance. Текущая граница:
+  pass 1 `66/66`, pass 2/comparison `66/66`, adjudication `66/66`, independent
+  full-grid QC `53/66`, строго приняты `36/66`.
+- Flutter/runtime, маршруты, content tool, DB и language loading не менялись;
+  smoke N/A. Production Strong, finalized global gold, Stage 8 и SQLite не
+  создавались.
+
+## Физический all-66 audit и independent QC 2Thess — 2026-09-19
+
+- Сводный `gold_adjudication_complete.manifest.json` повторно проверен против
+  физических артефактов: совпали SHA `62/62` versioned batch manifests и
+  `132/132` adjudication/sidecar файлов; присутствуют `66/66` уникальных книг
+  без пропусков и дублей. Root fail-closed `check-adjudication` прошёл для
+  каждой книги (`66/66`, failures `[]`). Полный учёт остаётся равным
+  22 204 adjudicated + 65 434 agreed = 87 638 stable decisions.
+- Independent distinct reviewer прочитал все 32 выбранных стиха `2Thess` и
+  весь reciprocal grid `1 200/1 200`: 252 adjudicated + 948 agreed.
+  Итог: 1 169 accepted, `error=0`, `uncertain=31` (25 adjudicated + 6 agreed),
+  строго в шести source/semantic loci `1.4`, `2.3`, `2.7`, `2.13`, `3.6`,
+  `3.11`. Новых definite content errors не найдено, alternative Strong не
+  продвигались.
+- Три QC-выпуска и три sidecar-выпуска побайтно одинаковы. SHA-256 QC:
+  `b4b76095bb81308311034d11fa7865040ea790b13c40ec0f92e4f1bef0c9ece3`;
+  sidecar:
+  `02bc62d21a348fbb2a108859a83af2a5945c0aa407b266fa815e3cb4d7d49062`.
+  Structural checks прошли; acceptance-validator ожидаемо отклонил книгу из-за
+  fail-closed `uncertain=31`. `gold_adjudication_batch_053.manifest.json`
+  обновлён как blocking QC evidence.
+- Новая точка продолжения: independent full-grid QC выполнен для `53/66`
+  (`Gen–2Thess`), строго приняты `36/66`; следующая книга — `1Tim`.
+
+## Independent full-grid QC 1Tim — 2026-09-19
+
+- Read-only independent review охватил все `33/33` выбранных стиха и весь
+  reciprocal grid: 199 adjudicated + 814 agreed = `1 013/1 013` решений.
+  Итог: 1 001 accepted, `error=0`, `uncertain=12` (11 adjudicated + 1 agreed)
+  в пяти loci `5.16`, `5.21`, `6.3`, `6.10`, `6.21`.
+- `1Tim.3.16` принято: exact OH1988 «Хто» подтверждает selected
+  `ὃς/G3739`, поэтому traditional `θεὸς/G2316` не переносился. В `5.16`
+  общий `G4103` не признан доказательством точной женской/мужской формы.
+  В `6.21` singular `σοῦ/G4675` и traditional-only `ἀμήν/G0281` оставлены
+  альтернативами без автоматического продвижения.
+- Три QC JSONL и sidecar выпуска побайтно одинаковы. QC SHA-256
+  `c40d80c4ed4d58b2910154656abcbf0d162ba620e00a24c267ad0802cd9a8d8a`;
+  sidecar SHA-256
+  `bd18fe6db09c4369a5194dc07637f3d96bb748504dcde8f8d0cd7baba565a0a8`.
+  Acceptance-validator ожидаемо завершился fail-closed сообщением
+  `Independent adjudication QC status or reviewer independence differs`.
+- `gold_adjudication_batch_054.manifest.json` обновлён QC SHA/счётчиками,
+  а его новый SHA внесён в all-66 aggregate. Текущая граница: QC `54/66`
+  (`Gen–1Tim`), строго приняты `36/66`; следующая книга — `2Tim`.
+
+## Independent full-grid QC 2Tim — 2026-09-19
+
+- Read-only independent review охватил все `32/32` выбранных стиха и весь
+  reciprocal grid: 172 adjudicated + 848 agreed = `1 020/1 020` решений.
+  Итог: 1 009 accepted, `error=0`, `uncertain=11` (7 adjudicated + 4 agreed)
+  в пяти loci `1.5`, `2.16`, `3.8`, `4.14`, `4.22`.
+- `2Tim.3.10` и `2Tim.4.3` приняты как допустимые переводческие соответствия.
+  В `1.5` и `4.14` одинаковый Strong у разных греческих форм не признан
+  доказательством точного source reading; в `4.22` traditional-only
+  `ἀμήν/G0281` не перенесён на украинское «Амінь» без source resolution.
+- Универсальный QC-emitter повторно проверил frozen SHA, reviewer independence,
+  exact Stage-6 text/comment, selected original tokens, target inventory,
+  scalar/byte spans и reciprocal locality. Три QC JSONL и sidecar выпуска
+  побайтно одинаковы. QC SHA-256
+  `51520e42f7f2c596658a4282c0ca08d2cbae3b0895ccfdb0a282baaa6ca64613`;
+  sidecar SHA-256
+  `41ec5922d8792a029e9955611f507b13f76dc8f259b199611c3f7ae219003271`.
+  Acceptance-validator ожидаемо завершился exit 1 только на fail-closed gate:
+  `Independent adjudication QC status or reviewer independence differs`.
+- `gold_adjudication_batch_055.manifest.json` обновлён QC SHA/счётчиками,
+  его SHA `a3065bff…` внесён в all-66 aggregate. Текущая граница: QC `55/66`
+  (`Gen–2Tim`), строго приняты `36/66`; следующая книга — `Titus`.
+
+## Independent full-grid QC Titus — 2026-09-19
+
+- Independent review охватил все `32/32` выбранных стиха и весь reciprocal
+  grid: 144 adjudicated + 789 agreed = `933/933` решения. Итог: 922 accepted,
+  `error=1`, `uncertain=10`; все 11 блокирующих строк относятся к ранее
+  согласованной части grid, что подтверждает необходимость полного QC.
+- Definite error `Titus.2.7`: TAGNT `Tit.2.7#12=NKO` содержит primary
+  `ἀφθορίαν/G0861` во всех основных witnesses, а frozen selected layer
+  ошибочно пометил этот token альтернативным и исключил его; украинское
+  «непорушеність» поэтому ошибочно осталось `translation_addition`. Strong
+  не продвигался: требуется scoped selected-source/full-grid correction и
+  новый distinct re-QC.
+- `Titus.1.4`, `1.5`, `2.5`, `3.15` сохранены как bounded source/textual
+  uncertainties; alternative `G1656/G2962/G2641/G3626/G0281` не переносились.
+  Три QC JSONL и sidecar выпуска побайтно одинаковы: QC SHA-256
+  `d6d838354c53a14f0394d87e056690c5b41a5321bdc48b5aba374fd53615896a`,
+  sidecar SHA-256
+  `95454c7441139ab199076b95968360dba9ec12c692b542b1d2addafdba037eee`.
+  Acceptance-validator ожидаемо завершился exit 1 на blocking-status gate.
+- `gold_adjudication_batch_056.manifest.json` обновлён QC SHA/счётчиками,
+  all-66 aggregate физически пересобран и снова проверил `62/62` batch SHA.
+  Текущая граница: QC `56/66` (`Gen–Titus`), строго приняты `36/66`;
+  следующая книга — `Phlm`.

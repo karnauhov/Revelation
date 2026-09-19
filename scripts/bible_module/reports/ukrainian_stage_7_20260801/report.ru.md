@@ -1,7 +1,7 @@
 # Этап 7: evidence-first Strong alignment OH1988
 
 Doc-Version: `1.0.0`
-Last-Updated: `2026-09-16`
+Last-Updated: `2026-09-19`
 Source-Commit: `working-tree`
 Schema-Version: `1`
 Contract-Version: `ukrainian-stage-7-evidence-alignment-v1`
@@ -18,12 +18,17 @@ choices получили двухпроходные post-candidate manual dispos
 неразличимых места намеренно не выводят Strong. Target-side bridge proof и gold
 остаются частичными и fail-closed. Первый blind gold-проход завершён по всем
 66 книгам: 2 171 стих, 45 831 original и 41 807 target-accounting decisions.
-Оба независимых прохода и post-blind comparison завершены для `Gen–Heb`
-(1 955 стихов, 41 636 original и 37 740 target). Для `1Sam–1Kgs` завершены
+Оба независимых прохода и post-blind comparison завершены для всех `66/66`
+книг: 2 171 стих, 45 831 original и 41 807 target решений. Общий pass 2
+содержит 87 638 stable decisions и 66 reviewer IDs; независимость reviewer
+pass 1/pass 2 подтверждена для каждого решения. Global comparison дал 65 434
+alignment agreements и 22 204 substantive disagreement. Для `1Sam–1Kgs` завершены
 distinct third adjudication и независимый QC; `Deut`, `Ezra`, `Neh` и `Esth`
-также полностью приняты. Pass 2 для `Jas–Rev` ещё не выполнен.
-В общей строгой лестнице distinct adjudication завершена для `52/66`
-(`Gen–1Thess`), independent full-grid QC выполнен для `51/66` (`Gen–Col`),
+также полностью приняты. Завершение pass 2 само по себе не принимало
+оставшиеся книги; теперь все 22 204 substantive disagreement прошли distinct
+structural adjudication. В общей строгой лестнице distinct adjudication
+завершена для `66/66` (`Gen–Rev`), independent full-grid QC выполнен для
+`56/66` (`Gen–Titus`),
 но без error/uncertain приняты только `36/66`.
 Для `Isa` третья адъюдикация 252/252 substantive disagreement закончена и
 прошла double deterministic `check-adjudication`; независимый content-QC нашёл
@@ -48,6 +53,19 @@ real-input correction-aware book proof; `Amos`, `Obad`, `Jonah`, `Hab` и `Hag` 
 Поэтому finalized gold по-прежнему содержит `0 / 25 000` принятых
 assignment/null решений, а candidate tuning, A/B/C calibration и production
 Strong markup намеренно не выполнялись.
+
+Последний adjudication-отрезок `1Tim–Rev` закрыл 2 254 расхождения в
+1 346 verse-local компонентах, не изменив 10 709 agreements. Все
+13 book-level выпусков прошли root `check-adjudication`, а повторные
+генерации совпали побайтно. Сводный
+`gold_adjudication_complete.manifest.json` SHA-locks 62 batch-manifests и доказывает
+exact учёт 22 204 adjudicated + 65 434 agreed = 87 638 stable decisions
+во всех 66 книгах, `error_count=0`. Это structural completeness, не
+book acceptance: independent QC `Phlm–Rev` и source resolution всех
+сохранённых critical/high loci остаются обязательными.
+Повторный физический аудит подтвердил SHA всех `62/62` versioned batch
+manifests, `132/132` adjudication/sidecar файлов и root validator `66/66`;
+пропусков, дублей и ошибок нет.
 
 Коррекционно-осведомлённый global finalizer теперь реализован и проверен на
 CC0 регрессии: он применяет SHA/QC/role-locked book corrections после обычной
@@ -726,8 +744,13 @@ Distinct third adjudication `1Thess` разрешила 163/163 disagreement в
 adjudication/sidecar SHA `8d913a35…` / `b2e8ea43…` в
 `gold_adjudication_batch_052.manifest.json`. `2.6`, `2.11`, `3.2`
 остаются source/segmentation blockers; нет межстихового или
-альтернативного переноса Strong. Independent full-grid QC нужна;
-книга не принята.
+альтернативного переноса Strong. Затем distinct reviewer проверил полный
+grid 1 037/1 037: 1 010 accepted, `error=0`, `uncertain=27` (14 adjudicated
++ 13 agreed) в семи loci `1.7`, `2.3`, `2.6`, `2.11`, `2.18`, `3.2`, `5.5`.
+Три byte-identical выпуска дали QC/sidecar SHA `74206231…` / `0c3d8207…`;
+acceptance-validator ожидаемо отклонил blocked status. `3.5` принят по
+точному TAGNT decomposition evidence `G1473+G2532`; source resolution и
+новый independent re-QC обязательны, книга не принята.
 `2Thess` завершила blind pass 2 на 32 стихах (603 original + 597 target =
 1 200 решений). Root compact check прошёл с `error_count=0`; два
 byte-identical comparison выпуска дали 948 agreements, 252 substantive
@@ -736,8 +759,20 @@ disagreements (163 original + 89 target), 570 metadata-only differences.
 `gold_review_batch_053.manifest.json`. `1.4`, `2.3`, `2.7`, `2.13`,
 `3.6`, `3.11` остаются source/semantic watchpoints; selected Greek
 «firstfruits» и украинское «спочатку» в `2.13` не объявлены
-эквивалентными без доказательства. Distinct adjudication/QC нужны;
-книга не принята.
+эквивалентными без доказательства. Distinct third adjudication разрешила
+252/252 disagreement в 123 компонентах, сохранила 948 agreements и полный
+grid 1 200/1 200. Три byte-identical выпуска прошли root
+`check-adjudication`; adjudication/sidecar SHA `08342fe0…` / `840a0366…`
+закреплены в `gold_adjudication_batch_053.manifest.json`. Использован ровно
+frozen pass-2 `manual-v1`; несовместимый `manual-v2` sidecar не применялся.
+Два critical и четыре high loci `1.4`, `2.3`, `2.7`, `2.13`, `3.6`, `3.11`
+остаются unresolved. Затем distinct reviewer проверил весь reciprocal grid:
+252 adjudicated + 948 agreed = 1 200/1 200 решений. Приняты 1 169,
+`error=0`, `uncertain=31` (25 adjudicated + 6 agreed), причём все uncertain
+ограничены этими шестью loci. Три byte-identical выпуска дали QC/sidecar SHA
+`b4b76095…` / `02bc62d2…`; acceptance-validator ожидаемо отклонил blocked
+status. Alternative Strong не продвигались; source resolution и новый
+independent re-QC обязательны, книга не принята.
 `1Tim` завершила blind pass 2 на 33 стихах (483 original + 530 target =
 1 013 решений). Root compact check прошёл с `error_count=0`; два
 byte-identical comparison выпуска дали 814 agreements, 199 substantive
@@ -745,25 +780,46 @@ disagreements (113 original + 86 target), 563 metadata-only differences.
 Физические comparison/sidecar SHA `34dea918…` / `b13c4dd7…` в
 `gold_review_batch_054.manifest.json`. Слитное surface `2.2` сохранено
 точно по stage 6; `3.16`, `5.16`, `5.21`, `6.3`, `6.10`, `6.21`
-требуют source/lexical adjudication/QC; книга не принята.
+проверены source/lexical QC. Distinct adjudication разрешила все 199
+расхождений в 94 компонентах при сохранении 814 agreements и полного grid
+1 013/1 013; adjudication/sidecar SHA `b88e6cce…` / `bd54731d…`.
+Independent reviewer затем проверил весь grid: 1 001 accepted, `error=0`,
+`uncertain=12` (11 adjudicated + 1 agreed) в `5.16`, `5.21`, `6.3`, `6.10`,
+`6.21`. `3.16` принято по точному соответствию selected `ὃς/G3739` и
+украинского «Хто»; alternative `G4675` и traditional-only `G0281` в `6.21`
+не продвигались. Три byte-identical выпуска дали QC/sidecar SHA
+`c40d80c4…` / `bd18fe6d…`; книга заблокирована до source resolution и re-QC.
 `2Tim` завершила blind pass 2 на 32 стихах (513 original + 507 target =
 1 020 решений). Root compact check прошёл с `error_count=0`; два
 byte-identical comparison выпуска дали 848 agreements, 172 substantive
 disagreements (118 original + 54 target), 587 metadata-only differences.
 Физические comparison/sidecar SHA `96dfda02…` / `49a084fc…` в
 `gold_review_batch_055.manifest.json`. Слитное surface `3.15`
-сохранено точно по stage 6; `1.5`, `2.16`, `3.8`, `3.10`, `4.3`,
-`4.14`, `4.22` остаются source/lexical watchpoints. Distinct
-adjudication/QC нужны; книга не принята.
+сохранено точно по stage 6. Distinct adjudication разрешила все 172
+расхождения в 98 компонентах при сохранении 848 agreements и полного grid
+1 020/1 020; adjudication/sidecar SHA `a1065417…` / `b12415e4…`.
+Independent reviewer затем проверил все 32 стиха и весь grid: 1 009 accepted,
+`error=0`, `uncertain=11` (7 adjudicated + 4 agreed) в `1.5`, `2.16`,
+`3.8`, `4.14`, `4.22`; `3.10` и `4.3` приняты как допустимые переводческие
+соответствия. Три byte-identical выпуска дали QC/sidecar SHA `51520e42…` /
+`41ec5922…`; shared Strong не принят как доказательство точной source-формы,
+traditional-only `G0281` не продвигался. Книга заблокирована до source
+resolution и re-QC.
 `Titus` завершила blind pass 2 на 32 стихах (460 original + 473 target =
 933 решения). Root compact check прошёл с `error_count=0`; два
 byte-identical comparison выпуска дали 789 agreements, 144 substantive
 disagreements (92 original + 52 target), 443 metadata-only differences.
 Физические comparison/sidecar SHA `01633d4a…` / `0fa88340…` в
-`gold_review_batch_056.manifest.json`. `1.4`, `1.6`, `1.9`, `2.7`,
-`2.15`, `3.4`, `3.15` остаются source/lexical watchpoints; отсутствующий
-selected original не получает Strong. Distinct adjudication/QC нужны;
-книга не принята.
+`gold_review_batch_056.manifest.json`. Distinct adjudication разрешила все
+144 расхождения в 81 компоненте при сохранении 789 agreements и полного
+grid 933/933; adjudication/sidecar SHA `c6cf48e6…` / `27e6d766…`.
+Independent reviewer затем проверил весь grid: 922 accepted, `error=1`,
+`uncertain=10`. Definite agreed-row error `2.7` показал, что primary TAGNT
+`ἀφθορίαν/G0861` ошибочно исключён из frozen selected layer, поэтому
+«непорушеність» неверно оставлена translation addition. Source/textual loci
+`1.4`, `1.5`, `2.5`, `3.15` сохранены fail-closed. Три byte-identical
+выпуска дали QC/sidecar SHA `d6d83835…` / `95454c74…`; scoped source-layer
+и full-grid correction с distinct re-QC обязательны. Книга не принята.
 `Phlm` завершила blind pass 2 на 25 стихах (338 original + 358 target =
 696 решений). Root compact check прошёл с `error_count=0`; два
 byte-identical comparison выпуска дали 567 agreements, 129 substantive
@@ -784,6 +840,41 @@ SHA `b7db4598…` / `51234eea…` закреплены в
 `10.12`, `11.15`, `12.3` и `13.23` остаются source/textual watchpoints;
 альтернативный Strong по отсутствию selected-layer token не импортировался.
 Distinct adjudication/QC нужны; книга не принята.
+
+`Jas` завершила blind pass 2 на 32 стихах (505 original + 503 target =
+1 008 решений). Ручной blind draft был заморожен до открытия pass 1; два
+expanded/check выпуска совпали побайтно и дали `error_count=0`. Три
+post-blind comparison выпуска также совпали: 829 agreements, 179 substantive
+disagreements (119 original + 60 target), 478 metadata-only differences.
+Pass-2/sidecar SHA `a20b522d…` / `38025a78…`, comparison/sidecar SHA
+`25ceb067…` / `79a8033f…` закреплены в
+`gold_review_batch_059.manifest.json`. `3.3` и `3.5` остаются critical
+source watchpoints; raw `G6063`/`G6060` не превращены в выдуманные classic
+Strong, добавленное `Слово` в `5.12` не получило соседний Strong.
+Adjudication/QC нужны; книга не принята.
+
+Последние семь книг `1Pet–Rev` завершили независимый blind pass 2 и
+post-blind comparison на 184 стихах: 3 690 original + 3 564 target = 7 254
+stable decisions. Три независимых reviewer-контекста заморозили результаты до
+доступа к pass 1/candidates/legacy/comparison; для каждой книги completed и
+repro raw/sidecar совпали побайтно, root compact-check дал `error_count=0`, а
+три post-blind comparison выпуска совпали. По книгам: `1Pet` — 873/229
+agreements/disagreements, `2Pet` — 993/225, `1John` — 1 074/220, `2John` —
+443/48, `3John` — 385/61, `Jude` — 754/180, `Rev` — 1 530/239. Всего 6 052
+agreements, 1 202 substantive disagreement и 4 358 metadata-only differences.
+SHA каждого book artifact закреплены в `gold_review_batch_060_066.manifest.json`;
+alternative Strong из отсутствующих selected-source readings, соседние слова и
+позиционный перенос не применялись. Все семь книг ждут adjudication/QC.
+
+После завершения book shards pass 2 объединён дважды и ingest выполнен дважды:
+оба выпуска побайтно совпали и содержат ровно 2 171 стих, 45 831 original,
+41 807 target и 66 reviewer IDs. Проверка независимости прошла для всех
+87 638 stable decisions. Три global comparison выпуска совпали: 65 434
+agreements, 22 204 substantive disagreement (14 455 original + 7 749 target)
+и 45 967 metadata-only differences. SHA merged/validated/comparison
+`18d41023…` / `6af366a7…` / `5b656a49…` и все sidecars закреплены в
+`gold_review_pass2_complete.manifest.json`. Это завершённый pass 2/comparison,
+но не finalized gold и не разрешение 22 204 расхождений.
 
 В замороженных blind pass 2 для `Mark`/`Luke`/`John` найден отдельный
 provenance-дефект общего renderer: текст `Independent blind Mat pass 2` и
