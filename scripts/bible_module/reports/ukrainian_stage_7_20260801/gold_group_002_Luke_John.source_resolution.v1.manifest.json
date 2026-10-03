@@ -1,0 +1,1329 @@
+{
+  "artifact": "gold_group_002_Luke_John_bounded_source_resolution",
+  "book_completion_authorized_by_this_manifest": false,
+  "books": {
+    "John": {
+      "deferred_keys": 6,
+      "initial_accepted_verdicts_preserved": 1160,
+      "initial_reviewed_grid": 1170,
+      "initial_uncertain_keys": 10,
+      "resolved_keys_author_proposal": 4
+    },
+    "Luke": {
+      "collateral_dependency_key": 1,
+      "deferred_keys": 12,
+      "initial_accepted_verdicts_preserved": 1196,
+      "initial_reviewed_grid": 1210,
+      "initial_uncertain_keys": 14,
+      "resolved_keys_author_proposal": 2
+    }
+  },
+  "canonical_shared_inventory_modified": false,
+  "collateral_dependency_exclusion_stable_keys": [
+    "target:gold7:target:a716d9890919b51ecb6114b98740536a"
+  ],
+  "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+  "correction_proposals": [],
+  "counts": {
+    "books": 2,
+    "bounded_cycles_per_hard_case": 1,
+    "collateral_dependency_exclusion_keys": 1,
+    "deferred_loci": 8,
+    "deferred_strong_unassigned_keys": 18,
+    "definite_content_errors": 0,
+    "fully_resolved_loci": 2,
+    "initial_uncertain_keys": 24,
+    "partially_resolved_loci": 1,
+    "proven_correction_scopes": 0,
+    "resolved_existing_keys_author_proposal": 6,
+    "resolved_reciprocal_pairs": 3,
+    "visually_inspected_exact_scan_pages": 12
+  },
+  "date": "2026-10-03",
+  "deferred_stable_keys": [
+    "original:gold7:original:04a14fa394542afbad8fbb68a39d5c29",
+    "original:gold7:original:2846e9eaf03eaa2995e24a7124c48dae",
+    "original:gold7:original:37e013a050e63313864e95759d39340b",
+    "original:gold7:original:4a15ce4e87e0d34545591c5c8c35bacf",
+    "original:gold7:original:6ceecb3822aaef8a22acc3f9481dc0cd",
+    "original:gold7:original:a30c43f00b717900d06277eaf3ea26b7",
+    "original:gold7:original:b1bd4cda7b0de0c316a3e1de1082a745",
+    "original:gold7:original:bfa3125202aa83daf77dabb0384a875b",
+    "original:gold7:original:cb3d5d6e320b1a19c215501a4eb56315",
+    "original:gold7:original:d4aed7a2e9803b3435bc429428d56fc6",
+    "original:gold7:original:f3e182098db2fce895701bdd4d32358e",
+    "target:gold7:target:29407746f5ea70c280f1b75f43c6095c",
+    "target:gold7:target:2e915cd0795e80bdb5dc8937c9229b6a",
+    "target:gold7:target:854800f2bbdf898e2bc13d6b5d6d938e",
+    "target:gold7:target:91102576ac24d85192322e10404437ee",
+    "target:gold7:target:a38ca82c264a544d8d775ed859646a17",
+    "target:gold7:target:ae8d8183078b01580361b0de017e70e9",
+    "target:gold7:target:cd60c02c25f3849fb369f8e5fd08edd7"
+  ],
+  "external_sources": [
+    {
+      "bytes": 18650,
+      "commit": "c4d241a9c1c479a55b989ba35a4976c1d0b8052c",
+      "local_path": "sblgnt_LICENSE",
+      "page_url": "https://github.com/Faithlife/SBLGNT/blob/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/LICENSE",
+      "retrieved_on": "2026-10-03",
+      "role": "primary_edition_text_apparatus_control_not_target_transfer",
+      "sha256": "7e7170e3cebf88a9f60c7b8421418323c09304da1af4d5e90f4da1dc1c8a2661",
+      "source_id": "sblgnt_LICENSE",
+      "url": "https://raw.githubusercontent.com/Faithlife/SBLGNT/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/LICENSE"
+    },
+    {
+      "bytes": 251219,
+      "commit": "c4d241a9c1c479a55b989ba35a4976c1d0b8052c",
+      "local_path": "sblgnt_data_sblgnt_text_Luke.txt",
+      "page_url": "https://github.com/Faithlife/SBLGNT/blob/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/data/sblgnt/text/Luke.txt",
+      "retrieved_on": "2026-10-03",
+      "role": "primary_edition_text_apparatus_control_not_target_transfer",
+      "sha256": "102d65ec7a91271777115d1a605688776adfda6a1188680ccf593e27e3e876d6",
+      "source_id": "sblgnt_data_sblgnt_text_Luke.txt",
+      "url": "https://raw.githubusercontent.com/Faithlife/SBLGNT/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/data/sblgnt/text/Luke.txt"
+    },
+    {
+      "bytes": 189793,
+      "commit": "c4d241a9c1c479a55b989ba35a4976c1d0b8052c",
+      "local_path": "sblgnt_data_sblgnt_text_John.txt",
+      "page_url": "https://github.com/Faithlife/SBLGNT/blob/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/data/sblgnt/text/John.txt",
+      "retrieved_on": "2026-10-03",
+      "role": "primary_edition_text_apparatus_control_not_target_transfer",
+      "sha256": "ada9643154a990ae2725ab847c6cfb576ce2c3bcd4945d47606e8a90c8d065f5",
+      "source_id": "sblgnt_data_sblgnt_text_John.txt",
+      "url": "https://raw.githubusercontent.com/Faithlife/SBLGNT/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/data/sblgnt/text/John.txt"
+    },
+    {
+      "bytes": 83568,
+      "commit": "c4d241a9c1c479a55b989ba35a4976c1d0b8052c",
+      "local_path": "sblgnt_data_sblgntapp_text_Luke.txt",
+      "page_url": "https://github.com/Faithlife/SBLGNT/blob/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/data/sblgntapp/text/Luke.txt",
+      "retrieved_on": "2026-10-03",
+      "role": "primary_edition_text_apparatus_control_not_target_transfer",
+      "sha256": "687348bf3002146877b58e425c82697e797b81edf075c42b5e4f973984c8e212",
+      "source_id": "sblgnt_data_sblgntapp_text_Luke.txt",
+      "url": "https://raw.githubusercontent.com/Faithlife/SBLGNT/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/data/sblgntapp/text/Luke.txt"
+    },
+    {
+      "bytes": 55512,
+      "commit": "c4d241a9c1c479a55b989ba35a4976c1d0b8052c",
+      "local_path": "sblgnt_data_sblgntapp_text_John.txt",
+      "page_url": "https://github.com/Faithlife/SBLGNT/blob/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/data/sblgntapp/text/John.txt",
+      "retrieved_on": "2026-10-03",
+      "role": "primary_edition_text_apparatus_control_not_target_transfer",
+      "sha256": "fbfb6ca71bee74da2ee7f27472bd75fd03e9894e7baa42ba4c8304913b766305",
+      "source_id": "sblgnt_data_sblgntapp_text_John.txt",
+      "url": "https://raw.githubusercontent.com/Faithlife/SBLGNT/c4d241a9c1c479a55b989ba35a4976c1d0b8052c/data/sblgntapp/text/John.txt"
+    }
+  ],
+  "frozen_QC_modified": false,
+  "input_inventory_sha256": "99b3cfd9328308e19e823eefdea5659d4ddcbf9fcd1f2a20fb53335cc9f7f29f",
+  "input_locks": [
+    {
+      "bytes": 3394,
+      "path": "gold_adjudication_batch_042.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\gold_adjudication_batch_042.manifest.json",
+      "root": "report",
+      "sha256": "ac1a80c744b8bad70732f843706623be23563ee569497c5d6b00659a1f5f6579",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 2844,
+      "path": "gold_adjudication_batch_043.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\gold_adjudication_batch_043.manifest.json",
+      "root": "report",
+      "sha256": "0e1fb8943504480fb1aeed924b9f9d67acf8fc13f50e4fd52ea5f741939691c1",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 2566,
+      "path": "gold_adjudication_provenance_rebase.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\gold_adjudication_provenance_rebase.manifest.json",
+      "root": "report",
+      "sha256": "63cc3753617dc709e28960b2aee5b7f35a98d1c55c5e79ec27b13b9ef07d4351",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 4635,
+      "path": "gold_pass2_provenance_repair.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\gold_pass2_provenance_repair.manifest.json",
+      "root": "report",
+      "sha256": "150629723937c5ba989057d922b91b1b3a1d200f1a9d217fbdaae63ad5a7a505",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 2484,
+      "path": "gold_qc_provenance_rebase.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\gold_qc_provenance_rebase.manifest.json",
+      "root": "report",
+      "sha256": "725b6d9947120b82fcc119cb9a1a6f151eda28228e637ee42d786fd13c930aea",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 2471,
+      "path": "gold_review_batch_042.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\gold_review_batch_042.manifest.json",
+      "root": "report",
+      "sha256": "3a5119f4691d8b9af209eb2d76ed3891ee318a38f3507e85ec70a9efe6fa15b6",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 2488,
+      "path": "gold_review_batch_043.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\gold_review_batch_043.manifest.json",
+      "root": "report",
+      "sha256": "71ab2bd0512d6e8bb39f1ec6683713a7a0c41b54dac2fbbb7cad3a23fc0e001b",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 432394,
+      "path": "source_registry.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\source_registry.json",
+      "root": "report",
+      "sha256": "b1f7e2bc82929bdd40c5701f4d16ff00387da8645c5279cf311adc12973ffebd",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 2714470,
+      "path": "strongs_issue_inventory.v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\strongs_issue_inventory.v1.jsonl",
+      "root": "report",
+      "sha256": "a2d7b575ec980ac69707d0be5e1caa3a4f1f5790fa82cb43d6c92623963251de",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 221166,
+      "path": "strongs_issue_inventory.v1.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\strongs_issue_inventory.v1.manifest.json",
+      "root": "report",
+      "sha256": "ae7bba1ee961e2d500a08d5fe87c08afacb67c5d263d16087582c173f9bafef6",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 71498,
+      "path": "strongs_issue_inventory.v1.ru.md",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\strongs_issue_inventory.v1.ru.md",
+      "root": "report",
+      "sha256": "dbc30a38b2249abcf0b707080c8e48550318a66d1e7d60581c655407454ac21a",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 482751,
+      "path": "textual_fingerprint.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\textual_fingerprint.manifest.json",
+      "root": "report",
+      "sha256": "f1588f87527927c2eb53a6c7eac0f82c6fa8383af05a3a82855bad5890808df1",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1156868,
+      "path": "external_chatgpt/uk7ext_gold_John_pass1_043/completed_external/review_pass_1.shard_043.compact.completed.external-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_John_pass1_043\\completed_external\\review_pass_1.shard_043.compact.completed.external-v1.jsonl",
+      "root": "work",
+      "sha256": "5f50e1f3bbbf924b2c48926cc418dafe08aab4ffc8abab25b197dc1dd2b6e7a0",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 256311,
+      "path": "external_chatgpt/uk7ext_gold_John_pass1_043/completed_external/review_pass_1.shard_043.compact.normalized.external-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_John_pass1_043\\completed_external\\review_pass_1.shard_043.compact.normalized.external-v1.jsonl",
+      "root": "work",
+      "sha256": "5b7db652fc81fc7c57607061bf04907e1d1f565fd901aed09be8945634c7ec0a",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1364,
+      "path": "external_chatgpt/uk7ext_gold_John_pass1_043/completed_external/review_pass_1.shard_043.compact.normalized.external-v1.jsonl.normalization.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_John_pass1_043\\completed_external\\review_pass_1.shard_043.compact.normalized.external-v1.jsonl.normalization.manifest.json",
+      "root": "work",
+      "sha256": "623b2f2ec314882d1b8adef89d98a6a3c508a69cdd9462a927002e8f41f7a1bf",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 336794,
+      "path": "external_chatgpt/uk7ext_gold_John_pass1_043/completed_external/review_pass_1.shard_043.compact.normalized.external-v2.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_John_pass1_043\\completed_external\\review_pass_1.shard_043.compact.normalized.external-v2.jsonl",
+      "root": "work",
+      "sha256": "1853ec7600f483db2b337286994b490ec6971e2f3d55e32d8ab03b6b28339751",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1841,
+      "path": "external_chatgpt/uk7ext_gold_John_pass1_043/completed_external/review_pass_1.shard_043.compact.normalized.external-v2.jsonl.normalization.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_John_pass1_043\\completed_external\\review_pass_1.shard_043.compact.normalized.external-v2.jsonl.normalization.manifest.json",
+      "root": "work",
+      "sha256": "de8ed9d66e4fe8c2711608c5aa34982b9ea391ae7bb7749ec885665ff75b9e48",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1287195,
+      "path": "external_chatgpt/uk7ext_gold_John_pass1_043/completed_external/review_pass_1.shard_043.raw.external-v1.canonical-v2.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_John_pass1_043\\completed_external\\review_pass_1.shard_043.raw.external-v1.canonical-v2.jsonl",
+      "root": "work",
+      "sha256": "8f52f924a7dadcb4305726689313ab6f9a7a606b1cf9b7cf8aa58866795d6ed8",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3316,
+      "path": "external_chatgpt/uk7ext_gold_John_pass1_043/completed_external/review_pass_1.shard_043.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_John_pass1_043\\completed_external\\review_pass_1.shard_043.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "b96fdb1e838877050d51ce3626c489b5364a60de93968da54c3d616f3298fb33",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 915613,
+      "path": "external_chatgpt/uk7ext_gold_John_pass1_043/inputs/review_pass_1.shard_043.compact.template.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_John_pass1_043\\inputs\\review_pass_1.shard_043.compact.template.jsonl",
+      "root": "work",
+      "sha256": "e0bc07dfdfdc99b941940011ceb5bda99ef0767d753ff2195de47d4ae6c66f14",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1199461,
+      "path": "external_chatgpt/uk7ext_gold_Luke_pass1_042/completed_external/review_pass_1.shard_042.compact.completed.external-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_Luke_pass1_042\\completed_external\\review_pass_1.shard_042.compact.completed.external-v1.jsonl",
+      "root": "work",
+      "sha256": "a000d80fbff9941c1d445e014e739e289b987f9ce6fb5476a7dac100fe9b2b4b",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 268723,
+      "path": "external_chatgpt/uk7ext_gold_Luke_pass1_042/completed_external/review_pass_1.shard_042.compact.normalized.external-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_Luke_pass1_042\\completed_external\\review_pass_1.shard_042.compact.normalized.external-v1.jsonl",
+      "root": "work",
+      "sha256": "b2c8dec877cea1bdbc6f3f349e144beebe8287f619cb51b25cd670b28e75fbc3",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1364,
+      "path": "external_chatgpt/uk7ext_gold_Luke_pass1_042/completed_external/review_pass_1.shard_042.compact.normalized.external-v1.jsonl.normalization.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_Luke_pass1_042\\completed_external\\review_pass_1.shard_042.compact.normalized.external-v1.jsonl.normalization.manifest.json",
+      "root": "work",
+      "sha256": "371ad6a4e13d3a24324e626d8d9850a6a4458364350e18b9fd7eb1a5cb4da165",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 321099,
+      "path": "external_chatgpt/uk7ext_gold_Luke_pass1_042/completed_external/review_pass_1.shard_042.compact.normalized.external-v2.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_Luke_pass1_042\\completed_external\\review_pass_1.shard_042.compact.normalized.external-v2.jsonl",
+      "root": "work",
+      "sha256": "c827cc2a0d49d3a1c29e11b4974b2be168edfd017d43ef921c7e589c2c0f60d1",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1705,
+      "path": "external_chatgpt/uk7ext_gold_Luke_pass1_042/completed_external/review_pass_1.shard_042.compact.normalized.external-v2.jsonl.normalization.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_Luke_pass1_042\\completed_external\\review_pass_1.shard_042.compact.normalized.external-v2.jsonl.normalization.manifest.json",
+      "root": "work",
+      "sha256": "9a1830e9816bbfedb1a8008f7b46a873bf15818d8b4ad3e2e62488806608775d",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1395031,
+      "path": "external_chatgpt/uk7ext_gold_Luke_pass1_042/completed_external/review_pass_1.shard_042.raw.external-v1.canonical-v2.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_Luke_pass1_042\\completed_external\\review_pass_1.shard_042.raw.external-v1.canonical-v2.jsonl",
+      "root": "work",
+      "sha256": "8f12ff2adad91196af37e432116e7806defedf1d57bdf525e3a3044f9cc7a95d",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3316,
+      "path": "external_chatgpt/uk7ext_gold_Luke_pass1_042/completed_external/review_pass_1.shard_042.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_Luke_pass1_042\\completed_external\\review_pass_1.shard_042.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "77775d478630eff0d3302f5e751bea6922fbd39172187bd96dba57932bd8d0ad",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 947063,
+      "path": "external_chatgpt/uk7ext_gold_Luke_pass1_042/inputs/review_pass_1.shard_042.compact.template.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\external_chatgpt\\uk7ext_gold_Luke_pass1_042\\inputs\\review_pass_1.shard_042.compact.template.jsonl",
+      "root": "work",
+      "sha256": "b0fa0b08bea625bba9aad8508f6b8a65ab16dc8969ffe6f2f283786ccd59f1a7",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 915613,
+      "path": "gold_compact_review/pass_1/John/review_pass_1.shard_043.compact.template.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_1\\John\\review_pass_1.shard_043.compact.template.jsonl",
+      "root": "work",
+      "sha256": "e0bc07dfdfdc99b941940011ceb5bda99ef0767d753ff2195de47d4ae6c66f14",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 947063,
+      "path": "gold_compact_review/pass_1/Luke/review_pass_1.shard_042.compact.template.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_1\\Luke\\review_pass_1.shard_042.compact.template.jsonl",
+      "root": "work",
+      "sha256": "b0fa0b08bea625bba9aad8508f6b8a65ab16dc8969ffe6f2f283786ccd59f1a7",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1229176,
+      "path": "gold_compact_review/pass_2/John/completed/review_pass_2.shard_043.raw.manual-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\completed\\review_pass_2.shard_043.raw.manual-v1.jsonl",
+      "root": "work",
+      "sha256": "751084b64c5abe8e3a776e17f3885209f75272a0c9751deaf4e0c61979a2e3cd",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3310,
+      "path": "gold_compact_review/pass_2/John/completed/review_pass_2.shard_043.raw.manual-v1.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\completed\\review_pass_2.shard_043.raw.manual-v1.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "ca2dc53956ccc43a49f82795afe506e8a0f87627b57c6f00a756ca856dae745c",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1229176,
+      "path": "gold_compact_review/pass_2/John/completed/review_pass_2.shard_043.raw.manual-v2.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\completed\\review_pass_2.shard_043.raw.manual-v2.jsonl",
+      "root": "work",
+      "sha256": "751084b64c5abe8e3a776e17f3885209f75272a0c9751deaf4e0c61979a2e3cd",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3310,
+      "path": "gold_compact_review/pass_2/John/completed/review_pass_2.shard_043.raw.manual-v2.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\completed\\review_pass_2.shard_043.raw.manual-v2.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "afa6ca9644e11f57dede6af02327e933fd11dd6617919c8662bd93d785d724bc",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 314995,
+      "path": "gold_compact_review/pass_2/John/provenance_repair/repro_run_1/review_pass_2.shard_043.compact.completed.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\provenance_repair\\repro_run_1\\review_pass_2.shard_043.compact.completed.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "996991876afce0279b95890c8805009364411f9e229e0e3a87ec04267a4daadd",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1231516,
+      "path": "gold_compact_review/pass_2/John/provenance_repair/repro_run_1/review_pass_2.shard_043.raw.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\provenance_repair\\repro_run_1\\review_pass_2.shard_043.raw.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "657a62a772eaf7ab37f74b46efab2421d33ea6902d087122c36a0f1950a1354d",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3314,
+      "path": "gold_compact_review/pass_2/John/provenance_repair/repro_run_1/review_pass_2.shard_043.raw.provenance-v1.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\provenance_repair\\repro_run_1\\review_pass_2.shard_043.raw.provenance-v1.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "14920f39ba03564f86bd25cdba58cab519b5881f22a69020cfe6fbb6c58b1c01",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 314995,
+      "path": "gold_compact_review/pass_2/John/provenance_repair/repro_run_2/review_pass_2.shard_043.compact.completed.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\provenance_repair\\repro_run_2\\review_pass_2.shard_043.compact.completed.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "996991876afce0279b95890c8805009364411f9e229e0e3a87ec04267a4daadd",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1231516,
+      "path": "gold_compact_review/pass_2/John/provenance_repair/repro_run_2/review_pass_2.shard_043.raw.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\provenance_repair\\repro_run_2\\review_pass_2.shard_043.raw.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "657a62a772eaf7ab37f74b46efab2421d33ea6902d087122c36a0f1950a1354d",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3314,
+      "path": "gold_compact_review/pass_2/John/provenance_repair/repro_run_2/review_pass_2.shard_043.raw.provenance-v1.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\provenance_repair\\repro_run_2\\review_pass_2.shard_043.raw.provenance-v1.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "14920f39ba03564f86bd25cdba58cab519b5881f22a69020cfe6fbb6c58b1c01",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 313801,
+      "path": "gold_compact_review/pass_2/John/review_pass_2.shard_043.compact.completed.manual.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\review_pass_2.shard_043.compact.completed.manual.jsonl",
+      "root": "work",
+      "sha256": "67f060df7bfe36c17501da4daee7645b9be87d0900eb8e96520c73cbd59cbb3d",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 915613,
+      "path": "gold_compact_review/pass_2/John/review_pass_2.shard_043.compact.template.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\John\\review_pass_2.shard_043.compact.template.jsonl",
+      "root": "work",
+      "sha256": "4fee74c7d2ea6dac9e6127e0c485221556d6d9e00a2328c30effd16b98ea2400",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1285150,
+      "path": "gold_compact_review/pass_2/Luke/completed/review_pass_2.shard_042.raw.manual-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\completed\\review_pass_2.shard_042.raw.manual-v1.jsonl",
+      "root": "work",
+      "sha256": "e84bcd28761e08f79a8cd9c74f7604551d1ea2ea9b2fcab07b50dda2d72be7ac",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3311,
+      "path": "gold_compact_review/pass_2/Luke/completed/review_pass_2.shard_042.raw.manual-v1.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\completed\\review_pass_2.shard_042.raw.manual-v1.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "900898a1510ad495fa56a276de01036831364183074f60c4393cbdcf8342d1a3",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1285150,
+      "path": "gold_compact_review/pass_2/Luke/completed/review_pass_2.shard_042.raw.manual-v2.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\completed\\review_pass_2.shard_042.raw.manual-v2.jsonl",
+      "root": "work",
+      "sha256": "e84bcd28761e08f79a8cd9c74f7604551d1ea2ea9b2fcab07b50dda2d72be7ac",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3311,
+      "path": "gold_compact_review/pass_2/Luke/completed/review_pass_2.shard_042.raw.manual-v2.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\completed\\review_pass_2.shard_042.raw.manual-v2.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "38c2fbd0a2077982af26b5efc69ed006448ee65802dc08216249b94217b06f4b",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 324205,
+      "path": "gold_compact_review/pass_2/Luke/provenance_repair/repro_run_1/review_pass_2.shard_042.compact.completed.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\provenance_repair\\repro_run_1\\review_pass_2.shard_042.compact.completed.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "611cb9db838a2f3de802dc2be11b63961bbbda95690933500bfe0361030ef374",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1287570,
+      "path": "gold_compact_review/pass_2/Luke/provenance_repair/repro_run_1/review_pass_2.shard_042.raw.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\provenance_repair\\repro_run_1\\review_pass_2.shard_042.raw.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "5a51fd363f601a807a2a405acf865f0f14ca50e97826bc71a70f0418c41bf63c",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3315,
+      "path": "gold_compact_review/pass_2/Luke/provenance_repair/repro_run_1/review_pass_2.shard_042.raw.provenance-v1.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\provenance_repair\\repro_run_1\\review_pass_2.shard_042.raw.provenance-v1.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "93bada0ac945ee89672fa78cc6530f1c78c0411618d7a3c8a63eccfffe3d0120",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 324205,
+      "path": "gold_compact_review/pass_2/Luke/provenance_repair/repro_run_2/review_pass_2.shard_042.compact.completed.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\provenance_repair\\repro_run_2\\review_pass_2.shard_042.compact.completed.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "611cb9db838a2f3de802dc2be11b63961bbbda95690933500bfe0361030ef374",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1287570,
+      "path": "gold_compact_review/pass_2/Luke/provenance_repair/repro_run_2/review_pass_2.shard_042.raw.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\provenance_repair\\repro_run_2\\review_pass_2.shard_042.raw.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "5a51fd363f601a807a2a405acf865f0f14ca50e97826bc71a70f0418c41bf63c",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3315,
+      "path": "gold_compact_review/pass_2/Luke/provenance_repair/repro_run_2/review_pass_2.shard_042.raw.provenance-v1.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\provenance_repair\\repro_run_2\\review_pass_2.shard_042.raw.provenance-v1.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "93bada0ac945ee89672fa78cc6530f1c78c0411618d7a3c8a63eccfffe3d0120",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 322999,
+      "path": "gold_compact_review/pass_2/Luke/review_pass_2.shard_042.compact.completed.manual.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\review_pass_2.shard_042.compact.completed.manual.jsonl",
+      "root": "work",
+      "sha256": "9dbcee634800282f54dc95868e3bfd76f50a82f65837ccaf04d53034657c40cb",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 947063,
+      "path": "gold_compact_review/pass_2/Luke/review_pass_2.shard_042.compact.template.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Luke\\review_pass_2.shard_042.compact.template.jsonl",
+      "root": "work",
+      "sha256": "e386f0336d64aa8a872af25208ec423a030fbfdf694f57e5c901c1a43afe9c09",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 392381,
+      "path": "gold_compact_review/pass_2/Mark/provenance_repair/repro_run_1/review_pass_2.shard_041.compact.completed.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Mark\\provenance_repair\\repro_run_1\\review_pass_2.shard_041.compact.completed.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "385887210055d2e2930cbfd2a819f562b0f854070a9e2d011dd01d5ac8aca8a7",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1448092,
+      "path": "gold_compact_review/pass_2/Mark/provenance_repair/repro_run_1/review_pass_2.shard_041.raw.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Mark\\provenance_repair\\repro_run_1\\review_pass_2.shard_041.raw.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "941ffd00e0f1c743f399f24532dee03b80ff080c3d36eab824e6cb148cc4933d",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3315,
+      "path": "gold_compact_review/pass_2/Mark/provenance_repair/repro_run_1/review_pass_2.shard_041.raw.provenance-v1.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Mark\\provenance_repair\\repro_run_1\\review_pass_2.shard_041.raw.provenance-v1.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "0a45213572287a6d3e1c275e3d0977115c9bde605669033cabab821eecd52695",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 392381,
+      "path": "gold_compact_review/pass_2/Mark/provenance_repair/repro_run_2/review_pass_2.shard_041.compact.completed.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Mark\\provenance_repair\\repro_run_2\\review_pass_2.shard_041.compact.completed.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "385887210055d2e2930cbfd2a819f562b0f854070a9e2d011dd01d5ac8aca8a7",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1448092,
+      "path": "gold_compact_review/pass_2/Mark/provenance_repair/repro_run_2/review_pass_2.shard_041.raw.provenance-v1.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Mark\\provenance_repair\\repro_run_2\\review_pass_2.shard_041.raw.provenance-v1.jsonl",
+      "root": "work",
+      "sha256": "941ffd00e0f1c743f399f24532dee03b80ff080c3d36eab824e6cb148cc4933d",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3315,
+      "path": "gold_compact_review/pass_2/Mark/provenance_repair/repro_run_2/review_pass_2.shard_041.raw.provenance-v1.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_compact_review\\pass_2\\Mark\\provenance_repair\\repro_run_2\\review_pass_2.shard_041.raw.provenance-v1.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "0a45213572287a6d3e1c275e3d0977115c9bde605669033cabab821eecd52695",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 218882,
+      "path": "gold_review_adjudication/John/completed/John.shard_043.pass1-pass2.third_adjudication.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\completed\\John.shard_043.pass1-pass2.third_adjudication.jsonl",
+      "root": "work",
+      "sha256": "139ffd0f95a16f6f7794782dc93207a6c7b842f03f28269a00fc8cd5dd3e4cc0",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 7140,
+      "path": "gold_review_adjudication/John/completed/John.shard_043.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\completed\\John.shard_043.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "5410146d7da9a73ffc497bfe73ec975cbeb9ccddb3a8c861cec8ef5caecb3959",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 596194,
+      "path": "gold_review_adjudication/John/qc/completed/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\completed\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "67233ff00f205df673f4d7cd01092375745484f4be4c5661af57e82138af07d3",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 21954,
+      "path": "gold_review_adjudication/John/qc/completed/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\completed\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "08c0a235460a1a8ea304e9c814d6fb2d6a876a43415336ccc9235502fb57b232",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 596230,
+      "path": "gold_review_adjudication/John/qc/repro_1/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\repro_1\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "415ab9fb6d806d20afa71605b16b56d6755deea5714bbe8e9664ae1dd7516dc4",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 22062,
+      "path": "gold_review_adjudication/John/qc/repro_1/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\repro_1\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "b7e4078f22dfb651263e81c93b0f121d9e0b3c8975a35956d94e3a82039ce2b8",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 596230,
+      "path": "gold_review_adjudication/John/qc/repro_2/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\repro_2\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "415ab9fb6d806d20afa71605b16b56d6755deea5714bbe8e9664ae1dd7516dc4",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 22062,
+      "path": "gold_review_adjudication/John/qc/repro_2/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\repro_2\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "b7e4078f22dfb651263e81c93b0f121d9e0b3c8975a35956d94e3a82039ce2b8",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 596194,
+      "path": "gold_review_adjudication/John/qc/repro_fixed_1/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\repro_fixed_1\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "67233ff00f205df673f4d7cd01092375745484f4be4c5661af57e82138af07d3",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 21954,
+      "path": "gold_review_adjudication/John/qc/repro_fixed_1/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\repro_fixed_1\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "08c0a235460a1a8ea304e9c814d6fb2d6a876a43415336ccc9235502fb57b232",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 596194,
+      "path": "gold_review_adjudication/John/qc/repro_fixed_2/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\repro_fixed_2\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "67233ff00f205df673f4d7cd01092375745484f4be4c5661af57e82138af07d3",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 21954,
+      "path": "gold_review_adjudication/John/qc/repro_fixed_2/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\repro_fixed_2\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "08c0a235460a1a8ea304e9c814d6fb2d6a876a43415336ccc9235502fb57b232",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 596230,
+      "path": "gold_review_adjudication/John/qc/superseded_stale_input_lock/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\superseded_stale_input_lock\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "415ab9fb6d806d20afa71605b16b56d6755deea5714bbe8e9664ae1dd7516dc4",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 22062,
+      "path": "gold_review_adjudication/John/qc/superseded_stale_input_lock/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\qc\\superseded_stale_input_lock\\John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "b7e4078f22dfb651263e81c93b0f121d9e0b3c8975a35956d94e3a82039ce2b8",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 218882,
+      "path": "gold_review_adjudication/John/repro_run_1/John.shard_043.pass1-pass2.third_adjudication.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\repro_run_1\\John.shard_043.pass1-pass2.third_adjudication.jsonl",
+      "root": "work",
+      "sha256": "139ffd0f95a16f6f7794782dc93207a6c7b842f03f28269a00fc8cd5dd3e4cc0",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 7140,
+      "path": "gold_review_adjudication/John/repro_run_1/John.shard_043.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\John\\repro_run_1\\John.shard_043.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "5410146d7da9a73ffc497bfe73ec975cbeb9ccddb3a8c861cec8ef5caecb3959",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 437041,
+      "path": "gold_review_adjudication/Luke/completed/Luke.shard_042.pass1-pass2.third_adjudication.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\completed\\Luke.shard_042.pass1-pass2.third_adjudication.jsonl",
+      "root": "work",
+      "sha256": "7f4e8a7d1fde9fb2ee5abd8fd1aa20437d273f8643e768b9c2a611d2de1b3a4f",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 7505,
+      "path": "gold_review_adjudication/Luke/completed/Luke.shard_042.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\completed\\Luke.shard_042.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "889ccdfb60cd9d5d8446ce3f171b2b2d55ea5245ff85fe3a7eeffef4b227847f",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 437041,
+      "path": "gold_review_adjudication/Luke/completed_run_a/Luke.shard_042.pass1-pass2.third_adjudication.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\completed_run_a\\Luke.shard_042.pass1-pass2.third_adjudication.jsonl",
+      "root": "work",
+      "sha256": "7f4e8a7d1fde9fb2ee5abd8fd1aa20437d273f8643e768b9c2a611d2de1b3a4f",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 7505,
+      "path": "gold_review_adjudication/Luke/completed_run_a/Luke.shard_042.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\completed_run_a\\Luke.shard_042.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "889ccdfb60cd9d5d8446ce3f171b2b2d55ea5245ff85fe3a7eeffef4b227847f",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 437041,
+      "path": "gold_review_adjudication/Luke/provenance_repair/repro_run_1/Luke.shard_042.pass1-pass2.third_adjudication.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\provenance_repair\\repro_run_1\\Luke.shard_042.pass1-pass2.third_adjudication.jsonl",
+      "root": "work",
+      "sha256": "6060591b7a7dbf091bd18c27e547dfc1b46f4f7d7c7d9a5d1fd832fe0e0dde07",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 8093,
+      "path": "gold_review_adjudication/Luke/provenance_repair/repro_run_1/Luke.shard_042.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\provenance_repair\\repro_run_1\\Luke.shard_042.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "1d34d91eab23acaeeef5d78fe7ec5866fbbd44e147e33ed8d7f12afb961fc691",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 437041,
+      "path": "gold_review_adjudication/Luke/provenance_repair/repro_run_2/Luke.shard_042.pass1-pass2.third_adjudication.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\provenance_repair\\repro_run_2\\Luke.shard_042.pass1-pass2.third_adjudication.jsonl",
+      "root": "work",
+      "sha256": "6060591b7a7dbf091bd18c27e547dfc1b46f4f7d7c7d9a5d1fd832fe0e0dde07",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 8093,
+      "path": "gold_review_adjudication/Luke/provenance_repair/repro_run_2/Luke.shard_042.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\provenance_repair\\repro_run_2\\Luke.shard_042.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "1d34d91eab23acaeeef5d78fe7ec5866fbbd44e147e33ed8d7f12afb961fc691",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1154300,
+      "path": "gold_review_adjudication/Luke/qc/completed/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\completed\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "9c34b5a29de75af485fa77dc241c93193f7843cae94e7272bc07c346fa8d8cc8",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 28249,
+      "path": "gold_review_adjudication/Luke/qc/completed/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\completed\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "c5df3e4b359c5e2048a96bd09f985629aceb52edd29387a9ff28068c1d51901b",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1154300,
+      "path": "gold_review_adjudication/Luke/qc/provenance_repair/repro_run_1/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\provenance_repair\\repro_run_1\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "aa6ce85b3d6e18c0f0f25a3b677f8c2ebfff18747685b7a1f8a0f0e1fdf05ebd",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 28755,
+      "path": "gold_review_adjudication/Luke/qc/provenance_repair/repro_run_1/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\provenance_repair\\repro_run_1\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "b490632577ee7d64b8f4f0526fbaf6eae8425e014d7a0ddff6ef727a380ae527",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1154300,
+      "path": "gold_review_adjudication/Luke/qc/provenance_repair/repro_run_2/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\provenance_repair\\repro_run_2\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "aa6ce85b3d6e18c0f0f25a3b677f8c2ebfff18747685b7a1f8a0f0e1fdf05ebd",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 28755,
+      "path": "gold_review_adjudication/Luke/qc/provenance_repair/repro_run_2/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\provenance_repair\\repro_run_2\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "b490632577ee7d64b8f4f0526fbaf6eae8425e014d7a0ddff6ef727a380ae527",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1154300,
+      "path": "gold_review_adjudication/Luke/qc/repro_1/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\repro_1\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "9c34b5a29de75af485fa77dc241c93193f7843cae94e7272bc07c346fa8d8cc8",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 28249,
+      "path": "gold_review_adjudication/Luke/qc/repro_1/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\repro_1\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "c5df3e4b359c5e2048a96bd09f985629aceb52edd29387a9ff28068c1d51901b",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1154300,
+      "path": "gold_review_adjudication/Luke/qc/repro_2/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\repro_2\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "9c34b5a29de75af485fa77dc241c93193f7843cae94e7272bc07c346fa8d8cc8",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 28249,
+      "path": "gold_review_adjudication/Luke/qc/repro_2/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Luke\\qc\\repro_2\\Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "c5df3e4b359c5e2048a96bd09f985629aceb52edd29387a9ff28068c1d51901b",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 489100,
+      "path": "gold_review_adjudication/Mark/provenance_repair/repro_run_1/Mark.shard_041.pass1-pass2.third_adjudication.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Mark\\provenance_repair\\repro_run_1\\Mark.shard_041.pass1-pass2.third_adjudication.jsonl",
+      "root": "work",
+      "sha256": "19cc5703e10f23eafc314fcbeb1f6367d5097270c37daf921771d73c60c421a2",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 7320,
+      "path": "gold_review_adjudication/Mark/provenance_repair/repro_run_1/Mark.shard_041.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Mark\\provenance_repair\\repro_run_1\\Mark.shard_041.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "3e08abfd69534529486866aba9e746a49b71eef113268699dcaab298cb7eef0f",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 489100,
+      "path": "gold_review_adjudication/Mark/provenance_repair/repro_run_2/Mark.shard_041.pass1-pass2.third_adjudication.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Mark\\provenance_repair\\repro_run_2\\Mark.shard_041.pass1-pass2.third_adjudication.jsonl",
+      "root": "work",
+      "sha256": "19cc5703e10f23eafc314fcbeb1f6367d5097270c37daf921771d73c60c421a2",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 7320,
+      "path": "gold_review_adjudication/Mark/provenance_repair/repro_run_2/Mark.shard_041.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Mark\\provenance_repair\\repro_run_2\\Mark.shard_041.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "3e08abfd69534529486866aba9e746a49b71eef113268699dcaab298cb7eef0f",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1349410,
+      "path": "gold_review_adjudication/Mark/qc/provenance_repair/repro_run_1/Mark.shard_041.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Mark\\qc\\provenance_repair\\repro_run_1\\Mark.shard_041.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "b40721a70c16a031d7dd7f5b6734e2fa97e117f1f7d95621505908e04a15483e",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 25879,
+      "path": "gold_review_adjudication/Mark/qc/provenance_repair/repro_run_1/Mark.shard_041.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Mark\\qc\\provenance_repair\\repro_run_1\\Mark.shard_041.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "2e54d0ce22c49d08b7e328f6a7aa97fcf0fce1b92092723eb6d93f694a9b9e93",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1349410,
+      "path": "gold_review_adjudication/Mark/qc/provenance_repair/repro_run_2/Mark.shard_041.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Mark\\qc\\provenance_repair\\repro_run_2\\Mark.shard_041.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "root": "work",
+      "sha256": "b40721a70c16a031d7dd7f5b6734e2fa97e117f1f7d95621505908e04a15483e",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 25879,
+      "path": "gold_review_adjudication/Mark/qc/provenance_repair/repro_run_2/Mark.shard_041.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_adjudication\\Mark\\qc\\provenance_repair\\repro_run_2\\Mark.shard_041.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "2e54d0ce22c49d08b7e328f6a7aa97fcf0fce1b92092723eb6d93f694a9b9e93",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 289544,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_1/John.pass1-pass2.disagreements.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_1\\John.pass1-pass2.disagreements.jsonl",
+      "root": "work",
+      "sha256": "e2af384998a2dadd8134672149c259a922151845e92d1327c1ada52979f774ec",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1491,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_1/John.pass1-pass2.disagreements.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_1\\John.pass1-pass2.disagreements.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "a2542bad767d0918b7d6d9ca35facccec3ef558c93c5b77936609e3bc957c112",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 625528,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_1/Luke.pass1-pass2.disagreements.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_1\\Luke.pass1-pass2.disagreements.jsonl",
+      "root": "work",
+      "sha256": "2445b6c5cd0f751c932121d3e7ddf3b4aed652445534736b41798a5f49914659",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1490,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_1/Luke.pass1-pass2.disagreements.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_1\\Luke.pass1-pass2.disagreements.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "18dd509d3cb5000c343b63d4fac0bfafbac20be77ca6cb098e546a337791d2b6",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 633160,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_1/Mark.pass1-pass2.disagreements.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_1\\Mark.pass1-pass2.disagreements.jsonl",
+      "root": "work",
+      "sha256": "6ed8cb5ce30b7a4e3c05761b596008b2f6c53a42c0e79a92abfb8b492536477c",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1491,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_1/Mark.pass1-pass2.disagreements.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_1\\Mark.pass1-pass2.disagreements.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "2d4143decf2013c26307caef5403c045ade26e7381da2718eca6c8db223655b8",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 289544,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_2/John.pass1-pass2.disagreements.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_2\\John.pass1-pass2.disagreements.jsonl",
+      "root": "work",
+      "sha256": "e2af384998a2dadd8134672149c259a922151845e92d1327c1ada52979f774ec",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1491,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_2/John.pass1-pass2.disagreements.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_2\\John.pass1-pass2.disagreements.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "a2542bad767d0918b7d6d9ca35facccec3ef558c93c5b77936609e3bc957c112",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 625528,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_2/Luke.pass1-pass2.disagreements.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_2\\Luke.pass1-pass2.disagreements.jsonl",
+      "root": "work",
+      "sha256": "2445b6c5cd0f751c932121d3e7ddf3b4aed652445534736b41798a5f49914659",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1490,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_2/Luke.pass1-pass2.disagreements.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_2\\Luke.pass1-pass2.disagreements.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "18dd509d3cb5000c343b63d4fac0bfafbac20be77ca6cb098e546a337791d2b6",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 633160,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_2/Mark.pass1-pass2.disagreements.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_2\\Mark.pass1-pass2.disagreements.jsonl",
+      "root": "work",
+      "sha256": "6ed8cb5ce30b7a4e3c05761b596008b2f6c53a42c0e79a92abfb8b492536477c",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1491,
+      "path": "gold_review_comparisons/provenance_repair/repro_run_2/Mark.pass1-pass2.disagreements.jsonl.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_review_comparisons\\provenance_repair\\repro_run_2\\Mark.pass1-pass2.disagreements.jsonl.manifest.json",
+      "root": "work",
+      "sha256": "2d4143decf2013c26307caef5403c045ade26e7381da2718eca6c8db223655b8",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1190235451,
+      "path": "gold_selected_original_layer.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\gold_selected_original_layer.jsonl",
+      "root": "work",
+      "sha256": "500482d4b1ce58f9749fe9e53b58bf8bce6be1558df926dacfbe0df29cf09ca4",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 1102373802,
+      "path": "original_token_universe.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\original_token_universe.jsonl",
+      "root": "work",
+      "sha256": "c891e29cedf8ac040418d8f052c94a3d21e2b39ea18ed96f122dc79853899242",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 3394,
+      "path": "session_group1_20261003_common_issue_inventory_01/historical_inputs/scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_adjudication_batch_042.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\session_group1_20261003_common_issue_inventory_01\\historical_inputs\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\gold_adjudication_batch_042.manifest.json",
+      "root": "work",
+      "sha256": "ac1a80c744b8bad70732f843706623be23563ee569497c5d6b00659a1f5f6579",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 2844,
+      "path": "session_group1_20261003_common_issue_inventory_01/historical_inputs/scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_adjudication_batch_043.manifest.json",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\session_group1_20261003_common_issue_inventory_01\\historical_inputs\\scripts\\bible_module\\reports\\ukrainian_stage_7_20260801\\gold_adjudication_batch_043.manifest.json",
+      "root": "work",
+      "sha256": "0e1fb8943504480fb1aeed924b9f9d67acf8fc13f50e4fd52ea5f741939691c1",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 544553840,
+      "path": "ukrainian_token_inventory.jsonl",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\ukrainian_token_inventory.jsonl",
+      "root": "work",
+      "sha256": "62caa29ff269c9ca8dad4b64c656728a645b3d09210034ddcc953c5363c567e1",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 83637482,
+      "path": "../../source_cache/commons_ohienko_1988.djvu",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\commons_ohienko_1988.djvu",
+      "root": "source",
+      "sha256": "0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34",
+      "source_id": "commons_ohienko_1988_scan",
+      "verified_before_full_read": true
+    },
+    {
+      "bytes": 14189032,
+      "path": "../../source_cache/step_tagnt_mat_jhn.txt",
+      "resolved_path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\source_cache\\step_tagnt_mat_jhn.txt",
+      "root": "source",
+      "sha256": "ab8eaaeb68e17a1dcfa34e1e9350358f22f03bc2a97244d848750ad81044bc8e",
+      "source_id": "step_tagnt_mat_jhn",
+      "verified_before_full_read": true
+    }
+  ],
+  "output_locks": [
+    {
+      "bytes": 37740,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/author_source_resolution.py",
+      "sha256": "c00e24af1a83d9994cce58d6392e55de25dd4839a243e7e5e302f5173a6c65a9"
+    },
+    {
+      "bytes": 129931,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/exact_issue_inputs.v1.jsonl",
+      "sha256": "05edc2ba2f6367e474cbfe05156fa2d569f949c1c46a94bf1e83644d3a07c90b"
+    },
+    {
+      "bytes": 346129,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/gold_selected_original_layer.scoped.v1.jsonl",
+      "sha256": "0800afe6e31dd6d7358dbdb4238cf09f7cfbbf25774abd407351fba6c800d325"
+    },
+    {
+      "bytes": 793013,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1267.png",
+      "sha256": "4dcd6a967574f9d239b325aa84efff339ff63bb2e1023a931d8e58169eccfdfb"
+    },
+    {
+      "bytes": 813266,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1284.png",
+      "sha256": "12e7a256e68fab2cc6082480077ec6f8b9c93f89f5eb0e07585e9f1632349baf"
+    },
+    {
+      "bytes": 881513,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1285.png",
+      "sha256": "acb1bac2622f25afc7f67b9e0e83d01d25d5ffda9658ca3ce0b04612654370e7"
+    },
+    {
+      "bytes": 838063,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1291.png",
+      "sha256": "60eb8120b11f7f51b4f7c808df578b4271d10ae46a1327574f451939de06f371"
+    },
+    {
+      "bytes": 830512,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1296.png",
+      "sha256": "8652d83c9961d28d0d03d83a4bbba2fe32f3d738eb7bb6211be6db15eaf92517"
+    },
+    {
+      "bytes": 788759,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1303.png",
+      "sha256": "0919f4272c24c4d6aea1a39ad74388b835e1e59ba5306ba1291b2b2a3864cf33"
+    },
+    {
+      "bytes": 715681,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1312.png",
+      "sha256": "3f68f806efc4c2980ed7c73ffe5206be699983207da9a110935610631eb3defc"
+    },
+    {
+      "bytes": 869838,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1313.png",
+      "sha256": "c89e837769470bc45fe3d3f9257a32cb7024eda441b81fd4c77a2dc5410d8a0d"
+    },
+    {
+      "bytes": 823419,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1318.png",
+      "sha256": "dae25469c99f29df8a931de38298458480316766e49879da4f8d41016e06994c"
+    },
+    {
+      "bytes": 822640,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1324.png",
+      "sha256": "b528e5c7711048fd21989976e20e7fc0f6ae15f55a0c93c7bdfc886638ae4c86"
+    },
+    {
+      "bytes": 829138,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1325.png",
+      "sha256": "0d97522de765302dfbe1de0dc7d57762293e256ec971e36782ceb39e92d519b4"
+    },
+    {
+      "bytes": 791677,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1336.png",
+      "sha256": "3e4abc5fc7bd72c7f1a03465196ead17fe4a7ea007bf9ec66cfbb03ebd39231a"
+    },
+    {
+      "bytes": 404771,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_scan_ocr_1260_1341.txt",
+      "sha256": "374feb390ca7e6317100a7b91504b4249273a7ad594ebf88be92013da689c9ee"
+    },
+    {
+      "bytes": 3224,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/online_acquisition.v1.json",
+      "sha256": "5de0eeaba4c84af97b3bb16d1f0d888eaff488922c82fcd0add0c13f79c097cc"
+    },
+    {
+      "bytes": 328154,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/original_token_universe.scoped.v1.jsonl",
+      "sha256": "f1199adc3158e64e2a0f7a9d010375d434b3bf139ad2e9db469f50b5b55943da"
+    },
+    {
+      "bytes": 4528,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/prepare_inputs.py",
+      "sha256": "afb9506a5515c7e235491038ec74788839ceb369483587ffec21582a835902da"
+    },
+    {
+      "bytes": 312,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/proven_correction_scopes.v1.json",
+      "sha256": "b0f3a8ed762c5cc9f2c1cc6d23fd40d2e42d445cda289eb96520eab53f4b1fed"
+    },
+    {
+      "bytes": 66302,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/role_and_input_locks.v1.json",
+      "sha256": "015f4f9960d8f84c91a013730228a8b2c15d1d93c89174752d58590bc8017975"
+    },
+    {
+      "bytes": 189793,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_data_sblgnt_text_John.txt",
+      "sha256": "ada9643154a990ae2725ab847c6cfb576ce2c3bcd4945d47606e8a90c8d065f5"
+    },
+    {
+      "bytes": 251219,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_data_sblgnt_text_Luke.txt",
+      "sha256": "102d65ec7a91271777115d1a605688776adfda6a1188680ccf593e27e3e876d6"
+    },
+    {
+      "bytes": 55512,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_data_sblgntapp_text_John.txt",
+      "sha256": "fbfb6ca71bee74da2ee7f27472bd75fd03e9894e7baa42ba4c8304913b766305"
+    },
+    {
+      "bytes": 83568,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_data_sblgntapp_text_Luke.txt",
+      "sha256": "687348bf3002146877b58e425c82697e797b81edf075c42b5e4f973984c8e212"
+    },
+    {
+      "bytes": 18650,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_LICENSE",
+      "sha256": "7e7170e3cebf88a9f60c7b8421418323c09304da1af4d5e90f4da1dc1c8a2661"
+    },
+    {
+      "bytes": 28337,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_tree.v1.json",
+      "sha256": "986376b07a3b3c83dfb8e5d12ceca56bfd8a65454aae7051e17c81d56237f413"
+    },
+    {
+      "bytes": 4269,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/scholarly_evidence_notes.v1.json",
+      "sha256": "41627fc0ddec56c7bf13b7e3d4f5d9a6ebba190ad71cfab640f0739017e1c148"
+    },
+    {
+      "bytes": 144786,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/source_qualified_controls.v1.jsonl",
+      "sha256": "a73514a372b275f68f28128d77c4f7bdf0a1f48b069e51a839f70767ac97a7a6"
+    },
+    {
+      "bytes": 846583,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/source_resolution.cases.v1.jsonl",
+      "sha256": "19b145d053dafd9759ec3cb0f479d8eeca59f2a73329dd6c19c03bd8d7ffbdd3"
+    },
+    {
+      "bytes": 159626,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/source_resolution.key_dispositions.v1.jsonl",
+      "sha256": "42d3eeb1960901dc670bbbc6a80660b2e1d61b37edb4f1e6f429fe6c7c5ee47a"
+    },
+    {
+      "bytes": 30359,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/tagnt_exact_loci.v1.tsv",
+      "sha256": "e88f2e483cf5dcfcba695bab1267030b5fb6ac6ef7e6be37bf77f8074cd6fdb9"
+    },
+    {
+      "bytes": 163540,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/ukrainian_token_inventory.scoped.v1.jsonl",
+      "sha256": "80cb9c49d2e4948f97b8d705456b9676a2db60a0c292619965fab92fb4b5d9ac"
+    },
+    {
+      "bytes": 26386,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Luke_John.source_resolution.v1.ru.md",
+      "sha256": "c59acf48ee75effb205d2cedb6d5205c6b3afe1ad49336d8388de9a6a46ab0b0"
+    }
+  ],
+  "output_sha256": {
+    "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Luke_John.source_resolution.v1.ru.md": "c59acf48ee75effb205d2cedb6d5205c6b3afe1ad49336d8388de9a6a46ab0b0",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/author_source_resolution.py": "c00e24af1a83d9994cce58d6392e55de25dd4839a243e7e5e302f5173a6c65a9",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/exact_issue_inputs.v1.jsonl": "05edc2ba2f6367e474cbfe05156fa2d569f949c1c46a94bf1e83644d3a07c90b",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/gold_selected_original_layer.scoped.v1.jsonl": "0800afe6e31dd6d7358dbdb4238cf09f7cfbbf25774abd407351fba6c800d325",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1267.png": "4dcd6a967574f9d239b325aa84efff339ff63bb2e1023a931d8e58169eccfdfb",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1284.png": "12e7a256e68fab2cc6082480077ec6f8b9c93f89f5eb0e07585e9f1632349baf",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1285.png": "acb1bac2622f25afc7f67b9e0e83d01d25d5ffda9658ca3ce0b04612654370e7",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1291.png": "60eb8120b11f7f51b4f7c808df578b4271d10ae46a1327574f451939de06f371",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1296.png": "8652d83c9961d28d0d03d83a4bbba2fe32f3d738eb7bb6211be6db15eaf92517",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1303.png": "0919f4272c24c4d6aea1a39ad74388b835e1e59ba5306ba1291b2b2a3864cf33",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1312.png": "3f68f806efc4c2980ed7c73ffe5206be699983207da9a110935610631eb3defc",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1313.png": "c89e837769470bc45fe3d3f9257a32cb7024eda441b81fd4c77a2dc5410d8a0d",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1318.png": "dae25469c99f29df8a931de38298458480316766e49879da4f8d41016e06994c",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1324.png": "b528e5c7711048fd21989976e20e7fc0f6ae15f55a0c93c7bdfc886638ae4c86",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1325.png": "0d97522de765302dfbe1de0dc7d57762293e256ec971e36782ceb39e92d519b4",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_leaf_1336.png": "3e4abc5fc7bd72c7f1a03465196ead17fe4a7ea007bf9ec66cfbb03ebd39231a",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/oh1988_scan_ocr_1260_1341.txt": "374feb390ca7e6317100a7b91504b4249273a7ad594ebf88be92013da689c9ee",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/online_acquisition.v1.json": "5de0eeaba4c84af97b3bb16d1f0d888eaff488922c82fcd0add0c13f79c097cc",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/original_token_universe.scoped.v1.jsonl": "f1199adc3158e64e2a0f7a9d010375d434b3bf139ad2e9db469f50b5b55943da",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/prepare_inputs.py": "afb9506a5515c7e235491038ec74788839ceb369483587ffec21582a835902da",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/proven_correction_scopes.v1.json": "b0f3a8ed762c5cc9f2c1cc6d23fd40d2e42d445cda289eb96520eab53f4b1fed",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/role_and_input_locks.v1.json": "015f4f9960d8f84c91a013730228a8b2c15d1d93c89174752d58590bc8017975",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_LICENSE": "7e7170e3cebf88a9f60c7b8421418323c09304da1af4d5e90f4da1dc1c8a2661",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_data_sblgnt_text_John.txt": "ada9643154a990ae2725ab847c6cfb576ce2c3bcd4945d47606e8a90c8d065f5",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_data_sblgnt_text_Luke.txt": "102d65ec7a91271777115d1a605688776adfda6a1188680ccf593e27e3e876d6",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_data_sblgntapp_text_John.txt": "fbfb6ca71bee74da2ee7f27472bd75fd03e9894e7baa42ba4c8304913b766305",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_data_sblgntapp_text_Luke.txt": "687348bf3002146877b58e425c82697e797b81edf075c42b5e4f973984c8e212",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/sblgnt_tree.v1.json": "986376b07a3b3c83dfb8e5d12ceca56bfd8a65454aae7051e17c81d56237f413",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/scholarly_evidence_notes.v1.json": "41627fc0ddec56c7bf13b7e3d4f5d9a6ebba190ad71cfab640f0739017e1c148",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/source_qualified_controls.v1.jsonl": "a73514a372b275f68f28128d77c4f7bdf0a1f48b069e51a839f70767ac97a7a6",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/source_resolution.cases.v1.jsonl": "19b145d053dafd9759ec3cb0f479d8eeca59f2a73329dd6c19c03bd8d7ffbdd3",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/source_resolution.key_dispositions.v1.jsonl": "42d3eeb1960901dc670bbbc6a80660b2e1d61b37edb4f1e6f429fe6c7c5ee47a",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/tagnt_exact_loci.v1.tsv": "e88f2e483cf5dcfcba695bab1267030b5fb6ac6ef7e6be37bf77f8074cd6fdb9",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/ukrainian_token_inventory.scoped.v1.jsonl": "80cb9c49d2e4948f97b8d705456b9676a2db60a0c292619965fab92fb4b5d9ac"
+  },
+  "production_Strong_export_training_run": false,
+  "required_next_workflow": [
+    "separate independent content_QC of author findings and current full-grid chain",
+    "canonical issue inventory registration by separate writer",
+    "closed-reciprocal deferral projection and coverage/completion validation by root"
+  ],
+  "research_author_id": "codex-group002-luke-john-research-20261003-01",
+  "resolved_stable_keys": [
+    "original:gold7:original:4883ea5680c6e81e3ecb854eea946bd2",
+    "original:gold7:original:4d936b2f55de892a7836e8a9ed7a3586",
+    "original:gold7:original:f5d0d4b2358edfc89f051946baeb60a6",
+    "target:gold7:target:202ca6d084c844654c4f934552a2f42a",
+    "target:gold7:target:a16d0beccd9f673fb17f0c1aec942756",
+    "target:gold7:target:d2cc691c969f2c0dcc527f18e986e732"
+  ],
+  "role": "research_author_not_independent_QC",
+  "schema_version": 1,
+  "scholarly_evidence_note_sha256": "41627fc0ddec56c7bf13b7e3d4f5d9a6ebba190ad71cfab640f0739017e1c148",
+  "source_selection_modified": false,
+  "status": "authored_bounded_research_complete_pending_independent_QC_and_completion_registration",
+  "supersedes": [
+    {
+      "artifact": "shared_inventory_Luke_John_known_unresolved_inventory_only",
+      "scope": "new source-research author dispositions for these24keys only; preserve historical QC and original inventory rows",
+      "sha256": "a2d7b575ec980ac69707d0be5e1caa3a4f1f5790fa82cb43d6c92623963251de"
+    }
+  ]
+}

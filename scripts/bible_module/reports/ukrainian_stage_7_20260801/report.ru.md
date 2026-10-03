@@ -1267,7 +1267,7 @@ gold/training/export. Nah/Zech приняты после correction/source resol
 независимого полного QC. Итог **completed39/66 (весьOT), fullyaccepted38/66**.
 Неполное покрытие Strong не требует повторного открытия завершённой книги.
 
-- [Единый читаемый реестр проблем OH1988](strongs_issue_inventory.v1.ru.md), [все записи JSONL](strongs_issue_inventory.v1.jsonl) и [manifest](strongs_issue_inventory.v1.manifest.json).
+- [Единый читаемый реестр проблем OH1988](oh88_strongs_issue_inventory.ru.md), [полные записи в едином файле](oh88_strongs_issue_inventory.ru.md#registry-records) и [evidence ? input digests](oh88_strongs_issue_inventory.ru.md#registry-records).
 - [Правило владельца и сохранённые прежние policy inputs](gold_group_001_completion_policy.v2.manifest.json), [AGENTS.md](../../../../AGENTS.md) и [план этапа7](../../../../docs/ru/content/ukrainian-bible-strongs-stage-7-alignment-plan.ru.md).
 - [Zeph: completed with registered deferrals](gold_group_001_Zeph.completed_with_deferrals.v1.manifest.json).
 - [Независимая проверка нового реестра и completion overlay](gold_group_001_completion_qc.v1.ru.md), [QC manifest](gold_group_001_completion_qc.v1.manifest.json).
@@ -1278,3 +1278,144 @@ findings и evidence digests. Существующие NT-проблемы ли�
 новый ledger/overlay, сохраняя исторические strict verdicts. AGENTS.md содержит
 bounded rule и больше не содержит model/Reasoning recommendations. Последний
 [HANDOFF](HANDOFF.ru.md) заменяет исторический prompt mandatory continuation.
+
+
+## Группа № 2 — Mat завершена, 2026-10-03
+
+Gold: завершено 40/66; строго принято 38/66; с отсрочками 2.
+
+[Mat: completion manifest](gold_group_002_Mat.completed_with_deferrals.v1.manifest.json); [реестр OH1988](oh88_strongs_issue_inventory.ru.md); [completion registry v2](gold_completion_registry.v2.manifest.json). Проверено 1358 полных labels; effective proven 1343; отложено 15 labels (15 uncertain, 0 accepted dependency), loci 1. Исходные QC/frozen answers сохранены, строгая ветка ожидаемо отклоняет uncertainties. Live completion, полное accounting и exact closed exclusions PASS. Другие группы, global finalize, этап8/DB/runtime/commit/push не запускались.
+
+
+## Группа № 2 — Mark завершена, 2026-10-03
+
+Gold: завершено 41/66; строго принято 38/66; с отсрочками 3.
+
+[Mark: completion manifest](gold_group_002_Mark.completed_with_deferrals.v1.manifest.json); [реестр OH1988](oh88_strongs_issue_inventory.ru.md); [completion registry v3](gold_completion_registry.v3.manifest.json). Проверено 1328 полных labels; effective proven 1324; отложено 4 labels (4 uncertain, 0 accepted dependency), loci 2. Исходные QC/frozen answers сохранены, строгая ветка ожидаемо отклоняет uncertainties. Live completion, полное accounting и exact closed exclusions PASS. Другие группы, global finalize, этап8/DB/runtime/commit/push не запускались.
+
+
+## Группа № 2 — Luke завершена, 2026-10-03
+
+Gold: завершено 42/66; строго принято 38/66; с отсрочками 4.
+
+[Luke: completion manifest](gold_group_002_Luke.completed_with_deferrals.v1.manifest.json); [реестр OH1988](oh88_strongs_issue_inventory.ru.md); [completion registry v4](gold_completion_registry.v4.manifest.json). Проверено 1210 полных labels; effective proven 1197; отложено 13 labels (12 uncertain, 1 accepted dependency), loci 6. Исходные QC/frozen answers сохранены, строгая ветка ожидаемо отклоняет uncertainties. Live completion, полное accounting и exact closed exclusions PASS. Другие группы, global finalize, этап8/DB/runtime/commit/push не запускались.
+
+
+## Группа № 2 — John завершена, 2026-10-03
+
+Gold: завершено 43/66; строго принято 38/66; с отсрочками 5.
+
+[John: completion manifest](gold_group_002_John.completed_with_deferrals.v1.manifest.json); [реестр OH1988](oh88_strongs_issue_inventory.ru.md); [completion registry v5](gold_completion_registry.v5.manifest.json). Проверено 1170 полных labels; effective proven 1164; отложено 6 labels (6 uncertain, 0 accepted dependency), loci 2. Исходные QC/frozen answers сохранены, строгая ветка ожидаемо отклоняет uncertainties. Live completion, полное accounting и exact closed exclusions PASS. Другие группы, global finalize, этап8/DB/runtime/commit/push не запускались.
+
+
+## Итоговый checkpoint 2026-10-03 — группа № 2 завершена
+
+**Gold: завершено 43/66; строго принято 38/66; с отсрочками 5.**
+Mat, Mark, Luke, John зарегистрированы как `completed_with_registered_deferrals`.
+Статус 38 строго принятых книг OT сохранён; с отсрочками завершены Zeph и
+четыре Евангелия. Остальные 23 книги NT и global finalize не запускались.
+
+| Книга | Reviewed labels | Effective proven | Deferred labels | Loci |
+|---|---:|---:|---:|---:|
+| Mat | 1358 | 1343 | 15 | 1 |
+| Mark | 1328 | 1324 | 4 | 2 |
+| Luke | 1210 | 1197 | 13 | 6 |
+| John | 1170 | 1164 | 6 | 2 |
+| Всего | 5066 | 5028 | 38 | 11 |
+
+Независимо проверены 154 полные сетки и 5066 решений; новых definite errors нет.
+Шесть uncertain IDs разрешены для конкретного occurrence: Luke.10.15 G5312
+↔ піднісся; John.1.28 G963 ↔ Віфанії; John.14.15 G5083 ↔ зберігайте.
+Семантические corrections не потребовались, corrector — N/A.
+Frozen links, NULL и группировки сохранены.
+
+Отсрочки: Mat.21.30; Mark.1.2, 16.9; Luke.1.76, 10.15, 10.42, 13.7,
+16.21, 20.34; John.1.18, 8.11. Exact closed exclusions содержат 37 uncertain
+labels и один dependent accepted target; исключены 8 reciprocal edges.
+Для target Luke.20.34 сохранён accepted content verdict, но исключена целая
+hyperedge без создания частичной связи. Отсрочка сохраняет исходный QC verdict
+и не требует второго исследования. Deferred nodes сохраняют identity с пустыми
+edges и без Strong; недоказанные NULL/addition classifiers исключены из
+effective accepted alignment, training, scoring и экспорта.
+34 source-only Short Ending nodes Mark.16.8 приняты только как фактическое
+`source_text_not_rendered` между reference и печатным текстом, без target Strong
+и без вывода о translator omission либо Vorlage.
+
+Роли: `/root/mat_mark_research` и `/root/luke_john_research` — авторы исследований;
+`/root` — автор ledger, completion validator и completion записей;
+`/root/independent_qc` — reviewer без наследования авторской истории и без
+авторства проверяемых решений/инструментов; `/root/inventory_writer` — отдельный
+mechanical writer. Reviewer прочитал locked files, составил собственные
+154 обоснования сеток, per-key observations и adjacency audit, проверил
+инструменты и post-seal цепочку. Чтение проверяемых файлов не является авторством.
+
+- [Общий реестр OH1988](oh88_strongs_issue_inventory.ru.md), [полные записи](oh88_strongs_issue_inventory.ru.md#registry-records), [evidence ? input digests](oh88_strongs_issue_inventory.ru.md#registry-records). Все 179 issue IDs сохранены; обновлены 13 строк текущей группы, остальные 166 строк побайтно сохранены. История реестра ведётся в Git; исходные приёмочные SHA-входы сохранены как неизменяемые технические доказательства. Модуль: active loci 172 / keys 510; registered deferral loci 12 / labels 40; closed/resolved history 7.
+- [Независимый QC](gold_group_002_independent_content_qc.v1.ru.md), [v1 manifest](gold_group_002_independent_content_qc.v1.manifest.json), [post-seal v2 manifest](gold_group_002_independent_content_qc.v2.manifest.json). Candidate/sealed projections побайтно совпадают; configs меняют только ledger path с тем же digest.
+- [Mat/Mark research](gold_group_002_Mat_Mark.source_resolution.v1.ru.md), [v1 manifest](gold_group_002_Mat_Mark.source_resolution.v1.manifest.json), [v2 receipt](gold_group_002_Mat_Mark.source_resolution.v2.manifest.json).
+- [Luke/John research](gold_group_002_Luke_John.source_resolution.v1.ru.md), [v1 manifest](gold_group_002_Luke_John.source_resolution.v1.manifest.json), [v2 locator bridge](gold_group_002_Luke_John.source_resolution.v2.manifest.json). Семь Luke locators связаны с актуальной repaired chain; v1 bytes сохранены.
+- [Completion registry v5](gold_completion_registry.v5.manifest.json); [Mat](gold_group_002_Mat.completed_with_deferrals.v1.manifest.json), [Mark](gold_group_002_Mark.completed_with_deferrals.v1.manifest.json), [Luke](gold_group_002_Luke.completed_with_deferrals.v1.manifest.json), [John](gold_group_002_John.completed_with_deferrals.v1.manifest.json). Canonical batches 040–043 и strict aggregate сохранены.
+- [Completion validator](../../ukrainian_stage_7_completion.py), [tests](../../tests/test_ukrainian_stage_7_completion.py): physical path/SHA/byte locks, frozen-author guards, независимые роли, полное accounting, exact IDs/spans/snapshots/digests, замкнутые exclusions. Strict validators сохранены; completion использует отдельный проверяемый контракт.
+
+Проверки: 226 stage-7 regression tests PASS, включая семь focused tests и
+14 negative subcases; stage 3–6 повторно PASS; stage-7 initial preflight PASS
+до чтения полных JSONL; четыре live completion validators и независимые
+content/deferral/post-seal audits PASS. Первоначально физически проверены все
+3871 entries inventory. Helper-only refresh и final stage-7 check прошли;
+после исправления кодировки новых mutable doc записей они повторяются.
+Окончательные roster/SHA/check результаты фиксируются в исключённом из inventory
+[HANDOFF](HANDOFF.ru.md).
+
+Docs sync, forbidden-pattern checks и git diff --check прошли.
+`dart format .` выполнен; четыре посторонних formatter изменения Dart-тестов
+возвращены к исходным bytes. Flutter analyze/test/coverage и smoke для Python
+gold tooling и evidence/docs — N/A; соответствующие Python tests выполнены.
+Checklist scope соблюдён: runtime/routes/dependencies/state/l10n/release не изменены.
+Исходный git status чистый; сохранены 13 baseline snapshots. Immutable stage-6
+text/comment, mapping, original/gold selections/folds и исходные review artifacts
+сохранены; frozen reviewer answers не регенерировались.
+Другие группы, global finalize, stage 8, SQLite, production Strong markup,
+Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+```text
+Complete Gospel gold review with registered Strong deferrals [skip ci]
+
+Complete Mat, Mark, Luke and John with independent full-grid QC.
+Resolve six occurrence-specific labels and register 38 exclusions at 11 loci.
+Add independently reviewed completion validation and regression tests;
+preserve strict acceptance, frozen artifacts and versioned provenance.
+Consolidate OH1988 issues into one Git-versioned Markdown registry;
+update policy pointers, docs and physical artifact inventory.
+
+Validation: 226 regression tests, stage 3-7 checks, live completion validators,
+independent content/overlay/post-seal audits, SHA accounting, docs and diff checks.
+```
+
+## Единый читаемый реестр OH1988 — 2026-10-03
+
+По уточнённому запросу владельца объединены только два прежних Markdown:
+[oh88_strongs_issue_inventory.ru.md](oh88_strongs_issue_inventory.ru.md).
+В нём 179 уникальных строк: слова/candidates/QC ссылки и контекст первой редакции,
+актуальные статусы/active counts и выводы второй редакции. Дубли удалены,
+сохранены семь контекстных абзацев. Оба старых report Markdown файла удалены.
+
+Для каждого библейского модуля ведётся один читаемый рабочий реестр с постоянным
+именем; его обновляют на месте, историю ведут в Git. Другие модули имеют свои файлы.
+Существующие sealed JSONL/manifests остаются техническими входами приёмки на прежних
+путях; их bytes, configs, projections, source/QC и completion инструменты сохранены.
+
+Лишний перенос машинных данных отменён; добавленные для него адаптер и тесты
+удалены. Реестр не превращён в новый машинный формат. Записи в work о прежней
+попытке не являются действующим контрактом. Gold остаётся 43/38/5; приёмка книг
+и филологические исследования повторно не выполнялись.
+
+Фокус проверки: 179 IDs/строк/статусов/candidates, сохранённый контекст и QC ссылки,
+восемь восстановленных SHA-входов, отсутствие двух старых report Markdown,
+локальные ссылки, UTF-8 и git diff. Финальный inventory отражает только новые
+документные пути и текущие bytes; его результат фиксируется в HANDOFF.
+
+Сверка объединения двух Markdown независимым reviewer:
+[PASS](../../work/ukrainian_stage_7_20260801/session_single_registry_20261003_independent_qc/minimalmerge_review.json),
+5593 bytes, SHA256 `22b09cefb601a39cdd275bd38051b02d223186292fa94338f519ba8157bfc732`.
+Подтверждены все 179 строк, актуальные статусы, candidates/QC/context,
+удаление двух старых report Markdown, восстановление служебных входов и
+отсутствие лишнего адаптера/tests. Полные Bible/QC/regression циклы не повторялись.

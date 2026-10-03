@@ -1,6 +1,6 @@
 # Дорожная карта создания украинского библейского модуля с номерами Стронга
 
-Doc-Version: `1.9.7`
+Doc-Version: `1.9.9`
 Last-Updated: `2026-10-03`
 Source-Commit: `working-tree`
 
@@ -792,16 +792,33 @@ dart run scripts/coverage_baseline.dart --min-effective=90.0
 | 12 | Не начат | — | — |
 | 13 | Не начат | — | — |
 
-**Актуализировано 2026-10-03 — весь OT завершён.**
+## Актуальный итог и единый реестр — 2026-10-03
+
+**Gold: завершено 43/66; строго принято 38/66; с отсрочками 5.**
+Весь OT и четыре Евангелия завершены. Табличная запись этапа 7 выше и
+промежуточные checkpoints ниже отражают историю до этого итога; актуальный
+completion контракт и доказательства приведены в заключительном разделе группы № 2.
+
+Единственный редактируемый человекочитаемый Markdown-реестр нерешённых Strong OH1988 —
+[`oh88_strongs_issue_inventory.ru.md`](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records).
+Его обновляют на месте; история ведётся только в Git. Версии в имени реестра,
+числовые варианты и параллельные редактируемые JSONL/индексы запрещены.
+Для каждого другого библейского модуля назначается собственное стабильное имя
+единственного человекочитаемого Markdown-реестра. Существующие запечатанные JSONL,
+manifests и proof-файлы сохраняются без изменений как технические доказательства,
+а не параллельные рабочие реестры. Source/QC/completion artifacts и действующие
+completion-инструменты сохраняют свои прежние версии, SHA-256 и контракты.
+
+**Исторический checkpoint 2026-10-03 до группы № 2 — весь OT завершён.**
 Завершены **39/66 книг**:38 полностью приняты и Zeph завершена с одной
 зарегистрированной отсрочкой Strong. Это допустимый конечный результат по
 прямому правилу владельца; повторное исследование не является условием
 завершения книги. Все известные проблемы собраны в
-[общем реестре OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/strongs_issue_inventory.v1.ru.md).
+[общем реестре OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records).
 Ссылка H1471A→«польова́» исключена из effective alignment/training/export;
 слово осталось без номера. Полные исходныеQC/исследования и provenlinks сохранены.
-Последний [HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md)
-содержит новый completion contract и независимые проверки. NT27 не начинались;
+[Актуальный HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md)
+содержит completion contract и независимые проверки. На момент этого checkpoint NT27 не начинались;
 stage8/SQLite/productionStrong/runtime/commit/push не выполнялись.
 Исторические checkpoints и prompt38/66 ниже сохранены как история.
 
@@ -919,6 +936,55 @@ stage8/SQLite/productionStrong/runtime/commit/push не выполнялись.
 
 - [x] Completed **39/66**, весь OT. Strict fully accepted38/66 сохранён как отдельная метрика доказанности.
 - [x] Zeph — [completed with registered deferrals](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_Zeph.completed_with_deferrals.v1.manifest.json): один target span без Strong; прочие1477labels accepted, source/target deferrednodes retained.
-- [x] Создан [единый инвентарь всех известных проблем модуля](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/strongs_issue_inventory.v1.ru.md), с exact words/IDs/spans, candidates, findings и SHA evidence; существующие NT записи не означают начало NT-работы.
+- [x] Создан [единый инвентарь всех известных проблем модуля](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records), с exact words/IDs/spans, candidates, findings и SHA evidence; существующие на этом историческом checkpoint NT записи не означали начала NT-работы.
 - [x] [Независимый completion QC](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_completion_qc.v1.ru.md) проверил ledger/overlay и preserved evidence; номер не выдуман, uncertainty не объявлена error.
 - [x] AGENTS.md закрепляет разумный предел одного филологического цикла, inventory/skip и допустимость завершения с отсрочками; раздел model/Reasoning удалён. Повторное открытие Zeph не требуется, улучшение optional по реестру.
+
+
+## Группа № 2 — Mat завершена, 2026-10-03
+
+Gold: завершено 40/66; строго принято 38/66; с отсрочками 2.
+
+[Mat: completion manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Mat.completed_with_deferrals.v1.manifest.json); [реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records); [completion registry v2](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v2.manifest.json). Проверено 1358 полных labels; effective proven 1343; отложено 15 labels (15 uncertain, 0 accepted dependency), loci 1. Исходные QC/frozen answers сохранены, строгая ветка ожидаемо отклоняет uncertainties. Live completion, полное accounting и exact closed exclusions PASS. Другие группы, global finalize, этап8/DB/runtime/commit/push не запускались.
+
+
+## Группа № 2 — Mark завершена, 2026-10-03
+
+Gold: завершено 41/66; строго принято 38/66; с отсрочками 3.
+
+[Mark: completion manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Mark.completed_with_deferrals.v1.manifest.json); [реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records); [completion registry v3](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v3.manifest.json). Проверено 1328 полных labels; effective proven 1324; отложено 4 labels (4 uncertain, 0 accepted dependency), loci 2. Исходные QC/frozen answers сохранены, строгая ветка ожидаемо отклоняет uncertainties. Live completion, полное accounting и exact closed exclusions PASS. Другие группы, global finalize, этап8/DB/runtime/commit/push не запускались.
+
+
+## Группа № 2 — Luke завершена, 2026-10-03
+
+Gold: завершено 42/66; строго принято 38/66; с отсрочками 4.
+
+[Luke: completion manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Luke.completed_with_deferrals.v1.manifest.json); [реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records); [completion registry v4](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v4.manifest.json). Проверено 1210 полных labels; effective proven 1197; отложено 13 labels (12 uncertain, 1 accepted dependency), loci 6. Исходные QC/frozen answers сохранены, строгая ветка ожидаемо отклоняет uncertainties. Live completion, полное accounting и exact closed exclusions PASS. Другие группы, global finalize, этап8/DB/runtime/commit/push не запускались.
+
+
+## Группа № 2 — John завершена, 2026-10-03
+
+Gold: завершено 43/66; строго принято 38/66; с отсрочками 5.
+
+[John: completion manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_John.completed_with_deferrals.v1.manifest.json); [реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records); [completion registry v5](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v5.manifest.json). Проверено 1170 полных labels; effective proven 1164; отложено 6 labels (6 uncertain, 0 accepted dependency), loci 2. Исходные QC/frozen answers сохранены, строгая ветка ожидаемо отклоняет uncertainties. Live completion, полное accounting и exact closed exclusions PASS. Другие группы, global finalize, этап8/DB/runtime/commit/push не запускались.
+
+
+## Завершение текущей группы № 2 — 2026-10-03
+
+**Gold: завершено 43/66; строго принято 38/66; с отсрочками 5.**
+Mat, Mark, Luke, John завершены по отдельному проверяемому completion контракту.
+Независимо проверены 5066 решений в 154 полных сетках; effective слой содержит
+5028 доказанных labels. Исключены 37 uncertain labels и один accepted dependency;
+зарегистрированы 11 мест с отсрочками. Шесть IDs разрешены по evidence конкретного
+occurrence; семантические corrections не потребовались. Исходные QC,
+selection/folds и stage-6 inputs сохранены; строго принятые 38 книг сохраняют статус.
+
+Актуальные документы: [общий реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records),
+[независимый QC](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_independent_content_qc.v1.ru.md),
+[completion registry v5](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v5.manifest.json),
+[актуальный HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
+
+Отсрочка сохраняет первоначальный QC verdict и не требует второго исследования.
+Перед training/scoring/Strong export требуется применить live SHA-checked
+active overlays; недоказанные NULL/addition classifiers исключены из accepted labels.
+Остальные группы NT, global finalize, stage 8, DB, runtime, commit и push не запускались.

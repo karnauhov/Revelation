@@ -1,0 +1,29 @@
+{
+  "artifact": "authored_source_resolution_supplementary_web_receipt",
+  "author_id": "codex-group002-mat-mark-source-author-20261003",
+  "date": "2026-10-03",
+  "independent_QC_performed": false,
+  "inputs": [
+    {
+      "bytes": 88424,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Mat_Mark.source_resolution.v1.manifest.json",
+      "sha256": "86d823773e215d314403c34f446beb0853ad64a659d0d2490072f16b44f17149"
+    }
+  ],
+  "new_Strong_links": 0,
+  "outputs": [
+    {
+      "bytes": 1411,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_mat_mark_research_01/evidence/web_read_receipt.v1.json",
+      "sha256": "3ba16512a16ca5b31b17229cd9faf7f910fd9da3e562e50e5cb4179693885b9a"
+    }
+  ],
+  "required_deferred_keys": 19,
+  "role": "research_author_only",
+  "schema_version": 1,
+  "semantic_changes": 0,
+  "source_status_only_keys": 34,
+  "status": "supplementary_archive_only_no_semantic_or_scope_change",
+  "supersedes": "gold_group_002_Mat_Mark.source_resolution.v1.manifest.json",
+  "supersedes_meaning": "adds one live-web archive receipt; preserves the complete v1 research disposition and sealed bytes"
+}

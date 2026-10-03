@@ -1,7 +1,7 @@
 # План доказательного Strong-выравнивания OH1988
 
-Doc-Version: `1.1.0`
-Last-Updated: `2026-08-15`
+Doc-Version: `1.1.2`
+Last-Updated: `2026-10-03`
 Source-Commit: `working-tree`
 
 ## Статус документа
@@ -317,9 +317,18 @@ Override хранит решение на stable token/span IDs и digests вс�
 С 2026-10-03 прямое поручение владельца заменяет требование продолжать
 приёмку книги до разрешения каждого филологического места. После одного
 ограниченного исследования и разумных попыток без достаточного доказательства
-место вносится в [общий реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/strongs_issue_inventory.v1.ru.md)
+место вносится в [общий реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records)
 и получает `deferred_strong_unassigned`. Номер Strong на этом месте не назначается;
 неопределённость не превращается в error или `original_omitted` без доказательства.
+
+Для OH1988 существует ровно один редактируемый человекочитаемый Markdown-реестр нерешённых Strong:
+`oh88_strongs_issue_inventory.ru.md`. Его обновляют на месте, историю ведут
+только в Git; версии в имени файла и параллельные редактируемые JSONL/индексы
+запрещены. У каждого другого библейского модуля — собственное стабильное имя
+единственного человекочитаемого Markdown-реестра. Существующие запечатанные JSONL,
+manifests и proof-файлы сохраняются без изменений как технические доказательства,
+а не параллельные рабочие реестры. Source/QC/completion artifacts и действующие
+completion-инструменты сохраняют свои прежние версии, SHA-256 и контракты.
 
 Книга или пакет завершается как `completed_with_registered_deferrals`, когда
 прочие решения проверены, все проблемы инвентаризированы, точные spans/IDs и
@@ -337,3 +346,23 @@ present-but-deferred nodes; это не consensus correction ошибочной 
 Никакой такой экспорт этим изменением не запускается. Ранее известные NT-проблемы
 можно перенести из уже завершённых QC в общий реестр без нового исследования NT.
 Дальнейшее улучшение отложенных мест остаётся отдельной необязательной задачей.
+
+## Завершение текущей группы № 2 — 2026-10-03
+
+**Gold: завершено 43/66; строго принято 38/66; с отсрочками 5.**
+Mat, Mark, Luke, John завершены по отдельному проверяемому completion контракту.
+Независимо проверены 5066 решений в 154 полных сетках; effective слой содержит
+5028 доказанных labels. Исключены 37 uncertain labels и один accepted dependency;
+зарегистрированы 11 мест с отсрочками. Шесть IDs разрешены по evidence конкретного
+occurrence; семантические corrections не потребовались. Исходные QC,
+selection/folds и stage-6 inputs сохранены; строго принятые 38 книг сохраняют статус.
+
+Актуальные документы: [общий реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records),
+[независимый QC](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_independent_content_qc.v1.ru.md),
+[completion registry v5](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v5.manifest.json),
+[актуальный HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
+
+Отсрочка сохраняет первоначальный QC verdict и не требует второго исследования.
+Перед training/scoring/Strong export требуется применить live SHA-checked
+active overlays; недоказанные NULL/addition classifiers исключены из accepted labels.
+Остальные группы NT, global finalize, stage 8, DB, runtime, commit и push не запускались.

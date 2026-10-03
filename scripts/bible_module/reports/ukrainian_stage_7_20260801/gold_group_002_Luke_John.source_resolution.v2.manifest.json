@@ -1,0 +1,142 @@
+{
+  "QC_row_locator_path_updated_stable_keys": [
+    "original:gold7:original:37e013a050e63313864e95759d39340b",
+    "original:gold7:original:4883ea5680c6e81e3ecb854eea946bd2",
+    "original:gold7:original:6ceecb3822aaef8a22acc3f9481dc0cd",
+    "target:gold7:target:a16d0beccd9f673fb17f0c1aec942756",
+    "target:gold7:target:ae8d8183078b01580361b0de017e70e9",
+    "original:gold7:original:2846e9eaf03eaa2995e24a7124c48dae",
+    "target:gold7:target:2e915cd0795e80bdb5dc8937c9229b6a"
+  ],
+  "QC_row_locator_paths_updated": 7,
+  "artifact": "gold_group_002_Luke_John.source_resolution.current_QC_locator_bridge",
+  "book_completion_authorized_by_this_manifest": false,
+  "canonical_shared_inventory_modified": false,
+  "changed_disposition_or_evidence_rows": 0,
+  "collateral_dependency_exclusion_stable_keys": [
+    "target:gold7:target:a716d9890919b51ecb6114b98740536a"
+  ],
+  "counts": {
+    "books": 2,
+    "bounded_cycles_per_hard_case": 1,
+    "collateral_dependency_exclusion_keys": 1,
+    "deferred_loci": 8,
+    "deferred_strong_unassigned_keys": 18,
+    "definite_content_errors": 0,
+    "fully_resolved_loci": 2,
+    "initial_uncertain_keys": 24,
+    "partially_resolved_loci": 1,
+    "proven_correction_scopes": 0,
+    "resolved_existing_keys_author_proposal": 6,
+    "resolved_reciprocal_pairs": 3,
+    "visually_inspected_exact_scan_pages": 12
+  },
+  "current_QC_roster_or_row_membership_verified_keys": 24,
+  "date": "2026-10-03",
+  "deferred_stable_keys": [
+    "original:gold7:original:04a14fa394542afbad8fbb68a39d5c29",
+    "original:gold7:original:2846e9eaf03eaa2995e24a7124c48dae",
+    "original:gold7:original:37e013a050e63313864e95759d39340b",
+    "original:gold7:original:4a15ce4e87e0d34545591c5c8c35bacf",
+    "original:gold7:original:6ceecb3822aaef8a22acc3f9481dc0cd",
+    "original:gold7:original:a30c43f00b717900d06277eaf3ea26b7",
+    "original:gold7:original:b1bd4cda7b0de0c316a3e1de1082a745",
+    "original:gold7:original:bfa3125202aa83daf77dabb0384a875b",
+    "original:gold7:original:cb3d5d6e320b1a19c215501a4eb56315",
+    "original:gold7:original:d4aed7a2e9803b3435bc429428d56fc6",
+    "original:gold7:original:f3e182098db2fce895701bdd4d32358e",
+    "target:gold7:target:29407746f5ea70c280f1b75f43c6095c",
+    "target:gold7:target:2e915cd0795e80bdb5dc8937c9229b6a",
+    "target:gold7:target:854800f2bbdf898e2bc13d6b5d6d938e",
+    "target:gold7:target:91102576ac24d85192322e10404437ee",
+    "target:gold7:target:a38ca82c264a544d8d775ed859646a17",
+    "target:gold7:target:ae8d8183078b01580361b0de017e70e9",
+    "target:gold7:target:cd60c02c25f3849fb369f8e5fd08edd7"
+  ],
+  "frozen_QC_modified": false,
+  "input_inventory_sha256": "99b3cfd9328308e19e823eefdea5659d4ddcbf9fcd1f2a20fb53335cc9f7f29f",
+  "input_locks": [
+    {
+      "bytes": 89511,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Luke_John.source_resolution.v1.manifest.json",
+      "sha256": "14a44afaee9765f0d1458e03ea7749a9bcde9c8b271a31c19ca6dd36d3dd4a92"
+    },
+    {
+      "bytes": 159626,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/source_resolution.key_dispositions.v1.jsonl",
+      "sha256": "42d3eeb1960901dc670bbbc6a80660b2e1d61b37edb4f1e6f429fe6c7c5ee47a"
+    },
+    {
+      "bytes": 26386,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Luke_John.source_resolution.v1.ru.md",
+      "sha256": "c59acf48ee75effb205d2cedb6d5205c6b3afe1ad49336d8388de9a6a46ab0b0"
+    },
+    {
+      "bytes": 1154300,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Luke/qc/provenance_repair/repro_run_1/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "sha256": "aa6ce85b3d6e18c0f0f25a3b677f8c2ebfff18747685b7a1f8a0f0e1fdf05ebd"
+    },
+    {
+      "bytes": 28755,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Luke/qc/provenance_repair/repro_run_1/Luke.shard_042.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "sha256": "b490632577ee7d64b8f4f0526fbaf6eae8425e014d7a0ddff6ef727a380ae527"
+    },
+    {
+      "bytes": 596194,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/John/qc/completed/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "sha256": "67233ff00f205df673f4d7cd01092375745484f4be4c5661af57e82138af07d3"
+    },
+    {
+      "bytes": 21954,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/John/qc/completed/John.shard_043.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "sha256": "08c0a235460a1a8ea304e9c814d6fb2d6a876a43415336ccc9235502fb57b232"
+    }
+  ],
+  "metadata_only": true,
+  "output_locks": [
+    {
+      "bytes": 196820,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/source_resolution.key_dispositions.v2.jsonl",
+      "sha256": "4b822952a904480072f668da480ccbe4acdc0c7cfdec702efaedd4809022a90d"
+    },
+    {
+      "bytes": 8562,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/author_locator_bridge_v2.py",
+      "sha256": "1cf69ba9a06ac61469bba6a356196715567b3d877273373e721ae9f5144e5bd0"
+    }
+  ],
+  "production_Strong_export_training_run": false,
+  "readable_report": {
+    "bytes": 26386,
+    "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Luke_John.source_resolution.v1.ru.md",
+    "sha256": "c59acf48ee75effb205d2cedb6d5205c6b3afe1ad49336d8388de9a6a46ab0b0"
+  },
+  "required_next_workflow": "Independent QC assesses unchanged 6 resolved / 18 deferred proposal; root writes new versioned inventory/completion without mutating sealed v1.",
+  "research_author_id": "codex-group002-luke-john-research-20261003-01",
+  "resolved_stable_keys": [
+    "original:gold7:original:4883ea5680c6e81e3ecb854eea946bd2",
+    "original:gold7:original:4d936b2f55de892a7836e8a9ed7a3586",
+    "original:gold7:original:f5d0d4b2358edfc89f051946baeb60a6",
+    "target:gold7:target:202ca6d084c844654c4f934552a2f42a",
+    "target:gold7:target:a16d0beccd9f673fb17f0c1aec942756",
+    "target:gold7:target:d2cc691c969f2c0dcc527f18e986e732"
+  ],
+  "role": "bounded_research_author_not_independent_QC",
+  "schema_version": 2,
+  "sealed_v1_output_locks_verified": 34,
+  "sealed_v1_packet_unchanged": true,
+  "source_selection_modified": false,
+  "status": "author_proposal_metadata_bridge_awaiting_independent_QC",
+  "supersedes": [
+    {
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_002_Luke_John.source_resolution.v1.manifest.json",
+      "scope": "QC_locator_metadata_only; all_sealed_v1_research_findings_and_output_locks_retained",
+      "sha256": "14a44afaee9765f0d1458e03ea7749a9bcde9c8b271a31c19ca6dd36d3dd4a92"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group2_20261003_luke_john_research_01/source_resolution.key_dispositions.v1.jsonl",
+      "scope": "current_QC_locator_metadata_only; frozen_locator_preserved_in_each_v2_row",
+      "sha256": "42d3eeb1960901dc670bbbc6a80660b2e1d61b37edb4f1e6f429fe6c7c5ee47a"
+    }
+  ]
+}
