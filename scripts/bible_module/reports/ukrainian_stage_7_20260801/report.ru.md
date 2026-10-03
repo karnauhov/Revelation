@@ -1,7 +1,7 @@
 # Этап 7: evidence-first Strong alignment OH1988
 
 Doc-Version: `1.0.0`
-Last-Updated: `2026-09-19`
+Last-Updated: `2026-10-03`
 Source-Commit: `working-tree`
 Schema-Version: `1`
 Contract-Version: `ukrainian-stage-7-evidence-alignment-v1`
@@ -28,7 +28,7 @@ distinct third adjudication и независимый QC; `Deut`, `Ezra`, `Neh` 
 оставшиеся книги; теперь все 22 204 substantive disagreement прошли distinct
 structural adjudication. В общей строгой лестнице distinct adjudication
 завершена для `66/66` (`Gen–Rev`), independent full-grid QC выполнен для
-`65/66` (`Gen–Jude`),
+`66/66` (`Gen–Rev`),
 но без error/uncertain приняты только `36/66`.
 Для `Isa` третья адъюдикация 252/252 substantive disagreement закончена и
 прошла double deterministic `check-adjudication`; независимый content-QC нашёл
@@ -61,8 +61,8 @@ Strong markup намеренно не выполнялись.
 `gold_adjudication_complete.manifest.json` SHA-locks 62 batch-manifests и доказывает
 exact учёт 22 204 adjudicated + 65 434 agreed = 87 638 stable decisions
 во всех 66 книгах, `error_count=0`. Это structural completeness, не
-book acceptance: independent QC `Rev` и source resolution всех
-сохранённых critical/high loci остаются обязательными.
+book acceptance: initial QC всех 66 книг завершён; source resolution,
+scoped corrections и distinct re-QC сохранённых blockers остаются обязательными.
 Повторный физический аудит подтвердил SHA всех `62/62` versioned batch
 manifests, `132/132` adjudication/sidecar файлов и root validator `66/66`;
 пропусков, дублей и ошибок нет.
@@ -930,7 +930,18 @@ Independent reviewer проверил весь grid: 926 accepted, `error=0`,
 `uncertain=8` (4 adjudicated + 4 agreed) в `1.12`, `1.15`, `1.25`. Три
 QC-эмиссии побайтно совпали, QC/sidecar SHA `08c7952e…` / `eb06329b…`;
 competing `G4064`, `G0765`, `G4680` не продвигались. Книга не принята;
-`Rev` ещё ждёт independent full-grid QC.
+`Rev` завершила independent full-grid QC 2026-10-03: проверены 239 adjudicated +
+1 530 agreed = 1 769/1 769 решений в 35/35 стихах. Итог 1 713 accepted,
+`error=0`, `uncertain=56` (24 adjudicated + 32 agreed; 34 critical, 21 high,
+1 normal). Спорные места: `1.3`, `1.5`, `2.13`, `3.7`, `4.7`, `8.13`,
+`9.2`, `9.21`, `11.1`, `13.1`, `18.16`, `20.6`, `21.4`, `22.19`.
+Сохранены обрезанный frozen target, конкурирующие лексемы, грамматические формы,
+traditional-only additions и unresolved alternative `καί`; чужие Strong не
+продвигались. Три QC/sidecar выпуска побайтно одинаковы, SHA `052451ff…` /
+`ceea341f…`; root acceptance-validator ожидаемо отклонил blocked status.
+Batch 066 SHA `2cc88bab…`, all-66 aggregate SHA `9e6dc653…` закрепляют результат.
+Первичная QC-очередь теперь завершена `66/66`, строго приняты `36/66`;
+`Rev` требует source/frozen-text resolution и distinct re-QC.
 
 После завершения book shards pass 2 объединён дважды и ingest выполнен дважды:
 оба выпуска побайтно совпали и содержат ровно 2 171 стих, 45 831 original,
@@ -1106,3 +1117,164 @@ SQLite не создавался. Working DB, `web/db`, KJV, LXX_TR, content too
 runtime и этап 8 не изменялись. В дорожной карте отмечены только доказанные
 автономные подпункты и промежуточные артефакты; общий этап и exit criteria
 остаются открытыми.
+
+## 7.4 — группа № 1, source resolution 2026-10-03
+
+Nah: bounded audit завершён; 5 critical decisions в 1:8 остаются uncertain.
+Live acceptance-validator отверг blocking QC; accepted books остаются 36/66.
+Полный locus grid (30 решений), 19 SHA-locks и точный residual scope сохранены
+в [versioned diagnostic manifest](gold_group_001_Nah.source_resolution.v1.manifest.json).
+Этот артефакт не является correction или independent QC.
+
+Zeph: два loci 2:14 и 3:17, четыре high blocker decisions; accepted 36/66.
+[Zeph diagnostic v1](gold_group_001_Zeph.source_resolution.v1.manifest.json)
+сохраняет 107 locus decisions и 20 проверенных QC SHA-locks. Raven/desolation
+и renew/silence — изменения леммы; renew + love-span требует полного разбора.
+
+Zech: 5 blockers в 11:7 и 2 в 14:6; [Zech diagnostic v1](gold_group_001_Zech.source_resolution.v1.manifest.json)
+сохраняет 91 locus decisions и 19 проверенных locks. H7087 qere/ketiv
+Strong-equivalence явно отделена от lexical cold reading. Все три книги остаются
+blocked; новых принятых книг 0, итог 36/66. Группа № 1 не исключена из очереди;
+NT автоматически не начат. Нужен independent source/span reviewer пяти clauses,
+не exact historical edition ради имени и не разрешение исправить stage-6 input.
+
+Итоговый [group manifest v1](gold_group_001_source_resolution.v1.manifest.json)
+и [точечный запрос на экспертизу](gold_group_001_owner_request.ru.md) связывают
+все 16 stable IDs и пять conditional revalidation scopes. Original selected layer,
+review answers, принятые решения и correction history сохранены. Три diagnostic
+выпуска для каждой книги byte-identical; это reproducibility evidence, а не
+independent review. Все 62 aggregate batch-locks и 154 QC digest references
+(152 unique digests: Mal v1/v2 blocking aliases совпадают) физически проверены.
+
+При возобновлении независимое заключение в доступных файлах не найдено.
+Владелец уточнил, что внешняя экспертиза ему недоступна, и поручил собственное
+исследование. Кириллица прошлых checkpoint-записей восстановлена; повреждённые
+версии сохранены в ignored snapshot. Gold остаётся **36/66**.
+
+### Собственное филологическое исследование группы № 1
+
+[Задание v1](gold_group_001_philological_assignment.v1.ru.md) выполнено;
+[заключение v1](gold_group_001_philological_opinion.v1.ru.md) даёт конкретные
+рекомендации для всех 16 blockers пяти loci. [Manifest](gold_group_001_philological_opinion.v1.manifest.json)
+SHA-locks 74 frozen inputs/controls и содержит exact stable IDs. Предлагается
+сохранить нынешние MT NULL/function/addition решения как кандидаты на отдельный
+content QC; такое accounting не заявляет исторического происхождения перевода.
+
+Новое: H3669/merchant и H7135/cold подтверждены по approved TAHOT dictionary
+mapping как лексические кандидаты. Для H7135 аппарат BDB указывает конкретную
+plural conjecture в 14:6; occurrence другого стиха не переносится. Native Greek
+проверен у издателя: Zeph.3.17 renew имеет другой объект; Zech.11.7 phrase не
+содержит flock, а Peshitta не голосует за merchant. При alternate cold layer
+условный scope расширен до o007–o014/t006–t013 для проверки отрицания/copula.
+
+Собственное заключение не является independent QC. Старые v1 research/QC и
+reviewer answers не менялись, corrections/source overlays не применены;
+Nah, Zeph, Zech остаются blocked, accepted **36/66**, осталось **30**.
+Внешний платный эксперт не является обязательным следующим шагом: дальнейший
+QC требует фактически самостоятельного проверяющего контекста и проверки
+его роли относительно проверяемых решений. Это правило записано в AGENTS.md;
+переименование reviewer или автоматическое объявление новой сессии независимой
+недопустимо. Проверки текущего возобновления записаны в validation log.
+
+### Аудит QC-контекста и MT NULL-accounting группы № 1
+
+[Аудит v1](gold_group_001_qc_context_accounting_audit.v1.ru.md) выполнен по
+заключению v1. Текущий чат сохраняет его авторство, поэтому этот результат
+не подаётся как independent QC. Metadata IDs четырёх прежних ролей различны;
+текущий вывод о зависимости не относится к подлинности прежних blind passes.
+Все три live acceptance-validator вызова отвергли uncertain status.
+Новых accepted книг **0**, gold **36/66**, осталось **30**.
+
+Структурно проверены 4 282 полных decisions, 228 bounded decisions, все 16
+blockers и 109 exact scalar/byte spans; accounting взаимен. MT NULL/addition
+остаётся условным по selected source и не скрывает вопрос source choice.
+Коррекция gold и новый QC submission не выполнены: definite-error scope нет,
+а текущий авторский контекст не является отдельным проверяющим.
+
+Обнаружено и исправлено расхождение диагностического экспорта v1 с validator
+merge: 171 agreed metadata rows (21 Nah, 93 Zeph, 57 Zech). Новые ignored
+bounded packets v2 сохраняют тот же link/NULL/group accounting и exact IDs;
+старые v1, frozen answers и book semantics не изменены. Список changed
+stable IDs/fields, supersedes digests и full-grid результаты закреплены
+в [manifest аудита](gold_group_001_qc_context_accounting_audit.v1.manifest.json),
+SHA `129e40bde9847a1869e13703da9b2e10b9f396e437c04fa3a3837ddabbd3d59d`.
+
+Подготовлено [полное задание отдельному QC-контексту](gold_group_001_independent_qc_task.v1.ru.md)
+с реальной проверкой роли, пятью source/span questions и conditional scopes.
+Следующая операция — открыть отдельный QC-контекст по этому заданию; текущая
+сессия не начинает NT. В AGENTS.md записано запрошенное правило уведомления
+Windows Alarm02 три раза после завершения, когда владелец не возле компьютера.
+
+### Независимый content QC группы № 1 — 2026-10-03
+
+[Новый QC report](gold_group_001_independent_content_qc.v1.ru.md) и
+[manifest](gold_group_001_independent_content_qc.v1.manifest.json) фиксируют
+фактически отдельный от авторства reviewed decisions/opinion v1 контекст.
+Роль подтверждена по доступной истории и физически сохранённым входам;
+старые self-audit и QC не переписаны. Новый ID не служит самостоятельным
+доказательством независимости.
+
+Проверены 96 выбранных стихов и все 4 282 decisions: Nah 1 197, Zeph 1 479,
+Zech 1 606. Итог 4 264 accepted decisions, 2 definite errors и прежние
+16 uncertainties пяти loci. Для пяти loci MT-relative accounting подтверждён
+как кандидат, source choice не принят. Новая definite reciprocal error
+Nah.1.10 — исключение сравнительного смысла עד/H5704 и NULL вместо связи с
+«наче»; BDB I.3 и NET note 10 опровергают основание adjudication. Concrete
+two-row correction proposal запечатан без применения; нужны отдельные
+corrector и post-correction reviewer.
+
+Каждый новый QC/sidecar и full-grid observation файл выпущен тремя побайтно
+совпавшими эмиссиями в ignored work. Payload audit проверил 91 prior lock,
+scope/evidence/semantics и 2 030 exact scalar/byte spans. Live acceptance-validator
+сохранил блокировку всех трёх книг. Global accepted registry не повышен:
+**36/66**, новых книг **0**, осталось **30**. История, frozen answers,
+stage-6 input и book semantics сохранены; NT не начат. Результаты окончательных
+проверок и следующая операция закреплены в validation log и HANDOFF.
+
+
+### OT closure группы №1 — 2026-10-03, текущий итог38/66
+
+Фактически приняты **Nah и Zech**, новых2; Zeph сохраняет только новую пару
+H1471A↔«польова́» как two-row uncertainty. Все пять исходных source loci и16
+прежних uncertainties получили положительный independent MT-reference verdict.
+Отдельный corrector исправил ровно2Nah.1.10 rows (H5704↔«наче»), отдельный
+examiner проверил все4282 решений: Nah1197accepted, Zech1606accepted,
+Zeph1477accepted/2uncertain/error0. Собственные исследования и final QC разделены
+фактическими ролями/fork-none contexts; reading проверяемых файлов не авторство.
+
+- [Авторские source dispositions v2](gold_group_001_source_disposition.v2.ru.md) и [manifest](gold_group_001_source_disposition.v2.manifest.json): пять loci / 16 прежних uncertainties; выбранный MT occurrence-layer сохранён.
+- [Nah.1.10 correction note](gold_group_001_Nah.correction_note.v1.ru.md) и [manifest](gold_group_001_Nah.correction.v1.manifest.json): sealed proposal → отдельный corrector → distinct final QC.
+- [Независимый итоговый content QC](gold_group_001_final_content_qc.v1.ru.md) и [manifest](gold_group_001_final_content_qc.v1.manifest.json): все 4 282 решения; accepted Nah/Zech, Zeph bounded residual.
+- [Дополнительное авторское исследование Zeph.2.14 v3](gold_group_001_Zeph.goy_source_disposition.v3.ru.md) и [архивный manifest](gold_group_001_Zeph.goy_source_disposition.v3.manifest.json): точная новая пара, первичные свидетельства и непроверенные альтернативы; это не independent QC.
+- [Nah accepted v1](gold_group_001_Nah.accepted.v1.manifest.json), [Zech accepted v1](gold_group_001_Zech.accepted.v1.manifest.json), canonical [batch034](gold_adjudication_batch_034.manifest.json)/[batch038](gold_adjudication_batch_038.manifest.json) и [aggregate62](gold_adjudication_complete.manifest.json).
+
+
+Acceptance подтверждена live validators и strict one-book registry probes;
+canonical034/038 и aggregate62 зарегистрированы только после actualPASS.
+Current gold **38/66**, remaining28=Zeph+27NT. Stage7 в целом открыт, production
+Strong links/markup0, finalized/calibration не выполнялись. Точный новый
+семантический остаток, missing evidence, stable IDs и готовый bounded prompt
+сохранены в последнем [HANDOFF](HANDOFF.ru.md). Старые checkpoint/QC сохранены.
+
+
+### Правило владельца применено: весь OT завершён39/66
+
+После прямого поручения владельца введена допустимая завершённость с
+зарегистрированными отсрочками. Zeph завершена с одной отложенной reciprocal
+парой H1471A→«польова́»; номер не назначен. Оставшиеся1477 проверенных labels
+сохранены, два узла отмечены present-but-deferred, edge исключена из effective
+gold/training/export. Nah/Zech приняты после correction/source resolution и
+независимого полного QC. Итог **completed39/66 (весьOT), fullyaccepted38/66**.
+Неполное покрытие Strong не требует повторного открытия завершённой книги.
+
+- [Единый читаемый реестр проблем OH1988](strongs_issue_inventory.v1.ru.md), [все записи JSONL](strongs_issue_inventory.v1.jsonl) и [manifest](strongs_issue_inventory.v1.manifest.json).
+- [Правило владельца и сохранённые прежние policy inputs](gold_group_001_completion_policy.v2.manifest.json), [AGENTS.md](../../../../AGENTS.md) и [план этапа7](../../../../docs/ru/content/ukrainian-bible-strongs-stage-7-alignment-plan.ru.md).
+- [Zeph: completed with registered deferrals](gold_group_001_Zeph.completed_with_deferrals.v1.manifest.json).
+- [Независимая проверка нового реестра и completion overlay](gold_group_001_completion_qc.v1.ru.md), [QC manifest](gold_group_001_completion_qc.v1.manifest.json).
+
+Общий inventory содержит 179 записей: exact words/IDs/spans, candidates,
+findings и evidence digests. Существующие NT-проблемы лишь перенесены из
+предыдущих QC, без новой NT-работы. Новый independent completion QC проверяет
+новый ledger/overlay, сохраняя исторические strict verdicts. AGENTS.md содержит
+bounded rule и больше не содержит model/Reasoning recommendations. Последний
+[HANDOFF](HANDOFF.ru.md) заменяет исторический prompt mandatory continuation.

@@ -20,47 +20,6 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - Desktop window handling: native platform runners (`windows/runner`, `linux/runner`)
 - Localization: `flutter_localizations`, `intl`
 
-## Model and Reasoning Selection
-
-- Official guidance: [ChatGPT/Codex models](https://learn.chatgpt.com/docs/models) and [GPT-5.6 prompting guidance](https://developers.openai.com/api/docs/guides/prompt-guidance-gpt-5p6).
-- The assistant cannot switch the model in the current session on its own; model switching is performed by the user.
-- Before each new task, the assistant must recommend a pair: `model + reasoning level`, with a short rationale. This recommendation is advisory and must not pause safe in-scope work unless the owner explicitly asks to switch first.
-- After the user switches the model, the assistant must continue the same task without losing context.
-- Recommend only models and reasoning levels available in the current ChatGPT/Codex model picker; availability can vary by surface and account.
-- Use the lowest reasoning level that reliably produces the required result. Increase it when the task needs more planning, analysis, trade-off evaluation, or verification.
-- If task complexity or risk increases during execution, recommend escalating to `high`, `xhigh`, or, for the hardest single-agent tasks, `max`, and explain why.
-
-### Model Selection Matrix
-
-| Model | Use Cases |
-| --- | --- |
-| `GPT-5.6 Sol` (`gpt-5.6-sol`) | Complex, ambiguous, open-ended, or high-value work: architecture, cross-cutting implementation, difficult debugging, deep code review, security, migrations, and polished final artifacts. If unsure which model to use, start here. |
-| `GPT-5.6 Terra` (`gpt-5.6-terra`) | Everyday development where strong reasoning and tool use are needed without Sol's full depth: focused Flutter implementation, refactoring, tests, CI/CD, databases, API integrations, documentation, and read-heavy repository scans. |
-| `GPT-5.6 Luna` (`gpt-5.6-luna`) | Clear, repeatable, high-volume work with an explicit success criterion: extraction, classification, mechanical transformations, structured summaries, boilerplate, translations, changelog copy, and simple data edits. Use only when it is available; otherwise use Terra at `low`. |
-
-- Do not recommend deprecated `gpt-5.2` or `gpt-5.3-codex` models for Codex sessions authenticated with ChatGPT.
-- Use older models such as `gpt-5.4` only when a workflow is intentionally pinned to them or the owner explicitly requests them; verify availability before recommending them.
-
-### Reasoning Matrix
-
-| Reasoning | When to Use |
-| --- | --- |
-| `low` (`Light` in some UI surfaces) | Quick, well-scoped, mechanical, or template-based tasks where speed matters. |
-| `medium` | Balanced default for most implementation tasks that need some planning and checking. |
-| `high` | Difficult multi-step work involving complex logic, non-trivial bugs, architecture, several sources, or meaningful trade-offs. |
-| `xhigh` (`Extra High` in some UI surfaces) | Long, agentic, reasoning-heavy work, deep reviews, critical incidents, high uncertainty, or a high cost of error. |
-| `max` | The hardest single-agent problems when depth matters more than latency or usage. Do not use as a global default. |
-
-- `ultra` is a multi-agent mode, not merely a higher single-agent reasoning level. Use it only when the owner explicitly requests delegation and the task can be split into meaningful independent parts.
-- There is no exact reasoning-level mapping from older model families to GPT-5.6. For repeatable workflows, establish a baseline, then test the same level and one level lower on representative tasks.
-
-### Default Recommendation
-
-- If task type is unclear, recommend `GPT-5.6 Sol + medium`, matching the official default Power profile.
-- For ordinary, well-scoped development, recommend `GPT-5.6 Terra + medium`.
-- For complex architecture, difficult debugging, security, migrations, or high-risk state-management work, recommend `GPT-5.6 Sol + high`; use `xhigh` only when the additional depth is justified.
-- For simple, repeatable edits, recommend `GPT-5.6 Luna + low` when available, otherwise `GPT-5.6 Terra + low`.
-
 ## Repository Layout
 - `lib/app/`: app bootstrap, DI, router, composition root
 - `lib/core/`: cross-cutting contracts (`errors`, `async`, `platform`, `logging`, `audio`, diagnostics)
@@ -73,7 +32,13 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - `scripts/`: project tools for content/database work
 - `.agents/skills/revelation/scripts/`: release/version sync tooling
 
+## Bible-module research and Strong alignment
+- For difficult philological questions, carry out one bounded research cycle using accessible original sources and scholarly evidence; do not assume access to paid experts. Record a reasoned conclusion, sources, stable IDs, input digests and remaining uncertainties. Keep authors/correctors separate from independent QC; reading reviewed files is inspection, not authorship.
+- After reasonable attempts that yield no sufficient proof, stop repeating the research and record the unresolved case in the module's single shared issue inventory. Include the module/edition, exact verse and words/spans, original and target IDs, lemma/Strong candidates, all material findings and evidence, attempted alternatives, the missing proof and a future follow-up. For OH1988 use `scripts/bible_module/reports/ukrainian_stage_7_20260801/strongs_issue_inventory.v1.jsonl` and its linked readable index.
+- Mark the place `deferred_strong_unassigned` and leave its unproved Strong links out of accepted alignment, training and export. Do not invent a number, turn uncertainty into a definite error, or infer a source omission merely to close the case. A book or package may be `completed_with_registered_deferrals` after the remaining work and inventory/coverage checks are complete; registered deferrals satisfy completion and do not require another research cycle. Report completion separately from proven link coverage, preserve the evidence and revisit deferred cases only as optional later work or on owner request.
+
 ## Working Rules
+- When the owner says they will be away from the computer, play the Windows system sound `%WINDIR%\Media\Alarm02.wav` synchronously three times after the requested work and final checks finish. Follow any explicitly requested sound or repeat count instead, keep a short pause between repetitions, and leave the system volume unchanged. This is a completion notification, not an application audio change.
 - Keep changes aligned with the current folder responsibilities in the repository layout above.
 - When moving or renaming runtime files under `lib/`, move or rename related tests under `test/` in the same change set.
 - Any functional add/change/remove in runtime code must include relevant test updates in the same change set:

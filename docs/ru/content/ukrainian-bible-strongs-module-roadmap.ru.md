@@ -1,7 +1,7 @@
 # Дорожная карта создания украинского библейского модуля с номерами Стронга
 
-Doc-Version: `1.9.3`
-Last-Updated: `2026-08-15`
+Doc-Version: `1.9.7`
+Last-Updated: `2026-10-03`
 Source-Commit: `working-tree`
 
 ## Назначение
@@ -283,10 +283,10 @@ decisions, 66 reviewer IDs, `error_count=0`; validated SHA-256 `681dc4fb…`.
 подтверждена для всех решений; global comparison дал 65 434 agreements и
 22 204 substantive disagreement, переданных distinct adjudication.
 Distinct adjudication завершена для всех `66/66` (`Gen–Rev`), independent
-full-grid QC выполнен для `65/66` (`Gen–Jude`). По строгому критерию
+full-grid QC выполнен для `66/66` (`Gen–Rev`). По строгому критерию
 «pass 1 + pass 2 + adjudication + независимый QC без error/uncertain» приняты
 `36/66`: все принятые книги перечислены в checked-пунктах ниже; `Nah`, `Zeph`,
-`Zech` и все проверенные NT-книги `Mat–Jude` остаются blocked по явно сохранённым
+`Zech` и все проверенные NT-книги `Mat–Rev` остаются blocked по явно сохранённым
 source/variant/semantic uncertainties.
 
 После прежней точки `Eph.5.2` получила exact two-row correction без продвижения
@@ -319,10 +319,14 @@ re-QC. `3John` прошла independent full-grid QC 446/446: `error=0`,
 книга остаётся fail-closed до source resolution и distinct re-QC. `Jude`
 прошла independent full-grid QC 934/934: `error=0`, `uncertain=8` в `1.12`,
 `1.15`, `1.25`; competing Strong не продвигались, книга остаётся fail-closed
-до source resolution и distinct re-QC. `Rev` также имеет проверенную structural adjudication 239/239 в
-197 компонентах и grid 1 769/1 769; четыре critical/high frozen-text/source-reading loci
-оставлены fail-closed, independent QC ещё не выполнялся. Оставшейся очереди adjudication нет;
-для `Rev` и ранее заблокированных книг всё ещё нужны independent QC и/или source resolution.
+до source resolution и distinct re-QC. `Rev` прошла independent full-grid QC:
+239 adjudicated + 1 530 agreed = 1 769/1 769, 35/35 стихов. Итог 1 713 accepted,
+`error=0`, `uncertain=56` (24 adjudicated + 32 agreed; 34 critical, 21 high и
+1 normal) в 14 frozen-text/source/form loci. Три QC/sidecar выпуска побайтно
+совпали, SHA `052451ff…` / `ceea341f…`; acceptance-validator ожидаемо отклонил
+blocked status. Первичные очереди adjudication и full-grid QC теперь завершены
+для всех 66 книг; ранее заблокированные книги требуют source resolution,
+scoped corrections при наличии ошибок и distinct re-QC.
 Finalized global gold, calibration и production Strong по-прежнему не начаты.
 Точный возобновляемый контекст находится в
 [HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
@@ -512,7 +516,7 @@ Finalized global gold, calibration и production Strong по-прежнему н
 - [x] Завершить distinct third adjudication `Jude` (shard 065) без принятия книги: все 180/180 substantive disagreement вручную разобраны в 90 verse-local компонентах, 754 agreements не менялись, reciprocal grid 934/934 прошёл root `check-adjudication` с `error_count=0`. Три генерации и sidecars побайтно совпали; adjudication/sidecar SHA-256 `d9ead1ca…` / `b593d50c…` закреплены в `gold_adjudication_batch_065.manifest.json`. В `1.14` раздельно сохранены связи `δέ`/«же», `καί`/«і» и `λέγων`/«казав»; в `1.15` выбранное `ψυχὴν` не было ложно связано с «безбожних», а competing `ἀσεβεῖς` оставлено одним critical source-reading blocker без продвижения Strong. Independent full-grid QC обязателен, книга не принята.
 - [x] Провести independent full-grid QC `Jude` без принятия книги: distinct reviewer проверил 180 adjudicated + 754 agreed = 934/934 stable decisions во всех 25 стихах. Итог 926 accepted, `error=0`, `uncertain=8` (4 adjudicated + 4 agreed) в `1.12`, `1.15`, `1.25`. Три QC/sidecar выпуска побайтно совпали; физические SHA-256 `08c7952e…` / `eb06329b…`. Article/lexeme/number/traditional-reading cases сохранены fail-closed; competing `G4064`, `G0765`, `G4680` не продвигались. Source resolution и distinct re-QC обязательны, книга не принята.
 - [x] Завершить distinct third adjudication `Rev` (shard 066) без принятия книги: все 239/239 substantive disagreement вручную разобраны в 197 verse-local компонентах, 1 530 agreements не менялись, reciprocal grid 1 769/1 769 прошёл root `check-adjudication` с `error_count=0`. Три генерации и sidecars побайтно совпали; adjudication/sidecar SHA-256 `f3ac9524…` / `fb946d40…` закреплены в `gold_adjudication_batch_066.manifest.json`. Три точные custom-декомпозиции отделили украинскую координацию/копулу от lexical Strong; обрезанный immutable текст `1.3`, `λύσαντι`/«обмив» в `1.5`, лицо `ἐστάθη` в `13.1` и unresolved alternative `καί` в `22.19` оставлены четырьмя critical/high blockers без продвижения чужого Strong. Тем самым distinct adjudication закрыта для `66/66`; independent full-grid QC и source resolution остаются отдельной незавершённой работой, книга не принята.
-- [ ] Запечатать independent full-grid QC `Rev` (shard 066) без принятия книги: distinct reviewer уже прочитал все 35/35 выбранных стихов и полный reciprocal grid 239 adjudicated + 1 530 agreed = 1 769/1 769 решений. Ручной аудит завершён, включая четыре ранее известные critical/high границы (`1.3`, `1.5`, `13.1`, `22.19`) и дополнительные bounded source-form/Strong loci; на паузе ещё не созданы authoritative `qc_spec.json`, три deterministic QC-выпуска и SHA-lock batch 066. До их выпуска официальный счётчик остаётся QC `65/66`, строго приняты `36/66`; competing Strong не продвигались.
+- [x] Запечатать independent full-grid QC `Rev` (shard 066) без принятия книги: проверены все 35/35 выбранных стихов и 239 adjudicated + 1 530 agreed = 1 769/1 769 решений. Итог 1 713 accepted, `error=0`, `uncertain=56` (24 adjudicated + 32 agreed; 34 critical, 21 high, 1 normal) в 14 loci. Authoritative `qc_spec.json` хранит точные bounded scopes; три deterministic QC/sidecar выпуска побайтно одинаковы, SHA-256 `052451ff…` / `ceea341f…`. Batch 066 и all-66 aggregate SHA-locks обновлены; root acceptance-validator ожидаемо отклонил blocked status. Официальный счётчик initial QC теперь `66/66`, строго приняты `36/66`; competing Strong не продвигались. Source resolution и distinct re-QC обязательны, книга не принята.
 - [x] Собрать и SHA-lock сводного all-66 adjudication contract: `gold_adjudication_complete.manifest.json` проверяет 62 versioned batch-manifests, все `66/66` книг и exact равенство 22 204 adjudicated + 65 434 agreed = 87 638 stable decisions, `error_count=0`; roster SHA-256 `f0f4dae1…`. Дополнительный физический аудит заново проверил SHA всех 62 manifests, 132 adjudication/sidecar файлов и запустил root fail-closed validator для всех `66/66` цепочек без пропусков, дублей и ошибок. Это закрывает structural adjudication, но не подменяет independent QC, source resolution и book acceptance.
 - [x] Провести independent full-grid QC `Eph` без принятия книги: distinct reviewer проверил 228 adjudicated + 762 agreed = 990/990 stable decisions в 32 стихах. Итог 970 accepted, 2 reciprocal content errors `5.2` (согласованные Greek `ἡμᾶς/G3165` ↔ украинское «вас») и 18 source-choice uncertain; альтернативный Greek `ὑμᾶς` не перенесён автоматически. Три QC/sidecar выпуска побайтно одинаковы; физические SHA `27b7ffec…` / `6c0091df…`, `check-adjudication-qc` ожидаемо отклонил blocking status; цепочка закреплена в `gold_adjudication_batch_049.manifest.json`. Exact two-row correction, source resolution и distinct post-correction QC обязательны; книга не принята.
 - [x] Завершить distinct third adjudication `Mat` (shard 040) без принятия книги: все 286/286 substantive disagreement разобраны по 138 verse-local компонентам, 1 072 agreements сохранены и reciprocal grid 1 358/1 358 прошёл root `check-adjudication` PASS. Два побайтно одинаковых прогона, физические adjudication/sidecar SHA `02240391…` / `5e9afa62…` закреплены в `gold_adjudication_batch_040.manifest.json`. В `Mat.21.30` selected TAGNT и OH1988 расходятся по порядку сыновей и действию, один critical source-reading case остаётся unresolved; Strong на расходящиеся слова не назначен. Отдельный independent full-grid QC и source resolution ещё обязательны, книга не принята.
@@ -529,7 +533,7 @@ Finalized global gold, calibration и production Strong по-прежнему н
 - [x] Провести первичный source-audit для трёх блокирующих loci `Nah.1.8`, `Zeph.2.14`, `Zeph.3.17`: визуально проверить точные страницы OH1988 и авторское свидетельство 1963 года (еврейская основа, выборочное обращение к LXX, 37 рабочих тетрадей), раздельно сравнить зависимые TAHOT/OSHB MT и диагностический греческий текст. Точная еврейская Vorlage для этих loci документами не установлена; пять critical `Nah` и четыре high `Zeph` остаются блокирующими. SHA страниц, исходников и note закреплены в `textual_fingerprint_nah_zeph_primary_audit.manifest.json`; это завершённый аудит, не разрешение чтений и не перенос Strong.
 - [x] Провести independent full-grid QC `Jas` без принятия книги: отдельный reviewer проверил 179 adjudicated + 829 agreed = 1 008/1 008 решений в 32 стихах; 994 accepted, `error=0`, `uncertain=14` (7 adjudicated + 7 agreed) в `2.3`, `3.3`, `3.5`, `4.9`, `5.12`. Три воспроизводящих выпуска и authoritative completed-эмиссия побайтно одинаковы; QC/sidecar SHA `ee43e14b…` / `7f0d1a10…`, `check-adjudication-qc` ожидаемо отклонил blocking status. Ни один конкурирующий Strong не продвинут; `gold_adjudication_batch_059.manifest.json` обновлён, source resolution и distinct re-QC обязательны.
 - [x] Провести independent full-grid QC `1Pet` без принятия книги: отдельный reviewer проверил 229 adjudicated + 873 agreed = 1 102/1 102 решений в 32 стихах; 1 092 accepted, `error=0`, `uncertain=10` (6 adjudicated + 4 agreed) в `1.7`, `1.16`, `2.21`, `4.1`, `5.9`. Три эмиссии побайтно одинаковы; QC/sidecar SHA `47a20b06…` / `6122c9e5…`, `check-adjudication-qc` ожидаемо отклонил blocking status. Traditional-only `ὑπὲρ ἡμῶν` и alternative pronoun/verb Strong не продвигались; `gold_adjudication_batch_060.manifest.json` обновлён, source resolution и distinct re-QC обязательны.
-- [ ] Завершить первичное текстологическое разрешение и re-QC `Nah`/`Zeph`/`Zech`, source resolution и re-QC `Mat`/`Mark`/`Luke`/`John`, correction/source resolution/re-QC `Acts–2Tim`, scoped selected-source/full-grid correction и re-QC `Titus.2.7`/`Phlm.1.25`, source/semantic resolution и re-QC `Heb`/`Jas`/`1Pet`/`2Pet`, scoped correction/source resolution/re-QC `1John`/`2John`, а также запечатать уже полностью прочитанный initial QC `Rev`, отмечая книгу завершённой только после всей цепочки и отдельной SHA-фиксации. Blind pass 2/comparison и structural adjudication уже завершены для всех 66 книг и не должны повторяться; блокирующие QC `2Thess–Jude` уже выполнены и не повторяются до resolution/correction.
+- [ ] Завершить текстологическое разрешение и re-QC `Nah`/`Zeph`/`Zech`, source resolution и re-QC `Mat`/`Mark`/`Luke`/`John`, correction/source resolution/re-QC `Acts–2Tim`, scoped selected-source/full-grid correction и re-QC `Titus.2.7`/`Phlm.1.25`, source/semantic resolution и re-QC `Heb`/`Jas`/`1Pet`/`2Pet`, scoped correction/source resolution/re-QC `1John`/`2John`, source/frozen-text resolution и re-QC `3John`/`Jude`/`Rev`, отмечая книгу завершённой только после всей цепочки и отдельной SHA-фиксации. Blind pass 2/comparison, structural adjudication и initial QC завершены для всех 66 книг и не повторяются; re-QC выполняется после resolution/correction соответствующего scope.
 - [x] Завершить distinct third adjudication и полный independent content-QC `2Kgs` (канонический shard 012): вручную разрешены 402/402 substantive disagreement в 251 компоненте и 32 стихах, сохранены 1 316 согласованных решений и полный reciprocal grid 1 718/1 718; distinct reviewer проверил все 402 решения, все 114 high и exact stage-6 text/comment 32/32. Итог `accepted=402`, `error=0`, `uncertain=0`, unresolved critical/high и dangling/cross-verse links — 0; QC SHA-256 `4d12c29d…`, manifest SHA-256 `1d1c9a14…`, exact цепочка закреплена в `gold_adjudication_batch_012.manifest.json`. Книга входит в текущий строгий счётчик `22/66`.
 - [x] Завершить distinct third adjudication и полный independent content-QC `1Chr` (канонический shard 013): вручную разрешены 273/273 substantive disagreement, сохранено 991 согласованное решение и полный reciprocal grid 1 264/1 264; distinct reviewer проверил все 273 решения, все 126 high и exact stage-6 text/comment 32/32. Итог `accepted=273`, `error=0`, `uncertain=0`, unresolved critical/high и dangling/cross-verse links — 0; QC SHA-256 `2e4880fa…`, manifest SHA-256 `a8e2fc4b…`, exact цепочка закреплена в `gold_adjudication_batch_013.manifest.json`. Книга входит в строгий счётчик `22/66`.
 - [x] Завершить distinct third adjudication и полный independent content-QC `2Chr` (канонический shard 014): вручную разрешены 356/356 substantive disagreement в 266 компонентах, сохранены 1 486 согласованных решений и полный reciprocal grid 1 842/1 842; distinct reviewer проверил все 356 решений, все 96 high и exact stage-6 text/comment 34/34. Итог `accepted=356`, `error=0`, `uncertain=0`, unresolved critical/high и dangling/cross-verse links — 0; QC SHA-256 `43d27d08…`, manifest SHA-256 `8140bbbd…`, exact цепочка закреплена в `gold_adjudication_batch_014.manifest.json`. Книга входит в строгий счётчик `22/66`.
@@ -780,7 +784,7 @@ dart run scripts/coverage_baseline.dart --min-effective=90.0
 | 4 | Завершён | 2026-08-01 | После fail-closed проверки 14 locked inputs реализованы независимые парсеры DjVu hidden text, ProofreadPage/MediaWiki, STEPBible TAHOT/TAGNT/TVTMS, OSHB OSIS ZIP, UXLC XML ZIP, UGNT USFM ZIP и CrossWire KJV milestone OSIS. Полные source-native `unprojected` JSONL воспроизводимо созданы в gitignored work-каталоге; 37 generated/work artifacts совпали побайтно после повторной генерации. Все 1 329 `<ref>` carriers учтены как 1 204 определения и 1 329 uses: 1 318 uses однозначно связаны с исходными стихами, 11 сносок в заголовочных шаблонах сохранены как `missing` anomalies, дубликатов uses, конфликтов текста определения, неверных anchor ranges и преждевременных target-полей нет. Commons выявлен как два одинаковых DjVu-контейнера; его логический контейнер и зависимый IA-контроль дают одинаковые 1 538 OCR-страниц. Полный безопасный diff содержит 91 569 классифицированных строк и ноль unresolved `critical/high`; 149 текстов сносок требуют последующей визуальной сверки из-за шумного hidden OCR, но не потеряны и имеют Commons page/revision provenance. [Отчёт и manifests](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/report.ru.md), [статистики](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/source_stats.json), [footnote audit](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/footnote_stats.json) и [validation log](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/validation_log.md) закрывают этап. Следующим разрешён этап 5; он не выполнялся. |
 | 5 | Завершён | 2026-08-01 | Построен детерминированный двунаправленный контракт `oh1988-kjv-protestant-v1`: все 31 160 source records представлены 31 171 непересекающимися span, все 31 102 `verse_key` точно равны baseline и имеют ровно один reverse result; дублей, необъяснённых пустых target и расхождений forward/reverse нет. 31 099 правил включают 31 026 `1:1`, 68 `merge`, 4 `split` и 1 явный source-only `range_transfer`; все 73 non-1:1 и 3 369 нестандартных/смещённых решений проверены по baseline, TVTMS и source-native digests. Для 575 target сосед формально совпадал лучше: они включены в manual review, автоматических перепривязок нет. Из 1 329 uses/markers 1 318 спроецированы (`1:1` 1 310, `merge` 8), а 11 heading footnotes сохранены как `non_verse_source_material`; `target_anchor_pending` не подменён выдуманным offset, `target_comment` не создавался. Двойная генерация 19 артефактов совпала побайтно; 158 bible_module, 30 content_tool и 920 Flutter tests, analyze, forbidden-pattern и docs-sync checks прошли. [Отчёт](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/report.ru.md), [карты и manifests](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/source_to_target_map.manifest.json), [manual review](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/manual_review.jsonl) и [validation log](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/validation_log.md) закрывают этап. |
 | 6 | Завершён | 2026-08-01 | Синтезированы ровно 31 102 непустых OH1988 target text по неизменённой карте этапа 5. Учтены 31 171 source spans и 595 095 source word tokens: 595 077 в target text и 18 в отдельном source-only `2Chr.14.14`; потерь, перекрытий и дублей нет. 31 026 `1:1`, 68 `merge` и 4 доказанных split дали 31 102 targets; 64 merge состоят из двух частей, 4 — из трёх, документированы 72 вставки U+0020 и 4 исключённых split-разделителя. Все 1 329 footnote uses/markers сохранены: 1 318 anchors разрешены через доказанные intervals, 11 heading uses оставлены non-verse; сформированы 31 102 comments. Все 149 OCR-review сносок визуально сверены с Commons scan без исправлений. Plain-text/source/footnote preservation точен, нерешённых `critical/high` нет. Двойная генерация 22 артефактов совпала по inventory/SHA-256; 16 целевых, 174 commit-scope bible-module, 30 content-tool и 920 Flutter tests, analyze, forbidden-pattern, docs-sync и staged-scope audits прошли. Strong-разметка вынесена в отдельный этап 7; SQLite не создавался. [Отчёт](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/report.ru.md), [manifests](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/synthesized_text.manifest.json), [preservation](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/plain_text_preservation_report.json), [footnote stats](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/footnote_comment_stats.json), [manual review](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/manual_review.jsonl) и [validation log](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/validation_log.md) закрывают этап. |
-| 7 | В работе | 2026-09-19 | Exact stage-6 text/comment и mapping заморожены; source/license registry, украинская токенизация, original-token universe, RUSSYN/YLT bridges, авторские сноски, textual fingerprint и candidate-only bundle воспроизводимы. Gold 7.4: pass 1 — `66/66`; blind pass 2/comparison — `66/66` (2 171 стих, 45 831 original, 41 807 target, 87 638 stable decisions; reviewer independence 87 638/87 638); global comparison дал 65 434 agreements и 22 204 substantive disagreement. Distinct adjudication — `66/66` (`Gen–Rev`); independent full-grid QC выполнен для `65/66` (`Gen–Jude`); строго приняты `36/66`. Физический all-66 аудит заново прошёл `62/62` batch SHA, `132/132` adjudication/sidecar SHA и root validator `66/66`. `Nah`, `Zeph`, `Zech` и проверенные NT-книги `Mat–Jude` остаются blocked; `Titus.2.7`, `Phlm.1.25`, `1John.4.20`, `2John.1.7` и `2John.1.9` выявили definite selected-source/full-grid errors, остальные книги сохраняют source/variant/semantic uncertainty. `Rev` structural adjudication проверена, но independent QC и отдельные critical/high loci ещё открыты; оставшейся очереди adjudication нет. Finalized gold, calibration и production Strong links/markup отсутствуют; SQLite и этап 8 не выполнялись. |
+| 7 | В работе | 2026-10-03 | Exact stage-6 text/comment и mapping заморожены; source/license registry, украинская токенизация, original-token universe, RUSSYN/YLT bridges, авторские сноски, textual fingerprint и candidate-only bundle воспроизводимы. Gold 7.4: pass 1 — `66/66`; blind pass 2/comparison — `66/66` (2 171 стих, 45 831 original, 41 807 target, 87 638 stable decisions; reviewer independence 87 638/87 638); global comparison дал 65 434 agreements и 22 204 substantive disagreement. Distinct adjudication и initial full-grid QC завершены для `66/66` (`Gen–Rev`); строго приняты `38/66`; завершены `39/66` (весь OT), включая Zeph с зарегистрированной отсрочкой. Физический all-66 аудит прошёл `62/62` batch SHA, `132/132` adjudication/sidecar SHA и root validator `66/66`. `Nah` и `Zech` приняты после source resolution/distinct full-grid QC; `Zeph` завершена с одной deferred_strong_unassigned парой H1471A→«польова́»; NT-книги `Mat–Rev` остаются вне текущей задачи; `Titus.2.7`, `Phlm.1.25`, `1John.4.20`, `2John.1.7` и `2John.1.9` выявили definite selected-source/full-grid errors, остальные книги сохраняют source/variant/semantic uncertainty. `Rev` QC запечатан тремя byte-identical выпусками: 1 713 accepted, `error=0`, `uncertain=56`. Первичные adjudication/QC очереди завершены, source resolution/scoped correction/distinct re-QC открыты. Finalized gold, calibration и production Strong links/markup отсутствуют; SQLite и этап 8 не выполнялись. |
 | 8 | Не начат | — | — |
 | 9 | Не начат | — | — |
 | 10 | Не начат | — | — |
@@ -788,18 +792,18 @@ dart run scripts/coverage_baseline.dart --min-effective=90.0
 | 12 | Не начат | — | — |
 | 13 | Не начат | — | — |
 
-**Актуализировано 2026-09-19.** Работа этапа 7.4 продолжается только от
-актуального
-[HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md):
-pass 1 — `66/66`, pass 2/comparison — `66/66`, adjudication — `66/66`,
-full-grid QC запечатан для `65/66`, строго приняты — `36/66`. `Jude` проверена
-`934/934`, но заблокирована 8 source/textual uncertainties; её не повторять
-до source resolution и distinct re-QC. В `Rev` уже вручную прочитан полный
-grid `1 769/1 769`; следующая frozen рабочая точка — оформить bounded verdicts,
-выпустить три deterministic QC-копии и SHA-lock shard 066.
-Adjudication-очереди больше нет.
-`1Thess`, `Eph` и другие
-книги с unresolved source/semantic cases не закрыты. Итоговый этап 7 открыт.
+**Актуализировано 2026-10-03 — весь OT завершён.**
+Завершены **39/66 книг**:38 полностью приняты и Zeph завершена с одной
+зарегистрированной отсрочкой Strong. Это допустимый конечный результат по
+прямому правилу владельца; повторное исследование не является условием
+завершения книги. Все известные проблемы собраны в
+[общем реестре OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/strongs_issue_inventory.v1.ru.md).
+Ссылка H1471A→«польова́» исключена из effective alignment/training/export;
+слово осталось без номера. Полные исходныеQC/исследования и provenlinks сохранены.
+Последний [HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md)
+содержит новый completion contract и независимые проверки. NT27 не начинались;
+stage8/SQLite/productionStrong/runtime/commit/push не выполнялись.
+Исторические checkpoints и prompt38/66 ниже сохранены как история.
 
 ## Связанные файлы
 
@@ -816,3 +820,105 @@ Adjudication-очереди больше нет.
 - [`lib/infra/db/bible/bible_module_db.dart`](../../../lib/infra/db/bible/bible_module_db.dart) — runtime-контракт SQLite-модуля.
 - [`web/db/manifest.json`](../../../web/db/manifest.json) — web-манифест распространяемых БД.
 - [`.github/change_checklist.md`](../../../.github/change_checklist.md) — обязательный change checklist.
+
+### 7.4 — группа № 1, bounded source resolution 2026-10-03 (исторический checkpoint до closure)
+
+- [x] Nah: восстановлены 5 blocking stable decisions в 1:8, проверены exact scan,
+  авторские примечания/методология, MT controls и variant apparatus. Сохранены
+  полный locus grid и input locks; [Nah diagnostic v1](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_Nah.source_resolution.v1.manifest.json).
+- [ ] Nah acceptance: live validator отверг frozen uncertain QC. Собственное
+  заключение рекомендует MT NULL; adversaries occurrence и possessive/span
+  остаются условием alternate layer; нужен отдельный content QC;
+  exact historical edition ради названия не требуется. Gold остаётся **36/66**.
+
+- [x] Zeph: восстановлены 4 high blockers в 2:14 и 3:17; exact scan, авторская
+  методология и apparatus проверены; [Zeph diagnostic v1](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_Zeph.source_resolution.v1.manifest.json)
+  содержит input locks и full locus grid.
+- [ ] Zeph acceptance: собственное заключение по raven и renew/love завершено;
+  MT NULL рекомендован, alternate occurrences не приняты; отдельный QC остаётся
+  открытым. Input corruption не обнаружено. Gold **36/66**.
+
+- [x] Zech: восстановлены 7 blockers в 11:7/14:6; word division, exact scan,
+  scholarly apparatus и H7087 qere/ketiv проверены;
+  [Zech diagnostic v1](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_Zech.source_resolution.v1.manifest.json).
+- [ ] Zech acceptance: собственное заключение завершено; merchant H3669 и
+  cold H7135 подтверждены как lexical candidates, но не как occurrences этих
+  loci. H7087-equivalent формы не закрывают lexical blocker; нужен отдельный QC.
+- [x] Группа № 1: research сохранён для всех трёх книг, 16 stable blockers в пяти
+  loci сохранены явно; новых accepted книг 0, всего **36/66**. Следующая NT-группа
+  автоматически не начата; acceptance текущей группы остаётся открытой.
+
+- [x] При возобновлении исправлена кириллица в документах checkpoint;
+  предыдущие повреждённые версии сохранены в отдельном ignored snapshot.
+- [x] По просьбе владельца составлено [полное исследовательское задание](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_philological_assignment.v1.ru.md)
+  и выполнено [собственное филологическое заключение v1](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_philological_opinion.v1.ru.md)
+  по всем пяти loci; [manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_philological_opinion.v1.manifest.json)
+  сохраняет 16 IDs, input digests и рекомендации по MT NULL-accounting.
+- [x] Правило самостоятельного исследования без предположения о доступе владельца
+  к платной внешней экспертизе записано в [AGENTS.md](../../../AGENTS.md).
+- [x] Новое исследование отделило H3669/H7135 dictionary proof от occurrence,
+  проверило Greek exact phrase и условно расширило Zech.14.6 scope до
+  o007–o014/t006–t013 из-за отрицания. Принятые rows не переобъявлены errors.
+- [x] Отдельный [независимый content QC v1](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_independent_content_qc.v1.ru.md)
+  выполнен по пяти loci и всем 4 282 решениям / 96 выбранным стихам трёх книг.
+  Фактическая роль проверена по доступному контексту и locked inputs;
+  новый reviewer не автор заключения v1 и проверяемых решений.
+  16 source uncertainties сохранены, две definite errors выявлены в Nah.1.10;
+  concrete correction proposal запечатан без применения. Gates и frozen input
+  неизменны, accepted books **36/66**, новых 0, осталось **30**.
+- [x] Проверены [зависимость прежнего авторского контекста и MT NULL-accounting](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_qc_context_accounting_audit.v1.ru.md):
+  прежний чат сохранял авторство v1 и не подавался как независимый QC.
+  Структура 4 282 book / 228 bounded decisions, 109 exact spans и все 16
+  blockers проверены; live acceptance-validator отклонил три uncertain QC.
+- [x] Исправлен только bounded diagnostic export: v2 использует действующий
+  validator merge для 171 agreed metadata rows; links/NULL/groups и blockers
+  не изменены. V1, frozen review answers и book semantics сохранены.
+- [x] Подготовлено [задание отдельному QC-контексту](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_independent_qc_task.v1.ru.md)
+  с проверкой реальной роли, source choice и conditional scopes. Content
+  acceptance трёх книг остаётся открытой; NT не начат, gold **36/66**.
+- [x] По просьбе владельца в AGENTS.md добавлено правило: при сообщении об
+  отсутствии у компьютера после завершения работы проигрывать Windows Alarm02
+  три раза, если в конкретном запросе не задан другой звук/счётчик.
+
+### 7.4 — группа № 1, independent content QC 2026-10-03
+
+- [x] Nah: новая полная проверка 1 197/1 197 дала 1 190 accepted decisions,
+  2 definite errors Nah.1.10 и 5 critical uncertainties Nah.1.8. BDB I.3/NET
+  note 10 подтверждают сравнительный עד/H5704 ↔ «наче»; запечатано предложение
+  reciprocal correction двух IDs. Correction не применена, книга blocked.
+- [x] Zeph: проверены 1 479/1 479, 1 475 accepted decisions и 4 high
+  uncertainties Zeph.2.14/3.17. MT NULL-accounting допустим относительно
+  выбранного source, но raven occurrence и renew/object не закрыты. Книга blocked.
+- [x] Zech: проверены 1 606/1 606, 1 599 accepted decisions и 7 uncertainties
+  Zech.11.7/14.6. Merchant word division, cold occurrence и negation scope
+  сохраняют conditional revalidation; H7087 equivalence не заменяет cold proof.
+- [x] По каждой книге новый blocking QC/sidecar и full-grid observations
+  запечатаны в ignored work; три эмиссии byte-identical. Live acceptance-validator
+  отклонил все три blocking statuses; отдельный payload audit проверил exact
+  scope/evidence/hashes, 91 prior input locks и 2 030 scalar/byte spans.
+  [Report](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_independent_content_qc.v1.ru.md)
+  и [manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_independent_content_qc.v1.manifest.json)
+  сохраняют роль, 16 unchanged uncertainty IDs, 2 error IDs и proposal chain.
+- [ ] Separate consensus correction Nah.1.10, distinct post-correction full-grid
+  QC и source disposition пяти loci. Текущий reviewer не может стать отдельным
+  corrector/post-QC сменой ID. Точное историческое имя edition не является gate;
+  внешняя платная экспертиза не требуется. Gold **36/66**, осталось **30**,
+  NT не начат; acceptance и весь этап 7 остаются открытыми.
+
+### 7.4 — приёмка группы №1, актуальный итог 38/66
+
+- [x] Все пять исходных мест и 16 неопределённостей разрешены отдельной цепочкой исследования и независимого QC; [source v2](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_source_disposition.v2.ru.md).
+- [x] Nah.1.10: отдельный corrector исправил ровно две строки H5704 ↔ «наче»; независимый QC всех 1197 решений, live validator и strict registry прошли; [приёмка Nah](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_Nah.accepted.v1.manifest.json).
+- [x] Zech: независимый QC всех 1606 решений, live validator и strict registry прошли; [приёмка Zech](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_Zech.accepted.v1.manifest.json).
+- [x] Zeph: проверены все 1479 решений, прежние четыре source uncertainties разрешены; [итоговый QC](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_final_content_qc.v1.ru.md).
+- [ ] Zeph acceptance: новая согласованная пара גוי/H1471A ↔ «польова́» сохраняет две high uncertainties: 1477 accepted, error0, uncertain2. [Авторское исследование v3](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_Zeph.goy_source_disposition.v3.ru.md) фиксирует точный недостающий довод; неопределённость не объявлена ошибкой ради correction scope.
+- [x] Текущий gold **38/66**, OT38/39, новых книг2. NT27 не начаты; stage8, DB, runtime, commit/push не выполнялись. Пользовательские изменения и frozen inputs сохранены; inventory обновляет отдельный writer. Следующая ограниченная OT-задача и готовый prompt — в последнем HANDOFF.
+
+
+### 7.4 — весь Ветхий Завет завершён по bounded правилу владельца
+
+- [x] Completed **39/66**, весь OT. Strict fully accepted38/66 сохранён как отдельная метрика доказанности.
+- [x] Zeph — [completed with registered deferrals](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_Zeph.completed_with_deferrals.v1.manifest.json): один target span без Strong; прочие1477labels accepted, source/target deferrednodes retained.
+- [x] Создан [единый инвентарь всех известных проблем модуля](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/strongs_issue_inventory.v1.ru.md), с exact words/IDs/spans, candidates, findings и SHA evidence; существующие NT записи не означают начало NT-работы.
+- [x] [Независимый completion QC](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_001_completion_qc.v1.ru.md) проверил ledger/overlay и preserved evidence; номер не выдуман, uncertainty не объявлена error.
+- [x] AGENTS.md закрепляет разумный предел одного филологического цикла, inventory/skip и допустимость завершения с отсрочками; раздел model/Reasoning удалён. Повторное открытие Zeph не требуется, улучшение optional по реестру.
