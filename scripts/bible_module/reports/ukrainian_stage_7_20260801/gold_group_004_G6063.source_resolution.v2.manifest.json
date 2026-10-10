@@ -1,0 +1,1450 @@
+{
+  "actual_full_payload_snapshots": {
+    "bytes": 36658,
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_metadata_bridge_01/actual_decision_payload_bridge.v1.jsonl",
+    "sha256": "f7079a7aa44eecd12bc273d3bd8cbf7d1c0d5f8536c45344c0973caea11c3929"
+  },
+  "all_semantic_identities_matched": true,
+  "artifact": "gold_group_004_G6063_metadata_only_source_resolution_bridge",
+  "assigned_strongs": [],
+  "author_id": "codex-group004-g6063-research-20261010-01",
+  "book_completion_authorized_by_this_manifest": false,
+  "classic_identity_proof_changed": false,
+  "counts": {
+    "corrections": 0,
+    "exact_payload_matches": 6,
+    "labels_compared": 9,
+    "metadata_differing_labels": 3,
+    "new_cases": 0,
+    "new_decisions": 0,
+    "new_research_cycles": 0,
+    "semantic_identity_mismatches": 0,
+    "source_or_target_Strong_assignments": 0
+  },
+  "date": "2026-10-10",
+  "deferred_stable_keys": [],
+  "exact_stable_keys": [
+    "original:gold7:original:0981e7e75dc0e1a542fcd8824fdf9260",
+    "original:gold7:original:1c6aa440751d9cde2115067ec104e30a",
+    "original:gold7:original:8e1300d880291dd2aa6237fe244369dd",
+    "original:gold7:original:c2a30b128136b4386ab5215240661fab",
+    "target:gold7:target:206190076c988c71f2b174ace67fe7e8",
+    "target:gold7:target:3e4c151a213a402cc43abdc86ee6b2df",
+    "target:gold7:target:996e4985b2e450d0629bdd0404440e62",
+    "target:gold7:target:d85e38abec75aa0512d9f7053c6e79da",
+    "target:gold7:target:e2b3c84b50c2b60895ad87945aab1883"
+  ],
+  "existing_alignment_edges_or_decisions_changed": false,
+  "frozen_v1_files_modified": false,
+  "independent_observations_authored_or_modified": false,
+  "input_locks": [
+    {
+      "bytes": 376037,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/completed/Eph.shard_049.pass1-pass2.third_adjudication.jsonl",
+      "sha256": "b58d2938598e20aaf3f484de4892413cd9e529863ef35ff08a312e0cfb1da857"
+    },
+    {
+      "bytes": 6300,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/completed/Eph.shard_049.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "sha256": "9708ea5332fce022e0e9ad864257c79885156ea86c18d4dc525dabd6d5a01490"
+    },
+    {
+      "bytes": 804903,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Eph/review_pass_2.shard_049.compact.template.jsonl",
+      "sha256": "2b8c871e2c652e3ed9551c016c10a721796bed564d87594940024f2806d70596"
+    },
+    {
+      "bytes": 4253,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Eph/gold_compact_review.manifest.json",
+      "sha256": "2047dddf3e6309143e1ee6eb76ca4f1592ebc068908517ac0e9250ff4f6614f1"
+    },
+    {
+      "bytes": 3044,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_adjudication_batch_049.manifest.json",
+      "sha256": "17d67d75ed6996516875e3237a26e38713767829d6456b726c29a44c4cac7524"
+    },
+    {
+      "bytes": 1051091,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/qc/completed/Eph.shard_049.third_adjudication.blocking_content_qc.codex-20260912.jsonl",
+      "sha256": "27b7ffecffd5fa3a0c8630e9fed5d9c9af3cf3843368151465ae5a31c559104a"
+    },
+    {
+      "bytes": 50196,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/qc/completed/Eph.shard_049.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json",
+      "sha256": "6c0091df7da4f0c27d5b623ca0b301109ecfc7a7ffee18088029a42cdb1495f6"
+    },
+    {
+      "bytes": 533681,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/canonical_v2/Eph.pass1-pass2.disagreements.jsonl",
+      "sha256": "c94804e94b37383ff5c5e57a6faa8881d18ba9ae9916a275178dc0c861211e6e"
+    },
+    {
+      "bytes": 1486,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/canonical_v2/Eph.pass1-pass2.disagreements.jsonl.manifest.json",
+      "sha256": "2e5aa6d59e25423a5fc21cf7bed99188b71562048450bf96552dc6655fb1a12e"
+    },
+    {
+      "bytes": 4554,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/correction/completed/Eph.shard_049.consensus_correction.jsonl",
+      "sha256": "f4c4139506e71a701a332e284b58dea9f7e4d546819350c1ff317bce61878f2d"
+    },
+    {
+      "bytes": 1790,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/correction/completed/Eph.shard_049.consensus_correction.jsonl.manifest.json",
+      "sha256": "db1fa3cd0aa1dbe067a76b9a848895741698f40c154b53f8f56ba9b2b11ac2c7"
+    },
+    {
+      "bytes": 1190235451,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_selected_original_layer.jsonl",
+      "sha256": "500482d4b1ce58f9749fe9e53b58bf8bce6be1558df926dacfbe0df29cf09ca4"
+    },
+    {
+      "bytes": 83637482,
+      "path": "scripts/bible_module/source_cache/commons_ohienko_1988.djvu",
+      "sha256": "0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34"
+    },
+    {
+      "bytes": 1102373802,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/original_token_universe.jsonl",
+      "sha256": "c891e29cedf8ac040418d8f052c94a3d21e2b39ea18ed96f122dc79853899242"
+    },
+    {
+      "bytes": 1038514,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Eph_pass1_049/completed_external/review_pass_1.shard_049.raw.external-v1.canonical-v2.jsonl",
+      "sha256": "2f0e85e62e93f5fd887f0e8eefcbcd02f5f2f5a708d27876566597dc77080220"
+    },
+    {
+      "bytes": 3313,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Eph_pass1_049/completed_external/review_pass_1.shard_049.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "sha256": "5b146871e7dc3960de241993bffd5022cd3c488e2b11cdf84b6b136c5d444174"
+    },
+    {
+      "bytes": 1104981,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Eph/completed/review_pass_2.shard_049.raw.manual-v2.jsonl",
+      "sha256": "c821c6f9df8b28f210d37f61c3c8c636666b0d6def9c1ed9cc42c2372a1d4cd9"
+    },
+    {
+      "bytes": 3307,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Eph/completed/review_pass_2.shard_049.raw.manual-v2.jsonl.manifest.json",
+      "sha256": "50fdeae4d005c1c5ebd627aff5f6ec12fadecb75944272d80d700dd9833ca4b5"
+    },
+    {
+      "bytes": 432394,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/source_registry.json",
+      "sha256": "b1f7e2bc82929bdd40c5701f4d16ff00387da8645c5279cf311adc12973ffebd"
+    },
+    {
+      "bytes": 8027331,
+      "path": "scripts/bible_module/work/ukrainian_stage_6_20260801/target_comments.jsonl",
+      "sha256": "5c1cf56e94410b6ab6e418dda7be7a6b385cb72221dfb8ca943e3419de42c9f4"
+    },
+    {
+      "bytes": 42532305,
+      "path": "scripts/bible_module/work/ukrainian_stage_6_20260801/synthesized_text.jsonl",
+      "sha256": "e55156cd4c201077de3c2e1d44b06dd1035a7a8db7c26321869f860768671bcf"
+    },
+    {
+      "bytes": 15939932,
+      "path": "scripts/bible_module/source_cache/step_tagnt_act_rev.txt",
+      "sha256": "524e32375361e6d3fa2f7ef00b87605fdc4317a762f395651a05fdc31ad031b7"
+    },
+    {
+      "bytes": 544553840,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/ukrainian_token_inventory.jsonl",
+      "sha256": "62caa29ff269c9ca8dad4b64c656728a645b3d09210034ddcc953c5363c567e1"
+    },
+    {
+      "bytes": 482751,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/textual_fingerprint.manifest.json",
+      "sha256": "f1588f87527927c2eb53a6c7eac0f82c6fa8383af05a3a82855bad5890808df1"
+    },
+    {
+      "bytes": 363643,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Phil/completed/Phil.shard_050.pass1-pass2.third_adjudication.jsonl",
+      "sha256": "2539e53aaf54d25faa361816de7aa56d2afb1fa65fcbac119b6e0a736d08e182"
+    },
+    {
+      "bytes": 6522,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Phil/completed/Phil.shard_050.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "sha256": "a3cc7e2812c4dd771d3d2c8c1391f681c8ef0e747189a0aa8283d476ecb16db0"
+    },
+    {
+      "bytes": 788635,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Phil/review_pass_2.shard_050.compact.template.jsonl",
+      "sha256": "91648c4ff7330ae99eb0ffb890978881665a49784e8ce7a301edac70e28b2f85"
+    },
+    {
+      "bytes": 4257,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Phil/gold_compact_review.manifest.json",
+      "sha256": "e74c9739af06cd0566f065b947e906fd7887ee1b6748591301ab158c3ade0d2b"
+    },
+    {
+      "bytes": 2646,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_adjudication_batch_050.manifest.json",
+      "sha256": "27f3713b1b6f2bcad817ea8389edaef9500fa0e1a712db0f11033291248d9b59"
+    },
+    {
+      "bytes": 536085,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/canonical_v2/Phil.pass1-pass2.disagreements.jsonl",
+      "sha256": "e37fd2c83b4d155b00503bb97045d04c643cd7fe00d2a9baba6486c470c656cf"
+    },
+    {
+      "bytes": 1490,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/canonical_v2/Phil.pass1-pass2.disagreements.jsonl.manifest.json",
+      "sha256": "8f6b93543a2118ac6b4eab17422399911e7ca819ad6ba50b44c327d9c4e13191"
+    },
+    {
+      "bytes": 987487,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Phil/qc/resume_repro_run_1/Phil.shard_050.third_adjudication.blocking_content_qc.codex-20260912-resume.jsonl",
+      "sha256": "eab7e55fa9ea7ef2d497aaa5fca791469a461fbb68f232eb2e9485f181234da0"
+    },
+    {
+      "bytes": 32980,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Phil/qc/resume_repro_run_1/Phil.shard_050.third_adjudication.blocking_content_qc.codex-20260912-resume.jsonl.manifest.json",
+      "sha256": "fe8b07b5b59e8382e7a5d1398afb9ff706fe2c2e568c41335f87b019c7239f94"
+    },
+    {
+      "bytes": 1176895,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Phil_pass1_050/completed_external/review_pass_1.shard_050.raw.external-v1.canonical-v2.jsonl",
+      "sha256": "406928e91a66d1094f179c6e0cda517b7d5a5cab8656b7785a2dde9e0387f69b"
+    },
+    {
+      "bytes": 3317,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Phil_pass1_050/completed_external/review_pass_1.shard_050.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "sha256": "09564665d8e62e4494297177c14b709638f17aed142686e38bc56e61e2032b44"
+    },
+    {
+      "bytes": 1155533,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Phil/completed/review_pass_2.shard_050.raw.manual-v2.jsonl",
+      "sha256": "f18ec7f5bdb399a7a0f67009abef80ce8cc2cc37b5ed3a2b89c0128b6b5f637f"
+    },
+    {
+      "bytes": 3311,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Phil/completed/review_pass_2.shard_050.raw.manual-v2.jsonl.manifest.json",
+      "sha256": "89680f2f6eb2a472b68105cd922d3a06c8cae42960017849483c53ba8bed4255"
+    },
+    {
+      "bytes": 355627,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Col/completed/Col.shard_051.pass1-pass2.third_adjudication.jsonl",
+      "sha256": "023c7533d2319a0ab40e09f2d9bfa789700552325c4845fe3a8cd24a153d623a"
+    },
+    {
+      "bytes": 6809,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Col/completed/Col.shard_051.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "sha256": "d12d2920d4c346e567b2556dfb022e059d8146ec757865715abbac0aa6ed51cf"
+    },
+    {
+      "bytes": 808427,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Col/review_pass_2.shard_051.compact.template.jsonl",
+      "sha256": "99028fedbf99d6b2f84841e0c12dc092b170b03ddedf3511cfcabcf0a99f6539"
+    },
+    {
+      "bytes": 4253,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Col/gold_compact_review.manifest.json",
+      "sha256": "0d7e6bbc598c686d2a5d5275df644acaa85b4dc237d92d8d27626ef2ecf5e55a"
+    },
+    {
+      "bytes": 2666,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_adjudication_batch_051.manifest.json",
+      "sha256": "18eb23586025cb2285154c3093eb369dc354d7c0aa0ceecbf560bb56712abfa0"
+    },
+    {
+      "bytes": 489213,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/Col.pass1-pass2.disagreements.jsonl",
+      "sha256": "14adfa414d2805c8eb4bc0e424a205969ddb0eea34707cabc3ffc2282c99bcb5"
+    },
+    {
+      "bytes": 1488,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/Col.pass1-pass2.disagreements.jsonl.manifest.json",
+      "sha256": "194f4724dd10763e712bea263dbae540c9c3dc0c84c9248afb868dfff26b4ce5"
+    },
+    {
+      "bytes": 964396,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Col/qc/completed_r2/Col.shard_051.third_adjudication.blocking_content_qc.codex-r2-20260912.jsonl",
+      "sha256": "dc4c9d3172cfd8d2dc3fc38a0ad550b0e11ef83f9f0e47fc75b8b455eeb3bca1"
+    },
+    {
+      "bytes": 29372,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Col/qc/completed_r2/Col.shard_051.third_adjudication.blocking_content_qc.codex-r2-20260912.jsonl.manifest.json",
+      "sha256": "5d6dad5394e1e00745aea7374f36a0e82afbeeda3895aec2749bd7e4f84c7359"
+    },
+    {
+      "bytes": 1040949,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Col_pass1_051/completed_external/review_pass_1.shard_051.raw.external-v1.canonical-v2.jsonl",
+      "sha256": "9426bcc6b08e2c25b562743250983700f0ce5ee3f9443c1b206f379a46363654"
+    },
+    {
+      "bytes": 3313,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Col_pass1_051/completed_external/review_pass_1.shard_051.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "sha256": "e3fdb1bcda68e07dd1354080a65408845a7066131a1f54f8d8be09d2afc280c4"
+    },
+    {
+      "bytes": 1135402,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Col/completed/review_pass_2.shard_051.raw.manual-v1.jsonl",
+      "sha256": "51e9c9c1150aa1e70950336b3aa0861c8b30ddfa5d29beb26ccc5d4c67ff5406"
+    },
+    {
+      "bytes": 3308,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Col/completed/review_pass_2.shard_051.raw.manual-v1.jsonl.manifest.json",
+      "sha256": "73347e4f987f445435dfab786e18ca64b87ffac87295f933380ce29bc9216bec"
+    },
+    {
+      "bytes": 22321,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_root_01/chain_inputs.v2.json",
+      "role": "actual_validated_grid_chain_v2",
+      "sha256": "7e3a91cbaa38c1229aa26c074a28e4936e87ea195b454d070956078de30663b0"
+    },
+    {
+      "bytes": 45597,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_004_G6063.source_resolution.v1.manifest.json",
+      "role": "preserved_sealed_source_proof_v1",
+      "sha256": "8a7b5f7fa6e453647ecf2ea52040a77f9b023835d6e26190db0a034aa97a0d61"
+    },
+    {
+      "bytes": 182163,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_research_01/source_resolution.supplemental_cases.v2.jsonl",
+      "role": "preserved_sealed_v1_semantic_snapshots",
+      "sha256": "73b5980d0e57bdab56f6ab9c7d49d06017ed06bba82e72c2303f7431b24234fd"
+    },
+    {
+      "bytes": 13336350,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+      "role": "independent_observations_inspected_not_authored",
+      "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d"
+    },
+    {
+      "bytes": 9992,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_004_G6063.source_resolution.v1.ru.md",
+      "role": "preserved_v1_readable_source_proof",
+      "sha256": "a9de482962116875537667591d7ac276e2cda5cbb339278fa8e363c0cc6a01f1"
+    },
+    {
+      "bytes": 20456,
+      "path": "scripts/bible_module/ukrainian_stage_7_completion_v2.py",
+      "role": "read_only_validated_grid_reconstruction_tool",
+      "sha256": "8e5903c855cec099a3936605307abc3302fcef0d9563cbdb737ab70fd74789af"
+    }
+  ],
+  "input_sha256": {
+    "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_adjudication_batch_049.manifest.json": "17d67d75ed6996516875e3237a26e38713767829d6456b726c29a44c4cac7524",
+    "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_adjudication_batch_050.manifest.json": "27f3713b1b6f2bcad817ea8389edaef9500fa0e1a712db0f11033291248d9b59",
+    "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_adjudication_batch_051.manifest.json": "18eb23586025cb2285154c3093eb369dc354d7c0aa0ceecbf560bb56712abfa0",
+    "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_004_G6063.source_resolution.v1.manifest.json": "8a7b5f7fa6e453647ecf2ea52040a77f9b023835d6e26190db0a034aa97a0d61",
+    "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_004_G6063.source_resolution.v1.ru.md": "a9de482962116875537667591d7ac276e2cda5cbb339278fa8e363c0cc6a01f1",
+    "scripts/bible_module/reports/ukrainian_stage_7_20260801/source_registry.json": "b1f7e2bc82929bdd40c5701f4d16ff00387da8645c5279cf311adc12973ffebd",
+    "scripts/bible_module/reports/ukrainian_stage_7_20260801/textual_fingerprint.manifest.json": "f1588f87527927c2eb53a6c7eac0f82c6fa8383af05a3a82855bad5890808df1",
+    "scripts/bible_module/source_cache/commons_ohienko_1988.djvu": "0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34",
+    "scripts/bible_module/source_cache/step_tagnt_act_rev.txt": "524e32375361e6d3fa2f7ef00b87605fdc4317a762f395651a05fdc31ad031b7",
+    "scripts/bible_module/ukrainian_stage_7_completion_v2.py": "8e5903c855cec099a3936605307abc3302fcef0d9563cbdb737ab70fd74789af",
+    "scripts/bible_module/work/ukrainian_stage_6_20260801/synthesized_text.jsonl": "e55156cd4c201077de3c2e1d44b06dd1035a7a8db7c26321869f860768671bcf",
+    "scripts/bible_module/work/ukrainian_stage_6_20260801/target_comments.jsonl": "5c1cf56e94410b6ab6e418dda7be7a6b385cb72221dfb8ca943e3419de42c9f4",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Col_pass1_051/completed_external/review_pass_1.shard_051.raw.external-v1.canonical-v2.jsonl": "9426bcc6b08e2c25b562743250983700f0ce5ee3f9443c1b206f379a46363654",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Col_pass1_051/completed_external/review_pass_1.shard_051.raw.external-v1.canonical-v2.jsonl.manifest.json": "e3fdb1bcda68e07dd1354080a65408845a7066131a1f54f8d8be09d2afc280c4",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Eph_pass1_049/completed_external/review_pass_1.shard_049.raw.external-v1.canonical-v2.jsonl": "2f0e85e62e93f5fd887f0e8eefcbcd02f5f2f5a708d27876566597dc77080220",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Eph_pass1_049/completed_external/review_pass_1.shard_049.raw.external-v1.canonical-v2.jsonl.manifest.json": "5b146871e7dc3960de241993bffd5022cd3c488e2b11cdf84b6b136c5d444174",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Phil_pass1_050/completed_external/review_pass_1.shard_050.raw.external-v1.canonical-v2.jsonl": "406928e91a66d1094f179c6e0cda517b7d5a5cab8656b7785a2dde9e0387f69b",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_Phil_pass1_050/completed_external/review_pass_1.shard_050.raw.external-v1.canonical-v2.jsonl.manifest.json": "09564665d8e62e4494297177c14b709638f17aed142686e38bc56e61e2032b44",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Col/completed/review_pass_2.shard_051.raw.manual-v1.jsonl": "51e9c9c1150aa1e70950336b3aa0861c8b30ddfa5d29beb26ccc5d4c67ff5406",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Col/completed/review_pass_2.shard_051.raw.manual-v1.jsonl.manifest.json": "73347e4f987f445435dfab786e18ca64b87ffac87295f933380ce29bc9216bec",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Col/gold_compact_review.manifest.json": "0d7e6bbc598c686d2a5d5275df644acaa85b4dc237d92d8d27626ef2ecf5e55a",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Col/review_pass_2.shard_051.compact.template.jsonl": "99028fedbf99d6b2f84841e0c12dc092b170b03ddedf3511cfcabcf0a99f6539",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Eph/completed/review_pass_2.shard_049.raw.manual-v2.jsonl": "c821c6f9df8b28f210d37f61c3c8c636666b0d6def9c1ed9cc42c2372a1d4cd9",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Eph/completed/review_pass_2.shard_049.raw.manual-v2.jsonl.manifest.json": "50fdeae4d005c1c5ebd627aff5f6ec12fadecb75944272d80d700dd9833ca4b5",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Eph/gold_compact_review.manifest.json": "2047dddf3e6309143e1ee6eb76ca4f1592ebc068908517ac0e9250ff4f6614f1",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Eph/review_pass_2.shard_049.compact.template.jsonl": "2b8c871e2c652e3ed9551c016c10a721796bed564d87594940024f2806d70596",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Phil/completed/review_pass_2.shard_050.raw.manual-v2.jsonl": "f18ec7f5bdb399a7a0f67009abef80ce8cc2cc37b5ed3a2b89c0128b6b5f637f",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Phil/completed/review_pass_2.shard_050.raw.manual-v2.jsonl.manifest.json": "89680f2f6eb2a472b68105cd922d3a06c8cae42960017849483c53ba8bed4255",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Phil/gold_compact_review.manifest.json": "e74c9739af06cd0566f065b947e906fd7887ee1b6748591301ab158c3ade0d2b",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/Phil/review_pass_2.shard_050.compact.template.jsonl": "91648c4ff7330ae99eb0ffb890978881665a49784e8ce7a301edac70e28b2f85",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Col/completed/Col.shard_051.pass1-pass2.third_adjudication.jsonl": "023c7533d2319a0ab40e09f2d9bfa789700552325c4845fe3a8cd24a153d623a",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Col/completed/Col.shard_051.pass1-pass2.third_adjudication.jsonl.manifest.json": "d12d2920d4c346e567b2556dfb022e059d8146ec757865715abbac0aa6ed51cf",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Col/qc/completed_r2/Col.shard_051.third_adjudication.blocking_content_qc.codex-r2-20260912.jsonl": "dc4c9d3172cfd8d2dc3fc38a0ad550b0e11ef83f9f0e47fc75b8b455eeb3bca1",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Col/qc/completed_r2/Col.shard_051.third_adjudication.blocking_content_qc.codex-r2-20260912.jsonl.manifest.json": "5d6dad5394e1e00745aea7374f36a0e82afbeeda3895aec2749bd7e4f84c7359",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/completed/Eph.shard_049.pass1-pass2.third_adjudication.jsonl": "b58d2938598e20aaf3f484de4892413cd9e529863ef35ff08a312e0cfb1da857",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/completed/Eph.shard_049.pass1-pass2.third_adjudication.jsonl.manifest.json": "9708ea5332fce022e0e9ad864257c79885156ea86c18d4dc525dabd6d5a01490",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/correction/completed/Eph.shard_049.consensus_correction.jsonl": "f4c4139506e71a701a332e284b58dea9f7e4d546819350c1ff317bce61878f2d",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/correction/completed/Eph.shard_049.consensus_correction.jsonl.manifest.json": "db1fa3cd0aa1dbe067a76b9a848895741698f40c154b53f8f56ba9b2b11ac2c7",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/qc/completed/Eph.shard_049.third_adjudication.blocking_content_qc.codex-20260912.jsonl": "27b7ffecffd5fa3a0c8630e9fed5d9c9af3cf3843368151465ae5a31c559104a",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Eph/qc/completed/Eph.shard_049.third_adjudication.blocking_content_qc.codex-20260912.jsonl.manifest.json": "6c0091df7da4f0c27d5b623ca0b301109ecfc7a7ffee18088029a42cdb1495f6",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Phil/completed/Phil.shard_050.pass1-pass2.third_adjudication.jsonl": "2539e53aaf54d25faa361816de7aa56d2afb1fa65fcbac119b6e0a736d08e182",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Phil/completed/Phil.shard_050.pass1-pass2.third_adjudication.jsonl.manifest.json": "a3cc7e2812c4dd771d3d2c8c1391f681c8ef0e747189a0aa8283d476ecb16db0",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Phil/qc/resume_repro_run_1/Phil.shard_050.third_adjudication.blocking_content_qc.codex-20260912-resume.jsonl": "eab7e55fa9ea7ef2d497aaa5fca791469a461fbb68f232eb2e9485f181234da0",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/Phil/qc/resume_repro_run_1/Phil.shard_050.third_adjudication.blocking_content_qc.codex-20260912-resume.jsonl.manifest.json": "fe8b07b5b59e8382e7a5d1398afb9ff706fe2c2e568c41335f87b019c7239f94",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/Col.pass1-pass2.disagreements.jsonl": "14adfa414d2805c8eb4bc0e424a205969ddb0eea34707cabc3ffc2282c99bcb5",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/Col.pass1-pass2.disagreements.jsonl.manifest.json": "194f4724dd10763e712bea263dbae540c9c3dc0c84c9248afb868dfff26b4ce5",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/canonical_v2/Eph.pass1-pass2.disagreements.jsonl": "c94804e94b37383ff5c5e57a6faa8881d18ba9ae9916a275178dc0c861211e6e",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/canonical_v2/Eph.pass1-pass2.disagreements.jsonl.manifest.json": "2e5aa6d59e25423a5fc21cf7bed99188b71562048450bf96552dc6655fb1a12e",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/canonical_v2/Phil.pass1-pass2.disagreements.jsonl": "e37fd2c83b4d155b00503bb97045d04c643cd7fe00d2a9baba6486c470c656cf",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/canonical_v2/Phil.pass1-pass2.disagreements.jsonl.manifest.json": "8f6b93543a2118ac6b4eab17422399911e7ca819ad6ba50b44c327d9c4e13191",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_selected_original_layer.jsonl": "500482d4b1ce58f9749fe9e53b58bf8bce6be1558df926dacfbe0df29cf09ca4",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/original_token_universe.jsonl": "c891e29cedf8ac040418d8f052c94a3d21e2b39ea18ed96f122dc79853899242",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_research_01/source_resolution.supplemental_cases.v2.jsonl": "73b5980d0e57bdab56f6ab9c7d49d06017ed06bba82e72c2303f7431b24234fd",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_root_01/chain_inputs.v2.json": "7e3a91cbaa38c1229aa26c074a28e4936e87ea195b454d070956078de30663b0",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/ukrainian_token_inventory.jsonl": "62caa29ff269c9ca8dad4b64c656728a645b3d09210034ddcc953c5363c567e1"
+  },
+  "metadata_differing_stable_keys": [
+    "original:gold7:original:1c6aa440751d9cde2115067ec104e30a",
+    "original:gold7:original:8e1300d880291dd2aa6237fe244369dd",
+    "target:gold7:target:e2b3c84b50c2b60895ad87945aab1883"
+  ],
+  "metadata_only_scope": true,
+  "original_selection_raw_G6063_classic_empty_modified": false,
+  "output_locks": [
+    {
+      "bytes": 36658,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_metadata_bridge_01/actual_decision_payload_bridge.v1.jsonl",
+      "sha256": "f7079a7aa44eecd12bc273d3bd8cbf7d1c0d5f8536c45344c0973caea11c3929"
+    },
+    {
+      "bytes": 8620,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_metadata_bridge_01/build_bridge.py",
+      "sha256": "7e2acf1d122259662d3a2d3b1fdd6c42004d722c253954c2ebd793d8baaa1006"
+    }
+  ],
+  "output_sha256": {
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_metadata_bridge_01/actual_decision_payload_bridge.v1.jsonl": "f7079a7aa44eecd12bc273d3bd8cbf7d1c0d5f8536c45344c0973caea11c3929",
+    "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_metadata_bridge_01/build_bridge.py": "7e2acf1d122259662d3a2d3b1fdd6c42004d722c253954c2ebd793d8baaa1006"
+  },
+  "payload_comparisons": [
+    {
+      "actual_full_payload_sha256": "72d0e140e915a8c7adf73c9b239e38f50060c1df18b97508902373c3fbb14a19",
+      "actual_validated_full_decision_payload": {
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_id": "gold7:original:0981e7e75dc0e1a542fcd8824fdf9260",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "external:external-chatgpt-web-col-pass1-v1:gold7:MRC:group:0004",
+            "kind": "external_blind_review_decision"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "group_original_token_ids": [
+          "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01",
+        "phenomena": [
+          "merge_split"
+        ],
+        "rationale": "The Greek infinitive εἰδέναι in the object-infinitive construction is rendered by the Ukrainian subordinate form щоб ... знали.",
+        "record_type": "original_decision",
+        "relation": "one_to_many",
+        "reviewer_id": "external-chatgpt-web-col-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Col.2.1",
+        "target_token_ids": [
+          "uk7:MRC:003:9:12",
+          "uk7:MRC:005:16:21"
+        ]
+      },
+      "all_semantic_identity_fields_matched": true,
+      "author_role": "technical_snapshot_clarification_author_not_QC_or_decision_author",
+      "independent_observation_locator": {
+        "bytes": 13336350,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+        "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+        "stable_key": "original:gold7:original:0981e7e75dc0e1a542fcd8824fdf9260"
+      },
+      "inspected_independent_observation_sha256": "2fcd3510630d6ab124e3d045cc74bae5a5fdec6fb453f1cb3a82c2492142e030",
+      "metadata_differences": [],
+      "observation_final_payload_matches_validated_grid": true,
+      "semantic_projection": {
+        "decision_id": "gold7:original:0981e7e75dc0e1a542fcd8824fdf9260",
+        "decision_status": "decided",
+        "group_original_token_ids": [
+          "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01",
+        "phenomena": [
+          "merge_split"
+        ],
+        "record_type": "original_decision",
+        "relation": "one_to_many",
+        "target_ref": "Col.2.1",
+        "target_token_ids": [
+          "uk7:MRC:003:9:12",
+          "uk7:MRC:005:16:21"
+        ]
+      },
+      "semantic_projection_fields": [
+        "record_type",
+        "target_ref",
+        "decision_status",
+        "phenomena",
+        "decision_id",
+        "original_token_id",
+        "group_original_token_ids",
+        "relation",
+        "null_reason",
+        "target_token_ids"
+      ],
+      "semantic_projection_sha256": "68fff23477a6500586fd4ce02232516d057cae464dfdbb4b062a4adfadce9378",
+      "stable_key": "original:gold7:original:0981e7e75dc0e1a542fcd8824fdf9260",
+      "target_ref": "Col.2.1",
+      "v1_semantic_evidence_snapshot": {
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_id": "gold7:original:0981e7e75dc0e1a542fcd8824fdf9260",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "external:external-chatgpt-web-col-pass1-v1:gold7:MRC:group:0004",
+            "kind": "external_blind_review_decision"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "group_original_token_ids": [
+          "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01",
+        "phenomena": [
+          "merge_split"
+        ],
+        "rationale": "The Greek infinitive εἰδέναι in the object-infinitive construction is rendered by the Ukrainian subordinate form щоб ... знали.",
+        "record_type": "original_decision",
+        "relation": "one_to_many",
+        "reviewer_id": "external-chatgpt-web-col-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Col.2.1",
+        "target_token_ids": [
+          "uk7:MRC:003:9:12",
+          "uk7:MRC:005:16:21"
+        ]
+      },
+      "v1_snapshot_sha256": "72d0e140e915a8c7adf73c9b239e38f50060c1df18b97508902373c3fbb14a19"
+    },
+    {
+      "actual_full_payload_sha256": "6dfeb6a3bed44575ed818cc32dce43a20029e14efa75733b8f1d14b30ca98375",
+      "actual_validated_full_decision_payload": {
+        "adjudicator_id": "codex-third-col-s051-20260912-independent",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_id": "gold7:original:1c6aa440751d9cde2115067ec104e30a",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "gold7:adjudication:col:s051:456b90bd5767ebeeca6ec1c6",
+            "kind": "manual_adjudication_original_target_context"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "group_original_token_ids": [
+          "tagnt:73af171c1310a9c6b8907a8583cdfbb6f9afffb010c3f9375634505f3d142491:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:73af171c1310a9c6b8907a8583cdfbb6f9afffb010c3f9375634505f3d142491:c01",
+        "phenomena": [],
+        "rationale": "Independent third component C0115 at Col.4.1 against frozen Col passes: εἰδότες gives знайте; і is a Ukrainian finite-clause connective beside the participle. Source: o011 εἰδότες [G6063; εἴδω; V-RAP-NPM; knowing; NA28,NA27,Tyn,SBL,WH,Treg,TR,Byz; primary_shared_reading]. Target: t008 і; t009 знайте. Selected local source o011 ↔ target t009. Frozen OH1988 text/comment: 'Пани, — виявляйте до рабів справедливість та рівність, і знайте, що й для вас є на небі Госпо́дь!'; ''.",
+        "record_type": "original_decision",
+        "relation": "one_to_one",
+        "reviewer_id": "codex-third-col-s051-20260912-independent",
+        "schema_version": 1,
+        "selection_source": "pass_2",
+        "severity": "normal",
+        "target_ref": "Col.4.1",
+        "target_token_ids": [
+          "uk7:MSO:009:57:63"
+        ]
+      },
+      "all_semantic_identity_fields_matched": true,
+      "author_role": "technical_snapshot_clarification_author_not_QC_or_decision_author",
+      "independent_observation_locator": {
+        "bytes": 13336350,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+        "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+        "stable_key": "original:gold7:original:1c6aa440751d9cde2115067ec104e30a"
+      },
+      "inspected_independent_observation_sha256": "85cf197beffe30404bc9603f69ac22e521c79ace5a7f515ccba519949fd27988",
+      "metadata_differences": [
+        {
+          "actual_value": "codex-third-col-s051-20260912-independent",
+          "field": "adjudicator_id",
+          "v1_present": false,
+          "v1_value": null,
+          "v2_actual_present": true
+        },
+        {
+          "actual_value": "ukrainian-stage-7-gold-compact-review-v1",
+          "field": "compact_review_version",
+          "v1_present": false,
+          "v1_value": null,
+          "v2_actual_present": true
+        },
+        {
+          "actual_value": "ukrainian-stage-7-evidence-alignment-v1",
+          "field": "contract_version",
+          "v1_present": false,
+          "v1_value": null,
+          "v2_actual_present": true
+        },
+        {
+          "actual_value": [
+            {
+              "evidence_id": "gold7:adjudication:col:s051:456b90bd5767ebeeca6ec1c6",
+              "kind": "manual_adjudication_original_target_context"
+            }
+          ],
+          "field": "evidence",
+          "v1_present": false,
+          "v1_value": null,
+          "v2_actual_present": true
+        },
+        {
+          "actual_value": "ukrainian-stage-7-gold-workflow-v2",
+          "field": "gold_workflow_version",
+          "v1_present": false,
+          "v1_value": null,
+          "v2_actual_present": true
+        },
+        {
+          "actual_value": "Independent third component C0115 at Col.4.1 against frozen Col passes: εἰδότες gives знайте; і is a Ukrainian finite-clause connective beside the participle. Source: o011 εἰδότες [G6063; εἴδω; V-RAP-NPM; knowing; NA28,NA27,Tyn,SBL,WH,Treg,TR,Byz; primary_shared_reading]. Target: t008 і; t009 знайте. Selected local source o011 ↔ target t009. Frozen OH1988 text/comment: 'Пани, — виявляйте до рабів справедливість та рівність, і знайте, що й для вас є на небі Госпо́дь!'; ''.",
+          "field": "rationale",
+          "v1_present": false,
+          "v1_value": null,
+          "v2_actual_present": true
+        },
+        {
+          "actual_value": "codex-third-col-s051-20260912-independent",
+          "field": "reviewer_id",
+          "v1_present": false,
+          "v1_value": null,
+          "v2_actual_present": true
+        },
+        {
+          "actual_value": 1,
+          "field": "schema_version",
+          "v1_present": false,
+          "v1_value": null,
+          "v2_actual_present": true
+        },
+        {
+          "actual_value": "pass_2",
+          "field": "selection_source",
+          "v1_present": false,
+          "v1_value": null,
+          "v2_actual_present": true
+        }
+      ],
+      "observation_final_payload_matches_validated_grid": true,
+      "semantic_projection": {
+        "decision_id": "gold7:original:1c6aa440751d9cde2115067ec104e30a",
+        "decision_status": "decided",
+        "group_original_token_ids": [
+          "tagnt:73af171c1310a9c6b8907a8583cdfbb6f9afffb010c3f9375634505f3d142491:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:73af171c1310a9c6b8907a8583cdfbb6f9afffb010c3f9375634505f3d142491:c01",
+        "phenomena": [],
+        "record_type": "original_decision",
+        "relation": "one_to_one",
+        "target_ref": "Col.4.1",
+        "target_token_ids": [
+          "uk7:MSO:009:57:63"
+        ]
+      },
+      "semantic_projection_fields": [
+        "record_type",
+        "target_ref",
+        "decision_status",
+        "phenomena",
+        "decision_id",
+        "original_token_id",
+        "group_original_token_ids",
+        "relation",
+        "null_reason",
+        "target_token_ids"
+      ],
+      "semantic_projection_sha256": "803fbad4af0ea7bdb76a924533137aeedf291b96def38e390649edb865ca97c5",
+      "stable_key": "original:gold7:original:1c6aa440751d9cde2115067ec104e30a",
+      "target_ref": "Col.4.1",
+      "v1_semantic_evidence_snapshot": {
+        "decision_id": "gold7:original:1c6aa440751d9cde2115067ec104e30a",
+        "decision_status": "decided",
+        "group_original_token_ids": [
+          "tagnt:73af171c1310a9c6b8907a8583cdfbb6f9afffb010c3f9375634505f3d142491:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:73af171c1310a9c6b8907a8583cdfbb6f9afffb010c3f9375634505f3d142491:c01",
+        "phenomena": [],
+        "record_type": "original_decision",
+        "relation": "one_to_one",
+        "severity": "normal",
+        "target_ref": "Col.4.1",
+        "target_token_ids": [
+          "uk7:MSO:009:57:63"
+        ]
+      },
+      "v1_snapshot_sha256": "72a680ac7f0b7e0da06cfa66f0a67626061783e3a75e0f2246ae1f3220fc3749"
+    },
+    {
+      "actual_full_payload_sha256": "b3da263a7a5260676cd2627dc5ed82493de10fddbf09b6999d71f576efa442e7",
+      "actual_validated_full_decision_payload": {
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_id": "gold7:original:8e1300d880291dd2aa6237fe244369dd",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "gold7:original:8e1300d880291dd2aa6237fe244369dd",
+            "kind": "external_blind_review_reference"
+          },
+          {
+            "evidence_id": "gold7:target:e2b3c84b50c2b60895ad87945aab1883",
+            "kind": "external_blind_review_reference"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "group_original_token_ids": [
+          "tagnt:71a3db5bc91bce4db3077d9feb23a6647a9cf3cc395b1ee53874e728d1cb3bf4:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:71a3db5bc91bce4db3077d9feb23a6647a9cf3cc395b1ee53874e728d1cb3bf4:c01",
+        "phenomena": [
+          "reorder"
+        ],
+        "rationale": "Original `εἰδέναι` (to know) is rendered by Ukrainian `зрозуміли`.",
+        "record_type": "original_decision",
+        "relation": "one_to_one",
+        "reviewer_id": "external-chatgpt-web-eph-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Eph.1.18",
+        "target_token_ids": [
+          "uk7:MJT:007:35:44"
+        ]
+      },
+      "all_semantic_identity_fields_matched": true,
+      "author_role": "technical_snapshot_clarification_author_not_QC_or_decision_author",
+      "independent_observation_locator": {
+        "bytes": 13336350,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+        "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+        "stable_key": "original:gold7:original:8e1300d880291dd2aa6237fe244369dd"
+      },
+      "inspected_independent_observation_sha256": "db92222c9da8568b22e926f04d56f455a2d7febd3316fcf866ed95dfce7759a2",
+      "metadata_differences": [
+        {
+          "actual_value": "high",
+          "field": "severity",
+          "v1_present": true,
+          "v1_value": "normal",
+          "v2_actual_present": true
+        }
+      ],
+      "observation_final_payload_matches_validated_grid": true,
+      "semantic_projection": {
+        "decision_id": "gold7:original:8e1300d880291dd2aa6237fe244369dd",
+        "decision_status": "decided",
+        "group_original_token_ids": [
+          "tagnt:71a3db5bc91bce4db3077d9feb23a6647a9cf3cc395b1ee53874e728d1cb3bf4:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:71a3db5bc91bce4db3077d9feb23a6647a9cf3cc395b1ee53874e728d1cb3bf4:c01",
+        "phenomena": [
+          "reorder"
+        ],
+        "record_type": "original_decision",
+        "relation": "one_to_one",
+        "target_ref": "Eph.1.18",
+        "target_token_ids": [
+          "uk7:MJT:007:35:44"
+        ]
+      },
+      "semantic_projection_fields": [
+        "record_type",
+        "target_ref",
+        "decision_status",
+        "phenomena",
+        "decision_id",
+        "original_token_id",
+        "group_original_token_ids",
+        "relation",
+        "null_reason",
+        "target_token_ids"
+      ],
+      "semantic_projection_sha256": "9053aa4515d1a758fbb9c9845174947cf19cea27e7891fc3f8258f5d1b093e69",
+      "stable_key": "original:gold7:original:8e1300d880291dd2aa6237fe244369dd",
+      "target_ref": "Eph.1.18",
+      "v1_semantic_evidence_snapshot": {
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_id": "gold7:original:8e1300d880291dd2aa6237fe244369dd",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "gold7:original:8e1300d880291dd2aa6237fe244369dd",
+            "kind": "external_blind_review_reference"
+          },
+          {
+            "evidence_id": "gold7:target:e2b3c84b50c2b60895ad87945aab1883",
+            "kind": "external_blind_review_reference"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "group_original_token_ids": [
+          "tagnt:71a3db5bc91bce4db3077d9feb23a6647a9cf3cc395b1ee53874e728d1cb3bf4:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:71a3db5bc91bce4db3077d9feb23a6647a9cf3cc395b1ee53874e728d1cb3bf4:c01",
+        "phenomena": [
+          "reorder"
+        ],
+        "rationale": "Original `εἰδέναι` (to know) is rendered by Ukrainian `зрозуміли`.",
+        "record_type": "original_decision",
+        "relation": "one_to_one",
+        "reviewer_id": "external-chatgpt-web-eph-pass1-v1",
+        "schema_version": 1,
+        "severity": "normal",
+        "target_ref": "Eph.1.18",
+        "target_token_ids": [
+          "uk7:MJT:007:35:44"
+        ]
+      },
+      "v1_snapshot_sha256": "aee47a46ac5d47e4b0d58c303a2322fbb2a6e7dd8e05d85af4c123c678cbf402"
+    },
+    {
+      "actual_full_payload_sha256": "a27215639db12f9715724b64a5d1b3b11f3e80abe3dc6ff778907cda11624446",
+      "actual_validated_full_decision_payload": {
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_id": "gold7:original:c2a30b128136b4386ab5215240661fab",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "gold7:original:c2a30b128136b4386ab5215240661fab",
+            "kind": "external_blind_review_reference"
+          },
+          {
+            "evidence_id": "gold7:target:996e4985b2e450d0629bdd0404440e62",
+            "kind": "external_blind_review_reference"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "group_original_token_ids": [
+          "tagnt:f6f9c07ae0586b42f91a23a44e6d53f9c7b88efa9ad3dce105ab4e37211e0f2f:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:f6f9c07ae0586b42f91a23a44e6d53f9c7b88efa9ad3dce105ab4e37211e0f2f:c01",
+        "phenomena": [],
+        "rationale": "Greek «οἶδα» (I know) is rendered by Ukrainian «знаю» with the same verse-local lexical or grammatical contribution.",
+        "record_type": "original_decision",
+        "relation": "one_to_one",
+        "reviewer_id": "external-chatgpt-web-phil-pass1-v1",
+        "schema_version": 1,
+        "severity": "normal",
+        "target_ref": "Phil.1.25",
+        "target_token_ids": [
+          "uk7:MOB:003:6:10"
+        ]
+      },
+      "all_semantic_identity_fields_matched": true,
+      "author_role": "technical_snapshot_clarification_author_not_QC_or_decision_author",
+      "independent_observation_locator": {
+        "bytes": 13336350,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+        "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+        "stable_key": "original:gold7:original:c2a30b128136b4386ab5215240661fab"
+      },
+      "inspected_independent_observation_sha256": "7e00b9ecb7c590602febd8bf31d64e9d62fdb1005963a820a04d8fdd88089bd6",
+      "metadata_differences": [],
+      "observation_final_payload_matches_validated_grid": true,
+      "semantic_projection": {
+        "decision_id": "gold7:original:c2a30b128136b4386ab5215240661fab",
+        "decision_status": "decided",
+        "group_original_token_ids": [
+          "tagnt:f6f9c07ae0586b42f91a23a44e6d53f9c7b88efa9ad3dce105ab4e37211e0f2f:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:f6f9c07ae0586b42f91a23a44e6d53f9c7b88efa9ad3dce105ab4e37211e0f2f:c01",
+        "phenomena": [],
+        "record_type": "original_decision",
+        "relation": "one_to_one",
+        "target_ref": "Phil.1.25",
+        "target_token_ids": [
+          "uk7:MOB:003:6:10"
+        ]
+      },
+      "semantic_projection_fields": [
+        "record_type",
+        "target_ref",
+        "decision_status",
+        "phenomena",
+        "decision_id",
+        "original_token_id",
+        "group_original_token_ids",
+        "relation",
+        "null_reason",
+        "target_token_ids"
+      ],
+      "semantic_projection_sha256": "a833788cc29f3b0cec02d5216068f5346d2ab41ee84285c9174d5bc547166291",
+      "stable_key": "original:gold7:original:c2a30b128136b4386ab5215240661fab",
+      "target_ref": "Phil.1.25",
+      "v1_semantic_evidence_snapshot": {
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_id": "gold7:original:c2a30b128136b4386ab5215240661fab",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "gold7:original:c2a30b128136b4386ab5215240661fab",
+            "kind": "external_blind_review_reference"
+          },
+          {
+            "evidence_id": "gold7:target:996e4985b2e450d0629bdd0404440e62",
+            "kind": "external_blind_review_reference"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "group_original_token_ids": [
+          "tagnt:f6f9c07ae0586b42f91a23a44e6d53f9c7b88efa9ad3dce105ab4e37211e0f2f:c01"
+        ],
+        "null_reason": null,
+        "original_token_id": "tagnt:f6f9c07ae0586b42f91a23a44e6d53f9c7b88efa9ad3dce105ab4e37211e0f2f:c01",
+        "phenomena": [],
+        "rationale": "Greek «οἶδα» (I know) is rendered by Ukrainian «знаю» with the same verse-local lexical or grammatical contribution.",
+        "record_type": "original_decision",
+        "relation": "one_to_one",
+        "reviewer_id": "external-chatgpt-web-phil-pass1-v1",
+        "schema_version": 1,
+        "severity": "normal",
+        "target_ref": "Phil.1.25",
+        "target_token_ids": [
+          "uk7:MOB:003:6:10"
+        ]
+      },
+      "v1_snapshot_sha256": "a27215639db12f9715724b64a5d1b3b11f3e80abe3dc6ff778907cda11624446"
+    },
+    {
+      "actual_full_payload_sha256": "6fc9c8556928f462322931b9009d174e4bb753d4ef4f306076f91709c95e4dbb",
+      "actual_validated_full_decision_payload": {
+        "accounting_id": "gold7:target:206190076c988c71f2b174ace67fe7e8",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "external:external-chatgpt-web-col-pass1-v1:gold7:MSO:group:0011",
+            "kind": "external_blind_review_decision"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:73af171c1310a9c6b8907a8583cdfbb6f9afffb010c3f9375634505f3d142491:c01"
+        ],
+        "phenomena": [
+          "merge_split",
+          "polysemy"
+        ],
+        "rationale": "The participle εἰδότες, knowing, is converted into the coordinated imperative і знайте.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-col-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Col.4.1",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MSO:009:57:63"
+      },
+      "all_semantic_identity_fields_matched": true,
+      "author_role": "technical_snapshot_clarification_author_not_QC_or_decision_author",
+      "independent_observation_locator": {
+        "bytes": 13336350,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+        "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+        "stable_key": "target:gold7:target:206190076c988c71f2b174ace67fe7e8"
+      },
+      "inspected_independent_observation_sha256": "90f8e31bbf0a877356cd4f8d207473a5d54948c8deed5c679ddf12a2d27eab25",
+      "metadata_differences": [],
+      "observation_final_payload_matches_validated_grid": true,
+      "semantic_projection": {
+        "accounting_id": "gold7:target:206190076c988c71f2b174ace67fe7e8",
+        "decision_status": "decided",
+        "linked_original_token_ids": [
+          "tagnt:73af171c1310a9c6b8907a8583cdfbb6f9afffb010c3f9375634505f3d142491:c01"
+        ],
+        "phenomena": [
+          "merge_split",
+          "polysemy"
+        ],
+        "record_type": "target_accounting",
+        "target_ref": "Col.4.1",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MSO:009:57:63"
+      },
+      "semantic_projection_fields": [
+        "record_type",
+        "target_ref",
+        "decision_status",
+        "phenomena",
+        "accounting_id",
+        "target_token_id",
+        "target_status",
+        "linked_original_token_ids"
+      ],
+      "semantic_projection_sha256": "b260ae340af749354a3928d115797a356cb38d6724bc3fd20a951fddcb79064a",
+      "stable_key": "target:gold7:target:206190076c988c71f2b174ace67fe7e8",
+      "target_ref": "Col.4.1",
+      "v1_semantic_evidence_snapshot": {
+        "accounting_id": "gold7:target:206190076c988c71f2b174ace67fe7e8",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "external:external-chatgpt-web-col-pass1-v1:gold7:MSO:group:0011",
+            "kind": "external_blind_review_decision"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:73af171c1310a9c6b8907a8583cdfbb6f9afffb010c3f9375634505f3d142491:c01"
+        ],
+        "phenomena": [
+          "merge_split",
+          "polysemy"
+        ],
+        "rationale": "The participle εἰδότες, knowing, is converted into the coordinated imperative і знайте.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-col-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Col.4.1",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MSO:009:57:63"
+      },
+      "v1_snapshot_sha256": "6fc9c8556928f462322931b9009d174e4bb753d4ef4f306076f91709c95e4dbb"
+    },
+    {
+      "actual_full_payload_sha256": "46f58f9d90e234487ba213e1f38269e11fa1e725d3a4baceb0b3a2d155f3e745",
+      "actual_validated_full_decision_payload": {
+        "accounting_id": "gold7:target:3e4c151a213a402cc43abdc86ee6b2df",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "external:external-chatgpt-web-col-pass1-v1:gold7:MRC:group:0004",
+            "kind": "external_blind_review_decision"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01"
+        ],
+        "phenomena": [
+          "merge_split"
+        ],
+        "rationale": "The Greek infinitive εἰδέναι in the object-infinitive construction is rendered by the Ukrainian subordinate form щоб ... знали.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-col-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Col.2.1",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MRC:005:16:21"
+      },
+      "all_semantic_identity_fields_matched": true,
+      "author_role": "technical_snapshot_clarification_author_not_QC_or_decision_author",
+      "independent_observation_locator": {
+        "bytes": 13336350,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+        "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+        "stable_key": "target:gold7:target:3e4c151a213a402cc43abdc86ee6b2df"
+      },
+      "inspected_independent_observation_sha256": "467e85b1e3220bca1668c7366ec41d285478ed58e30f1d8d28b96650471d32cb",
+      "metadata_differences": [],
+      "observation_final_payload_matches_validated_grid": true,
+      "semantic_projection": {
+        "accounting_id": "gold7:target:3e4c151a213a402cc43abdc86ee6b2df",
+        "decision_status": "decided",
+        "linked_original_token_ids": [
+          "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01"
+        ],
+        "phenomena": [
+          "merge_split"
+        ],
+        "record_type": "target_accounting",
+        "target_ref": "Col.2.1",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MRC:005:16:21"
+      },
+      "semantic_projection_fields": [
+        "record_type",
+        "target_ref",
+        "decision_status",
+        "phenomena",
+        "accounting_id",
+        "target_token_id",
+        "target_status",
+        "linked_original_token_ids"
+      ],
+      "semantic_projection_sha256": "6b6c59835f2620d46962cf30ffb0319897671ddf3b20835aae361df76777832d",
+      "stable_key": "target:gold7:target:3e4c151a213a402cc43abdc86ee6b2df",
+      "target_ref": "Col.2.1",
+      "v1_semantic_evidence_snapshot": {
+        "accounting_id": "gold7:target:3e4c151a213a402cc43abdc86ee6b2df",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "external:external-chatgpt-web-col-pass1-v1:gold7:MRC:group:0004",
+            "kind": "external_blind_review_decision"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01"
+        ],
+        "phenomena": [
+          "merge_split"
+        ],
+        "rationale": "The Greek infinitive εἰδέναι in the object-infinitive construction is rendered by the Ukrainian subordinate form щоб ... знали.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-col-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Col.2.1",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MRC:005:16:21"
+      },
+      "v1_snapshot_sha256": "46f58f9d90e234487ba213e1f38269e11fa1e725d3a4baceb0b3a2d155f3e745"
+    },
+    {
+      "actual_full_payload_sha256": "7e6787be295a3ca3ed2dc02ed024b41129b9e79e1bde92c1d9a1a5856e918b75",
+      "actual_validated_full_decision_payload": {
+        "accounting_id": "gold7:target:996e4985b2e450d0629bdd0404440e62",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "gold7:original:c2a30b128136b4386ab5215240661fab",
+            "kind": "external_blind_review_reference"
+          },
+          {
+            "evidence_id": "gold7:target:996e4985b2e450d0629bdd0404440e62",
+            "kind": "external_blind_review_reference"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:f6f9c07ae0586b42f91a23a44e6d53f9c7b88efa9ad3dce105ab4e37211e0f2f:c01"
+        ],
+        "phenomena": [],
+        "rationale": "Greek «οἶδα» (I know) is rendered by Ukrainian «знаю» with the same verse-local lexical or grammatical contribution.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-phil-pass1-v1",
+        "schema_version": 1,
+        "severity": "normal",
+        "target_ref": "Phil.1.25",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MOB:003:6:10"
+      },
+      "all_semantic_identity_fields_matched": true,
+      "author_role": "technical_snapshot_clarification_author_not_QC_or_decision_author",
+      "independent_observation_locator": {
+        "bytes": 13336350,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+        "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+        "stable_key": "target:gold7:target:996e4985b2e450d0629bdd0404440e62"
+      },
+      "inspected_independent_observation_sha256": "388ad96d7c7bf2c624322e3cf18d92b00875bfecc35befecc177a90084fd3893",
+      "metadata_differences": [],
+      "observation_final_payload_matches_validated_grid": true,
+      "semantic_projection": {
+        "accounting_id": "gold7:target:996e4985b2e450d0629bdd0404440e62",
+        "decision_status": "decided",
+        "linked_original_token_ids": [
+          "tagnt:f6f9c07ae0586b42f91a23a44e6d53f9c7b88efa9ad3dce105ab4e37211e0f2f:c01"
+        ],
+        "phenomena": [],
+        "record_type": "target_accounting",
+        "target_ref": "Phil.1.25",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MOB:003:6:10"
+      },
+      "semantic_projection_fields": [
+        "record_type",
+        "target_ref",
+        "decision_status",
+        "phenomena",
+        "accounting_id",
+        "target_token_id",
+        "target_status",
+        "linked_original_token_ids"
+      ],
+      "semantic_projection_sha256": "f891183e4427709cf93621e3701e023fd7c4224d48bc0ba97d229980e60e60cc",
+      "stable_key": "target:gold7:target:996e4985b2e450d0629bdd0404440e62",
+      "target_ref": "Phil.1.25",
+      "v1_semantic_evidence_snapshot": {
+        "accounting_id": "gold7:target:996e4985b2e450d0629bdd0404440e62",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "gold7:original:c2a30b128136b4386ab5215240661fab",
+            "kind": "external_blind_review_reference"
+          },
+          {
+            "evidence_id": "gold7:target:996e4985b2e450d0629bdd0404440e62",
+            "kind": "external_blind_review_reference"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:f6f9c07ae0586b42f91a23a44e6d53f9c7b88efa9ad3dce105ab4e37211e0f2f:c01"
+        ],
+        "phenomena": [],
+        "rationale": "Greek «οἶδα» (I know) is rendered by Ukrainian «знаю» with the same verse-local lexical or grammatical contribution.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-phil-pass1-v1",
+        "schema_version": 1,
+        "severity": "normal",
+        "target_ref": "Phil.1.25",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MOB:003:6:10"
+      },
+      "v1_snapshot_sha256": "7e6787be295a3ca3ed2dc02ed024b41129b9e79e1bde92c1d9a1a5856e918b75"
+    },
+    {
+      "actual_full_payload_sha256": "61051f03ae07fd85b7274027792fc467359f229d168436fec84aa35d8ea3dfeb",
+      "actual_validated_full_decision_payload": {
+        "accounting_id": "gold7:target:d85e38abec75aa0512d9f7053c6e79da",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "external:external-chatgpt-web-col-pass1-v1:gold7:MRC:group:0004",
+            "kind": "external_blind_review_decision"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01"
+        ],
+        "phenomena": [
+          "merge_split"
+        ],
+        "rationale": "The Greek infinitive εἰδέναι in the object-infinitive construction is rendered by the Ukrainian subordinate form щоб ... знали.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-col-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Col.2.1",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MRC:003:9:12"
+      },
+      "all_semantic_identity_fields_matched": true,
+      "author_role": "technical_snapshot_clarification_author_not_QC_or_decision_author",
+      "independent_observation_locator": {
+        "bytes": 13336350,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+        "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+        "stable_key": "target:gold7:target:d85e38abec75aa0512d9f7053c6e79da"
+      },
+      "inspected_independent_observation_sha256": "142f8acbbb44c28abe1c40324605562ac018b444e08d54e96fcd7024d5b0030d",
+      "metadata_differences": [],
+      "observation_final_payload_matches_validated_grid": true,
+      "semantic_projection": {
+        "accounting_id": "gold7:target:d85e38abec75aa0512d9f7053c6e79da",
+        "decision_status": "decided",
+        "linked_original_token_ids": [
+          "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01"
+        ],
+        "phenomena": [
+          "merge_split"
+        ],
+        "record_type": "target_accounting",
+        "target_ref": "Col.2.1",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MRC:003:9:12"
+      },
+      "semantic_projection_fields": [
+        "record_type",
+        "target_ref",
+        "decision_status",
+        "phenomena",
+        "accounting_id",
+        "target_token_id",
+        "target_status",
+        "linked_original_token_ids"
+      ],
+      "semantic_projection_sha256": "a0e13662be4d54eee30b317cfb3f5936cd733ad30deed093b6129c3214e72ef5",
+      "stable_key": "target:gold7:target:d85e38abec75aa0512d9f7053c6e79da",
+      "target_ref": "Col.2.1",
+      "v1_semantic_evidence_snapshot": {
+        "accounting_id": "gold7:target:d85e38abec75aa0512d9f7053c6e79da",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "external:external-chatgpt-web-col-pass1-v1:gold7:MRC:group:0004",
+            "kind": "external_blind_review_decision"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:df87458a52a5f6ab1b2a00ba2a02548eba57257ccfed9595296fda808c3df487:c01"
+        ],
+        "phenomena": [
+          "merge_split"
+        ],
+        "rationale": "The Greek infinitive εἰδέναι in the object-infinitive construction is rendered by the Ukrainian subordinate form щоб ... знали.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-col-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Col.2.1",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MRC:003:9:12"
+      },
+      "v1_snapshot_sha256": "61051f03ae07fd85b7274027792fc467359f229d168436fec84aa35d8ea3dfeb"
+    },
+    {
+      "actual_full_payload_sha256": "b3f909c3688e8dc1774049d0e7193b09d65c5db31f38edcd24d1398e9e91ccb6",
+      "actual_validated_full_decision_payload": {
+        "accounting_id": "gold7:target:e2b3c84b50c2b60895ad87945aab1883",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "gold7:original:8e1300d880291dd2aa6237fe244369dd",
+            "kind": "external_blind_review_reference"
+          },
+          {
+            "evidence_id": "gold7:target:e2b3c84b50c2b60895ad87945aab1883",
+            "kind": "external_blind_review_reference"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:71a3db5bc91bce4db3077d9feb23a6647a9cf3cc395b1ee53874e728d1cb3bf4:c01"
+        ],
+        "phenomena": [
+          "reorder"
+        ],
+        "rationale": "Original `εἰδέναι` (to know) is rendered by Ukrainian `зрозуміли`.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-eph-pass1-v1",
+        "schema_version": 1,
+        "severity": "high",
+        "target_ref": "Eph.1.18",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MJT:007:35:44"
+      },
+      "all_semantic_identity_fields_matched": true,
+      "author_role": "technical_snapshot_clarification_author_not_QC_or_decision_author",
+      "independent_observation_locator": {
+        "bytes": 13336350,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_independent_qc_01/independent_full_grid_observations.v1.jsonl",
+        "sha256": "24561a489521b600593f9051b5b21bf0129851afd49f5ba58aa48c2b1894618d",
+        "stable_key": "target:gold7:target:e2b3c84b50c2b60895ad87945aab1883"
+      },
+      "inspected_independent_observation_sha256": "125020c9a41a828645f6750b0f25d91f51059ceefc44a410c788694f356e90fa",
+      "metadata_differences": [
+        {
+          "actual_value": "high",
+          "field": "severity",
+          "v1_present": true,
+          "v1_value": "normal",
+          "v2_actual_present": true
+        }
+      ],
+      "observation_final_payload_matches_validated_grid": true,
+      "semantic_projection": {
+        "accounting_id": "gold7:target:e2b3c84b50c2b60895ad87945aab1883",
+        "decision_status": "decided",
+        "linked_original_token_ids": [
+          "tagnt:71a3db5bc91bce4db3077d9feb23a6647a9cf3cc395b1ee53874e728d1cb3bf4:c01"
+        ],
+        "phenomena": [
+          "reorder"
+        ],
+        "record_type": "target_accounting",
+        "target_ref": "Eph.1.18",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MJT:007:35:44"
+      },
+      "semantic_projection_fields": [
+        "record_type",
+        "target_ref",
+        "decision_status",
+        "phenomena",
+        "accounting_id",
+        "target_token_id",
+        "target_status",
+        "linked_original_token_ids"
+      ],
+      "semantic_projection_sha256": "8d3911768f1512c5ed675c570f3cb7e8a63cb4571d5a9e766b6d6565594f0caf",
+      "stable_key": "target:gold7:target:e2b3c84b50c2b60895ad87945aab1883",
+      "target_ref": "Eph.1.18",
+      "v1_semantic_evidence_snapshot": {
+        "accounting_id": "gold7:target:e2b3c84b50c2b60895ad87945aab1883",
+        "compact_review_version": "ukrainian-stage-7-gold-compact-review-v1",
+        "contract_version": "ukrainian-stage-7-evidence-alignment-v1",
+        "decision_status": "decided",
+        "evidence": [
+          {
+            "evidence_id": "gold7:original:8e1300d880291dd2aa6237fe244369dd",
+            "kind": "external_blind_review_reference"
+          },
+          {
+            "evidence_id": "gold7:target:e2b3c84b50c2b60895ad87945aab1883",
+            "kind": "external_blind_review_reference"
+          }
+        ],
+        "gold_workflow_version": "ukrainian-stage-7-gold-workflow-v2",
+        "linked_original_token_ids": [
+          "tagnt:71a3db5bc91bce4db3077d9feb23a6647a9cf3cc395b1ee53874e728d1cb3bf4:c01"
+        ],
+        "phenomena": [
+          "reorder"
+        ],
+        "rationale": "Original `εἰδέναι` (to know) is rendered by Ukrainian `зрозуміли`.",
+        "record_type": "target_accounting",
+        "reviewer_id": "external-chatgpt-web-eph-pass1-v1",
+        "schema_version": 1,
+        "severity": "normal",
+        "target_ref": "Eph.1.18",
+        "target_status": "aligned",
+        "target_token_id": "uk7:MJT:007:35:44"
+      },
+      "v1_snapshot_sha256": "f3e02368805b12601c52486ad4e0779423c18c5ceec052c491ba0ee47aac3d8b"
+    }
+  ],
+  "required_next_workflow": "Independent reviewer inspects this metadata-only bridge. Root candidate uses actual validated full payloads and current independent observations; this author inspected them without authoring decisions or QC.",
+  "resolved_stable_keys": [
+    "original:gold7:original:0981e7e75dc0e1a542fcd8824fdf9260",
+    "original:gold7:original:1c6aa440751d9cde2115067ec104e30a",
+    "original:gold7:original:8e1300d880291dd2aa6237fe244369dd",
+    "original:gold7:original:c2a30b128136b4386ab5215240661fab",
+    "target:gold7:target:206190076c988c71f2b174ace67fe7e8",
+    "target:gold7:target:3e4c151a213a402cc43abdc86ee6b2df",
+    "target:gold7:target:996e4985b2e450d0629bdd0404440e62",
+    "target:gold7:target:d85e38abec75aa0512d9f7053c6e79da",
+    "target:gold7:target:e2b3c84b50c2b60895ad87945aab1883"
+  ],
+  "role": "technical_author_not_QC_or_decision_author",
+  "schema_version": 1,
+  "semantic_fields_compared": "record/decision IDs, target reference, decision status, phenomena, original/target IDs, group IDs, relation/status, null reason and exact edges; severity and provenance/rationale metadata compared separately",
+  "status": "metadata_only_snapshot_clarification_author_proposal_independent_QC_pending",
+  "supersedes": {
+    "bytes": 45597,
+    "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_004_G6063.source_resolution.v1.manifest.json",
+    "scope": "snapshot interpretation only; primary classic-identity proof remains valid and preserved",
+    "sha256": "8a7b5f7fa6e453647ecf2ea52040a77f9b023835d6e26190db0a034aa97a0d61"
+  },
+  "target_Strong_assignment_performed": false,
+  "v1_contract_clarification": "existing_component_snapshots and their hashes in sealed v1 are semantic evidence snapshots, not exact final full decision payloads. v1 captured normal severity for two Eph1:18 labels and a metadata subset for Col4:1 original. This bridge locks exact actual full payloads without rewriting v1."
+}

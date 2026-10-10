@@ -2239,3 +2239,138 @@ Complete Acts, Romans and Corinthians gold review [skip ci]
 Validation: 234 tests, stage 3-7 checks, four live completion validators,
 independent content/overlay/post-seal audits, SHA accounting, docs and diff checks.
 ```
+
+
+## Группа № 4 — Gal завершена, 2026-10-10
+
+Gold: завершено 48/66; строго принято 38/66; с отсрочками 10.
+
+Проверены 1055 полных labels; effective proven 1039; deferred 16 (16 uncertain, 0 accepted dependency), loci 4. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Gal: completion manifest](gold_group_004_Gal.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v10](gold_completion_registry.v10.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 4 — Eph завершена, 2026-10-10
+
+Gold: завершено 49/66; строго принято 38/66; с отсрочками 11.
+
+Проверены 990 полных labels; effective proven 975; deferred 15 (15 uncertain, 0 accepted dependency), loci 6. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Eph: completion manifest](gold_group_004_Eph.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v11](gold_completion_registry.v11.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 4 — Phil завершена, 2026-10-10
+
+Gold: завершено 50/66; строго принято 38/66; с отсрочками 12.
+
+Проверены 1035 полных labels; effective proven 1021; deferred 14 (14 uncertain, 0 accepted dependency), loci 5. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Phil: completion manifest](gold_group_004_Phil.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v12](gold_completion_registry.v12.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 4 — Col завершена, 2026-10-10
+
+Gold: завершено 51/66; строго принято 38/66; с отсрочками 13.
+
+Проверены 1017 полных labels; effective proven 1003; deferred 14 (14 uncertain, 0 accepted dependency), loci 9. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Col: completion manifest](gold_group_004_Col.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v13](gold_completion_registry.v13.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Итоговый checkpoint 2026-10-10 — группа № 4 завершена
+
+**Gold: завершено 51/66; строго принято 38/66; с отсрочками 13.**
+
+Gal, Eph, Phil, Col зарегистрированы как `completed_with_registered_deferrals`. Незарегистрированного остатка группы нет. Проверены 129 полных сеток / 4097 labels; effective proven 4038; исключены 59 labels в 24 loci и 2 reciprocal edges. Current content uncertainties 59, errors 0, accepted dependency exclusions 0.
+
+Разрешены 48 исторических stable keys; оставлены 48 исторических и 11 новых исключённых keys. Исходные QC verdicts сохранены. Запечатанная Eph.5.2 correction учтена и проверена отдельным post-correction content reviewer. Новые Strong/NULL/source omission не назначались ради закрытия.
+
+Единственный Markdown registry обновлён на месте: 185 issue IDs, 155 active loci / 428 active keys. 145 записей других групп сохранены побайтно. Immutable completion snapshot является техническим доказательством, а не параллельным рабочим реестром.
+
+Один bounded research cycle на трудный случай; дополнительный цикл deferred places для завершения не требуется. Остальные группы, OT research, global finalize, stage 8, SQLite, production Strong, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+[Отчёт группы № 4](gold_group_004_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v13](gold_completion_registry.v13.manifest.json), [независимый QC](gold_group_004_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_004_independent_content_qc.v2.ru.md).
+
+
+## Финальные проверки группы № 4 перед inventory — 2026-10-10
+
+Gold: завершено 51/66; строго принято 38/66; с отсрочками 13.
+
+Stage 3 offline / 4–6 read-only PASS; final regression 234 tests PASS (14.228 s). Четыре live completion validators и независимые content/overlay/post-seal audits PASS. Source/classic proof, full accounting, 185 registry IDs / 155 active loci / 428 active keys, 145 other records и frozen baseline сохранены. Exact group exclusions: 59 labels / 24 loci / 2 edges / 0 accepted dependencies.
+
+Docs sync, forbidden patterns, UTF-8, whitespace/JSON и git diff --check PASS. Candidate v1 rejection сохранён; independently approved v2 исправляет draft-only roster assembly. G6063 v2 bridge и independent review подтверждают только три metadata differences; source identities и полные QC payloads согласованы. Flutter/runtime/DB/dependencies/localization/release и approved RU/EN pairs не изменены.
+
+Следующий шаг: отдельный helper-only inventory writer, затем stdout-only final stage-7/SHA/accounting/roster/navigation/git audit. После refresh новые work/report files не создаются; финальные результаты дописываются только в исключённый HANDOFF. Frozen reviewer answers не регенерируются. Последнее действие после финальных проверок — Alarm02 синхронно три раза с паузами350ms, без изменения громкости.
+
+
+## Финальная приёмка группы № 4 — 2026-10-10
+
+**Gold: завершено 51/66; строго принято 38/66; с отсрочками 13.**
+Gal, Eph, Phil, Col завершены как `completed_with_registered_deferrals`.
+Незарегистрированного остатка группы нет. Независимо проверены 129 полных
+сеток / 4097 labels: 4038 proven, 59 uncertain, errors 0. Разрешены 48
+исторических keys; зарегистрированы 48 исторических и 11 новых exclusions
+в 24 loci / 2 reciprocal edges; accepted dependencies 0. Все deferred nodes
+без Strong, без недоказанных NULL/addition classifiers в effective layer,
+исключены из training/scoring/export. Исходные QC verdicts сохранены.
+
+Запечатанная двухстрочная correction Eph.5.2 учтена и прошла независимый
+post-correction content QC; новых semantic corrections нет. G6063 classic
+identity подтверждена первичными данными для четырёх occurrences / девяти
+labels; frozen classic[] и selection сохранены, production Strong не назначен.
+Три metadata-only snapshot различия зафиксированы в author bridge v2 и
+независимом audit; final QC использует полные actual payloads. Draft candidate
+v1 отклонён live validator из-за двух повторных исторических MD rows; v2
+исправляет только сборку текущего roster, v1 сохранён как не принятый.
+
+Отдельный writer выполнил helper-only inventory refresh без регенерации
+frozen answers. Final inventory: **4566 entries = 258 report / 4308 work**,
+**1658277 bytes**, SHA256
+`870d4e4d2ef61138185b7ef0de2d39d0dba6cec72352382f16dc219a1081999a`.
+Physical SHA/byte mismatches 0; exact discovered roster и canonical seal PASS.
+Сохранены 4257 immutable baseline entries / 1509 JSONL и 145 записей других
+групп в Markdown AND technical proof побайтно. Writer проверил 822 новых
+manifest locks; historical fallback 0. Receipt создан до helper; после
+refresh новые work/report outputs не создавались и не изменялись.
+
+Root final stdout-only audit PASS, exit 0: четыре live sealed completion
+контракта, exact candidate-v2/sealed/live projections, roster 51/38/13,
+59 exclusions / 24 loci / 2 edges / 0 dependencies; strict branch неизменна.
+Single registry: 185 IDs / 155 active loci / 428 active keys; 145 unrelated
+records сохранены. Все восемь новых report docs доступны, broken links 0.
+Git scope 38 files ограничен stage-7 evidence/manifests и docs; baseline
+HANDOFF/report/log byte prefixes сохранены. Исходный Git status чистый.
+
+Final stage 3 offline / 4–6 PASS. Final stage-7 regression: 234 tests PASS
+(14.228 s). Independent content/tool/overlay/post-seal/metadata audits PASS.
+Post-seal reviewer проверил 334 lock references / 138 unique files и все 16
+book/registry deliveries. Docs sync, forbidden patterns, UTF-8/JSON/whitespace
+и git diff --check PASS. Последний read-only stage-7 check после inventory
+PASS, exit 0: targets 31102, gold panel 2171, error_count 0, accepted links 0.
+Global status `blocked_before_gold_and_alignment_acceptance` сохранён:
+оставшиеся 15 книг и global finalize не запускались. Это не отменяет
+выполненное завершение текущей группы. OT не переоткрывался; stage 8,
+SQLite, production markup, Flutter/runtime, working/web DB, commit/push
+не выполнялись. Registered deferrals не требуют второго research cycle.
+
+Актуальные документы: [отчёт группы](gold_group_004_acceptance.v1.ru.md),
+[единый реестр OH1988](oh88_strongs_issue_inventory.ru.md#registry-records),
+[completion registry v13](gold_completion_registry.v13.manifest.json),
+[независимый post-seal QC](gold_group_004_independent_content_qc.v2.ru.md).
+Этот финальный checkpoint добавлен только в HANDOFF, исключённый из
+inventory по действующему контракту. После итогового git diff --check
+выполняется Alarm02 синхронно три раза с паузами 350 ms, без изменения громкости.
+
+Proposed English commit message (commit не выполнялся):
+
+```text
+Complete group 004 gold acceptance [skip ci]
+
+Complete Galatians, Ephesians, Philippians and Colossians with independent
+review of 129 grids and 4097 labels: 4038 proven labels, 48 historical keys
+resolved and 59 registered exclusions at 24 loci.
+
+Preserve Eph 5:2 corrections, frozen inputs and strict acceptance; record
+occurrence research, G6063 proof, metadata bridges and validated candidate v2.
+Update the single OH1988 registry, completion manifests (51/38/13), HANDOFF,
+roadmap, alignment plan, reports, validation log and 4566-artifact inventory.
+
+Validation: 234 tests, stage 3-7 checks, live completion and independent
+content/overlay/post-seal audits, exact accounting, SHA, docs and diff checks.
+```

@@ -2172,3 +2172,61 @@ pairs не менялись, sync gate сохранён. Все новые до�
 результаты добавляются только в исключённый из inventory HANDOFF. Frozen reviewer
 answers не регенерируются. Другие группы/global finalize/stage 8/SQLite/production
 Strong/runtime/working или web DB/commit/push не выполнялись.
+
+
+## Группа № 4 — Gal завершена, 2026-10-10
+
+Gold: завершено 48/66; строго принято 38/66; с отсрочками 10.
+
+Проверены 1055 полных labels; effective proven 1039; deferred 16 (16 uncertain, 0 accepted dependency), loci 4. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA bf7954abecbc94538b010437cab7dbf96f41287e096246bb508e7faab203a210; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Группа № 4 — Eph завершена, 2026-10-10
+
+Gold: завершено 49/66; строго принято 38/66; с отсрочками 11.
+
+Проверены 990 полных labels; effective proven 975; deferred 15 (15 uncertain, 0 accepted dependency), loci 6. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA d95a3addbd69696e4d5133ecad2e38a12c40a2ac7daa00901ebc2c76edab980f; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Группа № 4 — Phil завершена, 2026-10-10
+
+Gold: завершено 50/66; строго принято 38/66; с отсрочками 12.
+
+Проверены 1035 полных labels; effective proven 1021; deferred 14 (14 uncertain, 0 accepted dependency), loci 5. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA dc1bee0074ec51570495b8d18d3030ad47b275ebf7283931b10c562d4b70d19d; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Группа № 4 — Col завершена, 2026-10-10
+
+Gold: завершено 51/66; строго принято 38/66; с отсрочками 13.
+
+Проверены 1017 полных labels; effective proven 1003; deferred 14 (14 uncertain, 0 accepted dependency), loci 9. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA 83ba2c7ba96b411135259f492203aa6e777b7618f15ef41d396730400a971b82; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Group004 completion accounting — 2026-10-10
+
+**Gold: завершено 51/66; строго принято 38/66; с отсрочками 13.**
+
+Gal, Eph, Phil, Col зарегистрированы как `completed_with_registered_deferrals`. Незарегистрированного остатка группы нет. Проверены 129 полных сеток / 4097 labels; effective proven 4038; исключены 59 labels в 24 loci и 2 reciprocal edges. Current content uncertainties 59, errors 0, accepted dependency exclusions 0.
+
+Разрешены 48 исторических stable keys; оставлены 48 исторических и 11 новых исключённых keys. Исходные QC verdicts сохранены. Запечатанная Eph.5.2 correction учтена и проверена отдельным post-correction content reviewer. Новые Strong/NULL/source omission не назначались ради закрытия.
+
+Единственный Markdown registry обновлён на месте: 185 issue IDs, 155 active loci / 428 active keys. 145 записей других групп сохранены побайтно. Immutable completion snapshot является техническим доказательством, а не параллельным рабочим реестром.
+
+Один bounded research cycle на трудный случай; дополнительный цикл deferred places для завершения не требуется. Остальные группы, OT research, global finalize, stage 8, SQLite, production Strong, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+Validation evidence: [gold_group_004_acceptance.v1.ru.md](gold_group_004_acceptance.v1.ru.md). Final stdout-only checks and separate inventory refresh follow.
+
+
+## Финальные проверки группы № 4 перед inventory — 2026-10-10
+
+Gold: завершено 51/66; строго принято 38/66; с отсрочками 13.
+
+Stage 3 offline / 4–6 read-only PASS; final regression 234 tests PASS (14.228 s). Четыре live completion validators и независимые content/overlay/post-seal audits PASS. Source/classic proof, full accounting, 185 registry IDs / 155 active loci / 428 active keys, 145 other records и frozen baseline сохранены. Exact group exclusions: 59 labels / 24 loci / 2 edges / 0 accepted dependencies.
+
+Docs sync, forbidden patterns, UTF-8, whitespace/JSON и git diff --check PASS. Candidate v1 rejection сохранён; independently approved v2 исправляет draft-only roster assembly. G6063 v2 bridge и independent review подтверждают только три metadata differences; source identities и полные QC payloads согласованы. Flutter/runtime/DB/dependencies/localization/release и approved RU/EN pairs не изменены.
+
+Следующий шаг: отдельный helper-only inventory writer, затем stdout-only final stage-7/SHA/accounting/roster/navigation/git audit. После refresh новые work/report files не создаются; финальные результаты дописываются только в исключённый HANDOFF. Frozen reviewer answers не регенерируются. Последнее действие после финальных проверок — Alarm02 синхронно три раза с паузами350ms, без изменения громкости.
