@@ -2356,3 +2356,61 @@ Stage3 offline /4/5/6 PASS; final regression234 tests PASS (15.886 s), docs sync
 Root pre-inventory audit PASS:4829 immutable baseline entries /1599 JSONL;206 issue IDs /173 active loci /477 keys;169 других records raw JSONL+MD сохранены;10 new docs reachable, broken links0. UTF8/JSON259 files /21924 JSONL rows PASS; git diff --check PASS, current scope37 files. Initial git clean; owner changes не перезаписывались. Approved RU/EN pairs/runtime/DB/dependencies/release untouched. Historical ancestry control pointers beyond current immutable baseline boundary не переоткрывались, implicit fallback0.
 
 Следующий шаг: отдельный mechanical inventory writer, helper-only refresh без regeneration frozen reviewer answers. После refresh work/report outputs не создавать и не менять; финальные результаты stdout и только этот HANDOFF (исключён из inventory). Затем final read-only stage7/SHA/accounting/git checks и Alarm02 synchronously3 с паузами350ms без изменения громкости.
+
+
+## Начало текущей группы № 7 — 2026-10-10
+
+Исходный checkpoint: Gold завершено 59/66; строго принято 38/66; с отсрочками 21. Git status clean; пользовательских изменений до начала сеанса нет. Stage3 offline /4/5/6/7 --check PASS до полного чтения work JSONL. Physical SHA/byte verification всех 5113 inventory entries PASS, mismatches0 (22.610 s). Девять exact snapshots сохранены. Locked остаток по full-grid sidecars: 1Pet1102 labels/32 стиха/10 uncertain; 2Pet1218/32/17 uncertain; 1John1294/33/14 uncertain+2 error. Итого97 полных сеток/3614 labels/43 blocking stable keys в20 loci. Initial QC, blind passes, adjudication и исторические corrections не повторяются; OT не переоткрывается. Исследователи /root/petrine_research и /root/johannine_research, independent reviewer /root/independent_qc запущены fork_none без авторской истории. Scope только 1Pet/2Pet/1John; actual role attestations и собственные inspected-grid notes обязательны.
+
+Initial group007 regression:234 tests PASS (13.856s); docs sync PASS; forbidden patterns PASS. Formal strict/completion validators unchanged. Flutter/runtime/DB changes none; Dart format, Flutter analyze/test/smoke N/A to evidence-only scope.
+
+
+## Возобновление группы № 7 после transport interruption
+
+Frozen outputs сохранены; root chain v3 точно повторяет independently delivered consolidated chain с 10 correction rows. Независимый reviewer завершил собственное чтение97сеток/3614меток, frozen answers не регенерируются. Повторные final regression234tests PASS(10.672s); stage3offline/4/5/6 PASS. Остаток — cached bounded2Pet2.12 finding, independent candidate/overlay review, seals и final inventory. Book completion до live проверки не заявлена.
+
+
+## Группа № 7 — 1Pet завершена, 2026-10-10
+
+Gold: завершено 60/66; строго принято 38/66; с отсрочками 22.
+
+Проверены 1102 полных labels; effective proven 1060; deferred 42 (39 uncertain, 0 error, 3 accepted dependency), loci 13. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA dc596cc20542f3a7258fc87ef346db1e10d65f01aa394bf411f0f10d85cf7838; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Группа № 7 — 2Pet завершена, 2026-10-10
+
+Gold: завершено 61/66; строго принято 38/66; с отсрочками 23.
+
+Проверены 1218 полных labels; effective proven 1176; deferred 42 (42 uncertain, 0 error, 0 accepted dependency), loci 12. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA ec427b78e2c3a697323ebc4875bfee2e44af16c5bf153da7e623c45152f4c0f3; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Группа № 7 — 1John завершена, 2026-10-10
+
+Gold: завершено 62/66; строго принято 38/66; с отсрочками 24.
+
+Проверены 1294 полных labels; effective proven 1263; deferred 31 (28 uncertain, 2 error, 1 accepted dependency), loci 13. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA c823949e201e04b29e6bd81883be13fdda07d76a5f3f9459eec1e197d541c1fd; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Group007 completion accounting — 2026-10-10
+
+**Gold: завершено 62/66; строго принято 38/66; с отсрочками 24.**
+
+1Pet, 2Pet, 1John завершены как `completed_with_registered_deferrals`; незарегистрированного остатка группы нет. Проверены 97 окончательных полных выбранных сеток / 3614 labels: effective proven 3499; исключены 115 labels в 38 loci и 35 reciprocal edges. Текущий content QC: uncertainties 109, errors 2; accepted dependency exclusions 4.
+
+Разрешены 2 исторических stable keys; исключены 41 исторических и 74 новых keys. Исходные QC verdicts и sealed answers сохранены. Deferred nodes без Strong; недоказанные links и classifiers исключены из effective accepted alignment, training, scoring и Strong export. Production accepted links остаются 0.
+
+Единственный Markdown registry обновлён на месте: 224 issue IDs, 191 active loci / 549 active keys. 186 записей остальных книг сохранены побайтно в Markdown table и technical proof. Immutable completion snapshot является доказательством приёмки, а не параллельным рабочим реестром.
+
+На каждый трудный случай проведён один bounded research cycle. Registered deferrals удовлетворяют завершению; повторный цикл не требуется. OT, другие группы и global finalize не запускались. Этап 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+Validation evidence: [gold_group_007_acceptance.v1.ru.md](gold_group_007_acceptance.v1.ru.md). Final checks and separate inventory refresh follow.
+
+
+## Group007 final pre-inventory checks — PASS
+
+Gold: завершено62/66; строго принято38/66; с отсрочками24. Final regression234tests PASS(10.672s); stage3offline/4/5/6 PASS; live completion3books PASS; independent content/candidate/post-seal PASS. Source packet256physical specs PASS. Current proof224records, other186ledger+MDrows byte-preserved; immutable baseline5110entries preserved. Accounting3614labels/3499effective/115excluded at38loci/35edges,109uncertain+2error+4accepted dependencies. UTF8 new397text files/24826JSONLrows PASS. New navigation13docs, broken links0; docs sync, forbidden patterns, git diff --check PASS.
+
+Separate inventory writer final refresh follows. Stage7final and current exact inventory/SHA check execute read-only after refresh; actual outputs are recorded in final HANDOFF because HANDOFF is explicitly outside inventory. This is not an advance PASS claim for those pending checks. Runtime/DB/dependencies/approvedRU-ENpairs/release/localization unchanged; Flutterformat/analyze/test/smoke N/A to evidence-only scope. Frozen review answers are not regenerated.

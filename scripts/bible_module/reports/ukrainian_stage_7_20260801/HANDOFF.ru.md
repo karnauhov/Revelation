@@ -2717,3 +2717,96 @@ Validation: 234 regression tests, stage 3-7 and four live completion
 checks, independent content/overlay/post-seal audits, exact accounting,
 5113-entry SHA/byte inventory, frozen preservation, docs and git checks.
 ```
+
+
+## Начало текущей группы № 7 — 2026-10-10
+
+Исходный checkpoint: Gold завершено 59/66; строго принято 38/66; с отсрочками 21. Git status clean; пользовательских изменений до начала сеанса нет. Stage3 offline /4/5/6/7 --check PASS до полного чтения work JSONL. Physical SHA/byte verification всех 5113 inventory entries PASS, mismatches0 (22.610 s). Девять exact snapshots сохранены. Locked остаток по full-grid sidecars: 1Pet1102 labels/32 стиха/10 uncertain; 2Pet1218/32/17 uncertain; 1John1294/33/14 uncertain+2 error. Итого97 полных сеток/3614 labels/43 blocking stable keys в20 loci. Initial QC, blind passes, adjudication и исторические corrections не повторяются; OT не переоткрывается. Исследователи /root/petrine_research и /root/johannine_research, independent reviewer /root/independent_qc запущены fork_none без авторской истории. Scope только 1Pet/2Pet/1John; actual role attestations и собственные inspected-grid notes обязательны.
+
+
+## Возобновление группы № 7 после transport interruption
+
+Frozen outputs сохранены; root chain v3 точно повторяет independently delivered consolidated chain с 10 correction rows. Независимый reviewer завершил собственное чтение97сеток/3614меток, frozen answers не регенерируются. Повторные final regression234tests PASS(10.672s); stage3offline/4/5/6 PASS. Остаток — cached bounded2Pet2.12 finding, independent candidate/overlay review, seals и final inventory. Book completion до live проверки не заявлена.
+
+
+## Группа № 7 — 1Pet завершена, 2026-10-10
+
+Gold: завершено 60/66; строго принято 38/66; с отсрочками 22.
+
+Проверены 1102 полных labels; effective proven 1060; deferred 42 (39 uncertain, 0 error, 3 accepted dependency), loci 13. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[1Pet: completion manifest](gold_group_007_1Pet.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v22](gold_completion_registry.v22.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 7 — 2Pet завершена, 2026-10-10
+
+Gold: завершено 61/66; строго принято 38/66; с отсрочками 23.
+
+Проверены 1218 полных labels; effective proven 1176; deferred 42 (42 uncertain, 0 error, 0 accepted dependency), loci 12. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[2Pet: completion manifest](gold_group_007_2Pet.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v23](gold_completion_registry.v23.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 7 — 1John завершена, 2026-10-10
+
+Gold: завершено 62/66; строго принято 38/66; с отсрочками 24.
+
+Проверены 1294 полных labels; effective proven 1263; deferred 31 (28 uncertain, 2 error, 1 accepted dependency), loci 13. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[1John: completion manifest](gold_group_007_1John.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v24](gold_completion_registry.v24.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Итоговый checkpoint 2026-10-10 — группа № 7 завершена
+
+**Gold: завершено 62/66; строго принято 38/66; с отсрочками 24.**
+
+1Pet, 2Pet, 1John завершены как `completed_with_registered_deferrals`; незарегистрированного остатка группы нет. Проверены 97 окончательных полных выбранных сеток / 3614 labels: effective proven 3499; исключены 115 labels в 38 loci и 35 reciprocal edges. Текущий content QC: uncertainties 109, errors 2; accepted dependency exclusions 4.
+
+Разрешены 2 исторических stable keys; исключены 41 исторических и 74 новых keys. Исходные QC verdicts и sealed answers сохранены. Deferred nodes без Strong; недоказанные links и classifiers исключены из effective accepted alignment, training, scoring и Strong export. Production accepted links остаются 0.
+
+Единственный Markdown registry обновлён на месте: 224 issue IDs, 191 active loci / 549 active keys. 186 записей остальных книг сохранены побайтно в Markdown table и technical proof. Immutable completion snapshot является доказательством приёмки, а не параллельным рабочим реестром.
+
+На каждый трудный случай проведён один bounded research cycle. Registered deferrals удовлетворяют завершению; повторный цикл не требуется. OT, другие группы и global finalize не запускались. Этап 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+[Отчёт группы № 7](gold_group_007_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v24](gold_completion_registry.v24.manifest.json), [independent content QC](gold_group_007_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_007_independent_content_qc.v2.ru.md).
+
+
+## Group007 final pre-inventory checks — PASS
+
+Gold: завершено62/66; строго принято38/66; с отсрочками24. Final regression234tests PASS(10.672s); stage3offline/4/5/6 PASS; live completion3books PASS; independent content/candidate/post-seal PASS. Source packet256physical specs PASS. Current proof224records, other186ledger+MDrows byte-preserved; immutable baseline5110entries preserved. Accounting3614labels/3499effective/115excluded at38loci/35edges,109uncertain+2error+4accepted dependencies. UTF8 new397text files/24826JSONLrows PASS. New navigation13docs, broken links0; docs sync, forbidden patterns, git diff --check PASS.
+
+Separate inventory writer final refresh follows. Stage7final and current exact inventory/SHA check execute read-only after refresh; actual outputs are recorded in final HANDOFF because HANDOFF is explicitly outside inventory. This is not an advance PASS claim for those pending checks. Runtime/DB/dependencies/approvedRU-ENpairs/release/localization unchanged; Flutterformat/analyze/test/smoke N/A to evidence-only scope. Frozen review answers are not regenerated.
+
+## Финальный checkpoint после inventory — группа № 7, 2026-10-10
+
+**Gold: завершено 62/66; строго принято 38/66; с отсрочками 24.**
+
+1Pet, 2Pet, 1John завершены как `completed_with_registered_deferrals`. Финальный read-only audit PASS: 3614 labels / 3499 effective proven / 115 exact exclusions, 38 зарегистрированных loci и 35 исключённых reciprocal edges. Исходные 109 uncertain и 2 error verdicts сохранены; четыре accepted dependency labels также исключены. Все три live completion contracts PASS; independent content, candidate/overlay и post-seal QC PASS. Strict acceptance branch и validators/tests сохранены без ослабления.
+
+Отдельный writer завершил единственный inventory refresh после собственного finished receipt. Inventory: 5516 entries = 350 report + 5166 work, 1977165 bytes, SHA256 `9b614e0b7706a1d75f0b8da0c0a48e5990d6060e4e2aac7fbdb9ea96948ee38d`. Exact discovered roster, canonical seal и SHA/byte checks PASS; mismatches 0. Writer проверил 56613 exact lock references / 823 unique files. Frozen reviewer answers не регенерировались. После refresh work/report artifacts не менялись; этот финальный checkpoint добавлен только в HANDOFF, который явно исключён из inventory.
+
+Root final read-only audit также PASS: 224 proof records; 186 записей остальных книг побайтно сохранены; 5110 immutable baseline entries сохранены; 400 новых UTF-8 text files / 24826 JSONL rows корректны; 13 новых документов доступны по ссылкам, broken links 0. Git scope: 43 изменения, только текущая группа и её evidence/docs/manifests. Пользовательских изменений в исходном clean checkout не было.
+
+Final regression: **234 tests PASS (10.672 s)**. Stage 3 offline / 4 / 5 / 6 и финальный stage 7 --check PASS. Stage 7 error_count 0, accepted_links 0; global status `blocked_before_gold_and_alignment_acceptance` сохраняется, global finalize не запускался. Docs sync, forbidden patterns, accounting, source locks, current inventory/SHA, navigation и git diff --check PASS. После записи этого checkpoint выполняется последний git diff --check, затем `%WINDIR%\Media\Alarm02.wav` synchronously три раза с паузами 350 ms, без изменения системной громкости.
+
+Immutable stage-6 text/comment, mapping, original selection, gold selection/folds и исходные review artifacts сохранены. OT и другие группы не открывались. Stage 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+Актуальные материалы: [отчёт группы № 7](gold_group_007_acceptance.v1.ru.md), [единый реестр OH1988](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v24](gold_completion_registry.v24.manifest.json), [независимый post-seal QC](gold_group_007_independent_content_qc.v2.ru.md).
+
+Proposed English commit message covering the entire current uncommitted set (commit not executed):
+
+```text
+Complete group 007 gold acceptance with registered deferrals [skip ci]
+
+Complete 1Pet, 2Pet and 1John: 62 books completed, 38 strictly accepted
+and 24 completed with registered deferrals. Apply 10 scoped corrections;
+independently review 97 grids and 3614 labels and exclude 115 labels at
+38 registered loci from accepted alignment, training, scoring and export.
+
+Preserve frozen inputs and review answers. Record versioned source
+resolutions, correction scopes, recovery history, independent QC and
+completion proofs. Update the single OH1988 issue registry, completion
+manifests, HANDOFF, roadmap, alignment plan, reports, validation log and
+artifact inventory.
+
+Validation: 234 regression tests, stage 3-7, three live completion checks,
+independent content/overlay/post-seal audits, SHA/byte preservation,
+exact accounting, inventory, docs/navigation and git checks.
+```
