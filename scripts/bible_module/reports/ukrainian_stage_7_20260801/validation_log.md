@@ -2107,3 +2107,68 @@ independent content/overlay/post-seal audits, SHA accounting, docs and diff chec
 Подтверждены все 179 строк, актуальные статусы, candidates/QC/context,
 удаление двух старых report Markdown, восстановление служебных входов и
 отсутствие лишнего адаптера/tests. Полные Bible/QC/regression циклы не повторялись.
+
+
+## Группа № 3 — Acts завершена, 2026-10-10
+
+Gold: завершено 44/66; строго принято 38/66; с отсрочками 6.
+
+Проверены 1436 полных labels; effective proven 1419; deferred 17 (17 uncertain, 0 accepted dependency), loci 5. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA 0ec561ca80de9c9df05f53ed612efa4ba1e0d6b19bbc39e491676c9de6134d28; strict unchanged rejection: Post-consensus QC acceptance metadata is invalid. Candidate-to-sealed bytes equal.
+
+
+## Группа № 3 — Rom завершена, 2026-10-10
+
+Gold: завершено 45/66; строго принято 38/66; с отсрочками 7.
+
+Проверены 1056 полных labels; effective proven 1040; deferred 16 (16 uncertain, 0 accepted dependency), loci 8. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA 531d35c7615a598f7993d99c628dd42ff84d76ef1fce5bab73914157a4331b97; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Группа № 3 — 1Cor завершена, 2026-10-10
+
+Gold: завершено 46/66; строго принято 38/66; с отсрочками 8.
+
+Проверены 952 полных labels; effective proven 946; deferred 6 (6 uncertain, 0 accepted dependency), loci 3. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA 3aa3e106bf7f66a51bcda58f02b517b7c6faaab42b230ee3cff298c757e61ea8; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Группа № 3 — 2Cor завершена, 2026-10-10
+
+Gold: завершено 47/66; строго принято 38/66; с отсрочками 9.
+
+Проверены 1083 полных labels; effective proven 1062; deferred 21 (21 uncertain, 0 accepted dependency), loci 8. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+Live validate_config v2 PASS; projection SHA 39ba775314d0dca51fbbad745d70f41d8e3ec7314e83f7750b306626243d7c96; strict unchanged rejection: Independent adjudication QC status or reviewer independence differs. Candidate-to-sealed bytes equal.
+
+
+## Финальные проверки группы № 3 перед artifact inventory — 2026-10-10
+
+Gold: завершено 47/66; строго принято 38/66; с отсрочками 9.
+Final stage 3 offline / stage 4 / stage 5 / stage 6 checks PASS, exit 0.
+Final stage-7 regression suite: 234 tests PASS, exit 0, включая восемь v2 tests.
+Четыре live sealed completion проверки и independent content/overlay/post-seal
+проверки PASS. Post-seal examiner проверил 235 manifest lock references /
+111 unique files; 16 book delivery/registry locks остались неизменны после EOF repair.
+Current registry: 181 issue IDs, 167 active loci / 465 active keys; ровно 150
+записей прочих групп сохранены. Exact exclusions: 60 labels / 12 edges / 24 loci,
+accepted dependencies 0. Source-only tail 2Cor.8.19 не означает translator omission.
+
+Docs-sync и forbidden-pattern checks PASS. Git diff --check сначала выявил
+одну пустую строку в EOF editable реестра; после удаления ровно одного LF PASS,
+exit 0. Sealed snapshot и v1/v2 QC сохранены; [отдельный independent v3 audit](gold_group_003_independent_content_qc.v3.manifest.json)
+подтверждает formatting-only equivalence и explicit preserved snapshot bridge.
+[V3 report](gold_group_003_independent_content_qc.v3.ru.md), [root EOF receipt](gold_group_003_registry_formatting_bridge.v1.manifest.json),
+[девять preserved inputs](gold_group_003_preserved_inputs.v1.manifest.json).
+
+Исходный git status чистый; baseline HANDOFF/report/log сохраняют полный byte prefix.
+Python tools/evidence/docs scope: Flutter format/analyze/test/coverage и smoke N/A;
+runtime/routes/state/dependencies/localization/release не изменены. RU/EN approved
+pairs не менялись, sync gate сохранён. Все новые документы доступны из HANDOFF/report
+через [отчёт текущей группы](gold_group_003_acceptance.v1.ru.md).
+
+Следующая и последняя техническая операция: отдельный helper-only inventory writer,
+затем stdout-only final stage-7/SHA/accounting/inventory/links/git audit. После
+последнего refresh новые work/report outputs не создаются; финальные фактические
+результаты добавляются только в исключённый из inventory HANDOFF. Frozen reviewer
+answers не регенерируются. Другие группы/global finalize/stage 8/SQLite/production
+Strong/runtime/working или web DB/commit/push не выполнялись.

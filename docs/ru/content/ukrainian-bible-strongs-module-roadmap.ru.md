@@ -1,7 +1,7 @@
 # Дорожная карта создания украинского библейского модуля с номерами Стронга
 
-Doc-Version: `1.9.9`
-Last-Updated: `2026-10-03`
+Doc-Version: `1.9.10`
+Last-Updated: `2026-10-10`
 Source-Commit: `working-tree`
 
 ## Назначение
@@ -784,7 +784,7 @@ dart run scripts/coverage_baseline.dart --min-effective=90.0
 | 4 | Завершён | 2026-08-01 | После fail-closed проверки 14 locked inputs реализованы независимые парсеры DjVu hidden text, ProofreadPage/MediaWiki, STEPBible TAHOT/TAGNT/TVTMS, OSHB OSIS ZIP, UXLC XML ZIP, UGNT USFM ZIP и CrossWire KJV milestone OSIS. Полные source-native `unprojected` JSONL воспроизводимо созданы в gitignored work-каталоге; 37 generated/work artifacts совпали побайтно после повторной генерации. Все 1 329 `<ref>` carriers учтены как 1 204 определения и 1 329 uses: 1 318 uses однозначно связаны с исходными стихами, 11 сносок в заголовочных шаблонах сохранены как `missing` anomalies, дубликатов uses, конфликтов текста определения, неверных anchor ranges и преждевременных target-полей нет. Commons выявлен как два одинаковых DjVu-контейнера; его логический контейнер и зависимый IA-контроль дают одинаковые 1 538 OCR-страниц. Полный безопасный diff содержит 91 569 классифицированных строк и ноль unresolved `critical/high`; 149 текстов сносок требуют последующей визуальной сверки из-за шумного hidden OCR, но не потеряны и имеют Commons page/revision provenance. [Отчёт и manifests](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/report.ru.md), [статистики](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/source_stats.json), [footnote audit](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/footnote_stats.json) и [validation log](../../../scripts/bible_module/reports/ukrainian_stage_4_20260801/validation_log.md) закрывают этап. Следующим разрешён этап 5; он не выполнялся. |
 | 5 | Завершён | 2026-08-01 | Построен детерминированный двунаправленный контракт `oh1988-kjv-protestant-v1`: все 31 160 source records представлены 31 171 непересекающимися span, все 31 102 `verse_key` точно равны baseline и имеют ровно один reverse result; дублей, необъяснённых пустых target и расхождений forward/reverse нет. 31 099 правил включают 31 026 `1:1`, 68 `merge`, 4 `split` и 1 явный source-only `range_transfer`; все 73 non-1:1 и 3 369 нестандартных/смещённых решений проверены по baseline, TVTMS и source-native digests. Для 575 target сосед формально совпадал лучше: они включены в manual review, автоматических перепривязок нет. Из 1 329 uses/markers 1 318 спроецированы (`1:1` 1 310, `merge` 8), а 11 heading footnotes сохранены как `non_verse_source_material`; `target_anchor_pending` не подменён выдуманным offset, `target_comment` не создавался. Двойная генерация 19 артефактов совпала побайтно; 158 bible_module, 30 content_tool и 920 Flutter tests, analyze, forbidden-pattern и docs-sync checks прошли. [Отчёт](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/report.ru.md), [карты и manifests](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/source_to_target_map.manifest.json), [manual review](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/manual_review.jsonl) и [validation log](../../../scripts/bible_module/reports/ukrainian_stage_5_20260801/validation_log.md) закрывают этап. |
 | 6 | Завершён | 2026-08-01 | Синтезированы ровно 31 102 непустых OH1988 target text по неизменённой карте этапа 5. Учтены 31 171 source spans и 595 095 source word tokens: 595 077 в target text и 18 в отдельном source-only `2Chr.14.14`; потерь, перекрытий и дублей нет. 31 026 `1:1`, 68 `merge` и 4 доказанных split дали 31 102 targets; 64 merge состоят из двух частей, 4 — из трёх, документированы 72 вставки U+0020 и 4 исключённых split-разделителя. Все 1 329 footnote uses/markers сохранены: 1 318 anchors разрешены через доказанные intervals, 11 heading uses оставлены non-verse; сформированы 31 102 comments. Все 149 OCR-review сносок визуально сверены с Commons scan без исправлений. Plain-text/source/footnote preservation точен, нерешённых `critical/high` нет. Двойная генерация 22 артефактов совпала по inventory/SHA-256; 16 целевых, 174 commit-scope bible-module, 30 content-tool и 920 Flutter tests, analyze, forbidden-pattern, docs-sync и staged-scope audits прошли. Strong-разметка вынесена в отдельный этап 7; SQLite не создавался. [Отчёт](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/report.ru.md), [manifests](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/synthesized_text.manifest.json), [preservation](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/plain_text_preservation_report.json), [footnote stats](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/footnote_comment_stats.json), [manual review](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/manual_review.jsonl) и [validation log](../../../scripts/bible_module/reports/ukrainian_stage_6_20260801/validation_log.md) закрывают этап. |
-| 7 | В работе | 2026-10-03 | Exact stage-6 text/comment и mapping заморожены; source/license registry, украинская токенизация, original-token universe, RUSSYN/YLT bridges, авторские сноски, textual fingerprint и candidate-only bundle воспроизводимы. Gold 7.4: pass 1 — `66/66`; blind pass 2/comparison — `66/66` (2 171 стих, 45 831 original, 41 807 target, 87 638 stable decisions; reviewer independence 87 638/87 638); global comparison дал 65 434 agreements и 22 204 substantive disagreement. Distinct adjudication и initial full-grid QC завершены для `66/66` (`Gen–Rev`); строго приняты `38/66`; завершены `39/66` (весь OT), включая Zeph с зарегистрированной отсрочкой. Физический all-66 аудит прошёл `62/62` batch SHA, `132/132` adjudication/sidecar SHA и root validator `66/66`. `Nah` и `Zech` приняты после source resolution/distinct full-grid QC; `Zeph` завершена с одной deferred_strong_unassigned парой H1471A→«польова́»; NT-книги `Mat–Rev` остаются вне текущей задачи; `Titus.2.7`, `Phlm.1.25`, `1John.4.20`, `2John.1.7` и `2John.1.9` выявили definite selected-source/full-grid errors, остальные книги сохраняют source/variant/semantic uncertainty. `Rev` QC запечатан тремя byte-identical выпусками: 1 713 accepted, `error=0`, `uncertain=56`. Первичные adjudication/QC очереди завершены, source resolution/scoped correction/distinct re-QC открыты. Finalized gold, calibration и production Strong links/markup отсутствуют; SQLite и этап 8 не выполнялись. |
+| 7 | В работе | 2026-10-10 | Stage-6 text/comment, mapping, original/gold selection и folds сохранены. Gold 7.4: blind passes, comparison, adjudication и initial QC завершены для 66/66; completed 47/66, strict 38/66, deferral books 9. Весь OT и группы № 2–3 завершены; Acts/Rom/1Cor/2Cor проверены независимо по 139 сеткам / 4527 labels, 4467 proven / 60 deferred в 24 loci. Оставшиеся 19 книг NT, global finalized gold, calibration и production Strong остаются вне текущего завершённого поручения. Stage 8/DB/runtime не выполнялись. [Текущий отчёт группы № 3](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_003_acceptance.v1.ru.md). |
 | 8 | Не начат | — | — |
 | 9 | Не начат | — | — |
 | 10 | Не начат | — | — |
@@ -988,3 +988,48 @@ selection/folds и stage-6 inputs сохранены; строго принят�
 Перед training/scoring/Strong export требуется применить live SHA-checked
 active overlays; недоказанные NULL/addition classifiers исключены из accepted labels.
 Остальные группы NT, global finalize, stage 8, DB, runtime, commit и push не запускались.
+
+
+## Группа № 3 — Acts завершена, 2026-10-10
+
+Gold: завершено 44/66; строго принято 38/66; с отсрочками 6.
+
+Проверены 1436 полных labels; effective proven 1419; deferred 17 (17 uncertain, 0 accepted dependency), loci 5. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Acts: completion manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_003_Acts.completed_with_deferrals.v1.manifest.json); [общий реестр](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md); [completion registry v6](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v6.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 3 — Rom завершена, 2026-10-10
+
+Gold: завершено 45/66; строго принято 38/66; с отсрочками 7.
+
+Проверены 1056 полных labels; effective proven 1040; deferred 16 (16 uncertain, 0 accepted dependency), loci 8. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Rom: completion manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_003_Rom.completed_with_deferrals.v1.manifest.json); [общий реестр](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md); [completion registry v7](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v7.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 3 — 1Cor завершена, 2026-10-10
+
+Gold: завершено 46/66; строго принято 38/66; с отсрочками 8.
+
+Проверены 952 полных labels; effective proven 946; deferred 6 (6 uncertain, 0 accepted dependency), loci 3. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[1Cor: completion manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_003_1Cor.completed_with_deferrals.v1.manifest.json); [общий реестр](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md); [completion registry v8](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v8.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 3 — 2Cor завершена, 2026-10-10
+
+Gold: завершено 47/66; строго принято 38/66; с отсрочками 9.
+
+Проверены 1083 полных labels; effective proven 1062; deferred 21 (21 uncertain, 0 accepted dependency), loci 8. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[2Cor: completion manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_003_2Cor.completed_with_deferrals.v1.manifest.json); [общий реестр](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md); [completion registry v9](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v9.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Итоговый checkpoint 2026-10-10 — группа № 3 завершена
+
+**Gold: завершено 47/66; строго принято 38/66; с отсрочками 9.**
+
+Acts, Rom, 1Cor, 2Cor зарегистрированы как `completed_with_registered_deferrals`; незарегистрированного остатка текущей группы нет. Независимо проверены 139 полных сеток / 4527 решений: 4467 accepted, 60 uncertain, error 0. Из прежних uncertainties разрешены 48 IDs; 57 прежних и три новых IDs (1Cor.2.13, 2Cor.8.19) отложены в 24 loci. Exact closed exclusions: 60 labels / 12 reciprocal edges / 0 accepted dependencies; Strong не назначен, training/scoring/export исключены.
+
+Новых semantic corrections нет; запечатанное исправление Acts.13.29 учтено correction-aware completion v2. Original QC verdicts и frozen answers сохранены. Single Markdown registry обновлён на месте: 181 issue ID, 167 active loci / 465 active keys; 150 записей остальных групп побайтно сохранены. Остальные 19 книг и global finalize не запускались. OT не переоткрывался. Дополнительное исследование deferred cases не требуется для завершения.
+
+[Полный отчёт группы № 3](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_003_acceptance.v1.ru.md), [актуальный реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v9](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v9.manifest.json), [независимый content QC](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_003_independent_content_qc.v1.ru.md), [post-seal QC v2](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_003_independent_content_qc.v2.manifest.json), [deferral evidence](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_003.deferral_evidence.v1.manifest.json). Финальные SHA/inventory/stage/docs/diff результаты — в последнем HANDOFF и validation log.
+
+Stage 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись. Приёмка всей группы завершена; дальнейшие действия ограничены финальными проверками и completion sound.

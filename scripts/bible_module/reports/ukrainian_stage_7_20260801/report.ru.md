@@ -1419,3 +1419,81 @@ independent content/overlay/post-seal audits, SHA accounting, docs and diff chec
 Подтверждены все 179 строк, актуальные статусы, candidates/QC/context,
 удаление двух старых report Markdown, восстановление служебных входов и
 отсутствие лишнего адаптера/tests. Полные Bible/QC/regression циклы не повторялись.
+
+
+## Группа № 3 — Acts завершена, 2026-10-10
+
+Gold: завершено 44/66; строго принято 38/66; с отсрочками 6.
+
+Проверены 1436 полных labels; effective proven 1419; deferred 17 (17 uncertain, 0 accepted dependency), loci 5. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Acts: completion manifest](gold_group_003_Acts.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v6](gold_completion_registry.v6.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 3 — Rom завершена, 2026-10-10
+
+Gold: завершено 45/66; строго принято 38/66; с отсрочками 7.
+
+Проверены 1056 полных labels; effective proven 1040; deferred 16 (16 uncertain, 0 accepted dependency), loci 8. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Rom: completion manifest](gold_group_003_Rom.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v7](gold_completion_registry.v7.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 3 — 1Cor завершена, 2026-10-10
+
+Gold: завершено 46/66; строго принято 38/66; с отсрочками 8.
+
+Проверены 952 полных labels; effective proven 946; deferred 6 (6 uncertain, 0 accepted dependency), loci 3. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[1Cor: completion manifest](gold_group_003_1Cor.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v8](gold_completion_registry.v8.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 3 — 2Cor завершена, 2026-10-10
+
+Gold: завершено 47/66; строго принято 38/66; с отсрочками 9.
+
+Проверены 1083 полных labels; effective proven 1062; deferred 21 (21 uncertain, 0 accepted dependency), loci 8. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[2Cor: completion manifest](gold_group_003_2Cor.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v9](gold_completion_registry.v9.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Итоговый checkpoint 2026-10-10 — группа № 3 завершена
+
+**Gold: завершено 47/66; строго принято 38/66; с отсрочками 9.**
+
+Acts, Rom, 1Cor, 2Cor зарегистрированы как `completed_with_registered_deferrals`; незарегистрированного остатка текущей группы нет. Независимо проверены 139 полных сеток / 4527 решений: 4467 accepted, 60 uncertain, error 0. Из прежних uncertainties разрешены 48 IDs; 57 прежних и три новых IDs (1Cor.2.13, 2Cor.8.19) отложены в 24 loci. Exact closed exclusions: 60 labels / 12 reciprocal edges / 0 accepted dependencies; Strong не назначен, training/scoring/export исключены.
+
+Новых semantic corrections нет; запечатанное исправление Acts.13.29 учтено correction-aware completion v2. Original QC verdicts и frozen answers сохранены. Single Markdown registry обновлён на месте: 181 issue ID, 167 active loci / 465 active keys; 150 записей остальных групп побайтно сохранены. Остальные 19 книг и global finalize не запускались. OT не переоткрывался. Дополнительное исследование deferred cases не требуется для завершения.
+
+[Полный отчёт группы № 3](gold_group_003_acceptance.v1.ru.md), [актуальный реестр OH1988](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v9](gold_completion_registry.v9.manifest.json), [независимый content QC](gold_group_003_independent_content_qc.v1.ru.md), [post-seal QC v2](gold_group_003_independent_content_qc.v2.manifest.json), [deferral evidence](gold_group_003.deferral_evidence.v1.manifest.json). Финальные SHA/inventory/stage/docs/diff результаты — в последнем HANDOFF и validation log.
+
+Stage 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись. Приёмка всей группы завершена; дальнейшие действия ограничены финальными проверками и completion sound.
+
+
+## Финальные проверки группы № 3 перед artifact inventory — 2026-10-10
+
+Gold: завершено 47/66; строго принято 38/66; с отсрочками 9.
+Final stage 3 offline / stage 4 / stage 5 / stage 6 checks PASS, exit 0.
+Final stage-7 regression suite: 234 tests PASS, exit 0, включая восемь v2 tests.
+Четыре live sealed completion проверки и independent content/overlay/post-seal
+проверки PASS. Post-seal examiner проверил 235 manifest lock references /
+111 unique files; 16 book delivery/registry locks остались неизменны после EOF repair.
+Current registry: 181 issue IDs, 167 active loci / 465 active keys; ровно 150
+записей прочих групп сохранены. Exact exclusions: 60 labels / 12 edges / 24 loci,
+accepted dependencies 0. Source-only tail 2Cor.8.19 не означает translator omission.
+
+Docs-sync и forbidden-pattern checks PASS. Git diff --check сначала выявил
+одну пустую строку в EOF editable реестра; после удаления ровно одного LF PASS,
+exit 0. Sealed snapshot и v1/v2 QC сохранены; [отдельный independent v3 audit](gold_group_003_independent_content_qc.v3.manifest.json)
+подтверждает formatting-only equivalence и explicit preserved snapshot bridge.
+[V3 report](gold_group_003_independent_content_qc.v3.ru.md), [root EOF receipt](gold_group_003_registry_formatting_bridge.v1.manifest.json),
+[девять preserved inputs](gold_group_003_preserved_inputs.v1.manifest.json).
+
+Исходный git status чистый; baseline HANDOFF/report/log сохраняют полный byte prefix.
+Python tools/evidence/docs scope: Flutter format/analyze/test/coverage и smoke N/A;
+runtime/routes/state/dependencies/localization/release не изменены. RU/EN approved
+pairs не менялись, sync gate сохранён. Все новые документы доступны из HANDOFF/report
+через [отчёт текущей группы](gold_group_003_acceptance.v1.ru.md).
+
+Следующая и последняя техническая операция: отдельный helper-only inventory writer,
+затем stdout-only final stage-7/SHA/accounting/inventory/links/git audit. После
+последнего refresh новые work/report outputs не создаются; финальные фактические
+результаты добавляются только в исключённый из inventory HANDOFF. Frozen reviewer
+answers не регенерируются. Другие группы/global finalize/stage 8/SQLite/production
+Strong/runtime/working или web DB/commit/push не выполнялись.
