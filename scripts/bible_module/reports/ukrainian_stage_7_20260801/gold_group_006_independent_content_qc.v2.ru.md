@@ -1,0 +1,21 @@
+# Группа 006: независимый post-seal QC
+
+Reviewer: `subagent:/root/final_content_qc:group006:20261010`; actual role `/root/final_content_qc`, independent content and completion reviewer. Исследования, correction, ledger, projection и formal validators не авторствовал. Это отдельный аудит фактически запечатанной публикации после моего [full-content QC v1](gold_group_006_independent_content_qc.v1.ru.md).
+
+**PASS: Gold завершено 59/66; строго принято 38/66; с зарегистрированными отсрочками 21.** Проверены четыре sealed manifests Titus, Phlm, Heb, Jas, точная registry chain v18–v21 и все четыре live completion contracts. 121 сетка / 3676 labels: 3577 proven, 99 exclusions в 37 loci / 31 edges; 93 uncertain, три исходные actual errors и три accepted dependency exclusions.
+
+Candidate v2 сохранён как отклонённый: в Jas 2:3 remaining missing proof не включал under/on вопрос и ошибочно повторял уже выполненную wearing correction. Root выпустил metadata-only candidate v3; лично проверены только три изменённых technical fields одной записи, неизменность остальных 205 records и всех 206 Markdown table rows, а также четырёх projection SHA/counts. Новый текст точно разделяет оставшиеся семь nodes и три принятые wearing nodes. Исследования, scope, verdicts и source/target evidence не менялись.
+
+Мой independent approval привязан к exact candidate v3 summary/config/projection/ledger/registry locks и неизменным validator/tests. Sealed technical ledger и registry snapshot побайтно равны candidate v3. Единственный рабочий `oh88_strongs_issue_inventory.ru.md` равен approved snapshot. 206 issue IDs, 173 активных loci / 477 keys; все 169 записей других книг побайтно сохранены в technical JSONL и Markdown table. Все 45 исторических keys текущей группы и 54 новых keys входят в exclusions.
+
+Из effective alignment удалены точные closed components всех неуверенных/error nodes, включая три accepted dependencies. На excluded nodes Strong не назначен; frozen omission/addition classifications сохранены только как evidence и не проходят в effective layer, training, scoring или Strong export. Accepted 3577 labels точно соответствуют моим собственным full-grid observations. Ни одна новая lemma, Strong или definitive NULL/addition replacement не введена.
+
+Jas 2:3 actual correction двух строк остаётся запечатанной; остальные 1006 payloads неизменны. Predicate `φοροῦντα→хто в` принят; unresolved opener, йому/финальное тут и `ὑπό→на` остаются deferred. Heb 10:31 source-only nominalizing-article classifier зарегистрирован после отдельного одного bounded case; neighbouring «Страшна річ» принято. Все 38 актуальных research refs документированы; предыдущие циклы не повторялись.
+
+Publication helper встретил legacy overall `rejected` для Titus/Phlm при expected strict validator rejection. Его diagnostic adapter проверен лично: exact strict rejection, `complete_qc_error_found`, положительные counts 1/2 и точные frozen error-key sets сохранены. Три исходные actual error keys равны моим трём final error verdicts. Heb/Jas сохраняют `uncertain`; strict accepted=false. Formal gold/compare/completion validators и tests не изменены; strict roster из 38 книг сохранён.
+
+Физический post-seal аудит: 1856 current lock references / 305 unique referenced files; 4829 immutable baseline entries вновь проверены и неизменны. Все historical locator resolutions явные, implicit fallbacks 0. Current graph прекращается на проверенной immutable baseline boundary; historical ancestor inventory/control не является повторно запускаемой current closure.
+
+Other groups, global finalize, stage 8, runtime/DB, training/export, commit и push не выполнялись. Completion подтверждён отдельно от proven coverage; optional research по зарегистрированным отсрочкам не является условием завершения.
+
+Подробные receipts: [independent candidate approval](../../work/ukrainian_stage_7_20260801/session_group6_20261010_final_qc_02/independent_completion_review.v1.json), [metadata delta](../../work/ukrainian_stage_7_20260801/session_group6_20261010_final_qc_02/candidate_v3_metadata_delta_inspection.v1.json), [post-seal audit](../../work/ukrainian_stage_7_20260801/session_group6_20261010_final_qc_02/independent_post_seal_review.v1.json).

@@ -1602,3 +1602,50 @@ Gold: завершено 55/66; строго принято 38/66; с отсро
 На каждый трудный случай выполнен один bounded research cycle. Registered deferrals удовлетворяют завершению и не требуют второго цикла. OT не переоткрывался; другие группы, global finalize, stage 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
 
 [Отчёт группы № 5](gold_group_005_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v17](gold_completion_registry.v17.manifest.json), [независимый QC](gold_group_005_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_005_independent_content_qc.v2.ru.md).
+
+
+## Группа № 6 — Titus завершена, 2026-10-10
+
+Gold: завершено 56/66; строго принято 38/66; с отсрочками 18.
+
+Проверены 933 полных labels; effective proven 910; deferred 23 (21 uncertain, 1 error, 1 accepted dependency), loci 10. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Titus: completion manifest](gold_group_006_Titus.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v18](gold_completion_registry.v18.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 6 — Phlm завершена, 2026-10-10
+
+Gold: завершено 57/66; строго принято 38/66; с отсрочками 19.
+
+Проверены 696 полных labels; effective proven 675; deferred 21 (18 uncertain, 2 error, 1 accepted dependency), loci 8. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Phlm: completion manifest](gold_group_006_Phlm.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v19](gold_completion_registry.v19.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 6 — Heb завершена, 2026-10-10
+
+Gold: завершено 58/66; строго принято 38/66; с отсрочками 20.
+
+Проверены 1039 полных labels; effective proven 1017; deferred 22 (22 uncertain, 0 error, 0 accepted dependency), loci 9. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Heb: completion manifest](gold_group_006_Heb.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v20](gold_completion_registry.v20.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 6 — Jas завершена, 2026-10-10
+
+Gold: завершено 59/66; строго принято 38/66; с отсрочками 21.
+
+Проверены 1008 полных labels; effective proven 975; deferred 33 (32 uncertain, 0 error, 1 accepted dependency), loci 10. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Jas: completion manifest](gold_group_006_Jas.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v21](gold_completion_registry.v21.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Итоговый checkpoint 2026-10-10 — группа № 6 завершена
+
+**Gold: завершено 59/66; строго принято 38/66; с отсрочками 21.**
+
+Titus, Phlm, Heb, Jas завершены как `completed_with_registered_deferrals`; незарегистрированного остатка группы нет. Проверена 121 полная выбранная сетка / 3676 labels: effective proven 3577; исключены 99 labels в 37 loci и 31 reciprocal edges. Текущий content QC: uncertainties 93, errors 3; accepted dependency exclusions 3.
+
+Разрешены 0 исторических stable keys; исключены 45 исторических и 54 новых keys. Исходные QC verdicts и sealed answers сохранены. Deferred nodes без Strong; их недоказанные связи и classifiers исключены из effective accepted alignment, training, scoring и экспорта.
+
+Единственный Markdown registry обновлён на месте: 206 issue IDs, 173 active loci / 477 active keys. 169 записей остальных книг сохранены побайтно в Markdown table и technical proof. Immutable completion snapshot является доказательством, а не параллельным рабочим реестром.
+
+Один bounded research cycle на трудный случай завершён. Registered deferrals удовлетворяют завершению; повторный цикл не требуется. OT не переоткрывался; другие группы, global finalize, stage 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+[Отчёт группы № 6](gold_group_006_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v21](gold_completion_registry.v21.manifest.json), [независимый QC](gold_group_006_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_006_independent_content_qc.v2.ru.md).

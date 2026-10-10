@@ -2535,3 +2535,185 @@ Validation: 234 regression tests, stage 3-7 checks, four live completion
 contracts, independent content/overlay/post-seal audits, exact accounting,
 physical SHA/byte locks, inventory, docs and git diff checks.
 ```
+
+
+## Начало текущей группы № 6 — 2026-10-10
+
+Исходный checkpoint: Gold завершено 55/66; строго принято 38/66; с отсрочками 17. Git status clean; пользовательских изменений до начала сеанса нет. Stage3 offline /4/5/6/7 --check PASS до полного чтения work JSONL; physical inventory 4832 entries, SHA/byte mismatches 0. Locked остаток: Titus 933 labels /1 error /10 uncertain; Phlm 696 /2 error /9 uncertain; Heb 1039 /0 error /9 uncertain; Jas 1008 /0 error /14 uncertain. Всего 121 выбранная полная сетка /3676 labels. Initial QC, blind passes и adjudication не повторяются; OT не переоткрывается. 234 regression tests PASS (8.216 s); docs sync и forbidden-pattern gates PASS. Изолированные исследователи и independent final-grid reviewer запущены без авторской истории. Scope ограничен Titus/Phlm/Heb/Jas.
+
+
+## Группа № 6 — Titus завершена, 2026-10-10
+
+Gold: завершено 56/66; строго принято 38/66; с отсрочками 18.
+
+Проверены 933 полных labels; effective proven 910; deferred 23 (21 uncertain, 1 error, 1 accepted dependency), loci 10. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Titus: completion manifest](gold_group_006_Titus.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v18](gold_completion_registry.v18.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 6 — Phlm завершена, 2026-10-10
+
+Gold: завершено 57/66; строго принято 38/66; с отсрочками 19.
+
+Проверены 696 полных labels; effective proven 675; deferred 21 (18 uncertain, 2 error, 1 accepted dependency), loci 8. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Phlm: completion manifest](gold_group_006_Phlm.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v19](gold_completion_registry.v19.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 6 — Heb завершена, 2026-10-10
+
+Gold: завершено 58/66; строго принято 38/66; с отсрочками 20.
+
+Проверены 1039 полных labels; effective proven 1017; deferred 22 (22 uncertain, 0 error, 0 accepted dependency), loci 9. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Heb: completion manifest](gold_group_006_Heb.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v20](gold_completion_registry.v20.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 6 — Jas завершена, 2026-10-10
+
+Gold: завершено 59/66; строго принято 38/66; с отсрочками 21.
+
+Проверены 1008 полных labels; effective proven 975; deferred 33 (32 uncertain, 0 error, 1 accepted dependency), loci 10. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[Jas: completion manifest](gold_group_006_Jas.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v21](gold_completion_registry.v21.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Итоговый checkpoint 2026-10-10 — группа № 6 завершена
+
+**Gold: завершено 59/66; строго принято 38/66; с отсрочками 21.**
+
+Titus, Phlm, Heb, Jas завершены как `completed_with_registered_deferrals`; незарегистрированного остатка группы нет. Проверена 121 полная выбранная сетка / 3676 labels: effective proven 3577; исключены 99 labels в 37 loci и 31 reciprocal edges. Текущий content QC: uncertainties 93, errors 3; accepted dependency exclusions 3.
+
+Разрешены 0 исторических stable keys; исключены 45 исторических и 54 новых keys. Исходные QC verdicts и sealed answers сохранены. Deferred nodes без Strong; их недоказанные связи и classifiers исключены из effective accepted alignment, training, scoring и экспорта.
+
+Единственный Markdown registry обновлён на месте: 206 issue IDs, 173 active loci / 477 active keys. 169 записей остальных книг сохранены побайтно в Markdown table и technical proof. Immutable completion snapshot является доказательством, а не параллельным рабочим реестром.
+
+Один bounded research cycle на трудный случай завершён. Registered deferrals удовлетворяют завершению; повторный цикл не требуется. OT не переоткрывался; другие группы, global finalize, stage 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+[Отчёт группы № 6](gold_group_006_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v21](gold_completion_registry.v21.manifest.json), [независимый QC](gold_group_006_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_006_independent_content_qc.v2.ru.md).
+
+
+## Финальные проверки группы № 6 перед artifact inventory — 2026-10-10
+
+Gold: завершено 59/66; строго принято 38/66; с отсрочками 21.
+
+Stage3 offline /4/5/6 PASS; final regression234 tests PASS (15.886 s), docs sync и forbidden patterns PASS. Independent actual content, candidate-v3 overlay/registry и post-seal audits PASS; 3676 labels /3577 proven /99 exclusions /37 loci /31 edges, 93 uncertain,3 error,3 accepted dependency. Correction Jas2.3:2 semantic rows,1006 unchanged; live correction seal/check и full-grid QC PASS. Candidatev2 содержательно отклонён за stale missing-proof/follow-up Jas2.3; v3 metadata-only fix сохраняет verdicts, scopes и все projection bytes. Legacy QC overall rejected Titus/Phlm сохранён; diagnostic adapter проверен independently, formal strict/completion validators/tests unchanged.
+
+Root pre-inventory audit PASS:4829 immutable baseline entries /1599 JSONL;206 issue IDs /173 active loci /477 keys;169 других records raw JSONL+MD сохранены;10 new docs reachable, broken links0. UTF8/JSON259 files /21924 JSONL rows PASS; git diff --check PASS, current scope37 files. Initial git clean; owner changes не перезаписывались. Approved RU/EN pairs/runtime/DB/dependencies/release untouched. Historical ancestry control pointers beyond current immutable baseline boundary не переоткрывались, implicit fallback0.
+
+Следующий шаг: отдельный mechanical inventory writer, helper-only refresh без regeneration frozen reviewer answers. После refresh work/report outputs не создавать и не менять; финальные результаты stdout и только этот HANDOFF (исключён из inventory). Затем final read-only stage7/SHA/accounting/git checks и Alarm02 synchronously3 с паузами350ms без изменения громкости.
+
+
+## Финальная приёмка группы № 6 — 2026-10-10
+
+**Gold: завершено 59/66; строго принято 38/66; с отсрочками 21.**
+Titus, Phlm, Heb, Jas завершены как `completed_with_registered_deferrals`.
+Незарегистрированного остатка текущей группы нет. Проверена 121 окончательная
+полная сетка / 3676 labels: 3577 effective proven, 99 exact exclusions в
+37 loci / 31 reciprocal edges. Content QC сохраняет 93 uncertainties и
+три исходные errors; три принятых lexical/grammatical dependency labels
+входят в исключённые closed groups. Все 45 исторических blocking keys и
+54 новых excluded keys учтены; Strong на deferred nodes не назначен,
+неподтверждённые links и classifiers удалены из effective alignment,
+training, scoring и Strong export. Строгое принятие и proven label coverage
+отличаются от завершения книги; production accepted links остаются 0.
+
+Отдельный corrector выполнил две semantic rows Jas.2.3: φοροῦντα связан с
+«хто в», target «в» включён в reciprocal edge; «хто» перепроверен без
+изменения. Остальные 1006 payloads Jas неизменны. Existing correction
+seal/check и independent actual post-correction/full-grid QC PASS.
+Titus.2.11 три labels и oath-means group Heb.6.17 четыре labels доказаны
+отдельной независимой проверкой. Утверждение omission article Heb.10.31
+не доказано; один новый source key зарегистрирован после одного bounded
+цикла, без Strong/NULL/target-addition assumptions. Titus.2.7 и Phlm.1.25
+сохраняют три actual error verdicts в истории и закрытых exclusions.
+
+Реальные роли: исследователи `/root/titus_phlm_research` и
+`/root/heb_jas_research`, corrector `/root/corrector_group006`, ledger/docs
+writer `/root`. Первичный independent peer `/root/independent_content_qc`
+сохранил native/blocking/post-correction receipts, но три stream failures
+не позволили записать final observations. `/root/final_content_qc`,
+запущенный без авторской истории, выполнил собственное чтение 121 actual
+final grids и 3676 labels, independent candidate-v3 и post-seal audits;
+его frozen own notes/answers сохранены. Независимость не выведена из ID.
+Чтение reviewed artifacts является inspection, а не authorship.
+
+Candidate v2 отвергнут независимым content audit: Jas.2.3 missing proof /
+follow-up ошибочно требовали уже выполненную wearing correction и не
+фиксировали remaining under/on uncertainty. Candidate v3 исправляет
+только metadata/registry prose этого issue; scopes, verdicts, counters и
+все projections byte-identical. V2 сохранён как rejected. Legacy QC
+`overall_verdict: rejected` Titus/Phlm сохранён; publication diagnostic
+adapter требует exact unchanged strict rejection + legacy error status,
+positive matching error keys. Adapter независимо проверен; formal strict
+и completion validators/tests не менялись, false strict PASS не объявлен.
+
+Единственный Markdown registry обновлён на месте: 206 issue IDs,
+173 active loci / 477 active keys. 169 записей остальных книг в human table
+AND technical proof сохранены побайтно. Immutable snapshots являются
+completion evidence, а не параллельными рабочими реестрами. Stage-6
+text/comment, mapping, original selection, gold selection/folds и original
+review artifacts сохранены; frozen answers не регенерировались. Registered
+deferrals удовлетворяют завершению и не требуют второго research cycle.
+
+Отдельный `/root/inventory_writer` выполнил единственный helper-only
+refresh после finished receipt. Inventory **5113 entries = 314 report +
+4799 work**, **1840518 bytes**, SHA256
+`45f3435fff1c97a2fe58c9206d4a59d6812d4cb0d962bd62d460767ce15d4d0c`.
+Physical SHA/byte mismatches 0; exact discovered roster и canonical seal
+PASS. Frozen baseline 4829 entries / 1599 JSONL, девять exact snapshots
+сохранены. Writer проверил 2402 lock references / 308 unique files в
+27 new manifest roots / 43 manifest/config objects; четыре sealed live
+contracts и approval-derived candidate v3 PASS. 36 declared bridge rows /
+30 identities проверены; historical fallback 0. Finished receipt создан
+до helper; после refresh work/report outputs не создавались и не менялись.
+
+Root final stdout-only audit PASS, exit 0: exact candidate-v3/sealed/live
+projections и accounting, roster 59/38/21, все 99 exclusions, 206 IDs и
+169 other rows; 10 новых docs доступны, broken links 0. Git scope 38 files
+ограничен stage-7 evidence/manifests/docs; initial git status clean,
+пользовательские изменения не перезаписывались. Last read-only stage-7
+check после inventory PASS, exit 0: 31102 targets, panel 2171,
+error_count 0, production accepted links 0. Global status
+`blocked_before_gold_and_alignment_acceptance` сохранён; оставшиеся семь
+книг и global finalize не запускались.
+
+Final stage 3 offline / 4–6 PASS; final regression **234 tests PASS
+(15.886 s)**. Independent content/registry-overlay/post-seal audits PASS
+(последний reviewer: 1856 refs / 305 unique files). UTF-8/JSON checks:
+259 new text files / 21924 JSONL rows PASS. Docs sync, forbidden patterns,
+whitespace/navigation и git diff --check PASS. Physical current-session
+closure завершена на immutable baseline boundary; старые ancestry
+inventory/doc control pointers сохранены как история без ложного live
+PASS полной historical recursion. Approved RU/EN pairs, Flutter/runtime,
+DB/dependencies/localization/release не менялись. OT не переоткрывался;
+stage 8, SQLite, production markup, working/web DB, commit/push не
+выполнялись.
+
+Актуальные материалы: [отчёт группы](gold_group_006_acceptance.v1.ru.md),
+[общий реестр OH1988](oh88_strongs_issue_inventory.ru.md#registry-records),
+[completion registry v21](gold_completion_registry.v21.manifest.json),
+[independent post-seal QC](gold_group_006_independent_content_qc.v2.ru.md).
+Этот checkpoint добавлен только в HANDOFF, исключённый из inventory.
+После последнего git diff --check выполняется Alarm02.wav synchronously
+три раза с паузами 350 ms, без изменения системной громкости.
+
+Proposed English commit message covering the entire current uncommitted
+set (commit not executed):
+
+```text
+Complete group 006 gold acceptance with registered deferrals [skip ci]
+
+Complete Titus, Philemon, Hebrews and James: 59 completed books,
+38 strictly accepted and 21 completed with registered deferrals.
+Independently verify 121 grids and 3676 labels; retain 3577 proven
+labels and exclude 99 exact labels at 37 loci across 31 closed edges.
+
+Correct two Jas 2:3 phrase-alignment rows. Preserve three original
+error verdicts, all frozen inputs and the strict acceptance branch.
+Record bounded source research, the Heb 10:31 article deferral,
+actual reviewer recovery, approved candidate-v3 registry metadata
+and the legacy QC diagnostic adapter without changing validators.
+Update the single OH1988 registry, completion manifests, HANDOFF,
+roadmap, alignment plan, reports, validation log and artifact inventory.
+
+Validation: 234 regression tests, stage 3-7 and four live completion
+checks, independent content/overlay/post-seal audits, exact accounting,
+5113-entry SHA/byte inventory, frozen preservation, docs and git checks.
+```
