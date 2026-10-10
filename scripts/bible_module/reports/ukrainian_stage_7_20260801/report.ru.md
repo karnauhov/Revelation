@@ -1688,3 +1688,50 @@ Gold: завершено 62/66; строго принято 38/66; с отсро
 На каждый трудный случай проведён один bounded research cycle. Registered deferrals удовлетворяют завершению; повторный цикл не требуется. OT, другие группы и global finalize не запускались. Этап 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
 
 [Отчёт группы № 7](gold_group_007_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v24](gold_completion_registry.v24.manifest.json), [independent content QC](gold_group_007_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_007_independent_content_qc.v2.ru.md).
+
+
+## Группа № 8 — 2John завершена, 2026-10-10
+
+Gold: завершено 63/66; строго принято 38/66; с отсрочками 25.
+
+Проверены 491 полных labels; effective proven 473; deferred 18 (13 uncertain, 5 error, 0 accepted dependency), 7 issues в 6 loci. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties/errors.
+[2John: completion manifest](gold_group_008_2John.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v25](gold_completion_registry.v25.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 8 — 3John завершена, 2026-10-10
+
+Gold: завершено 64/66; строго принято 38/66; с отсрочками 26.
+
+Проверены 446 полных labels; effective proven 433; deferred 13 (13 uncertain, 0 error, 0 accepted dependency), 7 issues в 7 loci. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties/errors.
+[3John: completion manifest](gold_group_008_3John.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v26](gold_completion_registry.v26.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 8 — Jude завершена, 2026-10-10
+
+Gold: завершено 65/66; строго принято 38/66; с отсрочками 27.
+
+Проверены 934 полных labels; effective proven 922; deferred 12 (12 uncertain, 0 error, 0 accepted dependency), 6 issues в 6 loci. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties/errors.
+[Jude: completion manifest](gold_group_008_Jude.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v27](gold_completion_registry.v27.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 8 — Rev завершена, 2026-10-10
+
+Gold: завершено 66/66; строго принято 38/66; с отсрочками 28.
+
+Проверены 1769 полных labels; effective proven 1731; deferred 38 (37 uncertain, 0 error, 1 accepted dependency), 12 issues в 12 loci. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties/errors.
+[Rev: completion manifest](gold_group_008_Rev.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v28](gold_completion_registry.v28.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Итоговый checkpoint 2026-10-10 — группа № 8 завершена
+
+**Gold: завершено 66/66; строго принято 38/66; с отсрочками 28.**
+
+2John, 3John, Jude, Rev завершены как `completed_with_registered_deferrals`; незарегистрированного остатка группы нет. Проверены 87 окончательных полных выбранных сеток / 3640 labels: effective proven 3559; исключены 81 labels, 32 issues в 31 loci и 23 reciprocal edges. Текущий content QC: uncertainties 75, errors 5; accepted dependency exclusions 1.
+
+Разрешены 45 исторических stable keys; исключены 55 исторических и 26 новых keys. Исходные QC verdicts и sealed answers сохранены. Deferred nodes без Strong; недоказанные links и classifiers исключены из effective accepted alignment, training, scoring и Strong export. Production accepted links остаются 0.
+
+Единственный Markdown registry обновлён на месте: 231 issue IDs, 190 active issues / 530 active keys. 191 записей остальных книг сохранены побайтно в Markdown table и technical proof. Immutable completion snapshot — техническое доказательство, а не параллельный рабочий реестр.
+
+Один bounded research cycle на трудный случай завершён. Registered deferrals удовлетворяют завершению; повторный цикл не требуется. Приёмка группы 8 не выполняет global finalize. Этап 7 остаётся открытым. OT, другие группы, этап 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+[Отчёт группы № 8](gold_group_008_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v28](gold_completion_registry.v28.manifest.json), [independent content QC](gold_group_008_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_008_independent_content_qc.v2.ru.md).

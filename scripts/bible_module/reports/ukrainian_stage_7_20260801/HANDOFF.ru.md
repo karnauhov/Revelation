@@ -2810,3 +2810,97 @@ Validation: 234 regression tests, stage 3-7, three live completion checks,
 independent content/overlay/post-seal audits, SHA/byte preservation,
 exact accounting, inventory, docs/navigation and git checks.
 ```
+
+
+## Начало текущей группы № 8 — 2026-10-10
+
+Исходный checkpoint: Gold завершено 62/66; строго принято 38/66; с отсрочками 24. Git status clean; пользовательских изменений до начала сеанса нет. До полного чтения work JSONL stage 3 offline / 4 / 5 / 6 / 7 --check PASS; физически проверены все 5516 entries inventory (SHA/bytes, mismatches 0, 30.313 s). Девять exact baseline snapshots сохранены. Locked остаток: 2John 491 labels / 13 стихов / 14 uncertain + 5 error; 3John 446 / 14 / 17 uncertain; Jude 934 / 25 / 8 uncertain; Rev 1769 / 35 / 56 uncertain. Всего 3640 labels / 87 полных сеток / 100 исходных blocking stable keys в 32 loci. Исходные passes/adjudication/initial QC не повторяются. Isolated fork_none authors: /root/letters_research и /root/rev_research; independent reviewer /root/independent_qc лично проверяет final grids. Scope только группа 8; OT, другие группы и global finalize не запускаются. Policy v8 и точные input locks сохранены. Completion пока не заявлена.
+
+
+## Возобновление группы № 8 после usage-limit interruption
+
+Три исполнителя остановились до delivery итоговых research/QC artifacts из-за лимита аккаунта. Владелец запросил продолжение. Сохранённые source packets, exact scan derivatives, input locks и own inspection findings сохранены; те же авторы/reviewer возобновлены в своих фактических ролях. Frozen answers не регенерируются; завершённые research cycles не повторяются. Счётчики остаются 62/38/24 до независимого delivery, live completion и регистрации. [Recovery receipt](../../work/ukrainian_stage_7_20260801/session_group8_20261010_root_01/continuation_recovery.v1.json).
+
+
+## Группа № 8 — 2John завершена, 2026-10-10
+
+Gold: завершено 63/66; строго принято 38/66; с отсрочками 25.
+
+Проверены 491 полных labels; effective proven 473; deferred 18 (13 uncertain, 5 error, 0 accepted dependency), 7 issues в 6 loci. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties/errors.
+[2John: completion manifest](gold_group_008_2John.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v25](gold_completion_registry.v25.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 8 — 3John завершена, 2026-10-10
+
+Gold: завершено 64/66; строго принято 38/66; с отсрочками 26.
+
+Проверены 446 полных labels; effective proven 433; deferred 13 (13 uncertain, 0 error, 0 accepted dependency), 7 issues в 7 loci. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties/errors.
+[3John: completion manifest](gold_group_008_3John.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v26](gold_completion_registry.v26.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 8 — Jude завершена, 2026-10-10
+
+Gold: завершено 65/66; строго принято 38/66; с отсрочками 27.
+
+Проверены 934 полных labels; effective proven 922; deferred 12 (12 uncertain, 0 error, 0 accepted dependency), 6 issues в 6 loci. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties/errors.
+[Jude: completion manifest](gold_group_008_Jude.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v27](gold_completion_registry.v27.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 8 — Rev завершена, 2026-10-10
+
+Gold: завершено 66/66; строго принято 38/66; с отсрочками 28.
+
+Проверены 1769 полных labels; effective proven 1731; deferred 38 (37 uncertain, 0 error, 1 accepted dependency), 12 issues в 12 loci. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties/errors.
+[Rev: completion manifest](gold_group_008_Rev.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v28](gold_completion_registry.v28.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Итоговый checkpoint 2026-10-10 — группа № 8 завершена
+
+**Gold: завершено 66/66; строго принято 38/66; с отсрочками 28.**
+
+2John, 3John, Jude, Rev завершены как `completed_with_registered_deferrals`; незарегистрированного остатка группы нет. Проверены 87 окончательных полных выбранных сеток / 3640 labels: effective proven 3559; исключены 81 labels, 32 issues в 31 loci и 23 reciprocal edges. Текущий content QC: uncertainties 75, errors 5; accepted dependency exclusions 1.
+
+Разрешены 45 исторических stable keys; исключены 55 исторических и 26 новых keys. Исходные QC verdicts и sealed answers сохранены. Deferred nodes без Strong; недоказанные links и classifiers исключены из effective accepted alignment, training, scoring и Strong export. Production accepted links остаются 0.
+
+Единственный Markdown registry обновлён на месте: 231 issue IDs, 190 active issues / 530 active keys. 191 записей остальных книг сохранены побайтно в Markdown table и technical proof. Immutable completion snapshot — техническое доказательство, а не параллельный рабочий реестр.
+
+Один bounded research cycle на трудный случай завершён. Registered deferrals удовлетворяют завершению; повторный цикл не требуется. Приёмка группы 8 не выполняет global finalize. Этап 7 остаётся открытым. OT, другие группы, этап 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+[Отчёт группы № 8](gold_group_008_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v28](gold_completion_registry.v28.manifest.json), [independent content QC](gold_group_008_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_008_independent_content_qc.v2.ru.md).
+
+
+## Final read-only checkpoint — группа № 8, 2026-10-10
+
+Gold: завершено 66/66; строго принято 38/66; с отсрочками 28. 2John, 3John, Jude и Rev завершены как `completed_with_registered_deferrals`; незарегистрированного остатка группы нет. Global finalize не выполнялся; stage 7 остаётся открытым.
+
+Фактически выполненные последние проверки: writer session33047 exit0; root stage7 --check session83356 exit0/error_count0/accepted_links0, generation status `blocked_before_gold_and_alignment_acceptance`; root full read-only audit session86126 exit0/PASS. Итог: 87 полных сеток / 3640 labels / 3559 proven / 81 deferred / 32 issues в 31 loci / 23 reciprocal edges; 75 uncertain, 5 исходных error и 1 accepted dependency exclusion. Все deferred assignments без Strong и исключены из effective alignment, training, scoring и Strong export. 45 исторических stable IDs разрешены; новых corrections в sealed answers 0.
+
+Final regression: 234 tests PASS (11.502 s); stage3 offline / 4 / 5 / 6 PASS. Independent content, candidate, overlay и actual post-seal QC PASS; four live completion contracts PASS. Docs sync, forbidden patterns, accounting, UTF8/JSON, navigation и git diff checks PASS. Сохранены 5513 immutable baseline entries, 1688 baseline JSONL и 191 other-book proof/Markdown rows; stage6 text/comment, mapping, original selection, gold selection/folds и frozen reviewer answers не изменялись.
+
+Separate writer `/root/inventory_writer` выполнил единственный существующий inventory helper после выдачи finished receipt: 5750 entries (373 report + 5377 work), 2054443 bytes, SHA256 `c3a6b2e2f28f870352c34a4dcfcf271082675b53a941cc87058429e4185ee374`. Roster/canonical seal/all physical SHA/bytes PASS, mismatches0; 18332 locks / 296 unique files, 114 current objects, 9 exact bridges / 7 explicit resolutions. Historical mutable ancestry не объявлена live PASS, implicit fallback не использован. Writer after-helper file writes0. Root final audit независимо подтвердил exact inventory roster/digests, other-book bytes, 6 новых доступных docs и zero broken links. После inventory обновлён только этот HANDOFF, исключённый из inventory; остальные checks stdout-only.
+
+Итоговые файлы: [отчёт группы 8](gold_group_008_acceptance.v1.ru.md), [completion registry v28](gold_completion_registry.v28.manifest.json), [единый OH1988 registry](oh88_strongs_issue_inventory.ru.md#registry-records), [independent QC v2](gold_group_008_independent_content_qc.v2.ru.md), [inventory](artifact_inventory.manifest.json), [writer finished receipt](../../work/ukrainian_stage_7_20260801/session_group8_20261010_inventory_writer_01/pre_refresh_physical_audit.v1.json), [root finished receipt](../../work/ukrainian_stage_7_20260801/session_group8_20261010_root_01/final_pre_inventory_checks.v1.json).
+
+Current git scope: 30 changed/untracked files, только content roadmap/plan и stage7 reports/manifests/inventory. Отдельные work artifacts gitignored. OT, другие группы, stage8, SQLite, production Strong, runtime/Flutter, working/web DB, commit и push не выполнялись. После последнего git diff check следует синхронный Alarm02.wav ×3 с короткими паузами и без изменения громкости.
+
+Предлагаемое английское сообщение коммита для всего текущего незакоммиченного набора (commit не выполнялся):
+
+```text
+Complete group 008 gold acceptance with registered deferrals [skip ci]
+
+Complete 2John, 3John, Jude and Revelation: 66 books completed,
+38 strictly accepted and 28 completed with registered deferrals.
+Resolve 45 historical stable IDs, independently verify 87 grids and
+3640 labels, retain 3559 proven labels and exclude 81 labels at
+31 loci across 23 reciprocal edges while preserving original QC.
+
+Add versioned source resolutions, deferral and completion proofs,
+independent content and post-seal QC, and preserved-input manifests.
+Update the single OH1988 issue registry, completion registry,
+HANDOFF, roadmap, alignment plan, reports, validation log and
+artifact inventory without regenerating frozen review answers.
+
+Validation: 234 regression tests, stage 3-7 checks, four live completion
+contracts, independent audits, SHA/byte preservation, exact accounting,
+inventory, documentation/navigation and git checks.
+```
