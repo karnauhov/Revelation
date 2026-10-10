@@ -1,0 +1,667 @@
+{
+  "schema_version": 1,
+  "artifact": "gold_group_005_1Thess_2Thess_source_resolution",
+  "date": "2026-10-10",
+  "research_author_id": "/root/thess_research",
+  "role": "researcher_not_corrector_not_independent_QC",
+  "status": "immutable_author_proposal_independent_QC_pending",
+  "counts": {
+    "historical_loci": 13,
+    "historical_keys": 58,
+    "historical_released": 12,
+    "historical_deferred": 46,
+    "supplemental_refs": 8,
+    "supplemental_keys": 21,
+    "distinct_loci": 19,
+    "scoped_keys": 79,
+    "all_released_or_retained": 26,
+    "all_deferred": 53,
+    "classic_G6063_occurrences_proved": 5,
+    "classic_G6063_keys_proved": 12,
+    "correction_candidates": 1,
+    "Strong_assignments": 0
+  },
+  "by_ref_summary": {
+    "1Thess.1.7": {
+      "conclusion": "proven_occurrence_correspondence",
+      "released_stable_keys": [
+        "original:gold7:original:0af5513bad540ee4a7e23e415d434b30",
+        "target:gold7:target:7ca3471f311aded90b9c38e440d33aa7"
+      ],
+      "deferred_stable_keys": [],
+      "missing_proof": ""
+    },
+    "1Thess.2.3": {
+      "conclusion": "deferred_strong_unassigned",
+      "released_stable_keys": [],
+      "deferred_stable_keys": [
+        "original:gold7:original:9616fee8aa74be888a91ce06599d53fd",
+        "target:gold7:target:f0e3dc41b618f39d9397c42c1d23177b"
+      ],
+      "missing_proof": "Нет occurrence-specific признака, различающего οὐδέ и οὔτε за вторым ані; G3761/G3777 не назначаются."
+    },
+    "1Thess.2.6": {
+      "conclusion": "deferred_strong_unassigned",
+      "released_stable_keys": [],
+      "deferred_stable_keys": [
+        "original:gold7:original:1944d0a5b9088bd36209ae6c3226d5b0",
+        "original:gold7:original:209777f678348c921255fe5d07c7ba0e",
+        "original:gold7:original:54b980b07e0d9a4f5e7c4b230a6426dc",
+        "original:gold7:original:795149c6c64e253d077972421bc0f129",
+        "original:gold7:original:818252a9812568f18aa8511ceb9f65ae",
+        "original:gold7:original:a1eda397312ffc4b076dc25837e63e54",
+        "original:gold7:original:d472128a53fc781fb2aa9c1052614ca2"
+      ],
+      "missing_proof": "Нет разрешённого exact projection/cross-verse span contract для этих семи frozen IDs. В accepted layer исключить, classifier original_omitted не считать доказанным."
+    },
+    "1Thess.2.11": {
+      "conclusion": "mixed_historical_boundary_deferral_and_supplemental_classic_proof",
+      "released_stable_keys": [
+        "original:gold7:original:08b7a1c0bad158ef122d66ad7cdf0504",
+        "target:gold7:target:23edbb5d299c707e29feb2c66b7b5044",
+        "target:gold7:target:3329dfd3d511920679fd8713439853d7"
+      ],
+      "deferred_stable_keys": [
+        "original:gold7:original:089c593eedacf325cda73335c3850b5b",
+        "original:gold7:original:87f38fd5266296c338be9c9c53004161",
+        "original:gold7:original:b3e0a487a24cba60e9128f746be2ccfa",
+        "original:gold7:original:b3f3729f2081fdb085449b3911578779",
+        "original:gold7:original:e4a2bde82c814516eeb33b3eef7394a6",
+        "original:gold7:original:e72ee90e8b91ba05599f7cb4e0b6be21"
+      ],
+      "missing_proof": "Для historical шести IDs нет разрешённого exact cross-verse projection. Supplemental οἴδατε не разрешает этот остаток."
+    },
+    "1Thess.2.18": {
+      "conclusion": "deferred_strong_unassigned",
+      "released_stable_keys": [],
+      "deferred_stable_keys": [
+        "original:gold7:original:5adcb51643ed27a5bc9ff106810f9f12",
+        "target:gold7:target:7e499996a6deab6bc7e55ddba8fbf0e8",
+        "target:gold7:target:baf809e8743789257b732a322d783710"
+      ],
+      "missing_proof": "Нет признака exact connective identity διότι versus διό; оба значения могут реализоваться связкой Тим то."
+    },
+    "1Thess.3.2": {
+      "conclusion": "mixed_proven_minister_and_registered_deferrals",
+      "released_stable_keys": [
+        "original:gold7:original:946fbccbc1676c4a1d9355ac487c8d35",
+        "target:gold7:target:de0abe562396706db4d489cbf29da0b3"
+      ],
+      "deferred_stable_keys": [
+        "original:gold7:original:8584656e65aaec2d4e4cf7fcc5eb569d",
+        "original:gold7:original:93d6d1220ff8555c566564f125438d6f",
+        "target:gold7:target:24e5c0b10c43ae1ee53886fa084adeeb"
+      ],
+      "missing_proof": "Для συνεργόν отсутствует доказательство именно omission, а не альтернативного source title. Для в вашій вірі отсутствует различающий ὑπέρ/περί признак."
+    },
+    "1Thess.5.5": {
+      "conclusion": "proven_occurrence_correspondence",
+      "released_stable_keys": [
+        "original:gold7:original:865073e193a1cde47363aa0e6069061e",
+        "target:gold7:target:af35e54ef56b0a70f6fdcb87f38e3405"
+      ],
+      "deferred_stable_keys": [],
+      "missing_proof": ""
+    },
+    "2Thess.1.4": {
+      "conclusion": "deferred_semantics_and_supplemental_classic_gap",
+      "released_stable_keys": [],
+      "deferred_stable_keys": [
+        "original:gold7:original:146782705adfc747906e5fc28ae29b9c",
+        "original:gold7:original:71e288b2683fa6c7342cb809935d5ca4",
+        "target:gold7:target:98d1d5a5d91bc3420ae08caf2788f467",
+        "target:gold7:target:e37c58efd1731364aca19bda4ed540d8"
+      ],
+      "missing_proof": "Нет доказательства intentional semantic recasting ὑπομονή→стражда́ння либо иного exact source reading. Дополнительный G7013 classic gap описан отдельно в findings. Для G7013 нет непротиворечивого explicit conventional-classic mapping для exact compound occurrence; ни2620, ни2744 не назначены."
+    },
+    "2Thess.2.3": {
+      "conclusion": "mixed_proven_lexical_atoms_and_idiom_deferral",
+      "released_stable_keys": [
+        "original:gold7:original:49ea3d4985711fe66428d2c5813ce797",
+        "original:gold7:original:de0045579818126b9c1bc6600e2cd95b",
+        "target:gold7:target:774216e02d924d087cf323bf150bb347",
+        "target:gold7:target:e9e935d454de0f801d34b54b1736b7e4"
+      ],
+      "deferred_stable_keys": [
+        "original:gold7:original:e74e1e2c3cd7ffe3305fba65e0277962",
+        "target:gold7:target:a5f2df7f79f0c96333d4c7073ba62c8e",
+        "target:gold7:target:bfd05537d2a0bec4370114b2cc0303c4"
+      ],
+      "missing_proof": "Нет достаточного exact decomposition υἱός в призна́чений на; phrase-level destination interpretation не доказывает текущие source NULL/addition classifiers."
+    },
+    "2Thess.2.7": {
+      "conclusion": "mixed_proven_article_and_idiom_deferrals",
+      "released_stable_keys": [
+        "original:gold7:original:c98878894473139c1ceb5ee171449f93",
+        "target:gold7:target:191531f5ed79712e867bcf7dfd8068e6"
+      ],
+      "deferred_stable_keys": [
+        "original:gold7:original:3df92302d019235100c0950da8d2b2c6",
+        "original:gold7:original:c658068aaae901f3cb53ef764f8b8622",
+        "target:gold7:target:05ab12dea279b6488c1c135ef3a33b27",
+        "target:gold7:target:24705a9c42c9863544507685df9bc5eb",
+        "target:gold7:target:56daa6967cb084af0726833b7c3346f1",
+        "target:gold7:target:6a127efb974466ca19b29bd0e203f4ea",
+        "target:gold7:target:86b3a795b8e20143da3fdbd5d25f2fb2",
+        "target:gold7:target:a9389e8520531dfebab4ef537b62f3bc",
+        "target:gold7:target:defb27bc5a06b9025da29044ed7190f6",
+        "target:gold7:target:e1c2328c4f0f5270b3d7c102c7b76af1"
+      ],
+      "missing_proof": "Нужен exact group proof для elliptical continuation, resumed subject и γένηται/ἐκ μέσου→не бу́де усу́нений Він із сере́дини. После текущей bounded попытки десять non-article keys оставить unassigned, без новых NULL/addition claims."
+    },
+    "2Thess.2.13": {
+      "conclusion": "deferred_strong_unassigned",
+      "released_stable_keys": [],
+      "deferred_stable_keys": [
+        "original:gold7:original:81214603910a3683d8174fcc08070e08",
+        "target:gold7:target:70322233d02f61375f8586caed42fd52"
+      ],
+      "missing_proof": "Нет разрешённого occurrence source selection exact ἀπ᾽ἀρχῆς и компонентов; selected critical node сохраняется, неподтверждённые bindings исключаются."
+    },
+    "2Thess.3.6": {
+      "conclusion": "deferred_strong_unassigned",
+      "released_stable_keys": [],
+      "deferred_stable_keys": [
+        "original:gold7:original:8461b9d510810babe7f5551b50f49aeb",
+        "target:gold7:target:0ec2e2119fa81f5897792b42da9e3c7b",
+        "target:gold7:target:a16802b56b13c2c92ddaa52132f9b6ef"
+      ],
+      "missing_proof": "Нет exact source-form selection для прийняли́ ви; общий classic G3880 не делает существующие NULL/addition labels доказанными."
+    },
+    "2Thess.3.11": {
+      "conclusion": "deferred_strong_unassigned",
+      "released_stable_keys": [],
+      "deferred_stable_keys": [
+        "original:gold7:original:6a3559441320417f57dcf36ed73b215f",
+        "target:gold7:target:2e4e697fbc6df77116ab5b65f4b3a5c4",
+        "target:gold7:target:5af553f497cc0364a88943aea4dea30a",
+        "target:gold7:target:bf5ee0ddf07c893eb2d0883fdfcbf861",
+        "target:gold7:target:d5ad5f8aa8674d36f7934071a5ff62fe"
+      ],
+      "missing_proof": "Не найден occurrence-specific proof, что pretending phrase является доказанным G4020 contribution; source omission и четыре translation additions не принимаются как proven."
+    },
+    "1Thess.1.4": {
+      "conclusion": "proven_scoped_classic_identity_without_assignment",
+      "released_stable_keys": [
+        "original:gold7:original:1cad8ca0fcbd5edddc33a6fca9879ef8",
+        "target:gold7:target:2b45183d716f3c90c58e275b9ffec259"
+      ],
+      "deferred_stable_keys": [],
+      "missing_proof": ""
+    },
+    "1Thess.5.2": {
+      "conclusion": "proven_scoped_classic_identity_without_assignment",
+      "released_stable_keys": [
+        "original:gold7:original:512c4ef791457832c225021835ac6798",
+        "target:gold7:target:94d3f4dc21c6e529581bb3c0367c1eff"
+      ],
+      "deferred_stable_keys": [],
+      "missing_proof": ""
+    },
+    "2Thess.1.8": {
+      "conclusion": "proven_scoped_classic_identity_without_assignment",
+      "released_stable_keys": [
+        "original:gold7:original:72cb6b21be5ba83b63b10cff11467a02",
+        "target:gold7:target:cc091862be716912346865380e3f5229"
+      ],
+      "deferred_stable_keys": [],
+      "missing_proof": ""
+    },
+    "2Thess.2.4": {
+      "conclusion": "proven_inherited_source_scope_error_requires_distinct_corrector_and_QC",
+      "released_stable_keys": [],
+      "deferred_stable_keys": [
+        "original:gold7:original:8146b1a458398a51b81864413fb2ef9c",
+        "original:gold7:original:b0da9c3f4fe033ffb984bd9831a1b0c0",
+        "target:gold7:target:12fcac04fa834879859d93a1aa2a88ed",
+        "target:gold7:target:8535a0732b53317dafb336782d041c0a",
+        "target:gold7:target:d942b43fc6fc7ddd6c4d2033a3d6a8ce"
+      ],
+      "missing_proof": "Для полной corrected atom decomposition требуется отдельный corrector/QC. Source choice traditional-only ὡς θεόν не разрешён frozen selected layer; не вводить fabricated addition/omission/NULL classifiers."
+    },
+    "2Thess.2.6": {
+      "conclusion": "proven_scoped_classic_identity_without_assignment",
+      "released_stable_keys": [
+        "original:gold7:original:ad2a80386e9198dc640a113f26641483",
+        "target:gold7:target:001f3c4107dd00cc986d1023f9cce22e",
+        "target:gold7:target:1c6ec2e328e6f769f273a53adef279f3"
+      ],
+      "deferred_stable_keys": [],
+      "missing_proof": ""
+    },
+    "2Thess.2.11": {
+      "conclusion": "proven_predictive_present_translation",
+      "released_stable_keys": [
+        "original:gold7:original:eedaca3140aa8df074c14dc4ad041473",
+        "target:gold7:target:9b524191d8ddfd7b856e777f35845f31"
+      ],
+      "deferred_stable_keys": [],
+      "missing_proof": ""
+    }
+  },
+  "readable_report": {
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_thess_research_01/gold_group_005_1Thess_2Thess.source_resolution.v1.ru.md",
+    "bytes": 50858,
+    "sha256": "687c06a03d31db3b7d7ad43bd2b37901fc8ae464f7463d291357a982bda59c33"
+  },
+  "input_locks": [
+    {
+      "role": "1Thess:adjudication",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/1Thess/completed/1Thess.shard_052.pass1-pass2.third_adjudication.jsonl",
+      "bytes": 267096,
+      "sha256": "8d913a3593f52e259cac77235d614a76f7af87728db69f88e733425561bc078d",
+      "verified": true
+    },
+    {
+      "role": "1Thess:adjudication_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/1Thess/completed/1Thess.shard_052.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "bytes": 5892,
+      "sha256": "b2e8ea4319b5a3f873e07efa75e17c3d8a93ccf75656379b678072c1d6f7ae65",
+      "verified": true
+    },
+    {
+      "role": "1Thess:answer_free_template",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/1Thess/review_pass_2.shard_052.compact.template.jsonl",
+      "bytes": 816789,
+      "sha256": "cab7bb88682a6631a3b51c71381665cef1c57a1d932a732604edf51cddd4f943",
+      "verified": true
+    },
+    {
+      "role": "1Thess:answer_free_template_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/1Thess/gold_compact_review.manifest.json",
+      "bytes": 4265,
+      "sha256": "cfcfcfe13bf77de4b8022ba8f2f04d4b9f6adbcf816349fec6b508d10b25b22f",
+      "verified": true
+    },
+    {
+      "role": "1Thess:comparison",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/1Thess.pass1-pass2.disagreements.jsonl",
+      "bytes": 372292,
+      "sha256": "df4c25e624eab4fc33474a6b5fa075ed462f60a58f5ea23d3ae093c8b1b1ae3d",
+      "verified": true
+    },
+    {
+      "role": "1Thess:comparison_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/1Thess.pass1-pass2.disagreements.jsonl.manifest.json",
+      "bytes": 1494,
+      "sha256": "aeec643cd9af722defecad5f715501a418dc805856cd76cd35f9f0426792f7d4",
+      "verified": true
+    },
+    {
+      "role": "1Thess:old_qc",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/1Thess/qc/completed/1Thess.shard_052.third_adjudication.blocking_content_qc.codex-20260919.jsonl",
+      "bytes": 741315,
+      "sha256": "7420623166a9081385d1af519c1a7b89db1060766ca7cfe2a88ad01e725a32ce",
+      "verified": true
+    },
+    {
+      "role": "1Thess:old_qc_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/1Thess/qc/completed/1Thess.shard_052.third_adjudication.blocking_content_qc.codex-20260919.jsonl.manifest.json",
+      "bytes": 28556,
+      "sha256": "0c3d82077888b328044b86b5c8b95a71ffee00756e65fa5e7ac5a0286986d1fa",
+      "verified": true
+    },
+    {
+      "role": "1Thess:pass1",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_1Thess_pass1_052/completed_external/review_pass_1.shard_052.raw.external-v1.canonical-v2.jsonl",
+      "bytes": 1060995,
+      "sha256": "051bd762ba236b22926187f6ddec58ce8d5c784eced8cfb1826a933764d785cd",
+      "verified": true
+    },
+    {
+      "role": "1Thess:pass1_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_1Thess_pass1_052/completed_external/review_pass_1.shard_052.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "bytes": 3323,
+      "sha256": "1f768c41fe0c972a9df45e9b5925130ec2ff055b83062d04e0864ee5a415b6d1",
+      "verified": true
+    },
+    {
+      "role": "1Thess:pass2",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/1Thess/completed/review_pass_2.shard_052.raw.manual-v1.jsonl",
+      "bytes": 1166356,
+      "sha256": "13374e40c4a0d8cad374a70d2c181a9051fb0d10b1a62ae6757cb26ae3a817dc",
+      "verified": true
+    },
+    {
+      "role": "1Thess:pass2_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/1Thess/completed/review_pass_2.shard_052.raw.manual-v1.jsonl.manifest.json",
+      "bytes": 3317,
+      "sha256": "7e1a2779547e4305ebad4c8923fd2ec28b4786392ae6be7a5d8ac1cb780d86ed",
+      "verified": true
+    },
+    {
+      "role": "2Thess:adjudication",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Thess/completed/2Thess.shard_053.pass1-pass2.third_adjudication.jsonl",
+      "bytes": 431547,
+      "sha256": "08342fe02ef8c1b60408fae312eee4e7202464182c8715bdd77b9555a4f0f9a1",
+      "verified": true
+    },
+    {
+      "role": "2Thess:adjudication_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Thess/completed/2Thess.shard_053.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "bytes": 6571,
+      "sha256": "840a03662d08d10b9dcf5bf35dcafb6a92e82819c395a271e04d32a699dbb485",
+      "verified": true
+    },
+    {
+      "role": "2Thess:answer_free_template",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/2Thess/review_pass_2.shard_053.compact.template.jsonl",
+      "bytes": 923908,
+      "sha256": "801c3d49d92165103acc07ea2546418c485ba4f1970cf6424bced0a5d5bc8578",
+      "verified": true
+    },
+    {
+      "role": "2Thess:answer_free_template_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/2Thess/gold_compact_review.manifest.json",
+      "bytes": 4265,
+      "sha256": "409c4de77206dab29315f3aae6813dcb7ebdc2408ca91ed19a1bc9a4422fdcc4",
+      "verified": true
+    },
+    {
+      "role": "2Thess:comparison",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/2Thess.pass1-pass2.disagreements.jsonl",
+      "bytes": 582028,
+      "sha256": "ec99f04a07ad45d66bcf0a303673d0792326ff48cda89f0ea03e9b2d0217e4e1",
+      "verified": true
+    },
+    {
+      "role": "2Thess:comparison_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/2Thess.pass1-pass2.disagreements.jsonl.manifest.json",
+      "bytes": 1494,
+      "sha256": "1ed413e7daf8baeaf92e53dcf3bbf3020481cf0810d4867f14d41f73e0075c7b",
+      "verified": true
+    },
+    {
+      "role": "2Thess:old_qc",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Thess/qc/completed/2Thess.shard_053.third_adjudication.blocking_content_qc.codex-20260919.jsonl",
+      "bytes": 1209738,
+      "sha256": "b4b76095bb81308311034d11fa7865040ea790b13c40ec0f92e4f1bef0c9ece3",
+      "verified": true
+    },
+    {
+      "role": "2Thess:old_qc_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Thess/qc/completed/2Thess.shard_053.third_adjudication.blocking_content_qc.codex-20260919.jsonl.manifest.json",
+      "bytes": 29616,
+      "sha256": "02bc62d21a348fbb2a108859a83af2a5945c0aa407b266fa815e3cb4d7d49062",
+      "verified": true
+    },
+    {
+      "role": "2Thess:pass1",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_2Thess_pass1_053/completed_external/review_pass_1.shard_053.raw.external-v1.canonical-v2.jsonl",
+      "bytes": 1202586,
+      "sha256": "55b1ea9b6ba7f50a1c49e9477d6ef090e552b557f0a993fb04ddd0f266fa8832",
+      "verified": true
+    },
+    {
+      "role": "2Thess:pass1_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_2Thess_pass1_053/completed_external/review_pass_1.shard_053.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "bytes": 3322,
+      "sha256": "5f53a12d45ab4dfa38f66a6edc8f896ba6e1da76bb253619026908972ff8ee38",
+      "verified": true
+    },
+    {
+      "role": "2Thess:pass2",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/2Thess/completed/review_pass_2.shard_053.raw.manual-v1.jsonl",
+      "bytes": 1362250,
+      "sha256": "be0c10716a656200475a0aac0d41a7072f9930b7ea7a85c67b52fb8c930f4193",
+      "verified": true
+    },
+    {
+      "role": "2Thess:pass2_manifest",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/2Thess/completed/review_pass_2.shard_053.raw.manual-v1.jsonl.manifest.json",
+      "bytes": 3317,
+      "sha256": "0e88622d517dd9c849524404c0cc00f04701918178a43710f59bf61ce41daae0",
+      "verified": true
+    },
+    {
+      "role": "gold_selected_original_layer",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_selected_original_layer.jsonl",
+      "bytes": 1190235451,
+      "sha256": "500482d4b1ce58f9749fe9e53b58bf8bce6be1558df926dacfbe0df29cf09ca4",
+      "verified": true
+    },
+    {
+      "role": "oh1988_scan",
+      "path": "scripts/bible_module/source_cache/commons_ohienko_1988.djvu",
+      "bytes": 83637482,
+      "sha256": "0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34",
+      "verified": true
+    },
+    {
+      "role": "original_token_universe",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/original_token_universe.jsonl",
+      "bytes": 1102373802,
+      "sha256": "c891e29cedf8ac040418d8f052c94a3d21e2b39ea18ed96f122dc79853899242",
+      "verified": true
+    },
+    {
+      "role": "qc_specification",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Tim/qc/qc_spec.json",
+      "bytes": 2283,
+      "sha256": "2b31380da5ce9a46e671532e8ec3327d3d0acb2f396857ff5d74b40047e0019e",
+      "verified": true
+    },
+    {
+      "role": "source_registry",
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/source_registry.json",
+      "bytes": 432394,
+      "sha256": "b1f7e2bc82929bdd40c5701f4d16ff00387da8645c5279cf311adc12973ffebd",
+      "verified": true
+    },
+    {
+      "role": "stage6_comments",
+      "path": "scripts/bible_module/work/ukrainian_stage_6_20260801/target_comments.jsonl",
+      "bytes": 8027331,
+      "sha256": "5c1cf56e94410b6ab6e418dda7be7a6b385cb72221dfb8ca943e3419de42c9f4",
+      "verified": true
+    },
+    {
+      "role": "stage6_text",
+      "path": "scripts/bible_module/work/ukrainian_stage_6_20260801/synthesized_text.jsonl",
+      "bytes": 42532305,
+      "sha256": "e55156cd4c201077de3c2e1d44b06dd1035a7a8db7c26321869f860768671bcf",
+      "verified": true
+    },
+    {
+      "role": "tagnt_act_rev",
+      "path": "scripts/bible_module/source_cache/step_tagnt_act_rev.txt",
+      "bytes": 15939932,
+      "sha256": "524e32375361e6d3fa2f7ef00b87605fdc4317a762f395651a05fdc31ad031b7",
+      "verified": true
+    },
+    {
+      "role": "target_token_inventory",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/ukrainian_token_inventory.jsonl",
+      "bytes": 544553840,
+      "sha256": "62caa29ff269c9ca8dad4b64c656728a645b3d09210034ddcc953c5363c567e1",
+      "verified": true
+    },
+    {
+      "role": "textual_fingerprint_manifest",
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/textual_fingerprint.manifest.json",
+      "bytes": 482751,
+      "sha256": "f1588f87527927c2eb53a6c7eac0f82c6fa8383af05a3a82855bad5890808df1",
+      "verified": true
+    },
+    {
+      "role": "root_selection:chain_inputs.v1.json",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_root_01/chain_inputs.v1.json",
+      "bytes": 13026,
+      "sha256": "25a7fa8ed445775597d0d00883e8eca57feb0eff23f7223c6427d79a8bdd7f4e",
+      "verified": true
+    },
+    {
+      "role": "root_selection:source_locks.v1.json",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_root_01/source_locks.v1.json",
+      "bytes": 2040,
+      "sha256": "918b39b4ab0b6a7a5c3663735ff7fad210490e3a344e8162fdb2748a0d50ea6c",
+      "verified": true
+    },
+    {
+      "role": "root_selection:residual.v1.json",
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_root_01/residual.v1.json",
+      "bytes": 432836,
+      "sha256": "d9969d54797ba7bf96fbdffb11155ad613e895e4f7954368c36d8a853bed3c12",
+      "verified": true
+    },
+    {
+      "source_id": "unfoldingword_ugnt_v0_34",
+      "path": "scripts/bible_module/source_cache/unfoldingword_ugnt_v0_34.zip",
+      "bytes": 1252605,
+      "sha256": "07318be27d0027146a62363c20ffedd0db695d7680f4b32c8ae8bd3020a29d00",
+      "expected_sha256": "07318be27d0027146a62363c20ffedd0db695d7680f4b32c8ae8bd3020a29d00"
+    },
+    {
+      "source_id": "wikisource_ohienko_1988_revisions",
+      "path": "scripts/bible_module/source_cache/wikisource_ohienko_1988_revisions.json",
+      "bytes": 8372816,
+      "sha256": "c7bc09ffdb232ded0abae6b631e382d896396750e3d3931ba5ee07e22c3e0702",
+      "expected_sha256": "c7bc09ffdb232ded0abae6b631e382d896396750e3d3931ba5ee07e22c3e0702"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_research_01/TBESG.official.pin.txt",
+      "bytes": 4736912,
+      "sha256": "312f723d7b8ef263bbdfb0451c9b8057125804dfff390b6f8544cff2a84b57f4",
+      "verification": "PASS"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_research_01/STEPBible_README.pin.md",
+      "bytes": 14495,
+      "sha256": "261d5157c0ffeadeedad3f734db945a4c3642e3e4ce5fa28002985b6c52437b1",
+      "verification": "PASS"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_research_01/Mounce_oida.html",
+      "bytes": 188802,
+      "sha256": "07df4d94e9a008c3650118682d4c7e6bc46ec3ccf2fb45beabb4cb3cbd35f9ff",
+      "verification": "PASS"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_independent_qc_01/preliminary_additional_source_scope.v1.json",
+      "bytes": 3154,
+      "sha256": "4f118586b8b941f4f3fec0fedb4e1720ac1e88022aaf680f76637306ce6e53d8"
+    }
+  ],
+  "output_locks": [
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_thess_research_01/source_resolution.cases.v1.jsonl",
+      "bytes": 292654,
+      "sha256": "f09198c8471fcf7828a13d0daffb4bc86879c126d4cce6b2c11828be2387530a"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_thess_research_01/conclusions.v1.json",
+      "bytes": 402384,
+      "sha256": "3de653900f79afdea1138093c3abdb5f0458767de42ef6fedc62177629ca910d"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_thess_research_01/exact_locus_evidence.v1.json",
+      "bytes": 728344,
+      "sha256": "cade89b8c8c732427b893c1f7db3751a8bb2f0d924905889dc22cd35ee6e5c0c"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_thess_research_01/supplemental_exact_locus_evidence.v1.json",
+      "bytes": 1242575,
+      "sha256": "187d09719d6486e9b8cca0976bbfbac6d25ff0ff763aa19397b61132447cc0a0"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_thess_research_01/official_extended_strong_rows.v1.json",
+      "bytes": 5134,
+      "sha256": "0fe9723c61a294d42d34c243120b9626414de4fc18ddd3127ce181b21c1fc162"
+    },
+    {
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_thess_research_01/online_sources_locks.v1.json",
+      "bytes": 959,
+      "sha256": "a0fa07bdb924df75741db2789418c8f00accc469bf2766f769f86b8024c9b514"
+    }
+  ],
+  "released_stable_keys": [
+    "original:gold7:original:08b7a1c0bad158ef122d66ad7cdf0504",
+    "original:gold7:original:0af5513bad540ee4a7e23e415d434b30",
+    "original:gold7:original:1cad8ca0fcbd5edddc33a6fca9879ef8",
+    "original:gold7:original:49ea3d4985711fe66428d2c5813ce797",
+    "original:gold7:original:512c4ef791457832c225021835ac6798",
+    "original:gold7:original:72cb6b21be5ba83b63b10cff11467a02",
+    "original:gold7:original:865073e193a1cde47363aa0e6069061e",
+    "original:gold7:original:946fbccbc1676c4a1d9355ac487c8d35",
+    "original:gold7:original:ad2a80386e9198dc640a113f26641483",
+    "original:gold7:original:c98878894473139c1ceb5ee171449f93",
+    "original:gold7:original:de0045579818126b9c1bc6600e2cd95b",
+    "original:gold7:original:eedaca3140aa8df074c14dc4ad041473",
+    "target:gold7:target:001f3c4107dd00cc986d1023f9cce22e",
+    "target:gold7:target:191531f5ed79712e867bcf7dfd8068e6",
+    "target:gold7:target:1c6ec2e328e6f769f273a53adef279f3",
+    "target:gold7:target:23edbb5d299c707e29feb2c66b7b5044",
+    "target:gold7:target:2b45183d716f3c90c58e275b9ffec259",
+    "target:gold7:target:3329dfd3d511920679fd8713439853d7",
+    "target:gold7:target:774216e02d924d087cf323bf150bb347",
+    "target:gold7:target:7ca3471f311aded90b9c38e440d33aa7",
+    "target:gold7:target:94d3f4dc21c6e529581bb3c0367c1eff",
+    "target:gold7:target:9b524191d8ddfd7b856e777f35845f31",
+    "target:gold7:target:af35e54ef56b0a70f6fdcb87f38e3405",
+    "target:gold7:target:cc091862be716912346865380e3f5229",
+    "target:gold7:target:de0abe562396706db4d489cbf29da0b3",
+    "target:gold7:target:e9e935d454de0f801d34b54b1736b7e4"
+  ],
+  "deferred_stable_keys": [
+    "original:gold7:original:089c593eedacf325cda73335c3850b5b",
+    "original:gold7:original:146782705adfc747906e5fc28ae29b9c",
+    "original:gold7:original:1944d0a5b9088bd36209ae6c3226d5b0",
+    "original:gold7:original:209777f678348c921255fe5d07c7ba0e",
+    "original:gold7:original:3df92302d019235100c0950da8d2b2c6",
+    "original:gold7:original:54b980b07e0d9a4f5e7c4b230a6426dc",
+    "original:gold7:original:5adcb51643ed27a5bc9ff106810f9f12",
+    "original:gold7:original:6a3559441320417f57dcf36ed73b215f",
+    "original:gold7:original:71e288b2683fa6c7342cb809935d5ca4",
+    "original:gold7:original:795149c6c64e253d077972421bc0f129",
+    "original:gold7:original:81214603910a3683d8174fcc08070e08",
+    "original:gold7:original:8146b1a458398a51b81864413fb2ef9c",
+    "original:gold7:original:818252a9812568f18aa8511ceb9f65ae",
+    "original:gold7:original:8461b9d510810babe7f5551b50f49aeb",
+    "original:gold7:original:8584656e65aaec2d4e4cf7fcc5eb569d",
+    "original:gold7:original:87f38fd5266296c338be9c9c53004161",
+    "original:gold7:original:93d6d1220ff8555c566564f125438d6f",
+    "original:gold7:original:9616fee8aa74be888a91ce06599d53fd",
+    "original:gold7:original:a1eda397312ffc4b076dc25837e63e54",
+    "original:gold7:original:b0da9c3f4fe033ffb984bd9831a1b0c0",
+    "original:gold7:original:b3e0a487a24cba60e9128f746be2ccfa",
+    "original:gold7:original:b3f3729f2081fdb085449b3911578779",
+    "original:gold7:original:c658068aaae901f3cb53ef764f8b8622",
+    "original:gold7:original:d472128a53fc781fb2aa9c1052614ca2",
+    "original:gold7:original:e4a2bde82c814516eeb33b3eef7394a6",
+    "original:gold7:original:e72ee90e8b91ba05599f7cb4e0b6be21",
+    "original:gold7:original:e74e1e2c3cd7ffe3305fba65e0277962",
+    "target:gold7:target:05ab12dea279b6488c1c135ef3a33b27",
+    "target:gold7:target:0ec2e2119fa81f5897792b42da9e3c7b",
+    "target:gold7:target:12fcac04fa834879859d93a1aa2a88ed",
+    "target:gold7:target:24705a9c42c9863544507685df9bc5eb",
+    "target:gold7:target:24e5c0b10c43ae1ee53886fa084adeeb",
+    "target:gold7:target:2e4e697fbc6df77116ab5b65f4b3a5c4",
+    "target:gold7:target:56daa6967cb084af0726833b7c3346f1",
+    "target:gold7:target:5af553f497cc0364a88943aea4dea30a",
+    "target:gold7:target:6a127efb974466ca19b29bd0e203f4ea",
+    "target:gold7:target:70322233d02f61375f8586caed42fd52",
+    "target:gold7:target:7e499996a6deab6bc7e55ddba8fbf0e8",
+    "target:gold7:target:8535a0732b53317dafb336782d041c0a",
+    "target:gold7:target:86b3a795b8e20143da3fdbd5d25f2fb2",
+    "target:gold7:target:98d1d5a5d91bc3420ae08caf2788f467",
+    "target:gold7:target:a16802b56b13c2c92ddaa52132f9b6ef",
+    "target:gold7:target:a5f2df7f79f0c96333d4c7073ba62c8e",
+    "target:gold7:target:a9389e8520531dfebab4ef537b62f3bc",
+    "target:gold7:target:baf809e8743789257b732a322d783710",
+    "target:gold7:target:bf5ee0ddf07c893eb2d0883fdfcbf861",
+    "target:gold7:target:bfd05537d2a0bec4370114b2cc0303c4",
+    "target:gold7:target:d5ad5f8aa8674d36f7934071a5ff62fe",
+    "target:gold7:target:d942b43fc6fc7ddd6c4d2033a3d6a8ce",
+    "target:gold7:target:defb27bc5a06b9025da29044ed7190f6",
+    "target:gold7:target:e1c2328c4f0f5270b3d7c102c7b76af1",
+    "target:gold7:target:e37c58efd1731364aca19bda4ed540d8",
+    "target:gold7:target:f0e3dc41b618f39d9397c42c1d23177b"
+  ],
+  "historical_QC_verdicts_preserved": true,
+  "frozen_source_fields_and_selection_modified": false,
+  "canonical_shared_inventory_modified": false,
+  "assigned_strongs": [],
+  "book_completion_authorized_by_this_manifest": false,
+  "registered_deferral_completion_allowed": true,
+  "required_next_workflow": "Independent full-grid reviewer decides content verdicts. Separate corrector inspects proven 2Thess2.4 source-scope candidate. Root registers deferrals and builds candidate; no repeat research required."
+}

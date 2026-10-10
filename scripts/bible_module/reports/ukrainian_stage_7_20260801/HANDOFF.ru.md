@@ -2374,3 +2374,164 @@ roadmap, alignment plan, reports, validation log and 4566-artifact inventory.
 Validation: 234 tests, stage 3-7 checks, live completion and independent
 content/overlay/post-seal audits, exact accounting, SHA, docs and diff checks.
 ```
+
+
+## Начало текущей группы № 5 — 2026-10-10
+
+Исходный checkpoint: Gold завершено 51/66; строго принято 38/66; с отсрочками 13. Git status clean; пользовательских изменений до начала сеанса нет. Stage3 offline /4/5/6/7 --check PASS до full work reads; physical inventory 4566 entries, SHA/byte mismatches 0. Locked остаток: 1Thess 1037 labels/27 uncertain/7 loci; 2Thess 1200/31/6; 1Tim 1013/12/5; 2Tim 1020/11/5. Строгие validators сохранены и ожидаемо отвергают исходные uncertain QC. 234 regression tests PASS (10.519 s); docs sync и forbidden-pattern checks PASS. Исторические blind/adjudication/initial QC не повторяются. Исследователи и независимый reviewer запущены без авторской истории; scope ограничен четырьмя книгами.
+
+
+## Группа № 5 — 1Thess завершена, 2026-10-10
+
+Gold: завершено 52/66; строго принято 38/66; с отсрочками 14.
+
+Проверены 1037 полных labels; effective proven 1016; deferred 21 (21 uncertain, 0 error, 0 accepted dependency), loci 5. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[1Thess: completion manifest](gold_group_005_1Thess.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v14](gold_completion_registry.v14.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 5 — 2Thess завершена, 2026-10-10
+
+Gold: завершено 53/66; строго принято 38/66; с отсрочками 15.
+
+Проверены 1200 полных labels; effective proven 1168; deferred 32 (27 uncertain, 4 error, 1 accepted dependency), loci 7. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[2Thess: completion manifest](gold_group_005_2Thess.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v15](gold_completion_registry.v15.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 5 — 1Tim завершена, 2026-10-10
+
+Gold: завершено 54/66; строго принято 38/66; с отсрочками 16.
+
+Проверены 1013 полных labels; effective proven 998; deferred 15 (15 uncertain, 0 error, 0 accepted dependency), loci 7. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[1Tim: completion manifest](gold_group_005_1Tim.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v16](gold_completion_registry.v16.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Группа № 5 — 2Tim завершена, 2026-10-10
+
+Gold: завершено 55/66; строго принято 38/66; с отсрочками 17.
+
+Проверены 1020 полных labels; effective proven 1012; deferred 8 (8 uncertain, 0 error, 0 accepted dependency), loci 4. Live completion, exact accounting/exclusions и независимый QC PASS. Исходные QC сохранены; строгая ветка ожидаемо отклоняет uncertainties.
+[2Tim: completion manifest](gold_group_005_2Tim.completed_with_deferrals.v1.manifest.json); [общий реестр](oh88_strongs_issue_inventory.ru.md); [completion registry v17](gold_completion_registry.v17.manifest.json). Другие группы/global finalize/stage8/DB/runtime/commit/push не выполнялись.
+
+
+## Итоговый checkpoint 2026-10-10 — группа № 5 завершена
+
+**Gold: завершено 55/66; строго принято 38/66; с отсрочками 17.**
+
+1Thess, 2Thess, 1Tim, 2Tim завершены как `completed_with_registered_deferrals`; незарегистрированного остатка группы нет. Проверены 129 полных сеток / 4270 labels: effective proven 4194; исключены 76 labels в 23 loci и 13 reciprocal edges. Текущие QC: uncertainties 71, errors 4; accepted dependency exclusions 1.
+
+Разрешены 15 исторических uncertain stable keys; исключены 66 исторических и 10 новых keys. Исходные QC verdicts и sealed answers сохранены. Номер Strong на deferred nodes не назначен; их недоказанные связи и NULL/addition classifiers исключены из effective alignment, training, scoring и экспорта.
+
+Единый Markdown registry обновлён на месте: 188 issue IDs, 155 active loci / 423 active keys. 162 записей других книг сохранены побайтно в Markdown table и technical proof. Locked completion snapshot является техническим доказательством, а не вторым рабочим реестром.
+
+На каждый трудный случай выполнен один bounded research cycle. Registered deferrals удовлетворяют завершению и не требуют второго цикла. OT не переоткрывался; другие группы, global finalize, stage 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+[Отчёт группы № 5](gold_group_005_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v17](gold_completion_registry.v17.manifest.json), [независимый QC](gold_group_005_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_005_independent_content_qc.v2.ru.md).
+
+## Финальные проверки группы № 5 перед inventory — 2026-10-10
+
+Gold: завершено 55/66; строго принято 38/66; с отсрочками 17.
+
+Stage 3 offline / 4–6 final read-only PASS; final regression: 234 tests PASS (7.735 s). Четыре live completion contracts и независимые full-grid/content/overlay/post-seal audits PASS: 4270 labels / 4194 proven / 76 exclusions / 23 loci / 13 edges. QC: 71 uncertain, 4 error, 1 accepted dependency. Correction 1Tim.1.13: три semantic rows, 1010 unchanged; полная сетка 1013 labels проверена. 2Thess.2.4 сохраняет четыре actual errors; exact closed exclusions: пять labels, unsupported classifier не введён. Strict branch, frozen inputs, selection/folds сохранены.
+
+Post-seal reviewer: 462 lock references / 130 unique files. Реестр: 188 issue IDs, 155 active loci / 423 active keys; 162 записи других книг сохранены побайтно. Root pre-inventory audit: 4563 baseline immutable entries / 1555 JSONL; семь новых docs доступны, broken links 0; Git scope 31 files до inventory. Canonical metadata-only v2 исправляет порядок списка авторов и 55 source arrays; original v1 и draft rejection сохранены. Docs sync, forbidden patterns, UTF-8/JSON/whitespace и git diff --check PASS. Approved RU/EN pairs, runtime/DB/dependencies/release не менялись.
+
+Следующий шаг: отдельный writer, helper-only inventory refresh. После refresh новые work/report outputs не создаются и не изменяются; последние результаты — stdout и только исключённый из inventory HANDOFF. Frozen reviewer answers не регенерируются. Затем final stage-7/SHA/accounting/git checks и Alarm02.wav синхронно три раза с паузами 350 ms, без изменения громкости.
+
+
+## Финальная приёмка группы № 5 — 2026-10-10
+
+**Gold: завершено 55/66; строго принято 38/66; с отсрочками 17.**
+1Thess, 2Thess, 1Tim, 2Tim завершены как `completed_with_registered_deferrals`.
+Незарегистрированного остатка текущей группы нет. Независимо проверены 129
+полных выбранных сеток / 4270 labels: 4194 effective proven, 76 exclusions
+в 23 loci / 13 reciprocal edges. Content QC: 71 uncertain, четыре error,
+одна accepted dependency. Разрешены 15 исторических uncertain keys;
+исключены 66 исторических и 10 новых keys. Strong на deferred nodes не
+назначен; недоказанные связи и classifiers исключены из effective accepted
+alignment, training, scoring и Strong export. Исходные QC verdicts сохранены.
+
+Отдельный corrector исправил три semantic rows 1Tim.1.13: связь adverbial
+article с «що» устранена; relative finite clause привязана к participle.
+«був» сохранён и независимо перепроверен. Existing correction seal/check
+и full 1013-label content QC PASS, 1010 остальных payloads неизменны.
+Кодирование grammatical_function_not_overt не утверждает lexical omission.
+В 2Thess.2.4 доказаны четыре cross-occurrence errors; отдельная corrector
+scope inspection подтвердила отсутствие безопасного полностью доказанного
+classifier для comparative «як Бог» в immutable selected layer. Formal
+correction не выпущена; actual error verdicts сохранены, точные пять labels
+в двух edges, включая accepted dependency «Бога», удалены из effective
+alignment. Unsupported addition/omission и competing Strong не назначались.
+1Tim.6.3/6.10 author correction hypotheses сохранены как unexecuted: exact
+composition/atom proof недостаточен, пять uncertainties остаются deferred.
+Один bounded research cycle завершён; второй цикл для completion не нужен.
+
+Единственный Markdown registry обновлён на месте: 188 issue IDs, 155 active
+loci / 423 active keys. Все 162 записи остальных книг в human table AND
+technical proof сохранены побайтно. Immutable technical snapshots являются
+доказательствами приёмки, а не параллельными рабочими реестрами. Frozen
+stage-6 text/comment, mapping, original selection, gold selection/folds и
+исходные review artifacts сохранены; frozen answers не регенерировались.
+
+Canonical metadata gate сохранил отклонённый v1 draft. Attestation v2
+сортирует тот же список реальных авторов; observations v2 меняют только
+порядок 55 source-evidence arrays. Все 4270 final decisions, verdicts,
+rationales, source/target item sets и роли неизменны. Candidate v2 прошёл
+live и фактически независимый registry/overlay audit. Post-seal reviewer
+проверил 462 lock references / 130 unique files и цепочку registry v14–v17.
+Strict validators и 38-book strict aggregate не изменены.
+
+Отдельный mechanical writer выполнил единственный helper-only inventory
+refresh после finished receipt. Перед helper нормализованы два уже явно
+заданных bridge schemas; implicit fallback не добавлен, sealed manifests
+не менялись. Проверены 547 recursive manifest locks, девять exact snapshots
+и четыре live sealed completion contracts. Inventory: **4832 entries =
+283 report + 4549 work**, **1747242 bytes**, SHA256
+`b44a7fe1c10b3d8c2aaac368cd902a9891ca7c02b45758845599106c43bda684`.
+Physical mismatches 0; exact discovered roster и canonical seal PASS.
+Сохранены 4563 immutable baseline entries / 1555 JSONL. После helper новые
+work/report outputs не создавались и не менялись; этот checkpoint добавлен
+только в исключённый из inventory HANDOFF.
+
+Root final stdout-only audit PASS, exit 0: candidate-v2/sealed/live exact
+projections, 55/38/17 roster, full accounting/exclusions, 188 issue records,
+162 other rows, семь новых docs доступны, broken links 0; Git scope 32 files
+ограничен stage-7 evidence/manifests/docs. Исходный Git status чистый;
+пользовательские изменения не перезаписывались. Final stage 3 offline / 4–6
+PASS; final regression **234 tests PASS (7.735 s)**. Последний stage-7
+read-only check после inventory PASS, exit 0: 31102 targets, 2171 gold panel
+verses, error_count 0, production accepted links 0. Global status
+`blocked_before_gold_and_alignment_acceptance` сохранён; остальные 11 книг
+и global finalize не запускались. Docs sync, forbidden patterns, UTF-8/JSON,
+whitespace и git diff --check PASS. Approved RU/EN pairs не изменены.
+OT не переоткрывался; stage 8, SQLite, production Strong markup,
+Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+Актуальные документы: [отчёт группы](gold_group_005_acceptance.v1.ru.md),
+[единый реестр OH1988](oh88_strongs_issue_inventory.ru.md#registry-records),
+[completion registry v17](gold_completion_registry.v17.manifest.json),
+[независимый post-seal QC](gold_group_005_independent_content_qc.v2.ru.md).
+После итогового git diff --check выполняется Alarm02.wav синхронно три раза
+с паузами 350 ms, без изменения системной громкости.
+
+Proposed English commit message covering the entire current uncommitted
+set (commit не выполнялся):
+
+```text
+Complete group 005 gold acceptance with deferrals [skip ci]
+
+Complete 1Thess, 2Thess, 1Tim and 2Tim: 55 completed books, 38 strictly
+accepted and 17 completed with registered deferrals.
+Independently review 129 grids and 4270 labels; retain 4194 proven labels
+and register 76 exact exclusions at 23 loci across 13 edges.
+
+Correct three 1Tim 1:13 syntax decisions. Preserve four 2Thess 2:4 error
+verdicts and exclude their closed components without unsupported classifiers.
+Record bounded source research, correction/deferral evidence, canonical
+metadata bridges and immutable locks. Update the single OH1988 registry,
+completion manifests, HANDOFF, roadmap, alignment plan, reports, validation
+log and 4832-artifact inventory while preserving frozen inputs and strict QC.
+
+Validation: 234 regression tests, stage 3-7 checks, four live completion
+contracts, independent content/overlay/post-seal audits, exact accounting,
+physical SHA/byte locks, inventory, docs and git diff checks.
+```

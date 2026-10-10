@@ -1,0 +1,634 @@
+{
+  "books": [
+    "1Tim",
+    "2Tim"
+  ],
+  "bounded_cycles_per_locus": 1,
+  "checks": {
+    "16_ref_roster_pass": true,
+    "37_key_partition_pass": true,
+    "TBESG_primary_lock_pass": true,
+    "UGNT_zip_lock_pass": true,
+    "exact_target_scalar_and_byte_spans_pass": true,
+    "historical_HANDOFF_resolved_by_exact_immutable_baseline": true,
+    "no_release_without_current_mapping_or_pending_correction_pass": true,
+    "preflight_34_expected_locks_pass": true
+  },
+  "commit_push_performed": false,
+  "conclusions": {
+    "bytes": 402754,
+    "immutable": true,
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/conclusions.v1.json",
+    "sha256": "1511232075d884f9fe8e37967d589f64098bed0c0161be39d22c933299a1eb90",
+    "technical_projection_not_working_issue_registry": true
+  },
+  "deferred_stable_keys": [
+    "original:gold7:original:e1e967c21eaa5a00dd616b20387dec54",
+    "target:gold7:target:99c3389bfc4bcb98211970c41c57fa45",
+    "original:gold7:original:3e9af351d8017688f0f2f60227f35b17",
+    "target:gold7:target:127252414580cdfa1bd45fe616756da2",
+    "original:gold7:original:98361d5a6a9bde627988654ced595cff",
+    "target:gold7:target:0f55c9c9b589cfb6a875a63ff0fb6a20",
+    "target:gold7:target:c381d95b80883673e527b4db3fa2ec42",
+    "original:gold7:original:a419d6d377bf185f7c6e8491ceba60a5",
+    "target:gold7:target:176fc3c75ed56e14e659a55d335a9f41",
+    "original:gold7:original:a7e713066ae304a3d08f5322a9bb0d82",
+    "target:gold7:target:1124c6d1730b755e2f42ec33209dd108",
+    "target:gold7:target:379ea9029f4d7db268483ded834a962b",
+    "original:gold7:original:73c958d7bacaf82fcf8d2b081166c7b6",
+    "target:gold7:target:101e17432b93a2eb7f80541da658b253",
+    "original:gold7:original:1bee42c0e8c7a189450dd264f0bccac7",
+    "target:gold7:target:574362de0109f147552eab6dbd78d2cf",
+    "original:gold7:original:4f03413faeca871285e339af11f62957",
+    "target:gold7:target:d229b9253d3ace75c7c5842f1eb212bc",
+    "target:gold7:target:f52b968158761e8faca15a79bd4653d0",
+    "target:gold7:target:23d504bf265048a9fdfea3e0f7ff0c66",
+    "original:gold7:original:18c1e6b0f3f681df32d4a3e7992e9aa3",
+    "target:gold7:target:1c6bda4247fbaa2e5fcaf7722a17cbee",
+    "target:gold7:target:0b1c9b84a801e1c4161b4eafb0ce9ab0",
+    "original:gold7:original:b0f6f0dd38802d9a15cefb81675f960e",
+    "target:gold7:target:73dc453e90785869fc3b2d474c5aed86"
+  ],
+  "edition": "ohienko_1988",
+  "frozen_QC_history_preserved": true,
+  "frozen_selected_inputs_modified": false,
+  "group": "005",
+  "historical_input_lock_resolutions": [
+    {
+      "historical_lock": {
+        "bytes": 204409,
+        "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md",
+        "sha256": "a76c0014f1c5a8ad7092154c2741de3cae9bdde1eed8d47cd96925fae539dc24"
+      },
+      "initial_input_locks_file_preserved": true,
+      "resolution": "explicit root pre-checkpoint baseline; active HANDOFF append is not used as research evidence",
+      "resolved_immutable_lock": {
+        "bytes": 204409,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_root_01/baseline/scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md",
+        "sha256": "a76c0014f1c5a8ad7092154c2741de3cae9bdde1eed8d47cd96925fae539dc24"
+      }
+    }
+  ],
+  "input_locks": [
+    {
+      "bytes": 365882,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/1Tim/completed/1Tim.shard_054.pass1-pass2.third_adjudication.jsonl",
+      "sha256": "b88e6cce33c5d6c506bbec0b187abba49bd6c67995b425a15729f816707f5f05"
+    },
+    {
+      "bytes": 4936,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/1Tim/completed/1Tim.shard_054.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "sha256": "bd54731daefa2c1ffb4357b523f8fabac00395ef9cabc95f8d5840b66c84739c"
+    },
+    {
+      "bytes": 773756,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/1Tim/review_pass_2.shard_054.compact.template.jsonl",
+      "sha256": "c1a8a2f614bb59f3a966bf9d4d0d61ec71972771f74b0f42fda5bfd88c97d368"
+    },
+    {
+      "bytes": 4257,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/1Tim/gold_compact_review.manifest.json",
+      "sha256": "4dc15c2f717f0c4a2b0807d1306774fb24d92038814c757d586a2bd3a2a5b02a"
+    },
+    {
+      "bytes": 452546,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/1Tim.pass1-pass2.disagreements.jsonl",
+      "sha256": "34dea918f0ddd368f53538e820361ef3ae756d389b810ed148bc54934eb9b90a"
+    },
+    {
+      "bytes": 1490,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/1Tim.pass1-pass2.disagreements.jsonl.manifest.json",
+      "sha256": "b13c4dd70e7e8aa1a66c58f5e3f3ceddbcd6262bf72c0069c7b03da711339f84"
+    },
+    {
+      "bytes": 880508,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/1Tim/qc/completed/1Tim.shard_054.third_adjudication.blocking_content_qc.codex-20260919.jsonl",
+      "sha256": "c40d80c4ed4d58b2910154656abcbf0d162ba620e00a24c267ad0802cd9a8d8a"
+    },
+    {
+      "bytes": 24612,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/1Tim/qc/completed/1Tim.shard_054.third_adjudication.blocking_content_qc.codex-20260919.jsonl.manifest.json",
+      "sha256": "bd18fe6db09c4369a5194dc07637f3d96bb748504dcde8f8d0cd7baba565a0a8"
+    },
+    {
+      "bytes": 997182,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_1Tim_pass1_054/completed_external/review_pass_1.shard_054.raw.external-v1.canonical-v2.jsonl",
+      "sha256": "85c34f5f6bdda47f2d844a4917909f2a59e0d19fad35f1bbb3c5e2906c407813"
+    },
+    {
+      "bytes": 3317,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_1Tim_pass1_054/completed_external/review_pass_1.shard_054.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "sha256": "064cbd2c8f72638509de80fd89ce1fe31fc543d9e885071922829e47a2bce72d"
+    },
+    {
+      "bytes": 1142779,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/1Tim/completed/review_pass_2.shard_054.raw.manual-v1.jsonl",
+      "sha256": "b06dfb056954604365583eafcc5a8440c0074bed6546a3526e4aca90924195d4"
+    },
+    {
+      "bytes": 3311,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/1Tim/completed/review_pass_2.shard_054.raw.manual-v1.jsonl.manifest.json",
+      "sha256": "cbbf62d2423755425135bc2601235142d8991ee23e8b1658e62cce5121a3af0d"
+    },
+    {
+      "bytes": 320785,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Tim/completed/2Tim.shard_055.pass1-pass2.third_adjudication.jsonl",
+      "sha256": "a1065417ff0447e09963fd41c6a2503da904c34479e7c27713c61ccc628c0e2a"
+    },
+    {
+      "bytes": 4115,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Tim/completed/2Tim.shard_055.pass1-pass2.third_adjudication.jsonl.manifest.json",
+      "sha256": "b12415e448e8a56b70c52187ead02bae40daf9756be76fadf8f64c6ca00a8afc"
+    },
+    {
+      "bytes": 799050,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/2Tim/review_pass_2.shard_055.compact.template.jsonl",
+      "sha256": "c06e0bebdc8b64c547eb050c3bca30d1e78c5eb5c587662c37817187592d305b"
+    },
+    {
+      "bytes": 4257,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/2Tim/gold_compact_review.manifest.json",
+      "sha256": "d670697fc43a1eafca207ee4c46c85601c7b92c109c7d073bfd13ead92b8f9b6"
+    },
+    {
+      "bytes": 391211,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/2Tim.pass1-pass2.disagreements.jsonl",
+      "sha256": "96dfda028b0a044a095804b734f71f6f2ce1e2b10c63ce6301f27da16b13eba7"
+    },
+    {
+      "bytes": 1490,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_comparisons/2Tim.pass1-pass2.disagreements.jsonl.manifest.json",
+      "sha256": "49a084fc522850af7d50eae26f806095cdd0a3f8aecb4df4d76eee046bc99736"
+    },
+    {
+      "bytes": 799342,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Tim/qc/completed/2Tim.shard_055.third_adjudication.blocking_content_qc.codex-20260919.jsonl",
+      "sha256": "51520e42f7f2c596658a4282c0ca08d2cbae3b0895ccfdb0a282baaa6ca64613"
+    },
+    {
+      "bytes": 23309,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Tim/qc/completed/2Tim.shard_055.third_adjudication.blocking_content_qc.codex-20260919.jsonl.manifest.json",
+      "sha256": "41ec5922d8792a029e9955611f507b13f76dc8f259b199611c3f7ae219003271"
+    },
+    {
+      "bytes": 1035392,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_2Tim_pass1_055/completed_external/review_pass_1.shard_055.raw.external-v1.canonical-v2.jsonl",
+      "sha256": "5793d7daab39fae8a519b6bba1ebcfc23da839651a07413b00ee729b43ab779c"
+    },
+    {
+      "bytes": 3316,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/external_chatgpt/uk7ext_gold_2Tim_pass1_055/completed_external/review_pass_1.shard_055.raw.external-v1.canonical-v2.jsonl.manifest.json",
+      "sha256": "897142fad9ce119508009151efade37a9c1a88f2216008c3cb21fc7143fea103"
+    },
+    {
+      "bytes": 1136542,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/2Tim/completed/review_pass_2.shard_055.raw.manual-v1.jsonl",
+      "sha256": "6c3f759619c13cbe2262f70aced2f6ab755e7576b45d6f1a23e723e382a6c884"
+    },
+    {
+      "bytes": 3311,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_compact_review/pass_2/2Tim/completed/review_pass_2.shard_055.raw.manual-v1.jsonl.manifest.json",
+      "sha256": "6e98faad8381a5e9d3cfe54d58c8547b9b8cacda348c5c593542f68d3878f1c7"
+    },
+    {
+      "bytes": 1190235451,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_selected_original_layer.jsonl",
+      "sha256": "500482d4b1ce58f9749fe9e53b58bf8bce6be1558df926dacfbe0df29cf09ca4"
+    },
+    {
+      "bytes": 83637482,
+      "path": "scripts/bible_module/source_cache/commons_ohienko_1988.djvu",
+      "sha256": "0f10b27860d3a902ea9a1b5d494937c4d11b90c57b5ed7f43e0f76462aa0ce34"
+    },
+    {
+      "bytes": 1102373802,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/original_token_universe.jsonl",
+      "sha256": "c891e29cedf8ac040418d8f052c94a3d21e2b39ea18ed96f122dc79853899242"
+    },
+    {
+      "bytes": 2283,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_review_adjudication/2Tim/qc/qc_spec.json",
+      "sha256": "2b31380da5ce9a46e671532e8ec3327d3d0acb2f396857ff5d74b40047e0019e"
+    },
+    {
+      "bytes": 432394,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/source_registry.json",
+      "sha256": "b1f7e2bc82929bdd40c5701f4d16ff00387da8645c5279cf311adc12973ffebd"
+    },
+    {
+      "bytes": 8027331,
+      "path": "scripts/bible_module/work/ukrainian_stage_6_20260801/target_comments.jsonl",
+      "sha256": "5c1cf56e94410b6ab6e418dda7be7a6b385cb72221dfb8ca943e3419de42c9f4"
+    },
+    {
+      "bytes": 42532305,
+      "path": "scripts/bible_module/work/ukrainian_stage_6_20260801/synthesized_text.jsonl",
+      "sha256": "e55156cd4c201077de3c2e1d44b06dd1035a7a8db7c26321869f860768671bcf"
+    },
+    {
+      "bytes": 15939932,
+      "path": "scripts/bible_module/source_cache/step_tagnt_act_rev.txt",
+      "sha256": "524e32375361e6d3fa2f7ef00b87605fdc4317a762f395651a05fdc31ad031b7"
+    },
+    {
+      "bytes": 544553840,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/ukrainian_token_inventory.jsonl",
+      "sha256": "62caa29ff269c9ca8dad4b64c656728a645b3d09210034ddcc953c5363c567e1"
+    },
+    {
+      "bytes": 482751,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/textual_fingerprint.manifest.json",
+      "sha256": "f1588f87527927c2eb53a6c7eac0f82c6fa8383af05a3a82855bad5890808df1"
+    },
+    {
+      "bytes": 13026,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_root_01/chain_inputs.v1.json",
+      "sha256": "25a7fa8ed445775597d0d00883e8eca57feb0eff23f7223c6427d79a8bdd7f4e"
+    },
+    {
+      "bytes": 2040,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_root_01/source_locks.v1.json",
+      "sha256": "918b39b4ab0b6a7a5c3663735ff7fad210490e3a344e8162fdb2748a0d50ea6c"
+    },
+    {
+      "bytes": 432836,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_root_01/residual.v1.json",
+      "sha256": "d9969d54797ba7bf96fbdffb11155ad613e895e4f7954368c36d8a853bed3c12"
+    },
+    {
+      "bytes": 19643,
+      "path": "AGENTS.md",
+      "sha256": "890ab1eebc2a3809682677c606c6c2f7c4a9a66ec74c2114ae9b33cb18048e12"
+    },
+    {
+      "bytes": 669,
+      "path": ".github/change_checklist.md",
+      "sha256": "5f73f7b5543075da9ceede3bacb5175a7acaa495eaedb3620422650d3cfc32e2"
+    },
+    {
+      "bytes": 204409,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_root_01/baseline/scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md",
+      "sha256": "a76c0014f1c5a8ad7092154c2741de3cae9bdde1eed8d47cd96925fae539dc24"
+    },
+    {
+      "bytes": 2286,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/ugnt_input_lock.v1.json",
+      "sha256": "a0b8c012e501e0259e3ecbd88e2a54dbe0293384fb14b9deae442dc974f3d7e0"
+    },
+    {
+      "bytes": 1137,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_independent_qc_01/preliminary_1Tim_additional_scope.v1.json",
+      "sha256": "ce50f87dba9d8ea57d380dd9482384164d49bbd325924b15e5f4547060131b67"
+    },
+    {
+      "bytes": 1012,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_independent_qc_01/preliminary_2Tim_additional_scope.v1.json",
+      "sha256": "8268fa9539a53f6b4abb1782f4c9e8d7a2a7ca8a130e7c066082331763bb751c"
+    },
+    {
+      "bytes": 4736912,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group4_20261010_g6063_research_01/TBESG.official.pin.txt",
+      "sha256": "312f723d7b8ef263bbdfb0451c9b8057125804dfff390b6f8544cff2a84b57f4"
+    }
+  ],
+  "module_code": "OH1988",
+  "new_production_Strong_assigned": false,
+  "output_locks": [
+    {
+      "bytes": 126234,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/55-1TI.usfm",
+      "sha256": "00d5491b06c381cd3b9cdc3806f0242333b2fe176acd5d8ed1ac93c975663317"
+    },
+    {
+      "bytes": 96772,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/56-2TI.usfm",
+      "sha256": "2801c71d96f51646560972db8cdaf7850eb047c1f9f61efd394af6d52f82d5a1"
+    },
+    {
+      "bytes": 40287,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/build_final_packet.py",
+      "sha256": "92a0c805a70b95444e1e7404718f5a439721dd35e70223dc339bda9232471c34"
+    },
+    {
+      "bytes": 402754,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/conclusions.v1.json",
+      "sha256": "1511232075d884f9fe8e37967d589f64098bed0c0161be39d22c933299a1eb90"
+    },
+    {
+      "bytes": 112288,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/exact_key_history.v1.json",
+      "sha256": "0ca8e372ce3097b5f4295bf8da858d89188b7f37b86f70a12c3cc07e946048db"
+    },
+    {
+      "bytes": 2327,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/external_sources.v1.json",
+      "sha256": "7b81db74b832eaffbd6a1a063b0ef9332b985b6c7d2ccc91520c5ee277815bb2"
+    },
+    {
+      "bytes": 3975,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/extract_sources.py",
+      "sha256": "dff5bd7f0587c9af81304888c836191c7d70c7c7b9dbc694c60b6d0c5c5bfdfd"
+    },
+    {
+      "bytes": 2678,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/extract_supplemental.py",
+      "sha256": "8766f4637a885a8ba9685f6ee02b79c0dc43dac4ed742fdd866b600d30b9fec2"
+    },
+    {
+      "bytes": 4010,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/finish_supplemental_sources.py",
+      "sha256": "3a05e1dcae38877687010599cdf983fd33cf237de0422fed5a381038da296051"
+    },
+    {
+      "bytes": 45446,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/gold_group_005_1Tim_2Tim.source_resolution.v1.ru.md",
+      "sha256": "ad63b5fbe3c6bc5812aad56dce5dfec74ac6c3d89eebad5a72f2f9b5db6da36d"
+    },
+    {
+      "bytes": 324406,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/gold_selected_original_layer.scoped.v1.jsonl",
+      "sha256": "8d9a15bee173581483b0637c3df4730decfdfdd6d1c40a1dba54d70b8ff61a90"
+    },
+    {
+      "bytes": 120447,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/gold_selected_original_layer.supplemental.v1.jsonl",
+      "sha256": "b268bb3efef6694cf188ddef10d2052ca6158fd00f02e47bde91b0eeb4d41cb3"
+    },
+    {
+      "bytes": 66834,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/gold_selected_original_layer.supplemental_2Tim.v1.jsonl",
+      "sha256": "80485af115d209a2128805c2627cea32982a03a179af72f501f31b03d8bcfbe5"
+    },
+    {
+      "bytes": 178978,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/historical_loci.v1.json",
+      "sha256": "2f827675e803c8294520dc4d10d008d00a516b1668587ed0f6a877789dbdb3e9"
+    },
+    {
+      "bytes": 24520,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/input_locks.v1.json",
+      "sha256": "c39bf00460e6d9bd0e916655bb99fe3dfe7f3380fe7f959a412b6f0a05fcc58a"
+    },
+    {
+      "bytes": 90372,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_ocr_1453_1472.txt",
+      "sha256": "482bead1e0ac75898d5f5c1cb1e3b9eb82b9b5ea438e5ed409bf930d6ec603ac"
+    },
+    {
+      "bytes": 9405,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_ocr_1462_1463.txt",
+      "sha256": "fc3d45892152c720010bb93a0bd0041c96516c29fedb8c91fb6568823fef4753"
+    },
+    {
+      "bytes": 487866,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1462.png",
+      "sha256": "eacd5a7f461415a8a8637b006bded263408ee9b7e1d11c6e8fed621d60a5d8ec"
+    },
+    {
+      "bytes": 1109202,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1462.tiff",
+      "sha256": "cf34883b4f43171ae142ef31cf2d2e1cabadd6d0a6904c9c3d68ebaff24fae74"
+    },
+    {
+      "bytes": 522573,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1463.png",
+      "sha256": "dca9dd03e2092a264dd59bd0985982ea7e0953a9b2e7dc14a53ab31c28704580"
+    },
+    {
+      "bytes": 1165854,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1463.tiff",
+      "sha256": "0b27e93cd5277720026cbbf367d2e3e7b513d1cd3f443f78698f6221932d4d58"
+    },
+    {
+      "bytes": 604356,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1465.png",
+      "sha256": "f4547f6d201fef2bc2c7e98893c66ac8089be9623c2f769447dc9043c39bf4cb"
+    },
+    {
+      "bytes": 1239856,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1465.tiff",
+      "sha256": "67bae82bd3eb24e51a019651c616d19b4e77ec964a163ff8204e02332e1b6808"
+    },
+    {
+      "bytes": 469748,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1466.png",
+      "sha256": "3cfc86a591ffdb8d6d447a865de03622f0da6f8447d5a8d5173f1ae02a386b8d"
+    },
+    {
+      "bytes": 1068418,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1466.tiff",
+      "sha256": "2913c55c77c9769264f98a2d48aaf3b78d57ed47d42116afbb9f5528dae5fddc"
+    },
+    {
+      "bytes": 506379,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1467.png",
+      "sha256": "2a7f01d03d7c84e93fe1f541c8337b45e279ae4bafa2fd6d34ada57d7c1f265b"
+    },
+    {
+      "bytes": 1130896,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1467.tiff",
+      "sha256": "2b4f39aeb18d55b4bbfc12669e362fb07a9aaec57727878c184dc37d872a7847"
+    },
+    {
+      "bytes": 553899,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1468.png",
+      "sha256": "7e4169141af9ed5a1be09db12c9d03de31bd9f4160e4b2e21576d60973af4758"
+    },
+    {
+      "bytes": 1199938,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1468.tiff",
+      "sha256": "8e9a802883c1fca26c08c74c304a71aeb6e56d329644fbe641e21d5b338def77"
+    },
+    {
+      "bytes": 475017,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1469.png",
+      "sha256": "3ca5ab2369ed553b846410f2666a6f39b863d51ce628f76f16cfb73562a3bc6f"
+    },
+    {
+      "bytes": 1089282,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/oh1988_page_1469.tiff",
+      "sha256": "3b58ac410a9eaa473e2ee1f9d9e5ff6d073139a238794151ccb7126e378b58eb"
+    },
+    {
+      "bytes": 364153,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/original_token_universe.scoped.v1.jsonl",
+      "sha256": "33db8d7fcd75c438c877494913affddd66663cf3d1cd340127ce10ab34b4f68c"
+    },
+    {
+      "bytes": 113945,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/original_token_universe.supplemental.v1.jsonl",
+      "sha256": "81f073a5bcbbac99feaaf07f9f4817b560592e6d4fd90ebd67b2f1c201cdd4c0"
+    },
+    {
+      "bytes": 61370,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/original_token_universe.supplemental_2Tim.v1.jsonl",
+      "sha256": "c22f58b224d5cc52d83763f2271a1e3f61aee9dddd224841dfacb17acdd09674"
+    },
+    {
+      "bytes": 2298,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/prepare_external.py",
+      "sha256": "2c87d9ed8769fcd1cfe2e1b54829ee105c03431c3004f004febf0491ca03724a"
+    },
+    {
+      "bytes": 2828,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/render_and_inspect.py",
+      "sha256": "70f7d2e00bc1c2b058e1ee9cc316e31dd59f0a2015464cf87a5f7009cedab7ac"
+    },
+    {
+      "bytes": 22409,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/sblgnt_1Tim.txt",
+      "sha256": "e4813e23b26b8b4763771b252cb41982d3af66abeead62f014e5f5f0a5323dcb"
+    },
+    {
+      "bytes": 16684,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/sblgnt_2Tim.txt",
+      "sha256": "eecea7f17f3493bb3e0d2d5922acf2ab10dae876156e0cbc395355c05f66d2bf"
+    },
+    {
+      "bytes": 18650,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/sblgnt_LICENSE",
+      "sha256": "7e7170e3cebf88a9f60c7b8421418323c09304da1af4d5e90f4da1dc1c8a2661"
+    },
+    {
+      "bytes": 3364,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/sblgntapp_1Tim.txt",
+      "sha256": "7354bb371ea83f4b3863ee0766450494e39ca053d2ce9647085b3b48eb4eddff"
+    },
+    {
+      "bytes": 3068,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/sblgntapp_2Tim.txt",
+      "sha256": "3ec81d2685f0b1d166f666fc0058e69abbc19f92e71062c34fc08298320796c0"
+    },
+    {
+      "bytes": 2224563,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/scoped_chain_inputs.v1.json",
+      "sha256": "4573fe0e1441b7e0c550b88deb4993abebb5222e5e786c2904f51ab20fa6e380"
+    },
+    {
+      "bytes": 301560,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/source_resolution.cases.v1.jsonl",
+      "sha256": "ea861d3fb2f076a08b592dac7ffe96552714717b7b7894324ce2180b670a25a3"
+    },
+    {
+      "bytes": 491179,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/supplemental_2Tim_chain_inputs.v1.json",
+      "sha256": "a232cd055bfd2376f4b0a092d990b31bee1c6241c1d2c620b0c05289584174be"
+    },
+    {
+      "bytes": 1690,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/supplemental_2Tim_input_locks.v1.json",
+      "sha256": "de60bf913de7afcc0a8934e670035676e5810a50e731bc083b5f4be7f259d9eb"
+    },
+    {
+      "bytes": 9553,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/supplemental_dictionary_rows.v1.json",
+      "sha256": "960dbb72af489880dd9580de767a247476c0fd46fd505d7567e6051cbc7246bc"
+    },
+    {
+      "bytes": 1689,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/supplemental_scope_input_locks.v1.json",
+      "sha256": "2a58e87b8ef8ccc7d149b3fdeeba9830fab0bb89e170cb99a0e0f03239d066ec"
+    },
+    {
+      "bytes": 640575,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/supplemental_scoped_chain_inputs.v1.json",
+      "sha256": "56356174f0a3459140b495507c8377b1364ce440c882396a4d61e4a6a6a403fa"
+    },
+    {
+      "bytes": 4,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/textual_fingerprint.scoped.v1.json",
+      "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+    },
+    {
+      "bytes": 2286,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/ugnt_input_lock.v1.json",
+      "sha256": "a0b8c012e501e0259e3ecbd88e2a54dbe0293384fb14b9deae442dc974f3d7e0"
+    },
+    {
+      "bytes": 87797,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/ugnt_occurrences.scoped.v1.json",
+      "sha256": "c60a224792ed678469c57b85e6e3d63e83c889f43e361401d95d0a55806b68ca"
+    },
+    {
+      "bytes": 50401,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/ugnt_occurrences.supplemental.v1.json",
+      "sha256": "2407ac14947c63afe0c985eae8a4cf77a45ff94e6ec6b7db50e51fd48e46e005"
+    },
+    {
+      "bytes": 2019,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/ugnt_source_registry.scoped.v1.json",
+      "sha256": "9dbc0cdb0211e68f856825c5ecd3851f9665a1028a0167147f405b9d98df01cf"
+    },
+    {
+      "bytes": 170861,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/ukrainian_token_inventory.scoped.v1.jsonl",
+      "sha256": "704d8e1451ccbbf673d82a164176b027c2d55ec883a25585d989a50cc4d9a6be"
+    },
+    {
+      "bytes": 67202,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/ukrainian_token_inventory.supplemental.v1.jsonl",
+      "sha256": "2b52e27442986867c268692e630a597de5f5f28e5b0ecb21140c89a6b2eab2e7"
+    },
+    {
+      "bytes": 33998,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/ukrainian_token_inventory.supplemental_2Tim.v1.jsonl",
+      "sha256": "7e889ec6aa396eb607784b3b5967a6e0dad42cb6cfd492a15d9d205e23ee8c1f"
+    },
+    {
+      "bytes": 2658,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/verify_inputs.py",
+      "sha256": "969dcc8753e4b862f53e428f3ea91308d6c023e978f5779c24025fae3486a7da"
+    }
+  ],
+  "readable_report": {
+    "bytes": 45446,
+    "format": "UTF-8 Markdown",
+    "immutable": true,
+    "language": "ru",
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/gold_group_005_1Tim_2Tim.source_resolution.v1.ru.md",
+    "sha256": "ad63b5fbe3c6bc5812aad56dce5dfec74ac6c3d89eebad5a72f2f9b5db6da36d"
+  },
+  "record_type": "bounded_source_research_manifest",
+  "released_stable_keys": [
+    "original:gold7:original:d333cb757196388fa98a75883989cd37",
+    "target:gold7:target:32fa8d65405c4798023fe5f351690756",
+    "target:gold7:target:e5b1d0173ec1e586c9004fcab7d1ca60",
+    "original:gold7:original:4eaec762166059e87b6b808ab97c0f78",
+    "target:gold7:target:ecad8c04ed4a95b1f22df5bab39d7b0e",
+    "original:gold7:original:fd47ca8653db7ac205a477b4ea9cb73e",
+    "original:gold7:original:61e00fc436411d167664ec0474dfcc61",
+    "original:gold7:original:0cf7dee9cd3f0ab108a0fd836fcb136e",
+    "target:gold7:target:5822a2b16e008e8e1e18e5b705297f47",
+    "original:gold7:original:ef96f82de603eea70cc309bcccdb8f16",
+    "target:gold7:target:be6d09158a259d253a2ce2e8c0d5be55",
+    "target:gold7:target:eb988b9602e7d941c8e5fc0360a97e2f"
+  ],
+  "researcher_is_not_corrector_or_independent_QC": true,
+  "role": "/root/tim_research",
+  "runtime_or_database_modified": false,
+  "schema_version": 1,
+  "shared_issue_registry_modified": false,
+  "source_resolution_cases": {
+    "bytes": 301560,
+    "immutable": true,
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_group5_20261010_tim_research_01/source_resolution.cases.v1.jsonl",
+    "rows": 16,
+    "sha256": "ea861d3fb2f076a08b592dac7ffe96552714717b7b7894324ce2180b670a25a3"
+  },
+  "status": "author_source_resolution_proposals_complete_pending_distinct_corrector_and_independent_QC",
+  "summary": {
+    "correction_candidate_loci": 3,
+    "correction_candidate_rows": 9,
+    "deferred_current_keys": 25,
+    "exact_target_span_checks": 22,
+    "historical_deferred_keys": 20,
+    "historical_loci": 10,
+    "historical_released_keys": 3,
+    "loci": 16,
+    "released_existing_keys": 12,
+    "scoped_stable_keys": 37,
+    "supplemental_deferred_keys": 5,
+    "supplemental_loci": 6,
+    "supplemental_released_keys": 9
+  }
+}
