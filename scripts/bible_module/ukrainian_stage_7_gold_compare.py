@@ -1524,6 +1524,26 @@ def validate_post_consensus_correction_qc(
         blocking_qc_path=blocking_qc_path,
         correction_path=correction_path,
     )
+    return _validate_post_consensus_qc_payload(
+        pass1_path=pass1_path, pass2_path=pass2_path,
+        comparison_path=comparison_path, adjudication_path=adjudication_path,
+        blocking_qc_path=blocking_qc_path, correction_path=correction_path,
+        final_qc_path=final_qc_path, correction_result=correction_result,
+    )
+
+
+def _validate_post_consensus_qc_payload(
+    *, pass1_path: Path, pass2_path: Path, comparison_path: Path,
+    adjudication_path: Path, blocking_qc_path: Path, correction_path: Path,
+    final_qc_path: Path, correction_result: Mapping[str, Any],
+    correction_scope: tuple[set[str], set[str], set[str]] | None = None,
+) -> dict[str, Any]:
+    """Shared exact final-QC checks after a separately validated correction.
+
+    The strict public entry point always proves its original correction
+    contract first. The versioned historical adapter supplies its own exact,
+    SHA-pinned correction proof; this helper never grants acceptance itself.
+    """
     (
         metadata1,
         metadata2,
@@ -1574,8 +1594,9 @@ def validate_post_consensus_correction_qc(
     blocking_qc_manifest = _read_json(
         Path(str(blocking_qc_path) + ".manifest.json")
     )
-    _, _, revalidate_only = _correction_scope_from_qc(
-        blocking_qc_manifest, final_values
+    _, _, revalidate_only = (
+        _correction_scope_from_qc(blocking_qc_manifest, final_values)
+        if correction_scope is None else correction_scope
     )
     revalidate_keys_in_order = sorted(revalidate_only)
     expected_by_record_type = {

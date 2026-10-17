@@ -205,12 +205,12 @@ def precision_metrics(correct: int, support: int) -> dict[str, Any]:
     }
 
 
-def _evaluated_rows(
+def _eligible_gold_rows(
     decisions: Sequence[Mapping[str, Any]],
     *,
-    threshold: float,
     allowed_folds: set[int],
 ) -> list[Mapping[str, Any]]:
+    """Apply frozen eligibility before reading scores, labels or strata."""
     rows: list[Mapping[str, Any]] = []
     for row in decisions:
         fold = row.get("fold_id")
@@ -220,10 +220,25 @@ def _evaluated_rows(
             raise ValueError("Decision appears in the wrong calibration fold")
         if row.get("label_source") != "frozen_gold":
             raise ValueError("Calibration decision is not from frozen gold")
+        if not isinstance(row.get("eligible"), bool):
+            raise ValueError("Calibration decision lacks explicit frozen eligibility")
+        if row["eligible"]:
+            rows.append(row)
+    return rows
+
+
+def _evaluated_rows(
+    decisions: Sequence[Mapping[str, Any]],
+    *,
+    threshold: float,
+    allowed_folds: set[int],
+) -> list[Mapping[str, Any]]:
+    rows: list[Mapping[str, Any]] = []
+    for row in _eligible_gold_rows(decisions, allowed_folds=allowed_folds):
         score = row.get("score")
         if not isinstance(score, (int, float)) or isinstance(score, bool):
             raise ValueError("Calibration score is invalid")
-        if float(score) >= threshold and row.get("eligible") is True:
+        if float(score) >= threshold:
             if row.get("correct") not in {True, False}:
                 raise ValueError("Calibration correctness label is invalid")
             rows.append(row)
@@ -279,10 +294,15 @@ def calibrate_auto_class(
 ) -> dict[str, Any]:
     """Choose maximum coverage without relaxing the 99.5% precision gate."""
 
+    eligible_calibration = _eligible_gold_rows(
+        calibration_decisions, allowed_folds=set(CALIBRATION_FOLDS)
+    )
+    # Even an unused ineligible score must not enter a gold-derived threshold
+    # grid. This is consumer safety, not a change to the frozen thresholds.
     thresholds = sorted(
         {
             float(row["score"])
-            for row in calibration_decisions
+            for row in eligible_calibration
             if isinstance(row.get("score"), (int, float))
             and not isinstance(row.get("score"), bool)
         },

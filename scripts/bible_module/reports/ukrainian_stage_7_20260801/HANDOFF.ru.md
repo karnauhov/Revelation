@@ -2904,3 +2904,154 @@ Validation: 234 regression tests, stage 3-7 checks, four live completion
 contracts, independent audits, SHA/byte preservation, exact accounting,
 inventory, documentation/navigation and git checks.
 ```
+
+## Общая сборка 7.4 — рабочий checkpoint 2026-10-17
+
+Исходный Git status clean. Завершённые book packages сохранены: 66/66 = 38 strict + 28 completed_with_registered_deferrals. До ручной обработки полных review JSONL stage 3 offline / 4 / 5 / 6 / 7 checks PASS; физически проверены 5750 inventory entries, SHA/bytes mismatches 0. Девять исходных snapshots сохранены в session_global_20261017_root_01. Исходный regression 408 tests PASS.
+
+Новые versioned registry/finalize/check-final и eligibility-aware evaluation реализованы отдельными авторами /root/gold_author и /root/evaluation_author (fork_none). Root автор narrow Dan/Isa compatibility adapter и документации; фактически отдельный /root/independent_review не наследовал авторскую историю. Старые strict validators сохраняют отказы; bounded QC scopes Gen/Samuel/1Kgs не объявлены новым full-grid review. Все 28 deferral projections проверены, 530 исключений; Zeph.2.14 включена.
+
+Текущий код после linear-complexity и corpus/source-alias guards: полный regression 450 tests PASS (37.734 s; receipt final_regression.v3.json). Independent code-family freeze review v3 PASS, 25 exact source files, 265 own checks и отдельный 256-case closure oracle. До этого stage 3-6/docs-sync/forbidden/diff и сохранение 5748 immutable baseline entries также PASS. Finalizer работает с locked candidate.v10, byte-identical report registry v6 SHA3ab26e879d53a8612128648a8a766b6a49c8f938c2fd8c666b8b8ba4c699afeb. На момент этой записи finalized annotations/mask/lock ещё не доставлены; metrics и sealed evaluation не запускались.
+
+Продолжение: закончить single all66 finalize, фактически независимый payload/accounting/provenance audit, immutable pipeline freeze, отдельно legacy/fixed folds0-3 и sealed4 с независимым воспроизведением, затем отчёт/docs и отдельный inventory writer. Не регенерировать frozen reviewer answers. Calibration, production Strong, stage8, DB/runtime, commit/push не выполняются. Эта запись является промежуточным checkpoint, не утверждением готовности gold.
+
+
+## 2026-10-17 — gold/evaluation завершены; заключительный inventory/post-refresh gate ожидается
+
+Завершены 66/66 книг: 38 strict accepted + 28 completed_with_registered_deferrals. Full 2171 verses / 87638 nodes; eligible 2171 proven verses / 45591 original link/null decisions / 87108 nodes; excluded 530 present-but-deferred nodes. Target/negative rows не увеличивают минимум original решений. Общий реестр OH1988 сохранён; accepted deferrals не переоткрывались.
+
+[Итоговый отчёт и coverage/evaluation tables](gold_global_finalization.v2.ru.md), [final lock](gold_alignment.finalized.v2.lock.json), [correction-aware/deferral-aware registry mirror v7](gold_finalization_registry.v7.manifest.json), [независимая проверка](gold_global_independent_validation.v1.ru.md), [единый реестр](oh88_strongs_issue_inventory.ru.md#registry-records).
+
+Same SHA-bound mask `d99436f6dedb48c6d7ec99acbaf4631fc009723fdc411851e2dc587e84f844db` применяется до gold membership/statistics для всех методов; whole hyperedges с deferred endpoint исключены без TP/FP/FN/support. Legacy и fixed, folds 0–3 и sealed fold 4 имеют раздельные frozen versioned artifacts/supersedes. Независимый raw-candidate пересчёт и deterministic byte replay завершены; точные P/R, знаменатели, taxonomy и coverage приведены в отчётах. Никакого tuning/training/promotion.
+
+Фактические проверки: 457 Python regressions PASS; stage 3 offline/4/5/6 PASS; author finalize/check-final и независимое воспроизведение PASS; independent payload 1 106 708 checks PASS; source-family/active-overlay/lock negatives PASS; docs sync/forbidden/navigation/scope/git diff PASS. Frozen stage-6 text/comment, mapping, original selection, gold selection/folds и reviewer artifacts сохранены. Separate writer refresh и post-refresh readonly stage7/check-final/inventory/git результаты записываются в последнем [HANDOFF](HANDOFF.ru.md) после их выполнения. Python/evidence-only scope: Flutter/runtime/DB и approved RU/EN pairs не менялись.
+
+Этап 7 целиком остаётся открытым: дальнейшая калибровка, production Strong, этап 8, SQLite, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+
+## 2026-10-17 — FINAL: общая сборка gold и baseline-оценка 7.4 завершены
+
+**Completed 66/66: 38 strict accepted + 28 completed_with_registered_deferrals.** Registered deferrals не являются blockers и не переоткрывались; 100% strict coverage не заявляется.
+
+Full-grid **2171 verses / 87638 nodes** = 45831 original + 41807 target. Eligible **2171 proven verses / 45591 original link/null decisions / 87108 nodes**; target eligible 41517. Present-but-deferred **530** = 240 original + 290 target, без вымышленных NULL и Strong links. Минимумы 2000/25000 выполнены после исключений; selection/folds/minima неизменны. OT 1315 и NT 856 proven verses; все 66 книг и frozen folds 0–4 учтены. Полные by-book/testament/fold/stratum tables и source-frequency proof — в отчёте; rare deferred-only примеры не включены в proven coverage.
+
+Все четыре evaluation artifacts завершены: legacy/fixed, folds 0–3 и отдельно sealed fold 4 после freeze и собственного unsealed predecessor. Same frozen mask `d99436f6dedb48c6d7ec99acbaf4631fc009723fdc411851e2dc587e84f844db` исключает whole candidate hyperedge до membership/statistics; исключённые строки не меняют TP/FP/FN/support. Независимый stdlib пересчёт всех4 scopes/всех strata и exact byte replay всех4 JSONL+manifest pairs PASS. P/R с точными знаменателями, taxonomy, support и exclusions сохранены раздельно. Training/tuning/calibration/promotion не выполнялись.
+
+[Итоговый отчёт 7.4](gold_global_finalization.v2.ru.md), [результаты/manifests](gold_global_finalization.v2.manifest.json), [final lock](gold_alignment.finalized.v2.lock.json), [registry mirror v7](gold_finalization_registry.v7.manifest.json), [независимая проверка](gold_global_independent_validation.v1.ru.md), [единственный OH1988 реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [фактические роли](../../work/ukrainian_stage_7_20260801/session_global_20261017_root_01/roles.v2.json).
+
+Фактические финальные проверки: full **457 Python tests PASS** на текущей SHA-bound source family; stage 3 offline/4/5/6 PASS; stage 7 `--check` и public deferral-aware `check-final-completed` PASS **после inventory refresh**. Author и независимое восстановление gold побайтно совпали; independent payload **1 106 708 checks PASS**, current registry physical/roster и active-overlay/lock negatives PASS. Docs sync, forbidden patterns, navigation, source/scope, git diff checks PASS. Separate `/root/artifact_inventory_writer` обновил inventory только существующим helper, затем проверил seal/canonical bytes/exact roster/every physical SHA+byte. Frozen review answers не регенерировались. Изначальные 5748 immutable entries и historical report/log/HANDOFF prefixes сохранены; stage-6 text/comment, mapping, original/gold selection/folds не изменены.
+
+Final inventory: **5921 entries**, SHA256 `f3c8f45ba11bcc0882ff84d099f09fe122b411e4726fc981082f1595ef8c6a39`. Final gold lock SHA256 `265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9`. Точные stdout receipts (записаны только здесь, HANDOFF исключён из inventory):
+
+```json
+{
+  "artifact": "actual_post_inventory_final_session_receipts",
+  "checks": [
+    {
+      "after": {
+        "gold_lock": "265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9",
+        "inventory": "f3c8f45ba11bcc0882ff84d099f09fe122b411e4726fc981082f1595ef8c6a39"
+      },
+      "artifact": "actual_post_inventory_read_only_check",
+      "before": {
+        "gold_lock": "265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9",
+        "inventory": "f3c8f45ba11bcc0882ff84d099f09fe122b411e4726fc981082f1595ef8c6a39"
+      },
+      "command": [
+        "C:\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "scripts.bible_module.ukrainian_stage_7",
+        "--check"
+      ],
+      "exit_code": 0,
+      "mode": "stage7",
+      "seconds": 116.031,
+      "status": "PASS",
+      "stderr": "",
+      "stdout_bytes": 2713,
+      "stdout_sha256": "265dbf9fd487a997d86a96a97f499e5503663e9633ead1b4576846e126568276",
+      "summary": {
+        "error_count": 0,
+        "processed_count": 31102,
+        "skipped_count": 682836,
+        "status": "blocked_before_gold_and_alignment_acceptance"
+      }
+    },
+    {
+      "after": {
+        "gold_lock": "265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9",
+        "inventory": "f3c8f45ba11bcc0882ff84d099f09fe122b411e4726fc981082f1595ef8c6a39"
+      },
+      "artifact": "actual_post_inventory_read_only_check",
+      "before": {
+        "gold_lock": "265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9",
+        "inventory": "f3c8f45ba11bcc0882ff84d099f09fe122b411e4726fc981082f1595ef8c6a39"
+      },
+      "command": [
+        "C:\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "scripts.bible_module.ukrainian_stage_7_gold",
+        "check-final-completed"
+      ],
+      "exit_code": 0,
+      "mode": "gold",
+      "seconds": 211.375,
+      "status": "PASS",
+      "stderr": "",
+      "stdout_bytes": 415940,
+      "stdout_sha256": "8c34382767a2adfd92ea390801997512a4c3fe42c30d1d41bcc0baceda7fd8ff",
+      "summary": {
+        "scalar_counts": {
+          "completed_books": 66,
+          "completed_with_deferrals_books": 28,
+          "deferred_labels": 530,
+          "eligible_labels": 87108,
+          "eligible_original_decisions": 45591,
+          "full_labels": 87638,
+          "full_original_decisions": 45831,
+          "full_target_labels": 41807,
+          "full_verses": 2171,
+          "proven_verses": 2171,
+          "strictly_accepted_books": 38,
+          "threshold_denominator": "eligible_original_decisions_only; target, hyperedge and negative records excluded"
+        },
+        "status": "finalized_deferral_aware_reviewed_gold"
+      }
+    }
+  ],
+  "current_single_issue_inventory_sha256": "57e08bf97dd3f4dd338b94c60c18bdf6e6623b5a62b0c6a33e272caff4751f60",
+  "final_git_diff_check_before_append": {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  "historical_stage7_preparation_status_explanation": "Stage-7 --check validates the preserved historical preparation manifest and still reports blocked_before_gold_and_alignment_acceptance. Its exit code is 0 with no integrity errors. Current gold completion is independently authoritative in the separate versioned v2 lock: finalized_deferral_aware_reviewed_gold, as verified by public check-final-completed. Stage 7 as a whole remains open for later alignment/calibration; no production acceptance is claimed.",
+  "inventory": {
+    "all_entry_sha_and_bytes_verified": true,
+    "bytes": 2113244,
+    "canonical_and_exact_roster_verified": true,
+    "entries": 5921,
+    "helper_calls": 1,
+    "helper_seconds": 45.579,
+    "payload_seal_sha256": "2a1be8703f74ad7d9f2db52beae859fc08c9ebbfb580484fa6981c5ada1bbc6a",
+    "physical_audit_seconds": 70.453,
+    "post_refresh_writes": 0,
+    "pre_refresh_receipt": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_global_20261017_inventory_writer_01/pre_refresh_receipt.v1.json",
+    "pre_refresh_receipt_sha256": "023a8363ef265afbb66a3922e4af39487461418cb3aff257a22778dfdaceddf2",
+    "roster_unchanged_after_audit": true,
+    "sha256": "f3c8f45ba11bcc0882ff84d099f09fe122b411e4726fc981082f1595ef8c6a39",
+    "status": "PASS",
+    "writer": "/root/artifact_inventory_writer"
+  },
+  "status": "PASS"
+}
+```
+
+**Этап 7 целиком остаётся открытым.** Дальнейшая калибровка, production Strong, этап 8, SQLite, Flutter/runtime, working/web DB, commit и push не выполнялись. Python/evidence-only scope; обязательные RU/EN architecture/testing pairs, dependencies и localization не менялись.

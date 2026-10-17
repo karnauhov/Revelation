@@ -1,7 +1,7 @@
 # План доказательного Strong-выравнивания OH1988
 
-Doc-Version: `1.1.8`
-Last-Updated: `2026-10-10`
+Doc-Version: `1.1.9`
+Last-Updated: `2026-10-17`
 Source-Commit: `working-tree`
 
 ## Статус документа
@@ -183,7 +183,7 @@ Lexeme ledger является обучающим и аудиторским ре
 
 ### 7.4. Gold set и baseline-оценка
 
-- сформировать стратифицированный gold set минимум из 2 000 стихов и 25 000 link decisions: OT/NT, все книги, частые/редкие lemmas, polysemy, reorder, omission, repetition, named entities, particles/articles, multiword и textual variants;
+- сформировать стратифицированный gold set минимум из 2 000 стихов с доказанными labels и 25 000 eligible original-token link/null decisions после deferrals (без reciprocal target rows и negative annotations): OT/NT, все книги, частые/редкие lemmas, polysemy, reorder, omission, repetition, named entities, particles/articles, multiword и textual variants;
 - вручную подтвердить original token↔OH1988 span с evidence; критические случаи проверять двумя независимыми проходами;
 - прогнать сохранённый старый эксперимент только как baseline и измерить precision/recall/error taxonomy;
 - зафиксировать thresholds до обучения/настройки, чтобы не подгонять их к финальному корпусу.
@@ -638,3 +638,22 @@ Gold: завершено 66/66; строго принято 38/66; с отсро
 Один bounded research cycle на трудный случай завершён. Registered deferrals удовлетворяют завершению; повторный цикл не требуется. Приёмка группы 8 не выполняет global finalize. Этап 7 остаётся открытым. OT, другие группы, этап 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
 
 [Отчёт группы № 8](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_008_acceptance.v1.ru.md), [общий реестр](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v28](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_completion_registry.v28.manifest.json), [independent content QC](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_008_independent_content_qc.v1.ru.md), [post-seal QC](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_group_008_independent_content_qc.v2.ru.md).
+
+
+## Глобальная финализация и baseline-оценка 7.4 — 2026-10-17
+
+Завершены **66/66** book-пакетов: **38 strict accepted + 28 completed_with_registered_deferrals**. Correction-aware/deferral-aware registry учитывает последние source resolutions, corrections, independent QC и active completion overlays, включая Zeph.2.14. Старый strict workflow и его отказы сохранены; blocking QC не переименован в strict accepted. Уже зарегистрированные отсрочки не переоткрывались.
+
+Full-grid: **2171 стихов, 45831 original + 41807 target = 87638 nodes**. После исключений: **2171 доказанных стихов, 45591 eligible original link/null decisions, 87108 eligible nodes**; **530 present-but-deferred nodes** сохранены в exact-once accounting. Target reciprocal rows, deferred nodes и negative annotations не входят в минимум 25000. Минимумы 2000/25000, selection и folds не изменялись.
+
+Единая SHA-bound eligibility mask заморожена из policy, общего реестра и независимого QC до оценки. Consumers проверены фактическими негативными пробами: deferred labels исключены из scoring, обучения, gold-derived statistics и threshold selection; candidate hyperedge с deferred endpoint исключается целиком до membership lookup без вклада в TP/FP/FN/support. Illegal IDs и остальные ошибки выявляются. Обучение и настройка не выполнялись.
+
+Все 66 книг, OT/NT, frozen folds, reviewed phenomena/relations и обязательные частотные страты проверены. Частотное доказательство выведено из exact selected original IDs и frozen primary non-unresolved source universe по прежним границам rare≤5/frequent≥1000; reviewed phenomena не изменены. Full/eligible/excluded coverage и deferred-only случаи приведены отдельно в отчёте.
+
+Изолированный zero-vote legacy baseline и пять существующих фиксированных методов оценены раздельно на folds 0–3 и sealed fold 4 после freeze pipeline. Новые versioned artifacts содержат supersedes и sealed→unsealed predecessor; результаты sealed не использовались для tuning. Precision/recall имеют явные знаменатели и разные единицы для legacy identification и exact candidate hyperedges. Низкий support не приводит к автоматическому назначению Strong.
+
+Независимый reviewer не наследовал авторскую историю и не писал production implementation: собственные adversarial/negative probes, packet-derived accounting и воспроизведение payload/evaluation проверяют авторские инструменты. Реальные роли, source/byte locks, отрицательные проверки и точные результаты находятся в evidence. Stage-6 text/comment, mapping, original/gold selection, folds и frozen reviewer artifacts сохранены.
+
+[Итоговый отчёт 7.4](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_global_finalization.v2.ru.md), [final lock](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_alignment.finalized.v2.lock.json), [final manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_alignment.finalized.v2.manifest.json), [независимая проверка](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_global_independent_validation.v1.ru.md), [единственный реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records), [актуальный HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
+
+**Этап 7 целиком остаётся открытым.** Калибровка, production Strong, этап 8, SQLite, Flutter/runtime, working/web DB, commit и push не выполнялись. Registered deferrals удовлетворяют завершению gold-пакета; дополнительная филология по ним не является обязательным продолжением.

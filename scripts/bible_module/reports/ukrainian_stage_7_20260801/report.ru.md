@@ -1735,3 +1735,16 @@ Gold: завершено 66/66; строго принято 38/66; с отсро
 Один bounded research cycle на трудный случай завершён. Registered deferrals удовлетворяют завершению; повторный цикл не требуется. Приёмка группы 8 не выполняет global finalize. Этап 7 остаётся открытым. OT, другие группы, этап 8, SQLite, production Strong markup, Flutter/runtime, working/web DB, commit и push не выполнялись.
 
 [Отчёт группы № 8](gold_group_008_acceptance.v1.ru.md), [общий реестр](oh88_strongs_issue_inventory.ru.md#registry-records), [completion registry v28](gold_completion_registry.v28.manifest.json), [independent content QC](gold_group_008_independent_content_qc.v1.ru.md), [post-seal QC](gold_group_008_independent_content_qc.v2.ru.md).
+
+
+## 2026-10-17 — общая сборка gold и baseline-оценка 7.4 завершены
+
+Завершены 66/66 книг: 38 strict accepted + 28 completed_with_registered_deferrals. Full 2171 verses / 87638 nodes; eligible 2171 proven verses / 45591 original link/null decisions / 87108 nodes; excluded 530 present-but-deferred nodes. Target/negative rows не увеличивают минимум original решений. Общий реестр OH1988 сохранён; accepted deferrals не переоткрывались.
+
+[Итоговый отчёт и coverage/evaluation tables](gold_global_finalization.v2.ru.md), [final lock](gold_alignment.finalized.v2.lock.json), [correction-aware/deferral-aware registry mirror v7](gold_finalization_registry.v7.manifest.json), [независимая проверка](gold_global_independent_validation.v1.ru.md), [единый реестр](oh88_strongs_issue_inventory.ru.md#registry-records).
+
+Same SHA-bound mask `d99436f6dedb48c6d7ec99acbaf4631fc009723fdc411851e2dc587e84f844db` применяется до gold membership/statistics для всех методов; whole hyperedges с deferred endpoint исключены без TP/FP/FN/support. Legacy и fixed, folds 0–3 и sealed fold 4 имеют раздельные frozen versioned artifacts/supersedes. Независимый raw-candidate пересчёт и deterministic byte replay завершены; точные P/R, знаменатели, taxonomy и coverage приведены в отчётах. Никакого tuning/training/promotion.
+
+Фактические проверки: 457 Python regressions PASS; stage 3 offline/4/5/6 PASS; author finalize/check-final и независимое воспроизведение PASS; independent payload 1 106 708 checks PASS; source-family/active-overlay/lock negatives PASS; docs sync/forbidden/navigation/scope/git diff PASS. Frozen stage-6 text/comment, mapping, original selection, gold selection/folds и reviewer artifacts сохранены. Separate writer refresh и post-refresh readonly stage7/check-final/inventory/git результаты записываются в последнем [HANDOFF](HANDOFF.ru.md) после их выполнения. Python/evidence-only scope: Flutter/runtime/DB и approved RU/EN pairs не менялись.
+
+Этап 7 целиком остаётся открытым: дальнейшая калибровка, production Strong, этап 8, SQLite, Flutter/runtime, working/web DB, commit и push не выполнялись.

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import unittest
+from unittest.mock import patch
+
+from scripts.bible_module import ukrainian_stage_7_alignment as alignment
 
 from scripts.bible_module.ukrainian_stage_7_alignment import (
     AUTO_LOWER_BOUND,
@@ -118,6 +121,23 @@ class Stage7HypergraphResolverTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(ValueError, "Sealed"):
             calibrate_auto_class([_gold_row(4)], validation)
+
+    def test_deferred_scores_never_enter_threshold_grid_or_gold_statistics(self) -> None:
+        calibration = [_gold_row(index % 3) for index in range(539)]
+        validation = [_gold_row(3) for _ in range(539)]
+        deferred = {**_gold_row(0, score=0.123456, correct=False),
+                    "eligible": False, "book": "DEFERRED_LABEL_LEAK"}
+        with patch.object(alignment, "evaluate_threshold", wraps=alignment.evaluate_threshold) as evaluate:
+            report = calibrate_auto_class(calibration + [deferred], validation)
+        self.assertEqual([call.kwargs["threshold"] for call in evaluate.call_args_list], [0.9, 0.9])
+        self.assertEqual(report["calibration"]["overall"]["support"], 539)
+        self.assertNotIn("DEFERRED_LABEL_LEAK", str(report))
+        # Poisoned deferred fields prove filtering precedes score/label access.
+        poisoned = {**deferred, "score": object(), "correct": object()}
+        selected = alignment.evaluate_threshold(calibration + [poisoned], threshold=0.9, allowed_folds={0, 1, 2})
+        self.assertEqual(selected["overall"]["support"], 539)
+        with self.assertRaisesRegex(ValueError, "Sealed"):
+            calibrate_auto_class([{**deferred, "fold_id": 4}], validation)
 
     def test_final_solution_requires_exact_accounting_and_a_gate(self) -> None:
         edges = [

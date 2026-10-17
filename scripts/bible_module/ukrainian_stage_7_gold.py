@@ -2057,6 +2057,12 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     finalize.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT)
     check = subparsers.add_parser("check-final", help="verify finalized gold lock")
     check.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT)
+    completed = subparsers.add_parser("finalize-completed", help="assemble versioned deferral-aware completed gold")
+    completed.add_argument("--registry", type=Path, required=True)
+    completed.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT)
+    completed.add_argument("--work-dir", type=Path, default=DEFAULT_WORK)
+    completed_check = subparsers.add_parser("check-final-completed", help="verify versioned deferral-aware gold and live dependencies")
+    completed_check.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT)
     return parser.parse_args(argv)
 
 
@@ -2088,6 +2094,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             adjudication_path=args.adjudication,
             correction_registry_path=args.correction_registry,
         )
+    elif args.command in {"finalize-completed", "check-final-completed"}:
+        from scripts.bible_module.ukrainian_stage_7_gold_v2 import (
+            finalize_gold_v2, validated_finalized_gold_lock_v2,
+        )
+        result = (finalize_gold_v2(args.registry, args.report_dir, args.work_dir)
+                  if args.command == "finalize-completed"
+                  else validated_finalized_gold_lock_v2(args.report_dir))
+        if result is None:
+            raise ValueError("No deferral-aware finalized gold lock exists")
     else:
         result = validated_finalized_gold_lock(args.report_dir)
         if result is None:
