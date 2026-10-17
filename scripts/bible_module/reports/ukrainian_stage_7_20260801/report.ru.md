@@ -1748,3 +1748,10 @@ Same SHA-bound mask `d99436f6dedb48c6d7ec99acbaf4631fc009723fdc411851e2dc587e84f
 Фактические проверки: 457 Python regressions PASS; stage 3 offline/4/5/6 PASS; author finalize/check-final и независимое воспроизведение PASS; independent payload 1 106 708 checks PASS; source-family/active-overlay/lock negatives PASS; docs sync/forbidden/navigation/scope/git diff PASS. Frozen stage-6 text/comment, mapping, original selection, gold selection/folds и reviewer artifacts сохранены. Separate writer refresh и post-refresh readonly stage7/check-final/inventory/git результаты записываются в последнем [HANDOFF](HANDOFF.ru.md) после их выполнения. Python/evidence-only scope: Flutter/runtime/DB и approved RU/EN pairs не менялись.
 
 Этап 7 целиком остаётся открытым: дальнейшая калибровка, production Strong, этап 8, SQLite, Flutter/runtime, working/web DB, commit и push не выполнялись.
+
+
+## Завершение7.6 — 2026-10-17
+
+Завершены оба подпункта roadmap 7.6: candidate-only constrained consensus и однократный leakage-free OOF lexical prior. Полный graph: 31102 стихов, 678149 original + 595077 target nodes, 401983 semantic hyperedges; legacy остаётся zero-vote. Prior: 26972 ordinary rank observations + 3 joint components = 26975 наблюдений folds0–2; 6 shared declarations сохранены целиком. Own-fold labels исключены из development predictions; validation3/test4 labels не входят в prior или tuning. Инженерный результат некалиброван, automatic promotion и production acceptance0. Gold, mask, selection, folds, policy/deferral/source-resolution chain и frozen7.4 сохранены. 7.4 не переоткрывается; этап7 целиком, калибровка и iterative bootstrap/self-training остаются открыты. Production Strong, этап8, DB, Flutter/runtime, commit/push не выполнялись.
+
+[Итоговый отчёт](consensus76.v1.ru.md), [manifest](consensus76.v1.manifest.json), [независимая проверка](consensus76_independent_validation.v1.ru.md), [HANDOFF](HANDOFF.ru.md).

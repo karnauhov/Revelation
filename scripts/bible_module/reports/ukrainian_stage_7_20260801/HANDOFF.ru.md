@@ -3055,3 +3055,256 @@ Final inventory: **5921 entries**, SHA256 `f3c8f45ba11bcc0882ff84d099f09fe122b41
 ```
 
 **Этап 7 целиком остаётся открытым.** Дальнейшая калибровка, production Strong, этап 8, SQLite, Flutter/runtime, working/web DB, commit и push не выполнялись. Python/evidence-only scope; обязательные RU/EN architecture/testing pairs, dependencies и localization не менялись.
+
+
+## Checkpoint7.6 — engineering complete, final inventory pending, 2026-10-17
+
+Завершены оба подпункта roadmap 7.6: candidate-only constrained consensus и однократный leakage-free OOF lexical prior. Полный graph: 31102 стихов, 678149 original + 595077 target nodes, 401983 semantic hyperedges; legacy остаётся zero-vote. Prior: 26972 ordinary rank observations + 3 joint components = 26975 наблюдений folds0–2; 6 shared declarations сохранены целиком. Own-fold labels исключены из development predictions; validation3/test4 labels не входят в prior или tuning. Инженерный результат некалиброван, automatic promotion и production acceptance0. Gold, mask, selection, folds, policy/deferral/source-resolution chain и frozen7.4 сохранены. 7.4 не переоткрывается; этап7 целиком, калибровка и iterative bootstrap/self-training остаются открыты. Production Strong, этап8, DB, Flutter/runtime, commit/push не выполнялись.
+
+[Итоговый отчёт](consensus76.v1.ru.md), [независимая проверка](consensus76_independent_validation.v1.ru.md). Последний FINAL с inventory/read-only receipts будет добавлен ниже после фактических проверок.
+
+
+## 7.6 — pre-inventory checks complete, 2026-10-17
+
+513 Python tests, stage3 offline/4/5/6, Flutter-bundled Dart docs-sync/forbidden patterns, navigation/scope, git diff --check и preservation5919/25 PASS. Graph/prior bytes replay-identical; independent raw payload/OOF/metric checks PASS. Final inventory и последующие read-only receipts ещё не объявлены пройденными.
+
+## FINAL — 7.6 завершён и проверен, 2026-10-17
+
+Завершены оба подпункта roadmap 7.6: candidate-only constrained consensus и однократный leakage-free OOF lexical prior. В alignment plan им соответствуют consensus 7.6 и только однократная часть будущего lexical ledger; iterative 7.7 и калибровка не выполнялись. 7.4 остаётся завершённой. Этап 7 целиком открыт. `resolver_eligible=false`, `calibrated_probability=null`, automatic promotion и production acceptance **0**; lower-bound precision **99,5%** сохранён.
+
+[Итоговый отчёт](consensus76.v1.ru.md), [completion manifest](consensus76.v1.manifest.json), [независимый отчёт](consensus76_independent_validation.v1.ru.md), [independent manifest](consensus76_independent_validation.v1.manifest.json). Новый код изолирован в `scripts/bible_module/consensus76`; roster 25 frozen root consumers не изменён.
+
+### Полный graph и unresolved accounting
+
+Полная сетка: **31102 стиха**, **678149 original + 595077 target = 1273226 физических nodes**. Исходные **872025 rows** состоят из 431745 nonlegacy provenance rows и 440280 legacy zero-vote diagnostics. Semantic candidate hyperedges: **401983**, из них 296 whole-edge deferred exclusions сохранены отдельно; 401687 допускаются к prior/rank/search. Top-1: 297767 edges; n-best: 155246 decompositions. Raw incidence отдельно: original 494884 + target 528116 = 1023000. Relations: one-to-one 295010, one-to-many 40552, many-to-one 22088, many-to-many 44333.
+
+| Nodes | Полная сетка | Есть raw candidate | В top-1 hypothesis | Нет raw candidate | Есть candidate, не выбран | Всего вне top-1 |
+|---|---:|---:|---:|---:|---:|---:|
+| Original | 678149 | 424179 | 334211 | 253970 | 89968 | 343938 |
+| Target | 595077 | 416018 | 346822 | 179059 | 69196 | 248255 |
+
+Exod.21.25 и Job.24.10 не имеют nonlegacy candidates; nodes сохранены. Invented NULL нет. Candidate-only top-1 не является принятой Strong-разметкой. Raw joint-use declarations и фактические top-1 shared-target nodes равны 0: разрешённая структура поддерживается и проверена, но отсутствующее candidate evidence не заимствуется из gold. Все declared shared edges/reciprocal unions Judg.18.24, Mat.5.11, Ruth.2.7 сохранены.
+
+### OOF prior
+
+Только eligible proven development folds 0–2: **26972 ordinary observations + 3 joint component observations = 26975**. Joint components сохраняют 6 отдельных declared hyperedges с subspans/multiplicity, не создавая singleton или pairwise labels. 484 повторяющихся same-verse semantic observations deduplicated. По folds 0/1/2 total observations: **9191 / 8263 / 9521**; ordinary: 9189 / 8263 / 9520; joint: 2 / 0 / 1.
+
+Каждый development prediction исключает весь собственный fold. Validation 3 и reused frozen test 4 используют только 0–2; их labels не участвовали в counts/rules/параметрах/thresholds. Проверены все 401687 фактических prior queries, fold/verse leakage canaries, poisoned deferred metadata, reciprocal/group inflation и shared-target bundles. Unknown queries 398653; sparse queries 401466; эти признаки не являются непересекающимися категориями. Candidate predictions не добавлялись в labels; bootstrap не запускался.
+
+### Оценка и сравнение с 7.4
+
+Оценка выполнена после freeze и независимого code/payload approval: development → validation без tuning → независимый presealed gate → **ровно один producer scoring fold 4**. Fold 4 уже использовался в 7.4; это reused frozen test partition. Метод после scoring не менялся. Независимый auditor без импортов producer/evaluator пересчитал все 71292 detail rows и все book/testament/fold/source-frequency/reviewed metrics, coverage и taxonomy: PASS.
+
+| Partition | Top-1 TP | FP | FN | P denominator | R denominator | Precision | Recall |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Development 0–2 | 6479 | 5782 | 20983 | 12261 | 27462 | 52.8423% | 23.5926% |
+| Validation 3 | 2082 | 1856 | 6459 | 3938 | 8541 | 52.8695% | 24.3765% |
+| Reused frozen test 4 | 2403 | 1942 | 7132 | 4345 | 9535 | 55.3049% | 25.2019% |
+
+Fold 4 n-best union: TP2520 / FP2308 / FN7015, P denominator4828, R denominator9535, P52.1955%, R26.4289%. Candidate union отдельно: TP2716 / FP3217 / FN6819, P denominator5933, R denominator9535, P45.7779%, R28.4845%. Recall включает весь eligible gold partition, включая uncovered/null cases. Реальные candidate whole-edge exclusions по partitions: 166 / 64 / 66, всего296.
+
+| Сохранённый fixed method 7.4, fold 4 | TP | FP | FN | P denominator | R denominator | P | R |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Contextual | 1060 | 2091 | 8475 | 3151 | 9535 | 33.6401% | 11.1169% |
+| Bridge | 133 | 319 | 9402 | 452 | 9535 | 29.4248% | 1.3949% |
+| IBM1 | 1675 | 677 | 7860 | 2352 | 9535 | 71.2160% | 17.5669% |
+| Lexical | 190 | 122 | 9345 | 312 | 9535 | 60.8974% | 1.9927% |
+| Transliteration | 174 | 47 | 9361 | 221 | 9535 | 78.7330% | 1.8249% |
+
+Consensus повышает recall относительно каждого отдельного fixed method, но уступает IBM1 по precision. Полное сравнение folds0–3 и fold4 находится в отчёте и [comparison receipt](../../work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/baseline_comparison.v1.json). Legacy target/original/Strong identification имеет другую единицу и приведён отдельно; он сохраняет zero vote. Старая оценка 7.4 не запускалась повторно.
+
+### Проверки, неизменность и роли
+
+**513 Python tests PASS**: 457 existing Bible + 26 consensus + 30 Content Tool (только временные fixtures). Независимо выполнены raw input и полный graph/OOF recount, exhaustive small-graph oracle, shared-target unions, invalid/duplicate/cross-verse ID и whole-edge mask guards, leakage/poison probes, calibrated resolver guards, physical source/config/input/runtime/baseline tampering и stale/missing lock checks. Две полные новые сборки graph/prior побайтно совпадают; row permutation проверена на fixtures. Старые blind answers, adjudication, initial QC, research и frozen artifacts не регенерировались.
+
+Фактические роли:
+- `/root/consensus_author` — production implementation и авторские tests/build/replay; не independent QC.
+- `/root/independent_review76` — `fork_turns=none`, собственные auditors/fixtures и raw recalculation; production code не писал.
+- `/root` — orchestration, preflight, execution protocol, единственный producer fold4 scoring и документация; не объявляет себя независимым reviewer.
+- `/root/inventory_writer76` — отдельный inventory writer, existing helper ровно1 раз; после helper записей0.
+
+Gold по public check: **66/66 книг = 38 strict + 28 completed_with_registered_deferrals**, 2171 proven verses, 45538 eligible gold hyperedges. Full87638 nodes, eligible87108, deferred530. Все 5919 прежних immutable inventory entries, 25 frozen consumers, selection/folds/policy/deferral/source-resolution chains, входы и baselines 7.4 физически сохранены. Historical report/log prefixes сохранены. Контрольные SHA256:
+
+- Final gold lock: `265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9`.
+- Annotations: `547c67517fa466682b5cfe602cc669fa35f3a0420d813bad3a41670d0e880d67`.
+- Eligibility mask: `d99436f6dedb48c6d7ec99acbaf4631fc009723fdc411851e2dc587e84f844db`.
+- Single OH1988 issue inventory: `57e08bf97dd3f4dd338b94c60c18bdf6e6623b5a62b0c6a33e272caff4751f60`.
+- New pipeline freeze: `230d671d431763bac09873cd5f90a9b237a667fe6805cdc1556f45ca5764ab80`.
+- Completion manifest: `1a136aa2e7142464301a3c0365b06025f5755716fe92ffb15c37cb1d06ff8e09`.
+- Independent manifest: `7dbb56fc9849c1836089b5f477bc53c589592b7d86ca7522875130a0a9486d18`.
+
+Stages3 offline/4/5/6 и post-inventory stage7/public gold PASS; docs sync, forbidden patterns, navigation/scope, tracked и new-file whitespace checks, git diff --check PASS. Dart3.13.2 использован по абсолютному Flutter-bundled path. Flutter format/analyze/test/smoke N/A для Python/evidence/content-docs scope: Flutter/runtime, dependencies/localization/release и production DB не менялись. Approved RU/EN architecture/testing pairs не затронуты.
+
+Ниже фактический writer receipt и последние **stdout-only** post-inventory receipts. После inventory helper все файлы, кроме этого исключённого HANDOFF, остались неизменны. Historical stage7 preparation status `blocked_before_gold_and_alignment_acceptance` сохранён: exit0/errors0/accepted_links0. Он не отменяет отдельный finalized gold v2.
+
+```json
+{
+  "writer": "/root/inventory_writer76",
+  "status": "PASS",
+  "helper": "existing _write_artifact_inventory",
+  "helper_calls": 1,
+  "entries": 6115,
+  "report_entries": 389,
+  "work_entries": 5726,
+  "bytes": 2177499,
+  "sha256": "f8dbb61929678d3f60f06f9f4cdaf5618e7c0dd2f1778c2022e181f92c2c5fe2",
+  "canonical_payload_seal": "aaf1710b24ed817e94dc0c8378e43d759869e02a874d94702afe7251fa4c0a9e",
+  "post_helper_audit_seconds": 49.031,
+  "all_entry_sha_and_bytes_canonical_seal_roster_verified": true,
+  "post_helper_file_writes": 0,
+  "frozen_artifacts_regenerated": false,
+  "pre_refresh_receipt": {
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_inventory_writer_01/pre_refresh_receipt.v1.json",
+    "bytes": 4982,
+    "sha256": "33e071b2741c86ca2068f7ee9e2a368e9b2d4c2d337b086174cabb1aeab2b67c"
+  }
+}
+```
+
+```json
+{
+  "after": {
+    "freeze": "230d671d431763bac09873cd5f90a9b237a667fe6805cdc1556f45ca5764ab80",
+    "gold_lock": "265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9",
+    "inventory": "f8dbb61929678d3f60f06f9f4cdaf5618e7c0dd2f1778c2022e181f92c2c5fe2"
+  },
+  "artifact": "stage76_actual_post_inventory_readonly_receipts",
+  "before": {
+    "freeze": "230d671d431763bac09873cd5f90a9b237a667fe6805cdc1556f45ca5764ab80",
+    "gold_lock": "265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9",
+    "inventory": "f8dbb61929678d3f60f06f9f4cdaf5618e7c0dd2f1778c2022e181f92c2c5fe2"
+  },
+  "checks": {
+    "git_diff": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.187,
+      "status": "PASS",
+      "stderr_bytes": 670,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inventory": {
+      "all_entry_sha_bytes_canonical_seal_and_roster": true,
+      "baseline_immutable_entries": 5919,
+      "bytes": 2177499,
+      "entries": 6115,
+      "historical_mutable_report_prefixes_preserved": true,
+      "seconds": 51.078,
+      "sha256": "f8dbb61929678d3f60f06f9f4cdaf5618e7c0dd2f1778c2022e181f92c2c5fe2",
+      "status": "PASS"
+    },
+    "navigation_scope": {
+      "affected_markdown_count": 7,
+      "dart_format_analyze_flutter_test_smoke": "N/A: Python tooling, candidate-only evidence and content docs; runtime/Dart and dependencies unchanged",
+      "errors": [],
+      "files": [
+        "docs/ru/content/ukrainian-bible-strongs-module-roadmap.ru.md",
+        "docs/ru/content/ukrainian-bible-strongs-stage-7-alignment-plan.ru.md",
+        "scripts/bible_module/consensus76/__init__.py",
+        "scripts/bible_module/consensus76/__main__.py",
+        "scripts/bible_module/consensus76/config.v1.json",
+        "scripts/bible_module/consensus76/core.py",
+        "scripts/bible_module/consensus76/evaluation.py",
+        "scripts/bible_module/consensus76/io.py",
+        "scripts/bible_module/consensus76/protocol.v1.json",
+        "scripts/bible_module/consensus76/schema.v1.json",
+        "scripts/bible_module/consensus76/tests/__init__.py",
+        "scripts/bible_module/consensus76/tests/shared_target_fixtures.v1.json",
+        "scripts/bible_module/consensus76/tests/test_consensus76.py",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/artifact_inventory.manifest.json",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.manifest.json",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.ru.md",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76_independent_validation.v1.manifest.json",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76_independent_validation.v1.ru.md",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/report.ru.md",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/validation_log.md"
+      ],
+      "new_file_whitespace_checks": 15,
+      "reachable_markdown_count": 108,
+      "runtime_db_dependencies_localization_release_changes": false,
+      "status": "PASS"
+    },
+    "new_pipeline_source_runtime_config_inputs_build_baselines": {
+      "freeze_sha256": "230d671d431763bac09873cd5f90a9b237a667fe6805cdc1556f45ca5764ab80",
+      "status": "PASS"
+    },
+    "public_gold": {
+      "command": [
+        "C:\\Python312\\python.exe",
+        "-B",
+        "-m",
+        "scripts.bible_module.ukrainian_stage_7_gold",
+        "check-final-completed"
+      ],
+      "exit_code": 0,
+      "seconds": 109.484,
+      "status": "PASS",
+      "stderr_bytes": 0,
+      "stdout_bytes": 415940,
+      "stdout_sha256": "8c34382767a2adfd92ea390801997512a4c3fe42c30d1d41bcc0baceda7fd8ff",
+      "summary": {
+        "accepted_links": null,
+        "counts": {
+          "completed_books": 66,
+          "completed_with_deferrals_books": 28,
+          "deferred_labels": 530,
+          "eligible_labels": 87108,
+          "eligible_original_decisions": 45591,
+          "full_labels": 87638,
+          "full_original_decisions": 45831,
+          "full_target_labels": 41807,
+          "full_verses": 2171,
+          "proven_verses": 2171,
+          "strictly_accepted_books": 38,
+          "threshold_denominator": "eligible_original_decisions_only; target, hyperedge and negative records excluded"
+        },
+        "error_count": null,
+        "status": "finalized_deferral_aware_reviewed_gold"
+      }
+    },
+    "stage7": {
+      "command": [
+        "C:\\Python312\\python.exe",
+        "-B",
+        "-m",
+        "scripts.bible_module.ukrainian_stage_7",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 87.531,
+      "status": "PASS",
+      "stderr_bytes": 0,
+      "stdout_bytes": 2713,
+      "stdout_sha256": "265dbf9fd487a997d86a96a97f499e5503663e9633ead1b4576846e126568276",
+      "summary": {
+        "accepted_links": 0,
+        "error_count": 0,
+        "status": "blocked_before_gold_and_alignment_acceptance"
+      }
+    }
+  },
+  "file_writes": 0,
+  "note": "only excluded HANDOFF may be appended after this stdout receipt",
+  "status": "PASS"
+}
+```
+
+Оставшиеся ограничения: approximate beam32/n-best5/top12 с записанным pruning (5256743 pruned beam states, 27878 affected verses), без доказанного global optimum; sparse/unknown prior; отсутствие raw candidate joint-use evidence; некалиброванные ranking scores. Зарегистрированные philological deferrals не переоткрываются.
+
+Production Strong, калибровка 7.7, iterative bootstrap/self-training, переобучение моделей/генераторов, этап8, SQLite/working/web DB, Flutter/runtime, commit и push не выполнялись.
+
+Английское сообщение коммита для текущего незакоммиченного набора:
+
+```text
+Complete stage 7.6 candidate consensus and leakage-free OOF prior [skip ci]
+
+Add the isolated candidate-only pipeline, regression coverage and independently
+verified evidence; update the roadmap, alignment plan, handoff and artifact inventory.
+Preserve frozen gold and stage 7.4 artifacts; keep calibration and promotion disabled.
+```

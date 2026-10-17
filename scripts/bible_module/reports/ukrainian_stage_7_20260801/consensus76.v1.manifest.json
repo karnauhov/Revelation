@@ -1,0 +1,332 @@
+{
+  "annotations_sha256": "547c67517fa466682b5cfe602cc669fa35f3a0420d813bad3a41670d0e880d67",
+  "artifact": "consensus76_completion",
+  "automatic_promotions": 0,
+  "baseline_references": [
+    {
+      "bytes": 21088842,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_global_20261017_evaluation_author_01/fixed.evaluation.unsealed.v3/candidate_gold_evaluation.v3.jsonl",
+      "sha256": "bbb9bb502ad8a4c422b9f3a33f7af2e942620c796ecb53e334259146a4bba8ed"
+    },
+    {
+      "bytes": 375739,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_global_20261017_evaluation_author_01/fixed.evaluation.unsealed.v3/candidate_gold_evaluation.v3.manifest.json",
+      "sha256": "5e04e5b6a000cc907997184c83e7886dfe6ac3acd81609fce51ffd51709ac4b7"
+    },
+    {
+      "bytes": 5715739,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_global_20261017_evaluation_author_01/fixed.evaluation.sealed.v3/candidate_gold_evaluation.v3.jsonl",
+      "sha256": "391b8e6467364467c90b85d3cf334a169ce56cca21b49045108a7b3f5cd91f4d"
+    },
+    {
+      "bytes": 264631,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_global_20261017_evaluation_author_01/fixed.evaluation.sealed.v3/candidate_gold_evaluation.v3.manifest.json",
+      "sha256": "2cb5e365cadd6d2a35e103eb895f24daf58664a7c26a64b360dc828eb1878d51"
+    },
+    {
+      "bytes": 15370776,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_global_20261017_evaluation_author_01/legacy.evaluation.unsealed.v3/candidate_gold_evaluation.v3.jsonl",
+      "sha256": "3d65595b07ca62d114bac5413629aef6a24e6b69360846227768e7454c6902a7"
+    },
+    {
+      "bytes": 80366,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_global_20261017_evaluation_author_01/legacy.evaluation.unsealed.v3/candidate_gold_evaluation.v3.manifest.json",
+      "sha256": "903db8ab37de91b0f63bfba427146788533e7cf33bfba30e80ffab0a104fa57f"
+    },
+    {
+      "bytes": 4054080,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_global_20261017_evaluation_author_01/legacy.evaluation.sealed.v3/candidate_gold_evaluation.v3.jsonl",
+      "sha256": "f22d2697238c5c0d049941598c2b00276ffaacc67e93ad02be5c7f1ec4fe4e69"
+    },
+    {
+      "bytes": 59379,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_global_20261017_evaluation_author_01/legacy.evaluation.sealed.v3/candidate_gold_evaluation.v3.manifest.json",
+      "sha256": "8f5999b9cfc9ffde8d77a7e5bb74e2a8990f09ec22b332a4d305ac1146452ed1"
+    }
+  ],
+  "build": [
+    {
+      "bytes": 3338092455,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/build.v3/graph.v1.jsonl",
+      "sha256": "4374c3a862ae4082b15c88f60d7ff8179905110258a1ad75365c28f928a67d21"
+    },
+    {
+      "bytes": 23875883,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/build.v3/prior.v1.json",
+      "sha256": "f06905c389441dfcb644006df8e47ee9eee12f12c2ee411e08e322738a7b0227"
+    },
+    {
+      "bytes": 3397,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/build.v3/build.v1.manifest.json",
+      "sha256": "8cda05e98a3be0141850e58d0f4a7a8b2807a652e16b0e31c3effd8ad9d56ca1"
+    }
+  ],
+  "calibrated": false,
+  "completed": [
+    "verse_local_constrained_consensus",
+    "one_pass_leakage_free_OOF_lexical_prior"
+  ],
+  "date": "2026-10-17",
+  "evidence": [
+    {
+      "bytes": 1849,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/final_regression.v1.json",
+      "sha256": "d7b262db734e2994dc31b754c7a5f1cab0daaedd5b4d5b274be393b3c72177b5"
+    },
+    {
+      "bytes": 679,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/final_supplementary.v1.json",
+      "sha256": "928a19f27fc80f67439060f1b59609ef495e1b8fdcccdf1b6c6d05ad2465e152"
+    },
+    {
+      "bytes": 3614,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/final_stages_docs.v1.json",
+      "sha256": "3ba6b2d1e2dc6c360ded8eb27d78a14013aef1807a77b2d2ad3f807a3a379bb8"
+    },
+    {
+      "bytes": 408,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/final_preservation.v1.json",
+      "sha256": "e5a7ae9be21ba97c434de992945385e434e6a821240d7ffaa2687f3982428f80"
+    },
+    {
+      "bytes": 1801,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/final_navigation_scope.v1.json",
+      "sha256": "adacee8179838f2cea888e2eac57df6c524dc0bb689d3ae1852013a43cfeac6e"
+    },
+    {
+      "bytes": 4867,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/preflight.v1.json",
+      "sha256": "7c034c29b5d17a8c37f78b707fe62a6bec02c1a7cf24a6cc41d7bd03302725cc"
+    },
+    {
+      "bytes": 16628,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/required_input_inspection.v1.json",
+      "sha256": "33c744bb27d4ce3a29eb2a1d9fa4e1ca7b842e13facd0564f9dd09276c6dd171"
+    },
+    {
+      "bytes": 1744,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/roles.v1.json",
+      "sha256": "d0f5a01de160be832a25008176bae2b2e26e9cbe0f091e2317e308c2396f2cd5"
+    },
+    {
+      "bytes": 2271,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/regression_source_roster.v1.json",
+      "sha256": "db832fde85e3b7f100b37bb072269adb5cf4cb2c8f1c2455242b66e5bc06f10b"
+    },
+    {
+      "bytes": 1364,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/execution_protocol.v1.lock.json",
+      "sha256": "99621a14960dbfe3b0167f405536b5f5d08fc115c16efda56ad97d4c70cac688"
+    },
+    {
+      "bytes": 3738,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/scoring_unsealed.v1.json",
+      "sha256": "f28b64efdd880805d948bf7468815dd07bc8a7452759e53d1c6a587c0fa134ff"
+    },
+    {
+      "bytes": 2183,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/scoring_sealed.v1.json",
+      "sha256": "3fd7fd1d741e3e309f9853260abbe3a6d78fe65501b473792748218e4255a1a7"
+    },
+    {
+      "bytes": 2322,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/graph_accounting.v1.json",
+      "sha256": "3f9561435f822cec8386cd8aa18a73238f575f8881f80c4e2a74f3917db6b757"
+    },
+    {
+      "bytes": 13749,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/baseline_comparison.v1.json",
+      "sha256": "23cce2a7fa8cb723ce63a8207240196eb18d6c099bb6e5ca55948eb04cbb768f"
+    },
+    {
+      "bytes": 77278,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.ru.md",
+      "sha256": "c4d29ca1ad7dc77676723eb260f765154c1433e26af822f44a4b7d1d35486d8c"
+    },
+    {
+      "bytes": 23416,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76_independent_validation.v1.manifest.json",
+      "sha256": "7dbb56fc9849c1836089b5f477bc53c589592b7d86ca7522875130a0a9486d18"
+    },
+    {
+      "bytes": 16652,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76_independent_validation.v1.ru.md",
+      "sha256": "c6f893005195dc41106979181d5a9137b70a272b6626734205d1723b03bef1b9"
+    },
+    {
+      "bytes": 164732,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/report.ru.md",
+      "sha256": "8108af13801a3af187a3569e2368aad1d6cb5afb2f49c6b754856727af184ffc"
+    },
+    {
+      "bytes": 209704,
+      "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/validation_log.md",
+      "sha256": "742dd2b94c5ce33cb189093c529b8d96b866f5b79dc1a226c8d8955eb7cb8cff"
+    },
+    {
+      "bytes": 3600,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/compare_baselines.py",
+      "sha256": "7fd3a60261052cee81ac9d9ade1a3725326e03028ba8b7318b8704debc85847e"
+    },
+    {
+      "bytes": 8121,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/final_checks.py",
+      "sha256": "2cf3626ab34be9a72e8c50d16399a1ad3506e688ba384a1544d645d49b7bd0a1"
+    },
+    {
+      "bytes": 13064,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/finish_docs.py",
+      "sha256": "3489b97438f16f96bbedb621ca26ee78944679118556d97144438e9ebf5ef3ba"
+    },
+    {
+      "bytes": 5140,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/post_inventory_readonly.py",
+      "sha256": "9c148047b336fc9ffe7f9ed2ddec71801c7c5572506ff5e6aa0bd9fc2d5992ed"
+    },
+    {
+      "bytes": 2930,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/run_scoring.py",
+      "sha256": "acad202dd60808345a76862304110c3d9d19404ee0297b443719af6fd1767e27"
+    },
+    {
+      "bytes": 4802,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/session_checks.py",
+      "sha256": "e98e8dac89d2608410924b3bfe2b97c1de91f42baf229b66b9cf6c8dc3bb58ec"
+    },
+    {
+      "bytes": 4073,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/summarize_graph.py",
+      "sha256": "74e75fba515a1bbd5e9bdf6f990ec60789e843dad92a17e45e804c5ae1bc66dd"
+    },
+    {
+      "bytes": 24972,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/write_results.py",
+      "sha256": "1e4ee785e98478d41bcc75bb59f0efef1caf446b989349ca2b9db03290632062"
+    },
+    {
+      "bytes": 2016,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/author_tests.v3.json",
+      "sha256": "15648f1dd0aef1f29d09564d72aaa1ed0f482dac6cfd21a7f34d1a59b61aff76"
+    },
+    {
+      "bytes": 2295,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/deterministic_replay.v3.json",
+      "sha256": "cbd8ffb8c4d5d01b3e8c0211fe9d636c845bfa59bcb41caa9bae17df67e8c986"
+    },
+    {
+      "bytes": 3258,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/author_completion.v3.json",
+      "sha256": "b8530c0f2a8a5c8ba0fabc0ba3f6f387cf1a7f5b0051c1833e4f5cb34be89a5a"
+    },
+    {
+      "bytes": 8988,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/v2_snapshot_flat/snapshot.v2.manifest.json",
+      "sha256": "8d15484cdda14c79d7b333cb91af0eff27884dbad26411a44b2de22063794bcc"
+    }
+  ],
+  "frozen7_4_superseded": false,
+  "gold_lock_sha256": "265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9",
+  "input_lock": {
+    "bytes": 338380,
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/inputs.v3.lock.json",
+    "sha256": "168d5b41031c466f9aab46af098d85f191f0f56f99beeefcf158585138cca16e"
+  },
+  "inventory": "distinct_writer_existing_helper_after_all_writes; last_actual_receipts_only_in_excluded_HANDOFF",
+  "lower_bound_precision_requirement": 0.995,
+  "mask_sha256": "d99436f6dedb48c6d7ec99acbaf4631fc009723fdc411851e2dc587e84f844db",
+  "pipeline_freeze": {
+    "bytes": 278504,
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/pipeline.v3.lock.json",
+    "sha256": "230d671d431763bac09873cd5f90a9b237a667fe6805cdc1556f45ca5764ab80"
+  },
+  "production_acceptance": 0,
+  "prohibited_scope_performed": false,
+  "schema_version": 1,
+  "source": [
+    {
+      "bytes": 0,
+      "path": "scripts/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 46,
+      "path": "scripts/bible_module/__init__.py",
+      "sha256": "971deef49ff8b4892d5f53f021d816dcc9695ba31a837fa72a412208989b65a4"
+    },
+    {
+      "bytes": 96,
+      "path": "scripts/bible_module/consensus76/__init__.py",
+      "sha256": "d351c9fceb2e2cfde16683a1fc84a7fa7354e29f595eac282360d1bad8eeed6f"
+    },
+    {
+      "bytes": 1986,
+      "path": "scripts/bible_module/consensus76/__main__.py",
+      "sha256": "a8e87e5bb1162251dab1bd7ccabb4ffa8126b72ac9ac8d52957b39427d36b1d8"
+    },
+    {
+      "bytes": 558,
+      "path": "scripts/bible_module/consensus76/config.v1.json",
+      "sha256": "e23308c95896c6eb4215a6c2a45598d64102979c663380105c825da835414c93"
+    },
+    {
+      "bytes": 35080,
+      "path": "scripts/bible_module/consensus76/core.py",
+      "sha256": "7e3b4be223edd8416f3daa607ec13e29090a741980945bc6e116b49c6d0f8923"
+    },
+    {
+      "bytes": 16423,
+      "path": "scripts/bible_module/consensus76/evaluation.py",
+      "sha256": "d559ab175ac0234065384d4b7e375580b82fadfed7f2bcd6885036319c428cc3"
+    },
+    {
+      "bytes": 11994,
+      "path": "scripts/bible_module/consensus76/io.py",
+      "sha256": "dad5b11746a6148c9d602530f2c2220d12ea281123a6e59eb69b0ad85c28a2de"
+    },
+    {
+      "bytes": 3403,
+      "path": "scripts/bible_module/consensus76/protocol.v1.json",
+      "sha256": "c69fe45ea6969584d188750be02325c14d9bc8f3d4b78bff09d8e1760eb33dfc"
+    },
+    {
+      "bytes": 648,
+      "path": "scripts/bible_module/consensus76/schema.v1.json",
+      "sha256": "ab07a113f8a814177eee6affb8d0f92f0301539631b33172c8694bf69052bb8f"
+    },
+    {
+      "bytes": 67,
+      "path": "scripts/bible_module/consensus76/tests/__init__.py",
+      "sha256": "beabdb1a5dba41f018df90a71fc7a1472643ebf9da1cb15602082360c5883571"
+    },
+    {
+      "bytes": 4311,
+      "path": "scripts/bible_module/consensus76/tests/shared_target_fixtures.v1.json",
+      "sha256": "57bbd2b2d8684b7ec7a64a8efe2048b3e69bffce3435da86fa6698d1e6ca6719"
+    },
+    {
+      "bytes": 28105,
+      "path": "scripts/bible_module/consensus76/tests/test_consensus76.py",
+      "sha256": "963ef39f7fb9011d90a195a626d624c787abe0f1efad3db13df70f1f8e1e6a52"
+    }
+  ],
+  "stage7_complete": false,
+  "status": "completed_candidate_only_engineering",
+  "supersedes": [
+    {
+      "artifact": {
+        "bytes": 277885,
+        "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/pipeline.v2.lock.json",
+        "sha256": "239c7164557c1a0d547b25ac90644211713be3ed5db6dbd9c114134d1604bd5a"
+      },
+      "reason": "rejected_pre_score_joint_shared_target_observation_inflation; full_v3_build_and_replay"
+    }
+  ],
+  "unresolved_limitations": [
+    "bounded_approximate_beam_not_global_optimum",
+    "sparse_unknown_prior",
+    "candidate_joint_use_requires_proof",
+    "ranking_scores_uncalibrated",
+    "fold4_reused_frozen_test_partition_not_new_holdout"
+  ],
+  "version": "consensus76-v1"
+}

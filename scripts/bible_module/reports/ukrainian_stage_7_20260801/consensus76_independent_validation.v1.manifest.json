@@ -1,0 +1,557 @@
+{
+  "artifact": "independent_consensus76_validation",
+  "calibration_performed": false,
+  "counts": {
+    "beam_states_pruned": 5256743,
+    "edges_removed_from_search": 0,
+    "graph_edges": 401983,
+    "graph_legacy_zero_vote_rows": 440280,
+    "graph_matching_supported_prior_queries": 2010,
+    "graph_original_nodes": 678149,
+    "graph_polysemous_prior_queries": 250,
+    "graph_prior_queries_verified": 401687,
+    "graph_relation_many_to_many": 44333,
+    "graph_relation_many_to_one": 22088,
+    "graph_relation_one_to_many": 40552,
+    "graph_relation_one_to_one": 295010,
+    "graph_sparse_prior_queries": 401466,
+    "graph_target_nodes": 595077,
+    "graph_unknown_prior_queries": 398653,
+    "independently_rederived_joint_observations": 3,
+    "independently_rederived_prior_observations": 26975,
+    "independently_rederived_singleton_observations": 26972,
+    "joint_declared_constituent_hyperedges_preserved": 6,
+    "local_pruned_incidents": 0,
+    "mask_original_deferred": 240,
+    "mask_original_eligible": 45591,
+    "mask_target_deferred": 290,
+    "mask_target_eligible": 41517,
+    "nbest_solutions": 155246,
+    "nonlegacy_provenance_rows": 431745,
+    "original_only_deferred_raw_incidence": 331,
+    "original_raw_candidate_present_top1_unselected": 89968,
+    "original_raw_edge_endpoint_incidents": 494884,
+    "original_uncovered": 343938,
+    "original_with_raw_candidate": 424179,
+    "original_without_raw_candidate": 253970,
+    "prior_observations_fold_0": 9189,
+    "prior_observations_fold_1": 8263,
+    "prior_observations_fold_2": 9520,
+    "prior_original_signatures": 13388,
+    "prior_target_groups": 22073,
+    "raw_joint_use_declarations": 0,
+    "raw_original_nodes": 678149,
+    "raw_target_nodes": 595077,
+    "repeated_group_observations_deduplicated": 484,
+    "target_only_deferred_raw_incidence": 399,
+    "target_raw_candidate_present_top1_unselected": 69196,
+    "target_raw_edge_endpoint_incidents": 528116,
+    "target_uncovered": 248255,
+    "target_with_raw_candidate": 416018,
+    "target_without_raw_candidate": 179059,
+    "top1_edges": 297767,
+    "top1_shared_target_nodes": 0,
+    "verses_with_beam_pruning": 27878,
+    "verses_with_empty_top1": 2,
+    "verses_without_raw_candidates": 2,
+    "whole_edge_deferred_rank_exclusions": 296
+  },
+  "evaluator_invoked_by_checker": false,
+  "execution_protocol": {
+    "bytes": 1364,
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/execution_protocol.v1.lock.json",
+    "sha256": "99621a14960dbfe3b0167f405536b5f5d08fc115c16efda56ad97d4c70cac688"
+  },
+  "freeze": {
+    "bytes": 278504,
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/pipeline.v3.lock.json",
+    "sha256": "230d671d431763bac09873cd5f90a9b237a667fe6805cdc1556f45ca5764ab80"
+  },
+  "historical_fold4_partition_reused": true,
+  "implementation_author": "/root/consensus_author",
+  "independent_full_philological_reannotation_claimed": false,
+  "input_locks": [
+    {
+      "bytes": 60087481,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_alignment.eligibility.v2.jsonl",
+      "sha256": "d99436f6dedb48c6d7ec99acbaf4631fc009723fdc411851e2dc587e84f844db"
+    },
+    {
+      "bytes": 237291078,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_alignment.annotations.v2.jsonl",
+      "sha256": "547c67517fa466682b5cfe602cc669fa35f3a0420d813bad3a41670d0e880d67"
+    },
+    {
+      "bytes": 1190235451,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/gold_selected_original_layer.jsonl",
+      "sha256": "500482d4b1ce58f9749fe9e53b58bf8bce6be1558df926dacfbe0df29cf09ca4"
+    },
+    {
+      "bytes": 544553840,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/ukrainian_token_inventory.jsonl",
+      "sha256": "62caa29ff269c9ca8dad4b64c656728a645b3d09210034ddcc953c5363c567e1"
+    },
+    {
+      "bytes": 930744605,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/first_party_candidates/alignment_candidates.first_party.jsonl",
+      "sha256": "246f3d53af7a6d788cad5707d7fce7e9ccb0d38b2c1f1cd829449c7f3ef9687f"
+    },
+    {
+      "bytes": 450939395,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/statistical_candidates/alignment_candidates.statistical.jsonl",
+      "sha256": "5be192bcddadec9699befa554654e0184886b38e1aeae8ef0903439ef0d663ad"
+    },
+    {
+      "bytes": 786724179,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/contextual_candidates/alignment_candidates.contextual.jsonl",
+      "sha256": "0e1e90dd1c2ffa2c907861a5eeba551bed00038015a0823ebc673446198a3881"
+    }
+  ],
+  "metrics": [
+    {
+      "all": {
+        "candidate_union": {
+          "f1": 0.3358671235052529,
+          "fn": 20061,
+          "fp": 9208,
+          "gold_support": 27462,
+          "precision": 0.44560178216629537,
+          "predicted": 16609,
+          "recall": 0.26949967227441557,
+          "tp": 7401
+        },
+        "nbest_union": {
+          "f1": 0.33098711610122017,
+          "fn": 20667,
+          "fp": 6802,
+          "gold_support": 27462,
+          "precision": 0.49974259027726703,
+          "predicted": 13597,
+          "recall": 0.24743281625518898,
+          "tp": 6795
+        },
+        "top1": {
+          "f1": 0.32620899730634645,
+          "fn": 20983,
+          "fp": 5782,
+          "gold_support": 27462,
+          "precision": 0.5284234564880516,
+          "predicted": 12261,
+          "recall": 0.23592600684582332,
+          "tp": 6479
+        }
+      },
+      "coverage": {
+        "candidate_union_whole_edges_excluded": 166,
+        "eligible_gold_graph_verses": 1292,
+        "outside_gold_graph_verses": 17275,
+        "outside_requested_fold_graph_verses": 12535
+      },
+      "coverage_groups_verified": 255,
+      "detail_rows_verified": 42467,
+      "folds": [
+        0,
+        1,
+        2
+      ],
+      "manifest_sha256": "d7a07601791a1e06202946f71d9716db456110015afc25e118b0b16c38d6be00",
+      "payload_sha256": "3b906e77d3021b2411155b6ff9e8c342599cbe70d179a62d4d64dfa07f046336",
+      "strata_verified": 257,
+      "support": {
+        "hyperedges": 27462,
+        "original_decisions": 27511,
+        "target_accounting": 24923
+      },
+      "taxonomy_groups_verified": 233
+    },
+    {
+      "all": {
+        "candidate_union": {
+          "f1": 0.3431893210851155,
+          "fn": 6150,
+          "fp": 3002,
+          "gold_support": 8541,
+          "precision": 0.44335249397366955,
+          "predicted": 5393,
+          "recall": 0.2799438004917457,
+          "tp": 2391
+        },
+        "nbest_union": {
+          "f1": 0.33676231727125067,
+          "fn": 6364,
+          "fp": 2211,
+          "gold_support": 8541,
+          "precision": 0.4961257976298997,
+          "predicted": 4388,
+          "recall": 0.2548881863950357,
+          "tp": 2177
+        },
+        "top1": {
+          "f1": 0.33368058338007855,
+          "fn": 6459,
+          "fp": 1856,
+          "gold_support": 8541,
+          "precision": 0.5286947689182326,
+          "predicted": 3938,
+          "recall": 0.24376536705303828,
+          "tp": 2082
+        }
+      },
+      "coverage": {
+        "candidate_union_whole_edges_excluded": 64,
+        "eligible_gold_graph_verses": 430,
+        "outside_gold_graph_verses": 5808,
+        "outside_requested_fold_graph_verses": 24864
+      },
+      "coverage_groups_verified": 166,
+      "detail_rows_verified": 13719,
+      "folds": [
+        3
+      ],
+      "manifest_sha256": "d145d7521eb4ac631b6b0c37ac32d1da98da849ea00279afb0490234e0e43b65",
+      "payload_sha256": "70c046a260e92044f1026fad723dbd2726d6cf8d167d1db3a8cb6d8b1d7c4888",
+      "strata_verified": 168,
+      "support": {
+        "hyperedges": 8541,
+        "original_decisions": 8586,
+        "target_accounting": 7905
+      },
+      "taxonomy_groups_verified": 160
+    },
+    {
+      "all": {
+        "candidate_union": {
+          "f1": 0.3511766227049392,
+          "fn": 6819,
+          "fp": 3217,
+          "gold_support": 9535,
+          "precision": 0.45777852688353277,
+          "predicted": 5933,
+          "recall": 0.28484530676455166,
+          "tp": 2716
+        },
+        "nbest_union": {
+          "f1": 0.3509016222237694,
+          "fn": 7015,
+          "fp": 2308,
+          "gold_support": 9535,
+          "precision": 0.5219552609776305,
+          "predicted": 4828,
+          "recall": 0.26428945988463554,
+          "tp": 2520
+        },
+        "top1": {
+          "f1": 0.3462536023054755,
+          "fn": 7132,
+          "fp": 1942,
+          "gold_support": 9535,
+          "precision": 0.5530494821634062,
+          "predicted": 4345,
+          "recall": 0.2520188778185632,
+          "tp": 2403
+        }
+      },
+      "coverage": {
+        "candidate_union_whole_edges_excluded": 66,
+        "eligible_gold_graph_verses": 449,
+        "outside_gold_graph_verses": 5848,
+        "outside_requested_fold_graph_verses": 24805
+      },
+      "coverage_groups_verified": 191,
+      "detail_rows_verified": 15106,
+      "folds": [
+        4
+      ],
+      "manifest_sha256": "beac0e096fae245e84fc3ca5781509d5bdaf2c1f03e44e4899c977563e0cb636",
+      "payload_sha256": "cb2f563312ffdda4906c26ba0fdbfc5f3145d15bdaf6543218430e383e71546b",
+      "strata_verified": 192,
+      "support": {
+        "hyperedges": 9535,
+        "original_decisions": 9494,
+        "target_accounting": 8689
+      },
+      "taxonomy_groups_verified": 176
+    }
+  ],
+  "own_review_scripts": [
+    {
+      "bytes": 8559,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/audit_locks.py",
+      "sha256": "53105214b05afd7c3a54b9f638f94b876bb43f063cc5bc686c8134890f6af0e7"
+    },
+    {
+      "bytes": 26750,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/audit_payload.py",
+      "sha256": "4a625376b3742e2b9b9f50ae12a4950c553e8e5f87deb6bb142945caa8a6bc84"
+    },
+    {
+      "bytes": 5615,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/audit_raw_inputs.py",
+      "sha256": "6cbf22c8ee7de1635935c2e9f9968e4e452f47625e0f6dd17a59f0353987f21e"
+    },
+    {
+      "bytes": 2691,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/inspect_projection_difference.py",
+      "sha256": "854d8c24d243a11609b21633ccf8a9488ef67a5ac5aa3e447926908068c16725"
+    },
+    {
+      "bytes": 4289,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/probe_actual_resolver.py",
+      "sha256": "fe6486d9c97f84fcacdb28f14cd3e276a37397f1b6ed9068567a1286aee43bc1"
+    },
+    {
+      "bytes": 27381,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/probe_contracts.py",
+      "sha256": "4aac9e1b32509331a31dc1bd53881621d3a4a4203e27c623b5bc37b9def9c30e"
+    },
+    {
+      "bytes": 3609,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/probe_metric_mask_order.py",
+      "sha256": "3fccf0b801d2af8419bcf7bb95cf3caf729f9783cf1a60f8cf5e6eb030597c07"
+    },
+    {
+      "bytes": 4057,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/probe_metric_mask_order.v2.py",
+      "sha256": "c6408b3acf9b469606e3b7e18d346fccd4cff1c20d28aea108777ff90f739e86"
+    },
+    {
+      "bytes": 6575,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/probe_presealed_guard.py",
+      "sha256": "c6057007515ee22de3c445025437266015e37b6af07e1e4de459119aabe64cb0"
+    },
+    {
+      "bytes": 16381,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/recalculate_metrics.py",
+      "sha256": "1c27f45f0b0b0f9d92de6870cf2681cf4e84b9eaa326e8569640dcd5bf8c07b8"
+    },
+    {
+      "bytes": 17577,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/recalculate_metrics.v2.py",
+      "sha256": "947184fea2c3e770d2727c7ac251ab00c2752467d11400c0f77dae73e31f0bb7"
+    },
+    {
+      "bytes": 2357,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/verify_replay.py",
+      "sha256": "63026f48fd2ef44be49a2eb7fb15adfa798bb47d57fd3a290630862544e5404f"
+    },
+    {
+      "bytes": 23897,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/write_final_review.py",
+      "sha256": "0e40fcb16c1b39249d0611659c5abb0bd7370c97aa59a3f530a3202fba317e0f"
+    },
+    {
+      "bytes": 8039,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/write_review_gate.py",
+      "sha256": "463f3aa74b417a45efc41dd84dadd8d42b7a613e3fa0e55db8fbfc2cef8060fe"
+    }
+  ],
+  "production_strong_promotions": 0,
+  "receipts": [
+    {
+      "bytes": 5466,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/review_initial_baseline.v1.json",
+      "sha256": "fc9bb47a67939c95f48206d9df5ccd98531c793948d4a6ce1e75c55aec24f070"
+    },
+    {
+      "bytes": 5648,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/source_review_findings.v1.json",
+      "sha256": "5ad30e5c29e2e90f90832cbb4e019440a7213e28f9ed4d19d0f13b50ad152b40"
+    },
+    {
+      "bytes": 2060,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/raw_input_audit.v1.json",
+      "sha256": "85965c1d675e93fbd029c4889f4833e9d2dc1495f631d964963e73c19020612d"
+    },
+    {
+      "bytes": 2506,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/selected_layer_delta.v1.json",
+      "sha256": "b2854f6efbf65ec1ab3727da1f0764bad5ee35eb8a5a96e34ac95d4a78b78b84"
+    },
+    {
+      "bytes": 2893,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/shared_target_prior_semantics.v1.json",
+      "sha256": "54e3576d22049fedefb4aa94b10ad20195957a221ceeb0a40ef3a497396cac7a"
+    },
+    {
+      "bytes": 3416,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/full_gold_shared_components.v1.json",
+      "sha256": "0443ac564382ecebecfffb83d6f2643bcf4a26af6decc1bbe331114ac640b1b5"
+    },
+    {
+      "bytes": 4445,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/contract_probes.v1.json",
+      "sha256": "0bf94a70a1146a10372f0e4f4daf3e37cf58d1fe36b06119b68f028f8bbdc7c9"
+    },
+    {
+      "bytes": 4362,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/presealed_guard_probes.v1.json",
+      "sha256": "af77c1e406961bfd4c13cbcf8b1f00e83e7b6ef9287c46140f9f3b6ae24a62f8"
+    },
+    {
+      "bytes": 4143,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/actual_resolver_guard.v1.json",
+      "sha256": "aace1eff675019b9b1c6818efccf96234b85721537e2577f57871b90c782afdb"
+    },
+    {
+      "bytes": 2678,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/input_lock_adversaries.pre_v3.v1.json",
+      "sha256": "e6eb3076e2da78fafd7fc0c5f60a0b47ca308457967691af4ce60b053596b34a"
+    },
+    {
+      "bytes": 4987,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/lock_adversaries.before_generation_fix.v1.json",
+      "sha256": "e731a7b12c812e5234de7b0edbc50fefbf6671be15ceb753a42f0b803f1f9ad9"
+    },
+    {
+      "bytes": 6879,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/lock_oracle_before_generation_fix.v1.py.txt",
+      "sha256": "45ff9254a273d443406d477a09ea05b1627546903322aa50eacc5093b442be33"
+    },
+    {
+      "bytes": 5728,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/lock_adversaries.v1.json",
+      "sha256": "b5be67db86964f997e49bba36c9fde232db643402d60947f8767ef277c613482"
+    },
+    {
+      "bytes": 1139,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/payload_oracle_projection_correction.v1.json",
+      "sha256": "acd7ca0192d1f8b8482dd61e5eb211bb6e8d6d9b1998f6de0ac0828d6e6017e0"
+    },
+    {
+      "bytes": 26729,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/payload_oracle_pre_projection_fix.v1.py.txt",
+      "sha256": "2534a973afa9436a37b579ae71d2e9e8044836741266b69749c4dccd73da78ac"
+    },
+    {
+      "bytes": 8031,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/payload_oof_audit.v1.json",
+      "sha256": "eae249a3f42b8423ce8326beb379d7874a7e8a1ba240171a785a85d05bb3d68b"
+    },
+    {
+      "bytes": 1357,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/deterministic_replay.v1.json",
+      "sha256": "4a7e38ad41c232b8246b04bdf8d9cd206b6d5a618627691b65d4f7fbd4494588"
+    },
+    {
+      "bytes": 3496,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/code_payload_approval.v1.json",
+      "sha256": "29faf41e13de1370b4d1391c1401e9bb3af6c681d8d63e6a8cc6b3eea70591b3"
+    },
+    {
+      "bytes": 16381,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/metric_auditor_before_mask_order_fix.v1.py.txt",
+      "sha256": "1c27f45f0b0b0f9d92de6870cf2681cf4e84b9eaa326e8569640dcd5bf8c07b8"
+    },
+    {
+      "bytes": 17577,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/metric_auditor_before_versioned_path.v1.py.txt",
+      "sha256": "0509db4a04d18c5d1727688749109d6b70ca0c4689dcee427e85e02667c12464"
+    },
+    {
+      "bytes": 2304,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/metric_auditor_mask_order_amendment.v1.json",
+      "sha256": "ce93902b64239eca593732916b5d42ccd512da1e1043468bd5f49bd34a745a14"
+    },
+    {
+      "bytes": 2894,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/metric_auditor_mask_order_amendment.v2.json",
+      "sha256": "f4e8f3b7d7d8f138be22fab32aa9734c1880acc2c60f8834805cb4fd7d5df000"
+    },
+    {
+      "bytes": 4519,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/presealed_gate.v1.json",
+      "sha256": "5ca4a4b4e3101a3d68f2f33e7059b43301096c6a830ff51520cf795a7258cc5e"
+    },
+    {
+      "bytes": 1197740,
+      "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_independent_01/metric_recalculation.v1.json",
+      "sha256": "716d9c430b626578928a87880f8eb11d21e00e0ac61a6e1a6527aaa1ba3964d7"
+    }
+  ],
+  "report": {
+    "bytes": 16652,
+    "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76_independent_validation.v1.ru.md",
+    "sha256": "c6f893005195dc41106979181d5a9137b70a272b6626734205d1723b03bef1b9"
+  },
+  "reviewer": "/root/independent_review76",
+  "reviewer_authored_production_code": false,
+  "root_sealed_run_claim": {
+    "bytes": 508,
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_author_01/pipeline.v3.lock.json.fold4.claim.json",
+    "sha256": "356d24d82b355a54aaf63d53d3694c30990d211707905c8eedca588e2be340f6"
+  },
+  "scoring_orchestrator": {
+    "bytes": 2930,
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_consensus76_20261017_root_01/run_scoring.py",
+    "sha256": "acad202dd60808345a76862304110c3d9d19404ee0297b443719af6fd1767e27"
+  },
+  "sealed_scoring_invocations_by_checker": 0,
+  "source_locks": [
+    {
+      "bytes": 0,
+      "path": "scripts/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 46,
+      "path": "scripts/bible_module/__init__.py",
+      "sha256": "971deef49ff8b4892d5f53f021d816dcc9695ba31a837fa72a412208989b65a4"
+    },
+    {
+      "bytes": 96,
+      "path": "scripts/bible_module/consensus76/__init__.py",
+      "sha256": "d351c9fceb2e2cfde16683a1fc84a7fa7354e29f595eac282360d1bad8eeed6f"
+    },
+    {
+      "bytes": 1986,
+      "path": "scripts/bible_module/consensus76/__main__.py",
+      "sha256": "a8e87e5bb1162251dab1bd7ccabb4ffa8126b72ac9ac8d52957b39427d36b1d8"
+    },
+    {
+      "bytes": 558,
+      "path": "scripts/bible_module/consensus76/config.v1.json",
+      "sha256": "e23308c95896c6eb4215a6c2a45598d64102979c663380105c825da835414c93"
+    },
+    {
+      "bytes": 35080,
+      "path": "scripts/bible_module/consensus76/core.py",
+      "sha256": "7e3b4be223edd8416f3daa607ec13e29090a741980945bc6e116b49c6d0f8923"
+    },
+    {
+      "bytes": 16423,
+      "path": "scripts/bible_module/consensus76/evaluation.py",
+      "sha256": "d559ab175ac0234065384d4b7e375580b82fadfed7f2bcd6885036319c428cc3"
+    },
+    {
+      "bytes": 11994,
+      "path": "scripts/bible_module/consensus76/io.py",
+      "sha256": "dad5b11746a6148c9d602530f2c2220d12ea281123a6e59eb69b0ad85c28a2de"
+    },
+    {
+      "bytes": 3403,
+      "path": "scripts/bible_module/consensus76/protocol.v1.json",
+      "sha256": "c69fe45ea6969584d188750be02325c14d9bc8f3d4b78bff09d8e1760eb33dfc"
+    },
+    {
+      "bytes": 648,
+      "path": "scripts/bible_module/consensus76/schema.v1.json",
+      "sha256": "ab07a113f8a814177eee6affb8d0f92f0301539631b33172c8694bf69052bb8f"
+    },
+    {
+      "bytes": 67,
+      "path": "scripts/bible_module/consensus76/tests/__init__.py",
+      "sha256": "beabdb1a5dba41f018df90a71fc7a1472643ebf9da1cb15602082360c5883571"
+    },
+    {
+      "bytes": 4311,
+      "path": "scripts/bible_module/consensus76/tests/shared_target_fixtures.v1.json",
+      "sha256": "57bbd2b2d8684b7ec7a64a8efe2048b3e69bffce3435da86fa6698d1e6ca6719"
+    },
+    {
+      "bytes": 28105,
+      "path": "scripts/bible_module/consensus76/tests/test_consensus76.py",
+      "sha256": "963ef39f7fb9011d90a195a626d624c787abe0f1efad3db13df70f1f8e1e6a52"
+    }
+  ],
+  "status": "PASS"
+}

@@ -1,6 +1,6 @@
 # Дорожная карта создания украинского библейского модуля с номерами Стронга
 
-Doc-Version: `1.9.16`
+Doc-Version: `1.9.17`
 Last-Updated: `2026-10-17`
 Source-Commit: `working-tree`
 
@@ -579,8 +579,8 @@ Finalized global gold, calibration и production Strong по-прежнему н
 - [x] 7.4. Исправить обнаруженную независимым QC ошибочную reciprocal-связь `Eph.5.2` без подстановки варианта по догадке: exact two-row correction снимает `ἡμᾶς/G3165 → «вас»`, оставляет выбранный source token как `source_text_not_rendered`, украинский token как translation addition относительно selected layer и не продвигает альтернативный `ὑμᾶς` Strong. Три эмиссии совпали побайтно (`f4c41395…`), `seal-correction` и две проверки прошли; книга остаётся открытой до независимого post-correction QC и разрешения source uncertainties.
 - [x] 7.4. Оценить изолированный прежний positional zero-vote baseline и пять уже существующих фиксированных методов на finalized eligible gold; раздельно folds 0–3 и sealed fold 4 после freeze pipeline, с precision/recall знаменателями, error taxonomy и whole-hyperedge exclusions. Обучение, tuning и автоматическое продвижение Strong не выполнялись; прежние bindings не являются обучающей истиной.
 - [x] 7.5. Реализовать и воспроизводимо выполнить независимые генераторы кандидатов: lexical/morphological 13 239, RUSSYN/YLT bridge 29 787, transliteration/named-entity 18 212, bidirectional statistical OOF 163 140 и multilingual contextual 207 367; rejected legacy 440 280 сохранён отдельным zero-vote baseline. Общий bundle содержит 872 025 candidate-only rows, каждый channel имеет version/license/digest и независимый manifest/registry; `resolver_eligible=0`, automatic acceptance `0`, `--check` прошёл.
-- [ ] 7.6. Объединять кандидаты в verse-local many-to-many hypergraph с явными null links, compounds и альтернативами; запретить nearest/neighbor, пропорциональное, позиционное и простое majority-only присваивание.
-- [ ] 7.6. Применять украинский lexeme ledger только как leakage-free out-of-fold prior с распределением `lemma/context/morphology → Strong`, а не как глобальную замену доказательства конкретного употребления.
+- [x] 7.6. Объединять кандидаты в verse-local many-to-many hypergraph с явными null links, compounds и альтернативами; запретить nearest/neighbor, пропорциональное, позиционное и простое majority-only присваивание.
+- [x] 7.6. Применять украинский lexeme ledger только как leakage-free out-of-fold prior с распределением `lemma/context/morphology → Strong`, а не как глобальную замену доказательства конкретного употребления.
 - [ ] 7.7. Калибровать классы `A_auto`, `B_review`, `C_unresolved` на отложенных данных; автоматический класс разрешить только при односторонней нижней границе precision не ниже 99,5% и отсутствии провала по книгам/жанрам/типам аномалий.
 - [ ] 7.8. Проверить вручную все `B_review`, `C_unresolved`, textual variants и конфликтующие источники; каждое принятое решение хранить в versioned override с original/OH1988 token spans, evidence, rationale и input digests.
 - [ ] 7.9. Только после приёмки links сформировать Strong markup отдельно от immutable plain text/comment этапа 6 и доказать точный plain-text round-trip для всех 31 102 позиций.
@@ -1279,3 +1279,12 @@ Full-grid: **2171 стихов, 45831 original + 41807 target = 87638 nodes**. �
 [Итоговый отчёт 7.4](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_global_finalization.v2.ru.md), [final lock](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_alignment.finalized.v2.lock.json), [final manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_alignment.finalized.v2.manifest.json), [независимая проверка](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_global_independent_validation.v1.ru.md), [единственный реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records), [актуальный HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
 
 **Этап 7 целиком остаётся открытым.** Калибровка, production Strong, этап 8, SQLite, Flutter/runtime, working/web DB, commit и push не выполнялись. Registered deferrals удовлетворяют завершению gold-пакета; дополнительная филология по ним не является обязательным продолжением.
+
+
+## Завершение 7.6 — 2026-10-17
+
+Завершены оба подпункта roadmap 7.6: candidate-only constrained consensus и однократный leakage-free OOF lexical prior. Полный graph: 31102 стихов, 678149 original + 595077 target nodes, 401983 semantic hyperedges; legacy остаётся zero-vote. Prior: 26972 ordinary rank observations + 3 joint components = 26975 наблюдений folds0–2; 6 shared declarations сохранены целиком. Own-fold labels исключены из development predictions; validation3/test4 labels не входят в prior или tuning. Инженерный результат некалиброван, automatic promotion и production acceptance0. Gold, mask, selection, folds, policy/deferral/source-resolution chain и frozen7.4 сохранены. 7.4 не переоткрывается; этап7 целиком, калибровка и iterative bootstrap/self-training остаются открыты. Production Strong, этап8, DB, Flutter/runtime, commit/push не выполнялись.
+
+Нумерация сопоставлена по содержанию: alignment plan7.6 — consensus, plan7.7 — будущий iterative ledger; здесь завершён только его однократный OOF prior. NULL не придуман при отсутствии кандидата; beam search ограничен и не объявлен global optimum. Shared-target edges сохраняются отдельно с reciprocal union. До оценки отклонён draftv2 с inflation shared observations, исправленныйv3 заново построен и воспроизведён.
+
+[Отчёт7.6](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.ru.md), [manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.manifest.json), [независимая проверка](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76_independent_validation.v1.ru.md), [актуальный HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).

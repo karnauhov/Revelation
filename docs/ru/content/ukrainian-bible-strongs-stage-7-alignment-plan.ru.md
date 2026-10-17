@@ -1,12 +1,12 @@
 # План доказательного Strong-выравнивания OH1988
 
-Doc-Version: `1.1.9`
+Doc-Version: `1.1.10`
 Last-Updated: `2026-10-17`
 Source-Commit: `working-tree`
 
 ## Статус документа
 
-Это план этапа 7, а не результат его выполнения. Генерация финальной Strong-разметки, принятие автоматических связей и SQLite-сборка в рамках подготовки плана не выполнялись.
+Это план этапа7 с последующими доказательными checkpoints. 7.4 и инженерная7.6 завершены по связанным отчётам; весь этап7 остаётся открыт. Финальная production Strong-разметка, автоматическое принятие и SQLite-сборка не выполнялись.
 
 ## Основное решение
 
@@ -657,3 +657,12 @@ Full-grid: **2171 стихов, 45831 original + 41807 target = 87638 nodes**. �
 [Итоговый отчёт 7.4](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_global_finalization.v2.ru.md), [final lock](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_alignment.finalized.v2.lock.json), [final manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_alignment.finalized.v2.manifest.json), [независимая проверка](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/gold_global_independent_validation.v1.ru.md), [единственный реестр OH1988](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/oh88_strongs_issue_inventory.ru.md#registry-records), [актуальный HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
 
 **Этап 7 целиком остаётся открытым.** Калибровка, production Strong, этап 8, SQLite, Flutter/runtime, working/web DB, commit и push не выполнялись. Registered deferrals удовлетворяют завершению gold-пакета; дополнительная филология по ним не является обязательным продолжением.
+
+
+## Завершение candidate-only 7.6 и однократного OOF prior — 2026-10-17
+
+Завершены оба подпункта roadmap 7.6: candidate-only constrained consensus и однократный leakage-free OOF lexical prior. Полный graph: 31102 стихов, 678149 original + 595077 target nodes, 401983 semantic hyperedges; legacy остаётся zero-vote. Prior: 26972 ordinary rank observations + 3 joint components = 26975 наблюдений folds0–2; 6 shared declarations сохранены целиком. Own-fold labels исключены из development predictions; validation3/test4 labels не входят в prior или tuning. Инженерный результат некалиброван, automatic promotion и production acceptance0. Gold, mask, selection, folds, policy/deferral/source-resolution chain и frozen7.4 сохранены. 7.4 не переоткрывается; этап7 целиком, калибровка и iterative bootstrap/self-training остаются открыты. Production Strong, этап8, DB, Flutter/runtime, commit/push не выполнялись.
+
+Roadmap7.6 объединяет graph и OOF prior; в этом плане7.6 — constrained consensus, а7.7 — iterative lexeme ledger. Однократный prior выполнен без iterative шага: joint target-overlap component — одно наблюдение, исходные declared edges/subspans/multiplicity сохранены; joint labels не проецируются в singleton counts. Development0–2, validation3 без tuning и отдельно однократно оценённый повторно используемый frozen test4 имеют SHA-bound manifests. Сохранённые baseline7.4 не регенерировались. Следующая калибровка требует отдельного разрешённого сеанса; lower-bound precision99,5% не менялся.
+
+[Отчёт7.6](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.ru.md), [manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.manifest.json), [независимая проверка](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76_independent_validation.v1.ru.md), [HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
