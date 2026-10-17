@@ -1,12 +1,12 @@
 # План доказательного Strong-выравнивания OH1988
 
-Doc-Version: `1.1.10`
+Doc-Version: `1.1.11`
 Last-Updated: `2026-10-17`
 Source-Commit: `working-tree`
 
 ## Статус документа
 
-Это план этапа7 с последующими доказательными checkpoints. 7.4 и инженерная7.6 завершены по связанным отчётам; весь этап7 остаётся открыт. Финальная production Strong-разметка, автоматическое принятие и SQLite-сборка не выполнялись.
+Это план этапа7 с последующими доказательными checkpoints. 7.4, инженерная7.6 и calibration-only roadmap7.7 с проверенным NO_GO завершены по связанным отчётам; iterative ledger этого плана7.7 и весь этап7 остаются открыты. Финальная production Strong-разметка, автоматическое принятие и SQLite-сборка не выполнялись.
 
 ## Основное решение
 
@@ -666,3 +666,11 @@ Full-grid: **2171 стихов, 45831 original + 41807 target = 87638 nodes**. �
 Roadmap7.6 объединяет graph и OOF prior; в этом плане7.6 — constrained consensus, а7.7 — iterative lexeme ledger. Однократный prior выполнен без iterative шага: joint target-overlap component — одно наблюдение, исходные declared edges/subspans/multiplicity сохранены; joint labels не проецируются в singleton counts. Development0–2, validation3 без tuning и отдельно однократно оценённый повторно используемый frozen test4 имеют SHA-bound manifests. Сохранённые baseline7.4 не регенерировались. Следующая калибровка требует отдельного разрешённого сеанса; lower-bound precision99,5% не менялся.
 
 [Отчёт7.6](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.ru.md), [manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.manifest.json), [независимая проверка](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76_independent_validation.v1.ru.md), [HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
+
+## Калибровка 7.7 — проверенный NO_GO, 2026-10-17
+
+Калибровка roadmap7.7 завершена как отдельный calibration-only инженерный результат: фиксированный rank-only isotonic PAVA обучен только на development0–2, model/policy заморожены до однократной validation3. Итог — **NO_GO, A_auto=0**: независимая Bernoulli-модель для зависимых edges не доказана, обязательные strata underpowered. B_review остаётся очередью предложений; C_unresolved сохраняет неопределённость. Production acceptance и automatic promotions0. Test4 по заранее заданному правилу пропущен без нового correctness scoring; прежние7.4/7.6 сохранены. Этап7 целиком открыт.
+
+Нумерация сопоставлена по содержанию: roadmap7.7 — calibration; alignment plan7.7 — iterative lexeme ledger. Итеративная часть, self-training и bootstrap **не выполнялись** и не отмечаются завершёнными. Gold/mask/source selection/folds, Strong registry, frozen7.4/7.6, общие SHA-bound report/log, SQLite/web DB и Flutter/runtime сохранены.
+
+[Отчёт calibration7.7](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77.v1.ru.md), [независимая проверка](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77_independent_validation.v1.ru.md), [manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77.v1.manifest.json), [validation log](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77_validation_log.v1.md), [HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).

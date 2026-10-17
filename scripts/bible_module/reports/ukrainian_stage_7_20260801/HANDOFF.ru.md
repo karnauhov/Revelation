@@ -3308,3 +3308,321 @@ Add the isolated candidate-only pipeline, regression coverage and independently
 verified evidence; update the roadmap, alignment plan, handoff and artifact inventory.
 Preserve frozen gold and stage 7.4 artifacts; keep calibration and promotion disabled.
 ```
+
+
+## 7.7 — engineering complete / verified NO_GO; final inventory pending, 2026-10-17
+
+Calibration-only pipeline 7.7 завершён. **NO_GO; A_auto=0; production acceptance/promotions=0.** Один rank-only isotonic PAVA fit folds0–2; 42 blocks, 12261 training top1 edges. Protocol SHA `f605376ddcd09796ca72e4b84a463b4c2aeb224ca50868a68cbcdf022339cefa`; learned freeze SHA `b3393f0a7f6adf51cc169b3e28c10d03bc4b6926a3b45a236f1144a6eb09e517`. Validation3 выполнена ровно один раз без tuning/refit; test4 **SKIPPED**, новых scoring0, старый claim7.6 сохранён.
+
+Full31102:678149 original+595077 target=1273226 nodes, 297767 top1 proposals =254074 B_review+43693 C_unresolved, A_auto0. Все physical nodes сохранены; deferred530 и uncovered/unselected причины отдельны. Candidate graph/ranks/nbest/prior7.6 не менялись. New payload SHA `288fd28466eb3bfe8510a179600a109b5680d4d7282cd3d26aae90b56e00aeda` совпал с независимым frozen-model byte replay.
+
+Dev top1 TP6479/FP5782/FN20983, gold27462. Final B TP6002/FP4311, C TP477/FP1471. Val top1 TP2082/FP1856/FN6459, gold8541. Final B TP1921/FP1335 (3256), C TP161/FP521 (682). High-score diagnostic dev61/61, lower bound0.9575304862433994,44 verses/8 dependent components; val22/22, lower bound0.8904884056032809,15 verses/6 components. Ни support, ни доказанная Bernoulli-независимость не дают сертификата99,5%; все66 books underpowered по verse-cluster ceiling13..97. Bounds descriptive, не совместная confidence гарантия. Val Brier0.22175201445791867/logloss0.6303765796841344/ECE0.008887557621011325, N3938, unsupported0.
+
+539 Python tests PASS =457 Bible+26 consensus76+26 calibration77+30 Content Tool. Independent32 source canary groups/300 PAVA fixtures, own raw3272-file lock closure, accounting31102 verses/1273226 nodes, model/provenance/classification и341 required strata+all PASS. Небольшое исправление schema expectation для пустого bin сделано только в независимом oracle; producer/model/policy не менялись, первый FAIL сохранён. Direct/nested leakage: new fit только0–2, validation3/test4 upstream только0–2; обычная calibrator CV поверх OOF scores не выполнялась, development diagnostics in-sample.
+
+Все6115 frozen entries,25 прежних consumers, gold/mask/selection/folds и frozen7.4/7.6 сохранены; общие report.ru.md/validation_log.md побайтно неизменны. Public gold66/66=38 strict+28 completed_with_registered_deferrals,2171 proven verses,45538 eligible hyperedges; full87638/eligible87108/deferred530. Исторический stage7 preparation status остаётся blocked_before_gold_and_alignment_acceptance; отдельный finalized gold v2 authoritative. Stage3offline/4/5/6, docs-sync/forbidden через absolute Flutter-bundled Dart3.13.2, navigation/scope/diff PASS. Flutter format/analyze/test/smoke N/A: только Python stdlib tooling, evidence и content docs; Dart/runtime/dependencies/localization/routes/startup/DB/release не менялись, approved RU/EN pairs не затронуты.
+
+Роли: `/root/calibration_author` — producer/package/tests; `/root/independent_review77` — fork_turns=none, независимые собственные auditors/QC без producer authorship; `/root` — orchestration/preflight/docs/checks, не independent QC; `/root/inventory_writer77` — отдельный existing-helper writer после всех остальных записей. [Роли](../../work/ukrainian_stage_7_20260801/session_calibration77_20261017_root_01/roles.v1.json).
+
+[Отчёт7.7](calibration77.v1.ru.md), [completion manifest](calibration77.v1.manifest.json), [независимая проверка](calibration77_independent_validation.v1.ru.md), [independent manifest](calibration77_independent_validation.v1.manifest.json), [validation log7.7](calibration77_validation_log.v1.md).
+
+Iterative ledger alignment plan7.7 не выполнялся; весь stage7 открыт. Strong registry/production/DB/этап8/commit/push не менялись. Final writer и последующие readonly receipts будут добавлены ниже только в исключённый HANDOFF.
+
+English commit message for the current uncommitted set:
+
+```text
+Complete stage 7.7 calibration with independently verified NO_GO [skip ci]
+
+Add the isolated calibration layer, frozen class proposals and independent
+raw-input verification. Preserve finalized gold and frozen stage 7.4/7.6;
+keep automatic promotion and production acceptance disabled.
+```
+
+
+## FINAL — 7.7 calibration-only завершён, независимо проверенный NO_GO, 2026-10-17
+
+Это актуальный FINAL checkpoint. Engineering completion подтверждён; статистическая сертификация NO_GO, A_auto=0, production acceptance=0, automatic promotions=0. Весь этап7 остаётся открыт; iterative lexeme ledger alignment plan7.7 не выполнялся. Нового test4 correctness scoring нет: SKIPPED по predeclared протоколу, прежний claim7.6 сохранён.
+
+Финальные классы по всем31102 стихам: A_auto0, B_review254074, C_unresolved43693, всего297767 frozen top1 edges. Полный accounting678149 original+595077 target=1273226 physical nodes сохранён;296 whole-edge deferred exclusions. Дополнительный stdout-only applicability scan без labels выявил один unsupported_probability edge, fold4, итог C_unresolved; это не correctness scoring test4.
+
+Validation3: top1 TP2082/FP1856/FN6459, precision denominator3938, eligible gold denominator8541. B_review TP1921/FP1335/FN6620 (N3256); C_unresolved TP161/FP521/FN8380 (N682). Development in-sample top1 TP6479/FP5782/FN20983 (N12261, gold27462); B6002/10313, C477/1948. A_auto support0, precision/LB undefined. High-score diagnostic61/61 dev,22/22 val, one-sided95% Wilson lower bounds0.9575304862433994 и0.8904884056032809 ниже0.995;44/15 verses,8/6 зависимых компонентов. Надёжная модель независимых trials не установлена; все66 book strata underpowered (pooled13..97 proven verses/book). A_proposed diagnostic не становится допустимым автоматическим классом.
+
+Роли фактические: /root/calibration_author — producer implementation/tests/fit; /root/independent_review77 — fork_turns=none, собственные raw-input auditors, не автор producer implementation; /root — orchestration/preflight/docs/checks; /root/inventory_writer77 — отдельный inventory-only writer, не implementation/QC author. Независимая проверка пересчитала actual payload, provenance,42 PAVA blocks,297767 classifications,31102 verse accounting и342 metric rows каждого scored scope. 539 Python regression tests PASS; собственные adversarial/poison/leakage/provenance/claim/determinism probes PASS.
+
+Без прямой/вложенной leakage: fit только0–2; features для3/4 upstream только0–2; model/policy/predictions заморожены до validation3. Calibrator CV поверх готовых OOF scores не выполнялась; development metrics явно in-sample, исторические aggregate results3/4 известны, нового untouched holdout не заявляется. После validation ни refit, ни threshold/domain selection не было.
+
+Final inventory обновлён existing helper ровно один раз отдельным writer после завершения всех остальных записей. 6279 entries (report394/work5885),2230468 bytes, SHA256134412f6e7b2a50162c6a2ed02dde0f1d51c94bc2ba6aed6943ea819c7062555. Все6115 прежних entries сохранены точно по metadata/SHA/bytes; общие report.ru.md и validation_log.md побайтно неизменны. После helper writer writes0. Root после helper выполнял только read-only проверки, затем этот разрешённый append в исключённый HANDOFF.
+
+Root stdout-only post-inventory checks PASS: exact physical roster/canonical seal/every SHA+bytecount, source/runtime/input/model/output check_freeze, stage7 --check, public check-final-completed, navigation/scope и git diff --check. Preparation status остаётся blocked_before_gold_and_alignment_acceptance с accepted_links0/error_count0; gold finalized v2 остаётся66/66=38 strict+28 completed_with_registered_deferrals,2171 proven verses,45538 eligible hyperedges,full87638/eligible87108/deferred530. Gold/mask/selection/folds, frozen7.4/7.6 и issue registry не менялись. Git CRLF warnings не являются diff errors; CLI exit0. Flutter format/analyze/test/smoke N/A: Python stdlib tooling, calibration evidence/content docs; Dart/runtime/dependencies/localization/routes/startup/DB/release и approved RU/EN pairs не затронуты. Docs sync/forbidden ранее PASS через абсолютный Flutter-bundled Dart3.13.2.
+
+[Отчёт7.7](calibration77.v1.ru.md), [completion manifest](calibration77.v1.manifest.json), [независимая проверка](calibration77_independent_validation.v1.ru.md), [independent manifest](calibration77_independent_validation.v1.manifest.json), [validation log7.7](calibration77_validation_log.v1.md). Ни commit/push, ни Strong/production/SQLite/working/web DB/этап8 не выполнялись.
+
+Последние receipts ниже сохраняются только в исключённом HANDOFF.
+
+### Distinct inventory writer — final stdout receipt
+
+```json
+{
+  "status": "PASS",
+  "helper_calls": 1,
+  "post_helper_file_writes": 0,
+  "entries": 6279,
+  "report_entries": 394,
+  "work_entries": 5885,
+  "bytes": 2230468,
+  "sha256": "134412f6e7b2a50162c6a2ed02dde0f1d51c94bc2ba6aed6943ea819c7062555",
+  "canonical_payload_before_output_digest": "623cb2f656698ecf4266be2876817b8c6386a3d322f914d095ef1d6a89f5868a",
+  "preserved_initial_entries": 6115,
+  "all_sha_bytes_roster_canonical_seal": "PASS",
+  "writer": "/root/inventory_writer77",
+  "actual_role": "distinct_inventory_only_writer",
+  "implementation_authorship": false,
+  "independent_qc_authorship": false,
+  "pre_refresh_receipt": {
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_calibration77_20261017_inventory_writer_01/pre_refresh_receipt.v1.json",
+    "bytes": 10838,
+    "sha256": "b5f0adc656ea75a8ab822d6adf7a37c669f31293bd4308a5bb2cabeb98c8131a"
+  }
+}
+```
+
+### Root — final post-inventory read-only receipts
+
+```json
+{
+  "after": {
+    "gold": "265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9",
+    "inventory": "134412f6e7b2a50162c6a2ed02dde0f1d51c94bc2ba6aed6943ea819c7062555",
+    "new_freeze": "b3393f0a7f6adf51cc169b3e28c10d03bc4b6926a3b45a236f1144a6eb09e517"
+  },
+  "artifact": "calibration77_post_inventory_readonly_receipts",
+  "automatic_promotions": 0,
+  "before": {
+    "gold": "265ac4f336ca6260d211628666a977d7b1805c413b789007cca09afce90a89c9",
+    "inventory": "134412f6e7b2a50162c6a2ed02dde0f1d51c94bc2ba6aed6943ea819c7062555",
+    "new_freeze": "b3393f0a7f6adf51cc169b3e28c10d03bc4b6926a3b45a236f1144a6eb09e517"
+  },
+  "checks": {
+    "calibration77.v1.manifest.json": {
+      "sha256": "30e810f1f512087fe7dab11667c94d7a200fb6ffa7dab803ba475279a3d9ddf5",
+      "status": "engineering_complete_verified_NO_GO"
+    },
+    "calibration77_independent_validation.v1.manifest.json": {
+      "sha256": "00f882d3ad01e24edd8366b6b50bc3d09307662568bc4ee0f735c8ac54305667",
+      "status": "PASS"
+    },
+    "git_diff": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.187,
+      "status": "PASS",
+      "stderr_bytes": 343,
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inventory": {
+      "all_sha_bytes_roster_canonical_seal": true,
+      "bytes": 2230468,
+      "entries": 6279,
+      "preserved_frozen_entries": 6115,
+      "report_and_validation_log_byte_identical": true,
+      "seconds": 77.093,
+      "sha256": "134412f6e7b2a50162c6a2ed02dde0f1d51c94bc2ba6aed6943ea819c7062555",
+      "status": "PASS"
+    },
+    "navigation_scope": {
+      "affected_markdown_count": 6,
+      "dart_format_analyze_flutter_test_smoke": "N/A: Python tooling, candidate-only evidence and content docs; runtime/Dart and dependencies unchanged",
+      "errors": [],
+      "files": [
+        "docs/ru/content/ukrainian-bible-strongs-module-roadmap.ru.md",
+        "docs/ru/content/ukrainian-bible-strongs-stage-7-alignment-plan.ru.md",
+        "scripts/bible_module/calibration77/__init__.py",
+        "scripts/bible_module/calibration77/__main__.py",
+        "scripts/bible_module/calibration77/config.v1.json",
+        "scripts/bible_module/calibration77/contracts.py",
+        "scripts/bible_module/calibration77/io.py",
+        "scripts/bible_module/calibration77/model.py",
+        "scripts/bible_module/calibration77/pipeline.py",
+        "scripts/bible_module/calibration77/protocol.v1.json",
+        "scripts/bible_module/calibration77/schema.v1.json",
+        "scripts/bible_module/calibration77/tests/__init__.py",
+        "scripts/bible_module/calibration77/tests/test_calibration77.py",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/artifact_inventory.manifest.json",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77.v1.manifest.json",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77.v1.ru.md",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77_independent_validation.v1.manifest.json",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77_independent_validation.v1.ru.md",
+        "scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77_validation_log.v1.md"
+      ],
+      "new_file_whitespace_checks": 16,
+      "reachable_markdown_count": 111,
+      "runtime_db_dependencies_localization_release_changes": false,
+      "status": "PASS"
+    },
+    "public_gold": {
+      "command": [
+        "C:\\Python312\\python.exe",
+        "-B",
+        "-m",
+        "scripts.bible_module.ukrainian_stage_7_gold",
+        "check-final-completed"
+      ],
+      "counts": {
+        "completed_books": 66,
+        "completed_with_deferrals_books": 28,
+        "deferred_labels": 530,
+        "eligible_labels": 87108,
+        "eligible_original_decisions": 45591,
+        "full_labels": 87638,
+        "full_original_decisions": 45831,
+        "full_target_labels": 41807,
+        "full_verses": 2171,
+        "proven_verses": 2171,
+        "strictly_accepted_books": 38,
+        "threshold_denominator": "eligible_original_decisions_only; target, hyperedge and negative records excluded"
+      },
+      "exit_code": 0,
+      "seconds": 98.594,
+      "status": "PASS",
+      "stderr_bytes": 0,
+      "stdout_bytes": 415940,
+      "stdout_sha256": "8c34382767a2adfd92ea390801997512a4c3fe42c30d1d41bcc0baceda7fd8ff",
+      "summary": {
+        "accepted_links": null,
+        "error_count": null,
+        "status": "finalized_deferral_aware_reviewed_gold"
+      }
+    },
+    "stage7": {
+      "command": [
+        "C:\\Python312\\python.exe",
+        "-B",
+        "-m",
+        "scripts.bible_module.ukrainian_stage_7",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 120.328,
+      "status": "PASS",
+      "stderr_bytes": 0,
+      "stdout_bytes": 2713,
+      "stdout_sha256": "265dbf9fd487a997d86a96a97f499e5503663e9633ead1b4576846e126568276",
+      "summary": {
+        "accepted_links": 0,
+        "error_count": 0,
+        "status": "blocked_before_gold_and_alignment_acceptance"
+      }
+    }
+  },
+  "file_writes": 0,
+  "only_subsequent_write_allowed": "excluded HANDOFF append",
+  "production_acceptance": 0,
+  "status": "PASS"
+}
+```
+
+### Label-free full applicability — read-only receipt
+
+```json
+{
+  "artifact": "calibration77_readonly_full_applicability_counts",
+  "groups": {
+    "all": {
+      "A_auto:edges": 0,
+      "A_auto:unsupported_probability": 0,
+      "B_review:edges": 254074,
+      "B_review:unsupported_probability": 0,
+      "C_unresolved:edges": 43693,
+      "C_unresolved:unsupported_probability": 1,
+      "top1_edges": 297767,
+      "unsupported_probability": 1,
+      "verses": 31102,
+      "whole_candidate_edges_excluded": 296
+    },
+    "fold:0": {
+      "A_auto:edges": 0,
+      "A_auto:unsupported_probability": 0,
+      "B_review:edges": 51092,
+      "B_review:unsupported_probability": 0,
+      "C_unresolved:edges": 8658,
+      "C_unresolved:unsupported_probability": 0,
+      "top1_edges": 59750,
+      "unsupported_probability": 0,
+      "verses": 6231,
+      "whole_candidate_edges_excluded": 62
+    },
+    "fold:1": {
+      "A_auto:edges": 0,
+      "A_auto:unsupported_probability": 0,
+      "B_review:edges": 50622,
+      "B_review:unsupported_probability": 0,
+      "C_unresolved:edges": 8758,
+      "C_unresolved:unsupported_probability": 0,
+      "top1_edges": 59380,
+      "unsupported_probability": 0,
+      "verses": 6231,
+      "whole_candidate_edges_excluded": 42
+    },
+    "fold:2": {
+      "A_auto:edges": 0,
+      "A_auto:unsupported_probability": 0,
+      "B_review:edges": 49809,
+      "B_review:unsupported_probability": 0,
+      "C_unresolved:edges": 8567,
+      "C_unresolved:unsupported_probability": 0,
+      "top1_edges": 58376,
+      "unsupported_probability": 0,
+      "verses": 6105,
+      "whole_candidate_edges_excluded": 62
+    },
+    "fold:3": {
+      "A_auto:edges": 0,
+      "A_auto:unsupported_probability": 0,
+      "B_review:edges": 50920,
+      "B_review:unsupported_probability": 0,
+      "C_unresolved:edges": 8831,
+      "C_unresolved:unsupported_probability": 0,
+      "top1_edges": 59751,
+      "unsupported_probability": 0,
+      "verses": 6238,
+      "whole_candidate_edges_excluded": 64
+    },
+    "fold:4": {
+      "A_auto:edges": 0,
+      "A_auto:unsupported_probability": 0,
+      "B_review:edges": 51631,
+      "B_review:unsupported_probability": 0,
+      "C_unresolved:edges": 8879,
+      "C_unresolved:unsupported_probability": 1,
+      "top1_edges": 60510,
+      "unsupported_probability": 1,
+      "verses": 6297,
+      "whole_candidate_edges_excluded": 66
+    }
+  },
+  "labels_read": false,
+  "source": "frozen predictions.v1.jsonl",
+  "status": "PASS",
+  "test4_correctness_scored": false
+}
+```
+
+English commit message for the current uncommitted set:
+
+```text
+Complete stage 7.7 calibration with independently verified NO_GO [skip ci]
+
+Add the isolated calibration layer, frozen class proposals and independent
+raw-input verification. Preserve finalized gold and frozen stage 7.4/7.6;
+keep automatic promotion and production acceptance disabled.
+```
+
+
+Post-append read-only receipt: six frozen/final control digests PASS; shared report/log byte identity PASS; historical HANDOFF prefix and persisted final receipts PASS; file_writes=0. The first post-append git diff --check reported only one blank EOF line in this excluded HANDOFF; this final receipt append closes that blank tail. No inventory-bound artifact changed.
+Final post-append git diff --check: PASS, exit_code=0, stdout_bytes=0; only Git LF/CRLF advisory warnings. All work finished; no further artifact writes.

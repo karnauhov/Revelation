@@ -1,6 +1,6 @@
 # Дорожная карта создания украинского библейского модуля с номерами Стронга
 
-Doc-Version: `1.9.17`
+Doc-Version: `1.9.18`
 Last-Updated: `2026-10-17`
 Source-Commit: `working-tree`
 
@@ -74,7 +74,7 @@ Source-Commit: `working-tree`
 
 ## Общий трекер
 
-Этапы 1–6 последовательно проверены и закрыты с учётом контракта печатных сносок и `verses.comment`. Исходный объединённый этап 6 разделён на завершённый синтез текста и отдельное Strong-выравнивание. **Этап 7 начат, но не закрыт:** закреплены входы, точная токенизация, raw original-token universe и лицензированные bridge-корпуса; нормативный book-level gold сформирован двумя blind-проходами, distinct adjudication и independent QC, глобальная финализация gold 66 книг и фиксированная baseline-оценка 7.4 завершены с проверенными зарегистрированными отсрочками; калибровка и production Strong links остаются открыты. Прежний позиционный алгоритм изолирован как отклонённый zero-vote baseline. Этапы 8–13 заблокированы до отдельного завершения этапа 7.
+Этапы 1–6 последовательно проверены и закрыты с учётом контракта печатных сносок и `verses.comment`. Исходный объединённый этап 6 разделён на завершённый синтез текста и отдельное Strong-выравнивание. **Этап 7 начат, но не закрыт:** закреплены входы, точная токенизация, raw original-token universe и лицензированные bridge-корпуса; нормативный book-level gold сформирован двумя blind-проходами, distinct adjudication и independent QC, глобальная финализация gold 66 книг и фиксированная baseline-оценка 7.4 завершены с проверенными зарегистрированными отсрочками. Инженерная calibration-only проверка 7.7 завершена с проверенным NO_GO, A_auto=0; статистическая сертификация автоматического класса и production Strong links остаются открыты. Прежний позиционный алгоритм изолирован как отклонённый zero-vote baseline. Этапы 8–13 заблокированы до отдельного завершения этапа 7.
 
 - [x] Этап 1. Доступность украинских переводов, источники и лицензии
 - [x] Этап 2. Выбор перевода, техническая спецификация и целевой эталон
@@ -581,7 +581,7 @@ Finalized global gold, calibration и production Strong по-прежнему н
 - [x] 7.5. Реализовать и воспроизводимо выполнить независимые генераторы кандидатов: lexical/morphological 13 239, RUSSYN/YLT bridge 29 787, transliteration/named-entity 18 212, bidirectional statistical OOF 163 140 и multilingual contextual 207 367; rejected legacy 440 280 сохранён отдельным zero-vote baseline. Общий bundle содержит 872 025 candidate-only rows, каждый channel имеет version/license/digest и независимый manifest/registry; `resolver_eligible=0`, automatic acceptance `0`, `--check` прошёл.
 - [x] 7.6. Объединять кандидаты в verse-local many-to-many hypergraph с явными null links, compounds и альтернативами; запретить nearest/neighbor, пропорциональное, позиционное и простое majority-only присваивание.
 - [x] 7.6. Применять украинский lexeme ledger только как leakage-free out-of-fold prior с распределением `lemma/context/morphology → Strong`, а не как глобальную замену доказательства конкретного употребления.
-- [ ] 7.7. Калибровать классы `A_auto`, `B_review`, `C_unresolved` на отложенных данных; автоматический класс разрешить только при односторонней нижней границе precision не ниже 99,5% и отсутствии провала по книгам/жанрам/типам аномалий.
+- [x] 7.7. Выполнить calibration-only проверку классов `A_auto`, `B_review`, `C_unresolved`: фиксированный PAVA, freeze и однократная validation; проверенный **NO_GO, A_auto=0** из-за недоказанной зависимости и недостаточного support обязательных strata. Gate: односторонняя 95% нижняя граница Wilson ≥99,5%, без ослабления; production acceptance/promotions0. [Доказательства](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77.v1.ru.md).
 - [ ] 7.8. Проверить вручную все `B_review`, `C_unresolved`, textual variants и конфликтующие источники; каждое принятое решение хранить в versioned override с original/OH1988 token spans, evidence, rationale и input digests.
 - [ ] 7.9. Только после приёмки links сформировать Strong markup отдельно от immutable plain text/comment этапа 6 и доказать точный plain-text round-trip для всех 31 102 позиций.
 - [ ] 7.9. Подтвердить полный учёт original tokens и украинских surface tokens, отсутствие dangling/invalid Strong, недоказанных привязок, межстихового переноса и нерешённых `critical/high`; выполнить двойную детерминированную генерацию и полный набор проверок.
@@ -1288,3 +1288,11 @@ Full-grid: **2171 стихов, 45831 original + 41807 target = 87638 nodes**. �
 Нумерация сопоставлена по содержанию: alignment plan7.6 — consensus, plan7.7 — будущий iterative ledger; здесь завершён только его однократный OOF prior. NULL не придуман при отсутствии кандидата; beam search ограничен и не объявлен global optimum. Shared-target edges сохраняются отдельно с reciprocal union. До оценки отклонён draftv2 с inflation shared observations, исправленныйv3 заново построен и воспроизведён.
 
 [Отчёт7.6](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.ru.md), [manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76.v1.manifest.json), [независимая проверка](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/consensus76_independent_validation.v1.ru.md), [актуальный HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
+
+## Калибровка 7.7 — проверенный NO_GO, 2026-10-17
+
+Калибровка roadmap7.7 завершена как отдельный calibration-only инженерный результат: фиксированный rank-only isotonic PAVA обучен только на development0–2, model/policy заморожены до однократной validation3. Итог — **NO_GO, A_auto=0**: независимая Bernoulli-модель для зависимых edges не доказана, обязательные strata underpowered. B_review остаётся очередью предложений; C_unresolved сохраняет неопределённость. Production acceptance и automatic promotions0. Test4 по заранее заданному правилу пропущен без нового correctness scoring; прежние7.4/7.6 сохранены. Этап7 целиком открыт.
+
+Нумерация сопоставлена по содержанию: roadmap7.7 — calibration; alignment plan7.7 — iterative lexeme ledger. Итеративная часть, self-training и bootstrap **не выполнялись** и не отмечаются завершёнными. Gold/mask/source selection/folds, Strong registry, frozen7.4/7.6, общие SHA-bound report/log, SQLite/web DB и Flutter/runtime сохранены.
+
+[Отчёт calibration7.7](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77.v1.ru.md), [независимая проверка](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77_independent_validation.v1.ru.md), [manifest](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77.v1.manifest.json), [validation log](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/calibration77_validation_log.v1.md), [HANDOFF](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/HANDOFF.ru.md).
