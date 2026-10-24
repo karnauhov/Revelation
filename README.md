@@ -59,6 +59,11 @@ Application entry point: `lib/main.dart`.
 - [Privacy Policy](./PRIVACY_POLICY.md)
 - [License Notice](./NOTICE)
 
+### Project Task Skills
+
+- [`$revelation-task`](./.agents/skills/revelation-task/SKILL.md) — select active bugs, active features, inactive bugs, inactive features, then resumable paused tasks.
+- [`$revelation-pause`](./.agents/skills/revelation-pause/SKILL.md) — pause work, save a resumable handoff, and prepare a commit message.
+
 ---
 
 <a href="https://www.revelation.website" target="_blank"><img src=".\_art\Sticker.jpg" width="512" height="256" /></a>
