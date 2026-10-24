@@ -663,6 +663,46 @@ void main() {
     expect(harness.databaseRefreshCalls, 1);
   });
 
+  testWidgets('AboutScreen does not report a stale same-size file as current', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness()
+      ..databaseRefreshResult = const LocalDatabaseSyncResult(
+        files: [
+          LocalDatabaseFileSyncResult(
+            fileName: 'revelation.sqlite',
+            existedBeforeSync: true,
+            healthyBeforeSync: true,
+            sizeMatchedManifestBeforeSync: true,
+            existsAfterSync: true,
+            healthyAfterSync: true,
+            sizeMatchedManifestAfterSync: true,
+            versionMatchedManifestBeforeSync: false,
+            versionMatchedManifestAfterSync: false,
+            updated: false,
+          ),
+        ],
+      );
+    final cubit = await _createSettingsCubit(language: 'en');
+    addTearDown(cubit.close);
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
+    final l10n = AppLocalizations.of(tester.element(find.byType(AboutScreen)))!;
+    await _expandMaintenanceSection(tester, l10n);
+    await _tapMaintenanceAction(
+      tester,
+      const ValueKey('about-refresh-databases'),
+    );
+    await _pumpUntilFound(tester, find.text(l10n.database_refresh_failed));
+    expect(find.text(l10n.databases_up_to_date), findsNothing);
+  });
+
   testWidgets('AboutScreen maintenance actions report failures', (
     tester,
   ) async {

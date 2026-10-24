@@ -9,6 +9,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:revelation/infra/db/connectors/database_version_file_loader.dart';
 import 'package:revelation/infra/db/connectors/local_database_sync_native.dart';
+import 'package:revelation/infra/db/connectors/local_database_sync_result.dart';
 import 'package:revelation/infra/db/connectors/web_db_manifest.dart';
 import 'package:revelation/infra/storage/file_sync_utils.dart';
 import 'package:revelation/shared/config/app_constants.dart';
@@ -207,6 +208,291 @@ void main() {
     expect(modules.first, 'bible_lxx_tr.sqlite');
     expect(modules, contains('bible_rst.sqlite'));
   });
+
+  for (final changeSchema in [false, true]) {
+    test('updates a same-size Bible module after a '
+        '${changeSchema ? 'schema' : 'data'} version change', () async {
+      const module = 'bible_lxx_tr.sqlite';
+      final dbFile = File(p.join(await getAppFolder(), 'db', module));
+      await _writeDatabaseFile(
+        dbFile,
+        schemaVersion: 3,
+        dataVersion: 6,
+        date: '2026-05-23T02:35:34Z',
+        payloadBytes: 1000,
+      );
+      final remoteBytes = await _databaseBytes(
+        schemaVersion: changeSchema ? 4 : 3,
+        dataVersion: changeSchema ? 1 : 7,
+        date: '2026-05-23T17:55:51Z',
+        payloadBytes: 1000,
+      );
+      expect(dbFile.lengthSync(), remoteBytes.length);
+      storageServer.seedFile(
+        repository: 'db',
+        path: module,
+        bytes: remoteBytes,
+      );
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'manifest.json',
+        bytes: _manifestBytes({
+          module: _ManifestEntry(
+            schemaVersion: changeSchema ? 4 : 3,
+            dataVersion: changeSchema ? 1 : 7,
+            date: '2026-05-23T17:55:51Z',
+            fileSizeBytes: remoteBytes.length,
+          ),
+        }),
+      );
+
+      final result = await verifyAndUpdateLocalDatabaseFileWithResult(module);
+
+      expect(result.updated, isTrue);
+      expect(await dbFile.readAsBytes(), remoteBytes);
+      final installed = loadDatabaseVersionInfoFromFile(dbFile)!;
+      expect(installed.schemaVersion, changeSchema ? 4 : 3);
+      expect(installed.dataVersion, changeSchema ? 1 : 7);
+      expect(result.versionMatchedManifestBeforeSync, isFalse);
+      expect(result.versionMatchedManifestAfterSync, isTrue);
+      final repeated = await verifyAndUpdateLocalDatabaseFileWithResult(module);
+      expect(repeated.updated, isFalse);
+      expect(storageServer.downloadCount('db/$module'), 1);
+    });
+  }
+
+  test('rejects a healthy same-size download with stale metadata', () async {
+    const module = 'bible_lxx_tr.sqlite';
+    final dbFile = File(p.join(await getAppFolder(), 'db', module));
+    await _writeDatabaseFile(
+      dbFile,
+      schemaVersion: 3,
+      dataVersion: 6,
+      date: '2026-05-23T02:35:34Z',
+      payloadBytes: 1000,
+    );
+    final originalBytes = await dbFile.readAsBytes();
+    final staleBytes = await _databaseBytes(
+      schemaVersion: 3,
+      dataVersion: 5,
+      date: '2026-05-22T02:35:34Z',
+      payloadBytes: 1000,
+    );
+    expect(originalBytes.length, staleBytes.length);
+    storageServer.seedFile(repository: 'db', path: module, bytes: staleBytes);
+    storageServer.seedFile(
+      repository: 'db',
+      path: 'manifest.json',
+      bytes: _manifestBytes({
+        module: _ManifestEntry(
+          schemaVersion: 3,
+          dataVersion: 7,
+          date: '2026-05-23T17:55:51Z',
+          fileSizeBytes: staleBytes.length,
+        ),
+      }),
+    );
+
+    final result = await verifyAndUpdateLocalDatabaseFileWithResult(
+      module,
+      force: true,
+    );
+
+    expect(result.updated, isFalse);
+    expect(await dbFile.readAsBytes(), originalBytes);
+    expect(loadDatabaseVersionInfoFromFile(dbFile)!.dataVersion, 6);
+    expect(result.versionMatchedManifestAfterSync, isFalse);
+    final aggregate = LocalDatabaseSyncResult(files: [result]);
+    expect(aggregate.hasValidationFailures, isTrue);
+    expect(aggregate.isUpToDate, isFalse);
+  });
+
+  for (final failure in ['unavailable', 'corrupt', 'missing metadata']) {
+    test('preserves the installed module when download is $failure', () async {
+      const module = 'bible_kjv.sqlite';
+      final dbFile = File(p.join(await getAppFolder(), 'db', module));
+      await _writeDatabaseFile(
+        dbFile,
+        schemaVersion: 3,
+        dataVersion: 6,
+        date: '2026-05-23T02:35:34Z',
+        payloadBytes: 1000,
+      );
+      final originalBytes = await dbFile.readAsBytes();
+      if (failure != 'unavailable') {
+        final bytes = failure == 'corrupt'
+            ? List<int>.filled(originalBytes.length, 0)
+            : await _databaseBytes(
+                schemaVersion: 3,
+                dataVersion: 7,
+                date: '2026-05-23T17:55:51Z',
+                payloadBytes: 1000,
+              );
+        if (failure == 'missing metadata') {
+          final remote = File(p.join(tempDir.path, 'remote.sqlite'));
+          await remote.writeAsBytes(bytes);
+          final db = sqlite3.open(remote.path);
+          try {
+            db.execute('DELETE FROM db_metadata');
+          } finally {
+            db.dispose();
+          }
+          bytes.setAll(0, await remote.readAsBytes());
+        }
+        storageServer.seedFile(repository: 'db', path: module, bytes: bytes);
+      }
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'manifest.json',
+        bytes: _manifestBytes({
+          module: _ManifestEntry(
+            schemaVersion: 3,
+            dataVersion: 7,
+            date: '2026-05-23T17:55:51Z',
+            fileSizeBytes: originalBytes.length,
+          ),
+        }),
+      );
+
+      final result = await verifyAndUpdateLocalDatabaseFileWithResult(module);
+
+      expect(result.updated, isFalse);
+      expect(result.healthyAfterSync, isTrue);
+      expect(result.versionMatchedManifestAfterSync, isFalse);
+      expect(await dbFile.readAsBytes(), originalBytes);
+      expect(File('${dbFile.path}.download').existsSync(), isFalse);
+    });
+  }
+
+  test('force does not report a failed download as an update', () async {
+    const module = 'bible_kjv.sqlite';
+    final dbFile = File(p.join(await getAppFolder(), 'db', module));
+    await _writeDatabaseFile(
+      dbFile,
+      schemaVersion: 3,
+      dataVersion: 7,
+      date: '2026-05-23T17:55:51Z',
+      payloadBytes: 1000,
+    );
+    storageServer.seedFile(
+      repository: 'db',
+      path: 'manifest.json',
+      bytes: _manifestBytes({
+        module: _ManifestEntry(
+          schemaVersion: 3,
+          dataVersion: 7,
+          date: '2026-05-23T17:55:51Z',
+          fileSizeBytes: dbFile.lengthSync(),
+        ),
+      }),
+    );
+    final result = await verifyAndUpdateLocalDatabaseFileWithResult(
+      module,
+      force: true,
+    );
+    expect(result.updated, isFalse);
+    expect(result.versionMatchedManifestAfterSync, isTrue);
+    expect(LocalDatabaseSyncResult(files: [result]).isUpToDate, isTrue);
+  });
+
+  for (final force in [false, true]) {
+    test(
+      'does not downgrade a newer installed module (force=$force)',
+      () async {
+        const module = 'bible_kjv.sqlite';
+        final dbFile = File(p.join(await getAppFolder(), 'db', module));
+        await _writeDatabaseFile(
+          dbFile,
+          schemaVersion: 3,
+          dataVersion: 7,
+          date: '2026-05-23T17:55:51Z',
+          payloadBytes: 25000,
+        );
+        final originalBytes = await dbFile.readAsBytes();
+        final olderBytes = await _databaseBytes(
+          schemaVersion: 3,
+          dataVersion: 6,
+          date: '2026-05-23T02:35:34Z',
+          payloadBytes: 1000,
+        );
+        storageServer.seedFile(
+          repository: 'db',
+          path: module,
+          bytes: olderBytes,
+        );
+        storageServer.seedFile(
+          repository: 'db',
+          path: 'manifest.json',
+          bytes: _manifestBytes({
+            module: _ManifestEntry(
+              schemaVersion: 3,
+              dataVersion: 6,
+              date: '2026-05-23T02:35:34Z',
+              fileSizeBytes: olderBytes.length,
+            ),
+          }),
+        );
+
+        final result = await verifyAndUpdateLocalDatabaseFileWithResult(
+          module,
+          force: force,
+        );
+
+        expect(result.updated, isFalse);
+        expect(result.versionMatchedManifestAfterSync, isTrue);
+        expect(await dbFile.readAsBytes(), originalBytes);
+        expect(storageServer.downloadCount('db/$module'), force ? 1 : 0);
+      },
+    );
+  }
+
+  test(
+    'parallel readers install a module once without sharing temp writes',
+    () async {
+      const module = 'bible_kjv.sqlite';
+      final dbFile = File(p.join(await getAppFolder(), 'db', module));
+      await _writeDatabaseFile(
+        dbFile,
+        schemaVersion: 3,
+        dataVersion: 6,
+        date: '2026-05-23T02:35:34Z',
+        payloadBytes: 1000,
+      );
+      final bytes = await _databaseBytes(
+        schemaVersion: 3,
+        dataVersion: 7,
+        date: '2026-05-23T17:55:51Z',
+        payloadBytes: 1000,
+      );
+      storageServer.seedFile(repository: 'db', path: module, bytes: bytes);
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'manifest.json',
+        bytes: _manifestBytes({
+          module: _ManifestEntry(
+            schemaVersion: 3,
+            dataVersion: 7,
+            date: '2026-05-23T17:55:51Z',
+            fileSizeBytes: bytes.length,
+          ),
+        }),
+      );
+      storageServer.downloadDelay = const Duration(milliseconds: 50);
+
+      final results = await Future.wait([
+        for (var reader = 0; reader < 3; reader++)
+          verifyAndUpdateLocalDatabaseFileWithResult(module),
+      ]);
+
+      expect(storageServer.downloadCount('db/$module'), 1);
+      expect(results.where((result) => result.updated), hasLength(1));
+      expect(
+        results.every((result) => result.versionMatchedManifestAfterSync),
+        isTrue,
+      );
+      expect(await dbFile.readAsBytes(), bytes);
+    },
+  );
 }
 
 Future<void> _writeDatabaseFile(
@@ -342,6 +628,10 @@ class _FakeStorageServer {
   final HttpServer _server;
   final String baseUrl;
   final Map<String, Uint8List> _files = <String, Uint8List>{};
+  final Map<String, int> _downloads = {};
+  Duration downloadDelay = Duration.zero;
+
+  int downloadCount(String key) => _downloads[key] ?? 0;
 
   static Future<_FakeStorageServer> start() async {
     final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
@@ -352,6 +642,8 @@ class _FakeStorageServer {
 
   void clear() {
     _files.clear();
+    _downloads.clear();
+    downloadDelay = Duration.zero;
   }
 
   void seedFile({
@@ -375,6 +667,11 @@ class _FakeStorageServer {
 
     final repository = segments[3];
     final filePath = segments.sublist(4).join('/');
+    _downloads.update(
+      '$repository/$filePath',
+      (count) => count + 1,
+      ifAbsent: () => 1,
+    );
     final bytes = _files['$repository/$filePath'];
     if (bytes == null) {
       request.response.statusCode = HttpStatus.notFound;
@@ -383,6 +680,9 @@ class _FakeStorageServer {
     }
 
     request.response.statusCode = HttpStatus.ok;
+    if (filePath != 'manifest.json') {
+      await Future<void>.delayed(downloadDelay);
+    }
     request.response.add(bytes);
     await request.response.close();
   }

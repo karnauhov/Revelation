@@ -10,6 +10,13 @@ import 'package:revelation/core/logging/common_logger.dart';
 
 typedef LocalFileValidator = bool Function(File file);
 
+class LocalFileUpdateResult {
+  const LocalFileUpdateResult({required this.path, required this.updated});
+
+  final String path;
+  final bool updated;
+}
+
 const _databaseFolder = 'db';
 const _databaseManifestFile = 'manifest.json';
 
@@ -66,6 +73,23 @@ Future<String> updateLocalFile(
   LocalFileValidator? downloadedFileValidator,
   bool refreshDbManifest = true,
 }) async {
+  final result = await updateLocalFileWithResult(
+    folder,
+    filePath,
+    expectedSizeBytes: expectedSizeBytes,
+    downloadedFileValidator: downloadedFileValidator,
+    refreshDbManifest: refreshDbManifest,
+  );
+  return result.path;
+}
+
+Future<LocalFileUpdateResult> updateLocalFileWithResult(
+  String folder,
+  String filePath, {
+  int? expectedSizeBytes,
+  LocalFileValidator? downloadedFileValidator,
+  bool refreshDbManifest = true,
+}) async {
   final appFolder = await getAppFolder();
   final file = File(p.join(appFolder, folder, filePath));
   final tempFile = File('${file.path}.download');
@@ -82,7 +106,7 @@ Future<String> updateLocalFile(
           'Downloaded file size mismatch for $folder/$filePath: '
           '${fileBytes.length} != $expectedSizeBytes',
         );
-        return file.path;
+        return LocalFileUpdateResult(path: file.path, updated: false);
       }
       if (tempFile.existsSync()) {
         tempFile.deleteSync();
@@ -95,10 +119,7 @@ Future<String> updateLocalFile(
         if (tempFile.existsSync()) {
           tempFile.deleteSync();
         }
-        return file.path;
-      }
-      if (file.existsSync()) {
-        await file.delete();
+        return LocalFileUpdateResult(path: file.path, updated: false);
       }
       await tempFile.rename(file.path);
       didReplaceFile = true;
@@ -116,7 +137,7 @@ Future<String> updateLocalFile(
     await _refreshLocalDbManifestIfNeeded(folder, filePath);
   }
 
-  return file.path;
+  return LocalFileUpdateResult(path: file.path, updated: didReplaceFile);
 }
 
 Future<DateTime?> getLastUpdateFileLocal(String folder, String filePath) async {

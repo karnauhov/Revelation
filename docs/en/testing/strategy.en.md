@@ -1,6 +1,6 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.1.1`
+Doc-Version: `2.1.2`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
@@ -41,6 +41,20 @@ flutter drive --release --driver=test_driver/integration_test.dart --target=inte
 This uses a separate local origin without affecting the published site's data. On native devices this browser check is explicitly skipped and does not count as passed. Updated tabs on the same origin share a Web Lock; without Web Locks, the queue operates within one tab. Old open tabs do not participate in the new lock until they reload.
 
 The first long press on a dictionary verse link is covered by `integration_test/strong_usage_preview_test.dart`. For Chrome, replace `--target` in the command above with this file; for Windows, run `flutter test integration_test/strong_usage_preview_test.dart -d windows`. The check verifies both a visible preview and copying the text exactly once.
+
+## Local Bible Module Update Check
+
+The native connector compares the SQLite file's own `schema_version` and `data_version` with the manifest even when file sizes match. Before replacement it validates integrity, size, and all advertised release metadata; a newer local release is preserved. A failed download is not reported as an update, and an old retained release is not reported as current. The manifest describes the expected release rather than proving installation.
+
+`test/infra/db/connectors/local_database_sync_native_test.dart` covers same-size data/schema updates, reopening without another download, rejecting stale objects, network failure, corruption, and missing metadata. A shared queue serializes module discovery and local database updates; a regression with three parallel readers verifies a single download without overlapping temporary files. An `AboutScreen` widget test verifies the message for a retained stale release.
+
+`integration_test/bible_module_update_test.dart` exercises the real path through local HTTP storage, download, the SQLite connector, repository, and reader screen. It checks visible text replacement, the installed version, no repeated download, and preserving a working copy when the manifest and object disagree. All files are synthetic and live in a temporary directory; working databases and Supabase are unaffected.
+
+```bash
+flutter test integration_test/bible_module_update_test.dart -d windows
+```
+
+On Web this native scenario is explicitly skipped and does not count as passed. Web uses a separate connector and a manifest token to reset storage on the next page launch; `web_db_version_sync_plan_test.dart` checks changed and unchanged tokens. Full version acceptance still requires a separate complete local run.
 
 ## Automation
 

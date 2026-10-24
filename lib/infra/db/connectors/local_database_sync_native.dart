@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:revelation/core/logging/common_logger.dart';
+import 'package:revelation/infra/db/connectors/database_open_queue.dart';
 import 'package:revelation/infra/db/connectors/database_version_file_loader.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/connectors/local_database_sync_result.dart';
@@ -14,6 +15,8 @@ import 'package:sqlite3/sqlite3.dart';
 
 const _databaseFolder = 'db';
 const _databaseManifestFile = 'manifest.json';
+// Discovery and updates share a manifest and temporary download paths.
+final _localDatabaseSyncQueue = DatabaseOpenQueue();
 
 Future<void> verifyAndUpdateKnownLocalDatabases({
   String? languageCode,
@@ -26,6 +29,16 @@ Future<void> verifyAndUpdateKnownLocalDatabases({
 }
 
 Future<LocalDatabaseSyncResult> verifyAndUpdateKnownLocalDatabasesWithResult({
+  String? languageCode,
+  bool force = false,
+}) => _localDatabaseSyncQueue.run(
+  () => _verifyAndUpdateKnownLocalDatabasesWithResult(
+    languageCode: languageCode,
+    force: force,
+  ),
+);
+
+Future<LocalDatabaseSyncResult> _verifyAndUpdateKnownLocalDatabasesWithResult({
   String? languageCode,
   bool force = false,
 }) async {
@@ -59,6 +72,13 @@ Future<bool> verifyAndUpdateLocalDatabaseFile(
 Future<LocalDatabaseFileSyncResult> verifyAndUpdateLocalDatabaseFileWithResult(
   String dbFile, {
   bool force = false,
+}) => _localDatabaseSyncQueue.run(
+  () => _verifyAndUpdateLocalDatabaseFileWithResult(dbFile, force: force),
+);
+
+Future<LocalDatabaseFileSyncResult> _verifyAndUpdateLocalDatabaseFileWithResult(
+  String dbFile, {
+  bool force = false,
 }) async {
   final manifestEntries = await _loadLocalManifestEntries(
     refreshFromServer: true,
@@ -85,14 +105,27 @@ Future<LocalDatabaseFileSyncResult> _verifyAndUpdateLocalDatabaseFile(
       manifestEntry,
     );
     final localIsHealthy = localExists && isLocalDatabaseFileHealthy(localFile);
+    final localVersion = localIsHealthy
+        ? loadDatabaseVersionInfoFromFile(localFile)
+        : null;
+    final localVersionMatchesManifest = _versionSatisfiesManifest(
+      localVersion,
+      manifestEntry,
+    );
     final localVersionIsNewerThanManifest =
-        localIsHealthy &&
-        _isLocalDatabaseVersionNewerThanManifest(localFile, manifestEntry);
+        localVersion != null &&
+        manifestEntry != null &&
+        _compareDatabaseReleaseVersion(
+              localVersion,
+              manifestEntry.versionInfo,
+            ) >
+            0;
 
     if (!force &&
         localExists &&
         localIsHealthy &&
-        (localSizeMatchesManifest || localVersionIsNewerThanManifest)) {
+        ((localSizeMatchesManifest && localVersionMatchesManifest) ||
+            localVersionIsNewerThanManifest)) {
       if (localVersionIsNewerThanManifest && !localSizeMatchesManifest) {
         log.warning(
           'Local database $dbFile is newer than the manifest entry; '
@@ -112,6 +145,8 @@ Future<LocalDatabaseFileSyncResult> _verifyAndUpdateLocalDatabaseFile(
         sizeBytesBeforeSync: localSize,
         sizeBytesAfterSync: localSize,
         manifestEntryMissing: manifestEntry == null,
+        versionMatchedManifestBeforeSync: localVersionMatchesManifest,
+        versionMatchedManifestAfterSync: localVersionMatchesManifest,
       );
     }
 
@@ -127,23 +162,44 @@ Future<LocalDatabaseFileSyncResult> _verifyAndUpdateLocalDatabaseFile(
       );
     }
 
-    final path = await updateLocalFile(
+    final download = await updateLocalFileWithResult(
       _databaseFolder,
       dbFile,
       expectedSizeBytes: manifestEntry?.fileSizeBytes,
-      downloadedFileValidator: isLocalDatabaseFileHealthy,
+      downloadedFileValidator: (file) {
+        if (!isLocalDatabaseFileHealthy(file)) {
+          return false;
+        }
+        final downloadedVersion = loadDatabaseVersionInfoFromFile(file);
+        // Validate the downloaded SQLite metadata before replacing a working
+        // copy. A valid file and matching size do not prove its release.
+        if (manifestEntry != null &&
+            downloadedVersion != manifestEntry.versionInfo) {
+          return false;
+        }
+        return localVersion == null ||
+            (downloadedVersion != null &&
+                _compareDatabaseReleaseVersion(
+                      downloadedVersion,
+                      localVersion,
+                    ) >=
+                    0);
+      },
+      // Keep the merged manifest snapshot used to validate this download.
+      refreshDbManifest: false,
     );
-    final updatedFile = File(path);
+    final updatedFile = File(download.path);
     final updatedExists = updatedFile.existsSync();
     final updatedHealthy =
         updatedExists && isLocalDatabaseFileHealthy(updatedFile);
     final updatedSize = _fileSizeOrNull(updatedFile);
-    final updatedManifestEntries = await _loadLocalManifestEntries();
-    final updatedManifestEntry =
-        updatedManifestEntries[dbFile] ?? manifestEntry;
     final updatedSizeMatchesManifest = _matchesManifestSize(
       updatedFile,
-      updatedManifestEntry,
+      manifestEntry,
+    );
+    final updatedVersionMatchesManifest = _versionSatisfiesManifest(
+      updatedHealthy ? loadDatabaseVersionInfoFromFile(updatedFile) : null,
+      manifestEntry,
     );
 
     return LocalDatabaseFileSyncResult(
@@ -154,11 +210,18 @@ Future<LocalDatabaseFileSyncResult> _verifyAndUpdateLocalDatabaseFile(
       existsAfterSync: updatedExists,
       healthyAfterSync: updatedHealthy,
       sizeMatchedManifestAfterSync: updatedSizeMatchesManifest,
-      updated: updatedExists && updatedHealthy && updatedSizeMatchesManifest,
-      expectedSizeBytes: updatedManifestEntry?.fileSizeBytes,
+      updated:
+          download.updated &&
+          updatedExists &&
+          updatedHealthy &&
+          updatedSizeMatchesManifest &&
+          updatedVersionMatchesManifest,
+      expectedSizeBytes: manifestEntry?.fileSizeBytes,
       sizeBytesBeforeSync: localSize,
       sizeBytesAfterSync: updatedSize,
-      manifestEntryMissing: updatedManifestEntry == null,
+      manifestEntryMissing: manifestEntry == null,
+      versionMatchedManifestBeforeSync: localVersionMatchesManifest,
+      versionMatchedManifestAfterSync: updatedVersionMatchesManifest,
     );
   } catch (error, stackTrace) {
     log.handle(
@@ -214,6 +277,12 @@ List<String> knownLocalDatabaseFiles({
 
 Future<List<String>> discoverKnownBibleModuleFiles({
   String defaultModuleFile = AppConstants.defaultBibleModuleDB,
+}) => _localDatabaseSyncQueue.run(
+  () => _discoverKnownBibleModuleFiles(defaultModuleFile: defaultModuleFile),
+);
+
+Future<List<String>> _discoverKnownBibleModuleFiles({
+  required String defaultModuleFile,
 }) async {
   final files = <String>{};
   final manifestEntries = await _loadLocalManifestEntries(
@@ -436,21 +505,20 @@ Future<File> _getLocalDatabaseFile(String fileName) async {
   return File(p.join(appFolder, _databaseFolder, fileName));
 }
 
-bool _isLocalDatabaseVersionNewerThanManifest(
-  File localFile,
+bool _versionSatisfiesManifest(
+  DatabaseVersionInfo? localVersion,
   WebDbManifestEntry? manifestEntry,
 ) {
   if (manifestEntry == null) {
-    return false;
+    return true;
   }
-  final localVersion = loadDatabaseVersionInfoFromFile(localFile);
   if (localVersion == null) {
     return false;
   }
   return _compareDatabaseReleaseVersion(
         localVersion,
         manifestEntry.versionInfo,
-      ) >
+      ) >=
       0;
 }
 

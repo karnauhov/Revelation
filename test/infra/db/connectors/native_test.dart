@@ -470,6 +470,11 @@ Future<void> _createValidCommonDbAt(File file) async {
   final db = CommonDB(NativeDatabase(file));
   try {
     await db.customSelect('SELECT 1 AS value').getSingle();
+    // A downloaded fixture must advertise the same release as its manifest.
+    await db.customStatement('''
+      UPDATE db_metadata SET value = '2026-03-21T12:00:00.000Z'
+      WHERE key = 'date'
+    ''');
   } finally {
     await db.close();
   }

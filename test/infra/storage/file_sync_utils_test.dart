@@ -253,6 +253,36 @@ void main() {
   });
 
   test(
+    'update result distinguishes validation failure from replacement',
+    () async {
+      await _initializeSupabase(storageServer.baseUrl);
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'result.sqlite',
+        bytes: const [21, 22],
+        lastModified: DateTime.utc(2026, 3, 21),
+      );
+      final rejected = await updateLocalFileWithResult(
+        'db',
+        'result.sqlite',
+        downloadedFileValidator: (_) => false,
+        refreshDbManifest: false,
+      );
+      expect(rejected.updated, isFalse);
+      expect(File(rejected.path).existsSync(), isFalse);
+
+      final accepted = await updateLocalFileWithResult(
+        'db',
+        'result.sqlite',
+        refreshDbManifest: false,
+      );
+      expect(accepted.path, rejected.path);
+      expect(accepted.updated, isTrue);
+      expect(await File(accepted.path).readAsBytes(), [21, 22]);
+    },
+  );
+
+  test(
     'getLastUpdateFileLocal returns null when path provider throws',
     () async {
       PathProviderPlatform.instance = _ThrowingPathProviderPlatform();

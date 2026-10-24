@@ -8,8 +8,12 @@ class LocalDatabaseSyncResult {
   bool get hasSizeMismatch =>
       files.any((file) => file.hasSizeMismatchAfterSync);
 
-  bool get hasValidationFailures =>
-      files.any((file) => !file.existsAfterSync || !file.healthyAfterSync);
+  bool get hasValidationFailures => files.any(
+    (file) =>
+        !file.existsAfterSync ||
+        !file.healthyAfterSync ||
+        !file.versionMatchedManifestAfterSync,
+  );
 
   bool get isUpToDate =>
       files.isNotEmpty &&
@@ -18,6 +22,7 @@ class LocalDatabaseSyncResult {
             !file.updated &&
             file.existsAfterSync &&
             file.healthyAfterSync &&
+            file.versionMatchedManifestAfterSync &&
             !file.hasSizeMismatchAfterSync,
       );
 }
@@ -36,6 +41,8 @@ class LocalDatabaseFileSyncResult {
     this.sizeBytesBeforeSync,
     this.sizeBytesAfterSync,
     this.manifestEntryMissing = false,
+    this.versionMatchedManifestBeforeSync = true,
+    this.versionMatchedManifestAfterSync = true,
   });
 
   final String fileName;
@@ -50,6 +57,9 @@ class LocalDatabaseFileSyncResult {
   final int? sizeBytesBeforeSync;
   final int? sizeBytesAfterSync;
   final bool manifestEntryMissing;
+  // A locally newer release also satisfies the manifest, preventing rollback.
+  final bool versionMatchedManifestBeforeSync;
+  final bool versionMatchedManifestAfterSync;
 
   bool get hadSizeMismatchBeforeSync =>
       expectedSizeBytes != null &&
