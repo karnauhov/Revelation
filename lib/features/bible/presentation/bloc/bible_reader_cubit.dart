@@ -39,6 +39,15 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
 
   BibleRepository get repository => _repository;
 
+  Future<void> retryInitialLoad() {
+    if (isClosed ||
+        state.status != BibleReaderStatus.failure ||
+        state.verseMap != null) {
+      return Future<void>.value();
+    }
+    return loadInitial();
+  }
+
   Future<void> loadInitial() async {
     final token = _requestGuard.start();
     emit(

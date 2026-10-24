@@ -54,6 +54,7 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [Дорожная карта модуля RST с номерами Стронга](./docs/ru/content/rst-strongs-module-roadmap.ru.md)
 - [Дорожная карта украинского библейского модуля с номерами Стронга](./docs/ru/content/ukrainian-bible-strongs-module-roadmap.ru.md)
 - [REV209: базовые показатели использования и гипотезы роста](./docs/ru/analytics/rev209-usage-baseline.ru.md)
+- [REV210: первый запуск и восстановление чтения](./docs/ru/testing/rev210-first-reading.ru.md)
 
 ### Additional Notes
 

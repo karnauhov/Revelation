@@ -1,8 +1,14 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.2.2`
+Doc-Version: `2.3.0`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## First launch and reading recovery
+
+`integration_test/first_reading_test.dart` exercises the real en/es/uk/ru language selector and settings persistence, a failed first module download, retrying on the same screen, reopening the installed copy offline, and installing a newer data version. Native runs use temporary Documents, synthetic SQLite, and loopback HTTP rather than working files or production Supabase. Run sequentially on local native devices: `flutter test integration_test/first_reading_test.dart -d <device-id>`. A Web skip of this suite is not a passing check. A separate `integration_test/smoke/bible_first_load_retry_smoke_test.dart` runs in Chrome using local `flutter drive --release` and ChromeDriver: after a controlled discovery failure, the real Web connector opens LXX/TR from local web/db. This checks UI recovery and actual reading rather than simulating browser network disconnection.
+
+Unit regressions cover rapid retries, the original reference, stale responses, and close-before-complete; widget regressions cover the localized button and recovered verse in all four languages. Full bootstrap remains in startup smoke; full version acceptance is REV236. The [single current REV210 report](../../ru/testing/rev210-first-reading.ru.md) separates laboratory results, module availability, and the limits of existing analytics.
 
 ## Bible text modules and footnotes
 

@@ -1,8 +1,12 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.5.0`
+Doc-Version: `2.5.1`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Retrying the first Bible load
+
+`BibleReaderCubit.retryInitialLoad` retries only a failed initial load and preserves the original route arguments. Button availability derives from failure and the absence of verseMap; starting a retry synchronously moves the cubit to loading so rapid taps coalesce. The existing LatestRequestGuard protects against stale responses and completion after close. The workspace, repository, and reader state retain their existing data ownership; no parallel retry state is introduced.
 
 ## Bible text modules and footnotes
 

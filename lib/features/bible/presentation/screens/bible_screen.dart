@@ -1052,7 +1052,23 @@ class _BibleReaderBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.status == BibleReaderStatus.failure) {
-      return ErrorMessage(errorMessage: state.errorMessage ?? '');
+      return Column(
+        children: [
+          Expanded(child: ErrorMessage(errorMessage: state.errorMessage ?? '')),
+          if (state.verseMap == null)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: FilledButton.icon(
+                key: const Key('bible_retry_button'),
+                onPressed: () => unawaited(
+                  context.read<BibleReaderCubit>().retryInitialLoad(),
+                ),
+                icon: const Icon(Icons.refresh),
+                label: Text(AppLocalizations.of(context)!.startup_retry),
+              ),
+            ),
+        ],
+      );
     }
 
     if (state.verses.isEmpty) {
