@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get_it/get_it.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -18,6 +21,7 @@ import 'package:revelation/shared/models/app_settings.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import 'smoke_test_harness.dart';
+import 'webview_test_data.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -96,10 +100,22 @@ void main() {
   testWidgets('App startup smoke: splash resolves into home shell', (
     tester,
   ) async {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+        DeviceOrientation.portraitUp,
+      ]);
+      addTearDown(
+        () => SystemChrome.setPreferredOrientations(<DeviceOrientation>[]),
+      );
+    }
     await app.main();
     await tester.pump();
 
     expect(find.byType(AppStartupScreen), findsOneWidget);
+    _expectInsideSystemInsets(
+      tester,
+      find.byKey(const ValueKey<String>('startup-panel')),
+    );
 
     startupCompleter.complete(settingsCubit!);
     await pumpAndSettleSmoke(tester);
@@ -109,7 +125,87 @@ void main() {
     final context = tester.element(find.byType(MainScreen));
     final l10n = AppLocalizations.of(context)!;
     expect(find.byTooltip(l10n.menu), findsOneWidget);
+    _expectInsideSystemInsets(tester, find.byTooltip(l10n.menu));
+
+    await tester.tap(find.byTooltip(l10n.menu));
+    await pumpAndSettleSmoke(tester);
+    _expectInsideSystemInsets(tester, find.text(l10n.bible_screen));
+    Scaffold.of(tester.element(find.byTooltip(l10n.menu))).closeDrawer();
+    await pumpAndSettleSmoke(tester);
+
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      final view = View.of(context);
+      // A native Android run must observe real system bars, not zeroed test data.
+      expect(view.viewPadding.top, greaterThan(0));
+      await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+        DeviceOrientation.landscapeLeft,
+      ]);
+      for (var attempt = 0; attempt < 60; attempt++) {
+        await tester.pump(const Duration(milliseconds: 100));
+        if (view.physicalSize.width > view.physicalSize.height) break;
+      }
+      expect(view.physicalSize.width, greaterThan(view.physicalSize.height));
+      _expectInsideSystemInsets(tester, find.byTooltip(l10n.menu));
+    }
+    expect(tester.takeException(), isNull);
   });
+
+  testWidgets('Android WebView loads local HTML and executes JavaScript', (
+    tester,
+  ) async {
+    final loaded = Completer<void>();
+    InAppWebViewController? webViewController;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SafeArea(
+            child: InAppWebView(
+              initialSettings: InAppWebViewSettings(javaScriptEnabled: true),
+              initialData: InAppWebViewInitialData(
+                data: rev142WebViewHtml,
+                baseUrl: WebUri('https://localhost/'),
+              ),
+              onWebViewCreated: (controller) => webViewController = controller,
+              onLoadStop: (controller, _) async {
+                final text = await controller.evaluateJavascript(
+                  source: "document.getElementById('status')?.textContent",
+                );
+                if (text == webViewReadyText && !loaded.isCompleted) {
+                  loaded.complete();
+                }
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.runAsync(
+      () => loaded.future.timeout(const Duration(seconds: 30)),
+    );
+    // Apply window metrics delivered while the native page was loading.
+    await pumpAndSettleSmoke(tester);
+    expect(webViewController, isNotNull);
+    _expectInsideSystemInsets(tester, find.byType(InAppWebView));
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+  }, skip: kIsWeb || defaultTargetPlatform != TargetPlatform.android);
+}
+
+void _expectInsideSystemInsets(WidgetTester tester, Finder finder) {
+  final context = tester.element(finder);
+  final media = MediaQueryData.fromView(View.of(context));
+  final rect = tester.getRect(finder);
+  expect(rect.left, greaterThanOrEqualTo(media.viewPadding.left));
+  expect(rect.top, greaterThanOrEqualTo(media.viewPadding.top));
+  expect(
+    rect.right,
+    lessThanOrEqualTo(media.size.width - media.viewPadding.right),
+  );
+  expect(
+    rect.bottom,
+    lessThanOrEqualTo(media.size.height - media.viewPadding.bottom),
+  );
 }
 
 ByteData _assetFor(String key) {
@@ -119,8 +215,17 @@ ByteData _assetFor(String key) {
       <String, Object?>{'asset': 'assets/images/UI/startup_splash_banner.jpg'},
     ],
   };
-  if (key == 'AssetManifest.bin') {
-    return const StandardMessageCodec().encodeMessage(assetManifestEntry)!;
+  if (key == 'AssetManifest.bin' || key == 'AssetManifest.bin.json') {
+    final manifest = const StandardMessageCodec().encodeMessage(
+      assetManifestEntry,
+    )!;
+    if (key == 'AssetManifest.bin') return manifest;
+    // Web loads the same binary manifest wrapped in JSON/base64.
+    return ByteData.sublistView(
+      Uint8List.fromList(
+        utf8.encode(jsonEncode(base64Encode(Uint8List.sublistView(manifest)))),
+      ),
+    );
   }
   if (key == 'AssetManifest.json') {
     return ByteData.sublistView(

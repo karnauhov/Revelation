@@ -1,6 +1,6 @@
 # Стратегия тестирования (RU)
 
-Doc-Version: `2.2.0`
+Doc-Version: `2.2.1`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
@@ -31,6 +31,16 @@ dart run scripts/check_docs_sync.dart
 ```
 
 `dart run scripts/check_docs_sync.dart` запускается, когда меняется синхронизируемая RU/EN пара документов.
+
+## Системные панели Android и оптимизация выпуска
+
+При запуске Android явно включается `SystemUiMode.edgeToEdge` до отрисовки. Unit-тесты проверяют порядок вызовов и отсутствие изменений на других платформах. Widget-тесты заставки покрывают системные панели в портретном режиме и вырезы в альбомном. Локальный `integration_test/smoke/app_startup_smoke_test.dart` проверяет заставку, меню и drawer относительно реальных системных отступов; на Android дополнительно требует ненулевой отступ строки состояния и проверяет поворот в альбомный режим. Запускать локально: `flutter test integration_test/smoke/app_startup_smoke_test.dart -d <android-device-id>`. Эта нативная команда работает в Debug и не принимает `--release`. Отдельно собрать и установить release APK, затем проверить запуск, drawer и переход к чтению: R8 не оптимизирует debug-сборки. Flutter-сборки и тесты выполнять последовательно, поскольку они используют общие генерируемые регистраторы плагинов.
+
+CI и локальные проверки используют Flutter 3.47.2 с поддерживаемым им Android toolchain: AGP 9.1.0, Gradle 9.3.1, Kotlin Gradle Plugin 2.4.0 и Java 17. AGP 9 включает оптимизированное удаление ресурсов по умолчанию; Flutter включает release-минификацию, удаление ресурсов и оптимизированные стандартные правила ProGuard. Сохранять consumer rules Flutter/плагинов, включая правила для reflection. Kotlin использует `compilerOptions` вместо удалённого DSL `kotlinOptions`. Сохранять `android.builtInKotlin=false` для немигрированных плагинов и `android.newDsl=false` для совместимости Flutter со старым DSL; это временные поддерживаемые переходные механизмы. Источники: [рекомендации Android по R8](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) и [миграция Kotlin во Flutter](https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin).
+
+Рекомендации Play Console относятся к загруженному артефакту, сейчас 1.0.7+172. Устаревшие вызовы цветов системных панелей могут оставаться во Flutter/AndroidX для старых Android; отсутствие собственных вызовов приложения не доказывает исчезновение предупреждения. Не изменять кэш SDK и не отключать код совместимости ради сканера. Повторно проверить рекомендации после загрузки отдельно принятого выпуска в REV237; успешная локальная сборка не является публикацией или новым измерением Play.
+
+Стабильный Android WebView 1.1.3 всё ещё запрашивает стандартный файл ProGuard, удалённый в AGP 9. [Совместимая копия с сохранённой лицензией](../../../third_party/flutter_inappwebview_android/README.md) заменяет только этот файл в обоих типах сборки. Startup smoke также загружает локальный HTML и выполняет JavaScript через настоящий Android WebView без внешних запросов. Для release-проверки собрать APK с target `integration_test/webview_release_probe.dart` и проверить видимый маркер `REV142 WebView release OK`; затем пересобрать обычный target `lib/main.dart` перед проверкой нормального запуска и перехода к чтению. Probe нельзя загружать как артефакт выпуска.
 
 ## Браузерная проверка открытия БД
 

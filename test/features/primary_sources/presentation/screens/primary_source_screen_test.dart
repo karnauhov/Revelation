@@ -604,51 +604,49 @@ void main() {
     variant: TargetPlatformVariant.only(TargetPlatform.android),
   );
 
-  testWidgets(
-    'desktop shortcuts gate description navigation by screen state',
-    (tester) async {
-      await _prepareSurface(tester);
-      addTearDown(_suppressOverflowErrors());
-      final source = _buildRichSource(id: 'source-desktop', title: 'Desktop');
-      await _seedLocalImagesInTest(tester, source, documentsPathForTest!);
+  testWidgets('desktop shortcuts gate description navigation by screen state', (
+    tester,
+  ) async {
+    await _prepareSurface(tester);
+    addTearDown(_suppressOverflowErrors());
+    final source = _buildRichSource(id: 'source-desktop', title: 'Desktop');
+    await _seedLocalImagesInTest(tester, source, documentsPathForTest!);
 
-      await tester.pumpWidget(
-        buildLocalizedTestApp(
-          child: PrimarySourceScreen(primarySource: source),
-          withScaffold: false,
-        ),
-      );
-      await _forceLoadFirstPageImage(tester, source);
-      await _pumpUntilFound(tester, find.byType(PrimarySourceDescriptionPanel));
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: PrimarySourceScreen(primarySource: source),
+        withScaffold: false,
+      ),
+    );
+    await _forceLoadFirstPageImage(tester, source);
+    await _pumpUntilFound(tester, find.byType(PrimarySourceDescriptionPanel));
 
-      final descriptionCubit = _descriptionCubit(tester);
-      final viewportCubit = _viewportCubit(tester);
+    final descriptionCubit = _descriptionCubit(tester);
+    final viewportCubit = _viewportCubit(tester);
 
-      descriptionCubit.updateDescriptionContent(
-        content: 'desktop description',
-        type: DescriptionKind.word,
-        number: 0,
-      );
-      await tester.pump();
+    descriptionCubit.updateDescriptionContent(
+      content: 'desktop description',
+      type: DescriptionKind.word,
+      number: 0,
+    );
+    await tester.pump();
 
-      expect(_descriptionPanel(tester).enableSwipeNavigation, isFalse);
-      expect(_descriptionPanel(tester).canNavigate, isTrue);
+    expect(_descriptionPanel(tester).enableSwipeNavigation, isFalse);
+    expect(_descriptionPanel(tester).canNavigate, isTrue);
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tester.pump();
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-      await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pump();
 
-      viewportCubit.startSelectAreaMode();
-      await tester.pump();
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tester.pump();
+    viewportCubit.startSelectAreaMode();
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
 
-      expect(viewportCubit.state.selectAreaMode, isTrue);
-      expect(find.byType(PrimarySourceScreen), findsOneWidget);
-    },
-    variant: TargetPlatformVariant.only(TargetPlatform.windows),
-  );
+    expect(viewportCubit.state.selectAreaMode, isTrue);
+    expect(find.byType(PrimarySourceScreen), findsOneWidget);
+  }, variant: TargetPlatformVariant.only(TargetPlatform.windows));
 }
 
 Future<void> _prepareSurface(

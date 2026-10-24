@@ -206,43 +206,39 @@ void main() {
     },
   );
 
-  testWidgets(
-    'MainScreen desktop drag scrolls topic list',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1200, 700));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+  testWidgets('MainScreen desktop drag scrolls topic list', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 700));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      final harness = await _buildHarness(topicCount: 40);
-      addTearDown(harness.dispose);
-      await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
+    final harness = await _buildHarness(topicCount: 40);
+    addTearDown(harness.dispose);
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
 
-      final listenerFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is Listener &&
-            widget.onPointerDown != null &&
-            widget.onPointerMove != null &&
-            widget.onPointerUp != null,
-      );
-      expect(listenerFinder, findsAtLeastNWidgets(1));
+    final listenerFinder = find.byWidgetPredicate(
+      (widget) =>
+          widget is Listener &&
+          widget.onPointerDown != null &&
+          widget.onPointerMove != null &&
+          widget.onPointerUp != null,
+    );
+    expect(listenerFinder, findsAtLeastNWidgets(1));
 
-      final scrollableFinder = find.byType(Scrollable).first;
-      final before = tester.state<ScrollableState>(scrollableFinder).position;
-      expect(before.pixels, 0);
+    final scrollableFinder = find.byType(Scrollable).first;
+    final before = tester.state<ScrollableState>(scrollableFinder).position;
+    expect(before.pixels, 0);
 
-      final start = tester.getCenter(listenerFinder.first);
-      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await gesture.addPointer(location: start);
-      await gesture.down(start);
-      await gesture.moveTo(Offset(start.dx, start.dy - 180));
-      await gesture.up();
-      await tester.pumpAndSettle();
+    final start = tester.getCenter(listenerFinder.first);
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: start);
+    await gesture.down(start);
+    await gesture.moveTo(Offset(start.dx, start.dy - 180));
+    await gesture.up();
+    await tester.pumpAndSettle();
 
-      final after = tester.state<ScrollableState>(scrollableFinder).position;
-      expect(after.pixels, greaterThan(0));
-    },
-    variant: TargetPlatformVariant.only(TargetPlatform.windows),
-  );
+    final after = tester.state<ScrollableState>(scrollableFinder).position;
+    expect(after.pixels, greaterThan(0));
+  }, variant: TargetPlatformVariant.only(TargetPlatform.windows));
 }
 
 Future<_MainScreenHarness> _buildHarness({

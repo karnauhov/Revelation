@@ -26,7 +26,7 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.38.7"
+          flutter-version: "3.47.2"
           cache: true
 
       - name: Get Flutter dependencies
@@ -83,7 +83,7 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.38.7"
+          flutter-version: "3.47.2"
           cache: true
 
       - name: Get Flutter dependencies
@@ -354,7 +354,7 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.38.7"
+          flutter-version: "3.47.2"
           cache: true
 
       - name: Get Flutter dependencies

@@ -219,42 +219,40 @@ void main() {
     },
   );
 
-  testWidgets(
-    'AboutScreen app version tooltip opens on tap for Android',
-    (tester) async {
-      final harness = _AboutScreenTestHarness()
-        ..appBuildTimestamp = DateTime(2026, 3, 29, 14, 15, 16);
-      final cubit = await _createSettingsCubit(language: 'ru');
-      addTearDown(cubit.close);
+  testWidgets('AboutScreen app version tooltip opens on tap for Android', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness()
+      ..appBuildTimestamp = DateTime(2026, 3, 29, 14, 15, 16);
+    final cubit = await _createSettingsCubit(language: 'ru');
+    addTearDown(cubit.close);
 
-      await tester.pumpWidget(
-        _buildApp(
-          cubit,
-          dependencies: harness.buildDependencies(),
-          aboutCubitBuilder: _buildAboutCubitBuilder(
-            appBuildTimestamp: harness.appBuildTimestamp,
-          ),
-          locale: const Locale('ru'),
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(
+          appBuildTimestamp: harness.appBuildTimestamp,
         ),
-      );
-      await _pumpUntilAboutScreenLoaded(tester);
+        locale: const Locale('ru'),
+      ),
+    );
+    await _pumpUntilAboutScreenLoaded(tester);
 
-      final context = tester.element(find.byType(AboutScreen));
-      final l10n = AppLocalizations.of(context)!;
-      final expectedTooltip =
-          '${l10n.app_version_from} '
-          '${DateFormat.yMd('ru').add_jms().format(harness.appBuildTimestamp!)}';
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+    final expectedTooltip =
+        '${l10n.app_version_from} '
+        '${DateFormat.yMd('ru').add_jms().format(harness.appBuildTimestamp!)}';
 
-      final appVersionItem = find.byKey(const ValueKey('about-version-app'));
-      await tester.ensureVisible(appVersionItem);
-      await tester.tap(appVersionItem);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 250));
+    final appVersionItem = find.byKey(const ValueKey('about-version-app'));
+    await tester.ensureVisible(appVersionItem);
+    await tester.tap(appVersionItem);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
 
-      expect(find.text(expectedTooltip), findsOneWidget);
-    },
-    variant: TargetPlatformVariant.only(TargetPlatform.android),
-  );
+    expect(find.text(expectedTooltip), findsOneWidget);
+  }, variant: TargetPlatformVariant.only(TargetPlatform.android));
 
   testWidgets('AboutScreen opens contact and legal external links', (
     tester,
@@ -741,45 +739,43 @@ void main() {
     expect(harness.showLocalFolderCalls, 1);
   });
 
-  testWidgets(
-    'AboutScreen desktop drag listener handles pointer drag',
-    (tester) async {
-      final harness = _AboutScreenTestHarness();
-      final cubit = await _createSettingsCubit(language: 'en');
-      addTearDown(cubit.close);
+  testWidgets('AboutScreen desktop drag listener handles pointer drag', (
+    tester,
+  ) async {
+    final harness = _AboutScreenTestHarness();
+    final cubit = await _createSettingsCubit(language: 'en');
+    addTearDown(cubit.close);
 
-      await tester.pumpWidget(
-        _buildApp(
-          cubit,
-          dependencies: harness.buildDependencies(),
-          aboutCubitBuilder: _buildAboutCubitBuilder(),
-        ),
-      );
-      await pumpAndSettleSafe(tester);
+    await tester.pumpWidget(
+      _buildApp(
+        cubit,
+        dependencies: harness.buildDependencies(),
+        aboutCubitBuilder: _buildAboutCubitBuilder(),
+      ),
+    );
+    await pumpAndSettleSafe(tester);
 
-      final listenerFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is Listener &&
-            widget.onPointerDown != null &&
-            widget.onPointerMove != null &&
-            widget.onPointerUp != null,
-      );
-      expect(listenerFinder, findsAtLeastNWidgets(1));
+    final listenerFinder = find.byWidgetPredicate(
+      (widget) =>
+          widget is Listener &&
+          widget.onPointerDown != null &&
+          widget.onPointerMove != null &&
+          widget.onPointerUp != null,
+    );
+    expect(listenerFinder, findsAtLeastNWidgets(1));
 
-      final start = tester.getCenter(listenerFinder.first);
-      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await gesture.addPointer(location: start);
-      await gesture.down(start);
-      await gesture.moveTo(Offset(start.dx, start.dy - 60));
-      await gesture.up();
-      await tester.pump();
+    final start = tester.getCenter(listenerFinder.first);
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: start);
+    await gesture.down(start);
+    await gesture.moveTo(Offset(start.dx, start.dy - 60));
+    await gesture.up();
+    await tester.pump();
 
-      final context = tester.element(find.byType(AboutScreen));
-      final l10n = AppLocalizations.of(context)!;
-      expect(find.text(l10n.about_screen), findsOneWidget);
-    },
-    variant: TargetPlatformVariant.only(TargetPlatform.windows),
-  );
+    final context = tester.element(find.byType(AboutScreen));
+    final l10n = AppLocalizations.of(context)!;
+    expect(find.text(l10n.about_screen), findsOneWidget);
+  }, variant: TargetPlatformVariant.only(TargetPlatform.windows));
 
   testWidgets(
     'AboutScreen keeps section dividers visible on Windows when sections expand',

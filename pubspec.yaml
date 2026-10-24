@@ -4,6 +4,7 @@ publish_to: 'none'
 version: 1.0.8+173
 environment:
   sdk: ^3.9.0
+  flutter: '>=3.47.2'
 
 dependencies:
   sentry_flutter: ^9.19.0
@@ -64,6 +65,11 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   msix: ^3.16.9
   drift_dev: ^2.30.1
+
+dependency_overrides:
+  # Stable upstream 1.1.3 with the minimal AGP 9 ProGuard compatibility patch.
+  flutter_inappwebview_android:
+    path: third_party/flutter_inappwebview_android
 
 msix_config:
   display_name: Revelation.Win

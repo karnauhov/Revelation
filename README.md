@@ -3,6 +3,8 @@
 Revelation is a Flutter app for studying the Book of Revelation.  
 Application entry point: `lib/main.dart`.
 
+Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9.1.0, Gradle 9.3.1, and Kotlin Gradle Plugin 2.4.0.
+
 ## Supported Platforms
 
 - Web: [revelation.website](https://www.revelation.website)
@@ -56,6 +58,8 @@ Application entry point: `lib/main.dart`.
 
 - [Operational Notes](./DEV_INFO.md)
 - [Changelog](./CHANGELOG.md)
+- [Android WebView compatibility snapshot](./third_party/flutter_inappwebview_android/README.md)
+- [REV142 validation state and review handoff](./.agents/task-state/REV142.md)
 - [Privacy Policy](./PRIVACY_POLICY.md)
 - [License Notice](./NOTICE)
 

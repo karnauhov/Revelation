@@ -1,6 +1,6 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.2.0`
+Doc-Version: `2.2.1`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
@@ -31,6 +31,16 @@ dart run scripts/check_docs_sync.dart
 ```
 
 Run `dart run scripts/check_docs_sync.dart` when a synchronized RU/EN doc pair changes.
+
+## Android System Bars and Release Optimization
+
+Android startup explicitly enables `SystemUiMode.edgeToEdge` before rendering. Unit tests check call order and leave other platforms unchanged. Splash widget tests cover portrait system bars and landscape cutouts. The local `integration_test/smoke/app_startup_smoke_test.dart` checks the splash, menu, and drawer against actual system insets; on Android it also requires nonzero status-bar insets and verifies landscape rotation. Run it locally with `flutter test integration_test/smoke/app_startup_smoke_test.dart -d <android-device-id>`. This native command runs in Debug and does not accept `--release`. Separately build and install a release APK, then check startup, the drawer, and reader navigation: R8 does not optimize debug builds. Run Flutter builds and tests sequentially because they share generated plugin registrants.
+
+CI and local validation use Flutter 3.47.2 with its supported Android toolchain: AGP 9.1.0, Gradle 9.3.1, Kotlin Gradle Plugin 2.4.0, and Java 17. AGP 9 enables optimized resource shrinking by default; Flutter enables release minification, resource shrinking, and optimized default ProGuard rules. Keep Flutter/plugin consumer rules, including reflection-related rules. Kotlin uses `compilerOptions` rather than the removed `kotlinOptions` DSL. Retain `android.builtInKotlin=false` for unmigrated plugins and `android.newDsl=false` for Flutter's legacy DSL compatibility; these are temporary supported migration bridges. See [Android R8 guidance](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) and [Flutter Kotlin migration](https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin).
+
+Play Console recommendations describe the uploaded artifact, currently 1.0.7+172. Deprecated system-bar color calls can remain in Flutter/AndroidX for older Android versions; absence of application-owned calls does not prove the warning has disappeared. Do not patch SDK caches or suppress compatibility code to silence the scanner. Recheck recommendations after the separately accepted release is uploaded in REV237; a local successful build is not publication or a new Play measurement.
+
+The stable Android WebView 1.1.3 package still requests a ProGuard default removed by AGP 9. The [licensed compatibility snapshot](../../../third_party/flutter_inappwebview_android/README.md) replaces just that default in both build types. The startup smoke also loads local HTML and evaluates JavaScript through the real Android WebView without external requests. For a release check, build `integration_test/webview_release_probe.dart` as the APK target and verify the visible `REV142 WebView release OK` marker; then rebuild the ordinary `lib/main.dart` target before checking normal startup and reader navigation. The probe must never be uploaded as a release artifact.
 
 ## Browser Database Opening Check
 

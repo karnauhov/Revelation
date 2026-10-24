@@ -8,6 +8,39 @@ import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 
 void main() {
+  testWidgets('keeps the splash panel clear of system bars and cutouts', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    for (final layout in <(Size, FakeViewPadding)>[
+      (const Size(390, 844), const FakeViewPadding(top: 32, bottom: 24)),
+      (
+        const Size(844, 390),
+        const FakeViewPadding(left: 40, right: 24, bottom: 24),
+      ),
+    ]) {
+      final (size, insets) = layout;
+      tester.view.physicalSize = size;
+      tester.view.viewPadding = insets;
+      tester.view.padding = insets;
+      await tester.pumpWidget(
+        _buildHarness(AppStartupState.initial(localeCode: 'en')),
+      );
+      await tester.pump();
+
+      final panel = tester.getRect(
+        find.byKey(const ValueKey<String>('startup-panel')),
+      );
+      expect(panel.left, greaterThanOrEqualTo(insets.left));
+      expect(panel.top, greaterThanOrEqualTo(insets.top));
+      expect(panel.right, lessThanOrEqualTo(size.width - insets.right));
+      expect(panel.bottom, lessThanOrEqualTo(size.height - insets.bottom));
+      expect(tester.getRect(find.byType(Image).first).size, size);
+      expect(tester.takeException(), isNull);
+    }
+  });
+
   testWidgets('renders full-screen splash progress and version info', (
     tester,
   ) async {

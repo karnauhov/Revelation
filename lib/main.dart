@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
@@ -155,6 +157,10 @@ Future<void> startApp(
   StartupSettingsCubitLoader? initializeSettingsCubit,
   RunAppCallback? runAppCallback,
 }) async {
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    // Apply before the first frame, including on Android versions before 15.
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  }
   (runAppCallback ?? runApp)(
     BlocProvider<AppStartupCubit>(
       create: (_) => AppStartupCubit(

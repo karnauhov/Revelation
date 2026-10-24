@@ -10,6 +10,7 @@ All notable changes to this application will be documented here.
 
 ### Fixed
 
+- Enabled consistent edge-to-edge display on Android while keeping controls clear of system bars.
 - Prevented web database startup errors when several modules open at the same time.
 - Fixed verse previews on the first long press in Strong's Dictionary.
 - Fixed local Bible modules missing updates when the new file has the same size; invalid downloads preserve the installed copy.

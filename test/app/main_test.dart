@@ -63,6 +63,8 @@ void main() {
         });
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(desktopChannel, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(SystemChannels.platform, (_) async => null);
   });
 
   tearDown(() async {
@@ -77,6 +79,8 @@ void main() {
         .setMockMethodCallHandler(audioChannel, null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(desktopChannel, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(SystemChannels.platform, null);
     await GetIt.I.reset();
   });
 
@@ -236,6 +240,55 @@ void main() {
   });
 
   group('startApp', () {
+    test(
+      'enables Android edge-to-edge before rendering the first frame',
+      () async {
+        debugDefaultTargetPlatformOverride = TargetPlatform.android;
+        final calls = <String>[];
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+            .setMockMethodCallHandler(SystemChannels.platform, (call) async {
+              if (call.method == 'SystemChrome.setEnabledSystemUIMode') {
+                calls.add(call.arguments as String);
+              }
+              return null;
+            });
+        addTearDown(() {
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+              .setMockMethodCallHandler(SystemChannels.platform, null);
+        });
+
+        await startApp(
+          _RecordingTalker(),
+          runAppCallback: (_) => calls.add('runApp'),
+        );
+
+        expect(calls, <String>['SystemUiMode.edgeToEdge', 'runApp']);
+      },
+    );
+
+    test('does not change system UI mode on other platforms', () async {
+      final modes = <Object?>[];
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, (call) async {
+            if (call.method == 'SystemChrome.setEnabledSystemUIMode') {
+              modes.add(call.arguments);
+            }
+            return null;
+          });
+      addTearDown(() {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+            .setMockMethodCallHandler(SystemChannels.platform, null);
+      });
+
+      for (final platform in TargetPlatform.values) {
+        if (platform == TargetPlatform.android) continue;
+        debugDefaultTargetPlatformOverride = platform;
+        await startApp(_RecordingTalker(), runAppCallback: (_) {});
+      }
+
+      expect(modes, isEmpty);
+    });
+
     test('passes a single root widget to runApp', () async {
       final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
       var runAppCalls = 0;
