@@ -3626,3 +3626,362 @@ keep automatic promotion and production acceptance disabled.
 
 Post-append read-only receipt: six frozen/final control digests PASS; shared report/log byte identity PASS; historical HANDOFF prefix and persisted final receipts PASS; file_writes=0. The first post-append git diff --check reported only one blank EOF line in this excluded HANDOFF; this final receipt append closes that blank tail. No inventory-bound artifact changed.
 Final post-append git diff --check: PASS, exit_code=0, stdout_bytes=0; only Git LF/CRLF advisory warnings. All work finished; no further artifact writes.
+
+
+## Checkpoint 2026-10-17 — 7.8 precision feasibility: проверенный structural NO_GO
+
+Первый deliverable завершён: [feasibility matrix всех 341 обязательных strata7.7 + global](precision78.v1.ru.md), [development error taxonomy](precision78_development_taxonomy.v1.ru.md), [completion manifest](precision78.v1.manifest.json). A_auto=0; production acceptance/promotions0. Это не завершение всего manual review7.8 или этапа7.
+
+- В 2John13/13, 3John14/14, Jude25/25, Obad21/21 и Phlm25/25 все стихи уже reviewed. Новых допустимых audit cases0: nominal Wilson support539 недостижим даже при0 ошибок. В15 книгах и31 observable strata fresh candidate union<539;235 reviewed-phenomena rows остаются unknown membership. Strata не исключались, порог не ослаблялся.
+- Label-free top-1 envelope297767 unique edges; candidate envelope401687; fresh top1277223, fresh union373752. Полный fresh verse grid28931, covered fresh top1 refs28929. Lexical components7 не объявлены независимыми Bernoulli trials. Это envelope, новая A-policy не обучена.
+- Только development0–2:5782 false-edge cases;4884 extra participant,3024 incomplete group,2126 wrong endpoints, категории пересекаются.946 conflicting-correct-candidate opportunities не означают946 совместимых исправлений. Repetition/morphology hints не выдаются за доказанные причины. Causal manual taxonomy отдельно не выполнена.
+- Исторические7401/6479, разница922 и20061 absent gold edges взяты из завершённого7.6; старый evaluation не повторялся. Новых training runs, sampling cases, annotation labels, predictor freeze, closed validation и final audit0; соответствующие фазы NOT_STARTED_STRUCTURAL_STOP.
+- Протокол сохраняет nominal one-sided95% Wilson LB>=.995 и задаёт дополнительный familywise design-based контроль342 claims;2611 Bonferroni-Wilson — отдельная sensitivity. Fresh-only sample не сертифицирует reviewed часть полного payload с нулевыми inclusion probabilities. Sampling applicability и будущий budget не заявлены доказанными.
+
+Автор `/root`; [отдельный независимый reviewer](../../work/ukrainian_stage_7_20260801/session_precision78_20261017_independent_01/independent_review.v1.ru.md), [его manifest](../../work/ukrainian_stage_7_20260801/session_precision78_20261017_independent_01/independent_validation.v1.manifest.json), [финальные report bytes QC](../../work/ukrainian_stage_7_20260801/session_precision78_20261017_independent_01/final_report_bytes_qc.v1.json). Raw401687 frame records и все5782 development cases независимо восстановлены. Проверены6279 immutable entries /30,713,576,734 bytes,19 source files,1821 runtime files и16 inputs. Blind annotators/adjudicator не назначались: новая annotation не начиналась. Inventory writer — отдельный `/root/precision78_inventory`.
+
+Проверки:520 Python tests PASS (11 новых +26 calibration77 +26 consensus76 +457 Bible-module); preflight stages3offline/4/5/6/7 PASS; final docs sync, forbidden patterns, git diff --check и navigation PASS. Dart format/analyze/Flutter tests/smoke — N/A для этого Python-only tooling change, targeted Python regression rationale записан в checklist receipt. Frozen7.4/7.6/7.7, gold/mask/folds, SHA-bound report/log, OH1988 issue registry и runtime/DB сохранены. Source/protocol/input/runtime locks и явные NOT_STARTED manifests связаны completion SHA `223af0ee66afb8d188cbe1e364c02affa1267b4f86b7752b91dd5e50cb0b3eda`.
+
+После окончания author/reviewer отдельный writer вызвал существующий inventory helper один раз; затем только read-only audit. Финальный stdout receipt writer:
+
+```json
+{
+  "status": "PASS",
+  "writer": "/root/precision78_inventory",
+  "actual_role": "distinct_inventory_only_writer",
+  "inventory": {
+    "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/artifact_inventory.manifest.json",
+    "sha256": "671f79ebd0124fbf165de8557f9c17b7620a29048a4b019f34cee445ff1caaa5",
+    "bytes": 2252323,
+    "entries": 6349,
+    "report_entries": 397,
+    "work_entries": 5952
+  },
+  "all_entries_physical_SHA256_and_bytes_checked": true,
+  "initial_6279_entries_exact_preserved_after_helper": true,
+  "shared_report_log_no_prefix_allowance": true,
+  "exact_sorted_roster_and_no_duplicates": true,
+  "canonical_UTF8_compact_sorted_JSON_LF": true,
+  "canonical_seal_exact": true,
+  "canonical_payload_sha256": "fb9d86fbc6409544bcfaddbd9696ca3811d9db89487a02f0894de7e4435e25c3",
+  "output_sha256_map_exact": true,
+  "pre_refresh_receipt": {
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_precision78_20261017_inventory_writer_01/pre_refresh_receipt.v1.json",
+    "bytes": 10389,
+    "sha256": "dfd0ad8b9e20f7abd8bbeffc5e4a424854e72fd699d95a2b19352b09973853fc"
+  },
+  "helper_calls": 1,
+  "post_helper_file_writes": 0,
+  "implementation_authorship": false,
+  "independent_QC_authorship": false,
+  "frozen_artifacts_regenerated": false,
+  "all_writer_writes_stopped": true
+}
+```
+
+Post-refresh read-only root receipt: inventory6349/6279-baseline metadata exact PASS; все69 specs completion evidence/docs повторно SHA/bytes проверены PASS; исторический HANDOFF до append был exact. `python -X utf8 -B -m scripts.bible_module.ukrainian_stage_7 --check` после refresh: exit0, error_count0, accepted_links0; historical preparation status blocked_before_gold_and_alignment_acceptance сохранён и не подменяет finalized goldv2. После helper новых work/report артефактов не записывалось; разрешён только этот append исключённого HANDOFF.
+
+Следующая полезная работа — улучшение B_review/manual workflow на development evidence: показывать полные конфликтующие groups, endpoints, morphology uncertainty и source provenance. Повторная попытка A-certification при неизменном freshness/book/Wilson contract не запускается. Registered deferrals не переоткрываются. Изменения generators возможны только отдельной последующей веткой; frozen graph7.6 сохраняется. Commit/push не выполнялись. Все агенты завершили работу.
+
+
+## Навигация текущей работы 2026-10-17 — B_review/manual workbench
+
+Следующий разрешённый владельцем deliverable реализуется отдельным пакетом: [review78 report](review78.v1.ru.md), [запуск и использование](../../review78/README.ru.md), [живой локальный workbench](http://127.0.0.1:8878). A_auto=0; frozen inputs/gold и source precision78 сохранены. Предыдущие roadmap/alignment-plan docs не редактируются: они SHA-bound в precision78 completion. Эта запись добавляет навигацию; финальный QC/completion/inventory receipt появится ниже после проверок.
+
+
+## Checkpoint 2026-10-17 — B_review/manual workbench завершён
+
+Реализован и открыт [локальный read-only workbench](http://127.0.0.1:8878): [отчёт](review78.v1.ru.md), [запуск и использование](../../review78/README.ru.md), [completion manifest](review78.v1.manifest.json). Это UI для существующих development error cases folds 0–2: 5782 cases / 1257 стихов, B_review 4311 и C_unresolved 1471. Cohort отобрана по известным ошибкам; precision по ней не оценивается. A_auto=0, новых labels/accepted overrides/production links нет; весь manual review 7.8 и этап 7 остаются открыты.
+
+Показываются полный frozen prediction, все конфликтующие eligible hyperedges, отдельные nearest gold-группы со всеми ties и per-group missing/extra original/target endpoints, полные decompositions и source evidence/dependency groups. Сохранены 16366 intact candidates, 17760 provenance rows, 6278 decompositions, 7845 самостоятельных gold comparisons. В 1839 случаях есть nearest ties; 3503 conflict references показываются полностью. Reciprocal shared declarations проверены синтетически (actual cohort references0). Whole-deferred edges 162 исключены; отсутствие candidate не превращается в NULL, deferrals не переоткрываются.
+
+Reviewer может скачивать source-bound review_note_draft; внутри вкладки заметка восстанавливается при matching packet digest. Draft не label/override и не применяется к gold. Synthetic UI-smoke note явно помечен, manual decision не создаёт. Сервер привязан к loopback и обслуживает только GET/HEAD; write methods отклоняются. SHA checks index/manifest/packet и client case/build binding защищают stale data; latest-request guard проверен на stale success/error. Прежние frozen 7.4/7.6/7.7/precision78, gold/mask/folds, shared report/log и SHA-bound roadmap/alignment docs сохранены.
+
+[Независимый raw/API/JS runtime QC](../../work/ukrainian_stage_7_20260801/session_review78_20261017_independent_01/independent_review.v1.ru.md), [его manifest](../../work/ukrainian_stage_7_20260801/session_review78_20261017_independent_01/independent_validation.v1.manifest.json): PASS без открытых замечаний. Все 5782 cases и 1257 packets независимо восстановлены, synthetic shared/mutation/async probes прошли. Автор `/root`, reviewer `/root/precision78_independent`, inventory writer `/root/precision78_inventory` — отдельные роли. Root visual browser QA и downloaded draft проверены отдельно; [browser receipt](../../work/ukrainian_stage_7_20260801/session_review78_20261017_root_01/browser_ui.v1.json).
+
+530 Python tests + 4 Node tests PASS; preflight stages 3 offline/4/5/6/7 PASS; final docs sync/forbidden patterns/navigation/git checks PASS. Source 13 / upstream 19 / runtime 1821 и все 69 прежних precision78 evidence/docs specs совпали. Checklist rationale: offline Python/JS tooling; Dart/Flutter runtime, DB, routes, dependencies и localization не менялись. Completion SHA256 `2603329cc396049383d4f2833085c1ce682490982c018dbb4c0af3cc2d330ca3`.
+
+После окончания всех artifact writes отдельный writer один раз вызвал существующий inventory helper. Финальный stdout receipt:
+
+```json
+{
+  "status": "PASS",
+  "writer": "/root/precision78_inventory",
+  "actual_role": "distinct_inventory_only_writer",
+  "inventory": {
+    "sha256": "5506895bea8b37d9cbe350d55c81c70e792d650d08d2ac6fccd1230e8699ac24",
+    "bytes": 2812140,
+    "entries": 7671,
+    "report_entries": 399,
+    "work_entries": 7272
+  },
+  "all_entries_physical_SHA256_and_bytes_checked": true,
+  "initial_6349_entries_exact_preserved_after_helper": true,
+  "previous_precision78_69_specs_including_docs_strict_PASS": true,
+  "HANDOFF_original_prefix_verified": true,
+  "exact_sorted_roster_and_no_duplicates": true,
+  "canonical_seal_exact": true,
+  "canonical_payload_sha256": "eef8f949332c1e622e951eafa246871aaa5de194ddbd51949d6f60d87f2402d9",
+  "output_sha256_map_exact": true,
+  "pre_refresh_receipt": {
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_review78_20261017_inventory_writer_01/pre_refresh_receipt.v1.json",
+    "bytes": 364991,
+    "sha256": "c1df812dce42a045b533463a775ff9438eeb69fb78396796d9cee5144f6c68ab"
+  },
+  "helper_calls": 1,
+  "post_helper_file_writes": 0,
+  "implementation_authorship": false,
+  "independent_QC_authorship": false,
+  "frozen_artifacts_regenerated": false,
+  "all_writer_writes_stopped": true
+}
+```
+
+Post-refresh read-only root checks: все 1320 completion evidence/docs specs и 69 прежних specs повторно проверены SHA/bytes; inventory SHA совпал; прежний HANDOFF prefix сохранён. Stage7 `--check` после refresh: exit0, error_count0, accepted_links0; historical preparation status остаётся blocked_before_gold_and_alignment_acceptance и не подменяет finalized gold v2. После helper создаётся только этот append исключённого HANDOFF, новых work/report artifacts нет.
+
+Локальный GET-only сервер http://127.0.0.1:8878 намеренно оставлен работающим для владельца, вкладка IAB отмечена deliverable. Для повторного запуска: `python -X utf8 -B -m scripts.bible_module.review78 serve --port 8878` из корня; остановка foreground-сервера Ctrl+C. Прочие jobs и все agents завершены. Commit/push не выполнялись. Следующая работа — собственно ручная проверка с rationale/source evidence; browser drafts остаются предложениями до отдельного разрешённого review/adjudication workflow. Structural NO_GO для A_auto при текущем контракте не переоткрывается.
+
+## 2026-10-18 — ручная партия B_review manual25-v1
+
+По прямому запросу владельца завершён source-based разбор фиксированных 25 development cases в 25 разных стихах: [отчёт с полными группами](manual25.v1.ru.md), [отдельные решения JSONL](manual25_decisions.v1.jsonl), [completion manifest](manual25.v1.manifest.json). Это отдельный ручной слой; A_auto=0, automatic/production acceptance=0. Gold, frozen 7.4/7.6/7.7/precision78/review78, mask/folds и старые claims не менялись; registered deferrals не переоткрывались.
+
+Независимый reviewer `/root/manual25_reviewer` запечатал собственный source-разбор до чтения авторских результатов; ранний обмен по одному Eph.1.18 раскрыт в seals, человеческая blind/statistical certification не заявляется. Его [финальный raw-payload QC](../../work/ukrainian_stage_7_20260801/session_manual25_20261018_independent_01/final_validation.v1.json) PASS для SHA256 `5697b0f78477ab2cb48b14ee52ce9d773085933c02974ae0b13e65514ad1ec45`: 37 полных соответствий в 23 случаях, из них 28 Strong-bearing и 9 безномерных служебных. 35 exact historical identities; 2 перегруппировки того же покрытия, нового Strong-покрытия сверх gold 0. Eph.1.18 и Lev.4.12 без принятой замены; displaced «то» Phil.3.15 также unproved. NULL не выведены из отсутствия кандидатов. Все 25 исходных предложений отклонены как полные группы; частичные лексические совпадения не переименованы в полную правильность.
+
+Начало задачи 05:42:16 UTC; source review начался 05:54:04; final independent PASS 06:07:17 — 13 мин 13 с содержательной работы и сверки wall clock, с параллельными проходами (не человеко-часы). Подготовка до source review заняла 11 мин 48 с и включала физическую проверку всех 7 671 baseline entries (~31 ГБ); stage3 offline и stage4–7 `--check` PASS. Root затем повторно проверил все 74 completion evidence specs, 9 Python helpers на компиляцию, точные IDs/spans/eligibility и gold/mask SHA; raw validation PASS, `git diff --check` PASS. Прежний HANDOFF до этого append был exact. Финальный inventory refresh выполняет отдельный writer `/root/precision78_inventory`; после него разрешены только read-only проверки и receipts в этом исключённом HANDOFF. Полное elapsed с packaging/inventory будет записано ниже.
+
+
+Inventory writer final stdout receipt (after all artifact writes closed):
+
+```json
+{
+  "status": "PASS",
+  "writer": "/root/precision78_inventory",
+  "actual_role": "distinct_inventory_only_writer",
+  "inventory": {
+    "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/artifact_inventory.manifest.json",
+    "sha256": "cd92ab154c74426937ada028434fa96edd36012bb3d4205408ae28dd1d2fabcb",
+    "bytes": 2835587,
+    "entries": 7748,
+    "report_entries": 402,
+    "work_entries": 7346,
+    "new_artifacts": 77
+  },
+  "all_7671_baseline_entries_metadata_exact_equal": true,
+  "baseline_comparison_covers_SHA256_and_bytes_without_prefix_allowance": true,
+  "physical_SHA256_and_bytes_for_all_entries_computed_by_existing_helper": true,
+  "duplicate_full_physical_disk_sweeps_by_writer": 0,
+  "exact_sorted_roster_and_no_duplicates": true,
+  "required_report_and_work_roots_exact": true,
+  "canonical_seal_exact": true,
+  "canonical_payload_sha256": "12d2119bd0c680bdf13306846e96e8a0ca699c0ae4c9d62d4ca33dc0825a6c45",
+  "output_sha256_map_exact": true,
+  "manual_completion_evidence_specs_independently_rehashed": 74,
+  "frozen_completion_files_independently_rehashed": 4,
+  "HANDOFF_original_prefix_SHA256_and_bytes_unchanged": true,
+  "helper_calls": 1,
+  "helper_start_utc": "2026-10-18T06:12:58.272720Z",
+  "helper_finish_utc": "2026-10-18T06:15:46.347337Z",
+  "helper_actual_elapsed_seconds": 168.078,
+  "audit_start_utc": "2026-10-18T06:15:46.348336Z",
+  "audit_finish_utc": "2026-10-18T06:15:48.946831Z",
+  "audit_actual_elapsed_seconds": 2.609,
+  "refresh_actual_elapsed_seconds": 172.296,
+  "pre_refresh_receipt": {
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_manual25_20261018_inventory_writer_01/pre_refresh_receipt.v1.json",
+    "bytes": 12741,
+    "sha256": "7cf0aceb73cc6f9c26ed594f77ea596b667d120e3b876f5fa4a235d0ff040ff8"
+  },
+  "semantic_payload_gold_or_source_packet_records_parsed": false,
+  "manual_decision_authorship": false,
+  "independent_QC_authorship": false,
+  "frozen_evaluation_rerun": false,
+  "post_helper_file_writes": 0,
+  "all_writer_writes_stopped": true
+}
+```
+
+Post-refresh root read-only receipt:
+
+```json
+{
+  "status": "PASS",
+  "final_root_read_only_finish_utc": "2026-10-18T06:16:21.906434+00:00",
+  "total_task_elapsed_seconds": 2045.906,
+  "source_review_through_final_independent_PASS_seconds": 793,
+  "baseline_entries_exact": 7671,
+  "inventory_entries": 7748,
+  "completion_specs_rehashed": 74,
+  "HANDOFF_original_prefix_exact": true,
+  "raw_payload_validation": {
+    "status": "PASS",
+    "review_cases": 25,
+    "unique_verses": 25,
+    "positive_hyperedges": 37,
+    "Strong_bearing_hyperedges": 28,
+    "cases_with_accepted_groups": 23,
+    "cases_without_accepted_groups": 2,
+    "held_groups": 5,
+    "relations": {
+      "one_to_one": 25,
+      "many_to_one": 5,
+      "one_to_many": 5,
+      "many_to_many": 2
+    },
+    "explicit_NULL": 0,
+    "gold_and_mask_bytes_preserved": true,
+    "A_auto": 0,
+    "production_acceptance": 0
+  },
+  "post_refresh_artifact_writes": 0
+}
+```
+
+Total elapsed to final root read-only PASS: 34 min 05.906 s; source review through final independent PASS: 13 min 13 s. Initial author/reviewer intervals overlapped. held_groups=5 counts four superseded initial forms plus one unproved initial group, not five open cases. No work/report artifact writes after inventory helper; only this excluded HANDOFF receipt append. git diff --check PASS. Stage3 offline and stage4-7 checks already PASS; unchanged frozen evaluation was not rerun. No commit/push.
+
+
+## 2026-10-18: fresh25 — новая ручная B_review партия
+
+Проверены 25 новых случаев в 25 стихах вне union 2 466 прежних reviewed/annotated verses. 43 целых positive hyperedges (39 Strong-bearing), 45 новых manual classic-Strong original endpoints; 50 original и 54 target endpoints всего. 7 исходных предложений принято целиком, 18 отклонено; 2 unproved loci сохранены без Strong/NULL. 25 частичных проверок, полных стихов не завершено. Новый manual-слой не внесён в gold/экспорт; A_auto=0, production_acceptance=0.
+
+[Отчёт](fresh25.v1.ru.md), [отдельные решения](fresh25_decisions.v1.jsonl), [completion manifest](fresh25.v1.manifest.json). Initial отдельного AI reviewer запечатан до получения авторских решений; до авторского seal было одно содержательное status-message о «тільки», protocol deviation записано отдельно, полной двусторонней blind independence не заявлено. Source QC и raw payload recomputation сохранены независимо. 28 из 43 author groups совпали по exact identity с independent initial; девять reviewer group-set amendments открыто записаны, исходные seals не менялись. Gold/frozen/mask/folds/прежние claims и единственный editable issue inventory сохранены. Flutter runtime не менялся; Python syntax, raw payload, independent QC, source/runtime hashes и git diff --check PASS. Старый evaluation повторно не запускался. Все author/reviewer artifact writes завершены, затем distinct writer обновит inventory одним полным physical sweep.
+
+Final independent receipt до inventory:
+
+```json
+{
+  "receipt": {
+    "path": "scripts/bible_module/work/ukrainian_stage_7_20260801/session_fresh25_20261018_independent_01/final_validation.v1.json",
+    "bytes": 17074,
+    "sha256": "ba2a09862346bf6c8ed7d285ef46acc3bad2b527673aa27182edd930d148e67a"
+  },
+  "timing": {
+    "actual_UTC_wall_clock": true,
+    "begin_utc": "2026-10-18T06:38:01+00:00",
+    "end_utc": "2026-10-18T06:42:08.097353+00:00"
+  },
+  "metrics": {
+    "A_auto": 0,
+    "Strong_bearing_hyperedges": 39,
+    "accepted_as_whole": 7,
+    "cases_with_accepted_groups": 25,
+    "exact_frozen_candidate_identities": 9,
+    "explicit_NULL": 0,
+    "gold_and_mask_bytes_preserved": true,
+    "held_groups": 9,
+    "new_gold_hyperedges": 0,
+    "new_manual_positive_hyperedges": 43,
+    "new_partial_reviewed_verses": 25,
+    "positive_hyperedges": 43,
+    "previous_reviewed_verse_overlap": 0,
+    "previous_reviewed_verse_union": 2466,
+    "production_acceptance": 0,
+    "rejected_as_whole": 18,
+    "relations": {
+      "many_to_many": 4,
+      "many_to_one": 3,
+      "one_to_many": 3,
+      "one_to_one": 33
+    },
+    "review_cases": 25,
+    "status": "PASS",
+    "unique_classic_Strong_original_endpoints": 45,
+    "unique_original_endpoints": 50,
+    "unique_target_endpoints": 54,
+    "unproved_loci": 2,
+    "whole_verses_completed": 0
+  }
+}
+```
+
+Distinct final inventory writer receipt:
+
+```json
+{
+  "status": "PASS",
+  "writer": "/root/precision78_inventory",
+  "inventory": {
+    "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/artifact_inventory.manifest.json",
+    "sha256": "1cdac8925837eef06d4af9c9b9baa6832a5cd34cd9d3a6c47d332062355c818a",
+    "bytes": 2855422,
+    "entries": 7814,
+    "report_entries": 405,
+    "work_entries": 7409
+  },
+  "expected_new_entries": 66,
+  "actual_new_entries": 66,
+  "all_7748_baseline_entries_metadata_exact_equal": true,
+  "physical_sweeps": 1,
+  "duplicate_full_physical_sweeps": 0,
+  "exact_roster_seal_output_map": true,
+  "canonical_payload_sha256": "f793fd3e5f9aa823449f9db8b4318711240326d89df6e124aa12205c38e0020c",
+  "fresh_completion_evidence_specs_rehashed": 63,
+  "frozen_completion_files_rehashed": 5,
+  "HANDOFF_original_prefix_unchanged": true,
+  "helper_start_utc": "2026-10-18T06:44:54.555372Z",
+  "helper_finish_utc": "2026-10-18T06:46:45.741858Z",
+  "helper_actual_elapsed_seconds": 111.187,
+  "audit_actual_elapsed_seconds": 2.344,
+  "refresh_actual_elapsed_seconds": 114.625,
+  "pre_refresh_receipt": {
+    "path": "scripts\\bible_module\\work\\ukrainian_stage_7_20260801\\session_fresh25_20261018_inventory_writer_01\\pre_refresh_receipt.v1.json",
+    "bytes": 13394,
+    "sha256": "bb38ee3151de52254f6b6529e4fd94d345629e346733153cd79a4f5603bb8346"
+  },
+  "writer_parsed_semantic_payload_gold_or_source_packet_records": false,
+  "post_helper_artifact_writes": 0,
+  "all_writer_writes_stopped": true
+}
+```
+
+Final root read-only receipt:
+
+```json
+{
+  "status": "PASS",
+  "final_root_read_only_finish_utc": "2026-10-18T06:47:22.565147+00:00",
+  "total_task_elapsed_seconds": 1648.565,
+  "baseline_entries_exact": 7748,
+  "inventory_entries": 7814,
+  "inventory": {
+    "path": "scripts/bible_module/reports/ukrainian_stage_7_20260801/artifact_inventory.manifest.json",
+    "bytes": 2855422,
+    "sha256": "1cdac8925837eef06d4af9c9b9baa6832a5cd34cd9d3a6c47d332062355c818a"
+  },
+  "completion_specs_rehashed": 63,
+  "HANDOFF_original_prefix_exact": true,
+  "raw_payload_validation": {
+    "status": "PASS",
+    "review_cases": 25,
+    "new_partial_reviewed_verses": 25,
+    "previous_reviewed_verse_union": 2466,
+    "previous_reviewed_verse_overlap": 0,
+    "positive_hyperedges": 43,
+    "Strong_bearing_hyperedges": 39,
+    "exact_frozen_candidate_identities": 9,
+    "rejected_as_whole": 18,
+    "cases_with_accepted_groups": 25,
+    "held_groups": 9,
+    "unproved_loci": 2,
+    "accepted_as_whole": 7,
+    "relations": {
+      "one_to_one": 33,
+      "one_to_many": 3,
+      "many_to_one": 3,
+      "many_to_many": 4
+    },
+    "unique_original_endpoints": 50,
+    "unique_target_endpoints": 54,
+    "unique_classic_Strong_original_endpoints": 45,
+    "new_manual_positive_hyperedges": 43,
+    "new_gold_hyperedges": 0,
+    "whole_verses_completed": 0,
+    "explicit_NULL": 0,
+    "A_auto": 0,
+    "production_acceptance": 0,
+    "gold_and_mask_bytes_preserved": true
+  },
+  "post_refresh_artifact_writes": 0
+}
+```
+
+После helper не было report/work artifact writes; только read-only проверки и этот append в excluded HANDOFF. No commit/push.

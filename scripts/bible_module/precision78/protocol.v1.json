@@ -1,0 +1,27 @@
+{
+  "version": "precision78-v1",
+  "scope": "feasibility_before_training_or_new_annotation_then_development_0_2_error_inspection",
+  "population": "label_free_frozen76_eligible_top1_upper_envelope_for_any_abstaining_selector;actual_A_policy_not_trained_or_frozen;A_auto=0",
+  "required_claims": "global_plus_exact_341_strata_from_frozen77_support;all_66_books_and_missing_rows_retained;no_postselection_removal",
+  "joint_inference_plan": "all_342_claims_require_nominal_one_sided95_Wilson_LB>=0.995_AND_simultaneous_design_based_lower_bounds_with_Bonferroni_alpha=0.05/342;Bonferroni_Wilson_2611_is_reported_as_a_stricter_sensitivity_not_required_nominal_support",
+  "observation": "unique_complete_semantic_hyperedge;never_pairwise_expansion_or_repeat_review_as_new_trial;verse_and_lexical_components_diagnostic_not_independent_Bernoulli_units",
+  "fresh_audit_frame": "exclude_all_finalized_v2_reviewed_verses_including_deferred;not_only_development;mask_ref_union_is_exact_gold_review_frame;uncatalogued_earlier_review_exposure_can_only_reduce_available_upper_bounds",
+  "unknown_strata": "reviewed_phenomena_membership_outside_reviewed_verses_unknown_until_independent_annotation;null_counts_and_full_frame_upper_ceiling;never_impute_from_prediction_or_old_labels",
+  "structural_stop": "if_any_required_stratum_fresh_unique_edge_upper_ceiling<539_stop_training_and_new_annotation;NO_GO_for_current_fixed_OH1988_fresh_audit_contract;zero_population_does_not_pass",
+  "taxonomy": "deterministic_multilabel_structural_differences_with_all_nearest_gold_ties;repetition_morphology_polysemy_textual_flags_are_evidence_hints_not_proven_causes;complete_identity_preserved;no_new_labels",
+  "labels": "eligible_development_folds0_1_2_only;historical_3_4_not_independent;no_old_evaluation_rerun;7401_6479_20061_from_completed76_report_only",
+  "experiment_budget": {
+    "maximum_selector_rules": 3,
+    "maximum_saved_candidate_rerankers": 1,
+    "generator_changes": 0,
+    "execution_under_structural_NO_GO": 0,
+    "selection": "development_only_coverage_at_high_precision;no_F1_selection;no_threshold_or_domain_tuning_on_future_audit",
+    "leakage": "new_upstream_views_exclude_inner_holdout_from_prior_counts_features_training_together;otherwise_explicit_in_sample_only;old_OOF_scores_not_nested_CV"
+  },
+  "future_selector_features": ["independent_dependency_group_agreement", "whole_conflicting_hyperedge_margin", "morphology_compatibility_when_proved", "lexical_prior_ambiguity", "decomposition_stability", "explicit_negative_evidence"],
+  "future_audit": "separate_development_review_and_sealed_certification_outside_prior_review;blind_pass1_pass2_distinct_adjudicator_QC;no_confidence_or_class_at_initial_review;full_semantic_identity_and_sources;missing_unresolved_blocks_without_replacement;registered_deferrals_stay_closed",
+  "sampling": "no_sampling_now;future_frozen_policy_frame_and_domain_membership_plus_known_positive_inclusion_probabilities_required;SRSWOR_with_conditional_SRS_domain_hypergeometric_inversion_only_if_applicability_proved;overlapping_reporting_domains_not_disjoint_sampling_strata;unequal_probability_or_cluster_design_needs_matching_inference;excluding_reviewed_units_gives_zero_pi_for_those_units_so_fresh_only_audit_does_not_by_itself_certify_full_payload_including_them;restricting_estimand_to_fresh_domain_leaves_mandatory_short_books_empty",
+  "freeze_order": "development_selection_then_predictor_calibrator_features_domain_threshold_freeze_then_independent_technical_gate_then_closed_validation_then_distinct_final_audit_only_if_predecessors_pass;separate_alpha_spending_or_final_only_claim_before_labels;no_optional_stopping_or_topup",
+  "guards": {"candidate_only": true, "resolver_eligible": false, "A_auto": 0, "automatic_promotions": 0, "production_acceptance": 0},
+  "roles": {"author": "/root", "independent_reviewer": "/root/precision78_independent", "inventory_writer": "/root/precision78_inventory", "blind_annotators": [], "adjudicator_QC": [], "annotation_status": "not_started_structural_gate_first"}
+}

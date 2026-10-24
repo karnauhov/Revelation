@@ -1,0 +1,11 @@
+{
+  "version": "review78-v1",
+  "purpose": "development_manual_inspection_of_frozen_B_review_C_unresolved_errors_from_precision78_taxonomy",
+  "population": "all_5782_existing_development_false_edge_cases_in_folds0_1_2;not_representative_precision_sample_or_new_audit",
+  "presentation": "full_predicted_conflicting_candidate_and_historical_gold_hyperedges;all_nearest_gold_ties_separately;explicit_per_group_missing_extra_original_target_endpoints;full_provenance_dependency_groups_original_locators_morphology_and_SHA",
+  "semantics": "no_flattening_or_merging_shared_groups;all_constituents_and_decompositions_preserved;no_absence_to_NULL;deferred_endpoints_not_reopened;legacy_zero_vote",
+  "notes": "browser_download_only_review_note_draft_with_reviewer_rationale_full_identity_packet_SHA_and_source_locks;never_gold_label_override_or_acceptance;server_has_no_write_endpoints",
+  "guards": {"A_auto": 0, "candidate_only": true, "resolver_eligible": false, "auto_acceptance": false, "automatic_promotions": 0, "production_acceptance": 0},
+  "preservation": "frozen74_76_77_precision78_sources_payload_reports_gold_mask_folds_unchanged;new_isolated_package_and_new_session_only",
+  "roles": {"author": "/root", "independent_reviewer": "/root/precision78_independent", "inventory_writer": "/root/precision78_inventory"}
+}

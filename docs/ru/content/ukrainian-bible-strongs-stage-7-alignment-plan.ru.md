@@ -217,6 +217,8 @@ Lexeme ledger является обучающим и аудиторским ре
 
 ### 7.8. Manual review workbench
 
+Подготовительный precision checkpoint выполнен: [feasibility matrix всех342 claims и протокол](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/precision78.v1.ru.md), [development-only error taxonomy](../../../scripts/bible_module/reports/ukrainian_stage_7_20260801/precision78_development_taxonomy.v1.ru.md). При сохранении обязательных66 книг, Wilson gate и новой когорты вне reviewed verses получен structural NO_GO: пять коротких книг уже reviewed целиком. A_auto=0; обучение, новые labels и certification audit остановлены до затратной разметки. Этот checkpoint не закрывает manual review workbench или этап7.
+
 Для каждого спорного места показывать рядом:
 
 - точный OH1988 text, source span и Commons page;
