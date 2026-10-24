@@ -101,6 +101,32 @@ class BibleRepository {
     return _readModuleInfo(moduleFile);
   }
 
+  /// Selects only a published module whose metadata matches the UI language.
+  /// A missing/unreadable translation must not prevent reading the original.
+  Future<String?> findTranslationModuleFile({
+    required String languageCode,
+    required List<BibleModuleInfo> modules,
+    required String primaryModuleFile,
+  }) async {
+    final language = languageCode.trim().toLowerCase();
+    for (final candidate in modules) {
+      if (candidate.fileName == primaryModuleFile) {
+        continue;
+      }
+      try {
+        final info = candidate.language.isEmpty
+            ? await loadModuleInfo(candidate.fileName)
+            : candidate;
+        if (info.language.trim().toLowerCase() == language) {
+          return candidate.fileName;
+        }
+      } catch (_) {
+        // An optional translation may be temporarily unavailable offline.
+      }
+    }
+    return null;
+  }
+
   Future<BibleChapterData> loadChapter({
     required String moduleFile,
     required int bookId,
@@ -227,8 +253,12 @@ class BibleRepository {
     required String? initialModuleFile,
     required String defaultModuleFile,
   }) async {
-    if (initialModuleFile != null && moduleFiles.contains(initialModuleFile)) {
-      return initialModuleFile;
+    if (initialModuleFile != null) {
+      return moduleFiles.contains(initialModuleFile)
+          ? initialModuleFile
+          : moduleFiles.contains(defaultModuleFile)
+          ? defaultModuleFile
+          : moduleFiles.first;
     }
 
     final storedModuleFile = await _preferencesStore.loadLastModuleFile();

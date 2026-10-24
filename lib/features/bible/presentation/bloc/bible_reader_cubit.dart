@@ -135,7 +135,6 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
         chapter: currentReference.chapter,
         verse: currentReference.verse,
       );
-      await _repository.saveLastModuleFile(loadedModule.fileName);
       if (isClosed || !_requestGuard.isActive(token)) {
         return;
       }

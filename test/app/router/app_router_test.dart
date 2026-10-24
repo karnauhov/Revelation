@@ -246,6 +246,7 @@ void main() {
     expect(child.initialChapter, 17);
     expect(child.initialVerse, 5);
     expect(child.initialModuleFile, 'bible_lxx_tr.sqlite');
+    expect(child.isReferenceLink, isTrue);
   });
 
   final plannedFeatureRoutes = <_PlannedFeatureRoute>[

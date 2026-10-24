@@ -82,6 +82,20 @@ void main() {
   });
 
   group('BibleRouteArgs.tryParse', () {
+    test('distinguishes a normal opening from reference links', () {
+      expect(BibleRouteArgs.tryParse(null, {}).isReferenceLink, isFalse);
+      expect(
+        BibleRouteArgs.tryParse(null, {'verse': '1'}).isReferenceLink,
+        isTrue,
+      );
+      expect(
+        BibleRouteArgs.tryParse(null, {
+          'module': 'bible_lxx_tr.sqlite',
+        }).isReferenceLink,
+        isTrue,
+      );
+      expect(const BibleRouteArgs().isReferenceLink, isTrue);
+    });
     test('parses typed args as-is', () {
       const args = BibleRouteArgs(
         initialBookId: 40,

@@ -33,6 +33,7 @@ void main() {
               initialChapter: args.initialChapter,
               initialVerse: args.initialVerse,
               initialModuleFile: args.initialModuleFile,
+              isReferenceLink: args.isReferenceLink,
               bibleRepository: repository,
             );
           },

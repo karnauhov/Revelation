@@ -34,6 +34,7 @@ class BibleScreen extends StatelessWidget {
     this.initialChapter = 1,
     this.initialVerse = 1,
     this.initialModuleFile,
+    this.isReferenceLink = false,
     this.bibleRepository,
     super.key,
   });
@@ -44,6 +45,7 @@ class BibleScreen extends StatelessWidget {
   final int initialChapter;
   final int initialVerse;
   final String? initialModuleFile;
+  final bool isReferenceLink;
   final BibleRepository? bibleRepository;
 
   @override
@@ -63,6 +65,7 @@ class BibleScreen extends StatelessWidget {
           initialChapter: initialChapter,
           initialVerse: initialVerse,
           initialModuleFile: initialModuleFile,
+          isReferenceLink: isReferenceLink,
           loadingBibleMessage: localizations.bible_loading,
           loadingChapterMessage: localizations.bible_loading_chapter,
           loadingModuleMessage: localizations.bible_loading_module,
@@ -734,7 +737,12 @@ class _BibleReaderToolbar extends StatelessWidget {
                 for (final action in visibleActions)
                   SizedBox(width: action.width, child: action.inline),
                 if (hiddenActions.isNotEmpty)
-                  _BibleToolbarOverflowMenuButton(actions: hiddenActions),
+                  SizedBox(
+                    width: 44,
+                    child: _BibleToolbarOverflowMenuButton(
+                      actions: hiddenActions,
+                    ),
+                  ),
               ],
             ),
           );

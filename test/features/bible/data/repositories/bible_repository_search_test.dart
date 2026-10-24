@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/bible/data/repositories/bible_module_data_source.dart';
@@ -56,6 +56,28 @@ void main() {
       initialModuleFile: 'bible_other.sqlite',
     );
     expect(explicit.selectedModule.code, 'OTHER');
+    preferences.lastModuleFile = 'bible_other.sqlite';
+    final missingExplicit = await repository.loadInitial(
+      languageCode: 'en',
+      initialModuleFile: 'bible_removed.sqlite',
+    );
+    expect(missingExplicit.selectedModule.code, 'ALT');
+    expect(
+      await repository.findTranslationModuleFile(
+        languageCode: 'en',
+        modules: initial.modules,
+        primaryModuleFile: 'bible_alt.sqlite',
+      ),
+      'bible_other.sqlite',
+    );
+    expect(
+      await repository.findTranslationModuleFile(
+        languageCode: 'uk',
+        modules: initial.modules,
+        primaryModuleFile: 'bible_alt.sqlite',
+      ),
+      isNull,
+    );
     expect(
       source.openedModuleFiles,
       containsAll(<String>['bible_alt.sqlite', 'bible_other.sqlite']),
@@ -91,6 +113,36 @@ void main() {
       throwsA(isA<BibleModulesUnavailableException>()),
     );
   });
+
+  test(
+    'unreadable optional metadata does not block the original reader',
+    () async {
+      final repository = BibleRepository(
+        moduleDataSource: _FakeBibleModuleDataSource.empty(),
+      );
+      expect(
+        await repository.findTranslationModuleFile(
+          languageCode: 'en',
+          primaryModuleFile: 'bible_lxx_tr.sqlite',
+          modules: const [
+            BibleModuleInfo(
+              fileName: 'bible_missing.sqlite',
+              code: 'MISSING',
+              moduleId: '',
+              title: '',
+              description: '',
+              language: '',
+              canon: '',
+              versification: '',
+              license: '',
+              sourceSummary: '',
+            ),
+          ],
+        ),
+        isNull,
+      );
+    },
+  );
 
   test(
     'loads chapter text with empty fallbacks and delegates preferences',

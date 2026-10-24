@@ -370,7 +370,9 @@ class _FakeBibleRepository extends BibleRepository {
     ),
   ];
   @override
-  Future<List<String>> loadLastModuleFiles() async => const <String>[];
+  Future<List<String>> loadLastModuleFiles() async => const [
+    'bible_lxx_tr.sqlite',
+  ];
 
   @override
   Future<void> saveLastModuleFiles(List<String> moduleFiles) async {}

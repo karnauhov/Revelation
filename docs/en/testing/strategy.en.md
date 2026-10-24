@@ -1,8 +1,14 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.3.0`
+Doc-Version: `2.4.0`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Parallel reading and saved choices
+
+`integration_test/smoke/bible_parallel_reading_smoke_test.dart` locally checks en/uk: two default panes, readable text, closing the translation through the toolbar/menu, reopening the saved single pane, following `bible:Мт17:5`, and an explicit `module` overriding the stored layout. Links do not overwrite preferences. It uses synthetic text, real routing/screens, and the SharedPreferences adapter with isolated test storage; production and user data are unchanged. Run `flutter test integration_test/smoke/bible_parallel_reading_smoke_test.dart -d windows`; for Web use local ChromeDriver and `flutter drive --release --driver=test_driver/integration_test.dart --target=integration_test/smoke/bible_parallel_reading_smoke_test.dart -d web-server --browser-name=chrome --headless --driver-port=4444 --web-port=8768`. This is targeted REV127 validation; full version acceptance remains REV236.
+
+Widget tests exercise the same user flow at 420×900 and 1280×800, including toolbar overflow. Unit tests cover en/uk and missing es/ru translations, stored choices, reference priority, concurrent initial loads, closing while awaiting data, manual changes before automatic selection completes, stale module switches, and serialized rapid preference writes.
 
 ## First launch and reading recovery
 

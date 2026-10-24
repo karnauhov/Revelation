@@ -6,6 +6,7 @@ All notable changes to this application will be documented here.
 
 ### Added
 
+- Open Bible references with an available translation beside the original, and remember your preferred reading panes.
 - Added the Ukrainian Ohienko Bible (1988 edition) with separate verse footnotes; Strong's numbers are not included in this module.
 
 ### Fixed

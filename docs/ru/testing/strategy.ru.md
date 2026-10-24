@@ -1,8 +1,14 @@
 # Стратегия тестирования (RU)
 
-Doc-Version: `2.3.0`
+Doc-Version: `2.4.0`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Параллельное чтение и сохранение выбора
+
+`integration_test/smoke/bible_parallel_reading_smoke_test.dart` локально проверяет en/uk: две панели по умолчанию, читаемые тексты, закрытие перевода через toolbar/меню, повторное открытие одной сохранённой панели, переход `bible:Мт17:5` и явный `module` вопреки сохранённому набору. Ссылки не перезаписывают предпочтения. Используются синтетические тексты, настоящий роутинг/экран и адаптер SharedPreferences с изолированным тестовым хранилищем; production и пользовательские данные не меняются. Запуск: `flutter test integration_test/smoke/bible_parallel_reading_smoke_test.dart -d windows`; Web — через локальный ChromeDriver и `flutter drive --release --driver=test_driver/integration_test.dart --target=integration_test/smoke/bible_parallel_reading_smoke_test.dart -d web-server --browser-name=chrome --headless --driver-port=4444 --web-port=8768`. Это целевая проверка REV127, полная приёмка версии остаётся REV236.
+
+Widget-тесты проходят тот же пользовательский сценарий при 420×900 и 1280×800, включая переполнение toolbar. Unit-тесты покрывают en/uk и отсутствие es/ru, сохранённый выбор, приоритет ссылок, одновременные начальные запросы, закрытие во время ожидания, ручное изменение до завершения автоподбора, устаревшую смену модуля и последовательность быстрых записей.
 
 ## Первый запуск и восстановление чтения
 

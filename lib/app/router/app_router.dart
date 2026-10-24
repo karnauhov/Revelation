@@ -138,6 +138,7 @@ class AppRouter {
               initialChapter: routeArgs.initialChapter,
               initialVerse: routeArgs.initialVerse,
               initialModuleFile: routeArgs.initialModuleFile,
+              isReferenceLink: routeArgs.isReferenceLink,
             ),
           );
         },
