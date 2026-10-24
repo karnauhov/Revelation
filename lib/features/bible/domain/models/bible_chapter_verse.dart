@@ -1,19 +1,25 @@
 import 'package:revelation/shared/models/bible_verse_reference.dart';
 
 class BibleChapterVerse {
-  const BibleChapterVerse({required this.reference, required this.text});
+  const BibleChapterVerse({
+    required this.reference,
+    required this.text,
+    this.comment = '',
+  });
 
   final BibleVerseReference reference;
   final String text;
+  final String comment;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         other is BibleChapterVerse &&
             other.reference == reference &&
-            other.text == text;
+            other.text == text &&
+            other.comment == comment;
   }
 
   @override
-  int get hashCode => Object.hash(reference, text);
+  int get hashCode => Object.hash(reference, text, comment);
 }

@@ -471,5 +471,21 @@
   "book_code_65": "Иуд",
   "book_name_65": "Иуды",
   "book_code_66": "Откр",
-  "book_name_66": "Откровение"
+  "book_name_66": "Откровение",
+  "bible_show_footnotes": "Показать сноски к стиху {verse}",
+  "@bible_show_footnotes": {
+    "placeholders": {
+      "verse": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_verse_footnotes": "Сноски: {reference}",
+  "@bible_verse_footnotes": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  }
 }

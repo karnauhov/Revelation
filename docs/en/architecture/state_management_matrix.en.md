@@ -1,8 +1,12 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.4.1`
+Doc-Version: `2.5.0`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Bible text modules and footnotes
+
+BibleReaderCubit remains the single source of chapter verses, including their separate comments, in each workspace pane. Comment visibility derives from the loaded verse comment; there is no extra visibility flag or comment cubit. Verse value equality includes the comment so changed notes update the existing state-driven presentation. Opening/closing the footnote is an explicit UI dialog action with no repository side effect.
 
 ## Strong Feature Notes
 

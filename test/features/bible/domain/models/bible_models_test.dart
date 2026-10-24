@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/bible/domain/models/bible_module_info.dart';
+import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
+import 'package:revelation/features/bible/domain/models/bible_verse_text.dart';
 import 'package:revelation/features/bible/domain/models/bible_search_result.dart';
 import 'package:revelation/shared/models/bible_verse_reference.dart';
 
@@ -55,6 +57,31 @@ void main() {
     expect(module.hashCode, same.hashCode);
     expect(module, isNot(titleOnly));
     expect(module == Object(), isFalse);
+  });
+
+  test('verse equality includes its separate comment', () {
+    const text = BibleVerseText(verseKey: '001', text: 'Text', comment: 'Note');
+    const same = BibleVerseText(verseKey: '001', text: 'Text', comment: 'Note');
+    const other = BibleVerseText(verseKey: '001', text: 'Text');
+    expect(text, same);
+    expect(text.hashCode, same.hashCode);
+    expect(text, isNot(other));
+    const verse = BibleChapterVerse(
+      reference: reference,
+      text: 'Text',
+      comment: 'Note',
+    );
+    const sameVerse = BibleChapterVerse(
+      reference: reference,
+      text: 'Text',
+      comment: 'Note',
+    );
+    expect(verse, sameVerse);
+    expect(verse.hashCode, sameVerse.hashCode);
+    expect(
+      verse,
+      isNot(const BibleChapterVerse(reference: reference, text: 'Text')),
+    );
   });
 
   test('BibleSearchResult and BibleTextMatch compare nested values', () {

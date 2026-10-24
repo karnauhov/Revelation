@@ -4,6 +4,10 @@ All notable changes to this application will be documented here.
 
 ## [1.0.8] - In development
 
+### Added
+
+- Added the Ukrainian Ohienko Bible (1988 edition) with separate verse footnotes; Strong's numbers are not included in this module.
+
 ### Fixed
 
 - Prevented web database startup errors when several modules open at the same time.

@@ -1,0 +1,354 @@
+{
+  "status": "archived_and_removed",
+  "archive": "C:\\Users\\karna\\Documents\\revelation\\backups\\REV201\\oh1988-superseded.zip",
+  "archive_sha256": "100eecd4d008821acb1d64bf96e292a0741c01e43fbae7c94717d8721b6643ca",
+  "archive_bytes": 1442399950,
+  "original_bytes": 11517170061,
+  "files": [
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/first_party_candidates/alignment_candidates.first_party.jsonl",
+      "bytes": 877173207,
+      "sha256": "8f356b52f24657b99cae2f903d88f8a188e18ad6efa14d71796981750de8fb3e"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/first_party_candidates/alignment_candidates.first_party.manifest.json",
+      "bytes": 3022,
+      "sha256": "478dc899ad249cf9e1156cba79458ba3912e40ef810a87beb332bcc66a797405"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/first_party_candidates/candidate_generator_registry.json",
+      "bytes": 9008,
+      "sha256": "8e8804b71678f44f8f2d3dec6726ce699877e047ce69d31e6c6002a798c5ad2c"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/first_party_candidates_determinism/alignment_candidates.first_party.jsonl",
+      "bytes": 930700194,
+      "sha256": "aa2bcbe804218dfc0511318263e7ff5aa342fd9c6d18e8f8495686692f464244"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/first_party_candidates_determinism/alignment_candidates.first_party.manifest.json",
+      "bytes": 3022,
+      "sha256": "478dc899ad249cf9e1156cba79458ba3912e40ef810a87beb332bcc66a797405"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/first_party_candidates_determinism/candidate_generator_registry.json",
+      "bytes": 9008,
+      "sha256": "8e8804b71678f44f8f2d3dec6726ce699877e047ce69d31e6c6002a798c5ad2c"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/gold_annotation_workbench.jsonl",
+      "bytes": 17475637,
+      "sha256": "b363c6658720e8954fa136eecb2bcac7e37e08851d05fcd5924c21a947405a4a"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/gold_review/gold_reviewer_packets.manifest.json",
+      "bytes": 2324,
+      "sha256": "e1c4a9feff8571e400b16be9de13050c3f91ca2d40733f60e643b4dfcf24341b"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/gold_review/review_pass_1.packet.jsonl",
+      "bytes": 32854143,
+      "sha256": "81677af08f575495fb01c55e79c90a31c7280e0057c627a430e66c4f6a6f6c7a"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/gold_review/review_pass_2.packet.jsonl",
+      "bytes": 32854143,
+      "sha256": "69d954b6bed8e96f83e23340fcf3d7ae1bc5736f5fa2fa57782a0efa4659cddc"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/gold_selection_panel.jsonl",
+      "bytes": 5425221,
+      "sha256": "558840bd7be8952e9c17025ed34147f6c1cd01209aa73ae8f184415cd26b1b38"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/original_alternative_inventory.jsonl",
+      "bytes": 40944255,
+      "sha256": "d8979566e696724a224ce076c39f44ad5c62fdd4f36fe4408ab602394b66ced5"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/original_control_crosswalk.jsonl",
+      "bytes": 660623750,
+      "sha256": "e2e65a31ebd6a3c4bd7350ce3cd80b25ede8ee74cd8b38c411628cfedf0d8ce0"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/original_control_tokens.jsonl",
+      "bytes": 711468146,
+      "sha256": "190a4634a9986b04675904c1d2ca7f3f5a412cd6e15776e1193a4bd3612e6f4c"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/original_parent_inventory.jsonl",
+      "bytes": 448232877,
+      "sha256": "befec123f3656a9f9380a77edb859471d69e5ab76b1ced0b354daf01d305a052"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/original_token_universe.jsonl",
+      "bytes": 1102373802,
+      "sha256": "c891e29cedf8ac040418d8f052c94a3d21e2b39ea18ed96f122dc79853899242"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/parallel_bridge_alignment.jsonl",
+      "bytes": 420714724,
+      "sha256": "068881a97b6c8813bc1ce9104429f73887a15ee1e9c0f07d8fd1d17b2f7914d7"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/ukrainian_lexeme_strong_ledger.jsonl",
+      "bytes": 80185842,
+      "sha256": "3616b00c7707e107ed2354d85cd1bb863aa7638718af49ade6f001ab260ce535"
+    },
+    {
+      "path": "ukrainian_stage_7_archive_pre_selected_20260808/ukrainian_token_inventory.jsonl",
+      "bytes": 544553840,
+      "sha256": "62caa29ff269c9ca8dad4b64c656728a645b3d09210034ddcc953c5363c567e1"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/__pycache__/run_contextual_pilot.cpython-312.pyc",
+      "bytes": 4959,
+      "sha256": "3495cc19b634c6bcfacf03ffd5bc8149efdd352bbc29e418f73a540fea2a0759"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198.run.json",
+      "bytes": 217,
+      "sha256": "97a28135b35ba8cf94d94bf115679f5d9db65822e6ebd43032645068e9ba3a66"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198.stderr.log",
+      "bytes": 1248,
+      "sha256": "eaae1546928f6154b8be15f800649c8e934246b892027de64dcd20e67f9868e7"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt2.run.json",
+      "bytes": 323,
+      "sha256": "cd0b8ac034bb60d8754a034a74454cad65f3ff12bdb7cbc03849491d7e053f99"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt2.stderr.log",
+      "bytes": 1355,
+      "sha256": "2dc575083896f7c56328d737f04f000ce64b87d352aea44e103a2eb5b2f91458"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt2.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt3/alignment_candidates.contextual.jsonl",
+      "bytes": 5138080,
+      "sha256": "fb639861191e79224c2519f4a5e86e6ccbefb26a914403330531325d39e99655"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt3/alignment_candidates.contextual.manifest.json",
+      "bytes": 2290,
+      "sha256": "e2cd7f68f17fdecad6cf24c81ce506cd2a517a4d595d41eaaea6dcf36676e3ef"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt3/contextual_generator_registry.json",
+      "bytes": 24551,
+      "sha256": "8314af1538c87e3becb49d23a4859e1291ed76437283327b1a66366574283175"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt3.progress.json",
+      "bytes": 428,
+      "sha256": "fcf24a5034a1dcbf36607f23b43dde860a12b1ed26332d08268a12017ba7d169"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt3.run.json",
+      "bytes": 2481,
+      "sha256": "b875edd6dd9f9cb4c6fbd369a092af5a1002911940f50facda13875f95412810"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt3.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt3.stdout.log",
+      "bytes": 2291,
+      "sha256": "4accbd06f178b426a4b44dac279fb485cbb8df74179a3fbece782c68ee1ccfd5"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt4/alignment_candidates.contextual.jsonl",
+      "bytes": 5138080,
+      "sha256": "fb639861191e79224c2519f4a5e86e6ccbefb26a914403330531325d39e99655"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt4/alignment_candidates.contextual.manifest.json",
+      "bytes": 2290,
+      "sha256": "e2cd7f68f17fdecad6cf24c81ce506cd2a517a4d595d41eaaea6dcf36676e3ef"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt4/contextual_generator_registry.json",
+      "bytes": 24551,
+      "sha256": "8314af1538c87e3becb49d23a4859e1291ed76437283327b1a66366574283175"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt4.progress.json",
+      "bytes": 428,
+      "sha256": "d29127c8640b17efc940055e3253d36d656d11a92bf96c427e3c91ac51f075f0"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt4.run.json",
+      "bytes": 2481,
+      "sha256": "93a08a71fdade779c0c9bb41326adee0e05eb2269545a585dba901c56eb11688"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt4.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/contextual_candidates_pilot_198_attempt4.stdout.log",
+      "bytes": 2291,
+      "sha256": "4accbd06f178b426a4b44dac279fb485cbb8df74179a3fbece782c68ee1ccfd5"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/fingerprint_selected_original_layer.jsonl",
+      "bytes": 1190223727,
+      "sha256": "a2f8b017b702b8217ce4242e2578082f134b615be64968f190c066c0d4692c82"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/original_alternative_inventory.jsonl",
+      "bytes": 40944255,
+      "sha256": "d8979566e696724a224ce076c39f44ad5c62fdd4f36fe4408ab602394b66ced5"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/original_control_crosswalk.jsonl",
+      "bytes": 660623750,
+      "sha256": "e2e65a31ebd6a3c4bd7350ce3cd80b25ede8ee74cd8b38c411628cfedf0d8ce0"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/original_control_tokens.jsonl",
+      "bytes": 711468146,
+      "sha256": "190a4634a9986b04675904c1d2ca7f3f5a412cd6e15776e1193a4bd3612e6f4c"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/original_parent_inventory.jsonl",
+      "bytes": 448232877,
+      "sha256": "befec123f3656a9f9380a77edb859471d69e5ab76b1ced0b354daf01d305a052"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/original_token_universe.jsonl",
+      "bytes": 1102373802,
+      "sha256": "c891e29cedf8ac040418d8f052c94a3d21e2b39ea18ed96f122dc79853899242"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/run_contextual_pilot.py",
+      "bytes": 3901,
+      "sha256": "1155629cb8fd5494b3591ea2822a3a89a20bd34d6abd818bbb0844b7d522097c"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/run_statistical_determinism.py",
+      "bytes": 1861,
+      "sha256": "832d665b5401be3183aa4d39036394bcadbc65b96b384e60bc74f6ac41a2157d"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/source_registry.json",
+      "bytes": 432394,
+      "sha256": "b1f7e2bc82929bdd40c5701f4d16ff00387da8645c5279cf311adc12973ffebd"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates/alignment_candidates.statistical.jsonl",
+      "bytes": 450939395,
+      "sha256": "5be192bcddadec9699befa554654e0184886b38e1aeae8ef0903439ef0d663ad"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates/statistical_candidates.manifest.json",
+      "bytes": 4947,
+      "sha256": "e0508e1884355f80a2ee1f2e8bbe89c2b4c941f2d4bf0408ca157a88656bc34f"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates/statistical_generator_registry.json",
+      "bytes": 3199,
+      "sha256": "a31c93b3d57819579400d3febc6ffc745bdf2544df55a0cf818ae77081d39d55"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates_determinism/alignment_candidates.statistical.jsonl",
+      "bytes": 450939395,
+      "sha256": "5be192bcddadec9699befa554654e0184886b38e1aeae8ef0903439ef0d663ad"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates_determinism/statistical_candidates.manifest.json",
+      "bytes": 4947,
+      "sha256": "e0508e1884355f80a2ee1f2e8bbe89c2b4c941f2d4bf0408ca157a88656bc34f"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates_determinism/statistical_generator_registry.json",
+      "bytes": 3199,
+      "sha256": "a31c93b3d57819579400d3febc6ffc745bdf2544df55a0cf818ae77081d39d55"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates_determinism.attempt2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates_determinism.attempt2.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates_determinism.run.json",
+      "bytes": 254,
+      "sha256": "5d3e3e798db4d7332b918705f021008303ae3c95217e05f5d044fbb0696f54ef"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates_determinism.stderr.log",
+      "bytes": 327,
+      "sha256": "edb93a0520ba27d45891432346dfc5d254a36936c057c4a65571e10f2e2fcc90"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/statistical_candidates_determinism.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/textual_fingerprint.manifest.json",
+      "bytes": 461336,
+      "sha256": "514f28de3bff3e729a31e37d5ef532d05f8de8761ee41ff2c08fa4ac0c6376d7"
+    },
+    {
+      "path": "ukrainian_stage_7_preflight_selected/ukrainian_token_inventory.jsonl",
+      "bytes": 544553840,
+      "sha256": "62caa29ff269c9ca8dad4b64c656728a645b3d09210034ddcc953c5363c567e1"
+    }
+  ],
+  "removed_directories": [
+    "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_archive_pre_selected_20260808",
+    "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\ukrainian_stage_7_preflight_selected"
+  ],
+  "restore_command": "python -m zipfile -e \"C:\\Users\\karna\\Documents\\revelation\\backups\\REV201\\oh1988-superseded.zip\" \"C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\"",
+  "current_run_disposable_copies_removed": [
+    {
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\oh1988_text_release\\source_audit",
+      "bytes": 52856147,
+      "kind": "current-run disposable or independently verified duplicate"
+    },
+    {
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\oh1988_text_release\\repeat",
+      "bytes": 7828306,
+      "kind": "current-run disposable or independently verified duplicate"
+    },
+    {
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\oh1988_text_release\\candidate",
+      "bytes": 7593984,
+      "kind": "current-run disposable or independently verified duplicate"
+    },
+    {
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\oh1988_text_release\\content_tool_check",
+      "bytes": 33583104,
+      "kind": "current-run disposable or independently verified duplicate"
+    }
+  ],
+  "canonical_inventory_preserved": {
+    "sha256": "1cdac8925837eef06d4af9c9b9baa6832a5cd34cd9d3a6c47d332062355c818a",
+    "work_entries_present_with_original_sizes": 7409,
+    "full_31GB_rehash_performed": false
+  },
+  "work_bytes_before_measured": 45173383935,
+  "work_bytes_after": 33587935438,
+  "net_disk_reduction_for_archived_old_trials": 10074770111
+}

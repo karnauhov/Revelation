@@ -163,7 +163,7 @@ class UkrainianStage2ContractTests(unittest.TestCase):
         self.assertEqual(canon_refs, map_refs)
         self.assertEqual(content_tool_keys, target_grid["verse_keys"])
 
-    def test_legacy_builders_runtime_and_editor_remain_on_schema_v3(self) -> None:
+    def test_legacy_files_stay_v3_while_the_reader_supports_v4(self) -> None:
         baseline_schema = self.baseline["reference_database"]["schema"]
 
         for create_schema in (
@@ -201,7 +201,12 @@ class UkrainianStage2ContractTests(unittest.TestCase):
             / "bible"
             / "bible_module_db.dart"
         ).read_text(encoding="utf-8")
-        self.assertIn("int get schemaVersion => 3;", runtime_source)
+        self.assertIn("int get schemaVersion => 4;", runtime_source)
+        self.assertIn("PRAGMA table_info(verses)", runtime_source)
+        native = (PROJECT_ROOT / "lib/infra/db/connectors/bible_module_connector_native.dart").read_text(encoding="utf-8")
+        web = (PROJECT_ROOT / "lib/infra/db/connectors/web.dart").read_text(encoding="utf-8")
+        self.assertIn("enableMigrations: false", native)
+        self.assertIn("enableMigrations: !dbFile.startsWith('bible_')", web)
         for column in (
             "code",
             "module_id",

@@ -9,6 +9,7 @@ from ..bible_map import BibleBook, BibleCatalog
 from ..models import BibleModuleRow, BibleVerseRow
 
 
+# Minimum legacy schema. Metadata writes retain a module's higher user_version.
 BIBLE_MODULE_DB_SCHEMA_VERSION = 3
 BIBLE_INFO_FIELDS = (
     "code",
@@ -19,6 +20,23 @@ BIBLE_INFO_FIELDS = (
     "versification",
     "license",
 )
+
+
+def bible_supports_comments(connection: sqlite3.Connection) -> bool:
+    return any(row[1] == "comment" for row in connection.execute("PRAGMA table_info(verses)"))
+
+
+def update_bible_verse(
+    connection: sqlite3.Connection, verse_key: str, text: str, comment: str,
+) -> None:
+    """Update text and its separate note in one statement and caller transaction."""
+    if bible_supports_comments(connection):
+        connection.execute(
+            "UPDATE verses SET text = ?, comment = ? WHERE verse_key = ?",
+            (text, comment, verse_key),
+        )
+    else:
+        connection.execute("UPDATE verses SET text = ? WHERE verse_key = ?", (text, verse_key))
 
 
 def bible_project_root() -> Path:
@@ -38,6 +56,7 @@ class BiblesMixin:
         self.bible_selected_verse_key: str | None = None
         self.bible_original_info_code = ""
         self.bible_pending_changes = False
+        self.bible_comments_supported = False
         self._loading_bible_ui = False
         self._bible_controls: list[tuple[tk.Widget, bool]] = []
         super().__init__(start_dir)
@@ -145,16 +164,18 @@ class BiblesMixin:
         verses_frame.rowconfigure(0, weight=1)
         self.bible_verses_tree = ttk.Treeview(
             verses_frame,
-            columns=("key", "reference", "text"),
+            columns=("key", "reference", "text", "comment"),
             show="headings",
             selectmode="browse",
         )
         self.bible_verses_tree.heading("key", text="Ключ")
         self.bible_verses_tree.heading("reference", text="Ссылка")
         self.bible_verses_tree.heading("text", text="Текст")
+        self.bible_verses_tree.heading("comment", text="Сноски")
         self.bible_verses_tree.column("key", width=80, stretch=False)
         self.bible_verses_tree.column("reference", width=210, stretch=False)
         self.bible_verses_tree.column("text", width=700, stretch=True)
+        self.bible_verses_tree.column("comment", width=220, stretch=True)
         self.bible_verses_tree.grid(row=0, column=0, sticky="nsew")
         verse_scroll = ttk.Scrollbar(verses_frame, orient="vertical", command=self.bible_verses_tree.yview)
         verse_scroll.grid(row=0, column=1, sticky="ns")
@@ -169,6 +190,12 @@ class BiblesMixin:
         self.bible_verse_text = tk.Text(editor_frame, height=5, wrap="word", undo=True)
         self.bible_verse_text.grid(row=1, column=0, sticky="nsew")
         self.bible_verse_text.bind("<<Modified>>", self._on_bible_text_modified)
+        ttk.Label(editor_frame, text="Печатные сноски выбранного стиха (отдельно от текста):").grid(
+            row=2, column=0, sticky="w", pady=(6, 0),
+        )
+        self.bible_verse_comment = tk.Text(editor_frame, height=4, wrap="word", undo=True)
+        self.bible_verse_comment.grid(row=3, column=0, sticky="nsew")
+        self.bible_verse_comment.bind("<<Modified>>", self._on_bible_text_modified)
         body.add(editor_frame, weight=1)
 
         actions = ttk.Frame(parent, padding=(8, 0, 8, 8))
@@ -243,6 +270,8 @@ class BiblesMixin:
             return
 
         self.bible_connection = connection
+        self.bible_comments_supported = bible_supports_comments(connection)
+        self.bible_verse_comment.configure(state="normal" if self.bible_comments_supported else "disabled")
         self.current_bible_path = db_path.resolve()
         self.bible_module_info = BibleModuleRow(
             file_name=db_path.name,
@@ -329,11 +358,12 @@ class BiblesMixin:
         keys = self.bible_catalog.verse_keys_for_chapter(book_id=book.id, chapter=chapter)
         if not keys:
             return
+        comment_column = "comment" if self.bible_comments_supported else "'' AS comment"
         rows = self.bible_connection.execute(
-            "SELECT verse_key, text FROM verses WHERE verse_key >= ? AND verse_key <= ? ORDER BY verse_key",
+            f"SELECT verse_key, text, {comment_column} FROM verses WHERE verse_key >= ? AND verse_key <= ? ORDER BY verse_key",
             (keys[0], keys[-1]),
         ).fetchall()
-        text_by_key = {str(row["verse_key"]): str(row["text"] or "") for row in rows}
+        text_by_key = {str(row["verse_key"]): (str(row["text"] or ""), str(row["comment"] or "")) for row in rows}
         filter_text = self.bible_filter_var.get().strip().casefold()
         selected_key = None
         try:
@@ -341,13 +371,13 @@ class BiblesMixin:
         except ValueError:
             selected_verse = 0
         for index, key in enumerate(keys, start=1):
-            text = text_by_key.get(key, "")
+            text, comment = text_by_key.get(key, ("", ""))
             reference = f"{book.name} {chapter}:{index}"
-            if filter_text and filter_text not in f"{key} {reference} {text}".casefold():
+            if filter_text and filter_text not in f"{key} {reference} {text} {comment}".casefold():
                 continue
-            row = BibleVerseRow(verse_key=key, reference=reference, text=text)
+            row = BibleVerseRow(verse_key=key, reference=reference, text=text, comment=comment)
             self.bible_verse_rows.append(row)
-            self.bible_verses_tree.insert("", "end", iid=key, values=(key, reference, text))
+            self.bible_verses_tree.insert("", "end", iid=key, values=(key, reference, text, comment))
             if index == selected_verse:
                 selected_key = key
 
@@ -372,6 +402,7 @@ class BiblesMixin:
             return
         self.bible_selected_verse_key = verse_key
         self._replace_text(self.bible_verse_text, row.text)
+        self._replace_text(self.bible_verse_comment, row.comment)
 
     def _on_bible_tree_selected(self, _event: object | None = None) -> None:
         selection = self.bible_verses_tree.selection()
@@ -419,6 +450,8 @@ class BiblesMixin:
 
     def _on_bible_filter_changed(self, *_args: object) -> None:
         if not self._loading_bible_ui:
+            if self.bible_pending_changes and not self._allow_switch_when_dirty():
+                return
             self._refresh_bible_verse_rows()
 
     def _on_bible_field_changed(self, *_args: object) -> None:
@@ -456,6 +489,7 @@ class BiblesMixin:
         source_summary = self.bible_source_summary_text.get("1.0", "end-1c")
         verse_key = self.bible_selected_verse_key
         verse_text = self.bible_verse_text.get("1.0", "end-1c")
+        verse_comment = self.bible_verse_comment.get("1.0", "end-1c")
         try:
             with self.bible_connection:
                 self.bible_connection.execute(
@@ -479,10 +513,7 @@ class BiblesMixin:
                     ),
                 )
                 if verse_key is not None:
-                    self.bible_connection.execute(
-                        "UPDATE verses SET text = ? WHERE verse_key = ?",
-                        (verse_text, verse_key),
-                    )
+                    update_bible_verse(self.bible_connection, verse_key, verse_text, verse_comment)
                 self._touch_db_data_version(
                     self.current_bible_path,
                     schema_version=BIBLE_MODULE_DB_SCHEMA_VERSION,
@@ -526,6 +557,7 @@ class BiblesMixin:
     def _clear_bible_verse_editor(self) -> None:
         self.bible_selected_verse_key = None
         self._replace_text(self.bible_verse_text, "")
+        self._replace_text(self.bible_verse_comment, "")
 
     def _clear_bible_views(self) -> None:
         self.bible_module_info = None
@@ -544,6 +576,7 @@ class BiblesMixin:
             self._replace_text(self.bible_description_text, "")
             self._replace_text(self.bible_source_summary_text, "")
             self._replace_text(self.bible_verse_text, "")
+            self._replace_text(self.bible_verse_comment, "")
         finally:
             self._loading_bible_ui = False
         self.bible_verses_tree.delete(*self.bible_verses_tree.get_children())
@@ -579,3 +612,6 @@ class BiblesMixin:
         for widget in (self.bible_module_combo, self.bible_book_combo, self.bible_chapter_combo, self.bible_verse_combo):
             widget.configure(state="readonly" if enabled else "disabled")
         self.btn_reload_bibles.configure(state="normal")
+        self.bible_verse_comment.configure(
+            state="normal" if enabled and self.bible_comments_supported else "disabled",
+        )

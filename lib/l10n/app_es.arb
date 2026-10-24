@@ -470,5 +470,21 @@
   "book_code_65": "Jud",
   "book_name_65": "Judas",
   "book_code_66": "Ap",
-  "book_name_66": "Apocalipsis"
+  "book_name_66": "Apocalipsis",
+  "bible_show_footnotes": "Mostrar notas del versículo {verse}",
+  "@bible_show_footnotes": {
+    "placeholders": {
+      "verse": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_verse_footnotes": "Notas: {reference}",
+  "@bible_verse_footnotes": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  }
 }

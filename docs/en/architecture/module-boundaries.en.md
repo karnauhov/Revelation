@@ -1,8 +1,12 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.4.1`
+Doc-Version: `2.5.0`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Bible text modules and footnotes
+
+BibleModuleDB owns schema capability detection and returns an empty comment for legacy files. BibleVerseText and BibleChapterVerse carry text and comment as distinct comparable values. BibleRepository forwards comments into chapter data but excludes them from text search. BibleVerseCommentButton owns localized dialog presentation; it introduces no parallel state slice. Python content-tool editing saves text/comment atomically and discovers the column dynamically. Its existing table-content comparison includes comment changes; metadata-only differences remain excluded from content summaries.
 
 ## Strong Feature Notes
 

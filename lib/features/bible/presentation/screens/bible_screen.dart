@@ -15,6 +15,7 @@ import 'package:revelation/features/bible/presentation/bloc/bible_reader_state.d
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_state.dart';
 import 'package:revelation/features/bible/presentation/widgets/bible_search_dialog.dart';
+import 'package:revelation/features/bible/presentation/widgets/bible_verse_comment_button.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/localization/bible_book_localization.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
@@ -1586,26 +1587,35 @@ class _BibleVerseRow extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              child: Text.rich(
-                TextSpan(
-                  style: textStyle,
-                  children: [
-                    TextSpan(
-                      text: '${verse.reference.verse}. ',
-                      style: textStyle?.copyWith(
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.w700,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        style: textStyle,
+                        children: [
+                          TextSpan(
+                            text: '${verse.reference.verse}. ',
+                            style: textStyle?.copyWith(
+                              color: colorScheme.primary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          ..._buildBibleTextSpans(
+                            context,
+                            verse.text,
+                            showStrongNumbers: showStrongNumbers,
+                            baseStyle: textStyle,
+                          ),
+                        ],
                       ),
+                      key: Key('bible_verse_${verse.reference.verse}'),
                     ),
-                    ..._buildBibleTextSpans(
-                      context,
-                      verse.text,
-                      showStrongNumbers: showStrongNumbers,
-                      baseStyle: textStyle,
-                    ),
-                  ],
-                ),
-                key: Key('bible_verse_${verse.reference.verse}'),
+                  ),
+                  if (verse.comment.trim().isNotEmpty)
+                    BibleVerseCommentButton(verse: verse),
+                ],
               ),
             ),
           ),

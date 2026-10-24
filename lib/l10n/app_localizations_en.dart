@@ -1345,4 +1345,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get book_name_66 => 'Revelation';
+
+  @override
+  String bible_show_footnotes(int verse) {
+    return 'Show footnotes for verse $verse';
+  }
+
+  @override
+  String bible_verse_footnotes(String reference) {
+    return 'Footnotes: $reference';
+  }
 }

@@ -52,6 +52,7 @@ class BibleVerseRow:
     verse_key: str
     reference: str
     text: str
+    comment: str = ""
 
 
 @dataclass

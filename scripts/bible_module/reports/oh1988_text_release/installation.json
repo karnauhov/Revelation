@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "repeated_build_bytes_equal": true,
+  "installed": [
+    {
+      "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_ohienko_1988.sqlite",
+      "audit": {
+        "integrity_check": "ok",
+        "schema_version": 4,
+        "verified_verses": 31102,
+        "verified_comments": 31102,
+        "sha256": "411b646d1d341824a16d259000b5534b5776116753d0b8c1f2b80390bf3bd906",
+        "bytes": 7593984,
+        "semantic_sha256_without_build_date": "3b36f58064dfe3bec06b08be0f2813c055fb18f806940cf9b3eadde0e9a6e55e"
+      },
+      "manifest_entry": {
+        "versionToken": "manifest:schema:4|data:1|date:2026-10-24T11:45:54Z|size:7593984",
+        "schemaVersion": 4,
+        "dataVersion": 1,
+        "date": "2026-10-24T11:45:54Z",
+        "fileSizeBytes": 7593984
+      },
+      "all_previous_database_bytes_unchanged": true,
+      "previous_manifest_entries_unchanged": true,
+      "manifest_backup": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\oh1988_text_release\\backups\\documents_manifest.json",
+      "previous_module_file_existed": false
+    },
+    {
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\web\\db\\bible_ohienko_1988.sqlite",
+      "audit": {
+        "integrity_check": "ok",
+        "schema_version": 4,
+        "verified_verses": 31102,
+        "verified_comments": 31102,
+        "sha256": "411b646d1d341824a16d259000b5534b5776116753d0b8c1f2b80390bf3bd906",
+        "bytes": 7593984,
+        "semantic_sha256_without_build_date": "3b36f58064dfe3bec06b08be0f2813c055fb18f806940cf9b3eadde0e9a6e55e"
+      },
+      "manifest_entry": {
+        "versionToken": "manifest:schema:4|data:1|date:2026-10-24T11:45:54Z|size:7593984",
+        "schemaVersion": 4,
+        "dataVersion": 1,
+        "date": "2026-10-24T11:45:54Z",
+        "fileSizeBytes": 7593984
+      },
+      "all_previous_database_bytes_unchanged": true,
+      "previous_manifest_entries_unchanged": true,
+      "manifest_backup": "C:\\Users\\karna\\Projects\\Revelation\\scripts\\bible_module\\work\\oh1988_text_release\\backups\\web_manifest.json",
+      "previous_module_file_existed": false
+    }
+  ],
+  "remote_publication": false
+}

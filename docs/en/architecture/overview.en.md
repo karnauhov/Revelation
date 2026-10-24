@@ -1,8 +1,12 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.4.2`
+Doc-Version: `2.5.0`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Bible text modules and footnotes
+
+Bible modules support legacy schema 3 and schema 4 with a separate verse comment. The OH1988 text release uses sealed stage-6 text/footnotes and contains no Strong links. BibleModuleDB reads column capabilities and never migrates externally versioned native or web Bible files. Comments flow through the existing repository and reader state; a labelled keyboard-accessible action opens the full footnote separately. Search and verse copying use only canonical text.
 
 ## Strong Feature Notes
 

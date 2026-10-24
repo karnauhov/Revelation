@@ -1,9 +1,45 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/infra/db/bible/bible_module_db.dart';
 
 void main() {
+  for (final version in [3, 4]) {
+    test('reads schema $version without changing its version', () async {
+      final temporary = await Directory.systemTemp.createTemp('rev201-db-');
+      addTearDown(() => temporary.delete(recursive: true));
+      final db = BibleModuleDB(
+        NativeDatabase(
+          File('${temporary.path}/bible_test.sqlite'),
+          enableMigrations: false,
+          setup: (database) {
+            database.execute('PRAGMA user_version=$version');
+            database.execute('''CREATE TABLE verses (
+              verse_key TEXT PRIMARY KEY, text TEXT NOT NULL
+              ${version == 4 ? ", comment TEXT NOT NULL DEFAULT ''" : ''}
+            )''');
+            database.execute(
+              version == 4
+                  ? "INSERT INTO verses VALUES ('001','Слово','Окрема примітка'),('002','Інше','')"
+                  : "INSERT INTO verses VALUES ('001','Слово'),('002','Інше')",
+            );
+          },
+        ),
+      );
+      addTearDown(db.close);
+      final verses = await db.readVersesByKeys(['002', '001']);
+      expect(verses.first.text, 'Слово');
+      expect(verses.first.comment, version == 4 ? 'Окрема примітка' : '');
+      expect(verses.last.comment, '');
+      expect(await db.readAllVerses(), verses);
+      expect(await db.readVersesByKeys([]), isEmpty);
+      final pragma = await db.customSelect('PRAGMA user_version').getSingle();
+      expect(pragma.read<int>('user_version'), version);
+    });
+  }
+
   test(
     'reads module info, version metadata and verses from real schema',
     () async {

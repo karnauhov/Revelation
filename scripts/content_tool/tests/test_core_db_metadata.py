@@ -44,6 +44,33 @@ class _FakeUrlopenResponse:
 
 
 class CoreDbMetadataTests(unittest.TestCase):
+    def test_comment_only_change_is_a_verse_content_change_with_schema_four(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "bible_notes.sqlite"
+            target = Path(temp_dir) / "published.sqlite"
+            self._create_db(source, schema_version=4, data_version=1, date_iso="2026-10-01T00:00:00Z")
+            con = sqlite3.connect(source)
+            try:
+                con.execute("CREATE TABLE verses(verse_key TEXT PRIMARY KEY,text TEXT,comment TEXT NOT NULL DEFAULT '')")
+                con.execute("INSERT INTO verses VALUES ('001','Text','Note')")
+                con.commit()
+            finally:
+                con.close()
+            shutil.copy2(source, target)
+            harness = _CoreDbHarness()
+            self.assertEqual(harness._compare_db_tables(source, target), [])
+            con = sqlite3.connect(source)
+            try:
+                con.execute("UPDATE verses SET comment='Changed'")
+                con.commit()
+            finally:
+                con.close()
+            self.assertEqual(harness._compare_db_tables(source, target), ["verses"])
+            snapshot = harness._touch_db_data_version(source, schema_version=BIBLE_MODULE_DB_SCHEMA_VERSION,
+                                                       increment_data_version=True)
+            self.assertEqual(snapshot["schema_version"], 4)
+            self.assertEqual(snapshot["data_version"], 2)
+
     def test_touch_updates_date_without_incrementing_data_version_by_default(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             db_path = Path(temp_dir) / "revelation_ru.sqlite"

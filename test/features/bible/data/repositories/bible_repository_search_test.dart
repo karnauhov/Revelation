@@ -216,6 +216,51 @@ void main() {
     expect(results.first.text, 'En arche');
     expect(results.first.matchCount, 1);
   });
+
+  test(
+    'passes comments to chapters while excluding them from search',
+    () async {
+      final source = _FakeBibleModuleDataSource(
+        moduleFiles: const ['bible_notes.sqlite'],
+        dataByFile: {
+          'bible_notes.sqlite': _FakeBibleModuleData(
+            info: _moduleInfo('NOTES'),
+            verses: const [
+              BibleVerseText(
+                verseKey: '001',
+                text: 'Вірш про світло',
+                comment: 'Примітка про інший об’єкт',
+              ),
+            ],
+          ),
+        },
+      );
+      final repository = BibleRepository(
+        moduleDataSource: source,
+        preferencesStore: _FakeBiblePreferencesStore(),
+      );
+      final chapter = await repository.loadChapter(
+        moduleFile: 'bible_notes.sqlite',
+        bookId: 1,
+        chapter: 1,
+        verse: 1,
+      );
+      expect(chapter.verses.first.comment, 'Примітка про інший об’єкт');
+      expect(chapter.verses[1].comment, '');
+      expect(
+        await repository.searchModule(
+          moduleFile: 'bible_notes.sqlite',
+          query: 'об’єкт',
+        ),
+        isEmpty,
+      );
+      final matches = await repository.searchModule(
+        moduleFile: 'bible_notes.sqlite',
+        query: 'світло',
+      );
+      expect(matches.single.text, 'Вірш про світло');
+    },
+  );
 }
 
 BibleModuleInfo _moduleInfo(String code) {
@@ -298,7 +343,11 @@ class _FakeBibleModuleDB extends BibleModuleDB {
   Future<List<BibleVerseText>> readVersesByKeys(List<String> verseKeys) async {
     if (data.verses.length == 1 && verseKeys.isNotEmpty) {
       return [
-        BibleVerseText(verseKey: verseKeys.first, text: data.verses.first.text),
+        BibleVerseText(
+          verseKey: verseKeys.first,
+          text: data.verses.first.text,
+          comment: data.verses.first.comment,
+        ),
       ];
     }
     return data.verses

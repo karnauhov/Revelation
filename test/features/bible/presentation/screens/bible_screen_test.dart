@@ -447,6 +447,9 @@ class _FakeBibleRepository extends BibleRepository {
             verse: index + 1,
           ),
           text: _verseText(module, index + 1),
+          comment: index == 1
+              ? 'Separate test footnote excluded from verse copying.'
+              : '',
         ),
     ];
   }

@@ -1,8 +1,12 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.1.2`
+Doc-Version: `2.2.0`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Bible text modules and footnotes
+
+OH1988 text-release coverage checks sealed input digests, full text/comment round trips, deterministic SQLite builds, failed replacement safety, and footnote binding. Content-tool Tk tests cover separate editing/filtering, transaction rollback, metadata increments and legacy compatibility. Flutter DB/model/repository/widget tests cover schema 3/4 without version changes, comment equality and propagation, exclusion from search/copy, and keyboard-accessible footnotes. Local Bible navigation smoke covers selecting OH1988, opening/closing a note, absence of an empty note action and existing Greek Strong navigation. Full version acceptance remains REV236; publication remains REV237.
 
 ## Purpose
 

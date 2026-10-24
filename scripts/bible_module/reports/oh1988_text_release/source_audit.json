@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "all_stage6_artifacts_byte_identical": {
+    "synthesized_text.jsonl": true,
+    "target_comments.jsonl": true,
+    "footnote_uses.jsonl": true,
+    "heading_footnotes.jsonl": true,
+    "source_only_material.jsonl": true,
+    "footnote_definitions.jsonl": true
+  },
+  "source_reconstruction": "all accepted source spans and footnote anchors rebuilt with current stage-6 generator",
+  "source_texts_replaced": false,
+  "strong_alignment_evaluated": false
+}

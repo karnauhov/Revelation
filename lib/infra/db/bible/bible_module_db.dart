@@ -7,7 +7,17 @@ class BibleModuleDB extends GeneratedDatabase {
   BibleModuleDB(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
+
+  Future<bool>? _commentSupport;
+
+  Future<bool> _hasCommentColumn() {
+    return _commentSupport ??= customSelect('PRAGMA table_info(verses)')
+        .get()
+        .then(
+          (rows) => rows.any((row) => row.read<String>('name') == 'comment'),
+        );
+  }
 
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => const [];
@@ -84,9 +94,12 @@ class BibleModuleDB extends GeneratedDatabase {
     }
 
     final placeholders = List<String>.filled(verseKeys.length, '?').join(',');
+    final commentColumn = await _hasCommentColumn()
+        ? 'comment'
+        : "'' AS comment";
     final rows = await customSelect(
       '''
-      SELECT verse_key, text
+      SELECT verse_key, text, $commentColumn
       FROM verses
       WHERE verse_key IN ($placeholders)
       ORDER BY verse_key
@@ -101,14 +114,18 @@ class BibleModuleDB extends GeneratedDatabase {
           (row) => BibleVerseText(
             verseKey: row.read<String>('verse_key'),
             text: row.read<String>('text'),
+            comment: row.read<String>('comment'),
           ),
         )
         .toList(growable: false);
   }
 
   Future<List<BibleVerseText>> readAllVerses() async {
+    final commentColumn = await _hasCommentColumn()
+        ? 'comment'
+        : "'' AS comment";
     final rows = await customSelect('''
-      SELECT verse_key, text
+      SELECT verse_key, text, $commentColumn
       FROM verses
       WHERE trim(text) <> ''
       ORDER BY verse_key
@@ -119,6 +136,7 @@ class BibleModuleDB extends GeneratedDatabase {
           (row) => BibleVerseText(
             verseKey: row.read<String>('verse_key'),
             text: row.read<String>('text'),
+            comment: row.read<String>('comment'),
           ),
         )
         .toList(growable: false);

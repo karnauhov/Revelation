@@ -1354,4 +1354,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get book_name_66 => 'Apocalipsis';
+
+  @override
+  String bible_show_footnotes(int verse) {
+    return 'Mostrar notas del versículo $verse';
+  }
+
+  @override
+  String bible_verse_footnotes(String reference) {
+    return 'Notas: $reference';
+  }
 }

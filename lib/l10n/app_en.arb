@@ -508,5 +508,21 @@
   "book_code_65": "Jude",
   "book_name_65": "Jude",
   "book_code_66": "Rev",
-  "book_name_66": "Revelation"
+  "book_name_66": "Revelation",
+  "bible_show_footnotes": "Show footnotes for verse {verse}",
+  "@bible_show_footnotes": {
+    "placeholders": {
+      "verse": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_verse_footnotes": "Footnotes: {reference}",
+  "@bible_verse_footnotes": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  }
 }

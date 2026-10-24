@@ -196,6 +196,9 @@ Future<WasmDatabaseResult> _openWasmDatabase({
 
   var downloadedDatabase = false;
   final result = await WasmDatabase.open(
+    // Bible files are externally versioned data, including legacy schema 3.
+    // Reading them must never migrate or restamp the downloaded file.
+    enableMigrations: !dbFile.startsWith('bible_'),
     databaseName: databaseName,
     sqlite3Uri: Uri.parse('sqlite3.wasm'),
     driftWorkerUri: Uri.parse('drift_worker.js'),

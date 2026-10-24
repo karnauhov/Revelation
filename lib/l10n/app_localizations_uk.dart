@@ -1346,4 +1346,14 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get book_name_66 => 'Об’явлення';
+
+  @override
+  String bible_show_footnotes(int verse) {
+    return 'Показати виноски до вірша $verse';
+  }
+
+  @override
+  String bible_verse_footnotes(String reference) {
+    return 'Виноски: $reference';
+  }
 }

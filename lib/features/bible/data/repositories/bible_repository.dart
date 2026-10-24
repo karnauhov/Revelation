@@ -118,8 +118,8 @@ class BibleRepository {
       chapter: reference.chapter,
     );
     final verseTexts = await _readVerseTexts(moduleFile, verseKeys);
-    final textByKey = <String, String>{
-      for (final verseText in verseTexts) verseText.verseKey: verseText.text,
+    final textByKey = <String, BibleVerseText>{
+      for (final verseText in verseTexts) verseText.verseKey: verseText,
     };
     final verses = <BibleChapterVerse>[];
     for (var index = 0; index < verseKeys.length; index++) {
@@ -131,7 +131,8 @@ class BibleRepository {
       verses.add(
         BibleChapterVerse(
           reference: verseReference,
-          text: textByKey[verseReference.verseKey] ?? '',
+          text: textByKey[verseReference.verseKey]?.text ?? '',
+          comment: textByKey[verseReference.verseKey]?.comment ?? '',
         ),
       );
     }

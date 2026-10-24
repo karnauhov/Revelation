@@ -471,5 +471,21 @@
   "book_code_65": "Юд",
   "book_name_65": "Юди",
   "book_code_66": "Об",
-  "book_name_66": "Об’явлення"
+  "book_name_66": "Об’явлення",
+  "bible_show_footnotes": "Показати виноски до вірша {verse}",
+  "@bible_show_footnotes": {
+    "placeholders": {
+      "verse": {
+        "type": "int"
+      }
+    }
+  },
+  "bible_verse_footnotes": "Виноски: {reference}",
+  "@bible_verse_footnotes": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  }
 }

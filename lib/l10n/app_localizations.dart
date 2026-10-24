@@ -2681,6 +2681,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Revelation'**
   String get book_name_66;
+
+  /// No description provided for @bible_show_footnotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Show footnotes for verse {verse}'**
+  String bible_show_footnotes(int verse);
+
+  /// No description provided for @bible_verse_footnotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Footnotes: {reference}'**
+  String bible_verse_footnotes(String reference);
 }
 
 class _AppLocalizationsDelegate

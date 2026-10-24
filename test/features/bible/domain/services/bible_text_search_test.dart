@@ -22,6 +22,26 @@ void main() {
       ]);
     });
 
+    test('finds Ukrainian text without printed stress marks', () {
+      expect(
+        findBibleTextMatches('На поча́тку Бог створив', 'НА ПОЧАТКУ'),
+        const [BibleTextMatch(start: 0, end: 11)],
+      );
+    });
+
+    test(
+      'retains Ukrainian apostrophes, hyphens and punctuation in matches',
+      () {
+        const text = 'Об’єкт, пів-Європи!';
+        expect(findBibleTextMatches(text, 'ОБ’ЄКТ'), const [
+          BibleTextMatch(start: 0, end: 6),
+        ]);
+        expect(findBibleTextMatches(text, 'ПІВ-ЄВРОПИ!'), const [
+          BibleTextMatch(start: 8, end: 19),
+        ]);
+      },
+    );
+
     test('finds Greek matches without case and breathing marks', () {
       const text = '\u{1F10}\u{03BD} \u{1F00}\u{03C1}\u{03C7}\u{1FC7}';
       const query = '\u{0395}\u{039D} \u{0391}\u{03A1}\u{03A7}\u{0397}';
