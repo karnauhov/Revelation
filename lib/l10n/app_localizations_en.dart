@@ -239,13 +239,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bible_strong_toggle_label => 'Strong';
 
   @override
-  String get bible_module_info => 'Module information';
-
-  @override
-  String get bible_module_info_code => 'Code';
-
-  @override
-  String get bible_module_info_module_id => 'Module ID';
+  String get bible_module_info => 'About this module';
 
   @override
   String get bible_module_info_title => 'Title';
@@ -257,16 +251,52 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bible_module_info_language => 'Language';
 
   @override
-  String get bible_module_info_canon => 'Canon';
+  String get bible_module_info_language_en => 'English';
 
   @override
-  String get bible_module_info_versification => 'Versification';
+  String get bible_module_info_language_es => 'Spanish';
+
+  @override
+  String get bible_module_info_language_uk => 'Ukrainian';
+
+  @override
+  String get bible_module_info_language_ru => 'Russian';
+
+  @override
+  String get bible_module_info_canon => 'Books';
+
+  @override
+  String get bible_module_info_versification => 'Verse numbering';
 
   @override
   String get bible_module_info_license => 'License';
 
   @override
   String get bible_module_info_source_summary => 'Source';
+
+  @override
+  String get bible_module_info_data_version => 'Data version';
+
+  @override
+  String get bible_module_info_schema_version => 'Database format';
+
+  @override
+  String get bible_module_info_date => 'Updated';
+
+  @override
+  String get bible_module_info_details => 'Source and details';
+
+  @override
+  String get bible_module_info_unknown => 'Not specified';
+
+  @override
+  String get bible_module_info_greek => 'Ancient Greek';
+
+  @override
+  String get bible_module_info_hebrew => 'Hebrew';
+
+  @override
+  String get bible_module_info_66_books => '66 books';
 
   @override
   String get bible_copy_selected_verses => 'Copy selected verses';

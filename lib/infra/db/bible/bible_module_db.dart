@@ -36,6 +36,7 @@ class BibleModuleDB extends GeneratedDatabase {
       FROM info
       LIMIT 1
       ''').getSingle();
+    final version = await readVersionInfo();
 
     return BibleModuleInfo(
       fileName: fileName,
@@ -48,10 +49,19 @@ class BibleModuleDB extends GeneratedDatabase {
       versification: row.read<String>('versification'),
       license: row.read<String>('license'),
       sourceSummary: row.read<String>('source_summary'),
+      schemaVersion: version?.schemaVersion,
+      dataVersion: version?.dataVersion,
+      date: version?.date,
     );
   }
 
   Future<DatabaseVersionInfo?> readVersionInfo() async {
+    final metadataTable = await customSelect(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'db_metadata'",
+    ).get();
+    if (metadataTable.isEmpty) {
+      return null;
+    }
     final rows = await customSelect(
       '''
       SELECT key, value

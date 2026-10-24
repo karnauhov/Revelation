@@ -1,8 +1,14 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.4.0`
+Doc-Version: `2.4.2`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Bible module information
+
+Additional regressions check standalone language names (including the exact Russian nominative forms), absence of module code/ID even in expanded details, a constant 560-pixel dialog width with a narrow-screen cap, unchanged width after expansion/module changes, and actual multiline rendering of long titles and values. Local integration checks repeat language, hidden-ID and width assertions against installed files.
+
+DB tests verify revision propagation and missing/invalid metadata; model tests verify version/date equality. Widget tests cover en/es/uk/ru at 420 and 1700 logical pixels, toolbar/overflow entry, switching to a module without metadata, stable revision dates, and preserved source/license text and links. Run `flutter test integration_test/bible_module_info_test.dart -d windows` locally to compare the dialog against the actual installed LXX/TR, KJV and OH1988 SQLite metadata in all four UI languages, expand the details and close the dialog. For Web, run the same target through local ChromeDriver and `flutter drive --release --driver=test_driver/integration_test.dart --target=integration_test/bible_module_info_test.dart -d web-server --browser-name=chrome --headless --driver-port=4444 --web-port=8770`. Installed candidates are required; native files are opened read-only, preferences are isolated, and no production download or publication occurs. This is targeted REV191 validation; full version acceptance remains REV236.
 
 ## Parallel reading and saved choices
 

@@ -240,13 +240,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bible_strong_toggle_label => 'Стронґ';
 
   @override
-  String get bible_module_info => 'Інформація про модуль';
-
-  @override
-  String get bible_module_info_code => 'Код';
-
-  @override
-  String get bible_module_info_module_id => 'ID модуля';
+  String get bible_module_info => 'Про модуль';
 
   @override
   String get bible_module_info_title => 'Назва';
@@ -258,16 +252,52 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bible_module_info_language => 'Мова';
 
   @override
-  String get bible_module_info_canon => 'Канон';
+  String get bible_module_info_language_en => 'Англійська';
 
   @override
-  String get bible_module_info_versification => 'Версифікація';
+  String get bible_module_info_language_es => 'Іспанська';
+
+  @override
+  String get bible_module_info_language_uk => 'Українська';
+
+  @override
+  String get bible_module_info_language_ru => 'Російська';
+
+  @override
+  String get bible_module_info_canon => 'Книги';
+
+  @override
+  String get bible_module_info_versification => 'Нумерація віршів';
 
   @override
   String get bible_module_info_license => 'Ліцензія';
 
   @override
   String get bible_module_info_source_summary => 'Джерело';
+
+  @override
+  String get bible_module_info_data_version => 'Версія даних';
+
+  @override
+  String get bible_module_info_schema_version => 'Формат бази';
+
+  @override
+  String get bible_module_info_date => 'Оновлено';
+
+  @override
+  String get bible_module_info_details => 'Джерело й подробиці';
+
+  @override
+  String get bible_module_info_unknown => 'Не вказано';
+
+  @override
+  String get bible_module_info_greek => 'Давньогрецька';
+
+  @override
+  String get bible_module_info_hebrew => 'Іврит';
+
+  @override
+  String get bible_module_info_66_books => '66 книг';
 
   @override
   String get bible_copy_selected_verses => 'Копіювати вибрані вірші';

@@ -1,8 +1,12 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.6.0`
+Doc-Version: `2.6.1`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Module information in reader state
+
+`BibleReaderState.selectedModule` remains the sole selected-module snapshot in each pane. Its `BibleModuleInfo` value now includes optional data/schema versions and a revision date; equality and hashing include all three values. Initial loading and module switching bring the revision through the existing guarded asynchronous flow. Opening module information has no I/O or state-write side effect; the same dialog serves the toolbar and overflow menu.
 
 ## Parallel reading by default and from reference links
 

@@ -243,13 +243,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bible_strong_toggle_label => 'Strong';
 
   @override
-  String get bible_module_info => 'Información del módulo';
-
-  @override
-  String get bible_module_info_code => 'Código';
-
-  @override
-  String get bible_module_info_module_id => 'ID del módulo';
+  String get bible_module_info => 'Acerca de este módulo';
 
   @override
   String get bible_module_info_title => 'Título';
@@ -261,16 +255,52 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bible_module_info_language => 'Idioma';
 
   @override
-  String get bible_module_info_canon => 'Canon';
+  String get bible_module_info_language_en => 'Inglés';
 
   @override
-  String get bible_module_info_versification => 'Versificación';
+  String get bible_module_info_language_es => 'Español';
+
+  @override
+  String get bible_module_info_language_uk => 'Ucraniano';
+
+  @override
+  String get bible_module_info_language_ru => 'Ruso';
+
+  @override
+  String get bible_module_info_canon => 'Libros';
+
+  @override
+  String get bible_module_info_versification => 'Numeración de versículos';
 
   @override
   String get bible_module_info_license => 'Licencia';
 
   @override
   String get bible_module_info_source_summary => 'Fuente';
+
+  @override
+  String get bible_module_info_data_version => 'Versión de datos';
+
+  @override
+  String get bible_module_info_schema_version => 'Formato de la base';
+
+  @override
+  String get bible_module_info_date => 'Actualizado';
+
+  @override
+  String get bible_module_info_details => 'Fuente y detalles';
+
+  @override
+  String get bible_module_info_unknown => 'Sin especificar';
+
+  @override
+  String get bible_module_info_greek => 'Griego antiguo';
+
+  @override
+  String get bible_module_info_hebrew => 'Hebreo';
+
+  @override
+  String get bible_module_info_66_books => '66 libros';
 
   @override
   String get bible_copy_selected_verses => 'Copiar versículos seleccionados';

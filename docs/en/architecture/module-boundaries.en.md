@@ -1,8 +1,12 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.6.0`
+Doc-Version: `2.6.2`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Bible module revision metadata
+
+The DB adapter reads optional revision metadata from the same file as module information. `BibleModuleInfo` carries nullable scalar versions/date with value equality; the repository and ReaderCubit retain ownership of the selected module. Presentation alone maps known language/canon/numbering values to localized readable names, formats the revision calendar date without a device-timezone shift, and preserves unknown values and complete source/license details. Module code and ID remain internal data and are omitted from the information dialog. Database schema and content are unchanged.
 
 ## Parallel reading by default and from reference links
 

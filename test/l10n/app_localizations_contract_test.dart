@@ -893,16 +893,6 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     reason: 'bible_module_info should not be empty',
   );
   expect(
-    l10n.bible_module_info_code,
-    isNotEmpty,
-    reason: 'bible_module_info_code should not be empty',
-  );
-  expect(
-    l10n.bible_module_info_module_id,
-    isNotEmpty,
-    reason: 'bible_module_info_module_id should not be empty',
-  );
-  expect(
     l10n.bible_module_info_title,
     isNotEmpty,
     reason: 'bible_module_info_title should not be empty',
@@ -917,6 +907,18 @@ void _assertLocalizationContract(AppLocalizations l10n) {
     isNotEmpty,
     reason: 'bible_module_info_language should not be empty',
   );
+  for (final name in [
+    l10n.bible_module_info_language_en,
+    l10n.bible_module_info_language_es,
+    l10n.bible_module_info_language_uk,
+    l10n.bible_module_info_language_ru,
+  ]) {
+    expect(
+      name,
+      isNotEmpty,
+      reason: 'Standalone module language names are required',
+    );
+  }
   expect(
     l10n.bible_module_info_canon,
     isNotEmpty,

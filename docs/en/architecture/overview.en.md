@@ -1,8 +1,12 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.6.0`
+Doc-Version: `2.6.2`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
+
+## Bible module information
+
+`BibleModuleDB.readInfo` includes the installed file’s `db_metadata` revision in `BibleModuleInfo` (data version, schema version and date). These optional comparable values follow the existing repository and ReaderCubit path; no parallel metadata state or extra UI fetch is introduced. The dialog uses localized labels and standalone language/canon/verse-numbering names. Full source descriptions, license text and links remain available in expandable details without changing their content; module code and ID are omitted. Its width stays at 560 logical pixels, constrained to the available space on narrow screens, with wrapping titles and values. Missing or invalid revision metadata is shown as unspecified.
 
 ## Parallel reading by default and from reference links
 

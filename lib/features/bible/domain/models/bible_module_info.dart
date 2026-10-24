@@ -10,6 +10,9 @@ class BibleModuleInfo {
     required this.versification,
     required this.license,
     required this.sourceSummary,
+    this.schemaVersion,
+    this.dataVersion,
+    this.date,
   });
 
   final String fileName;
@@ -22,6 +25,9 @@ class BibleModuleInfo {
   final String versification;
   final String license;
   final String sourceSummary;
+  final int? schemaVersion;
+  final int? dataVersion;
+  final DateTime? date;
 
   String get displayTitle => code.trim().isEmpty ? title : code;
 
@@ -38,7 +44,10 @@ class BibleModuleInfo {
             other.canon == canon &&
             other.versification == versification &&
             other.license == license &&
-            other.sourceSummary == sourceSummary;
+            other.sourceSummary == sourceSummary &&
+            other.schemaVersion == schemaVersion &&
+            other.dataVersion == dataVersion &&
+            other.date == date;
   }
 
   @override
@@ -53,5 +62,8 @@ class BibleModuleInfo {
     versification,
     license,
     sourceSummary,
+    schemaVersion,
+    dataVersion,
+    date,
   );
 }

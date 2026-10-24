@@ -1,11 +1,14 @@
 @Tags(['widget'])
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:revelation/features/bible/bible.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubit.dart';
+import 'package:revelation/features/bible/presentation/bloc/bible_reader_cubit.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
@@ -14,6 +17,11 @@ import 'package:revelation/shared/ui/widgets/planned_feature_screen.dart';
 import '../../../../test_harness/test_harness.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  late BibleVerseMap verseMap;
+  setUpAll(() async {
+    verseMap = await BibleVerseMap.loadFromAssets();
+  });
   tearDown(() {
     setDefaultGreekStrongTapHandler(null);
   });
@@ -53,7 +61,7 @@ void main() {
           initialBookId: 1,
           initialChapter: 1,
           initialVerse: 1,
-          bibleRepository: _FakeBibleRepository(),
+          bibleRepository: _FakeBibleRepository(verseMap: verseMap),
         ),
       ),
     );
@@ -85,6 +93,11 @@ void main() {
     expect(find.byKey(const Key('bible_module_info_dialog')), findsOneWidget);
     expect(find.text(localizations.bible_module_info), findsOneWidget);
     expect(find.text('Greek Bible'), findsOneWidget);
+    expect(find.text('Greek Bible module'), findsNothing);
+    expect(find.text('protestant_66'), findsNothing);
+    expect(find.text('kjv_protestant'), findsNothing);
+    await tester.tap(find.byKey(const Key('bible_module_info_details')));
+    await tester.pumpAndSettle();
     expect(find.text('Greek Bible module'), findsOneWidget);
     expect(
       find.text('https://example.com/source', findRichText: true),
@@ -301,7 +314,262 @@ void main() {
     expect(find.text(localizations.bible_strong_toggle_label), findsNothing);
     expect(find.textContaining('ἀρχῇ'), findsOneWidget);
   });
+
+  for (final locale in ['en', 'es', 'uk', 'ru']) {
+    for (final width in [420.0, 1700.0]) {
+      testWidgets('module metadata is readable in $locale at width $width', (
+        tester,
+      ) async {
+        await tester.binding.setSurfaceSize(Size(width, 900));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        await tester.pumpWidget(
+          buildLocalizedTestApp(
+            locale: Locale(locale),
+            withScaffold: false,
+            child: BibleScreen(
+              initialBookId: 1,
+              bibleRepository: _FakeBibleRepository(verseMap: verseMap),
+            ),
+          ),
+        );
+        await _pumpUntilFound(tester, find.byKey(const Key('bible_verse_1')));
+        final l10n = AppLocalizations.of(
+          tester.element(find.byType(BibleScreen)),
+        )!;
+        Future<void> openInfo() async {
+          final button = find.byKey(const Key('bible_module_info_button'));
+          if (button.evaluate().isNotEmpty) {
+            await tester.tap(button);
+          } else {
+            await tester.tap(find.byIcon(Icons.more_vert).first);
+            await tester.pumpAndSettle();
+            await tester.tap(
+              find.widgetWithText(
+                PopupMenuItem<String>,
+                l10n.bible_module_info,
+              ),
+            );
+          }
+          await tester.pumpAndSettle();
+        }
+
+        String value(String key) => tester
+            .widget<Text>(find.byKey(Key('bible_module_info_$key')))
+            .data!;
+        await openInfo();
+        final dialogWidth = tester.getSize(_moduleInfoMaterial()).width;
+        expect(dialogWidth, closeTo(width == 420 ? 372 : 560, 0.1));
+        expect(value('data_version'), '17');
+        expect(value('schema_version'), '3');
+        expect(
+          value('date'),
+          DateFormat.yMMMd(locale).format(DateTime.utc(2026, 7, 25, 23, 59)),
+        );
+        expect(value('language'), l10n.bible_module_info_greek);
+        expect(value('canon'), l10n.bible_module_info_66_books);
+        expect(value('versification'), 'KJV');
+        expect(find.text('Greek Bible module'), findsNothing);
+        await tester.tap(find.byKey(const Key('bible_module_info_details')));
+        await tester.pumpAndSettle();
+        expect(tester.getSize(_moduleInfoMaterial()).width, dialogWidth);
+        expect(find.text('Greek Bible module'), findsOneWidget);
+        expect(
+          find.text('https://example.com/source', findRichText: true),
+          findsOneWidget,
+        );
+        expect(find.text('CC BY 4.0', findRichText: true), findsOneWidget);
+        await tester.tap(find.text(l10n.close));
+        await tester.pumpAndSettle();
+
+        final reader = tester
+            .element(find.byKey(const Key('bible_verse_1')))
+            .read<BibleReaderCubit>();
+        await reader.selectModule(reader.state.modules.last);
+        await tester.pumpAndSettle();
+        await openInfo();
+        expect(tester.getSize(_moduleInfoMaterial()).width, dialogWidth);
+        expect(value('data_version'), l10n.bible_module_info_unknown);
+        expect(value('schema_version'), l10n.bible_module_info_unknown);
+        expect(value('date'), l10n.bible_module_info_unknown);
+        expect(value('language'), l10n.bible_module_info_language_en);
+        expect(find.text('Greek Bible'), findsNothing);
+        expect(find.text('Alternative Bible'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+  }
+
+  for (final entry in {
+    'uk': 'Украинский',
+    'en': 'Английский',
+    'ru': 'Русский',
+    'es': 'Испанский',
+  }.entries) {
+    testWidgets(
+      'module language uses the standalone Russian name for ${entry.key}',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(1000, 900));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final module = _moduleWithInfo(language: entry.key);
+        await tester.pumpWidget(
+          buildLocalizedTestApp(
+            locale: const Locale('ru'),
+            withScaffold: false,
+            child: BibleScreen(
+              initialBookId: 1,
+              bibleRepository: _FakeBibleRepository(
+                verseMap: verseMap,
+                modules: [module],
+              ),
+            ),
+          ),
+        );
+        await _pumpUntilFound(tester, find.byKey(const Key('bible_verse_1')));
+        await tester.tap(find.byKey(const Key('bible_module_info_button')));
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<Text>(find.byKey(const Key('bible_module_info_language')))
+              .data,
+          entry.value,
+        );
+        await tester.tap(find.byKey(const Key('bible_module_info_details')));
+        await tester.pumpAndSettle();
+        final dialog = find.byKey(const Key('bible_module_info_dialog'));
+        for (final hidden in [
+          'Код',
+          'ID модуля',
+          module.code,
+          module.moduleId,
+        ]) {
+          expect(
+            find.descendant(
+              of: dialog,
+              matching: find.text(hidden, findRichText: true),
+            ),
+            findsNothing,
+          );
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  for (final width in [420.0, 1700.0]) {
+    testWidgets('module dialog keeps its width and wraps long values at $width', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(Size(width, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final longValue = List.filled(20, 'Длинное значение модуля').join(' ');
+      final module = _moduleWithInfo(
+        language: longValue,
+        title: longValue,
+        canon: longValue,
+        versification: longValue,
+        description: longValue,
+      );
+      await tester.pumpWidget(
+        buildLocalizedTestApp(
+          locale: const Locale('ru'),
+          withScaffold: false,
+          child: BibleScreen(
+            initialBookId: 1,
+            bibleRepository: _FakeBibleRepository(
+              verseMap: verseMap,
+              modules: [module],
+            ),
+          ),
+        ),
+      );
+      await _pumpUntilFound(tester, find.byKey(const Key('bible_verse_1')));
+      final button = find.byKey(const Key('bible_module_info_button'));
+      if (button.evaluate().isNotEmpty) {
+        await tester.tap(button);
+      } else {
+        await tester.tap(find.byIcon(Icons.more_vert).first);
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.widgetWithText(PopupMenuItem<String>, 'О модуле'),
+        );
+      }
+      await tester.pumpAndSettle();
+      final dialogWidth = tester.getSize(_moduleInfoMaterial()).width;
+      expect(dialogWidth, closeTo(width == 420 ? 372 : 560, 0.1));
+      void expectWrapped(Finder finder, String text) {
+        final paragraph = tester.renderObject<RenderParagraph>(finder);
+        final boxes = paragraph.getBoxesForSelection(
+          TextSelection(baseOffset: 0, extentOffset: text.length),
+        );
+        expect(boxes.map((box) => box.top).toSet().length, greaterThan(1));
+        expect(paragraph.didExceedMaxLines, isFalse);
+        // Selection boxes include trailing spaces at soft line breaks;
+        // check the visible words rather than that invisible whitespace.
+        final wordBoxes = [
+          for (final word in RegExp(r'\S+').allMatches(text))
+            ...paragraph.getBoxesForSelection(
+              TextSelection(baseOffset: word.start, extentOffset: word.end),
+            ),
+        ];
+        expect(
+          wordBoxes.every(
+            (box) =>
+                box.left >= -0.1 && box.right <= paragraph.size.width + 0.1,
+          ),
+          isTrue,
+          reason:
+              '$finder: visible words must stay within width ${paragraph.size.width}',
+        );
+      }
+
+      for (final key in ['title', 'language', 'canon', 'versification']) {
+        expectWrapped(find.byKey(Key('bible_module_info_$key')), longValue);
+      }
+      final details = find.byKey(const Key('bible_module_info_details'));
+      await tester.ensureVisible(details);
+      await tester.tap(details);
+      await tester.pumpAndSettle();
+      expect(tester.getSize(_moduleInfoMaterial()).width, dialogWidth);
+      final description = find.byKey(const Key('bible_module_info_Описание'));
+      expectWrapped(
+        find.descendant(of: description, matching: find.byType(Text)),
+        longValue,
+      );
+      await tester.tap(find.text('Закрыть'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('bible_module_info_dialog')), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
+
+Finder _moduleInfoMaterial() => find
+    .descendant(
+      of: find.byKey(const Key('bible_module_info_dialog')),
+      matching: find.byWidgetPredicate(
+        (widget) => widget is Material && widget.type == MaterialType.card,
+      ),
+    )
+    .first;
+
+BibleModuleInfo _moduleWithInfo({
+  required String language,
+  String title = 'Test module',
+  String canon = 'protestant_66',
+  String versification = 'kjv_protestant',
+  String description = 'Test description',
+}) => BibleModuleInfo(
+  fileName: 'bible_test.sqlite',
+  code: 'TECHNICAL_CODE',
+  moduleId: 'technical_module_id',
+  title: title,
+  description: description,
+  language: language,
+  canon: canon,
+  versification: versification,
+  license: 'CC BY 4.0',
+  sourceSummary: 'https://example.com/source',
+);
 
 Future<void> _pumpUntilFound(WidgetTester tester, Finder finder) async {
   for (var attempt = 0; attempt < 40; attempt++) {
@@ -310,7 +578,16 @@ Future<void> _pumpUntilFound(WidgetTester tester, Finder finder) async {
       return;
     }
   }
-  fail('Widget was not found before pump timeout: $finder');
+  final workspace = tester
+      .element(find.byType(Scaffold).first)
+      .read<BibleWorkspaceCubit>();
+  final readers = [
+    for (final id in workspace.state.paneIds)
+      workspace.readerCubitFor(id).state,
+  ];
+  fail(
+    'Widget was not found before pump timeout: $finder; readers: ${readers.map((state) => '${state.status}: ${state.errorMessage}')}',
+  );
 }
 
 int? _topVisibleVerse(WidgetTester tester, String paneId) {
@@ -339,11 +616,17 @@ int? _topVisibleVerse(WidgetTester tester, String paneId) {
 }
 
 class _FakeBibleRepository extends BibleRepository {
-  _FakeBibleRepository() : super();
+  _FakeBibleRepository({
+    BibleVerseMap? verseMap,
+    List<BibleModuleInfo>? modules,
+  }) : _map = verseMap,
+       _modules = modules ?? _defaultModules(),
+       super();
 
   BibleVerseMap? _map;
 
-  final _modules = const <BibleModuleInfo>[
+  final List<BibleModuleInfo> _modules;
+  static List<BibleModuleInfo> _defaultModules() => <BibleModuleInfo>[
     BibleModuleInfo(
       fileName: 'bible_lxx_tr.sqlite',
       code: 'LXX_TR',
@@ -355,6 +638,9 @@ class _FakeBibleRepository extends BibleRepository {
       versification: 'kjv_protestant',
       license: 'CC BY 4.0',
       sourceSummary: 'https://example.com/source',
+      dataVersion: 17,
+      schemaVersion: 3,
+      date: DateTime.utc(2026, 7, 25, 23, 59),
     ),
     BibleModuleInfo(
       fileName: 'bible_alt.sqlite',

@@ -531,20 +531,8 @@ abstract class AppLocalizations {
   /// No description provided for @bible_module_info.
   ///
   /// In en, this message translates to:
-  /// **'Module information'**
+  /// **'About this module'**
   String get bible_module_info;
-
-  /// No description provided for @bible_module_info_code.
-  ///
-  /// In en, this message translates to:
-  /// **'Code'**
-  String get bible_module_info_code;
-
-  /// No description provided for @bible_module_info_module_id.
-  ///
-  /// In en, this message translates to:
-  /// **'Module ID'**
-  String get bible_module_info_module_id;
 
   /// No description provided for @bible_module_info_title.
   ///
@@ -564,16 +552,40 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get bible_module_info_language;
 
+  /// No description provided for @bible_module_info_language_en.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get bible_module_info_language_en;
+
+  /// No description provided for @bible_module_info_language_es.
+  ///
+  /// In en, this message translates to:
+  /// **'Spanish'**
+  String get bible_module_info_language_es;
+
+  /// No description provided for @bible_module_info_language_uk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ukrainian'**
+  String get bible_module_info_language_uk;
+
+  /// No description provided for @bible_module_info_language_ru.
+  ///
+  /// In en, this message translates to:
+  /// **'Russian'**
+  String get bible_module_info_language_ru;
+
   /// No description provided for @bible_module_info_canon.
   ///
   /// In en, this message translates to:
-  /// **'Canon'**
+  /// **'Books'**
   String get bible_module_info_canon;
 
   /// No description provided for @bible_module_info_versification.
   ///
   /// In en, this message translates to:
-  /// **'Versification'**
+  /// **'Verse numbering'**
   String get bible_module_info_versification;
 
   /// No description provided for @bible_module_info_license.
@@ -587,6 +599,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Source'**
   String get bible_module_info_source_summary;
+
+  /// No description provided for @bible_module_info_data_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Data version'**
+  String get bible_module_info_data_version;
+
+  /// No description provided for @bible_module_info_schema_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Database format'**
+  String get bible_module_info_schema_version;
+
+  /// No description provided for @bible_module_info_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated'**
+  String get bible_module_info_date;
+
+  /// No description provided for @bible_module_info_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Source and details'**
+  String get bible_module_info_details;
+
+  /// No description provided for @bible_module_info_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get bible_module_info_unknown;
+
+  /// No description provided for @bible_module_info_greek.
+  ///
+  /// In en, this message translates to:
+  /// **'Ancient Greek'**
+  String get bible_module_info_greek;
+
+  /// No description provided for @bible_module_info_hebrew.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew'**
+  String get bible_module_info_hebrew;
+
+  /// No description provided for @bible_module_info_66_books.
+  ///
+  /// In en, this message translates to:
+  /// **'66 books'**
+  String get bible_module_info_66_books;
 
   /// No description provided for @bible_copy_selected_verses.
   ///

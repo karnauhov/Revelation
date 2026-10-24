@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
@@ -1786,19 +1787,62 @@ String _selectedVerseRangeLabel(
 
 void _showBibleModuleInfoDialog(BuildContext context, BibleModuleInfo module) {
   final localizations = AppLocalizations.of(context)!;
-  final entries = <({String label, String value})>[
-    (label: localizations.bible_module_info_code, value: module.code),
-    (label: localizations.bible_module_info_module_id, value: module.moduleId),
-    (label: localizations.bible_module_info_title, value: module.title),
+  final language = switch (module.language.trim().toLowerCase()) {
+    'en' => localizations.bible_module_info_language_en,
+    'es' => localizations.bible_module_info_language_es,
+    'uk' => localizations.bible_module_info_language_uk,
+    'ru' => localizations.bible_module_info_language_ru,
+    'grc' => localizations.bible_module_info_greek,
+    'he' => localizations.bible_module_info_hebrew,
+    _ => module.language,
+  };
+  final unknown = localizations.bible_module_info_unknown;
+  final entries = <({String label, String value, String id})>[
+    (
+      label: localizations.bible_module_info_language,
+      value: language,
+      id: 'language',
+    ),
+    (
+      label: localizations.bible_module_info_canon,
+      value: module.canon == 'protestant_66'
+          ? localizations.bible_module_info_66_books
+          : module.canon,
+      id: 'canon',
+    ),
+    (
+      label: localizations.bible_module_info_versification,
+      value: module.versification == 'kjv_protestant'
+          ? 'KJV'
+          : module.versification,
+      id: 'versification',
+    ),
+    (
+      label: localizations.bible_module_info_data_version,
+      value: module.dataVersion?.toString() ?? unknown,
+      id: 'data_version',
+    ),
+    (
+      label: localizations.bible_module_info_schema_version,
+      value: module.schemaVersion?.toString() ?? unknown,
+      id: 'schema_version',
+    ),
+    (
+      label: localizations.bible_module_info_date,
+      // The metadata date identifies the module revision, not the device's
+      // installation time. Keep its calendar day, including near midnight UTC.
+      value: module.date == null
+          ? unknown
+          : DateFormat.yMMMd(
+              Localizations.localeOf(context).toString(),
+            ).format(module.date!),
+      id: 'date',
+    ),
+  ];
+  final details = <({String label, String value})>[
     (
       label: localizations.bible_module_info_description,
       value: module.description,
-    ),
-    (label: localizations.bible_module_info_language, value: module.language),
-    (label: localizations.bible_module_info_canon, value: module.canon),
-    (
-      label: localizations.bible_module_info_versification,
-      value: module.versification,
     ),
     (label: localizations.bible_module_info_license, value: module.license),
     (
@@ -1813,29 +1857,71 @@ void _showBibleModuleInfoDialog(BuildContext context, BibleModuleInfo module) {
       final theme = Theme.of(context);
       return AlertDialog(
         key: const Key('bible_module_info_dialog'),
+        constraints: const BoxConstraints.tightFor(width: 560),
+        insetPadding: const EdgeInsets.all(24),
         title: Text(localizations.bible_module_info),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 560),
+        content: SizedBox(
+          width: 512,
           child: SingleChildScrollView(
+            key: const Key('bible_module_info_scroll'),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Text(
+                  module.title.trim().isEmpty
+                      ? module.displayTitle
+                      : module.title,
+                  key: const Key('bible_module_info_title'),
+                  softWrap: true,
+                  style: theme.textTheme.titleMedium,
+                ),
+                const SizedBox(height: 16),
                 for (final entry in entries) ...[
-                  Text(
-                    entry.label,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      Text(
+                        '${entry.label}:',
+                        style: theme.textTheme.labelLarge,
+                      ),
+                      Text(
+                        entry.value.trim().isEmpty ? unknown : entry.value,
+                        key: Key('bible_module_info_${entry.id}'),
+                        softWrap: true,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 2),
-                  _ModuleInfoValueText(
-                    key: Key('bible_module_info_${entry.label}'),
-                    value: entry.value.isEmpty ? '-' : entry.value,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                 ],
+                ExpansionTile(
+                  key: const Key('bible_module_info_details'),
+                  tilePadding: EdgeInsets.zero,
+                  title: Text(localizations.bible_module_info_details),
+                  children: [
+                    for (final entry in details)
+                      if (entry.value.trim().isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                entry.label,
+                                style: theme.textTheme.labelLarge,
+                              ),
+                              const SizedBox(height: 2),
+                              _ModuleInfoValueText(
+                                key: Key('bible_module_info_${entry.label}'),
+                                value: entry.value,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -1882,7 +1968,10 @@ class _ModuleInfoValueTextState extends State<_ModuleInfoValueText> {
       _cachedSpans = _buildSpans(context, widget.value, widget.style);
     }
 
-    return Text.rich(TextSpan(style: widget.style, children: _cachedSpans));
+    return Text.rich(
+      TextSpan(style: widget.style, children: _cachedSpans),
+      softWrap: true,
+    );
   }
 
   List<InlineSpan> _buildSpans(
