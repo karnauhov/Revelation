@@ -144,6 +144,11 @@ class AppLocalizationsUk extends AppLocalizations {
   String get local_folder_open_failed => 'Не вдалося відкрити локальну папку';
 
   @override
+  String local_folder_open_failed_with_path(String path) {
+    return 'Не вдалося відкрити локальну папку:\n$path';
+  }
+
+  @override
   String get clear_cache => 'Очистити кеш';
 
   @override

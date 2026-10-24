@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
+import 'package:revelation/core/errors/local_folder_open_exception.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
@@ -880,7 +881,12 @@ class _AboutScreenState extends State<AboutScreen> {
       if (!mounted) {
         return;
       }
-      _showSnackBar(messenger, l10n.local_folder_open_failed);
+      _showSnackBar(
+        messenger,
+        error is LocalFolderOpenException
+            ? l10n.local_folder_open_failed_with_path(error.folderPath)
+            : l10n.local_folder_open_failed,
+      );
     }
   }
 

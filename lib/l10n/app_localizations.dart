@@ -348,6 +348,12 @@ abstract class AppLocalizations {
   /// **'Couldn\'t open local folder'**
   String get local_folder_open_failed;
 
+  /// Opening the local application folder failed; shows its resolved filesystem path
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open local folder:\n{path}'**
+  String local_folder_open_failed_with_path(String path);
+
   /// No description provided for @clear_cache.
   ///
   /// In en, this message translates to:

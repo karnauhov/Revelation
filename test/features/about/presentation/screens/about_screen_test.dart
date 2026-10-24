@@ -11,6 +11,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:revelation/core/errors/local_folder_open_exception.dart';
 import 'package:revelation/features/about/presentation/bloc/about_cubit.dart';
 import 'package:revelation/features/about/presentation/screens/about_screen.dart';
 import 'package:revelation/features/about/presentation/widgets/institution_card.dart';
@@ -738,6 +739,45 @@ void main() {
     await _pumpUntilFound(tester, find.text(l10n.local_folder_open_failed));
     expect(harness.showLocalFolderCalls, 1);
   });
+
+  for (final language in ['en', 'es', 'uk', 'ru']) {
+    testWidgets('AboutScreen shows the failed folder path in $language', (
+      tester,
+    ) async {
+      const folderPath = r'C:\Users\Reader\Мої документи\Revelation data';
+      final harness = _AboutScreenTestHarness()
+        ..showLocalFolderError = LocalFolderOpenException(
+          folderPath: folderPath,
+          cause: StateError('internal process diagnostics'),
+        );
+      final cubit = await _createSettingsCubit(language: language);
+      addTearDown(cubit.close);
+      await tester.pumpWidget(
+        _buildApp(
+          cubit,
+          locale: Locale(language),
+          dependencies: harness.buildDependencies(),
+          aboutCubitBuilder: _buildAboutCubitBuilder(),
+        ),
+      );
+      await _pumpUntilAboutScreenLoaded(tester);
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(AboutScreen)),
+      )!;
+      await _expandMaintenanceSection(tester, l10n);
+      await _tapMaintenanceAction(
+        tester,
+        const ValueKey('about-show-local-folder'),
+      );
+      await _pumpUntilFound(
+        tester,
+        find.text('${l10n.local_folder_open_failed}:\n$folderPath'),
+      );
+      expect(find.textContaining('internal process diagnostics'), findsNothing);
+      expect(harness.showLocalFolderCalls, 1);
+      expect(tester.takeException(), isNull);
+    });
+  }
 
   testWidgets('AboutScreen desktop drag listener handles pointer drag', (
     tester,

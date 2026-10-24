@@ -147,6 +147,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get local_folder_open_failed => 'No se pudo abrir la carpeta local';
 
   @override
+  String local_folder_open_failed_with_path(String path) {
+    return 'No se pudo abrir la carpeta local:\n$path';
+  }
+
+  @override
   String get clear_cache => 'Borrar caché';
 
   @override

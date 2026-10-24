@@ -71,6 +71,13 @@
   "database_refresh_failed": "Couldn't update databases",
   "show_local_folder": "Show local folder",
   "local_folder_open_failed": "Couldn't open local folder",
+  "local_folder_open_failed_with_path": "Couldn't open local folder:\n{path}",
+  "@local_folder_open_failed_with_path": {
+    "description": "Opening the local application folder failed; shows its resolved filesystem path",
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
   "clear_cache": "Clear cache",
   "cache_cleared": "Cache cleared",
   "cache_clear_failed": "Couldn't clear cache",

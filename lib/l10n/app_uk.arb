@@ -41,6 +41,7 @@
   "database_refresh_failed": "Не вдалося оновити бази даних",
   "show_local_folder": "Показати локальну папку",
   "local_folder_open_failed": "Не вдалося відкрити локальну папку",
+  "local_folder_open_failed_with_path": "Не вдалося відкрити локальну папку:\n{path}",
   "clear_cache": "Очистити кеш",
   "cache_cleared": "Кеш очищено",
   "cache_clear_failed": "Не вдалося очистити кеш",

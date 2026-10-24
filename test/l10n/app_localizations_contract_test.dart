@@ -21,6 +21,17 @@ void main() {
 
     localeFactories.forEach((code, factory) {
       test(
+        '$code keeps the exact local folder path in the failure message',
+        () {
+          final l10n = factory();
+          const path = r'C:\Моя папка\Revelation';
+          expect(
+            l10n.local_folder_open_failed_with_path(path),
+            '${l10n.local_folder_open_failed}:\n$path',
+          );
+        },
+      );
+      test(
         '$code exposes non-empty strings and interpolates parameterized messages',
         () {
           final l10n = factory();

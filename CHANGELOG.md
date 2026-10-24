@@ -14,6 +14,7 @@ All notable changes to this application will be documented here.
 - Prevented web database startup errors when several modules open at the same time.
 - Fixed verse previews on the first long press in Strong's Dictionary.
 - Fixed local Bible modules missing updates when the new file has the same size; invalid downloads preserve the installed copy.
+- Show the local folder path when the app cannot open it.
 
 ## [1.0.7](https://github.com/karnauhov/Revelation/releases/tag/v1.0.7%2B172) - 18.07.26
 

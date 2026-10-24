@@ -1,12 +1,18 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.2.1`
+Doc-Version: `2.2.2`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
 ## Bible text modules and footnotes
 
 OH1988 text-release coverage checks sealed input digests, full text/comment round trips, deterministic SQLite builds, failed replacement safety, and footnote binding. Content-tool Tk tests cover separate editing/filtering, transaction rollback, metadata increments and legacy compatibility. Flutter DB/model/repository/widget tests cover schema 3/4 without version changes, comment equality and propagation, exclusion from search/copy, and keyboard-accessible footnotes. Local Bible navigation smoke covers selecting OH1988, opening/closing a note, absence of an empty note action and existing Greek Strong navigation. Full version acceptance remains REV236; publication remains REV237.
+
+## Local folder opening failures
+
+`LocalFolderOpenException` preserves the resolved application folder path, original cause and stack when folder creation or launching fails. If path resolution itself fails, the About screen retains the generic localized message. Unit tests cover process exceptions, rejected desktop/mobile launches, creation failure, and unresolved paths; widget and localization contracts check exact paths with spaces and Unicode in all four languages.
+
+Run `flutter test integration_test/about_local_folder_test.dart -d windows` locally to exercise the About screen's actual Tools action through native directory creation and a deliberately failing launcher boundary in en/es/uk/ru. The check uses temporary folders and never opens a file manager or changes working databases. On Web the native-only check is explicitly skipped, not counted as passed. Other native devices may run the same suite; record only devices actually tested.
 
 ## Purpose
 

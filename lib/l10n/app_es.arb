@@ -41,6 +41,7 @@
   "database_refresh_failed": "No se pudieron actualizar las bases de datos",
   "show_local_folder": "Mostrar carpeta local",
   "local_folder_open_failed": "No se pudo abrir la carpeta local",
+  "local_folder_open_failed_with_path": "No se pudo abrir la carpeta local:\n{path}",
   "clear_cache": "Borrar caché",
   "cache_cleared": "Caché borrada",
   "cache_clear_failed": "No se pudo borrar la caché",

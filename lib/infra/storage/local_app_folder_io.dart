@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
+import 'package:revelation/core/errors/local_folder_open_exception.dart';
 import 'package:revelation/infra/storage/file_sync_utils.dart';
 import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 
@@ -29,20 +30,27 @@ Future<void> showLocalAppFolderWith({
 }) async {
   final folderPath = await (appFolderProvider ?? getAppFolder)();
   final folder = Directory(folderPath);
-  await folder.create(recursive: true);
+  try {
+    await folder.create(recursive: true);
 
-  final platform = platformOverride ?? defaultTargetPlatform;
-  final launched = await _launchFolder(
-    folder,
-    platform: platform,
-    processRunner: processRunner,
-    processStarter: processStarter ?? Process.start,
-    urlLauncher:
-        urlLauncher ??
-        (uri) => launchUrl(uri, mode: LaunchMode.externalApplication),
-  );
-  if (!launched) {
-    throw StateError('Unable to open local app folder: ${folder.path}');
+    final platform = platformOverride ?? defaultTargetPlatform;
+    final launched = await _launchFolder(
+      folder,
+      platform: platform,
+      processRunner: processRunner,
+      processStarter: processStarter ?? Process.start,
+      urlLauncher:
+          urlLauncher ??
+          (uri) => launchUrl(uri, mode: LaunchMode.externalApplication),
+    );
+    if (!launched) {
+      throw StateError('No application accepted the local folder.');
+    }
+  } catch (error, stackTrace) {
+    Error.throwWithStackTrace(
+      LocalFolderOpenException(folderPath: folderPath, cause: error),
+      stackTrace,
+    );
   }
 }
 
