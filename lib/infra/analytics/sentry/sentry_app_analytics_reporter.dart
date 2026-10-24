@@ -49,15 +49,31 @@ class SentryAppAnalyticsReporter implements AppAnalyticsReporter {
     required String source,
     bool fatal = false,
   }) {
+    var effectiveStackTrace = stackTrace;
+    var stackTraceOrigin = 'provided';
+    if (stackTrace.toString().trim().isEmpty) {
+      final errorStackTrace = error is Error ? error.stackTrace : null;
+      if (errorStackTrace != null &&
+          errorStackTrace.toString().trim().isNotEmpty) {
+        effectiveStackTrace = errorStackTrace;
+        stackTraceOrigin = 'error';
+      } else {
+        // Sentry recognizes this sentinel and marks its capture-site trace as
+        // a snapshot. A blank StackTrace.fromString would bypass that fallback.
+        effectiveStackTrace = StackTrace.empty;
+        stackTraceOrigin = 'capture';
+      }
+    }
     return Sentry.captureException(
       error,
-      stackTrace: stackTrace,
+      stackTrace: effectiveStackTrace,
       withScope: (scope) async {
         await scope.setTag('error.source', source);
         await scope.setTag('error.fatal', fatal ? 'true' : 'false');
         await scope.setContexts('revelation.error', <String, Object>{
           'source': source,
           'fatal': fatal,
+          'stack_trace_origin': stackTraceOrigin,
         });
       },
     ).then((_) {});

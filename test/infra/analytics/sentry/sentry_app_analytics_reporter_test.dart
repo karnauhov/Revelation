@@ -98,11 +98,14 @@ void main() {
       },
     );
     final reporter = SentryAppAnalyticsReporter();
-    final error = StateError('boom');
+    final error = _throwAndCatchError();
+    final suppliedStack = StackTrace.fromString(
+      '#0 suppliedThrow (package:revelation/supplied_throw.dart:42:7)',
+    );
 
     await reporter.captureException(
       error,
-      StackTrace.current,
+      suppliedStack,
       source: 'bootstrap',
       fatal: true,
     );
@@ -110,11 +113,86 @@ void main() {
     expect(capturedEvent?.throwable, same(error));
     expect(capturedEvent?.tags?['error.source'], 'bootstrap');
     expect(capturedEvent?.tags?['error.fatal'], 'true');
+    final frame = capturedEvent!.exceptions!.single.stackTrace!.frames.single;
+    expect(frame.fileName, 'supplied_throw.dart');
+    expect(frame.lineNo, 42);
     expect(capturedEvent?.contexts['revelation.error'], <String, Object>{
       'source': 'bootstrap',
       'fatal': true,
+      'stack_trace_origin': 'provided',
     });
   });
+
+  test(
+    'recovers the thrown Error stack when the supplied trace is blank',
+    () async {
+      SentryEvent? capturedEvent;
+      await _initSentry(
+        beforeSend: (event, hint) {
+          capturedEvent = event;
+          return event;
+        },
+      );
+      final error = _throwAndCatchError();
+
+      await SentryAppAnalyticsReporter().captureException(
+        error,
+        StackTrace.fromString(''),
+        source: 'blank supplied trace',
+      );
+
+      final exception = capturedEvent!.exceptions!.single;
+      expect(exception.stackTrace, isNotNull);
+      expect(exception.stackTrace!.frames, isNotEmpty);
+      expect(
+        capturedEvent!.contexts['revelation.error']['stack_trace_origin'],
+        'error',
+      );
+      expect(
+        exception.stackTrace!.frames.any(
+          (frame) => frame.function?.contains('_throwAndCatchError') ?? false,
+        ),
+        isTrue,
+      );
+    },
+  );
+
+  test(
+    'attaches a marked capture snapshot when no original trace exists',
+    () async {
+      SentryEvent? capturedEvent;
+      await _initSentry(
+        beforeSend: (event, hint) {
+          capturedEvent = event;
+          return event;
+        },
+      );
+
+      await SentryAppAnalyticsReporter().captureException(
+        StateError('never thrown'),
+        StackTrace.fromString('   \n'),
+        source: 'missing original trace',
+      );
+
+      final exception = capturedEvent!.exceptions!.single;
+      expect(exception.stackTrace, isNotNull);
+      expect(exception.stackTrace!.frames, isNotEmpty);
+      expect(exception.stackTrace?.snapshot, isTrue);
+      expect(exception.value, contains('never thrown'));
+      expect(
+        capturedEvent!.contexts['revelation.error']['stack_trace_origin'],
+        'capture',
+      );
+    },
+  );
+}
+
+StateError _throwAndCatchError() {
+  try {
+    throw StateError('original throw site');
+  } on StateError catch (error) {
+    return error;
+  }
 }
 
 Future<void> _initSentry({

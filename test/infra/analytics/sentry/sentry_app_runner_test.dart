@@ -16,6 +16,7 @@ void main() {
       configureOptions: (options) {
         configured = true;
         expect(options.sendDefaultPii, isFalse);
+        expect(options.attachStacktrace, isTrue);
         expect(options.attachScreenshot, isFalse);
         // These SDK opt-out flags are deliberately experimental.
         // ignore: experimental_member_use

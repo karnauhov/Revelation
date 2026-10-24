@@ -29,6 +29,7 @@ Future<void> runWithSentry(
       options.environment = _sentryEnvironment;
     }
     options.sendDefaultPii = false;
+    options.attachStacktrace = true;
     options.attachScreenshot = false;
     // Keep the explicit privacy opt-out while this SDK flag is experimental.
     // ignore: experimental_member_use

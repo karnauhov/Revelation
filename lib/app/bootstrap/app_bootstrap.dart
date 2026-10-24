@@ -270,7 +270,7 @@ class AppBootstrap {
       _talker.handle(details.exception, stackTrace, 'Flutter framework error');
       _captureException(
         details.exception,
-        stackTrace,
+        details.stack ?? StackTrace.empty,
         source: 'Flutter framework error',
         fatal: true,
       );

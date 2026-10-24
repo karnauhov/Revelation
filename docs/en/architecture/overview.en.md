@@ -1,6 +1,6 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.4.1`
+Doc-Version: `2.4.2`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
@@ -39,6 +39,12 @@ Describe the current Revelation runtime architecture.
 - Shared markdown no longer owns Strong-specific presentation tokens or inline syntax. Strong origin/source UI is rendered by `strongs_dictionary` widgets.
 - `AboutCubit` reads database metadata from `db_metadata` and exposes app/build/database version information to the UI.
 - `LatestRequestGuard` is used in async flows where stale responses must not overwrite newer state.
+
+## Error Diagnostics
+
+- `SentryAppAnalyticsReporter` preserves a non-empty supplied stack. For a blank trace, it recovers `Error.stackTrace` when available; otherwise the SDK attaches a capture-site snapshot, rather than claiming to recover the original throw site. `AppBootstrap` passes a missing Flutter error stack through as empty so this recovery remains possible, while keeping Talker logging intact. The `revelation.error.stack_trace_origin` context records `provided`, `error`, or `capture`. Stack attachment is explicitly enabled in `runWithSentry`.
+- `integration_test/sentry_error_reporting_test.dart` checks serialized envelopes in a local browser/device with an in-memory transport, including original frames, recovered frames, marked snapshots, and user redaction. No test events are sent to production.
+- A missing historical event is different from a missing stack at capture time. [Sentry retention](https://docs.sentry.io/security-legal-pii/security/data-retention-periods/) limits access to stored events; source maps and capture-site snapshots cannot restore expired data or an original stack that the runtime never supplied. Preserve available event evidence during triage.
 
 ## Architectural Invariants
 

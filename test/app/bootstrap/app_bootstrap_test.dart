@@ -213,15 +213,27 @@ void main() {
     expect(presentedErrors, hasLength(1));
     expect(presentedErrors.single.exception, isA<StateError>());
     await Future<void>.delayed(Duration.zero);
+    final suppliedStack = StackTrace.fromString(
+      '#0 originalThrow (package:revelation/original.dart:42:7)',
+    );
+    flutterHandler(
+      FlutterErrorDetails(
+        exception: StateError('framework error with stack'),
+        stack: suppliedStack,
+      ),
+    );
+    await Future<void>.delayed(Duration.zero);
     final handled = platformHandler!(
       StateError('forced platform error'),
       StackTrace.current,
     );
     expect(handled, isTrue);
     await Future<void>.delayed(Duration.zero);
-    expect(analyticsReporter.captured, hasLength(2));
+    expect(analyticsReporter.captured, hasLength(3));
     expect(analyticsReporter.captured.first.source, 'Flutter framework error');
     expect(analyticsReporter.captured.first.fatal, isTrue);
+    expect(analyticsReporter.captured.first.stackTrace, same(StackTrace.empty));
+    expect(analyticsReporter.captured[1].stackTrace, same(suppliedStack));
     expect(
       analyticsReporter.captured.last.source,
       'PlatformDispatcher uncaught error',
@@ -352,10 +364,15 @@ final _ruAnalyticsDatabaseVersion = AppAnalyticsDatabaseVersion(
 );
 
 class _CapturedException {
-  const _CapturedException({required this.source, required this.fatal});
+  const _CapturedException({
+    required this.source,
+    required this.fatal,
+    required this.stackTrace,
+  });
 
   final String source;
   final bool fatal;
+  final StackTrace stackTrace;
 }
 
 class _RecordingAppAnalyticsReporter implements AppAnalyticsReporter {
@@ -388,7 +405,9 @@ class _RecordingAppAnalyticsReporter implements AppAnalyticsReporter {
     required String source,
     bool fatal = false,
   }) async {
-    captured.add(_CapturedException(source: source, fatal: fatal));
+    captured.add(
+      _CapturedException(source: source, fatal: fatal, stackTrace: stackTrace),
+    );
   }
 }
 
