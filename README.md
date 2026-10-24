@@ -53,6 +53,7 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [Руководство по расширению Markdown](./docs/ru/content/markdown-extension-guide.ru.md)
 - [Дорожная карта модуля RST с номерами Стронга](./docs/ru/content/rst-strongs-module-roadmap.ru.md)
 - [Дорожная карта украинского библейского модуля с номерами Стронга](./docs/ru/content/ukrainian-bible-strongs-module-roadmap.ru.md)
+- [REV209: базовые показатели использования и гипотезы роста](./docs/ru/analytics/rev209-usage-baseline.ru.md)
 
 ### Additional Notes
 
@@ -60,6 +61,7 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [Changelog](./CHANGELOG.md)
 - [Android WebView compatibility snapshot](./third_party/flutter_inappwebview_android/README.md)
 - [REV142 validation state and review handoff](./.agents/task-state/REV142.md)
+- [REV209 verified tracker review state](./.agents/task-state/REV209.md)
 - [Privacy Policy](./PRIVACY_POLICY.md)
 - [License Notice](./NOTICE)
 

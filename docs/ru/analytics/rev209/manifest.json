@@ -1,0 +1,21 @@
+{
+  "task": "REV209",
+  "as_of": "2026-10-24",
+  "files": [
+    {
+      "file": "observations.json",
+      "bytes": 178915,
+      "sha256": "c943772f10cd365b9e1b6ec133a12291a735c85fdf797fa2d0e764d988a929e1"
+    },
+    {
+      "file": "play-installed-users-country.csv",
+      "bytes": 4211,
+      "sha256": "20ba172da1ac17000ab0236705a295b600590e03581e26dd214fd01f66a830fb"
+    },
+    {
+      "file": "weekly.csv",
+      "bytes": 1964,
+      "sha256": "5940a02e16cc300f30c4b8a7cc6f93bf466d0358b72b037085bd84a399483a7b"
+    }
+  ]
+}

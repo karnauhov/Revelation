@@ -1,0 +1,13 @@
+﻿week_start,week_end,android_installs_reported,android_installs_reported_observed_days,android_first_opens_reported,android_first_opens_reported_observed_days,android_returning_user_days_reported,android_returning_user_days_reported_observed_days,android_store_visitors_reported,android_store_visitors_reported_observed_days,windows_page_views,windows_page_views_observed_days,windows_installs,windows_installs_observed_days,windows_sessions_opt_in,windows_sessions_opt_in_observed_days,sentry_errors_accepted,sentry_errors_accepted_observed_days,sentry_transactions_accepted,sentry_transactions_accepted_observed_days,sentry_transactions_indexed_accepted,sentry_transactions_indexed_accepted_observed_days,search_clicks,search_clicks_observed_days,search_impressions,search_impressions_observed_days,snap_devices_week_end,android_installed_users_week_end,android_mau_devices_last_available
+2026-07-27,2026-08-02,4,3,3,3,3,3,10,6,6.0,7,1.0,7,0.0,7,9,7,44,7,27,7,0,7,17,7,37,48,15
+2026-08-03,2026-08-09,1,1,1,1,1,1,10,6,6.0,7,2.0,7,1.0,7,3,7,17,7,16,7,0,7,9,7,44,44,16
+2026-08-10,2026-08-16,1,1,,0,1,1,9,5,3.0,7,2.0,7,5.0,7,5,7,19,7,9,7,3,7,13,7,42,45,15
+2026-08-17,2026-08-23,,0,,0,1,1,15,7,6.0,7,1.0,7,0.0,7,2,7,18,7,0,7,0,7,12,7,41,43,9
+2026-08-24,2026-08-30,10,6,7,4,3,3,30,7,15.0,7,2.0,7,2.0,7,1,7,35,7,0,7,1,7,11,7,40,52,13
+2026-08-31,2026-09-06,8,5,7,5,2,2,36,7,19.0,7,0.0,7,0.0,7,3,7,26,7,0,7,0,7,15,7,36,53,19
+2026-09-07,2026-09-13,9,5,5,4,4,4,29,7,17.0,7,0.0,7,1.0,7,3,7,27,7,0,7,0,7,17,7,40,59,22
+2026-09-14,2026-09-20,3,2,1,1,6,4,9,5,22.0,7,1.0,7,0.0,7,2,7,17,7,0,7,1,7,18,7,49,55,23
+2026-09-21,2026-09-27,9,5,8,5,7,4,23,7,17.0,7,0.0,7,0.0,7,0,7,23,7,0,7,2,7,18,7,46,60,25
+2026-09-28,2026-10-04,2,2,,0,7,4,11,5,13.0,7,0.0,7,0.0,7,2,7,7,7,0,7,1,7,33,7,41,61,20
+2026-10-05,2026-10-11,6,3,3,2,10,5,16,6,19.0,7,0.0,7,0.0,7,0,7,16,7,0,7,0,7,34,7,35,60,22
+2026-10-12,2026-10-18,5,3,1,1,2,2,23,7,8.0,7,0.0,7,0.0,7,7,7,28,7,0,7,0,7,26,7,41,65,22
