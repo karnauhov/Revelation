@@ -7,4 +7,6 @@
 - [ ] `dart run scripts/check_forbidden_patterns.dart` executed.
 - [ ] RU/EN docs pairs are synchronized where required by `AGENTS.md`.
 - [ ] If dependencies changed in `pubspec.yaml`, `assets/data/about_libraries.xml` is synchronized.
-- [ ] If integration smoke is needed, run `.github/workflows/integration_smoke.yml` manually (`workflow_dispatch`).
+- [ ] New/changed functionality, screens, windows, and dialogs have relevant local integration coverage.
+- [ ] Before version acceptance/publication, all integration tests (including smoke) ran locally on applicable devices; build, device, command, results, and unavailable platforms are recorded. Do not run integration tests in GitHub Actions.
+- [ ] Manual version acceptance covers new/changed functionality and directly affected interactions, with one current report.

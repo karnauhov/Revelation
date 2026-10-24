@@ -46,7 +46,7 @@ If any rule below conflicts with a direct owner request, owner request wins.
   - add or update unit tests for changed business logic, repositories, services, and shared contracts;
   - add or update widget tests for changed UI behavior and state-driven presentation;
   - remove or rewrite obsolete tests when functionality is removed.
-- Any new screen, route, deep link, startup flow, or other critical end-to-end behavior must update relevant smoke coverage in `integration_test/smoke/` in the same change set.
+- Any new or changed user-facing functionality, screen, window, dialog, route, deep link, or startup flow must add or update relevant local integration coverage in `integration_test/` in the same change set. Keep critical startup/navigation coverage in `integration_test/smoke/`.
 - State management policy is strict:
   - New or modified stateful presentation logic must use `BLoC/Cubit`.
   - Do not introduce `provider`/`ChangeNotifier`/`notifyListeners` in runtime or test code.
@@ -122,6 +122,7 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - Docs sync check: `dart run scripts/check_docs_sync.dart`
 - Forbidden pattern checks: `dart run scripts/check_forbidden_patterns.dart`
 - Smoke integration tests: `flutter test integration_test/smoke`
+- All integration tests on a local device: `flutter test integration_test -d <device-id>`
 - Generate Drift code: `dart run build_runner build --delete-conflicting-outputs`
 - Watch Drift codegen: `dart run build_runner watch --delete-conflicting-outputs`
 - Generate localization files: `flutter gen-l10n`
@@ -132,7 +133,9 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - Run `flutter test` before finishing non-trivial code changes.
 - Run `dart run scripts/check_forbidden_patterns.dart` before finishing non-trivial code changes.
 - When docs from approved RU/EN pairs are changed, run `dart run scripts/check_docs_sync.dart`.
-- For startup, routing, deep-link, or other critical end-to-end flow changes, update relevant coverage in `integration_test/smoke/` and run `flutter test integration_test/smoke` when the environment supports it; otherwise trigger `.github/workflows/integration_smoke.yml`.
+- Before acceptance and publication of every version, run all integration tests from `integration_test/` locally on the applicable supported devices, including the smoke suite. Record the build, device, exact command, result, and any unavailable platform; unavailable execution is not a passing result.
+- Manual acceptance for a version covers its new and changed functionality and directly affected interactions, rather than repeating acceptance of the entire application. Use understandable scenarios with preconditions, steps, expected/actual results, and evidence in one current version report.
+- Integration tests must not run in GitHub Actions. Do not recreate, re-enable, schedule, or dispatch an integration-test workflow as a fallback; use local execution and resolve missing local device/toolchain access explicitly.
 - For state-architecture changes, run `rg "package:provider|ChangeNotifier|notifyListeners" lib test` and treat new matches as architecture regressions.
 - For state-architecture changes, run `rg "BuildContext" lib/features --glob "**/application/**/*.dart" --glob "**/presentation/bloc/**/*.dart"` and treat matches as architecture regressions (except explicitly approved transitional adapters).
 - For state-management changes in high-risk flows, ensure regression tests cover:

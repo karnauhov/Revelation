@@ -1,7 +1,7 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.0.0`  
-Last-Updated: `2026-03-28`  
+Doc-Version: `2.1.0`
+Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
 ## Purpose
@@ -31,7 +31,16 @@ Run `dart run scripts/check_docs_sync.dart` when a synchronized RU/EN doc pair c
 ## Automation
 
 - `.github/workflows/flutter_build.yml` repeats format, analysis, tests, coverage filtering, and forbidden-pattern checks.
-- `.github/workflows/integration_smoke.yml` runs the smoke suite on Android on schedule or on demand.
+- All integration tests, including smoke, run locally. The dedicated GitHub Actions workflow has been deleted and disabled; do not recreate or run it, including as a fallback for an unavailable local device.
+
+## Acceptance for Every Version
+
+- Prepare scenarios only for the version's new and changed functionality and directly affected interactions. Repeating full manual acceptance of the entire application is not required.
+- Add or update integration tests for new and changed functionality, pages, windows, and dialogs in the same change set. Keep critical startup and navigation scenarios in `integration_test/smoke/`.
+- Before acceptance and publication, run all integration tests locally, for example `flutter test integration_test -d <device-id>`, on applicable supported devices. Record an unavailable device or toolchain as a limitation, not a passing check; do not use GitHub Actions for this execution.
+- For each manual scenario, record understandable preconditions, steps, expected and actual results, build, platform, language, and evidence. Codex performs available checks independently; owner participation is needed for domain decisions and actions unavailable to Codex.
+- Maintain one current checklist and one complete current acceptance report per version. Repeat affected scenarios after fixes and retain material evidence.
+- Publication and deployment are a separate version task after acceptance; verify the actual published builds and data.
 
 ## Quality Rules
 
