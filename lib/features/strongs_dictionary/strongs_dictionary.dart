@@ -7,6 +7,7 @@ export 'domain/models/strong_picker_entry.dart';
 export 'domain/services/strong_number_policy.dart';
 export 'presentation/bloc/strong_number_picker_cubit.dart';
 export 'presentation/bloc/strong_number_picker_state.dart';
+export 'presentation/bloc/strong_usage_preview_cubit.dart';
 export 'presentation/bloc/strongs_dictionary_cubit.dart';
 export 'presentation/bloc/strongs_dictionary_state.dart';
 export 'presentation/integration/primary_source_strongs_dictionary_api.dart';

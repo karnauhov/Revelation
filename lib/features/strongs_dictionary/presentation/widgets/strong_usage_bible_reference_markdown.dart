@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_bible_reference_markdown_tokens.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_bible_text_provider.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_reference_detail_registry.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/bloc/strong_usage_preview_cubit.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
@@ -291,7 +293,7 @@ class _StrongUsageMoreReferenceLink extends StatelessWidget {
   }
 }
 
-class _StrongUsageBibleReferenceLink extends StatefulWidget {
+class _StrongUsageBibleReferenceLink extends StatelessWidget {
   const _StrongUsageBibleReferenceLink({
     required this.label,
     required this.href,
@@ -311,105 +313,95 @@ class _StrongUsageBibleReferenceLink extends StatefulWidget {
   final bool popBeforeBibleNavigation;
 
   @override
-  State<_StrongUsageBibleReferenceLink> createState() =>
-      _StrongUsageBibleReferenceLinkState();
-}
-
-class _StrongUsageBibleReferenceLinkState
-    extends State<_StrongUsageBibleReferenceLink> {
-  final GlobalKey<TooltipState> _tooltipKey = GlobalKey<TooltipState>();
-  Future<String?>? _previewFuture;
-  String? _previewText;
-  String? _copyablePreviewText;
-
-  @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      key: _tooltipKey,
-      message: _previewText ?? '',
-      triggerMode: TooltipTriggerMode.manual,
-      showDuration: const Duration(seconds: 12),
-      waitDuration: const Duration(milliseconds: 300),
-      preferBelow: false,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          unawaited(
-            handleAppLink(
-              context,
-              widget.href,
-              popBeforeScreenPush: widget.popBeforeBibleNavigation,
-            ),
-          );
-        },
-        onLongPress: () {
-          unawaited(_showPreview(copyText: true));
-        },
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: Text(widget.label, style: widget.style),
-        ),
+    return BlocProvider(
+      key: ValueKey((verseKey, bibleTextProvider, copyBibleText)),
+      create: (_) => StrongUsagePreviewCubit(
+        verseKey: verseKey,
+        textProvider: bibleTextProvider,
+        copyText: copyBibleText,
+      ),
+      child: _StrongUsagePreviewTooltip(
+        label: label,
+        href: href,
+        style: style,
+        popBeforeBibleNavigation: popBeforeBibleNavigation,
       ),
     );
   }
+}
 
-  Future<void> _showPreview({required bool copyText}) async {
-    await _loadPreviewText();
-    if (!mounted) {
-      return;
-    }
+class _StrongUsagePreviewTooltip extends StatefulWidget {
+  const _StrongUsagePreviewTooltip({
+    required this.label,
+    required this.href,
+    required this.style,
+    required this.popBeforeBibleNavigation,
+  });
 
-    final copyablePreviewText = _copyablePreviewText;
-    if (copyText &&
-        copyablePreviewText != null &&
-        copyablePreviewText.isNotEmpty) {
-      try {
-        await widget.copyBibleText(copyablePreviewText);
-      } catch (_) {}
-    }
+  final String label;
+  final String href;
+  final TextStyle style;
+  final bool popBeforeBibleNavigation;
 
-    if (!mounted) {
-      return;
-    }
-    _tooltipKey.currentState?.ensureTooltipVisible();
-  }
+  @override
+  State<_StrongUsagePreviewTooltip> createState() =>
+      _StrongUsagePreviewTooltipState();
+}
 
-  Future<String?> _loadPreviewText() {
-    final existingFuture = _previewFuture;
-    if (existingFuture != null) {
-      return existingFuture;
-    }
+class _StrongUsagePreviewTooltipState
+    extends State<_StrongUsagePreviewTooltip> {
+  final _tooltipKey = GlobalKey<TooltipState>();
 
-    final localizations = AppLocalizations.of(context)!;
-    final future = widget.bibleTextProvider
-        .loadVerseText(widget.verseKey)
-        .then(
-          (text) {
-            final trimmedText = text?.trim();
-            if (trimmedText == null || trimmedText.isEmpty) {
-              _copyablePreviewText = null;
-              return localizations.bible_reference_preview_unavailable;
-            }
-            _copyablePreviewText = trimmedText;
-            return trimmedText;
-          },
-          onError: (_) {
-            _copyablePreviewText = null;
-            return localizations.bible_reference_preview_unavailable;
-          },
-        );
-    _previewFuture = future;
-    unawaited(
-      future.then((text) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {
-          _previewText = text;
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<StrongUsagePreviewCubit, StrongUsagePreviewState>(
+      listenWhen: (previous, current) =>
+          previous.requestId != current.requestId,
+      listener: (context, state) {
+        // Tooltip must receive the loaded message before it can be shown.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted ||
+              context.read<StrongUsagePreviewCubit>().state.requestId !=
+                  state.requestId)
+            return;
+          _tooltipKey.currentState?.ensureTooltipVisible();
         });
-      }),
+      },
+      builder: (context, state) {
+        final message = switch (state.status) {
+          StrongUsagePreviewStatus.ready => state.text!,
+          StrongUsagePreviewStatus.unavailable => AppLocalizations.of(
+            context,
+          )!.bible_reference_preview_unavailable,
+          _ => '',
+        };
+        return Tooltip(
+          key: _tooltipKey,
+          message: message,
+          triggerMode: TooltipTriggerMode.manual,
+          showDuration: const Duration(seconds: 12),
+          waitDuration: const Duration(milliseconds: 300),
+          preferBelow: false,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => unawaited(
+              handleAppLink(
+                context,
+                widget.href,
+                popBeforeScreenPush: widget.popBeforeBibleNavigation,
+              ),
+            ),
+            onLongPress: () => unawaited(
+              context.read<StrongUsagePreviewCubit>().requestPreview(),
+            ),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Text(widget.label, style: widget.style),
+            ),
+          ),
+        );
+      },
     );
-    setState(() {});
-    return future;
   }
 }

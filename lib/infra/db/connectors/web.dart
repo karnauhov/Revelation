@@ -13,6 +13,7 @@ import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/connectors/database_version_loader.dart';
 import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
+import 'package:revelation/infra/db/connectors/web_database_open_lock.dart';
 import 'package:revelation/infra/db/connectors/web_db_manifest.dart';
 import 'package:revelation/infra/db/connectors/web_db_uri.dart';
 import 'package:revelation/infra/db/connectors/web_db_version_probe_policy.dart';
@@ -76,7 +77,7 @@ Future<WebDbManifestEntry?> _getManifestDbEntry(String dbFile) async {
 
 DatabaseConnection connectOnWeb(String dbFile) {
   return DatabaseConnection.delayed(
-    Future(() async {
+    withWebDatabaseOpenLock(() async {
       final talker = GetIt.I<Talker>();
       final databaseName = dbFile.replaceAll(".sqlite", "");
       try {

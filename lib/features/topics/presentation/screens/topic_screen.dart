@@ -397,7 +397,7 @@ class _TopicScreenState extends State<TopicScreen> {
       final bytes = (await rootBundle.load(assetPath)).buffer.asUint8List();
       final fileName = p.basename(assetPath);
       final mimeType = _guessMimeType(fileName);
-      return _saveBytesAsDownload(
+      return await _saveBytesAsDownload(
         bytes: bytes,
         fileName: fileName,
         mimeType: mimeType,

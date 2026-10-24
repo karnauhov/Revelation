@@ -1,11 +1,12 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.4.0`
-Last-Updated: `2026-06-27`
+Doc-Version: `2.4.1`
+Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
 
+- `StrongUsagePreviewCubit` owns loading and copying the preview for one verse link; the UI shows the tooltip after its message updates.
 - The app now supports `/strongs_dictionary` as a first-class route.
 - `strongs_dictionary` owns Strong dictionary domain/data/presentation and its page/dialog/embedded UI.
 - `strongs_dictionary` keeps a cached picker/search index for lookup by number, Greek word, and localized entry text.

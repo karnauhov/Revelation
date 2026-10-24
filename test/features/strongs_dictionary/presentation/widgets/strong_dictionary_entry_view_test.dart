@@ -1,4 +1,5 @@
 @Tags(['widget'])
+import 'dart:async';
 import 'dart:ui' show PointerDeviceKind;
 
 import 'package:flutter/material.dart';
@@ -119,7 +120,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(copiedText, 'verse text');
-      expect(find.text('verse text'), findsOneWidget);
+      expect(find.text('verse text', findRichText: true), findsOneWidget);
     },
   );
 
@@ -211,9 +212,56 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(copiedText, 'fourth verse');
-      expect(find.text('fourth verse'), findsOneWidget);
+      expect(find.text('fourth verse', findRichText: true), findsOneWidget);
     },
   );
+
+  testWidgets('switching verses discards an unfinished preview', (
+    tester,
+  ) async {
+    final oldText = Completer<String?>();
+    final provider = _DeferredTextProvider(oldText);
+    final copied = <String>[];
+    Future<void> copyText(String text) async {
+      copied.add(text);
+    }
+
+    Widget entry(String key) => buildLocalizedTestApp(
+      child: StrongDictionaryEntryView(
+        strongNumber: 1,
+        markdown: '[Gen 1:$key](bible:Gen1:$key "strong_usage_ref:$key")',
+        bibleTextProvider: provider,
+        copyBibleText: copyText,
+        onStrongNumberSelected: (_) {},
+        onStrongNumberPickerRequested: (_, __) {},
+        onNavigateBackward: () {},
+        onNavigateForward: () {},
+      ),
+    );
+
+    await tester.pumpWidget(entry('001'));
+    await tester.pumpAndSettle();
+    await tester.longPress(find.text('Gen 1:001'));
+    await tester.pumpWidget(entry('002'));
+    oldText.complete('stale verse');
+    await tester.pumpAndSettle();
+    expect(copied, isEmpty);
+    expect(find.text('stale verse', findRichText: true), findsNothing);
+    await tester.longPress(find.text('Gen 1:002'));
+    await tester.pumpAndSettle();
+    expect(copied, ['current verse']);
+    expect(find.text('current verse', findRichText: true), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+}
+
+class _DeferredTextProvider implements StrongUsageBibleTextProvider {
+  _DeferredTextProvider(this.oldText);
+  final Completer<String?> oldText;
+
+  @override
+  Future<String?> loadVerseText(String verseKey) =>
+      verseKey == '001' ? oldText.future : Future.value('current verse');
 }
 
 class _FakeStrongUsageBibleTextProvider

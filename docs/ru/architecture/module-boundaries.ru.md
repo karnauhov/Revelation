@@ -1,11 +1,12 @@
 # Границы модулей (RU)
 
-Doc-Version: `2.4.0`
-Last-Updated: `2026-06-27`
+Doc-Version: `2.4.1`
+Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
 
+- Асинхронное состояние подсказок ссылок на стихи принадлежит `strongs_dictionary/presentation/bloc/StrongUsagePreviewCubit`; локализация и показ Tooltip остаются в виджете.
 - `features/strongs_dictionary` владеет domain/data/presentation-логикой словаря Стронга, включая page/dialog/picker/embedded-потоки.
 - `shared/ui/markdown` остаётся независимым от Strong и не должен содержать Strong-специфичные маркеры или inline-обработчики синтаксиса.
 

@@ -61,6 +61,7 @@ Application entry point: `lib/main.dart`.
 
 ### Project Task Skills
 
+- [`$revelation-add-task`](./.agents/skills/revelation-add-task/SKILL.md) — add a feature, bug, or note to the current or a future Revelation version with duplicate checks and one checklist.
 - [`$revelation-task`](./.agents/skills/revelation-task/SKILL.md) — select active bugs, active features, inactive bugs, inactive features, then resumable paused tasks.
 - [`$revelation-pause`](./.agents/skills/revelation-pause/SKILL.md) — pause work, save a resumable handoff, and prepare a commit message.
 

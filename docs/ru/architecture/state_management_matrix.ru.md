@@ -1,11 +1,12 @@
 # Матрица управления состоянием (RU)
 
-Doc-Version: `2.4.0`
-Last-Updated: `2026-06-27`
+Doc-Version: `2.4.1`
+Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
 
+- `StrongUsagePreviewCubit` — единственный источник текста и запросов показа подсказки одной ссылки; объединяет быстрые запросы и отбрасывает результат после закрытия при смене ссылки.
 - `StrongsDictionaryCubit` является source of truth для выбора, контента, навигации и полнотекстового фильтра словаря Стронга в page/dialog-потоках.
 - `StrongNumberPickerCubit` владеет нормализацией ввода и состоянием выбранного элемента в picker-е номера Стронга.
 
@@ -43,6 +44,7 @@ Source-Commit: `working-tree`
 | `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Безопасная координация смены страниц, загрузки изображений и save/restore flow |
 | `strongs_dictionary/content` | `StrongsDictionaryCubit` | Выбранный номер Стронга, кэшированный picker/search-список, полнотекстовый запрос, markdown-контент статьи и навигация next/previous |
 | `strongs_dictionary/picker` | `StrongNumberPickerCubit` | Нормализация ввода номера Стронга, выбор ближайшей доступной статьи и состояние подтверждения picker-а |
+| `strongs_dictionary/verse-preview` | `StrongUsagePreviewCubit` | Текст/ошибка предпросмотра одной ссылки, копирование и запрос показа после обновления UI |
 | `download` | Stateless screen | Постоянный runtime state-срез отсутствует |
 
 ## Примечания по scope

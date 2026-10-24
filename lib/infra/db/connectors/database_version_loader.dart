@@ -56,7 +56,7 @@ Future<DatabaseVersionInfo?> loadDatabaseVersionInfo(
   GeneratedDatabase database,
 ) async {
   try {
-    return readDatabaseVersionInfo(database);
+    return await readDatabaseVersionInfo(database);
   } catch (_) {
     return null;
   } finally {

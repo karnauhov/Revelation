@@ -30,6 +30,8 @@ Future<void> runWithSentry(
     }
     options.sendDefaultPii = false;
     options.attachScreenshot = false;
+    // Keep the explicit privacy opt-out while this SDK flag is experimental.
+    // ignore: experimental_member_use
     options.attachViewHierarchy = false;
     options.enableLogs = false;
     options.enableAutoSessionTracking = true;
@@ -38,6 +40,8 @@ Future<void> runWithSentry(
     options.enableUserInteractionTracing = false;
     options.enableTimeToFullDisplayTracing = false;
     options.reportSilentFlutterErrors = false;
+    // Profiling remains disabled; the SDK exposes this opt-out as experimental.
+    // ignore: experimental_member_use
     options.profilesSampleRate = 0;
     options.tracesSampleRate = parseSentrySampleRate(
       _sentryTracesSampleRate,

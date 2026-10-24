@@ -1,6 +1,6 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.1.0`
+Doc-Version: `2.1.1`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
@@ -27,6 +27,20 @@ dart run scripts/check_docs_sync.dart
 ```
 
 Run `dart run scripts/check_docs_sync.dart` when a synchronized RU/EN doc pair changes.
+
+## Browser Database Opening Check
+
+`integration_test/web_database_open_test.dart` checks 45 concurrent Drift worker requests, waiting for a shared lock, releasing it after a failure, and opening/reopening common and localized databases from `web/db/`. The connector's queue and Web Lock prevent overlapping OPFS probes as described in [Drift #3856](https://github.com/simolus3/drift/issues/3856).
+
+Start a ChromeDriver compatible with the local Chrome on port 4444, then run locally:
+
+```bash
+flutter drive --release --driver=test_driver/integration_test.dart --target=integration_test/web_database_open_test.dart -d web-server --browser-name=chrome --headless --driver-port=4444 --web-port=8766
+```
+
+This uses a separate local origin without affecting the published site's data. On native devices this browser check is explicitly skipped and does not count as passed. Updated tabs on the same origin share a Web Lock; without Web Locks, the queue operates within one tab. Old open tabs do not participate in the new lock until they reload.
+
+The first long press on a dictionary verse link is covered by `integration_test/strong_usage_preview_test.dart`. For Chrome, replace `--target` in the command above with this file; for Windows, run `flutter test integration_test/strong_usage_preview_test.dart -d windows`. The check verifies both a visible preview and copying the text exactly once.
 
 ## Automation
 

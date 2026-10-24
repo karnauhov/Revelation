@@ -1,6 +1,6 @@
 # Стратегия тестирования (RU)
 
-Doc-Version: `2.1.0`
+Doc-Version: `2.1.1`
 Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
@@ -27,6 +27,20 @@ dart run scripts/check_docs_sync.dart
 ```
 
 `dart run scripts/check_docs_sync.dart` запускается, когда меняется синхронизируемая RU/EN пара документов.
+
+## Браузерная проверка открытия БД
+
+`integration_test/web_database_open_test.dart` проверяет 45 конкурентных запросов к Drift worker, ожидание общей блокировки, её освобождение после ошибки и открытие/повторное открытие общих и локализованных БД из `web/db/`. Очередь и Web Lock в коннекторе предотвращают пересечение проверок OPFS, описанное в [Drift #3856](https://github.com/simolus3/drift/issues/3856).
+
+Запустить совместимый с локальным Chrome ChromeDriver на порту 4444, затем выполнить локально:
+
+```bash
+flutter drive --release --driver=test_driver/integration_test.dart --target=integration_test/web_database_open_test.dart -d web-server --browser-name=chrome --headless --driver-port=4444 --web-port=8766
+```
+
+Используется отдельный локальный origin; данные опубликованного сайта не затрагиваются. На нативных устройствах эта браузерная проверка явно пропускается и не считается пройденной. Обновлённые вкладки одного origin используют общий Web Lock; без Web Locks очередь действует внутри одной вкладки. Старые открытые вкладки не участвуют в новой блокировке до обновления страницы.
+
+Регрессия первого долгого нажатия на ссылку стиха в словаре проверяется в `integration_test/strong_usage_preview_test.dart`. Для Chrome заменить `--target` в команде выше на этот файл; для Windows выполнить `flutter test integration_test/strong_usage_preview_test.dart -d windows`. Проверяются одновременно видимая подсказка и однократное копирование текста.
 
 ## Автоматизация
 

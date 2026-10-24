@@ -1,11 +1,12 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.4.0`
-Last-Updated: `2026-06-27`
+Doc-Version: `2.4.1`
+Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
 
+- Async verse-link preview state belongs to `strongs_dictionary/presentation/bloc/StrongUsagePreviewCubit`; localization and Tooltip presentation remain in the widget.
 - `features/strongs_dictionary` owns Strong dictionary domain/data/presentation logic, including page/dialog/picker/embedded flows.
 - `shared/ui/markdown` stays Strong-agnostic and must not contain Strong-specific markers or inline syntax handlers.
 

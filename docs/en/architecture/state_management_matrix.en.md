@@ -1,11 +1,12 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.4.0`
-Last-Updated: `2026-06-27`
+Doc-Version: `2.4.1`
+Last-Updated: `2026-10-24`
 Source-Commit: `working-tree`
 
 ## Strong Feature Notes
 
+- `StrongUsagePreviewCubit` is the sole source of preview text and presentation requests for one link; it coalesces rapid requests and discards results after closure when a link changes.
 - `StrongsDictionaryCubit` is the source of truth for Strong dictionary selection/content/navigation and full-text filtering in page and dialog flows.
 - `StrongNumberPickerCubit` owns input normalization and selected picker entry state for the Strong number picker.
 
@@ -43,6 +44,7 @@ Show which cubit owns each runtime state slice.
 | `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Safe coordination of page changes, image loading, and save/restore flows |
 | `strongs_dictionary/content` | `StrongsDictionaryCubit` | Selected Strong number, cached picker/search list, full-text query, dictionary markdown content, and next/previous navigation |
 | `strongs_dictionary/picker` | `StrongNumberPickerCubit` | Strong picker text input normalization, nearest allowed entry selection, and picker confirmation state |
+| `strongs_dictionary/verse-preview` | `StrongUsagePreviewCubit` | Preview text/failure for one link, copying, and presentation request after the UI updates |
 | `download` | Stateless screen | No persistent runtime state slice |
 
 ## Scope Notes

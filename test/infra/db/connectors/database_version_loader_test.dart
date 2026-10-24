@@ -4,6 +4,16 @@ import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/connectors/database_version_loader.dart';
 
 void main() {
+  test('metadata loading finishes before closing a cold database', () async {
+    final db = _TrackedCommonDb();
+    final loading = loadDatabaseVersionInfo(db);
+
+    expect(db.closeCalled, isFalse);
+    expect(await loading, isNotNull);
+    expect(db.closeCalled, isTrue);
+    expect(db.customSelect('SELECT 1').get(), throwsA(anything));
+  });
+
   test(
     'loadDatabaseVersionInfo returns parsed values and closes database',
     () async {
@@ -104,4 +114,16 @@ void main() {
       expect(db.customSelect('SELECT 1').get(), throwsA(anything));
     },
   );
+}
+
+class _TrackedCommonDb extends CommonDB {
+  _TrackedCommonDb() : super(NativeDatabase.memory());
+
+  bool closeCalled = false;
+
+  @override
+  Future<void> close() {
+    closeCalled = true;
+    return super.close();
+  }
 }
