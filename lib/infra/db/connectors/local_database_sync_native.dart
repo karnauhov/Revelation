@@ -365,8 +365,9 @@ Future<Map<String, WebDbManifestEntry>> _loadLocalManifestEntries({
 }) async {
   final manifestFile = await _getLocalDatabaseFile(_databaseManifestFile);
   if (refreshFromServer) {
-    await _refreshLocalManifestFromServer(manifestFile);
-  } else if (!isLocalDatabaseManifestHealthy(manifestFile)) {
+    return _refreshLocalManifestFromServer(manifestFile);
+  }
+  if (!isLocalDatabaseManifestHealthy(manifestFile)) {
     await _downloadLocalManifestFile();
   }
 
@@ -381,14 +382,16 @@ Future<Map<String, WebDbManifestEntry>> _loadLocalManifestEntries({
   }
 }
 
-Future<void> _refreshLocalManifestFromServer(File manifestFile) async {
+Future<Map<String, WebDbManifestEntry>> _refreshLocalManifestFromServer(
+  File manifestFile,
+) async {
   final localEntries = _readManifestEntriesOrEmpty(manifestFile);
   final remoteEntries = await _downloadManifestEntriesFromServer();
   if (remoteEntries == null) {
     if (localEntries.isEmpty && !isLocalDatabaseManifestHealthy(manifestFile)) {
       await _downloadLocalManifestFile();
     }
-    return;
+    return _readManifestEntriesOrEmpty(manifestFile);
   }
 
   final mergedEntries = _mergeManifestEntries(
@@ -396,13 +399,21 @@ Future<void> _refreshLocalManifestFromServer(File manifestFile) async {
     remoteEntries: remoteEntries,
   );
   if (mergedEntries.isEmpty) {
-    return;
+    return mergedEntries;
   }
 
   if (!manifestFile.existsSync() ||
       !_manifestEntriesEqual(localEntries, mergedEntries)) {
-    await _writeManifestEntries(manifestFile, mergedEntries);
+    try {
+      await _writeManifestEntries(manifestFile, mergedEntries);
+    } on FileSystemException catch (error) {
+      // The cache can become unavailable after its parent was created (for
+      // example, in a synchronized Documents folder). Keep validating against
+      // the fetched snapshot, and retry persistence on the next refresh.
+      log.warning('Local database manifest cache write failed: $error');
+    }
   }
+  return mergedEntries;
 }
 
 Future<void> _downloadLocalManifestFile() async {

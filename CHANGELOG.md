@@ -16,6 +16,7 @@ All notable changes to this application will be documented here.
 - Prevented web database startup errors when several modules open at the same time.
 - Fixed verse previews on the first long press in Strong's Dictionary.
 - Fixed local Bible modules missing updates when the new file has the same size; invalid downloads preserve the installed copy.
+- Keep database checks and Bible module updates running when the local manifest cache cannot be saved.
 - Show the local folder path when the app cannot open it.
 - Retry a failed first Bible module download directly from the reader after the connection recovers.
 

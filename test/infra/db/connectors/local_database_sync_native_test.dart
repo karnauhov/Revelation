@@ -446,6 +446,150 @@ void main() {
     );
   }
 
+  for (final errorCode in [2, 5]) {
+    test(
+      'discovers remote modules when manifest write fails ($errorCode)',
+      () async {
+        final manifestFile = File(
+          p.join(await getAppFolder(), 'db', 'manifest.json'),
+        );
+        storageServer.seedFile(
+          repository: 'db',
+          path: 'manifest.json',
+          bytes: _manifestBytes({
+            'bible_kjv.sqlite': const _ManifestEntry(
+              schemaVersion: 3,
+              dataVersion: 7,
+              date: '2026-05-23T17:55:51Z',
+              fileSizeBytes: 1024,
+            ),
+          }),
+        );
+        final failure = _ManifestWriteFailure(errorCode: errorCode);
+
+        final modules = await IOOverrides.runWithIOOverrides(
+          discoverKnownBibleModuleFiles,
+          failure,
+        );
+
+        expect(modules, contains('bible_kjv.sqlite'));
+        expect(failure.attempts, 1);
+        expect(manifestFile.existsSync(), isFalse);
+      },
+    );
+  }
+
+  test(
+    'background database verification survives a manifest write failure',
+    () async {
+      final bytes = await _databaseBytes(
+        schemaVersion: 3,
+        dataVersion: 7,
+        date: '2026-05-23T17:55:51Z',
+        payloadBytes: 1000,
+      );
+      final entries = <String, _ManifestEntry>{};
+      for (final name in knownLocalDatabaseFiles()) {
+        storageServer.seedFile(repository: 'db', path: name, bytes: bytes);
+        entries[name] = _ManifestEntry(
+          schemaVersion: 3,
+          dataVersion: 7,
+          date: '2026-05-23T17:55:51Z',
+          fileSizeBytes: bytes.length,
+        );
+      }
+      storageServer.seedFile(
+        repository: 'db',
+        path: 'manifest.json',
+        bytes: _manifestBytes(entries),
+      );
+      final failure = _ManifestWriteFailure();
+
+      final result = await IOOverrides.runWithIOOverrides(
+        verifyAndUpdateKnownLocalDatabasesWithResult,
+        failure,
+      );
+
+      expect(result.hasValidationFailures, isFalse);
+      expect(result.hasUpdates, isTrue);
+      expect(result.files, hasLength(entries.length));
+      expect(result.files.every((file) => file.updated), isTrue);
+      expect(failure.attempts, 1);
+    },
+  );
+
+  for (final staleObject in [false, true]) {
+    test(
+      'uses remote version checks after manifest write failure (stale=$staleObject)',
+      () async {
+        const module = 'bible_kjv.sqlite';
+        final dbFile = File(p.join(await getAppFolder(), 'db', module));
+        await _writeDatabaseFile(
+          dbFile,
+          schemaVersion: 3,
+          dataVersion: 6,
+          date: '2026-05-23T02:35:34Z',
+          payloadBytes: 1000,
+        );
+        final originalBytes = await dbFile.readAsBytes();
+        final updatedBytes = await _databaseBytes(
+          schemaVersion: 3,
+          dataVersion: 7,
+          date: '2026-05-23T17:55:51Z',
+          payloadBytes: 1000,
+        );
+        expect(originalBytes.length, updatedBytes.length);
+        storageServer.seedFile(
+          repository: 'db',
+          path: module,
+          bytes: staleObject ? originalBytes : updatedBytes,
+        );
+        storageServer.seedFile(
+          repository: 'db',
+          path: 'manifest.json',
+          bytes: _manifestBytes({
+            module: _ManifestEntry(
+              schemaVersion: 3,
+              dataVersion: 7,
+              date: '2026-05-23T17:55:51Z',
+              fileSizeBytes: updatedBytes.length,
+            ),
+          }),
+        );
+        final failure = _ManifestWriteFailure();
+
+        final result = await IOOverrides.runWithIOOverrides(
+          () => verifyAndUpdateLocalDatabaseFileWithResult(module),
+          failure,
+        );
+
+        expect(result.updated, !staleObject);
+        expect(result.versionMatchedManifestAfterSync, !staleObject);
+        expect(result.manifestEntryMissing, isFalse);
+        expect(
+          await dbFile.readAsBytes(),
+          staleObject ? originalBytes : updatedBytes,
+        );
+        expect(failure.attempts, 1);
+
+        storageServer.seedFile(
+          repository: 'db',
+          path: module,
+          bytes: updatedBytes,
+        );
+        final retried = await verifyAndUpdateLocalDatabaseFileWithResult(
+          module,
+        );
+        expect(retried.versionMatchedManifestAfterSync, isTrue);
+        final manifestFile = File(
+          p.join(await getAppFolder(), 'db', 'manifest.json'),
+        );
+        expect(isLocalDatabaseManifestHealthy(manifestFile), isTrue);
+        expect(await dbFile.readAsBytes(), updatedBytes);
+      },
+    );
+  }
+
   test(
     'parallel readers install a module once without sharing temp writes',
     () async {
@@ -703,4 +847,65 @@ class _InMemoryGotrueAsyncStorage extends GotrueAsyncStorage {
   Future<void> setItem({required String key, required String value}) async {
     _data[key] = value;
   }
+}
+
+/// Reproduces a manifest write failure without touching working application data.
+final class _ManifestWriteFailure extends IOOverrides {
+  _ManifestWriteFailure({this.errorCode = 2});
+
+  final int errorCode;
+  int attempts = 0;
+
+  @override
+  File createFile(String path) {
+    final file = super.createFile(path);
+    return p.basename(path) == 'manifest.json'
+        ? _UnwritableManifest(file, this)
+        : file;
+  }
+}
+
+class _UnwritableManifest implements File {
+  _UnwritableManifest(this.file, this.failure);
+
+  final File file;
+  final _ManifestWriteFailure failure;
+
+  @override
+  String get path => file.path;
+
+  @override
+  Directory get parent => file.parent;
+
+  @override
+  bool existsSync() => file.existsSync();
+
+  @override
+  int lengthSync() => file.lengthSync();
+
+  @override
+  String readAsStringSync({Encoding encoding = utf8}) =>
+      file.readAsStringSync(encoding: encoding);
+
+  @override
+  Future<String> readAsString({Encoding encoding = utf8}) =>
+      file.readAsString(encoding: encoding);
+
+  @override
+  Future<File> writeAsString(
+    String contents, {
+    FileMode mode = FileMode.write,
+    Encoding encoding = utf8,
+    bool flush = false,
+  }) async {
+    failure.attempts++;
+    throw FileSystemException(
+      'Cannot open file',
+      path,
+      OSError('Simulated manifest storage failure', failure.errorCode),
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

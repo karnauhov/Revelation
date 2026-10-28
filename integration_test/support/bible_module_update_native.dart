@@ -90,12 +90,46 @@ void main() {
         expect(await localFile.readAsBytes(), secondBytes);
         expect(loadDatabaseVersionInfoFromFile(localFile)!.dataVersion, 2);
       });
+
+      // A directory at the cache path reproduces a real filesystem write
+      // failure. The fetched manifest must still validate the installed update.
+      await tester.pumpWidget(const SizedBox.shrink());
+      late Directory blockedManifest;
+      await tester.runAsync(() async {
+        final manifestFile = File(
+          p.join(localFile.parent.path, 'manifest.json'),
+        );
+        await manifestFile.delete();
+        blockedManifest = await Directory(manifestFile.path).create();
+        server.publish(
+          3,
+          await _moduleBytes(temp, 3, 'Recovered sample verse'),
+        );
+      });
+      await _openReader(tester, 5, 'Recovered sample verse');
+      await tester.runAsync(() async {
+        expect(loadDatabaseVersionInfoFromFile(localFile)!.dataVersion, 3);
+        expect(blockedManifest.existsSync(), isTrue);
+        await blockedManifest.delete();
+      });
+      final downloadsAfterRecovery = server.moduleDownloads;
+      await tester.pumpWidget(const SizedBox.shrink());
+      await _openReader(tester, 6, 'Recovered sample verse');
+      await tester.runAsync(() async {
+        final manifestFile = File(
+          p.join(localFile.parent.path, 'manifest.json'),
+        );
+        expect(isLocalDatabaseManifestHealthy(manifestFile), isTrue);
+      });
+      expect(server.moduleDownloads, downloadsAfterRecovery);
       binding.reportData = {
         'fileSizeBytes': secondBytes.length,
-        'installedDataVersions': [1, 2],
+        'installedDataVersions': [1, 2, 3],
         'readerShowsUpdatedVerse': true,
         'repeatOpenDoesNotDownload': true,
         'staleObjectRejected': true,
+        'manifestWriteFailureDoesNotBlockReading': true,
+        'manifestCacheRecoversOnNextOpen': true,
         'storage': 'temporary documents and loopback HTTP only',
       };
     } finally {

@@ -1,7 +1,7 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.4.2`
-Last-Updated: `2026-10-24`
+Doc-Version: `2.4.3`
+Last-Updated: `2026-10-28`
 Source-Commit: `working-tree`
 
 ## Bible module information
@@ -81,6 +81,10 @@ This uses a separate local origin without affecting the published site's data. O
 The first long press on a dictionary verse link is covered by `integration_test/strong_usage_preview_test.dart`. For Chrome, replace `--target` in the command above with this file; for Windows, run `flutter test integration_test/strong_usage_preview_test.dart -d windows`. The check verifies both a visible preview and copying the text exactly once.
 
 ## Local Bible Module Update Check
+
+The [REVELATION-FLUTTER-H](https://ai11-link.sentry.io/issues/156728094/) regression checks failure to write the local `manifest.json`. Unit tests reproduce `FileSystemException` with OS codes 2 and 5, module discovery, background verification of all databases, same-size module replacement, rejection of a stale object, and subsequent cache recovery. A failed write retains the merged manifest in memory, preserving version, size and integrity checks. In the Windows integration check, a directory at the manifest file path causes a real write failure: the reader displays the new verse, and the next open restores the cache without another module download. Run `flutter test integration_test/bible_module_update_test.dart -d windows`. Data is temporary and the server uses loopback; production is unchanged. The event belongs to 1.0.7+172; the old release alone does not prove that earlier serialization fixes this failure. The physical OneDrive failure on the original device is not reproduced.
+
+Verified on 2026-10-28 with the local 1.0.8+173 candidate, Flutter 3.47.2 / Dart 3.13.2: `flutter analyze` found no issues; `flutter test --coverage` passed 1021 tests; `dart run scripts/coverage_baseline.dart --min-effective=90.0` reported 90.79%; `flutter test integration_test/bible_module_update_test.dart -d windows --reporter expanded` passed 1 test on Windows x64, Debug. All five new unit scenarios fail with a manifest write error before the fix and pass afterwards. Formatting, forbidden-pattern and RU/EN docs-sync checks passed. Debug still emits Drift's multiple-database-instance warning during repeated opens; the test passes and no warning suppression was added. Android/Linux/macOS/iOS were not run in this investigation; full version acceptance remains REV236. Validation preceded commit/push; no deployment was performed.
 
 The native connector compares the SQLite file's own `schema_version` and `data_version` with the manifest even when file sizes match. Before replacement it validates integrity, size, and all advertised release metadata; a newer local release is preserved. A failed download is not reported as an update, and an old retained release is not reported as current. The manifest describes the expected release rather than proving installation.
 
