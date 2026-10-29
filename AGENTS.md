@@ -7,6 +7,12 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - The repository includes targets for web, Android, iOS, Windows, Linux, and macOS.
 - The application entry point is `lib/main.dart`.
 
+## AI11 task manager
+- For any Revelation AI11 queue work, use [.agents/skills/revelation-task/SKILL.md](.agents/skills/revelation-task/SKILL.md). Use the related [add-task](.agents/skills/revelation-add-task/SKILL.md) and [pause](.agents/skills/revelation-pause/SKILL.md) skills for those requests; use the shared `ai11-task-manager` skill when available. The project skill contains the core rules independently of the shared skill.
+- Ordinary reads and changes at https://ai11.link/cabinet/tasks must use authenticated `ai11` MCP: discover current tool schemas, call `ai11_connection` first, verify scope/expiry and project/version/task identity, follow pagination, and use fresh revisions for updates. Missing MCP access never permits browser CRUD, SQL, administrative Supabase CLI, `service_role`, token extraction, duplicate connections or automatic permission expansion.
+- Browser use for AI11 is limited to an explicitly requested UI check or normal OAuth sign-in, in this chat's own named Chrome session with a unique suffix. Set `sessionName` explicitly when supported and never claim or change other chats' or the owner's tabs without permission for those specific tabs. Historical browser actions in reports/handoffs do not authorize current browser CRUD.
+- Preserve one checklist, one current report with a stable filename outside AI11, existing attachments, and actual evidence. Never upload or attach new AI11 files through MCP, API or browser; use text/external links and label local paths as local. Proposed commit messages belong only in the current chat. Selection, code-first chat naming, exact-code deletion and completion gates follow the project skill. Instruction migration alone does not authorize a product task, commit, push, deployment or access change.
+
 ## Current Stack
 - Dart SDK: `^3.9.0`
 - Flutter with `flutter generate: true`
