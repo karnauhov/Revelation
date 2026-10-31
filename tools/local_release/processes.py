@@ -1,0 +1,48 @@
+"""Cancellation applies only to a child process tree owned by this job."""
+
+import os
+from pathlib import Path
+import signal
+import subprocess
+import threading
+
+from .core import ReleaseError
+
+
+class JobStopped(ReleaseError):
+    pass
+
+
+def terminate_tree(process):
+    if process.poll() is not None:
+        return
+    if os.name == "nt":
+        subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"], capture_output=True, check=False)
+    else:
+        try:
+            os.killpg(process.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+
+
+class StopMonitor:
+    def __init__(self, process, request: Path):
+        self.process, self.request = process, request
+        self.finished = threading.Event()
+        self.stopped = False
+        self.thread = threading.Thread(target=self.watch, daemon=True)
+
+    def watch(self):
+        while not self.finished.wait(0.25):
+            if self.request.exists():
+                self.stopped = True
+                terminate_tree(self.process)
+                return
+
+    def __enter__(self):
+        self.thread.start()
+        return self
+
+    def __exit__(self, *args):
+        self.finished.set()
+        self.thread.join(timeout=5)

@@ -32,3 +32,5 @@ Windows: `sync --job <canonical-directory> --config <windows-config> --cleanup` 
 
 До успешного полного реального пробного выпуска и проверки триггера сохраняй hosted workflow и не активируй автоматические локальные сборки.
 Сейчас идёт REV301; журнал состояния и один отчёт находятся локально в `.local-releases/REV301-report.md`.
+
+Работай в main. Контракт обмена и runtime repair: docs/ru/release/protocol.ru.md. Полный message [skip ci] пропускает и инкремент build, и autobuild. Подтверждённые Snap clean/pack автоматизированы; install/smoke gate остаётся обязательным. Первый Linux запуск устанавливает user autostart; новые graphical logins обрабатывают общий projects.json последовательно.

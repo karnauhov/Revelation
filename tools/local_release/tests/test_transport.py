@@ -37,7 +37,8 @@ class FakeGitHub:
     def upload_verified(self, release, path, **kwargs):
         content = path.read_bytes()
         sha = hashlib.sha256(content).hexdigest()
-        existing = next((a for a in self.assets.values() if a[0]["name"] == path.name), None)
+        name = kwargs.get("asset_name") or path.name
+        existing = next((a for a in self.assets.values() if a[0]["name"] == name), None)
         if existing:
             if existing[1] != content:
                 raise core.ReleaseError("asset collision")
@@ -45,7 +46,7 @@ class FakeGitHub:
         else:
             asset_id = type(self).next_id
             type(self).next_id += 1
-            record = {"id": asset_id, "name": path.name, "size": len(content), "digest": "sha256:" + sha,
+            record = {"id": asset_id, "name": name, "size": len(content), "digest": "sha256:" + sha,
                       "url": f"https://api.github.com/fixture/assets/{asset_id}",
                       "browser_download_url": f"https://example.invalid/{asset_id}"}
             self.assets[asset_id] = (record, content)
@@ -144,6 +145,20 @@ class TransportTest(unittest.TestCase):
         self.assertIn("[REDACTED]", received)
         self.assertFalse((self.windows.output / "linux.tar.gz").exists())
 
+    def test_partial_windows_checkpoints_without_uploaded_packages_do_not_block_linux(self):
+        self.compile(self.windows, "windows.zip")
+        self.windows.job["required_steps"]["windows"].append("integration")
+        core.atomic_json(self.windows.directory / "job.json", self.windows.job)
+        transport.handoff(self.windows)
+        transport.send_result(self.windows)
+        linux = self.receive()
+        transport.sync_results(linux)
+        self.assertFalse((linux.output / "windows.zip").exists())
+        self.compile(linux, "linux.tar.gz")
+        from local_release.catalogue import catalogue_job
+        catalogue_job(linux)
+        self.assertEqual(verify_catalogue(linux.directory)["status"], "incomplete")
+
     def test_windows_evidence_uses_portable_paths_and_reaches_linux(self):
         self.compile(self.windows, "windows.zip")
         proof = self.windows.directory / "results/windows-proof.txt"
@@ -158,6 +173,42 @@ class TransportTest(unittest.TestCase):
         transport.sync_results(linux)
         self.assertEqual((linux.directory / "results/windows-proof.txt").read_text(), "verified coverage evidence")
 
+    def test_one_linux_package_is_transferred_even_when_another_stage_failed(self):
+        self.windows.job["artifacts"].append("fixture.snap")
+        self.windows.job["required_steps"]["linux"].append("snap")
+        self.windows.job["artifact_specs"] = {"linux.tar.gz": {"host": "linux", "gates": ["compile"]}}
+        core.atomic_json(self.windows.directory / "job.json", self.windows.job)
+        transport.handoff(self.windows)
+        linux = self.receive()
+        self.compile(linux, "linux.tar.gz")
+        linux.result.update(status="failed", current_step="snap")
+        linux.result["steps"]["snap"] = {"status": "failed", "error": "fixture Snap failure"}
+        linux.save()
+        transport.send_result(linux)
+        transport.sync_results(self.windows)
+        self.assertTrue((self.windows.output / "linux.tar.gz").is_file())
+        self.assertFalse((self.windows.output / "fixture.snap").exists())
+        self.assertEqual(core.read_json(self.windows.directory / "results/linux.json")["status"], "failed")
+
+    def test_runtime_update_preserves_source_packages_and_repairs_existing_linux_job(self):
+        from local_release.runtime_update import prepare_update, send_update
+        self.compile(self.windows, "windows.zip")
+        transport.handoff(self.windows)
+        linux = self.receive()
+        self.compile(linux, "linux.tar.gz")
+        before = self.windows.job["sha"], self.windows.job["build"]
+        prepare_update(self.windows.directory, {}, "b" * 40)
+        updated = core.Context(self.windows.directory, {}, host="windows")
+        first = send_update(updated)
+        second = send_update(updated)
+        self.assertEqual(first["sha256"], second["sha256"])
+        transport.receive_jobs(self.profile, self.base / "linux-root", {})
+        received = core.Context(linux.directory, {}, host="linux")
+        self.assertEqual((received.job["sha"], received.job["build"]), before)
+        self.assertEqual(received.job["preparation_revision"], 2)
+        self.assertEqual((received.output / "linux.tar.gz").read_bytes(), b"linux package")
+        self.assertTrue((received.directory / "results/runtime-updates-received.json").is_file())
+
     def test_early_linux_failure_preserves_unacknowledged_windows_results(self):
         self.compile(self.windows, "windows.zip")
         transport.handoff(self.windows)
@@ -170,7 +221,7 @@ class TransportTest(unittest.TestCase):
         names = {a[0]["name"] for a in FakeGitHub.assets.values()}
         self.assertIn(transport.prefix(self.windows.job) + "windows-status.json", names)
         self.assertIn(transport.prefix(self.windows.job) + "windows-logs.zip", names)
-        self.assertNotIn(transport.prefix(self.windows.job) + "job.tar.gz", names)
+        self.assertIn(transport.prefix(self.windows.job) + "job.tar.gz", names)
         # The already received Linux job can resume and obtain forward evidence.
         transport.sync_results(linux)
         self.assertEqual((linux.output / "windows.zip").read_bytes(), b"windows package")

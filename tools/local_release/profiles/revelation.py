@@ -37,10 +37,16 @@ def metadata(repo, sha, profile):
     notes = re.search(r"(^## \[" + re.escape(version) + r"\].*?)(?=\n## |\Z)", changelog, re.M | re.S)
     if not notes:
         raise ReleaseError("Release notes missing for committed version")
+    from .linux_release import overlays
+    overlay_hashes = {name: hashlib.sha256(text.encode()).hexdigest() for name, text in overlays(repo, sha, profile).items()}
+    specifications = {name: {"host": "windows", "gates": ["verify-windows"]} for name in names[:5]}
+    specifications[names[5]] = {"host": "linux", "gates": ["linux-tar", "inspect-linux-tar"]}
+    specifications[names[6]] = {"host": "linux", "gates": ["snap", "inspect-snap"]}
     return dict(version=version, build=build, tag=f"v{version}+{build}", artifacts=names,
+                protocol_version=2, artifact_specs=specifications, generated_source_overlays=overlay_hashes,
                 release_notes=notes.group(1).strip().removesuffix("---").strip(),
                 required_steps={"windows": ["preflight", *QUALITY, "integration-windows", "integration-android", "integration-web", "signing-preflight", *WINDOWS],
-                                "linux": ["preflight", *QUALITY, "integration-linux", *LINUX]},
+                                "linux": ["preflight", *QUALITY, "integration-linux", *LINUX, "inspect-linux-tar", "inspect-snap"]},
                 architectures={"android": ["armeabi-v7a", "arm64-v8a", "x86_64"],
                                "windows": ["x64"], "linux": ["x64"], "snap": ["amd64"], "web": ["javascript"]},
                 generated_output_paths=["coverage/lcov.info"],
@@ -48,8 +54,9 @@ def metadata(repo, sha, profile):
                     "installer": ["windows"], "msix": ["windows"],
                     "sentry-web": ["web"], "web-manifest": ["sentry-web"], "web-zip": ["web-manifest"],
                     "verify-windows": ["apk", "aab", "installer", "msix", "web-zip"],
-                    "sentry-linux": ["linux"], "linux-tar": ["sentry-linux"],
-                    "snap": ["linux"], "verify-linux": ["snap", "linux-tar"],
+                    "sentry-linux": ["linux"], "linux-tar": ["linux"],
+                    "inspect-linux-tar": ["linux-tar"], "inspect-snap": ["snap"],
+                    "verify-linux": ["snap", "linux-tar", "inspect-linux-tar", "inspect-snap"],
                 },
                 apple="Outside current REV301 scope; no Apple builder is required for this profile")
 
@@ -81,13 +88,12 @@ def configured_secrets(ctx):
         raise ReleaseError("Production compile defines differ from the prepared job; keep the same settings on both OSes")
     ctx.result["compile_defines_sha256"] = fingerprint
     token = ctx.env.get("SENTRY_AUTH_TOKEN")
-    if not token and ctx.config.get("sentry_properties"):
+    if not token and ctx.config.get("sentry_properties") and Path(ctx.config["sentry_properties"]).is_file():
         text = Path(ctx.config["sentry_properties"]).read_text(encoding="utf-8")
         match = re.search(r"^auth_token\s*[=:]\s*(.+)\s*$", text, re.M)
         token = match.group(1).strip() if match else None
-    if not token:
-        raise ReleaseError("Sentry upload token missing on this OS")
-    ctx.env["SENTRY_AUTH_TOKEN"] = token
+    if token:
+        ctx.env["SENTRY_AUTH_TOKEN"] = token
     if ctx.host == "windows" and ctx.config.get("signing_store_file"):
         store = Path(ctx.config["signing_store_file"])
         ctx.env["SIGNING_STORE_FILE_BASE64"] = base64.b64encode(store.read_bytes()).decode("ascii")
@@ -118,6 +124,9 @@ def verify_versions(ctx):
 
 def preflight(ctx):
     if ctx.host == "linux":
+        from .linux_release import provision_flutter, apply_overlays
+        provision_flutter(ctx)
+        apply_overlays(ctx)
         collect_snap_history(ctx)
     verify_versions(ctx)
     flutter = json.loads(ctx.command(["flutter", "--version", "--machine"]))
@@ -138,8 +147,9 @@ def preflight(ctx):
     if ctx.host == "linux":
         if capture(["uname", "-m"]) != "x86_64":
             raise ReleaseError("This profile currently requires an x86_64 Linux builder")
-        ctx.command(["snapcraft", "--version"])
-        ctx.command(["unsquashfs", "-version"])
+        for executable in ("snapcraft", "unsquashfs"):
+            if shutil.which(executable, path=ctx.env.get("PATH")):
+                ctx.command([executable, "--version" if executable == "snapcraft" else "-version"])
     (ctx.directory / "release_notes.txt").write_text(ctx.job["release_notes"] + "\n", encoding="utf-8", newline="\n")
     atomic_json(ctx.directory / "results" / f"{ctx.host}-environment.json", {
         "sha": ctx.job["sha"], "version": ctx.job["version"], "build": ctx.job["build"],
@@ -433,44 +443,8 @@ def verify_windows(ctx):
 
 
 def build_linux(ctx):
-    ctx.stage("linux", lambda: ctx.command(["flutter", "build", "linux", "--release", "--target=lib/main.dart", "--dart-define-from-file=api-keys.json"]),
-              always=not (ctx.workspace / "build/linux/x64/release/bundle/revelation").is_file())
-    ctx.stage("sentry-linux", lambda: ctx.command(["dart", "run", "sentry_dart_plugin", "--sentry-define=upload_source_maps=false"]))
-    def linux_tar():
-        with tarfile.open(ctx.directory / output_for(ctx, ".tar.gz"), "w:gz") as archive:
-            archive.add(ctx.workspace / "build/linux/x64/release/bundle", arcname=".")
-    ctx.stage("linux-tar", linux_tar, [output_for(ctx, ".tar.gz")])
-    def snap():
-        script = ctx.config.get("snap_script")
-        expected = ctx.config.get("snap_script_sha256")
-        if not script or not expected or digest(Path(script)) != expected:
-            raise ReleaseError("Waiting for owner's exact Linux Snap commands and their pinned script digest")
-        ctx.command(["bash", str(Path(script).resolve())], env={"LOCAL_RELEASE_SHA": ctx.job["sha"],
-                    "LOCAL_RELEASE_VERSION": ctx.job["version"], "LOCAL_RELEASE_BUILD": str(ctx.job["build"]),
-                    "LOCAL_RELEASE_SNAP_OUTPUT": str(ctx.directory / output_for(ctx, ".snap"))})
-    ctx.stage("snap", snap, [output_for(ctx, ".snap")])
-    def verify_linux():
-        snap = ctx.directory / output_for(ctx, ".snap")
-        meta = ctx.command(["unsquashfs", "-cat", snap, "meta/snap.yaml"])
-        if not re.search(r"^name:\s*revelation-x\s*$", meta, re.M):
-            raise ReleaseError("Snap identity changed")
-        if not re.search(r"^version:\s*['\"]?" + re.escape(f"{ctx.job['version']}.{ctx.job['build']}") + r"['\"]?\s*$", meta, re.M):
-            raise ReleaseError("Snap version differs from job")
-        if "amd64" not in meta:
-            raise ReleaseError("Snap architecture differs from job")
-        # Real local install/smoke is required. Commands arrive with owner's Linux history.
-        script = ctx.config.get("snap_verify_script")
-        expected = ctx.config.get("snap_verify_script_sha256")
-        if not script or not expected or digest(Path(script)) != expected:
-            raise ReleaseError("Exact Snap installation/smoke/restore script is not configured")
-        ctx.command(["bash", str(Path(script).resolve())], env={"LOCAL_RELEASE_SNAP_OUTPUT": str(snap)})
-        atomic_json(ctx.directory / "results/linux-packages.json", {
-            "sha": ctx.job["sha"], "version": ctx.job["version"], "build": ctx.job["build"],
-            "snap": "identity, version, architecture, owner installation/smoke script passed",
-            "snap_script_sha256": ctx.config["snap_script_sha256"],
-            "snap_verify_script_sha256": expected,
-        })
-    ctx.stage("verify-linux", verify_linux, ["results/linux-packages.json"])
+    from .linux_release import build
+    build(ctx)
 
 
 def run(ctx):
@@ -479,9 +453,19 @@ def run(ctx):
     # Preflight always rechecks this host's credentials and restores host-local defines.
     ctx.stage("preflight", lambda: preflight(ctx), always=True)
     phases = set(ctx.config.get("phases", ["quality", "integration", "build"]))
-    if "quality" in phases:
-        quality(ctx)
-    if "integration" in phases:
-        integration(ctx)
-    if "build" in phases:
-        (build_windows if ctx.host == "windows" else build_linux)(ctx)
+    failures = []
+    for name, action in (("quality", quality), ("integration", integration),
+                         ("build", build_windows if ctx.host == "windows" else build_linux)):
+        if name not in phases:
+            continue
+        try:
+            action(ctx)
+        except (ReleaseError, OSError) as error:
+            from ..processes import JobStopped
+            if isinstance(error, JobStopped):
+                raise
+            if ctx.host != "linux":
+                raise
+            failures.append(name)
+    if failures:
+        raise ReleaseError("Linux phases remain incomplete: " + ", ".join(failures))

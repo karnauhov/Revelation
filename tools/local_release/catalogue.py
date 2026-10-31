@@ -55,11 +55,31 @@ def catalogue_job(context):
                 source = inside(context.directory, relative)
                 if source.parent != context.output or source.name not in job["artifacts"]:
                     continue
+                if not source.is_file():
+                    # A peer's checkpoint describes its build, not necessarily
+                    # an asset already mirrored here. Partial exchanges must
+                    # not block this host's independent work.
+                    manifest["packages"].pop(source.name, None)
+                    continue
                 if digest(source) != expected:
                     raise ReleaseError("Changed build output cannot enter the catalogue")
-                manifest["packages"][source.name] = {
+                specification = job.get("artifact_specs", {}).get(source.name)
+                inspected = not specification or all(result["steps"].get(gate, {}).get("status") == "passed" for gate in specification["gates"])
+                package = {
                     "name": source.name, "path": source.relative_to(directory).as_posix(),
                     "size": source.stat().st_size, "sha256": expected}
+                receipt_path = directory / "results" / (host + ("-sent.json" if host == context.host else "-received.json"))
+                if receipt_path.exists():
+                    remote = read_json(receipt_path).get("packages", {}).get(source.name, {})
+                    if remote.get("sha256") == expected:
+                        package.update(source_asset_id=remote["id"], url=remote["url"])
+                if inspected:
+                    manifest["packages"][source.name] = package
+                    manifest.get("unverified_packages", {}).pop(source.name, None)
+                else:
+                    manifest["packages"].pop(source.name, None)
+                    package["verification"] = "built_unverified"
+                    manifest.setdefault("unverified_packages", {})[source.name] = package
     manifest["status"] = "ready" if complete_results(context.directory, job) and set(manifest["packages"]) == set(job["artifacts"]) else "incomplete"
     atomic_json(manifest_path, manifest)
     return directory
@@ -67,7 +87,7 @@ def catalogue_job(context):
 
 def verify_catalogue(directory):
     manifest = read_json(directory / "manifest.json")
-    for name, record in {**manifest["packages"], **manifest.get("metadata", {})}.items():
+    for name, record in {**manifest["packages"], **manifest.get("unverified_packages", {}), **manifest.get("metadata", {})}.items():
         path = inside(directory, record["path"])
         if not path.is_file() or path.stat().st_size != record["size"] or digest(path) != record["sha256"]:
             raise ReleaseError("Local release package verification failed: " + name)

@@ -20,12 +20,32 @@ from local_release.core import (ReleaseError, atomic_json, discover, host_name,
 def parser():
     result = argparse.ArgumentParser(description="Shared local release coordinator")
     sub = result.add_subparsers(dest="command", required=True)
+    from local_release.agent import registry_path
+    register_parser = sub.add_parser("register-project", help="Connect one explicit project to the shared service")
+    register_parser.add_argument("--registry", type=Path, default=registry_path())
+    for field in ("repo", "profile", "root", "config"):
+        register_parser.add_argument("--" + field, type=Path, required=True)
+    dispatcher = sub.add_parser("agent", help="One sequential registry dispatch cycle")
+    dispatcher.add_argument("--registry", type=Path, default=registry_path())
+    dispatcher.add_argument("--role", choices=("windows", "linux"), default=host_name())
     prepare_parser = sub.add_parser("prepare", help="Freeze one source SHA and portable job")
     prepare_parser.add_argument("--repo", type=Path, required=True)
     prepare_parser.add_argument("--profile", type=Path, required=True)
     prepare_parser.add_argument("--root", type=Path, required=True)
     prepare_parser.add_argument("--sha", default="HEAD")
     prepare_parser.add_argument("--config", type=Path)
+    repair = sub.add_parser("refresh-runtime", help="Audited protocol repair preserving source SHA/build and package files")
+    repair.add_argument("--job", type=Path, required=True)
+    repair.add_argument("--config", type=Path, required=True)
+    repair.add_argument("--coordinator-sha", required=True)
+    repair.add_argument("--send", action="store_true")
+    for command in ("install-version-hook", "remove-version-hook", "version-commit", "version-finalize"):
+        counter = sub.add_parser(command)
+        counter.add_argument("--repo", type=Path, required=True)
+        if command != "remove-version-hook":
+            counter.add_argument("--profile", type=Path, required=True)
+        if command == "version-commit":
+            counter.add_argument("--message", type=Path, required=True)
     run = sub.add_parser("run", help="Resume this OS's stages of a prepared job")
     run.add_argument("--job", type=Path, required=True)
     run.add_argument("--config", type=Path, required=True)
@@ -88,8 +108,34 @@ def spawn_worker(queue):
 
 def main(argv=None):
     args = parser().parse_args(argv)
-    if args.command == "prepare":
+    if args.command == "register-project":
+        from local_release.agent import register
+        register(args.registry, args.repo, args.profile, args.root, args.config)
+    elif args.command == "agent":
+        from local_release.agent import cycle
+        cycle(args.registry, args.role)
+    elif args.command == "prepare":
         print(prepare(args.repo, args.profile, args.root, args.sha, read_json(args.config) if args.config else None))
+    elif args.command == "refresh-runtime":
+        from local_release.runtime_update import prepare_update, send_update
+        from local_release.core import Context, git
+        repository = Path(__file__).resolve().parents[2]
+        if git(repository, "rev-parse", "HEAD") != args.coordinator_sha or git(repository, "status", "--porcelain", "--", "tools/local_release"):
+            raise ReleaseError("Commit the coordinator repair before publishing a runtime update")
+        config = read_json(args.config)
+        prepare_update(args.job.resolve(), config, args.coordinator_sha)
+        if args.send:
+            send_update(Context(args.job.resolve(), config))
+    elif args.command in ("install-version-hook", "remove-version-hook", "version-commit", "version-finalize"):
+        from local_release import versioning
+        if args.command == "install-version-hook":
+            versioning.install(args.repo.resolve(), args.profile.resolve())
+        elif args.command == "remove-version-hook":
+            versioning.remove(args.repo.resolve())
+        elif args.command == "version-finalize":
+            versioning.finalize(args.repo.resolve(), args.profile.resolve())
+        else:
+            versioning.commit(args.repo.resolve(), args.profile.resolve(), args.message.resolve())
     elif args.command == "run":
         frozen_cli = args.job.resolve() / "runtime/local_release/cli.py"
         if Path(__file__).resolve() != frozen_cli:

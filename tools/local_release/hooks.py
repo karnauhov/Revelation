@@ -58,8 +58,9 @@ def install(queue, proof=None, test_mode=False):
                 command = " ".join(shlex.quote(str(p).replace("\\", "/")) for p in
                                    (sys.executable, script, "notify", "--queue", queue.resolve()))
                 path.write_text("#!/bin/sh\n" + MARKER + "\n"
-                                + 'release_sha=$(git rev-parse HEAD) || release_sha=HEAD\nrelease_status=0\n'
+                                + 'release_status=0\n'
                                 + f"if [ -x {old} ]; then {old} \"$@\" || release_status=$?; fi\n"
+                                + 'release_sha=$(git rev-parse HEAD) || release_sha=HEAD\n'
                                 + command + ' --sha "$release_sha" >/dev/null 2>&1 || :\n'
                                 + 'exit "$release_status"\n', encoding="utf-8", newline="\n")
                 os.chmod(path, 0o755)

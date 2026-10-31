@@ -84,6 +84,18 @@ class CoordinatorTest(unittest.TestCase):
         self.assertEqual((ctx.workspace / "count").read_text(), "x")
         self.assertTrue(github.complete_results(job, ctx.job))
 
+    def test_peer_failure_before_preflight_is_incomplete_without_false_input_mismatch(self):
+        job = self.job()
+        specification = core.read_json(job / "job.json")
+        specification["compile_defines_sha256"] = "expected"
+        ctx = core.Context(job, {})
+        ctx.result.update(status="failed", current_step="exchange-receive")
+        ctx.save()
+        self.assertFalse(github.complete_results(job, specification))
+        core.run_job(job, {})
+        with self.assertRaisesRegex(core.ReleaseError, "compile settings differ"):
+            github.complete_results(job, specification)
+
     def test_unpushed_source_builds_locally_then_waits_without_rebuilding(self):
         job = self.job()
         waiting = core.SourceUnavailable("source SHA is not accessible")
@@ -103,6 +115,18 @@ class CoordinatorTest(unittest.TestCase):
         with patch.object(api, "request", side_effect=github.GitHubHTTPError("HTTP 403", 403)):
             with self.assertRaises(github.GitHubHTTPError):
                 api.require_source("a" * 40)
+
+    def test_exchange_outage_preserves_local_build_and_retry_does_not_recompile(self):
+        job = self.job()
+        with patch("local_release.transport.handoff", side_effect=core.ReleaseError("offline")), patch("local_release.transport.send_result", side_effect=core.ReleaseError("offline")):
+            with self.assertRaisesRegex(core.ReleaseError, "offline"):
+                core.run_job(job, {}, publish=True)
+        ctx = core.Context(job, {})
+        self.assertTrue((ctx.output / "sample.zip").is_file())
+        self.assertTrue((job / "results" / (core.host_name() + "-outbox.json")).is_file())
+        with patch("local_release.transport.handoff"), patch("local_release.transport.sync_results"), patch("local_release.transport.send_result"), patch("local_release.github.publish_job"):
+            core.run_job(job, {}, publish=True)
+        self.assertEqual((ctx.workspace / "count").read_text(), "x")
 
     def test_changed_artifact_is_rebuilt_without_reusing_bad_checkpoint(self):
         job = self.job()

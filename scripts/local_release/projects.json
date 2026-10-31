@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "projects": [
+    {
+      "project": "revelation",
+      "repository": "karnauhov/Revelation",
+      "directory": "Revelation",
+      "profile": "scripts/local_release/revelation.json",
+      "hosts": ["windows", "linux"],
+      "enabled": true
+    }
+  ]
+}

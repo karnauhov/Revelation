@@ -3,5 +3,9 @@
   "project": "revelation",
   "repository": "karnauhov/Revelation",
   "adapter": "local_release.profiles.revelation",
-  "flutter": "3.47.2"
+  "flutter": "3.47.2",
+  "versioning": {
+    "helper": ".agents/skills/revelation/scripts/update_release_version.py",
+    "files": ["pubspec.yaml", "setup.iss", "snap/snapcraft.yaml", "snap/gui/revelation-x.desktop"]
+  }
 }

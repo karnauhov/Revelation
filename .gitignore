@@ -36,6 +36,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+**/.gradle/
 
 # Durable local release jobs, signed packages, logs and historical GitHub assets.
 /.local-releases/

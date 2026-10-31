@@ -171,24 +171,25 @@ class GitHub:
             "draft": True, "prerelease": False,
         })
 
-    def upload_verified(self, release, path, *, allow_upload=True):
+    def upload_verified(self, release, path, *, allow_upload=True, asset_name=None):
         expected = digest(path)
+        name = asset_name or path.name
         assets = self.pages(f"/releases/{release['id']}/assets")
-        found = next((a for a in assets if a["name"] == path.name), None)
+        found = next((a for a in assets if a["name"] == name), None)
         if found:
             if found["size"] != path.stat().st_size:
                 raise ReleaseError("Asset collision: " + path.name)
         else:
             if not allow_upload:
                 raise ReleaseError("Published release is missing an expected asset")
-            url = release["upload_url"].split("{", 1)[0] + "?name=" + urllib.parse.quote(path.name)
+            url = release["upload_url"].split("{", 1)[0] + "?name=" + urllib.parse.quote(name)
             found = self.request("POST", url, path.read_bytes(), "application/octet-stream")
         with tempfile.TemporaryDirectory(prefix="local-release-readback-") as temporary:
             actual = self.download_asset(found, Path(temporary) / path.name)
             if actual != expected:
                 raise ReleaseError("Downloaded asset digest mismatch: " + path.name)
         return {"id": found["id"], "url": found["browser_download_url"],
-                "sha256": expected, "size": path.stat().st_size}
+                "sha256": expected, "size": path.stat().st_size, "asset_name": name}
 
 
 def complete_results(directory, job):
@@ -200,10 +201,10 @@ def complete_results(directory, job):
         result = read_json(path)
         if result["sha"] != job["sha"] or result["run_id"] != job["run_id"]:
             raise ReleaseError("Mixed release results")
-        if job.get("compile_defines_sha256") and result.get("compile_defines_sha256") != job["compile_defines_sha256"]:
-            raise ReleaseError("Builder compile settings differ between operating systems")
         if any(result["steps"].get(step, {}).get("status") != "passed" for step in required_steps):
             return False
+        if job.get("compile_defines_sha256") and result.get("compile_defines_sha256") != job["compile_defines_sha256"]:
+            raise ReleaseError("Builder compile settings differ between operating systems")
         for step in required_steps:
             for relative, expected in result["steps"][step].get("outputs", {}).items():
                 from .core import inside
@@ -223,7 +224,8 @@ def publish_job(context):
         publication_path = directory / "publication.json"
         saved = read_json(publication_path) if publication_path.exists() else {}
         notes = (directory / "release_notes.txt").read_text(encoding="utf-8")
-        release = api.ensure_release(job, notes)
+        with lock(directory / ".release.lock"):
+            release = api.ensure_release(job, notes)
         saved.update(run_id=job["run_id"], sha=job["sha"], tag=job["tag"],
                      release_id=release["id"], url=release["html_url"], published=False)
         saved.setdefault("assets", {})

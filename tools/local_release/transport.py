@@ -9,6 +9,7 @@ from __future__ import annotations
 import io
 import base64
 import json
+import re
 from pathlib import Path
 import tarfile
 import tempfile
@@ -18,13 +19,15 @@ from .core import (Context, ReleaseError, atomic_json, digest, host_name, inside
                    lock, read_json, verify_runtime)
 from .catalogue import catalogue_job, release_directory
 from .github import GitHub, credential
+from .protocol import VERSION, draft_packages, same_source
 
 
 def connection(ctx):
     token = credential(ctx.config)
     ctx.refresh_redaction([token])
     api = GitHub(ctx.job["repository"], token)
-    release = api.ensure_release(ctx.job, ctx.job["release_notes"])
+    with lock(ctx.directory / ".release.lock"):
+        release = api.ensure_release(ctx.job, ctx.job["release_notes"])
     return api, release
 
 
@@ -68,13 +71,16 @@ def handoff(ctx):
             actual = api.download_asset(old, received)
             with tarfile.open(received) as archive:
                 saved = json.load(archive.extractfile("job.json"))
-                if saved != ctx.job:
+                if saved != ctx.job and not (same_source(saved, ctx.job) and ctx.job.get("preparation_revision", 1) > saved.get("preparation_revision", 1)):
                     raise ReleaseError("Existing handoff belongs to a different prepared job")
             record = {"id": old["id"], "sha256": actual, "url": old["browser_download_url"]}
         else:
             record = api.upload_verified(release, path)
         atomic_json(ctx.directory / "exchange.json", {"release_id": release["id"], "job_asset": record,
                                                        "source_sha": ctx.job["sha"], "run_id": ctx.job["run_id"]})
+        if old and saved != ctx.job:
+            from .runtime_update import send_update
+            send_update(ctx)
         return release
 
 
@@ -82,14 +88,12 @@ def send_result(ctx):
     api, release = connection(ctx)
     with lock(ctx.directory / ".exchange.lock"), tempfile.TemporaryDirectory(prefix="release-result-") as folder:
         # Upload only outputs whose producing and host verification gates passed.
-        required = ctx.job["required_steps"][ctx.host]
-        verified = all(ctx.result["steps"].get(s, {}).get("status") == "passed" for s in required)
         package_records = {}
-        if verified:
-            for name in ctx.job["artifacts"]:
-                path = ctx.output / name
-                if path.is_file():
-                    package_records[name] = api.upload_verified(release, path, allow_upload=release["draft"])
+        for name, inspection in draft_packages(ctx).items():
+            asset_name = (prefix(ctx.job) + ctx.host + "-package-" + inspection["sha256"] + "-" + name
+                          if ctx.job.get("protocol_version", 1) >= 2 else name)
+            package_records[name] = {**api.upload_verified(release, ctx.output / name, allow_upload=release["draft"], asset_name=asset_name),
+                                     **inspection}
         log_path = Path(folder) / (prefix(ctx.job) + ctx.host + "-logs.zip")
         with zipfile.ZipFile(log_path, "w", zipfile.ZIP_DEFLATED) as archive:
             for path in sorted((ctx.directory / "logs" / ctx.host).glob("*.log")):
@@ -106,21 +110,44 @@ def send_result(ctx):
                         if digest(source) != expected or source.stat().st_size > 20 * 1024**2:
                             raise ReleaseError("Invalid result evidence")
                         evidence[relative] = base64.b64encode(source.read_bytes()).decode("ascii")
-        payload = {"schema": 1, "run_id": ctx.job["run_id"], "sha": ctx.job["sha"],
+        payload = {"schema": 1, "protocol_version": VERSION, "run_id": ctx.job["run_id"], "sha": ctx.job["sha"],
+                   "runtime_revision": ctx.job.get("preparation_revision", 1),
                    "version": ctx.job["version"], "build": ctx.job["build"], "host": ctx.host,
                    "result": ctx.result, "packages": package_records, "logs": logs, "evidence": evidence,
                    "receipts": {}}
         received_job = ctx.directory / "received.json"
         if received_job.exists():
             payload["receipts"]["job"] = read_json(received_job)
+        runtime_receipts = ctx.directory / "results/runtime-updates-received.json"
+        if runtime_receipts.exists():
+            payload["receipts"]["runtime_updates"] = read_json(runtime_receipts)
         for peer in ctx.job["required_steps"]:
             receipt = ctx.directory / "results" / f"{peer}-received.json"
             if peer != ctx.host and receipt.exists():
                 payload["receipts"][peer] = read_json(receipt)
         atomic_json(status_path, json.loads(ctx.redact(json.dumps(payload))))
         status = replace_exchange(api, release, status_path, ctx.job)
-        atomic_json(ctx.directory / "results" / f"{ctx.host}-sent.json", {"status": status, "logs": logs})
+        atomic_json(ctx.directory / "results" / f"{ctx.host}-sent.json", {"status": status, "logs": logs, "packages": package_records})
         (ctx.directory / "results" / f"{ctx.host}-outbox.json").unlink(missing_ok=True)
+
+
+def receive_runtime_updates(api, assets, job, destination, folder):
+    from .runtime_update import unpack, install
+    expression = re.compile(re.escape(prefix(job)) + r"runtime-v(\d+)\.tar\.gz$")
+    updates = sorted((int(match.group(1)), item) for item in assets if (match := expression.fullmatch(item["name"])))
+    for revision, item in updates:
+        if revision <= read_json(destination / "job.json").get("preparation_revision", 1):
+            continue
+        patch = Path(folder) / f"runtime-v{revision}.tar.gz"
+        patch_digest = api.download_asset(item, patch)
+        patch_dir = Path(folder) / f"runtime-v{revision}"
+        patch_dir.mkdir()
+        unpack(patch, patch_dir, 16 * 1024**2)
+        install(destination, patch_dir)
+        receipt_path = destination / "results/runtime-updates-received.json"
+        receipts = read_json(receipt_path) if receipt_path.exists() else []
+        receipts.append({"asset_id": item["id"], "sha256": patch_digest, "revision": revision})
+        atomic_json(receipt_path, receipts)
 
 
 def receive_jobs(profile, root, config, tag=None):
@@ -138,6 +165,22 @@ def receive_jobs(profile, root, config, tag=None):
         if not asset:
             continue
         root.mkdir(parents=True, exist_ok=True)
+        version = re.fullmatch(r"v(\d+\.\d+\.\d+)\+(\d+)", release["tag_name"])
+        target_sha = release.get("target_commitish", "")
+        if version and re.fullmatch(r"[0-9a-f]{40}", target_sha):
+            known = release_directory(root, profile["project"], version[1], int(version[2]), target_sha)
+            receipt_path = known / "received.json"
+            if (known / "job.json").exists() and receipt_path.exists() and (known / "source.bundle").is_file():
+                receipt = read_json(receipt_path)
+                if receipt.get("asset_id") == asset["id"] and asset.get("digest", "sha256:" + receipt["sha256"]) == "sha256:" + receipt["sha256"]:
+                    current = read_json(known / "job.json")
+                    if f"<!-- local-release:{current['run_id']} -->" not in release["body"]:
+                        raise ReleaseError("Cached job ownership marker differs")
+                    verify_runtime(known)
+                    with tempfile.TemporaryDirectory(prefix="release-update-receive-") as folder:
+                        receive_runtime_updates(api, assets, current, known, folder)
+                    received.append(known)
+                    continue
         with tempfile.TemporaryDirectory(prefix="release-receive-") as folder:
             downloaded = Path(folder) / "job.tar.gz"
             transport_digest = api.download_asset(asset, downloaded)
@@ -155,7 +198,7 @@ def receive_jobs(profile, root, config, tag=None):
                     with archive.extractfile(member) as source, destination.open("wb") as stream:
                         __import__("shutil").copyfileobj(source, stream)
             job = read_json(extracted / "job.json")
-            if job["profile"] != profile or job["repository"] != profile["repository"]:
+            if any(job["profile"].get(key) != profile.get(key) for key in ("project", "repository", "adapter", "flutter")) or job["repository"] != profile["repository"]:
                 raise ReleaseError("Received profile differs from this project")
             if f"<!-- local-release:{job['run_id']} -->" not in release["body"] or job["tag"] != release["tag_name"]:
                 raise ReleaseError("Received job does not match the draft release")
@@ -166,7 +209,8 @@ def receive_jobs(profile, root, config, tag=None):
                 raise ReleaseError("Received source bundle digest mismatch")
             destination = release_directory(root, job["project"], job["version"], job["build"], job["sha"])
             if (destination / "job.json").exists():
-                if read_json(destination / "job.json") != job:
+                current = read_json(destination / "job.json")
+                if current != job and not (same_source(current, job) and current.get("preparation_revision", 1) >= job.get("preparation_revision", 1)):
                     raise ReleaseError("Local job differs from received immutable job")
             else:
                 destination.parent.mkdir(parents=True, exist_ok=True)
@@ -175,6 +219,7 @@ def receive_jobs(profile, root, config, tag=None):
                 __import__("shutil").copytree(extracted, destination)
             atomic_json(destination / "received.json", {"asset_id": asset["id"], "sha256": transport_digest,
                                                         "release_id": release["id"], "run_id": job["run_id"]})
+            receive_runtime_updates(api, assets, job, destination, folder)
             received.append(destination)
     return received
 
@@ -195,12 +240,18 @@ def sync_results(ctx, *, cleanup=False):
             path = Path(folder) / "status.json"
             status_digest = api.download_asset(status, path)
             payload = read_json(path)
+            if payload.get("protocol_version", 1) > VERSION:
+                raise ReleaseError("Unsupported result exchange protocol")
             if (payload["run_id"], payload["sha"], payload["version"], payload["build"], payload["host"]) != (
                     ctx.job["run_id"], ctx.job["sha"], ctx.job["version"], ctx.job["build"], host):
                 raise ReleaseError("Remote result belongs to a different build")
             result = payload["result"]
             if (result["run_id"], result["sha"], result["host"]) != (ctx.job["run_id"], ctx.job["sha"], host):
                 raise ReleaseError("Remote result identity mismatch")
+            local_result_path = ctx.directory / "results" / f"{host}.json"
+            if local_result_path.exists() and read_json(local_result_path).get("runtime_revision", 1) > payload.get("runtime_revision", 1):
+                continue
+            result["runtime_revision"] = payload.get("runtime_revision", 1)
             expected_evidence = {relative: expected for step in result["steps"].values()
                                  if step.get("status") == "passed"
                                  for relative, expected in step.get("outputs", {}).items()
@@ -217,13 +268,31 @@ def sync_results(ctx, *, cleanup=False):
             for package_name, record in payload["packages"].items():
                 if package_name not in ctx.job["artifacts"]:
                     raise ReleaseError("Unexpected remote package")
+                if not any(step.get("status") == "passed" and step.get("outputs", {}).get("packages/" + package_name) == record["sha256"]
+                           for step in result["steps"].values()):
+                    raise ReleaseError("Remote package is not attested by a producing checkpoint")
+                spec = ctx.job.get("artifact_specs", {}).get(package_name)
+                if spec and (spec["host"] != host or record.get("verification") == "structure_verified" and any(result["steps"].get(gate, {}).get("status") != "passed" for gate in spec["gates"])):
+                    raise ReleaseError("Remote package inspection gates are incomplete")
                 asset = by_id.get(record["id"])
-                if not asset or asset["name"] != package_name:
+                expected_name = (prefix(ctx.job) + host + "-package-" + record["sha256"] + "-" + package_name
+                                 if payload.get("protocol_version", 1) >= 2 and ctx.job.get("protocol_version", 1) >= 2 else package_name)
+                if not asset or asset["name"] != expected_name:
                     raise ReleaseError("Remote package asset ID mismatch")
                 local = inside(ctx.output, package_name)
                 if local.exists():
                     if digest(local) != record["sha256"]:
-                        raise ReleaseError("Local package collision; existing file preserved")
+                        manifest_path = ctx.directory / "manifest.json"
+                        manifest = read_json(manifest_path) if manifest_path.exists() else {}
+                        pending = manifest.get("unverified_packages", {}).get(package_name, {})
+                        if pending.get("sha256") != digest(local) or not pending.get("source_asset_id"):
+                            raise ReleaseError("Local package collision; existing file preserved")
+                        replacement = Path(folder) / package_name
+                        if api.download_asset(asset, replacement) != record["sha256"]:
+                            raise ReleaseError("Replacement package digest mismatch; original preserved")
+                        replacement.replace(local)
+                        manifest["unverified_packages"].pop(package_name)
+                        atomic_json(manifest_path, manifest)
                 else:
                     if api.download_asset(asset, local) != record["sha256"]:
                         raise ReleaseError("Remote package hash mismatch")
@@ -245,10 +314,11 @@ def sync_results(ctx, *, cleanup=False):
             atomic_json(ctx.directory / "results" / f"{host}.json", result)
             receipt = {"run_id": ctx.job["run_id"], "sha": ctx.job["sha"], "host": host,
                        "status_asset_id": status["id"], "status_sha256": status_digest,
-                       "log_asset_id": logs["id"], "logs_sha256": payload["logs"]["sha256"]}
+                       "log_asset_id": logs["id"], "logs_sha256": payload["logs"]["sha256"], "packages": payload["packages"]}
             atomic_json(ctx.directory / "results" / f"{host}-received.json", receipt)
             imported.append(receipt)
             if cleanup and ctx.host == "windows":
+                from .github import complete_results
                 # A failed Linux run can return before receiving Windows
                 # results. Delete forward payloads only with exact acknowledgments.
                 owned = [status, logs]
@@ -259,7 +329,7 @@ def sync_results(ctx, *, cleanup=False):
                     exchange = read_json(exchange_path)
                     sent_job = exchange["job_asset"]
                     asset = by_id.get(sent_job["id"])
-                    if (asset and asset["name"] == prefix(ctx.job) + "job.tar.gz"
+                    if (complete_results(ctx.directory, ctx.job) and asset and asset["name"] == prefix(ctx.job) + "job.tar.gz"
                             and job_ack.get("asset_id") == sent_job["id"]
                             and job_ack.get("sha256") == sent_job["sha256"]
                             and job_ack.get("release_id") == release["id"]
@@ -281,6 +351,29 @@ def sync_results(ctx, *, cleanup=False):
                             asset = by_id.get(sent[key]["id"])
                             if asset and asset["name"] == prefix(ctx.job) + suffix:
                                 owned.append(asset)
+                runtime_sent = ctx.directory / "results/runtime-update-sent.json"
+                if runtime_sent.exists() and complete_results(ctx.directory, ctx.job):
+                    sent_update = read_json(runtime_sent)
+                    for ack in acknowledgments.get("runtime_updates", []):
+                        if ack.get("asset_id") == sent_update["id"] and ack.get("sha256") == sent_update["sha256"]:
+                            asset = by_id.get(sent_update["id"])
+                            if asset and re.fullmatch(re.escape(prefix(ctx.job)) + r"runtime-v\d+\.tar\.gz", asset["name"]):
+                                owned.append(asset)
+                publication_path = ctx.directory / "publication.json"
+                if publication_path.exists() and read_json(publication_path).get("published"):
+                    mirror = read_json(publication_path)["assets"]
+                    temporary_packages = list(payload["packages"].items())
+                    if own_sent.exists():
+                        temporary_packages += list(read_json(own_sent).get("packages", {}).items())
+                    for name, record in temporary_packages:
+                        asset = by_id.get(record["id"])
+                        canonical = mirror.get(name, {})
+                        if (asset and asset["name"].startswith(prefix(ctx.job))
+                                and canonical.get("sha256") == record["sha256"]
+                                and canonical.get("id") != record["id"]
+                                and digest(ctx.output / name) == record["sha256"]):
+                            owned.append(asset)
+                owned = list({asset["id"]: asset for asset in owned}.values())
                 for asset in owned:
                     api.request("DELETE", f"/releases/assets/{asset['id']}")
                 atomic_json(ctx.directory / "results/exchange-cleanup.json", {

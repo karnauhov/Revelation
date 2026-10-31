@@ -86,6 +86,16 @@ def host_name() -> str:
     return {"Windows": "windows", "Linux": "linux", "Darwin": "macos"}[platform.system()]
 
 
+def install_local_excludes(repo: Path):
+    """Keep private release state ignored even while an older branch is checked out."""
+    path = Path(git(repo, "rev-parse", "--path-format=absolute", "--git-path", "info/exclude"))
+    original = path.read_text(encoding="utf-8") if path.exists() else ""
+    additions = [line for line in ("/.local-releases/", "**/.gradle/") if line not in original.splitlines()]
+    if additions:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(original.rstrip() + "\n# AI11 local build state (all branches)\n" + "\n".join(additions) + "\n", encoding="utf-8")
+
+
 def inside(root: Path, relative: str) -> Path:
     path = (root / relative).resolve()
     if not path.is_relative_to(root.resolve()) or path == root.resolve():
@@ -149,6 +159,7 @@ class Context:
 
     def save(self):
         self.result["updated"] = time.time()
+        self.result["runtime_revision"] = self.job.get("preparation_revision", 1)
         atomic_json(self.result_path, self.result)
 
     def refresh_redaction(self, values=()):
@@ -174,26 +185,39 @@ class Context:
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 stdin=stdin,
                 encoding="utf-8", errors="replace", bufsize=1,
+                start_new_session=os.name != "nt",
+                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0,
             )
+            from .processes import StopMonitor, JobStopped, terminate_tree
+            monitor = StopMonitor(process, self.directory / "stop-request.json")
+            monitor.__enter__()
             output = []
             try:
                 for line in process.stdout:
                     output.append(line)
                     stream.write(self.redact(line))
                     stream.flush()
+                    if self.config.get("stream_output") and sys.stdout:
+                        print(self.redact(line), end="", flush=True)
                 code = process.wait()
             except BaseException:
-                process.terminate()
+                terminate_tree(process)
                 process.wait()
                 raise
             finally:
                 process.stdout.close()
+                monitor.__exit__()
             stream.write(f"exit_code={code}\n")
+            if monitor.stopped:
+                raise JobStopped("Stopped by owner; verified packages and checkpoints preserved")
         if code:
             raise ReleaseError(f"{step}: {Path(resolved[0]).name} exited {code}; log: {log}")
         return "".join(output)
 
     def stage(self, name, action, outputs=(), *, always=False):
+        if (self.directory / "stop-request.json").exists():
+            from .processes import JobStopped
+            raise JobStopped("Stopped by owner before the next stage")
         previous = self.result["steps"].get(name, {})
         paths = [inside(self.directory, value) for value in outputs]
         if not always and previous.get("status") == "passed":
@@ -221,8 +245,10 @@ class Context:
             print(f"PASS {self.host}/{name}", flush=True)
             return True
         except BaseException as error:
-            self.result.update(status="failed", error=self.redact(str(error)))
-            self.result["steps"][name].update(status="failed", finished=time.time())
+            from .processes import JobStopped
+            state = "stopped" if isinstance(error, JobStopped) else "failed"
+            self.result.update(status=state, error=self.redact(str(error)))
+            self.result["steps"][name].update(status=state, finished=time.time(), error=self.redact(str(error)))
             self.save()
             raise
 
@@ -243,13 +269,16 @@ class Context:
             raise ReleaseError("Source bundle digest mismatch")
         if not self.workspace.exists():
             self.workspace.parent.mkdir(parents=True, exist_ok=True)
-            capture(["git", "clone", "--no-checkout", "-c", "core.longpaths=true", bundle, self.workspace])
+            hooks = (self.workspace / ".git/ai11-no-hooks").as_posix()
+            capture(["git", "-c", "core.hooksPath=" + hooks, "clone", "--no-checkout", "-c", "core.longpaths=true", bundle, self.workspace])
+            git(self.workspace, "config", "core.hooksPath", hooks)
             git(self.workspace, "checkout", "--detach", self.job["sha"])
         if git(self.workspace, "rev-parse", "HEAD") != self.job["sha"]:
             raise ReleaseError("Builder checkout SHA differs from job")
         changed = git(self.workspace, "diff", "HEAD", "--name-only", "--no-ext-diff").splitlines()
         allowed = set(self.job.get("generated_output_paths", []))
-        if any(path not in allowed for path in changed):
+        overlays = self.job.get("generated_source_overlays", {})
+        if any(path not in allowed and not (path in overlays and digest(self.workspace / path) == overlays[path]) for path in changed):
             raise ReleaseError("Builder tracked sources changed; inspect before resuming")
 
     def attach_short_workspace(self):
@@ -286,6 +315,7 @@ class Context:
 
 def prepare(repo: Path, profile_path: Path, root: Path, sha="HEAD", config=None) -> Path:
     repo, root = repo.resolve(), root.resolve()
+    install_local_excludes(repo)
     profile = read_json(profile_path)
     full_sha = git(repo, "rev-parse", f"{sha}^{{commit}}")
     adapter = importlib.import_module(profile["adapter"])
@@ -368,6 +398,9 @@ def discover(repo: Path, root: Path, queue_path: Path):
     """Discover every reachable local/remote/tag commit, independently of branch/path."""
     with lock(root / ".queue.lock"):
         data = read_json(queue_path)
+        pending_version = Path(git(repo, "rev-parse", "--path-format=absolute", "--git-path", "ai11-version-pending.json"))
+        if pending_version.exists() and git(repo, "rev-parse", "HEAD") != read_json(pending_version)["base_head"]:
+            return data
         known = set(data["baseline"]) | set(data["commits"])
         events = sorted((root / "events" / queue_path.stem).glob("*.json"))
         tips = [read_json(path)["sha"] for path in events]
@@ -412,6 +445,15 @@ def run_job(directory: Path, config: dict, publish=False):
                     # Local commits build before push. Remote transfer resumes
                     # once that exact SHA becomes accessible, without pushing it.
                     pass
+                except (ReleaseError, OSError) as exchange_error:
+                    from .processes import JobStopped
+                    if isinstance(exchange_error, JobStopped):
+                        raise
+                    context.result["transfer_error"] = context.redact(str(exchange_error))
+                    context.save()
+                    atomic_json(context.directory / "results" / f"{context.host}-outbox.json", {
+                        "pending": True, "sha": context.job["sha"], "reason": context.redact(str(exchange_error)),
+                        "action": "Local stages continue; transfer is retried after network/authentication recovery"})
             context.stage("checkout", context.checkout, always=True)
             context.attach_short_workspace()
             adapter = importlib.import_module(context.job["profile"]["adapter"])
@@ -436,7 +478,8 @@ def run_job(directory: Path, config: dict, publish=False):
                 "pending": True, "sha": context.job["sha"], "waiting_source_sha": True,
                 "reason": context.redact(str(error)), "action": "Worker resumes when the exact source SHA is accessible on GitHub"})
         except BaseException as error:
-            context.result.update(status="failed", error=context.redact(str(error)))
+            from .processes import JobStopped
+            context.result.update(status="stopped" if isinstance(error, JobStopped) else "failed", error=context.redact(str(error)))
             context.save()
             if publish:
                 try:
@@ -511,7 +554,10 @@ def worker(queue_path: Path, *, once=False, interval=30, runner=None):
                     update_queue(root, queue_path, sha, status=status, job=str(job), error=None)
                 except Exception as error:
                     # Continue later commits; a failed SHA is never replaced by the newest SHA.
-                    update_queue(root, queue_path, sha, status="failed", error=str(error))
+                    saved_job = read_json(queue_path)["commits"][sha].get("job")
+                    result_path = Path(saved_job) / "results" / (host_name() + ".json") if saved_job else None
+                    stopped = result_path and result_path.exists() and read_json(result_path).get("status") == "stopped"
+                    update_queue(root, queue_path, sha, status="stopped" if stopped else "failed", error=str(error))
             if once:
                 return
             time.sleep(interval)

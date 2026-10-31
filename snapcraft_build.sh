@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
-rm -rf build
-flutter clean
-flutter pub get
-flutter run -d linux --debug --dart-define-from-file=api-keys.json
-snapcraft clean
-snapcraft pack
-echo "Build complete"
+cd -- "$(dirname -- "$0")"
+exec bash scripts/local_release/run-linux.sh "$@"

@@ -67,8 +67,7 @@ uses its own isolated checkout and saves results in its own canonical local cata
 The default host config is `~/.config/ai11-local-release/revelation.json`.
 Each OS needs independent GitHub authentication (`GH_TOKEN`, protected token file, native Git credential helper or `gh auth`)
 and its own local Sentry token. Windows secrets are not transferred. Flutter/native/Snap tools must actually be available on Linux.
-Snap uses the owner's reviewed commands through `snap_script`, `snap_script_sha256`, `snap_verify_script`
-and `snap_verify_script_sha256`. Bounded safe history candidates are collected as evidence; shell history is not executed automatically.
+Automated Snap preserves the confirmed clean/pack order and release override-build in a separate checkout with pinned Flutter. Interactive debug run is unnecessary. Final local install/smoke/restore acceptance uses `snap_verify_script` and `snap_verify_script_sha256`; missing acceptance keeps the release private while packages are transferred independently. Bounded safe history candidates are collected as evidence; shell history is not executed automatically.
 
 Linux uploads verified packages and current status, including redacted logs after a failure. It preserves a nonzero exit code.
 If network/authentication prevents upload, the result remains in the local outbox for retry; remote delivery is not claimed.
@@ -102,7 +101,7 @@ Other projects should supply profiles to this engine instead of forking coordina
 
 `init-queue` records a historical boundary without activation. `install-trigger` requires a complete published real trial.
 Until then, production hooks/startup workers stay inactive; hook tests use private repositories.
-After activation, `[skip ci]` anywhere in the full message skips build/publication while preserving existing version hooks.
+`[skip ci]` anywhere in the full message skips automatic build-number increment and build/publication.
 Every other new local/received-remote SHA gets its own durable entry without branch/path/author filters or latest-only replacement.
 Existing hooks are chained and restored on removal. Different SHAs with the same version/build retain separate local packages;
 an external tag collision blocks publication and never changes the source or overwrites a release.
@@ -113,3 +112,5 @@ The coordinator enumerates every `integration_test/**/*_test.dart`, including sm
 in a separate Flutter process with its own checkpoint. With Flutter 3.47.2 this also avoids
 `DesktopLogReader` closing after the first desktop application. Retry retains passed files and runs the remainder;
 the aggregate integration gate passes only after the complete suite.
+
+The [Windows/Linux protocol](protocol.en.md) defines jobs, runtime repairs, partial packages, logs and receipts. Implementation uses main; exchange needs no separate branch.
