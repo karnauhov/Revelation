@@ -1,6 +1,6 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.0.7
+Doc-Version: 1.0.8
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -61,6 +61,10 @@ SQLite fixtures передаются бинарным `adb exec-in`: обычн�
 так как завершение `exec-in` опережает окончание удалённой записи. Готовые APK/AAB не пересобираются из-за fixture repair.
 Android-файлы запускаются с `flutter test --no-uninstall`: стандартная очистка Flutter после первого файла
 иначе удаляет приложение вместе с заранее установленными тестовыми базами. AVD остаётся отдельным временным окружением.
+Web `flutter drive` требует IntegrationTest binding. Для smoke-файлов с обычным WidgetTest binding
+координатор создаёт launcher в `.dart_tool/ai11_integration/`, подключает IntegrationTest binding и вызывает
+исходный `main()` без изменения сценариев. Файлы с собственным IntegrationTest binding запускаются напрямую.
+Хеши launcher/исходного test сохраняются в `results/windows-web-driver-targets.json`.
 Перед Android-командами координатор проверяет пути Flutter-плагинов и при необходимости пересоздаёт их через
 `flutter pub get` из физического checkout. Временный SUBST применяется для Windows/MSBuild;
 Android не должен зависеть от отключаемой буквы диска. Восстановление `android-cache-recovery` проверяет

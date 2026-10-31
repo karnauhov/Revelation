@@ -9,9 +9,27 @@ from local_release.core import Context, ReleaseError, atomic_json
 from local_release.profiles.revelation import integration_files
 from local_release.profiles.revelation import prepare_android_fixture, wait_android_fixture
 from local_release.profiles.revelation import integration
+from local_release.profiles.revelation import web_integration_target
 
 
 class IntegrationRunnerTest(unittest.TestCase):
+    def test_web_widget_targets_get_the_driver_bridge_without_editing_or_skipping_tests(self):
+        with tempfile.TemporaryDirectory() as folder:
+            job = Path(folder) / "releases/fixture/1.0.0+1" / ("a" * 40)
+            atomic_json(job / "job.json", {"schema": 1, "sha": "a" * 40, "run_id": "fixture-a", "project": "fixture"})
+            ctx = Context(job, {}, host="windows")
+            target = ctx.workspace / "integration_test/smoke/startup_test.dart"
+            target.parent.mkdir(parents=True)
+            original = "void main() { TestWidgetsFlutterBinding.ensureInitialized(); testWidgets('critical startup', check); }"
+            target.write_text(original)
+            wrapper = ctx.workspace / web_integration_target(ctx, target)
+            contents = wrapper.read_text()
+            self.assertLess(contents.index("IntegrationTestWidgetsFlutterBinding.ensureInitialized()"), contents.index("scenario.main()"))
+            self.assertIn("../../integration_test/smoke/startup_test.dart", contents)
+            self.assertEqual(target.read_text(), original)
+            target.write_text("void main() { IntegrationTestWidgetsFlutterBinding.ensureInitialized(); }")
+            self.assertEqual(web_integration_target(ctx, target), "integration_test/smoke/startup_test.dart")
+
     def test_android_files_keep_seeded_data_between_flutter_processes(self):
         from contextlib import nullcontext
         with tempfile.TemporaryDirectory() as folder:

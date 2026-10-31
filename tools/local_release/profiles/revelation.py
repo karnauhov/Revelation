@@ -268,14 +268,36 @@ def integration(ctx):
             if not ctx.config.get("chromedriver_port"):
                 raise ReleaseError("Start a matching ChromeDriver and configure chromedriver_port")
             def run_file(test):
+                target = web_integration_target(ctx, test)
                 ctx.command(["flutter", "drive", "--no-pub", "--release", "--driver=test_driver/integration_test.dart",
-                             "--target=" + test.relative_to(ctx.workspace).as_posix(), "-d", "web-server",
+                             "--target=" + target, "-d", "web-server",
                              "--browser-name=chrome", "--headless", "--driver-port=" + str(ctx.config["chromedriver_port"]),
                              "--web-port=" + str(ctx.config.get("web_port", 8796)),
                              "--web-browser-flag=--user-data-dir=" + str(ctx.root / "w" / "chrome-Revelation-REV301-a5305")])
             with chrome_driver(ctx):
                 integration_files(ctx, "web", run_file)
         ctx.stage("integration-web", web)
+
+
+def web_integration_target(ctx, test):
+    relative = test.relative_to(ctx.workspace).as_posix()
+    if re.search(r"\bIntegrationTestWidgetsFlutterBinding\.ensureInitialized\s*\(", test.read_text(encoding="utf-8")):
+        return relative
+    if not re.fullmatch(r"integration_test/[A-Za-z0-9_/]+_test\.dart", relative):
+        raise ReleaseError("Web integration entrypoint must be a local reviewed test path")
+    name = hashlib.sha256(relative.encode()).hexdigest()[:16] + "_test.dart"
+    target = ctx.workspace / ".dart_tool/ai11_integration" / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("import 'package:integration_test/integration_test.dart';\n"
+        f"import '../../{relative}' as scenario;\n\n"
+        "void main() {\n  IntegrationTestWidgetsFlutterBinding.ensureInitialized();\n  scenario.main();\n}\n",
+        encoding="utf-8", newline="\n")
+    evidence = ctx.directory / "results/windows-web-driver-targets.json"
+    records = read_json(evidence) if evidence.exists() else {}
+    records[relative] = {"target": target.relative_to(ctx.workspace).as_posix(), "sha256": digest(target),
+                         "test_sha256": digest(test), "binding": "IntegrationTestWidgetsFlutterBinding"}
+    atomic_json(evidence, records)
+    return target.relative_to(ctx.workspace).as_posix()
 
 
 def prepare_android_fixture(ctx, device):

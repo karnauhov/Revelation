@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.0.7
+Doc-Version: 1.0.8
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -47,6 +47,10 @@ The coordinator waits for the complete device-side file size before checking SHA
 `exec-in` can return before the remote write finishes. Fixture repairs never rebuild completed APK/AAB packages.
 Android files use `flutter test --no-uninstall`: Flutter's default cleanup after the first file would otherwise
 remove the app and its preloaded test databases. The dedicated AVD remains a separate temporary environment.
+Web `flutter drive` requires an IntegrationTest binding. For smoke files using the ordinary WidgetTest binding,
+the coordinator generates a launcher under `.dart_tool/ai11_integration/`, initializes IntegrationTest binding
+and calls the original `main()` without changing scenarios. Existing IntegrationTest targets run directly.
+Launcher/source test hashes are recorded in `results/windows-web-driver-targets.json`.
 Before Android commands the coordinator checks generated Flutter plugin paths and, when needed, regenerates them
 with `flutter pub get` from the physical checkout. Temporary SUBST paths are reserved for Windows/MSBuild;
 Android must not depend on a drive letter removed after the run. `android-cache-recovery` validates
