@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.0.3
+Doc-Version: 1.0.4
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -18,6 +18,8 @@ After confirmed publication the status becomes Published, a GitHub link appears,
 controls are hidden. Local links continue to use the catalogue's single package files.
 Newly prepared jobs and archives share numeric version/build ordering: 1.0.10 follows 1.0.9,
 and build1000 follows999. A job appears as soon as it is prepared, before its first package or manifest.
+When the current OS has passed its required checks and another OS remains pending, the status is Waiting for another OS.
+The panel names that OS and preserves built packages until the corresponding builder's next login.
 
 ## Windows
 

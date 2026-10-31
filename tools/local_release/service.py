@@ -132,11 +132,15 @@ class Dashboard:
                                 value.update(status="published", missing=[], error=None, step=None,
                                              pending_runtime_revision=None, verified_elsewhere=True)
                     waiting = {name: value["missing"] for name, value in hosts.items() if value["missing"]}
+                    waiting_hosts = [name for name in waiting if name != host_name()]
+                    status = "published" if published else "running" if active else manifest.get("status", "prepared")
+                    if not published and not active and waiting_hosts and host_name() in hosts and not hosts[host_name()]["missing"]:
+                        status = "waiting_other_hosts"
                     expected_files = (job or {}).get("artifacts", list(manifest.get("packages", {})))
                     releases.append({"sha": directory.name, "version": source["version"], "build": source["build"],
-                        "status": "published" if published else "running" if active else manifest.get("status", "prepared"), "files": files, "hosts": hosts,
+                        "status": status, "files": files, "hosts": hosts,
                         "logs": logs, "controllable": bool(job) and not published, "active": active,
-                        "waiting_checks": waiting, "expected_packages": len(expected_files),
+                        "waiting_checks": waiting, "waiting_hosts": waiting_hosts, "expected_packages": len(expected_files),
                         "missing_packages": [name for name in expected_files if name not in manifest.get("packages", {})],
                         "publication": {"published": published, "url": publication.get("url"),
                                         "waiting": publication.get("waiting") if not published else None},

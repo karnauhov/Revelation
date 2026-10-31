@@ -212,6 +212,18 @@ with lock(directory/('.'+ctx.host+'.lock')):
         releases = json.loads(self.request("/api/state")[1])["projects"][0]["releases"]
         self.assertEqual([record["version"] for record in releases], ["1.0.10", "1.0.9", "1.0.0"])
 
+    def test_local_completion_waits_for_the_other_os_without_a_failed_build_status(self):
+        directory = self.prepare_runnable()
+        local, peer = host_name(), "linux" if host_name() != "linux" else "windows"
+        job = read_json(directory / "job.json")
+        job["required_steps"] = {local: [], peer: ["integration-" + peer]}
+        atomic_json(directory / "job.json", job)
+        atomic_json(directory / f"results/{local}.json", {"status": "built", "steps": {}})
+        release = json.loads(self.request("/api/state")[1])["projects"][0]["releases"][0]
+        self.assertEqual(release["status"], "waiting_other_hosts")
+        self.assertEqual(release["waiting_hosts"], [peer])
+        self.assertEqual(release["hosts"][local]["missing"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

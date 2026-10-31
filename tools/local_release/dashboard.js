@@ -27,6 +27,7 @@ function render(){
  if(r.controllable){const actions=el('div',undefined,'actions');for(const [action,label] of [['start','Запустить'],['retry','Повторить'],['restart','Перезапустить'],['stop','Остановить']]){const b=el('button',label,action==='stop'?'stop':'');b.disabled=['start','retry'].includes(action)&&r.active;b.onclick=()=>control(action,b);actions.append(b);}heading.append(actions);}detail.append(heading);
  if(r.stop_requested)detail.append(el('p','Остановка запрошена. Повтор продолжит с сохранённых проверенных этапов.','note'));
  const waiting=Object.entries(r.waiting_checks||{});
+ if(r.status==='waiting_other_hosts')detail.append(el('p','Эта ОС завершила работу. Ожидаются '+r.waiting_hosts.join(', ')+'. Готовые пакеты сохранены; задание продолжится на соответствующей ОС.','note'));
  if(waiting.length){const pending=el('div',undefined,'note');pending.append(el('b','Для завершения выпуска осталось:'));for(const [host,checks] of waiting)pending.append(el('p',host+': '+checks.map(checkName).join(', ')));detail.append(pending);}
  else if(r.controllable&&!r.publication?.published)detail.append(el('p','Все обязательные проверки пройдены. Подготавливается публикация полного комплекта.','note'));
  if(r.publication?.published&&r.publication.url){const published=el('p',undefined,'note');published.append(link('Полный выпуск на GitHub',r.publication.url));detail.append(published);}
