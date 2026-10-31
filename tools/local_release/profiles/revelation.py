@@ -147,13 +147,14 @@ def preflight(ctx):
     if ctx.host == "linux":
         if capture(["uname", "-m"]) != "x86_64":
             raise ReleaseError("This profile currently requires an x86_64 Linux builder")
-        for executable in ("snapcraft", "unsquashfs"):
-            if shutil.which(executable, path=ctx.env.get("PATH")):
-                ctx.command([executable, "--version" if executable == "snapcraft" else "-version"])
+        # Snap-only tools are checked in their own build/inspection stages.
+        # Their absence or diagnostic exit codes must not block a portable TAR.
     (ctx.directory / "release_notes.txt").write_text(ctx.job["release_notes"] + "\n", encoding="utf-8", newline="\n")
     atomic_json(ctx.directory / "results" / f"{ctx.host}-environment.json", {
         "sha": ctx.job["sha"], "version": ctx.job["version"], "build": ctx.job["build"],
         "flutter": flutter, "python": sys.version, "host": ctx.host,
+        "snap_tools": {name: shutil.which(name, path=ctx.env.get("PATH")) for name in ("snapcraft", "unsquashfs")}
+                      if ctx.host == "linux" else {},
     })
 
 

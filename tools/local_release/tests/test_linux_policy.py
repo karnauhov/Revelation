@@ -6,13 +6,62 @@ import sys
 import tarfile
 import tempfile
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from local_release.core import Context, ReleaseError, atomic_json, hidden_flags
-from local_release.profiles.linux_release import inspect_tar
+from local_release.profiles.linux_release import inspect_tar, unsquashfs_version
 
 
 class LinuxPolicyTest(unittest.TestCase):
+    def test_unsquashfs_version_exit_one_is_valid_only_with_its_banner(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            directory = root / "releases/fixture/1.0.0+1" / ("a" * 40)
+            atomic_json(directory / "job.json", {"schema": 1, "sha": "a" * 40, "run_id": "fixture-a", "project": "fixture"})
+            ctx = Context(directory, {}, host="linux")
+            ctx.workspace.mkdir(parents=True)
+            command = ctx.command
+            fixture = root / "unsquashfs_fixture.py"
+            def invoke(argv, **kwargs):
+                self.assertEqual(argv, ["unsquashfs", "-version"])
+                return command([sys.executable, str(fixture)], **kwargs)
+            with patch.object(ctx, "command", side_effect=invoke):
+                for code in (0, 1):
+                    fixture.write_text("print('unsquashfs version 4.6.1 (2023/03/25)')\nraise SystemExit(" + str(code) + ")")
+                    versions = []
+                    ctx.stage("inspect-snap", lambda: versions.append(unsquashfs_version(ctx)), always=True)
+                    self.assertEqual(versions, ["4.6.1"])
+                    self.assertEqual(ctx.result["steps"]["inspect-snap"]["status"], "passed")
+                for content in ("print('broken executable')\nraise SystemExit(1)",
+                                "print('unsquashfs version 4.6.1')\nraise SystemExit(2)"):
+                    fixture.write_text(content)
+                    with self.assertRaises(ReleaseError):
+                        ctx.stage("inspect-snap", lambda: unsquashfs_version(ctx), always=True)
+                    self.assertEqual(ctx.result["steps"]["inspect-snap"]["status"], "failed")
+            with self.assertRaises(ReleaseError):
+                command([sys.executable, "-c", "raise SystemExit(1)"])
+
+    def test_linux_preflight_defers_optional_snap_tools_to_their_stages(self):
+        from local_release.profiles import revelation
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            directory = root / "releases/fixture/1.0.0+1" / ("a" * 40)
+            atomic_json(directory / "job.json", {"schema": 1, "sha": "a" * 40, "run_id": "fixture-a", "project": "fixture",
+                "profile": {"flutter": "3.47.2"}, "version": "1.0.0", "build": 1, "release_notes": "Fixture"})
+            ctx = Context(directory, {}, host="linux")
+            def command(argv, **kwargs):
+                if argv[0] in ("snapcraft", "unsquashfs"):
+                    self.fail("Optional Snap tool blocked native preflight")
+                return '{"frameworkVersion":"3.47.2"}' if "--machine" in argv else "fixture"
+            with patch("local_release.profiles.linux_release.provision_flutter"), patch("local_release.profiles.linux_release.apply_overlays"), \
+                    patch.object(revelation, "collect_snap_history"), patch.object(revelation, "verify_versions"), \
+                    patch.object(revelation, "configured_secrets"), patch.object(revelation, "capture", return_value="x86_64"), \
+                    patch.object(ctx, "command", side_effect=command), patch.object(revelation.shutil, "which", return_value="available-but-broken"):
+                ctx.stage("preflight", lambda: revelation.preflight(ctx))
+            self.assertTrue((directory / "results/linux-environment.json").is_file())
+            self.assertEqual(ctx.result["steps"]["preflight"]["status"], "passed")
+
     def test_tar_rejects_the_reported_crashpad_permission_failure(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

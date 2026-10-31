@@ -197,8 +197,9 @@ class TransportTest(unittest.TestCase):
         linux = self.receive()
         self.compile(linux, "linux.tar.gz")
         before = self.windows.job["sha"], self.windows.job["build"]
-        prepare_update(self.windows.directory, {}, "b" * 40)
+        prepare_update(self.windows.directory, {}, "b" * 40, reason="Repair the fixture version probe")
         updated = core.Context(self.windows.directory, {}, host="windows")
+        self.assertEqual(updated.job["tooling_changes"][-1]["reason"], "Repair the fixture version probe")
         first = send_update(updated)
         second = send_update(updated)
         self.assertEqual(first["sha256"], second["sha256"])

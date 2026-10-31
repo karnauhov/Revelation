@@ -166,12 +166,15 @@ class Context:
     def save(self):
         self.result["updated"] = time.time()
         self.result["runtime_revision"] = self.job.get("preparation_revision", 1)
+        if self.result.get("status") == "running":
+            self.result["attempt_runtime_revision"] = self.job.get("preparation_revision", 1)
+            self.result.pop("pending_runtime_revision", None)
         atomic_json(self.result_path, self.result)
 
     def refresh_redaction(self, values=()):
         self.redact = Redactor([*self.redact.values, *values])
 
-    def command(self, argv, *, cwd=None, env=None, stdin=None):
+    def command(self, argv, *, cwd=None, env=None, stdin=None, success_codes=(0,)):
         step = self.result.get("current_step", "preflight")
         log = self.directory / "logs" / self.host / f"{step}.log"
         log.parent.mkdir(parents=True, exist_ok=True)
@@ -216,7 +219,7 @@ class Context:
             stream.write(f"exit_code={code}\n")
             if monitor.stopped:
                 raise JobStopped("Stopped by owner; verified packages and checkpoints preserved")
-        if code:
+        if code not in success_codes:
             raise ReleaseError(f"{step}: {Path(resolved[0]).name} exited {code}; log: {log}")
         return "".join(output)
 

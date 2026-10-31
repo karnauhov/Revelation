@@ -60,7 +60,9 @@ def install(directory, extracted):
                 for name in list(result["steps"]):
                     if name in ("linux", "sentry-linux", "linux-tar", "snap", "inspect-snap", "inspect-linux-tar", "verify-linux", "integration-linux") or name.startswith("integration-linux-"):
                         result["steps"].pop(name)
-                result.update(status="pending", current_step=None, runtime_revision=new["preparation_revision"])
+                result.setdefault("attempt_runtime_revision", result.get("runtime_revision", 1))
+                result.update(status="pending", current_step=None, runtime_revision=new["preparation_revision"],
+                              pending_runtime_revision=new["preparation_revision"])
                 atomic_json(linux_result, result)
         except BaseException:
             if backup.exists():
@@ -82,7 +84,7 @@ def install(directory, extracted):
                     shutil.rmtree(temporary)
 
 
-def prepare_update(directory, config, coordinator_sha):
+def prepare_update(directory, config, coordinator_sha, reason="Audited coordinator repair; source/version/build unchanged"):
     import importlib
     old = read_json(directory / "job.json")
     publication = directory / "publication.json"
@@ -105,7 +107,7 @@ def prepare_update(directory, config, coordinator_sha):
                "coordinator_source_sha": coordinator_sha,
                "runtime_sha256": {p.relative_to(staged / "runtime").as_posix(): digest(p) for p in runtime.rglob("*.py")}}
         new.setdefault("tooling_changes", []).append({"revision": new["preparation_revision"], "time": time.time(),
-            "reason": "Protocol repair: independent partial results, Linux catalogue recovery and noninteractive packaging; source/version/build unchanged"})
+            "reason": reason})
         atomic_json(staged / "job.json", new)
         atomic_json(staged / "runtime-update.json", {"schema": 1, "protocol_version": VERSION,
             "run_id": old["run_id"], "previous_job_sha256": digest(directory / "job.json"),

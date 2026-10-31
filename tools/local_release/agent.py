@@ -105,10 +105,11 @@ def remediation(directory, project):
     if not path.exists():
         return
     result, job = read_json(path), read_json(directory / "job.json")
-    if result.get("status") not in ("failed", "stopped", "interrupted"):
+    if result.get("status") not in ("failed", "stopped", "interrupted") and not result.get("pending_runtime_revision"):
         return
     error = result.get("error", "Linux stage failed")
-    ready = job.get("preparation_revision", 1) > result.get("runtime_revision", 1)
+    attempted = result.get("attempt_runtime_revision", result.get("runtime_revision", 1))
+    ready = job.get("preparation_revision", 1) > attempted
     commands = ["#!/usr/bin/env bash", "set -euo pipefail",
                 'if [ -n "${AI11_PROJECT_DIR:-}" ]; then cd -- "$AI11_PROJECT_DIR"; fi',
                 'test -f scripts/local_release/run-linux.sh || { echo "Run from this project checkout, or set AI11_PROJECT_DIR"; exit 2; }',
@@ -119,6 +120,7 @@ def remediation(directory, project):
     atomic_json(directory / "results/linux-remediation.json", {
         "schema": 1, "source_sha": job["sha"], "error": error,
         "runtime_update_ready": ready, "repair_script": "results/linux-repair.sh",
+        "attempt_runtime_revision": attempted, "repair_runtime_revision": job.get("preparation_revision", 1),
         "action": "Next Linux login receives the audited runtime repair and retries with diagnostics" if ready else
                   "Next Linux login retries failed stages and returns fresh diagnostics; unknown log text is never executed"})
 

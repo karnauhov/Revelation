@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.0.0
+Doc-Version: 2.0.1
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -78,6 +78,15 @@ Published jobs cannot be repaired in place.
 
 Linux receives the repair before execution, runs known diagnostic commands and retries necessary stages.
 Error text and shell history are data, never commands to evaluate. Unknown failures return fresh logs.
+
+`attempt_runtime_revision` identifies the revision actually executed; `pending_runtime_revision` identifies
+a delivered repair awaiting its next attempt. Windows can show repair readiness separately from the old error.
+`refresh-runtime --reason <description>` records the repair reason in the job history.
+
+Snap-only tools are checked in Snap stages, preserving portable TAR independence.
+In squashfs-tools 4.6.1, `unsquashfs -version` prints its version and exits 1 without an input image.
+Only this diagnostic accepts that code with a recognizable version banner. Actual package-content checks
+still require code0. See the [4.6.1 source](https://github.com/plougher/squashfs-tools/blob/4.6.1/squashfs-tools/unsquashfs.c).
 
 Receipts acknowledge exact asset IDs/digests. Base jobs/runtime repairs remain until complete success for recovery.
 Cleanup removes only owned acknowledged temporary IDs; temporary package assets require a verified public mirror.

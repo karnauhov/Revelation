@@ -89,7 +89,18 @@ def inspect_tar(ctx):
     atomic_json(ctx.directory / "results/linux-tar-package.json", {"sha256": digest(path), "architecture": "x86_64", "programs_executable": True})
 
 
+def unsquashfs_version(ctx):
+    # squashfs-tools 4.6.1 prints its version then exits 1 without an input
+    # image. Accept that only for this diagnostic, with a valid version banner.
+    text = ctx.command(["unsquashfs", "-version"], success_codes=(0, 1))
+    match = re.search(r"^unsquashfs version\s+(\d+(?:\.\d+)+)\b", text, re.M)
+    if not match:
+        raise ReleaseError("unsquashfs did not report a recognizable version")
+    return match[1]
+
+
 def inspect_snap(ctx):
+    inspector_version = unsquashfs_version(ctx)
     snap = package_path(ctx, ".snap")
     meta = ctx.command(["unsquashfs", "-cat", snap, "meta/snap.yaml"])
     if not re.search(r"^name:\s*revelation-x\s*$", meta, re.M):
@@ -101,12 +112,14 @@ def inspect_snap(ctx):
     listing = ctx.command(["unsquashfs", "-ll", snap, "lib/crashpad_handler"])
     if not re.search(r"^-rwx[^\n]*lib/crashpad_handler\s*$", listing, re.M):
         raise ReleaseError("Snap Crashpad helper has no executable permission")
-    atomic_json(ctx.directory / "results/linux-snap-package.json", {"sha256": digest(snap), "architecture": "amd64", "identity": "revelation-x", "crashpad_executable": True})
+    atomic_json(ctx.directory / "results/linux-snap-package.json", {"sha256": digest(snap), "architecture": "amd64", "identity": "revelation-x", "crashpad_executable": True,
+        "unsquashfs_version": inspector_version})
 
 
 def build_snap(ctx):
     # Preserve the owner's confirmed clean -> pack order, with no interactive
     # flutter run. Snap's override-build already performs the release build.
+    ctx.command(["snapcraft", "--version"])
     snapshot = ctx.root / "w" / ctx.job["sha"][:12] / "snap-input"
     if not snapshot.exists():
         hooks = (snapshot / ".git/ai11-no-hooks").as_posix()
