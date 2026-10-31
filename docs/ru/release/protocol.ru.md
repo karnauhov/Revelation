@@ -1,6 +1,6 @@
 # Обмен локальных сборщиков
 
-Doc-Version: 2.0.4
+Doc-Version: 2.0.5
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -97,6 +97,10 @@ inspection/install/smoke, сохраняя готовый TAR и пройден�
 Runtime16 сохраняет эти checkpoints и исправляет sudo TTY/временное подтверждение для установленной Snap-приёмки.
 Runtime17 повторяет только `verify-linux`: protected Snap checksums читаются через подтверждённый sudo,
 а новая успешно собранная Snap16, TAR и все пройденные build/test checkpoints сохраняются.
+Runtime18 также повторяет только `verify-linux`: runtime17 успешно установил пакет, но владелец закрыл
+тестовое окно до завершения десятисекундной проверки. Добавлены явная подсказка, обратный отсчёт,
+один повтор только запуска после нормального раннего закрытия и exit/startup/timing evidence.
+Требуемые десять секунд, готовые пакеты и пройденные build/test checkpoints сохраняются.
 
 Snap-only инструменты проверяются в этапах Snap, сохраняя независимость portable TAR.
 `unsquashfs -version` в squashfs-tools 4.6.1 печатает версию и возвращает 1 без входного image;

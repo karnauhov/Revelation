@@ -15,10 +15,12 @@ import sys
 import threading
 import time
 
-from ..core import ReleaseError, atomic_json, digest, read_json
+from ..core import ReleaseError, atomic_json, digest, hidden_flags, read_json
 from ..processes import JobStopped, StopMonitor, terminate_tree
 
 NAME = "revelation-x"
+SMOKE_ALIVE_SECONDS = 10
+SMOKE_TIMEOUT_SECONDS = 45
 SMOKE_SHELL = '''set -eu
 export XDG_CONFIG_HOME="$SNAP_USER_COMMON/.ai11-acceptance/config"
 export XDG_DATA_HOME="$SNAP_USER_COMMON/.ai11-acceptance/data"
@@ -211,8 +213,12 @@ def restore(ctx, journal):
     journal.unlink()
 
 
-def smoke(ctx):
-    """Require actual Flutter startup and ten seconds alive, then close our tree."""
+class EarlySnapClose(ReleaseError):
+    """A normal close before the observation period is an incomplete check."""
+
+
+def smoke_once(ctx, attempt):
+    """Keep the ten-second gate and record exit details before our own cleanup."""
     log = ctx.directory / "logs/linux/snap-smoke.log"
     log.parent.mkdir(parents=True, exist_ok=True)
     command = ["snap", "run", "--shell", NAME, "-c", SMOKE_SHELL]
@@ -220,15 +226,22 @@ def smoke(ctx):
     failed = threading.Event()
     env = ctx.env.copy()
     env["LC_ALL"] = "C.UTF-8"
+    print("Проверка готового Snap: не закрывайте окно Revelation. После запуска проверка наблюдает "
+          "его 10 секунд, затем сама закроет окно и восстановит прежнюю установку. Пересборка не выполняется.", flush=True)
+    launched = time.monotonic()
     with log.open("a", encoding="utf-8") as stream:
+        stream.write(f"\nSnap smoke attempt {attempt['attempt']}\n")
+        stream.flush()
         process = subprocess.Popen(command, cwd=ctx.workspace, env=env, stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace",
-            start_new_session=True)
+            start_new_session=True, creationflags=hidden_flags())
         def consume():
             for line in process.stdout:
                 stream.write(ctx.redact(line))
                 stream.flush()
                 if "Started on TargetPlatform.linux" in line:
+                    if not started.is_set():
+                        attempt["startup_at_seconds"] = time.monotonic() - launched
                     started.set()
                 if re.search(r"FATAL|failed to start crashpad|sentry_init.*failed|posix_spawn.*[Dd]enied", line):
                     failed.set()
@@ -236,19 +249,36 @@ def smoke(ctx):
         reader.start()
         try:
             with StopMonitor(process, ctx.directory / "stop-request.json") as monitor:
-                deadline, observed = time.monotonic() + 45, None
+                deadline, last_remaining = launched + SMOKE_TIMEOUT_SECONDS, None
                 while time.monotonic() < deadline:
                     if monitor.stopped:
                         raise JobStopped("Snap smoke stopped by owner")
-                    if process.poll() is not None or failed.is_set():
-                        raise ReleaseError("Installed Snap failed during startup; see snap-smoke.log")
+                    code = process.poll()
+                    if code is not None:
+                        # Drain final output before classifying an exit; a last
+                        # fatal line must never turn into a retryable clean close.
+                        reader.join(timeout=1)
+                    if failed.is_set():
+                        raise ReleaseError(f"Installed Snap reported a fatal startup error (exit={code}); see snap-smoke.log")
+                    if code is not None:
+                        if code == 0 and started.is_set():
+                            raise EarlySnapClose("Snap window closed normally before the ten-second check finished")
+                        raise ReleaseError(f"Installed Snap exited before acceptance (exit={code}, startup={started.is_set()}); see snap-smoke.log")
                     if started.is_set():
-                        observed = observed or time.monotonic()
-                        if time.monotonic() - observed >= 10:
-                            return {"startup_marker": True, "alive_seconds_after_startup": 10}
+                        elapsed = time.monotonic() - launched - attempt["startup_at_seconds"]
+                        if elapsed >= SMOKE_ALIVE_SECONDS:
+                            return {"startup_marker": True, "alive_seconds_after_startup": SMOKE_ALIVE_SECONDS}
+                        remaining = int(SMOKE_ALIVE_SECONDS - elapsed) + 1
+                        if remaining != last_remaining:
+                            print(f"Snap запущен. До автоматического закрытия: {remaining} с. Не закрывайте окно.", flush=True)
+                            last_remaining = remaining
                     time.sleep(.1)
                 raise ReleaseError("Installed Snap did not report Flutter startup within 45 seconds; see snap-smoke.log")
         finally:
+            attempt.update(startup_marker=started.is_set(), fatal_output=failed.is_set(),
+                exit_code_before_cleanup=process.poll(), elapsed_seconds=round(time.monotonic() - launched, 3))
+            stream.write("Smoke observation: " + str(attempt) + "\n")
+            stream.flush()
             terminate_tree(process)
             try:
                 process.wait(timeout=5)
@@ -257,6 +287,36 @@ def smoke(ctx):
                 process.wait(timeout=5)
             reader.join(timeout=5)
             process.stdout.close()
+
+
+def smoke(ctx):
+    """Retry one clean early close in place, without reinstalling or rebuilding."""
+    report = {"schema": 1, "sha": ctx.job["sha"], "required_alive_seconds": SMOKE_ALIVE_SECONDS, "attempts": []}
+    target = ctx.directory / "results/linux-snap-smoke.json"
+    for number in (1, 2):
+        attempt = {"attempt": number}
+        report["attempts"].append(attempt)
+        try:
+            proof = smoke_once(ctx, attempt)
+        except EarlySnapClose as error:
+            attempt.update(status="closed_early", error=str(error))
+            report["status"] = "incomplete"
+            atomic_json(target, report)
+            if number == 1:
+                print("Окно Snap закрыто до окончания проверки. Повторяю только запуск один раз. "
+                      "Не закрывайте окно - оно закроется автоматически. Пакеты и сборка сохраняются.", flush=True)
+                continue
+            raise ReleaseError("Snap window closed normally twice before the ten-second check finished. "
+                               "Keep it open until automatic closure; built packages are preserved.") from error
+        except BaseException as error:
+            attempt.update(status="stopped" if isinstance(error, JobStopped) else "failed", error=str(error))
+            report["status"] = attempt["status"]
+            atomic_json(target, report)
+            raise
+        attempt["status"] = report["status"] = "passed"
+        atomic_json(target, report)
+        print("Проверка запуска Snap пройдена. Окно закрыто автоматически; восстанавливаю прежнюю установку.", flush=True)
+        return {**proof, "smoke_attempts": number}
 
 
 def verify(ctx):

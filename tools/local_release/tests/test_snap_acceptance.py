@@ -78,6 +78,16 @@ class SnapAcceptanceTest(unittest.TestCase):
             self.assertNotEqual(self.ctx.result["steps"]["verify-linux"]["status"], "passed")
             self.assertFalse((self.job / "results/linux-packages.json").exists())
 
+    def test_clean_early_close_relaunches_without_reinstall_or_rebuild(self):
+        with patch.object(snap, "smoke_once", side_effect=[snap.EarlySnapClose("closed early"),
+                {"startup_marker": True, "alive_seconds_after_startup": 10}]):
+            snap.verify(self.ctx)
+        self.assertEqual(sum(args[0] == "install" for args in self.calls), 1)
+        self.assertEqual(sum(args[0] == "save" for args in self.calls), 1)
+        self.assertEqual(sum(args[0] == "revert" for args in self.calls), 1)
+        self.assertEqual(self.current, self.before)
+        self.assertEqual(read_json(self.job / "results/linux-packages.json")["smoke_attempts"], 2)
+
     def test_new_install_is_removed_but_unrelated_install_is_preserved(self):
         self.current = None
         with patch.object(snap, "smoke", return_value={"startup_marker": True}):

@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.0.3
+Doc-Version: 1.0.4
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -84,7 +84,12 @@ That debug process uses isolated XDG Documents/config/data/cache. Snapcraft reta
 Full-script execution evidence is saved as `results/linux-snap-script.json`. Manual `./snapcraft_build.sh`
 retains its original behavior; automated multi-project dispatch uses `run-linux.sh`.
 Built-in `verify-linux` installs the exact SHA-256 inspected package, requires actual Flutter startup and ten seconds
-alive, then restores the original Snap revision, tracking and data snapshot. The owner's Snap data directory is temporarily
+alive, then restores the original Snap revision, tracking and data snapshot.
+Leave the test window open: the terminal displays a countdown and the check closes it automatically.
+One normal early close retries only the launch once, without reinstalling or rebuilding.
+A second early close leaves acceptance incomplete. Crashes, fatal output and stop requests are not automatically retried.
+Each attempt's exit code, startup marker and duration are saved in `results/linux-snap-smoke.json`.
+The owner's Snap data directory is temporarily
 renamed beside its original location; the exact files are returned and checked by a combined digest, including caches
 excluded from snapshots. If no app was installed, only the matching temporary installation is removed.
 Smoke uses isolated XDG config/data/cache/Documents inside Snap instead of owner data.

@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.0.4
+Doc-Version: 2.0.5
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -92,6 +92,10 @@ previous draft asset ID. A collision without an attested remote backup still pre
 Runtime16 preserves these checkpoints and fixes sudo TTY handling and temporary authentication for installed Snap acceptance.
 Runtime17 repeats only `verify-linux`: protected Snap checksums use authenticated sudo, preserving the successfully
 built Snap16, TAR, and every passed build/test checkpoint.
+Runtime18 also repeats only `verify-linux`: runtime17 installed the package successfully, but the owner closed
+the test window before the ten-second observation finished. Clear instructions, a countdown, one launch-only
+retry after a normal early close, and exit/startup/timing evidence are now included.
+The required ten seconds, built packages and passed build/test checkpoints are preserved.
 
 Snap-only tools are checked in Snap stages, preserving portable TAR independence.
 In squashfs-tools 4.6.1, `unsquashfs -version` prints its version and exits 1 without an input image.
