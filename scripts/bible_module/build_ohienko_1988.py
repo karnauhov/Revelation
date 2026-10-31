@@ -1,4 +1,4 @@
-"""Build a staging OH1988 text module from the sealed stage-6 corpus.
+"""Build a staging OH1988 text module from the sealed, page-audited text corpus.
 
 Strong research is deliberately not an input. Metadata is supplied explicitly so
 the text-only attribution can be reviewed before a candidate is distributed.
@@ -39,16 +39,16 @@ from .ukrainian_stage_6_model import (
     word_tokens,
 )
 
-DEFAULT_WORK = PROJECT_ROOT / "scripts/bible_module/work/ukrainian_stage_6_20260801"
-BUILD_CONTRACT = "oh1988-text-module-v1"
+DEFAULT_WORK = PROJECT_ROOT / "scripts/bible_module/work/oh1988_text_repair"
+BUILD_CONTRACT = "oh1988-text-module-v2"
 BASELINE_SHA256 = "3c5fd1c4cbe8fa10d19f5c9301c778c165fb690b7fb374745cbb1c03948081c1"
 INPUT_DIGESTS = {
-    "synthesized_text.jsonl": "e55156cd4c201077de3c2e1d44b06dd1035a7a8db7c26321869f860768671bcf",
+    "synthesized_text.jsonl": "b634fef17d963997666fafd1653ff7acf47a55fef01465c9d9e66df357da6ebf",
     "target_comments.jsonl": "5c1cf56e94410b6ab6e418dda7be7a6b385cb72221dfb8ca943e3419de42c9f4",
-    "footnote_uses.jsonl": "e86d3136a8760833b1910177c323896f02710ff9515391a6e4aae9b6d4798449",
-    "heading_footnotes.jsonl": "b06c705bf8c7ff5753dd4609cad73441de4cada296d5ccea2aff20ee3e31e92a",
-    "source_only_material.jsonl": "9dc10f01f11ff51b454e72f9a91adafb3a51f5656e593a284df3790e086f09e9",
-    "footnote_definitions.jsonl": "4e69616e865d1e048391b6059eb622250570f1562b5a257a7a93c67edef2e5e7",
+    "footnote_uses.jsonl": "0b5579a18114f3a933272d547f4a5fdbc48430e09afb4134599f7324fb758056",
+    "heading_footnotes.jsonl": "e5d31c484efb13f1ea9ee60cd8e342fc406d4ff1b37ae226dd76124b906f06aa",
+    "source_only_material.jsonl": "a9674ef8a43410a30a86782f1cc82923f41c2c599858f9252c6134fac30cf40f",
+    "footnote_definitions.jsonl": "8bf67f0dfb6ede4bac591afc6b879c82924f0c34e3c5ab27cf673d095b4fc514"
 }
 INFO_FIELDS = (
     "code", "module_id", "title", "description", "language", "canon",
@@ -321,7 +321,7 @@ def main() -> None:
     parser.add_argument("--info", type=Path, required=True, help="Explicit reviewed/draft text-only info JSON")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
-    parser.add_argument("--data-version", type=int, default=1)
+    parser.add_argument("--data-version", type=int, default=2)
     parser.add_argument("--built-at", default=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
     parser.add_argument("--replace", action="store_true")
     args = parser.parse_args()

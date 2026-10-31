@@ -316,7 +316,9 @@ def load_targets() -> tuple[list[Target], dict[str, Any]]:
     return targets, baseline
 
 
-def _segment_record(record: Mapping[str, Any]) -> tuple[list[Segment], list[dict[str, Any]]]:
+def _segment_record(
+    record: Mapping[str, Any], *, repair_legacy_context: bool = True,
+) -> tuple[list[Segment], list[dict[str, Any]]]:
     ref = Ref.from_mapping(record["source_ref_normalized"])
     reported_ref = _canonical_ref(ref.book, ref.chapter, ref.verse)
     text = str(record["source_plain_nfc"])
@@ -325,6 +327,8 @@ def _segment_record(record: Mapping[str, Any]) -> tuple[list[Segment], list[dict
     provenance = dict(record["provenance"])
     fragment_sha = str(record["source_fragment_sha256"])
     second = COMPOUND_SECOND_SEGMENTS.get(reported_ref)
+    if not repair_legacy_context and reported_ref.startswith(("Num.", "Jude.")):
+        second = None
     if second is not None:
         second_ref, prefix = second
         boundary = text.find(prefix)
@@ -347,8 +351,9 @@ def _segment_record(record: Mapping[str, Any]) -> tuple[list[Segment], list[dict
             }
         ]
     else:
-        effective_ref = REFERENCE_CONTEXT_CORRECTIONS.get(
-            reported_ref, reported_ref
+        effective_ref = (
+            REFERENCE_CONTEXT_CORRECTIONS.get(reported_ref, reported_ref)
+            if repair_legacy_context else reported_ref
         )
         specs = [(effective_ref, ScalarSpan(0, len(text)))]
         service = []
@@ -372,22 +377,27 @@ def _segment_record(record: Mapping[str, Any]) -> tuple[list[Segment], list[dict
     return segments, service
 
 
-def load_source() -> LoadedSource:
+def load_source(
+    path: Path | None = None, *, repair_legacy_context: bool = True,
+) -> LoadedSource:
     records: list[dict[str, Any]] = []
     headings: list[dict[str, Any]] = []
     segments: list[Segment] = []
     service_spans: list[dict[str, Any]] = []
-    with SOURCE_PATH.open(encoding="utf-8") as handle:
+    with (path or SOURCE_PATH).open(encoding="utf-8") as handle:
         for line in handle:
             record = json.loads(line)
             if "canonical_text" in record.get("classification", []):
                 records.append(record)
-                produced, service = _segment_record(record)
+                produced, service = _segment_record(
+                    record, repair_legacy_context=repair_legacy_context,
+                )
                 segments.extend(produced)
                 service_spans.extend(service)
             else:
                 headings.append(record)
-    if len(records) != EXPECTED_SOURCE_RECORDS:
+    expected_records = EXPECTED_SOURCE_RECORDS if repair_legacy_context else 31_169
+    if len(records) != expected_records:
         raise AssertionError(f"Source record count is {len(records)}")
     if len(headings) != EXPECTED_HEADING_FOOTNOTES:
         raise AssertionError(f"Heading record count is {len(headings)}")

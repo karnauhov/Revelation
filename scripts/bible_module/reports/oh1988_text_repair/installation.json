@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "copies": [
+    {
+      "path": "C:\\Users\\karna\\Documents\\revelation\\db\\bible_ohienko_1988.sqlite",
+      "sha256": "7d7db0904fa4a579dd34c71c8e7e2b810c4faf99d25417022f2dcd976f6838f7",
+      "backup": "C:\\Users\\karna\\Documents\\revelation\\backups\\REV299\\0-bible_ohienko_1988.sqlite.data1",
+      "manifest_entry": {
+        "versionToken": "manifest:schema:4|data:2|date:2026-10-31T04:47:49Z|size:7593984",
+        "schemaVersion": 4,
+        "dataVersion": 2,
+        "date": "2026-10-31T04:47:49Z",
+        "fileSizeBytes": 7593984
+      }
+    },
+    {
+      "path": "C:\\Users\\karna\\Projects\\Revelation\\web\\db\\bible_ohienko_1988.sqlite",
+      "sha256": "7d7db0904fa4a579dd34c71c8e7e2b810c4faf99d25417022f2dcd976f6838f7",
+      "backup": "C:\\Users\\karna\\Documents\\revelation\\backups\\REV299\\1-bible_ohienko_1988.sqlite.data1",
+      "manifest_entry": {
+        "versionToken": "manifest:schema:4|data:2|date:2026-10-31T04:47:49Z|size:7593984",
+        "schemaVersion": 4,
+        "dataVersion": 2,
+        "date": "2026-10-31T04:47:49Z",
+        "fileSizeBytes": 7593984
+      }
+    }
+  ],
+  "published": false
+}

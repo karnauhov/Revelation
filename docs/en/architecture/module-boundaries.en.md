@@ -1,8 +1,12 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.6.2`
-Last-Updated: `2026-10-24`
+Doc-Version: `2.6.3`
+Last-Updated: `2026-10-31`
 Source-Commit: `working-tree`
+
+## Strong number availability in a module
+
+`BibleModuleDB.readInfo` derives `BibleModuleInfo.hasStrongNumbers` from standalone G/H numeric tokens in the text of all verses. SQL selects candidates in bounded batches, then the shared reader token contract validates them; comments are excluded. The capability participates in value equality and is refreshed when module information is read, without SQLite schema changes or a persistent cache. Each pane derives Strong toolbar and overflow action availability from its own `selectedModule`, without another visibility flag in state. The display preference survives switching through a text-only module, and the standalone dictionary remains available.
 
 ## Bible module revision metadata
 

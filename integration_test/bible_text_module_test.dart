@@ -13,6 +13,24 @@ import 'support/installed_bible_stub.dart'
     as platform;
 
 const _textModule = 'bible_ohienko_1988.sqlite';
+const _restoredVerses = [
+  (
+    book: 66,
+    chapter: 1,
+    verse: 3,
+    text:
+        'Блаженний, хто читає, і ті, хто слухає слова пророцтва та '
+        'доде́ржує написане в ньому, — час бо близьки́й!',
+  ),
+  (
+    book: 5,
+    chapter: 34,
+    verse: 8,
+    text:
+        'І оплакували Мойсея Ізраїлеві сини в моавських степа́х '
+        'тридцять день, та й покінчи́лися дні опла́кування жало́би за Мойсеєм.',
+  ),
+];
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +48,7 @@ void main() {
         await db.customStatement('PRAGMA query_only=ON');
         expect((await db.readInfo(_textModule)).code, 'OH1988');
         expect((await db.readVersionInfo())?.schemaVersion, 4);
+        expect((await db.readVersionInfo())?.dataVersion, 2);
         final verses = await db.readAllVerses();
         expect(verses, hasLength(31102));
         expect(verses.where((v) => v.comment.isNotEmpty), hasLength(1222));
@@ -38,6 +57,10 @@ void main() {
           isFalse,
         );
         expect(verses.first.comment, contains('šamajim'));
+        expect(
+          verses.last.text,
+          'Благода́ть Господа нашого Ісуса Христа зо всіма́ вами! Амі́нь.',
+        );
         binding.reportData!['verifiedVerseRows'] = verses.length;
         binding.reportData!['nonemptyComments'] = 1222;
       } finally {
@@ -108,6 +131,57 @@ void main() {
     expect(find.byKey(const Key('bible_verse_comment_dialog')), findsNothing);
     binding.reportData!['installedModuleReaderAndFootnote'] = true;
   });
+
+  for (final restored in _restoredVerses) {
+    testWidgets(
+      'complete OH1988 ${restored.book}:${restored.chapter}:${restored.verse}',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final repository = BibleRepository(
+          moduleDataSource: _InstalledModules(),
+        );
+        await tester.runAsync(() async {
+          final chapter = await repository.loadChapter(
+            moduleFile: _textModule,
+            bookId: restored.book,
+            chapter: restored.chapter,
+            verse: restored.verse,
+          );
+          expect(
+            chapter.verses
+                .singleWhere((v) => v.reference.verse == restored.verse)
+                .text,
+            restored.text,
+          );
+        });
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: const Locale('uk'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: BibleScreen(
+              initialBookId: restored.book,
+              initialChapter: restored.chapter,
+              initialVerse: restored.verse,
+              initialModuleFile: _textModule,
+              bibleRepository: repository,
+            ),
+          ),
+        );
+        await _pumpUntil(
+          tester,
+          find.byKey(Key('bible_verse_${restored.verse}')),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.textContaining(restored.text, findRichText: true),
+          findsOneWidget,
+        );
+        binding.reportData!['restored_${restored.book}_${restored.chapter}_${restored.verse}'] =
+            true;
+      },
+    );
+  }
 }
 
 Future<void> _pumpUntil(WidgetTester tester, Finder finder) async {

@@ -658,29 +658,30 @@ class _BibleReaderToolbar extends StatelessWidget {
           unawaited(readerCubit.navigateChapter(forward: true));
         },
       ),
-      _BibleToolbarAction(
-        id: 'strong_numbers',
-        width: 44,
-        inline: IconButton(
-          key: const Key('bible_strong_toggle_button'),
-          icon: const Icon(Icons.local_offer),
-          tooltip: localizations.toggle_show_strong_numbers,
-          color: colorScheme.primary,
-          style: IconButton.styleFrom(
-            backgroundColor: state.showStrongNumbers
-                ? colorScheme.secondaryContainer
-                : Colors.transparent,
-            shape: const CircleBorder(),
+      if (state.selectedModule?.hasStrongNumbers ?? false)
+        _BibleToolbarAction(
+          id: 'strong_numbers',
+          width: 44,
+          inline: IconButton(
+            key: const Key('bible_strong_toggle_button'),
+            icon: const Icon(Icons.local_offer),
+            tooltip: localizations.toggle_show_strong_numbers,
+            color: colorScheme.primary,
+            style: IconButton.styleFrom(
+              backgroundColor: state.showStrongNumbers
+                  ? colorScheme.secondaryContainer
+                  : Colors.transparent,
+              shape: const CircleBorder(),
+            ),
+            onPressed: readerCubit.toggleStrongNumbers,
           ),
-          onPressed: readerCubit.toggleStrongNumbers,
+          menuIcon: Icons.local_offer,
+          menuLabel: localizations.toggle_show_strong_numbers,
+          active: state.showStrongNumbers,
+          onMenuSelected: (context) {
+            readerCubit.toggleStrongNumbers();
+          },
         ),
-        menuIcon: Icons.local_offer,
-        menuLabel: localizations.toggle_show_strong_numbers,
-        active: state.showStrongNumbers,
-        onMenuSelected: (context) {
-          readerCubit.toggleStrongNumbers();
-        },
-      ),
       _BibleToolbarAction(
         id: 'copy_selection',
         width: 44,

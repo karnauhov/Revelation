@@ -811,6 +811,7 @@ _SECTION_TAG_RE = re.compile(r"<section\s+begin\s*=\s*(?:\"([^\"]+)\"|'([^']+)'|
 _SECTION_END_RE = re.compile(r"<section\s+end\s*=\s*(?:\"[^\"]+\"|'[^']+'|[^\s/>]+)\s*/?>", re.I)
 _HTML_TAG_RE = re.compile(r"</?[A-Za-z][^>]*>")
 _WIKILINK_RE = re.compile(r"\[\[(?:[^\]|]+\|)?([^\]]+)\]\]")
+_MEDIA_LINK_RE = re.compile(r"\[\[(?:Файл|File|Image|Зображення):[^\]]+\]\]", re.I)
 _EXTERNAL_LINK_RE = re.compile(r"\[(?:https?://\S+)\s+([^\]]+)\]")
 _KNOWN_TEMPLATE_NAMES = {
     "pline", "c", "anchor", "uc", "rh", "dropinitial", "nop", "reflist", "sp",
@@ -831,7 +832,7 @@ _PAGE_BOOK_STARTS: tuple[tuple[int, str], ...] = (
 )
 _SECTION_BOOKS = {
     "Перша книга Мойсеєва: Буття":"Gen","Друга книга Мойсеєва: Вихід":"Exod","Третя книга Мойсеєва: Левит":"Lev",
-    "Четверта книга Мойсеєва: Числа":"Num","П":"Deut","Книга Ісуса Навина (Книга Єгошуї)":"Josh","Книга Суддів":"Judg",
+    "Четверта книга Мойсеєва: Числа":"Num","П":"Deut","П'ята книга Мойсеєва: Повторення Закону":"Deut","Книга Ісуса Навина (Книга Єгошуї)":"Josh","Книга Суддів":"Judg",
     "Книга Рут":"Ruth","Перша книга Самуїлова (або Перша книга царів)":"1Sam","Друга книга Самуїлова (або Друга книга царів)":"2Sam",
     "Перша книга царів":"1Kgs","Друга книга царів":"2Kgs","Перша книга хроніки":"1Chr","Друга книга хроніки":"2Chr",
     "Книга Ездри":"Ezra","Книга Неемії":"Neh","Книга Естер":"Esth","Книга Йова":"Job","Книга Псалмів":"Ps",
@@ -849,7 +850,7 @@ _SECTION_BOOKS = {
     "Соборне послання св. апостола Якова":"Jas","Перше соборне послання св. апостола Петра":"1Pet",
     "Друге соборне послання св. апостола Петра":"2Pet","Перше соборне послання св. апостола Івана":"1John",
     "Друге соборне послання св. апостола Івана":"2John","Третє соборне послання св. апостола Івана":"3John",
-    "Соборне послання св. апостола Юди":"Jude","Об":"Rev",
+    "Соборне послання св. апостола Юди":"Jude","Об":"Rev","Об'явлення св. Івана Богослова":"Rev",
 }
 
 
@@ -951,6 +952,7 @@ def _render_wikitext(value: str) -> str:
     rendered = _NOINCLUDE_RE.sub("", rendered)
     rendered = _INCLUDEONLY_TAG_RE.sub("", rendered)
     rendered = _HTML_TAG_RE.sub("", rendered)
+    rendered = _MEDIA_LINK_RE.sub("", rendered)
     rendered = _WIKILINK_RE.sub(r"\1", rendered)
     rendered = _EXTERNAL_LINK_RE.sub(r"\1", rendered)
     rendered = rendered.replace("'''", "").replace("''", "")
@@ -1015,6 +1017,7 @@ class _VerseBuilder:
     fragments: list[str] = field(default_factory=list)
     footnotes: list[dict[str, object]] = field(default_factory=list)
     fragment_digests: list[str] = field(default_factory=list)
+    last_text_page: int | None = None
 
     @property
     def plain(self) -> str:
@@ -1061,6 +1064,40 @@ def parse_wikisource_bundle(
     current_chapter = 0
     footnote_definitions: dict[str, dict[str, object]] = {}
     use_index = 0
+    page_audit: list[dict[str, object]] = []
+    page_joins: list[dict[str, object]] = []
+    book_transitions: list[dict[str, object]] = []
+
+    def append_text(raw: str, start: int) -> None:
+        rendered = _render_wikitext(raw)
+        if active is None:
+            if normalize_source_text(rendered) and page >= _PAGE_BOOK_STARTS[0][0]:
+                raise Stage4ParseError(
+                    f"Unassigned canonical text on page {page}, scalar {start}"
+                )
+            return
+        if not rendered:
+            return
+        if active.last_text_page is not None and active.last_text_page != page:
+            # hws/hwe explicitly split one printed word across two pages. All
+            # other page boundaries are word boundaries even without raw LF.
+            split_word = bool(re.match(r"\s*{{\s*hwe\|", raw, re.I))
+            separator = bool(
+                active.fragments and active.fragments[-1]
+                and not active.fragments[-1][-1].isspace()
+                and not rendered[0].isspace() and not split_word
+            )
+            if separator:
+                active.fragments.append(" ")
+            page_joins.append({
+                "source_ref": active.ref.label, "from_page": active.last_text_page,
+                "to_page": page, "source_scalar": start,
+                "split_word": split_word, "inserted_separator": separator,
+            })
+            result.counters["page_continuations"] += 1
+        active.fragments.append(rendered)
+        active.last_text_page = page
+        active.last_page = page
 
     page_revisions: list[tuple[int, Mapping[str, object]]] = []
     for revision in revisions:
@@ -1095,12 +1132,18 @@ def parse_wikisource_bundle(
             _SECTION_BOOKS.get(next(value for value in match.groups() if value is not None))
             for match in _SECTION_TAG_RE.finditer(included)
         ]
-        if active_book is None or (
-            page_default_book != active_book and active_book not in mapped_sections
-        ):
+        # Section changes must be processed in source order. A page can contain
+        # the tail of one book and the beginning of another; a page-level guess
+        # must never clear the active verse before that tail has been consumed.
+        if active_book is None:
             active_book = page_default_book
-            active = None
-            current_chapter = 0
+        page_audit.append({
+            "page": page, "revision_id": revision.get("revision_id", revision.get("revid")),
+            "input_sha256": sha256_text(content), "default_book": page_default_book,
+            "entry_book": active_book,
+            "entry_verse": active.ref.label if active else None,
+            "excluded_media_links": len(_MEDIA_LINK_RE.findall(included)),
+        })
         page_definitions: dict[str, dict[str, object]] = {}
         pending_named_uses: list[dict[str, object]] = []
         cursor = 0
@@ -1138,13 +1181,13 @@ def parse_wikisource_bundle(
                 },
                 "definition_order": result.counters["footnote_definitions"] + 1,
                 "source_id": context.source_id,
-                "source_revision": str(revision.get("revid", "")),
+                "source_revision": str(revision.get("revision_id", revision.get("revid", ""))),
                 "source_page": page,
                 "definition_locator": {"page": page, "source_scalar": nested_start},
                 "provenance": _record_provenance(
                     context,
                     page=page,
-                    revision_id=revision.get("revid"),
+                    revision_id=revision.get("revision_id", revision.get("revid")),
                     title=revision.get("title"),
                 ),
                 "source_fragment_sha256": sha256_text(included[nested_start:nested_end]),
@@ -1189,7 +1232,7 @@ def parse_wikisource_bundle(
                     source_plain_raw="",
                     footnotes=[footprint],
                     provenance=_record_provenance(
-                        context, page=page, revision_id=revision.get("revid")
+                        context, page=page, revision_id=revision.get("revision_id", revision.get("revid"))
                     ),
                     classification=["footnote", "heading", "manual_review"],
                     edition_applicable=True,
@@ -1206,12 +1249,11 @@ def parse_wikisource_bundle(
                 if position >= 0
             ]
             if not next_positions:
-                if active is not None:
-                    active.fragments.append(_render_wikitext(included[cursor:]))
+                append_text(included[cursor:], cursor)
                 break
             next_pos = min(next_positions)
-            if active is not None and next_pos > cursor:
-                active.fragments.append(_render_wikitext(included[cursor:next_pos]))
+            if next_pos > cursor:
+                append_text(included[cursor:next_pos], cursor)
             if included.startswith("{{", next_pos):
                 end = _find_template_end(included, next_pos)
                 raw_template = included[next_pos:end]
@@ -1220,6 +1262,16 @@ def parse_wikisource_bundle(
                 args = parts[1:]
                 result.counters[f"template_{name}"] += 1
                 marker = _parse_verse_marker(name, args, current_chapter)
+                if (
+                    marker == (1, 1) and page_default_book != active_book
+                    and page in dict(_PAGE_BOOK_STARTS) and not any(mapped_sections)
+                ):
+                    book_transitions.append({
+                        "page": page, "scalar": next_pos, "from": active_book,
+                        "to": page_default_book, "carrier": "first_verse_page_fallback",
+                    })
+                    active_book = page_default_book
+                    active = None
                 if marker and active_book:
                     current_chapter, verse_number = marker
                     source_ref = SourceRef(active_book, current_chapter, verse_number)
@@ -1233,8 +1285,8 @@ def parse_wikisource_bundle(
                     chapter_match = re.fullmatch(r"(\d+):", args[0].strip())
                     if chapter_match:
                         current_chapter = int(chapter_match.group(1))
-                elif active is not None:
-                    active.fragments.append(_render_wikitext(raw_template))
+                else:
+                    append_text(raw_template, next_pos)
                 if name in {"c", "rh", "larger", "x-larger", "xx-larger", "xxx-larger"}:
                     result.counters["headings"] += 1
                 cursor = end
@@ -1243,7 +1295,15 @@ def parse_wikisource_bundle(
             if section_match:
                 section = next(value for value in section_match.groups() if value is not None)
                 mapped_book = _SECTION_BOOKS.get(section)
+                if mapped_book is None and not (
+                    section.isdigit() or section in {"head", "Книги Старого Заповіту", "Новий Заповіт"}
+                ):
+                    raise Stage4ParseError(f"Unknown book section on page {page}: {section!r}")
                 if mapped_book and mapped_book != active_book:
+                    book_transitions.append({
+                        "page": page, "scalar": next_pos, "from": active_book,
+                        "to": mapped_book, "carrier": "section", "section": section,
+                    })
                     active_book = mapped_book
                     active = None
                     current_chapter = 0
@@ -1308,13 +1368,13 @@ def parse_wikisource_bundle(
                     },
                     "definition_order": result.counters["footnote_definitions"] + 1,
                     "source_id": context.source_id,
-                    "source_revision": str(revision.get("revid", "")),
+                    "source_revision": str(revision.get("revision_id", revision.get("revid", ""))),
                     "source_page": page,
                     "definition_locator": {"page": page, "source_scalar": next_pos},
                     "provenance": _record_provenance(
                         context,
                         page=page,
-                        revision_id=revision.get("revid"),
+                        revision_id=revision.get("revision_id", revision.get("revid")),
                         title=revision.get("title"),
                     ),
                     "source_fragment_sha256": sha256_text(included[next_pos:close_match.end()]),
@@ -1390,7 +1450,7 @@ def parse_wikisource_bundle(
                     },
                     "source_order": use_index,
                     "source_id": context.source_id,
-                    "source_revision": str(revision.get("revid", "")),
+                    "source_revision": str(revision.get("revision_id", revision.get("revid", ""))),
                     "source_page": page,
                     "source_ref": verse_builder.ref.as_dict() if verse_builder else None,
                     "anchor_locator": {"page": page, "source_scalar": use["source_scalar"]},
@@ -1450,7 +1510,7 @@ def parse_wikisource_bundle(
                         source_kind="unresolved_footnote",
                         source_plain_raw="",
                         footnotes=[footprint],
-                        provenance=_record_provenance(context, page=page, revision_id=revision.get("revid")),
+                        provenance=_record_provenance(context, page=page, revision_id=revision.get("revision_id", revision.get("revid"))),
                         classification=["footnote", "manual_review"],
                         edition_applicable=True,
                     )
@@ -1526,6 +1586,10 @@ def parse_wikisource_bundle(
         "proofread_page_count": expected_page_count,
         "named_ref_scope": "ProofreadPage page",
         "target_projection_performed": False,
+        "book_context_policy": "ordered_sections_v2",
+        "page_audit": page_audit,
+        "page_joins": page_joins,
+        "book_transitions": book_transitions,
     }
     expected_carriers = expected_carriers or {
         "raw_carrier_ref_opening": 1329,

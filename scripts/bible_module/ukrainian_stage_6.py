@@ -149,7 +149,7 @@ def _load_overrides() -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]]:
     return rows, by_rule
 
 
-def _load_source() -> tuple[
+def _load_source(path: Path | None = None, *, expected_spans: int = EXPECTED_SOURCE_SPANS) -> tuple[
     dict[str, dict[str, Any]],
     dict[str, dict[str, Any]],
     dict[str, str],
@@ -158,7 +158,7 @@ def _load_source() -> tuple[
     definitions: dict[str, dict[str, Any]] = {}
     use_records: dict[str, str] = {}
     line_count = 0
-    with SOURCE.open(encoding="utf-8") as handle:
+    with (path or SOURCE).open(encoding="utf-8") as handle:
         for line in handle:
             record = json.loads(line)
             line_count += 1
@@ -180,7 +180,7 @@ def _load_source() -> tuple[
                 if current is not None and current["full_text_nfc"] != compact["full_text_nfc"]:
                     raise AssertionError("Named footnote definition text changed")
                 definitions[note["footnote_id"]] = current or compact
-    if line_count != EXPECTED_SOURCE_SPANS:
+    if line_count != expected_spans:
         raise AssertionError("Stage-4 normalized source span count changed")
     if len(definitions) != EXPECTED_FOOTNOTE_DEFINITIONS:
         raise AssertionError("Stage-4 footnote definition count changed")

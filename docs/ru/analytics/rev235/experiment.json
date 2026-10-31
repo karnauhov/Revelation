@@ -1,0 +1,156 @@
+{
+  "task": "REV235",
+  "status": "local_materials_ready_campaign_not_launched",
+  "primary_locale": "uk",
+  "locale_rationale": "OH1988 is the concrete new reading benefit in 1.0.8. Ukrainian demand is a hypothesis, not established by device-language data in G01.",
+  "duration_days": 14,
+  "start_date": null,
+  "end_date": null,
+  "launch_gates": [
+    "REV301 release process",
+    "REV236 acceptance",
+    "REV237 publication and OH1988 delivery verified for each advertised platform",
+    "owner permission for the specific listing updates and placements"
+  ],
+  "channels": [
+    {
+      "id": "website",
+      "placement": "One Ukrainian benefit section on the owner's Revelation website",
+      "reading_url": "https://www.revelation.website/",
+      "windows_url": "https://apps.microsoft.com/detail/9NXHRR2P4087?cid=rev108-uk-site",
+      "measurement": "Partner Center page views and acquisitions with cid rev108-uk-site. Website visits and first reading remain unavailable without an approved measurement method."
+    },
+    {
+      "id": "microsoft_store",
+      "placement": "Ukrainian Microsoft Store listing with the same one-minute example",
+      "url": "https://apps.microsoft.com/detail/9NXHRR2P4087?hl=uk-UA",
+      "measurement": "Store Acquisitions totals and internal Store source. Do not add campaign-attributed views to totals. Store does not prove that a verse was read."
+    }
+  ],
+  "platform_links": {
+    "web": "https://www.revelation.website/",
+    "android": "https://play.google.com/store/apps/details?id=ai11.link.revelation&hl=uk",
+    "windows": "https://apps.microsoft.com/detail/9NXHRR2P4087?hl=uk-UA",
+    "linux": "https://snapcraft.io/revelation-x"
+  },
+  "baseline": {
+    "source": "../rev209/weekly.csv",
+    "start_date": "2026-10-05",
+    "end_date": "2026-10-18",
+    "windows_page_views": {
+      "value": 27,
+      "observed_days": 14
+    },
+    "windows_installs": {
+      "value": 0,
+      "observed_days": 14
+    },
+    "windows_sessions_opt_in": {
+      "value": 0,
+      "observed_days": 14
+    },
+    "android_installs_reported": {
+      "value": 11,
+      "observed_days": 6
+    },
+    "android_first_opens_reported": {
+      "value": 4,
+      "observed_days": 3
+    },
+    "android_returning_user_days_reported": {
+      "value": 12,
+      "observed_days": 7
+    },
+    "android_store_visitors_reported": {
+      "value": 39,
+      "observed_days": 13
+    },
+    "search_clicks": {
+      "value": 0,
+      "observed_days": 14
+    },
+    "search_impressions": {
+      "value": 60,
+      "observed_days": 14
+    },
+    "first_reading": {
+      "value": null,
+      "reason": "not instrumented"
+    },
+    "reading_cohort_d7": {
+      "value": null,
+      "reason": "not instrumented"
+    }
+  },
+  "targets": {
+    "windows_page_views_14_days": 40,
+    "windows_installs_14_days": 3,
+    "verified_entry_points": 2
+  },
+  "observations": [
+    {
+      "checkpoint": "D0",
+      "status": "not_started",
+      "window": null,
+      "windows_page_views": null,
+      "windows_installs": null,
+      "campaign_page_views": null,
+      "campaign_acquisitions": null,
+      "first_reading": null,
+      "returning_user_days": null,
+      "reading_cohort_d7": null,
+      "feedback": null
+    },
+    {
+      "checkpoint": "D7",
+      "status": "not_started",
+      "window": null,
+      "windows_page_views": null,
+      "windows_installs": null,
+      "campaign_page_views": null,
+      "campaign_acquisitions": null,
+      "first_reading": null,
+      "returning_user_days": null,
+      "reading_cohort_d7": null,
+      "feedback": null
+    },
+    {
+      "checkpoint": "D14",
+      "status": "not_started",
+      "window": null,
+      "windows_page_views": null,
+      "windows_installs": null,
+      "campaign_page_views": null,
+      "campaign_acquisitions": null,
+      "first_reading": null,
+      "returning_user_days": null,
+      "reading_cohort_d7": null,
+      "feedback": null
+    }
+  ],
+  "decision_rules": {
+    "continue": "At D14, if 40 Store views and 3 installs are observed, entry points work and feedback shows no repeated reading blocker, retain the tested channel for one more bounded cycle. Small samples do not establish causation.",
+    "change": "If views reach 40 but installs stay below 3, inspect listing-to-install friction. If installs occur but readers report a blocker, fix the reading path before increasing placements.",
+    "insufficient_data": "With fewer than 40 views or missing/partial reporting, record insufficient evidence. Do not call missing data zero or claim a failed Ukrainian module.",
+    "stop": "Stop the placement when its advertised module cannot be obtained or a reproducible reading blocker appears. Preserve evidence and do not replace the approved scope with new channels."
+  },
+  "money_spent": 0,
+  "placements_published": 0,
+  "messages_sent": 0,
+  "scheduling": "No automation was created. D0/D7/D14 are relative checkpoints after an explicitly approved launch, not calendar appointments.",
+  "completed_dependencies": [
+    "REV299 accepted by owner: complete OH1988 data 2",
+    "REV300 accepted by owner: module-specific Strong controls"
+  ],
+  "queue_order": 1100,
+  "queue_dependencies": [
+    "REV301",
+    "REV236",
+    "REV237"
+  ],
+  "web_entry_check": {
+    "cold_deep_link": "redirected_to_home_on_local_candidate",
+    "advertised_entry": "home_then_menu_Bible",
+    "release_recheck": "REV236/REV237 before placement"
+  }
+}

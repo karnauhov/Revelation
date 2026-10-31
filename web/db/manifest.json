@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-24T11:47:43Z",
+  "generatedAt": "2026-10-31T04:47:49Z",
   "databases": {
     "bible_kjv.sqlite": {
       "versionToken": "manifest:schema:3|data:6|date:2026-07-25T07:16:08Z|size:6733824",
@@ -17,10 +17,10 @@
       "fileSizeBytes": 12840960
     },
     "bible_ohienko_1988.sqlite": {
-      "versionToken": "manifest:schema:4|data:1|date:2026-10-24T11:45:54Z|size:7593984",
+      "versionToken": "manifest:schema:4|data:2|date:2026-10-31T04:47:49Z|size:7593984",
       "schemaVersion": 4,
-      "dataVersion": 1,
-      "date": "2026-10-24T11:45:54Z",
+      "dataVersion": 2,
+      "date": "2026-10-31T04:47:49Z",
       "fileSizeBytes": 7593984
     },
     "revelation.sqlite": {

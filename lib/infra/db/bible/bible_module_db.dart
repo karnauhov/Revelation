@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:revelation/features/bible/domain/models/bible_module_info.dart';
 import 'package:revelation/features/bible/domain/models/bible_verse_text.dart';
+import 'package:revelation/features/bible/domain/services/bible_text_search.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
 
 class BibleModuleDB extends GeneratedDatabase {
@@ -49,10 +50,43 @@ class BibleModuleDB extends GeneratedDatabase {
       versification: row.read<String>('versification'),
       license: row.read<String>('license'),
       sourceSummary: row.read<String>('source_summary'),
+      hasStrongNumbers: await readHasStrongNumbers(),
       schemaVersion: version?.schemaVersion,
       dataVersion: version?.dataVersion,
       date: version?.date,
     );
+  }
+
+  /// Uses the reader's token contract across the whole module. SQL only narrows
+  /// candidates; Dart checks token boundaries consistently on native and web.
+  Future<bool> readHasStrongNumbers() async {
+    const batchSize = 64;
+    String? afterKey;
+    while (true) {
+      final rows = await customSelect(
+        '''
+        SELECT verse_key, text FROM verses
+        WHERE ${afterKey == null ? '' : 'verse_key > ? AND '}
+              text GLOB '*[GgHh][0-9]*'
+        ORDER BY verse_key
+        LIMIT $batchSize
+        ''',
+        variables: [if (afterKey != null) Variable.withString(afterKey)],
+      ).get();
+      for (final row in rows) {
+        if (row
+            .read<String>('text')
+            .trim()
+            .split(RegExp(r'\s+'))
+            .any(bibleStrongTokenPattern.hasMatch)) {
+          return true;
+        }
+      }
+      if (rows.length < batchSize) {
+        return false;
+      }
+      afterKey = rows.last.read<String>('verse_key');
+    }
   }
 
   Future<DatabaseVersionInfo?> readVersionInfo() async {

@@ -1,0 +1,48 @@
+{
+  "checked_on": "2026-10-31",
+  "reference": "Rev.1.3",
+  "verse_key": "NOT",
+  "database": "web\\db\\bible_ohienko_1988.sqlite",
+  "database_sha256": "411b646d1d341824a16d259000b5534b5776116753d0b8c1f2b80390bf3bd906",
+  "metadata": {
+    "data_version": "1",
+    "date": "2026-10-24T11:45:54Z",
+    "schema_version": "4"
+  },
+  "actual_text": "Блаженний, хто читає, і ті, хто слухає слова пророцтва та",
+  "actual_comment": "",
+  "missing_continuation": "доде́ржує написане в ньому, \u2014 час бо близьки́й!",
+  "source_cache": "scripts\\bible_module\\source_cache\\wikisource_ohienko_1988_revisions.json",
+  "source_cache_sha256": "c7bc09ffdb232ded0abae6b631e382d896396750e3d3931ba5ee07e22c3e0702",
+  "source_pages": [
+    {
+      "title": "Сторінка:Ivan Ohienko Bible.djvu/1505",
+      "revision_id": 108531,
+      "content_sha256": "d557e9766f12eb6661a5bd66bdc7641f48ab4d804862acdbe7c48239e71a163d",
+      "snippet": "{{pline|3|id=1:3}} Блаженний, хто читає, і ті, хто слухає слова пророцтва та<section end=\"Об'явлення св. Івана Богослова\"/><noinclude>{{reflist}}</noinclude>",
+      "url": "https://uk.wikisource.org/w/index.php?oldid=108531"
+    },
+    {
+      "title": "Сторінка:Ivan Ohienko Bible.djvu/1506",
+      "revision_id": 108532,
+      "content_sha256": "1d9267d1996cc9b0df8ec5a2cc24624de2c8f175a0ee1657696f61bed1b7c024",
+      "snippet": "доде́ржує написане в ньому, \u2014 час бо близьки́й!",
+      "url": "https://uk.wikisource.org/w/index.php?oldid=108532"
+    }
+  ],
+  "ui_confirmed": true,
+  "cause_status": "Cross-page continuation absent in export; exact pipeline fault not yet isolated. No source omission or Strong assignment is inferred.",
+  "historical_status": "Original defect evidence before REV299; retained for traceability",
+  "resolution": {
+    "task": "REV299",
+    "status": "done",
+    "module_sha256": "7d7db0904fa4a579dd34c71c8e7e2b810c4faf99d25417022f2dcd976f6838f7",
+    "schema_version": 4,
+    "data_version": 2,
+    "date": "2026-10-31T04:47:49Z",
+    "full_corpus_verses_checked": 31102,
+    "corrected_verses": 722,
+    "root_cause": "Incomplete section-name mapping and premature verse reset at a page-default book transition; source-order parsing now retains continuations and fails on unassigned canonical text.",
+    "report": "../../../scripts/bible_module/reports/oh1988_text_repair/report.ru.md"
+  }
+}

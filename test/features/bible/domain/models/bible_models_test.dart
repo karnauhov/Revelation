@@ -85,26 +85,33 @@ void main() {
   });
 
   test('module equality includes each version metadata value', () {
-    BibleModuleInfo module({int schema = 3, int data = 17, DateTime? date}) =>
-        BibleModuleInfo(
-          fileName: 'bible_test.sqlite',
-          code: 'TEST',
-          moduleId: 'test',
-          title: 'Test',
-          description: '',
-          language: 'en',
-          canon: '',
-          versification: '',
-          license: '',
-          sourceSummary: '',
-          schemaVersion: schema,
-          dataVersion: data,
-          date: date ?? DateTime.utc(2026, 10, 24),
-        );
+    BibleModuleInfo module({
+      int schema = 3,
+      int data = 17,
+      DateTime? date,
+      bool strong = false,
+    }) => BibleModuleInfo(
+      fileName: 'bible_test.sqlite',
+      code: 'TEST',
+      moduleId: 'test',
+      title: 'Test',
+      description: '',
+      language: 'en',
+      canon: '',
+      versification: '',
+      license: '',
+      sourceSummary: '',
+      hasStrongNumbers: strong,
+      schemaVersion: schema,
+      dataVersion: data,
+      date: date ?? DateTime.utc(2026, 10, 24),
+    );
     expect(module(), module());
     expect(module().hashCode, module().hashCode);
     expect(module(), isNot(module(schema: 4)));
     expect(module(), isNot(module(data: 18)));
+    expect(module().hasStrongNumbers, isFalse);
+    expect(module(), isNot(module(strong: true)));
     expect(module(), isNot(module(date: DateTime.utc(2026, 10, 25))));
   });
 

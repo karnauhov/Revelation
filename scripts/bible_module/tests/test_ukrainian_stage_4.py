@@ -134,6 +134,112 @@ class Stage4StepParserTests(unittest.TestCase):
 
 
 class Stage4MediaWikiTests(unittest.TestCase):
+    def _parse_pages(self, pages):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "pages.json"
+            revisions = [
+                {"title": f"Сторінка:Ivan Ohienko Bible.djvu/{page}",
+                 "revision_id": 100000 + page, "content": content}
+                for page, content in pages
+            ]
+            path.write_text(json.dumps({"revisions": revisions}), encoding="utf-8")
+            carriers = {
+                "raw_carrier_ref_opening": sum(len(parsers._REF_OPEN_RE.findall(r["content"])) for r in revisions),
+                "raw_carrier_ref_closing": sum(len(parsers._REF_CLOSE_RE.findall(r["content"])) for r in revisions),
+                "raw_carrier_ref_self_closing": sum(len(parsers._REF_SELF_RE.findall(r["content"])) for r in revisions),
+                "raw_carrier_reflist": 0,
+                "raw_carrier_anchor": sum(r["content"].count("{{anchor|") for r in revisions),
+            }
+            return parse_wikisource_bundle(
+                _context(path, "wikisource_ohienko_1988_revisions", edition=True),
+                expected_revision_count=len(revisions), expected_page_count=len(revisions),
+                expected_carriers=carriers,
+            )
+
+    def test_full_revelation_verse_survives_mixed_book_and_next_page(self):
+        first = "Блаженний, хто читає, і ті, хто слухає слова пророцтва та"
+        last = "доде́ржує написане в ньому, — час бо близьки́й!"
+        result = self._parse_pages([
+            (1504, '<section begin="Соборне послання св. апостола Юди"/>'
+             '{{anchor|1:1}}Попередня книга.'),
+            (1505, '<section begin="Соборне послання св. апостола Юди"/>'
+             '{{pline|25|id=1:25}}Кінець попередньої книги.'
+             '<section begin="Об\'явлення св. Івана Богослова"/>'
+             '{{anchor|1:1}}Новий вступ<ref>Примітка вступу.</ref>.'
+             '{{pline|3|id=1:3}}' + first),
+            (1506, last + '<ref>Примітка продовження.</ref>{{pline|4|id=1:4}}Наступний.'),
+        ])
+        records = {r["source_ref_raw"]: r for r in result.records}
+        self.assertEqual(records["Rev.1.3"]["source_plain_nfc"], first + " " + last)
+        self.assertEqual(records["Jude.1.1"]["source_plain_nfc"], "Попередня книга.")
+        self.assertEqual(records["Rev.1.3"]["source_locator"]["page_end"], 1506)
+        note, = records["Rev.1.3"]["footnotes"]
+        self.assertEqual(note["source_ref"]["book"], "Rev")
+        self.assertEqual(note["source_revision"], "101506")
+        self.assertEqual(note["anchor_start_scalar"], len(first + " " + last))
+        self.assertEqual(records["Rev.1.1"]["footnotes"][0]["source_ref"]["book"], "Rev")
+
+    def test_deuteronomy_start_and_tail_before_joshua_are_not_lost(self):
+        result = self._parse_pages([
+            (229, '{{anchor|1:1}}Числа.'),
+            (230, '<section begin="Четверта книга Мойсеєва: Числа"/>'
+             '{{pline|13|id=36:13}}Закінчення.'
+             '<section begin="П\'ята книга Мойсеєва: Повторення Закону"/>'
+             '{{anchor|1:1}}Второзаконня.{{pline|6|id=1:6}}Початок'),
+            (231, 'продовження.{{pline|7|id=1:7}}Інший.'),
+            (278, '{{pline|8|id=34:8}}І оплакували Мойсея'),
+            (279, '<section begin="П\'ята книга Мойсеєва: Повторення Закону"/>'
+             'тридцять день.{{pline|9|id=34:9}}А Ісус.'
+             '<section begin="Книга Ісуса Навина (Книга Єгошуї)"/>'
+             '{{anchor|1:1}}Наступна книга.'),
+        ])
+        records = {r["source_ref_raw"]: r["source_plain_nfc"] for r in result.records}
+        self.assertEqual(records["Num.1.1"], "Числа.")
+        self.assertEqual(records["Deut.1.1"], "Второзаконня.")
+        self.assertEqual(records["Deut.1.6"], "Початок продовження.")
+        self.assertEqual(records["Deut.34.8"], "І оплакували Мойсея тридцять день.")
+        self.assertEqual(records["Josh.1.1"], "Наступна книга.")
+
+    def test_book_without_sections_switches_at_first_verse_and_shared_page_keeps_third_john(self):
+        result = self._parse_pages([
+            (1447, '{{pline|24|id=6:24}}Ефесяни.'),
+            (1448, '{{c|Заголовок}}{{anchor|1:}}{{anchor|1:1}}Филип\'яни.'),
+            (1503, '<section begin="Друге соборне послання св. апостола Івана"/>'
+             '{{anchor|1:1}}Друге послання.'
+             '<section begin="Третє соборне послання св. апостола Івана"/>'
+             '{{anchor|1:1}}Третє послання.'),
+        ])
+        records = {r["source_ref_raw"]: r["source_plain_nfc"] for r in result.records}
+        self.assertEqual(records["Phil.1.1"], "Филип'яни.")
+        self.assertEqual(records["2John.1.1"], "Друге послання.")
+        self.assertEqual(records["3John.1.1"], "Третє послання.")
+
+    def test_page_word_boundary_and_explicit_split_word_have_distinct_join_rules(self):
+        for ending, beginning, expected in [
+            ("два", "слова", "два слова"),
+            ("два ", " слова", "два слова"),
+            ("{{hws|слі|сліпий}}", "{{hwe|пий|сліпий}}", "сліпий"),
+        ]:
+            with self.subTest(expected=expected):
+                result = self._parse_pages([(11, '{{anchor|1:1}}' + ending), (12, beginning)])
+                self.assertEqual(result.records[0]["source_plain_nfc"], expected)
+
+    def test_unknown_book_section_and_orphan_text_fail_closed(self):
+        for content in ['<section begin="Невідома книга"/>{{anchor|1:1}}Текст.',
+                        'Загублений текст.{{anchor|1:1}}Текст.']:
+            with self.subTest(content=content), self.assertRaises(Stage4ParseError):
+                self._parse_pages([(11, content)])
+
+    def test_image_transclusion_after_final_verse_is_not_bible_text(self):
+        result = self._parse_pages([
+            (1527, '{{pline|21|id=22:21}}Кінець.{{nop}}'),
+            (1529, '[[Файл:Ivan Ohienko Bible.djvu|400px|center|сторінка=1529]]'),
+        ])
+        self.assertEqual(result.records[0]["source_plain_nfc"], "Кінець.")
+        self.assertEqual(result.records[0]["source_locator"]["page_end"], 1527)
+        self.assertEqual(result.format_details["page_audit"][-1]["excluded_media_links"], 1)
+        self.assertEqual(parsers._render_wikitext('[[ціль|звичайний текст]]'), 'звичайний текст')
+
     def _bundle(self, directory: Path) -> tuple[Path, dict[str, int]]:
         fixture = json.loads((FIXTURES / "wikisource_pages.json").read_text(encoding="utf-8"))
         revisions = [

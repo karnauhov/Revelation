@@ -1,0 +1,68 @@
+{
+  "release": "1.0.8",
+  "status": "materials_updated_for_REV299_REV300_pending_release_and_placements",
+  "primary_locale": "uk",
+  "app_name": "Revelation",
+  "locales": {
+    "uk": {
+      "short_description": "Досліджуйте Об'явлення з українською Біблією та грецьким текстом",
+      "headline": "Читайте Об'явлення українською поруч із грецьким текстом",
+      "lead": "Почніть з Об'явлення 1:1-3. Порівняйте текст перекладу Івана Огієнка 1988 року з грецьким текстом і відкрийте примітки до вірша.",
+      "description": "Revelation допомагає вивчати книгу Об'явлення, починаючи з її тексту та першоджерел.\n\nЧитайте український переклад Івана Огієнка 1988 року окремо або поруч із грецьким текстом. Відкривайте примітки до віршів, переходьте між розділами та порівнюйте доступні біблійні модулі. У відомостях про модуль можна перевірити джерела, версію даних і дату оновлення.\n\nДля першого знайомства виберіть українську мову інтерфейсу, відкрийте Біблію та перейдіть до Об'явлення 1. У паралельному читанні можна зіставити переклад із LXX/TR. Український модуль OH1988 містить текст і примітки; номерів Стронга в ньому немає. Англійський переклад KJV доступний як окремий модуль.\n\nІнтерфейс доступний українською, англійською, іспанською та російською. Наявність мови інтерфейсу не означає наявності біблійного перекладу цією мовою. Для першого отримання даних потрібне підключення до мережі.",
+      "steps": [
+        "Виберіть українську мову. У меню відкрийте «Біблія».",
+        "Оберіть переклад Огієнка 1988 року та Об'явлення 1. Для порівняння оберіть LXX/TR у сусідній панелі; якщо панель одна, відкрийте паралельне читання.",
+        "Прочитайте вірші 1-3 і відкрийте примітку біля вірша 1."
+      ],
+      "post": "Як почати читати Об'явлення, коли хочеться бачити і переклад, і грецький текст? У Revelation 1.0.8 є українська Біблія Івана Огієнка 1988 року з примітками. Відкрийте Об'явлення 1:1-3, додайте поруч LXX/TR і порівняйте текст. Номерів Стронга в українському модулі немає. Нижче - хвилинний приклад і посилання для читання або встановлення. Чи вдалося відкрити текст і примітку? Якщо ні, напишіть платформу та крок, на якому зупинилися. Особисті дані не потрібні.",
+      "release_notes": "Українська Біблія Огієнка 1988 року з примітками. Паралельне читання перекладу й оригіналу та зрозуміліші відомості про модулі. Надійніший запуск і оновлення даних.",
+      "web_cta": "Відкрити Revelation у браузері",
+      "install_cta": "Встановити Revelation"
+    },
+    "en": {
+      "short_description": "Study Revelation with the Ukrainian Bible beside the Greek text",
+      "headline": "Read Revelation in Ukrainian beside the Greek text",
+      "lead": "Start with Revelation 1:1-3. Compare the 1988 Ohienko translation with the Greek text and open the verse footnotes.",
+      "description": "Revelation helps you study the Book of Revelation, starting with its text and primary sources.\n\nRead the 1988 Ukrainian Ohienko translation on its own or beside the Greek text. Open verse footnotes, move between chapters and compare the available Bible modules. Module information shows sources, the data version and the update date.\n\nTo begin, choose the Ukrainian interface, open the Bible and go to Revelation 1. Add LXX/TR for parallel reading. The OH1988 Ukrainian module includes text and footnotes; it does not include Strong's numbers. The English KJV is available as a separate module.\n\nThe interface supports Ukrainian, English, Spanish and Russian. An interface language does not imply that a Bible translation is available in that language. A network connection is needed to obtain the data for the first time.",
+      "steps": [
+        "Choose the Ukrainian interface, then open Bible from the menu.",
+        "Choose the 1988 Ohienko translation and Revelation 1. Select LXX/TR in the other pane; if only one pane is open, enable parallel reading.",
+        "Read verses 1-3 and open the footnote beside verse 1."
+      ],
+      "post": "Want to read Revelation in Ukrainian while keeping the Greek text in view? Revelation 1.0.8 includes the 1988 Ohienko Bible with verse footnotes. Open Revelation 1:1-3, add LXX/TR beside it and compare the text. The Ukrainian module does not include Strong's numbers. Watch the one-minute example, then use the reading or installation link below. Could you open the text and its footnote? If you got stuck, tell us your platform and the step. No personal information is needed.",
+      "release_notes": "The 1988 Ukrainian Ohienko Bible with verse footnotes, parallel reading with the original, clearer module information, and more reliable startup and data updates.",
+      "web_cta": "Open Revelation in your browser",
+      "install_cta": "Install Revelation"
+    },
+    "es": {
+      "short_description": "Estudia Apocalipsis con la Biblia ucraniana junto al texto griego",
+      "headline": "Lee Apocalipsis en ucraniano junto al texto griego",
+      "lead": "Empieza por Apocalipsis 1:1-3. Compara la traducción de Ohienko de 1988 con el texto griego y abre las notas del versículo.",
+      "description": "Revelation te ayuda a estudiar el libro de Apocalipsis a partir de su texto y sus fuentes primarias.\n\nLee la traducción ucraniana de Ohienko de 1988 por separado o junto al texto griego. Abre las notas de los versículos, cambia de capítulo y compara los módulos bíblicos disponibles. La información del módulo muestra las fuentes, la versión de los datos y la fecha de actualización.\n\nPara empezar, elige la interfaz en ucraniano, abre la Biblia y ve a Apocalipsis 1. Añade LXX/TR para la lectura en paralelo. El módulo ucraniano OH1988 incluye texto y notas, sin números de Strong. La traducción inglesa KJV está disponible como otro módulo.\n\nLa interfaz está disponible en ucraniano, inglés, español y ruso. El idioma de la interfaz no implica que exista una traducción bíblica en ese idioma. Se necesita conexión para obtener los datos por primera vez.",
+      "steps": [
+        "Elige la interfaz en ucraniano y abre Biblia desde el menú.",
+        "Elige la traducción de Ohienko de 1988 y Apocalipsis 1. Selecciona LXX/TR en el otro panel; si solo hay uno, abre la lectura en paralelo.",
+        "Lee los versículos 1-3 y abre la nota del versículo 1."
+      ],
+      "post": "¿Quieres leer Apocalipsis en ucraniano sin perder de vista el texto griego? Revelation 1.0.8 incluye la Biblia de Ohienko de 1988 con notas. Abre Apocalipsis 1:1-3 y añade LXX/TR para comparar los textos. El módulo ucraniano no incluye números de Strong. Mira el ejemplo de un minuto y utiliza el enlace de lectura o instalación. ¿Pudiste abrir el texto y su nota? Si no, indica la plataforma y el paso donde te detuviste. No hacen falta datos personales.",
+      "release_notes": "Biblia ucraniana de Ohienko de 1988 con notas, lectura en paralelo con el original, información más clara de los módulos e inicio y actualización de datos más fiables.",
+      "web_cta": "Abrir Revelation en el navegador",
+      "install_cta": "Instalar Revelation"
+    },
+    "ru": {
+      "short_description": "Изучайте Откровение с украинской Библией рядом с греческим текстом",
+      "headline": "Читайте Откровение по-украински рядом с греческим текстом",
+      "lead": "Начните с Откровения 1:1-3. Сравните перевод Огиенко 1988 года с греческим текстом и откройте примечания к стиху.",
+      "description": "Revelation помогает изучать книгу Откровение, начиная с её текста и первоисточников.\n\nЧитайте украинский перевод Огиенко 1988 года отдельно или рядом с греческим текстом. Открывайте примечания к стихам, переходите между главами и сравнивайте доступные библейские модули. В информации о модуле можно проверить источники, версию данных и дату обновления.\n\nДля знакомства выберите украинский язык интерфейса, откройте Библию и перейдите к Откровению 1. Добавьте LXX/TR для параллельного чтения. Украинский модуль OH1988 содержит текст и примечания без номеров Стронга. Английский перевод KJV доступен отдельным модулем.\n\nИнтерфейс доступен на украинском, английском, испанском и русском. Язык интерфейса не означает наличия перевода Библии на этом языке. Для первого получения данных требуется подключение к сети.",
+      "steps": [
+        "Выберите украинский интерфейс и откройте Библию из меню.",
+        "Выберите перевод Огиенко 1988 года и Откровение 1. Для сравнения выберите LXX/TR в соседней панели; если панель одна, откройте параллельное чтение.",
+        "Прочитайте стихи 1-3 и откройте примечание к стиху 1."
+      ],
+      "post": "Хотите читать Откровение по-украински и видеть рядом греческий текст? В Revelation 1.0.8 есть Библия Огиенко 1988 года с примечаниями. Откройте Откровение 1:1-3, добавьте рядом LXX/TR и сравните текст. Номеров Стронга в украинском модуле нет. Посмотрите минутный пример и откройте ссылку для чтения или установки. Получилось открыть текст и примечание? Если нет, напишите платформу и шаг, на котором остановились. Личные данные не нужны.",
+      "release_notes": "Украинская Библия Огиенко 1988 года с примечаниями, параллельное чтение с оригиналом, понятная информация о модулях и более надёжные запуск и обновление данных.",
+      "web_cta": "Открыть Revelation в браузере",
+      "install_cta": "Установить Revelation"
+    }
+  }
+}

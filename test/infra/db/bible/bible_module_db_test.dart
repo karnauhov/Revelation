@@ -7,6 +7,48 @@ import 'package:revelation/infra/db/bible/bible_module_db.dart';
 
 void main() {
   for (final version in [3, 4]) {
+    test('detects Strong tokens throughout schema $version module', () async {
+      final temporary = await Directory.systemTemp.createTemp('rev300-db-');
+      addTearDown(() => temporary.delete(recursive: true));
+      final db = BibleModuleDB(
+        NativeDatabase(
+          File('${temporary.path}/bible_test.sqlite'),
+          enableMigrations: false,
+          setup: (database) => database.execute('PRAGMA user_version=$version'),
+        ),
+      );
+      addTearDown(db.close);
+      await db.customStatement('''CREATE TABLE verses (
+        verse_key TEXT PRIMARY KEY, text TEXT NOT NULL
+        ${version == 4 ? ", comment TEXT NOT NULL DEFAULT ''" : ''}
+      )''');
+      expect(await db.readHasStrongNumbers(), isFalse);
+      // Comments and partial words are not reader Strong tokens. More than one
+      // candidate batch must not prevent finding a later genuine annotation.
+      for (var i = 0; i < 65; i++) {
+        await db.customStatement(
+          'INSERT INTO verses VALUES (?, ?${version == 4 ? ', ?' : ''})',
+          [
+            i.toString().padLeft(3, '0'),
+            'AG123 G12x H3. Gword',
+            if (version == 4) 'G746',
+          ],
+        );
+      }
+      expect(await db.readHasStrongNumbers(), isFalse);
+      for (final token in ['G746', 'H7225', 'g1722', 'h430']) {
+        await db.customStatement(
+          'INSERT INTO verses (verse_key, text) VALUES (?, ?)',
+          ['999', 'Word\t$token\nnext'],
+        );
+        expect(await db.readHasStrongNumbers(), isTrue, reason: token);
+        await db.customStatement("DELETE FROM verses WHERE verse_key = '999'");
+      }
+      expect(await db.readHasStrongNumbers(), isFalse);
+    });
+  }
+
+  for (final version in [3, 4]) {
     test('reads schema $version without changing its version', () async {
       final temporary = await Directory.systemTemp.createTemp('rev201-db-');
       addTearDown(() => temporary.delete(recursive: true));
@@ -121,6 +163,7 @@ void main() {
       expect(info.fileName, 'bible_lxx_tr.sqlite');
       expect(info.code, 'LXX_TR');
       expect(info.displayTitle, 'LXX_TR');
+      expect(info.hasStrongNumbers, isTrue);
       expect(info.schemaVersion, 3);
       expect(info.dataVersion, 13);
       expect(info.date, DateTime.utc(2026, 5, 31, 6, 20, 48));

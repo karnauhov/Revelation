@@ -638,6 +638,7 @@ class _FakeBibleRepository extends BibleRepository {
       versification: 'kjv_protestant',
       license: 'CC BY 4.0',
       sourceSummary: 'https://example.com/source',
+      hasStrongNumbers: true,
       dataVersion: 17,
       schemaVersion: 3,
       date: DateTime.utc(2026, 7, 25, 23, 59),
