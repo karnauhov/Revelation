@@ -531,15 +531,23 @@ def build_web(ctx, defines):
             and previous.get("outputs", {}).get(name) == digest(packaged)):
         return
     recover_web_cache(ctx)
-    # Integration builds may have replaced build/web. If the distribution ZIP
-    # needs rebuilding, always rebuild lib/main.dart and its dependent steps.
-    ctx.result["steps"].pop("web", None)
-    ctx.invalidate_dependents("web")
-    ctx.stage("web", lambda: ctx.command(["flutter", "build", "web", "--source-maps", *defines], cwd=ctx.workspace),
-              always=True)
+    # Integration can replace build/web; verify the complete production output
+    # before reusing it. A failed Sentry upload alone must not recompile it.
+    if not web_output_current(ctx):
+        ctx.result["steps"].pop("web", None)
+        ctx.invalidate_dependents("web")
+    def compile_web():
+        ctx.command(["flutter", "build", "web", "--source-maps", *defines], cwd=ctx.workspace)
+        record_web_output(ctx)
+    ctx.stage("web", compile_web, ["results/windows-web-build.json"])
     def sentry_web():
         ctx.command(["dart", "run", "scripts/prepare_sentry_web_source_maps.dart", "--web-build-dir", "build/web"], cwd=ctx.workspace)
-        ctx.command(["dart", "run", "sentry_dart_plugin"], cwd=ctx.workspace)
+        record_web_output(ctx)
+        # Dart's recursive symbol scan exceeds MAX_PATH in Gradle transforms
+        # from the physical checkout. Use the already owned short drive only
+        # for this uploader; Flutter Web's build bookkeeping stays physical.
+        ctx.command(["dart", "run", "sentry_dart_plugin"])
+        record_web_output(ctx)
     ctx.stage("sentry-web", sentry_web)
     ctx.stage("web-manifest", lambda: ctx.command(["python", "scripts/generate_web_loader_manifest.py", "--web-build-dir", "build/web"], cwd=ctx.workspace),
               always=not (ctx.workspace / "build/web/loader_manifest.json").is_file())
@@ -552,6 +560,42 @@ def build_web(ctx, defines):
                 if item.is_file() and item.suffix != ".map":
                     archive.write(item, item.relative_to(root).as_posix())
     ctx.stage("web-zip", web_zip, [output_for(ctx, ".zip")])
+
+
+def web_output_hashes(ctx):
+    root = ctx.workspace / "build/web"
+    if not all((root / name).is_file() for name in ("main.dart.js", "main.dart.js.map", "index.html")):
+        raise ReleaseError("Production Web output or source map is missing")
+    files = {}
+    for path in sorted(root.rglob("*")):
+        if path.is_file() and path.relative_to(root).as_posix() != "loader_manifest.json":
+            if not path.resolve().is_relative_to(root.resolve()):
+                raise ReleaseError("Web output escapes its build directory")
+            files[path.relative_to(root).as_posix()] = digest(path)
+    return files
+
+
+def record_web_output(ctx, *, recovery=None):
+    path = ctx.directory / "results/windows-web-build.json"
+    atomic_json(path, {"sha": ctx.job["sha"], "compile_defines_sha256": ctx.job.get("compile_defines_sha256"),
+        "files": web_output_hashes(ctx), "recovery": recovery})
+    if ctx.result["steps"].get("web", {}).get("status") == "passed":
+        # The source-map preparer legitimately updates JS/maps after compilation.
+        ctx.result["steps"]["web"]["outputs"] = {"results/windows-web-build.json": digest(path)}
+        ctx.save()
+
+
+def web_output_current(ctx):
+    path = ctx.directory / "results/windows-web-build.json"
+    step = ctx.result["steps"].get("web", {})
+    try:
+        record = read_json(path)
+        return (step.get("status") == "passed" and step.get("outputs", {}).get("results/windows-web-build.json") == digest(path)
+            and record["sha"] == ctx.job["sha"]
+            and record.get("compile_defines_sha256") == ctx.job.get("compile_defines_sha256")
+            and record["files"] == web_output_hashes(ctx))
+    except (OSError, ValueError, KeyError, ReleaseError):
+        return False
 
 
 def verify_windows(ctx):

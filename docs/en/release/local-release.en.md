@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.1.0
+Doc-Version: 1.1.1
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -17,6 +17,14 @@ versions/platforms/packages, current stages and queue, start/retry/stop, automat
 The service reads the same package files. Other projects' autobuilds are implemented in their own tasks
 and connected through this coordinator's profiles/queues/catalogues. Windows Startup and the Linux graphical-login
 dispatcher have been verified in the owner's real dual-boot cycle. Rebooting and signing in remain manual.
+
+The `sentry-web` stage uploads shared Android/Windows debug symbols and Web source maps.
+On Windows only the `sentry_dart_plugin` uploader runs through the builder-owned short SUBST path:
+Dart recursive scans of deep Gradle `.transforms` paths can otherwise fail at MAX_PATH.
+Flutter Web builds and source-map preparation retain the physical path to avoid mixed build bookkeeping.
+`results/windows-web-build.json` records source/defines and hashes of the entire production Web output.
+A Sentry retry reuses verified output; files replaced by integration require a fresh production build.
+An accepted ZIP is reused independently of the temporary build directory.
 
 ## Primary local catalogue
 

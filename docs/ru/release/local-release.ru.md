@@ -1,6 +1,6 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.1.0
+Doc-Version: 1.1.1
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -17,6 +17,14 @@ REV301 завершил полный реальный пробный выпус�
 Сервис читает те же файлы пакетов. Автобилды остальных проектов создаются в их собственных задачах
 и подключаются к общему сервису через профили/очереди/каталоги этого координатора. Windows Startup и Linux graphical-login
 dispatcher подтверждены реальным dual-boot циклом владельца. Перезагрузку и вход выполняет владелец.
+
+Этап `sentry-web` загружает общие Android/Windows debug symbols и Web source maps.
+На Windows только загрузчик `sentry_dart_plugin` запускается через принадлежащий builder короткий SUBST-путь:
+Dart recursive scan глубоко вложенного Gradle `.transforms` иначе может упасть на MAX_PATH.
+Flutter Web build и подготовка source maps остаются на физическом пути, чтобы не смешивать build bookkeeping.
+`results/windows-web-build.json` фиксирует source/defines и хеши всего production Web output.
+После ошибки Sentry повтор использует проверенный output; изменение файлов интеграционным запуском требует нового production build.
+Готовый проверенный ZIP используется независимо от наличия временного build directory.
 
 ## Единственный каталог пакетов
 
