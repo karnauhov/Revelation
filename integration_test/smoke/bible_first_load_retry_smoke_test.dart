@@ -48,21 +48,23 @@ void main() {
           final context = tester.element(
             find.byKey(const Key('bible_reader_pane_primary')),
           );
-          final state = context
-              .read<BibleWorkspaceCubit>()
-              .readerCubitFor('primary')
-              .state;
+          final workspace = context.read<BibleWorkspaceCubit>();
+          final state = workspace.readerCubitFor('primary').state;
           expect(state.verses.first.text.trim(), isNotEmpty);
           expect(state.selectedModule!.code, 'LXX_TR');
           expect(state.selectedModule!.language, 'grc');
           expect(find.byKey(const Key('bible_retry_button')), findsNothing);
-          expect(source.listCalls, 2);
+          // One failed primary attempt, then one initial load per reader.
+          // A successful retry also opens the available default translation.
+          expect(source.listCalls, 1 + workspace.state.paneIds.length);
           expect(tester.takeException(), isNull);
           binding.reportData![language] = {
             'actualModule': state.selectedModule!.fileName,
             'visibleVerse': true,
             'recoveryToVisibleVerseMs': stopwatch.elapsedMilliseconds,
             'failureBoundary': 'module discovery',
+            'readerPanes': workspace.state.paneIds.length,
+            'moduleDiscoveryCalls': source.listCalls,
           };
           debugPrint(
             'REV210_WEB_RESULT $language ${jsonEncode(binding.reportData![language])}',

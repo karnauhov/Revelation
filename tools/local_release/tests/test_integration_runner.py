@@ -13,6 +13,24 @@ from local_release.profiles.revelation import web_integration_target, recover_we
 
 
 class IntegrationRunnerTest(unittest.TestCase):
+    def test_historical_retry_retains_exact_discovery_count_for_each_open_reader(self):
+        relative = "integration_test/smoke/bible_first_load_retry_smoke_test.dart"
+        source = git(Path(__file__).resolve().parents[3], "show", "abd9d33f77b837940f03eaaec430a9568adf3f6e:" + relative) + "\n"
+        with tempfile.TemporaryDirectory() as folder:
+            job = Path(folder) / "releases/fixture/1.0.0+1" / ("a" * 40)
+            atomic_json(job / "job.json", {"schema": 1, "sha": "a" * 40, "run_id": "fixture-a", "project": "fixture"})
+            ctx = Context(job, {}, host="windows")
+            test = ctx.workspace / relative
+            test.parent.mkdir(parents=True)
+            test.write_text(source, encoding="utf-8")
+            web_integration_target(ctx, test)
+            record = read_json(job / "results/windows-web-driver-targets.json")[relative]
+            adapted = (ctx.workspace / record["test_compatibility"]["target"]).read_text()
+            self.assertIn("expect(source.listCalls, 1 + context.read<BibleWorkspaceCubit>().state.paneIds.length)", adapted)
+            self.assertIn("expect(source.listCalls, 1)", adapted)
+            self.assertIn("expect(tester.takeException(), isNull)", adapted)
+            self.assertEqual(test.read_text(), source)
+
     def test_web_alias_recovery_keeps_native_cache_and_ready_packages(self):
         with tempfile.TemporaryDirectory() as folder:
             job = Path(folder) / "releases/fixture/1.0.0+1" / ("a" * 40)
@@ -21,8 +39,9 @@ class IntegrationRunnerTest(unittest.TestCase):
             cache = ctx.workspace / (".dart_tool/flutter_build/" + "b" * 32)
             aliased = cache / "web_release_bundle.stamp"
             native = cache / "windows_bundle.stamp"
+            localization = cache / "gen_localizations.stamp"
             physical = cache / "web_templated_files.stamp"
-            for path in (aliased, native):
+            for path in (aliased, native, localization):
                 atomic_json(path, {"outputs": [r"R:\fixture\build\web\assets\FontManifest.json"]})
             atomic_json(physical, {"outputs": [str(ctx.workspace / "build/web/index.html")]})
             marker = ctx.workspace / "build/web/.last_build_id"
@@ -33,6 +52,7 @@ class IntegrationRunnerTest(unittest.TestCase):
             package.write_bytes(b"signed immutable package")
             recover_web_cache(ctx)
             self.assertFalse(aliased.exists())
+            self.assertFalse(localization.exists())
             self.assertFalse(marker.exists())
             self.assertTrue(native.exists())
             self.assertTrue(physical.exists())
@@ -81,7 +101,9 @@ class IntegrationRunnerTest(unittest.TestCase):
             self.assertIn("Failure(description, '${details.exception}\\n${details.stack}')", contents)
             self.assertEqual(target.read_text(), original)
             target.write_text("void main() { IntegrationTestWidgetsFlutterBinding.ensureInitialized(); }")
-            self.assertEqual(web_integration_target(ctx, target), "integration_test/smoke/startup_test.dart")
+            direct = ctx.workspace / web_integration_target(ctx, target)
+            self.assertIn("previousReporter(details, description)", direct.read_text())
+            self.assertIn("scenario.main()", direct.read_text())
 
     def test_android_files_keep_seeded_data_between_flutter_processes(self):
         from contextlib import nullcontext

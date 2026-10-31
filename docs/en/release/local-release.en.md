@@ -49,16 +49,18 @@ Android files use `flutter test --no-uninstall`: Flutter's default cleanup after
 remove the app and its preloaded test databases. The dedicated AVD remains a separate temporary environment.
 Web `flutter drive` requires an IntegrationTest binding. For smoke files using the ordinary WidgetTest binding,
 the coordinator generates a launcher under `.dart_tool/ai11_integration/`, initializes IntegrationTest binding
-and calls the original `main()` without changing scenarios. Existing IntegrationTest targets run directly.
+and calls the original `main()` without changing scenarios. Existing IntegrationTest targets receive the same diagnostics.
 Launcher/source test hashes are recorded in `results/windows-web-driver-targets.json`.
 All Web commands use the physical checkout instead of the MSBuild SUBST alias. Flutter otherwise
 compares C:/R: output strings as different configurations and can delete freshly copied assets.
-Recovery removes only aliased Web stamps and Web `.last_build_id`, preserving native caches and packages;
+Recovery removes only aliased Web/localization stamps and Web `.last_build_id`, preserving native compile caches and packages;
 `windows-web-cache-recovery.json` records the repair. Incognito prevents service-worker state leaking between tests.
 Release diagnostics preserve the exception and stack even when Flutter strips its error description.
 For the exact historical build173 About smoke test, an audited test-only copy corrects platform expectations:
 Web hides native-only database/folder tools and retains cache cleanup. The source checkout, app code and
 packages stay unchanged; the adapter digest and reason are recorded in the same evidence.
+The historical retry smoke counts one failed primary attempt and exactly one successful discovery per open
+reader, including the automatic parallel translation. The call and pane counts are preserved in reportData.
 Before Android commands the coordinator checks generated Flutter plugin paths and, when needed, regenerates them
 with `flutter pub get` from the physical checkout. Temporary SUBST paths are reserved for Windows/MSBuild;
 Android must not depend on a drive letter removed after the run. `android-cache-recovery` validates

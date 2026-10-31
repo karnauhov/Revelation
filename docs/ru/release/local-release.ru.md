@@ -63,16 +63,18 @@ Android-файлы запускаются с `flutter test --no-uninstall`: ст
 иначе удаляет приложение вместе с заранее установленными тестовыми базами. AVD остаётся отдельным временным окружением.
 Web `flutter drive` требует IntegrationTest binding. Для smoke-файлов с обычным WidgetTest binding
 координатор создаёт launcher в `.dart_tool/ai11_integration/`, подключает IntegrationTest binding и вызывает
-исходный `main()` без изменения сценариев. Файлы с собственным IntegrationTest binding запускаются напрямую.
+исходный `main()` без изменения сценариев. Файлы с собственным IntegrationTest binding получают ту же диагностику.
 Хеши launcher/исходного test сохраняются в `results/windows-web-driver-targets.json`.
 Все Web-команды выполняются из физического checkout, без MSBuild SUBST. Иначе Flutter считает
 пути C:/R: разными конфигурациями и может удалить свежие assets при очистке прежних outputs.
-Recovery удаляет только Web stamp с путями alias и Web `.last_build_id`, сохраняя native cache и пакеты;
+Recovery удаляет только Web/localization stamp с путями alias и Web `.last_build_id`, сохраняя native compile cache и пакеты;
 evidence находится в `windows-web-cache-recovery.json`. Incognito предотвращает перенос service worker между тестами.
 Release-диагностика сохраняет текст исключения и stack, даже если Flutter убирает описание ошибки.
 Для точного исторического About smoke из build173 проверяемая test-only копия исправляет ожидания:
 Web не показывает native-only обслуживание баз/папки, но показывает очистку кеша. Исходный checkout,
 код приложения и пакеты не меняются; digest и причина адаптации записываются в тот же evidence.
+Исторический retry smoke учитывает одну неудачную primary-попытку и ровно одну успешную загрузку на каждую
+открытую панель, включая автоматический параллельный перевод. Число вызовов и панелей сохраняется в reportData.
 Перед Android-командами координатор проверяет пути Flutter-плагинов и при необходимости пересоздаёт их через
 `flutter pub get` из физического checkout. Временный SUBST применяется для Windows/MSBuild;
 Android не должен зависеть от отключаемой буквы диска. Восстановление `android-cache-recovery` проверяет

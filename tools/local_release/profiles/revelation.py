@@ -294,7 +294,8 @@ def recover_web_cache(ctx):
         return
     removed = []
     cache = ctx.workspace / ".dart_tool/flutter_build"
-    for stamp in cache.glob("*/web_*.stamp"):
+    stamps = [*cache.glob("*/web_*.stamp"), *cache.glob("*/gen_localizations.stamp")]
+    for stamp in stamps:
         if not re.fullmatch(r"[a-f0-9]{32}", stamp.parent.name):
             continue
         try:
@@ -316,8 +317,6 @@ def recover_web_cache(ctx):
 def web_integration_target(ctx, test):
     relative = test.relative_to(ctx.workspace).as_posix()
     source = test.read_text(encoding="utf-8")
-    if re.search(r"\bIntegrationTestWidgetsFlutterBinding\.ensureInitialized\s*\(", source):
-        return relative
     if not re.fullmatch(r"integration_test/[A-Za-z0-9_/]+_test\.dart", relative):
         raise ReleaseError("Web integration entrypoint must be a local reviewed test path")
     name = hashlib.sha256(relative.encode()).hexdigest()[:16] + "_test.dart"
@@ -325,7 +324,8 @@ def web_integration_target(ctx, test):
     target.parent.mkdir(parents=True, exist_ok=True)
     scenario = "../../" + relative
     compatibility = None
-    # This exact historical test incorrectly expected desktop-only tools on Web.
+    adapted, reason = source, None
+    # Exact historical smoke tests predate Web/native and parallel-reader rules.
     # Keep the immutable app/test checkout intact and record the reviewed test-only
     # adapter. New source snapshots contain the same platform assertions directly.
     if (relative == "integration_test/smoke/about_download_navigation_smoke_test.dart" and
@@ -336,10 +336,21 @@ def web_integration_target(ctx, test):
                 f"expect(find.text(l10n.{key}), kIsWeb ? findsNothing : findsOneWidget);")
         adapted = adapted.replace("import 'smoke_test_harness.dart';",
             "import '../../integration_test/smoke/smoke_test_harness.dart';")
+        reason = "Assert that native-only maintenance tools are absent on Web"
+    elif (relative == "integration_test/smoke/bible_first_load_retry_smoke_test.dart" and
+            hashlib.sha256(source.encode()).hexdigest() == "a089fa74624dd0979cd08933a817a95a5591e4cdcbf228d1169242f04451a739"):
+        adapted = source.replace("expect(source.listCalls, 2);",
+            "expect(source.listCalls, 1 + context.read<BibleWorkspaceCubit>().state.paneIds.length);")
+        adapted = adapted.replace("'failureBoundary': 'module discovery',",
+            "'failureBoundary': 'module discovery',\n"
+            "            'readerPanes': context.read<BibleWorkspaceCubit>().state.paneIds.length,\n"
+            "            'moduleDiscoveryCalls': source.listCalls,")
+        reason = "One failed primary discovery plus one successful discovery per open reader, including default translation"
+    if reason:
         copied = target.with_name(target.stem + "_scenario.dart")
         copied.write_text(adapted, encoding="utf-8", newline="\n")
         scenario = copied.name
-        compatibility = {"reason": "Assert that native-only maintenance tools are absent on Web",
+        compatibility = {"reason": reason,
                          "target": copied.relative_to(ctx.workspace).as_posix(), "sha256": digest(copied)}
     target.write_text("import 'package:flutter_test/flutter_test.dart';\n"
         "import 'package:integration_test/common.dart';\n"
