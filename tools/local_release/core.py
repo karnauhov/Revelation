@@ -438,6 +438,9 @@ def update_queue(root, path, sha, **fields):
 
 
 def run_job(directory: Path, config: dict, publish=False):
+    publication = directory / "publication.json"
+    if publication.exists() and read_json(publication).get("published"):
+        raise ReleaseError("Published releases are immutable; restore archived packages or prepare a new source build")
     verify_runtime(directory)
     context = Context(directory, config)
     with lock(directory / f".{context.host}.lock"):

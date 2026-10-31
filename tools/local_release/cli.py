@@ -162,6 +162,9 @@ def main(argv=None):
         else:
             versioning.commit(args.repo.resolve(), args.profile.resolve(), args.message.resolve())
     elif args.command == "run":
+        publication = args.job / "publication.json"
+        if publication.exists() and read_json(publication).get("published"):
+            raise ReleaseError("Published releases are immutable; use the catalogue instead of rebuilding")
         frozen_cli = args.job.resolve() / "runtime/local_release/cli.py"
         if Path(__file__).resolve() != frozen_cli:
             # All hosts execute exactly the frozen coordinator shipped in the job.

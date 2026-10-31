@@ -294,6 +294,16 @@ class CoordinatorTest(unittest.TestCase):
             install(queue)
         self.assertFalse(core.read_json(queue)["enabled"])
 
+    def test_published_release_cannot_run_or_replace_its_checkpoint(self):
+        proof = self.job()
+        core.run_job(proof, {})
+        result = proof / "results" / (core.host_name() + ".json")
+        before = result.read_bytes()
+        core.atomic_json(proof / "publication.json", {"published": True})
+        with self.assertRaisesRegex(core.ReleaseError, "Published releases are immutable"):
+            core.run_job(proof, {})
+        self.assertEqual(result.read_bytes(), before)
+
     def test_failed_startup_install_rolls_back_existing_hooks(self):
         queue = core.queue_install(self.repo, self.state, self.profile, self.config)
         proof = self.job()
