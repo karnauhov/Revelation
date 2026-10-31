@@ -8,9 +8,28 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from local_release.core import Context, ReleaseError, atomic_json
 from local_release.profiles.revelation import integration_files
 from local_release.profiles.revelation import prepare_android_fixture, wait_android_fixture
+from local_release.profiles.revelation import integration
 
 
 class IntegrationRunnerTest(unittest.TestCase):
+    def test_android_files_keep_seeded_data_between_flutter_processes(self):
+        from contextlib import nullcontext
+        with tempfile.TemporaryDirectory() as folder:
+            job = Path(folder) / "releases/fixture/1.0.0+1" / ("a" * 40)
+            atomic_json(job / "job.json", {"schema": 1, "sha": "a" * 40, "run_id": "fixture-a", "project": "fixture"})
+            ctx = Context(job, {"integration_targets": ["android"], "android_device": "emulator-5584"}, host="windows")
+            for name in ["first_test.dart", "second_test.dart"]:
+                test = ctx.workspace / "integration_test" / name
+                test.parent.mkdir(parents=True, exist_ok=True)
+                test.write_text("fixture")
+            with patch("local_release.prerequisites.android_device", return_value=nullcontext()), \
+                    patch("local_release.profiles.revelation.prepare_android_fixture") as seed, patch.object(ctx, "command") as command:
+                integration(ctx)
+                seed.assert_called_once()
+                self.assertEqual(command.call_count, 2)
+                self.assertTrue(all("--no-uninstall" in call.args[0] for call in command.call_args_list))
+            self.assertEqual(ctx.result["steps"]["integration-android"]["status"], "passed")
+
     def test_binary_sqlite_fixtures_use_exec_in_instead_of_windows_text_shell(self):
         from local_release.core import digest, read_json
         from local_release.native_fixture import MODULES

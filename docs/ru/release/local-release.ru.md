@@ -1,6 +1,6 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.0.6
+Doc-Version: 1.0.7
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -59,6 +59,8 @@ Hosted `.github/workflows/flutter_build.yml` сохраняется до пол�
 SQLite fixtures передаются бинарным `adb exec-in`: обычный Windows stdin может оборваться на DOS EOF.
 После передачи координатор ждёт полного размера файла на устройстве и только потом сверяет SHA-256,
 так как завершение `exec-in` опережает окончание удалённой записи. Готовые APK/AAB не пересобираются из-за fixture repair.
+Android-файлы запускаются с `flutter test --no-uninstall`: стандартная очистка Flutter после первого файла
+иначе удаляет приложение вместе с заранее установленными тестовыми базами. AVD остаётся отдельным временным окружением.
 Перед Android-командами координатор проверяет пути Flutter-плагинов и при необходимости пересоздаёт их через
 `flutter pub get` из физического checkout. Временный SUBST применяется для Windows/MSBuild;
 Android не должен зависеть от отключаемой буквы диска. Восстановление `android-cache-recovery` проверяет

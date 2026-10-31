@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.0.6
+Doc-Version: 1.0.7
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -45,6 +45,8 @@ ChromeDriver startup/cleanup. Browser tests use an isolated headless profile and
 SQLite fixtures use binary `adb exec-in`: ordinary Windows stdin can stop at DOS EOF.
 The coordinator waits for the complete device-side file size before checking SHA-256 because
 `exec-in` can return before the remote write finishes. Fixture repairs never rebuild completed APK/AAB packages.
+Android files use `flutter test --no-uninstall`: Flutter's default cleanup after the first file would otherwise
+remove the app and its preloaded test databases. The dedicated AVD remains a separate temporary environment.
 Before Android commands the coordinator checks generated Flutter plugin paths and, when needed, regenerates them
 with `flutter pub get` from the physical checkout. Temporary SUBST paths are reserved for Windows/MSBuild;
 Android must not depend on a drive letter removed after the run. `android-cache-recovery` validates

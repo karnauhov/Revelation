@@ -246,7 +246,7 @@ def integration(ctx):
             with android_device(ctx):
                 prepare_android_fixture(ctx, device)
                 integration_files(ctx, "android", lambda test: ctx.command([
-                    "flutter", "test", "--no-pub", test.relative_to(ctx.workspace).as_posix(),
+                    "flutter", "test", "--no-pub", "--no-uninstall", test.relative_to(ctx.workspace).as_posix(),
                     "-d", device, "--reporter=expanded"], cwd=ctx.workspace))
         ctx.stage("integration-android", android)
     if ctx.host == "windows" and "web" in targets:
