@@ -1,13 +1,15 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.1.1
+Doc-Version: 1.1.2
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
 [Общая панель сборок и автозапуск](build-service.ru.md) - http://127.0.0.1:8877.
 
-REV301 завершил полный реальный пробный выпуск [v1.0.8+173](https://github.com/karnauhov/Revelation/releases/tag/v1.0.8%2B173):
+REV301 завершил полный реальный пробный выпуск [v1.0.8+173](https://github.com/karnauhov/Revelation/tree/v1.0.8%2B173):
 семь пакетов, все обязательные gates обеих ОС и integration18/18 файлов на Windows/Android/Web/Linux, download/read-back.
+После этого владелец подтвердил удаление сборки 173: его Windows-копия и GitHub Release удалены; Linux очистит свою копию при следующем входе.
+Ссылка выше ведёт к сохранённому source tag, а не к удалённым пакетам. Tombstone запрещает их повторный импорт.
 Локальный commit trigger активирован, заменённый `.github/workflows/flutter_build.yml` удалён.
 Исторические53 шага проверяются через Git blob и `python scripts/local_release/inventory.py --check`; hosted fallback не используется.
 Магазины, production-сайт и Supabase публикуются отдельной задачей версии после приёмки.

@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.1.1
+Doc-Version: 1.1.2
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -121,3 +121,10 @@ hosts and enabled. Arbitrary folders are never scanned. Each OS retains its own 
 Implement other projects' autobuilds in their corresponding tasks.
 
 [OS exchange protocol](protocol.en.md) · [Release flow and gates](local-release.en.md).
+
+Windows cleans the verified managed directory using extended-length paths, including deep Gradle files
+and readonly Git files. A partial failure cannot produce an OS ack: local cleanup must physically finish.
+Retry continues the original request; an already removed GitHub Release is not deleted again.
+The confirmed version leaves the normal queue immediately to prevent automatic restoration.
+Until cleanup finishes, the deletion section explicitly shows pending local removal or an error;
+long error paths wrap inside the sidebar.

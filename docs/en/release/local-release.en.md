@@ -1,16 +1,18 @@
 # Local Revelation releases
 
-Doc-Version: 1.1.1
+Doc-Version: 1.1.2
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
 [Shared build dashboard and startup](build-service.en.md) - http://127.0.0.1:8877.
 
-REV301 completed the real [v1.0.8+173 trial](https://github.com/karnauhov/Revelation/releases/tag/v1.0.8%2B173):
+REV301 completed the real [v1.0.8+173 trial](https://github.com/karnauhov/Revelation/tree/v1.0.8%2B173):
 seven packages, every mandatory gate on both hosts and18/18 integration files on Windows/Android/Web/Linux, download/read-back.
 The local commit trigger is enabled and the replaced `.github/workflows/flutter_build.yml` is removed.
 The53-step historical recipe is checked through its Git blob with `python scripts/local_release/inventory.py --check`;
 there is no hosted fallback. Stores, the production website and Supabase remain separate version tasks after acceptance.
+The owner subsequently confirmed deletion of build 173: its Windows copy and GitHub Release are removed; Linux cleans its copy on the next login.
+The link above points to the retained source tag, not deleted packages. Its tombstone prevents reimport.
 
 Child [REV302](https://ai11.link/cabinet/tasks?project=1&task=REV302) implements one shared local service for all projects:
 versions/platforms/packages, current stages and queue, start/retry/stop, automatic startup and a fixed local URL.

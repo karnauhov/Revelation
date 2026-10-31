@@ -1,5 +1,6 @@
 from copy import deepcopy
 import json
+import os
 from pathlib import Path
 import stat
 import sys
@@ -102,6 +103,57 @@ class RetentionTest(unittest.TestCase):
     def request(self):
         prepared = retention.preview(self.project, self.directory, api=self.api)
         return retention.request_deletion(self.project, prepared)
+
+    @unittest.skipUnless(os.name == 'nt', 'Windows extended-length paths')
+    def test_long_readonly_gradle_tree_is_removed_and_neighbour_build_is_preserved(self):
+        root = Path(self.project['catalogue'])
+        snapshot = root / 'w' / self.api.sha[:12]
+        deep = snapshot / 'w/build/plugin/.transforms' / ('nested-gradle-output-' * 8) / ('package-name-' * 6)
+        self.assertGreater(len(str(deep)), 300)
+        extended = Path('\\\\?\\' + str(deep.absolute()))
+        extended.mkdir(parents=True)
+        file = extended / 'ActionBroadcastReceiver.dex'
+        file.write_bytes(b'readonly build output')
+        file.chmod(stat.S_IREAD)
+        keeper = root / 'w' / ('b' * 12) / 'w/keep.bin'
+        keeper.parent.mkdir(parents=True)
+        keeper.write_bytes(b'another source build')
+        self.request()
+        # Simulate a previous interrupted cleanup before the retry.
+        (snapshot / 'w/cache.bin').unlink()
+        result = retention.process(self.project, self.api.sha, role='windows', api=self.api)
+        self.assertTrue(result['local_deleted'], result.get('error'))
+        self.assertFalse(snapshot.exists())
+        self.assertFalse(file.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertEqual(keeper.read_bytes(), b'another source build')
+        self.assertEqual(retention.process(self.project, self.api.sha, role='windows', api=self.api)['status'], 'waiting_other_hosts')
+        self.assertEqual(self.api.events.count(('DELETE', '/releases/1')), 1)
+
+    def test_a_concurrently_removed_child_does_not_abort_managed_cleanup(self):
+        root = Path(self.project['catalogue'])
+        target = root / 'w' / self.api.sha[:12]
+        original = retention.shutil.rmtree
+        def remove(path, *, onerror):
+            missing = str(Path(path) / 'already-removed.bin')
+            onerror(os.unlink, missing, (FileNotFoundError, FileNotFoundError(missing), None))
+            original(path, onerror=onerror)
+        with patch('local_release.retention.shutil.rmtree', side_effect=remove):
+            retention.safe_remove(root, target, Path('w') / self.api.sha[:12])
+        self.assertFalse(target.exists())
+        self.assertTrue(self.directory.exists())
+
+    def test_remaining_files_cannot_be_acknowledged_as_deleted(self):
+        self.request()
+        with patch('local_release.retention.shutil.rmtree'):
+            result = retention.process(self.project, self.api.sha, role='windows', api=self.api)
+        self.assertEqual(result['status'], 'failed')
+        self.assertIn('remains after cleanup', result['error'])
+        self.assertFalse(result.get('local_deleted'))
+        self.assertFalse(result.get('ack_sent'))
+        self.assertTrue(self.directory.exists())
+        self.assertTrue(retention.process(self.project, self.api.sha, role='windows', api=self.api)['local_deleted'])
+        self.assertEqual(self.api.events.count(('DELETE', '/releases/1')), 1)
 
     def test_preview_and_cancel_change_nothing(self):
         value = retention.preview(self.project, self.directory, api=self.api)

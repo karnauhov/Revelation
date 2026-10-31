@@ -185,16 +185,39 @@ def safe_remove(root, target, expected_relative):
     if target.absolute() != expected.absolute() or target.resolve() != expected.absolute() or not target.resolve().is_relative_to(root):
         raise ReleaseError("Refusing deletion outside the exact managed build path")
     if target.exists():
+        # Apply the extended-length prefix only after checking the exact
+        # engine-constructed target. Gradle trees exceed Windows MAX_PATH.
+        filesystem_target = target
+        if os.name == "nt":
+            value = str(target.absolute())
+            if not value.startswith("\\\\?\\"):
+                value = "\\\\?\\UNC\\" + value[2:] if value.startswith("\\\\") else "\\\\?\\" + value
+            filesystem_target = Path(value)
+        def canonical(path):
+            value = str(Path(path).resolve())
+            if os.name == "nt":
+                if value.startswith("\\\\?\\UNC\\"):
+                    value = "\\\\" + value[8:]
+                elif value.startswith("\\\\?\\"):
+                    value = value[4:]
+            return Path(value)
         def writable_owned_file(function, filename, error):
             candidate = Path(filename)
+            # Another process may already have removed a child. Existing-file
+            # permission/path errors must still fail visibly.
+            if isinstance(error[1], FileNotFoundError) and not os.path.lexists(filename):
+                return
             if (not isinstance(error[1], PermissionError) or candidate.is_symlink()
-                    or not candidate.resolve().is_relative_to(target.resolve())):
+                    or (hasattr(candidate, "is_junction") and candidate.is_junction())
+                    or not canonical(candidate).is_relative_to(canonical(target))):
                 raise error[1]
             # Git pack files can have the Windows readonly attribute. Only
             # this exact managed tree can have that attribute cleared.
             os.chmod(candidate, candidate.stat().st_mode | stat.S_IWRITE)
             function(filename)
-        shutil.rmtree(target, onerror=writable_owned_file)
+        shutil.rmtree(filesystem_target, onerror=writable_owned_file)
+        if filesystem_target.exists():
+            raise ReleaseError("Managed build directory remains after cleanup")
 
 
 def cleanup_local(project, request, role):

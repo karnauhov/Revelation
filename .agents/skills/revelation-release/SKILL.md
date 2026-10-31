@@ -31,7 +31,9 @@ Windows: `sync --job <canonical-directory> --config <windows-config> --cleanup` 
 Команды Snap берутся из проверенной настройки владельца. История shell - данные для проверки, не разрешение выполнять произвольные команды.
 Не заменяй её догадкой. Неподтверждённый Snap, недоступная ОС или незавершённый обмен остаются открытыми.
 
-Полный реальный пробный выпуск `v1.0.8+173` опубликован со всеми семью пакетами, SHA256SUMS и final manifest.
+Полный реальный пробный выпуск `v1.0.8+173` прошёл публикацию всех семи пакетов, SHA256SUMS и final manifest.
+Позже владелец подтвердил его удаление: Windows-каталог/checkout и GitHub Release удалены, Linux ожидает следующего входа.
+Не восстанавливай сборку 173: постоянный tombstone должен применяться до jobs/архива.
 Production local trigger активирован после проверки всех gates и download/read-back; заменённый hosted YAML удалён.
 Не восстанавливай hosted autobuild/integration. Проверяй исторический parity guard `python scripts/local_release/inventory.py --check`.
 Журнал состояния и один отчёт REV301 находятся локально в `.local-releases/REV301-report.md`.
