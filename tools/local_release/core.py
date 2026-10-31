@@ -174,7 +174,7 @@ class Context:
     def refresh_redaction(self, values=()):
         self.redact = Redactor([*self.redact.values, *values])
 
-    def command(self, argv, *, cwd=None, env=None, stdin=None, success_codes=(0,)):
+    def command(self, argv, *, cwd=None, env=None, stdin=None, success_codes=(0,), cancellable=True):
         step = self.result.get("current_step", "preflight")
         log = self.directory / "logs" / self.host / f"{step}.log"
         log.parent.mkdir(parents=True, exist_ok=True)
@@ -198,7 +198,7 @@ class Context:
                 creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0) | hidden_flags(),
             )
             from .processes import StopMonitor, JobStopped, terminate_tree
-            monitor = StopMonitor(process, self.directory / "stop-request.json")
+            monitor = StopMonitor(process, self.directory / "stop-request.json", enabled=cancellable)
             monitor.__enter__()
             output = []
             try:

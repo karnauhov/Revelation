@@ -117,8 +117,11 @@ def inspect_snap(ctx):
 
 
 def build_snap(ctx):
-    # Preserve the owner's confirmed clean -> pack order, with no interactive
-    # flutter run. Snap's override-build already performs the release build.
+    # Every original command remains in snapcraft_build.sh, including its
+    # preliminary debug run. Only its q input is automated through a PTY.
+    from ..native_fixture import application_running
+    if application_running():
+        raise ReleaseError("Revelation is already open; the original Snap debug run waits without touching it")
     ctx.command(["snapcraft", "--version"])
     snapshot = ctx.root / "w" / ctx.job["sha"][:12] / "snap-input"
     if not snapshot.exists():
@@ -130,8 +133,8 @@ def build_snap(ctx):
         raise ReleaseError("Snap input checkout differs from the job")
     apply_overlays(ctx, snapshot)
     shutil.copy2(ctx.workspace / "api-keys.json", snapshot / "api-keys.json")
-    ctx.command(["snapcraft", "clean"], cwd=snapshot)
-    ctx.command(["snapcraft", "pack"], cwd=snapshot)
+    from ..snap_script import run
+    run(ctx, snapshot)
     expected = snapshot / f"revelation-x_{ctx.job['version']}.{ctx.job['build']}_amd64.snap"
     if not expected.is_file():
         raise ReleaseError("Snapcraft did not produce the expected amd64 package")
@@ -143,6 +146,10 @@ def build_snap(ctx):
         if pending.get("sha256") != digest(destination) or not pending.get("source_asset_id"):
             raise ReleaseError("Existing local Snap differs; preserve it and reconcile the catalogue")
         # Its exact previous bytes are already backed up in the owned draft.
+        proof_path = ctx.directory / "results/linux-snap-script.json"
+        proof = read_json(proof_path)
+        proof["superseded_package"] = {key: pending[key] for key in ("sha256", "source_asset_id", "url") if key in pending}
+        atomic_json(proof_path, proof)
         expected.replace(destination)
         return
     if destination.exists():
@@ -174,15 +181,10 @@ def build(ctx):
                 output.add(ctx.workspace / "build/linux/x64/release/bundle", arcname=".")
         if attempt("linux-tar", archive, ["packages/" + package_path(ctx, ".tar.gz").name]):
             attempt("inspect-linux-tar", lambda: inspect_tar(ctx), ["results/linux-tar-package.json"])
-    if attempt("snap", lambda: build_snap(ctx), ["packages/" + package_path(ctx, ".snap").name]):
+    if attempt("snap", lambda: build_snap(ctx), ["packages/" + package_path(ctx, ".snap").name, "results/linux-snap-script.json"]):
         attempt("inspect-snap", lambda: inspect_snap(ctx), ["results/linux-snap-package.json"])
-    def acceptance():
-        script, expected = ctx.config.get("snap_verify_script"), ctx.config.get("snap_verify_script_sha256")
-        if not script or not expected or digest(Path(script)) != expected:
-            raise ReleaseError("Snap install/smoke/restore approval script is not configured; private packages remain available")
-        ctx.command(["bash", str(Path(script).resolve())], env={"LOCAL_RELEASE_SNAP_OUTPUT": str(package_path(ctx, ".snap"))})
-        atomic_json(ctx.directory / "results/linux-packages.json", {"snap": "install/smoke/restore passed", "verify_script_sha256": expected})
+    from .snap_acceptance import acceptance
     if not failures:
-        attempt("verify-linux", acceptance, ["results/linux-packages.json"])
+        attempt("verify-linux", lambda: acceptance(ctx), ["results/linux-packages.json"])
     if failures:
         raise ReleaseError("Linux stages remain incomplete: " + ", ".join(failures))

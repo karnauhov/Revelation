@@ -262,6 +262,8 @@ def integration(ctx):
 
 
 def prepare_android_fixture(ctx, device):
+    from .android_release import dependencies
+    dependencies(ctx)
     from ..native_fixture import MODULES
     avd = ctx.config.get("android_avd_name")
     if not device.startswith("emulator-") or not avd:
@@ -305,6 +307,11 @@ def build_windows(ctx):
     targets = set(ctx.config.get("build_targets", ["android", "windows", "web"]))
     defines = ["--release", "--target=lib/main.dart", "--dart-define-from-file=api-keys.json"]
     if "android" in targets:
+        from .android_release import dependencies, recover_cache
+        if ctx.result["steps"].get("android-cache-recovery", {}).get("status") == "failed":
+            recover_cache(ctx)
+        else:
+            dependencies(ctx)
         ctx.stage("signing-preflight", lambda: validate_signing(ctx), ["results/windows-signing.json"], always=True)
     for target, source, suffix in [
         ("apk", "build/app/outputs/flutter-apk/app-release.apk", ".apk"),

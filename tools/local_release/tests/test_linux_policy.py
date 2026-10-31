@@ -14,6 +14,40 @@ from local_release.profiles.linux_release import inspect_tar, unsquashfs_version
 
 
 class LinuxPolicyTest(unittest.TestCase):
+    def test_repaired_snap_replaces_one_local_package_only_with_a_remote_backup(self):
+        from local_release.profiles.linux_release import build_snap
+        from local_release.core import digest, read_json
+        for backed_up in (False, True):
+            with self.subTest(backed_up=backed_up), tempfile.TemporaryDirectory() as folder:
+                root = Path(folder)
+                job = root / "releases/fixture/1.0.0+1" / ("a" * 40)
+                atomic_json(job / "job.json", {"schema": 1, "sha": "a" * 40, "run_id": "fixture-a", "project": "fixture",
+                    "version": "1.0.0", "build": 1, "artifacts": ["fixture.snap"]})
+                ctx = Context(job, {}, host="linux")
+                ctx.workspace.mkdir(parents=True)
+                (ctx.workspace / "api-keys.json").write_text('{}')
+                snapshot = ctx.root / "w" / ("a" * 12) / "snap-input"
+                snapshot.mkdir(parents=True)
+                (snapshot / "revelation-x_1.0.0.1_amd64.snap").write_bytes(b"new build using the entire original script")
+                destination = ctx.output / "fixture.snap"
+                destination.write_bytes(b"old build")
+                previous = {"sha256": digest(destination), **({"source_asset_id": 123} if backed_up else {})}
+                atomic_json(job / "manifest.json", {"unverified_packages": {"fixture.snap": previous}})
+                def script(*args):
+                    atomic_json(job / "results/linux-snap-script.json", {"original_script_executed": True})
+                with patch("local_release.native_fixture.application_running", return_value=False), \
+                        patch("local_release.profiles.linux_release.apply_overlays"), \
+                        patch("local_release.profiles.linux_release.git", return_value="a" * 40), \
+                        patch("local_release.snap_script.run", side_effect=script), patch.object(ctx, "command"):
+                    if backed_up:
+                        build_snap(ctx)
+                        self.assertEqual(destination.read_bytes(), b"new build using the entire original script")
+                        self.assertEqual(read_json(job / "results/linux-snap-script.json")["superseded_package"]["source_asset_id"], 123)
+                    else:
+                        with self.assertRaisesRegex(ReleaseError, "Existing local Snap differs"):
+                            build_snap(ctx)
+                        self.assertEqual(destination.read_bytes(), b"old build")
+
     def test_unsquashfs_version_exit_one_is_valid_only_with_its_banner(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

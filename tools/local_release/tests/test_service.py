@@ -157,6 +157,11 @@ with lock(directory/('.'+ctx.host+'.lock')):
         repair = self.server.dashboard.state()["projects"][0]["releases"][0]["hosts"][host_name()]
         self.assertEqual(repair["attempt_runtime_revision"], 13)
         self.assertEqual(repair["pending_runtime_revision"], 14)
+        atomic_json(directory / "results" / (host_name() + ".json"), {
+            "status": "failed", "current_step": "verify-linux", "error": "Linux phases incomplete: build",
+            "steps": {"verify-linux": {"status": "failed", "error": "Snap authentication is required"}}})
+        failure = self.server.dashboard.state()["projects"][0]["releases"][0]["hosts"][host_name()]
+        self.assertEqual(failure["error"], "Snap authentication is required")
 
     def test_commit_discovery_is_visible_but_does_not_start_a_gated_project(self):
         repo = self.root / "first"

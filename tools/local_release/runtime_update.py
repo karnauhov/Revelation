@@ -37,7 +37,17 @@ def install(directory, extracted):
         raise ReleaseError("Runtime update predecessor differs from this checkpoint")
     if envelope["job_sha256"] != digest(extracted / "job.json"):
         raise ReleaseError("Runtime update metadata digest mismatch")
-    metadata_paths = ("job.json", "runtime-update.json", "results/linux.json")
+    invalidations = envelope.get("invalidate_steps")
+    if invalidations is not None:
+        if invalidations != new.get("tooling_changes", [{}])[-1].get("invalidate_steps"):
+            raise ReleaseError("Runtime checkpoint invalidation differs from the audited job")
+        for role, names in invalidations.items():
+            if role != "linux" or role not in new["required_steps"] or not isinstance(names, list) or not names or any(
+                    name not in new["required_steps"][role] for name in names):
+                raise ReleaseError("Runtime invalidation must name explicit required steps")
+        if old.get("generated_source_overlays") != new.get("generated_source_overlays"):
+            raise ReleaseError("A source overlay change requires full recipe checkpoint invalidation")
+    metadata_paths = ("job.json", "runtime-update.json", "results/linux.json", "manifest.json")
     previous = {name: (directory / name).read_bytes() if (directory / name).exists() else None
                 for name in metadata_paths}
     # Refuse a live builder on either OS. Updates never interrupt running jobs.
@@ -55,11 +65,33 @@ def install(directory, extracted):
                                     new["runtime_sha256"].get("local_release/profiles/linux_release.py") or
                                     old.get("generated_source_overlays") != new.get("generated_source_overlays"))
             linux_result = directory / "results/linux.json"
-            if linux_recipe_changed and linux_result.exists():
+            if (linux_recipe_changed or invalidations and "linux" in invalidations) and linux_result.exists():
                 result = read_json(linux_result)
-                for name in list(result["steps"]):
-                    if name in ("linux", "sentry-linux", "linux-tar", "snap", "inspect-snap", "inspect-linux-tar", "verify-linux", "integration-linux") or name.startswith("integration-linux-"):
-                        result["steps"].pop(name)
+                names = invalidations.get("linux", []) if invalidations is not None else [
+                    name for name in result["steps"] if name in ("linux", "sentry-linux", "linux-tar", "snap", "inspect-snap", "inspect-linux-tar", "verify-linux", "integration-linux") or name.startswith("integration-linux-")]
+                affected = set(names)
+                while True:
+                    dependents = {step for step, parents in new.get("step_dependencies", {}).items() if affected.intersection(parents)}
+                    if dependents <= affected:
+                        break
+                    affected.update(dependents)
+                manifest_path = directory / "manifest.json"
+                if manifest_path.exists():
+                    manifest = read_json(manifest_path)
+                    for step in affected:
+                        for relative, expected in result["steps"].get(step, {}).get("outputs", {}).items():
+                            if not relative.startswith("packages/"):
+                                continue
+                            name = Path(relative).name
+                            record = manifest.get("packages", {}).get(name)
+                            if record and record.get("sha256") == expected:
+                                manifest["packages"].pop(name)
+                                manifest.setdefault("unverified_packages", {})[name] = {
+                                    **record, "verification": "pending_audited_rebuild", "pending_runtime_revision": new["preparation_revision"]}
+                    manifest["status"] = "incomplete"
+                    atomic_json(manifest_path, manifest)
+                for name in affected:
+                    result["steps"].pop(name, None)
                 result.setdefault("attempt_runtime_revision", result.get("runtime_revision", 1))
                 result.update(status="pending", current_step=None, runtime_revision=new["preparation_revision"],
                               pending_runtime_revision=new["preparation_revision"])
@@ -84,7 +116,7 @@ def install(directory, extracted):
                     shutil.rmtree(temporary)
 
 
-def prepare_update(directory, config, coordinator_sha, reason="Audited coordinator repair; source/version/build unchanged"):
+def prepare_update(directory, config, coordinator_sha, reason="Audited coordinator repair; source/version/build unchanged", invalidate_steps=None):
     import importlib
     old = read_json(directory / "job.json")
     publication = directory / "publication.json"
@@ -106,13 +138,15 @@ def prepare_update(directory, config, coordinator_sha, reason="Audited coordinat
                "preparation_revision": old.get("preparation_revision", 1) + 1,
                "coordinator_source_sha": coordinator_sha,
                "runtime_sha256": {p.relative_to(staged / "runtime").as_posix(): digest(p) for p in runtime.rglob("*.py")}}
-        new.setdefault("tooling_changes", []).append({"revision": new["preparation_revision"], "time": time.time(),
-            "reason": reason})
+        audit = {"revision": new["preparation_revision"], "time": time.time(), "reason": reason}
+        if invalidate_steps is not None:
+            audit["invalidate_steps"] = invalidate_steps
+        new.setdefault("tooling_changes", []).append(audit)
         atomic_json(staged / "job.json", new)
         atomic_json(staged / "runtime-update.json", {"schema": 1, "protocol_version": VERSION,
             "run_id": old["run_id"], "previous_job_sha256": digest(directory / "job.json"),
             "job_sha256": digest(staged / "job.json"), "revision": new["preparation_revision"],
-            "coordinator_source_sha": coordinator_sha})
+            "coordinator_source_sha": coordinator_sha, **({"invalidate_steps": invalidate_steps} if invalidate_steps is not None else {})})
         install(directory, staged)
     return new
 

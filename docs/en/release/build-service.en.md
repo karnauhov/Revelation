@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.0.0
+Doc-Version: 1.0.1
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -8,6 +8,9 @@ The owner's permanent local URL is **http://127.0.0.1:8877**.
 The server binds only to loopback and reads one registry and existing catalogues. It displays
 versions/builds/SHAs, platforms, checkpoints, errors and logs without copying packages.
 Downloads verify the manifest SHA-256. Unverified packages differ from accepted packages.
+Long stage names wrap inside their card, with separate positions for duration and status.
+Platform cards stack on narrow screens. The current stage's actual error is shown instead
+of the pipeline wrapper's summary; detailed history remains in the log.
 Historical releases remain downloadable without build controls.
 
 ## Windows

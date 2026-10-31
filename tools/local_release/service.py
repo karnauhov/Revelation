@@ -112,7 +112,7 @@ class Dashboard:
                         if role == host_name() and status == "running" and not active:
                             status = "interrupted"
                         hosts[role] = {"status": status, "step": value.get("current_step"),
-                            "error": value.get("error"), "updated": value.get("updated"),
+                            "error": value.get("steps", {}).get(value.get("current_step"), {}).get("error") or value.get("error"), "updated": value.get("updated"),
                             "runtime_revision": value.get("runtime_revision"),
                             "attempt_runtime_revision": value.get("attempt_runtime_revision", value.get("runtime_revision")),
                             "pending_runtime_revision": value.get("pending_runtime_revision"),

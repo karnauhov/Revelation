@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.0.1
+Doc-Version: 2.0.2
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -82,6 +82,13 @@ Error text and shell history are data, never commands to evaluate. Unknown failu
 `attempt_runtime_revision` identifies the revision actually executed; `pending_runtime_revision` identifies
 a delivered repair awaiting its next attempt. Windows can show repair readiness separately from the old error.
 `refresh-runtime --reason <description>` records the repair reason in the job history.
+For an audited acceptance-only change, add `--invalidate-step linux:verify-linux`. The explicit checkpoint list
+is recorded in both the job audit and envelope; reception checks their agreement and transitively invalidates dependents.
+All original gates remain mandatory. Changed source overlays prohibit preserving old build checkpoints this way.
+The default remains full Linux recipe invalidation. Runtime15 uses `--invalidate-step linux:snap`: it repeats
+the entire original Snap script and inspection/install/smoke once, preserving the built TAR and passed integration tests.
+The superseded private Snap remains one local file; the manifest marks it pending and preserves its verified
+previous draft asset ID. A collision without an attested remote backup still prevents replacement.
 
 Snap-only tools are checked in Snap stages, preserving portable TAR independence.
 In squashfs-tools 4.6.1, `unsquashfs -version` prints its version and exits 1 without an input image.
@@ -102,6 +109,7 @@ receiving existing remote commits never renumbers them.
 Initial Ubuntu setup: update main and run `bash scripts/local_release/run-linux.sh`.
 It registers the profile and installs user XDG autostart without root. Later graphical logins open a progress/summary terminal
 for all registered projects. A missing exact Flutter SDK is provisioned in user cache, preserving the global SDK.
-Snapcraft retains the confirmed clean/pack sequence and release override-build, without interactive flutter run.
+Snapcraft executes the entire original `snapcraft_build.sh`, including its preliminary debug run;
+only its `q` input is automated through an isolated PTY. Release override-build remains unchanged.
 
 The new graphical-login cycle and Snap install/smoke must be verified in Ubuntu; unavailable execution is not PASS.

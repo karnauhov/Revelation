@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.0.0
+Doc-Version: 1.0.1
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -35,7 +35,12 @@ Never substitute another version/SHA or silently overwrite a conflicting package
 
 Prerequisites: Python 3.10+, Git, Flutter 3.47.2, Java 17, Android SDK, Visual Studio C++/Windows SDK and Inno Setup.
 Host configuration points to `defines_file`, `sentry_properties`, `inno_setup`, and optionally `environment`,
-`android_sdk`, `android_device`, `chromedriver_port` and `web_port`. Existing `SIGNING_*` environment variables
+`android_sdk`, `android_device`, `chromedriver_port` and `web_port`.
+Before Android commands the coordinator checks generated Flutter plugin paths and, when needed, regenerates them
+with `flutter pub get` from the physical checkout. Temporary SUBST paths are reserved for Windows/MSBuild;
+Android must not depend on a drive letter removed after the run. `android-cache-recovery` validates
+`gradlew help --offline`, preserving existing packages and the failed attempt in its recovery evidence.
+Existing `SIGNING_*` environment variables
 provide Android signing. Keep credentials outside Git, jobs, AI11 and handoff payloads.
 Set the working keystore through host-local `signing_store_file`; the builder verifies its private-key password
 and `expected_signing_certificate_sha256`. Key/password values never enter the portable job.
@@ -70,7 +75,27 @@ uses its own isolated checkout and saves results in its own canonical local cata
 The default host config is `~/.config/ai11-local-release/revelation.json`.
 Each OS needs independent GitHub authentication (`GH_TOKEN`, protected token file, native Git credential helper or `gh auth`)
 and its own local Sentry token. Windows secrets are not transferred. Flutter/native/Snap tools must actually be available on Linux.
-Automated Snap preserves the confirmed clean/pack order and release override-build in a separate checkout with pinned Flutter. Interactive debug run is unnecessary. Final local install/smoke/restore acceptance uses `snap_verify_script` and `snap_verify_script_sha256`; missing acceptance keeps the release private while packages are transferred independently. Bounded safe history candidates are collected as evidence; shell history is not executed automatically.
+Automated Snap executes the entire original `snapcraft_build.sh` from the pinned source SHA in an isolated input checkout:
+`rm -rf build`, `flutter clean`, `flutter pub get`, `flutter run -d linux --debug --dart-define-from-file=api-keys.json`,
+`snapcraft clean`, `snapcraft pack`, and `Build complete`. Its Git blob is verified before execution;
+commands and order are never shortened. The job's release override-build and pinned Flutter SDK remain.
+Only `q` input is automated through a real Linux PTY after Flutter's command banner, application startup and five seconds alive.
+That debug process uses isolated XDG Documents/config/data/cache. Snapcraft retains the original environment.
+Full-script execution evidence is saved as `results/linux-snap-script.json`. Manual `./snapcraft_build.sh`
+retains its original behavior; automated multi-project dispatch uses `run-linux.sh`.
+Built-in `verify-linux` installs the exact SHA-256 inspected package, requires actual Flutter startup and ten seconds
+alive, then restores the original Snap revision, tracking and data snapshot. The owner's Snap data directory is temporarily
+renamed beside its original location; the exact files are returned and checked by a combined digest, including caches
+excluded from snapshots. If no app was installed, only the matching temporary installation is removed.
+Smoke uses isolated XDG config/data/cache/Documents inside Snap instead of owner data.
+Restoration runs even after failure or cancellation. Its host-local recovery journal is
+`.local-releases/w/<short-SHA>/snap-acceptance/restore.json`; after interruption the next run restores first.
+Data snapshots are never sent to GitHub. Installation uses `sudo -n snap`. If authentication is needed,
+the graphical progress terminal asks once through `sudo -v`; passwords are neither stored nor logged.
+No persistent passwordless/sudoers permission is created. Without an interactive terminal or available sudo,
+acceptance remains incomplete with a concrete instruction. An explicitly pinned custom verifier remains supported
+through `snap_verify_script` and `snap_verify_script_sha256`. Failed acceptance preserves the draft;
+package transfer remains independent. Bounded safe history candidates are collected as evidence; shell history is not executed automatically.
 
 Linux uploads verified packages and current status, including redacted logs after a failure. It preserves a nonzero exit code.
 If network/authentication prevents upload, the result remains in the local outbox for retry; remote delivery is not claimed.

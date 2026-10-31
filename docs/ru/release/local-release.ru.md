@@ -1,6 +1,6 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.0.0
+Doc-Version: 1.0.1
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -50,6 +50,10 @@ Hosted `.github/workflows/flutter_build.yml` сохраняется до пол�
 Рабочий keystore задаётся локальным `signing_store_file`; сборщик проверяет пароль приватного ключа и
 `expected_signing_certificate_sha256`. Значения ключа и паролей не входят в переносимое задание.
 Конфиг указывает `defines_file`, `sentry_properties`, `inno_setup`, при необходимости `environment`, `android_sdk`, `android_device`, `chromedriver_port` и `web_port`.
+Перед Android-командами координатор проверяет пути Flutter-плагинов и при необходимости пересоздаёт их через
+`flutter pub get` из физического checkout. Временный SUBST применяется для Windows/MSBuild;
+Android не должен зависеть от отключаемой буквы диска. Восстановление `android-cache-recovery` проверяет
+`gradlew help --offline`, сохраняя готовые пакеты и прежнюю ошибку в доказательстве восстановления.
 Секреты не должны попадать в Git, `job.json`, AI11 или handoff. Конфиг каждой ОС остаётся локальным.
 Production-сборка задаёт `SENTRY_ENVIRONMENT=production`, сохраняя исходный dev-конфиг.
 
@@ -82,7 +86,29 @@ bash scripts/local_release/run-linux.sh
 Его конфиг по умолчанию: `~/.config/ai11-local-release/revelation.json`.
 У каждой ОС должны быть собственный GitHub-доступ (`GH_TOKEN`, защищённый token file, native Git credential helper или `gh auth`) и локальный Sentry token.
 Секреты Windows не передаются Linux. Flutter/native/Snap tools должны быть реально доступны в Linux.
-Автоматический Snap сохраняет подтверждённые clean/pack и release override-build, использует отдельный input checkout и pinned Flutter SDK. Интерактивный debug run не требуется. Для конечной локальной install/smoke/restore приёмки задаются `snap_verify_script` и `snap_verify_script_sha256`; отсутствие этого gate сохраняет draft, а бинарники возвращаются отдельно.
+Автоматический Snap выполняет весь исходный `snapcraft_build.sh` из закреплённого source SHA в отдельном input checkout:
+`rm -rf build`, `flutter clean`, `flutter pub get`, `flutter run -d linux --debug --dart-define-from-file=api-keys.json`,
+`snapcraft clean`, `snapcraft pack` и сообщение `Build complete`. Git blob скрипта проверяется перед запуском;
+порядок и команды не сокращаются. Сохраняются release override-build и pinned Flutter SDK из job.
+Только ввод `q` автоматизирован через настоящий Linux PTY после команд Flutter, сообщения старта приложения
+и пяти секунд работы. Этот debug-процесс использует отдельные XDG Documents/config/data/cache.
+Snapcraft сохраняет исходное окружение. Доказательство полного запуска: `results/linux-snap-script.json`.
+Ручной `./snapcraft_build.sh` сохраняет исходное поведение; автоматический многопроектный вход - `run-linux.sh`.
+Встроенный `verify-linux` устанавливает именно проверенный по SHA-256 пакет, проверяет реальный запуск Flutter
+и десять секунд работы, затем восстанавливает прежнюю revision, tracking и snapshot данных Snap.
+Перед тестом пользовательский каталог Snap временно переименовывается рядом с исходным местом;
+после проверки возвращаются те же файлы с проверкой общего хеша, включая исключённые из snapshot caches.
+Если приложения раньше не было, удаляется только временная установка с совпавшим хешем. Тест задаёт собственные
+XDG config/data/cache/Documents внутри Snap; пользовательские базы и настройки не используются.
+При ошибке или остановке восстановление всё равно выполняется. Журнал восстановления остаётся локально
+в `.local-releases/w/<short-SHA>/snap-acceptance/restore.json` до успешного восстановления; после аварийного
+выхода следующий запуск сначала завершит восстановление. Snapshot данных не передаётся на GitHub.
+Установку выполняет `sudo -n snap`. Если права ещё не подтверждены, в графическом progress terminal
+Ubuntu один раз запросит пароль через `sudo -v`; он не сохраняется и не попадает в журналы.
+Постоянные passwordless/sudoers права не создаются. Без интерактивного терминала или доступного sudo gate
+остаётся незавершённым с точной инструкцией. Собственный verifier по-прежнему можно явно закрепить через
+`snap_verify_script` и `snap_verify_script_sha256`. Непройденная приёмка сохраняет draft;
+бинарники возвращаются независимо от неё.
 Ограниченный безопасный список найденных Snap-команд из `.bash_history` собирается как данные для анализа; автоматически история не исполняется.
 
 Linux сам передаёт проверенные пакеты и актуальный статус, а при сбое - статус и очищенные журналы.

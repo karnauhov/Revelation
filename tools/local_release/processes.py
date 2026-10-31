@@ -26,15 +26,16 @@ def terminate_tree(process):
 
 
 class StopMonitor:
-    def __init__(self, process, request: Path):
+    def __init__(self, process, request: Path, *, enabled=True):
         self.process, self.request = process, request
+        self.enabled = enabled
         self.finished = threading.Event()
         self.stopped = False
         self.thread = threading.Thread(target=self.watch, daemon=True)
 
     def watch(self):
         while not self.finished.wait(0.25):
-            if self.request.exists():
+            if self.enabled and self.request.exists():
                 self.stopped = True
                 terminate_tree(self.process)
                 return

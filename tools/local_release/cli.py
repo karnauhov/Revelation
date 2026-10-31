@@ -44,6 +44,7 @@ def parser():
     repair.add_argument("--config", type=Path, required=True)
     repair.add_argument("--coordinator-sha", required=True)
     repair.add_argument("--reason", default="Audited coordinator repair; source/version/build unchanged")
+    repair.add_argument("--invalidate-step", action="append", help="Audited checkpoint to repeat, e.g. linux:verify-linux; otherwise use full recipe invalidation")
     repair.add_argument("--send", action="store_true")
     for command in ("install-version-hook", "remove-version-hook", "version-commit", "version-finalize"):
         counter = sub.add_parser(command)
@@ -139,7 +140,15 @@ def main(argv=None):
         if git(repository, "rev-parse", "HEAD") != args.coordinator_sha or git(repository, "status", "--porcelain", "--", "tools/local_release"):
             raise ReleaseError("Commit the coordinator repair before publishing a runtime update")
         config = read_json(args.config)
-        prepare_update(args.job.resolve(), config, args.coordinator_sha, reason=args.reason)
+        invalidations = None
+        if args.invalidate_step:
+            invalidations = {}
+            for value in args.invalidate_step:
+                role, separator, step = value.partition(":")
+                if not separator or not step:
+                    raise ReleaseError("--invalidate-step must be host:step")
+                invalidations.setdefault(role, []).append(step)
+        prepare_update(args.job.resolve(), config, args.coordinator_sha, reason=args.reason, invalidate_steps=invalidations)
         if args.send:
             send_update(Context(args.job.resolve(), config))
     elif args.command in ("install-version-hook", "remove-version-hook", "version-commit", "version-finalize"):
