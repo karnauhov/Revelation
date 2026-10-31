@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from local_release.core import Context, ReleaseError, atomic_json
+from local_release.core import Context, ReleaseError, atomic_json, git, read_json
 from local_release.profiles.revelation import integration_files
 from local_release.profiles.revelation import prepare_android_fixture, wait_android_fixture
 from local_release.profiles.revelation import integration
@@ -13,6 +13,28 @@ from local_release.profiles.revelation import web_integration_target
 
 
 class IntegrationRunnerTest(unittest.TestCase):
+    def test_historical_web_tools_assertions_are_platform_correct_and_audited(self):
+        source = git(Path(__file__).resolve().parents[3], "show",
+                     "abd9d33f77b837940f03eaaec430a9568adf3f6e:integration_test/smoke/about_download_navigation_smoke_test.dart") + "\n"
+        with tempfile.TemporaryDirectory() as folder:
+            job = Path(folder) / "releases/fixture/1.0.0+1" / ("a" * 40)
+            atomic_json(job / "job.json", {"schema": 1, "sha": "a" * 40, "run_id": "fixture-a", "project": "fixture"})
+            ctx = Context(job, {}, host="windows")
+            test = ctx.workspace / "integration_test/smoke/about_download_navigation_smoke_test.dart"
+            test.parent.mkdir(parents=True)
+            test.write_text(source, encoding="utf-8")
+            web_integration_target(ctx, test)
+            evidence = read_json(job / "results/windows-web-driver-targets.json")[test.relative_to(ctx.workspace).as_posix()]
+            copied = ctx.workspace / evidence["test_compatibility"]["target"]
+            contents = copied.read_text()
+            self.assertIn("kIsWeb ? findsNothing : findsOneWidget", contents)
+            self.assertIn("expect(find.text(l10n.clear_cache), findsOneWidget)", contents)
+            self.assertEqual(test.read_text(), source)
+            test.write_text(source + "// changed scenario\n", encoding="utf-8")
+            web_integration_target(ctx, test)
+            changed = read_json(job / "results/windows-web-driver-targets.json")[test.relative_to(ctx.workspace).as_posix()]
+            self.assertNotIn("test_compatibility", changed)
+
     def test_web_widget_targets_get_the_driver_bridge_without_editing_or_skipping_tests(self):
         with tempfile.TemporaryDirectory() as folder:
             job = Path(folder) / "releases/fixture/1.0.0+1" / ("a" * 40)
@@ -26,6 +48,8 @@ class IntegrationRunnerTest(unittest.TestCase):
             contents = wrapper.read_text()
             self.assertLess(contents.index("IntegrationTestWidgetsFlutterBinding.ensureInitialized()"), contents.index("scenario.main()"))
             self.assertIn("../../integration_test/smoke/startup_test.dart", contents)
+            self.assertIn("previousReporter(details, description)", contents)
+            self.assertIn("Failure(description, '${details.exception}\\n${details.stack}')", contents)
             self.assertEqual(target.read_text(), original)
             target.write_text("void main() { IntegrationTestWidgetsFlutterBinding.ensureInitialized(); }")
             self.assertEqual(web_integration_target(ctx, target), "integration_test/smoke/startup_test.dart")

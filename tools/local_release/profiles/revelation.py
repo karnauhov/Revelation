@@ -281,21 +281,48 @@ def integration(ctx):
 
 def web_integration_target(ctx, test):
     relative = test.relative_to(ctx.workspace).as_posix()
-    if re.search(r"\bIntegrationTestWidgetsFlutterBinding\.ensureInitialized\s*\(", test.read_text(encoding="utf-8")):
+    source = test.read_text(encoding="utf-8")
+    if re.search(r"\bIntegrationTestWidgetsFlutterBinding\.ensureInitialized\s*\(", source):
         return relative
     if not re.fullmatch(r"integration_test/[A-Za-z0-9_/]+_test\.dart", relative):
         raise ReleaseError("Web integration entrypoint must be a local reviewed test path")
     name = hashlib.sha256(relative.encode()).hexdigest()[:16] + "_test.dart"
     target = ctx.workspace / ".dart_tool/ai11_integration" / name
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text("import 'package:integration_test/integration_test.dart';\n"
-        f"import '../../{relative}' as scenario;\n\n"
-        "void main() {\n  IntegrationTestWidgetsFlutterBinding.ensureInitialized();\n  scenario.main();\n}\n",
+    scenario = "../../" + relative
+    compatibility = None
+    # This exact historical test incorrectly expected desktop-only tools on Web.
+    # Keep the immutable app/test checkout intact and record the reviewed test-only
+    # adapter. New source snapshots contain the same platform assertions directly.
+    if (relative == "integration_test/smoke/about_download_navigation_smoke_test.dart" and
+            hashlib.sha256(source.encode()).hexdigest() == "f2dffa6c40999a4250ab56b8d3ef3932bf8e77b04b33faa778ef945a3f391839"):
+        adapted = "import 'package:flutter/foundation.dart';\n" + source
+        for key in ("refresh_databases", "show_local_folder"):
+            adapted = adapted.replace(f"expect(find.text(l10n.{key}), findsOneWidget);",
+                f"expect(find.text(l10n.{key}), kIsWeb ? findsNothing : findsOneWidget);")
+        adapted = adapted.replace("import 'smoke_test_harness.dart';",
+            "import '../../integration_test/smoke/smoke_test_harness.dart';")
+        copied = target.with_name(target.stem + "_scenario.dart")
+        copied.write_text(adapted, encoding="utf-8", newline="\n")
+        scenario = copied.name
+        compatibility = {"reason": "Assert that native-only maintenance tools are absent on Web",
+                         "target": copied.relative_to(ctx.workspace).as_posix(), "sha256": digest(copied)}
+    target.write_text("import 'package:flutter_test/flutter_test.dart';\n"
+        "import 'package:integration_test/common.dart';\n"
+        "import 'package:integration_test/integration_test.dart';\n"
+        f"import '{scenario}' as scenario;\n\n"
+        "void main() {\n  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();\n"
+        "  final previousReporter = reportTestException;\n"
+        "  reportTestException = (details, description) {\n"
+        "    previousReporter(details, description);\n"
+        "    binding.results[description] = Failure(description, '${details.exception}\\n${details.stack}');\n"
+        "  };\n  scenario.main();\n}\n",
         encoding="utf-8", newline="\n")
     evidence = ctx.directory / "results/windows-web-driver-targets.json"
     records = read_json(evidence) if evidence.exists() else {}
     records[relative] = {"target": target.relative_to(ctx.workspace).as_posix(), "sha256": digest(target),
-                         "test_sha256": digest(test), "binding": "IntegrationTestWidgetsFlutterBinding"}
+                         "test_sha256": digest(test), "binding": "IntegrationTestWidgetsFlutterBinding",
+                         **({"test_compatibility": compatibility} if compatibility else {})}
     atomic_json(evidence, records)
     return target.relative_to(ctx.workspace).as_posix()
 

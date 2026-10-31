@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -59,8 +60,14 @@ void main() {
     await tester.tap(find.text(l10n.tools));
     await pumpAndSettleSmoke(tester);
 
-    expect(find.text(l10n.refresh_databases), findsOneWidget);
-    expect(find.text(l10n.show_local_folder), findsOneWidget);
+    expect(
+      find.text(l10n.refresh_databases),
+      kIsWeb ? findsNothing : findsOneWidget,
+    );
+    expect(
+      find.text(l10n.show_local_folder),
+      kIsWeb ? findsNothing : findsOneWidget,
+    );
     expect(find.text(l10n.clear_cache), findsOneWidget);
   });
 

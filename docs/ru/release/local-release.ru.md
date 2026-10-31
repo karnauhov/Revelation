@@ -65,6 +65,10 @@ Web `flutter drive` требует IntegrationTest binding. Для smoke-фай�
 координатор создаёт launcher в `.dart_tool/ai11_integration/`, подключает IntegrationTest binding и вызывает
 исходный `main()` без изменения сценариев. Файлы с собственным IntegrationTest binding запускаются напрямую.
 Хеши launcher/исходного test сохраняются в `results/windows-web-driver-targets.json`.
+Release-диагностика сохраняет текст исключения и stack, даже если Flutter убирает описание ошибки.
+Для точного исторического About smoke из build173 проверяемая test-only копия исправляет ожидания:
+Web не показывает native-only обслуживание баз/папки, но показывает очистку кеша. Исходный checkout,
+код приложения и пакеты не меняются; digest и причина адаптации записываются в тот же evidence.
 Перед Android-командами координатор проверяет пути Flutter-плагинов и при необходимости пересоздаёт их через
 `flutter pub get` из физического checkout. Временный SUBST применяется для Windows/MSBuild;
 Android не должен зависеть от отключаемой буквы диска. Восстановление `android-cache-recovery` проверяет
