@@ -174,7 +174,7 @@ class Context:
     def refresh_redaction(self, values=()):
         self.redact = Redactor([*self.redact.values, *values])
 
-    def command(self, argv, *, cwd=None, env=None, stdin=None, success_codes=(0,), cancellable=True):
+    def command(self, argv, *, cwd=None, env=None, stdin=None, success_codes=(0,), cancellable=True, new_session=True):
         step = self.result.get("current_step", "preflight")
         log = self.directory / "logs" / self.host / f"{step}.log"
         log.parent.mkdir(parents=True, exist_ok=True)
@@ -194,9 +194,10 @@ class Context:
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 stdin=stdin,
                 encoding="utf-8", errors="replace", bufsize=1,
-                start_new_session=os.name != "nt",
-                creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0) | hidden_flags(),
+                start_new_session=os.name != "nt" and new_session,
+                creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" and new_session else 0) | hidden_flags(),
             )
+            process.owned_process_group = new_session
             from .processes import StopMonitor, JobStopped, terminate_tree
             monitor = StopMonitor(process, self.directory / "stop-request.json", enabled=cancellable)
             monitor.__enter__()

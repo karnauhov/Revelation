@@ -5,6 +5,7 @@ The recovery journal stays host-local. No user snapshot is exported to GitHub.
 
 import os
 import hashlib
+from contextlib import contextmanager
 from pathlib import Path
 import re
 import shutil
@@ -105,17 +106,41 @@ def authorize(ctx):
     if os.geteuid() == 0:
         raise ReleaseError("Run the Linux dispatcher as the desktop user, not root")
     try:
-        ctx.command(["sudo", "-n", "true"], cancellable=False)
+        ctx.command(["sudo", "-n", "true"], cancellable=False, new_session=False)
     except ReleaseError:
         if not sys.stdin.isatty():
             raise ReleaseError("Snap validation needs administrator authentication: run sudo -v in the Linux progress terminal and retry")
         print("Ubuntu needs administrator authentication for Snap install/restore. Enter your sudo password in this terminal; it is not logged.", flush=True)
-        ctx.command(["sudo", "-v"], cancellable=False)
+        # Keep the desktop terminal as controlling TTY. Context commands normally
+        # create a new session, which would make /dev/tty and sudo timestamps fail.
+        result = subprocess.run(["sudo", "-v"], env=ctx.env, check=False)
+        if result.returncode:
+            raise ReleaseError("Ubuntu administrator authentication failed; Snap installation was not changed")
+
+
+@contextmanager
+def sudo_lease(ctx):
+    authorize(ctx)
+    finished = threading.Event()
+    def renew():
+        while not finished.wait(60):
+            try:
+                subprocess.run(["sudo", "-n", "-v"], env=ctx.env, stdin=subprocess.DEVNULL,
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False, timeout=15)
+            except (OSError, subprocess.TimeoutExpired):
+                return
+    thread = threading.Thread(target=renew, daemon=True)
+    thread.start()
+    try:
+        yield
+    finally:
+        finished.set()
+        thread.join(timeout=16)
 
 
 def privileged(ctx, *args):
     return ctx.command(["sudo", "-n", "snap", *args], env={"LC_ALL": "C"},
-                       cancellable=False)
+                       cancellable=False, new_session=False)
 
 
 def restore(ctx, journal):
@@ -223,7 +248,11 @@ def verify(ctx):
         raise ReleaseError("Revelation is already open; Snap validation waits without changing owner data")
     if not (ctx.env.get("DISPLAY") or ctx.env.get("WAYLAND_DISPLAY")):
         raise ReleaseError("Snap smoke requires the owner's native graphical Linux session")
-    authorize(ctx)
+    with sudo_lease(ctx):
+        verify_authorized(ctx)
+
+
+def verify_authorized(ctx):
     folder = ctx.root / "w" / ctx.job["sha"][:12] / "snap-acceptance"
     folder.mkdir(parents=True, exist_ok=True)
     journal = folder / "restore.json"

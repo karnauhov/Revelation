@@ -20,7 +20,10 @@ def terminate_tree(process):
         subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"], capture_output=True, check=False, creationflags=hidden_flags())
     else:
         try:
-            os.killpg(process.pid, signal.SIGTERM)
+            if getattr(process, "owned_process_group", True):
+                os.killpg(process.pid, signal.SIGTERM)
+            else:
+                process.terminate()
         except ProcessLookupError:
             pass
 

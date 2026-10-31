@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.0.2
+Doc-Version: 2.0.3
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -89,6 +89,7 @@ The default remains full Linux recipe invalidation. Runtime15 uses `--invalidate
 the entire original Snap script and inspection/install/smoke once, preserving the built TAR and passed integration tests.
 The superseded private Snap remains one local file; the manifest marks it pending and preserves its verified
 previous draft asset ID. A collision without an attested remote backup still prevents replacement.
+Runtime16 preserves these checkpoints and fixes sudo TTY handling and temporary authentication for installed Snap acceptance.
 
 Snap-only tools are checked in Snap stages, preserving portable TAR independence.
 In squashfs-tools 4.6.1, `unsquashfs -version` prints its version and exits 1 without an input image.

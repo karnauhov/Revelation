@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.0.1
+Doc-Version: 1.0.2
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -92,6 +92,8 @@ Restoration runs even after failure or cancellation. Its host-local recovery jou
 `.local-releases/w/<short-SHA>/snap-acceptance/restore.json`; after interruption the next run restores first.
 Data snapshots are never sent to GitHub. Installation uses `sudo -n snap`. If authentication is needed,
 the graphical progress terminal asks once through `sudo -v`; passwords are neither stored nor logged.
+Sudo commands retain the controlling terminal. Authentication is renewed only during install/smoke/restore
+so a long dependency download does not expire authorization before restoration finishes.
 No persistent passwordless/sudoers permission is created. Without an interactive terminal or available sudo,
 acceptance remains incomplete with a concrete instruction. An explicitly pinned custom verifier remains supported
 through `snap_verify_script` and `snap_verify_script_sha256`. Failed acceptance preserves the draft;

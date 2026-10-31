@@ -1,6 +1,7 @@
 from copy import deepcopy
 from pathlib import Path
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -32,6 +33,7 @@ class SnapAcceptanceTest(unittest.TestCase):
         self.before = {"version": "0.9.0", "revision": "42", "tracking": "latest/stable", "sha256": "old-package"}
         self.current = deepcopy(self.before)
         self.calls = []
+        self.real_authorize = snap.authorize
         for target, kwargs in (("local_release.native_fixture.application_running", {"return_value": False}),
                                (snap.__name__ + ".authorize", {}),
                                (snap.__name__ + ".installed", {"side_effect": lambda ctx: deepcopy(self.current)}),
@@ -123,6 +125,18 @@ class SnapAcceptanceTest(unittest.TestCase):
         with self.assertRaisesRegex(ReleaseError, "invalid package/snapshot"):
             snap.restore(self.ctx, journal)
         self.assertEqual(self.calls, [])
+
+    def test_interactive_sudo_keeps_the_desktop_terminal_and_never_pipes_password(self):
+        with patch.object(os, "geteuid", return_value=1000, create=True), \
+                patch.object(sys.stdin, "isatty", return_value=True), \
+                patch.object(self.ctx, "command", side_effect=ReleaseError("authentication required")) as command, \
+                patch.object(subprocess, "run", return_value=subprocess.CompletedProcess(["sudo", "-v"], 0)) as authenticate:
+            self.real_authorize(self.ctx)
+        self.assertFalse(command.call_args.kwargs["new_session"])
+        self.assertFalse(command.call_args.kwargs["cancellable"])
+        self.assertEqual(authenticate.call_args.args[0], ["sudo", "-v"])
+        for name in ("stdin", "stdout", "stderr", "start_new_session"):
+            self.assertNotIn(name, authenticate.call_args.kwargs)
 
     def test_recovery_after_interruption_precedes_another_install(self):
         folder = self.ctx.root / "w" / self.ctx.job["sha"][:12] / "snap-acceptance"

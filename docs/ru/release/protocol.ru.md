@@ -1,6 +1,6 @@
 # Обмен локальных сборщиков
 
-Doc-Version: 2.0.2
+Doc-Version: 2.0.3
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -94,6 +94,7 @@ Runtime15 использует `--invalidate-step linux:snap`: один раз �
 inspection/install/smoke, сохраняя готовый TAR и пройденные integration tests. Заменяемый непубличный Snap
 остаётся единственным локальным файлом; manifest переводит его в pending до пересборки и сохраняет ID
 проверенной прежней копии в draft. Коллизия без подтверждённого remote backup по-прежнему блокирует замену.
+Runtime16 сохраняет эти checkpoints и исправляет sudo TTY/временное подтверждение для установленной Snap-приёмки.
 
 Snap-only инструменты проверяются в этапах Snap, сохраняя независимость portable TAR.
 `unsquashfs -version` в squashfs-tools 4.6.1 печатает версию и возвращает 1 без входного image;
