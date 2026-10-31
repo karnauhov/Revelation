@@ -13,7 +13,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from .core import ReleaseError, SourceUnavailable, atomic_json, digest, lock, read_json
+from .core import ReleaseError, SourceUnavailable, atomic_json, digest, lock, read_json, hidden_flags
 
 
 class GitHubHTTPError(ReleaseError):
@@ -38,12 +38,12 @@ def credential(config):
         env = dict(os.environ, GIT_TERMINAL_PROMPT="0", GCM_INTERACTIVE="never")
         result = subprocess.run(["git", "credential", "fill"],
                                 input="protocol=https\nhost=github.com\n\n",
-                                capture_output=True, text=True, env=env, check=False)
+                                capture_output=True, text=True, env=env, check=False, creationflags=hidden_flags())
         fields = dict(line.split("=", 1) for line in result.stdout.splitlines() if "=" in line)
         if result.returncode == 0 and fields.get("password"):
             return fields["password"]
     if shutil.which("gh"):
-        result = subprocess.run(["gh", "auth", "token"], capture_output=True, text=True, check=False)
+        result = subprocess.run(["gh", "auth", "token"], capture_output=True, text=True, check=False, creationflags=hidden_flags())
         if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip()
     raise ReleaseError("GitHub release authentication missing on this OS; configure GH_TOKEN or a local token file")

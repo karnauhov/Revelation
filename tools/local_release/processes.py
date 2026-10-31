@@ -6,7 +6,7 @@ import signal
 import subprocess
 import threading
 
-from .core import ReleaseError
+from .core import ReleaseError, hidden_flags
 
 
 class JobStopped(ReleaseError):
@@ -17,7 +17,7 @@ def terminate_tree(process):
     if process.poll() is not None:
         return
     if os.name == "nt":
-        subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"], capture_output=True, check=False)
+        subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"], capture_output=True, check=False, creationflags=hidden_flags())
     else:
         try:
             os.killpg(process.pid, signal.SIGTERM)

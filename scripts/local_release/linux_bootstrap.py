@@ -27,7 +27,11 @@ def main():
     os.chmod(args.config, 0o600)
     register(args.registry, REPO, REPO / "scripts/local_release/revelation.json", args.root, args.config)
     sync_project_catalogue(args.registry, REPO / "scripts/local_release/projects.json", allow_clone=True)
+    from local_release.versioning import install as install_version_hook
+    install_version_hook(REPO, REPO / "scripts/local_release/revelation.json")
     install_linux_startup(REPO, args.registry)
+    from local_release.service import start
+    print("Local dashboard: " + start(args.registry, sync=False), flush=True)
     print("Login dispatcher installed. Future Linux runs start automatically after graphical login.", flush=True)
     report = cycle(args.registry, "linux")
     return 0 if report["status"] == "finished" else 1

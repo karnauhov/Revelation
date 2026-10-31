@@ -9,7 +9,7 @@ import shlex
 import subprocess
 import sys
 
-from .core import ReleaseError, atomic_json, capture, git, lock, read_json
+from .core import ReleaseError, atomic_json, capture, git, lock, read_json, hidden_flags
 from .github import complete_results
 
 
@@ -86,7 +86,7 @@ def register_startup(project, queue):
     if os.name == "nt":
         suffix = hashlib.sha256(str(queue.resolve()).encode()).hexdigest()[:8]
         name = "AI11LocalRelease-" + project + "-" + suffix
-        query = subprocess.run(["schtasks", "/Query", "/TN", name], capture_output=True, check=False)
+        query = subprocess.run(["schtasks", "/Query", "/TN", name], capture_output=True, check=False, creationflags=hidden_flags())
         if query.returncode == 0:
             raise ReleaseError("Existing startup task would be overwritten: " + name)
         pythonw = Path(sys.executable).with_name("pythonw.exe")

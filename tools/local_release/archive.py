@@ -35,6 +35,12 @@ def archive_releases(profile, root: Path, config):
                 target = sha
             owned = (re.fullmatch(r"[0-9a-f]{40}", target) is not None
                      and f"<!-- local-release:{profile['project']}-{target} -->" in (release.get("body") or ""))
+            if release["draft"] and not match and not owned:
+                # Owner-created temporary drafts have no attested version/SHA.
+                # Keep them untouched; manual intake records their provenance.
+                index.setdefault("unmapped_drafts", {})[release_id] = {"url": release["html_url"], "reason": "unversioned foreign draft"}
+                atomic_json(index_path, index)
+                continue
             if not sha and release["draft"] and owned:
                 sha = target
             if not match or not sha:

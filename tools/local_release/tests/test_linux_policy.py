@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from local_release.core import Context, ReleaseError, atomic_json
+from local_release.core import Context, ReleaseError, atomic_json, hidden_flags
 from local_release.profiles.linux_release import inspect_tar
 
 
@@ -53,7 +53,7 @@ class LinuxPolicyTest(unittest.TestCase):
             recipe += 'set(INSTALL_BUNDLE_LIB_DIR "${CMAKE_BINARY_DIR}/bundle/lib")\n'
             recipe += 'set(PLUGIN_BUNDLED_LIBRARIES "${CMAKE_SOURCE_DIR}/crashpad_handler" "${CMAKE_SOURCE_DIR}/libfixture.so")\n' + loop
             (root / "CMakeLists.txt").write_text(recipe)
-            subprocess.run([cmake, "-S", str(root), "-B", str(root / "build")], capture_output=True, check=True)
+            subprocess.run([cmake, "-S", str(root), "-B", str(root / "build")], capture_output=True, check=True, creationflags=hidden_flags())
             installed = (root / "build/cmake_install.cmake").read_text()
             self.assertRegex(installed, r'TYPE PROGRAM FILES "[^"\n]*/crashpad_handler"')
             self.assertRegex(installed, r'TYPE FILE FILES "[^"\n]*/libfixture.so"')

@@ -209,6 +209,39 @@ class TransportTest(unittest.TestCase):
         self.assertEqual((received.output / "linux.tar.gz").read_bytes(), b"linux package")
         self.assertTrue((received.directory / "results/runtime-updates-received.json").is_file())
 
+    def test_runtime_upgrade_rejects_source_change_or_gate_removal_and_base_is_cached(self):
+        from copy import deepcopy
+        from local_release.protocol import validate_upgrade
+        old = self.windows.job
+        new = deepcopy(old)
+        new["preparation_revision"] = 2
+        validate_upgrade(old, new)
+        new["sha"] = "c" * 40
+        with self.assertRaisesRegex(core.ReleaseError, "source identity"):
+            validate_upgrade(old, new)
+        new["sha"] = old["sha"]
+        new["required_steps"]["linux"] = []
+        with self.assertRaisesRegex(core.ReleaseError, "removes required"):
+            validate_upgrade(old, new)
+        transport.handoff(self.windows)
+        self.receive()
+        with patch.object(FakeGitHub, "download_asset", side_effect=AssertionError("cached base was downloaded twice")):
+            transport.receive_jobs(self.profile, self.base / "linux-root", {})
+
+    def test_runtime_archive_refuses_symlinks_and_escape_paths(self):
+        import io
+        import tarfile
+        from local_release.runtime_update import unpack
+        for name, kind in (("../escape.py", tarfile.REGTYPE), ("symlink.py", tarfile.SYMTYPE)):
+            path = self.base / "unsafe.tar"
+            with tarfile.open(path, "w") as archive:
+                member = tarfile.TarInfo(name)
+                member.type = kind
+                member.size = 0
+                archive.addfile(member, io.BytesIO(b""))
+            with self.assertRaises(core.ReleaseError):
+                unpack(path, self.base / "extract")
+
     def test_early_linux_failure_preserves_unacknowledged_windows_results(self):
         self.compile(self.windows, "windows.zip")
         transport.handoff(self.windows)

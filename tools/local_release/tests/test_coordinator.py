@@ -374,7 +374,9 @@ class ReleaseTransportTest(unittest.TestCase):
             def pages(self, path):
                 if path == "/releases":
                     return [{"id": 1, "tag_name": "v1.0.0+1", "target_commitish": sha, "draft": True,
-                             "body": f"<!-- local-release:fixture-{sha} -->", "html_url": "https://example.invalid/v1"}]
+                             "body": f"<!-- local-release:fixture-{sha} -->", "html_url": "https://example.invalid/v1"},
+                            {"id": 2, "tag_name": "", "target_commitish": "main", "draft": True,
+                             "body": "Owner manual Snap", "html_url": "https://example.invalid/manual"}]
                 return [{"id": n, "name": name, "size": 3, "browser_download_url": "https://example.invalid/asset"}
                         for n, name in enumerate([f"local-transfer-fixture-{sha}-job.tar.gz", "sample.zip", "release-manifest.json"])]
             def download_asset(self, asset, path):
@@ -391,6 +393,7 @@ class ReleaseTransportTest(unittest.TestCase):
             self.assertEqual([p.name for p in (directory / "packages").iterdir()], ["sample.zip"])
             self.assertTrue((directory / "release-manifest.json").is_file())
             self.assertEqual(core.read_json(directory / "manifest.json")["status"], "incomplete")
+            self.assertIn("2", core.read_json(root / "github-index.json")["unmapped_drafts"])
 
 
 if __name__ == "__main__":

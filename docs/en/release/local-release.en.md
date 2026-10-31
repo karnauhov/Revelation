@@ -4,14 +4,17 @@ Doc-Version: 1.0.0
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
+[Shared build dashboard and startup](build-service.en.md) - http://127.0.0.1:8877.
+
 REV301 is still implementing the migration. The hosted workflow stays until a complete real trial,
 GitHub asset read-back and trigger verification pass. Stores, the production website and Supabase deployment
 remain separate version tasks after acceptance.
 
-Child [REV302](https://ai11.link/cabinet/tasks?project=1&task=REV302) will add one shared local service for all projects:
+Child [REV302](https://ai11.link/cabinet/tasks?project=1&task=REV302) implements one shared local service for all projects:
 versions/platforms/packages, current stages and queue, start/retry/stop, automatic startup and a fixed local URL.
 The service reads the same package files. Other projects' autobuilds are implemented in their own tasks
-and connected through this coordinator's profiles/queues/catalogues. The service is not installed yet.
+and connected through this coordinator's profiles/queues/catalogues. The Windows service is installed;
+the next real login and Linux startup are separate host checks, and the REV301 rollout remains incomplete.
 
 ## Primary local catalogue
 

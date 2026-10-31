@@ -49,6 +49,13 @@ class VersioningTest(unittest.TestCase):
             git(self.repo, "commit", "--allow-empty", "-m", message)
             self.assertIn("1.0.8+173", self.build())
 
+    def test_repeated_signing_failures_then_skip_restore_the_original_build(self):
+        for _ in range(2):
+            with self.assertRaises(ReleaseError):
+                git(self.repo, "-c", "commit.gpgsign=true", "-c", "gpg.program=false", "commit", "--allow-empty", "-m", "signing failure")
+        git(self.repo, "-c", "commit.gpgsign=false", "commit", "--allow-empty", "-m", "maintenance [skip ci]")
+        self.assertIn("1.0.8+173", self.build())
+
     def test_failed_signing_retry_does_not_increment_twice(self):
         with self.assertRaises(ReleaseError):
             git(self.repo, "-c", "commit.gpgsign=true", "-c", "gpg.program=false", "commit", "--allow-empty", "-m", "signing failure")

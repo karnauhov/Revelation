@@ -124,7 +124,14 @@ def build_snap(ctx):
         raise ReleaseError("Snapcraft did not produce the expected amd64 package")
     destination = package_path(ctx, ".snap")
     if destination.exists() and digest(destination) != digest(expected):
-        raise ReleaseError("Existing local Snap differs; preserve it and reconcile the catalogue")
+        from ..core import read_json
+        manifest_path = ctx.directory / "manifest.json"
+        pending = read_json(manifest_path).get("unverified_packages", {}).get(destination.name, {}) if manifest_path.exists() else {}
+        if pending.get("sha256") != digest(destination) or not pending.get("source_asset_id"):
+            raise ReleaseError("Existing local Snap differs; preserve it and reconcile the catalogue")
+        # Its exact previous bytes are already backed up in the owned draft.
+        expected.replace(destination)
+        return
     if destination.exists():
         expected.unlink()
     else:

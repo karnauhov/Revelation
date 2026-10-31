@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Мои сборки - AI11</title><link rel="stylesheet" href="/dashboard.css"><script src="/dashboard.js" defer></script></head>
+<body>
+<header><div><p class="eyebrow">AI11 / LOCAL BUILDS</p><h1>Мои сборки</h1><p class="muted">Все версии и платформы в одном месте</p></div><div class="connection"><span id="dot"></span><span id="connection">Подключение</span><small id="refreshed"></small></div></header>
+<main>
+<section class="stats" aria-label="Сводка"><div><strong id="projectCount">0</strong><span>Проекты</span></div><div><strong id="versionCount">0</strong><span>Версии</span></div><div><strong id="packageCount">0</strong><span>Пакеты</span></div><div><strong id="activeCount">0</strong><span>Сейчас в работе</span></div></section>
+<div id="notice" role="status"></div>
+<section class="workspace"><aside><label for="project">Проект</label><select id="project"></select><div id="policy" class="note"></div><label for="search">Поиск версии или SHA</label><input id="search" type="search" placeholder="Например, 1.0.8"><div id="releases" class="releaseList"></div><details><summary>Очередь коммитов</summary><div id="queue"></div></details></aside>
+<article id="detail"><p class="muted">Загрузка каталога...</p></article></section>
+<footer><span>Пакеты выдаются из исходного каталога без копирования.</span><span>127.0.0.1:8877 · Windows / Linux</span></footer>
+</main>
+</body></html>

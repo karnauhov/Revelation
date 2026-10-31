@@ -41,7 +41,7 @@ def install(directory, extracted):
     previous = {name: (directory / name).read_bytes() if (directory / name).exists() else None
                 for name in metadata_paths}
     # Refuse a live builder on either OS. Updates never interrupt running jobs.
-    with lock(directory / ".windows.lock"), lock(directory / ".linux.lock"):
+    with lock(directory / ".windows.lock"), lock(directory / ".linux.lock"), lock(directory / ".exchange.lock"):
         destination = directory / "runtime"
         backup = directory / (".runtime-" + uuid.uuid4().hex)
         staged = directory / (".runtime-next-" + uuid.uuid4().hex)

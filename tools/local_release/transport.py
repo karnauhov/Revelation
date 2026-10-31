@@ -129,6 +129,8 @@ def send_result(ctx):
         status = replace_exchange(api, release, status_path, ctx.job)
         atomic_json(ctx.directory / "results" / f"{ctx.host}-sent.json", {"status": status, "logs": logs, "packages": package_records})
         (ctx.directory / "results" / f"{ctx.host}-outbox.json").unlink(missing_ok=True)
+        from .catalogue import catalogue_job
+        catalogue_job(ctx)
 
 
 def receive_runtime_updates(api, assets, job, destination, folder):
@@ -225,6 +227,11 @@ def receive_jobs(profile, root, config, tag=None):
 
 
 def sync_results(ctx, *, cleanup=False):
+    with lock(ctx.directory / ".exchange.lock"):
+        return _sync_results(ctx, cleanup=cleanup)
+
+
+def _sync_results(ctx, *, cleanup=False):
     api, release = connection(ctx)
     assets = api.pages(f"/releases/{release['id']}/assets")
     by_id = {a["id"]: a for a in assets}

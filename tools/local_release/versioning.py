@@ -7,7 +7,7 @@ import shlex
 import subprocess
 import sys
 
-from .core import ReleaseError, atomic_json, git, inside, read_json
+from .core import ReleaseError, atomic_json, git, inside, read_json, hidden_flags
 from .hooks import hook_directory
 
 MARKER = "# AI11 synchronized build number v1"
@@ -29,6 +29,8 @@ def commit(repo, profile, message):
                 atomic_json(pending, plan)
         return
     settings = read_json(profile)["versioning"]
+    pending_path = Path(git(repo, "rev-parse", "--path-format=absolute", "--git-path", "ai11-version-pending.json"))
+    pending_plan = read_json(pending_path) if pending_path.exists() else None
     files = settings["files"]
     paths = [inside(repo, name) for name in files]
     if git(repo, "diff", "--name-only", "--", *files):
@@ -46,14 +48,16 @@ def commit(repo, profile, message):
     arguments = (["set-version", new[1], "--build", new[2]] if int(new[2]) > int(old[2]) or new[1] != old[1] else ["inc-build"])
     try:
         process = subprocess.run([sys.executable, str(helper), "--repo-root", str(repo), *arguments],
-                                 capture_output=True, text=True, check=False)
+                                 capture_output=True, text=True, check=False, creationflags=hidden_flags())
         if process.returncode:
             raise ReleaseError("Project version helper failed; version files restored")
         git(repo, "add", "--", *files)
         from .core import digest
-        atomic_json(Path(git(repo, "rev-parse", "--path-format=absolute", "--git-path", "ai11-version-pending.json")),
+        original = (pending_plan["before"] if pending_plan and pending_plan["base_head"] == git(repo, "rev-parse", "HEAD")
+                    else {name: before[inside(repo, name)].hex() for name in files})
+        atomic_json(pending_path,
                     {"base_head": git(repo, "rev-parse", "HEAD"), "files": files,
-                     "before": {name: before[inside(repo, name)].hex() for name in files},
+                     "before": original,
                      "after": {name: digest(inside(repo, name)) for name in files}})
     except BaseException:
         for path, value in before.items():

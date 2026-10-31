@@ -14,13 +14,18 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from local_release.core import (ReleaseError, atomic_json, discover, host_name,
-                                prepare, queue_install, read_json, run_job, worker)
+                                prepare, queue_install, read_json, run_job, worker, hidden_flags)
 
 
 def parser():
     result = argparse.ArgumentParser(description="Shared local release coordinator")
     sub = result.add_subparsers(dest="command", required=True)
     from local_release.agent import registry_path
+    for name in ("serve", "install-service", "start-service", "stop-service"):
+        service = sub.add_parser(name, help="Shared loopback build dashboard")
+        service.add_argument("--registry", type=Path, default=registry_path())
+        service.add_argument("--port", type=int, default=8877)
+        service.add_argument("--no-sync", action="store_true")
     register_parser = sub.add_parser("register-project", help="Connect one explicit project to the shared service")
     register_parser.add_argument("--registry", type=Path, default=registry_path())
     for field in ("repo", "profile", "root", "config"):
@@ -108,7 +113,17 @@ def spawn_worker(queue):
 
 def main(argv=None):
     args = parser().parse_args(argv)
-    if args.command == "register-project":
+    if args.command in ("serve", "install-service", "start-service", "stop-service"):
+        from local_release import service
+        if args.command == "serve":
+            service.serve(args.registry, args.port, not args.no_sync)
+        elif args.command == "stop-service":
+            service.stop(args.registry, args.port)
+        else:
+            if args.command == "install-service":
+                service.install_startup(args.registry, args.port)
+            print(service.start(args.registry, args.port, not args.no_sync))
+    elif args.command == "register-project":
         from local_release.agent import register
         register(args.registry, args.repo, args.profile, args.root, args.config)
     elif args.command == "agent":
@@ -145,7 +160,7 @@ def main(argv=None):
                 command.append("--publish")
             for phase in args.phase or []:
                 command.extend(["--phase", phase])
-            result = subprocess.run(command, check=False)
+            result = subprocess.run(command, check=False, creationflags=hidden_flags())
             if result.returncode:
                 raise ReleaseError("Prepared builder exited " + str(result.returncode))
             return

@@ -3,7 +3,6 @@
 import os
 from pathlib import Path
 import re
-import shlex
 import shutil
 import subprocess
 import sys
@@ -111,7 +110,9 @@ def remediation(directory, project):
     error = result.get("error", "Linux stage failed")
     ready = job.get("preparation_revision", 1) > result.get("runtime_revision", 1)
     commands = ["#!/usr/bin/env bash", "set -euo pipefail",
-                "cd -- " + shlex.quote(project["repo"]), "git fetch origin", "git merge --ff-only origin/main",
+                'if [ -n "${AI11_PROJECT_DIR:-}" ]; then cd -- "$AI11_PROJECT_DIR"; fi',
+                'test -f scripts/local_release/run-linux.sh || { echo "Run from this project checkout, or set AI11_PROJECT_DIR"; exit 2; }',
+                "git fetch origin", "git merge --ff-only origin/main",
                 "bash scripts/local_release/run-linux.sh"]
     script = directory / "results/linux-repair.sh"
     script.write_text("\n".join(commands) + "\n", encoding="utf-8", newline="\n")

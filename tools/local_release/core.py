@@ -31,6 +31,11 @@ class SourceUnavailable(ReleaseError):
     """The exact local source commit is not yet accessible on GitHub."""
 
 
+def hidden_flags():
+    """GUI/background parents must never allocate consoles for CLI children."""
+    return subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
+
+
 def digest(path: Path) -> str:
     with path.open("rb") as stream:
         result = hashlib.sha256()
@@ -71,6 +76,7 @@ def capture(argv, cwd=None, env=None) -> str:
         [str(arg) for arg in argv], cwd=cwd, env=env,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8",
         errors="replace", check=False,
+        creationflags=hidden_flags(),
     )
     if result.returncode:
         # External stderr may include credentials. Persist it only via Context.
@@ -186,7 +192,7 @@ class Context:
                 stdin=stdin,
                 encoding="utf-8", errors="replace", bufsize=1,
                 start_new_session=os.name != "nt",
-                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0,
+                creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0) | hidden_flags(),
             )
             from .processes import StopMonitor, JobStopped, terminate_tree
             monitor = StopMonitor(process, self.directory / "stop-request.json")
@@ -501,7 +507,7 @@ def execute_prepared(directory: Path, config_path: Path, publish=False):
                "--config", str(config_path)]
     if publish:
         command.append("--publish")
-    result = subprocess.run(command, check=False)
+    result = subprocess.run(command, check=False, creationflags=hidden_flags())
     if result.returncode:
         raise ReleaseError("Prepared builder exited " + str(result.returncode))
 

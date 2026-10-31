@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import csv
 
-from .core import ReleaseError, atomic_json, capture, digest, read_json
+from .core import ReleaseError, atomic_json, capture, digest, read_json, hidden_flags
 
 MODULES = ("bible_ohienko_1988.sqlite", "bible_kjv.sqlite", "bible_lxx_tr.sqlite")
 
@@ -24,7 +24,7 @@ def documents_directory():
 
 def application_running():
     if os.name == "nt":
-        result = subprocess.run(["tasklist", "/FI", "IMAGENAME eq revelation.exe", "/FO", "CSV", "/NH"], capture_output=True, text=True, errors="replace")
+        result = subprocess.run(["tasklist", "/FI", "IMAGENAME eq revelation.exe", "/FO", "CSV", "/NH"], capture_output=True, text=True, errors="replace", creationflags=hidden_flags())
         return any(row and row[0].lower() == "revelation.exe" for row in csv.reader(result.stdout.splitlines()))
     return subprocess.run(["pgrep", "-x", "revelation"], capture_output=True).returncode == 0
 
