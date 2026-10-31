@@ -238,17 +238,19 @@ def integration(ctx):
         ctx.stage("integration-" + ctx.host, native, [f"results/{ctx.host}-integration-state.json"])
     if ctx.host == "windows" and "android" in targets:
         def android():
+            from ..prerequisites import android_device
             device = ctx.config.get("android_device")
             if not device:
                 raise ReleaseError("Configure an isolated Android device for all local integration tests")
-            prepare_android_fixture(ctx, device)
-            integration_files(ctx, "android", lambda test: ctx.command([
-                "flutter", "test", "--no-pub", test.relative_to(ctx.workspace).as_posix(),
-                "-d", device, "--reporter=expanded"], cwd=ctx.workspace))
+            with android_device(ctx):
+                prepare_android_fixture(ctx, device)
+                integration_files(ctx, "android", lambda test: ctx.command([
+                    "flutter", "test", "--no-pub", test.relative_to(ctx.workspace).as_posix(),
+                    "-d", device, "--reporter=expanded"], cwd=ctx.workspace))
         ctx.stage("integration-android", android)
     if ctx.host == "windows" and "web" in targets:
         def web():
-            # The driver must already be running locally; no hosted fallback.
+            from ..prerequisites import chrome_driver
             if not ctx.config.get("chromedriver_port"):
                 raise ReleaseError("Start a matching ChromeDriver and configure chromedriver_port")
             def run_file(test):
@@ -257,7 +259,8 @@ def integration(ctx):
                              "--browser-name=chrome", "--headless", "--driver-port=" + str(ctx.config["chromedriver_port"]),
                              "--web-port=" + str(ctx.config.get("web_port", 8796)),
                              "--web-browser-flag=--user-data-dir=" + str(ctx.root / "w" / "chrome-Revelation-REV301-a5305")])
-            integration_files(ctx, "web", run_file)
+            with chrome_driver(ctx):
+                integration_files(ctx, "web", run_file)
         ctx.stage("integration-web", web)
 
 

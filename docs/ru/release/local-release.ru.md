@@ -1,6 +1,6 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.0.4
+Doc-Version: 1.0.5
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -50,6 +50,12 @@ Hosted `.github/workflows/flutter_build.yml` сохраняется до пол�
 Рабочий keystore задаётся локальным `signing_store_file`; сборщик проверяет пароль приватного ключа и
 `expected_signing_certificate_sha256`. Значения ключа и паролей не входят в переносимое задание.
 Конфиг указывает `defines_file`, `sentry_properties`, `inno_setup`, при необходимости `environment`, `android_sdk`, `android_device`, `chromedriver_port` и `web_port`.
+Для Windows integration включите `integration_targets: ["windows", "android", "web"]`.
+Задайте отдельные `android_avd_name`, `android_device` вида `emulator-5584` и `adb_server_port` (например 5041, не 5037).
+Координатор сам запускает этот AVD без окна с временными данными, ждёт загрузки и закрывает только свой процесс.
+Уже работающий AVD используется только после проверки имени и не закрывается координатором.
+`chromedriver_path`, его проверенный `chromedriver_sha256` и свободный `chromedriver_port` включают автоматический
+запуск/закрытие ChromeDriver. Браузерные тесты используют отдельный headless profile, окна владельца не затрагиваются.
 Перед Android-командами координатор проверяет пути Flutter-плагинов и при необходимости пересоздаёт их через
 `flutter pub get` из физического checkout. Временный SUBST применяется для Windows/MSBuild;
 Android не должен зависеть от отключаемой буквы диска. Восстановление `android-cache-recovery` проверяет

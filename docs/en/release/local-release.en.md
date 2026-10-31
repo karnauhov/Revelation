@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.0.4
+Doc-Version: 1.0.5
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -36,6 +36,12 @@ Never substitute another version/SHA or silently overwrite a conflicting package
 Prerequisites: Python 3.10+, Git, Flutter 3.47.2, Java 17, Android SDK, Visual Studio C++/Windows SDK and Inno Setup.
 Host configuration points to `defines_file`, `sentry_properties`, `inno_setup`, and optionally `environment`,
 `android_sdk`, `android_device`, `chromedriver_port` and `web_port`.
+For Windows integration enable `integration_targets: ["windows", "android", "web"]`.
+Configure a dedicated `android_avd_name`, an `android_device` such as `emulator-5584`, and `adb_server_port` (for example 5041, never 5037).
+The coordinator starts that AVD without a window using temporary data, waits for boot and closes only its own process.
+An already running AVD is used only after verifying its name and is never closed by the coordinator.
+`chromedriver_path`, its approved `chromedriver_sha256` and a free `chromedriver_port` enable automatic
+ChromeDriver startup/cleanup. Browser tests use an isolated headless profile and leave the owner's windows untouched.
 Before Android commands the coordinator checks generated Flutter plugin paths and, when needed, regenerates them
 with `flutter pub get` from the physical checkout. Temporary SUBST paths are reserved for Windows/MSBuild;
 Android must not depend on a drive letter removed after the run. `android-cache-recovery` validates
