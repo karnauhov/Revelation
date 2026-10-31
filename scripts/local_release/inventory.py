@@ -93,12 +93,15 @@ def inventory():
             if name not in EQUIVALENTS:
                 raise SystemExit("Missing local equivalent: " + name)
             jobs[current].append({"name": name, "local_equivalent": EQUIVALENTS[name]})
-    return {"schema": 1, "source": ".github/workflows/flutter_build.yml",
+    return {"schema": 2, "source": ".github/workflows/flutter_build.yml",
+            "hosted_workflow_present": source.exists(),
+            "source_storage": "working-tree" if source.exists() else "git-blob:" + LEGACY_WORKFLOW_BLOB,
             "git_blob": hashlib.sha1(f"blob {len(payload)}\0".encode() + payload).hexdigest(),
             "sha256": hashlib.sha256(payload).hexdigest(), "jobs": jobs,
             "actions": sorted(set(re.findall(r"uses: (.+)", text))),
             "secret_names": sorted(set(re.findall(r"secrets\.([A-Z_]+)", text))),
-            "legacy_trigger": "push/main with paths and head-commit [skip ci]/[ci skip]; retained until full REV301 trial",
+            "legacy_trigger": "push/main with paths and head-commit [skip ci]/[ci skip]; " + (
+                "retained until full REV301 trial" if source.exists() else "removed after full published REV301 trial"),
             "local_trigger": "all new local and received remote commits; full message [skip ci]; one durable entry per project+SHA",
             "additional_gates": ["local integration on supported applicable devices", "docs sync", "APK/AAB release certificate",
                                  "MSIX identity/version", "Web map exclusion", "Linux Snap owner commands/install/smoke",

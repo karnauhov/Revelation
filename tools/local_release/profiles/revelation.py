@@ -24,6 +24,15 @@ WINDOWS = ["apk", "aab", "windows", "installer", "msix", "web", "sentry-web", "w
 LINUX = ["linux", "sentry-linux", "linux-tar", "snap", "verify-linux"]
 
 
+def quality_steps(repo, sha):
+    steps = list(QUALITY)
+    # Historical app snapshots predate the coordinator. New snapshots carry
+    # the committed inventory/cutover guard and must execute it on both hosts.
+    if git(repo, "ls-tree", "--name-only", sha, "--", "scripts/local_release/inventory.py"):
+        steps.append("workflow-parity")
+    return steps
+
+
 def metadata(repo, sha, profile):
     pubspec = git(repo, "show", f"{sha}:pubspec.yaml")
     match = re.search(r"^version:\s*(\d+\.\d+\.\d+)\+(\d+)\s*$", pubspec, re.M)
@@ -43,11 +52,12 @@ def metadata(repo, sha, profile):
     specifications = {name: {"host": "windows", "gates": ["verify-windows"]} for name in names[:5]}
     specifications[names[5]] = {"host": "linux", "gates": ["linux-tar", "inspect-linux-tar"]}
     specifications[names[6]] = {"host": "linux", "gates": ["snap", "inspect-snap"]}
+    checks = quality_steps(repo, sha)
     return dict(version=version, build=build, tag=f"v{version}+{build}", artifacts=names,
                 protocol_version=2, artifact_specs=specifications, generated_source_overlays=overlay_hashes,
                 release_notes=notes.group(1).strip().removesuffix("---").strip(),
-                required_steps={"windows": ["preflight", *QUALITY, "integration-windows", "integration-android", "integration-web", "signing-preflight", *WINDOWS],
-                                "linux": ["preflight", *QUALITY, "integration-linux", *LINUX, "inspect-linux-tar", "inspect-snap"]},
+                required_steps={"windows": ["preflight", *checks, "integration-windows", "integration-android", "integration-web", "signing-preflight", *WINDOWS],
+                                "linux": ["preflight", *checks, "integration-linux", *LINUX, "inspect-linux-tar", "inspect-snap"]},
                 architectures={"android": ["armeabi-v7a", "arm64-v8a", "x86_64"],
                                "windows": ["x64"], "linux": ["x64"], "snap": ["amd64"], "web": ["javascript"]},
                 generated_output_paths=["coverage/lcov.info"],
@@ -200,8 +210,11 @@ def quality(ctx):
         "forbidden": ["dart", "run", "scripts/check_forbidden_patterns.dart"],
         "encoding": ["dart", "run", "scripts/check_encoding_sanity.dart"],
         "docs-sync": ["dart", "run", "scripts/check_docs_sync.dart"],
+        "workflow-parity": ["python", "scripts/local_release/inventory.py", "--check"],
     }
     for name, argv in commands.items():
+        if name == "workflow-parity" and name not in ctx.job["required_steps"][ctx.host]:
+            continue
         def action(argv=argv, name=name):
             ctx.command(argv)
             if name == "coverage-threshold":

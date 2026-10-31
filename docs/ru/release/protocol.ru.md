@@ -1,6 +1,6 @@
 # Обмен локальных сборщиков
 
-Doc-Version: 2.0.8
+Doc-Version: 2.0.9
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -125,6 +125,10 @@ status/log/package assets с точным префиксом данного run.
 Локальный `publication-received.json` фиксирует подтверждение; старые локальные checkpoint records не подделываются.
 Такой выпуск пропускается без сборки и без восстановления удалённых transport-файлов. После публикации карточка
 может явно подтвердить завершение другой ОС по итоговому manifest, сохраняя историю её прошлых локальных попыток.
+Для новых source snapshots, содержащих inventory script, `workflow-parity` обязателен на Windows и Linux.
+Inventory фиксирует наличие hosted YAML; после cutover guard отвергает его повторное появление,
+а parity исходных3jobs/53steps читается из immutable Git blob. Историческим snapshots без этого script
+не добавляется невыполнимый gate и не сбрасываются их успешные проверки.
 
 ## Автонумерация и запуск
 

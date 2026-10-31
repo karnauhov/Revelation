@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.0.8
+Doc-Version: 2.0.9
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -119,6 +119,10 @@ the complete required gate list, every package's metadata and SHA256SUMS are ver
 A local `publication-received.json` records the acknowledgment without fabricating old local checkpoints.
 The release is skipped without building or recreating removed transport files. After publication the dashboard
 can confirm another OS through that manifest while preserving its earlier local attempt history.
+New source snapshots containing the inventory script require `workflow-parity` on Windows and Linux.
+Inventory records whether the hosted YAML exists; after cutover the guard rejects its reintroduction,
+while preserving parity for the original3jobs/53steps from its immutable Git blob. Historical snapshots
+without that script gain no impossible gate and retain their successful checks.
 
 ## Numbering and login
 

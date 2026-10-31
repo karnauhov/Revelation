@@ -1,6 +1,8 @@
 {
-  "schema": 1,
+  "schema": 2,
   "source": ".github/workflows/flutter_build.yml",
+  "hosted_workflow_present": true,
+  "source_storage": "working-tree",
   "git_blob": "a3c10e9152fd9abd86124fbb3bb3673ff8d33d9e",
   "sha256": "6ccae266b989bc25bf89f50ffc50197bf1f85a70310278f757d7c38da12da49f",
   "jobs": {
