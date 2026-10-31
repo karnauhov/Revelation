@@ -288,6 +288,8 @@ def reconcile_published(context):
 
 
 def publish_job(context):
+    from .retention import ensure_allowed
+    ensure_allowed(context.root, context.job["project"], context.job["sha"])
     job, directory = context.job, context.directory
     token = credential(context.config)
     context.refresh_redaction([token])

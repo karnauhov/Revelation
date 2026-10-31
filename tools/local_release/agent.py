@@ -82,6 +82,9 @@ def discover_jobs(project):
     cursor = project.get("cursor", current)
     commits = git(repo, "rev-list", "--reverse", cursor + ".." + current).splitlines()
     for sha in commits:
+        from .retention import deleted
+        if deleted(Path(project["catalogue"]), project["project"], sha):
+            continue
         if "[skip ci]" not in git(repo, "show", "-s", "--format=%B", sha):
             prepare(repo, Path(project["profile"]), Path(project["catalogue"]), sha,
                     config=read_json(Path(project["config"])))
@@ -138,6 +141,8 @@ def project_cycle(project, role):
         config.setdefault("auto_provision_flutter", True)
         config["stream_output"] = True
         atomic_json(Path(project["config"]), config)
+    from .retention import synchronize, deleted
+    synchronize(project, role)
     received = receive_jobs(profile, root, config)
     jobs = {path for path in received}
     if role == "linux":
@@ -145,6 +150,8 @@ def project_cycle(project, role):
     jobs.update(path.parent for path in (root / "releases" / profile["project"]).glob("*/*/job.json"))
     records = []
     for directory in sorted(jobs):
+        if deleted(root, profile["project"], directory.name):
+            continue
         job = read_json(directory / "job.json")
         publication = directory / "publication.json"
         if publication.exists() and read_json(publication).get("published"):

@@ -25,6 +25,9 @@ def archive_releases(profile, root: Path, config):
             raise ReleaseError("Archive belongs to a different repository")
         releases = api.pages("/releases")
         for release in releases:
+            from .retention import marker, deleted
+            if marker(profile["project"]) in (release.get("body") or ""):
+                continue
             release_id = str(release["id"])
             match = re.fullmatch(r"v(\d+\.\d+\.\d+)\+(\d+)", release["tag_name"])
             sha = api.tag_sha(release["tag_name"])
@@ -45,6 +48,8 @@ def archive_releases(profile, root: Path, config):
                 sha = target
             if not match or not sha:
                 raise ReleaseError("Historical release needs explicit version/build and source tag SHA: " + release["tag_name"])
+            if deleted(root, profile["project"], sha):
+                continue
             directory = release_directory(root, profile["project"], match.group(1), int(match.group(2)), sha)
             directory.mkdir(parents=True, exist_ok=True)
             atomic_json(directory / "github-release.json", release)

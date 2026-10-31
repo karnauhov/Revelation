@@ -8,11 +8,13 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest.mock import patch
 from urllib.parse import urlencode
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from local_release.core import atomic_json, digest, host_name, read_json, capture, git, queue_install
 from local_release.service import Dashboard, make_server
+from test_retention import FakeGitHub
 
 
 class ServiceTest(unittest.TestCase):
@@ -44,6 +46,8 @@ class ServiceTest(unittest.TestCase):
         self.addCleanup(self.close)
 
     def close(self):
+        for thread in self.server.dashboard.deletion_threads.values():
+            thread.join(timeout=12)
         for process in self.server.dashboard.children.values():
             if process.poll() is None:
                 process.wait(timeout=10)
@@ -64,6 +68,104 @@ class ServiceTest(unittest.TestCase):
         return self.request("/api/action", {"project": "first", "sha": "a" * 40, "action": action}, {
             "Content-Type": "application/json", "X-AI11-Token": self.server.dashboard.token,
             "Origin": f"http://127.0.0.1:{self.port}"})
+
+    def deletion(self, route, **extra):
+        return self.request('/api/delete-' + route, {"project": "first", "sha": "a" * 40, **extra}, {
+            "Content-Type": "application/json", "X-AI11-Token": self.server.dashboard.token,
+            "Origin": f"http://127.0.0.1:{self.port}"})
+
+    def retention_fixture(self):
+        value = read_json(self.registry)
+        profile = self.root / "first-profile.json"
+        atomic_json(profile, {"project": "first", "repository": "owner/first", "adapter": "local_release.profiles.native_fixture"})
+        value["projects"]["first"].update(profile=str(profile), hosts=["windows", "linux"])
+        atomic_json(self.registry, value)
+        api = FakeGitHub()
+        mocked = patch("local_release.retention.api_for", return_value=api)
+        mocked.start()
+        self.addCleanup(mocked.stop)
+        return api
+
+    def test_confirmed_deletion_resumes_even_when_project_builds_are_disabled(self):
+        value = read_json(self.registry)
+        value['projects']['first']['enabled'] = False
+        value['projects']['second']['hosts'] = []
+        atomic_json(self.registry, value)
+        # Confirmed cleanup must not depend on a queue or enabled autobuild.
+        with patch.object(self.server.dashboard, 'resume_deletions') as resume:
+            self.server.dashboard.scan()
+        self.assertEqual([call.args[0] for call in resume.call_args_list], ['first', 'second'])
+
+    def test_delete_http_requires_a_fresh_confirmation_bound_to_the_build(self):
+        api = self.retention_fixture()
+        self.assertEqual(self.request('/api/delete-confirm', {"project": "first", "sha": "a" * 40, "preview_id": "missing"})[0], 403)
+        self.assertEqual(self.deletion('confirm', preview_id='missing')[0], 400)
+        status, payload, _ = self.deletion('preview')
+        self.assertEqual(status, 200)
+        preview = json.loads(payload)
+        self.assertEqual(preview['package_count'], 1)
+        self.assertTrue(self.jobs['first'].exists())
+        self.assertEqual(api.events, [])
+        self.assertEqual(self.deletion('confirm', preview_id=preview['preview_id'], sha='b' * 40)[0], 400)
+        self.assertTrue(self.jobs['first'].exists())
+        preview = json.loads(self.deletion('preview')[1])
+        self.assertEqual(self.deletion('confirm', preview_id=preview['preview_id'])[0], 200)
+        self.wait(lambda: not self.jobs['first'].exists())
+        self.wait(lambda: self.server.dashboard.state()['projects'][0]['deletions'][0]['local_deleted'])
+        self.wait(lambda: self.server.dashboard.state()['projects'][0]['deletions'][0]['status'] == 'waiting_other_hosts')
+        state = self.server.dashboard.state()
+        self.assertEqual(state['projects'][0]['releases'], [])
+        removed = state['projects'][0]['deletions'][0]
+        self.assertTrue(removed['github_deleted'])
+        self.assertEqual(removed['status'], 'waiting_other_hosts')
+        self.assertTrue((self.jobs['second'] / 'packages/package.zip').exists())
+        self.assertEqual(self.deletion('confirm', preview_id=preview['preview_id'])[0], 400)
+        self.assertEqual(api.events.count(('DELETE', '/releases/1')), 1)
+
+    def test_os_cards_receive_legacy_timings_without_counting_integration_twice(self):
+        directory = self.prepare_runnable()
+        job = read_json(directory / 'job.json')
+        job['required_steps'] = {'windows': ['compile', 'integration-windows'], 'linux': ['compile']}
+        atomic_json(directory / 'job.json', job)
+        atomic_json(directory / 'results/windows.json', {'status': 'built', 'steps': {
+            'compile': {'status': 'passed', 'started': 10, 'finished': 20},
+            'integration-windows': {'status': 'passed', 'started': 20, 'finished': 80},
+            'integration-windows-file': {'status': 'passed', 'started': 20, 'finished': 70}}})
+        atomic_json(directory / 'results/linux.json', {'status': 'built', 'steps': {
+            'compile': {'status': 'passed', 'started': 10, 'finished': 130}}})
+        status, payload, _ = self.request('/api/state')
+        self.assertEqual(status, 200)
+        hosts = json.loads(payload)['projects'][0]['releases'][0]['hosts']
+        self.assertEqual(hosts['windows']['timing']['seconds'], 70)
+        self.assertEqual(hosts['linux']['timing']['seconds'], 120)
+        self.assertTrue(hosts['linux']['timing']['estimated'])
+        self.assertIsNone(hosts['windows']['timing']['current_seconds'])
+
+    def test_delete_http_preserves_packages_on_network_error_and_retries_same_request(self):
+        api = self.retention_fixture()
+        api.fail_upload = True
+        preview = json.loads(self.deletion('preview')[1])
+        self.assertEqual(self.deletion('confirm', preview_id=preview['preview_id'])[0], 200)
+        self.wait(lambda: self.server.dashboard.state()['projects'][0]['deletions'][0]['status'] == 'failed')
+        self.assertTrue(self.jobs['first'].exists())
+        self.assertIn(1, api.releases)
+        self.assertNotIn('must-stay-private', json.dumps(self.server.dashboard.state()))
+        api.fail_upload = False
+        retry = json.loads(self.deletion('preview')[1])
+        self.assertEqual(self.deletion('confirm', preview_id=retry['preview_id'])[0], 200)
+        self.wait(lambda: not self.jobs['first'].exists())
+        self.assertEqual(api.events.count(('DELETE', '/releases/1')), 1)
+
+    def test_delete_http_cooperatively_stops_the_real_fixture_builder(self):
+        self.retention_fixture()
+        directory = self.prepare_runnable()
+        self.assertEqual(self.control('start')[0], 200)
+        self.wait(lambda: (directory / 'results/attempt.json').exists())
+        preview = json.loads(self.deletion('preview')[1])
+        self.assertEqual(self.deletion('confirm', preview_id=preview['preview_id'])[0], 200)
+        self.wait(lambda: not directory.exists())
+        self.wait(lambda: self.server.dashboard.state()['projects'][0]['deletions'][0]['status'] == 'waiting_other_hosts')
+        self.assertEqual(self.server.dashboard.state()['projects'][0]['deletions'][0]['status'], 'waiting_other_hosts')
 
     def wait(self, predicate):
         deadline = time.monotonic() + 12

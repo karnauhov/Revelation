@@ -36,12 +36,15 @@ class Dashboard:
         self.token = secrets.token_urlsafe(32)
         self.guard = threading.Lock()
         self.children = {}
+        self.deletion_previews = {}
+        self.deletion_threads = {}
 
     def projects(self):
         return read_json(self.registry)["projects"]
 
     def scan(self):
         for name, project in self.projects().items():
+            self.resume_deletions(name, project)
             if not project.get("enabled") or host_name() not in project["hosts"]:
                 continue
             root = Path(project["catalogue"])
@@ -59,6 +62,7 @@ class Dashboard:
                 spawn_worker(queue)
 
     def jobs(self, project):
+        from .retention import deleted
         root = Path(project["catalogue"]) / "releases" / project["project"]
         directories = {path.parent for pattern in ("*/*/manifest.json", "*/*/job.json") for path in root.glob(pattern)
                        if path.resolve().is_relative_to(root.resolve())}
@@ -67,7 +71,75 @@ class Dashboard:
             numbers = tuple(int(value) for value in version.groups()) if version else (0, 0, 0, 0)
             return (*numbers, directory.name)
         # Include prepared jobs in the same numeric order as archived releases.
-        yield from sorted(directories, key=order, reverse=True)
+        yield from (directory for directory in sorted(directories, key=order, reverse=True)
+                    if not re.fullmatch(r"[a-f0-9]{40}", directory.name)
+                    or not deleted(Path(project["catalogue"]), project["project"], directory.name))
+
+    def resume_deletions(self, name, project):
+        from .retention import summary
+        for record in summary(project):
+            if not record["local_deleted"] or record["status"] == "failed":
+                self.start_deletion(name, record["sha"])
+
+    def start_deletion(self, name, sha):
+        key = (name, sha)
+        with self.guard:
+            previous = self.deletion_threads.get(key)
+            if previous and previous.is_alive():
+                return
+            def run():
+                from .retention import process, busy, validate, record_path
+                project = self.projects()[name]
+                try:
+                    record = process(project, sha)
+                    if record["status"] == "stopping":
+                        directory = validate(record["request"], project)
+                        deadline = time.monotonic() + 600
+                        while time.monotonic() < deadline and busy(directory):
+                            time.sleep(.5)
+                        if not busy(directory):
+                            process(project, sha)
+                except (OSError, ValueError, KeyError, ReleaseError) as error:
+                    path = record_path(project["catalogue"], project["project"], sha)
+                    if path.exists():
+                        record = read_json(path)
+                        record.update(status="failed", error=str(error))
+                        atomic_json(path, record)
+            thread = threading.Thread(target=run, daemon=True)
+            self.deletion_threads[key] = thread
+            thread.start()
+
+    def preview_deletion(self, name, sha):
+        from .retention import preview, record_path
+        project = self.projects().get(name)
+        if not project:
+            raise ReleaseError("Unknown registered project")
+        existing = record_path(project["catalogue"], project["project"], sha)
+        if existing.exists():
+            prepared = {"request": read_json(existing)["request"], "package_count": 0,
+                        "package_bytes": 0, "github_asset_count": 0, "github_release": None}
+        else:
+            _, directory = self.find(name, sha)
+            prepared = preview(project, directory)
+        identifier = secrets.token_hex(16)
+        with self.guard:
+            self.deletion_previews = {k: v for k, v in self.deletion_previews.items() if v["expires"] > time.time()}
+            self.deletion_previews[identifier] = {"expires": time.time() + 300, "project": name, "sha": sha, "prepared": prepared}
+        request = prepared["request"]
+        return {"preview_id": identifier, "project": name, "sha": sha, "version": request["version"],
+                "build": request["build"], "hosts": request["hosts"],
+                **{key: value for key, value in prepared.items() if key != "request"}}
+
+    def confirm_deletion(self, name, sha, preview_id):
+        from .retention import request_deletion
+        with self.guard:
+            prepared = self.deletion_previews.pop(preview_id, None)
+        if (not prepared or prepared["expires"] < time.time()
+                or (prepared["project"], prepared["sha"]) != (name, sha)):
+            raise ReleaseError("Deletion confirmation expired or belongs to another build; open the dialog again")
+        record = request_deletion(self.projects()[name], prepared["prepared"])
+        self.start_deletion(name, sha)
+        return {"status": "deletion_requested", "request_id": record["request"]["request_id"]}
 
     def find(self, name, sha):
         project = self.projects().get(name)
@@ -118,8 +190,13 @@ class Dashboard:
                             "attempt_runtime_revision": value.get("attempt_runtime_revision", value.get("runtime_revision")),
                             "pending_runtime_revision": value.get("pending_runtime_revision"),
                             "steps": [{"name": key, **{k: v for k, v in row.items() if k in
-                                ("status", "started", "finished", "error")}} for key, row in value.get("steps", {}).items()],
+                                ("status", "started", "finished", "error", "duration_seconds", "total_duration_seconds", "attempts")}} for key, row in value.get("steps", {}).items()],
                             "missing": [s for s in job["required_steps"][role] if value.get("steps", {}).get(s, {}).get("status") != "passed"]}
+                        from .timing import summarize, latest_seconds
+                        hosts[role]["timing"] = summarize(value, running=role == host_name() and active)
+                        for step in hosts[role]["steps"]:
+                            step["elapsed_seconds"] = latest_seconds(value["steps"][step["name"]],
+                                running=role == host_name() and active, session=value.get("session_id"))
                     logs = [{"name": p.relative_to(directory).as_posix(), "size": p.stat().st_size,
                              "url": "/api/file?" + urlencode({**query, "log": p.relative_to(directory).as_posix()})}
                             for p in sorted((directory / "logs").glob("*/*.log")) if p.resolve().is_relative_to(directory.resolve())]
@@ -151,8 +228,14 @@ class Dashboard:
                     releases.append({"sha": directory.name, "error": str(error), "files": [], "hosts": {}, "logs": []})
             queue = Path(project["catalogue"]) / (name + "-queue.json")
             q = read_json(queue) if queue.exists() else {}
+            from .retention import summary
+            removals = summary(project)
+            for removed in removals:
+                if removed["sha"] in q.get("commits", {}):
+                    q["commits"][removed["sha"]].update(status="deleted", reason="Owner-confirmed deletion")
             projects.append({"name": name, "enabled": project.get("enabled"), "hosts": project["hosts"],
-                "automatic_builds": q.get("enabled", False), "queue": q.get("commits", {}), "releases": releases})
+                "automatic_builds": q.get("enabled", False), "queue": q.get("commits", {}), "releases": releases,
+                "deletions": removals})
         agent = self.registry.parent / (host_name() + "-agent-result.json")
         failure = self.registry.parent / "service-error.json"
         return {"product": PRODUCT, "host": host_name(), "token": self.token, "time": time.time(),
@@ -317,13 +400,19 @@ class Handler(BaseHTTPRequestHandler):
             self.respond(403, {"error": "Control request requires this dashboard's token and origin"})
             return
         try:
-            if self.path != "/api/action" or self.headers.get("Content-Type") != "application/json":
+            if self.path not in ("/api/action", "/api/delete-preview", "/api/delete-confirm") or self.headers.get("Content-Type") != "application/json":
                 raise ReleaseError("Expected JSON control request")
             length = int(self.headers.get("Content-Length", "0"))
             if length <= 0 or length > 4096:
                 raise ReleaseError("Invalid control payload length")
             value = json.loads(self.rfile.read(length))
-            self.respond(200, self.server.dashboard.action(value["project"], value["sha"], value["action"]))
+            if self.path == "/api/delete-preview":
+                result = self.server.dashboard.preview_deletion(value["project"], value["sha"])
+            elif self.path == "/api/delete-confirm":
+                result = self.server.dashboard.confirm_deletion(value["project"], value["sha"], value["preview_id"])
+            else:
+                result = self.server.dashboard.action(value["project"], value["sha"], value["action"])
+            self.respond(200, result)
         except (OSError, ValueError, KeyError, ReleaseError) as error:
             self.respond(400, {"error": str(error)})
 

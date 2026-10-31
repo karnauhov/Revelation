@@ -1,12 +1,41 @@
 # Обмен локальных сборщиков
 
-Doc-Version: 2.0.9
+Doc-Version: 2.0.10
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
 Git `main` хранит инструменты, профили и [перечень проектов](../../../scripts/local_release/projects.json).
 Draft GitHub Releases передают задания, пакеты, результаты и очищенные логи. Секреты и бинарники в Git не попадают.
 Регистрация другого проекта и его автобилд выполняются в задаче этого проекта; сейчас включён Revelation.
+
+## Удаление и отсутствие повторного импорта
+
+Отдельный непубликуемый control draft `ai11-local-retention-<project>` имеет marker
+`<!-- local-release-retention:<project>:1 -->`. Он не входит в архив пакетов или финальный release.
+`delete-<request_id>.json` содержит schema1, project/repository, version/build/SHA, точный release ID/tag
+и ожидаемые OS-роли. В нём нет путей, команд или секретов. После подтверждения UI запрос сохраняется
+один раз в `.local-releases/deletions/<project>/<SHA>.json`, затем отправляется с download/hash read-back.
+
+До удаления GitHub Release проверяются tag SHA и release ID; локальные пути вычисляет координатор.
+Остановка активного процесса и возврат owner data предшествуют очистке checkout. Только точные managed
+пути могут удаляться рекурсивно; посторонние snapshots, SHA и незавершённые recovery journals защищены.
+После очистки ОС отправляет immutable `ack-<request_id>-<os>.json`. Запросы/ack принимаются только от
+GitHub uploader владельца репозитория (иной заранее проверенный actor задаётся host-local `retention_actor`).
+
+Linux обрабатывает control draft до обнаружения/получения jobs. Постоянная метка запрещает prepare/run,
+повтор из очереди, handoff/publication, receive и archive для удалённого SHA. Отказ сети сохраняет outbox
+состояние; повтор продолжает тот же request ID. GitHub Release исчезает целиком, Git-тег остаётся.
+Квитанции позволяют Windows отличать готовую локальную очистку от ожидающего следующего Linux login.
+
+## Время этапов
+
+Result schema1 допускает stage `duration_seconds`, cumulative `total_duration_seconds`, `attempts`,
+`parent_step`, `timing_exact` и `timing_partial`. Host-local `monotonic_started` используется только у
+живого builder текущей ОС с совпадающим session_id. Завершённые durations переносимы между ОС;
+чужой monotonic counter не сравнивается с локальным. `timing_totals` сохраняет потраченное время,
+когда checkpoint приходится инвалидировать. Итог суммирует только корневые этапы, сохраняя вложенные
+для детализации. Для старых данных используется явно обозначенная оценка, отсутствующие или обратные
+времена не превращаются в выдуманные нули. Самостоятельные ожидания между запусками не суммируются.
 
 ## Идентичность задания
 

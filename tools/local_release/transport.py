@@ -23,6 +23,8 @@ from .protocol import VERSION, SOURCE_FIELDS, draft_packages, same_source
 
 
 def connection(ctx):
+    from .retention import ensure_allowed
+    ensure_allowed(ctx.root, ctx.job["project"], ctx.job["sha"])
     token = credential(ctx.config)
     ctx.refresh_redaction([token])
     api = GitHub(ctx.job["repository"], token)
@@ -176,6 +178,7 @@ def receive_runtime_updates(api, assets, job, destination, folder):
 
 
 def receive_jobs(profile, root, config, tag=None):
+    from .retention import deleted
     api = GitHub(profile["repository"], credential(config))
     received = []
     for release in api.pages("/releases"):
@@ -192,6 +195,8 @@ def receive_jobs(profile, root, config, tag=None):
         root.mkdir(parents=True, exist_ok=True)
         version = re.fullmatch(r"v(\d+\.\d+\.\d+)\+(\d+)", release["tag_name"])
         target_sha = release.get("target_commitish", "")
+        if re.fullmatch(r"[0-9a-f]{40}", target_sha) and deleted(root, profile["project"], target_sha):
+            continue
         if version and re.fullmatch(r"[0-9a-f]{40}", target_sha):
             known = release_directory(root, profile["project"], version[1], int(version[2]), target_sha)
             receipt_path = known / "received.json"
@@ -223,6 +228,8 @@ def receive_jobs(profile, root, config, tag=None):
                     with archive.extractfile(member) as source, destination.open("wb") as stream:
                         __import__("shutil").copyfileobj(source, stream)
             job = read_json(extracted / "job.json")
+            if deleted(root, profile["project"], job["sha"]):
+                continue
             if any(job["profile"].get(key) != profile.get(key) for key in ("project", "repository", "adapter", "flutter")) or job["repository"] != profile["repository"]:
                 raise ReleaseError("Received profile differs from this project")
             if f"<!-- local-release:{job['run_id']} -->" not in release["body"] or job["tag"] != release["tag_name"]:

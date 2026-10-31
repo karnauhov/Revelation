@@ -162,6 +162,8 @@ class Context:
         self.env.update({str(k): str(v) for k, v in config.get("environment", {}).items()})
         self.redact = Redactor(v for k, v in self.env.items() if re.search("TOKEN|PASSWORD|SECRET|BASE64", k))
         self.output.mkdir(exist_ok=True)
+        self.session_id = uuid.uuid4().hex
+        self._stage_stack = []
 
     def save(self):
         self.result["updated"] = time.time()
@@ -241,16 +243,35 @@ class Context:
         # platform branches cannot make a successful build disappear on retry.
         if name in self.result["steps"]:
             self.invalidate_dependents(name)
-        self.result["steps"][name] = {"status": "running", "started": time.time()}
+        from .timing import cumulative_seconds
+        timing_history = self.result.setdefault("timing_totals", {})
+        prior = timing_history.get(name, previous)
+        prior_seconds = cumulative_seconds(prior)
+        previous_seconds = prior_seconds or 0
+        previous_exact = not prior or prior.get("timing_exact", False)
+        began = time.monotonic()
+        self.result["session_id"] = self.session_id
+        self.result["steps"][name] = {"status": "running", "started": time.time(),
+            "monotonic_started": began, "session_id": self.session_id,
+            "parent_step": self._stage_stack[-1] if self._stage_stack else None,
+            "prior_duration_seconds": previous_seconds, "timing_exact": previous_exact,
+            "timing_partial": prior.get("timing_partial", False) or bool(prior and prior_seconds is None),
+            "attempts": prior.get("attempts", 1 if prior else 0) + 1}
+        def finish_timing():
+            elapsed = max(0, time.monotonic() - began)
+            row = self.result["steps"][name]
+            row.update(duration_seconds=elapsed, total_duration_seconds=previous_seconds + elapsed)
+            timing_history[name] = {"status": "measured", **{key: row[key] for key in (
+                "total_duration_seconds", "parent_step", "timing_exact", "timing_partial", "attempts")}}
         self.save()
+        self._stage_stack.append(name)
         try:
             action()
             if any(not path.is_file() for path in paths):
                 raise ReleaseError(f"{name}: required output is missing")
-            self.result["steps"][name].update(
-                status="passed", finished=time.time(),
-                outputs={p.relative_to(self.directory).as_posix(): digest(p) for p in paths},
-            )
+            hashes = {p.relative_to(self.directory).as_posix(): digest(p) for p in paths}
+            self.result["steps"][name].update(status="passed", finished=time.time(), outputs=hashes)
+            finish_timing()
             self.save()
             print(f"PASS {self.host}/{name}", flush=True)
             return True
@@ -259,8 +280,11 @@ class Context:
             state = "stopped" if isinstance(error, JobStopped) else "failed"
             self.result.update(status=state, error=self.redact(str(error)))
             self.result["steps"][name].update(status=state, finished=time.time(), error=self.redact(str(error)))
+            finish_timing()
             self.save()
             raise
+        finally:
+            self._stage_stack.pop()
 
     def invalidate_dependents(self, name):
         dependencies = self.job.get("step_dependencies", {})
@@ -328,6 +352,8 @@ def prepare(repo: Path, profile_path: Path, root: Path, sha="HEAD", config=None)
     install_local_excludes(repo)
     profile = read_json(profile_path)
     full_sha = git(repo, "rev-parse", f"{sha}^{{commit}}")
+    from .retention import ensure_allowed
+    ensure_allowed(root, profile["project"], full_sha)
     adapter = importlib.import_module(profile["adapter"])
     metadata = adapter.metadata(repo, full_sha, profile)
     if hasattr(adapter, "input_metadata"):
@@ -424,6 +450,10 @@ def discover(repo: Path, root: Path, queue_path: Path):
                                     "reason": "[skip ci] in full commit message" if skip else None,
                                     "sequence": len(data["commits"]) + 1,
                                     "discovered": time.time()}
+        from .retention import deleted
+        for sha, entry in data["commits"].items():
+            if deleted(root, data["project"], sha):
+                entry.update(status="deleted", reason="Owner-confirmed deletion")
         atomic_json(queue_path, data)
         for path in events:
             path.unlink(missing_ok=True)
@@ -434,16 +464,24 @@ def update_queue(root, path, sha, **fields):
     with lock(root / ".queue.lock"):
         data = read_json(path)
         data["commits"][sha].update(fields)
+        from .retention import deleted
+        if deleted(root, data["project"], sha):
+            data["commits"][sha].update(status="deleted", reason="Owner-confirmed deletion")
         atomic_json(path, data)
 
 
 def run_job(directory: Path, config: dict, publish=False):
+    from .retention import ensure_job_allowed
+    ensure_job_allowed(directory)
     publication = directory / "publication.json"
     if publication.exists() and read_json(publication).get("published"):
         raise ReleaseError("Published releases are immutable; restore archived packages or prepare a new source build")
     verify_runtime(directory)
     context = Context(directory, config)
     with lock(directory / f".{context.host}.lock"):
+        ensure_job_allowed(directory)
+        context.result.update(status="running", current_step=None, session_id=context.session_id)
+        context.save()
         try:
             if publish:
                 # Receive peer evidence before any local build can fail. Receipts
@@ -510,6 +548,8 @@ def run_job(directory: Path, config: dict, publish=False):
 
 
 def execute_prepared(directory: Path, config_path: Path, publish=False):
+    from .retention import ensure_job_allowed
+    ensure_job_allowed(directory)
     command = [sys.executable, str(directory / "runtime/local_release/cli.py"), "run", "--job", str(directory),
                "--config", str(config_path)]
     if publish:

@@ -1,12 +1,41 @@
 # Local builder exchange
 
-Doc-Version: 2.0.9
+Doc-Version: 2.0.10
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
 Git main stores tools, profiles and the [project catalogue](../../../scripts/local_release/projects.json).
 Owned draft GitHub Releases carry jobs, packages, results and redacted logs. Credentials and binaries stay outside Git.
 Each other project registers its profile in its own task; Revelation is currently the only enabled project.
+
+## Deletion and prevention of reimport
+
+A separate unpublished control draft `ai11-local-retention-<project>` has the marker
+`<!-- local-release-retention:<project>:1 -->`. It is excluded from package archives and final releases.
+`delete-<request_id>.json` contains schema1, project/repository, version/build/SHA, exact release ID/tag
+and expected OS roles, without paths, commands or secrets. UI confirmation saves one request under
+`.local-releases/deletions/<project>/<SHA>.json`, then sends it with download/hash read-back.
+
+Tag SHA and release ID are verified before deleting the GitHub Release. The coordinator constructs local
+paths. An active process stops and owner data is restored before checkout cleanup. Recursive removal
+is restricted to exact managed paths; foreign snapshots/SHAs and pending recovery journals are protected.
+After cleanup each OS sends immutable `ack-<request_id>-<os>.json`. Requests/acks require the repository
+owner's GitHub uploader identity (another verified actor can be set in host-local `retention_actor`).
+
+Linux processes control records before job discovery/intake. The permanent tombstone blocks prepare/run,
+queue retry, handoff/publication, receive and archive for the deleted SHA. Network failures retain durable
+pending state; retry uses the same request ID. The GitHub Release is removed entirely and its Git tag remains.
+Receipts let Windows distinguish completed local cleanup from a pending Linux login.
+
+## Stage time
+
+Result schema1 accepts stage `duration_seconds`, cumulative `total_duration_seconds`, `attempts`,
+`parent_step`, `timing_exact` and `timing_partial`. Host-local `monotonic_started` is read only for
+a live builder on the current OS with a matching session_id. Completed durations transfer between OSs;
+another host's monotonic counter is never compared with ours. `timing_totals` retains spent time when
+a checkpoint is invalidated. Totals include only root stages; nested stages remain available as detail.
+Legacy data is explicitly estimated, and missing/reversed measurements are not invented as zero.
+Waiting between separate runs is excluded.
 
 ## Job identity
 

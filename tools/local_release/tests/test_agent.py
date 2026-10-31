@@ -20,14 +20,39 @@ class AgentTest(unittest.TestCase):
             atomic_json(directory / "job.json", {"schema": 1, "sha": "a" * 40, "project": "fixture",
                 "run_id": "fixture-a", "version": "1.0.0", "build": 1})
             atomic_json(directory / "publication.json", {"published": False, "release_id": 1})
-            project = {"profile": str(profile), "config": str(config), "catalogue": str(root), "repo": str(root)}
+            project = {"project": "fixture", "profile": str(profile), "config": str(config), "catalogue": str(root), "repo": str(root)}
             with patch("local_release.agent.update_main"), patch("local_release.agent.discover_jobs", return_value="a" * 40), \
+                    patch("local_release.retention.synchronize"), \
                     patch("local_release.transport.receive_jobs", return_value=[]), \
                     patch("local_release.github.reconcile_published", return_value=True), \
                     patch("local_release.agent.execute_prepared") as run:
                 records = project_cycle(project, "linux")
                 run.assert_not_called()
             self.assertEqual(records, [{"run_id": "fixture-a", "status": "published"}])
+
+    def test_linux_applies_tombstones_before_receiving_or_starting_builds(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            profile, config = root / 'profile.json', root / 'config.json'
+            atomic_json(profile, {'project': 'fixture'})
+            atomic_json(config, {})
+            directory = root / 'releases/fixture/1.0.0+1' / ('a' * 40)
+            atomic_json(directory / 'job.json', {'schema': 1, 'sha': 'a' * 40})
+            project = {'project': 'fixture', 'profile': str(profile), 'config': str(config), 'catalogue': str(root), 'repo': str(root)}
+            order = []
+            def cleanup(*args):
+                order.append('delete')
+                atomic_json(root / 'deletions/fixture' / ('a' * 40 + '.json'), {'confirmed': True})
+            def receive(*args):
+                order.append('receive')
+                return [directory]
+            with patch('local_release.agent.update_main'), patch('local_release.retention.synchronize', side_effect=cleanup), \
+                    patch('local_release.transport.receive_jobs', side_effect=receive), \
+                    patch('local_release.agent.discover_jobs', return_value='a' * 40), \
+                    patch('local_release.agent.execute_prepared') as run:
+                self.assertEqual(project_cycle(project, 'linux'), [])
+                run.assert_not_called()
+            self.assertEqual(order, ['delete', 'receive'])
 
     def test_remediation_distinguishes_a_delivered_repair_from_a_retried_failure(self):
         with tempfile.TemporaryDirectory() as folder:

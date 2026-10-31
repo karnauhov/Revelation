@@ -162,6 +162,8 @@ def main(argv=None):
         else:
             versioning.commit(args.repo.resolve(), args.profile.resolve(), args.message.resolve())
     elif args.command == "run":
+        from local_release.retention import ensure_job_allowed
+        ensure_job_allowed(args.job.resolve())
         publication = args.job / "publication.json"
         if publication.exists() and read_json(publication).get("published"):
             raise ReleaseError("Published releases are immutable; use the catalogue instead of rebuilding")
@@ -200,10 +202,12 @@ def main(argv=None):
         from local_release.core import update_queue
         data = read_json(args.queue)
         row = data["commits"].get(args.sha)
-        if not row or row["status"] in ("skipped", "published"):
+        if not row or row["status"] in ("skipped", "published", "deleted"):
             raise ReleaseError("Only a known failed/waiting commit can be retried")
         update_queue(args.queue.parent, args.queue, args.sha, status="queued", error=None)
     elif args.command in ("handoff", "send-result", "sync"):
+        from local_release.retention import ensure_job_allowed
+        ensure_job_allowed(args.job.resolve())
         from local_release.core import Context
         from local_release import transport
         context = Context(args.job.resolve(), read_json(args.config))

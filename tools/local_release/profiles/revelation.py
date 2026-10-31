@@ -236,6 +236,32 @@ def integration_files(ctx, platform, action):
     return records
 
 
+def recover_for_deletion(ctx):
+    """Restore only existing owner-state journals; never start another test."""
+    from .. import native_fixture
+    folder = ctx.root / "w" / ctx.job["sha"][:12]
+    backup = folder / (ctx.host + "-test-state")
+    journal = backup / "restore.json"
+    if journal.exists():
+        if native_fixture.application_running():
+            raise ReleaseError("Close Revelation so original user data can be restored before deletion")
+        targets = [native_fixture.documents_directory() / "revelation/db" / name for name in native_fixture.MODULES]
+        if ctx.host == "windows":
+            targets.append(Path(os.environ["APPDATA"]) / "AI11/revelation/shared_preferences.json")
+        native_fixture.restore(journal, backup, targets)
+    journal = folder / "snap-acceptance/restore.json"
+    if journal.exists():
+        if ctx.host != "linux" or native_fixture.application_running():
+            raise ReleaseError("Linux Snap user-data restoration must finish before deleting this build")
+        from .snap_acceptance import restore, sudo_lease
+        with sudo_lease(ctx):
+            ctx.restoring_snap = True
+            try:
+                restore(ctx, journal)
+            finally:
+                ctx.restoring_snap = False
+
+
 def integration(ctx):
     targets = set(ctx.config.get("integration_targets", [ctx.host, "android", "web"] if ctx.host == "windows" else [ctx.host]))
     if ctx.host in targets and ctx.host in ("windows", "linux"):

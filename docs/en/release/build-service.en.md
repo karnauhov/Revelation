@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.1.0
+Doc-Version: 1.1.1
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -20,6 +20,12 @@ Newly prepared jobs and archives share numeric version/build ordering: 1.0.10 fo
 and build1000 follows999. A job appears as soon as it is prepared, before its first package or manifest.
 When the current OS has passed its required checks and another OS remains pending, the status is Waiting for another OS.
 The panel names that OS and preserves built packages until the corresponding builder's next login.
+Measured stage time is immediately visible in each OS card, with the current stage updating while it runs.
+New measurements use a monotonic clock, include retries and survive checkpoint invalidation. Nested integration
+files are not added again to their parent timer. Waiting for another OS is excluded. Legacy started/finished
+records are labelled estimates; ≥ indicates missing old measurements, including a reversed system clock.
+This is measured stage time, rather than the interval between reboots.
+Previously prepared jobs retain their pinned runtime and old timestamps. Exact monotonic measurements appear in new jobs or after an audited runtime update of an existing job.
 
 ## Windows
 
@@ -84,6 +90,27 @@ ones. An unavailable peer OS is shown as waiting.
 POST requires the current dashboard token and valid Host/Origin; CORS is absent.
 HTTP serves only manifest packages and redacted log tails up to 512 KiB. Configuration, keystores,
 credentials and arbitrary paths are unavailable. UI values are rendered as text.
+
+## Delete a build
+
+Delete is available for published and archived builds too. A mandatory dialog first shows version,
+build, full SHA, package count and scope. Cancel and Escape do not delete anything. Confirmation
+expires after five minutes and is bound to that project/SHA.
+
+After confirmation an active builder is stopped cooperatively. Original integration/Snap user data
+must be restored before cleanup. Only the selected release directory, its isolated build checkouts
+and matching GitHub Release with all assets are removed. Main sources, the Git tag and installed
+application remain. Package deletion is irreversible.
+
+A tombstone is verified in a separate private `Local build retention` draft before deleting packages.
+A network failure preserves packages and exposes the error and Retry deletion. Small tombstones/receipts
+remain in `.local-releases/deletions/<project>/<SHA>.json` and the control draft to prevent the queue,
+intake or archive from restoring a deleted build.
+
+The next Linux login receives tombstones before any jobs, removes its own catalogue/checkout and
+returns an ack. Deletion status shows local/GitHub cleanup and outstanding hosts separately. Windows
+receives the ack through normal background exchange. Unknown snapshots, a different SHA or pending
+owner-data restoration produce an explicit error and preserve the corresponding files.
 
 ## Other projects
 
