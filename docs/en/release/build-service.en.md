@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.0.4
+Doc-Version: 1.1.0
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -39,7 +39,8 @@ Git is checked every 30 seconds; after trigger activation, its hook delivers com
 Linux draft results are imported every 5 minutes while idle and every minute during a build.
 The UI refreshes every 10 seconds while idle and every 3 seconds during a build; hidden tabs suspend polling.
 GitHub finalization requires all gates; incomplete releases stay private. Automatic Windows
-builds after commits remain gated on the complete REV301 trial.
+builds are enabled after the complete published REV301/build173 trial. Each new ordinary commit gets
+the next build and its own queue entry; completed173 is never rebuilt.
 
 Restart the server after updating main:
 
@@ -69,7 +70,8 @@ This installs `~/.config/autostart/ai11-local-builds.desktop`, the registry and 
 starts the same dashboard and runs the sequential dispatcher. Subsequent graphical logins open
 an owned progress terminal, update main, receive runtime repairs and build registered Linux projects.
 After its report the owner manually reboots to Windows. Remove the Desktop Entry to disable Linux
-startup. No shared OS disk is required. The next real Ubuntu login remains unverified until run there.
+startup. No shared OS disk is required. Repeated automatic Ubuntu login, job receipt, the complete Linux trial
+and automatic result return have been verified in the owner's real session.
 
 ## Controls
 

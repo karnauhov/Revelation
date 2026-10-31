@@ -31,7 +31,9 @@ Windows: `sync --job <canonical-directory> --config <windows-config> --cleanup` 
 Команды Snap берутся из проверенной настройки владельца. История shell - данные для проверки, не разрешение выполнять произвольные команды.
 Не заменяй её догадкой. Неподтверждённый Snap, недоступная ОС или незавершённый обмен остаются открытыми.
 
-До успешного полного реального пробного выпуска и проверки триггера сохраняй hosted workflow и не активируй автоматические локальные сборки.
-Сейчас идёт REV301; журнал состояния и один отчёт находятся локально в `.local-releases/REV301-report.md`.
+Полный реальный пробный выпуск `v1.0.8+173` опубликован со всеми семью пакетами, SHA256SUMS и final manifest.
+Production local trigger активирован после проверки всех gates и download/read-back; заменённый hosted YAML удалён.
+Не восстанавливай hosted autobuild/integration. Проверяй исторический parity guard `python scripts/local_release/inventory.py --check`.
+Журнал состояния и один отчёт REV301 находятся локально в `.local-releases/REV301-report.md`.
 
 Работай в main. Контракт обмена и runtime repair: docs/ru/release/protocol.ru.md. Полный message [skip ci] пропускает и инкремент build, и autobuild. Выполняй весь исходный snapcraft_build.sh из source SHA без удаления команд, включая rm/build, Flutter clean/pub get/debug run и Snapcraft clean/pack. Только q для debug автоматизируется через PTY; сохраняй проверку Git blob и linux-snap-script.json. Встроенный install/smoke/restore gate обязателен, пользовательские Snap-данные сохраняются локально и возвращаются с проверкой хеша; sudo при необходимости подтверждает владелец в Linux-терминале. Protected installed Snap hashes читай через sudo sha256sum без изменения прав. Первый Linux запуск устанавливает user autostart; новые graphical logins обрабатывают общий projects.json последовательно. В Ubuntu реально подтверждены полный исходный Snap-скрипт/автоматический q и installed Snap startup+10s/restore. Перед повтором читай фактические checkpoints: ошибки приёмки или обмена не требуют пересборки уже принятых пакетов. Опубликованные выпуски восстанавливай из каталога, повторный build для них запрещён. Объясняй, что тестовое окно закрывается автоматически после десяти секунд; нормальное раннее закрытие повторяет только запуск один раз, не ослабляя gate.

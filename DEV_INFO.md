@@ -6,7 +6,7 @@ This file contains short practical notes for local development, release work, an
 
 - The app expects compile-time defines `SUPABASE_URL` and `SUPABASE_KEY`.
 - Sentry is enabled only when `SENTRY_DSN` is provided. Release builds should also provide `SENTRY_ENVIRONMENT=production`; `SENTRY_TRACES_SAMPLE_RATE` can lower the manual session transaction sample rate if the free quota needs protection.
-- Debug symbol/source-map upload uses the Sentry Dart plugin and requires `SENTRY_AUTH_TOKEN` in CI or local release environments.
+- Debug symbol/source-map upload uses the Sentry Dart plugin and requires `SENTRY_AUTH_TOKEN` in each local release environment.
 - Snap packaging uses `--dart-define-from-file=api-keys.json`.
 - Working database files are edited in `%Documents%/revelation/db`.
 - Web builds consume SQLite files from `web/db/`.
@@ -15,8 +15,8 @@ This file contains short practical notes for local development, release work, an
 
 ## Sentry Debug Artifacts
 
-- CI uploads Sentry debug symbols/source maps from `.github/workflows/flutter_build.yml`.
-- GitHub Actions must have the repository secret `SENTRY_AUTH_TOKEN`; the runtime DSN stays in `SENTRY_DSN`.
+- The local coordinator uploads Sentry debug symbols/source maps on each applicable builder. The replaced GitHub autobuild workflow has been removed after the verified `v1.0.8+173` trial.
+- Each host supplies its own protected `SENTRY_AUTH_TOKEN`; the runtime DSN stays in `SENTRY_DSN`. Credentials stay outside Git and cross-OS exchange.
 - `pubspec.yaml` keeps `upload_sources: true` for Sentry source context in Flutter web and Drift worker events; `commits: false` avoids requiring commit association permissions.
 - Flutter web must be built with `--source-maps`, then `dart run scripts/prepare_sentry_web_source_maps.dart --web-build-dir build/web` must run before `dart run sentry_dart_plugin`. The preparation step embeds `sourcesContent` for Dart SDK and package sources used by generated web workers.
 - After Sentry upload, remove generated web `*.map` files before publishing a public web archive.
@@ -58,7 +58,7 @@ The script keeps these files synchronized:
 
 ## Release Notes
 
-- Use the [canonical local package catalogue and release pipeline](./docs/en/release/local-release.en.md) as the primary package source. GitHub Releases is the external backup and cross-OS transport. REV301 keeps the hosted workflow until its real trial and cutover gates pass.
+- Use the [canonical local package catalogue and release pipeline](./docs/en/release/local-release.en.md) as the primary package source. GitHub Releases is the external backup and cross-OS transport. REV301 has completed the full real trial and enabled the local commit trigger; the shared service is available at http://127.0.0.1:8877.
 - Update `CHANGELOG.md` only for notable user-visible changes.
 - Build and verify the platforms that are part of the release.
 - Publish updated website content in the separate `Revelation.website` repository when web assets or web DB files change.

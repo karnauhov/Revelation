@@ -150,7 +150,7 @@ If any rule below conflicts with a direct owner request, owner request wins.
   - stale async race (`latest request wins`)
   - lifecycle safety (`close before async completes`)
   - side-effect call-count and rapid-switch UI scenarios (for example detail image-preview flows)
-- Coverage thresholds are enforced in CI through `dart run scripts/coverage_baseline.dart --min-effective=90.0`; run `flutter test --coverage` for broad or high-risk runtime changes and before release-oriented validation.
+- Local releases enforce coverage through `dart run scripts/coverage_baseline.dart --min-effective=90.0`; run `flutter test --coverage` for broad or high-risk runtime changes and before release-oriented validation.
 - `flutter analyze` and `flutter test` pass in the repository state verified on March 7, 2026.
 
 ## Release Versioning
@@ -168,7 +168,7 @@ If any rule below conflicts with a direct owner request, owner request wins.
 ## Release Checklist
 
 - Obtain deployment packages from the canonical gitignored `.local-releases/releases/revelation/<version>+<build>/<SHA>/packages/` catalogue. Verify its manifest, version/build, source SHA, SHA-256 and signing. GitHub Releases is a mirror/backup, not the primary deployment source. Missing packages remain a local pipeline dependency; never substitute another SHA or rebuild historical releases when archived packages exist.
-- Follow [.agents/skills/revelation-release/SKILL.md](.agents/skills/revelation-release/SKILL.md) for local builds and isolated Windows/Linux exchange. During REV301 retain hosted autobuild until its complete real trial and trigger/cutover gates pass.
+- Follow [.agents/skills/revelation-release/SKILL.md](.agents/skills/revelation-release/SKILL.md) for local builds and isolated Windows/Linux exchange. REV301 completed the published seven-package trial at `v1.0.8+173`; the local trigger replaces the removed hosted autobuild. Preserve `scripts/local_release/inventory.py --check` and its historical Git-blob parity evidence. Do not recreate hosted autobuild or integration workflows.
 - Update version information in the versioned project files listed above.
 - Update `CHANGELOG.md` only when there are new user-visible and non-duplicated changes for the release.
 - Build the Snap package with `snapcraft_build.sh`, install it locally, and verify it.

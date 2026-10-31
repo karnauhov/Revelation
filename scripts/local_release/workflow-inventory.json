@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "source": ".github/workflows/flutter_build.yml",
-  "hosted_workflow_present": true,
-  "source_storage": "working-tree",
+  "hosted_workflow_present": false,
+  "source_storage": "git-blob:a3c10e9152fd9abd86124fbb3bb3673ff8d33d9e",
   "git_blob": "a3c10e9152fd9abd86124fbb3bb3673ff8d33d9e",
   "sha256": "6ccae266b989bc25bf89f50ffc50197bf1f85a70310278f757d7c38da12da49f",
   "jobs": {
@@ -246,7 +246,7 @@
     "SUPABASE_KEY",
     "SUPABASE_URL"
   ],
-  "legacy_trigger": "push/main with paths and head-commit [skip ci]/[ci skip]; retained until full REV301 trial",
+  "legacy_trigger": "push/main with paths and head-commit [skip ci]/[ci skip]; removed after full published REV301 trial",
   "local_trigger": "all new local and received remote commits; full message [skip ci]; one durable entry per project+SHA",
   "additional_gates": [
     "local integration on supported applicable devices",

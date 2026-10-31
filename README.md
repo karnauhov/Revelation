@@ -74,7 +74,7 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [`$revelation-add-task`](./.agents/skills/revelation-add-task/SKILL.md) - add a feature, bug, or note through AI11 MCP with project/version verification, duplicate checks and one checklist.
 - [`$revelation-task`](./.agents/skills/revelation-task/SKILL.md) - use AI11 MCP for an exact code, otherwise resume this chat's unfinished task or select READY work by the current plan, dependencies and gates, preserving project priorities.
 - [`$revelation-pause`](./.agents/skills/revelation-pause/SKILL.md) - save a resumable handoff, update the current task through AI11 MCP, and propose a commit message only in the chat.
-- [`$revelation-release`](./.agents/skills/revelation-release/SKILL.md) - use the shared local coordinator, isolated Windows/Linux jobs and the canonical package catalogue. REV301 rollout gates still apply.
+- [`$revelation-release`](./.agents/skills/revelation-release/SKILL.md) - use the active local coordinator, isolated Windows/Linux jobs and the canonical package catalogue. The verified `v1.0.8+173` trial replaced the hosted autobuild; see [My Builds and startup](./docs/en/release/build-service.en.md).
 
 ---
 
