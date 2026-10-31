@@ -245,7 +245,7 @@ class Context:
             self.invalidate_dependents(name)
         from .timing import cumulative_seconds
         timing_history = self.result.setdefault("timing_totals", {})
-        prior = timing_history.get(name, previous)
+        prior = previous if previous.get("status") == "running" else timing_history.get(name, previous)
         prior_seconds = cumulative_seconds(prior)
         previous_seconds = prior_seconds or 0
         previous_exact = not prior or prior.get("timing_exact", False)
@@ -255,7 +255,8 @@ class Context:
             "monotonic_started": began, "session_id": self.session_id,
             "parent_step": self._stage_stack[-1] if self._stage_stack else None,
             "prior_duration_seconds": previous_seconds, "timing_exact": previous_exact,
-            "timing_partial": prior.get("timing_partial", False) or bool(prior and prior_seconds is None),
+            "timing_partial": prior.get("timing_partial", False) or prior.get("status") == "running"
+                or bool(prior and prior_seconds is None),
             "attempts": prior.get("attempts", 1 if prior else 0) + 1}
         def finish_timing():
             elapsed = max(0, time.monotonic() - began)

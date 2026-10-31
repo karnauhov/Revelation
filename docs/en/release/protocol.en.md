@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.0.10
+Doc-Version: 2.0.11
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -35,7 +35,8 @@ a live builder on the current OS with a matching session_id. Completed durations
 another host's monotonic counter is never compared with ours. `timing_totals` retains spent time when
 a checkpoint is invalidated. Totals include only root stages; nested stages remain available as detail.
 Legacy data is explicitly estimated, and missing/reversed measurements are not invented as zero.
-Waiting between separate runs is excluded.
+Waiting between separate runs is excluded. After interruption, already measured time is retained;
+the unfinished interval from the previous session is marked unknown and excludes reboot time.
 
 ## Job identity
 

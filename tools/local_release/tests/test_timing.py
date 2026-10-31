@@ -88,7 +88,28 @@ class TimingTest(unittest.TestCase):
             'status': 'running', 'started': 100, 'monotonic_started': 500, 'session_id': 'old'}}}
         self.assertIsNone(summarize(result, running=False, now=10000, monotonic=10000)['current_seconds'])
         live = summarize(result, running=True, now=105, monotonic=10000)
-        self.assertEqual(live['current_seconds'], 5)
+        self.assertIsNone(live['current_seconds'])
+        self.assertTrue(live['partial'])
+
+    def test_interrupted_retry_preserves_known_time_and_excludes_time_between_runs(self):
+        ctx = Context(self.job, {}, host='windows')
+        ctx.stage('compile', lambda: self.advance(5))
+        # A later retry was interrupted before it could save its duration.
+        ctx.result['steps']['compile'] = {'status': 'running', 'started': 1000,
+            'monotonic_started': 500, 'session_id': 'interrupted',
+            'prior_duration_seconds': 5, 'timing_exact': True, 'attempts': 2, 'parent_step': None}
+        ctx.save()
+        self.advance(3600)
+        resumed = Context(self.job, {}, host='windows')
+        resumed.result['session_id'] = resumed.session_id
+        during = summarize(resumed.result, running=True, now=self.clock['wall'], monotonic=self.clock['mono'])
+        self.assertEqual(during['seconds'], 5)
+        self.assertTrue(during['partial'])
+        resumed.stage('compile', lambda: self.advance(3))
+        value = summarize(resumed.result)
+        self.assertEqual(value['seconds'], 8)
+        self.assertTrue(value['partial'])
+        self.assertEqual(resumed.result['steps']['compile']['attempts'], 3)
 
 
 if __name__ == '__main__':

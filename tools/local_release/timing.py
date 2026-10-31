@@ -12,6 +12,8 @@ def latest_seconds(row, *, running=False, session=None, now=None, monotonic=None
     if row.get("status") == "running":
         if not running:
             return None
+        if row.get("session_id") and row["session_id"] != session:
+            return None
         started = row.get("monotonic_started")
         if row.get("session_id") == session and session and number(started):
             elapsed = (time.monotonic() if monotonic is None else monotonic) - started
@@ -32,7 +34,10 @@ def cumulative_seconds(row, **clock):
     if row.get("status") != "running" and number(row.get("total_duration_seconds")):
         return row["total_duration_seconds"]
     latest = latest_seconds(row, **clock)
-    return row.get("prior_duration_seconds", 0) + latest if latest is not None else None
+    if latest is not None:
+        return row.get("prior_duration_seconds", 0) + latest
+    prior = row.get("prior_duration_seconds")
+    return prior if number(prior) else None
 
 
 def summarize(result, *, running=False, now=None, monotonic=None):
@@ -54,7 +59,8 @@ def summarize(result, *, running=False, now=None, monotonic=None):
     latest = latest_seconds(steps.get(result.get("current_step"), {}), **clock)
     return {"seconds": sum(value for value in values if value is not None),
         "available": any(value is not None for value in values),
-        "partial": any(value is None for value in values) or any(row.get("timing_partial", False) for row in roots),
+        "partial": any(value is None for value in values) or any(row.get("timing_partial", False)
+            or (row.get("status") == "running" and latest_seconds(row, **clock) is None) for row in roots),
         "estimated": any(not row.get("timing_exact", False) for row in roots),
         "current_seconds": latest if running else None,
         "steps_measured": sum(value is not None for value in values), "steps_total": len(roots)}
