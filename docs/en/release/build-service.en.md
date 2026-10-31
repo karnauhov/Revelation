@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.0.2
+Doc-Version: 1.0.3
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -16,6 +16,8 @@ Completion of one OS is shown separately from readiness of the entire release. T
 the specific required checks still missing and counts packages against the expected set.
 After confirmed publication the status becomes Published, a GitHub link appears, and rebuild
 controls are hidden. Local links continue to use the catalogue's single package files.
+Newly prepared jobs and archives share numeric version/build ordering: 1.0.10 follows 1.0.9,
+and build1000 follows999. A job appears as soon as it is prepared, before its first package or manifest.
 
 ## Windows
 

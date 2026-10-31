@@ -60,13 +60,14 @@ class Dashboard:
 
     def jobs(self, project):
         root = Path(project["catalogue"]) / "releases" / project["project"]
-        for path in sorted(root.glob("*/*/manifest.json"), reverse=True):
-            if path.resolve().is_relative_to(root.resolve()):
-                yield path.parent
-        # A prepared or failed-before-catalogue job also belongs on the panel.
-        for path in sorted(root.glob("*/*/job.json"), reverse=True):
-            if not path.with_name("manifest.json").exists() and path.resolve().is_relative_to(root.resolve()):
-                yield path.parent
+        directories = {path.parent for pattern in ("*/*/manifest.json", "*/*/job.json") for path in root.glob(pattern)
+                       if path.resolve().is_relative_to(root.resolve())}
+        def order(directory):
+            version = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)\+(\d+)", directory.parent.name)
+            numbers = tuple(int(value) for value in version.groups()) if version else (0, 0, 0, 0)
+            return (*numbers, directory.name)
+        # Include prepared jobs in the same numeric order as archived releases.
+        yield from sorted(directories, key=order, reverse=True)
 
     def find(self, name, sha):
         project = self.projects().get(name)

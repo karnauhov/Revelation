@@ -203,6 +203,15 @@ with lock(directory/('.'+ctx.host+'.lock')):
         self.assertEqual(published["waiting_checks"], {})
         self.assertTrue(published["hosts"]["windows"]["verified_elsewhere"])
 
+    def test_prepared_versions_sort_numerically_with_archived_releases(self):
+        base = self.jobs["first"].parents[1]
+        archived = base / "1.0.9+999" / ("c" * 40)
+        atomic_json(archived / "manifest.json", {"version": "1.0.9", "build": 999, "status": "archived", "packages": {}})
+        prepared = base / "1.0.10+1000" / ("d" * 40)
+        atomic_json(prepared / "job.json", {"version": "1.0.10", "build": 1000, "required_steps": {}, "artifacts": []})
+        releases = json.loads(self.request("/api/state")[1])["projects"][0]["releases"]
+        self.assertEqual([record["version"] for record in releases], ["1.0.10", "1.0.9", "1.0.0"])
+
 
 if __name__ == "__main__":
     unittest.main()
