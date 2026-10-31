@@ -179,6 +179,13 @@ class GitHub:
         if found:
             if found["size"] != path.stat().st_size:
                 raise ReleaseError("Asset collision: " + path.name)
+            previous = getattr(self, "verified_assets", {}).get(found["id"], {})
+            if (previous.get("sha256") == expected and previous.get("size") == path.stat().st_size
+                    and found.get("digest") == "sha256:" + expected):
+                # The first upload was downloaded and recorded durably. An
+                # unchanged immutable ID plus GitHub's fresh digest reuses it.
+                return {"id": found["id"], "url": found["browser_download_url"],
+                        "sha256": expected, "size": path.stat().st_size, "asset_name": name}
         else:
             if not allow_upload:
                 raise ReleaseError("Published release is missing an expected asset")
@@ -223,6 +230,8 @@ def publish_job(context):
     with lock(directory / ".publication.lock"):
         publication_path = directory / "publication.json"
         saved = read_json(publication_path) if publication_path.exists() else {}
+        api.verified_assets = {record["id"]: record for record in list(saved.get("assets", {}).values())
+                               + [saved.get("checksums", {}), saved.get("manifest", {})] if "id" in record}
         notes = (directory / "release_notes.txt").read_text(encoding="utf-8")
         with lock(directory / ".release.lock"):
             release = api.ensure_release(job, notes)

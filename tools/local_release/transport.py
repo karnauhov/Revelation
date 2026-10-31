@@ -19,7 +19,7 @@ from .core import (Context, ReleaseError, atomic_json, digest, host_name, inside
                    lock, read_json, verify_runtime)
 from .catalogue import catalogue_job, release_directory
 from .github import GitHub, credential
-from .protocol import VERSION, draft_packages, same_source
+from .protocol import VERSION, SOURCE_FIELDS, draft_packages, same_source
 
 
 def connection(ctx):
@@ -28,6 +28,17 @@ def connection(ctx):
     api = GitHub(ctx.job["repository"], token)
     with lock(ctx.directory / ".release.lock"):
         release = api.ensure_release(ctx.job, ctx.job["release_notes"])
+    api.verified_assets = {}
+    for name in (f"results/{ctx.host}-sent.json", "publication.json", "results/runtime-update-sent.json"):
+        path = ctx.directory / name
+        if not path.exists():
+            continue
+        record = read_json(path)
+        values = list(record.get("packages", {}).values()) + list(record.get("assets", {}).values())
+        values += [record.get(key, {}) for key in ("logs", "status", "checksums", "manifest")]
+        if "id" in record:
+            values.append(record)
+        api.verified_assets.update({value["id"]: value for value in values if isinstance(value, dict) and "id" in value})
     return api, release
 
 
@@ -52,33 +63,45 @@ def handoff(ctx):
     api, release = connection(ctx)
     with lock(ctx.directory / ".exchange.lock"), tempfile.TemporaryDirectory(prefix="release-handoff-") as folder:
         path = Path(folder) / (prefix(ctx.job) + "job.tar.gz")
-        # Freeze the transport payload only once. Subsequent status goes separately.
-        names = ["job.json", "source.bundle", "release_notes.txt"]
-        names += ["runtime/" + name for name in sorted(ctx.job["runtime_sha256"])]
-        with tarfile.open(path, "w:gz") as archive:
-            for name in names:
-                source = inside(ctx.directory, name)
-                info = tarfile.TarInfo(name)
-                info.size, info.mode, info.mtime = source.stat().st_size, 0o644, 0
-                with source.open("rb") as stream:
-                    archive.addfile(info, stream)
-        # gzip header timestamps differ; an existing immutable job asset is reused
-        # only after inspecting its embedded job identity and all payload hashes.
         assets = api.pages(f"/releases/{release['id']}/assets")
         old = next((a for a in assets if a["name"] == path.name), None)
+        previous_path = ctx.directory / "exchange.json"
+        previous = read_json(previous_path) if previous_path.exists() else {}
+        previous_asset = previous.get("job_asset", {})
+        cached = (old and previous.get("release_id") == release["id"]
+                  and same_source(previous.get("base_job_source", {}), ctx.job)
+                  and previous_asset.get("id") == old["id"]
+                  and old.get("digest") == "sha256:" + previous_asset.get("sha256", ""))
         if old:
-            received = Path(folder) / "existing.tar.gz"
-            actual = api.download_asset(old, received)
-            with tarfile.open(received) as archive:
-                saved = json.load(archive.extractfile("job.json"))
-                if saved != ctx.job and not (same_source(saved, ctx.job) and ctx.job.get("preparation_revision", 1) > saved.get("preparation_revision", 1)):
-                    raise ReleaseError("Existing handoff belongs to a different prepared job")
-            record = {"id": old["id"], "sha256": actual, "url": old["browser_download_url"]}
+            if cached:
+                record, base_revision = previous_asset, previous["base_runtime_revision"]
+            else:
+                received = Path(folder) / "existing.tar.gz"
+                actual = api.download_asset(old, received)
+                with tarfile.open(received) as archive:
+                    saved = json.load(archive.extractfile("job.json"))
+                    if saved != ctx.job and not (same_source(saved, ctx.job) and ctx.job.get("preparation_revision", 1) > saved.get("preparation_revision", 1)):
+                        raise ReleaseError("Existing handoff belongs to a different prepared job")
+                base_revision = saved.get("preparation_revision", 1)
+                record = {"id": old["id"], "sha256": actual, "url": old["browser_download_url"]}
         else:
+            # Compress the source once, only when the transport asset is absent.
+            names = ["job.json", "source.bundle", "release_notes.txt"]
+            names += ["runtime/" + name for name in sorted(ctx.job["runtime_sha256"])]
+            with tarfile.open(path, "w:gz") as archive:
+                for name in names:
+                    source = inside(ctx.directory, name)
+                    info = tarfile.TarInfo(name)
+                    info.size, info.mode, info.mtime = source.stat().st_size, 0o644, 0
+                    with source.open("rb") as stream:
+                        archive.addfile(info, stream)
             record = api.upload_verified(release, path)
+            base_revision = ctx.job.get("preparation_revision", 1)
         atomic_json(ctx.directory / "exchange.json", {"release_id": release["id"], "job_asset": record,
+                                                       "base_job_source": {key: ctx.job.get(key) for key in SOURCE_FIELDS},
+                                                       "base_runtime_revision": base_revision,
                                                        "source_sha": ctx.job["sha"], "run_id": ctx.job["run_id"]})
-        if old and saved != ctx.job:
+        if old and base_revision < ctx.job.get("preparation_revision", 1):
             from .runtime_update import send_update
             send_update(ctx)
         return release

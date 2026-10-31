@@ -282,6 +282,16 @@ class TransportTest(unittest.TestCase):
         with patch.object(FakeGitHub, "download_asset", side_effect=AssertionError("cached base was downloaded twice")):
             transport.receive_jobs(self.profile, self.base / "linux-root", {})
 
+    def test_repeated_handoff_does_not_repack_or_download_attested_source(self):
+        transport.handoff(self.windows)
+        for record, content in FakeGitHub.assets.values():
+            record["digest"] = "sha256:" + hashlib.sha256(content).hexdigest()
+        with patch.object(FakeGitHub, "download_asset", side_effect=AssertionError("source downloaded again")), \
+                patch.object(transport.tarfile, "open", side_effect=AssertionError("source compressed again")):
+            transport.handoff(self.windows)
+        exchange = core.read_json(self.windows.directory / "exchange.json")
+        self.assertEqual(exchange["base_job_source"]["sha"], self.windows.job["sha"])
+
     def test_runtime_archive_refuses_symlinks_and_escape_paths(self):
         import io
         import tarfile

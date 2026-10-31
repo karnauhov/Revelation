@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.0.5
+Doc-Version: 1.0.6
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -42,6 +42,9 @@ The coordinator starts that AVD without a window using temporary data, waits for
 An already running AVD is used only after verifying its name and is never closed by the coordinator.
 `chromedriver_path`, its approved `chromedriver_sha256` and a free `chromedriver_port` enable automatic
 ChromeDriver startup/cleanup. Browser tests use an isolated headless profile and leave the owner's windows untouched.
+SQLite fixtures use binary `adb exec-in`: ordinary Windows stdin can stop at DOS EOF.
+The coordinator waits for the complete device-side file size before checking SHA-256 because
+`exec-in` can return before the remote write finishes. Fixture repairs never rebuild completed APK/AAB packages.
 Before Android commands the coordinator checks generated Flutter plugin paths and, when needed, regenerates them
 with `flutter pub get` from the physical checkout. Temporary SUBST paths are reserved for Windows/MSBuild;
 Android must not depend on a drive letter removed after the run. `android-cache-recovery` validates

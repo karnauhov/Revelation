@@ -1,6 +1,6 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.0.5
+Doc-Version: 1.0.6
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -56,6 +56,9 @@ Hosted `.github/workflows/flutter_build.yml` сохраняется до пол�
 Уже работающий AVD используется только после проверки имени и не закрывается координатором.
 `chromedriver_path`, его проверенный `chromedriver_sha256` и свободный `chromedriver_port` включают автоматический
 запуск/закрытие ChromeDriver. Браузерные тесты используют отдельный headless profile, окна владельца не затрагиваются.
+SQLite fixtures передаются бинарным `adb exec-in`: обычный Windows stdin может оборваться на DOS EOF.
+После передачи координатор ждёт полного размера файла на устройстве и только потом сверяет SHA-256,
+так как завершение `exec-in` опережает окончание удалённой записи. Готовые APK/AAB не пересобираются из-за fixture repair.
 Перед Android-командами координатор проверяет пути Flutter-плагинов и при необходимости пересоздаёт их через
 `flutter pub get` из физического checkout. Временный SUBST применяется для Windows/MSBuild;
 Android не должен зависеть от отключаемой буквы диска. Восстановление `android-cache-recovery` проверяет
