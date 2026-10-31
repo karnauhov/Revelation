@@ -164,6 +164,9 @@ If any rule below conflicts with a direct owner request, owner request wins.
 - Do not bypass the release-version synchronization helper unless explicitly requested by the owner.
 
 ## Release Checklist
+
+- Obtain deployment packages from the canonical gitignored `.local-releases/releases/revelation/<version>+<build>/<SHA>/packages/` catalogue. Verify its manifest, version/build, source SHA, SHA-256 and signing. GitHub Releases is a mirror/backup, not the primary deployment source. Missing packages remain a local pipeline dependency; never substitute another SHA or rebuild historical releases when archived packages exist.
+- Follow [.agents/skills/revelation-release/SKILL.md](.agents/skills/revelation-release/SKILL.md) for local builds and isolated Windows/Linux exchange. During REV301 retain hosted autobuild until its complete real trial and trigger/cutover gates pass.
 - Update version information in the versioned project files listed above.
 - Update `CHANGELOG.md` only when there are new user-visible and non-duplicated changes for the release.
 - Build the Snap package with `snapcraft_build.sh`, install it locally, and verify it.

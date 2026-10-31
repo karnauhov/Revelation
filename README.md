@@ -42,6 +42,7 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [Module Boundaries](./docs/en/architecture/module-boundaries.en.md)
 - [State Management Matrix](./docs/en/architecture/state_management_matrix.en.md)
 - [Testing Strategy](./docs/en/testing/strategy.en.md)
+- [Local release pipeline and canonical packages](./docs/en/release/local-release.en.md)
 - [Markdown Extension Guide](./docs/en/content/markdown-extension-guide.en.md)
 
 ### Русский
@@ -50,6 +51,7 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [Границы модулей](./docs/ru/architecture/module-boundaries.ru.md)
 - [Матрица управления состоянием](./docs/ru/architecture/state_management_matrix.ru.md)
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
+- [Локальный выпуск и единый каталог пакетов](./docs/ru/release/local-release.ru.md)
 - [Руководство по расширению Markdown](./docs/ru/content/markdown-extension-guide.ru.md)
 - [Дорожная карта модуля RST с номерами Стронга](./docs/ru/content/rst-strongs-module-roadmap.ru.md)
 - [Дорожная карта украинского библейского модуля с номерами Стронга](./docs/ru/content/ukrainian-bible-strongs-module-roadmap.ru.md)
@@ -72,6 +74,7 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [`$revelation-add-task`](./.agents/skills/revelation-add-task/SKILL.md) - add a feature, bug, or note through AI11 MCP with project/version verification, duplicate checks and one checklist.
 - [`$revelation-task`](./.agents/skills/revelation-task/SKILL.md) - use AI11 MCP for an exact code, otherwise resume this chat's unfinished task or select READY work by the current plan, dependencies and gates, preserving project priorities.
 - [`$revelation-pause`](./.agents/skills/revelation-pause/SKILL.md) - save a resumable handoff, update the current task through AI11 MCP, and propose a commit message only in the chat.
+- [`$revelation-release`](./.agents/skills/revelation-release/SKILL.md) - use the shared local coordinator, isolated Windows/Linux jobs and the canonical package catalogue. REV301 rollout gates still apply.
 
 ---
 

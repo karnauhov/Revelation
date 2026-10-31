@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "project": "revelation",
+  "repository": "karnauhov/Revelation",
+  "adapter": "local_release.profiles.revelation",
+  "flutter": "3.47.2"
+}

@@ -1,0 +1,259 @@
+{
+  "schema": 1,
+  "source": ".github/workflows/flutter_build.yml",
+  "git_blob": "a3c10e9152fd9abd86124fbb3bb3673ff8d33d9e",
+  "sha256": "6ccae266b989bc25bf89f50ffc50197bf1f85a70310278f757d7c38da12da49f",
+  "jobs": {
+    "quality": [
+      {
+        "name": "Checkout repository",
+        "local_equivalent": "core.prepare/source.bundle and Context.checkout at exact Git SHA; private clone; no owner checkout mutation"
+      },
+      {
+        "name": "Install Flutter",
+        "local_equivalent": "Profile flutter=3.47.2; preflight verifies installed SDK; local SDK/pub caches replace hosted action cache"
+      },
+      {
+        "name": "Get Flutter dependencies",
+        "local_equivalent": "quality/dependencies: flutter pub get inside isolated checkout"
+      },
+      {
+        "name": "Format check",
+        "local_equivalent": "quality/format: dart format --output=none --set-exit-if-changed ."
+      },
+      {
+        "name": "Analyze",
+        "local_equivalent": "quality/analyze: flutter analyze --no-pub"
+      },
+      {
+        "name": "Unit tests",
+        "local_equivalent": "quality/unit: flutter test --exclude-tags widget"
+      },
+      {
+        "name": "Widget tests",
+        "local_equivalent": "quality/widget: flutter test --tags widget"
+      },
+      {
+        "name": "Coverage",
+        "local_equivalent": "quality/coverage: flutter test --coverage"
+      },
+      {
+        "name": "Filter coverage report",
+        "local_equivalent": "quality/filter-coverage: scripts/filter_lcov.dart"
+      },
+      {
+        "name": "Coverage thresholds",
+        "local_equivalent": "quality/coverage-threshold: scripts/coverage_baseline.dart --min-effective=90.0"
+      },
+      {
+        "name": "Forbidden pattern checks",
+        "local_equivalent": "quality/forbidden: scripts/check_forbidden_patterns.dart"
+      },
+      {
+        "name": "Encoding sanity checks",
+        "local_equivalent": "quality/encoding: scripts/check_encoding_sanity.dart"
+      }
+    ],
+    "build-windows": [
+      {
+        "name": "Checkout repository",
+        "local_equivalent": "core.prepare/source.bundle and Context.checkout at exact Git SHA; private clone; no owner checkout mutation"
+      },
+      {
+        "name": "Set up JDK 17",
+        "local_equivalent": "Host-local JAVA_HOME/PATH; preflight java -version and flutter doctor -v; no global settings mutation"
+      },
+      {
+        "name": "Install Flutter",
+        "local_equivalent": "Profile flutter=3.47.2; preflight verifies installed SDK; local SDK/pub caches replace hosted action cache"
+      },
+      {
+        "name": "Get Flutter dependencies",
+        "local_equivalent": "quality/dependencies: flutter pub get inside isolated checkout"
+      },
+      {
+        "name": "Analyze",
+        "local_equivalent": "quality/analyze: flutter analyze --no-pub"
+      },
+      {
+        "name": "Extract version and build number (Windows)",
+        "local_equivalent": "Revelation metadata reads pubspec at source SHA; verify_versions checks all four helper-managed version files"
+      },
+      {
+        "name": "Extract Release Notes",
+        "local_equivalent": "metadata extracts the exact version section from committed CHANGELOG; one release_notes.txt"
+      },
+      {
+        "name": "Build APK",
+        "local_equivalent": "windows/apk: flutter build apk --release with production defines and signing environment"
+      },
+      {
+        "name": "Rename APK",
+        "local_equivalent": "Move completed APK to canonical packages/Revelation-android-version-build.apk; no retained duplicate"
+      },
+      {
+        "name": "Build App Bundle (AAB)",
+        "local_equivalent": "windows/aab: flutter build appbundle --release with the same defines/signing"
+      },
+      {
+        "name": "Rename AAB",
+        "local_equivalent": "Move completed AAB to canonical packages/Revelation-android-version-build.aab"
+      },
+      {
+        "name": "Build Windows App",
+        "local_equivalent": "windows/windows: flutter build windows --release --no-tree-shake-icons"
+      },
+      {
+        "name": "Install Inno Setup",
+        "local_equivalent": "Pre-provisioned local Inno Setup; preflight validates configured ISCC.exe"
+      },
+      {
+        "name": "Build Installer with Inno Setup",
+        "local_equivalent": "windows/installer: ISCC setup.iss using committed helper-synchronized version/build"
+      },
+      {
+        "name": "Upload windows Artifacts",
+        "local_equivalent": "Canonical local packages plus SHA-256/checkpoints; GitHub receives only verified mirror assets"
+      },
+      {
+        "name": "Create MSIX Package",
+        "local_equivalent": "windows/msix: dart run msix:create --build-windows false; Store identity retained"
+      },
+      {
+        "name": "Rename MSIX Package",
+        "local_equivalent": "Move MSIX directly to canonical packages/Revelation-windows-version-build.msix"
+      },
+      {
+        "name": "Build web",
+        "local_equivalent": "windows/web: flutter build web --release --source-maps and production defines"
+      },
+      {
+        "name": "Prepare Sentry web source maps",
+        "local_equivalent": "windows/sentry-web: scripts/prepare_sentry_web_source_maps.dart"
+      },
+      {
+        "name": "Upload Sentry debug symbols and source maps",
+        "local_equivalent": "windows/sentry-web: sentry_dart_plugin using this OS's local token"
+      },
+      {
+        "name": "Generate web loader manifest",
+        "local_equivalent": "windows/web-manifest: scripts/generate_web_loader_manifest.py"
+      },
+      {
+        "name": "Remove web source maps from packaged build",
+        "local_equivalent": "Exclude every .map from distribution ZIP after Sentry upload; retain private builder symbols for resume"
+      },
+      {
+        "name": "Zip Web Build",
+        "local_equivalent": "windows/web-zip: root-relative ZIP written once into canonical packages"
+      },
+      {
+        "name": "Create GitHub Release",
+        "local_equivalent": "GitHub.ensure_release creates owned draft at exact SHA/tag; publish_job finalizes after both hosts, seven packages and required gates"
+      },
+      {
+        "name": "Upload upload_url as artifact",
+        "local_equivalent": "exchange.json records release ID; immutable handoff transfers job through the same draft release"
+      },
+      {
+        "name": "Upload APK to Release",
+        "local_equivalent": "send_result/publish_job: SHA-256 download read-back of verified APK; existing files never overwritten"
+      },
+      {
+        "name": "Upload AAB to Release",
+        "local_equivalent": "send_result/publish_job: verified AAB mirror asset and read-back"
+      },
+      {
+        "name": "Upload EXE to Release",
+        "local_equivalent": "send_result/publish_job: verified Inno installer mirror and read-back"
+      },
+      {
+        "name": "Upload MSIX to Release",
+        "local_equivalent": "send_result/publish_job: Store MSIX mirror and read-back; unsigned Store package clearly identified"
+      },
+      {
+        "name": "Upload Web ZIP to Release",
+        "local_equivalent": "send_result/publish_job: map-free Web ZIP mirror and read-back"
+      }
+    ],
+    "build-linux": [
+      {
+        "name": "Checkout repository",
+        "local_equivalent": "core.prepare/source.bundle and Context.checkout at exact Git SHA; private clone; no owner checkout mutation"
+      },
+      {
+        "name": "Download upload_url artifact",
+        "local_equivalent": "receive_jobs obtains immutable job and exact draft release ID through GitHub; no Windows disk/session required"
+      },
+      {
+        "name": "Read upload_url",
+        "local_equivalent": "GitHub API resolves owned release ID and verifies target SHA/tag/run marker"
+      },
+      {
+        "name": "Install dependencies",
+        "local_equivalent": "Linux prerequisites recorded in release guide; native Flutter/Linux/Snap preflight and actual build expose missing packages without hosted fallback"
+      },
+      {
+        "name": "Install Flutter",
+        "local_equivalent": "Profile flutter=3.47.2; preflight verifies installed SDK; local SDK/pub caches replace hosted action cache"
+      },
+      {
+        "name": "Get Flutter dependencies",
+        "local_equivalent": "quality/dependencies: flutter pub get inside isolated checkout"
+      },
+      {
+        "name": "Extract version and build number (Linux)",
+        "local_equivalent": "Same immutable job version/build; Linux cannot increment or select a new source SHA"
+      },
+      {
+        "name": "Build Linux",
+        "local_equivalent": "linux/linux: flutter build linux --release with same job defines/version/build/SHA"
+      },
+      {
+        "name": "Upload Sentry Linux debug symbols",
+        "local_equivalent": "linux/sentry-linux: sentry_dart_plugin --sentry-define=upload_source_maps=false"
+      },
+      {
+        "name": "Archive Linux Build",
+        "local_equivalent": "linux/linux-tar: TAR.GZ of x64 release bundle, retaining executable bits/symlinks"
+      },
+      {
+        "name": "Upload Linux Archive to Release",
+        "local_equivalent": "Linux sends verified TAR.GZ and Snap; Windows sync receives packages/results/logs; temporary exchange IDs cleaned after durable receipt"
+      }
+    ]
+  },
+  "actions": [
+    "actions/checkout@v3",
+    "actions/checkout@v4",
+    "actions/download-artifact@v4",
+    "actions/github-script@v6",
+    "actions/setup-java@v3",
+    "actions/upload-artifact@v4",
+    "actions/upload-release-asset@v1",
+    "subosito/flutter-action@v2"
+  ],
+  "secret_names": [
+    "GITHUB_TOKEN",
+    "SENTRY_AUTH_TOKEN",
+    "SENTRY_DSN",
+    "SIGNING_KEY_ALIAS",
+    "SIGNING_KEY_PASSWORD",
+    "SIGNING_STORE_FILE_BASE",
+    "SIGNING_STORE_PASSWORD",
+    "SUPABASE_KEY",
+    "SUPABASE_URL"
+  ],
+  "legacy_trigger": "push/main with paths and head-commit [skip ci]/[ci skip]; retained until full REV301 trial",
+  "local_trigger": "all new local and received remote commits; full message [skip ci]; one durable entry per project+SHA",
+  "additional_gates": [
+    "local integration on supported applicable devices",
+    "docs sync",
+    "APK/AAB release certificate",
+    "MSIX identity/version",
+    "Web map exclusion",
+    "Linux Snap owner commands/install/smoke",
+    "cross-host failure/receipt/cleanup",
+    "complete seven-package GitHub read-back before trigger activation"
+  ]
+}

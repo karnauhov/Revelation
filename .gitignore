@@ -37,6 +37,9 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Durable local release jobs, signed packages, logs and historical GitHub assets.
+/.local-releases/
+
 # Symbolication related
 app.*.symbols
 

@@ -58,6 +58,7 @@ The script keeps these files synchronized:
 
 ## Release Notes
 
+- Use the [canonical local package catalogue and release pipeline](./docs/en/release/local-release.en.md) as the primary package source. GitHub Releases is the external backup and cross-OS transport. REV301 keeps the hosted workflow until its real trial and cutover gates pass.
 - Update `CHANGELOG.md` only for notable user-visible changes.
 - Build and verify the platforms that are part of the release.
 - Publish updated website content in the separate `Revelation.website` repository when web assets or web DB files change.
