@@ -1,5 +1,5 @@
 'use strict';
-let state, selectedProject, selectedSha, signature = '', renderSignature = '', refreshTimer;
+let state, selectedProject, selectedSha, signature = '', renderSignature = '', refreshTimer, lastSyncError;
 const $ = id => document.getElementById(id);
 const labels = {archived:'Архив',ready:'Готово',incomplete:'Не завершено',prepared:'Подготовлено',waiting:'Ожидание',failed:'Ошибка',stopped:'Остановлено',running:'В работе',interrupted:'Прервано',built:'Собрано',passed:'Пройдено',pending:'Ожидание',skipped:'Пропущено',queued:'В очереди',published:'Опубликовано',waiting_other_hosts:'Ожидание другой ОС',waiting_source_sha:'Ожидание исходников'};
 const text = value => labels[value] || value || '-';
@@ -11,7 +11,7 @@ function projects(){return state.projects;}
 function project(){return projects().find(p=>p.name===selectedProject);}
 function checkName(name){return {'integration-android':'Интеграционные тесты Android','integration-web':'Интеграционные тесты Web','integration-windows':'Интеграционные тесты Windows','integration-linux':'Интеграционные тесты Linux','verify-linux':'Установка и запуск Snap','verify-windows':'Проверка пакетов и подписи'}[name]||name;}
 function render(){
- if(state.sync_error)$('notice').textContent='Ошибка обмена: '+state.sync_error;
+ if(state.sync_error)$('notice').textContent='Ошибка обмена: '+state.sync_error;else if(lastSyncError&&$('notice').textContent.startsWith('Ошибка обмена: '))$('notice').textContent='';lastSyncError=state.sync_error;
  const all=projects().flatMap(p=>p.releases);$('projectCount').textContent=projects().length;$('versionCount').textContent=all.length;$('packageCount').textContent=all.reduce((n,r)=>n+r.files.length,0);$('activeCount').textContent=all.filter(r=>r.active).length;
  const nextRender=JSON.stringify([state.projects,selectedProject,selectedSha,$('search').value]);if(nextRender===renderSignature)return;renderSignature=nextRender;
  const selector=$('project');if([...selector.options].map(x=>x.value).join()!==projects().map(p=>p.name).join()){selector.replaceChildren(...projects().map(p=>{const o=el('option',p.name);o.value=p.name;return o;}));}

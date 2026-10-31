@@ -5,8 +5,11 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import os
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
+LEGACY_WORKFLOW_BLOB = "a3c10e9152fd9abd86124fbb3bb3673ff8d33d9e"
 
 EQUIVALENTS = {
     "Checkout repository": "core.prepare/source.bundle and Context.checkout at exact Git SHA; private clone; no owner checkout mutation",
@@ -60,7 +63,17 @@ EQUIVALENTS = {
 
 def inventory():
     source = ROOT / ".github/workflows/flutter_build.yml"
-    text = source.read_text(encoding="utf-8")
+    if source.exists():
+        text = source.read_text(encoding="utf-8")
+    else:
+        # After the gated cutover, retain parity evidence from Git history;
+        # never restore the hosted workflow just to inspect its old recipe.
+        result = subprocess.run(["git", "-C", str(ROOT), "cat-file", "blob", LEGACY_WORKFLOW_BLOB],
+            capture_output=True, text=True, encoding="utf-8", check=False,
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
+        if result.returncode:
+            raise SystemExit("Legacy workflow blob is missing from local Git history")
+        text = result.stdout
     # Git stores LF-normalized content; Windows worktree CRLF is not a new blob.
     payload = text.encode("utf-8")
     jobs, current, in_jobs = {}, None, False

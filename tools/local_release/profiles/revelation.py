@@ -12,6 +12,7 @@ import shutil
 import sys
 import tarfile
 import tempfile
+import time
 import zipfile
 
 from ..core import ReleaseError, atomic_json, capture, digest, git, inside, read_json
@@ -288,12 +289,25 @@ def prepare_android_fixture(ctx, device):
             # (0x1a), corrupting SQLite fixtures. exec-in uses binary copy_to_file.
             ctx.command([adb, "-s", device, "exec-in", "run-as", "ai11.link.revelation",
                          "sh", "-c", "cat > " + remote], stdin=stream)
-        sha = digest(source)
-        actual = ctx.command([adb, "-s", device, "shell", "run-as ai11.link.revelation sha256sum " + remote])
-        if actual.split()[0] != sha:
-            raise ReleaseError("Android integration module digest mismatch")
-        records[name] = sha
+        records[name] = wait_android_fixture(ctx, adb, device, source, remote)
     atomic_json(ctx.directory / "results/android-fixtures.json", {"avd": avd, "serial": device, "module_sha256": records})
+
+
+def wait_android_fixture(ctx, adb, device, source, remote):
+    # exec-in has no remote exit acknowledgment: it may return while Android
+    # is still writing buffered input. Confirm the full size before hashing.
+    expected, size = digest(source), source.stat().st_size
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline:
+        output = ctx.command([adb, "-s", device, "shell", "run-as ai11.link.revelation wc -c " + remote], success_codes=(0, 1))
+        fields = output.split()
+        if fields and fields[0].isdigit() and int(fields[0]) == size:
+            actual = ctx.command([adb, "-s", device, "shell", "run-as ai11.link.revelation sha256sum " + remote])
+            if actual.split()[0] != expected:
+                raise ReleaseError("Android integration module digest mismatch after complete binary transfer")
+            return expected
+        time.sleep(.5)
+    raise ReleaseError("Android integration module transfer did not finish within 60 seconds")
 
 
 def copy_artifact(ctx, source, suffix):

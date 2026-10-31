@@ -81,9 +81,32 @@ def install(queue, proof=None, test_mode=False):
             raise
 
 
+def shared_service_startup(project, queue):
+    from .agent import registry_path
+    from .service import identity, PRODUCT
+    from urllib.request import urlopen
+    import json
+    registry = registry_path()
+    registered = read_json(registry).get("projects", {}).get(project) if registry.exists() else None
+    if (registered and Path(registered["catalogue"]).resolve() == queue.parent.resolve()
+            and Path(registered["repo"]).resolve() == Path(read_json(queue)["repo"]).resolve()):
+        try:
+            with urlopen("http://127.0.0.1:8877/api/health", timeout=2) as response:
+                health = json.load(response)
+            if health == {"product": PRODUCT, "registry": identity(registry)}:
+                return {"kind": "shared-service", "registry": str(registry), "url": "http://127.0.0.1:8877"}
+        except (OSError, ValueError):
+            pass
+    return None
+
+
 def register_startup(project, queue):
     argv = [sys.executable, str(Path(__file__).with_name("cli.py").resolve()), "worker", "--queue", str(queue.resolve())]
     if os.name == "nt":
+        # The shared dashboard already scans enabled queues after login.
+        shared = shared_service_startup(project, queue)
+        if shared:
+            return shared
         suffix = hashlib.sha256(str(queue.resolve()).encode()).hexdigest()[:8]
         name = "AI11LocalRelease-" + project + "-" + suffix
         query = subprocess.run(["schtasks", "/Query", "/TN", name], capture_output=True, check=False, creationflags=hidden_flags())
@@ -117,6 +140,8 @@ def register_startup(project, queue):
 
 
 def unregister_startup(startup):
+    if startup["kind"] == "shared-service":
+        return  # Other projects and package browsing still use that service.
     if startup["kind"] == "scheduled-task":
         capture(["schtasks", "/Delete", "/TN", startup["name"], "/F"])
     else:

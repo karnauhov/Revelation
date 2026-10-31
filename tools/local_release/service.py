@@ -128,7 +128,7 @@ class Dashboard:
                     waiting = {name: value["missing"] for name, value in hosts.items() if value["missing"]}
                     expected_files = (job or {}).get("artifacts", list(manifest.get("packages", {})))
                     releases.append({"sha": directory.name, "version": source["version"], "build": source["build"],
-                        "status": "published" if published else manifest.get("status", "prepared"), "files": files, "hosts": hosts,
+                        "status": "published" if published else "running" if active else manifest.get("status", "prepared"), "files": files, "hosts": hosts,
                         "logs": logs, "controllable": bool(job) and not published, "active": active,
                         "waiting_checks": waiting, "expected_packages": len(expected_files),
                         "missing_packages": [name for name in expected_files if name not in manifest.get("packages", {})],

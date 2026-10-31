@@ -7,7 +7,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from local_release.core import Context, ReleaseError, atomic_json
 from local_release.profiles.revelation import integration_files
-from local_release.profiles.revelation import prepare_android_fixture
+from local_release.profiles.revelation import prepare_android_fixture, wait_android_fixture
 
 
 class IntegrationRunnerTest(unittest.TestCase):
@@ -35,11 +35,34 @@ class IntegrationRunnerTest(unittest.TestCase):
                     return "fixture-avd\nOK"
                 if "sha256sum" in argv[-1]:
                     return digest(sources[Path(argv[-1]).name]) + "  fixture.sqlite"
+                if "wc -c" in argv[-1]:
+                    return str(sources[Path(argv[-1]).name].stat().st_size) + " fixture.sqlite"
                 return ""
             with patch("local_release.profiles.android_release.dependencies"), patch.object(ctx, "command", side_effect=command):
                 prepare_android_fixture(ctx, "emulator-5584")
             self.assertEqual(copied, list(MODULES))
             self.assertEqual(set(read_json(job / "results/android-fixtures.json")["module_sha256"]), set(MODULES))
+
+    def test_exec_in_return_does_not_hash_a_partially_written_database(self):
+        from local_release.core import digest
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / "fixture.sqlite"
+            source.write_bytes(b"SQLite\x1a\x00data")
+            ctx = unittest.mock.Mock()
+            ctx.command.side_effect = ["4 remote.sqlite", str(source.stat().st_size) + " remote.sqlite", digest(source) + " remote.sqlite"]
+            with patch("local_release.profiles.revelation.time.sleep"):
+                self.assertEqual(wait_android_fixture(ctx, "adb", "emulator-5584", source, "remote.sqlite"), digest(source))
+            self.assertNotIn("sha256sum", ctx.command.call_args_list[0].args[0][-1])
+            self.assertIn("sha256sum", ctx.command.call_args_list[-1].args[0][-1])
+
+    def test_complete_but_corrupt_database_never_passes(self):
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / "fixture.sqlite"
+            source.write_bytes(b"SQLite\x1a\x00data")
+            ctx = unittest.mock.Mock()
+            ctx.command.side_effect = [str(source.stat().st_size) + " remote.sqlite", "f" * 64 + " remote.sqlite"]
+            with self.assertRaisesRegex(ReleaseError, "digest mismatch after complete"):
+                wait_android_fixture(ctx, "adb", "emulator-5584", source, "remote.sqlite")
 
     def test_every_file_including_smoke_runs_and_retry_preserves_passed_files(self):
         with tempfile.TemporaryDirectory() as folder:
