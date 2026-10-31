@@ -151,6 +151,12 @@ with lock(directory/('.'+ctx.host+'.lock')):
         release = self.server.dashboard.state()["projects"][0]["releases"][0]
         self.assertFalse(release["files"][0]["verified"])
         self.assertEqual(release["hosts"][host_name()]["status"], "interrupted")
+        atomic_json(directory / "results" / (host_name() + ".json"), {
+            "status": "pending", "steps": {}, "runtime_revision": 14,
+            "attempt_runtime_revision": 13, "pending_runtime_revision": 14})
+        repair = self.server.dashboard.state()["projects"][0]["releases"][0]["hosts"][host_name()]
+        self.assertEqual(repair["attempt_runtime_revision"], 13)
+        self.assertEqual(repair["pending_runtime_revision"], 14)
 
     def test_commit_discovery_is_visible_but_does_not_start_a_gated_project(self):
         repo = self.root / "first"

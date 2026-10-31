@@ -114,6 +114,8 @@ class Dashboard:
                         hosts[role] = {"status": status, "step": value.get("current_step"),
                             "error": value.get("error"), "updated": value.get("updated"),
                             "runtime_revision": value.get("runtime_revision"),
+                            "attempt_runtime_revision": value.get("attempt_runtime_revision", value.get("runtime_revision")),
+                            "pending_runtime_revision": value.get("pending_runtime_revision"),
                             "steps": [{"name": key, **{k: v for k, v in row.items() if k in
                                 ("status", "started", "finished", "error")}} for key, row in value.get("steps", {}).items()],
                             "missing": [s for s in job["required_steps"][role] if value.get("steps", {}).get(s, {}).get("status") != "passed"]}
@@ -257,9 +259,9 @@ class Handler(BaseHTTPRequestHandler):
                 self.respond(200, {"product": PRODUCT, "registry": identity(self.server.dashboard.registry)})
             elif url.path == "/api/state":
                 self.respond(200, self.server.dashboard.state())
-            elif url.path in ("/", "/dashboard.js", "/dashboard.css"):
+            elif url.path in ("/", "/dashboard.js", "/dashboard.css", "/favicon.svg"):
                 names = {"/": ("dashboard.html", "text/html"), "/dashboard.js": ("dashboard.js", "text/javascript"),
-                         "/dashboard.css": ("dashboard.css", "text/css")}
+                         "/dashboard.css": ("dashboard.css", "text/css"), "/favicon.svg": ("favicon.svg", "image/svg+xml")}
                 name, kind = names[url.path]
                 self.respond(200, Path(__file__).with_name(name).read_bytes(), kind + "; charset=utf-8")
             elif url.path == "/api/file":
