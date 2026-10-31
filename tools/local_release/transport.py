@@ -467,9 +467,11 @@ def close_published_exchange(ctx, api, release):
             candidates.append({key: asset.get(key) for key in ("id", "name", "size", "digest")})
     receipt_path = ctx.directory / "results/exchange-closed.json"
     previous = read_json(receipt_path) if receipt_path.exists() else {}
+    history = {asset["id"]: asset for asset in previous.get("temporary_assets", [])}
+    history.update({asset["id"]: asset for asset in candidates})
     receipt = {"schema": 1, "run_id": ctx.job["run_id"], "sha": ctx.job["sha"],
         "release_id": release["id"], "published_assets": records, "all_required_gates_passed": True,
-        "source_bundle_sha256": ctx.job["source_bundle_sha256"], "temporary_assets": candidates,
+        "source_bundle_sha256": ctx.job["source_bundle_sha256"], "temporary_assets": list(history.values()),
         "removed_asset_ids": previous.get("removed_asset_ids", [])}
     # Persist exact IDs and final package/source/gate proofs before the first DELETE.
     atomic_json(receipt_path, receipt)
@@ -477,3 +479,5 @@ def close_published_exchange(ctx, api, release):
         api.request("DELETE", f"/releases/assets/{asset['id']}")
         receipt["removed_asset_ids"].append(asset["id"])
         atomic_json(receipt_path, receipt)
+    receipt["closed"] = True
+    atomic_json(receipt_path, receipt)

@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.0.7
+Doc-Version: 2.0.8
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -114,6 +114,11 @@ Repeated handoff checks the existing base asset before compressing source.bundle
 A saved receipt with the exact identity/asset ID/hash plus a fresh GitHub digest reuses an unchanged base
 or package without downloading the large file again. The first upload still requires complete download
 read-back; a missing receipt, new ID or changed digest requires verification again.
+On the next Linux login a completed release is recognized through its public final manifest: source/tag/build/defines,
+the complete required gate list, every package's metadata and SHA256SUMS are verified.
+A local `publication-received.json` records the acknowledgment without fabricating old local checkpoints.
+The release is skipped without building or recreating removed transport files. After publication the dashboard
+can confirm another OS through that manifest while preserving its earlier local attempt history.
 
 ## Numbering and login
 

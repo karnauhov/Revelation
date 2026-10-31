@@ -106,6 +106,8 @@ def remediation(directory, project):
         return
     result, job = read_json(path), read_json(directory / "job.json")
     if result.get("status") not in ("failed", "stopped", "interrupted") and not result.get("pending_runtime_revision"):
+        for name in ("linux-remediation.json", "linux-repair.sh"):
+            (directory / "results" / name).unlink(missing_ok=True)
         return
     error = result.get("error", "Linux stage failed")
     attempted = result.get("attempt_runtime_revision", result.get("runtime_revision", 1))
@@ -127,7 +129,7 @@ def remediation(directory, project):
 
 def project_cycle(project, role):
     from .transport import receive_jobs, sync_results, handoff
-    from .github import publish_job
+    from .github import publish_job, reconcile_published
     profile = read_json(Path(project["profile"]))
     config = read_json(Path(project["config"]))
     root = Path(project["catalogue"])
@@ -146,11 +148,23 @@ def project_cycle(project, role):
         job = read_json(directory / "job.json")
         publication = directory / "publication.json"
         if publication.exists() and read_json(publication).get("published"):
+            if role == "windows":
+                closed = directory / "results/exchange-closed.json"
+                if not closed.exists() or not read_json(closed).get("closed"):
+                    try:
+                        sync_results(Context(directory, config, host=role), cleanup=True)
+                    except ReleaseError as error:
+                        if not str(error).startswith("Busy operation:"):
+                            raise
             continue
         print(f"{profile['project']} {job['version']}+{job['build']} {job['sha'][:12]}", flush=True)
         try:
             ctx = Context(directory, config, host=role)
             if role == "linux":
+                if reconcile_published(ctx):
+                    records.append({"run_id": job["run_id"], "status": "published"})
+                    print("Already published; completed packages and stages are preserved.", flush=True)
+                    continue
                 if (directory / "stop-request.json").exists():
                     records.append({"run_id": job["run_id"], "status": "stopped"})
                     continue

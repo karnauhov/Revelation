@@ -125,6 +125,11 @@ class Dashboard:
                     publication_path = directory / "publication.json"
                     publication = read_json(publication_path) if publication_path.exists() else {}
                     published = publication.get("published") is True
+                    if published:
+                        for value in hosts.values():
+                            if value["missing"]:
+                                value.update(status="published", missing=[], error=None, step=None,
+                                             pending_runtime_revision=None, verified_elsewhere=True)
                     waiting = {name: value["missing"] for name, value in hosts.items() if value["missing"]}
                     expected_files = (job or {}).get("artifacts", list(manifest.get("packages", {})))
                     releases.append({"sha": directory.name, "version": source["version"], "build": source["build"],

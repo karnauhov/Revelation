@@ -222,6 +222,71 @@ def complete_results(directory, job):
     return True
 
 
+def reconcile_published(context):
+    """An offline peer recognizes final publication after transport cleanup."""
+    directory, job = context.directory, context.job
+    publication_path = directory / "publication.json"
+    saved = read_json(publication_path) if publication_path.exists() else {}
+    if saved.get("published"):
+        return True
+    received = directory / "received.json"
+    release_id = saved.get("release_id") or (read_json(received).get("release_id") if received.exists() else None)
+    if not release_id:
+        return False
+    token = credential(context.config)
+    context.refresh_redaction([token])
+    api = GitHub(job["repository"], token)
+    release = api.request("GET", f"/releases/{release_id}")
+    if release["draft"]:
+        return False
+    if (release["tag_name"] != job["tag"] or f"<!-- local-release:{job['run_id']} -->" not in (release.get("body") or "")
+            or api.tag_sha(job["tag"]) != job["sha"]):
+        raise ReleaseError("Published release identity differs from this local job")
+    assets = {asset["name"]: asset for asset in api.pages(f"/releases/{release_id}/assets")}
+    manifest = assets.get("release-manifest.json")
+    if not manifest or manifest["size"] > 256 * 1024:
+        raise ReleaseError("Published release has no bounded final manifest")
+    with tempfile.TemporaryDirectory(prefix="release-publication-receipt-") as folder:
+        path = Path(folder) / "manifest.json"
+        actual = api.download_asset(manifest, path)
+        summary = read_json(path)
+        manifest_bytes = path.read_bytes()
+    if any(summary.get(key) != job.get(key) for key in (
+            "run_id", "sha", "version", "build", "tag", "source_bundle_sha256", "compile_defines_sha256")):
+        raise ReleaseError("Published manifest differs from the immutable local source")
+    if any(not set(gates) <= set(summary.get("verified_gates", {}).get(role, [])) for role, gates in job["required_steps"].items()):
+        raise ReleaseError("Published manifest omits required release gates")
+    if set(summary.get("packages", {})) != set(job["artifacts"]):
+        raise ReleaseError("Published manifest omits expected packages")
+    records = {}
+    for name, record in summary["packages"].items():
+        asset = assets.get(name)
+        if not asset or asset["size"] != record["size"] or asset.get("digest") != "sha256:" + record["sha256"]:
+            raise ReleaseError("Published package metadata differs from the final manifest")
+        local = context.output / name
+        if local.exists() and digest(local) != record["sha256"]:
+            raise ReleaseError("Local package differs from the completed public release")
+        records[name] = {**record, "id": asset["id"], "url": asset["browser_download_url"], "asset_name": name}
+    checksum_bytes = "".join(f"{records[name]['sha256']}  {name}\n" for name in sorted(job["artifacts"])).encode()
+    checksum_hash = hashlib.sha256(checksum_bytes).hexdigest()
+    checksums = assets.get("SHA256SUMS")
+    if not checksums or checksums.get("digest") != "sha256:" + checksum_hash or checksums["size"] != len(checksum_bytes):
+        raise ReleaseError("Published checksums differ from the final package manifest")
+    (directory / "release-manifest.json").write_bytes(manifest_bytes)
+    (context.output / "SHA256SUMS").write_bytes(checksum_bytes)
+    atomic_json(directory / "results/publication-received.json", {"schema": 1, "run_id": job["run_id"],
+        "manifest_asset_id": manifest["id"], "manifest_sha256": actual, "verified_gates": summary["verified_gates"]})
+    saved.update(run_id=job["run_id"], sha=job["sha"], tag=job["tag"], release_id=release_id,
+        published=True, url=release["html_url"], assets=records, completion_source="verified-public-manifest")
+    saved["manifest"] = {"id": manifest["id"], "sha256": actual, "size": manifest["size"], "url": manifest["browser_download_url"]}
+    saved["checksums"] = {"id": checksums["id"], "sha256": checksum_hash, "size": checksums["size"], "url": checksums["browser_download_url"]}
+    saved.pop("waiting", None)
+    atomic_json(publication_path, saved)
+    from .catalogue import catalogue_job
+    catalogue_job(context)
+    return True
+
+
 def publish_job(context):
     job, directory = context.job, context.directory
     token = credential(context.config)

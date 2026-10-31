@@ -200,6 +200,8 @@ with lock(directory/('.'+ctx.host+'.lock')):
         self.assertEqual(published["status"], "published")
         self.assertFalse(published["controllable"])
         self.assertTrue(published["publication"]["published"])
+        self.assertEqual(published["waiting_checks"], {})
+        self.assertTrue(published["hosts"]["windows"]["verified_elsewhere"])
 
 
 if __name__ == "__main__":
