@@ -86,8 +86,23 @@ def restore_user_data(ctx, state):
         raise ReleaseError("Snap user-data restoration digest mismatch")
 
 
+def installed_revision_digest(ctx, revision):
+    if not re.fullmatch(r"x?\d+", str(revision)):
+        raise ReleaseError("Cannot hash an invalid installed Snap revision")
+    path = f"/var/lib/snapd/snaps/{NAME}_{revision}.snap"
+    # snapd may keep installed packages root-readable only. Authentication does
+    # not elevate this Python process; ask sudo for the digest, never chmod/read
+    # the protected package into the unprivileged coordinator.
+    output = ctx.command(["sudo", "-n", "sha256sum", "--", path],
+        env={"LC_ALL": "C", "LANGUAGE": "C"}, cancellable=False, new_session=False)
+    match = re.fullmatch(r"([0-9a-f]{64}) [ *]" + re.escape(path) + r"\s*", output)
+    if not match:
+        raise ReleaseError("Installed Snap checksum output is invalid; package state preserved")
+    return match[1]
+
+
 def installed(ctx):
-    text = ctx.command(["snap", "list", NAME], env={"LC_ALL": "C"}, success_codes=(0, 1),
+    text = ctx.command(["snap", "list", NAME], env={"LC_ALL": "C", "LANGUAGE": "C"}, success_codes=(0, 1),
                        cancellable=not getattr(ctx, "restoring_snap", False))
     for line in text.splitlines():
         fields = line.split()
@@ -95,8 +110,8 @@ def installed(ctx):
             version, revision, tracking = fields[1:4]
             if not re.fullmatch(r"x?\d+", revision):
                 raise ReleaseError("Cannot identify the installed Snap revision")
-            path = Path("/var/lib/snapd/snaps") / f"{NAME}_{revision}.snap"
-            return {"version": version, "revision": revision, "tracking": tracking, "sha256": digest(path)}
+            return {"version": version, "revision": revision, "tracking": tracking,
+                    "sha256": installed_revision_digest(ctx, revision)}
     if "no matching snaps installed" in text.lower():
         return None
     raise ReleaseError("Cannot determine whether Revelation Snap is installed; no changes made")
@@ -116,6 +131,8 @@ def authorize(ctx):
         result = subprocess.run(["sudo", "-v"], env=ctx.env, check=False)
         if result.returncode:
             raise ReleaseError("Ubuntu administrator authentication failed; Snap installation was not changed")
+        ctx.command(["sudo", "-n", "true"], cancellable=False, new_session=False)
+    print("Administrator authentication accepted. Checking installed Snap package access.", flush=True)
 
 
 @contextmanager
@@ -139,7 +156,7 @@ def sudo_lease(ctx):
 
 
 def privileged(ctx, *args):
-    return ctx.command(["sudo", "-n", "snap", *args], env={"LC_ALL": "C"},
+    return ctx.command(["sudo", "-n", "snap", *args], env={"LC_ALL": "C", "LANGUAGE": "C"},
                        cancellable=False, new_session=False)
 
 
@@ -172,7 +189,7 @@ def restore(ctx, journal):
             # Remove only the exact disabled revision created by this test.
             path = Path("/var/lib/snapd/snaps") / f"{NAME}_{test_revision}.snap"
             if path.exists():
-                if digest(path) != state["package_sha256"]:
+                if installed_revision_digest(ctx, test_revision) != state["package_sha256"]:
                     raise ReleaseError("Disabled test revision changed; it will not be removed")
                 privileged(ctx, "remove", NAME, "--revision=" + test_revision)
         if "user_data_existed" in state:

@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.0.2
+Doc-Version: 1.0.3
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -92,6 +92,10 @@ Restoration runs even after failure or cancellation. Its host-local recovery jou
 `.local-releases/w/<short-SHA>/snap-acceptance/restore.json`; after interruption the next run restores first.
 Data snapshots are never sent to GitHub. Installation uses `sudo -n snap`. If authentication is needed,
 the graphical progress terminal asks once through `sudo -v`; passwords are neither stored nor logged.
+Successful authentication is confirmed separately before package inspection. Installed Snap files under
+`/var/lib/snapd/snaps/` may be unreadable by the desktop user: `sudo -n sha256sum` computes their digest,
+including revision checks during restoration. Python does not read them directly or change permissions.
+A read failure after authentication is not reported as a wrong password.
 Sudo commands retain the controlling terminal. Authentication is renewed only during install/smoke/restore
 so a long dependency download does not expire authorization before restoration finishes.
 No persistent passwordless/sudoers permission is created. Without an interactive terminal or available sudo,

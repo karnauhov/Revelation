@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.0.3
+Doc-Version: 2.0.4
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -90,6 +90,8 @@ the entire original Snap script and inspection/install/smoke once, preserving th
 The superseded private Snap remains one local file; the manifest marks it pending and preserves its verified
 previous draft asset ID. A collision without an attested remote backup still prevents replacement.
 Runtime16 preserves these checkpoints and fixes sudo TTY handling and temporary authentication for installed Snap acceptance.
+Runtime17 repeats only `verify-linux`: protected Snap checksums use authenticated sudo, preserving the successfully
+built Snap16, TAR, and every passed build/test checkpoint.
 
 Snap-only tools are checked in Snap stages, preserving portable TAR independence.
 In squashfs-tools 4.6.1, `unsquashfs -version` prints its version and exits 1 without an input image.
