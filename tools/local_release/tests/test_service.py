@@ -183,6 +183,24 @@ with lock(directory/('.'+ctx.host+'.lock')):
         self.assertEqual(state["queue"][queued]["status"], "queued")
         self.assertEqual(self.server.dashboard.children, {})
 
+    def test_completed_linux_and_pending_windows_are_distinct_from_publication(self):
+        directory = self.prepare_runnable()
+        job = read_json(directory / "job.json")
+        job["required_steps"] = {"linux": ["verify-linux"], "windows": ["integration-android", "integration-web"]}
+        job["artifacts"] = ["package.zip", "missing.snap"]
+        atomic_json(directory / "job.json", job)
+        atomic_json(directory / "results/linux.json", {"status": "built", "steps": {"verify-linux": {"status": "passed"}}})
+        atomic_json(directory / "results/windows.json", {"status": "incomplete", "steps": {}})
+        release = json.loads(self.request("/api/state")[1])["projects"][0]["releases"][0]
+        self.assertEqual(release["waiting_checks"], {"windows": ["integration-android", "integration-web"]})
+        self.assertEqual(release["hosts"]["linux"]["status"], "built")
+        self.assertEqual(release["missing_packages"], ["missing.snap"])
+        atomic_json(directory / "publication.json", {"published": True, "url": "https://github.com/fixture/release"})
+        published = json.loads(self.request("/api/state")[1])["projects"][0]["releases"][0]
+        self.assertEqual(published["status"], "published")
+        self.assertFalse(published["controllable"])
+        self.assertTrue(published["publication"]["published"])
+
 
 if __name__ == "__main__":
     unittest.main()

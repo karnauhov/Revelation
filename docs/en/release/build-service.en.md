@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.0.1
+Doc-Version: 1.0.2
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -12,6 +12,10 @@ Long stage names wrap inside their card, with separate positions for duration an
 Platform cards stack on narrow screens. The current stage's actual error is shown instead
 of the pipeline wrapper's summary; detailed history remains in the log.
 Historical releases remain downloadable without build controls.
+Completion of one OS is shown separately from readiness of the entire release. The panel lists
+the specific required checks still missing and counts packages against the expected set.
+After confirmed publication the status becomes Published, a GitHub link appears, and rebuild
+controls are hidden. Local links continue to use the catalogue's single package files.
 
 ## Windows
 

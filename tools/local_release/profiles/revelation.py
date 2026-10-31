@@ -284,7 +284,10 @@ def prepare_android_fixture(ctx, device):
         source = ctx.workspace / "web/db" / name
         remote = "app_flutter/revelation/db/" + name
         with source.open("rb") as stream:
-            ctx.command([adb, "-s", device, "shell", "run-as ai11.link.revelation sh -c 'cat > " + remote + "'"], stdin=stream)
+            # On Windows adb shell treats stdin as text and stops at DOS EOF
+            # (0x1a), corrupting SQLite fixtures. exec-in uses binary copy_to_file.
+            ctx.command([adb, "-s", device, "exec-in", "run-as", "ai11.link.revelation",
+                         "sh", "-c", "cat > " + remote], stdin=stream)
         sha = digest(source)
         actual = ctx.command([adb, "-s", device, "shell", "run-as ai11.link.revelation sha256sum " + remote])
         if actual.split()[0] != sha:

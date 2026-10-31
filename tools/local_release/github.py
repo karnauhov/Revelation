@@ -280,6 +280,7 @@ def publish_job(context):
             confirmed = api.request("GET", f"/releases/{release['id']}")
             if confirmed["draft"] or api.tag_sha(job["tag"]) != job["sha"]:
                 raise ReleaseError("Published release read-back failed")
+            saved.pop("waiting", None)
             saved.update(published=True, url=confirmed["html_url"])
         else:
             saved["waiting"] = "Other builders or required gates are incomplete"

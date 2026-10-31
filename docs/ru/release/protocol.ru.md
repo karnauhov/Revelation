@@ -1,6 +1,6 @@
 # Обмен локальных сборщиков
 
-Doc-Version: 2.0.5
+Doc-Version: 2.0.6
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -110,6 +110,12 @@ Snap-only инструменты проверяются в этапах Snap, с
 Receipts подтверждают точные asset IDs/digests. Base job/runtime repair сохраняются до полного завершения для recovery.
 Очистка удаляет только собственные подтверждённые временные IDs; временные пакеты удаляются после проверенного
 публичного зеркала. Канонические packages, SHA256SUMS и итоговый manifest остаются.
+После полного успешного выпуска Windows проверяет все gates, локальные source/runtime/package hashes,
+публичные package/checksum/manifest assets и сохраняет `results/exchange-closed.json` до первого удаления.
+Этот финальный receipt закрывает весь завершённый обмен, включая старые runtime revisions и промежуточные
+status/log/package assets с точным префиксом данного run. Удаляются только распознанные имена и сохранённые IDs;
+чужие runs и неизвестные файлы сохраняются. Повтор очистки безопасен без нового входа в Linux.
+После публикации manifest каталога ссылается на обычные публичные assets, а не удаляемые transport-копии.
 
 ## Автонумерация и запуск
 

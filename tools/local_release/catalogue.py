@@ -73,6 +73,12 @@ def catalogue_job(context):
                     remote = read_json(receipt_path).get("packages", {}).get(source.name, {})
                     if remote.get("sha256") == expected:
                         package.update(source_asset_id=remote["id"], url=remote["url"])
+                publication = directory / "publication.json"
+                if publication.exists():
+                    published = read_json(publication)
+                    mirror = published.get("assets", {}).get(source.name, {})
+                    if published.get("published") and mirror.get("sha256") == expected:
+                        package.update(source_asset_id=mirror["id"], url=mirror["url"])
                 if inspected:
                     manifest["packages"][source.name] = package
                     manifest.get("unverified_packages", {}).pop(source.name, None)

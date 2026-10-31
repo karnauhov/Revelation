@@ -127,6 +127,59 @@ class TransportTest(unittest.TestCase):
         self.assertEqual(len(list(self.windows.output.iterdir())), 2)
         self.assertEqual({a[0]["name"] for a in FakeGitHub.assets.values()}, {"windows.zip", "linux.tar.gz"})
 
+    def published_fixture(self):
+        self.compile(self.windows, "windows.zip")
+        transport.handoff(self.windows)
+        transport.send_result(self.windows)
+        linux = self.receive()
+        self.compile(linux, "linux.tar.gz")
+        transport.send_result(linux)
+        transport.sync_results(self.windows)
+        api = FakeGitHub("owner/repo", "fixture")
+        release = FakeGitHub.release
+        records = {name: api.upload_verified(release, self.windows.output / name) for name in self.windows.job["artifacts"]}
+        checksums = self.windows.output / "SHA256SUMS"
+        checksums.write_text("verified fixture sums")
+        manifest = self.windows.directory / "release-manifest.json"
+        manifest.write_text("verified fixture manifest")
+        core.atomic_json(self.windows.directory / "publication.json", {
+            "published": True, "release_id": release["id"], "sha": self.windows.job["sha"], "assets": records,
+            "checksums": api.upload_verified(release, checksums), "manifest": api.upload_verified(release, manifest)})
+        return api, release
+
+    def test_final_receipt_closes_only_recognized_owned_transport_after_publication(self):
+        api, release = self.published_fixture()
+        temporary = self.base / "temporary.bin"
+        temporary.write_bytes(b"old repair")
+        own = api.upload_verified(release, temporary, asset_name=transport.prefix(self.windows.job) + "runtime-v3.tar.gz")
+        foreign = api.upload_verified(release, temporary, asset_name="local-transfer-another-run-runtime-v1.tar.gz")
+        unknown = api.upload_verified(release, temporary, asset_name=transport.prefix(self.windows.job) + "owner-note.txt")
+        transport.close_published_exchange(self.windows, api, release)
+        self.assertIn(own["id"], FakeGitHub.assets)  # A draft never permits final cleanup.
+        release["draft"] = False
+        original = api.request
+        def remove(method, path, **kwargs):
+            receipt = core.read_json(self.windows.directory / "results/exchange-closed.json")
+            self.assertTrue(receipt["all_required_gates_passed"])
+            self.assertTrue(any(a["id"] == int(path.rsplit("/", 1)[1]) for a in receipt["temporary_assets"]))
+            return original(method, path, **kwargs)
+        with patch.object(api, "request", side_effect=remove):
+            transport.close_published_exchange(self.windows, api, release)
+        self.assertNotIn(own["id"], FakeGitHub.assets)
+        self.assertIn(foreign["id"], FakeGitHub.assets)
+        self.assertIn(unknown["id"], FakeGitHub.assets)
+        self.assertTrue({"windows.zip", "linux.tar.gz", "SHA256SUMS", "release-manifest.json"} <= {a[0]["name"] for a in FakeGitHub.assets.values()})
+        transport.close_published_exchange(self.windows, api, release)  # Idempotent after the peer status is gone.
+
+    def test_changed_canonical_asset_prevents_final_transport_deletion(self):
+        api, release = self.published_fixture()
+        release["draft"] = False
+        before = set(FakeGitHub.assets)
+        (self.windows.output / "windows.zip").write_bytes(b"changed bytes")
+        with self.assertRaises(core.ReleaseError):
+            transport.close_published_exchange(self.windows, api, release)
+        self.assertEqual(set(FakeGitHub.assets), before)
+
     def test_failure_status_and_redacted_logs_reach_windows_without_manual_copy(self):
         transport.handoff(self.windows)
         linux = self.receive()

@@ -386,5 +386,71 @@ def _sync_results(ctx, *, cleanup=False):
                 atomic_json(ctx.directory / "results/exchange-cleanup.json", {
                     "run_id": ctx.job["run_id"], "removed_asset_ids": [a["id"] for a in owned],
                     "receipt": receipt, "packages_preserved": True})
+    if cleanup and ctx.host == "windows":
+        close_published_exchange(ctx, api, release)
     catalogue_job(ctx)
     return imported
+
+
+def close_published_exchange(ctx, api, release):
+    """Close an entire finished exchange after a durable verified final receipt.
+
+    Per-message acknowledgments still govern incomplete releases. Once all gates
+    and nine canonical assets are verified, neither OS needs obsolete repairs or
+    transport copies. Unknown files and other runs are never deletion candidates.
+    """
+    from .core import verify_runtime
+    from .github import complete_results
+    publication_path = ctx.directory / "publication.json"
+    if not publication_path.exists():
+        return
+    published = read_json(publication_path)
+    if not published.get("published") or release["draft"] or not complete_results(ctx.directory, ctx.job):
+        return
+    if published.get("release_id") != release["id"] or published.get("sha") != ctx.job["sha"]:
+        raise ReleaseError("Final exchange receipt has a different release identity")
+    verify_runtime(ctx.directory)
+    if digest(ctx.directory / "source.bundle") != ctx.job["source_bundle_sha256"]:
+        raise ReleaseError("Canonical source snapshot changed; temporary exchange retained")
+    assets = api.pages(f"/releases/{release['id']}/assets")
+    by_id = {asset["id"]: asset for asset in assets}
+    records = {**published.get("assets", {}), "SHA256SUMS": published.get("checksums", {}),
+               "release-manifest.json": published.get("manifest", {})}
+    if set(records) != set(ctx.job["artifacts"]) | {"SHA256SUMS", "release-manifest.json"}:
+        raise ReleaseError("Canonical publication is incomplete; temporary exchange retained")
+    for name, record in records.items():
+        path = ctx.directory / "release-manifest.json" if name == "release-manifest.json" else ctx.output / name
+        asset = by_id.get(record.get("id"))
+        if (not asset or asset["name"] != name or asset["size"] != record.get("size")
+                or not path.is_file() or digest(path) != record.get("sha256")):
+            raise ReleaseError("Canonical publication differs from final receipt; exchange retained")
+        if asset.get("digest"):
+            if asset["digest"] != "sha256:" + record["sha256"]:
+                raise ReleaseError("Canonical GitHub digest differs from final receipt")
+        else:
+            with tempfile.TemporaryDirectory(prefix="release-final-receipt-") as folder:
+                if api.download_asset(asset, Path(folder) / name) != record["sha256"]:
+                    raise ReleaseError("Canonical GitHub read-back differs from final receipt")
+    transport_prefix = prefix(ctx.job)
+    candidates = []
+    for asset in assets:
+        if not asset["name"].startswith(transport_prefix):
+            continue
+        tail = asset["name"][len(transport_prefix):]
+        recognized = tail == "job.tar.gz" or re.fullmatch(r"runtime-v\d+\.tar\.gz|(?:windows|linux)-(?:status\.json|logs\.zip)", tail)
+        for name in ctx.job["artifacts"]:
+            recognized = recognized or re.fullmatch(r"(?:windows|linux)-package-[0-9a-f]{64}-" + re.escape(name), tail)
+        if recognized:
+            candidates.append({key: asset.get(key) for key in ("id", "name", "size", "digest")})
+    receipt_path = ctx.directory / "results/exchange-closed.json"
+    previous = read_json(receipt_path) if receipt_path.exists() else {}
+    receipt = {"schema": 1, "run_id": ctx.job["run_id"], "sha": ctx.job["sha"],
+        "release_id": release["id"], "published_assets": records, "all_required_gates_passed": True,
+        "source_bundle_sha256": ctx.job["source_bundle_sha256"], "temporary_assets": candidates,
+        "removed_asset_ids": previous.get("removed_asset_ids", [])}
+    # Persist exact IDs and final package/source/gate proofs before the first DELETE.
+    atomic_json(receipt_path, receipt)
+    for asset in candidates:
+        api.request("DELETE", f"/releases/assets/{asset['id']}")
+        receipt["removed_asset_ids"].append(asset["id"])
+        atomic_json(receipt_path, receipt)

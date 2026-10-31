@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.0.5
+Doc-Version: 2.0.6
 Last-Updated: 2026-10-31
 Source-Commit: working-tree
 
@@ -105,6 +105,11 @@ still require code0. See the [4.6.1 source](https://github.com/plougher/squashfs
 Receipts acknowledge exact asset IDs/digests. Base jobs/runtime repairs remain until complete success for recovery.
 Cleanup removes only owned acknowledged temporary IDs; temporary package assets require a verified public mirror.
 Canonical packages, checksums and final manifest remain.
+After full success Windows verifies all gates, local source/runtime/package hashes and public package/checksum/manifest
+assets, then persists `results/exchange-closed.json` before the first deletion. This final receipt closes the completed
+exchange, including old runtime revisions and intermediate status/log/package assets under this exact run's prefix.
+Only recognized names and recorded IDs are removed; other runs and unknown files remain. Cleanup can safely resume
+without another Linux login. The local catalogue then links to normal public assets rather than deleted transport copies.
 
 ## Numbering and login
 

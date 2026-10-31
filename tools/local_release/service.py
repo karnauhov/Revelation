@@ -122,9 +122,18 @@ class Dashboard:
                     logs = [{"name": p.relative_to(directory).as_posix(), "size": p.stat().st_size,
                              "url": "/api/file?" + urlencode({**query, "log": p.relative_to(directory).as_posix()})}
                             for p in sorted((directory / "logs").glob("*/*.log")) if p.resolve().is_relative_to(directory.resolve())]
+                    publication_path = directory / "publication.json"
+                    publication = read_json(publication_path) if publication_path.exists() else {}
+                    published = publication.get("published") is True
+                    waiting = {name: value["missing"] for name, value in hosts.items() if value["missing"]}
+                    expected_files = (job or {}).get("artifacts", list(manifest.get("packages", {})))
                     releases.append({"sha": directory.name, "version": source["version"], "build": source["build"],
-                        "status": manifest.get("status", "prepared"), "files": files, "hosts": hosts,
-                        "logs": logs, "controllable": bool(job), "active": active,
+                        "status": "published" if published else manifest.get("status", "prepared"), "files": files, "hosts": hosts,
+                        "logs": logs, "controllable": bool(job) and not published, "active": active,
+                        "waiting_checks": waiting, "expected_packages": len(expected_files),
+                        "missing_packages": [name for name in expected_files if name not in manifest.get("packages", {})],
+                        "publication": {"published": published, "url": publication.get("url"),
+                                        "waiting": publication.get("waiting") if not published else None},
                         "stop_requested": (directory / "stop-request.json").exists(),
                         "runtime_revision": (job or {}).get("preparation_revision"),
                         "protocol": (job or {}).get("protocol_version", 1) if job else None})
