@@ -265,6 +265,7 @@ def integration(ctx):
     if ctx.host == "windows" and "web" in targets:
         def web():
             from ..prerequisites import chrome_driver
+            recover_web_cache(ctx)
             if not ctx.config.get("chromedriver_port"):
                 raise ReleaseError("Start a matching ChromeDriver and configure chromedriver_port")
             def run_file(test):
@@ -273,10 +274,43 @@ def integration(ctx):
                              "--target=" + target, "-d", "web-server",
                              "--browser-name=chrome", "--headless", "--driver-port=" + str(ctx.config["chromedriver_port"]),
                              "--web-port=" + str(ctx.config.get("web_port", 8796)),
-                             "--web-browser-flag=--user-data-dir=" + str(ctx.root / "w" / "chrome-Revelation-REV301-a5305")])
+                             "--web-browser-flag=--incognito",
+                             "--web-browser-flag=--user-data-dir=" + str(ctx.root / "w" / "chrome-Revelation-REV301-a5305")],
+                            cwd=ctx.workspace)
             with chrome_driver(ctx):
                 integration_files(ctx, "web", run_file)
         ctx.stage("integration-web", web)
+
+
+def recover_web_cache(ctx):
+    """Discard only Web bookkeeping containing the temporary MSBuild alias.
+
+    Flutter compares output path strings when removing previous configurations.
+    C: and SUBST R: name the same files, so mixed paths delete fresh resources.
+    Keep Web commands physical and forget that obsolete output bookkeeping.
+    """
+    drive = str(ctx.config.get("workspace_drive", "")).rstrip("/\\").upper()
+    if not drive or drive == ctx.workspace.drive.upper():
+        return
+    removed = []
+    cache = ctx.workspace / ".dart_tool/flutter_build"
+    for stamp in cache.glob("*/web_*.stamp"):
+        if not re.fullmatch(r"[a-f0-9]{32}", stamp.parent.name):
+            continue
+        try:
+            outputs = read_json(stamp).get("outputs", [])
+        except (OSError, ValueError, AttributeError):
+            continue
+        if any(isinstance(path, str) and path.upper().startswith(drive + "\\") for path in outputs):
+            removed.append({"path": stamp.relative_to(ctx.workspace).as_posix(), "sha256": digest(stamp)})
+            stamp.unlink()
+    if removed:
+        (ctx.workspace / "build/web/.last_build_id").unlink(missing_ok=True)
+        evidence = ctx.directory / "results/windows-web-cache-recovery.json"
+        old = read_json(evidence) if evidence.exists() else {"repairs": []}
+        old["repairs"].append({"physical_workspace": str(ctx.workspace), "removed_bookkeeping": removed,
+                               "reason": "Flutter output cleanup compared physical and SUBST paths"})
+        atomic_json(evidence, old)
 
 
 def web_integration_target(ctx, test):
@@ -459,17 +493,18 @@ def build_web(ctx, defines):
     if (previous.get("status") == "passed" and packaged.is_file()
             and previous.get("outputs", {}).get(name) == digest(packaged)):
         return
+    recover_web_cache(ctx)
     # Integration builds may have replaced build/web. If the distribution ZIP
     # needs rebuilding, always rebuild lib/main.dart and its dependent steps.
     ctx.result["steps"].pop("web", None)
     ctx.invalidate_dependents("web")
-    ctx.stage("web", lambda: ctx.command(["flutter", "build", "web", "--source-maps", *defines]),
+    ctx.stage("web", lambda: ctx.command(["flutter", "build", "web", "--source-maps", *defines], cwd=ctx.workspace),
               always=True)
     def sentry_web():
-        ctx.command(["dart", "run", "scripts/prepare_sentry_web_source_maps.dart", "--web-build-dir", "build/web"])
-        ctx.command(["dart", "run", "sentry_dart_plugin"])
+        ctx.command(["dart", "run", "scripts/prepare_sentry_web_source_maps.dart", "--web-build-dir", "build/web"], cwd=ctx.workspace)
+        ctx.command(["dart", "run", "sentry_dart_plugin"], cwd=ctx.workspace)
     ctx.stage("sentry-web", sentry_web)
-    ctx.stage("web-manifest", lambda: ctx.command(["python", "scripts/generate_web_loader_manifest.py", "--web-build-dir", "build/web"]),
+    ctx.stage("web-manifest", lambda: ctx.command(["python", "scripts/generate_web_loader_manifest.py", "--web-build-dir", "build/web"], cwd=ctx.workspace),
               always=not (ctx.workspace / "build/web/loader_manifest.json").is_file())
     def web_zip():
         # Keep private symbol files in the builder for resumption; omit from distribution.

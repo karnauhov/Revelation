@@ -51,6 +51,10 @@ Web `flutter drive` requires an IntegrationTest binding. For smoke files using t
 the coordinator generates a launcher under `.dart_tool/ai11_integration/`, initializes IntegrationTest binding
 and calls the original `main()` without changing scenarios. Existing IntegrationTest targets run directly.
 Launcher/source test hashes are recorded in `results/windows-web-driver-targets.json`.
+All Web commands use the physical checkout instead of the MSBuild SUBST alias. Flutter otherwise
+compares C:/R: output strings as different configurations and can delete freshly copied assets.
+Recovery removes only aliased Web stamps and Web `.last_build_id`, preserving native caches and packages;
+`windows-web-cache-recovery.json` records the repair. Incognito prevents service-worker state leaking between tests.
 Release diagnostics preserve the exception and stack even when Flutter strips its error description.
 For the exact historical build173 About smoke test, an audited test-only copy corrects platform expectations:
 Web hides native-only database/folder tools and retains cache cleanup. The source checkout, app code and

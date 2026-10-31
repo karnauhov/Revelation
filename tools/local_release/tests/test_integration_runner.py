@@ -9,10 +9,39 @@ from local_release.core import Context, ReleaseError, atomic_json, git, read_jso
 from local_release.profiles.revelation import integration_files
 from local_release.profiles.revelation import prepare_android_fixture, wait_android_fixture
 from local_release.profiles.revelation import integration
-from local_release.profiles.revelation import web_integration_target
+from local_release.profiles.revelation import web_integration_target, recover_web_cache
 
 
 class IntegrationRunnerTest(unittest.TestCase):
+    def test_web_alias_recovery_keeps_native_cache_and_ready_packages(self):
+        with tempfile.TemporaryDirectory() as folder:
+            job = Path(folder) / "releases/fixture/1.0.0+1" / ("a" * 40)
+            atomic_json(job / "job.json", {"schema": 1, "sha": "a" * 40, "run_id": "fixture-a", "project": "fixture"})
+            ctx = Context(job, {"workspace_drive": "R:"}, host="windows")
+            cache = ctx.workspace / (".dart_tool/flutter_build/" + "b" * 32)
+            aliased = cache / "web_release_bundle.stamp"
+            native = cache / "windows_bundle.stamp"
+            physical = cache / "web_templated_files.stamp"
+            for path in (aliased, native):
+                atomic_json(path, {"outputs": [r"R:\fixture\build\web\assets\FontManifest.json"]})
+            atomic_json(physical, {"outputs": [str(ctx.workspace / "build/web/index.html")]})
+            marker = ctx.workspace / "build/web/.last_build_id"
+            marker.parent.mkdir(parents=True)
+            marker.write_text("b" * 32)
+            package = job / "packages/ready.zip"
+            package.parent.mkdir(exist_ok=True)
+            package.write_bytes(b"signed immutable package")
+            recover_web_cache(ctx)
+            self.assertFalse(aliased.exists())
+            self.assertFalse(marker.exists())
+            self.assertTrue(native.exists())
+            self.assertTrue(physical.exists())
+            self.assertEqual(package.read_bytes(), b"signed immutable package")
+            evidence = read_json(job / "results/windows-web-cache-recovery.json")
+            self.assertEqual(len(evidence["repairs"]), 1)
+            recover_web_cache(ctx)
+            self.assertEqual(read_json(job / "results/windows-web-cache-recovery.json"), evidence)
+
     def test_historical_web_tools_assertions_are_platform_correct_and_audited(self):
         source = git(Path(__file__).resolve().parents[3], "show",
                      "abd9d33f77b837940f03eaaec430a9568adf3f6e:integration_test/smoke/about_download_navigation_smoke_test.dart") + "\n"
