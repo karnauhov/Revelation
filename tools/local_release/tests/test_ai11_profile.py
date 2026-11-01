@@ -17,6 +17,18 @@ from local_release.versioning import install
 
 
 class Ai11ProfileTest(unittest.TestCase):
+    def test_transient_windows_directory_handle_is_retried_but_permanent_error_surfaces(self):
+        from local_release.core import replace_path
+        with patch('local_release.core.os.name', 'nt'), patch('local_release.core.time.sleep') as sleep:
+            with patch('local_release.core.os.replace', side_effect=[PermissionError(), PermissionError(), None]) as replace:
+                replace_path('prepared', 'final')
+                self.assertEqual(replace.call_count, 3)
+                self.assertEqual(sleep.call_count, 2)
+            with patch('local_release.core.os.replace', side_effect=PermissionError()) as replace:
+                with self.assertRaises(PermissionError):
+                    replace_path('prepared', 'final')
+                self.assertEqual(replace.call_count, 8)
+
     def test_profile_has_three_packages_and_one_host(self):
         def source(repo, *args):
             return {'show': 'version: 1.0.0+26' if 'pubspec' in args[-1] else '## [1.0.0] - 2026-11-01\nNotes', 'tag': ''}[args[0]]

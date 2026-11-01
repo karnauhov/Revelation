@@ -48,6 +48,18 @@ def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def replace_path(source, target):
+    """Bounded retry for Windows indexer handles on files and prepared folders."""
+    for attempt in range(8):
+        try:
+            os.replace(source, target)
+            return
+        except PermissionError:
+            if os.name != 'nt' or attempt == 7:
+                raise
+            time.sleep(0.05 * (attempt + 1))
+
+
 def atomic_json(path: Path, value) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(path.name + "." + uuid.uuid4().hex + ".tmp")
@@ -59,14 +71,7 @@ def atomic_json(path: Path, value) -> None:
             os.fsync(stream.fileno())
         # Windows indexers/antivirus may briefly hold the destination without
         # delete sharing. Retain the exact new payload and retry for <= 2 s.
-        for attempt in range(8):
-            try:
-                os.replace(temporary, path)
-                break
-            except PermissionError:
-                if os.name != "nt" or attempt == 7:
-                    raise
-                time.sleep(0.05 * (attempt + 1))
+        replace_path(temporary, path)
     finally:
         temporary.unlink(missing_ok=True)
 
@@ -425,7 +430,7 @@ def prepare(repo: Path, profile_path: Path, root: Path, sha="HEAD", config=None)
                        runtime_sha256=runtime_hashes, **metadata)
             atomic_json(temporary / "job.json", job)
             (temporary / "release_notes.txt").write_text(job["release_notes"] + "\n", encoding="utf-8", newline="\n")
-            os.replace(temporary, destination)
+            replace_path(temporary, destination)
         finally:
             if temporary.exists():
                 shutil.rmtree(temporary)
