@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.2.0
+Doc-Version: 2.2.1
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -215,7 +215,7 @@ The independent final `phase=cleaned` report confirms removal of managed build d
 All seven original package hashes stayed unchanged; Windows receives complete gates/logs/timings through the normal receiver.
 Linux is disposable: Windows/GitHub deletion does not wait for a Linux receipt. Durable tombstones still block jobs/import
 and cancel/reap a possible bounded attempt before starting another. Legacy control drafts are migrated into Git notes
-and removed after verification. Legacy Linux receipts remain readable for compatibility.
+and removed after verification; new control drafts are not created. Legacy Linux receipts remain readable for compatibility.
 
 ## Retire technical drafts after success
 

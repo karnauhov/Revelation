@@ -125,6 +125,14 @@ class ServiceTest(unittest.TestCase):
 
     def test_delete_http_requires_a_fresh_confirmation_bound_to_the_build(self):
         api = self.retention_fixture()
+        status, markup, _ = self.request('/')
+        self.assertEqual(status, 200)
+        page = markup.decode('utf-8')
+        self.assertIn('не хранит архив версий', page)
+        self.assertIn('После проверенной передачи пакетов и журналов', page)
+        self.assertNotIn('Linux удалит свою копию', page)
+        self.assertNotIn('при следующем входе и подключении к GitHub', page)
+        self.assertIn('Удаление пакетов и GitHub Release нельзя отменить.', page)
         self.assertEqual(self.request('/api/delete-confirm', {"project": "first", "sha": "a" * 40, "preview_id": "missing"})[0], 403)
         self.assertEqual(self.deletion('confirm', preview_id='missing')[0], 400)
         status, payload, _ = self.deletion('preview')

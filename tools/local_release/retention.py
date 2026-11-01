@@ -87,7 +87,7 @@ def control_release(api, project, *, create_sha=None):
     branch = api.request("GET", "")["default_branch"]
     return api.request("POST", "/releases", {"tag_name": tag, "target_commitish": branch,
         "name": "Local build retention - " + name, "draft": True, "prerelease": True,
-        "make_latest": "false", "body": marker(name) + "\nSmall deletion requests and OS receipts. Keep this private control draft so removed builds cannot return."})
+        "make_latest": "false", "body": marker(name) + "\nLegacy deletion-control exchange. New deletions use verified Git notes; this draft is retired after migration."})
 
 
 def matching_release(api, request):
