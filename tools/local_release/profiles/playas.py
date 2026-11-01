@@ -233,7 +233,8 @@ def run(ctx):
         ctx.stage('costaflow-inventory',lambda:ctx.command([py,'-m','costaflow','inventory','--output',ctx.directory/'results/costaflow'],cwd=ctx.workspace),['results/costaflow/coverage.json','results/costaflow/coverage.html'])
         for platform in ['android','web']: ctx.stage('integration-'+platform,lambda platform=platform:integration(ctx,platform))
         apk,aab,web=[ctx.output/n for n in ctx.job['artifacts']]
-        flags=['--release','--no-pub','--dart-define-from-file=env/dart_defines.release.ci.json']
+        # The normal build pub phase regenerates release-only plugin registration after integration_test.
+        flags=['--release','--dart-define-from-file=env/dart_defines.release.ci.json']
         for name,command,source,dest in [('apk','apk','build/app/outputs/flutter-apk/app-release.apk',apk),('aab','appbundle','build/app/outputs/bundle/release/app-release.aab',aab)]:
             def build(command=command,source=source,dest=dest):
                 ctx.command(['flutter','build',command,*flags],cwd=ctx.workspace);shutil.copy2(ctx.workspace/source,dest)
