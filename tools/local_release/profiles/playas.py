@@ -68,6 +68,7 @@ def input_metadata(config):
 def configure(ctx):
     for k,v in input_metadata(ctx.config).items():
         if ctx.job.get(k) != v: raise ReleaseError('Prepared Playas input changed: '+k)
+    ctx.result['compile_defines_sha256']=ctx.job['compile_defines_sha256']
     for name in ['SIGNING_KEY_ALIAS','SIGNING_KEY_PASSWORD','SIGNING_STORE_PASSWORD']:
         if not ctx.env.get(name): raise ReleaseError('Missing signing variable: '+name)
     ctx.env['JAVA_HOME']=ctx.config['java_home']
