@@ -18,9 +18,10 @@ def registry_path():
     return Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "ai11-local-release/registry.json"
 
 
-def register(registry, repo, profile, catalogue, config, hosts=("windows", "linux")):
+def register(registry, repo, profile, catalogue, config, hosts=None):
     data = read_json(registry) if registry.exists() else {"schema": 1, "projects": {}}
     identity = read_json(profile)
+    hosts = hosts if hosts is not None else identity.get('hosts', ['windows', 'linux'])
     name = identity["project"]
     previous = data["projects"].get(name, {})
     if previous and Path(previous["repo"]).resolve() != repo.resolve():

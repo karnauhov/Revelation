@@ -185,7 +185,7 @@ class GitHub:
         return self.request("POST", "/releases", {
             "tag_name": job["tag"], "target_commitish": job["sha"],
             "name": f"Release v{job['version']} ({job['build']})", "body": notes + "\n\n" + marker,
-            "draft": True, "prerelease": False,
+            "draft": True, "prerelease": job.get('release_prerelease', False),
         })
 
     def upload_verified(self, release, path, *, allow_upload=True, asset_name=None):
@@ -370,7 +370,7 @@ def publish_job(context):
             if api.tag_sha(job["tag"]) not in (None, job["sha"]):
                 raise ReleaseError("Tag changed during publication")
             if release["draft"]:
-                release = api.request("PATCH", f"/releases/{release['id']}", {"draft": False, "make_latest": "false"})
+                release = api.request("PATCH", f"/releases/{release['id']}", {"draft": False, "make_latest": job.get('release_make_latest', 'false')})
             confirmed = api.request("GET", f"/releases/{release['id']}")
             if confirmed["draft"] or api.tag_sha(job["tag"]) != job["sha"]:
                 raise ReleaseError("Published release read-back failed")
