@@ -1,7 +1,7 @@
 # Shared local build dashboard
 
-Doc-Version: 1.1.2
-Last-Updated: 2026-10-31
+Doc-Version: 1.2.0
+Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
 The owner's permanent local URL is **http://127.0.0.1:8877**.
@@ -128,3 +128,18 @@ Retry continues the original request; an already removed GitHub Release is not d
 The confirmed version leaves the normal queue immediately to prevent automatic restoration.
 Until cleanup finishes, the deletion section explicitly shows pending local removal or an error;
 long error paths wrap inside the sidebar.
+
+## Tooltips and Linux diagnostics
+
+Control buttons explain their action on hover and keyboard focus; Escape hides the tooltip.
+Descriptions reflect the OS, active process and completed gates. Restart stops then resumes checkpoints;
+it does not request a full rebuild. After Windows completes, start/retry also sends Linux a resume request for its next login.
+Stop while inactive also records and sends a log. Deletion retains its separate confirmation dialog.
+
+The latest Linux report shows receipt time, last stage, available timing, error and log tail.
+This diagnostic channel does not replace quality gates. Missing reports are explicitly shown as unavailable.
+Progress is sent once per minute during Linux builds; completion, early failure and cleanup outcomes are sent separately.
+Windows archives received history in `.local-releases/host-reports/`; full job logs stay in the canonical version catalogue.
+Linux keeps no permanent archive - see the [temporary builder policy](local-release.en.md#linux-is-a-temporary-builder).
+
+Controls hide equivalent actions: a new build shows Start, an attempted build shows Retry, and Restart appears only for an active process. Stop is hidden after the current OS completes. Recent Linux diagnostic history links open the saved Windows copies.

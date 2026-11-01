@@ -1,7 +1,7 @@
 # Local builder exchange
 
-Doc-Version: 2.0.11
-Last-Updated: 2026-10-31
+Doc-Version: 2.1.0
+Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
 Git main stores tools, profiles and the [project catalogue](../../../scripts/local_release/projects.json).
@@ -163,8 +163,34 @@ receiving existing remote commits never renumbers them.
 
 Initial Ubuntu setup: update main and run `bash scripts/local_release/run-linux.sh`.
 It registers the profile and installs user XDG autostart without root. Later graphical logins open a progress/summary terminal
-for all registered projects. A missing exact Flutter SDK is provisioned in user cache, preserving the global SDK.
+for all registered projects. The exact Flutter SDK is copied/provisioned inside the disposable attempt, preserving the global SDK.
 Snapcraft executes the entire original `snapcraft_build.sh`, including its preliminary debug run;
 only its `q` input is automated through an isolated PTY. Release override-build remains unchanged.
 
 The new graphical-login cycle and Snap install/smoke must be verified in Ubuntu; unavailable execution is not PASS.
+
+## Temporary Linux execution and independent reports
+
+Linux sends its own result, packages and complete logs.zip; it neither downloads Windows APK/AAB/EXE/MSIX/Web nor finalizes the release.
+Before large packages, logs.zip and a provisional status with `delivery_complete=false` are delivered.
+Status becomes `delivery_complete=true` only after every file is read back. Partial delivery is not release completion.
+Upload verification streams the complete SHA-256 read-back without a second on-disk package copy.
+`linux-receipts/<project>/<SHA>.json` is a small receipt preventing repeated download/build of a completed job.
+A newer runtime or explicit `local-transfer-<run_id>-linux-resume.json` permits resumption without modifying immutable job.json.
+Retries restore only Linux packages/evidence/checkpoints. Successful Windows stages are preserved.
+
+A separate private control draft `ai11-local-reports-<project>` owns marker `<!-- ai11-host-reports:<project>:1 -->`.
+`latest-linux.json` is the bounded current snapshot; `report-linux-<SHA|bootstrap>-<time>-<id>.json` retains immutable completion/failure history.
+Reports contain schema/project/host/updated, phase/status and optional sha/result/timing/log_tails/error.
+The envelope is limited to 512 KiB, redacted before upload, and staged in Ubuntu `/dev/shm`.
+Bootstrap/Git-update/ENOSPC reporting needs no valid job.json or space for a second package.
+Windows verifies marker/identity/digest and saves the report/receipt; diagnostic snapshots never attest quality gates.
+Version deletion also removes its exact-SHA diagnostic history and prevents reimport.
+
+Linux cleanup requires verified delivery and restored owner state. On failure, one bounded outbox preserves the attempt and blocks new jobs.
+Only small control records remain on Linux, never package/log archives, SDK copies or build/cache directories.
+New LXD instances/images are deleted only after observed ownership by the builder process session and absence from the baseline;
+unproven resources or images used by other projects are preserved with an explicit cleanup error. General system prune is forbidden.
+The entire original snapcraft_build.sh runs unchanged; ephemeral Snap execution uses LXD.
+
+Linux receives and prepares one job at a time: the next source bundle is downloaded only after the preceding attempt is handled. The engine rejects historical archive imports on Linux.

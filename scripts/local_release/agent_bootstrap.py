@@ -26,6 +26,10 @@ def main():
         code = subprocess.run([sys.executable, str(REPO / "scripts/local_release/linux_bootstrap.py"),
                                "--registry", str(args.registry)], check=False).returncode
     except Exception as error:
+        from local_release.host_reports import report_failure
+        report_failure({'project': 'revelation', 'profile': str(REPO / 'scripts/local_release/revelation.json'),
+                        'config': str(Path.home() / '.config/ai11-local-release/revelation.json'),
+                        'catalogue': str(REPO / '.local-releases')}, error, phase='git-update')
         print(f"Startup failed: {error}", flush=True)
     finally:
         if args.hold and sys.stdin.isatty():

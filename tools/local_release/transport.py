@@ -7,6 +7,7 @@ Only IDs recorded for this exact run are deleted, after durable local receipt.
 from __future__ import annotations
 
 import io
+import os
 import base64
 import json
 import re
@@ -111,14 +112,9 @@ def handoff(ctx):
 
 def send_result(ctx):
     api, release = connection(ctx)
-    with lock(ctx.directory / ".exchange.lock"), tempfile.TemporaryDirectory(prefix="release-result-") as folder:
-        # Upload only outputs whose producing and host verification gates passed.
+    ram = '/dev/shm' if ctx.host == 'linux' and os.name != 'nt' and Path('/dev/shm').is_dir() else None
+    with lock(ctx.directory / ".exchange.lock"), tempfile.TemporaryDirectory(prefix="release-result-", dir=ram) as folder:
         package_records = {}
-        for name, inspection in draft_packages(ctx).items():
-            asset_name = (prefix(ctx.job) + ctx.host + "-package-" + inspection["sha256"] + "-" + name
-                          if ctx.job.get("protocol_version", 1) >= 2 else name)
-            package_records[name] = {**api.upload_verified(release, ctx.output / name, allow_upload=release["draft"], asset_name=asset_name),
-                                     **inspection}
         log_path = Path(folder) / (prefix(ctx.job) + ctx.host + "-logs.zip")
         with zipfile.ZipFile(log_path, "w", zipfile.ZIP_DEFLATED) as archive:
             for path in sorted((ctx.directory / "logs" / ctx.host).glob("*.log")):
@@ -150,12 +146,43 @@ def send_result(ctx):
             receipt = ctx.directory / "results" / f"{peer}-received.json"
             if peer != ctx.host and receipt.exists():
                 payload["receipts"][peer] = read_json(receipt)
+        payload["delivery_complete"] = False
+        atomic_json(status_path, json.loads(ctx.redact(json.dumps(payload))))
+        replace_exchange(api, release, status_path, ctx.job)
+        try:
+            for name, inspection in draft_packages(ctx).items():
+                asset_name = (prefix(ctx.job) + ctx.host + "-package-" + inspection["sha256"] + "-" + name
+                              if ctx.job.get("protocol_version", 1) >= 2 else name)
+                package_records[name] = {**api.upload_verified(release, ctx.output / name, allow_upload=release["draft"], asset_name=asset_name),
+                                         **inspection}
+        except Exception as error:
+            payload["result"] = {**ctx.result, "transfer_error": ctx.redact(str(error))}
+            payload["packages"] = package_records
+            atomic_json(status_path, json.loads(ctx.redact(json.dumps(payload))))
+            replace_exchange(api, release, status_path, ctx.job)
+            raise
+        payload["delivery_complete"] = True
+        payload["packages"] = package_records
         atomic_json(status_path, json.loads(ctx.redact(json.dumps(payload))))
         status = replace_exchange(api, release, status_path, ctx.job)
         atomic_json(ctx.directory / "results" / f"{ctx.host}-sent.json", {"status": status, "logs": logs, "packages": package_records})
         (ctx.directory / "results" / f"{ctx.host}-outbox.json").unlink(missing_ok=True)
         from .catalogue import catalogue_job
         catalogue_job(ctx)
+        return {"status": status, "logs": logs, "packages": package_records}
+
+
+def resume_linux(ctx):
+    """Explicit Windows control survives removal of Linux's disposable checkout."""
+    import uuid
+    api, release = connection(ctx)
+    if not release['draft']:
+        raise ReleaseError('Published releases cannot be resumed')
+    with tempfile.TemporaryDirectory(prefix='release-resume-') as folder:
+        path = Path(folder) / (prefix(ctx.job) + 'linux-resume.json')
+        atomic_json(path, {'schema': 1, 'sha': ctx.job['sha'], 'run_id': ctx.job['run_id'],
+                          'action': 'resume', 'request_id': uuid.uuid4().hex})
+        return replace_exchange(api, release, path, ctx.job)
 
 
 def receive_runtime_updates(api, assets, job, destination, folder):
@@ -177,8 +204,28 @@ def receive_runtime_updates(api, assets, job, destination, folder):
         atomic_json(receipt_path, receipts)
 
 
-def receive_jobs(profile, root, config, tag=None):
+def receive_resume(api, assets, job, destination, folder):
+    resume = next((a for a in assets if a['name'] == prefix(job) + 'linux-resume.json'), None)
+    if not resume or host_name() != 'linux':
+        return
+    if resume['size'] > 4096:
+        raise ReleaseError('Oversized Linux control request')
+    path = Path(folder) / 'resume.json'
+    api.download_asset(resume, path)
+    request = read_json(path)
+    if (request.get('schema'), request.get('sha'), request.get('run_id'), request.get('action')) != (1, job['sha'], job['run_id'], 'resume'):
+        raise ReleaseError('Linux resume control identity differs')
+    receipt = destination / 'results/linux-resume.json'
+    previous = read_json(receipt) if receipt.exists() else {}
+    if previous.get('id') != resume['id']:
+        atomic_json(receipt, {'id': resume['id'], 'request_id': request.get('request_id')})
+        (destination / 'stop-request.json').unlink(missing_ok=True)
+
+
+def receive_jobs(profile, root, config, tag=None, *, limit=None, exclude_shas=()):
     from .retention import deleted
+    if host_name() == 'linux' and limit is None:
+        limit = 1
     api = GitHub(profile["repository"], credential(config))
     received = []
     for release in api.pages("/releases"):
@@ -192,9 +239,18 @@ def receive_jobs(profile, root, config, tag=None):
                       and a["name"].endswith("-job.tar.gz")), None)
         if not asset:
             continue
+        identity = re.fullmatch(re.escape('local-transfer-' + profile['project'] + '-') + r'([a-f0-9]{40})-job\.tar\.gz', asset['name'])
+        if identity and identity[1] in exclude_shas:
+            continue
         root.mkdir(parents=True, exist_ok=True)
         version = re.fullmatch(r"v(\d+\.\d+\.\d+)\+(\d+)", release["tag_name"])
         target_sha = release.get("target_commitish", "")
+        if target_sha in exclude_shas:
+            continue
+        if host_name() == 'linux' and re.fullmatch(r'[0-9a-f]{40}', target_sha):
+            from .linux_ephemeral import already_delivered
+            if already_delivered(root, profile['project'], target_sha, assets):
+                continue
         if re.fullmatch(r"[0-9a-f]{40}", target_sha) and deleted(root, profile["project"], target_sha):
             continue
         if version and re.fullmatch(r"[0-9a-f]{40}", target_sha):
@@ -209,9 +265,12 @@ def receive_jobs(profile, root, config, tag=None):
                     verify_runtime(known)
                     with tempfile.TemporaryDirectory(prefix="release-update-receive-") as folder:
                         receive_runtime_updates(api, assets, current, known, folder)
+                        receive_resume(api, assets, current, known, folder)
                     received.append(known)
+                    if limit and len(received) >= limit:
+                        return received
                     continue
-        with tempfile.TemporaryDirectory(prefix="release-receive-") as folder:
+        with tempfile.TemporaryDirectory(prefix="release-receive-", dir=root) as folder:
             downloaded = Path(folder) / "job.tar.gz"
             transport_digest = api.download_asset(asset, downloaded)
             extracted = Path(folder) / "extracted"
@@ -228,6 +287,8 @@ def receive_jobs(profile, root, config, tag=None):
                     with archive.extractfile(member) as source, destination.open("wb") as stream:
                         __import__("shutil").copyfileobj(source, stream)
             job = read_json(extracted / "job.json")
+            if job['sha'] in exclude_shas:
+                continue
             if deleted(root, profile["project"], job["sha"]):
                 continue
             if any(job["profile"].get(key) != profile.get(key) for key in ("project", "repository", "adapter", "flutter")) or job["repository"] != profile["repository"]:
@@ -248,26 +309,29 @@ def receive_jobs(profile, root, config, tag=None):
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 if destination.exists():
                     raise ReleaseError("Local catalogue exists without matching job; reconcile before receiving")
-                __import__("shutil").copytree(extracted, destination)
+                os.replace(extracted, destination)
             atomic_json(destination / "received.json", {"asset_id": asset["id"], "sha256": transport_digest,
                                                         "release_id": release["id"], "run_id": job["run_id"]})
             receive_runtime_updates(api, assets, job, destination, folder)
+            receive_resume(api, assets, job, destination, folder)
             received.append(destination)
+            if limit and len(received) >= limit:
+                return received
     return received
 
 
-def sync_results(ctx, *, cleanup=False):
+def sync_results(ctx, *, cleanup=False, hosts=None):
     with lock(ctx.directory / ".exchange.lock"):
-        return _sync_results(ctx, cleanup=cleanup)
+        return _sync_results(ctx, cleanup=cleanup, hosts=hosts)
 
 
-def _sync_results(ctx, *, cleanup=False):
+def _sync_results(ctx, *, cleanup=False, hosts=None):
     api, release = connection(ctx)
     assets = api.pages(f"/releases/{release['id']}/assets")
     by_id = {a["id"]: a for a in assets}
     imported = []
     for host in ctx.job["required_steps"]:
-        if host == ctx.host:
+        if (host not in hosts) if hosts is not None else (host == ctx.host):
             continue
         name = prefix(ctx.job) + host + "-status.json"
         status = next((a for a in assets if a["name"] == name), None)
@@ -283,6 +347,8 @@ def _sync_results(ctx, *, cleanup=False):
                     ctx.job["run_id"], ctx.job["sha"], ctx.job["version"], ctx.job["build"], host):
                 raise ReleaseError("Remote result belongs to a different build")
             result = payload["result"]
+            if "delivery_complete" in payload:
+                result["delivery_complete"] = payload["delivery_complete"]
             if (result["run_id"], result["sha"], result["host"]) != (ctx.job["run_id"], ctx.job["sha"], host):
                 raise ReleaseError("Remote result identity mismatch")
             local_result_path = ctx.directory / "results" / f"{host}.json"

@@ -167,6 +167,8 @@ If any rule below conflicts with a direct owner request, owner request wins.
 
 ## Release Checklist
 
+- Linux is a disposable builder across all shared-engine projects. Permanent package/log catalogues are Windows/GitHub only. Isolate new build/temp/cache/SDK copies; after verified upload of available packages and full logs/status (success/failed/stopped), restore owner state and remove attempt-created files and proven-owned new provider resources. Keep only small config/cursors/receipts/tombstones. Unverified delivery/recovery retains one bounded outbox and blocks new attempts. Preserve existing tools, settings, credentials and owner data; never perform general system pruning. Follow the release protocol and do not reintroduce Linux archives without a new direct owner instruction.
+
 - Obtain deployment packages from the canonical gitignored `.local-releases/releases/revelation/<version>+<build>/<SHA>/packages/` catalogue. Verify its manifest, version/build, source SHA, SHA-256 and signing. GitHub Releases is a mirror/backup, not the primary deployment source. Missing packages remain a local pipeline dependency; never substitute another SHA or rebuild historical releases when archived packages exist.
 - Follow [.agents/skills/revelation-release/SKILL.md](.agents/skills/revelation-release/SKILL.md) for local builds and isolated Windows/Linux exchange. REV301 completed the published seven-package trial at `v1.0.8+173`; the local trigger replaces the removed hosted autobuild. Preserve `scripts/local_release/inventory.py --check` and its historical Git-blob parity evidence. Do not recreate hosted autobuild or integration workflows.
 - Update version information in the versioned project files listed above.

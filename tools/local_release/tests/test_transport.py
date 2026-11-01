@@ -127,6 +127,43 @@ class TransportTest(unittest.TestCase):
         self.assertEqual(len(list(self.windows.output.iterdir())), 2)
         self.assertEqual({a[0]["name"] for a in FakeGitHub.assets.values()}, {"windows.zip", "linux.tar.gz"})
 
+    def test_package_upload_failure_still_delivers_logs_and_truthful_partial_status(self):
+        self.compile(self.windows, 'windows.zip')
+        original = FakeGitHub.upload_verified
+        def upload(api, release, path, **kwargs):
+            if path.name == 'windows.zip':
+                raise core.ReleaseError('package connection failed')
+            return original(api, release, path, **kwargs)
+        with patch.object(FakeGitHub, 'upload_verified', upload):
+            with self.assertRaisesRegex(core.ReleaseError, 'package connection'):
+                transport.send_result(self.windows)
+        assets = {item[0]['name']: item[1] for item in FakeGitHub.assets.values()}
+        self.assertIn(transport.prefix(self.windows.job) + 'windows-logs.zip', assets)
+        status = json.loads(assets[transport.prefix(self.windows.job) + 'windows-status.json'])
+        self.assertFalse(status['delivery_complete'])
+        self.assertIn('package connection failed', status['result']['transfer_error'])
+        self.assertFalse((self.windows.directory / 'results/windows-sent.json').exists())
+
+    def test_self_restore_fetches_linux_only_and_resume_does_not_mutate_job(self):
+        transport.handoff(self.windows)
+        linux = self.receive()
+        self.compile(linux, 'linux.tar.gz')
+        transport.send_result(linux)
+        job_bytes = (linux.directory / 'job.json').read_bytes()
+        (linux.directory / 'results/linux.json').unlink()
+        (linux.output / 'linux.tar.gz').unlink()
+        transport.sync_results(linux, hosts=['linux'])
+        self.assertEqual((linux.output / 'linux.tar.gz').read_bytes(), b'linux package')
+        self.assertFalse((linux.output / 'windows.zip').exists())
+        asset = transport.resume_linux(self.windows)
+        core.atomic_json(linux.directory / 'stop-request.json', {})
+        api = FakeGitHub('owner/repo', 'fixture')
+        with patch('local_release.transport.host_name', return_value='linux'):
+            transport.receive_resume(api, api.pages('/assets'), linux.job, linux.directory, self.base)
+        self.assertEqual((linux.directory / 'job.json').read_bytes(), job_bytes)
+        self.assertFalse((linux.directory / 'stop-request.json').exists())
+        self.assertEqual(core.read_json(linux.directory / 'results/linux-resume.json')['id'], asset['id'])
+
     def published_fixture(self):
         self.compile(self.windows, "windows.zip")
         transport.handoff(self.windows)

@@ -10,6 +10,50 @@ from local_release.core import atomic_json, capture, git, install_local_excludes
 
 
 class AgentTest(unittest.TestCase):
+    def test_linux_downloads_the_next_job_only_after_previous_cleanup_and_blocks_on_unsent_attempt(self):
+        from local_release.agent import linux_jobs
+        from local_release.linux_ephemeral import receipt_path
+        from local_release.core import ReleaseError
+        import shutil
+        for fail in (False, True):
+            with self.subTest(fail=fail), tempfile.TemporaryDirectory() as folder:
+                root = Path(folder)
+                project = {'project': 'fixture', 'config': str(root / 'config.json')}
+                profile = {'project': 'fixture'}
+                calls, completed = [], []
+                def receive(*args, **kwargs):
+                    calls.append('receive')
+                    self.assertEqual(kwargs['limit'], 1)
+                    self.assertFalse(any((root / 'releases').glob('*/*/*/job.json')))
+                    if len(calls) > 2:
+                        return []
+                    sha = ('a' if len(calls) == 1 else 'b') * 40
+                    directory = root / 'releases/fixture/1.0.0+1' / sha
+                    atomic_json(directory / 'job.json', {'schema': 1, 'project': 'fixture', 'sha': sha,
+                        'run_id': 'fixture-' + sha, 'version': '1.0.0', 'build': 1})
+                    atomic_json(directory / 'received.json', {})
+                    return [directory]
+                def execute(directory, *args, **kwargs):
+                    self.assertFalse(kwargs['publish'])
+                    if fail:
+                        atomic_json(directory / 'results/linux-outbox.json', {'pending': True})
+                        raise ReleaseError('offline')
+                    completed.append(directory.name)
+                    atomic_json(receipt_path(root, 'fixture', directory.name), {'status': 'built'})
+                    shutil.rmtree(directory)
+                with patch('local_release.transport.receive_jobs', side_effect=receive), \
+                        patch('local_release.github.reconcile_published', return_value=False), \
+                        patch('local_release.agent.discover_jobs', return_value='cursor'), \
+                        patch('local_release.agent.execute_prepared', side_effect=execute):
+                    if fail:
+                        with self.assertRaisesRegex(ReleaseError, 'blocked'):
+                            linux_jobs(project, profile, {}, root)
+                        self.assertEqual(len(calls), 1)
+                    else:
+                        records = linux_jobs(project, profile, {}, root)
+                        self.assertEqual([r['status'] for r in records], ['built', 'built'])
+                        self.assertEqual(completed, ['a' * 40, 'b' * 40])
+
     def test_linux_skips_a_release_completed_elsewhere_after_exchange_files_are_gone(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
@@ -25,9 +69,11 @@ class AgentTest(unittest.TestCase):
                     patch("local_release.retention.synchronize"), \
                     patch("local_release.transport.receive_jobs", return_value=[]), \
                     patch("local_release.github.reconcile_published", return_value=True), \
+                    patch("local_release.linux_ephemeral.cleanup_published") as cleanup, \
                     patch("local_release.agent.execute_prepared") as run:
                 records = project_cycle(project, "linux")
                 run.assert_not_called()
+                cleanup.assert_called_once()
             self.assertEqual(records, [{"run_id": "fixture-a", "status": "published"}])
 
     def test_linux_applies_tombstones_before_receiving_or_starting_builds(self):
@@ -43,9 +89,9 @@ class AgentTest(unittest.TestCase):
             def cleanup(*args):
                 order.append('delete')
                 atomic_json(root / 'deletions/fixture' / ('a' * 40 + '.json'), {'confirmed': True})
-            def receive(*args):
+            def receive(*args, **kwargs):
                 order.append('receive')
-                return [directory]
+                return []  # The receiver also filters the already-applied tombstone.
             with patch('local_release.agent.update_main'), patch('local_release.retention.synchronize', side_effect=cleanup), \
                     patch('local_release.transport.receive_jobs', side_effect=receive), \
                     patch('local_release.agent.discover_jobs', return_value='a' * 40), \

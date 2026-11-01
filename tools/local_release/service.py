@@ -151,6 +151,9 @@ class Dashboard:
         raise ReleaseError("Unknown release SHA")
 
     def busy(self, directory):
+        from .retention import busy
+        if busy(directory):
+            return True
         try:
             with lock(directory / ("." + host_name() + ".lock")):
                 return False
@@ -233,9 +236,14 @@ class Dashboard:
             for removed in removals:
                 if removed["sha"] in q.get("commits", {}):
                     q["commits"][removed["sha"]].update(status="deleted", reason="Owner-confirmed deletion")
+            diagnostic = Path(project['catalogue']) / 'host-reports/linux.json'
+            history = sorted(diagnostic.parent.glob('report-linux-*.json'), key=lambda p: p.stat().st_mtime, reverse=True)
+            history = [{'name': p.name, 'url': '/api/host-report?' + urlencode({'project': name, 'name': p.name})}
+                       for p in history if not p.name.endswith('.receipt.json')][:20]
             projects.append({"name": name, "enabled": project.get("enabled"), "hosts": project["hosts"],
                 "automatic_builds": q.get("enabled", False), "queue": q.get("commits", {}), "releases": releases,
-                "deletions": removals})
+                "deletions": removals, 'linux_diagnostic': read_json(diagnostic) if diagnostic.exists() else None,
+                'linux_report_history': history})
         agent = self.registry.parent / (host_name() + "-agent-result.json")
         failure = self.registry.parent / "service-error.json"
         return {"product": PRODUCT, "host": host_name(), "token": self.token, "time": time.time(),
@@ -261,6 +269,8 @@ class Dashboard:
             if action in ("stop", "restart"):
                 atomic_json(directory / "stop-request.json", {"requested": time.time(), "source": "localhost dashboard"})
                 if action == "stop":
+                    if not active:
+                        threading.Thread(target=self.report_stop, args=(project, directory), daemon=True).start()
                     return {"status": "stopping" if active else "stopped"}
                 if active:
                     threading.Thread(target=self.restart_after_stop, args=(name, sha), daemon=True).start()
@@ -268,6 +278,15 @@ class Dashboard:
             elif active:
                 raise ReleaseError("This job is already running")
             verify_runtime(directory)
+            if host_name() == 'windows' and 'linux' in job['required_steps']:
+                local = directory / 'results/windows.json'
+                peer = directory / 'results/linux.json'
+                values = read_json(local).get('steps', {}) if local.exists() else {}
+                remote = read_json(peer).get('steps', {}) if peer.exists() else {}
+                if (all(values.get(step, {}).get('status') == 'passed' for step in job['required_steps']['windows'])
+                        and any(remote.get(step, {}).get('status') != 'passed' for step in job['required_steps']['linux'])):
+                    from .transport import resume_linux
+                    resume_linux(Context(directory, read_json(Path(project['config']))))
             directory.joinpath("stop-request.json").unlink(missing_ok=True)
             python = Path(sys.executable)
             if python.name.lower() == "pythonw.exe":
@@ -280,6 +299,21 @@ class Dashboard:
             with output.open("a", encoding="utf-8") as stream:
                 self.children[key] = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=stream, stderr=stream, **options)
             return {"status": "starting"}
+
+    def report_stop(self, project, directory):
+        """Inactive stop still leaves a remotely visible log/status."""
+        try:
+            ctx = Context(directory, read_json(Path(project['config'])))
+            ctx.result.update(status='stopped', current_step=None)
+            log = directory / 'logs' / ctx.host / 'dashboard-stop.log'
+            log.parent.mkdir(parents=True, exist_ok=True)
+            log.write_text('Owner requested Stop while no builder was active.\n', encoding='utf-8')
+            ctx.save()
+            from .transport import send_result
+            send_result(ctx)
+        except Exception as error:
+            atomic_json(directory / 'results' / (host_name() + '-outbox.json'),
+                        {'pending': True, 'reason': str(error), 'action': 'Retry result delivery'})
 
     def restart_after_stop(self, name, sha):
         # Cooperative shutdown allows fixture restoration and result transfer.
@@ -361,8 +395,9 @@ class Handler(BaseHTTPRequestHandler):
                 self.respond(200, {"product": PRODUCT, "registry": identity(self.server.dashboard.registry)})
             elif url.path == "/api/state":
                 self.respond(200, self.server.dashboard.state())
-            elif url.path in ("/", "/dashboard.js", "/dashboard.css", "/favicon.svg"):
+            elif url.path in ("/", "/dashboard.js", "/dashboard_controls.js", "/dashboard.css", "/favicon.svg"):
                 names = {"/": ("dashboard.html", "text/html"), "/dashboard.js": ("dashboard.js", "text/javascript"),
+                         "/dashboard_controls.js": ("dashboard_controls.js", "text/javascript"),
                          "/dashboard.css": ("dashboard.css", "text/css"), "/favicon.svg": ("favicon.svg", "image/svg+xml")}
                 name, kind = names[url.path]
                 self.respond(200, Path(__file__).with_name(name).read_bytes(), kind + "; charset=utf-8")
@@ -380,6 +415,17 @@ class Handler(BaseHTTPRequestHandler):
                     self.end_headers()
                     with path.open("rb") as stream:
                         shutil.copyfileobj(stream, self.wfile)
+            elif url.path == '/api/host-report':
+                query = {k: v[0] for k, v in parse_qs(url.query).items()}
+                project = self.server.dashboard.projects().get(query.get('project'))
+                name = query.get('name', '')
+                if not project or not re.fullmatch(r'report-linux-(?:[a-f0-9]{40}|bootstrap)-\d+-[a-f0-9]{32}\.json', name):
+                    raise ReleaseError('Unknown host report')
+                path = inside(Path(project['catalogue']) / 'host-reports', name)
+                if path.stat().st_size > 512 * 1024:
+                    raise ReleaseError('Oversized host report')
+                from .host_reports import redactor
+                self.respond(200, redactor(read_json(Path(project['config'])))(path.read_text(encoding='utf-8')).encode(), 'text/plain; charset=utf-8')
             else:
                 self.respond(404, {"error": "Unknown resource"})
         except (OSError, ValueError, KeyError, ReleaseError) as error:

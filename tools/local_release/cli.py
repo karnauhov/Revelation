@@ -215,6 +215,9 @@ def main(argv=None):
             transport.sync_results(context, cleanup=args.cleanup)
         elif args.command == "handoff":
             transport.handoff(context)
+        elif host_name() == 'linux':
+            from local_release.linux_ephemeral import run
+            run(args.job.resolve(), read_json(args.config), lambda *args: None)
         else:
             transport.send_result(context)
     elif args.command == "receive":

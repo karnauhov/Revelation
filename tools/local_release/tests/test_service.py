@@ -74,6 +74,30 @@ class ServiceTest(unittest.TestCase):
             "Content-Type": "application/json", "X-AI11-Token": self.server.dashboard.token,
             "Origin": f"http://127.0.0.1:{self.port}"})
 
+    def test_tooltip_script_and_linux_diagnostics_are_available_without_changing_gates(self):
+        status, body, headers = self.request('/dashboard_controls.js')
+        self.assertEqual(status, 200)
+        self.assertIn(b'aria-description', body)
+        self.assertIn(b'focusin', body)
+        self.assertIn(b'mouseenter', body)
+        project = read_json(self.registry)['projects']['first']
+        atomic_json(Path(project['catalogue']) / 'host-reports/linux.json', {
+            'schema': 1, 'host': 'linux', 'project': 'first', 'phase': 'bootstrap',
+            'error': 'ENOSPC', 'status': 'failed', 'updated': 10})
+        state = json.loads(self.request('/api/state')[1])
+        self.assertEqual(state['projects'][0]['linux_diagnostic']['error'], 'ENOSPC')
+        self.assertEqual(state['projects'][0]['releases'][0]['hosts'], {})
+        name = 'report-linux-bootstrap-123-' + '0' * 32 + '.json'
+        atomic_json(Path(project['catalogue']) / 'host-reports' / name,
+                    {'error': 'must-stay-private', 'phase': 'bootstrap'})
+        state = json.loads(self.request('/api/state')[1])
+        url = state['projects'][0]['linux_report_history'][0]['url']
+        status, body, _ = self.request(url)
+        self.assertEqual(status, 200)
+        self.assertNotIn(b'must-stay-private', body)
+        self.assertIn(b'[REDACTED]', body)
+        self.assertEqual(self.request('/api/host-report?project=first&name=../config.json')[0], 400)
+
     def retention_fixture(self):
         value = read_json(self.registry)
         profile = self.root / "first-profile.json"

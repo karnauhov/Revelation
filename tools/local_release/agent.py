@@ -72,22 +72,38 @@ def update_main(project):
         raise ReleaseError("Switch this project to main once before enabling the login dispatcher")
     if git(repo, "diff", "HEAD", "--name-only"):
         raise ReleaseError("Tracked owner changes prevent automatic main update; files preserved")
-    git(repo, "fetch", "origin")
-    git(repo, "merge", "--ff-only", "origin/main")
+    for arguments in (['fetch', 'origin'], ['merge', '--ff-only', 'origin/main']):
+        from .core import hidden_flags
+        result = subprocess.run(['git', '-C', str(repo), *arguments], capture_output=True, text=True,
+                                errors='replace', check=False, creationflags=hidden_flags())
+        if result.returncode:
+            from .host_reports import redactor
+            config = read_json(Path(project['config'])) if project.get('config') else {}
+            detail = redactor(config)((result.stdout + '\n' + result.stderr)[-32768:])
+            raise ReleaseError('Git ' + arguments[0] + ' failed: ' + detail)
 
 
-def discover_jobs(project):
+def discover_jobs(project, *, prepared=None, exclude_shas=()):
     repo = Path(project["repo"])
     current = git(repo, "rev-parse", "HEAD")
     cursor = project.get("cursor", current)
     commits = git(repo, "rev-list", "--reverse", cursor + ".." + current).splitlines()
     for sha in commits:
+        if sha in exclude_shas:
+            continue
         from .retention import deleted
         if deleted(Path(project["catalogue"]), project["project"], sha):
             continue
         if "[skip ci]" not in git(repo, "show", "-s", "--format=%B", sha):
-            prepare(repo, Path(project["profile"]), Path(project["catalogue"]), sha,
-                    config=read_json(Path(project["config"])))
+            if prepared:
+                from .linux_ephemeral import receipt_path
+                receipt = receipt_path(Path(project['catalogue']), project['project'], sha)
+                if receipt.exists() and read_json(receipt).get('delivery_verified'):
+                    continue
+            directory = prepare(repo, Path(project["profile"]), Path(project["catalogue"]), sha,
+                                config=read_json(Path(project["config"])))
+            if prepared:
+                prepared(directory)
     return current
 
 
@@ -131,22 +147,32 @@ def remediation(directory, project):
 
 
 def project_cycle(project, role):
-    from .transport import receive_jobs, sync_results, handoff
-    from .github import publish_job, reconcile_published
+    from .transport import receive_jobs, sync_results
+    from .github import publish_job
     profile = read_json(Path(project["profile"]))
     config = read_json(Path(project["config"]))
     root = Path(project["catalogue"])
     if role == "linux":
+        from .host_reports import drain, collect_previous
+        drain(project)
+        collect_previous(project)
         update_main(project)
         config.setdefault("auto_provision_flutter", True)
         config["stream_output"] = True
         atomic_json(Path(project["config"]), config)
     from .retention import synchronize, deleted
     synchronize(project, role)
+    if role == 'windows':
+        from .host_reports import receive
+        receive(project)
+    if role == 'linux':
+        from .linux_ephemeral import run
+        # Drain existing attempts before downloading/preparing any further jobs.
+        for outbox in (root / 'releases' / profile['project']).glob('*/*/results/linux-outbox.json'):
+            run(outbox.parents[1], config, lambda *args: None)
+        return linux_jobs(project, profile, config, root)
     received = receive_jobs(profile, root, config)
     jobs = {path for path in received}
-    if role == "linux":
-        project["cursor"] = discover_jobs(project)
     jobs.update(path.parent for path in (root / "releases" / profile["project"]).glob("*/*/job.json"))
     records = []
     for directory in sorted(jobs):
@@ -167,35 +193,69 @@ def project_cycle(project, role):
         print(f"{profile['project']} {job['version']}+{job['build']} {job['sha'][:12]}", flush=True)
         try:
             ctx = Context(directory, config, host=role)
-            if role == "linux":
-                if reconcile_published(ctx):
-                    records.append({"run_id": job["run_id"], "status": "published"})
-                    print("Already published; completed packages and stages are preserved.", flush=True)
-                    continue
-                if (directory / "stop-request.json").exists():
-                    records.append({"run_id": job["run_id"], "status": "stopped"})
-                    continue
-                previous = directory / "results/linux.json"
-                if previous.exists() and read_json(previous).get("status") == "failed":
-                    ctx.result["current_step"] = "diagnostics"
-                    diagnose(ctx)
-                # New jobs first prepared here also get the exact same transport.
-                if not (directory / "received.json").exists():
-                    handoff(ctx)
-                execute_prepared(directory, Path(project["config"]), publish=True)
-            else:
-                sync_results(ctx)
-                remediation(directory, project)
-                if not (directory / "stop-request.json").exists():
-                    publish_job(ctx)
-                    if publication.exists() and read_json(publication).get("published"):
-                        sync_results(ctx, cleanup=True)
+            sync_results(ctx)
+            remediation(directory, project)
+            if not (directory / "stop-request.json").exists():
+                publish_job(ctx)
+                if publication.exists() and read_json(publication).get("published"):
+                    sync_results(ctx, cleanup=True)
             current = directory / "results" / f"{role}.json"
             state = read_json(current).get("status") if current.exists() else "waiting"
             records.append({"run_id": job["run_id"], "status": state})
         except Exception as error:
             records.append({"run_id": job["run_id"], "status": "failed", "error": str(error)})
             print(f"FAILED {job['run_id']}: {error}", flush=True)
+    return records
+
+
+def linux_jobs(project, profile, config, root):
+    """Never prefetch a version archive: download/build/deliver/purge one at a time."""
+    from .retention import deleted
+    from .transport import receive_jobs, handoff
+    from .github import reconcile_published
+    from .linux_ephemeral import receipt_path, cleanup_published
+    records, attempted = [], set()
+    def one(directory):
+        if directory.name in attempted or deleted(root, profile['project'], directory.name):
+            return
+        attempted.add(directory.name)
+        ctx = Context(directory, config, host='linux')
+        job = ctx.job
+        print(f"{profile['project']} {job['version']}+{job['build']} {job['sha'][:12]}", flush=True)
+        try:
+            if reconcile_published(ctx):
+                cleanup_published(ctx)
+                status = 'published'
+            else:
+                if not (directory / 'received.json').exists():
+                    handoff(ctx)
+                execute_prepared(directory, Path(project['config']), publish=False)
+                current = directory / 'results/linux.json'
+                receipt = receipt_path(root, profile['project'], job['sha'])
+                status = (read_json(current).get('status', 'waiting') if current.exists() else
+                          read_json(receipt).get('status', 'waiting') if receipt.exists() else 'waiting')
+            records.append({'run_id': job['run_id'], 'status': status})
+        except Exception as error:
+            records.append({'run_id': job['run_id'], 'status': 'failed', 'error': str(error)})
+            print(f"FAILED {job['run_id']}: {error}", flush=True)
+            if directory.exists() and not (directory / 'results/linux-outbox.json').exists():
+                from .host_reports import report_failure
+                report_failure(project, error, phase='job-or-delivery')
+            if directory.exists():
+                # A preserved attempt always blocks further preparation/download.
+                raise ReleaseError('Linux delivery/recovery pending; further downloads are blocked') from error
+    for job in sorted((root / 'releases' / profile['project']).glob('*/*/job.json')):
+        one(job.parent)
+    while True:
+        received = receive_jobs(profile, root, config, limit=1, exclude_shas=attempted)
+        if not received:
+            break
+        before = len(attempted)
+        for directory in received:
+            one(directory)
+        if len(attempted) == before:
+            break
+    project['cursor'] = discover_jobs(project, prepared=one, exclude_shas=attempted)
     return records
 
 
@@ -217,6 +277,9 @@ def cycle(registry, role=None, runner=project_cycle):
             except Exception as error:
                 report["projects"][name] = {"status": "failed", "error": str(error)}
                 print(f"FAILED {name}: {error}", flush=True)
+                if role == 'linux':
+                    from .host_reports import report_failure
+                    report_failure(project, error)
         report["finished"] = time.time()
         report["status"] = "finished_with_errors" if any(
             value["status"] == "failed" or any(job.get("status") in ("failed", "stopped", "incomplete", "interrupted") for job in value.get("jobs", []))

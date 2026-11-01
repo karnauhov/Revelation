@@ -56,16 +56,27 @@ def provision_flutter(ctx):
     from ..core import capture
     import json
     try:
-        current = json.loads(capture(["flutter", "--version", "--machine"], env=ctx.env))["frameworkVersion"]
+        if ctx.config.get('ephemeral_linux'):
+            installed = shutil.which('flutter', path=ctx.env.get('PATH'))
+            version_file = Path(installed).resolve().parents[1] / 'bin/cache/flutter.version.json' if installed else None
+            current = json.loads(version_file.read_text())['frameworkVersion'] if version_file and version_file.is_file() else None
+        else:
+            current = json.loads(capture(["flutter", "--version", "--machine"], env=ctx.env))["frameworkVersion"]
     except (ReleaseError, OSError, ValueError):
         current = None
-    if current == ctx.job["profile"]["flutter"]:
+    if current == ctx.job["profile"]["flutter"] and not ctx.config.get('ephemeral_linux'):
         return
-    sdk = Path.home() / ".cache/ai11-local-release/flutter" / ctx.job["profile"]["flutter"]
+    sdk = (Path(ctx.config['linux_scratch']) / 'flutter' if ctx.config.get('ephemeral_linux') else
+           Path.home() / ".cache/ai11-local-release/flutter" / ctx.job["profile"]["flutter"])
     sdk.parent.mkdir(parents=True, exist_ok=True)
     if not sdk.exists():
-        ctx.command(["git", "clone", "--depth", "1", "--branch", ctx.job["profile"]["flutter"],
-                     "https://github.com/flutter/flutter.git", sdk], cwd=sdk.parent)
+        installed = shutil.which('flutter', path=ctx.env.get('PATH'))
+        baseline = Path(installed).resolve().parents[1] if installed else None
+        if ctx.config.get('ephemeral_linux') and current == ctx.job['profile']['flutter'] and baseline and (baseline / 'bin/cache').is_dir():
+            shutil.copytree(baseline, sdk, symlinks=False)
+        else:
+            ctx.command(["git", "clone", "--depth", "1", "--branch", ctx.job["profile"]["flutter"],
+                         "https://github.com/flutter/flutter.git", sdk], cwd=sdk.parent)
     ctx.env["PATH"] = str(sdk / "bin") + os.pathsep + ctx.env.get("PATH", "")
 
 
@@ -123,6 +134,9 @@ def build_snap(ctx):
     if application_running():
         raise ReleaseError("Revelation is already open; the original Snap debug run waits without touching it")
     ctx.command(["snapcraft", "--version"])
+    if ctx.config.get('ephemeral_linux'):
+        from ..linux_provider import baseline
+        baseline(ctx)
     snapshot = ctx.root / "w" / ctx.job["sha"][:12] / "snap-input"
     if not snapshot.exists():
         hooks = (snapshot / ".git/ai11-no-hooks").as_posix()
@@ -171,9 +185,16 @@ def build(ctx):
             failures.append(name)
             print(ctx.redact(f"FAILED {name}: {error}"), flush=True)
             return False
-    if not (ctx.workspace / "build/linux/x64/release/bundle/revelation").is_file():
+    tar = package_path(ctx, '.tar.gz')
+    tar_checkpoint = ctx.result['steps'].get('linux-tar', {})
+    preserved_tar = (tar.is_file() and tar_checkpoint.get('status') == 'passed' and
+                     tar_checkpoint.get('outputs', {}).get('packages/' + tar.name) == digest(tar) and
+                     all(ctx.result['steps'].get(name, {}).get('status') == 'passed' for name in ('linux', 'sentry-linux')))
+    if preserved_tar:
+        attempt('inspect-linux-tar', lambda: inspect_tar(ctx), ['results/linux-tar-package.json'])
+    elif not (ctx.workspace / "build/linux/x64/release/bundle/revelation").is_file():
         ctx.result["steps"].pop("linux", None)
-    native = attempt("linux", lambda: ctx.command(["flutter", "build", "linux", "--release", "--target=lib/main.dart", "--dart-define-from-file=api-keys.json"]))
+    native = False if preserved_tar else attempt("linux", lambda: ctx.command(["flutter", "build", "linux", "--release", "--target=lib/main.dart", "--dart-define-from-file=api-keys.json"]))
     if native:
         attempt("sentry-linux", lambda: ctx.command(["dart", "run", "sentry_dart_plugin", "--sentry-define=upload_source_maps=false"]))
         def archive():

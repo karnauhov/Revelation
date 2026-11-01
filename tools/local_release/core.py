@@ -171,7 +171,17 @@ class Context:
         if self.result.get("status") == "running":
             self.result["attempt_runtime_revision"] = self.job.get("preparation_revision", 1)
             self.result.pop("pending_runtime_revision", None)
-        atomic_json(self.result_path, self.result)
+        try:
+            atomic_json(self.result_path, self.result)
+        except OSError as error:
+            import errno
+            if self.host != 'linux' or error.errno != errno.ENOSPC:
+                raise
+            reserve = inside(self.root, 'w/' + self.job['sha'][:12] + '/linux-scratch/emergency-reserve')
+            if not reserve.exists():
+                raise
+            reserve.unlink()
+            atomic_json(self.result_path, self.result)
 
     def refresh_redaction(self, values=()):
         self.redact = Redactor([*self.redact.values, *values])
@@ -200,6 +210,10 @@ class Context:
                 creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" and new_session else 0) | hidden_flags(),
             )
             process.owned_process_group = new_session
+            finish_provider_observation = None
+            if self.host == 'linux' and self.config.get('ephemeral_linux'):
+                from .linux_provider import observe
+                finish_provider_observation = observe(self, process)
             from .processes import StopMonitor, JobStopped, terminate_tree
             monitor = StopMonitor(process, self.directory / "stop-request.json", enabled=cancellable)
             monitor.__enter__()
@@ -219,6 +233,8 @@ class Context:
             finally:
                 process.stdout.close()
                 monitor.__exit__()
+                if finish_provider_observation:
+                    finish_provider_observation()
             stream.write(f"exit_code={code}\n")
             if monitor.stopped:
                 raise JobStopped("Stopped by owner; verified packages and checkpoints preserved")
@@ -472,6 +488,15 @@ def update_queue(root, path, sha, **fields):
 
 
 def run_job(directory: Path, config: dict, publish=False):
+    from .retention import ensure_job_allowed
+    ensure_job_allowed(directory)
+    if host_name() == 'linux':
+        from .linux_ephemeral import run
+        return run(directory, config, _run_job)
+    return _run_job(directory, config, publish)
+
+
+def _run_job(directory: Path, config: dict, publish=False):
     from .retention import ensure_job_allowed
     ensure_job_allowed(directory)
     publication = directory / "publication.json"

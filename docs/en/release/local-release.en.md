@@ -1,7 +1,7 @@
 # Local Revelation releases
 
-Doc-Version: 1.1.2
-Last-Updated: 2026-10-31
+Doc-Version: 1.2.0
+Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
 [Shared build dashboard and startup](build-service.en.md) - http://127.0.0.1:8877.
@@ -117,7 +117,7 @@ Automated Snap executes the entire original `snapcraft_build.sh` from the pinned
 `snapcraft clean`, `snapcraft pack`, and `Build complete`. Its Git blob is verified before execution;
 commands and order are never shortened. The job's release override-build and pinned Flutter SDK remain.
 Only `q` input is automated through a real Linux PTY after Flutter's command banner, application startup and five seconds alive.
-That debug process uses isolated XDG Documents/config/data/cache. Snapcraft retains the original environment.
+That debug process uses isolated XDG Documents/config/data/cache. Snapcraft retains the original build commands with attempt-local caches and the LXD provider.
 Full-script execution evidence is saved as `results/linux-snap-script.json`. Manual `./snapcraft_build.sh`
 retains its original behavior; automated multi-project dispatch uses `run-linux.sh`.
 Built-in `verify-linux` installs the exact SHA-256 inspected package, requires actual Flutter startup and ten seconds
@@ -192,3 +192,18 @@ in a separate Flutter process with its own checkpoint. With Flutter 3.47.2 this 
 the aggregate integration gate passes only after the complete suite.
 
 The [Windows/Linux protocol](protocol.en.md) defines jobs, runtime repairs, partial packages, logs and receipts. Implementation uses main; exchange needs no separate branch.
+
+## Linux is a temporary builder
+
+Only Windows and GitHub retain the permanent package catalogue and complete logs. Linux keeps no version archive.
+Each attempt uses an isolated checkout, a private copy of the pinned Flutter SDK and private temporary/cache directories.
+The global SDK, installed tools, settings, credentials and owner data are preserved.
+For success/failed/stopped, logs, status and available packages are uploaded and SHA-256 read back first.
+Owner acceptance data is then restored; newly observed, proven-owned LXD resources, checkouts, caches,
+source bundle, packages and logs are removed. Only small receipts/cursors/tombstones/config remain.
+Unverified delivery or pending recovery preserves one attempt and blocks new jobs until it is handled.
+Retries restore accepted packages/checkpoints from GitHub. A Snap failure does not require recompiling an accepted TAR.
+A normal dashboard Stop also sends logs. Forced power-off can interrupt transfer; the next login drains the saved attempt first.
+No general system cleanup or deletion of unrelated LXD resources/caches is performed.
+This policy applies to every Linux profile using the shared engine; permanent local archive requirements mean Windows.
+The complete Ubuntu baseline-restoration trial must be run after this update is delivered.

@@ -297,7 +297,7 @@ class RetentionTest(unittest.TestCase):
         self.api.upload_verified(self.api.releases[1], package)
         self.request()
         package.unlink()
-        with patch('local_release.archive.GitHub', return_value=self.api), patch('local_release.archive.credential', return_value='fixture'):
+        with patch('local_release.archive.GitHub', return_value=self.api), patch('local_release.archive.credential', return_value='fixture'), patch('local_release.archive.host_name', return_value='windows'):
             archive_releases(read_json(Path(self.project['profile'])), Path(self.project['catalogue']), {})
         self.assertFalse(package.exists())
         self.assertFalse((self.directory / 'github-release.json').exists())

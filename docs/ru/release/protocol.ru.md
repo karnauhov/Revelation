@@ -1,7 +1,7 @@
 # Обмен локальных сборщиков
 
-Doc-Version: 2.0.11
-Last-Updated: 2026-10-31
+Doc-Version: 2.1.0
+Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
 Git `main` хранит инструменты, профили и [перечень проектов](../../../scripts/local_release/projects.json).
@@ -171,8 +171,33 @@ Retry после ошибки подписи повторно build не уве�
 
 Первый запуск в Ubuntu: обновить main и выполнить `bash scripts/local_release/run-linux.sh`.
 Он регистрирует профиль и устанавливает пользовательский XDG autostart без root. Следующие входы открывают терминал
-с прогрессом и итогом всех подключённых проектов. Flutter при необходимости устанавливается отдельно в user cache
-строго указанной версии; глобальный SDK не заменяется. Snapcraft выполняет весь исходный `snapcraft_build.sh`,
+с прогрессом и итогом всех подключённых проектов. Flutter закреплённой версии копируется/устанавливается только в временный каталог попытки; глобальный SDK не изменяется. Snapcraft выполняет весь исходный `snapcraft_build.sh`,
 включая debug run; только его завершение через `q` автоматизировано в отдельном PTY. Release override-build сохраняется.
 
 Реальная проверка нового graphical-login цикла и Snap install/smoke выполняется в Ubuntu; недоступный прогон не является PASS.
+
+## Временное выполнение Linux и независимые отчёты
+
+Linux отправляет собственный result, пакеты и полный logs.zip; не скачивает Windows APK/AAB/EXE/MSIX/Web и не публикует итоговый выпуск.
+Перед большими пакетами отправляются logs.zip и provisional status с `delivery_complete=false`.
+После read-back всех файлов отправляется status с `delivery_complete=true`. Неполная передача не является завершением выпуска.
+Проверка upload выполняет полный потоковый SHA-256 read-back без второй дисковой копии пакета.
+`linux-receipts/<project>/<SHA>.json` хранит небольшую квитанцию, preventing повторный download/build завершённого задания.
+Новый runtime или явный `local-transfer-<run_id>-linux-resume.json` разрешают продолжение; сам immutable job.json не меняется от команды.
+При повторе восстанавливаются только Linux-пакеты/evidence/checkpoints. Успешные Windows-этапы не сбрасываются.
+
+Отдельный private control draft `ai11-local-reports-<project>` имеет marker `<!-- ai11-host-reports:<project>:1 -->`.
+`latest-linux.json` - ограниченный текущий snapshot; `report-linux-<SHA|bootstrap>-<time>-<id>.json` - неизменяемая история завершений/ошибок.
+Отчёт содержит schema/project/host/updated, phase/status, при наличии sha/result/timing/log_tails/error.
+Его размер ограничен 512 KiB; секреты удаляются перед отправкой, временный JSON в Ubuntu создаётся в `/dev/shm`.
+Bootstrap/Git-update/ENOSPC не требуют доступного job.json или места под второй пакет.
+Windows проверяет marker/identity/digest, сохраняет отчёт и receipt; диагностический snapshot не объявляет gates пройденными.
+Удаление версии также удаляет её диагностическую историю по точному SHA и запрещает её повторный импорт.
+
+Очистка Linux разрешена после проверенной передачи и восстановления owner-state. При ошибке одна bounded outbox сохраняет попытку,
+новые задания блокируются. В Linux остаются только небольшие управляющие записи, но не пакеты, логи, SDK-копии и build/cache-каталоги.
+Новые LXD instances/images удаляются только при наблюдённой принадлежности процессной сессии сборки и отсутствии в baseline;
+неизвестные или используемые другими проектами ресурсы сохраняются с явной ошибкой очистки. Системный prune запрещён.
+Оригинальный snapcraft_build.sh выполняется целиком, без правок команд; ephemeral Snap использует LXD.
+
+Linux получает и подготавливает задания по одному: следующий source bundle скачивается только после обработки предыдущей попытки. Исторический archive import в Linux запрещён движком.

@@ -24,6 +24,14 @@ from local_release.hooks import install, remove
 
 class CoordinatorTest(unittest.TestCase):
     def setUp(self):
+        # These are persistent checkpoint/queue primitive tests. Disposable Linux
+        # execution and verified delivery have their own lifecycle suite.
+        primitive = patch('local_release.core.run_job', core._run_job)
+        primitive.start()
+        self.addCleanup(primitive.stop)
+        archive_host = patch('local_release.archive.host_name', return_value='windows')
+        archive_host.start()
+        self.addCleanup(archive_host.stop)
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)

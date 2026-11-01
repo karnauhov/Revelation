@@ -3,12 +3,14 @@
 from pathlib import Path
 import re
 
-from .core import ReleaseError, atomic_json, digest, inside, lock, read_json
+from .core import ReleaseError, atomic_json, digest, inside, lock, read_json, host_name
 from .github import GitHub, credential
 from .catalogue import release_directory
 
 
 def archive_releases(profile, root: Path, config):
+    if host_name() == 'linux':
+        raise ReleaseError('Linux is a disposable builder; import permanent release archives on Windows')
     try:
         token = credential(config)
     except ReleaseError:

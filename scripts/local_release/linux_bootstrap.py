@@ -41,8 +41,9 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except Exception as error:
-        atomic_json(REPO / ".local-releases/linux-bootstrap-result.json", {
-            "status": "failed-before-job", "reason": str(error),
-            "action": "Restore local configuration/authentication and retry; no shell text from logs was executed"})
+        from local_release.host_reports import report_failure
+        report_failure({'project': 'revelation', 'profile': str(REPO / 'scripts/local_release/revelation.json'),
+                        'config': str(Path.home() / '.config/ai11-local-release/revelation.json'),
+                        'catalogue': str(REPO / '.local-releases')}, error)
         print(str(error), file=sys.stderr)
         sys.exit(1)

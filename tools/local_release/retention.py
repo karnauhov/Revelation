@@ -164,9 +164,20 @@ def request_deletion(project, prepared):
     return record
 
 
-def busy(directory):
+def busy(directory, *, ignore_lifecycle=False):
     if not directory.exists():
         return False
+    if not ignore_lifecycle:
+        from .linux_ephemeral import receipt_path
+        lifecycle = receipt_path(directory.parents[3], directory.parents[1].name, directory.name).with_suffix('.lock')
+        if lifecycle.exists():
+            try:
+                with lock(lifecycle):
+                    pass
+            except ReleaseError as error:
+                if str(error).startswith('Busy operation:'):
+                    return True
+                raise
     for host in ("windows", "linux", "macos"):
         try:
             with lock(directory / ("." + host + ".lock")):
@@ -220,10 +231,10 @@ def safe_remove(root, target, expected_relative):
             raise ReleaseError("Managed build directory remains after cleanup")
 
 
-def cleanup_local(project, request, role):
+def cleanup_local(project, request, role, *, ignore_lifecycle=False):
     directory = validate(request, project)
     root = Path(project["catalogue"]).resolve()
-    if busy(directory):
+    if busy(directory, ignore_lifecycle=ignore_lifecycle):
         if directory.exists():
             atomic_json(directory / "stop-request.json", {"source": "owner-confirmed deletion", "requested": time.time()})
         return False
@@ -232,7 +243,7 @@ def cleanup_local(project, request, role):
         if snapshot.resolve() != snapshot.absolute() or not snapshot.resolve().is_relative_to(root):
             raise ReleaseError("Builder snapshot is linked outside the catalogue")
         for child in snapshot.iterdir():
-            if child.name not in {"w", "l", "m", "snap-input", "snap-cli", "snap-acceptance", "windows-test-state", "linux-test-state", "macos-test-state"}:
+            if child.name not in {"w", "l", "m", "snap-input", "snap-cli", "snap-acceptance", "linux-scratch", "windows-test-state", "linux-test-state", "macos-test-state"}:
                 raise ReleaseError("Unrecognized files in the builder snapshot; preserved for inspection")
             if (child / ".git").exists() and git(child, "rev-parse", "HEAD") != request["sha"]:
                 raise ReleaseError("Builder snapshot belongs to another source SHA")
@@ -251,6 +262,9 @@ def cleanup_local(project, request, role):
             adapter.recover_for_deletion(Context(directory, read_json(Path(project["config"])), host=role))
             if any(path.exists() for path in journals):
                 raise ReleaseError("Owner-data recovery is still pending; build preserved")
+    if role == 'linux' and not ignore_lifecycle and (directory / 'results/linux-provider-baseline.json').exists():
+        from .linux_provider import cleanup
+        cleanup(Context(directory, read_json(Path(project['config'])), host=role))
     safe_remove(root, snapshot, Path("w") / request["sha"][:12])
     safe_remove(root, directory, directory.relative_to(root))
     if directory.parent.exists() and not any(directory.parent.iterdir()):
@@ -312,6 +326,8 @@ def process(project, sha, *, role=None, api=None):
                     return record
                 record["local_deleted"] = True
                 atomic_json(path, record)
+            from .host_reports import purge_build
+            purge_build(project, sha, api)
             ack = {"schema": 1, "project": request["project"], "request_id": request["request_id"],
                    "sha": sha, "host": role, "deleted": True}
             if not record.get("ack_sent"):

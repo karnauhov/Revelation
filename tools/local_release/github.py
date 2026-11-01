@@ -93,8 +93,8 @@ class GitHub:
                 return result
             page += 1
 
-    def download_asset(self, asset, destination):
-        """Stream to disk; API credentials never follow signed CDN redirects."""
+    def asset_response(self, asset):
+        """Open a download without forwarding API credentials to the CDN."""
         url = asset["url"]
         if not url.startswith(self.base + "/releases/assets/"):
             raise ReleaseError("Asset URL does not belong to the selected repository")
@@ -111,6 +111,23 @@ class GitHub:
             if parsed.scheme != "https" or not parsed.hostname.endswith(".githubusercontent.com"):
                 raise ReleaseError("Unexpected asset CDN redirect") from None
             response = urllib.request.urlopen(location, timeout=180)
+        return response
+
+    def verify_asset(self, asset, expected):
+        """Full byte/hash read-back without a second on-disk package copy."""
+        checksum, size = hashlib.sha256(), 0
+        with self.asset_response(asset) as response:
+            while block := response.read(1024 * 1024):
+                checksum.update(block)
+                size += len(block)
+        if (size != asset["size"] or checksum.hexdigest() != expected
+                or asset.get("digest") and asset["digest"] != "sha256:" + expected):
+            raise ReleaseError("Downloaded asset digest mismatch: " + asset["name"])
+        return expected
+
+    def download_asset(self, asset, destination):
+        """Stream to disk; API credentials never follow signed CDN redirects."""
+        response = self.asset_response(asset)
         destination.parent.mkdir(parents=True, exist_ok=True)
         partial = destination.with_name(destination.name + ".partial")
         try:
@@ -191,10 +208,7 @@ class GitHub:
                 raise ReleaseError("Published release is missing an expected asset")
             url = release["upload_url"].split("{", 1)[0] + "?name=" + urllib.parse.quote(name)
             found = self.request("POST", url, path.read_bytes(), "application/octet-stream")
-        with tempfile.TemporaryDirectory(prefix="local-release-readback-") as temporary:
-            actual = self.download_asset(found, Path(temporary) / path.name)
-            if actual != expected:
-                raise ReleaseError("Downloaded asset digest mismatch: " + path.name)
+        self.verify_asset(found, expected)
         return {"id": found["id"], "url": found["browser_download_url"],
                 "sha256": expected, "size": path.stat().st_size, "asset_name": name}
 
@@ -206,6 +220,8 @@ def complete_results(directory, job):
         if not path.exists():
             return False
         result = read_json(path)
+        if result.get('delivery_complete') is False:
+            return False
         if result["sha"] != job["sha"] or result["run_id"] != job["run_id"]:
             raise ReleaseError("Mixed release results")
         if any(result["steps"].get(step, {}).get("status") != "passed" for step in required_steps):

@@ -146,6 +146,10 @@ def preflight(ctx):
     ctx.command(["git", "--version"])
     ctx.command(["flutter", "doctor", "-v"])
     configured_secrets(ctx)
+    if ctx.host == 'linux' and ctx.config.get('ephemeral_linux') and ctx.result['steps'].get('dependencies', {}).get('status') == 'passed' and not (ctx.workspace / '.dart_tool/package_config.json').is_file():
+        # Restored quality evidence remains valid, but a new disposable checkout
+        # still needs its package configuration before --no-pub commands.
+        ctx.stage('workspace-dependencies', lambda: ctx.command(['flutter', 'pub', 'get']), always=True)
     if ctx.host == "windows":
         java = ctx.command(["java", "-version"])
         if not re.search(r'version "17[.\"]', java):
