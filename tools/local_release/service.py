@@ -574,7 +574,9 @@ def install_startup(registry, port=PORT):
     if not python.is_file():
         raise ReleaseError("pythonw.exe is required for a hidden Windows startup service")
     cli = Path(__file__).with_name("cli.py").resolve()
-    arguments = subprocess.list2cmdline([str(cli), "serve", "--registry", str(registry.resolve()), "--port", str(port)])
+    # The launcher reuses a healthy instance and gives the detached server real
+    # log handles. Direct pythonw/serve at login loses early stderr diagnostics.
+    arguments = subprocess.list2cmdline([str(cli), "start-service", "--registry", str(registry.resolve()), "--port", str(port)])
     # Structured environment avoids interpolating owner paths into PowerShell code.
     script = '''$s = New-Object -ComObject WScript.Shell
 $link = $s.CreateShortcut($env:AI11_STARTUP_LINK)

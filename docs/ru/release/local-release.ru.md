@@ -1,6 +1,6 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.2.0
+Doc-Version: 1.2.1
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -8,7 +8,7 @@ Source-Commit: working-tree
 
 REV301 завершил полный реальный пробный выпуск [v1.0.8+173](https://github.com/karnauhov/Revelation/tree/v1.0.8%2B173):
 семь пакетов, все обязательные gates обеих ОС и integration18/18 файлов на Windows/Android/Web/Linux, download/read-back.
-После этого владелец подтвердил удаление сборки 173: его Windows-копия и GitHub Release удалены; Linux очистит свою копию при следующем входе.
+После этого владелец подтвердил удаление сборки 173: его Windows-копия и GitHub Release удалены; очистку Linux подтвердил владелец. Удаление Windows/GitHub больше не ждёт Linux ack.
 Ссылка выше ведёт к сохранённому source tag, а не к удалённым пакетам. Tombstone запрещает их повторный импорт.
 Локальный commit trigger активирован, заменённый `.github/workflows/flutter_build.yml` удалён.
 Исторические53 шага проверяются через Git blob и `python scripts/local_release/inventory.py --check`; hosted fallback не используется.
@@ -220,3 +220,6 @@ OS-backed locks освобождаются после завершения/ав�
 следующий вход сначала обрабатывает сохранённую попытку. Общая очистка системы и чужих LXD/cache-каталогов не выполняется.
 Эта политика обязательна для всех Linux-профилей общего движка; требования хранить локальный архив относятся к Windows.
 Реальную проверку полного возврата Ubuntu к baseline необходимо выполнить после доставки этого обновления.
+
+Реальный временный Ubuntu runtime4/build174 завершён 01.11.2026: Snap acceptance без пересборки, verified upload, owner-state restore и удаление рабочих файлов.
+Windows автоматически принял результат и опубликовал [все семь пакетов 1.0.8+174](https://github.com/karnauhov/Revelation/releases/tag/v1.0.8%2B174).

@@ -1,6 +1,6 @@
 # Обмен локальных сборщиков
 
-Doc-Version: 2.1.1
+Doc-Version: 2.2.0
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -10,22 +10,18 @@ Draft GitHub Releases передают задания, пакеты, резул�
 
 ## Удаление и отсутствие повторного импорта
 
-Отдельный непубликуемый control draft `ai11-local-retention-<project>` имеет marker
-`<!-- local-release-retention:<project>:1 -->`. Он не входит в архив пакетов или финальный release.
-`delete-<request_id>.json` содержит schema1, project/repository, version/build/SHA, точный release ID/tag
-и ожидаемые OS-роли. В нём нет путей, команд или секретов. После подтверждения UI запрос сохраняется
-один раз в `.local-releases/deletions/<project>/<SHA>.json`, затем отправляется с download/hash read-back.
+После обязательного UI confirmation один request сохраняется в `.local-releases/deletions/<project>/<SHA>.json`
+и проверенно передаётся в Git notes `refs/notes/ai11-local-retention`. Request содержит project/repository,
+version/build/SHA, release ID/tag и OS-роли без путей, команд или секретов. В notes также сохраняются
+подтверждения постоянных архивных ОС; Linux ack не требуется. Main, index и изменения владельца не затрагиваются.
 
-До удаления GitHub Release проверяются tag SHA и release ID; локальные пути вычисляет координатор.
-Остановка активного процесса и возврат owner data предшествуют очистке checkout. Только точные managed
-пути могут удаляться рекурсивно; посторонние snapshots, SHA и незавершённые recovery journals защищены.
-После очистки ОС отправляет immutable `ack-<request_id>-<os>.json`. Запросы/ack принимаются только от
-GitHub uploader владельца репозитория (иной заранее проверенный actor задаётся host-local `retention_actor`).
-
-Linux обрабатывает control draft до обнаружения/получения jobs. Постоянная метка запрещает prepare/run,
-повтор из очереди, handoff/publication, receive и archive для удалённого SHA. Отказ сети сохраняет outbox
-состояние; повтор продолжает тот же request ID. GitHub Release исчезает целиком, Git-тег остаётся.
-Квитанции позволяют Windows отличать готовую локальную очистку от ожидающего следующего Linux login.
+До удаления проверяются tag SHA/release ID. Активный процесс останавливается и возвращает owner data.
+Рекурсивная очистка ограничена exact managed paths; чужие SHA/snapshots и recovery journals защищены.
+Linux получает notes до jobs. Постоянная метка запрещает prepare/run, queue retry, handoff/publication,
+receive/archive удалённого SHA. Сетевой отказ сохраняет recoverable state; повтор использует тот же request ID.
+Удаляется GitHub Release, исходный Git-тег остаётся. Linux не хранит архив, поэтому его следующий login не задерживает
+завершение удаления в Windows/GitHub. Legacy control draft принимается только с marker и доверенным uploader,
+мигрирует в проверенные notes и удаляется. Новый постоянный технический Release для меток не создаётся.
 
 ## Время этапов
 
@@ -217,3 +213,26 @@ Lifecycle lock не позволяет заменить runtime работающ
 после verified receipt та же попытка продолжается с принятыми пакетами. Полная пересборка/повторное скачивание им не требуются.
 Импорт Snap acceptance находится внутри verify-linux, поэтому его ошибка не подписывается как успешный inspect-snap.
 Очищенный traceback сохраняется в bounded result и отдельном stage-error.log, даже если внешний wrapper сообщает общую ошибку.
+
+## Подтверждённый временный цикл и удаление
+
+01.11.2026 Ubuntu runtime4/build174 завершил verify-linux за 28.388 с без повторной компиляции/упаковки.
+Snap revision и пользовательские данные восстановлены; проверены передача и provider cleanup.
+Итоговый независимый отчёт `phase=cleaned` подтверждает удаление managed build data (30.915 с вместе с доставкой).
+Семь исходных пакетов сохранили SHA-256; Windows получает полные gates/logs/timings штатным receiver.
+Linux - временный builder: Windows/GitHub deletion не ждёт Linux ack. Метки удаления остаются долговечными,
+блокируют jobs/import и отменяют/очищают возможную bounded попытку до нового запуска. Потерянный control draft
+восстанавливается из локальных меток, не создавая заново удалённый release. Старые Linux ack читаются для совместимости.
+
+## Очистка технических draft после успеха
+
+После публикации всех подготовленных jobs Windows сначала сохраняет полные redacted Windows/Linux logs, результаты
+и историю host reports в одном `build-logs-<SHA256-prefix>.zip` при готовом public Release. Архив имеет отдельный
+SHA-256/read-back receipt, не считается восьмым пакетом и не хранится второй ZIP-копией на диске Windows.
+Только после durable receipt и повторной проверки неизменности списка assets удаляется owned diagnostic draft.
+Неизвестные assets, новая отправка Linux, незавершённый job, bootstrap/Stop/transfer failure сохраняют draft для recovery.
+Deletion control хранится в `refs/notes/ai11-local-retention`: только малые requests/acks, append/merge без force push,
+проверка project/version/SHA и read-back; main/index/owner changes не меняются. Все control commits имеют реальный
+`retention_task_code` из профиля и `[skip ci]`, поэтому autobuild не запускается и build не увеличивается.
+Linux получает notes до любых jobs. Старые retention drafts мигрируют и удаляются, новые не создаются.
+Основа формата: [Git notes](https://git-scm.com/docs/git-notes), [Git push](https://git-scm.com/docs/git-push).

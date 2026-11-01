@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.1.1
+Doc-Version: 2.2.0
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -8,24 +8,20 @@ Git main stores tools, profiles and the [project catalogue](../../../scripts/loc
 Owned draft GitHub Releases carry jobs, packages, results and redacted logs. Credentials and binaries stay outside Git.
 Each other project registers its profile in its own task; Revelation is currently the only enabled project.
 
-## Deletion and prevention of reimport
+## Deletion and no reimport
 
-A separate unpublished control draft `ai11-local-retention-<project>` has the marker
-`<!-- local-release-retention:<project>:1 -->`. It is excluded from package archives and final releases.
-`delete-<request_id>.json` contains schema1, project/repository, version/build/SHA, exact release ID/tag
-and expected OS roles, without paths, commands or secrets. UI confirmation saves one request under
-`.local-releases/deletions/<project>/<SHA>.json`, then sends it with download/hash read-back.
+After mandatory UI confirmation, one request is saved under `.local-releases/deletions/<project>/<SHA>.json`
+and sent with read-back verification to Git notes `refs/notes/ai11-local-retention`. It contains project/repository,
+version/build/SHA, release ID/tag and OS roles, without paths, commands or secrets. Notes retain persistent-host
+receipts; no Linux ack is required. Main, the index and owner changes remain untouched.
 
-Tag SHA and release ID are verified before deleting the GitHub Release. The coordinator constructs local
-paths. An active process stops and owner data is restored before checkout cleanup. Recursive removal
-is restricted to exact managed paths; foreign snapshots/SHAs and pending recovery journals are protected.
-After cleanup each OS sends immutable `ack-<request_id>-<os>.json`. Requests/acks require the repository
-owner's GitHub uploader identity (another verified actor can be set in host-local `retention_actor`).
-
-Linux processes control records before job discovery/intake. The permanent tombstone blocks prepare/run,
-queue retry, handoff/publication, receive and archive for the deleted SHA. Network failures retain durable
-pending state; retry uses the same request ID. The GitHub Release is removed entirely and its Git tag remains.
-Receipts let Windows distinguish completed local cleanup from a pending Linux login.
+Tag SHA/release ID are checked before deletion. Active processes stop and owner data is restored.
+Recursive removal is restricted to exact managed paths; foreign SHAs/snapshots and recovery journals are protected.
+Linux fetches notes before jobs. A tombstone blocks prepare/run, queue retry, handoff/publication and
+receive/archive of the deleted SHA. Network failure retains recoverable state; retry uses the same request ID.
+The GitHub Release is removed, while the source tag stays. Linux has no archive, so its next login never delays
+Windows/GitHub deletion. Legacy control drafts require their marker/trusted uploader, migrate into verified notes
+and are deleted. No new permanent technical Release is created for tombstones.
 
 ## Stage time
 
@@ -210,3 +206,26 @@ The lifecycle lock prevents replacing an active builder's runtime. Incomplete ga
 a verified receipt then permits the same attempt to resume with accepted packages, without rebuilding or downloading them again.
 Snap acceptance imports occur inside verify-linux so loader failures are not attributed to a successful inspect-snap.
 A redacted traceback survives in the bounded result and a stage-error.log even when the outer wrapper reports a generic error.
+
+## Verified disposable cycle and deletion
+
+On 2026-11-01 Ubuntu runtime4/build174 completed verify-linux in 28.388 seconds without recompilation/repackaging.
+The original Snap revision and owner data were restored; delivery and provider cleanup were verified.
+The independent final `phase=cleaned` report confirms removal of managed build data (30.915 seconds including delivery).
+All seven original package hashes stayed unchanged; Windows receives complete gates/logs/timings through the normal receiver.
+Linux is disposable: Windows/GitHub deletion does not wait for a Linux receipt. Durable tombstones still block jobs/import
+and cancel/reap a possible bounded attempt before starting another. Legacy control drafts are migrated into Git notes
+and removed after verification. Legacy Linux receipts remain readable for compatibility.
+
+## Retire technical drafts after success
+
+Once all prepared jobs are published, Windows first saves full redacted Windows/Linux logs, results and host-report
+history in one `build-logs-<SHA256-prefix>.zip` attached to the completed public Release. Its separate SHA-256/read-back
+receipt does not count as an eighth package, and no permanent duplicate ZIP is kept on Windows. Only after the durable
+receipt and an unchanged remote asset inventory is the owned diagnostic draft deleted. Unknown assets, a fresh Linux
+upload, unfinished jobs or actionable bootstrap/Stop/transfer failures preserve the draft for recovery.
+Deletion control uses `refs/notes/ai11-local-retention`: small requests/acks, append/merge without force-pushing, identity
+and read-back verification. Main/index/owner changes stay untouched. Control commits use the profile's real
+`retention_task_code` and `[skip ci]`, so neither autobuild nor build numbering is triggered. Linux fetches notes before jobs.
+Legacy retention drafts are migrated and removed; new ones are never created.
+Format references: [Git notes](https://git-scm.com/docs/git-notes), [Git push](https://git-scm.com/docs/git-push).

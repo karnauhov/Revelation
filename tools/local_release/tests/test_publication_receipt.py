@@ -9,10 +9,21 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from local_release.core import Context, ReleaseError, atomic_json, read_json
-from local_release.github import reconcile_published
+from local_release.github import reconcile_published, publish_job
 
 
 class PublicationReceiptTest(unittest.TestCase):
+    def test_repeated_publish_keeps_public_release_with_a_later_log_archive_immutable(self):
+        saved = {'published': True, 'sha': self.job['sha'], 'release_id': 1}
+        atomic_json(self.directory / 'publication.json', saved)
+        atomic_json(self.directory / 'results/build-logs.json', {'archive': {'id': 99}, 'closed': True})
+        before = (self.directory / 'publication.json').read_bytes()
+        with patch('local_release.github.credential', return_value='fixture'), patch('local_release.github.GitHub') as api:
+            self.assertEqual(publish_job(self.context), saved)
+            api.return_value.request.assert_not_called()
+            api.return_value.upload_verified.assert_not_called()
+        self.assertEqual((self.directory / 'publication.json').read_bytes(), before)
+
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)

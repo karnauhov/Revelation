@@ -1,18 +1,51 @@
 from io import BytesIO
 import json
+import os
 from pathlib import Path
+import socket
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from local_release.core import atomic_json
+from local_release.core import atomic_json, capture, read_json
 from local_release.hooks import shared_service_startup, unregister_startup
 from local_release.service import identity, PRODUCT
+from local_release import service
 
 
 class SharedStartupTest(unittest.TestCase):
+    @unittest.skipUnless(os.name == 'nt', 'native Windows Startup shortcut')
+    def test_shell_startup_shortcut_launches_hidden_logged_server_and_reuses_it(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            registry = root / 'state/registry.json'
+            atomic_json(registry, {'schema': 1, 'projects': {}})
+            with socket.socket() as probe:
+                probe.bind(('127.0.0.1', 0))
+                port = probe.getsockname()[1]
+            appdata = root / 'roaming'
+            (appdata / 'Microsoft/Windows/Start Menu/Programs/Startup').mkdir(parents=True)
+            with patch.dict(os.environ, APPDATA=str(appdata)):
+                shortcut = service.install_startup(registry, port)
+            startup = read_json(registry.parent / 'startup.json')
+            self.assertIn('start-service', startup['arguments'])
+            env = dict(os.environ, AI11_TEST_STARTUP=str(shortcut))
+            try:
+                capture(['powershell', '-NoProfile', '-NonInteractive', '-Command',
+                         'Start-Process -FilePath $env:AI11_TEST_STARTUP -WindowStyle Hidden'], env=env)
+                deadline = time.monotonic() + 15
+                while not (registry.parent / 'service.json').exists() and time.monotonic() < deadline:
+                    time.sleep(.1)
+                before = read_json(registry.parent / 'service.json')
+                self.assertEqual(service.start(registry, port), f'http://127.0.0.1:{port}')
+                self.assertEqual(before['pid'], read_json(registry.parent / 'service.json')['pid'])
+                self.assertTrue((registry.parent / 'service.log').is_file())
+            finally:
+                service.stop(registry, port)
+
     def test_registered_healthy_service_is_reused_without_modifying_other_projects(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

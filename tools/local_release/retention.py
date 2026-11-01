@@ -15,6 +15,7 @@ import uuid
 from .core import Context, ReleaseError, atomic_json, digest, git, host_name, lock, read_json
 from .catalogue import release_directory
 from .github import GitHub, GitHubHTTPError, credential
+from .retention_notes import store as notes_store
 
 
 def marker(project):
@@ -131,7 +132,7 @@ def mark_queue(project, request):
     root = Path(project["catalogue"])
     queue = root / (project["project"] + "-queue.json")
     if queue.exists():
-        with lock(root / ".queue.lock"):
+        with lock(root / ".queue.lock", timeout=5):
             data = read_json(queue)
             entry = data["commits"].setdefault(request["sha"], {"sequence": len(data["commits"]) + 1})
             entry.update(status="deleted", reason="Owner-confirmed deletion", deletion_request=request["request_id"])
@@ -286,7 +287,14 @@ def upload_json(api, release, name, value):
         return api.upload_verified(release, path)
 
 
-def process(project, sha, *, role=None, api=None):
+def completion_status(record):
+    # Linux has no permanent archive. Its tombstone still cancels/reaps a
+    # possible bounded attempt, but Windows deletion never waits for its login.
+    required = set(record['request']['hosts']) - {'linux'}
+    return 'complete' if required <= set(record.get('acks', {})) else 'waiting_other_hosts'
+
+
+def process(project, sha, *, role=None, api=None, store=None):
     role = role or host_name()
     path = record_path(project["catalogue"], project["project"], sha)
     with lock(path.with_suffix(".lock")):
@@ -298,10 +306,10 @@ def process(project, sha, *, role=None, api=None):
         try:
             verify_local_identity(directory, request)
             api = api or api_for(project)
-            control = control_release(api, project, create_sha=request["sha"])
-            if not record.get("request_sent"):
-                record["request_sent"] = upload_json(api, control, "delete-" + request["request_id"] + ".json", request)
-                atomic_json(path, record)
+            control_release(api, project)  # Reject a foreign legacy control draft.
+            store = store or notes_store(project)
+            record['request_sent'] = store.sync(record)
+            atomic_json(path, record)
             if busy(directory):
                 record.update(status="stopping", error=None)
                 atomic_json(path, record)
@@ -328,12 +336,12 @@ def process(project, sha, *, role=None, api=None):
                 atomic_json(path, record)
             from .host_reports import purge_build
             purge_build(project, sha, api)
-            ack = {"schema": 1, "project": request["project"], "request_id": request["request_id"],
-                   "sha": sha, "host": role, "deleted": True}
-            if not record.get("ack_sent"):
-                record["ack_sent"] = upload_json(api, control, f"ack-{request['request_id']}-{role}.json", ack)
-            record.setdefault("acks", {})[role] = True
-            record.update(status="complete" if set(request["hosts"]) <= set(record["acks"]) else "waiting_other_hosts", error=None)
+            if role != 'linux':
+                record.setdefault("acks", {})[role] = True
+            receipt = store.sync(record)
+            if role != 'linux':
+                record['ack_sent'] = receipt
+            record.update(status=completion_status(record), error=None)
             mark_queue(project, request)
         except Exception as error:
             record.update(status="failed", error=str(error))
@@ -358,6 +366,19 @@ def synchronize(project, role=None, *, api=None):
     root = Path(project["catalogue"])
     known = {value["request"]["request_id"]: value for path in (root / "deletions" / project["project"]).glob("*.json")
              for value in [read_json(path)]}
+    store = notes_store(project)
+    remote_notes = store.read()
+    for sha, note in remote_notes.items():
+        request = note['request']
+        validate(request, project)
+        path = record_path(root, project['project'], sha)
+        with lock(path.with_suffix('.lock')):
+            record = read_json(path) if path.exists() else {
+                'request': request, 'received': time.time(), 'status': 'pending', 'acks': {}}
+            if record['request'] != request:
+                raise ReleaseError('Conflicting deletion tombstone; preserve and inspect')
+            record.setdefault('acks', {}).update(note.get('acks', {}))
+            atomic_json(path, record)
     def metadata(asset):
         return {key: asset.get(key) for key in ("id", "size", "digest")}
     if control:
@@ -406,13 +427,31 @@ def synchronize(project, role=None, *, api=None):
         if path.stem != record["request"]["sha"]:
             raise ReleaseError("Deletion registry filename differs from its source SHA")
         if role in record["request"]["hosts"]:
-            if record.get("local_deleted") and record.get("ack_sent"):
-                record["status"] = "complete" if set(record["request"]["hosts"]) <= set(record.get("acks", {})) else "waiting_other_hosts"
+            if record.get("local_deleted") and (role == 'linux' or record.get("ack_sent")):
+                record['request_sent'] = store.sync(record)
+                record["status"] = completion_status(record)
                 atomic_json(path, record)
                 mark_queue(project, record["request"])
             else:
-                record = process(project, record["request"]["sha"], role=role, api=api)
+                record = process(project, record["request"]["sha"], role=role, api=api, store=store)
             results.append(record)
+    if control and all(row.get('status') not in ('failed', 'stopping') for row in results):
+        # Only retire a recognized legacy draft after every request is durable in
+        # notes. Unknown/new concurrent assets keep the draft for inspection.
+        current = api.pages(f"/releases/{control['id']}/assets")
+        recognized = all(re.fullmatch(r'(?:delete-[a-f0-9]{32}|ack-[a-f0-9]{32}-(?:windows|linux|macos))\.json', a['name']) for a in current)
+        if recognized and {a['id'] for a in current} == {a['id'] for a in assets}:
+            verified = store.read()
+            requests = [read_json(path)['request'] for path in (root / 'deletions' / project['project']).glob('*.json')]
+            if all(verified.get(r['sha'], {}).get('request') == r for r in requests):
+                api.request('DELETE', f"/releases/{control['id']}")
+                try:
+                    api.request('GET', f"/releases/{control['id']}")
+                except GitHubHTTPError as error:
+                    if error.status != 404:
+                        raise
+                else:
+                    raise ReleaseError('Legacy retention draft still exists after cleanup')
     return results
 
 
@@ -423,7 +462,7 @@ def summary(project):
         request = record["request"]
         validate(request, project)
         result.append({"sha": request["sha"], "version": request["version"], "build": request["build"],
-            "status": record["status"], "local_deleted": bool(record.get("local_deleted")),
+            "status": completion_status(record) if record['status'] == 'waiting_other_hosts' else record['status'], "local_deleted": bool(record.get("local_deleted")),
             "github_deleted": bool(record.get("github_deleted")),
-            "waiting_hosts": [host for host in request["hosts"] if host not in record.get("acks", {})], "error": record.get("error")})
+            "waiting_hosts": [host for host in request["hosts"] if host != 'linux' and host not in record.get("acks", {})], "error": record.get("error")})
     return sorted(result, key=lambda value: value["build"], reverse=True)

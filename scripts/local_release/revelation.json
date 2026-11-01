@@ -2,6 +2,7 @@
   "schema": 1,
   "project": "revelation",
   "repository": "karnauhov/Revelation",
+  "retention_task_code": "REV301",
   "adapter": "local_release.profiles.revelation",
   "flutter": "3.47.2",
   "versioning": {

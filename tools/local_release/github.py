@@ -313,6 +313,8 @@ def publish_job(context):
     with lock(directory / ".publication.lock"):
         publication_path = directory / "publication.json"
         saved = read_json(publication_path) if publication_path.exists() else {}
+        if saved.get('published'):
+            return saved  # A later log archive never reopens an immutable release.
         api.verified_assets = {record["id"]: record for record in list(saved.get("assets", {}).values())
                                + [saved.get("checksums", {}), saved.get("manifest", {})] if "id" in record}
         notes = (directory / "release_notes.txt").read_text(encoding="utf-8")

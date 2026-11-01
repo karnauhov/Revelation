@@ -10,6 +10,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading
 import types
 import unittest
 from unittest.mock import patch
@@ -233,6 +234,27 @@ class CoordinatorTest(unittest.TestCase):
         data = core.discover(self.repo, self.state, queue)
         self.assertEqual(set(data["commits"]), {first, second})
         self.assertEqual(list((self.state / "events" / queue.stem).glob("*.json")), [])
+
+    def test_queue_discovery_waits_for_short_retention_write_without_losing_commits(self):
+        queue = core.queue_install(self.repo, self.state, self.profile, self.config, test_mode=True)
+        sha = self.commit('queued while retention writes')
+        entered, release = threading.Event(), threading.Event()
+        def writer():
+            with core.lock(self.state / '.queue.lock'):
+                entered.set()
+                release.wait(3)
+        thread = threading.Thread(target=writer)
+        thread.start()
+        self.assertTrue(entered.wait(3))
+        timer = threading.Timer(.2, release.set)
+        timer.start()
+        try:
+            data = core.discover(self.repo, self.state, queue)
+            self.assertEqual(data['commits'][sha]['status'], 'queued')
+        finally:
+            release.set()
+            timer.cancel()
+            thread.join(3)
 
     def test_worker_retains_failed_jobs_and_processes_later_commits(self):
         queue = core.queue_install(self.repo, self.state, self.profile, self.config, test_mode=True)

@@ -22,7 +22,7 @@ def hook_directory(repo):
 
 def install(queue, proof=None, test_mode=False):
     root = queue.parent
-    with lock(root / ".queue.lock"):
+    with lock(root / ".queue.lock", timeout=5):
         data = read_json(queue)
         if data["enabled"]:
             raise ReleaseError("Trigger is already installed; remove it before updating")
@@ -151,7 +151,7 @@ def unregister_startup(startup):
 
 
 def remove(queue):
-    with lock(queue.parent / ".queue.lock"):
+    with lock(queue.parent / ".queue.lock", timeout=5):
         data = read_json(queue)
         for value in data.get("hook_paths", []):
             path = Path(value)

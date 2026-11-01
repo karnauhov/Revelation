@@ -110,14 +110,14 @@ def inside(root: Path, relative: str) -> Path:
 
 
 @contextlib.contextmanager
-def lock(path: Path):
+def lock(path: Path, *, timeout=0):
     """OS-backed SQLite lock, automatically released on process exit/reboot.
 
     Use a local filesystem (including a dual-boot shared data volume), not a
-    synchronizing cloud folder. No timeout or PID guessing can steal a live lock.
+    synchronizing cloud folder. A bounded wait never steals a live lock.
     """
     path.parent.mkdir(parents=True, exist_ok=True)
-    connection = sqlite3.connect(path, timeout=0)
+    connection = sqlite3.connect(path, timeout=timeout)
     try:
         connection.execute("BEGIN EXCLUSIVE")
         yield
@@ -444,7 +444,7 @@ def queue_install(repo: Path, root: Path, profile: Path, config: Path, *, test_m
     root.mkdir(parents=True, exist_ok=True)
     project = read_json(profile)["project"]
     path = root / f"{project}-queue.json"
-    with lock(root / ".queue.lock"):
+    with lock(root / ".queue.lock", timeout=5):
         if path.exists():
             raise ReleaseError("Queue already installed; preserve its boundary and jobs")
         baseline = git(repo, "rev-list", "--all", "HEAD").splitlines()
@@ -465,7 +465,7 @@ def record_commit_event(repo: Path, queue_path: Path, sha="HEAD"):
 
 def discover(repo: Path, root: Path, queue_path: Path):
     """Discover every reachable local/remote/tag commit, independently of branch/path."""
-    with lock(root / ".queue.lock"):
+    with lock(root / ".queue.lock", timeout=5):
         data = read_json(queue_path)
         pending_version = Path(git(repo, "rev-parse", "--path-format=absolute", "--git-path", "ai11-version-pending.json"))
         if pending_version.exists() and git(repo, "rev-parse", "HEAD") != read_json(pending_version)["base_head"]:
@@ -494,7 +494,7 @@ def discover(repo: Path, root: Path, queue_path: Path):
 
 
 def update_queue(root, path, sha, **fields):
-    with lock(root / ".queue.lock"):
+    with lock(root / ".queue.lock", timeout=5):
         data = read_json(path)
         data["commits"][sha].update(fields)
         from .retention import deleted

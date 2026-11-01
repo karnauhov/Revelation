@@ -32,16 +32,16 @@ Windows: `sync --job <canonical-directory> --config <windows-config> --cleanup` 
 Не заменяй её догадкой. Неподтверждённый Snap, недоступная ОС или незавершённый обмен остаются открытыми.
 
 Полный реальный пробный выпуск `v1.0.8+173` прошёл публикацию всех семи пакетов, SHA256SUMS и final manifest.
-Позже владелец подтвердил его удаление: Windows-каталог/checkout и GitHub Release удалены, Linux ожидает следующего входа.
+Позже владелец подтвердил его удаление: Windows-каталог/checkout и GitHub Release удалены; владелец подтвердил очистку Linux.
 Не восстанавливай сборку 173: постоянный tombstone должен применяться до jobs/архива.
 Production local trigger активирован после проверки всех gates и download/read-back; заменённый hosted YAML удалён.
 Не восстанавливай hosted autobuild/integration. Проверяй исторический parity guard `python scripts/local_release/inventory.py --check`.
 Журнал состояния и один отчёт REV301 находятся локально в `.local-releases/REV301-report.md`.
 
 Явное удаление выбранной сборки выполняется только через обязательный preview/диалог панели с точными version/build/SHA.
-Retention сохраняет tombstone вне каталога выпуска, проверенно передаёт его в private control draft и останавливает builder.
+Retention сохраняет tombstone вне каталога выпуска, проверенно передаёт его в Git notes refs/notes/ai11-local-retention и останавливает builder.
 Удаляются только выбранный каталог/checkout и matching GitHub Release; owner-data recovery должен завершиться.
-Linux получает метку до jobs при следующем login и возвращает ack. Никогда не восстанавливай tombstoned SHA из очереди/архива.
+Linux получает метки до jobs и не восстанавливает tombstoned SHA из очереди/архива. У него нет постоянного архива, поэтому удаление Windows/GitHub не ждёт Linux login/ack. Метка по-прежнему отменяет/очищает возможную незавершённую попытку; старый control draft переносится в Git notes и удаляется после проверки.
 
 Работай в main. Контракт обмена и runtime repair: docs/ru/release/protocol.ru.md. Полный message [skip ci] пропускает и инкремент build, и autobuild. Выполняй весь исходный snapcraft_build.sh из source SHA без удаления команд, включая rm/build, Flutter clean/pub get/debug run и Snapcraft clean/pack. Только q для debug автоматизируется через PTY; сохраняй проверку Git blob и linux-snap-script.json. Встроенный install/smoke/restore gate обязателен, пользовательские Snap-данные сохраняются локально и возвращаются с проверкой хеша; sudo при необходимости подтверждает владелец в Linux-терминале. Protected installed Snap hashes читай через sudo sha256sum без изменения прав. Первый Linux запуск устанавливает user autostart; новые graphical logins обрабатывают общий projects.json последовательно. В Ubuntu реально подтверждены полный исходный Snap-скрипт/автоматический q и installed Snap startup+10s/restore. Перед повтором читай фактические checkpoints: ошибки приёмки или обмена не требуют пересборки уже принятых пакетов. Опубликованные выпуски восстанавливай из каталога, повторный build для них запрещён. Объясняй, что тестовое окно закрывается автоматически после десяти секунд; нормальное раннее закрытие повторяет только запуск один раз, не ослабляя gate.
 
@@ -54,3 +54,7 @@ Linux - только временный сборщик. Постоянный к�
 Не удаляй глобальные SDK, чужие caches/VM/images, настройки, ключи или данные владельца; не выполняй системный prune.
 Эта политика распространяется на Linux всех подключённых проектов; не возвращай Linux-архив без нового прямого указания владельца.
 Подробности и ограничения реальной проверки - docs/ru/release/protocol.ru.md.
+
+Реальный Ubuntu runtime4/build174 подтвердил Snap acceptance без пересборки, восстановление owner-state, verified delivery и `phase=cleaned`. Windows автоматически принимает результат и финализирует полный выпуск.
+
+После полного verified выпуска сохраняй redacted logs/results/host reports одним проверенным архивом при public Release и удаляй owned diagnostic draft. Постоянных технических draft не оставляй. Git notes сохраняют только малые метки удаления, без изменения main/index; управляющие коммиты используют retention_task_code и [skip ci]. При сбое/незавершённой передаче draft остаётся для recovery.

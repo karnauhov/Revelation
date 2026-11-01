@@ -221,6 +221,8 @@ def project_cycle(project, role):
         except Exception as error:
             records.append({"run_id": job["run_id"], "status": "failed", "error": str(error)})
             print(f"FAILED {job['run_id']}: {error}", flush=True)
+    from .technical_cleanup import finish
+    finish(project)
     return records
 
 

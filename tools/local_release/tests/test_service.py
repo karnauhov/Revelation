@@ -14,7 +14,7 @@ from urllib.parse import urlencode
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from local_release.core import atomic_json, digest, host_name, read_json, capture, git, queue_install
 from local_release.service import Dashboard, make_server
-from test_retention import FakeGitHub
+from test_retention import FakeGitHub, FakeNotes
 
 
 class ServiceTest(unittest.TestCase):
@@ -108,6 +108,9 @@ class ServiceTest(unittest.TestCase):
         mocked = patch("local_release.retention.api_for", return_value=api)
         mocked.start()
         self.addCleanup(mocked.stop)
+        notes = patch('local_release.retention.notes_store', return_value=FakeNotes(api))
+        notes.start()
+        self.addCleanup(notes.stop)
         return api
 
     def test_confirmed_deletion_resumes_even_when_project_builds_are_disabled(self):
@@ -136,12 +139,12 @@ class ServiceTest(unittest.TestCase):
         self.assertEqual(self.deletion('confirm', preview_id=preview['preview_id'])[0], 200)
         self.wait(lambda: not self.jobs['first'].exists())
         self.wait(lambda: self.server.dashboard.state()['projects'][0]['deletions'][0]['local_deleted'])
-        self.wait(lambda: self.server.dashboard.state()['projects'][0]['deletions'][0]['status'] == 'waiting_other_hosts')
+        self.wait(lambda: self.server.dashboard.state()['projects'][0]['deletions'][0]['status'] == 'complete')
         state = self.server.dashboard.state()
         self.assertEqual(state['projects'][0]['releases'], [])
         removed = state['projects'][0]['deletions'][0]
         self.assertTrue(removed['github_deleted'])
-        self.assertEqual(removed['status'], 'waiting_other_hosts')
+        self.assertEqual(removed['status'], 'complete')
         self.assertTrue((self.jobs['second'] / 'packages/package.zip').exists())
         self.assertEqual(self.deletion('confirm', preview_id=preview['preview_id'])[0], 400)
         self.assertEqual(api.events.count(('DELETE', '/releases/1')), 1)
@@ -188,8 +191,8 @@ class ServiceTest(unittest.TestCase):
         preview = json.loads(self.deletion('preview')[1])
         self.assertEqual(self.deletion('confirm', preview_id=preview['preview_id'])[0], 200)
         self.wait(lambda: not directory.exists())
-        self.wait(lambda: self.server.dashboard.state()['projects'][0]['deletions'][0]['status'] == 'waiting_other_hosts')
-        self.assertEqual(self.server.dashboard.state()['projects'][0]['deletions'][0]['status'], 'waiting_other_hosts')
+        self.wait(lambda: self.server.dashboard.state()['projects'][0]['deletions'][0]['status'] == 'complete')
+        self.assertEqual(self.server.dashboard.state()['projects'][0]['deletions'][0]['status'], 'complete')
 
     def wait(self, predicate):
         deadline = time.monotonic() + 12

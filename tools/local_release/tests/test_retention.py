@@ -72,12 +72,34 @@ class FakeGitHub:
         return digest(destination)
 
 
+class FakeNotes:
+    def __init__(self, api):
+        self.api, self.records = api, {}
+
+    def read(self):
+        return deepcopy(self.records)
+
+    def sync(self, record):
+        if self.api.fail_upload:
+            raise ReleaseError('network unavailable')
+        from local_release.retention_notes import merge
+        value = {'request': record['request'], 'acks': {k: v for k, v in record.get('acks', {}).items() if k != 'linux'}}
+        sha = value['request']['sha']
+        self.records[sha] = merge(self.records.get(sha), value)
+        self.api.events.append(('NOTES', sha))
+        return {'transport': 'git-notes', 'commit': 'f' * 40}
+
+
 class RetentionTest(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.base = Path(self.temporary.name)
         self.api = FakeGitHub()
+        self.notes = FakeNotes(self.api)
+        patched = patch('local_release.retention.notes_store', return_value=self.notes)
+        patched.start()
+        self.addCleanup(patched.stop)
         self.project, self.directory = self.create_host("windows")
 
     def create_host(self, role):
@@ -127,7 +149,7 @@ class RetentionTest(unittest.TestCase):
         self.assertFalse(file.exists())
         self.assertFalse(self.directory.exists())
         self.assertEqual(keeper.read_bytes(), b'another source build')
-        self.assertEqual(retention.process(self.project, self.api.sha, role='windows', api=self.api)['status'], 'waiting_other_hosts')
+        self.assertEqual(retention.process(self.project, self.api.sha, role='windows', api=self.api)['status'], 'complete')
         self.assertEqual(self.api.events.count(('DELETE', '/releases/1')), 1)
 
     def test_a_concurrently_removed_child_does_not_abort_managed_cleanup(self):
@@ -162,7 +184,7 @@ class RetentionTest(unittest.TestCase):
         self.assertFalse(retention.deleted(self.project["catalogue"], "fixture", self.api.sha))
         self.assertEqual(self.api.events, [])
 
-    def test_windows_delete_then_isolated_linux_login_and_receipt(self):
+    def test_windows_deletion_finishes_without_linux_ack_but_tombstone_reaps_an_attempt(self):
         linux, linux_directory = self.create_host("linux")
         foreign = self.base / "windows/releases/fixture/9.0.0+9" / ("b" * 40)
         foreign.mkdir(parents=True)
@@ -171,20 +193,20 @@ class RetentionTest(unittest.TestCase):
         record = retention.process(self.project, self.api.sha, role="windows", api=self.api)
         self.assertTrue(record["local_deleted"])
         self.assertTrue(record["github_deleted"])
-        self.assertEqual(record["status"], "waiting_other_hosts")
+        self.assertEqual(record["status"], "complete")
         self.assertFalse(self.directory.exists())
         self.assertFalse((Path(self.project["catalogue"]) / "w" / self.api.sha[:12]).exists())
         self.assertTrue((foreign / "keep.bin").exists())
         self.assertNotIn(1, self.api.releases)
         self.assertTrue(linux_directory.exists())
-        upload = next(i for i, event in enumerate(self.api.events) if event[0] == "UPLOAD")
+        upload = next(i for i, event in enumerate(self.api.events) if event[0] == "NOTES")
         deletion = self.api.events.index(("DELETE", "/releases/1"))
         self.assertLess(upload, deletion)
         retention.synchronize(linux, "linux", api=self.api)
         self.assertFalse(linux_directory.exists())
         result = retention.synchronize(self.project, "windows", api=self.api)[0]
         self.assertEqual(result["status"], "complete")
-        self.assertEqual(set(result["acks"]), {"windows", "linux"})
+        self.assertEqual(set(result["acks"]), {"windows"})
         self.assertEqual(sum(e == ("DELETE", "/releases/1") for e in self.api.events), 1)
         with self.assertRaisesRegex(ReleaseError, "deleted by the owner"):
             retention.ensure_allowed(self.project["catalogue"], "fixture", self.api.sha)
@@ -197,11 +219,33 @@ class RetentionTest(unittest.TestCase):
         self.assertEqual(result["status"], "failed")
         self.assertTrue(self.directory.exists())
         self.assertIn(1, self.api.releases)
+
         self.assertTrue(retention.deleted(self.project["catalogue"], "fixture", self.api.sha))
         self.api.fail_upload = False
         result = retention.process(self.project, self.api.sha, role="windows", api=self.api)
         self.assertEqual(result["request"]["request_id"], record["request"]["request_id"])
         self.assertTrue(result["local_deleted"])
+
+    def test_lost_remote_notes_are_restored_without_recreating_a_deleted_release(self):
+        self.request()
+        first = retention.process(self.project, self.api.sha, role='windows', api=self.api)
+        self.notes.records.clear()
+        restored = retention.synchronize(self.project, 'windows', api=self.api)[0]
+        self.assertEqual(restored['status'], 'complete')
+        self.assertFalse(self.directory.exists())
+        self.assertEqual(self.api.releases, {})
+        self.assertEqual(self.notes.records[self.api.sha]['request'], first['request'])
+        self.assertEqual(retention.summary(self.project)[0]['waiting_hosts'], [])
+
+    def test_other_persistent_host_still_requires_its_own_receipt(self):
+        self.request()
+        path = retention.record_path(self.project['catalogue'], 'fixture', self.api.sha)
+        record = read_json(path)
+        record['request']['hosts'].append('macos')
+        atomic_json(path, record)
+        result = retention.process(self.project, self.api.sha, role='windows', api=self.api)
+        self.assertEqual(result['status'], 'waiting_other_hosts')
+        self.assertEqual(retention.summary(self.project)[0]['waiting_hosts'], ['macos'])
 
     def test_active_builder_is_stopped_before_any_release_or_files_are_removed(self):
         self.request()
@@ -259,7 +303,9 @@ class RetentionTest(unittest.TestCase):
         linux, directory = self.create_host("linux")
         self.request()
         retention.process(self.project, self.api.sha, role="windows", api=self.api)
-        control = next(r for r in self.api.releases.values() if r["tag_name"].startswith("ai11-local-retention"))
+        request = read_json(retention.record_path(self.project['catalogue'], 'fixture', self.api.sha))['request']
+        control = retention.control_release(self.api, self.project, create_sha=self.api.sha)
+        retention.upload_json(self.api, control, 'delete-' + request['request_id'] + '.json', request)
         self.api.assets[control["id"]][0]["uploader"]["login"] = "stranger"
         with self.assertRaisesRegex(ReleaseError, "trusted repository owner"):
             retention.synchronize(linux, "linux", api=self.api)
@@ -276,19 +322,17 @@ class RetentionTest(unittest.TestCase):
         self.assertTrue((self.directory / 'packages/one.zip').exists())
         self.assertEqual(self.api.events, [])
 
-    def test_verified_control_records_are_reused_until_remote_identity_changes(self):
-        linux, _ = self.create_host('linux')
-        self.request()
-        retention.process(self.project, self.api.sha, role='windows', api=self.api)
-        retention.synchronize(linux, 'linux', api=self.api)
+    def test_legacy_control_draft_is_migrated_to_notes_and_removed(self):
+        record = self.request()
+        control = retention.control_release(self.api, self.project, create_sha=self.api.sha)
+        retention.upload_json(self.api, control, 'delete-' + record['request']['request_id'] + '.json', record['request'])
         retention.synchronize(self.project, 'windows', api=self.api)
+        self.assertTrue(retention.deleted(self.project['catalogue'], 'fixture', self.api.sha))
+        self.assertEqual(self.notes.records[self.api.sha]['acks'], {'windows': True})
+        self.assertEqual(self.api.releases, {})
         with patch.object(self.api, 'download_asset', wraps=self.api.download_asset) as download:
             retention.synchronize(self.project, 'windows', api=self.api)
             download.assert_not_called()
-            control = next(r for r in self.api.releases.values() if r['tag_name'].startswith('ai11-local-retention'))
-            self.api.assets[control['id']][0]['id'] += 1000
-            retention.synchronize(self.project, 'windows', api=self.api)
-            self.assertEqual(download.call_count, 1)
 
     def test_archive_and_handoff_do_not_restore_a_tombstoned_build(self):
         from local_release.archive import archive_releases

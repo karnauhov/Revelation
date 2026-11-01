@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.2.0
+Doc-Version: 1.3.0
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -93,24 +93,17 @@ credentials and arbitrary paths are unavailable. UI values are rendered as text.
 
 ## Delete a build
 
-Delete is available for published and archived builds too. A mandatory dialog first shows version,
-build, full SHA, package count and scope. Cancel and Escape do not delete anything. Confirmation
-expires after five minutes and is bound to that project/SHA.
+Delete opens a mandatory version/build/full-SHA/package-count/scope dialog. Cancel and Escape do nothing.
+Confirmation expires after five minutes and applies only to that project/SHA. The active builder stops and acceptance
+owner data is restored before removing the exact local catalogue/checkout and matching GitHub Release.
+The main source, Git tag and installed application remain.
 
-After confirmation an active builder is stopped cooperatively. Original integration/Snap user data
-must be restored before cleanup. Only the selected release directory, its isolated build checkouts
-and matching GitHub Release with all assets are removed. Main sources, the Git tag and installed
-application remain. Package deletion is irreversible.
-
-A tombstone is verified in a separate private `Local build retention` draft before deleting packages.
-A network failure preserves packages and exposes the error and Retry deletion. Small tombstones/receipts
-remain in `.local-releases/deletions/<project>/<SHA>.json` and the control draft to prevent the queue,
-intake or archive from restoring a deleted build.
-
-The next Linux login receives tombstones before any jobs, removes its own catalogue/checkout and
-returns an ack. Deletion status shows local/GitHub cleanup and outstanding hosts separately. Windows
-receives the ack through normal background exchange. Unknown snapshots, a different SHA or pending
-owner-data restoration produce an explicit error and preserve the corresponding files.
+A small tombstone is first written with read-back verification to this repository's `refs/notes/ai11-local-retention`.
+Git notes create no branch and do not modify main history. Control commits contain the real task code and `[skip ci]`.
+Network failure preserves packages and allows the same request to resume. Linux automatically fetches notes before jobs,
+blocks the deleted SHA and reaps an unfinished attempt if necessary. It has no permanent archive, so Windows/GitHub deletion
+never waits for Linux login/ack. The dashboard finishes deletion after persistent catalogues are cleaned.
+Legacy retention drafts are migrated into notes and deleted after verification; new retention drafts are not created.
 
 ## Other projects
 
@@ -143,3 +136,9 @@ Windows archives received history in `.local-releases/host-reports/`; full job l
 Linux keeps no permanent archive - see the [temporary builder policy](local-release.en.md#linux-is-a-temporary-builder).
 
 Controls hide equivalent actions: a new build shows Start, an attempted build shows Retry, and Restart appears only for an active process. Stop is hidden after the current OS completes. Recent Linux diagnostic history links open the saved Windows copies.
+
+Windows Startup calls idempotent `start-service`, reusing a healthy server or starting a hidden server with `service.log`.
+Concurrent queue writes wait up to five seconds without stealing a live lock.
+Linux keeps no archive, so deletion finishes after Windows/GitHub cleanup without a Linux login or receipt.
+Small tombstones still block resurrection and reap an unfinished Linux outbox if necessary. Deletion markers persist in Git notes without a technical Release. Native Ubuntu runtime4/build174 passed Snap acceptance, verified delivery
+and cleanup; Windows imported the result automatically.

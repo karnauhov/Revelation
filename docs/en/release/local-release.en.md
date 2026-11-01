@@ -1,6 +1,6 @@
 # Local Revelation releases
 
-Doc-Version: 1.2.0
+Doc-Version: 1.2.1
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -11,7 +11,7 @@ seven packages, every mandatory gate on both hosts and18/18 integration files on
 The local commit trigger is enabled and the replaced `.github/workflows/flutter_build.yml` is removed.
 The53-step historical recipe is checked through its Git blob with `python scripts/local_release/inventory.py --check`;
 there is no hosted fallback. Stores, the production website and Supabase remain separate version tasks after acceptance.
-The owner subsequently confirmed deletion of build 173: its Windows copy and GitHub Release are removed; Linux cleans its copy on the next login.
+The owner subsequently confirmed deletion of build 173: its Windows copy and GitHub Release are removed; the owner confirmed Linux cleanup. Windows/GitHub deletion no longer waits for a Linux ack.
 The link above points to the retained source tag, not deleted packages. Its tombstone prevents reimport.
 
 Child [REV302](https://ai11.link/cabinet/tasks?project=1&task=REV302) implements one shared local service for all projects:
@@ -207,3 +207,6 @@ A normal dashboard Stop also sends logs. Forced power-off can interrupt transfer
 No general system cleanup or deletion of unrelated LXD resources/caches is performed.
 This policy applies to every Linux profile using the shared engine; permanent local archive requirements mean Windows.
 The complete Ubuntu baseline-restoration trial must be run after this update is delivered.
+
+The native disposable Ubuntu runtime4/build174 cycle completed on 2026-11-01: Snap acceptance without rebuilding, verified upload, owner-state restoration and managed-data cleanup.
+Windows automatically imported the result and published [all seven 1.0.8+174 packages](https://github.com/karnauhov/Revelation/releases/tag/v1.0.8%2B174).
