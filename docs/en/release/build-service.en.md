@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.3.0
+Doc-Version: 1.3.1
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -92,6 +92,17 @@ HTTP serves only manifest packages and redacted log tails up to 512 KiB. Configu
 credentials and arbitrary paths are unavailable. UI values are rendered as text.
 
 ## Delete a build
+
+GitHub Releases use the actual job/manifest tag and verified source SHA, including auto tags.
+Legacy false "GitHub deleted" records are reconciled through the unique project/SHA marker
+without changing the confirmed request. Completion requires the Release and both managed
+Windows directories to be physically absent.
+
+Windows builders pass Gradle `-Dorg.gradle.daemon=false` so its JVM does not retain lint JARs
+after a build. For an existing tree, Restart Manager identifies the lock owner. Only an IDLE
+Gradle daemon holding a JAR inside that directory can be stopped: PID and creation time are
+checked, and IDLE is rechecked before stopping. Active and unrelated processes are preserved;
+deletion remains incomplete and can be retried.
 
 Delete opens a mandatory version/build/full-SHA/package-count/scope dialog. Cancel and Escape do nothing.
 Confirmation expires after five minutes and applies only to that project/SHA. The active builder stops and acceptance

@@ -165,6 +165,10 @@ class Context:
             step["outputs"] = {name.replace("\\", "/"): value for name, value in step.get("outputs", {}).items()}
         self.env = os.environ.copy()
         self.env.update({str(k): str(v) for k, v in config.get("environment", {}).items()})
+        if self.host == 'windows':
+            # Android lint loads checkout-local JARs. A persistent JVM would
+            # retain Windows handles after the builder releases its job lock.
+            self.env['GRADLE_OPTS'] = self.env.get('GRADLE_OPTS', '') + ' -Dorg.gradle.daemon=false'
         self.redact = Redactor(v for k, v in self.env.items() if re.search("TOKEN|PASSWORD|SECRET|BASE64", k))
         self.output.mkdir(exist_ok=True)
         self.session_id = uuid.uuid4().hex

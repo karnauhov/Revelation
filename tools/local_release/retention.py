@@ -64,8 +64,9 @@ def validate(request, project):
         raise ReleaseError("Invalid deletion request")
     expected = release_directory(Path(project["catalogue"]).resolve(), request["project"],
                                  request["version"], request["build"], request["sha"])
-    if request.get("release_tag") != f"v{request['version']}+{request['build']}":
-        raise ReleaseError("Deletion tag differs from its build")
+    tag = request.get('release_tag', '')
+    if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._+/-]{0,199}', tag) or '..' in tag or tag.endswith(('/', '.lock')):
+        raise ReleaseError('Invalid deletion release tag')
     if request.get("release_id") is not None and (type(request["release_id"]) is not int or request["release_id"] <= 0):
         raise ReleaseError("Invalid deletion release ID")
     return expected
@@ -91,13 +92,19 @@ def control_release(api, project, *, create_sha=None):
 
 
 def matching_release(api, request):
-    matches = [r for r in api.pages("/releases") if r["tag_name"] == request["release_tag"]]
+    releases = api.pages('/releases')
+    matches = [r for r in releases if r['tag_name'] == request['release_tag']]
+    if not matches:
+        # Old previews guessed vVERSION+BUILD even for a profile-owned auto
+        # tag. Reconcile the immutable tombstone by exact run marker and SHA.
+        identity = f"<!-- local-release:{request['project']}-{request['sha']} -->"
+        matches = [r for r in releases if identity in (r.get('body') or '')]
     if len(matches) > 1:
         raise ReleaseError("Multiple GitHub releases match this version")
     if not matches:
         return None
     release = matches[0]
-    actual = api.tag_sha(request["release_tag"])
+    actual = api.tag_sha(release['tag_name'])
     if actual is None and release["draft"]:
         actual = release.get("target_commitish")
     if actual != request["sha"]:
@@ -113,7 +120,7 @@ def preview(project, directory, *, api=None):
     request = {"schema": 1, "project": project["project"], "repository": read_json(Path(project["profile"]))["repository"],
         "version": source["version"], "build": source["build"], "sha": source["sha"],
         "request_id": uuid.uuid4().hex, "created": time.time(), "hosts": list(project["hosts"]),
-        "release_tag": f"v{source['version']}+{source['build']}", "release_id": None}
+        "release_tag": source.get('tag', f"v{source['version']}+{source['build']}"), "release_id": None}
     expected = validate(request, project)
     if expected != directory:
         raise ReleaseError("Deletion preview is outside the canonical build directory")
@@ -223,6 +230,17 @@ def safe_remove(root, target, expected_relative):
                     or (hasattr(candidate, "is_junction") and candidate.is_junction())
                     or not canonical(candidate).is_relative_to(canonical(target))):
                 raise error[1]
+            if os.name == 'nt' and getattr(error[1], 'winerror', None) in (32, 33):
+                from .windows_locks import release_managed_jar
+                release_managed_jar(candidate, target)
+                for attempt in range(8):
+                    try:
+                        function(filename)
+                        return
+                    except PermissionError:
+                        if attempt == 7:
+                            raise
+                        time.sleep(.05 * (attempt + 1))
             # Git pack files can have the Windows readonly attribute. Only
             # this exact managed tree can have that attribute cleared.
             os.chmod(candidate, candidate.stat().st_mode | stat.S_IWRITE)
@@ -314,8 +332,8 @@ def process(project, sha, *, role=None, api=None, store=None):
                 record.update(status="stopping", error=None)
                 atomic_json(path, record)
                 return record
-            if not record.get("github_deleted"):
-                release = matching_release(api, request)
+            release = matching_release(api, request)
+            if release or not record.get("github_deleted"):
                 if release:
                     api.request("DELETE", f"/releases/{release['id']}")
                     try:
@@ -325,6 +343,7 @@ def process(project, sha, *, role=None, api=None, store=None):
                             raise
                     else:
                         raise ReleaseError("GitHub still returns the deleted release")
+                    record['deleted_release'] = {'id': release['id'], 'tag': release['tag_name'], 'sha': request['sha']}
                 record["github_deleted"] = True
                 atomic_json(path, record)
             if not record.get("local_deleted"):

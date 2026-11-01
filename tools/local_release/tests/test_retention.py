@@ -184,6 +184,41 @@ class RetentionTest(unittest.TestCase):
         self.assertFalse(retention.deleted(self.project["catalogue"], "fixture", self.api.sha))
         self.assertEqual(self.api.events, [])
 
+    def test_auto_release_tag_from_profile_is_used_in_preview_and_deletion(self):
+        tag = 'auto-v1.0.0-b1-' + self.api.sha[:8]
+        path = self.directory / 'manifest.json'
+        value = read_json(path)
+        value['tag'] = tag
+        atomic_json(path, value)
+        self.api.releases[1]['tag_name'] = tag
+        self.api.tag_sha = lambda name: self.api.sha if name == tag else None
+        request = self.request()['request']
+        self.assertEqual(request['release_tag'], tag)
+        self.assertEqual(request['release_id'], 1)
+        result = retention.process(self.project, self.api.sha, role='windows', api=self.api)
+        self.assertEqual(result['status'], 'complete', result.get('error'))
+        self.assertEqual(result['deleted_release']['tag'], tag)
+        self.assertEqual(self.api.releases, {})
+
+    def test_legacy_false_github_deleted_flag_is_reconciled_by_exact_run_marker(self):
+        first = self.request()
+        path = retention.record_path(self.project['catalogue'], 'fixture', self.api.sha)
+        record = read_json(path)
+        record['github_deleted'] = True
+        atomic_json(path, record)
+        tag = 'auto-v1.0.0-b1-' + self.api.sha[:8]
+        self.api.releases[1].update(tag_name=tag, body='<!-- local-release:fixture-' + self.api.sha + ' -->')
+        self.api.releases[2] = {**self.api.releases[1], 'id': 2, 'tag_name': 'other', 'body': 'unrelated same-SHA release'}
+        self.api.tag_sha = lambda name: self.api.sha if name in (tag, 'other') else None
+        result = retention.process(self.project, self.api.sha, role='windows', api=self.api)
+        self.assertEqual(result['status'], 'complete', result.get('error'))
+        self.assertEqual(result['request'], first['request'])
+        self.assertEqual(result['deleted_release']['tag'], tag)
+        self.assertNotIn(1, self.api.releases)
+        self.assertIn(2, self.api.releases)
+        retention.process(self.project, self.api.sha, role='windows', api=self.api)
+        self.assertEqual(self.api.events.count(('DELETE', '/releases/1')), 1)
+
     def test_windows_deletion_finishes_without_linux_ack_but_tombstone_reaps_an_attempt(self):
         linux, linux_directory = self.create_host("linux")
         foreign = self.base / "windows/releases/fixture/9.0.0+9" / ("b" * 40)
