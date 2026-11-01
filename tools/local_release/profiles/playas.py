@@ -29,12 +29,21 @@ def metadata(repo, sha, profile):
     tags = [t for t in git(repo, 'tag', '--points-at', sha).splitlines() if t.startswith('v')]
     return dict(version=version, build=build, tag=tags[0] if tags else f'auto-v{version}-b{build}-{sha[:8]}',
         generated_output_paths=['coverage/lcov.info'],
+        generated_source_overlays={'android/gradle.properties':hashlib.sha256(gradle_properties(repo,sha).encode()).hexdigest()},
         artifacts=names, release_notes=notes[1].strip().removesuffix('---').strip(),
         release_prerelease=not bool(tags), release_make_latest='true' if tags else 'false',
         required_steps={'windows': ['preflight', *QUALITY, 'integration-android', 'integration-web', *BUILD]},
         artifact_specs={n: {'host': 'windows', 'gates': [g]} for n,g in zip(names,['verify-apk','verify-aab','verify-web'])},
         architectures={'android':['armeabi-v7a','arm64-v8a','x86_64'],'web':['javascript']},
         step_dependencies={'verify-apk':['apk'],'verify-aab':['aab'],'web-zip':['web'],'verify-web':['web-zip']})
+
+
+def gradle_properties(repo,sha):
+    source=git(repo,'show',sha+':android/gradle.properties').rstrip()+'\n'
+    for key,comment in [('android.builtInKotlin','builtInKotlin'),('android.newDsl','newDsl')]:
+        if not re.search(r'^'+re.escape(key)+r'=',source,re.M):
+            source+='# This '+comment+' flag was added automatically by Flutter migrator\n'+key+'=false\n'
+    return source
 
 
 def compile_defines(config):
