@@ -28,6 +28,7 @@ def metadata(repo, sha, profile):
     names = [f'playas-{version}+{build}.apk', f'playas-{version}+{build}.aab', f'playas-web-{version}+{build}.zip']
     tags = [t for t in git(repo, 'tag', '--points-at', sha).splitlines() if t.startswith('v')]
     return dict(version=version, build=build, tag=tags[0] if tags else f'auto-v{version}-b{build}-{sha[:8]}',
+        generated_output_paths=['coverage/lcov.info'],
         artifacts=names, release_notes=notes[1].strip().removesuffix('---').strip(),
         release_prerelease=not bool(tags), release_make_latest='true' if tags else 'false',
         required_steps={'windows': ['preflight', *QUALITY, 'integration-android', 'integration-web', *BUILD]},
@@ -177,13 +178,23 @@ def verify_web(ctx,path):
 
 def integration(ctx,platform):
     from ..prerequisites import android_device,chrome_driver
-    target='tools/local_release/smoke.dart'
-    if platform=='android':
-        with android_device(ctx):
-            ctx.command(['flutter','test','--no-pub',target,'-d',ctx.config['android_device'],'--reporter=expanded'],cwd=ctx.workspace)
-    else:
-        with chrome_driver(ctx):
-            ctx.command(['flutter','drive','--no-pub','--release','--driver=tools/local_release/driver.dart','--target='+target,'-d','web-server','--browser-name=chrome','--headless','--driver-port='+str(ctx.config['chromedriver_port']),'--web-port='+str(ctx.config['web_port']),'--web-browser-flag=--incognito','--web-browser-flag=--user-data-dir='+str(ctx.root/'w/chrome-Playas-PLA297-01a19838')],cwd=ctx.workspace)
+    target='integration_test/pla297_release_smoke_test.dart'
+    generated=ctx.workspace/target
+    if generated.exists(): raise ReleaseError('Generated integration entrypoint already exists; preserve it for inspection')
+    tests=sorted((ctx.workspace/'integration_test').glob('*_test.dart'))
+    if not tests: raise ReleaseError('No Playas integration tests')
+    text='\n'.join("import '"+p.name+"' as test"+str(i)+';' for i,p in enumerate(tests))+'\nvoid main() {\n'+''.join('test'+str(i)+'.main();\n' for i in range(len(tests)))+'}\n'
+    generated.write_text(text,encoding='utf-8')
+    try:
+        if platform=='android':
+            with android_device(ctx):
+                ctx.command(['flutter','test','--no-pub',target,'-d',ctx.config['android_device'],'--reporter=expanded'],cwd=ctx.workspace)
+        else:
+            with chrome_driver(ctx):
+                ctx.command(['flutter','drive','--no-pub','--release','--driver=tools/local_release/driver.dart','--target='+target,'-d','web-server','--browser-name=chrome','--headless','--driver-port='+str(ctx.config['chromedriver_port']),'--web-port='+str(ctx.config['web_port']),'--web-browser-flag=--incognito','--web-browser-flag=--user-data-dir='+str(ctx.root/'w/chrome-Playas-PLA297-01a19838')],cwd=ctx.workspace)
+        atomic_json(ctx.directory/('results/integration-'+platform+'.json'),{'sha':ctx.job['sha'],'tests':[p.relative_to(ctx.workspace).as_posix() for p in tests],'platform':platform,'status':'passed'})
+    finally:
+        generated.unlink(missing_ok=True)
 
 
 def run(ctx):
