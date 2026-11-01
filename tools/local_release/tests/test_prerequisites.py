@@ -77,6 +77,21 @@ class PrerequisitesTest(unittest.TestCase):
         self.assertEqual(commands[-1][-2:], ["emu", "kill"])
         self.assertEqual(self.ctx.env, environment)
 
+    def test_adb_server_forks_from_stable_catalogue_and_holds_project_lease(self):
+        calls=[]
+        def invoke(argv, **kwargs):
+            calls.append((argv,kwargs))
+            if argv[-1]=='devices':return 'emulator-5584 device'
+            return 'fixture-owned\nOK'
+        from local_release import windows_locks
+        with patch.object(self.ctx,'command',side_effect=invoke),patch.object(windows_locks,'adb_server_pid') as listener:
+            with prerequisites.android_device(self.ctx):
+                with self.assertRaisesRegex(ReleaseError,'Busy operation'):
+                    windows_locks.release_idle_project_adb(self.ctx.config,self.ctx.root)
+            listener.assert_not_called()
+        self.assertTrue(calls)
+        self.assertTrue(all(kwargs['cwd']==self.ctx.root for _,kwargs in calls))
+
     def test_driver_checksum_and_occupied_port_preserve_other_browser_sessions(self):
         driver = self.ctx.directory / "driver.exe"
         driver.write_bytes(b"approved driver")

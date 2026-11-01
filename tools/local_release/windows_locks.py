@@ -1,4 +1,4 @@
-"""Release only verified idle Gradle daemons holding a managed build JAR."""
+"""Release verified idle build helpers without touching unrelated processes."""
 
 import ctypes
 from ctypes import wintypes as w
@@ -7,8 +7,9 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import time
 
-from .core import ReleaseError, capture, hidden_flags
+from .core import ReleaseError, capture, hidden_flags, lock
 
 
 class UniqueProcess(ctypes.Structure):
@@ -57,7 +58,7 @@ def locking_processes(path):
 
 def process_details(pid):
     # The only interpolated value is an integer returned by Restart Manager.
-    command = f'Get-CimInstance Win32_Process -Filter "ProcessId = {int(pid)}" | Select-Object ExecutablePath,CommandLine | ConvertTo-Json -Compress'
+    command = f'Get-CimInstance Win32_Process -Filter "ProcessId = {int(pid)}" | Select-Object ExecutablePath,CommandLine,CreationDate | ConvertTo-Json -Compress'
     output = capture(['powershell', '-NoProfile', '-Command', command])
     return json.loads(output) if output else {}
 
@@ -138,3 +139,52 @@ def release_managed_jar(path, root):
     for owner in owners:
         stop_same_process(owner)
     return [o['pid'] for o in owners]
+
+
+def adb_server_pid(port):
+    # Identify the configured fork-server directly. Windows CIM TCP State can be
+    # null even for a live ADB server, so it is not a reliable identity source.
+    command = ("Get-CimInstance Win32_Process -Filter \"Name = 'adb.exe'\" | "
+               "Select-Object ProcessId,CommandLine | ConvertTo-Json -Compress")
+    output = capture(['powershell', '-NoProfile', '-Command', command])
+    records = json.loads(output) if output else []
+    records = records if isinstance(records, list) else [records]
+    endpoints = ('tcp:' + str(port), 'tcp:localhost:' + str(port), 'tcp:127.0.0.1:' + str(port))
+    pids = set()
+    for record in records:
+        args = command_arguments(record.get('CommandLine') or '')
+        if ('fork-server' in args and 'server' in args and '-L' in args
+                and args.index('-L') + 1 < len(args) and args[args.index('-L') + 1] in endpoints):
+            pids.add(int(record['ProcessId']))
+    return next(iter(pids)) if len(pids) == 1 else None
+
+
+def release_idle_project_adb(config, root):
+    """Stop only the configured non-global, verified, device-free ADB server."""
+    port = config.get('adb_server_port')
+    if type(port) is not int or not 1024 <= port <= 65535 or port == 5037 or not config.get('android_sdk'):
+        return False
+    root = Path(root).resolve()
+    with lock(root / ('.adb-server-' + str(port) + '.lock')):
+        pid = adb_server_pid(port)
+        if not pid:
+            return False
+        details = process_details(pid)
+        executable = Path(config['android_sdk']) / 'platform-tools/adb.exe'
+        if Path(details.get('ExecutablePath') or '').resolve() != executable.resolve():
+            return False
+        args = command_arguments(details.get('CommandLine') or '')
+        endpoint = args[args.index('-L') + 1] if '-L' in args and args.index('-L') + 1 < len(args) else None
+        listeners = ('tcp:' + str(port), 'tcp:localhost:' + str(port), 'tcp:127.0.0.1:' + str(port))
+        if ('fork-server' not in args or 'server' not in args or endpoint not in listeners or not details.get('CreationDate')):
+            return False
+        env = dict(os.environ, ANDROID_ADB_SERVER_PORT=str(port), ADB_SERVER_SOCKET='tcp:127.0.0.1:' + str(port))
+        devices = capture([executable, '-P', str(port), 'devices'], cwd=root, env=env)
+        if any(line.strip() and not line.startswith('List of devices') for line in devices.splitlines()):
+            raise ReleaseError(f'Dedicated ADB port {port} has connected devices; server preserved')
+        current = process_details(pid)
+        if (adb_server_pid(port) != pid or current.get('CreationDate') != details['CreationDate']
+                or current.get('ExecutablePath') != details.get('ExecutablePath')):
+            raise ReleaseError('ADB identity changed during cleanup; process preserved')
+        capture([executable, '-P', str(port), 'kill-server'], cwd=root, env=env)
+        return True

@@ -197,7 +197,7 @@ def busy(directory, *, ignore_lifecycle=False):
     return False
 
 
-def safe_remove(root, target, expected_relative):
+def safe_remove(root, target, expected_relative, *, config=None):
     """The caller supplies an engine-constructed path, never a request path."""
     root, target = Path(root).resolve(), Path(target)
     expected = root / expected_relative
@@ -231,8 +231,26 @@ def safe_remove(root, target, expected_relative):
                     or not canonical(candidate).is_relative_to(canonical(target))):
                 raise error[1]
             if os.name == 'nt' and getattr(error[1], 'winerror', None) in (32, 33):
-                from .windows_locks import release_managed_jar
-                release_managed_jar(candidate, target)
+                # Indexers and short-lived download handles need no process recovery.
+                for attempt in range(8):
+                    try:
+                        function(filename)
+                        return
+                    except FileNotFoundError:
+                        if not os.path.lexists(filename):
+                            return
+                        raise
+                    except PermissionError:
+                        time.sleep(.05 * (attempt + 1))
+                if candidate.suffix.lower() == '.jar' and not candidate.is_dir():
+                    from .windows_locks import release_managed_jar
+                    release_managed_jar(candidate, target)
+                elif candidate.is_dir() and config:
+                    from .windows_locks import release_idle_project_adb
+                    if not release_idle_project_adb(config, root):
+                        raise error[1]
+                else:
+                    raise error[1]
                 for attempt in range(8):
                     try:
                         function(filename)
@@ -257,6 +275,8 @@ def cleanup_local(project, request, role, *, ignore_lifecycle=False):
         if directory.exists():
             atomic_json(directory / "stop-request.json", {"source": "owner-confirmed deletion", "requested": time.time()})
         return False
+    config_file = Path(project.get("config", ""))
+    host_config = read_json(config_file) if config_file.is_file() else None
     snapshot = root / "w" / request["sha"][:12]
     if snapshot.exists():
         if snapshot.resolve() != snapshot.absolute() or not snapshot.resolve().is_relative_to(root):
@@ -284,8 +304,8 @@ def cleanup_local(project, request, role, *, ignore_lifecycle=False):
     if role == 'linux' and not ignore_lifecycle and (directory / 'results/linux-provider-baseline.json').exists():
         from .linux_provider import cleanup
         cleanup(Context(directory, read_json(Path(project['config'])), host=role))
-    safe_remove(root, snapshot, Path("w") / request["sha"][:12])
-    safe_remove(root, directory, directory.relative_to(root))
+    safe_remove(root, snapshot, Path("w") / request["sha"][:12], config=host_config)
+    safe_remove(root, directory, directory.relative_to(root), config=host_config)
     if directory.parent.exists() and not any(directory.parent.iterdir()):
         directory.parent.rmdir()
     index = root / "github-index.json"

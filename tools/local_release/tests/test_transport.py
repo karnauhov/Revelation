@@ -198,6 +198,9 @@ class TransportTest(unittest.TestCase):
         def remove(method, path, **kwargs):
             receipt = core.read_json(self.windows.directory / "results/exchange-closed.json")
             self.assertTrue(receipt["all_required_gates_passed"])
+            archive = core.read_json(self.windows.directory / "results/build-logs.json")
+            self.assertTrue(archive["closed"])
+            self.assertIn(archive["archive"]["id"], FakeGitHub.assets)
             self.assertTrue(any(a["id"] == int(path.rsplit("/", 1)[1]) for a in receipt["temporary_assets"]))
             return original(method, path, **kwargs)
         with patch.object(api, "request", side_effect=remove):
@@ -207,6 +210,15 @@ class TransportTest(unittest.TestCase):
         self.assertIn(unknown["id"], FakeGitHub.assets)
         self.assertTrue({"windows.zip", "linux.tar.gz", "SHA256SUMS", "release-manifest.json"} <= {a[0]["name"] for a in FakeGitHub.assets.values()})
         transport.close_published_exchange(self.windows, api, release)  # Idempotent after the peer status is gone.
+
+    def test_failed_published_log_archive_preserves_every_transport_asset(self):
+        api, release = self.published_fixture()
+        release['draft'] = False
+        before = set(FakeGitHub.assets)
+        with patch('local_release.technical_cleanup.archive_job', side_effect=core.ReleaseError('archive offline')):
+            with self.assertRaisesRegex(core.ReleaseError, 'archive offline'):
+                transport.sync_results(self.windows, cleanup=True)
+        self.assertEqual(set(FakeGitHub.assets), before)
 
     def test_changed_canonical_asset_prevents_final_transport_deletion(self):
         api, release = self.published_fixture()

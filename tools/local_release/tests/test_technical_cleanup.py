@@ -93,3 +93,60 @@ class TechnicalCleanupTest(unittest.TestCase):
         self.assertIn(self.draft_id, self.api.releases)
         with self.assertRaisesRegex(ReleaseError, 'Unknown diagnostic'):
             technical_cleanup.finish(self.project, api=self.api)
+
+
+class WindowsLogArchiveTest(unittest.TestCase):
+    def setUp(self):
+        from types import SimpleNamespace
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.directory = self.root / 'release'
+        self.api = ReportsAPI()
+        self.api.token = 'private-gh-token'
+        self.release = self.api.releases[1]
+        self.job = {'project':'fixture','sha':self.api.sha,'run_id':'fixture-'+self.api.sha,
+                    'version':'1.0.0','build':1,'tag':'v1.0.0+1','required_steps':{'windows':['verified']}}
+        atomic_json(self.directory/'publication.json',{'published':True,'release_id':1,'sha':self.api.sha})
+        atomic_json(self.directory/'results/windows.json',{'sha':self.api.sha,'run_id':self.job['run_id'],
+                    'status':'built','steps':{'verified':{'status':'passed'}}})
+        self.log=self.directory/'logs/windows/build.log';self.log.parent.mkdir(parents=True)
+        self.log.write_text('PASS private-map-key private-password private-define private-gh-token',encoding='utf-8')
+        atomic_json(self.root/'defines.json',{'API_KEY':'private-define'})
+        config={'defines_file':str(self.root/'defines.json'),'environment':{
+            'GOOGLE_MAPS_ANDROID_API_KEY':'private-map-key','SIGNING_KEY_PASSWORD':'private-password'}}
+        self.context=SimpleNamespace(directory=self.directory,job=self.job,config=config)
+
+    def test_single_windows_host_without_linux_draft_archives_redacted_results_once(self):
+        record=technical_cleanup.archive_job(self.context,self.api,self.release)
+        self.assertTrue(record['closed'] and record['read_back_verified'])
+        asset=self.api.assets[1][0]
+        with zipfile.ZipFile(io.BytesIO(asset['bytes'])) as archive:
+            self.assertIn('logs/windows/build.log',archive.namelist())
+            self.assertIn('results/windows.json',archive.namelist())
+            payload=b' '.join(archive.read(n) for n in archive.namelist())
+        for secret in [b'private-map-key',b'private-password',b'private-define',b'private-gh-token']:
+            self.assertNotIn(secret,payload)
+        self.assertEqual(len(self.api.releases),1)
+        self.assertFalse(list(self.root.rglob('*.zip')))
+        atomic_json(self.directory/'results/build-logs-outbox.json',{'pending':True})
+        technical_cleanup.archive_job(self.context,self.api,self.release)
+        self.assertEqual(sum(e[0]=='UPLOAD' for e in self.api.events),1)
+        self.assertFalse((self.directory/'results/build-logs-outbox.json').exists())
+
+    def test_failed_archival_leaves_durable_outbox_and_all_source_logs_for_retry(self):
+        self.api.fail_upload=True
+        with self.assertRaises(ReleaseError):technical_cleanup.archive_job(self.context,self.api,self.release)
+        self.assertTrue(read_json(self.directory/'results/build-logs-outbox.json')['pending'])
+        self.assertTrue(self.log.exists())
+        self.assertFalse((self.directory/'results/build-logs.json').exists())
+        self.api.fail_upload=False
+        technical_cleanup.archive_job(self.context,self.api,self.release)
+        self.assertFalse((self.directory/'results/build-logs-outbox.json').exists())
+
+    def test_incomplete_or_foreign_publication_cannot_archive_or_claim_success(self):
+        for patch_data in [{'published':False,'release_id':1,'sha':self.api.sha},
+                           {'published':True,'release_id':999,'sha':self.api.sha}]:
+            atomic_json(self.directory/'publication.json',patch_data)
+            with self.assertRaises(ReleaseError):technical_cleanup.archive_job(self.context,self.api,self.release)
+        self.assertFalse(self.api.assets)

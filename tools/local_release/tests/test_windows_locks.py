@@ -85,3 +85,58 @@ time.sleep(60)
             safe_remove(root, target, Path('w') / ('a' * 12))
             self.assertFalse(target.exists())
             self.assertEqual(keep.read_text(), 'neighbour')
+
+
+class AdbCleanupTest(unittest.TestCase):
+    def setup_fixture(self,root):
+        config={'android_sdk':str(root/'sdk'),'adb_server_port':5043}
+        details={'ExecutablePath':str(root/'sdk/platform-tools/adb.exe'),
+                 'CommandLine':'fixture','CreationDate':'same-start'}
+        args=['adb.exe','-L','tcp:127.0.0.1:5043','fork-server','server']
+        return config,details,args
+
+    def test_verified_idle_non_global_adb_server_can_release_a_managed_directory(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);config,details,args=self.setup_fixture(root)
+            with patch.object(locks,'adb_server_pid',return_value=123),patch.object(locks,'process_details',return_value=details),patch.object(locks,'command_arguments',return_value=args),patch.object(locks,'capture',side_effect=['List of devices attached','']) as command:
+                self.assertTrue(locks.release_idle_project_adb(config,root))
+                self.assertEqual(command.call_args_list[-1].args[0][-1],'kill-server')
+                self.assertTrue(all(c.kwargs['cwd']==root for c in command.call_args_list))
+
+    def test_global_port_unknown_binary_and_connected_devices_are_preserved(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);config,details,args=self.setup_fixture(root)
+            with patch.object(locks,'adb_server_pid') as listener:
+                self.assertFalse(locks.release_idle_project_adb(dict(config,adb_server_port=5037),root))
+                listener.assert_not_called()
+            with patch.object(locks,'adb_server_pid',return_value=123),patch.object(locks,'process_details',return_value=dict(details,ExecutablePath=str(root/'other.exe'))),patch.object(locks,'capture') as command:
+                self.assertFalse(locks.release_idle_project_adb(config,root));command.assert_not_called()
+            with patch.object(locks,'adb_server_pid',return_value=123),patch.object(locks,'process_details',return_value=details),patch.object(locks,'command_arguments',return_value=args),patch.object(locks,'capture',return_value='List of devices attached\nfixture-phone device') as command:
+                with self.assertRaisesRegex(ReleaseError,'server preserved'):locks.release_idle_project_adb(config,root)
+                self.assertEqual(command.call_count,1)
+
+    def test_reused_adb_pid_cannot_stop_a_new_server(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);config,details,args=self.setup_fixture(root)
+            with patch.object(locks,'adb_server_pid',return_value=123),patch.object(locks,'process_details',side_effect=[details,dict(details,CreationDate='new-start')]),patch.object(locks,'command_arguments',return_value=args),patch.object(locks,'capture',return_value='List of devices attached') as command:
+                with self.assertRaisesRegex(ReleaseError,'identity changed'):locks.release_idle_project_adb(config,root)
+                self.assertEqual(command.call_count,1)
+
+    @unittest.skipUnless(os.name=='nt' and os.environ.get('AI11_TEST_ADB'),'Explicit owned Windows ADB fixture required')
+    def test_real_adb_directory_handle_is_recovered_without_global_server(self):
+        import socket
+        adb=Path(os.environ['AI11_TEST_ADB']).resolve();sdk=adb.parents[1]
+        with tempfile.TemporaryDirectory(prefix='AI11-owned-adb-') as folder:
+            root=Path(folder);target=root/'w'/('b'*12);cwd=target/'w';cwd.mkdir(parents=True)
+            with socket.socket() as probe:
+                probe.bind(('127.0.0.1',0));port=probe.getsockname()[1]
+            self.assertNotEqual(port,5037)
+            env=dict(os.environ,ANDROID_ADB_SERVER_PORT=str(port),ADB_SERVER_SOCKET='tcp:127.0.0.1:'+str(port))
+            subprocess.run([str(adb),'--one-device','AI11-disposable-fixture','-P',str(port),'start-server'],cwd=cwd,env=env,check=True,capture_output=True,creationflags=subprocess.CREATE_NO_WINDOW)
+            try:
+                with self.assertRaises(PermissionError):cwd.rmdir()
+                safe_remove(root,target,Path('w')/('b'*12),config={'android_sdk':str(sdk),'adb_server_port':port})
+                self.assertFalse(target.exists())
+                self.assertIsNone(locks.adb_server_pid(port))
+            finally:
+                subprocess.run([str(adb),'-P',str(port),'kill-server'],cwd=root,env=env,check=False,capture_output=True,creationflags=subprocess.CREATE_NO_WINDOW)

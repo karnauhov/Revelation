@@ -10,7 +10,7 @@ import subprocess
 import time
 from urllib.request import urlopen
 
-from .core import ReleaseError, digest, hidden_flags
+from .core import ReleaseError, digest, hidden_flags, lock
 from .processes import JobStopped, terminate_tree
 
 
@@ -57,6 +57,17 @@ def child(ctx, argv, label, env=None):
 
 @contextmanager
 def android_device(ctx):
+    port = ctx.config.get('adb_server_port')
+    if type(port) is not int or not 1024 <= port <= 65535 or port == 5037:
+        raise ReleaseError('Configure an explicit isolated AVD and non-global adb_server_port')
+    # A version deletion must not stop the shared project server during another test.
+    with lock(ctx.root / ('.adb-server-' + str(port) + '.lock')):
+        with _android_device(ctx) as serial:
+            yield serial
+
+
+@contextmanager
+def _android_device(ctx):
     """Never use a phone/global ADB server or terminate a borrowed emulator."""
     avd, serial = ctx.config.get("android_avd_name"), ctx.config.get("android_device", "")
     match = re.fullmatch(r"emulator-(\d+)", serial)
@@ -71,12 +82,14 @@ def android_device(ctx):
     ctx.env.update(ANDROID_ADB_SERVER_PORT=str(port), ADB_SERVER_SOCKET=f"tcp:127.0.0.1:{port}")
 
     def identity():
-        value = ctx.command([adb, "-P", str(port), "-s", serial, "emu", "avd", "name"])
+        value = ctx.command([adb, "-P", str(port), "-s", serial, "emu", "avd", "name"], cwd=ctx.root)
         if avd not in value.splitlines():
             raise ReleaseError("Configured emulator serial belongs to another AVD; it was not changed")
 
     try:
-        devices = ctx.command([adb, "-P", str(port), "devices"])
+        # ADB retains a directory handle when forking its server. Never fork it
+        # from a disposable source checkout, even though the client is short-lived.
+        devices = ctx.command([adb, "-P", str(port), "devices"], cwd=ctx.root)
         if any(line.split()[:1] == [serial] for line in devices.splitlines()):
             identity()
             yield serial
@@ -89,7 +102,7 @@ def android_device(ctx):
         with child(ctx, argv, "android-emulator") as process:
             def ready():
                 try:
-                    return ctx.command([adb, "-P", str(port), "-s", serial, "shell", "getprop", "sys.boot_completed"]).strip() == "1"
+                    return ctx.command([adb, "-P", str(port), "-s", serial, "shell", "getprop", "sys.boot_completed"], cwd=ctx.root).strip() == "1"
                 except ReleaseError:
                     return False
             wait_ready(ctx, ready, process, "Android emulator")
@@ -99,7 +112,7 @@ def android_device(ctx):
             finally:
                 # The serial and AVD were verified before use. Only our launch
                 # is shut down; the borrowed-device branch never enters here.
-                ctx.command([adb, "-P", str(port), "-s", serial, "emu", "kill"], cancellable=False)
+                ctx.command([adb, "-P", str(port), "-s", serial, "emu", "kill"], cancellable=False, cwd=ctx.root)
     finally:
         for name, value in previous.items():
             if value is None:

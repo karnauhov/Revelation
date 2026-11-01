@@ -487,6 +487,10 @@ def _sync_results(ctx, *, cleanup=False, hosts=None):
                                 and canonical.get("id") != record["id"]
                                 and digest(ctx.output / name) == record["sha256"]):
                             owned.append(asset)
+                if (publication_path.exists() and read_json(publication_path).get("published")
+                        and complete_results(ctx.directory, ctx.job)):
+                    from .technical_cleanup import archive_job
+                    archive_job(ctx, api, release)
                 owned = list({asset["id"]: asset for asset in owned}.values())
                 for asset in owned:
                     api.request("DELETE", f"/releases/assets/{asset['id']}")
@@ -538,6 +542,8 @@ def close_published_exchange(ctx, api, release):
             with tempfile.TemporaryDirectory(prefix="release-final-receipt-") as folder:
                 if api.download_asset(asset, Path(folder) / name) != record["sha256"]:
                     raise ReleaseError("Canonical GitHub read-back differs from final receipt")
+    from .technical_cleanup import archive_job
+    archive_job(ctx, api, release)
     transport_prefix = prefix(ctx.job)
     candidates = []
     for asset in assets:

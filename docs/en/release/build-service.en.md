@@ -1,6 +1,6 @@
 # Shared local build dashboard
 
-Doc-Version: 1.3.1
+Doc-Version: 1.3.2
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -129,6 +129,7 @@ Implement other projects' autobuilds in their corresponding tasks.
 Windows cleans the verified managed directory using extended-length paths, including deep Gradle files
 and readonly Git files. A partial failure cannot produce an OS ack: local cleanup must physically finish.
 Retry continues the original request; an already removed GitHub Release is not deleted again.
+ADB starts in the permanent service directory to avoid holding a disposable checkout. Directory recovery can gracefully stop only the configured project ADB on its dedicated port after checking the SDK binary, PID, creation time and absence of devices. A shared lease protects active Android smoke tests. Global ADB5037 and unknown processes are preserved; Gradle recovery applies only to JAR files, never directories.
 The confirmed version leaves the normal queue immediately to prevent automatic restoration.
 Until cleanup finishes, the deletion section explicitly shows pending local removal or an error;
 long error paths wrap inside the sidebar.
@@ -144,6 +145,7 @@ The latest Linux report shows receipt time, last stage, available timing, error 
 This diagnostic channel does not replace quality gates. Missing reports are explicitly shown as unavailable.
 Progress is sent once per minute during Linux builds; completion, early failure and cleanup outcomes are sent separately.
 Windows archives received history in `.local-releases/host-reports/`; full job logs stay in the canonical version catalogue.
+Before final deletion of temporary transfer assets, every published job, including Windows-only jobs, saves a redacted `build-logs-<hash>.zip` to its GitHub Release. Download and SHA-256 are verified; archive failures preserve logs and transfer assets for retry. Linux can supplement the archive with its reports. Credentials and define values are removed before packaging.
 Linux keeps no permanent archive - see the [temporary builder policy](local-release.en.md#linux-is-a-temporary-builder).
 
 Controls hide equivalent actions: a new build shows Start, an attempted build shows Retry, and Restart appears only for an active process. Stop is hidden after the current OS completes. Recent Linux diagnostic history links open the saved Windows copies.
