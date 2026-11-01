@@ -222,6 +222,17 @@ def receive_resume(api, assets, job, destination, folder):
         (destination / 'stop-request.json').unlink(missing_ok=True)
 
 
+def refresh_job(ctx):
+    """Install audited repairs before an existing job/outbox can run old code."""
+    api, release = connection(ctx)
+    if not release['draft']:
+        return
+    assets = api.pages(f"/releases/{release['id']}/assets")
+    with tempfile.TemporaryDirectory(prefix='release-existing-update-') as folder:
+        receive_runtime_updates(api, assets, ctx.job, ctx.directory, folder)
+        receive_resume(api, assets, ctx.job, ctx.directory, folder)
+
+
 def receive_jobs(profile, root, config, tag=None, *, limit=None, exclude_shas=()):
     from .retention import deleted
     if host_name() == 'linux' and limit is None:

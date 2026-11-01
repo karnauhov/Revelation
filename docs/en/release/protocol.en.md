@@ -1,6 +1,6 @@
 # Local builder exchange
 
-Doc-Version: 2.1.0
+Doc-Version: 2.1.1
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -194,3 +194,19 @@ unproven resources or images used by other projects are preserved with an explic
 The entire original snapcraft_build.sh runs unchanged; ephemeral Snap execution uses LXD.
 
 Linux receives and prepares one job at a time: the next source bundle is downloaded only after the preceding attempt is handled. The engine rejects historical archive imports on Linux.
+
+## Damaged Python cache and resident-job updates
+
+A full disk can leave a truncated `.pyc` that raises `EOFError: marshal data too short` on a later import.
+`-B` alone blocks writes but still reads existing bytecode. Entry scripts source-load a guard before importing the coordinator,
+setting dont_write_bytecode and a unique empty pycache_prefix. No replacement caches are written and no global/foreign Python
+caches are deleted. A real truncated `.pyc` regression covers all four entrypoints.
+Primary references: [CPython issue126606](https://github.com/python/cpython/issues/126606),
+[Python options](https://docs.python.org/3.12/using/cmdline.html#envvar-PYTHONPYCACHEPREFIX).
+
+Resident jobs/outboxes receive runtime repairs before recovery/execution, not only when new jobs are received.
+Manual and dashboard runs enter the current CLI before executing the job's verified frozen runtime.
+The lifecycle lock prevents replacing an active builder's runtime. Incomplete gates first deliver the previous outbox;
+a verified receipt then permits the same attempt to resume with accepted packages, without rebuilding or downloading them again.
+Snap acceptance imports occur inside verify-linux so loader failures are not attributed to a successful inspect-snap.
+A redacted traceback survives in the bounded result and a stage-error.log even when the outer wrapper reports a generic error.

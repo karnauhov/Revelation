@@ -204,8 +204,11 @@ def build(ctx):
             attempt("inspect-linux-tar", lambda: inspect_tar(ctx), ["results/linux-tar-package.json"])
     if attempt("snap", lambda: build_snap(ctx), ["packages/" + package_path(ctx, ".snap").name, "results/linux-snap-script.json"]):
         attempt("inspect-snap", lambda: inspect_snap(ctx), ["results/linux-snap-package.json"])
-    from .snap_acceptance import acceptance
     if not failures:
-        attempt("verify-linux", lambda: acceptance(ctx), ["results/linux-packages.json"])
+        def verify():
+            # Attribute a loader failure to acceptance, after package inspection.
+            from .snap_acceptance import acceptance
+            acceptance(ctx)
+        attempt("verify-linux", verify, ["results/linux-packages.json"])
     if failures:
         raise ReleaseError("Linux stages remain incomplete: " + ", ".join(failures))

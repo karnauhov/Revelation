@@ -14,6 +14,47 @@ from local_release.profiles.linux_release import inspect_tar, unsquashfs_version
 
 
 class LinuxPolicyTest(unittest.TestCase):
+    def test_acceptance_loader_error_keeps_packages_and_retry_runs_acceptance_only(self):
+        import sys
+        import types
+        from local_release.profiles.linux_release import build
+        from local_release.core import digest
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            directory = root / 'releases/fixture/1.0.0+1' / ('a' * 40)
+            atomic_json(directory / 'job.json', {'schema': 1, 'sha': 'a' * 40, 'run_id': 'fixture-a',
+                'project': 'fixture', 'artifacts': ['fixture.tar.gz', 'fixture.snap']})
+            ctx = Context(directory, {}, host='linux')
+            outputs = {'linux-tar': ['packages/fixture.tar.gz'],
+                'inspect-linux-tar': ['results/linux-tar-package.json'],
+                'snap': ['packages/fixture.snap', 'results/linux-snap-script.json'],
+                'inspect-snap': ['results/linux-snap-package.json'], 'linux': [], 'sentry-linux': []}
+            for step, paths in outputs.items():
+                for name in paths:
+                    path = directory / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_bytes(b'accepted immutable output')
+                ctx.result['steps'][step] = {'status': 'passed', 'outputs': {name: digest(directory / name) for name in paths}}
+            before = {p.name: (digest(p), p.stat().st_mtime_ns) for p in ctx.output.iterdir()}
+            module = types.ModuleType('local_release.profiles.snap_acceptance')
+            def broken(name):
+                if name == 'acceptance':
+                    raise EOFError('marshal data too short')
+                raise AttributeError(name)
+            module.__getattr__ = broken
+            with patch.dict(sys.modules, {module.__name__: module}), patch.object(ctx, 'command', side_effect=AssertionError('unnecessary rebuild')):
+                with self.assertRaisesRegex(EOFError, 'marshal'):
+                    build(ctx)
+                self.assertEqual(ctx.result['current_step'], 'verify-linux')
+                self.assertEqual(ctx.result['steps']['verify-linux']['status'], 'failed')
+                self.assertEqual(ctx.result['steps']['inspect-snap']['status'], 'passed')
+                trace = (directory / 'logs/linux/verify-linux-error.log').read_text(encoding='utf-8')
+                self.assertIn('EOFError: marshal data too short', trace)
+                module.acceptance = lambda ctx: atomic_json(directory / 'results/linux-packages.json', {'verified': True})
+                build(ctx)
+                self.assertEqual(ctx.result['steps']['verify-linux']['status'], 'passed')
+            self.assertEqual(before, {p.name: (digest(p), p.stat().st_mtime_ns) for p in ctx.output.iterdir()})
+
     def test_repaired_snap_replaces_one_local_package_only_with_a_remote_backup(self):
         from local_release.profiles.linux_release import build_snap
         from local_release.core import digest, read_json

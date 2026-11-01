@@ -13,7 +13,7 @@ class RuntimeInvalidationTest(unittest.TestCase):
     def test_audited_acceptance_repair_preserves_build_test_and_package_checkpoints(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            job, incoming = root / "job", root / "incoming"
+            job, incoming = root / 'releases/fixture/1.0.0+1' / ('a' * 40), root / "incoming"
             recipe = "local_release/profiles/linux_release.py"
             for target, content in ((job, "old acceptance"), (incoming, "new acceptance")):
                 (target / "runtime" / recipe).parent.mkdir(parents=True)
@@ -46,12 +46,12 @@ class RuntimeInvalidationTest(unittest.TestCase):
     def test_audited_snap_rebuild_demotes_only_its_package_and_preserves_remote_backup(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            job, incoming = root / "job", root / "incoming"
+            job, incoming = root / 'releases/fixture/1.0.0+1' / ('a' * 40), root / "incoming"
             recipe = "local_release/profiles/linux_release.py"
             for target in (job, incoming):
                 (target / "runtime" / recipe).parent.mkdir(parents=True)
                 (target / "runtime" / recipe).write_text(target.name)
-            old = {"schema": 1, "sha": "a" * 40, "preparation_revision": 14,
+            old = {"schema": 1, "project": "fixture", "run_id": "fixture-a", "sha": "a" * 40, "preparation_revision": 14,
                 "required_steps": {"linux": ["snap", "inspect-snap", "verify-linux", "linux-tar", "integration-linux"]},
                 "step_dependencies": {"inspect-snap": ["snap"], "verify-linux": ["snap", "inspect-snap"]},
                 "runtime_sha256": {recipe: digest(job / "runtime" / recipe)}}

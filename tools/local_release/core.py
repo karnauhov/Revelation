@@ -183,6 +183,20 @@ class Context:
             reserve.unlink()
             atomic_json(self.result_path, self.result)
 
+    def record_exception(self):
+        """Keep the actual import/command traceback without exporting locals."""
+        import traceback
+        value = self.redact(traceback.format_exc())[-32768:]
+        self.result['error_traceback'] = value
+        try:
+            step = self.result.get('current_step') or 'builder'
+            path = self.directory / 'logs' / self.host / (step + '-error.log')
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open('a', encoding='utf-8') as stream:
+                stream.write(value + '\n')
+        except OSError:
+            pass  # The bounded traceback still travels with the status payload.
+
     def refresh_redaction(self, values=()):
         self.redact = Redactor([*self.redact.values, *values])
 
@@ -255,6 +269,7 @@ class Context:
                 return False
         self.result.update(status="running", current_step=name)
         self.result.pop("error", None)
+        self.result.pop('error_traceback', None)
         # Only declared dependents are invalidated. JSON key order and independent
         # platform branches cannot make a successful build disappear on retry.
         if name in self.result["steps"]:
@@ -294,6 +309,7 @@ class Context:
             return True
         except BaseException as error:
             from .processes import JobStopped
+            self.record_exception()
             state = "stopped" if isinstance(error, JobStopped) else "failed"
             self.result.update(status=state, error=self.redact(str(error)))
             self.result["steps"][name].update(status=state, finished=time.time(), error=self.redact(str(error)))
@@ -556,6 +572,7 @@ def _run_job(directory: Path, config: dict, publish=False):
                 "reason": context.redact(str(error)), "action": "Worker resumes when the exact source SHA is accessible on GitHub"})
         except BaseException as error:
             from .processes import JobStopped
+            context.record_exception()
             context.result.update(status="stopped" if isinstance(error, JobStopped) else "failed", error=context.redact(str(error)))
             context.save()
             if publish:
@@ -576,7 +593,7 @@ def _run_job(directory: Path, config: dict, publish=False):
 def execute_prepared(directory: Path, config_path: Path, publish=False):
     from .retention import ensure_job_allowed
     ensure_job_allowed(directory)
-    command = [sys.executable, str(directory / "runtime/local_release/cli.py"), "run", "--job", str(directory),
+    command = [sys.executable, str(Path(__file__).with_name('cli.py')), "run", "--job", str(directory),
                "--config", str(config_path)]
     if publish:
         command.append("--publish")

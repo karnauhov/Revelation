@@ -293,7 +293,8 @@ class TransportTest(unittest.TestCase):
         first = send_update(updated)
         second = send_update(updated)
         self.assertEqual(first["sha256"], second["sha256"])
-        transport.receive_jobs(self.profile, self.base / "linux-root", {})
+        # Repair a resident job directly, before the queue receiver/build stage.
+        transport.refresh_job(linux)
         received = core.Context(linux.directory, {}, host="linux")
         self.assertEqual((received.job["sha"], received.job["build"]), before)
         self.assertEqual(received.job["preparation_revision"], 2)

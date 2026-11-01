@@ -67,14 +67,48 @@ class AgentTest(unittest.TestCase):
             project = {"project": "fixture", "profile": str(profile), "config": str(config), "catalogue": str(root), "repo": str(root)}
             with patch("local_release.agent.update_main"), patch("local_release.agent.discover_jobs", return_value="a" * 40), \
                     patch("local_release.retention.synchronize"), \
+                    patch("local_release.transport.refresh_job") as refresh, \
                     patch("local_release.transport.receive_jobs", return_value=[]), \
                     patch("local_release.github.reconcile_published", return_value=True), \
                     patch("local_release.linux_ephemeral.cleanup_published") as cleanup, \
                     patch("local_release.agent.execute_prepared") as run:
                 records = project_cycle(project, "linux")
                 run.assert_not_called()
+                refresh.assert_called_once()
                 cleanup.assert_called_once()
             self.assertEqual(records, [{"run_id": "fixture-a", "status": "published"}])
+
+    def test_existing_failed_outbox_receives_repair_before_recovery_or_old_runtime_execution(self):
+        import shutil
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            profile, config = root / 'profile.json', root / 'config.json'
+            atomic_json(profile, {'project': 'fixture'})
+            atomic_json(config, {})
+            directory = root / 'releases/fixture/1.0.0+1' / ('a' * 40)
+            job = {'schema': 1, 'project': 'fixture', 'sha': 'a' * 40, 'run_id': 'fixture-a',
+                   'version': '1.0.0', 'build': 1, 'preparation_revision': 2, 'required_steps': {'linux': []}}
+            atomic_json(directory / 'job.json', job)
+            atomic_json(directory / 'results/linux-outbox.json', {'pending': True})
+            project = {'project': 'fixture', 'profile': str(profile), 'config': str(config),
+                       'catalogue': str(root), 'repo': str(root)}
+            order = []
+            def refresh(ctx):
+                order.append('repair')
+                atomic_json(directory / 'job.json', {**job, 'preparation_revision': 4})
+            def recover(*args):
+                order.append('recover')
+                self.assertEqual(read_json(directory / 'job.json')['preparation_revision'], 4)
+                shutil.rmtree(directory)
+            with patch('local_release.agent.update_main'), patch('local_release.retention.synchronize'), \
+                    patch('local_release.transport.refresh_job', side_effect=refresh), \
+                    patch('local_release.linux_ephemeral.run', side_effect=recover), \
+                    patch('local_release.transport.receive_jobs', return_value=[]), \
+                    patch('local_release.agent.discover_jobs', return_value='cursor'), \
+                    patch('local_release.agent.execute_prepared') as build:
+                self.assertEqual(project_cycle(project, 'linux'), [])
+                build.assert_not_called()
+            self.assertEqual(order, ['repair', 'recover'])
 
     def test_linux_applies_tombstones_before_receiving_or_starting_builds(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -114,6 +148,43 @@ class AgentTest(unittest.TestCase):
             atomic_json(directory / "results/linux.json", result)
             remediation(directory, {})
             self.assertFalse(read_json(directory / "results/linux-remediation.json")["runtime_update_ready"])
+
+    def test_incomplete_outbox_is_sent_then_resumed_in_place_without_deleting_accepted_package(self):
+        from local_release.core import digest
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            profile, config = root / 'profile.json', root / 'config.json'
+            atomic_json(profile, {'project': 'fixture'})
+            atomic_json(config, {})
+            directory = root / 'releases/fixture/1.0.0+1' / ('a' * 40)
+            job = {'schema': 1, 'project': 'fixture', 'sha': 'a' * 40, 'run_id': 'fixture-a',
+                   'version': '1.0.0', 'build': 1, 'required_steps': {'linux': ['verify-linux']}}
+            atomic_json(directory / 'job.json', job)
+            atomic_json(directory / 'received.json', {})
+            outbox = directory / 'results/linux-outbox.json'
+            atomic_json(outbox, {'pending': True})
+            package = directory / 'packages/fixture.snap'
+            package.parent.mkdir()
+            package.write_bytes(b'accepted package')
+            expected = digest(package)
+            project = {'project': 'fixture', 'profile': str(profile), 'config': str(config),
+                       'catalogue': str(root), 'repo': str(root)}
+            order = []
+            def execute(*args, **kwargs):
+                order.append('execute')
+                self.assertFalse(outbox.exists())
+                self.assertEqual(digest(package), expected)
+            with patch('local_release.agent.update_main'), patch('local_release.retention.synchronize'), \
+                    patch('local_release.transport.refresh_job', side_effect=lambda ctx: order.append('repair')), \
+                    patch('local_release.transport.send_result', side_effect=lambda ctx: order.append('send')), \
+                    patch('local_release.transport.receive_jobs', return_value=[]), \
+                    patch('local_release.github.reconcile_published', return_value=False), \
+                    patch('local_release.agent.discover_jobs', return_value='cursor'), \
+                    patch('local_release.agent.execute_prepared', side_effect=execute), \
+                    patch('local_release.linux_ephemeral.run') as recovery:
+                project_cycle(project, 'linux')
+                recovery.assert_not_called()
+            self.assertEqual(order, ['repair', 'send', 'execute'])
 
     def test_dispatcher_continues_projects_in_order_and_selects_linux_profiles(self):
         with tempfile.TemporaryDirectory() as folder:

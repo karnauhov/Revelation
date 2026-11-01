@@ -291,7 +291,7 @@ class Dashboard:
             python = Path(sys.executable)
             if python.name.lower() == "pythonw.exe":
                 python = python.with_name("python.exe")
-            command = [str(python), "-u", str(directory / "runtime/local_release/cli.py"), "run", "--job", str(directory),
+            command = [str(python), "-u", str(Path(__file__).with_name('cli.py')), "run", "--job", str(directory),
                        "--config", project["config"], "--publish"]
             output = directory / "logs" / host_name() / "dashboard-worker.log"
             output.parent.mkdir(parents=True, exist_ok=True)

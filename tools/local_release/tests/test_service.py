@@ -197,7 +197,15 @@ class ServiceTest(unittest.TestCase):
             if predicate():
                 return
             time.sleep(.08)
-        self.fail("Timed out waiting for the owned fixture builder")
+        diagnostic = []
+        for directory in self.jobs.values():
+            result = directory / 'results' / (host_name() + '.json')
+            worker = directory / 'logs' / host_name() / 'dashboard-worker.log'
+            if result.exists():
+                diagnostic.append(result.read_text(encoding='utf-8')[-3000:])
+            if worker.exists():
+                diagnostic.append(worker.read_text(encoding='utf-8')[-3000:])
+        self.fail("Timed out waiting for the owned fixture builder: " + '\n'.join(diagnostic))
 
     def prepare_runnable(self):
         directory = self.jobs["first"]

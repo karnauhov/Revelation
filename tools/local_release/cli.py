@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
+import os
+import sys
+
+_guard = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'python_bootstrap.py')
+with open(_guard, 'rb') as _source:
+    exec(compile(_source.read(), _guard, 'exec'), {'__name__': '_ai11_python_startup'})
+
 import argparse
 import importlib
 import json
-import os
 from pathlib import Path
 import subprocess
-import sys
 
 # Resolve the same package both in tools/ and in a job's runtime/ directory.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -169,6 +174,13 @@ def main(argv=None):
             raise ReleaseError("Published releases are immutable; use the catalogue instead of rebuilding")
         frozen_cli = args.job.resolve() / "runtime/local_release/cli.py"
         if Path(__file__).resolve() != frozen_cli:
+            from local_release.core import verify_runtime
+            verify_runtime(args.job.resolve())
+            if host_name() == 'linux':
+                from local_release.core import Context
+                from local_release.transport import refresh_job
+                refresh_job(Context(args.job.resolve(), read_json(args.config), host='linux'))
+                verify_runtime(args.job.resolve())
             # All hosts execute exactly the frozen coordinator shipped in the job.
             command = [sys.executable, str(frozen_cli), "run", "--job", str(args.job.resolve()), "--config", str(args.config.resolve())]
             if args.publish:

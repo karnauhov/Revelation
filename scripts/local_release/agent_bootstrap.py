@@ -1,9 +1,17 @@
 """Stable graphical-login entrypoint; update main before loading job dispatch code."""
 
+import os
+import sys
+
+# Load the guard from source before importing potentially damaged .pyc files.
+_guard = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                      'tools', 'local_release', 'python_bootstrap.py')
+with open(_guard, 'rb') as _source:
+    exec(compile(_source.read(), _guard, 'exec'), {'__name__': '_ai11_python_startup'})
+
 import argparse
 from pathlib import Path
 import subprocess
-import sys
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "tools"))

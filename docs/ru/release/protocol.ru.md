@@ -1,6 +1,6 @@
 # Обмен локальных сборщиков
 
-Doc-Version: 2.1.0
+Doc-Version: 2.1.1
 Last-Updated: 2026-11-01
 Source-Commit: working-tree
 
@@ -201,3 +201,19 @@ Windows проверяет marker/identity/digest, сохраняет отчёт
 Оригинальный snapcraft_build.sh выполняется целиком, без правок команд; ephemeral Snap использует LXD.
 
 Linux получает и подготавливает задания по одному: следующий source bundle скачивается только после обработки предыдущей попытки. Исторический archive import в Linux запрещён движком.
+
+## Повреждённый Python cache и обновление существующих заданий
+
+После переполнения диска `.pyc` может остаться усечённым и вызвать `EOFError: marshal data too short` при следующем импорте.
+Одного `-B` недостаточно: он запрещает запись, но не чтение существующего bytecode. Entry scripts загружают guard из исходника
+до импорта координатора: включают dont_write_bytecode и уникальный пустой pycache_prefix. Новые cache-файлы не создаются,
+глобальные/чужие Python-кэши не удаляются. Это проверено реальным усечённым `.pyc` на всех четырёх entrypoints.
+Официальные источники: [CPython issue126606](https://github.com/python/cpython/issues/126606),
+[параметры Python](https://docs.python.org/3.12/using/cmdline.html#envvar-PYTHONPYCACHEPREFIX).
+
+Существующее job/outbox получает runtime repairs до recovery и запуска, а не только при получении новых заданий.
+Ручной запуск и панель входят через актуальный CLI, затем выполняют проверенный frozen runtime задания.
+Lifecycle lock не позволяет заменить runtime работающего builder. При незавершённых gates сначала передаётся прежний outbox,
+после verified receipt та же попытка продолжается с принятыми пакетами. Полная пересборка/повторное скачивание им не требуются.
+Импорт Snap acceptance находится внутри verify-linux, поэтому его ошибка не подписывается как успешный inspect-snap.
+Очищенный traceback сохраняется в bounded result и отдельном stage-error.log, даже если внешний wrapper сообщает общую ошибку.

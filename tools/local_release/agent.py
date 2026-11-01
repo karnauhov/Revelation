@@ -167,9 +167,25 @@ def project_cycle(project, role):
         receive(project)
     if role == 'linux':
         from .linux_ephemeral import run
+        from .transport import refresh_job
+        # Existing jobs must receive repairs before outbox recovery or execution.
+        # Otherwise a failed runtime can permanently prevent reaching receive_jobs.
+        for job in sorted((root / 'releases' / profile['project']).glob('*/*/job.json')):
+            if not deleted(root, profile['project'], job.parent.name):
+                refresh_job(Context(job.parent, config, host=role))
         # Drain existing attempts before downloading/preparing any further jobs.
         for outbox in (root / 'releases' / profile['project']).glob('*/*/results/linux-outbox.json'):
-            run(outbox.parents[1], config, lambda *args: None)
+            ctx = Context(outbox.parents[1], config, host=role)
+            missing = [step for step in ctx.job['required_steps'][role]
+                       if ctx.result['steps'].get(step, {}).get('status') != 'passed']
+            if missing:
+                # Deliver the previous error first, then resume the SAME repaired
+                # attempt with its accepted packages rather than purge/re-download.
+                from .transport import send_result
+                send_result(ctx)
+                outbox.unlink(missing_ok=True)
+            else:
+                run(outbox.parents[1], config, lambda *args: None)
         return linux_jobs(project, profile, config, root)
     received = receive_jobs(profile, root, config)
     jobs = {path for path in received}
