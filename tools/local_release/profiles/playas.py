@@ -21,7 +21,7 @@ def metadata(repo, sha, profile):
     if not match:
         raise ReleaseError('Cannot parse committed Playas version')
     version, build = match[1], int(match[2])
-    notes = re.search(r'(^## \[' + re.escape(version) + r'\].*?)(?=\n## |\Z)',
+    notes = re.search(r'(^##[ \t]+(?:\[' + re.escape(version) + r'\]|' + re.escape(version) + r')(?=[ \t\r\n]|$).*?)(?=\n##[ \t]+|\Z)',
                       git(repo, 'show', sha + ':CHANGELOG.md'), re.M | re.S)
     if not notes:
         raise ReleaseError('Missing Playas changelog section')
