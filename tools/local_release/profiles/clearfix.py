@@ -226,7 +226,8 @@ def verify_windows(ctx, path):
             raise ReleaseError('ClearFix Windows executable is not x64')
     executable = ctx.workspace / 'build/windows/x64/runner/Release/clear_fix.exe'
     actual = ctx.command(['powershell', '-NoProfile', '-Command',
-        "(Get-Item -LiteralPath '" + str(executable).replace("'", "''") + "').VersionInfo.ProductVersion"], cwd=ctx.workspace)
+        "(Get-Item -LiteralPath '" + str(executable).replace("'", "''") + "').VersionInfo.ProductVersion"],
+        cwd=ctx.workspace, env=powershell_environment(ctx.env))
     if actual.strip() != f"{ctx.job['version']}+{ctx.job['build']}":
         raise ReleaseError('ClearFix Windows executable version/build mismatch')
 
@@ -245,7 +246,19 @@ def sentry(ctx, platform):
 
 
 def powershell(ctx, script):
-    ctx.command(['powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', script])
+    ctx.command(['powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', script],
+                env=powershell_environment(ctx.env))
+
+
+def powershell_environment(environment):
+    # A pwsh/Codex parent can omit Windows PowerShell 5's system modules.
+    # Restore their lookup only in this child; retain custom owner paths.
+    def value(name, fallback):
+        return next((v for k, v in environment.items() if k.lower() == name.lower()), fallback)
+    key = next((k for k in environment if k.lower() == 'psmodulepath'), 'PSModulePath')
+    defaults = [str(Path(value('SystemRoot', 'C:/Windows')) / 'System32/WindowsPowerShell/v1.0/Modules'),
+                str(Path(value('ProgramFiles', 'C:/Program Files')) / 'WindowsPowerShell/Modules')]
+    return {key: ';'.join([*defaults, value('PSModulePath', '')])}
 
 
 def run(ctx):

@@ -1,7 +1,9 @@
 """ClearFix scope, client inputs, packaging and release verification regressions."""
 import json
+import os
 from pathlib import Path
 import sys
+import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -14,6 +16,29 @@ from local_release.profiles import clearfix
 
 
 class ClearFixProfileTest(unittest.TestCase):
+    def test_powershell_modules_are_scoped_and_preserve_owner_paths(self):
+        env = dict(SystemRoot='C:/Windows', ProgramFiles='C:/Program Files', PSMODULEPATH='C:/Custom/Modules')
+        before = dict(env)
+        fixed = clearfix.powershell_environment(env)
+        self.assertEqual(env, before)
+        self.assertEqual(list(fixed), ['PSMODULEPATH'])
+        paths = fixed['PSMODULEPATH'].replace('\\', '/').split(';')
+        self.assertEqual(paths, ['C:/Windows/System32/WindowsPowerShell/v1.0/Modules',
+            'C:/Program Files/WindowsPowerShell/Modules', 'C:/Custom/Modules'])
+
+    @unittest.skipUnless(os.name == 'nt', 'Requires native Windows PowerShell')
+    def test_real_windows_powershell_hash_works_with_a_pwsh_parent_module_path(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'fixture.bin'
+            path.write_bytes(b'fixture')
+            env = {**os.environ, 'PSMODULEPATH': str(Path(folder) / 'empty-modules')}
+            env.update(clearfix.powershell_environment(env))
+            command = "(Get-FileHash -LiteralPath '" + str(path).replace("'", "''") + "' -Algorithm SHA256).Hash"
+            process = subprocess.run(['powershell.exe', '-NoProfile', '-Command', command], env=env,
+                capture_output=True, text=True, timeout=30)
+            self.assertEqual(process.returncode, 0, process.stderr)
+            self.assertEqual(process.stdout.strip().lower(), __import__('hashlib').sha256(b'fixture').hexdigest())
+
     def source(self, repo, *args):
         if args[0] == 'tag':
             return ''
