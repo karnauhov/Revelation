@@ -45,7 +45,15 @@ def digest(path: Path) -> str:
 
 
 def read_json(path: Path):
-    return json.loads(path.read_text(encoding="utf-8"))
+    for attempt in range(8):
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except PermissionError:
+            # Concurrent atomic replace/indexer handles can briefly deny reads
+            # on Windows. Never swallow malformed JSON or a permanent ACL error.
+            if os.name != 'nt' or attempt == 7:
+                raise
+            time.sleep(0.05 * (attempt + 1))
 
 
 def replace_path(source, target):
