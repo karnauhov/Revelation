@@ -118,6 +118,13 @@ Windows builders передают Gradle `-Dorg.gradle.daemon=false`, чтобы
 
 ## Другие проекты
 
+ClearFix подключён отдельным Windows-only профилем CLF231: Web ZIP, Android
+APK/AAB, Windows ZIP и Store MSIX. Linux-диагностика и подсказки приёма Linux
+показываются только проектам с `linux` в `hosts`; другие проекты их не видят.
+Apple-рецепты ClearFix сохранены для отдельной CLF232. Исторические hosted
+auto-теги импортируются в общий каталог после проверки версии/build по pubspec
+закреплённого tag SHA; существующие пакеты не пересобираются.
+
 В соответствующей задаче проекта создайте профиль общего движка, helper версий, gates и свой
 gitignored каталог. Зарегистрируйте их через `register-project` без второго сервиса/копий пакетов.
 Для Linux добавьте явную запись в `scripts/local_release/projects.json`: project, repository,

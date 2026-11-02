@@ -8,6 +8,20 @@ from local_release.core import capture
 
 
 class ControlsTest(unittest.TestCase):
+    def test_linux_policy_is_present_only_for_projects_with_a_linux_builder(self):
+        source = Path(__file__).resolve().parents[1] / 'dashboard_controls.js'
+        program = r'''
+const c=require(process.argv[1]);
+console.log(JSON.stringify([
+ {hosts:['windows']},{hosts:['windows','linux']},{hosts:[]}
+].map(p=>({show:c.supportsLinux(p),policy:c.policy(p)}))));
+'''
+        rows = json.loads(capture(['node', '-e', program, source]))
+        self.assertEqual([row['show'] for row in rows], [False, True, False])
+        self.assertNotIn('Linux', rows[0]['policy'])
+        self.assertIn('Linux', rows[1]['policy'])
+        self.assertNotIn('Linux', rows[2]['policy'])
+
     def test_equivalent_actions_hidden_as_the_release_changes_state(self):
         source = Path(__file__).resolve().parents[1] / 'dashboard_controls.js'
         program = r'''

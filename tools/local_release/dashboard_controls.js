@@ -1,5 +1,10 @@
 (function(root){
 'use strict';
+function supportsLinux(project){return (project.hosts||[]).includes('linux');}
+function policy(project){
+ if(project.automatic_builds)return 'Автобилд подключён. Панель: 10 с в покое, 3 с при сборке.';
+ return 'Автобилд ожидает полного пробного выпуска. Доступно ручное управление.'+(supportsLinux(project)?' Приём Linux-пакетов подключён.':'');
+}
 function actions(release,host){
  if(!release.controllable||release.publication?.published)return [];
  if(release.active)return [['restart','Перезапустить'],['stop','Остановить']];
@@ -42,5 +47,5 @@ function attach(button,message){
  wrapper.addEventListener('click',hide);wrapper.addEventListener('keydown',e=>{if(e.key==='Escape')hide();});
  return wrapper;
 }
-const api={actions,description,attach};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.buildControls=api;
+const api={actions,description,attach,supportsLinux,policy};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.buildControls=api;
 })(typeof window!=='undefined'?window:this);
