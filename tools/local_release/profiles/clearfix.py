@@ -7,12 +7,13 @@ from pathlib import Path
 import re
 import shutil
 import struct
-import sys
 import zipfile
 
 from ..core import ReleaseError, atomic_json, digest, git, read_json
 from .ai11 import pack, tools, verify_zip
 from .playas import manifest_attributes
+
+SENTRY_CLI_SHA256 = '99c1bf7a3d18df2b62ee5052f7e8f5d1e065e218442cdf0cfa2ede0b9cf7b938'
 
 QUALITY = ['dependencies', 'firebase-config', 'analyze', 'legacy', 'legal-html',
            'workflow-parity', 'apple-config', 'tool-tests', 'tests', 'coverage',
@@ -79,6 +80,8 @@ def input_metadata(config):
     certificate = config.get('expected_signing_certificate_sha256', '').lower().replace(':', '')
     if not re.fullmatch('[a-f0-9]{64}', certificate):
         raise ReleaseError('Pin the existing ClearFix Android release certificate')
+    if digest(Path(config['sentry_cli'])) != SENTRY_CLI_SHA256:
+        raise ReleaseError('ClearFix Sentry CLI differs from the audited Windows x64 2.58.6 binary')
     return dict(compile_defines_sha256=hashlib.sha256(json.dumps(compile_defines(config), sort_keys=True).encode()).hexdigest(),
                 signing_certificate_sha256=certificate, signing_keystore_sha256=digest(Path(config['signing_store_file'])),
                 firebase_config_sha256=digest(Path(config['firebase_config_file'])),

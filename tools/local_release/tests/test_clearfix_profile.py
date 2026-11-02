@@ -63,6 +63,13 @@ class ClearFixProfileTest(unittest.TestCase):
             with self.assertRaises(ReleaseError):
                 clearfix.input_metadata({'defines_file': str(path)})
 
+    def test_unverified_sentry_binary_is_rejected_before_preparing_the_job(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'sentry.exe'
+            path.write_bytes(b'unverified-tool')
+            with self.assertRaisesRegex(ReleaseError, 'audited Windows'):
+                clearfix.input_metadata({'expected_signing_certificate_sha256': 'a' * 64, 'sentry_cli': str(path)})
+
     def test_public_web_keeps_hidden_files_and_excludes_maps_without_deleting_them(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
