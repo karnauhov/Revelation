@@ -1,5 +1,6 @@
 """Restore GitHub assets into the one canonical local release directory."""
 
+import base64
 from pathlib import Path
 import re
 
@@ -32,6 +33,9 @@ def archive_releases(profile, root: Path, config):
                 continue
             release_id = str(release["id"])
             match = re.fullmatch(r"v(\d+\.\d+\.\d+)\+(\d+)", release["tag_name"])
+            legacy_auto = not match
+            if legacy_auto:
+                match = re.fullmatch(r"auto-(?:.+-)?v(\d+\.\d+\.\d+)-b(\d+)(?:-[0-9a-f]{8})?", release["tag_name"])
             sha = api.tag_sha(release["tag_name"])
             # An owned draft can exist before GitHub creates its tag. Exchange
             # payloads are not historical package assets and must never be copied.
@@ -50,6 +54,14 @@ def archive_releases(profile, root: Path, config):
                 sha = target
             if not match or not sha:
                 raise ReleaseError("Historical release needs explicit version/build and source tag SHA: " + release["tag_name"])
+            if legacy_auto:
+                # Hosted workflows used branch-qualified tags. Accept them only
+                # when the actual tagged source confirms both version and build.
+                content = api.request('GET', '/contents/pubspec.yaml?ref=' + sha)
+                committed = base64.b64decode(content['content'], validate=False).decode('utf-8')
+                version = re.search(r'^version:\s*(\d+\.\d+\.\d+)\+(\d+)\s*$', committed, re.M)
+                if not version or version.groups() != match.groups():
+                    raise ReleaseError('Historical auto release differs from its tagged pubspec version/build')
             if deleted(root, profile["project"], sha):
                 continue
             directory = release_directory(root, profile["project"], match.group(1), int(match.group(2)), sha)
