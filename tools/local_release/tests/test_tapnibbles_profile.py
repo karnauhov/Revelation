@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from local_release.core import Context, ReleaseError, atomic_json
 from local_release.github import complete_results, release_metadata
 from local_release.profiles import tapnibbles
+from local_release.processes import JobStopped
 
 
 class TapNibblesProfileTests(unittest.TestCase):
@@ -55,6 +56,14 @@ class TapNibblesProfileTests(unittest.TestCase):
                         pass
             self.assertFalse((root / 'backend/.tap44-firebase.json').exists())
             self.assertFalse((root / 'env/tap44.local.json').exists())
+            with patch('local_release.prerequisites.port_free', return_value=True), \
+                    patch.object(tapnibbles.shutil, 'which', return_value='node'), \
+                    patch.object(tapnibbles.subprocess, 'Popen'), \
+                    patch('local_release.processes.terminate_tree'), \
+                    patch('local_release.prerequisites.wait_ready', side_effect=JobStopped('owner stop')):
+                with self.assertRaises(JobStopped):
+                    with tapnibbles.local_backend(ctx):
+                        pass
 
     def metadata(self, changelog='## [1.0.0]\nRelease notes\n'):
         values = {'pubspec.yaml': 'version: 1.0.0+12',

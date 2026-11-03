@@ -337,7 +337,7 @@ def integration(ctx, platform):
 @contextmanager
 def local_backend(ctx):
     from ..prerequisites import port_free, wait_ready
-    from ..processes import terminate_tree
+    from ..processes import JobStopped, terminate_tree
     backend = ctx.workspace / 'backend'
     ports = [ctx.config[k] for k in ['auth_port', 'worker_port', 'hub_port', 'logging_port']]
     if not all(port_free(p) for p in ports):
@@ -376,6 +376,8 @@ def local_backend(ctx):
                         return False
                 try:
                     wait_ready(ctx, ready, process, name, 180)
+                except JobStopped:
+                    raise
                 except ReleaseError as error:
                     raise ReleaseError(f'{error}; last readiness probe: {last_probe}') from error
                 yield
