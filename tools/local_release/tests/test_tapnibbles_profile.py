@@ -16,6 +16,46 @@ from local_release.profiles import tapnibbles
 
 
 class TapNibblesProfileTests(unittest.TestCase):
+    def test_backend_readiness_accepts_cold_response_and_retains_last_error(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'backend').mkdir()
+            calls = []
+            ctx = SimpleNamespace(workspace=root, directory=root, env={'PATH': ''}, config={
+                'auth_port': 19099, 'worker_port': 18878, 'hub_port': 19400,
+                'logging_port': 19401, 'web_port': 18881}, command=lambda *a, **kw: None)
+            response = SimpleNamespace(status=200)
+            @contextmanager
+            def request(url, timeout):
+                calls.append((url, timeout))
+                yield response
+            def wait(ctx, probe, process, name, seconds):
+                self.assertEqual(seconds, 180)
+                self.assertTrue(probe())
+            with patch('local_release.prerequisites.port_free', return_value=True), \
+                    patch.object(tapnibbles.shutil, 'which', return_value='node'), \
+                    patch.object(tapnibbles.subprocess, 'Popen'), \
+                    patch('local_release.processes.terminate_tree'), \
+                    patch.object(tapnibbles, 'urlopen', side_effect=request), \
+                    patch('local_release.prerequisites.wait_ready', side_effect=wait):
+                with tapnibbles.local_backend(ctx):
+                    pass
+            self.assertEqual([timeout for _, timeout in calls], [5, 5])
+            def fail(ctx, probe, process, name, seconds):
+                self.assertFalse(probe())
+                raise ReleaseError('auth-emulator did not become ready')
+            with patch('local_release.prerequisites.port_free', return_value=True), \
+                    patch.object(tapnibbles.shutil, 'which', return_value='node'), \
+                    patch.object(tapnibbles.subprocess, 'Popen'), \
+                    patch('local_release.processes.terminate_tree'), \
+                    patch.object(tapnibbles, 'urlopen', side_effect=TimeoutError('cold fixture')), \
+                    patch('local_release.prerequisites.wait_ready', side_effect=fail):
+                with self.assertRaisesRegex(ReleaseError, 'last readiness probe: TimeoutError: cold fixture'):
+                    with tapnibbles.local_backend(ctx):
+                        pass
+            self.assertFalse((root / 'backend/.tap44-firebase.json').exists())
+            self.assertFalse((root / 'env/tap44.local.json').exists())
+
     def metadata(self, changelog='## [1.0.0]\nRelease notes\n'):
         values = {'pubspec.yaml': 'version: 1.0.0+12',
                   'CHANGELOG.md': changelog,

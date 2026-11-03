@@ -362,13 +362,22 @@ def local_backend(ctx):
             process = subprocess.Popen([str(v) for v in argv], cwd=backend, env=ctx.env,
                 stdin=subprocess.DEVNULL, stdout=stream, stderr=subprocess.STDOUT, creationflags=hidden_flags())
             try:
+                last_probe = 'no response'
                 def ready():
+                    nonlocal last_probe
                     try:
-                        with urlopen(url, timeout=1) as response:
+                        # A cold Auth emulator can take over a second to answer
+                        # even after announcing that its listener is ready.
+                        with urlopen(url, timeout=5) as response:
+                            last_probe = f'HTTP {response.status}'
                             return response.status == 200
-                    except OSError:
+                    except OSError as error:
+                        last_probe = f'{type(error).__name__}: {error}'
                         return False
-                wait_ready(ctx, ready, process, name, 90)
+                try:
+                    wait_ready(ctx, ready, process, name, 180)
+                except ReleaseError as error:
+                    raise ReleaseError(f'{error}; last readiness probe: {last_probe}') from error
                 yield
             finally:
                 terminate_tree(process)
