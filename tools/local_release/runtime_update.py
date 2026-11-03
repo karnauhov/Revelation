@@ -47,7 +47,7 @@ def install(directory, extracted):
                 raise ReleaseError("Runtime invalidation must name explicit required steps")
         if old.get("generated_source_overlays") != new.get("generated_source_overlays"):
             raise ReleaseError("A source overlay change requires full recipe checkpoint invalidation")
-    metadata_paths = ("job.json", "runtime-update.json", "results/linux.json", "manifest.json")
+    metadata_paths = ("job.json", "runtime-update.json", "release_notes.txt", "results/linux.json", "manifest.json")
     previous = {name: (directory / name).read_bytes() if (directory / name).exists() else None
                 for name in metadata_paths}
     # Refuse a live builder on either OS. Updates never interrupt running jobs.
@@ -57,12 +57,16 @@ def install(directory, extracted):
         destination = directory / "runtime"
         backup = directory / (".runtime-" + uuid.uuid4().hex)
         staged = directory / (".runtime-next-" + uuid.uuid4().hex)
+        notes_next = directory / (".release-notes-" + uuid.uuid4().hex)
         shutil.copytree(extracted / "runtime", staged)
         try:
             os.replace(destination, backup)
             os.replace(staged, destination)
             atomic_json(directory / "job.json", new)
             atomic_json(directory / "runtime-update.json", envelope)
+            if "release_notes" in new:
+                notes_next.write_text(new["release_notes"], encoding="utf-8")
+                os.replace(notes_next, directory / "release_notes.txt")
             linux_recipe_changed = (old["runtime_sha256"].get("local_release/profiles/linux_release.py") !=
                                     new["runtime_sha256"].get("local_release/profiles/linux_release.py") or
                                     old.get("generated_source_overlays") != new.get("generated_source_overlays"))
@@ -113,6 +117,7 @@ def install(directory, extracted):
                         os.replace(replacement, path)
             raise
         finally:
+            notes_next.unlink(missing_ok=True)
             for temporary in (backup, staged):
                 if temporary.exists() and temporary.parent.resolve() == directory.resolve():
                     shutil.rmtree(temporary)

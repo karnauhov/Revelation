@@ -299,7 +299,11 @@ class TransportTest(unittest.TestCase):
         linux = self.receive()
         self.compile(linux, "linux.tar.gz")
         before = self.windows.job["sha"], self.windows.job["build"]
-        prepare_update(self.windows.directory, {}, "b" * 40, reason="Repair the fixture version probe")
+        fixture = sys.modules[self.profile['adapter']]
+        metadata = {**fixture.metadata(), 'release_notes': 'Repaired committed changelog'}
+        with patch.object(fixture, 'metadata', return_value=metadata):
+            prepare_update(self.windows.directory, {}, "b" * 40, reason="Repair the fixture version probe")
+        self.assertEqual((self.windows.directory / 'release_notes.txt').read_text(), 'Repaired committed changelog')
         updated = core.Context(self.windows.directory, {}, host="windows")
         self.assertEqual(updated.job["tooling_changes"][-1]["reason"], "Repair the fixture version probe")
         first = send_update(updated)
@@ -310,6 +314,7 @@ class TransportTest(unittest.TestCase):
         received = core.Context(linux.directory, {}, host="linux")
         self.assertEqual((received.job["sha"], received.job["build"]), before)
         self.assertEqual(received.job["preparation_revision"], 2)
+        self.assertEqual((received.directory / 'release_notes.txt').read_text(), 'Repaired committed changelog')
         self.assertEqual((received.output / "linux.tar.gz").read_bytes(), b"linux package")
         self.assertTrue((received.directory / "results/runtime-updates-received.json").is_file())
 
