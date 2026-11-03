@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import tempfile
 import unittest
 from unittest.mock import patch
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -166,7 +166,11 @@ class TapNibblesProfileTests(unittest.TestCase):
             calls = []
             def invoke(argv, **kwargs):
                 calls.append(argv)
-                if argv[0] == 'flutter':
+                if argv[:3] == ['flutter', 'build', 'apk']:
+                    apk = root / 'build/app/outputs/flutter-apk/app-debug.apk'
+                    apk.parent.mkdir(parents=True)
+                    apk.write_bytes(b'fixture-test-apk')
+                if argv[:2] == ['flutter', 'drive']:
                     raise ReleaseError('original VM failure')
                 if '--remove' in argv:
                     raise ReleaseError('device disconnected during cleanup')
@@ -200,6 +204,43 @@ class TapNibblesProfileTests(unittest.TestCase):
             self.assertEqual(job['build_mode'], 'release')
             receipt = json.loads((root / 'results/integration-web.json').read_text())
             self.assertEqual(receipt['test_build_mode'], 'debug')
+
+    def test_android_apk_build_finishes_before_avd_and_drive_uses_that_binary(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'integration_test').mkdir()
+            (root / 'integration_test/app_smoke_test.dart').write_text('void main() {}')
+            apk = root / 'build/app/outputs/flutter-apk/app-debug.apk'
+            live = False
+            commands = []
+            def invoke(argv, **kwargs):
+                commands.append(argv)
+                if argv[:3] == ['flutter', 'build', 'apk']:
+                    self.assertFalse(live)
+                    apk.parent.mkdir(parents=True)
+                    apk.write_bytes(b'fixture-prebuilt-debug-apk')
+                if argv[:2] == ['flutter', 'drive']:
+                    self.assertTrue(live)
+                    self.assertIn('--use-application-binary=' + str(apk), argv)
+                    self.assertIn('--keep-app-running', argv)
+            @contextmanager
+            def avd(ctx):
+                nonlocal live
+                self.assertTrue(apk.exists())
+                live = True
+                try:
+                    yield
+                finally:
+                    live = False
+            ctx = SimpleNamespace(workspace=root, root=root, directory=root, job={'sha': 'a' * 40},
+                config={'android_sdk': str(root / 'sdk'), 'adb_server_port': 5053,
+                        'android_device': 'emulator-5590', 'auth_port': 19099, 'worker_port': 18878}, command=invoke)
+            with patch('local_release.prerequisites.android_device', side_effect=avd), \
+                    patch('local_release.prerequisites.child', return_value=nullcontext()):
+                tapnibbles.integration(ctx, 'android')
+            self.assertTrue(any('force-stop' in command for command in commands))
+            receipt = json.loads((root / 'results/integration-android.json').read_text())
+            self.assertEqual(receipt['prebuilt_test_apk_sha256'], __import__('hashlib').sha256(apk.read_bytes()).hexdigest())
 
 
 if __name__ == '__main__':

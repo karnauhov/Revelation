@@ -277,6 +277,15 @@ def integration(ctx, platform):
 ''', encoding='utf-8')
     try:
         if platform == 'android':
+            # Finish Gradle before starting the emulator on the 16 GB host.
+            # Concurrent cold boot/compilation caused system-service ANRs and
+            # lost ADB forwards before the test isolate could start.
+            defines = ['--dart-define-from-file=env/tap44.local.json',
+                       '--dart-define=INTEGRATION_TEST_SHOULD_REPORT_RESULTS_TO_NATIVE=false']
+            ctx.command(['flutter', 'build', 'apk', '--debug', '--target=' + target, *defines])
+            test_apk = ctx.workspace / 'build/app/outputs/flutter-apk/app-debug.apk'
+            if not test_apk.is_file():
+                raise ReleaseError('Android integration APK was not produced before AVD startup')
             with android_device(ctx):
                 adb = Path(ctx.config['android_sdk']) / 'platform-tools/adb.exe'
                 prefix = [adb, '-P', str(ctx.config['adb_server_port']), '-s', ctx.config['android_device']]
@@ -286,9 +295,15 @@ def integration(ctx, platform):
                 try:
                     with child(ctx, [*prefix, 'logcat', '-v', 'threadtime', '-s',
                             'AndroidRuntime:E', 'libc:F', 'lmkd:I', 'ActivityManager:E'], 'android-system'):
-                        ctx.command(['flutter', 'test', target, '-d', ctx.config['android_device'],
-                            '--dart-define-from-file=env/tap44.local.json', '--reporter=expanded', '--timeout=5m'])
+                        ctx.command(['flutter', 'drive', '--debug', '--driver=test_driver/design_shell.dart',
+                            '--target=' + target, '-d', ctx.config['android_device'], *defines,
+                            '--use-application-binary=' + str(test_apk), '--keep-app-running'])
                 finally:
+                    try:
+                        ctx.command([*prefix, 'shell', 'am', 'force-stop', 'click.tapnibbles'],
+                                    cwd=ctx.root, cancellable=False)
+                    except ReleaseError:
+                        pass
                     for port in ports:
                         # A disconnected emulator must not replace the original
                         # Flutter/VM failure with a secondary cleanup error.
@@ -313,6 +328,7 @@ def integration(ctx, platform):
                          '--dart-define-from-file=env/tap44.local.json', '--reporter=expanded'])
         atomic_json(ctx.directory / ('results/integration-' + platform + '.json'), dict(
             sha=ctx.job['sha'], platform=platform, test_build_mode='debug',
+            **({'prebuilt_test_apk_sha256': digest(test_apk)} if platform == 'android' else {}),
             tests=[p.name for p in tests], status='passed'))
     finally:
         generated.unlink(missing_ok=True)
