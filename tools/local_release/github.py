@@ -74,7 +74,8 @@ class GitHub:
         if self.token:
             headers["Authorization"] = "Bearer " + self.token
         try:
-            response = self.opener.open(urllib.request.Request(url, payload, headers, method=method), timeout=180)
+            timeout = 600 if method == "POST" and content_type == "application/octet-stream" else 180
+            response = self.opener.open(urllib.request.Request(url, payload, headers, method=method), timeout=timeout)
         except urllib.error.HTTPError as error:
             if raw and error.code in (301, 302, 303, 307, 308):
                 location = error.headers["Location"]
@@ -211,6 +212,17 @@ class GitHub:
         name = asset_name or path.name
         assets = self.pages(f"/releases/{release['id']}/assets")
         found = next((a for a in assets if a["name"] == name), None)
+        recovered = None
+        if found and found.get("state") == "starter":
+            # A timed-out upload can leave a placeholder with the full declared
+            # size but no downloadable bytes. The verified local file remains
+            # the durable source; restart only our exact unpublished asset.
+            owned = __import__('re').search(r'<!-- local-release:[A-Za-z0-9_-]+ -->', release.get('body') or '')
+            if not allow_upload or not release.get("draft") or not owned or found["size"] not in (0, path.stat().st_size):
+                raise ReleaseError("Refusing recovery of an unowned or published incomplete asset: " + name)
+            recovered = found['id']
+            self.request('DELETE', f"/releases/assets/{recovered}")
+            found = None
         if found:
             if found["size"] != path.stat().st_size:
                 raise ReleaseError("Asset collision: " + path.name)
@@ -228,7 +240,8 @@ class GitHub:
             found = self.request("POST", url, path.read_bytes(), "application/octet-stream")
         self.verify_asset(found, expected)
         return {"id": found["id"], "url": found["browser_download_url"],
-                "sha256": expected, "size": path.stat().st_size, "asset_name": name}
+                "sha256": expected, "size": path.stat().st_size, "asset_name": name,
+                **({"recovered_incomplete_asset_id": recovered} if recovered is not None else {})}
 
 
 def complete_results(directory, job):

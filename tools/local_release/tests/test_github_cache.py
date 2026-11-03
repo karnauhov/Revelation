@@ -11,6 +11,37 @@ from local_release.github import GitHub
 
 
 class GitHubReadbackCacheTest(unittest.TestCase):
+    def test_incomplete_owned_draft_upload_recovers_from_the_preserved_local_file(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'fixture.aab'
+            path.write_bytes(b'verified local package')
+            api = GitHub('owner/repo', 'fixture')
+            release = {'id': 1, 'draft': True, 'body': '<!-- local-release:fixture-a -->',
+                       'upload_url': 'https://uploads.github.com/fixture{?name}'}
+            starter = {'id': 7, 'name': path.name, 'size': path.stat().st_size, 'state': 'starter'}
+            uploaded = {**starter, 'id': 8, 'state': 'uploaded', 'browser_download_url': 'https://example.invalid/8'}
+            with patch.object(api, 'pages', return_value=[starter]), \
+                    patch.object(api, 'request', side_effect=[None, uploaded]) as request, \
+                    patch.object(api, 'verify_asset') as verify:
+                receipt = api.upload_verified(release, path)
+                self.assertEqual(receipt['recovered_incomplete_asset_id'], 7)
+                self.assertEqual(receipt['sha256'], digest(path))
+                self.assertEqual(path.read_bytes(), b'verified local package')
+                self.assertEqual(request.call_args_list[0].args, ('DELETE', '/releases/assets/7'))
+                verify.assert_called_once_with(uploaded, digest(path))
+            for changed in [{**release, 'draft': False}, {**release, 'body': 'foreign draft'}]:
+                with patch.object(api, 'pages', return_value=[starter]), patch.object(api, 'request') as request:
+                    with self.assertRaisesRegex(ReleaseError, 'Refusing recovery'):
+                        api.upload_verified(changed, path)
+                    request.assert_not_called()
+
+    def test_binary_upload_uses_a_longer_bounded_socket_timeout(self):
+        api = GitHub('owner/repo', 'fixture')
+        for method, content_type, expected in [('POST', 'application/octet-stream', 600), ('GET', 'application/json', 180)]:
+            with patch.object(api.opener, 'open', return_value=BytesIO(b'{}')) as request:
+                api.request(method, '/fixture', content_type=content_type)
+                self.assertEqual(request.call_args.kwargs['timeout'], expected)
+
     def test_repaired_notes_update_only_an_owned_unpublished_draft(self):
         api = GitHub('owner/repo', 'fixture')
         job = {'sha': 'a' * 40, 'tag': 'auto-fixture', 'run_id': 'fixture-a'}
