@@ -217,6 +217,7 @@ class TapNibblesProfileTests(unittest.TestCase):
                 commands.append(argv)
                 if argv[:3] == ['flutter', 'build', 'apk']:
                     self.assertFalse(live)
+                    self.assertIn('--target-platform=android-x64', argv)
                     apk.parent.mkdir(parents=True)
                     apk.write_bytes(b'fixture-prebuilt-debug-apk')
                 if argv[:2] == ['flutter', 'drive']:

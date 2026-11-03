@@ -282,7 +282,7 @@ def integration(ctx, platform):
             # lost ADB forwards before the test isolate could start.
             defines = ['--dart-define-from-file=env/tap44.local.json',
                        '--dart-define=INTEGRATION_TEST_SHOULD_REPORT_RESULTS_TO_NATIVE=false']
-            ctx.command(['flutter', 'build', 'apk', '--debug', '--target=' + target, *defines])
+            ctx.command(['flutter', 'build', 'apk', '--debug', '--target-platform=android-x64', '--target=' + target, *defines])
             test_apk = ctx.workspace / 'build/app/outputs/flutter-apk/app-debug.apk'
             if not test_apk.is_file():
                 raise ReleaseError('Android integration APK was not produced before AVD startup')
