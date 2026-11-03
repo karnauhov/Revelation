@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import shutil
 import tempfile
@@ -191,6 +192,21 @@ class GitHub:
         releases = self.pages("/releases")
         existing = [r for r in releases if r["tag_name"] == job["tag"]]
         marker = f"<!-- local-release:{job['run_id']} -->"
+        if len(existing) > 1:
+            raise ReleaseError('Ambiguous release tag; refusing another draft')
+        if not existing:
+            # GitHub can expose an unfinished draft under an untagged-* name.
+            # The immutable run marker still identifies it across retries.
+            owned = [r for r in releases if marker in (r.get('body') or '')]
+            if len(owned) > 1:
+                raise ReleaseError('Ambiguous owned release drafts; recovery required')
+            if owned:
+                release = owned[0]
+                if (not release.get('draft') or release.get('target_commitish') != job['sha']
+                        or not re.fullmatch(r'untagged-[A-Za-z0-9]+', release['tag_name'])):
+                    raise ReleaseError('Owned release has a different source/tag; preserved')
+                return self.request('PATCH', f"/releases/{release['id']}", {
+                    'tag_name': job['tag'], 'body': notes + '\n\n' + marker})
         if existing:
             release = existing[0]
             if marker not in (release.get("body") or ""):

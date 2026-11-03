@@ -571,3 +571,5 @@ def close_published_exchange(ctx, api, release):
         atomic_json(receipt_path, receipt)
     receipt["closed"] = True
     atomic_json(receipt_path, receipt)
+    from .technical_cleanup import retire_redundant_drafts
+    retire_redundant_drafts(ctx, api, release)

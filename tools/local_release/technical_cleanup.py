@@ -1,15 +1,113 @@
 """Archive verified release logs once, then retire owned technical drafts."""
 
 import base64
+import hashlib
 import json
 from pathlib import Path
 import re
 import tempfile
+import tarfile
 import zipfile
 
 from .core import Redactor, ReleaseError, atomic_json, digest, lock, read_json
 from .github import GitHub, GitHubHTTPError, complete_results, credential
 from .host_reports import redactor, receive
+
+
+def _redundant_job_bundle(ctx, api, asset):
+    """An obsolete handoff must contain only the same source and declared runtime."""
+    from .protocol import same_source
+    if asset['size'] > 64 * 1024**2:
+        raise ReleaseError('Orphan handoff exceeds the bounded transport contract')
+    with tempfile.TemporaryDirectory(prefix='ai11-orphan-check-') as folder:
+        path = Path(folder) / 'job.tar.gz'
+        checksum = api.download_asset(asset, path)
+        with tarfile.open(path) as archive:
+            members = archive.getmembers()
+            if (any(not m.isfile() for m in members) or sum(m.size for m in members) > 512 * 1024**2
+                    or len({m.name for m in members}) != len(members)):
+                raise ReleaseError('Unexpected orphan handoff contents; draft preserved')
+            job_member = archive.getmember('job.json')
+            if job_member.size > 2 * 1024**2:
+                raise ReleaseError('Orphan job metadata exceeds its bound')
+            old = json.load(archive.extractfile(job_member))
+            expected = {'job.json', 'source.bundle', 'release_notes.txt'} | {
+                'runtime/' + name for name in old.get('runtime_sha256', {})}
+            if not same_source(old, ctx.job) or {m.name for m in members} != expected:
+                raise ReleaseError('Orphan handoff has different source/extra files; draft preserved')
+            hashes = {'source.bundle': ctx.job['source_bundle_sha256'], **{
+                'runtime/' + name: value for name, value in old.get('runtime_sha256', {}).items()}}
+            for name, expected_hash in hashes.items():
+                with archive.extractfile(name) as stream:
+                    if hashlib.file_digest(stream, 'sha256').hexdigest() != expected_hash:
+                        raise ReleaseError('Orphan handoff checksum mismatch; draft preserved')
+        return checksum
+
+
+def retire_redundant_drafts(ctx, api, release):
+    """Retire only redundant handoffs for this fully published immutable run."""
+    publication = read_json(ctx.directory / 'publication.json')
+    if (not publication.get('published') or release.get('draft')
+            or publication.get('release_id') != release['id']
+            or publication.get('sha') != ctx.job['sha'] or release['tag_name'] != ctx.job['tag']
+            or not complete_results(ctx.directory, ctx.job)):
+        raise ReleaseError('Orphan cleanup requires the verified published source')
+    marker = '<!-- local-release:' + ctx.job['run_id'] + ' -->'
+    receipt_path = ctx.directory / 'results/orphan-drafts-closed.json'
+    with lock(ctx.directory / '.release.lock', timeout=5):
+        releases = api.pages('/releases')
+        candidates = [r for r in releases if r['id'] != release['id'] and marker in (r.get('body') or '')]
+        previous = read_json(receipt_path) if receipt_path.exists() else {}
+        if previous and (previous.get('sha'), previous.get('release_id')) != (ctx.job['sha'], release['id']):
+            raise ReleaseError('Orphan cleanup receipt belongs to another publication')
+        if not candidates and not previous:
+            return {'closed': True, 'drafts': {}}
+        archived = read_json(ctx.directory / 'results/build-logs.json')
+        log_asset = next((a for a in api.pages(f"/releases/{release['id']}/assets")
+                          if a['id'] == archived.get('archive', {}).get('id')), None)
+        if (not archived.get('closed') or not log_asset
+                or log_asset.get('digest') != 'sha256:' + archived['archive']['sha256']):
+            raise ReleaseError('Orphan cleanup requires the verified archived diagnostics')
+        record = {**previous, 'schema': 1, 'sha': ctx.job['sha'], 'run_id': ctx.job['run_id'],
+                  'release_id': release['id'], 'archive_id': log_asset['id'],
+                  'source_bundle_sha256': ctx.job['source_bundle_sha256'], 'closed': False}
+        record.setdefault('drafts', {})
+        def identity(row):
+            if (not row.get('draft') or row.get('target_commitish') != ctx.job['sha']
+                    or marker not in (row.get('body') or '')
+                    or not (row['tag_name'] == ctx.job['tag'] or re.fullmatch(r'untagged-[A-Za-z0-9]+', row['tag_name']))):
+                raise ReleaseError('Orphan draft identity mismatch; preserved')
+        def inventory(assets):
+            return sorted((a['id'], a['name'], a['size'], a.get('digest')) for a in assets)
+        for draft in candidates:
+            identity(draft)
+            assets = api.pages(f"/releases/{draft['id']}/assets")
+            verified = []
+            for asset in assets:
+                if asset['name'] != 'local-transfer-' + ctx.job['run_id'] + '-job.tar.gz':
+                    raise ReleaseError('Unknown orphan draft asset; preserved for recovery')
+                verified.append({k: asset[k] for k in ('id', 'name', 'size')})
+                verified[-1]['sha256'] = _redundant_job_bundle(ctx, api, asset)
+            current = api.request('GET', f"/releases/{draft['id']}")
+            identity(current)
+            if inventory(assets) != inventory(api.pages(f"/releases/{draft['id']}/assets")):
+                raise ReleaseError('Orphan draft changed during verification; preserved')
+            # Persist exact IDs and source/archive proofs before deleting the draft.
+            record['drafts'][str(draft['id'])] = {'tag': draft['tag_name'], 'assets': verified, 'closed': False}
+            atomic_json(receipt_path, record)
+            api.request('DELETE', f"/releases/{draft['id']}")
+        for identifier, entry in record['drafts'].items():
+            try:
+                api.request('GET', '/releases/' + identifier)
+            except GitHubHTTPError as error:
+                if error.status != 404:
+                    raise
+                entry['closed'] = True
+            else:
+                raise ReleaseError('Orphan draft still exists after cleanup')
+        record['closed'] = True
+        atomic_json(receipt_path, record)
+        return record
 
 
 def _upload_log_archive(api, release, entries, index, redact, previous):

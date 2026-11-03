@@ -11,6 +11,35 @@ from local_release.github import GitHub
 
 
 class GitHubReadbackCacheTest(unittest.TestCase):
+    def test_untagged_owned_draft_is_reused_instead_of_creating_another_release(self):
+        api = GitHub('owner/repo', 'fixture')
+        job = {'sha': 'a' * 40, 'tag': 'auto-fixture', 'run_id': 'fixture-a'}
+        marker = '<!-- local-release:fixture-a -->'
+        draft = {'id': 7, 'tag_name': 'untagged-ab123', 'target_commitish': job['sha'],
+                 'draft': True, 'body': 'notes\n\n' + marker}
+        with patch.object(api, 'require_source'), patch.object(api, 'tag_sha', return_value=None), \
+                patch.object(api, 'pages', return_value=[draft]), patch.object(api, 'request') as request:
+            api.ensure_release(job, 'Current notes')
+            request.assert_called_once_with('PATCH', '/releases/7', {
+                'tag_name': 'auto-fixture', 'body': 'Current notes\n\n' + marker})
+        public = {**draft, 'id': 8, 'tag_name': job['tag'], 'draft': False}
+        with patch.object(api, 'require_source'), patch.object(api, 'tag_sha', return_value=job['sha']), \
+                patch.object(api, 'pages', return_value=[draft, public]), patch.object(api, 'request') as request:
+            self.assertEqual(api.ensure_release(job, 'notes'), public)
+            request.assert_not_called()
+        for changed in [{**draft, 'target_commitish': 'b' * 40}, {**draft, 'draft': False},
+                        {**draft, 'tag_name': 'other-version'}]:
+            with patch.object(api, 'require_source'), patch.object(api, 'tag_sha', return_value=None), \
+                    patch.object(api, 'pages', return_value=[changed]), patch.object(api, 'request') as request:
+                with self.assertRaisesRegex(ReleaseError, 'different source/tag'):
+                    api.ensure_release(job, 'notes')
+                request.assert_not_called()
+        with patch.object(api, 'require_source'), patch.object(api, 'tag_sha', return_value=None), \
+                patch.object(api, 'pages', return_value=[draft, {**draft, 'id': 8}]), patch.object(api, 'request') as request:
+            with self.assertRaisesRegex(ReleaseError, 'Ambiguous owned'):
+                api.ensure_release(job, 'notes')
+            request.assert_not_called()
+
     def test_incomplete_owned_draft_upload_recovers_from_the_preserved_local_file(self):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / 'fixture.aab'
