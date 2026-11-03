@@ -6,6 +6,7 @@ from types import SimpleNamespace
 import tempfile
 import unittest
 from unittest.mock import patch
+from contextlib import nullcontext
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -156,6 +157,28 @@ class TapNibblesProfileTests(unittest.TestCase):
             resumed.stage('verify-apk', lambda: calls.append('retry'))
             self.assertEqual(calls, ['package', 'retry'])
             self.assertEqual((ctx.output / 'verified.zip').read_bytes(), b'verified-fixture')
+
+    def test_android_disconnect_cleanup_keeps_original_vm_error_and_removes_generated_target(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'integration_test').mkdir()
+            (root / 'integration_test/app_smoke_test.dart').write_text('void main() {}')
+            calls = []
+            def invoke(argv, **kwargs):
+                calls.append(argv)
+                if argv[0] == 'flutter':
+                    raise ReleaseError('original VM failure')
+                if '--remove' in argv:
+                    raise ReleaseError('device disconnected during cleanup')
+            ctx = SimpleNamespace(workspace=root, root=root, config={
+                'android_sdk': str(root / 'sdk'), 'adb_server_port': 5053,
+                'android_device': 'emulator-5590', 'auth_port': 19099, 'worker_port': 18878}, command=invoke)
+            with patch('local_release.prerequisites.android_device', return_value=nullcontext()), \
+                    patch('local_release.prerequisites.child', return_value=nullcontext()):
+                with self.assertRaisesRegex(ReleaseError, 'original VM failure'):
+                    tapnibbles.integration(ctx, 'android')
+            self.assertEqual(sum('--remove' in argv for argv in calls), 2)
+            self.assertFalse((root / 'integration_test/tap44_release_test.dart').exists())
 
 
 if __name__ == '__main__':
