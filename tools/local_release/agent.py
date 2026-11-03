@@ -27,6 +27,7 @@ def register(registry, repo, profile, catalogue, config, hosts=None):
     if previous and Path(previous["repo"]).resolve() != repo.resolve():
         raise ReleaseError("This project ID already points to another checkout")
     data["projects"][name] = {**previous, "project": name, "repo": str(repo.resolve()),
+        "display_name": identity.get('display_name', name),
         "profile": str(profile.resolve()), "catalogue": str(catalogue.resolve()), "config": str(config.resolve()),
         "hosts": list(hosts), "enabled": True,
         "cursor": previous.get("cursor", git(repo, "rev-parse", "HEAD"))}

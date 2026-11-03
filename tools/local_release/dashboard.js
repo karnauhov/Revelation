@@ -17,7 +17,7 @@ function render(){
  if(state.sync_error)$('notice').textContent='Ошибка обмена: '+state.sync_error;else if(lastSyncError&&$('notice').textContent.startsWith('Ошибка обмена: '))$('notice').textContent='';lastSyncError=state.sync_error;
  const all=projects().flatMap(p=>p.releases);$('projectCount').textContent=projects().length;$('versionCount').textContent=all.length;$('packageCount').textContent=all.reduce((n,r)=>n+r.files.length,0);$('activeCount').textContent=all.filter(r=>r.active).length;
  const nextRender=JSON.stringify([state.projects,selectedProject,selectedSha,$('search').value]);if(nextRender===renderSignature)return;renderSignature=nextRender;
- const selector=$('project');if([...selector.options].map(x=>x.value).join()!==projects().map(p=>p.name).join()){selector.replaceChildren(...projects().map(p=>{const o=el('option',p.name);o.value=p.name;return o;}));}
+ const selector=$('project');if([...selector.options].map(x=>x.value+':'+x.textContent).join()!==projects().map(p=>p.name+':'+(p.display_name||p.name)).join()){selector.replaceChildren(...projects().map(p=>{const o=el('option',p.display_name||p.name);o.value=p.name;return o;}));}
  if(!project())selectedProject=projects()[0]?.name;selector.value=selectedProject||'';const p=project();if(!p){$('detail').textContent='Пока нет подключённых проектов.';return;}
  $('policy').textContent=buildControls.policy(p);
  const filter=$('search').value.toLowerCase();const releases=p.releases.filter(r=>(r.version+'+'+r.build+' '+r.sha).toLowerCase().includes(filter));

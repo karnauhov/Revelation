@@ -118,6 +118,15 @@ Windows builders передают Gradle `-Dorg.gradle.daemon=false`, чтобы
 
 ## Другие проекты
 
+TapNibbles подключён профилем TAP44 с единственным Windows builder: release Web ZIP,
+Android APK/AAB с существующим release-ключом владельца и Windows x64 ZIP. Собственный
+канонический каталог и очередь зарегистрированы в этом сервисе. Автотриггер активируется
+после полного опубликованного trial; точное состояние и команды - в
+[runbook TapNibbles](https://github.com/karnauhov/Tapnibbles/blob/main/docs/local-release.md).
+Linux/Snap и Apple builders отложены в TAP45; обязательный Sentry gate включается с TAP27
+по решению владельца 03.11.2026. Технический project ID остаётся tapnibbles,
+видимый бренд задаётся optional display_name=TapNibbles без изменения каталогов или package IDs.
+
 ClearFix подключён отдельным Windows-only профилем CLF231: Web ZIP, Android
 APK/AAB, Windows ZIP и Store MSIX. Linux-диагностика и подсказки приёма Linux
 показываются только проектам с `linux` в `hosts`; другие проекты их не видят.

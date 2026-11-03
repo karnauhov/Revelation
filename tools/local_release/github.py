@@ -27,6 +27,12 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
+def release_metadata(job):
+    """Public package facts only; host config and credential inputs stay private."""
+    return {key: job[key] for key in ('build_mode', 'store_ready', 'source_dirty', 'signing',
+        'signing_certificate_sha256', 'sentry', 'generated_source_overlays') if key in job}
+
+
 def credential(config):
     token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
     if token:
@@ -357,6 +363,7 @@ def publish_job(context):
                 "verified_gates": job["required_steps"], "architectures": job.get("architectures", {}),
                 "runtime_sha256": job["runtime_sha256"], "source_bundle_sha256": job["source_bundle_sha256"],
                 "compile_defines_sha256": job.get("compile_defines_sha256"),
+                **release_metadata(job),
                 "packages": {name: {"sha256": saved["assets"][name]["sha256"], "size": saved["assets"][name]["size"]}
                              for name in sorted(job["artifacts"])},
             })

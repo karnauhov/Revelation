@@ -241,6 +241,7 @@ class Dashboard:
             history = [{'name': p.name, 'url': '/api/host-report?' + urlencode({'project': name, 'name': p.name})}
                        for p in history if not p.name.endswith('.receipt.json')][:20]
             projects.append({"name": name, "enabled": project.get("enabled"), "hosts": project["hosts"],
+                "display_name": project.get('display_name', name),
                 "automatic_builds": q.get("enabled", False), "queue": q.get("commits", {}), "releases": releases,
                 "deletions": removals, 'linux_diagnostic': read_json(diagnostic) if diagnostic.exists() else None,
                 'linux_report_history': history})
