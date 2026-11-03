@@ -397,6 +397,22 @@ class Context:
             self.owned_drive = None
 
 
+def ensure_unique_build(root: Path, project: str, build: int, sha: str):
+    """A project build number identifies one source, including retained deletions."""
+    paths = list((root / 'releases' / project).glob('*/*/job.json'))
+    paths += list((root / 'releases' / project).glob('*/*/manifest.json'))
+    paths += list((root / 'deletions' / project).glob('*.json'))
+    for path in paths:
+        if not path.resolve().is_relative_to(root.resolve()):
+            raise ReleaseError('Build identity record escapes its catalogue')
+        record = read_json(path)
+        record = record.get('request', record)
+        if str(record.get('build')) == str(build) and record.get('sha') not in (None, sha):
+            raise ReleaseError(f"Build {build} is already reserved for source {record['sha']}. "
+                               'Reserve and commit a new project build number before preparing another SHA; '
+                               '[skip ci] deliberately does not increment it.')
+
+
 def prepare(repo: Path, profile_path: Path, root: Path, sha="HEAD", config=None) -> Path:
     repo, root = repo.resolve(), root.resolve()
     install_local_excludes(repo)
@@ -418,6 +434,7 @@ def prepare(repo: Path, profile_path: Path, root: Path, sha="HEAD", config=None)
             if existing["sha"] != full_sha or existing["profile"] != profile:
                 raise ReleaseError("Existing job has a different immutable profile")
             return destination
+        ensure_unique_build(root, profile['project'], metadata['build'], full_sha)
         destination.parent.mkdir(parents=True, exist_ok=True)
         temporary = Path(tempfile.mkdtemp(prefix=".prepare-", dir=destination.parent))
         try:

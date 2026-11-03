@@ -118,6 +118,10 @@ Windows builders передают Gradle `-Dorg.gradle.daemon=false`, чтобы
 
 ## Другие проекты
 
+Один номер build проекта закрепляется за одним source SHA, включая архив и retention records.
+Перед новым ручным trial после `[skip ci]` явно резервируйте номер проектным helper и фиксируйте
+version-правку. Координатор отклоняет другой SHA с уже занятым номером; immutable job не перенумеровывается.
+
 TapNibbles подключён профилем TAP44 с единственным Windows builder: release Web ZIP,
 Android APK/AAB с существующим release-ключом владельца и Windows x64 ZIP. Собственный
 канонический каталог и очередь зарегистрированы в этом сервисе. Автотриггер активируется

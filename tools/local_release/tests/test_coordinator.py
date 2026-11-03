@@ -260,6 +260,10 @@ class CoordinatorTest(unittest.TestCase):
         queue = core.queue_install(self.repo, self.state, self.profile, self.config, test_mode=True)
         one = self.commit("one")
         two = self.commit("two")
+        original_metadata = self.fixture.metadata
+        self.fixture.metadata = lambda repo, sha, profile: {
+            **original_metadata(repo, sha, profile), 'build': 1 if sha == one else 2,
+            'tag': 'v1.0.0+' + ('1' if sha == one else '2')}
         def pipeline(ctx):
             if ctx.job["sha"] == one:
                 raise core.ReleaseError("fixture build failure")
@@ -275,7 +279,7 @@ class CoordinatorTest(unittest.TestCase):
         core.update_queue(self.state, queue, one, status="queued")
         core.worker(queue, once=True, runner=runner)
         self.assertEqual(core.read_json(queue)["commits"][one]["status"], "waiting_other_hosts")
-        self.assertEqual((core.Context(self.state / "releases/fixture/1.0.0+1" / two, {}).workspace / "count").read_text(), "x")
+        self.assertEqual((core.Context(self.state / "releases/fixture/1.0.0+2" / two, {}).workspace / "count").read_text(), "x")
 
     def test_restarted_observer_waits_for_live_builder_and_recovers_interrupted_job(self):
         queue = core.queue_install(self.repo, self.state, self.profile, self.config, test_mode=True)
