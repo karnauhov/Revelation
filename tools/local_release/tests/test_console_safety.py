@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import sys
+import subprocess
 import unittest
 from unittest.mock import patch
 
@@ -14,6 +15,22 @@ class ConsoleSafetyTest(unittest.TestCase):
     def test_observer_scopes_events_to_the_owned_process_tree(self):
         self.assertTrue(console_safety._is_descendant(os.getpid(), {os.getpid()}))
         self.assertFalse(console_safety._is_descendant(os.getpid(), {0}))
+        from local_release.core import hidden_flags
+        from local_release.processes import terminate_tree
+        code = ('import subprocess,sys,time; '
+                'p=subprocess.Popen([sys.executable,"-c","import time; time.sleep(10)"],'
+                'creationflags=subprocess.CREATE_NO_WINDOW); print(p.pid,flush=True); time.sleep(10)')
+        child = subprocess.Popen([sys.executable, '-c', code], stdout=subprocess.PIPE,
+            text=True, creationflags=hidden_flags())
+        try:
+            grandchild = int(child.stdout.readline())
+            self.assertTrue(console_safety._is_descendant(child.pid, {os.getpid()}))
+            self.assertTrue(console_safety._is_descendant(grandchild, {os.getpid()}))
+            self.assertFalse(console_safety._is_descendant(grandchild, {0}))
+        finally:
+            terminate_tree(child)
+            child.wait(timeout=10)
+            child.stdout.close()
 
     def test_unsafe_primitive_is_rejected_without_starting_any_process(self):
         with patch.object(console_safety, '_verified', None), \
