@@ -51,6 +51,26 @@ def cli_launch_options():
     return {"creationflags": subprocess.CREATE_NEW_CONSOLE, "startupinfo": startup}
 
 
+def windows_sdk_environment(environment):
+    """Recover missing standard SDK locations only in the child environment."""
+    result = dict(environment)
+    if os.name != 'nt':
+        return result
+    import winreg
+    existing = {key.casefold() for key in result}
+    with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
+                        r'SOFTWARE\Microsoft\Windows\CurrentVersion') as key:
+        for target, name in [('PROGRAMFILES', 'ProgramFilesDir'),
+                             ('PROGRAMFILES(X86)', 'ProgramFilesDir (x86)'),
+                             ('PROGRAMW6432', 'ProgramW6432Dir')]:
+            if target.casefold() not in existing:
+                value, kind = winreg.QueryValueEx(key, name)
+                if kind not in (winreg.REG_SZ, winreg.REG_EXPAND_SZ) or not Path(value).is_dir():
+                    raise ReleaseError('Invalid Windows SDK directory: ' + name)
+                result[target] = value
+    return result
+
+
 def digest(path: Path) -> str:
     with path.open("rb") as stream:
         result = hashlib.sha256()
@@ -189,6 +209,7 @@ class Context:
         self.env = os.environ.copy()
         self.env.update({str(k): str(v) for k, v in config.get("environment", {}).items()})
         if self.host == 'windows':
+            self.env = windows_sdk_environment(self.env)
             # Startup/pythonw need not inherit an interactive shell's PATH.
             # Keep the selected interpreter available to nested scripts only.
             inherited_path = next((value for key, value in reversed(list(self.env.items()))

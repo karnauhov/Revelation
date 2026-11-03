@@ -10,11 +10,19 @@ import time
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from local_release.core import Context, atomic_json, read_json, hidden_flags, cli_launch_options
+from local_release.core import Context, atomic_json, read_json, hidden_flags, cli_launch_options, windows_sdk_environment
 from local_release.processes import JobStopped
 
 
 class ProcessControlTest(unittest.TestCase):
+    @unittest.skipUnless(os.name == 'nt', 'native registry SDK directories')
+    def test_sdk_directories_are_recovered_without_overwriting_owner_environment(self):
+        before = {'ProgramFiles': 'owner-directory', 'CUSTOM': 'retained'}
+        result = windows_sdk_environment(before)
+        self.assertEqual(before, {'ProgramFiles': 'owner-directory', 'CUSTOM': 'retained'})
+        self.assertEqual(result['ProgramFiles'], 'owner-directory')
+        self.assertTrue(Path(result['PROGRAMFILES(X86)']).is_dir())
+        self.assertTrue(Path(result['PROGRAMW6432']).is_dir())
     def test_windows_context_pins_nested_python_without_mutating_owner_path(self):
         with tempfile.TemporaryDirectory() as folder:
             job = Path(folder) / 'releases/fixture/1.0.0+1' / ('a' * 40)
