@@ -97,15 +97,21 @@ def _android_device(ctx):
         if not port_free(console) or not port_free(console + 1):
             raise ReleaseError("Configured emulator ports are occupied; existing processes preserved")
         executable = Path(ctx.config["android_sdk"]) / "emulator/emulator.exe"
+        cold_boot = ctx.config.get("android_no_snapshot_load", False)
+        boot_timeout = ctx.config.get("android_boot_timeout", 240)
+        if type(cold_boot) is not bool or type(boot_timeout) is not int or not 30 <= boot_timeout <= 900:
+            raise ReleaseError("Invalid owned Android cold-boot configuration")
         argv = [executable, "-avd", avd, "-port", str(console), "-no-window", "-no-audio",
                 "-no-snapshot-save", "-read-only", "-gpu", "swiftshader_indirect"]
+        if cold_boot:
+            argv.append("-no-snapshot-load")
         with child(ctx, argv, "android-emulator") as process:
             def ready():
                 try:
                     return ctx.command([adb, "-P", str(port), "-s", serial, "shell", "getprop", "sys.boot_completed"], cwd=ctx.root).strip() == "1"
                 except ReleaseError:
                     return False
-            wait_ready(ctx, ready, process, "Android emulator")
+            wait_ready(ctx, ready, process, "Android emulator", seconds=boot_timeout)
             identity()
             try:
                 yield serial

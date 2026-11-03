@@ -56,6 +56,7 @@ class PrerequisitesTest(unittest.TestCase):
 
     def test_owned_avd_closes_after_test_failure_and_restores_environment(self):
         environment = self.ctx.env.copy()
+        self.ctx.config.update(android_no_snapshot_load=True, android_boot_timeout=600)
         commands = []
         def invoke(argv, **kwargs):
             commands.append(argv)
@@ -65,15 +66,17 @@ class PrerequisitesTest(unittest.TestCase):
         def launch(ctx, argv, label):
             self.assertIn("-no-window", argv)
             self.assertIn("-read-only", argv)
+            self.assertIn("-no-snapshot-load", argv)
             yield process
         with patch.object(self.ctx, "command", side_effect=invoke), \
                 patch.object(prerequisites, "port_free", return_value=True), \
                 patch.object(prerequisites, "child", side_effect=launch), \
-                patch.object(prerequisites, "wait_ready"):
+                patch.object(prerequisites, "wait_ready") as ready:
             with self.assertRaisesRegex(RuntimeError, "fixture failure"):
                 with prerequisites.android_device(self.ctx):
                     self.assertEqual(self.ctx.env["ADB_SERVER_SOCKET"], "tcp:127.0.0.1:5041")
                     raise RuntimeError("fixture failure")
+        self.assertEqual(ready.call_args.kwargs['seconds'], 600)
         self.assertEqual(commands[-1][-2:], ["emu", "kill"])
         self.assertEqual(self.ctx.env, environment)
 
