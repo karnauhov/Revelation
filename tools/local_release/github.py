@@ -102,7 +102,16 @@ class GitHub:
     def asset_response(self, asset):
         """Open a download without forwarding API credentials to the CDN."""
         url = asset["url"]
-        if not url.startswith(self.base + "/releases/assets/"):
+        parsed = urllib.parse.urlsplit(url)
+        prefix = urllib.parse.urlsplit(self.base).path + "/releases/assets/"
+        # GitHub canonicalizes repository casing in asset URLs. Repository
+        # identity is case-insensitive, but the host and numeric asset path
+        # must still match exactly before sending the API credential.
+        if (parsed.scheme != "https" or parsed.netloc != "api.github.com"
+                or not parsed.path.casefold().startswith(prefix.casefold())
+                or not parsed.path[len(prefix):].isascii()
+                or not parsed.path[len(prefix):].isdigit()
+                or parsed.query or parsed.fragment):
             raise ReleaseError("Asset URL does not belong to the selected repository")
         headers = {"Accept": "application/octet-stream", "User-Agent": "AI11-local-release"}
         if self.token:
