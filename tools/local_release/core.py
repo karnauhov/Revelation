@@ -196,6 +196,14 @@ class Context:
             for key in [key for key in self.env if key.casefold() == 'path']:
                 self.env.pop(key)
             self.env['PATH'] = str(Path(sys.executable).parent) + os.pathsep + inherited_path
+            inherited_extensions = next((value for key, value in reversed(list(self.env.items()))
+                                         if key.casefold() == 'pathext'), '')
+            for key in [key for key in self.env if key.casefold() == 'pathext']:
+                self.env.pop(key)
+            extensions = ['.COM', '.EXE', '.BAT', '.CMD']
+            extensions.extend(value for value in inherited_extensions.split(';')
+                              if value and value.upper() not in extensions)
+            self.env['PATHEXT'] = ';'.join(extensions)
             # Android lint loads checkout-local JARs. A persistent JVM would
             # retain Windows handles after the builder releases its job lock.
             self.env['GRADLE_OPTS'] = self.env.get('GRADLE_OPTS', '') + ' -Dorg.gradle.daemon=false'

@@ -30,7 +30,9 @@ class ClearFixProfileTest(unittest.TestCase):
                 env={'LOCALAPPDATA': str(root / 'local'), 'PYTHONPATH': 'owner-modules'}, command=command)
             clearfix.tool_tests(ctx)
             self.assertTrue(ctx.env['PYTHONPATH'].endswith(os.pathsep + 'owner-modules'))
-            self.assertEqual(commands[1][:4], ['python', '-m', 'pip', 'install'])
+            self.assertEqual(commands[1][:2], ['python', '-c'])
+            self.assertIn('ensurepip', commands[1][2])
+            self.assertEqual(commands[1][3], 'install')
             self.assertIn(str(root / 'tool/requirements-acceptance-reports.txt'), commands[1])
             self.assertEqual(commands[-1][1:4], ['-m', 'unittest', 'discover'])
 

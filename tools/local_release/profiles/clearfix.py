@@ -275,7 +275,13 @@ def tool_tests(ctx):
             try:
                 ctx.command(['python', '-c', check], cwd=ctx.workspace)
             except ReleaseError:
-                ctx.command(['python', '-m', 'pip', 'install', '--disable-pip-version-check',
+                # The pinned Python may intentionally have no global pip.
+                # Use its official bundled wheel without installing pip there.
+                bootstrap = ('import ensurepip,runpy,sys; from pathlib import Path; '
+                    'wheel=next((Path(ensurepip.__file__).parent/"_bundled").glob("pip-*.whl")); '
+                    'sys.path.insert(0,str(wheel)); sys.argv=["pip",*sys.argv[1:]]; '
+                    'runpy.run_module("pip",run_name="__main__")')
+                ctx.command(['python', '-c', bootstrap, 'install', '--disable-pip-version-check',
                     '--upgrade', '--target', str(target), '-r', str(requirements)], cwd=ctx.workspace)
                 ctx.command(['python', '-c', check], cwd=ctx.workspace)
     ctx.command(['python', '-m', 'unittest', 'discover', '-s', 'tool/tests', '-v'], cwd=ctx.workspace)

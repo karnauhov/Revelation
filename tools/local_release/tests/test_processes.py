@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -23,6 +24,19 @@ class ProcessControlTest(unittest.TestCase):
             self.assertEqual(ctx.env['PATH'], str(Path(sys.executable).parent) + os.pathsep + 'owner-tools')
             self.assertEqual([key for key in ctx.env if key.casefold() == 'path'], ['PATH'])
             self.assertEqual(dict(os.environ), before)
+
+    @unittest.skipUnless(os.name == 'nt', 'native nested PowerShell lookup')
+    def test_nested_powershell_finds_python_when_startup_omits_pathext(self):
+        with tempfile.TemporaryDirectory() as folder:
+            job = Path(folder) / 'releases/fixture/1.0.0+1' / ('a' * 40)
+            atomic_json(job / 'job.json', {'schema': 1, 'sha': 'a' * 40, 'run_id': 'fixture-a', 'project': 'fixture'})
+            ctx = Context(job, {'environment': {'PATHEXT': ''}}, host='windows')
+            ctx.workspace.mkdir(parents=True)
+            self.assertTrue({'.COM', '.EXE', '.BAT', '.CMD'} <= set(ctx.env['PATHEXT'].split(';')))
+            shell = shutil.which('pwsh') or shutil.which('powershell')
+            self.assertIsNotNone(shell)
+            result = ctx.command([shell, '-NoProfile', '-Command', 'python -c "print(12345)"'])
+            self.assertEqual(result.strip(), '12345')
 
     def test_restore_command_finishes_with_stop_requested_without_losing_request(self):
         with tempfile.TemporaryDirectory() as folder:
