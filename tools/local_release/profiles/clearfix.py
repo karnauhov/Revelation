@@ -9,7 +9,7 @@ import shutil
 import struct
 import zipfile
 
-from ..core import ReleaseError, atomic_json, digest, git, read_json
+from ..core import ReleaseError, atomic_json, digest, git, read_json, lock
 from .ai11 import pack, tools, verify_zip
 from .playas import manifest_attributes
 
@@ -261,6 +261,26 @@ def powershell_environment(environment):
     return {key: ';'.join([*defaults, value('PSModulePath', '')])}
 
 
+def tool_tests(ctx):
+    requirements = ctx.workspace / 'tool/requirements-acceptance-reports.txt'
+    if requirements.is_file():
+        target = Path(ctx.env['LOCALAPPDATA']) / 'ClearFix/acceptance-report-tools'
+        ctx.env['PYTHONPATH'] = str(target) + os.pathsep + ctx.env.get('PYTHONPATH', '')
+        pins = dict(line.strip().split('==', 1) for line in requirements.read_text(encoding='utf-8').splitlines()
+                    if line.strip() and not line.lstrip().startswith('#'))
+        check = ('from importlib.metadata import version; import json; '
+                 'pins=json.loads(' + repr(json.dumps(pins)) + '); '
+                 'assert all(version(name)==wanted for name,wanted in pins.items()); import PIL,pypdf,reportlab')
+        with lock(ctx.root / '.python-report-tools.lock'):
+            try:
+                ctx.command(['python', '-c', check], cwd=ctx.workspace)
+            except ReleaseError:
+                ctx.command(['python', '-m', 'pip', 'install', '--disable-pip-version-check',
+                    '--upgrade', '--target', str(target), '-r', str(requirements)], cwd=ctx.workspace)
+                ctx.command(['python', '-c', check], cwd=ctx.workspace)
+    ctx.command(['python', '-m', 'unittest', 'discover', '-s', 'tool/tests', '-v'], cwd=ctx.workspace)
+
+
 def run(ctx):
     if ctx.host != 'windows':
         raise ReleaseError('ClearFix uses only its Windows builder')
@@ -275,13 +295,14 @@ def run(ctx):
                 'legal-html': ['python', 'tool/check_legal_document_html_sync.py'],
                 'workflow-parity': ['python', 'tool/check_release_workflow.py'],
                 'apple-config': ['python', 'tool/check_apple_project.py'],
-                'tool-tests': ['python', '-m', 'unittest', 'discover', '-s', 'tool/tests', '-v'],
                 'tests': ['flutter', 'test', '--no-pub', '--reporter=expanded'],
                 'coverage': ['flutter', 'test', '--no-pub', '--coverage', '--reporter=expanded'],
                 'changelog': ['python', 'tool/extract_changelog_section.py', '--check-only'],
                 'store-config': ['python', 'tool/windows_msix.py'],
             }
             for name, argv in commands.items():
+                if name == 'tests':
+                    ctx.stage('tool-tests', lambda: tool_tests(ctx))
                 ctx.stage(name, lambda argv=argv: ctx.command(argv, cwd=ctx.workspace))
             ctx.stage('coverage-threshold', lambda: coverage(ctx), ['results/coverage.json', 'results/windows-lcov.info'])
         if 'build' not in phases:

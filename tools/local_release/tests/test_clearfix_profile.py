@@ -16,6 +16,24 @@ from local_release.profiles import clearfix
 
 
 class ClearFixProfileTest(unittest.TestCase):
+    def test_report_tool_dependencies_are_available_before_the_tests(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'tool').mkdir()
+            (root / 'tool/requirements-acceptance-reports.txt').write_text('pypdf==6.7.1\n')
+            commands = []
+            def command(argv, **kwargs):
+                commands.append(argv)
+                if len(commands) == 1:
+                    raise ReleaseError('Missing report tools')
+            ctx = SimpleNamespace(workspace=root, root=root,
+                env={'LOCALAPPDATA': str(root / 'local'), 'PYTHONPATH': 'owner-modules'}, command=command)
+            clearfix.tool_tests(ctx)
+            self.assertTrue(ctx.env['PYTHONPATH'].endswith(os.pathsep + 'owner-modules'))
+            self.assertEqual(commands[1][:4], ['python', '-m', 'pip', 'install'])
+            self.assertIn(str(root / 'tool/requirements-acceptance-reports.txt'), commands[1])
+            self.assertEqual(commands[-1][1:4], ['-m', 'unittest', 'discover'])
+
     def test_powershell_modules_are_scoped_and_preserve_owner_paths(self):
         env = dict(SystemRoot='C:/Windows', ProgramFiles='C:/Program Files', PSMODULEPATH='C:/Custom/Modules')
         before = dict(env)

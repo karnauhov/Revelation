@@ -14,6 +14,16 @@ from local_release.processes import JobStopped
 
 
 class ProcessControlTest(unittest.TestCase):
+    def test_windows_context_pins_nested_python_without_mutating_owner_path(self):
+        with tempfile.TemporaryDirectory() as folder:
+            job = Path(folder) / 'releases/fixture/1.0.0+1' / ('a' * 40)
+            atomic_json(job / 'job.json', {'schema': 1, 'sha': 'a' * 40, 'run_id': 'fixture-a', 'project': 'fixture'})
+            before = dict(os.environ)
+            ctx = Context(job, {'environment': {'Path': 'owner-tools'}}, host='windows')
+            self.assertEqual(ctx.env['PATH'], str(Path(sys.executable).parent) + os.pathsep + 'owner-tools')
+            self.assertEqual([key for key in ctx.env if key.casefold() == 'path'], ['PATH'])
+            self.assertEqual(dict(os.environ), before)
+
     def test_restore_command_finishes_with_stop_requested_without_losing_request(self):
         with tempfile.TemporaryDirectory() as folder:
             job = Path(folder) / "releases/fixture/1.0.0+1" / ("a" * 40)

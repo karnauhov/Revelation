@@ -189,6 +189,13 @@ class Context:
         self.env = os.environ.copy()
         self.env.update({str(k): str(v) for k, v in config.get("environment", {}).items()})
         if self.host == 'windows':
+            # Startup/pythonw need not inherit an interactive shell's PATH.
+            # Keep the selected interpreter available to nested scripts only.
+            inherited_path = next((value for key, value in reversed(list(self.env.items()))
+                                   if key.casefold() == 'path'), '')
+            for key in [key for key in self.env if key.casefold() == 'path']:
+                self.env.pop(key)
+            self.env['PATH'] = str(Path(sys.executable).parent) + os.pathsep + inherited_path
             # Android lint loads checkout-local JARs. A persistent JVM would
             # retain Windows handles after the builder releases its job lock.
             self.env['GRADLE_OPTS'] = self.env.get('GRADLE_OPTS', '') + ' -Dorg.gradle.daemon=false'
