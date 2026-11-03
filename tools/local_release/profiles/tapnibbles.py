@@ -239,7 +239,7 @@ def verify_windows(ctx, path):
 
 
 def integration(ctx, platform):
-    from ..prerequisites import android_device, chrome_driver
+    from ..prerequisites import android_device, chrome_driver, child
     target = 'integration_test/tap44_release_test.dart'
     generated = ctx.workspace / target
     if generated.exists():
@@ -261,11 +261,18 @@ def integration(ctx, platform):
                 for port in ports:
                     ctx.command([*prefix, 'reverse', f'tcp:{port}', f'tcp:{port}'], cwd=ctx.root)
                 try:
-                    ctx.command(['flutter', 'test', target, '-d', ctx.config['android_device'],
-                        '--dart-define-from-file=env/tap44.local.json', '--reporter=expanded'])
+                    with child(ctx, [*prefix, 'logcat', '-v', 'threadtime', '-s',
+                            'AndroidRuntime:E', 'libc:F', 'lmkd:I', 'ActivityManager:E'], 'android-system'):
+                        ctx.command(['flutter', 'test', target, '-d', ctx.config['android_device'],
+                            '--dart-define-from-file=env/tap44.local.json', '--reporter=expanded', '--timeout=5m'])
                 finally:
                     for port in ports:
-                        ctx.command([*prefix, 'reverse', '--remove', f'tcp:{port}'], cwd=ctx.root, cancellable=False)
+                        # A disconnected emulator must not replace the original
+                        # Flutter/VM failure with a secondary cleanup error.
+                        try:
+                            ctx.command([*prefix, 'reverse', '--remove', f'tcp:{port}'], cwd=ctx.root, cancellable=False)
+                        except ReleaseError:
+                            pass
         elif platform == 'web':
             with chrome_driver(ctx):
                 ctx.command(['flutter', 'drive', '--release', '--driver=test_driver/design_shell.dart',
