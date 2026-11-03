@@ -45,6 +45,17 @@ class SharedStartupTest(unittest.TestCase):
                 self.assertTrue((registry.parent / 'service.log').is_file())
             finally:
                 service.stop(registry, port)
+                # HTTP closes before the detached pythonw releases its log.
+                # Wait on this fixture-owned file before TemporaryDirectory cleanup.
+                deadline = time.monotonic() + 5
+                while True:
+                    try:
+                        (registry.parent / 'service.log').unlink(missing_ok=True)
+                        break
+                    except PermissionError:
+                        if time.monotonic() >= deadline:
+                            raise
+                        time.sleep(.1)
 
     def test_registered_healthy_service_is_reused_without_modifying_other_projects(self):
         with tempfile.TemporaryDirectory() as folder:
