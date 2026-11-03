@@ -195,6 +195,8 @@ class TapNibblesProfileTests(unittest.TestCase):
                 tapnibbles.integration(ctx, 'web')
             self.assertIn('--debug', calls[0])
             self.assertNotIn('--release', calls[0])
+            target = next(arg.removeprefix('--target=') for arg in calls[0] if arg.startswith('--target='))
+            self.assertEqual(Path(target).parent, Path('.'))  # DDC can resolve both integration_test and test/helpers.
             self.assertEqual(job['build_mode'], 'release')
             receipt = json.loads((root / 'results/integration-web.json').read_text())
             self.assertEqual(receipt['test_build_mode'], 'debug')

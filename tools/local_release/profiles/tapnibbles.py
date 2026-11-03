@@ -240,7 +240,10 @@ def verify_windows(ctx, path):
 
 def integration(ctx, platform):
     from ..prerequisites import android_device, chrome_driver, child
-    target = 'integration_test/tap44_release_test.dart'
+    # DDC roots relative imports at the entrypoint directory. Web test files
+    # share fixtures from ../test, so its generated entrypoint must be at the
+    # project root. Native flutter test retains its integration_test target.
+    target = 'tap44_web_integration.dart' if platform == 'web' else 'integration_test/tap44_release_test.dart'
     generated = ctx.workspace / target
     if generated.exists():
         raise ReleaseError('Generated integration entrypoint already exists')
@@ -254,7 +257,8 @@ def integration(ctx, platform):
         "import 'package:flutter_test/flutter_test.dart' show reportTestException;\n"
         "import 'package:integration_test/integration_test.dart' show IntegrationTestWidgetsFlutterBinding;\n"
         "import 'package:integration_test/common.dart' as integration_common;\n" +
-        '\n'.join("import '" + p.name + "' as t" + str(i) + ';' for i, p in enumerate(tests)) +
+        '\n'.join("import '" + ('integration_test/' if platform == 'web' else '') + p.name +
+                  "' as t" + str(i) + ';' for i, p in enumerate(tests)) +
         '\nvoid main() {\n' + ''.join('t' + str(i) + '.main();\n' for i in range(len(tests))) + r'''
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   final previousReporter = reportTestException;
