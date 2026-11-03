@@ -36,6 +36,21 @@ def hidden_flags():
     return subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
 
 
+def cli_launch_options():
+    """Hide at creation and let unmodified CLI grandchildren inherit it.
+
+    CREATE_NO_WINDOW alone detaches a CLI parent; its ordinary subprocesses
+    can then allocate visible consoles when the coordinator uses pythonw.
+    A private console created hidden keeps that entire CLI tree invisible.
+    """
+    if os.name != "nt":
+        return {}
+    startup = subprocess.STARTUPINFO()
+    startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startup.wShowWindow = subprocess.SW_HIDE
+    return {"creationflags": subprocess.CREATE_NEW_CONSOLE, "startupinfo": startup}
+
+
 def digest(path: Path) -> str:
     with path.open("rb") as stream:
         result = hashlib.sha256()
@@ -89,7 +104,7 @@ def capture(argv, cwd=None, env=None) -> str:
         [str(arg) for arg in argv], cwd=cwd, env=env,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8",
         errors="replace", check=False,
-        creationflags=hidden_flags(),
+        **cli_launch_options(),
     )
     if result.returncode:
         # External stderr may include credentials. Persist it only via Context.
@@ -226,6 +241,8 @@ class Context:
         resolved = [str(arg) for arg in argv]
         if resolved[0] == "python":
             resolved[0] = sys.executable
+            if os.name == "nt" and Path(resolved[0]).name.lower() == "pythonw.exe":
+                resolved[0] = str(Path(resolved[0]).with_name("python.exe"))
         elif os.name == "nt":
             resolved[0] = shutil.which(resolved[0], path=command_env.get("PATH")) or resolved[0]
         # Arguments contain paths/flags only. Secret values are supplied in env/files.
@@ -238,7 +255,7 @@ class Context:
                 stdin=stdin,
                 encoding="utf-8", errors="replace", bufsize=1,
                 start_new_session=os.name != "nt" and new_session,
-                creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" and new_session else 0) | hidden_flags(),
+                **cli_launch_options(),
             )
             process.owned_process_group = new_session
             finish_provider_observation = None

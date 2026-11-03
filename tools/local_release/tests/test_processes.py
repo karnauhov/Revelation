@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import json
 import subprocess
 import sys
 import tempfile
@@ -8,7 +9,7 @@ import time
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from local_release.core import Context, atomic_json, read_json, hidden_flags
+from local_release.core import Context, atomic_json, read_json, hidden_flags, cli_launch_options
 from local_release.processes import JobStopped
 
 
@@ -49,7 +50,7 @@ class ProcessControlTest(unittest.TestCase):
                 thread.join()
 
     @unittest.skipUnless(os.name == "nt", "Windows GUI-parent console regression")
-    def test_pythonw_background_children_never_allocate_a_console(self):
+    def test_pythonw_cli_tree_inherits_console_hidden_from_creation(self):
         pythonw = Path(sys.executable).with_name("pythonw.exe")
         self.assertTrue(pythonw.is_file())
         with tempfile.TemporaryDirectory() as folder:
@@ -61,19 +62,35 @@ class ProcessControlTest(unittest.TestCase):
 from pathlib import Path
 sys.path.insert(0, TOOLS)
 from local_release.core import Context, atomic_json, capture
-code="import ctypes; print(ctypes.windll.kernel32.GetConsoleWindow())"
+setup="k=ctypes.windll.kernel32; k.GetConsoleWindow.restype=ctypes.c_void_p; h=k.GetConsoleWindow(); data={'console':h,'visible':bool(ctypes.windll.user32.IsWindowVisible(ctypes.c_void_p(h or 0))),'pid':os.getpid()}"
+probe="import ctypes,json,os; "+setup+"; print(json.dumps(data))"
+code="import ctypes,json,os,subprocess,sys; "+setup+"; probe="+repr(probe)+"; rows=[json.loads(subprocess.check_output([sys.executable,'-c',probe],text=True)) for _ in range(12)]; print(json.dumps({'rows':rows,'parent':data,'executable':sys.executable}))"
 captured=capture([str(Path(sys.executable).with_name('python.exe')),'-c',code])
 job=Path(sys.argv[1])/'releases/fixture/1.0.0+1'/('a'*40)
 atomic_json(job/'job.json',{'schema':1,'sha':'a'*40,'run_id':'fixture-a','project':'fixture'})
 ctx=Context(job,{})
 ctx.workspace.mkdir(parents=True)
 ctx.result['current_step']='silent-check'
-command=ctx.command([str(Path(sys.executable).with_name('python.exe')),'-c',code])
-atomic_json(Path(sys.argv[1])/'result.json',{'capture_console':int(captured),'builder_console':int(command)})
+command=ctx.command(['python','-c',code])
+atomic_json(Path(sys.argv[1])/'result.json',{'capture':__import__('json').loads(captured),'builder':__import__('json').loads(command)})
 '''.replace("TOOLS", repr(tools)))
             process = subprocess.Popen([str(pythonw), str(script), str(root)], creationflags=hidden_flags())
-            self.assertEqual(process.wait(timeout=15), 0)
-            self.assertEqual(read_json(result), {"capture_console": 0, "builder_console": 0})
+            self.assertEqual(process.wait(timeout=30), 0)
+            for mode in read_json(result).values():
+                self.assertEqual(Path(mode['executable']).name.lower(), 'python.exe')
+                self.assertFalse(mode['parent']['visible'])
+                self.assertTrue(mode['parent']['console'])
+                self.assertEqual(len(mode['rows']), 12)
+                self.assertTrue(all(not row['visible'] for row in mode['rows']))
+                self.assertTrue(all(row['console'] == mode['parent']['console'] for row in mode['rows']))
+
+    @unittest.skipUnless(os.name == "nt", "Windows process creation policy")
+    def test_cli_console_is_hidden_at_creation_not_after_launch(self):
+        options = cli_launch_options()
+        self.assertEqual(options['creationflags'], subprocess.CREATE_NEW_CONSOLE)
+        self.assertFalse(options['creationflags'] & subprocess.CREATE_NO_WINDOW)
+        self.assertTrue(options['startupinfo'].dwFlags & subprocess.STARTF_USESHOWWINDOW)
+        self.assertEqual(options['startupinfo'].wShowWindow, subprocess.SW_HIDE)
 
 
 if __name__ == "__main__":

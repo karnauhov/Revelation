@@ -533,7 +533,8 @@ def start(registry, port=PORT, sync=True):
     registry.parent.mkdir(parents=True, exist_ok=True)
     with (registry.parent / "service.log").open("a", encoding="utf-8") as stream:
         process = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=stream, stderr=stream, **options)
-    for _ in range(50):
+    # The native descendant/WinEvent gate runs before serve binds its port.
+    for _ in range(300):
         try:
             with urlopen(url + "/api/health", timeout=1) as response:
                 health = json.load(response)

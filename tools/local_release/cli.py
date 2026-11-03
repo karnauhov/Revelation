@@ -120,6 +120,9 @@ def spawn_worker(queue):
 
 def main(argv=None):
     args = parser().parse_args(argv)
+    if os.name == 'nt' and args.command in ('serve', 'worker', 'run'):
+        from local_release.console_safety import verify_console_safety
+        verify_console_safety()
     if args.command in ("serve", "install-service", "start-service", "stop-service"):
         from local_release import service
         if args.command == "serve":

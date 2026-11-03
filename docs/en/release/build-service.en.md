@@ -151,6 +151,7 @@ Linux keeps no permanent archive - see the [temporary builder policy](local-rele
 Controls hide equivalent actions: a new build shows Start, an attempted build shows Retry, and Restart appears only for an active process. Stop is hidden after the current OS completes. Recent Linux diagnostic history links open the saved Windows copies.
 
 Windows Startup calls idempotent `start-service`, reusing a healthy server or starting a hidden server with `service.log`.
+Before Windows serve/worker/run, a mandatory native gate checks a pythonw parent, 24 repeated Python/Git/cmd descendant cycles, console inheritance hidden at creation, and transient WinEvent show/foreground events. Unsafe creation flags are rejected before any child launch. CLI trees use python.exe and a private hidden console: pythonw or CREATE_NO_WINDOW on a parent alone is insufficient when a tool spawns ordinary descendants. Startup waits for the gate; replace stale idle observers only after active builders are released. The probe uses no screenshots or user input.
 Concurrent queue writes wait up to five seconds without stealing a live lock.
 Linux keeps no archive, so deletion finishes after Windows/GitHub cleanup without a Linux login or receipt.
 Small tombstones still block resurrection and reap an unfinished Linux outbox if necessary. Deletion markers persist in Git notes without a technical Release. Native Ubuntu runtime4/build174 passed Snap acceptance, verified delivery

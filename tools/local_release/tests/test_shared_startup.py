@@ -36,7 +36,7 @@ class SharedStartupTest(unittest.TestCase):
             try:
                 capture(['powershell', '-NoProfile', '-NonInteractive', '-Command',
                          'Start-Process -FilePath $env:AI11_TEST_STARTUP -WindowStyle Hidden'], env=env)
-                deadline = time.monotonic() + 15
+                deadline = time.monotonic() + 60
                 while not (registry.parent / 'service.json').exists() and time.monotonic() < deadline:
                     time.sleep(.1)
                 before = read_json(registry.parent / 'service.json')
