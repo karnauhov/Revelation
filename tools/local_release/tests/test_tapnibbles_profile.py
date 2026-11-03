@@ -180,6 +180,25 @@ class TapNibblesProfileTests(unittest.TestCase):
             self.assertEqual(sum('--remove' in argv for argv in calls), 2)
             self.assertFalse((root / 'integration_test/tap44_release_test.dart').exists())
 
+    def test_web_widget_input_runs_with_assertions_while_package_mode_remains_release(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'integration_test').mkdir()
+            (root / 'integration_test/app_smoke_test.dart').write_text('void main() {}')
+            calls = []
+            job = self.metadata()
+            job['sha'] = 'a' * 40
+            ctx = SimpleNamespace(workspace=root, root=root, directory=root, job=job,
+                config={'chromedriver_port': 18884, 'web_port': 18881},
+                command=lambda argv: calls.append(argv))
+            with patch('local_release.prerequisites.chrome_driver', return_value=nullcontext()):
+                tapnibbles.integration(ctx, 'web')
+            self.assertIn('--debug', calls[0])
+            self.assertNotIn('--release', calls[0])
+            self.assertEqual(job['build_mode'], 'release')
+            receipt = json.loads((root / 'results/integration-web.json').read_text())
+            self.assertEqual(receipt['test_build_mode'], 'debug')
+
 
 if __name__ == '__main__':
     unittest.main()

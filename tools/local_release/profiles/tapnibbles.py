@@ -294,7 +294,11 @@ def integration(ctx, platform):
                             pass
         elif platform == 'web':
             with chrome_driver(ctx):
-                ctx.command(['flutter', 'drive', '--release', '--driver=test_driver/design_shell.dart',
+                # WidgetTester text injection uses the debug-only client -1,
+                # and keyboard simulation needs debug key names. Package
+                # compilation remains release; all native test runners also
+                # use debug mode for these same input scenarios.
+                ctx.command(['flutter', 'drive', '--debug', '--driver=test_driver/design_shell.dart',
                     '--target=' + target, '-d', 'web-server', '--browser-name=chrome', '--headless',
                     '--dart-define-from-file=env/tap44.local.json',
                     '--driver-port=' + str(ctx.config['chromedriver_port']), '--web-port=' + str(ctx.config['web_port']),
@@ -304,7 +308,8 @@ def integration(ctx, platform):
             ctx.command(['flutter', 'test', target, '-d', 'windows',
                          '--dart-define-from-file=env/tap44.local.json', '--reporter=expanded'])
         atomic_json(ctx.directory / ('results/integration-' + platform + '.json'), dict(
-            sha=ctx.job['sha'], platform=platform, tests=[p.name for p in tests], status='passed'))
+            sha=ctx.job['sha'], platform=platform, test_build_mode='debug',
+            tests=[p.name for p in tests], status='passed'))
     finally:
         generated.unlink(missing_ok=True)
 
