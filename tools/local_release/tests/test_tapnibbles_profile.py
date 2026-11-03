@@ -15,13 +15,23 @@ from local_release.profiles import tapnibbles
 
 
 class TapNibblesProfileTests(unittest.TestCase):
-    def metadata(self):
+    def metadata(self, changelog='## [1.0.0]\nRelease notes\n'):
         values = {'pubspec.yaml': 'version: 1.0.0+12',
-                  'CHANGELOG.md': '## [1.0.0]\nRelease notes\n',
+                  'CHANGELOG.md': changelog,
                   'android/app/build.gradle.kts': 'android {\n    buildTypes {\n'
                       '        release { signingConfig = signingConfigs.getByName("debug") }\n    }\n}\n'}
         with patch.object(tapnibbles, 'git', side_effect=lambda repo, _, path: values[path.split(':', 1)[1]]):
             return tapnibbles.metadata(None, 'a' * 40, {})
+
+    def test_prerelease_notes_use_committed_pending_changes_or_the_version_section(self):
+        for heading in ['Unreleased', '[Unreleased]']:
+            job = self.metadata(f'## {heading}\n\n- Play the practice game.\n\n## [1.0.0]\nOld scaffold.\n')
+            self.assertIn('## 1.0.0+12', job['release_notes'])
+            self.assertIn('- Play the practice game.', job['release_notes'])
+            self.assertNotIn('Old scaffold.', job['release_notes'])
+        self.assertIn('Release notes', self.metadata('## Unreleased\n\n## [1.0.0]\nRelease notes\n')['release_notes'])
+        with self.assertRaisesRegex(ReleaseError, 'changelog section'):
+            self.metadata('## Unreleased\n- Pending change.\n')
 
     def test_four_release_packages_windows_only_and_sentry_explicitly_deferred(self):
         job = self.metadata()

@@ -32,15 +32,22 @@ def metadata(repo, sha, profile):
     if not match:
         raise ReleaseError('Cannot parse committed TapNibbles version')
     version, build = match[1], int(match[2])
+    changelog = git(repo, 'show', sha + ':CHANGELOG.md')
     notes = re.search(r'(^## \[' + re.escape(version) + r'\].*?)(?=\n## |\Z)',
-                      git(repo, 'show', sha + ':CHANGELOG.md'), re.M | re.S)
+                      changelog, re.M | re.S)
     if not notes:
         raise ReleaseError('Missing TapNibbles changelog section')
+    # Automatic prereleases include the implemented changes committed under
+    # Unreleased while v1 is still being developed. Never read the dirty tree.
+    pending = re.search(r'^## (?:Unreleased|\[Unreleased\])[^\n]*\n(.*?)(?=\n## |\Z)',
+                        changelog, re.M | re.S)
+    release_notes = (f'## {version}+{build}\n\n' + pending[1].strip()
+                     if pending and pending[1].strip() else notes[1].strip())
     names = [f'tapnibbles-web-{version}+{build}.zip', f'tapnibbles-{version}+{build}.apk',
              f'tapnibbles-{version}+{build}.aab', f'tapnibbles-windows-x64-{version}+{build}.zip']
     return dict(version=version, build=build, tag=f'auto-v{version}-b{build}-{sha[:8]}',
         artifacts=names, release_prerelease=True, release_make_latest='false',
-        release_notes=notes[1].strip() + '\n\nRelease-mode packages: Web, signed Android APK/AAB, Windows x64 portable ZIP. '
+        release_notes=release_notes + '\n\nRelease-mode packages: Web, signed Android APK/AAB, Windows x64 portable ZIP. '
             'No store submission. Sentry integration is deferred to TAP27 by owner decision.',
         build_mode='release', store_ready=False, source_dirty=False, signing='Android release-keystore / unsigned Windows',
         sentry={'status': 'deferred', 'task': 'TAP27', 'owner_decision': '2026-11-03'},
