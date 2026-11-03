@@ -196,6 +196,9 @@ class GitHub:
                 raise ReleaseError("Existing release is foreign; refusing modification")
             if release["target_commitish"] != job["sha"] and tag_sha != job["sha"]:
                 raise ReleaseError("Draft release targets a different SHA")
+            body = notes + "\n\n" + marker
+            if release.get("draft") and release.get("body") != body:
+                return self.request("PATCH", f"/releases/{release['id']}", {"body": body})
             return release
         return self.request("POST", "/releases", {
             "tag_name": job["tag"], "target_commitish": job["sha"],

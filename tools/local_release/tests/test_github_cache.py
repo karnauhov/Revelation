@@ -11,6 +11,21 @@ from local_release.github import GitHub
 
 
 class GitHubReadbackCacheTest(unittest.TestCase):
+    def test_repaired_notes_update_only_an_owned_unpublished_draft(self):
+        api = GitHub('owner/repo', 'fixture')
+        job = {'sha': 'a' * 40, 'tag': 'auto-fixture', 'run_id': 'fixture-a'}
+        marker = '<!-- local-release:fixture-a -->'
+        release = {'id': 7, 'tag_name': job['tag'], 'target_commitish': job['sha'],
+                   'draft': True, 'body': 'Old notes\n\n' + marker}
+        with patch.object(api, 'require_source'), patch.object(api, 'tag_sha', return_value=job['sha']), \
+                patch.object(api, 'pages', return_value=[release]), patch.object(api, 'request') as request:
+            api.ensure_release(job, 'Current committed notes')
+            request.assert_called_once_with('PATCH', '/releases/7', {'body': 'Current committed notes\n\n' + marker})
+            request.reset_mock()
+            release['draft'] = False
+            self.assertEqual(api.ensure_release(job, 'Another note'), release)
+            request.assert_not_called()
+
     def test_canonical_repository_casing_is_accepted_without_trusting_other_asset_urls(self):
         api = GitHub("owner/Tapnibbles", "fixture")
         with patch.object(api.opener, "open", return_value=BytesIO(b"fixture")) as download:
