@@ -250,8 +250,27 @@ def integration(ctx, platform):
                    if p.name != 'google_flow_test.dart')
     if not tests:
         raise ReleaseError('No TapNibbles integration tests')
-    generated.write_text('\n'.join("import '" + p.name + "' as t" + str(i) + ';' for i, p in enumerate(tests)) +
-        '\nvoid main() {\n' + ''.join('t' + str(i) + '.main();\n' for i in range(len(tests))) + '}\n', encoding='utf-8')
+    generated.write_text(
+        "import 'package:flutter_test/flutter_test.dart' show reportTestException;\n"
+        "import 'package:integration_test/integration_test.dart' show IntegrationTestWidgetsFlutterBinding;\n"
+        "import 'package:integration_test/common.dart' as integration_common;\n" +
+        '\n'.join("import '" + p.name + "' as t" + str(i) + ';' for i, p in enumerate(tests)) +
+        '\nvoid main() {\n' + ''.join('t' + str(i) + '.main();\n' for i in range(len(tests))) + r'''
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final previousReporter = reportTestException;
+  reportTestException = (details, description) {
+    try {
+      previousReporter(details, description);
+    } finally {
+      // Flutter diagnostic trees can be empty in release mode. Preserve the
+      // actual test exception and stack without changing its failure status.
+      binding.results[description] = integration_common.Failure(
+        description, '${details.exception}\n${details.stack ?? ""}',
+      );
+    }
+  };
+}
+''', encoding='utf-8')
     try:
         if platform == 'android':
             with android_device(ctx):
