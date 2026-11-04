@@ -14,6 +14,8 @@ QUALITY = ['dependencies', 'analyze', 'tests', 'coverage', 'coverage-threshold',
            'boundaries', 'test-layout', 'changelog', 'workflow-parity', 'tool-tests',
            'costaflow-setup', 'costaflow-tests', 'costaflow-inventory']
 BUILD = ['apk', 'verify-apk', 'aab', 'verify-aab', 'web', 'web-zip', 'verify-web']
+SENTRY_BUILD = ['apk', 'aab', 'sentry-android', 'verify-apk', 'verify-aab',
+                'web', 'web-sources', 'sentry-web', 'web-manifest', 'web-zip', 'verify-web']
 
 
 def metadata(repo, sha, profile):
@@ -27,15 +29,23 @@ def metadata(repo, sha, profile):
         raise ReleaseError('Missing Playas changelog section')
     names = [f'playas-{version}+{build}.apk', f'playas-{version}+{build}.aab', f'playas-web-{version}+{build}.zip']
     tags = [t for t in git(repo, 'tag', '--points-at', sha).splitlines() if t.startswith('v')]
+    sentry = bool(profile.get('sentry', {}).get('required'))
+    dependencies = {'verify-apk':['apk'],'verify-aab':['aab'],'web-zip':['web'],'verify-web':['web-zip']}
+    if sentry:
+        dependencies.update({'web-sources':['web'], 'sentry-web':['web-sources'],
+            'web-manifest':['sentry-web'], 'web-zip':['web-manifest'],
+            'sentry-android':['apk','aab'], 'verify-apk':['apk','sentry-android'],
+            'verify-aab':['aab','sentry-android']})
     return dict(version=version, build=build, tag=tags[0] if tags else f'auto-v{version}-b{build}-{sha[:8]}',
         generated_output_paths=['coverage/lcov.info'],
         generated_source_overlays={'android/gradle.properties':hashlib.sha256(gradle_properties(repo,sha).encode()).hexdigest()},
         artifacts=names, release_notes=notes[1].strip().removesuffix('---').strip(),
         release_prerelease=not bool(tags), release_make_latest='true' if tags else 'false',
-        required_steps={'windows': ['preflight', *QUALITY, 'integration-android', 'integration-web', *BUILD]},
+        sentry_required=sentry,
+        required_steps={'windows': ['preflight', *QUALITY, 'integration-android', 'integration-web', *(SENTRY_BUILD if sentry else BUILD)]},
         artifact_specs={n: {'host': 'windows', 'gates': [g]} for n,g in zip(names,['verify-apk','verify-aab','verify-web'])},
         architectures={'android':['armeabi-v7a','arm64-v8a','x86_64'],'web':['javascript']},
-        step_dependencies={'verify-apk':['apk'],'verify-aab':['aab'],'web-zip':['web'],'verify-web':['web-zip']})
+        step_dependencies=dependencies)
 
 
 def gradle_properties(repo,sha):
@@ -51,7 +61,11 @@ def compile_defines(config):
     required = ['IP2LOCATION_API_KEY', 'GEOCODING_API_KEY']
     if any(not isinstance(values.get(k), str) or not values[k].strip() for k in required):
         raise ReleaseError('Playas requires both client API defines')
-    return {k:values[k] for k in required}
+    result = {k:values[k] for k in required}
+    if config.get('sentry_required'):
+        from .playas_sentry import sentry_defines
+        result.update(sentry_defines(values))
+    return result
 
 
 def input_metadata(config):
@@ -59,13 +73,20 @@ def input_metadata(config):
     maps = config.get('environment',{}).get('GOOGLE_MAPS_ANDROID_API_KEY','')
     if not re.fullmatch('[a-f0-9]{64}',certificate) or not maps.strip():
         raise ReleaseError('Pin the existing release certificate and configure Android Maps key')
-    return dict(compile_defines_sha256=hashlib.sha256(json.dumps(compile_defines(config),sort_keys=True).encode()).hexdigest(),
+    metadata = dict(compile_defines_sha256=hashlib.sha256(json.dumps(compile_defines(config),sort_keys=True).encode()).hexdigest(),
         signing_certificate_sha256=certificate, signing_keystore_sha256=digest(Path(config['signing_store_file'])),
         maps_key_sha256=hashlib.sha256(maps.encode()).hexdigest(),
         firebase_config_sha256=digest(Path(config['firebase_config_file'])) if config.get('firebase_config_file') else None)
+    if config.get('sentry_required'):
+        from .playas_sentry import pinned_cli
+        metadata['sentry_cli_sha256'] = digest(pinned_cli(config))
+    return metadata
 
 
 def configure(ctx):
+    if ctx.job.get('sentry_required'):
+        from .playas_sentry import configure as configure_sentry
+        configure_sentry(ctx)
     for k,v in input_metadata(ctx.config).items():
         if ctx.job.get(k) != v: raise ReleaseError('Prepared Playas input changed: '+k)
     ctx.result['compile_defines_sha256']=ctx.job['compile_defines_sha256']
@@ -76,7 +97,11 @@ def configure(ctx):
     ctx.env['PATH']=os_path(ctx)
     ctx.env['AI11_LOCAL_RELEASE_ENGINE']=str(Path(__file__).resolve().parents[1])
     ctx.refresh_redaction([*compile_defines(ctx.config).values(),ctx.env['GOOGLE_MAPS_ANDROID_API_KEY'],ctx.env['SIGNING_KEY_ALIAS']])
-    atomic_json(ctx.workspace/'env/dart_defines.release.ci.json',compile_defines(ctx.config))
+    defines = compile_defines(ctx.config)
+    if ctx.job.get('sentry_required'):
+        defines.update(SENTRY_SOURCE_SHA=ctx.job['sha'], SENTRY_APP_VERSION=ctx.job['version'],
+                       SENTRY_APP_BUILD=str(ctx.job['build']))
+    atomic_json(ctx.workspace/'env/dart_defines.release.ci.json',defines)
     def escaped(v): return str(v).replace('\\','\\\\').replace('\n','\\n').replace('\r','\\r')
     values={'storeFile':Path(ctx.config['signing_store_file']).as_posix(),'keyAlias':ctx.env['SIGNING_KEY_ALIAS'],
             'keyPassword':ctx.env['SIGNING_KEY_PASSWORD'],'storePassword':ctx.env['SIGNING_STORE_PASSWORD']}
@@ -114,6 +139,9 @@ def coverage(ctx):
 
 
 def verify_apk(ctx,path):
+    if ctx.job.get('sentry_required'):
+        from .playas_sentry import verify_public_package
+        verify_public_package(ctx, path)
     aapt,signer=tools(ctx); badging=ctx.command([aapt,'dump','badging',path])
     expected="package: name='click.playas' versionCode='"+str(ctx.job['build'])+"' versionName='"+ctx.job['version']+"'"
     if expected not in badging or not all("'"+abi+"'" in badging for abi in ctx.job['architectures']['android']): raise ReleaseError('APK identity/version/ABIs mismatch')
@@ -165,6 +193,9 @@ def manifest_attributes(data):
 
 
 def verify_aab(ctx,path):
+    if ctx.job.get('sentry_required'):
+        from .playas_sentry import verify_public_package
+        verify_public_package(ctx, path)
     verify_zip(path,['BundleConfig.pb','base/manifest/AndroidManifest.xml','base/dex/classes.dex'])
     with zipfile.ZipFile(path) as z:
         if not all(any(n.startswith('base/lib/'+abi+'/') for n in z.namelist()) for abi in ctx.job['architectures']['android']): raise ReleaseError('AAB omits ABI')
@@ -180,6 +211,9 @@ def verify_aab(ctx,path):
 
 
 def verify_web(ctx,path):
+    if ctx.job.get('sentry_required'):
+        from .playas_sentry import verify_public_package
+        verify_public_package(ctx, path)
     verify_zip(path,['index.html','main.dart.js','flutter_bootstrap.js','version.json'])
     with zipfile.ZipFile(path) as z:
         version=json.loads(z.read('version.json'))
@@ -233,6 +267,10 @@ def run(ctx):
         ctx.stage('costaflow-tests',lambda:ctx.command([py,'-m','pytest','tools/costaflow/tests','-q'],cwd=ctx.workspace))
         ctx.stage('costaflow-inventory',lambda:ctx.command([py,'-m','costaflow','inventory','--output',ctx.directory/'results/costaflow'],cwd=ctx.workspace),['results/costaflow/coverage.json','results/costaflow/coverage.html'])
         for platform in ['android','web']: ctx.stage('integration-'+platform,lambda platform=platform:integration(ctx,platform))
+        if ctx.job.get('sentry_required'):
+            from .playas_sentry import build
+            build(ctx)
+            return
         apk,aab,web=[ctx.output/n for n in ctx.job['artifacts']]
         # The normal build pub phase regenerates release-only plugin registration after integration_test.
         flags=['--release','--dart-define-from-file=env/dart_defines.release.ci.json']
