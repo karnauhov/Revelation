@@ -350,6 +350,110 @@ def reconcile_published(context):
     return True
 
 
+def _publication_records(job, saved):
+    if set(saved.get('assets', {})) != set(job['artifacts']):
+        raise ReleaseError('Publication receipt does not describe all job packages')
+    records = {**saved['assets'], 'SHA256SUMS': saved.get('checksums', {}),
+               'release-manifest.json': saved.get('manifest', {})}
+    if any(type(r.get('id')) is not int or r['id'] <= 0
+           or type(r.get('size')) is not int or r['size'] < 0
+           or not re.fullmatch(r'[0-9a-f]{64}', r.get('sha256') or '') for r in records.values()):
+        raise ReleaseError('Publication receipt is missing verified asset identities')
+    if len({r['id'] for r in records.values()}) != len(records):
+        raise ReleaseError('Publication receipt repeats an asset ID')
+    return records
+
+
+def _verified_inventory(api, release_id, records):
+    assets = api.pages(f'/releases/{release_id}/assets')
+    matched = {}
+    for asset in assets:
+        name = asset['name']
+        if name not in records:
+            continue  # Technical assets may be archived after publication.
+        record = records[name]
+        if (name in matched or asset.get('state') != 'uploaded' or
+                (asset['id'], asset['size']) != (record['id'], record['size'])):
+            raise ReleaseError('Release asset identity changed: ' + name)
+        expected = record['sha256']
+        if asset.get('digest') is None:
+            api.verify_asset(asset, expected)  # Older assets may lack API digests.
+        elif asset['digest'] != 'sha256:' + expected:
+            raise ReleaseError('Release asset digest changed: ' + name)
+        matched[name] = asset
+    if matched.keys() != records.keys():
+        raise ReleaseError('Verified release asset is missing')
+    return matched, assets
+
+
+def _read_publication_release(api, job, saved):
+    release = api.request('GET', f"/releases/{saved['release_id']}")
+    draft = release.get('draft') is True
+    tag = release.get('tag_name', '')
+    correct_tag = tag == job['tag'] or (draft and re.fullmatch(r'untagged-[A-Za-z0-9]+', tag))
+    if (release.get('id') != saved['release_id'] or not correct_tag or
+            (draft and release.get('target_commitish') != job['sha']) or
+            f"<!-- local-release:{job['run_id']} -->" not in (release.get('body') or '')):
+        raise ReleaseError('Publication release identity changed')
+    return release
+
+
+def _publication_url_matches(url, repository, kind, tail):
+    parts = urllib.parse.urlsplit(url or '')
+    repo, separator, suffix = urllib.parse.unquote(parts.path).partition('/releases/')
+    return (parts.scheme == 'https' and parts.netloc == 'github.com' and
+            repo.casefold() == '/' + repository.casefold() and separator and
+            suffix == kind + '/' + tail and not parts.query and not parts.fragment)
+
+
+def _finish_publication(path, job, api, saved):
+    from .catalogue import update_publication_mirror
+
+    confirmed = _read_publication_release(api, job, saved)
+    if (confirmed['draft'] or api.tag_sha(job['tag']) != job['sha'] or
+            not _publication_url_matches(confirmed.get('html_url'), job['repository'], 'tag', job['tag'])):
+        raise ReleaseError('Published release read-back failed')
+    records = _publication_records(job, saved)
+    assets, _ = _verified_inventory(api, saved['release_id'], records)
+    for name, record in records.items():
+        url = assets[name].get('browser_download_url')
+        if not _publication_url_matches(url, job['repository'], 'download', job['tag'] + '/' + name):
+            raise ReleaseError('Published asset URL does not use the canonical tag: ' + name)
+        record['url'] = url
+    saved.pop('waiting', None)
+    saved.pop('awaiting_publication_confirmation', None)
+    saved.update(published=True, url=confirmed['html_url'])
+    # If interrupted between writes, the pending receipt can be retried safely.
+    with lock(path.parent / '.catalogue.lock', timeout=5):
+        update_publication_mirror(path.parent, job, saved['assets'])
+        atomic_json(path, saved)
+    return saved
+
+
+def repair_publication_urls(directory, config):
+    """Refresh a published local receipt using only GitHub read operations."""
+    from .catalogue import release_directory
+    from .retention import ensure_allowed, record_path
+
+    directory = directory.resolve()
+    job_path = directory / 'job.json'
+    if not job_path.is_file() or len(directory.parents) < 4:
+        raise ReleaseError('Repair requires a local release job directory')
+    root, project, sha = directory.parents[3], directory.parents[1].name, directory.name
+    with lock(record_path(root, project, sha).with_suffix('.lock')):
+        ensure_allowed(root, project, sha)
+        job = read_json(job_path)
+        if release_directory(root, job['project'], job['version'], job['build'], job['sha']) != directory:
+            raise ReleaseError('Repair requires the canonical local release directory')
+        with lock(directory / '.publication.lock'):
+            path = directory / 'publication.json'
+            saved = read_json(path) if path.is_file() else {}
+            if (not saved.get('published') or type(saved.get('release_id')) is not int or
+                    any(saved.get(key) != job[key] for key in ('run_id', 'sha', 'tag'))):
+                raise ReleaseError('Repair requires the published receipt for this exact job')
+            return _finish_publication(path, job, GitHub(job['repository'], credential(config)), saved)
+
+
 def publish_job(context):
     from .retention import ensure_allowed
     ensure_allowed(context.root, context.job["project"], context.job["sha"])
@@ -362,6 +466,13 @@ def publish_job(context):
         saved = read_json(publication_path) if publication_path.exists() else {}
         if saved.get('published'):
             return saved  # A later log archive never reopens an immutable release.
+        if saved.get('awaiting_publication_confirmation'):
+            release = _read_publication_release(api, job, saved)
+            if not release['draft']:
+                return _finish_publication(publication_path, job, api, saved)
+            if not complete_results(directory, job):
+                raise ReleaseError('Publication retry requires all gates to pass')
+            return _publish_verified_draft(context, api, release, publication_path, saved)
         api.verified_assets = {record["id"]: record for record in list(saved.get("assets", {}).values())
                                + [saved.get("checksums", {}), saved.get("manifest", {})] if "id" in record}
         notes = (directory / "release_notes.txt").read_text(encoding="utf-8")
@@ -409,21 +520,28 @@ def publish_job(context):
                              for name in sorted(job["artifacts"])},
             })
             saved["manifest"] = api.upload_verified(release, summary, allow_upload=release["draft"])
-            # Re-read asset inventory and tag immediately before making the draft public.
-            actual = api.pages(f"/releases/{release['id']}/assets")
-            expected = set(job["artifacts"]) | {"SHA256SUMS", "release-manifest.json"}
-            transport_prefix = "local-transfer-" + job["run_id"] + "-"
-            if {a["name"] for a in actual if not a["name"].startswith(transport_prefix)} != expected:
-                raise ReleaseError("Unexpected or missing draft assets")
-            if api.tag_sha(job["tag"]) not in (None, job["sha"]):
-                raise ReleaseError("Tag changed during publication")
             if release["draft"]:
-                release = api.request("PATCH", f"/releases/{release['id']}", {"draft": False, "make_latest": job.get('release_make_latest', 'false')})
-            confirmed = api.request("GET", f"/releases/{release['id']}")
-            if confirmed["draft"] or api.tag_sha(job["tag"]) != job["sha"]:
-                raise ReleaseError("Published release read-back failed")
-            saved.pop("waiting", None)
-            saved.update(published=True, url=confirmed["html_url"])
+                return _publish_verified_draft(context, api, release, publication_path, saved)
+            saved['awaiting_publication_confirmation'] = True
+            atomic_json(publication_path, saved)
+            return _finish_publication(publication_path, job, api, saved)
         else:
             saved["waiting"] = "Other builders or required gates are incomplete"
         atomic_json(publication_path, saved)
+
+
+def _publish_verified_draft(context, api, release, path, saved):
+    job = context.job
+    records = _publication_records(job, saved)
+    _, actual = _verified_inventory(api, release['id'], records)
+    transport_prefix = 'local-transfer-' + job['run_id'] + '-'
+    if {a['name'] for a in actual if not a['name'].startswith(transport_prefix)} != records.keys():
+        raise ReleaseError('Unexpected or missing draft assets')
+    if api.tag_sha(job['tag']) not in (None, job['sha']):
+        raise ReleaseError('Tag changed during publication')
+    # Persist every verified asset identity before a PATCH whose response may be lost.
+    saved['awaiting_publication_confirmation'] = True
+    atomic_json(path, saved)
+    api.request('PATCH', f"/releases/{release['id']}", {
+        'draft': False, 'tag_name': job['tag'], 'make_latest': job.get('release_make_latest', 'false')})
+    return _finish_publication(path, job, api, saved)

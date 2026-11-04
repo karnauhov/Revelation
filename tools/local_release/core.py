@@ -609,6 +609,19 @@ def _run_job(directory: Path, config: dict, publish=False):
     context = Context(directory, config)
     with lock(directory / f".{context.host}.lock"):
         ensure_job_allowed(directory)
+        saved = read_json(publication) if publication.exists() else {}
+        if saved.get('published'):
+            raise ReleaseError('Published releases are immutable; use the catalogue')
+        if saved.get('awaiting_publication_confirmation'):
+            if not publish:
+                raise ReleaseError('Publication confirmation pending; resume with --publish')
+            if (directory / 'stop-request.json').exists():
+                from .processes import JobStopped
+                raise JobStopped('Stopped by owner before publication confirmation')
+            # PATCH may already have succeeded. Bypass build and exchange writes.
+            from .github import publish_job
+            publish_job(context)
+            return context
         context.result.update(status="running", current_step=None, session_id=context.session_id)
         context.save()
         try:
@@ -660,6 +673,10 @@ def _run_job(directory: Path, config: dict, publish=False):
         except BaseException as error:
             from .processes import JobStopped
             context.record_exception()
+            saved = read_json(publication) if publication.exists() else {}
+            if saved.get('awaiting_publication_confirmation') or saved.get('published'):
+                # Publication can be retried without changing completed builder evidence.
+                raise
             context.result.update(status="stopped" if isinstance(error, JobStopped) else "failed", error=context.redact(str(error)))
             context.save()
             if publish:

@@ -13,6 +13,7 @@ from urllib.request import urlopen
 import zipfile
 
 from ..core import ReleaseError, atomic_json, digest, git, hidden_flags
+from ..jar_signing import verify_jar_signer
 from .ai11 import tools, verify_zip
 from .playas import manifest_attributes
 
@@ -216,12 +217,10 @@ def verify_aab(ctx, path):
                 any(n.startswith('base/lib/' + abi + '/') for n in archive.namelist())
                 for abi in ctx.job['architectures']['android']):
             raise ReleaseError('AAB identity/version/ABIs mismatch')
-    if 'jar verified.' not in ctx.command(['jarsigner', '-verify', path]):
-        raise ReleaseError('AAB signature invalid')
-    cert = re.search(r'SHA256:\s*([A-Fa-f0-9:]+)', ctx.command(['keytool', '-printcert', '-jarfile', path]))
-    if not cert or cert[1].lower().replace(':', '') != ctx.job['signing_certificate_sha256']:
-        raise ReleaseError('AAB certificate mismatch')
-    atomic_json(ctx.directory / 'results/aab-signing.json', dict(aab_sha256=digest(path), signing='release-keystore'))
+    pin = ctx.job['signing_certificate_sha256']
+    verify_jar_signer(ctx, path, pin)
+    atomic_json(ctx.directory / 'results/aab-signing.json', dict(
+        aab_sha256=digest(path), certificate_sha256=pin, signing='release-keystore'))
 
 
 def verify_windows(ctx, path):

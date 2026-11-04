@@ -211,8 +211,10 @@ def project_cycle(project, role):
         print(f"{profile['project']} {job['version']}+{job['build']} {job['sha'][:12]}", flush=True)
         try:
             ctx = Context(directory, config, host=role)
-            sync_results(ctx)
-            remediation(directory, project)
+            pending = publication.exists() and read_json(publication).get('awaiting_publication_confirmation')
+            if not pending:
+                sync_results(ctx)
+                remediation(directory, project)
             if not (directory / "stop-request.json").exists():
                 publish_job(ctx)
                 if publication.exists() and read_json(publication).get("published"):

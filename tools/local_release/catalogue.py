@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 import shutil
 
-from .core import ReleaseError, atomic_json, digest, inside, read_json
+from .core import ReleaseError, atomic_json, digest, inside, lock, read_json
 
 
 def release_directory(root, project, version, build, sha):
@@ -34,6 +34,11 @@ def retain_file(source, destination):
 
 
 def catalogue_job(context):
+    with lock(context.directory / '.catalogue.lock', timeout=5):
+        return _catalogue_job(context)
+
+
+def _catalogue_job(context):
     from .github import complete_results
     job = context.job
     directory = context.directory
@@ -98,3 +103,24 @@ def verify_catalogue(directory):
         if not path.is_file() or path.stat().st_size != record["size"] or digest(path) != record["sha256"]:
             raise ReleaseError("Local release package verification failed: " + name)
     return manifest
+
+
+def update_publication_mirror(directory, job, assets):
+    """Refresh public mirror fields without rebuilding the local catalogue."""
+    path = directory / 'manifest.json'
+    if not path.is_file():
+        return
+    manifest = read_json(path)
+    if any(manifest.get(key) != job[key] for key in ('project', 'version', 'build', 'sha', 'run_id')):
+        raise ReleaseError('Local catalogue belongs to a different job')
+    changed = False
+    for name, package in manifest['packages'].items():
+        asset = assets.get(name)
+        if not asset or any(package.get(key) != asset[key] for key in ('sha256', 'size')):
+            raise ReleaseError('Local catalogue differs from verified publication: ' + name)
+        mirror = {'source_asset_id': asset['id'], 'url': asset['url']}
+        if any(package.get(key) != value for key, value in mirror.items()):
+            package.update(mirror)
+            changed = True
+    if changed:
+        atomic_json(path, manifest)

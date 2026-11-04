@@ -92,6 +92,9 @@ def parser():
     archive.add_argument("--config", type=Path, required=True)
     verify = sub.add_parser("verify-packages", help="Verify the primary local deployment catalogue")
     verify.add_argument("directory", type=Path)
+    repair_urls = sub.add_parser("repair-publication-urls", help="Refresh a published local receipt using read-only GitHub requests")
+    repair_urls.add_argument("--job", type=Path, required=True)
+    repair_urls.add_argument("--config", type=Path, required=True)
     retry = sub.add_parser("retry", help="Explicitly resume one failed/waiting SHA")
     retry.add_argument("--queue", type=Path, required=True)
     retry.add_argument("--sha", required=True)
@@ -213,6 +216,10 @@ def main(argv=None):
     elif args.command == "verify-packages":
         from local_release.catalogue import verify_catalogue
         print(json.dumps(verify_catalogue(args.directory), indent=2))
+    elif args.command == "repair-publication-urls":
+        from local_release.github import repair_publication_urls
+        receipt = repair_publication_urls(args.job, read_json(args.config))
+        print(f"Refreshed local receipt for release {receipt['release_id']}: {receipt['url']}")
     elif args.command == "retry":
         from local_release.core import update_queue
         data = read_json(args.queue)
