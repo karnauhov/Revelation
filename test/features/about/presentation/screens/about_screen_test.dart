@@ -326,9 +326,7 @@ void main() {
     variant: TargetPlatformVariant.only(TargetPlatform.android),
   );
 
-  testWidgets('AboutScreen legal topic links navigate through app router', (
-    tester,
-  ) async {
+  testWidgets('AboutScreen opens the dedicated legal routes', (tester) async {
     final harness = _AboutScreenTestHarness();
     final cubit = await _createSettingsCubit(language: 'en');
     addTearDown(cubit.close);
@@ -347,10 +345,12 @@ void main() {
           ),
         ),
         GoRoute(
-          path: '/topic',
-          builder: (_, state) => Scaffold(
-            body: Text('Topic: ${state.uri.queryParameters['file']}'),
-          ),
+          path: '/privacy-policy',
+          builder: (_, __) => const Scaffold(body: Text('Privacy route')),
+        ),
+        GoRoute(
+          path: '/license',
+          builder: (_, __) => const Scaffold(body: Text('License route')),
         ),
       ],
     );
@@ -375,18 +375,18 @@ void main() {
     );
     await tester.ensureVisible(privacyPolicyTileFinder);
     await tester.tap(privacyPolicyTileFinder);
-    await _pumpUntilFound(tester, find.text('Topic: privacy_policy'));
-    expect(find.text('Topic: privacy_policy'), findsOneWidget);
+    await _pumpUntilFound(tester, find.text('Privacy route'));
+    expect(find.text('Privacy route'), findsOneWidget);
 
-    router.go('/');
+    router.pop();
     await pumpAndSettleSafe(tester);
     await _pumpUntilFound(tester, find.text(l10n.license));
 
     final licenseTileFinder = find.widgetWithText(ListTile, l10n.license);
     await tester.ensureVisible(licenseTileFinder);
     await tester.tap(licenseTileFinder);
-    await _pumpUntilFound(tester, find.text('Topic: license'));
-    expect(find.text('Topic: license'), findsOneWidget);
+    await _pumpUntilFound(tester, find.text('License route'));
+    expect(find.text('License route'), findsOneWidget);
   });
 
   testWidgets(

@@ -205,7 +205,8 @@ class RevelationStartupHost extends StatelessWidget {
             scaffoldBackgroundColor: const Color(0xFF0D0907),
             useMaterial3: true,
           ),
-          home: AppStartupScreen(
+          // Keep the platform's initial location until the app router mounts.
+          builder: (context, child) => AppStartupScreen(
             state: state,
             onRetry: state.failure != null ? startupCubit.retry : null,
             onReportError: state.failure != null

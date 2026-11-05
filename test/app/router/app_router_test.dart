@@ -66,8 +66,39 @@ void main() {
     );
     await pumpFrames(tester, count: 20);
 
-    expect(find.byType(TopicScreen), findsOneWidget);
+    final screen = tester.widget<TopicScreen>(find.byType(TopicScreen));
+    expect(screen.file, 'topic-1');
+    expect(screen.name, 'Topic 1');
   });
+
+  for (final (path, article) in [
+    ('/privacy-policy', 'privacy_policy'),
+    ('/license', 'license'),
+  ]) {
+    testWidgets('$path deep link opens the corresponding article', (
+      tester,
+    ) async {
+      final settingsCubit = await _createSettingsCubit();
+      addTearDown(settingsCubit.close);
+      final routeProvider = PlatformRouteInformationProvider(
+        initialRouteInformation: RouteInformation(uri: Uri(path: path)),
+      );
+      addTearDown(routeProvider.dispose);
+
+      await tester.pumpWidget(
+        _buildRouterHost(
+          appRouter: AppRouter(),
+          settingsCubit: settingsCubit,
+          routeProvider: routeProvider,
+        ),
+      );
+      await pumpFrames(tester, count: 8);
+
+      final screen = tester.widget<TopicScreen>(find.byType(TopicScreen));
+      expect(screen.file, article);
+      expect(find.byType(AboutScreen), findsNothing);
+    });
+  }
 
   testWidgets('topic pageBuilder handles TopicRouteArgs extra', (tester) async {
     final appRouter = AppRouter();

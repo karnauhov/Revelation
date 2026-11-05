@@ -533,14 +533,17 @@ class _AboutScreenState extends State<AboutScreen> {
           iconPath: "assets/images/UI/shield.svg",
           text: AppLocalizations.of(context)!.privacy_policy,
           onTap: () {
-            widget.dependencies.appLinkHandler(context, 'topic:privacy_policy');
+            widget.dependencies.appLinkHandler(
+              context,
+              'screen:privacy-policy',
+            );
           },
         ),
         IconLinkItem(
           iconPath: "assets/images/UI/license.svg",
           text: AppLocalizations.of(context)!.license,
           onTap: () {
-            widget.dependencies.appLinkHandler(context, 'topic:license');
+            widget.dependencies.appLinkHandler(context, 'screen:license');
           },
         ),
         IconLinkItem(

@@ -11,6 +11,7 @@ This file contains short practical notes for local development, release work, an
 - Working database files are edited in `%Documents%/revelation/db`.
 - Web builds consume SQLite files from `web/db/`.
 - Web DB version checks prefer `web/db/manifest.json`; the content tool button `Сохранить в проект` compares DB size/date between working DBs and `web/db`, rewrites only changed files, increments `data_version` only for rewritten DBs, and then refreshes `manifest.json`.
+- After changing the English privacy policy or license in the web database, regenerate `web/privacy-policy.html` and `web/license.html` with `dart run scripts/generate_legal_pages.dart`. Add `--check` to verify the pages against the database.
 - Content tool release-publish config is stored locally in `env/content_tool_release_publish.env` (the `env/` folder is gitignored).
 
 ## Sentry Debug Artifacts

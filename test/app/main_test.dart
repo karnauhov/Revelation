@@ -327,6 +327,9 @@ void main() {
       expect(initializeCalls, 0);
       expect(capturedRoot, isNotNull);
 
+      final dispatcher = tester.binding.platformDispatcher;
+      dispatcher.defaultRouteNameTestValue = '/privacy-policy';
+      addTearDown(dispatcher.clearDefaultRouteNameTestValue);
       await tester.pumpWidget(capturedRoot!);
       await pumpFrames(tester, count: 2);
 
@@ -336,8 +339,10 @@ void main() {
       )!;
       expect(find.byType(AppStartupScreen), findsOneWidget);
       expect(find.text(l10n.startup_title), findsOneWidget);
+      expect(find.byType(Navigator), findsNothing);
       expect(find.byType(RevelationApp), findsNothing);
 
+      dispatcher.clearDefaultRouteNameTestValue();
       initializeCompleter.complete(settingsCubit);
       await pumpFrames(tester, count: 20);
 

@@ -228,6 +228,24 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: '/privacy-policy',
+        name: 'privacy_policy',
+        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
+          context: context,
+          state: state,
+          child: const TopicScreen(file: 'privacy_policy'),
+        ),
+      ),
+      GoRoute(
+        path: '/license',
+        name: 'license',
+        pageBuilder: (context, state) => buildPageWithDefaultTransition<void>(
+          context: context,
+          state: state,
+          child: const TopicScreen(file: 'license'),
+        ),
+      ),
+      GoRoute(
         path: '/download',
         name: 'download',
         pageBuilder: (BuildContext context, GoRouterState state) {

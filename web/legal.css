@@ -1,0 +1,116 @@
+@font-face {
+  font-family: Arimo;
+  src: url("assets/assets/fonts/Arimo/Arimo.ttf") format("truetype");
+  font-display: swap;
+}
+
+/* Manuscript colors and typography from the app's article screen. */
+:root {
+  color-scheme: light;
+  --surface: #fff9ee;
+  --on-surface: #1e1b13;
+  --primary: #6d5e0f;
+  --surface-container-highest: #e8e2d4;
+  --outline-variant: #cdc6b4;
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--on-surface);
+  font: 1rem/1.45 Arimo, Arial, sans-serif;
+}
+
+.app-bar {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-block-size: 56px;
+  padding: 4px 12px 4px 4px;
+  box-sizing: border-box;
+  background: var(--surface);
+  color: var(--on-surface);
+  border-block-end: 1px solid var(--outline-variant);
+}
+
+.back-link {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  block-size: 44px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  background: var(--surface-container-highest);
+}
+
+.app-bar-title {
+  margin: 0;
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+
+.app-bar-description {
+  margin: 0;
+  font-size: .8rem;
+  line-height: 1.25;
+  letter-spacing: .035em;
+}
+
+.document {
+  padding: 8px 8px 24px;
+  overflow-wrap: anywhere;
+}
+
+.document > :first-child {
+  margin-block-start: 0;
+}
+
+.document h1,
+.document h2 {
+  margin-block: 8px;
+  line-height: 1.15;
+}
+
+.document h1 {
+  font-size: 1.7rem;
+}
+
+.document h2 {
+  font-size: 1.55rem;
+}
+
+.document p,
+.document ul {
+  margin-block: 0 8px;
+}
+
+.document ul {
+  padding-inline-start: 1.55em;
+}
+
+.document li > ul {
+  margin-block-end: 0;
+}
+
+a {
+  color: var(--primary);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+pre {
+  padding: 12px;
+  border-radius: 4px;
+  background: var(--surface-container-highest);
+  white-space: pre-wrap;
+}
