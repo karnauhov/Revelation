@@ -1,8 +1,10 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.2.2
+Doc-Version: 1.2.3
 Last-Updated: 2026-11-07
 Source-Commit: working-tree
+
+Общий движок перенесён в `../ai11/tools/local_release/` (REV306). [Перенос, автозапуск и ограничения диска](https://github.com/karnauhov/ai11/blob/main/docs/shared-local-release.md) описаны в репозитории AI11. Проектные профили и канонические пакеты остаются в Revelation. Сервис каждые пять минут очищает только доказанно временные данные; готовые пакеты и незавершённое восстановление данных не удаляются.
 
 [Общая панель сборок и автозапуск](build-service.ru.md) - http://127.0.0.1:8877.
 
@@ -179,14 +181,15 @@ python scripts/local_release/release.py sync --job <canonical-directory> --confi
 python scripts/local_release/release.py archive --profile scripts/local_release/revelation.json --root .local-releases --config .local-releases/windows-config.json
 python scripts/local_release/release.py verify-packages <canonical-directory>
 python scripts/local_release/release.py status --job <canonical-directory>
-python -m unittest discover -s tools/local_release/tests -v
+python -m unittest discover -s ../ai11/tools/local_release/tests -v
+python -m unittest discover -s scripts/local_release/tests -v
 python scripts/local_release/inventory.py --check
 ```
 
 Архивирование получает все страницы GitHub Releases/assets, проверяет размер и доступный publisher SHA-256, сохраняет собственный SHA-256,
 исходные URL/ID и tag SHA. Исторические версии не пересобираются. Существующие файлы сверяются, а не скачиваются повторно без причины.
 
-Общий координатор - `tools/local_release/`, профиль - `scripts/local_release/revelation.json`;
+Общий координатор - `../ai11/tools/local_release/` (REV306), профиль - `scripts/local_release/revelation.json`;
 [полная матрица 53 шагов](../../../scripts/local_release/workflow-inventory.json) привязана к исходному Git blob.
 Другие проекты подключают свои профили к этому движку.
 

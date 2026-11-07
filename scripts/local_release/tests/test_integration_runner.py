@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3].parent / "ai11/tools"))
 from local_release.core import Context, ReleaseError, atomic_json, git, read_json
 from local_release.profiles.revelation import integration_files
 from local_release.profiles.revelation import prepare_android_fixture, wait_android_fixture

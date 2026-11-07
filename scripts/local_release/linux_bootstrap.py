@@ -3,17 +3,20 @@
 import os
 import sys
 
-# Load the guard from source before importing potentially damaged .pyc files.
-_guard = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-                      'tools', 'local_release', 'python_bootstrap.py')
-with open(_guard, 'rb') as _source:
-    exec(compile(_source.read(), _guard, 'exec'), {'__name__': '_ai11_python_startup'})
-
 import argparse
 from pathlib import Path
+import runpy
 
 REPO = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(REPO / "tools"))
+ENGINE = Path(os.environ.get('AI11_LOCAL_RELEASE_ENGINE', str(REPO.parent / 'ai11/tools/local_release')))
+if not (ENGINE / 'cli.py').is_file():
+    # The old already-loaded login bootstrap may pull the migration and then
+    # launch this file. Acquire ai11 here as well, before importing the engine.
+    compatibility = runpy.run_path(str(REPO / 'scripts/local_release/agent_bootstrap.py'))
+    compatibility['ensure_engine']()
+with (ENGINE / 'python_bootstrap.py').open('rb') as source:
+    exec(compile(source.read(), str(ENGINE / 'python_bootstrap.py'), 'exec'), {'__name__': '_ai11_python_startup'})
+sys.path.insert(0, str(ENGINE.parent))
 from local_release.agent import cycle, install_linux_startup, register, registry_path, sync_project_catalogue
 from local_release.core import ReleaseError, atomic_json, read_json
 
@@ -33,7 +36,11 @@ def main():
     atomic_json(args.config, config)
     os.chmod(args.config, 0o600)
     register(args.registry, REPO, REPO / "scripts/local_release/revelation.json", args.root, args.config)
-    sync_project_catalogue(args.registry, REPO / "scripts/local_release/projects.json", allow_clone=True)
+    sync_project_catalogue(args.registry, ENGINE / "projects.json", allow_clone=True)
+    from local_release.relocation import plan, apply
+    changes = plan(args.registry, REPO / 'tools/local_release')
+    if changes:
+        apply(args.registry, changes)
     from local_release.versioning import install as install_version_hook
     install_version_hook(REPO, REPO / "scripts/local_release/revelation.json")
     install_linux_startup(REPO, args.registry)

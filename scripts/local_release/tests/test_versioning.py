@@ -4,7 +4,7 @@ import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3].parent / "ai11/tools"))
 from local_release.core import ReleaseError, atomic_json, capture, git
 from local_release.versioning import install, remove
 

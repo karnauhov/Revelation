@@ -1,12 +1,14 @@
 # Local builder exchange
 
-Doc-Version: 2.2.1
-Last-Updated: 2026-11-01
+Doc-Version: 2.2.2
+Last-Updated: 2026-11-07
 Source-Commit: working-tree
 
-Git main stores tools, profiles and the [project catalogue](../../../scripts/local_release/projects.json).
+REV306 moved the shared engine to `../ai11/tools/local_release/`. [Migration, startup and disk safeguards](https://github.com/karnauhov/ai11/blob/main/docs/shared-local-release.md) are documented in AI11. Project profiles and canonical packages remain in Revelation. The service cleans proven temporary data every five minutes; retained packages and pending owner-data recovery are preserved.
+
+AI11 main stores the shared tools and [Linux project catalogue](https://github.com/karnauhov/ai11/blob/main/tools/local_release/projects.json).
 Owned draft GitHub Releases carry jobs, packages, results and redacted logs. Credentials and binaries stay outside Git.
-Each other project registers its profile in its own task; Revelation is currently the only enabled project.
+Each other project registers its profile in its own task; Revelation is currently the only enabled Linux project.
 
 ## Deletion and no reimport
 
@@ -50,7 +52,7 @@ job.json, manifest.json, source.bundle, runtime, results and `logs/<host>/`. The
 
 | Data | Location |
 |---|---|
-| Credential-free project list | `scripts/local_release/projects.json` in coordinator main |
+| Credential-free project list | `ai11/tools/local_release/projects.json` in coordinator main |
 | Host repository/profile paths | `%LOCALAPPDATA%/AI11/LocalRelease/registry.json` or `~/.config/ai11-local-release/registry.json` |
 | Windows settings/credentials | `.local-releases/windows-config.json`, machine environment and protected keystore |
 | Linux settings/credentials | `~/.config/ai11-local-release/<project>.json` and private Linux checkout files |

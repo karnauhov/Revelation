@@ -1,24 +1,11 @@
-"""Revelation entrypoint to the shared coordinator."""
-
+"""Revelation entrypoint to the shared AI11 release coordinator."""
 import os
-import sys
-
-# Load the guard from source before importing potentially damaged .pyc files.
-_guard = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-                      'tools', 'local_release', 'python_bootstrap.py')
-with open(_guard, 'rb') as _source:
-    exec(compile(_source.read(), _guard, 'exec'), {'__name__': '_ai11_python_startup'})
-
 from pathlib import Path
+import runpy
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
-from local_release.cli import main
-from local_release.core import ReleaseError
-
-
-if __name__ == "__main__":
-    try:
-        main()
-    except (ReleaseError, OSError, ValueError) as error:
-        print(str(error), file=sys.stderr)
-        sys.exit(1)
+engine = Path(os.environ.get('AI11_LOCAL_RELEASE_ENGINE',
+    str(Path(__file__).resolve().parents[3] / 'ai11/tools/local_release')))
+if not (engine / 'cli.py').is_file():
+    raise SystemExit('Shared local release engine is missing: ' + str(engine))
+if __name__ == '__main__':
+    runpy.run_path(str(engine / 'cli.py'), run_name='__main__')

@@ -1,49 +1,42 @@
-"""Stable graphical-login entrypoint; update main before loading job dispatch code."""
-
+"""Compatibility login entrypoint for the shared AI11 coordinator."""
 import os
+from pathlib import Path
+import runpy
+import subprocess
 import sys
 
-# Load the guard from source before importing potentially damaged .pyc files.
-_guard = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-                      'tools', 'local_release', 'python_bootstrap.py')
-with open(_guard, 'rb') as _source:
-    exec(compile(_source.read(), _guard, 'exec'), {'__name__': '_ai11_python_startup'})
-
-import argparse
-from pathlib import Path
-import subprocess
-
 REPO = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(REPO / "tools"))
+ENGINE = Path(os.environ.get('AI11_LOCAL_RELEASE_ENGINE', str(REPO.parent / 'ai11/tools/local_release')))
 
 
-def main():
-    from local_release.agent import registry_path, open_linux_terminal, update_main
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--registry", type=Path, default=registry_path())
-    parser.add_argument("--terminal", action="store_true")
-    parser.add_argument("--run", action="store_true")
-    parser.add_argument("--hold", action="store_true")
-    args = parser.parse_args()
-    if args.terminal:
-        open_linux_terminal(Path(__file__).resolve(), args.registry)
-        return 0
-    code = 1
-    try:
-        update_main({"repo": str(REPO)})
-        code = subprocess.run([sys.executable, str(REPO / "scripts/local_release/linux_bootstrap.py"),
-                               "--registry", str(args.registry)], check=False).returncode
-    except Exception as error:
-        from local_release.host_reports import report_failure
-        report_failure({'project': 'revelation', 'profile': str(REPO / 'scripts/local_release/revelation.json'),
-                        'config': str(Path.home() / '.config/ai11-local-release/revelation.json'),
-                        'catalogue': str(REPO / '.local-releases')}, error, phase='git-update')
-        print(f"Startup failed: {error}", flush=True)
-    finally:
-        if args.hold and sys.stdin.isatty():
-            input("\nFinished. You may reboot to Windows, or press Enter to close this terminal. ")
-    return code
+def ensure_engine():
+    if (ENGINE / 'agent_bootstrap.py').is_file():
+        return
+    # Acquire only the explicitly selected shared repository on first Linux
+    # login. Never clone over an override or a dirty owner checkout.
+    if sys.platform != 'linux' or 'AI11_LOCAL_RELEASE_ENGINE' in os.environ:
+        raise SystemExit('Shared local release engine is missing: ' + str(ENGINE))
+    target = ENGINE.parents[1]
+    if not target.exists():
+        result = subprocess.run(['git', 'clone', 'https://github.com/karnauhov/ai11.git', str(target)],
+                                capture_output=True, check=False)
+        if result.returncode:
+            raise SystemExit('Cannot acquire the shared ai11 checkout; existing files preserved')
+    else:
+        def git(*args):
+            result = subprocess.run(['git', '-C', str(target), *args], capture_output=True,
+                                    text=True, check=False)
+            if result.returncode:
+                raise SystemExit('Cannot update the shared ai11 checkout; existing files preserved')
+            return result.stdout.strip()
+        if git('branch', '--show-current') != 'main' or git('status', '--porcelain', '--untracked-files=no'):
+            raise SystemExit('Shared ai11 checkout must be clean on main; existing files preserved')
+        git('fetch', 'origin')
+        git('merge', '--ff-only', 'origin/main')
+    if not (ENGINE / 'agent_bootstrap.py').is_file():
+        raise SystemExit('Publish REV306 in ai11 before using the migrated Linux startup')
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ensure_engine()
+    runpy.run_path(str(ENGINE / 'agent_bootstrap.py'), run_name='__main__')

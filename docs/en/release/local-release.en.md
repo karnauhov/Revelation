@@ -1,8 +1,10 @@
 # Local Revelation releases
 
-Doc-Version: 1.2.2
+Doc-Version: 1.2.3
 Last-Updated: 2026-11-07
 Source-Commit: working-tree
+
+REV306 moved the shared engine to `../ai11/tools/local_release/`. [Migration, startup and disk safeguards](https://github.com/karnauhov/ai11/blob/main/docs/shared-local-release.md) are documented in AI11. Project profiles and canonical packages remain in Revelation. The service cleans proven temporary data every five minutes; retained packages and pending owner-data recovery are preserved.
 
 [Shared build dashboard and startup](build-service.en.md) - http://127.0.0.1:8877.
 
@@ -164,7 +166,8 @@ A public GitHub Release requires all seven packages and both hosts' gates. A suc
 python scripts/local_release/release.py archive --profile scripts/local_release/revelation.json --root .local-releases --config .local-releases/windows-config.json
 python scripts/local_release/release.py verify-packages <canonical-directory>
 python scripts/local_release/release.py status --job <canonical-directory>
-python -m unittest discover -s tools/local_release/tests -v
+python -m unittest discover -s ../ai11/tools/local_release/tests -v
+python -m unittest discover -s scripts/local_release/tests -v
 python scripts/local_release/inventory.py --check
 ```
 
@@ -172,7 +175,7 @@ Archive follows every releases/assets page, verifies size and any publisher SHA-
 and records original URLs/IDs plus the resolved tag SHA. Historical versions are downloaded, not rebuilt.
 Existing files are checked instead of downloaded again without reason.
 
-The shared engine is `tools/local_release/`; Revelation's profile is `scripts/local_release/revelation.json`.
+The shared engine is `../ai11/tools/local_release/` (REV306); Revelation's profile is `scripts/local_release/revelation.json`.
 The [53-step parity inventory](../../../scripts/local_release/workflow-inventory.json) pins the original workflow Git blob.
 Other projects should supply profiles to this engine instead of forking coordinators.
 

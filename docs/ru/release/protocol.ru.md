@@ -1,12 +1,14 @@
 # Обмен локальных сборщиков
 
-Doc-Version: 2.2.1
-Last-Updated: 2026-11-01
+Doc-Version: 2.2.2
+Last-Updated: 2026-11-07
 Source-Commit: working-tree
 
-Git `main` хранит инструменты, профили и [перечень проектов](../../../scripts/local_release/projects.json).
+Общий движок перенесён в `../ai11/tools/local_release/` (REV306). [Перенос, автозапуск и ограничения диска](https://github.com/karnauhov/ai11/blob/main/docs/shared-local-release.md) описаны в репозитории AI11. Проектные профили и канонические пакеты остаются в Revelation. Сервис каждые пять минут очищает только доказанно временные данные; готовые пакеты и незавершённое восстановление данных не удаляются.
+
+В `main` AI11 находятся общие инструменты и [перечень Linux-проектов](https://github.com/karnauhov/ai11/blob/main/tools/local_release/projects.json).
 Draft GitHub Releases передают задания, пакеты, результаты и очищенные логи. Секреты и бинарники в Git не попадают.
-Регистрация другого проекта и его автобилд выполняются в задаче этого проекта; сейчас включён Revelation.
+Регистрация другого проекта и его автобилд выполняются в задаче этого проекта; в Linux-перечне сейчас включён Revelation.
 
 ## Удаление и отсутствие повторного импорта
 
@@ -53,7 +55,7 @@ Result schema1 допускает stage `duration_seconds`, cumulative `total_du
 
 | Данные | Размещение |
 |---|---|
-| Общий список проектов без credentials | `scripts/local_release/projects.json` в main координатора |
+| Общий список проектов без credentials | `ai11/tools/local_release/projects.json` в main координатора |
 | Локальные пути профилей/репозиториев | `%LOCALAPPDATA%/AI11/LocalRelease/registry.json` или `~/.config/ai11-local-release/registry.json` |
 | Windows credentials/настройки | `.local-releases/windows-config.json`, machine environment, защищённый keystore |
 | Linux credentials/настройки | `~/.config/ai11-local-release/<project>.json` и private-файлы Linux checkout |

@@ -1,8 +1,10 @@
 # Shared local build dashboard
 
-Doc-Version: 1.3.2
-Last-Updated: 2026-11-01
+Doc-Version: 1.3.3
+Last-Updated: 2026-11-07
 Source-Commit: working-tree
+
+REV306 moved the shared engine to `../ai11/tools/local_release/`. [Migration, startup and disk safeguards](https://github.com/karnauhov/ai11/blob/main/docs/shared-local-release.md) are documented in AI11. Project profiles and canonical packages remain in Revelation. The service cleans proven temporary data every five minutes; retained packages and pending owner-data recovery are preserved.
 
 The owner's permanent local URL is **http://127.0.0.1:8877**.
 The server binds only to loopback and reads one registry and existing catalogues. It displays
@@ -120,7 +122,7 @@ Legacy retention drafts are migrated into notes and deleted after verification; 
 
 In that project's task, create its shared-engine profile, version helper, gates and gitignored
 catalogue, then use `register-project` without a second server or package copies. For Linux add
-an explicit `scripts/local_release/projects.json` entry: project, repository, directory, profile,
+an explicit `../ai11/tools/local_release/projects.json` entry: project, repository, directory, profile,
 hosts and enabled. Arbitrary folders are never scanned. Each OS retains its own credentials.
 Implement other projects' autobuilds in their corresponding tasks.
 

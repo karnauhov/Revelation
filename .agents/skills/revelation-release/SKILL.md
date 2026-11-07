@@ -5,7 +5,7 @@ description: Build, resume, inspect or transfer a Revelation local release with 
 
 # Локальный выпуск Revelation
 
-Используй общий координатор `tools/local_release/` и профиль `scripts/local_release/revelation.json`.
+Используй общий координатор `../ai11/tools/local_release/` (REV306) и профиль `scripts/local_release/revelation.json`.
 Общая панель всех проектов реализуется в дочерней REV302 и установлена на Windows: http://127.0.0.1:8877.
 Инструкции установки/обновления: docs/ru/release/build-service.ru.md. Она использует ту же очередь и каталог;
 автобилды других проектов создаются в их задачах с подключением к общему сервису, без копирования пакетов.
@@ -58,3 +58,5 @@ Linux - только временный сборщик. Постоянный к�
 Реальный Ubuntu runtime4/build174 подтвердил Snap acceptance без пересборки, восстановление owner-state, verified delivery и `phase=cleaned`. Windows автоматически принимает результат и финализирует полный выпуск.
 
 После полного verified выпуска сохраняй redacted logs/results/host reports одним проверенным архивом при public Release и удаляй owned diagnostic draft. Постоянных технических draft не оставляй. Git notes сохраняют только малые метки удаления, без изменения main/index; управляющие коммиты используют retention_task_code и [skip ci]. При сбое/незавершённой передаче draft остаётся для recovery.
+
+REV306: общий движок находится в `C:/Users/karna/Projects/ai11/tools/local_release/`; инструкция переноса и контроля диска - `C:/Users/karna/Projects/ai11/docs/shared-local-release.md`. Проектные profiles, version helpers, gates, очереди и пакеты сохраняются. Используй актуальный проектный загрузчик, не старый путь внутри Revelation. Общий сервис регулярно удаляет только проверенные временные данные; при лимите диска задание останавливается с сохранением пакетов/checkpoints. Не увеличивай лимит и не удаляй сохранённые выпуски ради обхода ошибки. Новые сборки запускай через общий движок, который контролирует также исторические frozen runtimes.
