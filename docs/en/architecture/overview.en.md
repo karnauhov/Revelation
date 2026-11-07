@@ -1,7 +1,7 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.6.3`
-Last-Updated: `2026-10-31`
+Doc-Version: `2.6.4`
+Last-Updated: `2026-11-07`
 Source-Commit: `working-tree`
 
 ## Strong number availability in a module
@@ -64,6 +64,8 @@ Describe the current Revelation runtime architecture.
 
 ## Error Diagnostics
 
+- Sentry uses `revelation@<version>+<build>` and the build as `dist` on every platform, matching the symbol uploader. Release builders provide compile-time identity; local runs fall back to bounded package metadata loading. SDK initialization failure cannot prevent the guarded application startup, and application failures are never retried by the telemetry wrapper.
+- The outgoing error and session-transaction boundary strips user/request/host data, credentials, URL parameters, local user paths and arbitrary contexts. Navigation breadcrumbs contain known route names only; console, HTTP and native breadcrumbs, screenshots, replay and profiling remain disabled. Debug IDs and stack coordinates are preserved. Application reports set the actual severity and handled mechanism; absent database metadata removes old version tags. The SDK's existing deduplication remains enabled, with envelope regression coverage for the same throwable traversing multiple hooks.
 - `SentryAppAnalyticsReporter` preserves a non-empty supplied stack. For a blank trace, it recovers `Error.stackTrace` when available; otherwise the SDK attaches a capture-site snapshot, rather than claiming to recover the original throw site. `AppBootstrap` passes a missing Flutter error stack through as empty so this recovery remains possible, while keeping Talker logging intact. The `revelation.error.stack_trace_origin` context records `provided`, `error`, or `capture`. Stack attachment is explicitly enabled in `runWithSentry`.
 - `integration_test/sentry_error_reporting_test.dart` checks serialized envelopes in a local browser/device with an in-memory transport, including original frames, recovered frames, marked snapshots, and user redaction. No test events are sent to production.
 - A missing historical event is different from a missing stack at capture time. [Sentry retention](https://docs.sentry.io/security-legal-pii/security/data-retention-periods/) limits access to stored events; source maps and capture-site snapshots cannot restore expired data or an original stack that the runtime never supplied. Preserve available event evidence during triage.

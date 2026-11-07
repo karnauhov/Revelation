@@ -1,7 +1,7 @@
 # Local Revelation releases
 
-Doc-Version: 1.2.1
-Last-Updated: 2026-11-01
+Doc-Version: 1.2.2
+Last-Updated: 2026-11-07
 Source-Commit: working-tree
 
 [Shared build dashboard and startup](build-service.en.md) - http://127.0.0.1:8877.
@@ -20,7 +20,8 @@ The service reads the same package files. Other projects' autobuilds are impleme
 and connected through this coordinator's profiles/queues/catalogues. Windows Startup and the Linux graphical-login
 dispatcher have been verified in the owner's real dual-boot cycle. Rebooting and signing in remain manual.
 
-The `sentry-web` stage uploads shared Android/Windows debug symbols and Web source maps.
+REV305 adds independent `sentry-apk`, `sentry-aab` and `sentry-windows` gates after each final native build, plus explicit Dart symbols in `sentry-linux`. Each target retains its own `build/sentry/<target>` symbols outside distributable packages; missing ABI symbols block upload. Successful processing writes a receipt with source SHA, canonical release/dist and symbol hashes. These gates are required for new jobs; historical source snapshots remain immutable. Real upload and symbolication acceptance belong to the next release run.
+The `sentry-web` stage prepares and uploads Web source maps with explicit `revelation@<version>+<build>` identity. Native stages use the same identity, also supplied to the app compiler. Existing SDK native integrations and the Snap packaging path remain in place; Snap's separately compiled native bundle must still be checked during Linux release acceptance.
 On Windows only the `sentry_dart_plugin` uploader runs through the builder-owned short SUBST path:
 Dart recursive scans of deep Gradle `.transforms` paths can otherwise fail at MAX_PATH.
 Flutter Web builds and source-map preparation retain the physical path to avoid mixed build bookkeeping.

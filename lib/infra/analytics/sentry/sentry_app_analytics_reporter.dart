@@ -68,6 +68,7 @@ class SentryAppAnalyticsReporter implements AppAnalyticsReporter {
       error,
       stackTrace: effectiveStackTrace,
       withScope: (scope) async {
+        scope.level = fatal ? SentryLevel.fatal : SentryLevel.error;
         await scope.setTag('error.source', source);
         await scope.setTag('error.fatal', fatal ? 'true' : 'false');
         await scope.setContexts('revelation.error', <String, Object>{
@@ -94,6 +95,9 @@ class SentryAppAnalyticsReporter implements AppAnalyticsReporter {
         'db.common.data',
         commonDatabase.dataVersion.toString(),
       );
+    } else {
+      await scope.removeTag('db.common.schema');
+      await scope.removeTag('db.common.data');
     }
     final localizedDatabase = context.localizedDatabase;
     if (localizedDatabase != null) {
@@ -105,6 +109,9 @@ class SentryAppAnalyticsReporter implements AppAnalyticsReporter {
         'db.localized.data',
         localizedDatabase.dataVersion.toString(),
       );
+    } else {
+      await scope.removeTag('db.localized.schema');
+      await scope.removeTag('db.localized.data');
     }
   }
 

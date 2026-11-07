@@ -15,6 +15,7 @@ class WebPackagingTest(unittest.TestCase):
         self.addCleanup(folder.cleanup)
         job = Path(folder.name) / 'releases/fixture/1.0.0+1' / ('a' * 40)
         atomic_json(job / 'job.json', {'schema': 1, 'sha': 'a' * 40, 'run_id': 'fixture-a',
+            'version': '1.0.0', 'build': 1,
             'project': 'fixture', 'artifacts': ['web.zip'], 'compile_defines_sha256': 'defines',
             'step_dependencies': {'sentry-web': ['web'], 'web-manifest': ['sentry-web'], 'web-zip': ['web-manifest']}})
         self.ctx = Context(job, {}, host='windows')
@@ -38,6 +39,7 @@ class WebPackagingTest(unittest.TestCase):
             # Source-map preparation legitimately changes the compiled JS.
             (root / 'main.dart.js').write_text('production with debug ID')
         elif 'sentry_dart_plugin' in argv and self.fail_upload:
+            (root / 'main.dart.js').write_text('uploader injected debug ID before failure')
             raise ReleaseError('fixture upload failed')
         elif 'scripts/generate_web_loader_manifest.py' in argv:
             (root / 'loader_manifest.json').write_text('{}')

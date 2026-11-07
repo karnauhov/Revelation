@@ -53,6 +53,38 @@ void main() {
   });
 
   test(
+    'switching to unavailable metadata clears previous database tags',
+    () async {
+      await _initSentry();
+      final reporter = SentryAppAnalyticsReporter();
+      await reporter.setDataContext(_dataContext());
+      await reporter.setDataContext(
+        const AppAnalyticsDataContext(
+          languageCode: 'uk',
+          commonDatabase: null,
+          localizedDatabase: null,
+        ),
+      );
+      await Sentry.configureScope((scope) {
+        expect(scope.tags['db.language'], 'uk');
+        expect(
+          scope.tags.keys.where((key) => key.startsWith('db.common.')),
+          isEmpty,
+        );
+        expect(
+          scope.tags.keys.where((key) => key.startsWith('db.localized.')),
+          isEmpty,
+        );
+        expect(scope.contexts['revelation.data'], {
+          'language_code': 'uk',
+          'common_database': null,
+          'localized_database': null,
+        });
+      });
+    },
+  );
+
+  test(
     'trackAppSessionStarted reports app session transaction metadata',
     () async {
       SentryTransaction? capturedTransaction;
@@ -113,6 +145,7 @@ void main() {
     expect(capturedEvent?.throwable, same(error));
     expect(capturedEvent?.tags?['error.source'], 'bootstrap');
     expect(capturedEvent?.tags?['error.fatal'], 'true');
+    expect(capturedEvent?.level, SentryLevel.fatal);
     final frame = capturedEvent!.exceptions!.single.stackTrace!.frames.single;
     expect(frame.fileName, 'supplied_throw.dart');
     expect(frame.lineNo, 42);

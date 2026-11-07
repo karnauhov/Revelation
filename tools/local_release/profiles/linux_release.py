@@ -8,6 +8,7 @@ import shutil
 import tarfile
 
 from ..core import ReleaseError, atomic_json, digest, git
+from . import revelation_sentry
 
 OLD_LOOP = '''foreach(bundled_library ${PLUGIN_BUNDLED_LIBRARIES})
   install(FILES "${bundled_library}"
@@ -194,9 +195,9 @@ def build(ctx):
         attempt('inspect-linux-tar', lambda: inspect_tar(ctx), ['results/linux-tar-package.json'])
     elif not (ctx.workspace / "build/linux/x64/release/bundle/revelation").is_file():
         ctx.result["steps"].pop("linux", None)
-    native = False if preserved_tar else attempt("linux", lambda: ctx.command(["flutter", "build", "linux", "--release", "--target=lib/main.dart", "--dart-define-from-file=api-keys.json"]))
+    native = False if preserved_tar else attempt("linux", lambda: ctx.command(["flutter", "build", "linux", "--release", "--target=lib/main.dart", "--dart-define-from-file=api-keys.json", *revelation_sentry.build_flags('linux')]))
     if native:
-        attempt("sentry-linux", lambda: ctx.command(["dart", "run", "sentry_dart_plugin", "--sentry-define=upload_source_maps=false"]))
+        attempt("sentry-linux", lambda: revelation_sentry.upload_native(ctx, 'linux'), ['results/sentry-linux.json'])
         def archive():
             with tarfile.open(package_path(ctx, ".tar.gz"), "w:gz") as output:
                 output.add(ctx.workspace / "build/linux/x64/release/bundle", arcname=".")

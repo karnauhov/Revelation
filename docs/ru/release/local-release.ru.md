@@ -1,7 +1,7 @@
 # Локальный выпуск Revelation
 
-Doc-Version: 1.2.1
-Last-Updated: 2026-11-01
+Doc-Version: 1.2.2
+Last-Updated: 2026-11-07
 Source-Commit: working-tree
 
 [Общая панель сборок и автозапуск](build-service.ru.md) - http://127.0.0.1:8877.
@@ -20,7 +20,8 @@ REV301 завершил полный реальный пробный выпус�
 и подключаются к общему сервису через профили/очереди/каталоги этого координатора. Windows Startup и Linux graphical-login
 dispatcher подтверждены реальным dual-boot циклом владельца. Перезагрузку и вход выполняет владелец.
 
-Этап `sentry-web` загружает общие Android/Windows debug symbols и Web source maps.
+REV305 добавляет отдельные gates `sentry-apk`, `sentry-aab` и `sentry-windows` после каждой финальной native-сборки, а также явные Dart symbols в `sentry-linux`. Каждый target сохраняет собственные символы `build/sentry/<target>` вне распространяемых пакетов; отсутствие символов ABI блокирует загрузку. После успешной обработки записывается квитанция с source SHA, каноническими release/dist и хешами символов. Gates обязательны для новых заданий; исторические source snapshots неизменны. Реальная загрузка и приёмка символикации относятся к следующему запуску выпуска.
+Этап `sentry-web` готовит и загружает Web source maps с явным идентификатором `revelation@<version>+<build>`. Native-этапы используют тот же идентификатор, передаваемый также компилятору приложения. Существующие native-интеграции SDK и путь упаковки Snap сохраняются; отдельно скомпилированный native bundle Snap необходимо проверить при приёмке Linux-выпуска.
 На Windows только загрузчик `sentry_dart_plugin` запускается через принадлежащий builder короткий SUBST-путь:
 Dart recursive scan глубоко вложенного Gradle `.transforms` иначе может упасть на MAX_PATH.
 Flutter Web build и подготовка source maps остаются на физическом пути, чтобы не смешивать build bookkeeping.

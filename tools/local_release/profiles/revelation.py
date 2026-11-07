@@ -16,11 +16,12 @@ import time
 import zipfile
 
 from ..core import ReleaseError, atomic_json, capture, digest, git, inside, read_json
+from . import revelation_sentry
 
 
 QUALITY = ["dependencies", "format", "analyze", "unit", "widget", "coverage", "filter-coverage",
            "coverage-threshold", "forbidden", "encoding", "docs-sync"]
-WINDOWS = ["apk", "aab", "windows", "installer", "msix", "web", "sentry-web", "web-manifest", "web-zip", "verify-windows"]
+WINDOWS = ["apk", "sentry-apk", "aab", "sentry-aab", "windows", "sentry-windows", "installer", "msix", "web", "sentry-web", "web-manifest", "web-zip", "verify-windows"]
 LINUX = ["linux", "sentry-linux", "linux-tar", "snap", "verify-linux"]
 
 
@@ -62,9 +63,10 @@ def metadata(repo, sha, profile):
                                "windows": ["x64"], "linux": ["x64"], "snap": ["amd64"], "web": ["javascript"]},
                 generated_output_paths=["coverage/lcov.info"],
                 step_dependencies={
-                    "installer": ["windows"], "msix": ["windows"],
+                    "sentry-apk": ["apk"], "sentry-aab": ["aab"], "sentry-windows": ["windows"],
+                    "installer": ["sentry-windows"], "msix": ["sentry-windows"],
                     "sentry-web": ["web"], "web-manifest": ["sentry-web"], "web-zip": ["web-manifest"],
-                    "verify-windows": ["apk", "aab", "installer", "msix", "web-zip"],
+                    "verify-windows": ["apk", "sentry-apk", "aab", "sentry-aab", "installer", "msix", "web-zip"],
                     "sentry-linux": ["linux"], "linux-tar": ["linux"],
                     "inspect-linux-tar": ["linux-tar"], "inspect-snap": ["snap"],
                     "verify-linux": ["snap", "linux-tar", "inspect-linux-tar", "inspect-snap"],
@@ -113,6 +115,8 @@ def configured_secrets(ctx):
     ctx.refresh_redaction([ctx.env.get("SIGNING_STORE_FILE_BASE64")])
     # Keep compile-time secrets host-local; never include them in source.bundle.
     local_defines = ctx.workspace / "api-keys.json"
+    defines['SENTRY_APP_VERSION'] = ctx.job['version']
+    defines['SENTRY_APP_BUILD'] = str(ctx.job['build'])
     atomic_json(local_defines, defines)
     return local_defines
 
@@ -480,9 +484,11 @@ def build_windows(ctx):
         def action(target=target, source=source, suffix=suffix):
             # Kotlin incremental caches require the project and Pub cache on
             # the same physical drive; the short SUBST alias is for MSBuild.
-            ctx.command(["flutter", "build", target, *defines], cwd=ctx.workspace)
+            ctx.command(["flutter", "build", target, *defines, *revelation_sentry.build_flags(name)], cwd=ctx.workspace)
             copy_artifact(ctx, source, suffix)
         ctx.stage(name, action, [output_for(ctx, suffix)])
+        ctx.stage('sentry-' + name, lambda name=name: revelation_sentry.upload_native(ctx, name),
+                  ['results/sentry-' + name + '.json'])
     if "windows" in targets:
         build_native_windows(ctx, defines)
     if "web" in targets:
@@ -514,8 +520,10 @@ def validate_signing(ctx):
 
 
 def build_native_windows(ctx, defines):
-    ctx.stage("windows", lambda: ctx.command(["flutter", "build", "windows", "--no-tree-shake-icons", *defines]),
+    ctx.stage("windows", lambda: ctx.command(["flutter", "build", "windows", "--no-tree-shake-icons", *defines, *revelation_sentry.build_flags('windows')]),
               always=not (ctx.workspace / "build/windows/x64/runner/Release/revelation.exe").is_file())
+    ctx.stage('sentry-windows', lambda: revelation_sentry.upload_native(ctx, 'windows'),
+              ['results/sentry-windows.json'])
     def installer():
         ctx.command([ctx.config["inno_setup"], "setup.iss"])
         name = next(n for n in ctx.job["artifacts"] if n.endswith(".exe"))
@@ -550,8 +558,10 @@ def build_web(ctx, defines):
         # Dart's recursive symbol scan exceeds MAX_PATH in Gradle transforms
         # from the physical checkout. Use the already owned short drive only
         # for this uploader; Flutter Web's build bookkeeping stays physical.
-        ctx.command(["dart", "run", "sentry_dart_plugin"])
-        record_web_output(ctx)
+        try:
+            ctx.command(["dart", "run", "sentry_dart_plugin", *revelation_sentry.identity_args(ctx)])
+        finally:
+            record_web_output(ctx)
     ctx.stage("sentry-web", sentry_web)
     ctx.stage("web-manifest", lambda: ctx.command(["python", "scripts/generate_web_loader_manifest.py", "--web-build-dir", "build/web"], cwd=ctx.workspace),
               always=not (ctx.workspace / "build/web/loader_manifest.json").is_file())
