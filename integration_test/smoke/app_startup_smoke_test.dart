@@ -102,6 +102,10 @@ void main() {
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
+    final backgroundAnimation = AnimationController(
+      vsync: tester,
+      duration: const Duration(seconds: 1),
+    );
     VoidCallback? removeFocusListener;
     try {
       if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
@@ -116,6 +120,8 @@ void main() {
       await tester.pump();
 
       expect(find.byType(AppStartupScreen), findsOneWidget);
+      // Startup/navigation readiness must not depend on unrelated frame activity.
+      backgroundAnimation.repeat();
       final materialAppState = tester.state(find.byType(MaterialApp));
       final semanticsOwner =
           tester.binding.renderViews.single.owner!.semanticsOwner!;
@@ -140,9 +146,16 @@ void main() {
       );
 
       startupCompleter.complete(settingsCubit!);
-      await pumpAndSettleSmoke(tester);
+      await pumpUntilSmoke(
+        tester,
+        isReady: () =>
+            find.byType(MainScreen).evaluate().length == 1 &&
+            find.byType(AppStartupScreen).evaluate().isEmpty,
+        reason: 'startup to display the home shell',
+      );
 
       expect(find.byType(MainScreen), findsOneWidget);
+      expect(backgroundAnimation.isAnimating, isTrue);
       expect(tester.state(find.byType(MaterialApp)), same(materialAppState));
       expect(focusEvents, greaterThan(0));
 
@@ -151,11 +164,25 @@ void main() {
       expect(find.byTooltip(l10n.menu), findsOneWidget);
       _expectInsideSystemInsets(tester, find.byTooltip(l10n.menu));
 
+      final scaffold = Scaffold.of(tester.element(find.byTooltip(l10n.menu)));
+      final scaffoldLeft = tester.getTopLeft(find.byType(MainScreen)).dx;
+      final drawer = find.byType(Drawer);
       await tester.tap(find.byTooltip(l10n.menu));
-      await pumpAndSettleSmoke(tester);
+      await pumpUntilSmoke(
+        tester,
+        isReady: () =>
+            scaffold.isDrawerOpen &&
+            drawer.evaluate().length == 1 &&
+            (tester.getTopLeft(drawer).dx - scaffoldLeft).abs() < 0.1,
+        reason: 'the home drawer to finish opening',
+      );
       _expectInsideSystemInsets(tester, find.text(l10n.bible_screen));
-      Scaffold.of(tester.element(find.byTooltip(l10n.menu))).closeDrawer();
-      await pumpAndSettleSmoke(tester);
+      scaffold.closeDrawer();
+      await pumpUntilSmoke(
+        tester,
+        isReady: () => !scaffold.isDrawerOpen && drawer.evaluate().isEmpty,
+        reason: 'the home drawer to finish closing',
+      );
 
       if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
         final view = View.of(context);
@@ -173,6 +200,7 @@ void main() {
       }
       expect(tester.takeException(), isNull);
     } finally {
+      backgroundAnimation.dispose();
       removeFocusListener?.call();
       semantics.dispose();
     }

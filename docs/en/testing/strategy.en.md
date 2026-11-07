@@ -1,10 +1,16 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.4.4`
+Doc-Version: `2.4.5`
 Last-Updated: `2026-11-07`
 Source-Commit: `working-tree`
 
+## Waiting for the smoke scenario result
+
+`pumpUntilSmoke` in `integration_test/smoke/smoke_test_harness.dart` waits for the scenario's concrete state with the existing 8-second limit and semantics delivery on every frame. Startup smoke checks that the home shell replaces the splash and that drawer opening/closing completes. An independent catalogue-loading indicator may keep animating; this does not mean the shell itself is unready. MaterialApp state preservation, focus delivery during semantics, system insets, orientation and the real WebView checks remain. `test/integration/smoke_test_harness_test.dart` covers a continuous background animation, a delayed result and a descriptive failure when the deadline expires. `pumpAndSettleSmoke` remains for scenarios that require all frames to stop. Never disable the timeout or assertions to obtain a passing result.
+
 ## Accessibility focus when startup completes
+
+Startup smoke also keeps an independent `AnimationController` active until the scenario ends and disposes it in `finally`. This regression requires shell and drawer readiness while frames continue to be scheduled, regardless of data-loading speed on a particular device.
 
 `test/app/startup/startup_focus_handoff_test.dart` requests View focus while semantics are sent, before inactive elements are disposed. The original root MaterialApp replacement reproduces the inactive RenderObject access reported as Sentry REVELATION-FLUTTER-K. MaterialApp preserves its state when the ready BLoC providers are inserted; accessibility and keyboard traversal stay enabled. Local `app_startup_smoke_test.dart` and `settings_topics_language_sync_smoke_test.dart` repeat focus delivery, state preservation, cold /settings on en/es/uk/ru and Tab to an attached render object. After the fix, repeat the ordinary Web build with accessibility and check Sentry for new events.
 
