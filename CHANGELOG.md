@@ -16,6 +16,8 @@ All notable changes to this application will be documented here.
 - Enabled consistent edge-to-edge display on Android while keeping controls clear of system bars.
 - Prevented web database startup errors when several modules open at the same time.
 - Fixed verse previews on the first long press in Strong's Dictionary.
+- Keep Greek keyboard accessibility controls valid while opening and closing the dictionary.
+- Prevent accessibility focus errors when the web app finishes starting.
 - Fixed local Bible modules missing updates when the new file has the same size; invalid downloads preserve the installed copy.
 - Keep database checks and Bible module updates running when the local manifest cache cannot be saved.
 - Show the local folder path when the app cannot open it.

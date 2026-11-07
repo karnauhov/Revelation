@@ -1,6 +1,15 @@
+import 'dart:async';
+import 'dart:ui' show ViewFocusDirection, ViewFocusEvent, ViewFocusState;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/app/router/app_router.dart';
+import 'package:revelation/app/startup/screens/app_startup_screen.dart';
 import 'package:revelation/core/errors/app_failure.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
@@ -14,10 +23,120 @@ import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/main.dart' as app;
 import 'package:revelation/shared/models/app_settings.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 import 'smoke_test_harness.dart';
 
 void main() {
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('Cold settings preserves focus through startup on four locales', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final dispatcher = tester.binding.platformDispatcher;
+    dispatcher.defaultRouteNameTestValue = '/settings';
+    addTearDown(dispatcher.clearDefaultRouteNameTestValue);
+    final results = <String>[];
+    var activeLanguage = '';
+    var stage = 'initialization';
+    try {
+      for (final language in ['en', 'es', 'uk', 'ru']) {
+        activeLanguage = language;
+        stage = 'configure startup';
+        await GetIt.I.reset();
+        final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
+        AppDi.registerCore(talker: talker);
+        final settings = SettingsCubit(
+          _FakeSettingsRepository(
+            initialSettings: AppSettings(
+              selectedLanguage: language,
+              selectedTheme: 'manuscript',
+              selectedFontSize: 'medium',
+              soundEnabled: false,
+            ),
+          ),
+        );
+        await settings.loadSettings();
+        final startup = Completer<SettingsCubit>();
+        await app.startApp(
+          talker,
+          initializeSettingsCubit: (_) => startup.future,
+        );
+        stage = 'render splash';
+        await tester.pump();
+        expect(find.byType(AppStartupScreen), findsOneWidget);
+        final materialAppState = tester.state(find.byType(MaterialApp));
+        stage = 'capture semantics owner';
+        final owner = tester.binding.renderViews.single.owner!.semanticsOwner!;
+        var focusEvents = 0;
+        void focusDuringSemantics() {
+          focusEvents++;
+          tester.binding.handleViewFocusChanged(
+            ViewFocusEvent(
+              viewId: tester.view.viewId,
+              state: ViewFocusState.focused,
+              direction: ViewFocusDirection.forward,
+            ),
+          );
+        }
+
+        owner.addListener(focusDuringSemantics);
+        try {
+          stage = 'complete startup';
+          startup.complete(settings);
+          await pumpAndSettleSmoke(tester);
+          stage = 'verify startup';
+          expect(tester.takeException(), isNull);
+          expect(focusEvents, greaterThan(0));
+          expect(
+            tester.state(find.byType(MaterialApp)),
+            same(materialAppState),
+          );
+          expect(find.byType(SettingsScreen), findsOneWidget);
+          expect(
+            AppRouter().router.routeInformationProvider.value.uri.path,
+            '/settings',
+          );
+          // Release builds omit key debug names used by the simulator fallback.
+          await tester.sendKeyEvent(
+            LogicalKeyboardKey.tab,
+            physicalKey: PhysicalKeyboardKey.tab,
+          );
+          await tester.pump();
+          stage = 'verify keyboard focus';
+          final focused = FocusManager.instance.primaryFocus;
+          expect(focused, isNotNull);
+          expect(focused!.context!.findRenderObject()!.attached, isTrue);
+          expect(tester.takeException(), isNull);
+          results.add(language);
+        } finally {
+          owner.removeListener(focusDuringSemantics);
+          await tester.pumpWidget(const SizedBox.shrink());
+          await tester.pump();
+        }
+      }
+      binding.reportData = {
+        'coldSettingsFocusLocales': results,
+        'focusDuringSemantics': true,
+        'materialAppStatePreserved': true,
+      };
+    } catch (error, stackTrace) {
+      binding.reportData = {
+        'failedLanguage': activeLanguage,
+        'failedStage': stage,
+        'error': error.toString(),
+        'stack': stackTrace.toString(),
+        'completedLocales': results,
+      };
+      rethrow;
+    } finally {
+      semantics.dispose();
+      await GetIt.I.reset();
+    }
+  });
+
   testWidgets('Settings language change propagates to topics catalog', (
     tester,
   ) async {

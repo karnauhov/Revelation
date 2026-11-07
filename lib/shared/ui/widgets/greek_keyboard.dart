@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class GreekKeyboardButton extends StatefulWidget {
+class GreekKeyboardButton extends StatelessWidget {
   const GreekKeyboardButton({
     required this.controller,
     required this.focusNode,
@@ -15,50 +15,46 @@ class GreekKeyboardButton extends StatefulWidget {
   final ValueChanged<String>? onChanged;
 
   @override
-  State<GreekKeyboardButton> createState() => _GreekKeyboardButtonState();
-}
-
-class _GreekKeyboardButtonState extends State<GreekKeyboardButton> {
-  final MenuController _menuController = MenuController();
-
-  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return MenuAnchor(
-      controller: _menuController,
-      menuChildren: [GreekKeyboardPanel(onKeyPressed: _insertLetter)],
-      child: IconButton(
-        key: const Key('greek_keyboard_button'),
-        tooltip: widget.tooltip,
-        visualDensity: VisualDensity.compact,
-        padding: const EdgeInsets.all(2),
-        constraints: const BoxConstraints.tightFor(width: 44, height: 42),
-        icon: Text(
-          'ω',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: colorScheme.primary,
+    // InputDecorator can partially clip its suffix during a route slide.
+    // Clip the anchor's semantics before Tooltip/OverlayPortal contributes it.
+    return ClipRect(
+      child: MenuAnchor(
+        menuChildren: [GreekKeyboardPanel(onKeyPressed: _insertLetter)],
+        builder: (context, menuController, child) => IconButton(
+          key: const Key('greek_keyboard_button'),
+          tooltip: tooltip,
+          visualDensity: VisualDensity.compact,
+          padding: const EdgeInsets.all(2),
+          constraints: const BoxConstraints.tightFor(width: 44, height: 42),
+          icon: Text(
+            'ω',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: colorScheme.primary,
+            ),
           ),
+          onPressed: () {
+            if (menuController.isOpen) {
+              menuController.close();
+            } else {
+              menuController.open();
+            }
+          },
         ),
-        onPressed: () {
-          if (_menuController.isOpen) {
-            _menuController.close();
-          } else {
-            _menuController.open();
-          }
-        },
       ),
     );
   }
 
   void _insertLetter(String letter) {
-    final value = widget.controller.value;
+    final value = controller.value;
     final text = value.text;
     final selection = value.selection;
     final insertionOffset =
-        widget.focusNode.hasFocus && selection.isValid && selection.isCollapsed
+        focusNode.hasFocus && selection.isValid && selection.isCollapsed
         ? selection.baseOffset.clamp(0, text.length).toInt()
         : text.length;
     final updatedText = text.replaceRange(
@@ -70,13 +66,13 @@ class _GreekKeyboardButtonState extends State<GreekKeyboardButton> {
       offset: insertionOffset + letter.length,
     );
 
-    widget.focusNode.requestFocus();
-    widget.controller.value = value.copyWith(
+    focusNode.requestFocus();
+    controller.value = value.copyWith(
       text: updatedText,
       selection: updatedSelection,
       composing: TextRange.empty,
     );
-    widget.onChanged?.call(updatedText);
+    onChanged?.call(updatedText);
   }
 }
 

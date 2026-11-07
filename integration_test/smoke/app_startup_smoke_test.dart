@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' show ViewFocusDirection, ViewFocusEvent, ViewFocusState;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -100,54 +101,81 @@ void main() {
   testWidgets('App startup smoke: splash resolves into home shell', (
     tester,
   ) async {
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
-        DeviceOrientation.portraitUp,
-      ]);
-      addTearDown(
-        () => SystemChrome.setPreferredOrientations(<DeviceOrientation>[]),
-      );
-    }
-    await app.main();
-    await tester.pump();
-
-    expect(find.byType(AppStartupScreen), findsOneWidget);
-    _expectInsideSystemInsets(
-      tester,
-      find.byKey(const ValueKey<String>('startup-panel')),
-    );
-
-    startupCompleter.complete(settingsCubit!);
-    await pumpAndSettleSmoke(tester);
-
-    expect(find.byType(MainScreen), findsOneWidget);
-
-    final context = tester.element(find.byType(MainScreen));
-    final l10n = AppLocalizations.of(context)!;
-    expect(find.byTooltip(l10n.menu), findsOneWidget);
-    _expectInsideSystemInsets(tester, find.byTooltip(l10n.menu));
-
-    await tester.tap(find.byTooltip(l10n.menu));
-    await pumpAndSettleSmoke(tester);
-    _expectInsideSystemInsets(tester, find.text(l10n.bible_screen));
-    Scaffold.of(tester.element(find.byTooltip(l10n.menu))).closeDrawer();
-    await pumpAndSettleSmoke(tester);
-
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      final view = View.of(context);
-      // A native Android run must observe real system bars, not zeroed test data.
-      expect(view.viewPadding.top, greaterThan(0));
-      await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
-        DeviceOrientation.landscapeLeft,
-      ]);
-      for (var attempt = 0; attempt < 60; attempt++) {
-        await tester.pump(const Duration(milliseconds: 100));
-        if (view.physicalSize.width > view.physicalSize.height) break;
+    final semantics = tester.ensureSemantics();
+    VoidCallback? removeFocusListener;
+    try {
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+        await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+          DeviceOrientation.portraitUp,
+        ]);
+        addTearDown(
+          () => SystemChrome.setPreferredOrientations(<DeviceOrientation>[]),
+        );
       }
-      expect(view.physicalSize.width, greaterThan(view.physicalSize.height));
+      await app.main();
+      await tester.pump();
+
+      expect(find.byType(AppStartupScreen), findsOneWidget);
+      final materialAppState = tester.state(find.byType(MaterialApp));
+      final semanticsOwner =
+          tester.binding.renderViews.single.owner!.semanticsOwner!;
+      var focusEvents = 0;
+      void focusDuringSemantics() {
+        focusEvents++;
+        tester.binding.handleViewFocusChanged(
+          ViewFocusEvent(
+            viewId: tester.view.viewId,
+            state: ViewFocusState.focused,
+            direction: ViewFocusDirection.forward,
+          ),
+        );
+      }
+
+      semanticsOwner.addListener(focusDuringSemantics);
+      removeFocusListener = () =>
+          semanticsOwner.removeListener(focusDuringSemantics);
+      _expectInsideSystemInsets(
+        tester,
+        find.byKey(const ValueKey<String>('startup-panel')),
+      );
+
+      startupCompleter.complete(settingsCubit!);
+      await pumpAndSettleSmoke(tester);
+
+      expect(find.byType(MainScreen), findsOneWidget);
+      expect(tester.state(find.byType(MaterialApp)), same(materialAppState));
+      expect(focusEvents, greaterThan(0));
+
+      final context = tester.element(find.byType(MainScreen));
+      final l10n = AppLocalizations.of(context)!;
+      expect(find.byTooltip(l10n.menu), findsOneWidget);
       _expectInsideSystemInsets(tester, find.byTooltip(l10n.menu));
+
+      await tester.tap(find.byTooltip(l10n.menu));
+      await pumpAndSettleSmoke(tester);
+      _expectInsideSystemInsets(tester, find.text(l10n.bible_screen));
+      Scaffold.of(tester.element(find.byTooltip(l10n.menu))).closeDrawer();
+      await pumpAndSettleSmoke(tester);
+
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+        final view = View.of(context);
+        // A native Android run must observe real system bars, not zeroed test data.
+        expect(view.viewPadding.top, greaterThan(0));
+        await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+          DeviceOrientation.landscapeLeft,
+        ]);
+        for (var attempt = 0; attempt < 60; attempt++) {
+          await tester.pump(const Duration(milliseconds: 100));
+          if (view.physicalSize.width > view.physicalSize.height) break;
+        }
+        expect(view.physicalSize.width, greaterThan(view.physicalSize.height));
+        _expectInsideSystemInsets(tester, find.byTooltip(l10n.menu));
+      }
+      expect(tester.takeException(), isNull);
+    } finally {
+      removeFocusListener?.call();
+      semantics.dispose();
     }
-    expect(tester.takeException(), isNull);
   });
 
   testWidgets('Android WebView loads local HTML and executes JavaScript', (

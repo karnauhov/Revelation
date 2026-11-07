@@ -178,6 +178,9 @@ class RevelationStartupHost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Keep the app and focus tree alive when readiness inserts providers.
+    // Web route semantics can request focus before deactivated nodes dispose.
+    final materialAppKey = GlobalObjectKey(context);
     return BlocBuilder<AppStartupCubit, AppStartupState>(
       builder: (context, state) {
         final startupCubit = context.read<AppStartupCubit>();
@@ -185,11 +188,12 @@ class RevelationStartupHost extends StatelessWidget {
         if (state.isReady && settingsCubit != null) {
           return MultiBlocProvider(
             providers: AppDi.appBlocProviders(settingsCubit: settingsCubit),
-            child: const RevelationApp(),
+            child: RevelationApp(materialAppKey: materialAppKey),
           );
         }
 
         return MaterialApp(
+          key: materialAppKey,
           debugShowCheckedModeBanner: false,
           locale: Locale(state.localeCode),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -220,7 +224,9 @@ class RevelationStartupHost extends StatelessWidget {
 }
 
 class RevelationApp extends StatelessWidget {
-  const RevelationApp({super.key});
+  const RevelationApp({super.key, this.materialAppKey});
+
+  final Key? materialAppKey;
 
   @override
   Widget build(BuildContext context) {
@@ -235,6 +241,7 @@ class RevelationApp extends StatelessWidget {
     );
     final appRouter = AppRouter();
     final materialApp = MaterialApp.router(
+      key: materialAppKey,
       debugShowCheckedModeBanner: false,
       routerDelegate: appRouter.router.routerDelegate,
       routeInformationParser: appRouter.router.routeInformationParser,

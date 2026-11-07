@@ -1,8 +1,20 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.4.3`
-Last-Updated: `2026-10-28`
+Doc-Version: `2.4.4`
+Last-Updated: `2026-11-07`
 Source-Commit: `working-tree`
+
+## Accessibility focus when startup completes
+
+`test/app/startup/startup_focus_handoff_test.dart` requests View focus while semantics are sent, before inactive elements are disposed. The original root MaterialApp replacement reproduces the inactive RenderObject access reported as Sentry REVELATION-FLUTTER-K. MaterialApp preserves its state when the ready BLoC providers are inserted; accessibility and keyboard traversal stay enabled. Local `app_startup_smoke_test.dart` and `settings_topics_language_sync_smoke_test.dart` repeat focus delivery, state preservation, cold /settings on en/es/uk/ru and Tab to an attached render object. After the fix, repeat the ordinary Web build with accessibility and check Sentry for new events.
+
+## Greek keyboard accessibility during navigation
+
+The widget regression `test/shared/ui/widgets/greek_keyboard_semantics_test.dart` enables semantics and checks every frame of three route entry/exit cycles with the real slide transition and a constrained TextField suffix. It verifies that the Greek button retains its tooltip and tap action, the menu key remains accessible, and insertion still works. The original implementation reproduces Sentry [REVELATION-FLUTTER-J](https://ai11-link.sentry.io/issues/159312907/) before the fix. `integration_test/smoke/strongs_dictionary_navigation_smoke_test.dart` repeats three animated cycles through the real Ukrainian dictionary with accessibility enabled. Run it locally on Windows, Web and Android; also repeat the transition in the ordinary Windows build and check Sentry for new events. Do not disable semantics or error reporting to pass this regression.
+
+## Cold entry through a Bible link
+
+`integration_test/smoke/bible_cold_start_smoke_test.dart` holds startup completion, checks that no intermediate Navigator is mounted, and then opens the actual `/bible?book=66&chapter=1&verse=3&module=bible_ohienko_1988.sqlite` route. It verifies the location after the splash, Ukrainian UI, installed OH1988 schema 4 / data 2, and the complete Rev. 1:3. Preferences are isolated; reviewed local modules are required. Run locally on native devices with `flutter test integration_test/smoke/bible_cold_start_smoke_test.dart -d <device-id>` and on Web through the same ChromeDriver process as other smoke tests. This exercises actual startup and SQLite reading; also open the ordinary build manually in a new tab. Results from an older build or a different source revision do not constitute acceptance of the current candidate.
 
 ## Bible module information
 
@@ -105,6 +117,7 @@ On Web this native scenario is explicitly skipped and does not count as passed. 
 
 ## Acceptance for Every Version
 
+- Before acceptance execution, publish the specific scenarios and a realistic remaining-time estimate in the current chat. Add scenario checkboxes to the task's existing single continuous checklist, splitting platforms or partially completed scope when needed. Mark only the scope actually verified as execution progresses, retain skipped or unavailable checks as limitations, and revise the estimate when significant defects or environment problems change it. Do not create a separate dated or per-run checklist.
 - Prepare scenarios only for the version's new and changed functionality and directly affected interactions. Repeating full manual acceptance of the entire application is not required.
 - Add or update integration tests for new and changed functionality, pages, windows, and dialogs in the same change set. Keep critical startup and navigation scenarios in `integration_test/smoke/`.
 - Before acceptance and publication, run all integration tests locally, for example `flutter test integration_test -d <device-id>`, on applicable supported devices. Record an unavailable device or toolchain as a limitation, not a passing check; do not use GitHub Actions for this execution.
