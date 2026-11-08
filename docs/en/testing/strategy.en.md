@@ -1,12 +1,14 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.4.5`
-Last-Updated: `2026-11-07`
+Doc-Version: `2.4.6`
+Last-Updated: `2026-11-08`
 Source-Commit: `working-tree`
 
 ## Waiting for the smoke scenario result
 
 `pumpUntilSmoke` in `integration_test/smoke/smoke_test_harness.dart` waits for the scenario's concrete state with the existing 8-second limit and semantics delivery on every frame. Startup smoke checks that the home shell replaces the splash and that drawer opening/closing completes. An independent catalogue-loading indicator may keep animating; this does not mean the shell itself is unready. MaterialApp state preservation, focus delivery during semantics, system insets, orientation and the real WebView checks remain. `test/integration/smoke_test_harness_test.dart` covers a continuous background animation, a delayed result and a descriptive failure when the deadline expires. `pumpAndSettleSmoke` remains for scenarios that require all frames to stop. Never disable the timeout or assertions to obtain a passing result.
+
+The About folder smoke also waits for concrete states: the localized tools header, revealed action geometry and a hit-testable action center. The deadline remains 8 seconds; localized feedback, the Unicode path, directory creation and exactly one opener call remain checked for en/es/uk/ru. An independent animation stays active until the scenario finishes and is disposed in `finally`. `test/integration/about_local_folder_scenario_test.dart` reuses the same scenarios as host widget tests without initializing the native binding, and demonstrates the old global settle failing while the interface is already ready. File operations run outside the host test's fake clock while preserving the exception for the UI handler. This native-only scenario does not apply to Web.
 
 ## Accessibility focus when startup completes
 
