@@ -1,8 +1,12 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.4.7`
-Last-Updated: `2026-11-08`
+Doc-Version: `2.4.8`
+Last-Updated: `2026-11-14`
 Source-Commit: `working-tree`
+
+## Windows WebView shutdown
+
+Build a local Windows Release probe with `flutter build windows --release --target=integration_test/webview_release_probe.dart`. Run `integration_test/windows_webview_shutdown.ps1 -Executable build/windows/x64/runner/Release/revelation.exe` under the project's verified Windows console launcher. The script sends a normal window-close request and waits for the process to finish. It repeats this without a WebView, during startup of a WebView, and after a local HTML page has confirmed JavaScript execution. Each run must exit with code zero. Use the normal `lib/main.dart` target for application builds. See [REV318 and the plugin patch](../../../third_party/flutter_inappwebview_windows/README.md).
 
 ## Waiting for the smoke scenario result
 

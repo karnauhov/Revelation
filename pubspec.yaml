@@ -70,6 +70,9 @@ dependency_overrides:
   # Stable upstream 1.1.3 with the minimal AGP 9 ProGuard compatibility patch.
   flutter_inappwebview_android:
     path: third_party/flutter_inappwebview_android
+  # Stable upstream 0.6.0 with ordered WinRT shutdown for the Windows runner.
+  flutter_inappwebview_windows:
+    path: third_party/flutter_inappwebview_windows
 
 msix_config:
   display_name: Revelation.Win

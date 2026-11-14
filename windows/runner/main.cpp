@@ -1,5 +1,6 @@
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
+#include <flutter_inappwebview_windows/flutter_inappwebview_windows_plugin_c_api.h>
 #include <windows.h>
 
 #include "flutter_window.h"
@@ -15,31 +16,40 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   // Initialize COM, so that it is available for use in the library and/or
   // plugins.
-  ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-
-  flutter::DartProject project(L"data");
-
-  std::vector<std::string> command_line_arguments =
-      GetCommandLineArguments();
-
-  project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
-
-  FlutterWindow window(project);
-  Win32Window::Point origin(10, 10);
-  Win32Window::Size size(800, 650);
-  window.SetMinSize(800, 650);
-  // Startup title is replaced by localized Flutter title after first frame.
-  if (!window.Create(L"Revelation", origin, size)) {
+  const HRESULT com_result = ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+  if (FAILED(com_result)) {
     return EXIT_FAILURE;
   }
-  window.SetQuitOnClose(true);
 
-  ::MSG msg;
-  while (::GetMessage(&msg, nullptr, 0, 0)) {
-    ::TranslateMessage(&msg);
-    ::DispatchMessage(&msg);
+  int exit_code = EXIT_FAILURE;
+  {
+    flutter::DartProject project(L"data");
+    project.set_dart_entrypoint_arguments(GetCommandLineArguments());
+
+    FlutterWindow window(project);
+    Win32Window::Point origin(10, 10);
+    Win32Window::Size size(800, 650);
+    window.SetMinSize(800, 650);
+    // Startup title is replaced by localized Flutter title after first frame.
+    if (window.Create(L"Revelation", origin, size)) {
+      window.SetQuitOnClose(true);
+
+      ::MSG msg;
+      BOOL result;
+      while ((result = ::GetMessage(&msg, nullptr, 0, 0)) > 0) {
+        ::TranslateMessage(&msg);
+        ::DispatchMessage(&msg);
+      }
+      if (result == 0) {
+        exit_code = EXIT_SUCCESS;
+      }
+    }
+    window.Destroy();
   }
 
+  if (!FlutterInappwebviewWindowsPluginCApiShutdownGraphics()) {
+    exit_code = EXIT_FAILURE;
+  }
   ::CoUninitialize();
-  return EXIT_SUCCESS;
+  return exit_code;
 }

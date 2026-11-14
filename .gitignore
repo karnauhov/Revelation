@@ -36,6 +36,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/third_party/flutter_inappwebview_windows/pubspec.lock
 **/.gradle/
 
 # Durable local release jobs, signed packages, logs and historical GitHub assets.

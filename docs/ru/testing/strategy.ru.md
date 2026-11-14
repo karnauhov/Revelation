@@ -1,8 +1,12 @@
 # Стратегия тестирования (RU)
 
-Doc-Version: `2.4.7`
-Last-Updated: `2026-11-08`
+Doc-Version: `2.4.8`
+Last-Updated: `2026-11-14`
 Source-Commit: `working-tree`
+
+## Завершение работы WebView в Windows
+
+Собрать локальный Windows Release probe командой `flutter build windows --release --target=integration_test/webview_release_probe.dart`. Запустить `integration_test/windows_webview_shutdown.ps1 -Executable build/windows/x64/runner/Release/revelation.exe` через проверенный запуск скрытой консоли проекта. Скрипт отправляет штатный запрос закрытия и дожидается выхода процесса. Он повторяет проверку без WebView, при его запуске и после подтверждения выполнения JavaScript локальной HTML-страницей. Каждый процесс должен завершиться с кодом 0. Для обычных сборок приложения использовать целевой файл `lib/main.dart`. См. [REV318 и правку плагина](../../../third_party/flutter_inappwebview_windows/README.md).
 
 ## Ожидание результата smoke-сценария
 
