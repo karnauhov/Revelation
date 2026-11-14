@@ -1,27 +1,28 @@
 {
   "task": "REV235",
-  "status": "release_published_campaign_not_launched",
+  "status": "campaign_live_waiting_for_d7",
   "planning_version": "1.0.9",
   "promoted_release": "1.0.8+178",
   "primary_locale": "uk",
   "locale_rationale": "OH1988 is the concrete new reading benefit in 1.0.8. Ukrainian demand is a hypothesis, not established by device-language data in G01.",
   "duration_days": 14,
-  "start_date": null,
-  "end_date": null,
-  "launch_gates": [
-    "owner permission for the campaign placements"
-  ],
+  "published_at_utc": "2026-11-14T11:22:19Z",
+  "website_commit": "e89867b53e982d455f52348b2cef62b4efdc0718",
+  "calendar_timezone": "Europe/Madrid",
+  "start_date": "2026-11-15",
+  "end_date": "2026-11-28",
   "channels": [
     {
       "id": "website",
       "placement": "One Ukrainian benefit section on the owner's Revelation website",
+      "url": "https://www.revelation.website/demo/uk-reading.html",
       "reading_url": "https://www.revelation.website/",
-      "windows_url": "https://apps.microsoft.com/detail/9NXHRR2P4087?cid=rev108-uk-site",
+      "windows_url": "https://apps.microsoft.com/detail/9NXHRR2P4087?hl=uk-UA&cid=rev108-uk-site",
       "measurement": "Partner Center MSIX Campaign Conversion page views and installs with cid rev108-uk-site. Search Console records Google Search clicks and impressions. Website visits and first reading remain unmeasured."
     },
     {
       "id": "microsoft_store",
-      "placement": "Published Ukrainian Microsoft Store listing with the same reading scenario and the campaign example after campaign approval",
+      "placement": "Published Ukrainian Microsoft Store listing with the OH1988 description and gallery from REV237",
       "url": "https://apps.microsoft.com/detail/9NXHRR2P4087?hl=uk-UA",
       "measurement": "Store Acquisitions page view and install totals and internal Store source. Campaign-attributed views are already included in totals."
     }
@@ -89,21 +90,47 @@
   "observations": [
     {
       "checkpoint": "D0",
-      "status": "not_started",
-      "window": null,
-      "windows_page_views": null,
-      "windows_installs": null,
+      "status": "recorded",
+      "recorded_date": "2026-11-14",
+      "windows_page_views": 15,
+      "windows_installs": 1,
+      "windows_store_page_views": 12,
+      "windows_external_url_page_views": 2,
+      "windows_bing_page_views": 1,
+      "windows_sessions_opt_in": 4,
+      "search_clicks": 0,
+      "search_impressions": 55,
       "campaign_page_views": null,
       "campaign_installs": null,
       "first_reading": null,
       "returning_user_days": null,
       "reading_cohort_d7": null,
-      "feedback": null
+      "feedback": null,
+      "windows": {
+        "acquisitions": {
+          "requested": ["2026-10-31", "2026-11-13"],
+          "observed": ["2026-10-31", "2026-11-12"],
+          "observed_days": 13,
+          "timezone": null,
+          "views_by_day": [1, 2, 1, 1, 5, 3, 0, 0, 1, 0, 1, 0, 0],
+          "installs_by_day": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+        },
+        "usage": {
+          "observed": ["2026-10-18", "2026-10-31"],
+          "observed_days": 14,
+          "timezone": null
+        }
+      },
+      "search": {
+        "observed": ["2026-10-29", "2026-11-11"],
+        "observed_days": 14,
+        "timezone": "America/Los_Angeles"
+      }
     },
     {
       "checkpoint": "D7",
-      "status": "not_started",
-      "window": null,
+      "status": "scheduled",
+      "window": ["2026-11-15", "2026-11-21"],
       "windows_page_views": null,
       "windows_installs": null,
       "campaign_page_views": null,
@@ -115,8 +142,8 @@
     },
     {
       "checkpoint": "D14",
-      "status": "not_started",
-      "window": null,
+      "status": "scheduled",
+      "window": ["2026-11-15", "2026-11-28"],
       "windows_page_views": null,
       "windows_installs": null,
       "campaign_page_views": null,
@@ -134,9 +161,13 @@
     "stop": "Stop the placement when its advertised module cannot be obtained or a reproducible reading blocker appears. Preserve evidence and do not replace the approved scope with new channels."
   },
   "money_spent": 0,
-  "placements_published": 0,
+  "placements_published": 1,
   "messages_sent": 0,
-  "scheduling": "No automation was created. D0/D7/D14 are relative checkpoints after an explicitly approved launch, not calendar appointments.",
+  "scheduling": {
+    "timezone": "Europe/Madrid",
+    "D7": {"run_at": "2026-11-24T12:00:00+01:00", "automation_id": "rev235-d7"},
+    "D14": {"run_at": "2026-12-01T12:00:00+01:00", "automation_id": "rev235-d14"}
+  },
   "completed_dependencies": [
     "REV299 accepted by owner: complete OH1988 data 2",
     "REV300 accepted by owner: module-specific Strong controls",
