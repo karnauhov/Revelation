@@ -1,5 +1,7 @@
 # Revelation
 
+**[Project roadmap / Дорожная карта проекта](./ROADMAP.md)**
+
 Revelation is a Flutter app for studying the Book of Revelation.  
 Application entry point: `lib/main.dart`.
 
@@ -53,8 +55,8 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
 - [Локальный выпуск и единый каталог пакетов](./docs/ru/release/local-release.ru.md)
 - [Руководство по расширению Markdown](./docs/ru/content/markdown-extension-guide.ru.md)
-- [Дорожная карта модуля RST с номерами Стронга](./docs/ru/content/rst-strongs-module-roadmap.ru.md)
-- [Дорожная карта украинского библейского модуля с номерами Стронга](./docs/ru/content/ukrainian-bible-strongs-module-roadmap.ru.md)
+- [Технический план разметки русского текста по Стронгу](./docs/ru/content/rst-strongs-module-roadmap.ru.md)
+- [Технический план разметки украинского текста по Стронгу](./docs/ru/content/ukrainian-bible-strongs-module-roadmap.ru.md)
 - [REV209: базовые показатели использования и гипотезы роста](./docs/ru/analytics/rev209-usage-baseline.ru.md)
 - [REV235: материалы кампании украинского чтения и состояние запуска](./docs/ru/analytics/rev235-campaign.ru.md)
 - [REV210: первый запуск и восстановление чтения](./docs/ru/testing/rev210-first-reading.ru.md)

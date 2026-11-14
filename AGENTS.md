@@ -171,6 +171,8 @@ If any rule below conflicts with a direct owner request, owner request wins.
 
 ## Release Checklist
 
+- After verifying each public release, refresh the single [project roadmap](ROADMAP.md) and the four demo summaries. Preserve the original estimate and compare it with actual elapsed time; use the observed pace and a 10% reserve to revise upcoming windows. Follow the post-release roadmap steps in the [publishing skill](.agents/skills/revelation-publish/SKILL.md) and obtain approval before publishing the updated materials.
+
 - Linux is a disposable builder across all shared-engine projects. Permanent package/log catalogues are Windows/GitHub only. Isolate new build/temp/cache/SDK copies; after verified upload of available packages and full logs/status (success/failed/stopped), restore owner state and remove attempt-created files and proven-owned new provider resources. Keep only small config/cursors/receipts/tombstones. Unverified delivery/recovery retains one bounded outbox and blocks new attempts. Preserve existing tools, settings, credentials and owner data; never perform general system pruning. Follow the release protocol and do not reintroduce Linux archives without a new direct owner instruction.
 
 - After a verified complete local release, preserve redacted logs/results/host reports in Windows and one verified public Release archive, then remove owned technical diagnostic drafts. Keep actionable failures for recovery. Small deletion tombstones use Git notes `refs/notes/ai11-local-retention`, never a permanent control Release; they do not alter main/index. Linux has no archive and deletion does not wait for its login/ack. Preserve tombstone enforcement against resurrection.
