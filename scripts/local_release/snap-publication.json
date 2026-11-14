@@ -1,0 +1,11 @@
+{
+  "task": "REV237",
+  "tag": "v1.0.8+178",
+  "source_sha": "bf335de19246f63959040bb6395c30529cf4370c",
+  "filename": "Revelation-linux-1.0.8-178-amd64.snap",
+  "version": "1.0.8.178",
+  "size": 21606400,
+  "sha256": "0679d02652722a3813bb8bc09134079c5e3476f673e6881f78b7890f00b945bf",
+  "sha3_384": "239a5db5c57db86a568d9a5cec1d9b6e0781834185ac0fc446a6aa65342388b0460b8e0c19e111e1103f4699dde199ee",
+  "previous_stable_revision": 6
+}

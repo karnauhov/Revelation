@@ -89,6 +89,8 @@ The script keeps these files synchronized:
 
 ## Deploy
 
+Follow the [Revelation publishing skill](.agents/skills/revelation-publish/SKILL.md) to publish an accepted build and verify the website and store listings.
+
 - Deploy on [revelation.website](https://github.com/karnauhov/Revelation.website)
 - Deploy on [Snapcraft](https://snapcraft.io/revelation-x/listing) and [GitHub Releases](https://github.com/karnauhov/Revelation/releases). See [commands for deploy](https://dashboard.snapcraft.io/snaps/revelation-x/upload/), then [move release to latest/stable](https://snapcraft.io/revelation-x/releases) and save
 - Deploy on [Goole Play](https://play.google.com/console/u/1/developers/8693299089478158768/app/4975644827990074725/tracks/production)
