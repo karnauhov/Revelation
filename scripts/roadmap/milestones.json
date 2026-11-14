@@ -16,7 +16,8 @@
           "uk": "Перегляд і масштабування сторінок рукописів у вебверсії та Windows.",
           "ru": "1.0.1: просмотр страниц рукописей с панелью и масштабом на Web и Windows."
         },
-        "id": "A1"
+        "id": "A1",
+        "detail_en": "1.0.1: Added a manuscript page viewer with controls and zoom on web and Windows."
       },
       {
         "state": "past",
@@ -29,7 +30,8 @@
           "uk": "Області віршів і переходи до слів на факсиміле.",
           "ru": "1.0.5: интерактивные стихи и переходы от стиха к слову на факсимиле."
         },
-        "id": "A2"
+        "id": "A2",
+        "detail_en": "1.0.5: Added interactive verse areas and links from verses to words on facsimiles."
       },
       {
         "state": "past",
@@ -42,7 +44,8 @@
           "uk": "Пошук у Біблії, паралельне читання й окремий словник Стронга.",
           "ru": "1.0.7: поиск по Библии, параллельное чтение и отдельный словарь Стронга."
         },
-        "id": "A3"
+        "id": "A3",
+        "detail_en": "1.0.7: Added Bible search, parallel reading and a standalone Strong's Dictionary."
       },
       {
         "state": "plan",
@@ -55,7 +58,8 @@
           "uk": "Шукати старозавітні алюзії та повертатися до місця читання.",
           "ru": "1.0.9: искать ветхозаветные аллюзии и восстанавливать место чтения."
         },
-        "id": "A4"
+        "id": "A4",
+        "detail_en": "1.0.9: Search for Old Testament allusions and resume reading from the saved position (REV113, REV212)."
       },
       {
         "state": "plan",
@@ -68,7 +72,8 @@
           "uk": "Завантажувати комплект для вивчення без інтернету.",
           "ru": "1.0.12: скачивать комплект данных и читать без сети."
         },
-        "id": "A5"
+        "id": "A5",
+        "detail_en": "1.0.12: Download a data pack and read offline (REV197, REV149-REV151)."
       },
       {
         "state": "plan",
@@ -81,7 +86,8 @@
           "uk": "Показувати частини мови й члени речення на факсиміле.",
           "ru": "1.0.14: показывать части речи и части предложения в слоях рукописи."
         },
-        "id": "A6"
+        "id": "A6",
+        "detail_en": "1.0.14: Show parts of speech and sentence roles in manuscript overlays (REV156, REV157)."
       },
       {
         "state": "plan",
@@ -94,7 +100,8 @@
           "uk": "Показувати ілюстрації до абзаців і підтримати клавіатуру або пульт.",
           "ru": "1.0.18: показывать иллюстрации к абзацам и предусмотреть управление с клавиатуры или пульта."
         },
-        "id": "A7"
+        "id": "A7",
+        "detail_en": "1.0.18: Show illustrations for individual paragraphs and support keyboard or remote navigation (REV163, REV161)."
       },
       {
         "state": "plan",
@@ -107,7 +114,8 @@
           "uk": "Додати оригінальні грецькі та єврейські статті Стронга.",
           "ru": "1.0.19: добавить оригиналы греческих и еврейских словарных статей Стронга."
         },
-        "id": "A8"
+        "id": "A8",
+        "detail_en": "1.0.19: Add the original Greek and Hebrew entries from Strong (REV135, REV232)."
       }
     ],
     "color": "#77D5FF",
@@ -130,7 +138,8 @@
           "uk": "Передмова знайомить із джерелами, принципами та етапами вивчення.",
           "ru": "1.0.0: вышло предисловие о первоисточниках, принципах и этапах изучения."
         },
-        "id": "S1"
+        "id": "S1",
+        "detail_en": "1.0.0: Released a preface explaining primary sources, study principles and stages."
       },
       {
         "state": "past",
@@ -143,7 +152,8 @@
           "uk": "Вступ до Об’явлення 1:1-3 уже доступний; повний розбір ще попереду.",
           "ru": "К 1.0.8: в каталоге есть введение к Откровению 1:1-3; полный семиэтапный разбор ещё предстоит."
         },
-        "id": "S2"
+        "id": "S2",
+        "detail_en": "By 1.0.8: An introduction to Revelation 1:1-3 is available. The full seven-stage study is planned."
       },
       {
         "state": "plan",
@@ -156,7 +166,8 @@
           "uk": "Перевірити формат на Об’явленні 1:1-3 разом із пошуком алюзій.",
           "ru": "1.0.9: подготовить образец Откровения 1:1-3 и проверить формат с поиском аллюзий."
         },
-        "id": "S3"
+        "id": "S3",
+        "detail_en": "1.0.9: Prepare a sample study of Revelation 1:1-3 and test the format with allusion search (REV213)."
       },
       {
         "state": "plan",
@@ -169,7 +180,8 @@
           "uk": "Опублікувати перший повний розбір Об’явлення 1:1-3 за сімома етапами.",
           "ru": "1.0.10: выпустить первый полный пакет 1:1-3 после всех семи фаз и проверки."
         },
-        "id": "S4"
+        "id": "S4",
+        "detail_en": "1.0.10: Publish the first complete study of 1:1-3 after all seven stages and review (REV242)."
       },
       {
         "state": "plan",
@@ -182,7 +194,8 @@
           "uk": "Завершити Об’явлення 1:1-8 із джерелами й супровідними матеріалами.",
           "ru": "1.0.11: завершить полный пролог 1:1-8 с сопутствующими материалами."
         },
-        "id": "S5"
+        "id": "S5",
+        "detail_en": "1.0.11: Complete the full prologue, 1:1-8, with supporting material (REV246)."
       },
       {
         "state": "plan",
@@ -195,7 +208,8 @@
           "uk": "Випускати розбори послань семи церквам невеликими групами.",
           "ru": "2027-2029: публиковать проверенные послания семи церквям по одному или небольшими группами."
         },
-        "id": "S6"
+        "id": "S6",
+        "detail_en": "2027-2029: Publish reviewed studies of the messages to the seven churches individually or in small groups (REV3)."
       },
       {
         "state": "plan",
@@ -208,7 +222,8 @@
           "uk": "Випускати перевірені розбори печаток, а потім труб.",
           "ru": "2029-2032: после посланий выпускать разборы печатей и труб небольшими пакетами."
         },
-        "id": "S7"
+        "id": "S7",
+        "detail_en": "2029-2032: After the messages, publish studies of the seals and trumpets in short packages (REV3)."
       },
       {
         "state": "conditional",
@@ -221,7 +236,8 @@
           "uk": "Після труб: остання криза, чаші, царство, Новий Єрусалим та епілог.",
           "ru": "С 2032: после труб перейти к заключительному кризису и чашам, затем к царству, Новому Иерусалиму и эпилогу."
         },
-        "id": "S8"
+        "id": "S8",
+        "detail_en": "From 2032: After the trumpets, move on to the final crisis and the bowls, then the kingdom, New Jerusalem and epilogue (REV3)."
       }
     ],
     "color": "#FBCB7E",
@@ -244,7 +260,8 @@
           "uk": "Перші дев’ять комплектів зображень, серед них U001 і P018.",
           "ru": "1.0.1: добавлены первые девять наборов изображений, включая U001 и P018."
         },
-        "id": "M1"
+        "id": "M1",
+        "detail_en": "1.0.1: Added the first nine image sets, including U001 and P018."
       },
       {
         "state": "past",
@@ -257,7 +274,8 @@
           "uk": "Додано 93 зображення U051.",
           "ru": "1.0.2: добавлены 93 изображения U051."
         },
-        "id": "M2"
+        "id": "M2",
+        "detail_en": "1.0.2: Added 93 images of U051."
       },
       {
         "state": "past",
@@ -270,7 +288,8 @@
           "uk": "Додано зображення U207, U229 і P098.",
           "ru": "1.0.7: добавлены изображения U207, U229 и P098."
         },
-        "id": "M3"
+        "id": "M3",
+        "detail_en": "1.0.7: Added images of U207, U229 and P098."
       },
       {
         "state": "conditional",
@@ -283,7 +302,8 @@
           "uk": "Зареєструвати до двох джерел за наявності дозволів і файлів.",
           "ru": "1.0.10-1.0.12: зарегистрировать до двух новых источников по мере получения материалов и прав."
         },
-        "id": "M4"
+        "id": "M4",
+        "detail_en": "1.0.10-1.0.12: Register up to two new sources as images and rights become available (REV145, REV153)."
       },
       {
         "state": "conditional",
@@ -296,7 +316,8 @@
           "uk": "Перевірити ще один слот і кандидатів INTF 20325 та 20326.",
           "ru": "1.0.14-1.0.16: проверить ещё один слот и двух кандидатов INTF 20325/20326."
         },
-        "id": "M5"
+        "id": "M5",
+        "detail_en": "1.0.14-1.0.16: Check one further slot and two INTF candidates, 20325 and 20326 (REV168, REV169)."
       },
       {
         "state": "conditional",
@@ -309,7 +330,8 @@
           "uk": "Додати U025 після оцифрування, опису сторінок і дозволу.",
           "ru": "1.0.23: включить факсимиле U025 после оцифровки, проверки страниц и разрешения."
         },
-        "id": "M6"
+        "id": "M6",
+        "detail_en": "1.0.23: Add U025 facsimiles after digitization, page verification and permission (REV5, REV140, REV159)."
       },
       {
         "state": "conditional",
@@ -322,7 +344,8 @@
           "uk": "Отримати й зареєструвати зображення U052 та порахувати сторінки.",
           "ru": "1.1.x: получить и зарегистрировать изображения U052; количество уточнить по описи."
         },
-        "id": "M7"
+        "id": "M7",
+        "detail_en": "1.1.x: Acquire and catalogue U052 images. Confirm the page count during inventory (REV5, REV228)."
       }
     ],
     "color": "#ECA7FF",
@@ -345,7 +368,8 @@
           "uk": "На трьох сторінках розмічено 156 слів, 154 посилання Стронга й вісім областей віршів.",
           "ru": "К 1.0.8: на трёх страницах U001/U002/U004 есть 156 размеченных слов, 154 номера Стронга и 8 стиховых областей."
         },
-        "id": "N1"
+        "id": "N1",
+        "detail_en": "By 1.0.8: Three U001/U002/U004 pages contain 156 annotated words, 154 Strong's links and 8 verse areas."
       },
       {
         "state": "plan",
@@ -358,7 +382,8 @@
           "uk": "Завершити P018 і P098 та перевірити три початі сторінки.",
           "ru": "1.0.9: полностью проверить P018/P098 и дополнить три начатые страницы в пилоте W00."
         },
-        "id": "N2"
+        "id": "N2",
+        "detail_en": "1.0.9: Complete P018/P098 verification and add to three partly annotated pages in pilot W00 (REV218)."
       },
       {
         "state": "plan",
@@ -371,7 +396,8 @@
           "uk": "Розмітити всі 18 зображень восьми малих фрагментів.",
           "ru": "1.0.10: разметить 18 изображений восьми малых фрагментов целиком."
         },
-        "id": "N3"
+        "id": "N3",
+        "detail_en": "1.0.10: Annotate all 18 images of eight small fragments (REV219)."
       },
       {
         "state": "plan",
@@ -384,7 +410,8 @@
           "uk": "Завершити розмітку P115/U001 і P047/U002.",
           "ru": "1.0.11-1.0.12: закончить P115/U001 и P047/U002, включая уже начатые страницы."
         },
-        "id": "N4"
+        "id": "N4",
+        "detail_en": "1.0.11-1.0.12: Complete P115/U001 and P047/U002, including the partly annotated pages (REV220, REV221)."
       },
       {
         "state": "plan",
@@ -397,7 +424,8 @@
           "uk": "Завершити розмітку 16 зображень U004.",
           "ru": "1.0.13: закончить 16 изображений U004."
         },
-        "id": "N5"
+        "id": "N5",
+        "detail_en": "1.0.13: Finish annotating all 16 U004 images (REV222)."
       },
       {
         "state": "plan",
@@ -410,7 +438,8 @@
           "uk": "Розмітити всі 93 зображення U051 трьома партіями.",
           "ru": "1.0.14-1.0.16: разметить все 93 изображения U051 тремя партиями по 31."
         },
-        "id": "N6"
+        "id": "N6",
+        "detail_en": "1.0.14-1.0.16: Annotate all 93 U051 images in three groups of 31 (REV223-REV225)."
       },
       {
         "state": "conditional",
@@ -423,7 +452,8 @@
           "uk": "Розмітити 39 сторінок U046 після отримання доступу й дозволу.",
           "ru": "2030 при доступе и правах: разметить 39 изображений U046 в окнах 1.0.17-1.0.18, с выпуском по готовности."
         },
-        "id": "N7"
+        "id": "N7",
+        "detail_en": "2030, subject to access and rights: Annotate 39 U046 images in the 1.0.17-1.0.18 windows and release them as they are verified (REV226)."
       },
       {
         "state": "conditional",
@@ -436,7 +466,8 @@
           "uk": "Розмітити U025 і U052 після реєстрації сторінок.",
           "ru": "После регистрации страниц: разметить U025 и U052; опись даст объём и срок."
         },
-        "id": "N8"
+        "id": "N8",
+        "detail_en": "Annotate U025 and U052 after their pages are catalogued. Use the inventory to estimate scope and timing (REV227, REV228)."
       }
     ],
     "color": "#82E1B4",
@@ -459,7 +490,8 @@
           "uk": "Перший інтерфейс англійською, українською та російською.",
           "ru": "1.0.0: интерфейс на английском, украинском и русском."
         },
-        "id": "L1"
+        "id": "L1",
+        "detail_en": "1.0.0: Released the interface in English, Ukrainian and Russian."
       },
       {
         "state": "past",
@@ -472,7 +504,8 @@
           "uk": "Додано іспанський інтерфейс.",
           "ru": "1.0.3: добавлен испанский интерфейс."
         },
-        "id": "L2"
+        "id": "L2",
+        "detail_en": "1.0.3: Added a Spanish interface."
       },
       {
         "state": "past",
@@ -485,7 +518,8 @@
           "uk": "Статті грецького словника Стронга чотирма мовами.",
           "ru": "1.0.4: статьи греческого словаря Стронга на четырёх языках."
         },
-        "id": "L3"
+        "id": "L3",
+        "detail_en": "1.0.4: Added Greek Strong's Dictionary entries in four languages."
       },
       {
         "state": "plan",
@@ -498,7 +532,8 @@
           "uk": "Вичитати перші повні розбори чотирма мовами.",
           "ru": "1.0.10-1.0.11: проверять en/es/uk/ru вместе с первыми полными разборами."
         },
-        "id": "L4"
+        "id": "L4",
+        "detail_en": "1.0.10-1.0.11: Review English, Spanish, Ukrainian and Russian alongside the first completed studies."
       },
       {
         "state": "conditional",
@@ -511,7 +546,8 @@
           "uk": "Вибрати наступну мову за попитом і наявністю дозволеного перекладу Біблії.",
           "ru": "1.1.x: выбрать следующий язык по спросу, готовности интерфейса и разрешённого перевода Библии."
         },
-        "id": "L5"
+        "id": "L5",
+        "detail_en": "1.1.x: Choose the next language based on demand, interface readiness and the availability of a Bible translation with permission (REV208)."
       },
       {
         "state": "conditional",
@@ -524,7 +560,8 @@
           "uk": "Після пілота додавати мови, які можемо підтримувати.",
           "ru": "Дальнейшие языковые волны: расширять географию после пилота, проверяя контент и возможность сопровождения каждой локали."
         },
-        "id": "L6"
+        "id": "L6",
+        "detail_en": "Expand to more regions after the pilot. Check content and the capacity to maintain each language."
       }
     ],
     "color": "#F7AB98",
@@ -547,7 +584,8 @@
           "uk": "Випущено англійський KJV і грецький LXX/TR.",
           "ru": "1.0.7: выпущены английский KJV и греческий LXX/TR."
         },
-        "id": "B1"
+        "id": "B1",
+        "detail_en": "1.0.7: Released English KJV and Greek LXX/TR."
       },
       {
         "state": "past",
@@ -560,7 +598,8 @@
           "uk": "Випущено українську Біблію OH1988 із примітками.",
           "ru": "1.0.8: выпущен украинский OH1988 со сносками; Strong ведётся отдельно."
         },
-        "id": "B2"
+        "id": "B2",
+        "detail_en": "1.0.8: Released Ukrainian OH1988 with footnotes. Strong's annotation follows separate research."
       },
       {
         "state": "plan",
@@ -573,7 +612,8 @@
           "uk": "Випустити перевірений російський біблійний текст.",
           "ru": "1.0.10: выпустить русский текстовый модуль после проверки конкретной редакции."
         },
-        "id": "B3"
+        "id": "B3",
+        "detail_en": "1.0.10: Release the Russian text module after verifying the edition (REV202)."
       },
       {
         "state": "plan",
@@ -586,7 +626,8 @@
           "uk": "Випустити перевірений іспанський біблійний текст.",
           "ru": "1.0.11: выпустить испанский текстовый модуль после проверки конкретной редакции."
         },
-        "id": "B4"
+        "id": "B4",
+        "detail_en": "1.0.11: Release the Spanish text module after verifying the edition (REV203)."
       },
       {
         "state": "conditional",
@@ -599,7 +640,8 @@
           "uk": "Вибрати ще один переклад і перевірити невеликий текстовий модуль.",
           "ru": "После русского и испанского модулей: выбрать один следующий перевод и подготовить ограниченный текстовый пилот."
         },
-        "id": "B5"
+        "id": "B5",
+        "detail_en": "After Russian and Spanish: Choose one further translation and prepare a limited text pilot (REV217)."
       },
       {
         "state": "plan",
@@ -612,7 +654,8 @@
           "uk": "Звірити TR, KJV і LXX із друкованими виданнями та додати примітки.",
           "ru": "1.0.20-1.0.22: сверить TR, KJV и LXX с печатными изданиями и добавить сноски."
         },
-        "id": "B6"
+        "id": "B6",
+        "detail_en": "1.0.20-1.0.22: Compare TR, KJV and LXX against printed editions and add footnotes (REV180, REV194, REV196)."
       },
       {
         "state": "conditional",
@@ -625,7 +668,8 @@
           "uk": "Публікувати перевірені посилання Стронга для OH1988, російського й іспанського модулів за готовністю.",
           "ru": "1.1.x: выпускать проверенные слои Strong для OH1988 и будущих русской и испанской Библий по мере завершения отдельных исследований."
         },
-        "id": "B7"
+        "id": "B7",
+        "detail_en": "1.1.x: Release reviewed Strong's annotation for OH1988 and the future Russian and Spanish Bibles as each research project is completed (REV229-REV231)."
       }
     ],
     "color": "#AAB6FF",
@@ -648,7 +692,8 @@
           "uk": "Опубліковано хвилинний приклад українського читання.",
           "ru": "1.0.8: открыт минутный пример украинского чтения на сайте; кампания идёт."
         },
-        "id": "O1"
+        "id": "O1",
+        "detail_en": "1.0.8: Published a one-minute Ukrainian reading example on the website and launched the campaign (REV235)."
       },
       {
         "state": "plan",
@@ -661,7 +706,8 @@
           "uk": "Оцінити повні 14 днів кампанії українського читання.",
           "ru": "1.0.9: разобрать результаты украинской кампании после полного 14-дневного окна."
         },
-        "id": "O2"
+        "id": "O2",
+        "detail_en": "1.0.9: Review the Ukrainian campaign after the full 14-day window (REV235)."
       },
       {
         "state": "plan",
@@ -674,7 +720,8 @@
           "uk": "Спростити надсилання відгуків від читачів.",
           "ru": "1.0.10: улучшить путь обратной связи для читателя."
         },
-        "id": "O3"
+        "id": "O3",
+        "detail_en": "1.0.10: Make it easier for readers to send feedback (REV216)."
       },
       {
         "state": "plan",
@@ -687,7 +734,8 @@
           "uk": "Порівняти соцмережі та вибрати до двох для пілота.",
           "ru": "1.0.12: сравнить соцсети и выбрать до двух каналов для пилота."
         },
-        "id": "O4"
+        "id": "O4",
+        "detail_en": "1.0.12: Compare social networks and choose up to two channels for a pilot (REV177)."
       },
       {
         "state": "conditional",
@@ -700,7 +748,8 @@
           "uk": "Перевірити повний пролог із малою групою перед зверненням до OneVoice27.",
           "ru": "После полного пролога: проверить его с небольшой группой; обращаться к OneVoice27 только после успешного пилота."
         },
-        "id": "O5"
+        "id": "O5",
+        "detail_en": "After the full prologue: Test it with a small group. Contact OneVoice27 after a successful pilot (REV214, REV304)."
       },
       {
         "state": "conditional",
@@ -713,7 +762,8 @@
           "uk": "Проводити мовні й регіональні кампанії за попитом і результатами.",
           "ru": "Дальний горизонт: проводить языковые и региональные кампании по фактическому интересу и результатам предыдущих запусков."
         },
-        "id": "O6"
+        "id": "O6",
+        "detail_en": "Longer term: Run language and regional campaigns based on reader interest and results from earlier campaigns."
       }
     ],
     "color": "#F59EB9",
@@ -736,7 +786,8 @@
           "uk": "Перший випуск для Android.",
           "ru": "1.0.0: первый выпуск на Android."
         },
-        "id": "P1"
+        "id": "P1",
+        "detail_en": "1.0.0: First release on Android."
       },
       {
         "state": "past",
@@ -749,7 +800,8 @@
           "uk": "Запущено вебверсію, Windows і Linux/Snap.",
           "ru": "1.0.1-1.0.3: запущены Web, Windows и Linux/Snap."
         },
-        "id": "P2"
+        "id": "P2",
+        "detail_en": "1.0.1-1.0.3: Launched web, Windows and Linux/Snap."
       },
       {
         "state": "past",
@@ -762,7 +814,8 @@
           "uk": "Перевірено доставку локальних збірок на сайт і в магазини.",
           "ru": "1.0.8: проверена доставка через сайт и магазины с локальной сборкой и приёмкой."
         },
-        "id": "P3"
+        "id": "P3",
+        "detail_en": "1.0.8: Verified delivery via the site and stores using local builds and acceptance testing."
       },
       {
         "state": "conditional",
@@ -775,7 +828,8 @@
           "uk": "Підготувати підпис Windows і застосувати його в локальних збірках.",
           "ru": "1.0.9: подготовить подпись Windows и её использование в локальной сборке."
         },
-        "id": "P4"
+        "id": "P4",
+        "detail_en": "1.0.9: Prepare Windows signing and use it in local builds (REV165, REV167)."
       },
       {
         "state": "conditional",
@@ -788,7 +842,8 @@
           "uk": "Підготувати збірки Apple і перевірити готовність Galaxy Store.",
           "ru": "С 1.0.10: подготовить версии iOS и macOS к проверке Apple; Galaxy Store зависит от готовности площадки."
         },
-        "id": "P5"
+        "id": "P5",
+        "detail_en": "From 1.0.10: Prepare iOS and macOS for Apple review. Galaxy Store depends on store readiness (REV123, REV154, REV160)."
       },
       {
         "state": "conditional",
@@ -801,7 +856,8 @@
           "uk": "Перевірити вимоги AppGallery, F-Droid і Flathub.",
           "ru": "1.0.11-1.0.12: проверить условия AppGallery, F-Droid и Flathub и публиковать после готовности."
         },
-        "id": "P6"
+        "id": "P6",
+        "detail_en": "1.0.11-1.0.12: Check AppGallery, F-Droid and Flathub requirements and publish when ready (REV146, REV141, REV147)."
       },
       {
         "state": "plan",
@@ -814,7 +870,8 @@
           "uk": "Підтримувати відтворювані збірки, локальну перевірку й контроль швидкодії.",
           "ru": "1.1.x: поддерживать воспроизводимые сборки, локальную приёмку и проверку производительности."
         },
-        "id": "P7"
+        "id": "P7",
+        "detail_en": "1.1.x: Maintain reproducible builds, local acceptance testing and performance checks (REV144, REV133)."
       }
     ],
     "color": "#75DFDF",

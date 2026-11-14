@@ -1,6 +1,6 @@
 # Revelation
 
-**[Project roadmap / Дорожная карта проекта](./ROADMAP.md)**
+**Project roadmap: [English](./ROADMAP.en.md) · [Русский](./ROADMAP.md)**
 
 Revelation is a Flutter app for studying the Book of Revelation.  
 Application entry point: `lib/main.dart`.

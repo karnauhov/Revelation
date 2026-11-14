@@ -36,6 +36,7 @@ def read_lanes():
                 or set(node["hint"]) != set(LOCALES)
                 or not all(node["hint"].values())
                 or not node["detail"]
+                or not node["detail_en"]
                 or node["x"] - last_x < 40
             ):
                 raise ValueError(f'Invalid milestone: {node["id"]}')
@@ -118,13 +119,17 @@ def draw(lanes, mobile):
     return "\n".join(result), positions
 
 
-def markdown(lanes):
-    result = [START, "", '<a name="milestones"></a>', "", "## Что означает каждый узел", ""]
+def markdown(lanes, language):
+    english = language == "en"
+    heading = "Milestone details" if english else "Что означает каждый узел"
+    title_key = "short" if english else "title"
+    detail_key = "detail_en" if english else "detail"
+    result = [START, "", '<a name="milestones"></a>', "", f"## {heading}", ""]
     for lane in lanes:
-        result.extend([f'### {lane["code"]} · {lane["title"]}', ""])
+        result.extend([f'### {lane["code"]} · {lane[title_key]}', ""])
         for node in lane["nodes"]:
             code = node["id"]
-            result.append(f'- <a name="{code.lower()}"></a> **{code}** · {node["detail"]}')
+            result.append(f'- <a name="{code.lower()}"></a> **{code}** · {node[detail_key]}')
         result.append("")
     return "\n".join([*result, END])
 
@@ -141,11 +146,18 @@ def main():
         node["id"]: {"wide": wide[node["id"]], "narrow": narrow[node["id"]], "text": node["hint"]}
         for lane in lanes for node in lane["nodes"]
     }
-    doc = ROOT / "ROADMAP.md"
-    content, replacements = re.subn(f"{re.escape(START)}.*?{re.escape(END)}", lambda _: markdown(lanes), doc.read_text(encoding="utf-8"), flags=re.S)
-    if replacements != 1:
-        raise ValueError("ROADMAP.md needs one milestone block")
-    output = {doc: content, ROOT / "docs" / "roadmap.svg": desktop}
+    output = {ROOT / "docs" / "roadmap.svg": desktop}
+    for language, filename in (("ru", "ROADMAP.md"), ("en", "ROADMAP.en.md")):
+        doc = ROOT / filename
+        content, replacements = re.subn(
+            f"{re.escape(START)}.*?{re.escape(END)}",
+            lambda _: markdown(lanes, language),
+            doc.read_text(encoding="utf-8"),
+            flags=re.S,
+        )
+        if replacements != 1:
+            raise ValueError(f"{filename} needs one milestone block")
+        output[doc] = content
     if args.site:
         target = args.site / "demo"
         if not all((target / f"{lang}.html").is_file() for lang in LOCALES):
