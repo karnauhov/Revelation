@@ -19,8 +19,30 @@ Future<void> writeCachedAllusionIndex(Uint8List bytes) async {
   try {
     final draft = File(p.join(temp.path, 'index'));
     await draft.writeAsBytes(bytes, flush: true);
-    await draft.rename(file.path);
+    await _replaceIndex(draft, file.path);
   } finally {
     await temp.delete(recursive: true);
+  }
+}
+
+Future<void> _replaceIndex(File draft, String path) async {
+  for (var delayMs = 20; ; delayMs *= 2) {
+    try {
+      await draft.rename(path);
+      return;
+    } on FileSystemException catch (error) {
+      // An open handle or concurrent rename can temporarily block replacement.
+      const windowsAccessDenied = 5;
+      const windowsSharingViolation = 32;
+      if (!Platform.isWindows ||
+          delayMs > 320 ||
+          !const {
+            windowsAccessDenied,
+            windowsSharingViolation,
+          }.contains(error.osError?.errorCode)) {
+        rethrow;
+      }
+      await Future<void>.delayed(Duration(milliseconds: delayMs));
+    }
   }
 }
