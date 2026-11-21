@@ -1,9 +1,10 @@
 #define MyAppName "Revelation"
-#define MyAppCompany "Oleh Karnaukhov"
+#define MyAppCompany "AI11"
 #define MyAppFileName "revelation.exe"
 #define MyAppVersion "1.0.9"
 #define MyAppBuild "178"
 #define CurrentYear GetDateTimeString('yyyy', '', '')
+#define MyAppCopyright "Copyright © 2024-" + CurrentYear + " " + MyAppCompany + ". All rights reserved."
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -13,9 +14,9 @@ Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 [Setup]
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-AppPublisher="Oleh Karnaukhov"
-AppPublisherURL="https://g.dev/karnaukhov"
-AppCopyright="Copyright © {#CurrentYear} {#MyAppCompany}. All rights reserved"
+AppPublisher={#MyAppCompany}
+AppPublisherURL=https://ai11.link
+AppCopyright={#MyAppCopyright}
 DefaultDirName={commonpf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 OutputDir=build\windows
@@ -24,7 +25,8 @@ Compression=lzma
 SolidCompression=yes
 SetupIconFile=_art\app_icon.ico
 UninstallDisplayIcon={app}\app_icon.ico
-VersionInfoCompany="Oleh Karnaukhov"
+VersionInfoCompany={#MyAppCompany}
+VersionInfoCopyright={#MyAppCopyright}
 VersionInfoDescription="Revelation Study app."
 VersionInfoProductName="{#MyAppName}"
 VersionInfoProductVersion="{#MyAppVersion}.{#MyAppBuild}"

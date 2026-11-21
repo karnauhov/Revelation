@@ -64,9 +64,12 @@ void main() {
       reason: 'PDF metadata should preserve Cyrillic titles.',
     );
     expect(
-      _containsPdfString(bytes, revelationMarkdownPdfAuthor),
-      isTrue,
-      reason: 'PDF metadata should include the configured author.',
+      latin1.decode(bytes, allowInvalid: true),
+      matches(
+        r'/Author\s*\(AI11 \\\('
+        r'https://ai11\.link\\\)\)',
+      ),
+      reason: 'PDF metadata should include the author and their website.',
     );
     expect(
       _containsPdfString(bytes, appName),

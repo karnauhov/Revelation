@@ -35,7 +35,7 @@ void main() {
     final l10n = AppLocalizations.of(tester.element(find.text('send')))!;
     expect(clipboardText, 'DIAGNOSTICS');
     expect(launchedUrl, isNotNull);
-    expect(launchedUrl, contains('mailto:'));
+    expect(launchedUrl, startsWith('mailto:ok.ai11.link@gmail.com?'));
     expect(launchedUrl, contains('Revelation%20Bug%20Report'));
     expect(Uri.decodeFull(launchedUrl!), contains(l10n.bug_report_wish));
     expect(find.byType(SnackBar), findsNothing);

@@ -274,8 +274,9 @@ void main() {
     final context = tester.element(find.byType(AboutScreen));
     final l10n = AppLocalizations.of(context)!;
 
-    await tester.ensureVisible(find.text(AppConstants.supportEmail));
-    await tester.tap(find.text(AppConstants.supportEmail));
+    final email = find.text('ok.ai11.link@gmail.com');
+    await tester.ensureVisible(email);
+    await tester.tap(email);
     await tester.pump();
 
     await tester.tap(find.text(l10n.website));
@@ -291,7 +292,7 @@ void main() {
     await tester.pump();
 
     expect(harness.launchedUrls.length, 5);
-    expect(harness.launchedUrls[0], startsWith('mailto:'));
+    expect(harness.launchedUrls[0], 'mailto:ok.ai11.link@gmail.com');
     expect(harness.launchedUrls[1], AppConstants.websiteUrl);
     expect(harness.launchedUrls[2], AppConstants.projectUrl);
     expect(harness.launchedUrls[3], AppConstants.latestReleaseUrl);

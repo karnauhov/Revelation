@@ -36,7 +36,7 @@ void registerAboutDownloadNavigationScenarios({
     );
   });
   testWidgets(
-    'About smoke: renders localized shell and version metadata',
+    'About smoke: renders version metadata and opens AI11 links',
     (tester) =>
         exerciseAboutShell(tester, aboutCubitBuilder: aboutCubitBuilder),
     variant: variant,
@@ -63,6 +63,7 @@ Future<void> exerciseAboutShell(
 }) async {
   final settings = await _settings();
   final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+  final launchedLinks = <String>[];
   await _withIndependentAnimation(tester, () async {
     await tester.pumpWidget(
       BlocProvider<SettingsCubit>.value(
@@ -71,7 +72,15 @@ Future<void> exerciseAboutShell(
           locale: Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: AboutScreen(aboutCubitBuilder: aboutCubitBuilder),
+          home: AboutScreen(
+            aboutCubitBuilder: aboutCubitBuilder,
+            dependencies: AboutScreenDependencies(
+              launchLink: (url) async {
+                launchedLinks.add(url);
+                return true;
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -112,6 +121,23 @@ Future<void> exerciseAboutShell(
       kIsWeb ? findsNothing : findsOneWidget,
     );
     expect(clearCache, findsOneWidget);
+
+    expect(
+      find.textContaining('© 2024-${DateTime.now().year}'),
+      findsOneWidget,
+    );
+    final author = find.text('AI11');
+    await tester.ensureVisible(author);
+    await tester.tap(author);
+
+    final supportEmail = find.text('ok.ai11.link@gmail.com');
+    await tester.ensureVisible(supportEmail);
+    await tester.tap(supportEmail);
+
+    expect(launchedLinks, [
+      'https://ai11.link',
+      'mailto:ok.ai11.link@gmail.com',
+    ]);
   });
 }
 

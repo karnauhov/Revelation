@@ -8,6 +8,10 @@ All notable changes to this application will be documented here.
 
 - Search the Ancient Greek Bible (LXX + TR) for possible allusions. Preview the words and weights used for your passage, compare ranked matches, and open Strong's entries from the Greek text or your preferred translation.
 
+### Changed
+
+- Open the [AI11 website](https://ai11.link) or email support at [ok.ai11.link@gmail.com](mailto:ok.ai11.link@gmail.com) from the About screen.
+
 ### Fixed
 
 - Fixed a crash when closing Revelation on Windows.

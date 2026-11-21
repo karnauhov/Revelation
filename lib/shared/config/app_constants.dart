@@ -1,6 +1,8 @@
 class AppConstants {
-  static const String author = "Karnaukhov Oleh";
-  static const String supportEmail = "karnauhov.oleg@gmail.com";
+  static const String author = "AI11";
+  static const String authorWebsiteUrl = "https://ai11.link";
+  static const int copyrightStartYear = 2024;
+  static const String supportEmail = "ok.ai11.link@gmail.com";
   static const String projectUrl = "https://github.com/karnauhov/Revelation";
   static const String joinPartUrl = "/demo/@loc.html#join";
   static const String latestReleaseUrl =

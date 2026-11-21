@@ -9,6 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/core/platform/file_downloader.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_config.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_block_syntax.dart';
 import 'package:revelation/shared/ui/markdown/revelation_markdown_image_data.dart';
@@ -21,7 +22,8 @@ const String _revelationMarkdownPdfCopticFontAsset =
     'assets/fonts/NotoSansCoptic/NotoSansCoptic-Regular.ttf';
 const String _revelationMarkdownPdfSymbolsFontAsset =
     'assets/fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf';
-const String revelationMarkdownPdfAuthor = 'Karnauhov Oleh';
+const String revelationMarkdownPdfAuthor =
+    '${AppConstants.author} (${AppConstants.authorWebsiteUrl})';
 const String revelationMarkdownPdfUnknownBlockLink =
     'https://www.revelation.website';
 const int _combiningOverlineCodePoint = 0x0305;

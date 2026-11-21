@@ -212,15 +212,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   if (!isWeb())
                     Divider(height: 1, color: colorScheme.outlineVariant),
                   // Copyright
-                  Center(
-                    child: Text(
-                      "© ${DateTime.now().year} ${AppConstants.author}. ${AppLocalizations.of(context)!.all_rights_reserved}.",
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.outline,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                  Center(child: _buildCopyright(context)),
                   const SizedBox(height: 4),
                 ],
               ),
@@ -494,6 +486,41 @@ class _AboutScreenState extends State<AboutScreen> {
       default:
         return l10n.language_name_en;
     }
+  }
+
+  Widget _buildCopyright(BuildContext context) {
+    final theme = Theme.of(context);
+    final style = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.outline,
+    );
+    final rights = AppLocalizations.of(context)!.all_rights_reserved;
+    final years = '${AppConstants.copyrightStartYear}-${DateTime.now().year}';
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: '© $years '),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.baseline,
+            baseline: TextBaseline.alphabetic,
+            child: Semantics(
+              link: true,
+              child: InkWell(
+                onTap: () => widget.dependencies.launchLink(
+                  AppConstants.authorWebsiteUrl,
+                ),
+                child: Text(
+                  AppConstants.author,
+                  style: style?.copyWith(decoration: TextDecoration.underline),
+                ),
+              ),
+            ),
+          ),
+          TextSpan(text: '. $rights.'),
+        ],
+      ),
+      style: style,
+      textAlign: TextAlign.center,
+    );
   }
 
   Widget _buildContactsLinks(BuildContext context) {
