@@ -1,8 +1,10 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.6.7`
+Doc-Version: `2.6.8`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
+
+When a manuscript leaf opens, the viewer waits for its decoded image and panel dimensions. The first usable frame shows the saved scale and offsets for that leaf.
 
 ## Manuscript image tools
 

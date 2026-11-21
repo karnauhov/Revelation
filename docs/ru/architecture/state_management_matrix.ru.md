@@ -1,6 +1,6 @@
 # Матрица управления состоянием (RU)
 
-Doc-Version: `2.6.5`
+Doc-Version: `2.6.6`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
@@ -75,7 +75,7 @@ BibleReaderCubit остаётся единственным источником 
 | `primary_source/detail/page-settings` | `PrimarySourcePageSettingsCubit` | Фильтры изображения и overlay-переключатели |
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | Выбор стиха/слова, контент описания, элементы Strong picker |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | Pan, zoom, область выделения, состояние замены цвета |
-| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Безопасная координация смены страниц, загрузки изображений и save/restore flow |
+| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Применяет масштаб и координаты выбранного листа после декодирования и расчёта области просмотра. Сохраняет последнее перемещение перед сменой листа или выходом. |
 | `strongs_dictionary/content` | `StrongsDictionaryCubit` | Выбранный номер Стронга, кэшированный picker/search-список, полнотекстовый запрос, markdown-контент статьи и навигация next/previous |
 | `strongs_dictionary/picker` | `StrongNumberPickerCubit` | Нормализация ввода номера Стронга, выбор ближайшей доступной статьи и состояние подтверждения picker-а |
 | `strongs_dictionary/verse-preview` | `StrongUsagePreviewCubit` | Текст/ошибка предпросмотра одной ссылки, копирование и запрос показа после обновления UI |

@@ -38,6 +38,17 @@ class PrimarySourceImageCubit extends Cubit<PrimarySourceImageState> {
   final LatestRequestGuard _imageLoadRequestGuard = LatestRequestGuard();
   final LatestRequestGuard _localPagesRequestGuard = LatestRequestGuard();
 
+  void clearSelection({bool isLoading = false}) {
+    _imageLoadRequestGuard.cancelActive();
+    emit(
+      state.copyWith(
+        imageDataSet: true,
+        isLoading: isLoading,
+        refreshError: false,
+      ),
+    );
+  }
+
   Future<void> loadImage({
     required String page,
     required int sourceHashCode,

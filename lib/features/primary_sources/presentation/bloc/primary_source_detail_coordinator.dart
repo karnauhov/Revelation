@@ -36,6 +36,7 @@ class PrimarySourceDetailCoordinator {
 
   ImagePreviewController get imageController =>
       _orchestrationCubit.imageController;
+  Object? get activeImageRequest => _orchestrationCubit.activeImageRequest;
   ValueNotifier<ZoomStatus> get zoomStatusNotifier =>
       _orchestrationCubit.zoomStatusNotifier;
 
@@ -219,6 +220,8 @@ class PrimarySourceDetailCoordinator {
   void savePageSettings() {
     _orchestrationCubit.savePageSettings();
   }
+
+  void flushPendingSave() => _orchestrationCubit.flushPendingSave();
 
   void removePageSettings() {
     _orchestrationCubit.removePageSettings();

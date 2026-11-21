@@ -1,8 +1,10 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.6.7`
+Doc-Version: `2.6.8`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
+
+ImagePreview owns the decoded leaf, paints it beneath its annotations and reports when the geometry is ready. The orchestration cubit restores the saved transform once and flushes pending viewport changes to the outgoing leaf before navigation.
 
 ## Manuscript image tools
 

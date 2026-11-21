@@ -64,6 +64,17 @@ void main() {
     expect(_matrixScale(controller), closeTo(1.6, 0.00001));
   });
 
+  test('remounting a small leaf fits the current panel before restoring', () {
+    final controller = ImagePreviewController(2);
+    addTearDown(controller.dispose);
+    controller.setImageSize(const Size(100, 100), 50, 50);
+    controller.setImageSize(const Size(100, 100), 400, 300);
+    controller.setTransformParams(0, 0, 1);
+    expect(controller.minScale, 4);
+    expect(controller.maxScale, 4);
+    expect(_matrixScale(controller), 4);
+  });
+
   test('zoomOut returns early when image size is unknown', () {
     final controller = ImagePreviewController(4);
     controller.setTransformParams(5, 6, 2);

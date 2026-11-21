@@ -1,5 +1,7 @@
 @Tags(['widget'])
+import 'dart:async';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,100 +12,108 @@ import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page_rect.dart';
 import 'package:revelation/shared/models/page_word.dart';
 import 'package:revelation/shared/models/verse.dart';
+import '../../../../test_harness/widget_test_harness.dart';
 
 void main() {
-  testWidgets(
-    'ImagePreview clears stale geometry before decoding a new page image',
-    (tester) async {
-      final controller = ImagePreviewController(20.0);
-      addTearDown(controller.dispose);
-
-      controller.setImageSize(const Size(120, 80), 800, 600);
-      final imageData = _loadPreviewBytes();
-
-      await tester.pumpWidget(
-        _buildHost(
-          child: _buildPreview(
-            controller: controller,
-            imageName: 'page_1',
-            imageData: imageData,
-            onRestorePositionAndScale: () {},
-          ),
-        ),
-      );
-      await tester.pump();
-      expect(controller.imageSize, const Size(120, 80));
-
-      await tester.pumpWidget(
-        _buildHost(
-          child: _buildPreview(
-            controller: controller,
-            imageName: 'page_2',
-            imageData: imageData,
-            onRestorePositionAndScale: () {},
-          ),
-        ),
-      );
-      await tester.pump();
-
-      expect(controller.imageSize, isNull);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    },
-  );
-
-  testWidgets('ImagePreview requests restore once per image lifecycle change', (
+  testWidgets('restore waits for current decoded image and a usable layout', (
     tester,
   ) async {
-    final controller = ImagePreviewController(20.0);
+    final controller = ImagePreviewController(20);
     addTearDown(controller.dispose);
-    final imageData = _loadPreviewBytes();
-    var restoreCalls = 0;
-
-    await tester.pumpWidget(
-      _buildHost(
-        child: _buildPreview(
-          controller: controller,
-          imageName: 'page_1',
-          imageData: imageData,
-          onRestorePositionAndScale: () {
-            restoreCalls++;
-          },
+    final bytes = _loadPreviewBytes();
+    final calls = <String>[];
+    Future<void> show(
+      String page,
+      Completer<ui.Image> decode, {
+      double width = 800,
+    }) async {
+      await tester.pumpWidget(
+        _buildHost(
+          child: Align(
+            child: SizedBox(
+              width: width,
+              height: 600,
+              child: _buildPreview(
+                controller: controller,
+                imageName: page,
+                imageData: bytes,
+                decodeImage: (_) => decode.future,
+                onRestorePositionAndScale: () {
+                  calls.add(page);
+                  controller.setTransformParams(-12, -18, 2);
+                },
+              ),
+            ),
+          ),
         ),
-      ),
-    );
-    await tester.pump();
-    expect(restoreCalls, 1);
+      );
+    }
 
-    await tester.pumpWidget(
-      _buildHost(
-        child: _buildPreview(
-          controller: controller,
-          imageName: 'page_1',
-          imageData: imageData,
-          onRestorePositionAndScale: () {
-            restoreCalls++;
-          },
-        ),
-      ),
-    );
+    final first = Completer<ui.Image>();
+    final second = Completer<ui.Image>();
+    await show('A', first);
+    await tester.pump(const Duration(seconds: 2));
+    expect(calls, isEmpty);
+    expect(find.byType(InteractiveViewer), findsNothing);
+    await show('B', second, width: 0);
+    final stale = _decoded(640, 480);
+    first.complete(stale);
+    final ready = _decoded(1200, 800);
+    second.complete(ready);
     await tester.pump();
-    expect(restoreCalls, 1);
-
-    await tester.pumpWidget(
-      _buildHost(
-        child: _buildPreview(
-          controller: controller,
-          imageName: 'page_2',
-          imageData: imageData,
-          onRestorePositionAndScale: () {
-            restoreCalls++;
-          },
-        ),
-      ),
-    );
+    expect(calls, isEmpty);
+    expect(controller.imageSize, isNull);
+    await show('B', second);
     await tester.pump();
-    expect(restoreCalls, 2);
+    expect(calls, ['B']);
+    expect(controller.imageSize, const Size(1200, 800));
+    expect(controller.transformationController.value.storage[12], -12);
+    expect(find.byType(InteractiveViewer), findsOneWidget);
+    expect(tester.widget<RawImage>(find.byType(RawImage)).image, same(ready));
+    await show('B', second);
+    await tester.pump(const Duration(seconds: 2));
+    expect(calls, ['B']);
+    final third = Completer<ui.Image>();
+    await show('C', third);
+    expect(find.byType(InteractiveViewer), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+    final late = _decoded(400, 400);
+    third.complete(late);
+    await tester.pump();
+    expect(calls, ['B']);
+    expect(stale.debugDisposed, isTrue);
+    expect(ready.debugDisposed, isTrue);
+    expect(late.debugDisposed, isTrue);
+    expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'failed decode leaves the viewport and its saved position untouched',
+    (tester) async {
+      final controller = ImagePreviewController(2);
+      addTearDown(controller.dispose);
+      final decode = Completer<ui.Image>();
+      var restored = false;
+      await tester.pumpWidget(
+        buildLocalizedTestApp(
+          child: _buildPreview(
+            controller: controller,
+            imageName: 'missing',
+            imageData: _loadPreviewBytes(),
+            decodeImage: (_) => decode.future,
+            onRestorePositionAndScale: () => restored = true,
+          ),
+        ),
+      );
+      decode.completeError(StateError('invalid image'));
+      await tester.pump();
+      expect(restored, isFalse);
+      expect(controller.imageSize, isNull);
+      expect(find.byType(InteractiveViewer), findsNothing);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('select area mode reports chosen region on drag end', (
     tester,
@@ -232,7 +242,9 @@ void main() {
     },
   );
 
-  testWidgets('tap on word rect invokes word callback', (tester) async {
+  testWidgets('a word under the restored zoom and offset receives the tap', (
+    tester,
+  ) async {
     final controller = ImagePreviewController(20.0);
     addTearDown(controller.dispose);
     controller.setImageSize(const Size(800, 600), 800, 600);
@@ -252,18 +264,15 @@ void main() {
           onWordTap: (index) {
             tappedWord = index;
           },
-          onRestorePositionAndScale: () {},
+          onRestorePositionAndScale: () =>
+              controller.setTransformParams(-50, -30, 2),
         ),
       ),
     );
     await tester.pumpAndSettle();
 
-    final tapDetector = tester
-        .widgetList<GestureDetector>(find.byType(GestureDetector))
-        .firstWhere((widget) => widget.onTapDown != null);
-    tapDetector.onTapDown!(
-      TapDownDetails(globalPosition: const Offset(90, 90)),
-    );
+    // (135, 90) in manuscript pixels after the saved scale and translation.
+    await tester.tapAt(const Offset(220, 150));
     await tester.pump();
 
     expect(tappedWord, 0);
@@ -303,7 +312,7 @@ void main() {
 
       expect(find.byType(ColorFiltered), findsWidgets);
       expect(find.byType(CustomPaint), findsWidgets);
-      expect(find.byType(Image), findsWidgets);
+      expect(find.byType(RawImage), findsWidgets);
     },
   );
 
@@ -371,6 +380,15 @@ void main() {
 
     expect(find.byType(CustomPaint), findsWidgets);
   });
+}
+
+ui.Image _decoded(int width, int height) {
+  final recorder = ui.PictureRecorder();
+  ui.Canvas(recorder).drawColor(const Color(0xffdddddd), BlendMode.src);
+  final picture = recorder.endRecording();
+  final image = picture.toImageSync(width, height);
+  picture.dispose();
+  return image;
 }
 
 Uint8List _loadPreviewBytes() {
@@ -457,6 +475,7 @@ Widget _buildPreview({
   required String imageName,
   required Uint8List imageData,
   required VoidCallback onRestorePositionAndScale,
+  Future<ui.Image> Function(Uint8List)? decodeImage,
   bool pipetteMode = false,
   bool selectAreaMode = false,
   bool isNegative = false,
@@ -480,6 +499,12 @@ Widget _buildPreview({
     imageData: imageData,
     imageName: imageName,
     controller: controller,
+    decodeImage:
+        decodeImage ??
+        (_) async => _decoded(
+          controller.imageSize!.width.toInt(),
+          controller.imageSize!.height.toInt(),
+        ),
     pipetteMode: pipetteMode,
     selectAreaMode: selectAreaMode,
     isNegative: isNegative,

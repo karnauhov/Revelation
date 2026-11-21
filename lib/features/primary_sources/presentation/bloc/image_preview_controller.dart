@@ -5,11 +5,12 @@ class ImagePreviewController {
   final TransformationController _transformationController =
       TransformationController();
   double minScale = 1.0;
-  double maxScale = 10.0;
+  final double _maxScale;
+  double get maxScale => max(minScale, _maxScale);
   Size? imageSize;
   bool _isDisposed = false;
 
-  ImagePreviewController(this.maxScale);
+  ImagePreviewController(this._maxScale);
 
   TransformationController get transformationController =>
       _transformationController;
@@ -18,17 +19,18 @@ class ImagePreviewController {
     Size size,
     double availableWidth,
     double availableHeight, {
-    recalc = false,
+    bool recalc = false,
   }) {
     if (_isDisposed) {
       return;
     }
-    if (imageSize == null || imageSize != size || recalc) {
+    final fitScale = max(
+      availableWidth / size.width,
+      availableHeight / size.height,
+    );
+    if (imageSize != size || minScale != fitScale || recalc) {
       imageSize = size;
-      minScale = availableWidth / size.width;
-      if (minScale * size.height < availableHeight) {
-        minScale = availableHeight / size.height;
-      }
+      minScale = fitScale;
       _transformationController.value = Matrix4.identity()
         ..scaleByDouble(minScale, minScale, minScale, 1.0);
     }

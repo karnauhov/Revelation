@@ -1,6 +1,6 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.6.5`
+Doc-Version: `2.6.6`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
@@ -75,7 +75,7 @@ Show which cubit owns each runtime state slice.
 | `primary_source/detail/page-settings` | `PrimarySourcePageSettingsCubit` | Image filters and overlay toggles |
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | Verse/word selection, description content, Strong picker entries |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | Pan, zoom, selection area, color replacement state |
-| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Safe coordination of page changes, image loading, and save/restore flows |
+| `primary_source/detail/orchestration` | `PrimarySourceDetailOrchestrationCubit` | Restores the selected leaf after decoding and viewport layout. Flushes the last pan or zoom before switching leaves or leaving the viewer. |
 | `strongs_dictionary/content` | `StrongsDictionaryCubit` | Selected Strong number, cached picker/search list, full-text query, dictionary markdown content, and next/previous navigation |
 | `strongs_dictionary/picker` | `StrongNumberPickerCubit` | Strong picker text input normalization, nearest allowed entry selection, and picker confirmation state |
 | `strongs_dictionary/verse-preview` | `StrongUsagePreviewCubit` | Preview text/failure for one link, copying, and presentation request after the UI updates |

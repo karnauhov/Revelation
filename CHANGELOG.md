@@ -14,10 +14,12 @@ All notable changes to this application will be documented here.
 
 ### Fixed
 
+- Returning to a manuscript leaf restores its saved zoom and position as soon as the image is ready.
+
 - Fixed a crash when closing Revelation on Windows.
 - Open a primary source from its image, its title, or the first link in its expanded card. Clickable images show a hand pointer.
 
-## [1.0.8](https://github.com/karnauhov/Revelation/releases/tag/v1.0.8%2B178) - 14.11.26
+## [1.0.8] - 14.11.26
 
 ### Added
 
@@ -38,7 +40,7 @@ All notable changes to this application will be documented here.
 - Show the local folder path when the app cannot open it.
 - Retry a failed first Bible module download directly from the reader after the connection recovers.
 
-## [1.0.7](https://github.com/karnauhov/Revelation/releases/tag/v1.0.7%2B172) - 18.07.26
+## [1.0.7] - 18.07.26
 
 ### Added
 
@@ -57,7 +59,7 @@ All notable changes to this application will be documented here.
 - Performance of dialog for compare words
 - Improved web database startup during published updates
 
-## [1.0.6](https://github.com/karnauhov/Revelation/releases/tag/v1.0.6%2B156) - 02.05.26
+## [1.0.6] - 02.05.26
 
 ### Added
 
@@ -75,7 +77,7 @@ All notable changes to this application will be documented here.
 
 - Fixed UI delay on Windows caused by audio playback.
 
-## [1.0.5](https://github.com/karnauhov/Revelation/releases/tag/v1.0.5%2B146) - 28.03.26
+## [1.0.5] - 28.03.26
 
 ### Added
 
@@ -89,7 +91,7 @@ All notable changes to this application will be documented here.
 - Content updates are now independent from the app. You no longer need to update the app to get new or improved content.
 - Completed a deep architecture refactor: migration to canonical feature-first structure (`app/core/infra/shared/features`), full state-management cutover to `BLoC/Cubit`, and governance hardening
 
-## [1.0.4](https://github.com/karnauhov/Revelation/releases/tag/v1.0.4%2B134) - 22.02.26
+## [1.0.4] - 22.02.26
 
 ### Added
 
@@ -103,7 +105,7 @@ All notable changes to this application will be documented here.
 
 - About screen (Recommended, Bug report);
 
-## [1.0.3](https://github.com/karnauhov/Revelation/releases/tag/v1.0.3%2B113) - 04.07.25
+## [1.0.3] - 04.07.25
 
 ### Added
 
@@ -118,7 +120,7 @@ All notable changes to this application will be documented here.
 - The application design has been completely revamped: main icon, color scheme, font "Arimo", UI icons
 - About screen (Resources attributes, support us);
 
-## [1.0.2](https://github.com/karnauhov/Revelation/releases/tag/v1.0.2%2B80) - 31.05.25
+## [1.0.2] - 31.05.25
 
 ### Added
 
@@ -131,7 +133,7 @@ All notable changes to this application will be documented here.
 - Improved Download screen;
 - Topic screen (description of principles and stages);
 
-## [1.0.1](https://github.com/karnauhov/Revelation/releases/tag/v1.0.1%2B69) - 02.05.25
+## [1.0.1] - 02.05.25
 
 ### Added
 
@@ -155,7 +157,7 @@ All notable changes to this application will be documented here.
 - Opening custom dialog;
 - Mobile browser limits (MAX_TEXTURE_SIZE);
 
-## [1.0.0](https://github.com/karnauhov/Revelation/releases/tag/v1.0.0%2B27) - 29.03.25
+## [1.0.0] - 29.03.25
 
 ### Added
 

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_description_cubit.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_detail_orchestration_state.dart';
@@ -62,9 +61,9 @@ class PrimarySourceDetailOrchestrationCubit
     const ZoomStatus(canZoomIn: false, canZoomOut: false, canReset: false),
   );
 
-  final LatestRequestGuard _imageLoadRequestGuard = LatestRequestGuard();
+  Object? _activeImageRequest;
+  Object? get activeImageRequest => _activeImageRequest;
   StreamSubscription<PrimarySourceViewportState>? _viewportStateSubscription;
-  Timer? _restoreDebounceTimer;
   Timer? _saveDebounceTimer;
   bool _isDisposed = false;
 
@@ -80,10 +79,16 @@ class PrimarySourceDetailOrchestrationCubit
   double get savedScale => _viewportCubit.state.savedScale;
 
   Future<void> loadImage(String page, {bool isReload = false}) async {
-    final requestToken = _imageLoadRequestGuard.start();
+    final requestToken = _activeImageRequest = Object();
+    flushPendingSave();
+    if (!isReload ||
+        _sessionCubit.state.imageName != '${_source.hashCode}_$page') {
+      _imageCubit.clearSelection(isLoading: true);
+    }
+    _sessionCubit.setImageName('');
+    _viewportCubit.markImageLoadingStarted();
+    imageController.resetImageSize();
     try {
-      _viewportCubit.markImageLoadingStarted();
-
       final pageSettings = await _pageSettingsCubit.loadSettingsForPage(
         source: _source,
         selectedPage: selectedPage,
@@ -104,6 +109,7 @@ class PrimarySourceDetailOrchestrationCubit
     } catch (error, stackTrace) {
       if (_canApplyImageRequest(requestToken)) {
         log.error('Image loading error: $error', stackTrace);
+        _imageCubit.clearSelection();
       }
     }
     if (!_canApplyImageRequest(requestToken)) {
@@ -118,6 +124,8 @@ class PrimarySourceDetailOrchestrationCubit
   }
 
   Future<void> changeSelectedPage(model.Page? newPage) async {
+    flushPendingSave();
+    _activeImageRequest = null;
     _viewportCubit.markImageLoadingStarted();
     _sessionCubit.setSelectedPage(newPage);
     _viewportCubit.resetColorReplacement();
@@ -125,6 +133,8 @@ class PrimarySourceDetailOrchestrationCubit
     if (newPage != null) {
       await loadImage(newPage.image);
     } else {
+      _imageCubit.clearSelection();
+      _sessionCubit.setImageName('');
       _viewportCubit.resetViewportWithNoPage();
       _pageSettingsCubit.resetToDefaults();
     }
@@ -172,6 +182,7 @@ class PrimarySourceDetailOrchestrationCubit
     );
     _viewportCubit.resetViewportAndRenderControls();
     imageController.backToMinScale();
+    _saveDebounceTimer?.cancel();
   }
 
   void startSelectAreaMode() {
@@ -279,6 +290,7 @@ class PrimarySourceDetailOrchestrationCubit
   }
 
   void savePageSettings() {
+    _saveDebounceTimer?.cancel();
     _pageSettingsCubit.saveSettingsForPage(
       source: _source,
       selectedPage: selectedPage,
@@ -289,20 +301,24 @@ class PrimarySourceDetailOrchestrationCubit
     );
   }
 
-  void restorePositionAndScale() {
-    if (scaleAndPositionRestored) {
-      return;
+  void flushPendingSave() {
+    if (_saveDebounceTimer?.isActive ?? false) {
+      savePageSettings();
     }
-
-    _restoreDebounceTimer?.cancel();
-    _restoreDebounceTimer = Timer(const Duration(milliseconds: 1000), () {
-      imageController.setTransformParams(savedX, savedY, savedScale);
-      _viewportCubit.setScaleAndPositionRestored(true);
-    });
   }
 
-  bool _canApplyImageRequest(RequestToken token) {
-    return !_isDisposed && _imageLoadRequestGuard.isActive(token);
+  void restorePositionAndScale() {
+    if (_isDisposed ||
+        scaleAndPositionRestored ||
+        imageController.imageSize == null) {
+      return;
+    }
+    imageController.setTransformParams(savedX, savedY, savedScale);
+    _viewportCubit.setScaleAndPositionRestored(true);
+  }
+
+  bool _canApplyImageRequest(Object token) {
+    return !_isDisposed && identical(_activeImageRequest, token);
   }
 
   void _updateTransformStatus() {
@@ -339,10 +355,10 @@ class PrimarySourceDetailOrchestrationCubit
 
   @override
   Future<void> close() async {
+    flushPendingSave();
     _isDisposed = true;
-    _imageLoadRequestGuard.cancelActive();
+    _activeImageRequest = null;
     _viewportStateSubscription?.cancel();
-    _restoreDebounceTimer?.cancel();
     _saveDebounceTimer?.cancel();
     imageController.transformationController.removeListener(
       _updateTransformStatus,

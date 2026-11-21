@@ -23,7 +23,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets(
-    'full-size leaves keep their credits through zoom and restore them after tool hints',
+    'manuscript leaves restore their own zoom and pan and keep their credits through tool use',
     (tester) async {
       final dispatcher = tester.binding.platformDispatcher;
       dispatcher.defaultRouteNameTestValue = '/primary_sources';
@@ -118,29 +118,114 @@ void main() {
 
       verifyFrame();
       final pageSelector = find.byType(DropdownButton<model.Page>);
+      Future<void> selectLeaf(model.Page page) async {
+        await tester.pumpAndSettle();
+        await tester.tap(pageSelector);
+        await tester.pumpAndSettle();
+        final label = find.text(
+          '${page.name} (${page.content})',
+          findRichText: true,
+        );
+        if (label.evaluate().isEmpty) {
+          final list = find.byType(ListView).last;
+          final scrollable = find.descendant(
+            of: list,
+            matching: find.byType(Scrollable),
+          );
+          final current = tester
+              .widget<DropdownButton<model.Page>>(pageSelector)
+              .value!;
+          final delta =
+              source.pages.indexOf(page) < source.pages.indexOf(current)
+              ? -90.0
+              : 90.0;
+          await tester.scrollUntilVisible(label, delta, scrollable: scrollable);
+        }
+        expect(label, findsWidgets, reason: 'open page option ${page.name}');
+        await tester.ensureVisible(label.last);
+        await tester.tap(label.last);
+        await pumpUntilSmoke(
+          tester,
+          isReady: () {
+            final previews = tester.widgetList<ImagePreview>(
+              find.byType(ImagePreview),
+            );
+            return previews.length == 1 &&
+                viewer.evaluate().isNotEmpty &&
+                previews.single.imageName.endsWith('_${page.image}');
+          },
+          reason: 'first usable frame of ${page.name}',
+          timeout: const Duration(seconds: 40),
+        );
+        expect(
+          tester.widget<DropdownButton<model.Page>>(pageSelector).value?.name,
+          page.name,
+        );
+        final base = tester.widget<RawImage>(
+          find.descendant(of: viewer, matching: find.byType(RawImage)).first,
+        );
+        expect(
+          base.image,
+          isNotNull,
+          reason:
+              'the first readable frame must paint the leaf under its annotations',
+        );
+      }
+
+      Matrix4 currentView() => tester
+          .widget<InteractiveViewer>(viewer)
+          .transformationController!
+          .value
+          .clone();
+      void expectView(Matrix4 saved) {
+        final current = currentView();
+        for (final i in [0, 5, 12, 13]) {
+          expect(
+            current.storage[i],
+            closeTo(saved.storage[i], 0.001),
+            reason: 'saved scale or offset at matrix index $i',
+          );
+        }
+      }
+
+      Future<void> pan(Offset delta) async {
+        final gesture = await tester.startGesture(tester.getCenter(viewer));
+        await gesture.moveBy(delta / 2);
+        await tester.pump(const Duration(milliseconds: 100));
+        await gesture.moveBy(delta / 2);
+        await tester.pump(const Duration(milliseconds: 180));
+        await gesture.up();
+        await tester.pump();
+      }
+
+      final firstPage = source.pages.first;
       final nextPage = source.pages[1];
-      await tester.tap(pageSelector);
-      final nextLabel = find.text(
-        '${nextPage.name} (${nextPage.content})',
-        findRichText: true,
-      );
-      await waitFor(nextLabel);
-      await tester.tap(nextLabel.last);
-      await waitFor(viewer);
-      expect(
-        tester.widget<DropdownButton<model.Page>>(pageSelector).value?.name,
-        nextPage.name,
-      );
-      verifyFrame();
-      final scale = tester
-          .widget<ImagePreview>(find.byType(ImagePreview))
-          .controller
-          .transformationController;
-      final beforeZoom = scale.value.getMaxScaleOnAxis();
+      final initial = currentView();
       await tool(l10n.zoom_in);
-      expect(scale.value.getMaxScaleOnAxis(), greaterThan(beforeZoom));
-      await tester.drag(viewer, const Offset(40, 20));
+      await pan(const Offset(-45, -25));
       await tester.pump();
+      final firstView = currentView();
+      expect(firstView.storage[0], greaterThan(initial.storage[0]));
+      expect(firstView.storage[12], isNot(closeTo(initial.storage[12], 0.001)));
+      await selectLeaf(nextPage);
+      verifyFrame();
+      final beforeZoom = currentView().storage[0];
+      await tool(l10n.zoom_in);
+      await tool(l10n.zoom_in);
+      await pan(const Offset(-85, -50));
+      await tester.pump();
+      final secondView = currentView();
+      expect(secondView.storage[0], greaterThan(beforeZoom));
+      expect(
+        secondView.storage[12],
+        isNot(closeTo(firstView.storage[12], 0.001)),
+      );
+      await selectLeaf(firstPage);
+      expectView(firstView);
+      await selectLeaf(nextPage);
+      expectView(secondView);
+      await tester.pump(const Duration(milliseconds: 1100));
+      expectView(secondView);
       verifyFrame();
 
       await tool(l10n.brightness_contrast);
@@ -163,6 +248,22 @@ void main() {
       await tester.tap(find.text(l10n.reset));
       await tester.pump(const Duration(milliseconds: 400));
       verifyFrame();
+
+      await selectLeaf(firstPage);
+      expectView(firstView);
+      await pan(const Offset(-42, -24));
+      final beforeExit = currentView();
+      AppRouter().router.go('/primary_sources');
+      await waitFor(card);
+      await tester.ensureVisible(thumb);
+      await tester.tap(thumb);
+      await pumpUntilSmoke(
+        tester,
+        isReady: () => viewer.evaluate().isNotEmpty,
+        reason: 'reopened source',
+        timeout: const Duration(seconds: 40),
+      );
+      expectView(beforeExit);
       expect(tester.takeException(), isNull);
     },
   );

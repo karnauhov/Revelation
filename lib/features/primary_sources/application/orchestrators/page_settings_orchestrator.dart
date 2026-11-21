@@ -57,7 +57,10 @@ class PrimarySourcePageSettingsOrchestrator {
     required PrimarySource source,
     required model.Page? selectedPage,
   }) async {
-    _cachedPagesSettings ??= await _pagesRepository.getPages();
+    if (_cachedPagesSettings == null) {
+      final pages = await _pagesRepository.getPages();
+      _cachedPagesSettings ??= pages;
+    }
     if (selectedPage == null) {
       return PageSettingsState.defaults;
     }

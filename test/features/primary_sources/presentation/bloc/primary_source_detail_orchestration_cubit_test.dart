@@ -167,7 +167,7 @@ void main() {
     },
   );
 
-  test('restorePositionAndScale applies saved transform after debounce', () {
+  test('ready geometry restores the saved transform immediately', () {
     final source = _buildSource();
     final imageCubit = PrimarySourceImageCubit(
       source: source,
@@ -235,17 +235,20 @@ void main() {
     );
     viewportCubit.setScaleAndPositionRestored(false);
 
-    fakeAsync((async) {
-      cubit.restorePositionAndScale();
-      async.elapse(const Duration(milliseconds: 999));
-      expect(viewportCubit.state.scaleAndPositionRestored, isFalse);
-      async.elapse(const Duration(milliseconds: 1));
-    });
+    cubit.imageController.setImageSize(const Size(800, 600), 400, 300);
+    cubit.restorePositionAndScale();
 
     final matrix = cubit.imageController.transformationController.value;
     expect(viewportCubit.state.scaleAndPositionRestored, isTrue);
     expect(matrix.storage[12], closeTo(17, 0.001));
     expect(matrix.storage[13], closeTo(23, 0.001));
+    expect(matrix.storage[0], closeTo(1.4, 0.001));
+    cubit.imageController.setTransformParams(-5, -8, 1.8);
+    cubit.restorePositionAndScale();
+    expect(
+      cubit.imageController.transformationController.value.storage[0],
+      1.8,
+    );
   });
 
   test(
@@ -324,6 +327,17 @@ void main() {
         expect(pageSettingsOrchestrator.saveCallCount, 0);
         async.elapse(const Duration(milliseconds: 1));
         expect(pageSettingsOrchestrator.saveCallCount, 1);
+        cubit.imageController.setTransformParams(-8, -12, 2);
+        unawaited(cubit.changeSelectedPage(source.pages[1]));
+        async.flushMicrotasks();
+        expect(pageSettingsOrchestrator.lastSaved, (
+          page.name,
+          -8.0,
+          -12.0,
+          2.0,
+        ));
+        async.elapse(const Duration(seconds: 2));
+        expect(pageSettingsOrchestrator.saveCallCount, 2);
       });
     },
   );
@@ -769,6 +783,7 @@ class _FakePageSettingsOrchestrator
   _FakePageSettingsOrchestrator() : super(PagesRepository());
 
   int saveCallCount = 0;
+  (String?, double, double, double)? lastSaved;
 
   @override
   Future<PageSettingsState> loadSettingsForPage({
@@ -807,6 +822,7 @@ class _FakePageSettingsOrchestrator
     required bool showVerseNumbers,
   }) {
     saveCallCount++;
+    lastSaved = (selectedPage?.name, posX, posY, scale);
     return 'saved-raw';
   }
 }

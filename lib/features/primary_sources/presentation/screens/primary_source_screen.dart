@@ -77,6 +77,12 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
   }
 
   @override
+  void deactivate() {
+    _viewModel?.flushPendingSave();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _viewModel?.dispose();
@@ -356,6 +362,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         final selectedPage = previewContext.select(
           (PrimarySourceSessionCubit cubit) => cubit.state.selectedPage,
         );
+        if (imageName.isEmpty || selectedPage == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
         final pageSettingsSlice = previewContext.select((
           PrimarySourcePageSettingsCubit cubit,
         ) {
@@ -393,7 +402,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           );
         });
 
+        final imageRequest = viewModel.activeImageRequest;
         return ImagePreview(
+          key: ObjectKey(imageRequest),
           imageData: imageData,
           imageName: imageName,
           controller: viewModel.imageController,
@@ -432,9 +443,13 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
               AppLocalizations.of(previewContext)!,
             );
           },
-          onRestorePositionAndScale: viewModel.restorePositionAndScale,
-          words: selectedPage?.words ?? const [],
-          verses: selectedPage?.verses ?? const [],
+          onRestorePositionAndScale: () {
+            if (identical(viewModel.activeImageRequest, imageRequest)) {
+              viewModel.restorePositionAndScale();
+            }
+          },
+          words: selectedPage.words,
+          verses: selectedPage.verses,
           selectedVerseIndex:
               descriptionSlice.currentType == DescriptionKind.verse
               ? descriptionSlice.currentNumber

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
+import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/image_preview_controller.dart';
 import 'package:revelation/shared/models/description_kind.dart';
 import 'package:revelation/shared/models/page_word.dart';
@@ -52,6 +53,7 @@ class ImagePreview extends StatefulWidget {
   final ValueChanged<int> onVerseTap;
   final ValueChanged<int> onStrongNumberTap;
   final VoidCallback onRestorePositionAndScale;
+  final Future<ui.Image> Function(Uint8List) decodeImage;
 
   const ImagePreview({
     required this.imageData,
@@ -80,6 +82,7 @@ class ImagePreview extends StatefulWidget {
     required this.onVerseTap,
     required this.onStrongNumberTap,
     required this.onRestorePositionAndScale,
+    this.decodeImage = decodeImageFromList,
     this.selectedVerseIndex,
     super.key,
   });
@@ -94,6 +97,9 @@ class ImagePreviewState extends State<ImagePreview> {
   Offset? _start;
   Offset? _end;
   Size? _lastContainerSize;
+  ui.Image? _decodedImage;
+  Size? _appliedViewport;
+  bool _decodeFailed = false;
   List<SingleLine>? _lines;
   List<TextLabel>? _strongLabels;
   int _decodeRequestId = 0;
@@ -106,7 +112,6 @@ class ImagePreviewState extends State<ImagePreview> {
     _lines = _prepareWordSeparators(widget.words);
     _strongLabels = _preparStrongNumbers(widget.words);
     _decodeImage();
-    _requestRestorePositionAndScale();
   }
 
   @override
@@ -117,15 +122,24 @@ class ImagePreviewState extends State<ImagePreview> {
     final imageChanged =
         oldWidget.imageName != widget.imageName ||
         !identical(oldWidget.imageData, widget.imageData);
-    if (imageChanged) {
+    if (imageChanged || oldWidget.controller != widget.controller) {
       _start = null;
       _end = null;
       _imageName = null;
       _original = null;
+      _decodedImage?.dispose();
+      _decodedImage = null;
+      _appliedViewport = null;
+      _decodeFailed = false;
       widget.controller.resetImageSize();
       _decodeImage();
-      _requestRestorePositionAndScale();
     }
+  }
+
+  @override
+  void dispose() {
+    _decodedImage?.dispose();
+    super.dispose();
   }
 
   @override
@@ -136,28 +150,29 @@ class ImagePreviewState extends State<ImagePreview> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final currentSize = Size(constraints.maxWidth, constraints.maxHeight);
-        bool recalcAnyway = false;
-        if (_lastContainerSize == null ||
-            _lastContainerSize!.width != currentSize.width ||
-            (_lastContainerSize!.height - currentSize.height).abs() > 40) {
+        if (_lastContainerSize != currentSize) {
           _lastContainerSize = currentSize;
-          recalcAnyway = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _applyGeometry();
+          });
         }
 
-        if (widget.controller.imageSize == null) {
+        if (_decodeFailed) {
+          return Center(
+            child: Text(AppLocalizations.of(context)!.image_not_loaded),
+          );
+        }
+        if (_appliedViewport == null || widget.controller.imageSize == null) {
           return Container(
             color: colorScheme.surface,
             child: const Center(child: CircularProgressIndicator()),
           );
         }
 
-        widget.controller.setImageSize(
-          widget.controller.imageSize!,
-          constraints.maxWidth,
-          constraints.maxHeight,
-          recalc: recalcAnyway,
+        final manuscript = Semantics(
+          image: true,
+          child: RawImage(image: _decodedImage),
         );
-
         Widget imageWidget;
         Widget wrapped;
 
@@ -188,7 +203,7 @@ class ImagePreviewState extends State<ImagePreview> {
             },
             child: Stack(
               children: [
-                Image.memory(widget.imageData),
+                manuscript,
                 if (_start != null && _end != null)
                   Positioned(
                     left: _start!.dx < _end!.dx ? _start!.dx : _end!.dx,
@@ -210,13 +225,13 @@ class ImagePreviewState extends State<ImagePreview> {
           );
           wrapped = imageWidget;
         } else if (widget.pipetteMode) {
-          imageWidget = Image.memory(widget.imageData);
+          imageWidget = manuscript;
           wrapped = imageWidget;
         } else {
           // Color replacement and filters
           imageWidget = Stack(
             children: [
-              Image.memory(widget.imageData),
+              manuscript,
               if (widget.tolerance > 0 && widget.replaceRegion != null)
                 FutureBuilder<Uint8List>(
                   future: _createModifiedRegionImage(
@@ -351,11 +366,6 @@ class ImagePreviewState extends State<ImagePreview> {
           ),
         );
 
-        final effectiveMaxScale =
-            widget.controller.maxScale >= widget.controller.minScale
-            ? widget.controller.maxScale
-            : widget.controller.minScale;
-
         return MouseRegion(
           cursor: widget.selectAreaMode
               ? SystemMouseCursors.precise
@@ -366,7 +376,7 @@ class ImagePreviewState extends State<ImagePreview> {
             transformationController:
                 widget.controller.transformationController,
             minScale: widget.controller.minScale,
-            maxScale: effectiveMaxScale,
+            maxScale: widget.controller.maxScale,
             constrained: false,
             child: gestureWrapped,
           ),
@@ -393,55 +403,47 @@ class ImagePreviewState extends State<ImagePreview> {
     return LocalCoord(px, py);
   }
 
-  void _decodeImage() {
+  Future<void> _decodeImage() async {
     final requestId = ++_decodeRequestId;
-    final imageData = widget.imageData;
-    ui.decodeImageFromList(imageData, (ui.Image image) {
-      _applyDecodedImageSize(
-        requestId: requestId,
-        imageWidth: image.width.toDouble(),
-        imageHeight: image.height.toDouble(),
-      );
-    });
-  }
-
-  void _applyDecodedImageSize({
-    required int requestId,
-    required double imageWidth,
-    required double imageHeight,
-  }) {
-    if (!mounted || requestId != _decodeRequestId) {
-      return;
-    }
-
-    final viewportSize = _lastContainerSize;
-    if (viewportSize == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _applyDecodedImageSize(
-          requestId: requestId,
-          imageWidth: imageWidth,
-          imageHeight: imageHeight,
-        );
-      });
-      return;
-    }
-
-    setState(() {
-      widget.controller.setImageSize(
-        Size(imageWidth, imageHeight),
-        viewportSize.width,
-        viewportSize.height,
-      );
-    });
-  }
-
-  void _requestRestorePositionAndScale() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
+    try {
+      final image = await widget.decodeImage(widget.imageData);
+      if (!mounted || requestId != _decodeRequestId) {
+        image.dispose();
         return;
       }
-      widget.onRestorePositionAndScale();
-    });
+      _decodedImage = image;
+    } catch (_) {
+      if (mounted && requestId == _decodeRequestId) {
+        setState(() => _decodeFailed = true);
+      }
+      return;
+    }
+    _applyGeometry();
+  }
+
+  void _applyGeometry() {
+    final image = _decodedImage;
+    final viewportSize = _lastContainerSize;
+    if (image == null ||
+        viewportSize == null ||
+        !viewportSize.isFinite ||
+        viewportSize.isEmpty) {
+      return;
+    }
+    final previous = _appliedViewport;
+    if (previous != null &&
+        previous.width == viewportSize.width &&
+        (previous.height - viewportSize.height).abs() <= 40) {
+      return;
+    }
+    widget.controller.setImageSize(
+      Size(image.width.toDouble(), image.height.toDouble()),
+      viewportSize.width,
+      viewportSize.height,
+      recalc: previous != null,
+    );
+    if (previous == null) widget.onRestorePositionAndScale();
+    setState(() => _appliedViewport = viewportSize);
   }
 
   Future<Uint8List> _createModifiedRegionImage({
@@ -564,28 +566,33 @@ class ImagePreviewState extends State<ImagePreview> {
   }
 
   Future<bool> _handlePipetteModeTap(Offset globalPosition) async {
-    if (widget.pipetteMode) {
-      final coord = _getCursorCoord(globalPosition);
-      final ui.Image decoded = await decodeImageFromList(widget.imageData);
-      final byteData = await decoded.toByteData(
-        format: ui.ImageByteFormat.rawRgba,
+    if (!widget.pipetteMode) return false;
+    final image = _decodedImage;
+    if (image == null || widget.controller.imageSize == null) return true;
+    final coord = _getCursorCoord(globalPosition);
+    // The pixel read may outlive a page change. Retain its image until it finishes.
+    final sample = image.clone();
+    try {
+      final data = await sample.toByteData(format: ui.ImageByteFormat.rawRgba);
+      if (!mounted ||
+          !identical(image, _decodedImage) ||
+          !widget.pipetteMode ||
+          data == null) {
+        return true;
+      }
+      final offset = (coord.y * sample.width + coord.x) * 4;
+      widget.onFinishPipetteMode(
+        Color.fromARGB(
+          data.getUint8(offset + 3),
+          data.getUint8(offset),
+          data.getUint8(offset + 1),
+          data.getUint8(offset + 2),
+        ),
       );
-      if (byteData == null) {
-        return false;
-      }
-      final offset = (coord.y * decoded.width + coord.x) * 4;
-      if (offset < 0 || offset + 3 >= byteData.lengthInBytes) {
-        return false;
-      }
-      final r = byteData.getUint8(offset);
-      final g = byteData.getUint8(offset + 1);
-      final b = byteData.getUint8(offset + 2);
-      final a = byteData.getUint8(offset + 3);
-      final picked = Color.fromARGB(a, r, g, b);
-      widget.onFinishPipetteMode(picked);
-      return true;
+    } finally {
+      sample.dispose();
     }
-    return false;
+    return true;
   }
 
   bool _handleSelectArea() {

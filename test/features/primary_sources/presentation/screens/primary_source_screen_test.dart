@@ -776,10 +776,7 @@ Future<void> _forceLoadFirstPageImage(
   PrimarySource source,
 ) async {
   await tester.runAsync(
-    () => _imageCubit(tester).loadImage(
-      page: source.pages.first.image,
-      sourceHashCode: source.hashCode,
-    ),
+    () => _toolbar(tester).onChangeSelectedPage(source.pages.first),
   );
   await tester.pump();
 }

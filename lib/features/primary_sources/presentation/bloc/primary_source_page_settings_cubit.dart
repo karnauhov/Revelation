@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_source_page_settings_state.dart';
 import 'package:revelation/shared/models/page.dart' as model;
@@ -10,16 +11,18 @@ class PrimarySourcePageSettingsCubit
     : super(PrimarySourcePageSettingsState.defaults);
 
   final PrimarySourcePageSettingsOrchestrator _pageSettingsOrchestrator;
+  final _loadGuard = LatestRequestGuard();
 
   Future<PageSettingsState> loadSettingsForPage({
     required PrimarySource source,
     required model.Page? selectedPage,
   }) async {
+    final token = _loadGuard.start();
     final loaded = await _pageSettingsOrchestrator.loadSettingsForPage(
       source: source,
       selectedPage: selectedPage,
     );
-    if (isClosed) {
+    if (isClosed || !_loadGuard.isActive(token)) {
       return loaded;
     }
     applyLoadedSettings(loaded);
@@ -110,6 +113,7 @@ class PrimarySourcePageSettingsCubit
   }
 
   void resetToDefaults() {
+    _loadGuard.cancelActive();
     emit(PrimarySourcePageSettingsState.defaults);
   }
 }

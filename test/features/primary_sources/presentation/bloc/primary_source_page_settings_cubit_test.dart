@@ -46,6 +46,24 @@ void main() {
     expect(cubit.state.showVerseNumbers, isFalse);
   });
 
+  test('late settings cannot replace filters for the next selection', () async {
+    final first = Completer<PageSettingsState>();
+    final fake = _FakePageSettingsOrchestrator()..loadCompleter = first;
+    final cubit = PrimarySourcePageSettingsCubit(fake);
+    addTearDown(cubit.close);
+    final source = _buildSource();
+    final old = cubit.loadSettingsForPage(
+      source: source,
+      selectedPage: source.pages.first,
+    );
+    fake.loadCompleter = null;
+    await cubit.loadSettingsForPage(source: source, selectedPage: null);
+    cubit.toggleMonochrome();
+    first.complete(PageSettingsState.defaults);
+    await old;
+    expect(cubit.state.isMonochrome, isTrue);
+  });
+
   test('toggle and apply operations update state', () {
     final cubit = PrimarySourcePageSettingsCubit(
       _FakePageSettingsOrchestrator(),
