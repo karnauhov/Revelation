@@ -1,0 +1,1 @@
+{"acks": {}, "request": {"build": 180, "created": 1795292828.8145385, "hosts": ["windows", "linux"], "project": "revelation", "release_id": null, "release_tag": "v1.0.9+180", "repository": "karnauhov/Revelation", "request_id": "b726635dcc4948a59ba7f593f3264a04", "schema": 1, "sha": "580e8d5c8f168c7a42379bd88c83f6eca8a70ab6", "version": "1.0.9"}}
