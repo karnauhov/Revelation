@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:revelation/features/bible/bible.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
@@ -17,6 +18,7 @@ import 'package:revelation/shared/ui/widgets/planned_feature_screen.dart';
 import '../../../../test_harness/test_harness.dart';
 
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
   TestWidgetsFlutterBinding.ensureInitialized();
   late BibleVerseMap verseMap;
   setUpAll(() async {

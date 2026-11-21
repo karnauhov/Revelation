@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -438,10 +441,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
             );
           },
           onStrongNumberTap: (strongNumber) {
-            viewModel.showInfoForStrongNumber(
-              strongNumber,
-              AppLocalizations.of(previewContext)!,
-            );
+            unawaited(handleAppLink(previewContext, 'strong:G$strongNumber'));
           },
           onRestorePositionAndScale: () {
             if (identical(viewModel.activeImageRequest, imageRequest)) {
@@ -513,10 +513,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           currentDescriptionType: descriptionSlice.currentType,
           currentDescriptionNumber: descriptionSlice.currentNumber,
           onGreekStrongTap: (strongNumber, linkContext) {
-            viewModel.showInfoForStrongNumber(
-              strongNumber,
-              AppLocalizations.of(linkContext)!,
-            );
+            unawaited(handleAppLink(linkContext, 'strong:G$strongNumber'));
           },
           onGreekStrongPickerTap: (strongNumber, linkContext) {
             _openStrongNumberPickerDialog(linkContext, viewModel, strongNumber);

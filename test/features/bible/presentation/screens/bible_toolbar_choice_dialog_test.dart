@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:revelation/features/bible/bible.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubit.dart';
@@ -11,6 +12,7 @@ import 'package:revelation/shared/services/bible_verse_map.dart';
 import '../../../../test_harness/test_harness.dart';
 
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
   testWidgets('opens toolbar chapter chooser from overflow menu', (
     tester,
   ) async {

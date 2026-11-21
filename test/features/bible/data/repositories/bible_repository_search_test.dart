@@ -417,7 +417,8 @@ class _FakeBibleModuleDB extends BibleModuleDB {
   Future<void> close() async {}
 }
 
-class _RecordingBiblePreferencesStore implements BiblePreferencesStore {
+class _RecordingBiblePreferencesStore
+    extends SharedPreferencesBiblePreferencesStore {
   _RecordingBiblePreferencesStore({
     this.lastModuleFile,
     List<String> lastSearchHistory = const <String>[],
@@ -484,7 +485,8 @@ class _SingleDbBibleModuleDataSource implements BibleModuleDataSource {
   BibleModuleDB openModule(String moduleFile) => db;
 }
 
-class _FakeBiblePreferencesStore implements BiblePreferencesStore {
+class _FakeBiblePreferencesStore
+    extends SharedPreferencesBiblePreferencesStore {
   @override
   Future<String?> loadLastModuleFile() async => null;
 

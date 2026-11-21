@@ -1317,6 +1317,7 @@ class _BibleChapterView extends StatefulWidget {
 
 class _BibleChapterViewState extends State<_BibleChapterView> {
   final ScrollController _scrollController = ScrollController();
+  bool _positioning = false;
   final GlobalKey _viewportKey = GlobalKey();
   final Map<String, GlobalKey> _verseKeys = <String, GlobalKey>{};
 
@@ -1369,6 +1370,14 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
               (notification is ScrollUpdateNotification ||
                   notification is ScrollEndNotification)) {
             widget.scrollCoordinator.scheduleSyncFrom(widget.paneId);
+            if (!_positioning && notification is ScrollUpdateNotification) {
+              final top = _topVisibleVerse();
+              if (top != null)
+                context.read<BibleWorkspaceCubit>().rememberScroll(
+                  widget.paneId,
+                  top,
+                );
+            }
           }
           return false;
         },
@@ -1440,7 +1449,13 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
       if (selectedVerse == null) {
         return;
       }
-      _scrollToVerse(selectedVerse, alignment: 0.2);
+      final anchor = context.read<BibleWorkspaceCubit>().viewportVerseFor(
+        widget.paneId,
+      );
+      _scrollToVerse(
+        anchor ?? selectedVerse,
+        alignment: anchor == null ? 0.2 : 0,
+      );
     });
   }
 
@@ -1492,7 +1507,12 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
     if ((_scrollController.offset - targetOffset).abs() <= 1) {
       return true;
     }
-    _scrollController.jumpTo(targetOffset);
+    _positioning = true;
+    try {
+      _scrollController.jumpTo(targetOffset);
+    } finally {
+      _positioning = false;
+    }
     return true;
   }
 

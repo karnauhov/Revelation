@@ -7,7 +7,6 @@ import 'package:revelation/features/bible/bible.dart';
 import 'package:revelation/features/bible/data/repositories/bible_preferences_store.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubit.dart';
 import 'package:revelation/l10n/app_localizations.dart';
-import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,7 +38,8 @@ Future<void> exerciseParallelBibleReading(
               ),
               TextButton(
                 key: const Key('open-reference'),
-                onPressed: () => handleAppLink(context, 'bible:Мт17:5'),
+                onPressed: () =>
+                    context.push('/bible?book=40&chapter=17&verse=5'),
                 child: const Text('Reference'),
               ),
               TextButton(
@@ -99,7 +99,49 @@ Future<void> exerciseParallelBibleReading(
     ),
     findsOneWidget,
   );
-  expect(repository.savedModuleLists, isEmpty);
+  expect(repository.savedModuleLists.last, _files(workspace));
+  await tester.tap(find.byKey(const Key('bible_linked_navigation_button')));
+  await tester.pump();
+  final ids = workspace.state.paneIds;
+  await workspace
+      .readerCubitFor(ids.first)
+      .selectReference(bookId: 19, chapter: 119, verse: 4);
+  workspace.readerCubitFor(ids.last).selectLoadedVerse(7);
+  await tester.pumpAndSettle();
+  final chapter = find.descendant(
+    of: find.byKey(const Key('bible_reader_pane_primary')),
+    matching: find.byKey(const Key('bible_chapter_verses')),
+  );
+  await tester.drag(chapter, const Offset(0, -160));
+  await tester.pumpAndSettle();
+  final anchor = workspace.viewportVerseFor(ids.first);
+  expect(anchor, isNotNull);
+  final before = await const SharedPreferencesBiblePreferencesStore()
+      .loadReadingSession();
+  await tester.tap(find.byType(BackButton));
+  await tester.pumpAndSettle();
+  await tester.tap(find.byKey(const Key('open-reference')));
+  await tester.pumpAndSettle();
+  workspace = _workspace(tester);
+  expect(workspace.state.linkedNavigation, isFalse);
+  for (final id in workspace.state.paneIds) {
+    final ref = workspace.readerCubitFor(id).state.selectedReference!;
+    expect((ref.bookId, ref.chapter, ref.verse), (40, 17, 5));
+  }
+  workspace.readerCubitFor('primary').selectLoadedVerse(9);
+  await tester.tap(find.byType(BackButton));
+  await tester.pumpAndSettle();
+  expect(
+    await const SharedPreferencesBiblePreferencesStore().loadReadingSession(),
+    before,
+  );
+  await tester.tap(find.byKey(const Key('open-bible')));
+  await tester.pumpAndSettle();
+  workspace = _workspace(tester);
+  expect(workspace.state.linkedNavigation, isFalse);
+  expect(workspace.readerCubitFor(ids.first).state.selectedReference?.verse, 4);
+  expect(workspace.readerCubitFor(ids.last).state.selectedReference?.verse, 7);
+  expect(workspace.viewportVerseFor(ids.first), anchor);
   final secondary = find.byKey(
     Key('bible_reader_pane_${workspace.state.paneIds.last}'),
   );
@@ -132,10 +174,7 @@ Future<void> exerciseParallelBibleReading(
   await tester.tap(find.byKey(const Key('open-reference')));
   await tester.pumpAndSettle();
   workspace = _workspace(tester);
-  expect(_files(workspace), [
-    translation,
-    FakeParallelBibleRepository.original,
-  ]);
+  expect(_files(workspace), [FakeParallelBibleRepository.original]);
   for (final pane in workspace.state.paneIds) {
     final reference = workspace.readerCubitFor(pane).state.selectedReference!;
     expect([reference.bookId, reference.chapter, reference.verse], [40, 17, 5]);
@@ -147,15 +186,12 @@ Future<void> exerciseParallelBibleReading(
       : FakeParallelBibleRepository.english;
   await tester.tap(find.byKey(const Key('open-reference')));
   await tester.pumpAndSettle();
-  expect(_files(_workspace(tester)).first, preferred);
+  expect(_files(_workspace(tester)), [FakeParallelBibleRepository.original]);
   await tester.tap(find.byType(BackButton));
   await tester.pumpAndSettle();
   await tester.tap(find.byKey(const Key('open-module-reference')));
   await tester.pumpAndSettle();
-  expect(_files(_workspace(tester)), [
-    FakeParallelBibleRepository.ukrainian,
-    if (language != 'uk') translation,
-  ]);
+  expect(_files(_workspace(tester)), [FakeParallelBibleRepository.ukrainian]);
   final selection = _workspace(tester).readerCubitFor('primary').state;
   expect(selection.selectionStartVerse, 3);
   expect(selection.selectionEndVerse, 4);
@@ -168,8 +204,8 @@ Future<void> exerciseParallelBibleReading(
     await const SharedPreferencesBiblePreferencesStore().loadLastModuleFiles(),
     [FakeParallelBibleRepository.original],
   );
-  expect(repository.savedModuleLists, [
-    [FakeParallelBibleRepository.original],
+  expect(repository.savedModuleLists.last, [
+    FakeParallelBibleRepository.original,
   ]);
   expect(tester.takeException(), isNull);
   await tester.pumpWidget(const SizedBox.shrink());

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:revelation/features/bible/domain/services/bible_text_search.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
-import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
+import 'package:revelation/shared/ui/dialogs/hebrew_strong_dialog.dart';
 
 /// Strong links follow the module's own annotations. Only Greek identifiers
 /// from the current allusion query can contribute a highlight.
@@ -93,7 +93,6 @@ class BibleMarkedVerse extends StatelessWidget {
   }
 
   Future<void> _openWord(BuildContext context, BibleMarkedWord word) async {
-    final l10n = AppLocalizations.of(context)!;
     var code = word.codes.first;
     if (word.codes.length > 1) {
       final selected = await showDialog<String>(
@@ -116,29 +115,10 @@ class BibleMarkedVerse extends StatelessWidget {
       await handleAppLink(context, 'strong:$code');
       return;
     }
-    // The app's Hebrew dictionary is external. Keep passage context on tap
-    // and open that exact entry only on an explicit dictionary action.
-    await showDialog<void>(
-      context: context,
-      builder: (dialog) => StudyTextDialog(
-        title: code,
-        subtitle: l10n.bible_module_info_hebrew,
-        content: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Text(word.text),
-        ),
-        actions: [
-          TextButton.icon(
-            onPressed: () => handleAppLink(dialog, 'strong:$code'),
-            icon: const Icon(Icons.open_in_new),
-            label: Text(l10n.strong_open_dictionary),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(dialog),
-            child: Text(l10n.close),
-          ),
-        ],
-      ),
+    await showHebrewStrongDialog(
+      context,
+      int.parse(code.substring(1)),
+      word: word.text,
     );
   }
 }

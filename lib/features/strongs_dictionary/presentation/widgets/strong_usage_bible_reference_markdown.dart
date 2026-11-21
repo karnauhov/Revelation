@@ -27,7 +27,6 @@ Map<String, MarkdownElementBuilder> buildStrongUsageBibleReferenceBuilders({
   WordsTapHandler? onWordsTap,
   StrongUsageBibleTextProvider? bibleTextProvider,
   StrongUsageBibleTextCopyHandler? copyBibleText,
-  bool popBeforeBibleNavigation = false,
 }) {
   return <String, MarkdownElementBuilder>{
     'a': StrongUsageBibleReferenceElementBuilder(
@@ -40,7 +39,6 @@ Map<String, MarkdownElementBuilder> buildStrongUsageBibleReferenceBuilders({
       copyBibleText:
           copyBibleText ??
           (String text) => Clipboard.setData(ClipboardData(text: text)),
-      popBeforeBibleNavigation: popBeforeBibleNavigation,
     ),
   };
 }
@@ -53,7 +51,6 @@ class StrongUsageBibleReferenceElementBuilder extends MarkdownElementBuilder {
     this.onWordsTap,
     required this.bibleTextProvider,
     required this.copyBibleText,
-    required this.popBeforeBibleNavigation,
   });
 
   final GreekStrongTapHandler? onGreekStrongTap;
@@ -62,7 +59,6 @@ class StrongUsageBibleReferenceElementBuilder extends MarkdownElementBuilder {
   final WordsTapHandler? onWordsTap;
   final StrongUsageBibleTextProvider bibleTextProvider;
   final StrongUsageBibleTextCopyHandler copyBibleText;
-  final bool popBeforeBibleNavigation;
 
   @override
   Widget? visitElementAfterWithContext(
@@ -93,7 +89,6 @@ class StrongUsageBibleReferenceElementBuilder extends MarkdownElementBuilder {
         onWordsTap: onWordsTap,
         bibleTextProvider: bibleTextProvider,
         copyBibleText: copyBibleText,
-        popBeforeBibleNavigation: popBeforeBibleNavigation,
       );
     }
 
@@ -117,7 +112,6 @@ class StrongUsageBibleReferenceElementBuilder extends MarkdownElementBuilder {
       style: linkStyle,
       bibleTextProvider: bibleTextProvider,
       copyBibleText: copyBibleText,
-      popBeforeBibleNavigation: popBeforeBibleNavigation,
     );
   }
 
@@ -191,7 +185,6 @@ class _StrongUsageMoreReferenceLink extends StatelessWidget {
     this.onWordsTap,
     required this.bibleTextProvider,
     required this.copyBibleText,
-    required this.popBeforeBibleNavigation,
   });
 
   final String label;
@@ -203,7 +196,6 @@ class _StrongUsageMoreReferenceLink extends StatelessWidget {
   final WordsTapHandler? onWordsTap;
   final StrongUsageBibleTextProvider bibleTextProvider;
   final StrongUsageBibleTextCopyHandler copyBibleText;
-  final bool popBeforeBibleNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -259,7 +251,6 @@ class _StrongUsageMoreReferenceLink extends StatelessWidget {
                 onWordsTap: onWordsTap,
                 bibleTextProvider: bibleTextProvider,
                 copyBibleText: copyBibleText,
-                popBeforeBibleNavigation: popBeforeBibleNavigation,
               ),
               onGreekStrongTap: onGreekStrongTap,
               onGreekStrongPickerTap: onGreekStrongPickerTap,
@@ -290,7 +281,6 @@ class _StrongUsageBibleReferenceLink extends StatelessWidget {
     required this.style,
     required this.bibleTextProvider,
     required this.copyBibleText,
-    required this.popBeforeBibleNavigation,
   });
 
   final String label;
@@ -299,7 +289,6 @@ class _StrongUsageBibleReferenceLink extends StatelessWidget {
   final TextStyle style;
   final StrongUsageBibleTextProvider bibleTextProvider;
   final StrongUsageBibleTextCopyHandler copyBibleText;
-  final bool popBeforeBibleNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -310,12 +299,7 @@ class _StrongUsageBibleReferenceLink extends StatelessWidget {
         textProvider: bibleTextProvider,
         copyText: copyBibleText,
       ),
-      child: _StrongUsagePreviewTooltip(
-        label: label,
-        href: href,
-        style: style,
-        popBeforeBibleNavigation: popBeforeBibleNavigation,
-      ),
+      child: _StrongUsagePreviewTooltip(label: label, href: href, style: style),
     );
   }
 }
@@ -325,13 +309,11 @@ class _StrongUsagePreviewTooltip extends StatefulWidget {
     required this.label,
     required this.href,
     required this.style,
-    required this.popBeforeBibleNavigation,
   });
 
   final String label;
   final String href;
   final TextStyle style;
-  final bool popBeforeBibleNavigation;
 
   @override
   State<_StrongUsagePreviewTooltip> createState() =>
@@ -374,13 +356,7 @@ class _StrongUsagePreviewTooltipState
           preferBelow: false,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () => unawaited(
-              handleAppLink(
-                context,
-                widget.href,
-                popBeforeScreenPush: widget.popBeforeBibleNavigation,
-              ),
-            ),
+            onTap: () => unawaited(handleAppLink(context, widget.href)),
             onLongPress: () => unawaited(
               context.read<StrongUsagePreviewCubit>().requestPreview(),
             ),

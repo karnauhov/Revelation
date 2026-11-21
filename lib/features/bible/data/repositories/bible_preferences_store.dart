@@ -1,6 +1,10 @@
+import 'package:revelation/features/bible/domain/models/bible_reading_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class BiblePreferencesStore {
+  Future<BibleReadingSession?> loadReadingSession();
+  Future<void> saveReadingSession(BibleReadingSession session);
+
   Future<String?> loadLastModuleFile();
 
   Future<void> saveLastModuleFile(String moduleFile);
@@ -26,6 +30,38 @@ class SharedPreferencesBiblePreferencesStore implements BiblePreferencesStore {
 
   static const String lastModuleFileKey = 'bible.last_module_file';
   static const String lastModuleFilesKey = 'bible.last_module_files';
+  static const String readingSessionKey = 'bible.reading_session.v1';
+  // A new route may open before its predecessor finishes saving.
+  static Future<void>? _writes;
+
+  @override
+  Future<BibleReadingSession?> loadReadingSession() async {
+    await _writes;
+    final preferences = await SharedPreferences.getInstance();
+    final encoded = preferences.get(readingSessionKey);
+    return BibleReadingSession.decode(encoded is String ? encoded : null);
+  }
+
+  @override
+  Future<void> saveReadingSession(BibleReadingSession session) {
+    final preceding = _writes;
+    Future<void> persist() async {
+      if (preceding != null) await preceding;
+      final prefs = await SharedPreferences.getInstance();
+      if (!await prefs.setString(readingSessionKey, session.encode())) {
+        throw StateError('Could not save the Bible reading session');
+      }
+    }
+
+    final write = persist();
+    final settled = write.catchError((Object _) {});
+    _writes = settled;
+    settled.then((_) {
+      if (identical(_writes, settled)) _writes = null;
+    });
+    return write;
+  }
+
   static const String searchHistoryKey = 'bible.search.history';
   static const String _lastSearchQueryPrefix = 'bible.search.last_query.';
 
@@ -45,6 +81,8 @@ class SharedPreferencesBiblePreferencesStore implements BiblePreferencesStore {
   @override
   Future<List<String>> loadLastModuleFiles() async {
     final preferences = await SharedPreferences.getInstance();
+    final session = await loadReadingSession();
+    if (session != null) return [for (final pane in session.panes) pane.module];
     final values = preferences.getStringList(lastModuleFilesKey);
     if (values == null || values.isEmpty) {
       final singleModuleFile = await loadLastModuleFile();

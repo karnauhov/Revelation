@@ -12,6 +12,7 @@ import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubi
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_attributes_footer.dart';
 import 'package:revelation/features/settings/settings.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_dialog.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_entry_view.dart';
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/infra/db/runtime/db_manager.dart';
 import 'package:revelation/main.dart' as app;
@@ -51,11 +52,14 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
     }
 
-    Future<void> tapReference(String label) async {
-      final paragraphs = find.byWidgetPredicate(
+    Future<void> tapReference(String label, {Finder? within}) async {
+      final matches = find.byWidgetPredicate(
         (widget) =>
             widget is RichText && widget.text.toPlainText().contains(label),
       );
+      final paragraphs = within == null
+          ? matches
+          : find.descendant(of: within, matching: matches);
       await waitFor(() => paragraphs.evaluate().isNotEmpty, 'Find link $label');
       final paragraph = paragraphs.last;
       final render = tester.renderObject<RenderParagraph>(paragraph);
@@ -95,6 +99,21 @@ void main() {
       int chapter,
       int verse,
     ) async {
+      final preview = find.byKey(const Key('bible_passage_dialog'));
+      await waitFor(
+        () => preview.evaluate().isNotEmpty,
+        '$entry opens a preview',
+      );
+      final open = find.byKey(const Key('bible_passage_open_reader'));
+      await waitFor(
+        () =>
+            open.evaluate().isNotEmpty &&
+            tester.widget<TextButton>(open).onPressed != null,
+        'Reader action ready',
+      );
+      expect(find.byKey(const Key('bible_reader_pane_primary')), findsNothing);
+      await tester.tap(open);
+      await tester.pump();
       final pane = find.byKey(const Key('bible_reader_pane_primary'));
       await waitFor(() {
         if (pane.evaluate().isEmpty) return false;
@@ -127,6 +146,12 @@ void main() {
       );
       await tester.pump();
       await tapReference('Одкр 9:11');
+      final preview = find.byKey(const Key('bible_passage_dialog'));
+      await waitFor(() => preview.evaluate().isNotEmpty, 'Topic preview');
+      Navigator.of(tester.element(preview)).pop();
+      await waitFor(() => preview.evaluate().isEmpty, 'Dismiss to the topic');
+      expect(find.byKey(const Key('bible_reader_pane_primary')), findsNothing);
+      await tapReference('Одкр 9:11');
       await verify('topic.auto', oh1988, 66, 9, 11);
       await settings.changeDefaultBibleModule(kjv);
       await tapReference('Гал 4:24');
@@ -134,6 +159,45 @@ void main() {
 
       final router = AppRouter().router;
       unawaited(router.push('/strongs_dictionary?number=G3056'));
+      final article = find.byType(StrongDictionaryEntryView);
+      await tapReference('G3004', within: article);
+      final dictionaryDialog = find.byType(StrongDictionaryDialog);
+      await waitFor(
+        () => dictionaryDialog.evaluate().isNotEmpty,
+        'Article link previews G3004',
+      );
+      final linkedArticle = find.descendant(
+        of: dictionaryDialog,
+        matching: article,
+      );
+      await waitFor(
+        () =>
+            linkedArticle.evaluate().isNotEmpty &&
+            tester
+                    .widget<StrongDictionaryEntryView>(linkedArticle)
+                    .strongNumber ==
+                3004,
+        'G3004 in the dialog',
+      );
+      await tester.tap(find.byKey(const Key('strong_dialog_open_page')));
+      await waitFor(
+        () =>
+            dictionaryDialog.evaluate().isEmpty &&
+            article.evaluate().length == 1 &&
+            tester.widget<StrongDictionaryEntryView>(article).strongNumber ==
+                3004,
+        'Bottom action opens the full G3004 article',
+      );
+      router.pop();
+      await waitFor(
+        () =>
+            article.evaluate().length == 1 &&
+            tester.widget<StrongDictionaryEntryView>(article).strongNumber ==
+                3056,
+        'Back restores the source article',
+      );
+      results['dictionary.crossReference'] =
+          'G3056 -> G3004 dialog -> G3004 page -> G3056';
       await tapReference('Ів. 1:1');
       await verify('dictionary.page', kjv, 43, 1, 1);
       await settings.changeDefaultBibleModule(oh1988);

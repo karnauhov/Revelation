@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/core/logging/common_logger.dart';
-import 'package:revelation/shared/config/app_constants.dart';
+import 'package:revelation/shared/ui/dialogs/hebrew_strong_dialog.dart';
 import 'package:revelation/shared/models/primary_source_word_link_target.dart';
 import 'package:revelation/shared/services/bible_book_abbreviations.dart';
 import 'package:revelation/shared/utils/links_utils.dart';
@@ -24,6 +24,19 @@ typedef WordsTapHandler =
       List<PrimarySourceWordLinkTarget> targets,
       BuildContext context,
     );
+
+typedef BiblePassageTapHandler =
+    Future<bool> Function(
+      BuildContext context,
+      int book,
+      int chapter,
+      int firstVerse,
+      int lastVerse,
+    );
+BiblePassageTapHandler? _biblePassageTapHandler;
+void setBiblePassageTapHandler(BiblePassageTapHandler? handler) {
+  _biblePassageTapHandler = handler;
+}
 
 GreekStrongTapHandler? _defaultGreekStrongTapHandler;
 GreekStrongPickerTapHandler? _defaultGreekStrongPickerTapHandler;
@@ -111,11 +124,7 @@ Future<bool> handleAppLink(
   }
 
   if (_hasScheme(link, 'bible')) {
-    return _handleBibleLink(
-      context,
-      link,
-      popBeforeScreenPush: popBeforeScreenPush,
-    );
+    return _handleBibleLink(context, link);
   }
 
   return launchLink(link);
@@ -198,15 +207,10 @@ Future<bool> _handleStrongLink(
   }
 
   if (strongCode.startsWith('H') || strongCode.startsWith('h')) {
-    if (strongCode.length < 2) {
-      log.warning("Wrong Strong's Hebrew number: '$strongCode'");
-      return false;
-    }
-    final hebrewUrl = AppConstants.hebrewUrl.replaceFirst(
-      '@index',
-      strongCode.substring(1),
-    );
-    return launchLink(hebrewUrl);
+    final number = int.tryParse(strongCode.substring(1));
+    if (number == null || number < 1) return false;
+    unawaited(showHebrewStrongDialog(context, number));
+    return true;
   }
 
   if (strongCode.startsWith('G') || strongCode.startsWith('g')) {
@@ -414,13 +418,9 @@ Future<bool> _handleWordsLink(
   return true;
 }
 
-Future<bool> _handleBibleLink(
-  BuildContext context,
-  String href, {
-  required bool popBeforeScreenPush,
-}) async {
+Future<bool> _handleBibleLink(BuildContext context, String href) async {
   final address = href.split(':');
-  if (address.length < 2) {
+  if (address.length < 2 || address.length > 3) {
     log.warning("Wrong Bible link: '$href'");
     return false;
   }
@@ -449,38 +449,21 @@ Future<bool> _handleBibleLink(
     return false;
   }
 
-  var verse = 1;
-  if (address.length > 2 && address[2].trim().isNotEmpty) {
-    final parsedVerse = int.tryParse(address[2].trim());
-    if (parsedVerse == null || parsedVerse <= 0) {
-      log.warning("Wrong Bible verse in link: '$href'");
-      return false;
-    }
-    verse = parsedVerse;
+  final range = address.length == 3 && address[2].trim().isNotEmpty
+      ? address[2].trim().split(RegExp(r'[-–]'))
+      : ['1'];
+  final first = int.tryParse(range.first);
+  final last = int.tryParse(range.last);
+  if (range.length > 2 ||
+      first == null ||
+      last == null ||
+      first < 1 ||
+      last < first) {
+    return false;
   }
-
-  final router = GoRouter.of(context);
-  final navigator = Navigator.of(context);
-  final currentRoute = ModalRoute.of(context);
-  if (popBeforeScreenPush && navigator.canPop()) {
-    if (currentRoute is PopupRoute) {
-      navigator.popUntil((route) => route is! PopupRoute);
-    } else {
-      navigator.pop();
-    }
-  }
-
-  router.push(
-    Uri(
-      path: '/bible',
-      queryParameters: <String, String>{
-        'book': bookId.toString(),
-        'chapter': bibleChapter.toString(),
-        'verse': verse.toString(),
-      },
-    ).toString(),
-  );
-  return true;
+  final showPassage = _biblePassageTapHandler;
+  return showPassage != null &&
+      await showPassage(context, bookId, bibleChapter, first, last);
 }
 
 Future<BibleBookAbbreviationCatalog> _loadBibleBookAbbreviationCatalog() async {

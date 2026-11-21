@@ -1,12 +1,14 @@
 @Tags(['widget'])
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:revelation/features/bible/bible.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
 
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
   late BibleVerseMap verseMap;
   setUpAll(() async {
     verseMap = await BibleVerseMap.loadFromAssets();

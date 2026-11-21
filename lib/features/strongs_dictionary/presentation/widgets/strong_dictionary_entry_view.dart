@@ -25,7 +25,6 @@ class StrongDictionaryEntryView extends StatelessWidget {
     this.forwardButtonKey = const Key('strong_dictionary_nav_forward'),
     this.bibleTextProvider,
     this.copyBibleText,
-    this.popBeforeBibleNavigation = false,
     super.key,
   });
 
@@ -45,7 +44,6 @@ class StrongDictionaryEntryView extends StatelessWidget {
   final Key forwardButtonKey;
   final StrongUsageBibleTextProvider? bibleTextProvider;
   final StrongUsageBibleTextCopyHandler? copyBibleText;
-  final bool popBeforeBibleNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +68,6 @@ class StrongDictionaryEntryView extends StatelessWidget {
           },
           bibleTextProvider: bibleTextProvider,
           copyBibleText: copyBibleText,
-          popBeforeBibleNavigation: popBeforeBibleNavigation,
         ),
       },
       padding: padding,

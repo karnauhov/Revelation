@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
 import 'package:revelation/features/bible/domain/models/bible_module_info.dart';
+import 'package:revelation/features/bible/domain/models/bible_reading_session.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_state.dart';
 import 'package:revelation/shared/models/bible_verse_reference.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
@@ -18,6 +19,8 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
     int initialChapter = 1,
     int initialVerse = 1,
     int initialVerseCount = 1,
+    this.savedPlace,
+    this.initialShowStrongNumbers,
     String? initialModuleFile,
   }) : _repository = repository,
        _languageCode = languageCode,
@@ -30,6 +33,8 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
 
   final BibleRepository _repository;
   final String _languageCode;
+  final BiblePanePlace? savedPlace;
+  final bool? initialShowStrongNumbers;
   final int _initialBookId;
   final int _initialChapter;
   final int _initialVerse;
@@ -76,6 +81,11 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
       if (isClosed || !_requestGuard.isActive(token)) {
         return;
       }
+      final initialRange = _rangeForChapter(data.reference, data.verseMap);
+      final chapterLength = data.verseMap.verseCount(
+        bookId: data.reference.bookId,
+        chapter: data.reference.chapter,
+      );
       emit(
         state.copyWith(
           status: BibleReaderStatus.ready,
@@ -85,15 +95,15 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
           selectedModuleSet: true,
           selectedReference: data.reference,
           selectedReferenceSet: true,
-          selectionStartVerse: _rangeForChapter(
-            data.reference,
-            data.verseMap,
-          ).start,
+          showStrongNumbers:
+              initialShowStrongNumbers ?? state.showStrongNumbers,
+          selectionStartVerse:
+              savedPlace?.selectionStart.clamp(1, chapterLength) ??
+              initialRange.start,
           selectionStartVerseSet: true,
-          selectionEndVerse: _rangeForChapter(
-            data.reference,
-            data.verseMap,
-          ).end,
+          selectionEndVerse:
+              savedPlace?.selectionEnd.clamp(1, chapterLength) ??
+              initialRange.end,
           selectionEndVerseSet: true,
           verses: data.verses,
           loadingMessage: null,
@@ -240,7 +250,8 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
     required int verse,
   }) {
     final reference = state.selectedReference;
-    if (reference != null &&
+    if (!state.isBusy &&
+        reference != null &&
         reference.bookId == bookId &&
         reference.chapter == chapter &&
         state.verses.isNotEmpty) {

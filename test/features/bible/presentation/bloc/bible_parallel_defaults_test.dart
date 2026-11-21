@@ -16,7 +16,7 @@ void main() {
 
   for (final language in ['en', 'uk', 'es', 'ru']) {
     test(
-      'opens only the available translation for $language without saving defaults',
+      'opens only the available translation for $language and remembers the first session',
       () async {
         final repository = FakeParallelBibleRepository(map);
         final cubit = _workspace(repository, language: language);
@@ -27,7 +27,7 @@ void main() {
           if (language == 'en') FakeParallelBibleRepository.english,
           if (language == 'uk') FakeParallelBibleRepository.ukrainian,
         ]);
-        expect(repository.savedModuleLists, isEmpty);
+        expect(repository.savedModuleLists.single, _files(cubit));
         cubit.readerCubitFor('primary').selectLoadedVerse(6);
         await _drain();
         expect(repository.translationQueries, 1);
@@ -43,10 +43,7 @@ void main() {
     final repository = FakeParallelBibleRepository(map);
     final link = _workspace(repository, language: 'uk', reference: true);
     await link.loadInitial();
-    expect(_files(link), [
-      FakeParallelBibleRepository.original,
-      FakeParallelBibleRepository.ukrainian,
-    ]);
+    expect(_files(link), [FakeParallelBibleRepository.english]);
     expect(
       await const SharedPreferencesBiblePreferencesStore()
           .loadLastModuleFiles(),
@@ -60,6 +57,101 @@ void main() {
     expect(_files(normal), [FakeParallelBibleRepository.english]);
   });
 
+  test(
+    'three independent places survive a temporary link and a new workspace',
+    () async {
+      final repository = FakeParallelBibleRepository(map);
+      await _store(repository.modules.map((m) => m.fileName).toList());
+      final normal = _workspace(repository);
+      await normal.loadInitial();
+      normal.toggleLinkedNavigation();
+      for (var i = 0; i < 3; i++) {
+        final id = normal.state.paneIds[i];
+        await normal
+            .readerCubitFor(id)
+            .selectReference(bookId: i + 1, chapter: 2, verse: 4 + i);
+        await _drain();
+        normal.rememberScroll(id, 10 + i);
+      }
+      await normal.close();
+      final baseline = await const SharedPreferencesBiblePreferencesStore()
+          .loadReadingSession();
+      expect(baseline!.panes.map((p) => (p.book, p.verse, p.topVerse)), [
+        (1, 4, 10),
+        (2, 5, 11),
+        (3, 6, 12),
+      ]);
+
+      final linked = _workspace(
+        repository,
+        reference: true,
+        module: FakeParallelBibleRepository.english,
+      );
+      await linked.loadInitial();
+      expect(linked.state.linkedNavigation, isFalse);
+      expect(_files(linked), repository.modules.map((m) => m.fileName));
+      for (final id in linked.state.paneIds) {
+        final ref = linked.readerCubitFor(id).state.selectedReference!;
+        expect((ref.bookId, ref.chapter, ref.verse), (40, 17, 5));
+      }
+      linked.toggleLinkedNavigation();
+      await linked
+          .readerCubitFor('primary')
+          .selectReference(bookId: 66, chapter: 2, verse: 2);
+      await linked.closeReaderPane(linked.state.paneIds.last);
+      await linked.close();
+      expect(
+        await const SharedPreferencesBiblePreferencesStore()
+            .loadReadingSession(),
+        baseline,
+      );
+      final restored = _workspace(repository);
+      addTearDown(restored.close);
+      await restored.loadInitial();
+      expect(restored.state.linkedNavigation, isFalse);
+      for (var i = 0; i < 3; i++) {
+        final id = restored.state.paneIds[i];
+        final ref = restored.readerCubitFor(id).state.selectedReference!;
+        expect(
+          (ref.bookId, ref.chapter, ref.verse, restored.viewportVerseFor(id)),
+          (i + 1, 2, 4 + i, 10 + i),
+        );
+      }
+    },
+  );
+
+  test(
+    'rapid linked navigation keeps the latest reference after a slow parallel load',
+    () async {
+      final repository = FakeParallelBibleRepository(map);
+      final normal = _workspace(repository);
+      await normal.loadInitial();
+      final gate = Completer<void>();
+      repository.chapterGates[FakeParallelBibleRepository.english] =
+          gate.future;
+      final primary = normal.readerCubitFor('primary');
+      await primary.selectReference(bookId: 43, chapter: 1, verse: 2);
+      await _drain();
+      await primary.selectReference(bookId: 43, chapter: 2, verse: 5);
+      await _drain();
+      gate.complete();
+      await _drain();
+      for (final id in normal.state.paneIds) {
+        expect(
+          normal.readerCubitFor(id).state.selectedReference,
+          primary.state.selectedReference,
+        );
+      }
+      await normal.close();
+      final saved = await const SharedPreferencesBiblePreferencesStore()
+          .loadReadingSession();
+      expect(saved!.panes.map((p) => (p.book, p.chapter, p.verse)), [
+        (43, 2, 5),
+        (43, 2, 5),
+      ]);
+    },
+  );
+
   test('an explicit module wins over the saved layout', () async {
     await _store([FakeParallelBibleRepository.ukrainian]);
     final cubit = _workspace(
@@ -72,11 +164,12 @@ void main() {
   });
 
   test(
-    'closing the translation persists a single pane and later links remain parallel',
+    'closing the translation persists one pane for both menu and reference visits',
     () async {
       final repository = FakeParallelBibleRepository(map);
       final cubit = _workspace(repository);
       await cubit.loadInitial();
+      repository.savedModuleLists.clear();
       await cubit.closeReaderPane(cubit.state.paneIds.last);
       expect(repository.savedModuleLists, [
         [FakeParallelBibleRepository.original],
@@ -89,10 +182,7 @@ void main() {
       final link = _workspace(repository, reference: true);
       addTearDown(link.close);
       await link.loadInitial();
-      expect(_files(link), [
-        FakeParallelBibleRepository.original,
-        FakeParallelBibleRepository.english,
-      ]);
+      expect(_files(link), [FakeParallelBibleRepository.original]);
     },
   );
 
@@ -155,7 +245,7 @@ void main() {
         FakeParallelBibleRepository.original,
         FakeParallelBibleRepository.english,
       ]);
-      expect(repository.savedModuleLists, isEmpty);
+      expect(repository.savedModuleLists.last, _files(cubit));
     },
   );
 
@@ -166,6 +256,7 @@ void main() {
       final repository = FakeParallelBibleRepository(map);
       final cubit = _workspace(repository);
       await cubit.loadInitial();
+      repository.savedModuleLists.clear();
       final gate = Completer<void>();
       repository.chapterGates[FakeParallelBibleRepository.english] =
           gate.future;
@@ -188,6 +279,7 @@ void main() {
       final cubit = _workspace(repository);
       addTearDown(cubit.close);
       await cubit.loadInitial();
+      repository.savedModuleLists.clear();
       repository.beforeSave = (_) async =>
           throw StateError('Synthetic write failure');
       await cubit
@@ -262,6 +354,7 @@ void main() {
       final cubit = _workspace(repository);
       addTearDown(cubit.close);
       await cubit.loadInitial();
+      repository.savedModuleLists.clear();
       final gate = Completer<void>();
       repository.chapterGates[FakeParallelBibleRepository.english] =
           gate.future;
@@ -287,6 +380,7 @@ void main() {
       final cubit = _workspace(repository);
       addTearDown(cubit.close);
       await cubit.loadInitial();
+      repository.savedModuleLists.clear();
       final gate = Completer<void>();
       repository.beforeSave = (_) => gate.future;
       await cubit

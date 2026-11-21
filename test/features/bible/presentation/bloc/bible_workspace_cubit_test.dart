@@ -1,10 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/bible/bible.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
+import 'package:revelation/features/bible/domain/models/bible_reading_session.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubit.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test(
@@ -155,7 +158,8 @@ class _FakeBibleRepository extends BibleRepository {
   Future<void> saveLastModuleFile(String moduleFile) async {}
 
   @override
-  Future<void> saveLastModuleFiles(List<String> moduleFiles) async {
+  Future<void> saveReadingSession(BibleReadingSession session) async {
+    final moduleFiles = [for (final pane in session.panes) pane.module];
     storedModuleFiles = List<String>.from(moduleFiles);
     savedModuleFileLists.add(List<String>.from(moduleFiles));
   }

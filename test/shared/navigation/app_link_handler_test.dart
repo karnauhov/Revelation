@@ -41,6 +41,7 @@ void main() {
     setDefaultGreekStrongPickerTapHandler(null);
     setDefaultWordTapHandler(null);
     setDefaultWordsTapHandler(null);
+    setBiblePassageTapHandler(null);
   });
 
   tearDown(() async {
@@ -48,6 +49,7 @@ void main() {
     setDefaultGreekStrongPickerTapHandler(null);
     setDefaultWordTapHandler(null);
     setDefaultWordsTapHandler(null);
+    setBiblePassageTapHandler(null);
     await GetIt.I.reset();
   });
 
@@ -180,19 +182,26 @@ void main() {
       expect(handled, isFalse);
     });
 
-    testWidgets('hebrew strong link launches external bible hub url', (
-      tester,
-    ) async {
-      final context = await pumpContext(tester);
+    testWidgets(
+      'Hebrew link previews the entry before the external dictionary action',
+      (tester) async {
+        final context = await pumpLocalizedContext(tester);
+        final handled = await handleAppLink(context, 'strong:H7225');
+        await tester.pumpAndSettle();
+        expect(find.text('H7225'), findsOneWidget);
+        expect(fakeUrlLauncherPlatform.launchedUrls, isEmpty);
+        await tester.tap(
+          find.byKey(const Key('hebrew_strong_open_dictionary')),
+        );
+        await tester.pumpAndSettle();
 
-      final handled = await handleAppLink(context, 'strong:H7225');
-
-      expect(handled, isTrue);
-      expect(
-        fakeUrlLauncherPlatform.launchedUrls,
-        contains('https://biblehub.com/hebrew/7225.htm'),
-      );
-    });
+        expect(handled, isTrue);
+        expect(
+          fakeUrlLauncherPlatform.launchedUrls,
+          contains('https://biblehub.com/hebrew/7225.htm'),
+        );
+      },
+    );
 
     testWidgets('strong link rejects malformed or unknown numbers', (
       tester,
@@ -508,20 +517,34 @@ void main() {
   });
 
   group('bible links', () {
-    testWidgets('bible link pushes internal Bible route with canonical ids', (
+    setUp(() {
+      setBiblePassageTapHandler((context, book, chapter, first, last) async {
+        unawaited(
+          showDialog<void>(
+            context: context,
+            builder: (_) => SimpleDialog(
+              title: Text('preview:$book:$chapter:$first-$last'),
+            ),
+          ),
+        );
+        return true;
+      });
+    });
+
+    testWidgets('Bible link previews the range using canonical IDs', (
       tester,
     ) async {
       final fixture = await _pumpRouterFixture(tester);
 
       final handled = await handleAppLink(
         fixture.contexts['home']!,
-        'bible:Rev22:3',
+        'bible:Rev22:3-4',
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(handled, isTrue);
-      expect(find.text('bible:66:22:3'), findsOneWidget);
+      expect(find.text('preview:66:22:3-4'), findsOneWidget);
     });
 
     testWidgets('bible link resolves localized book abbreviations', (
@@ -537,7 +560,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(handled, isTrue);
-      expect(find.text('bible:66:22:3'), findsOneWidget);
+      expect(find.text('preview:66:22:3-3'), findsOneWidget);
     });
 
     testWidgets('bible link resolves database John abbreviation', (
@@ -553,56 +576,60 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(handled, isTrue);
-      expect(find.text('bible:43:1:1'), findsOneWidget);
+      expect(find.text('preview:43:1:1-1'), findsOneWidget);
     });
 
-    testWidgets('bible link closes nested popup routes before pushing route', (
-      tester,
-    ) async {
-      final fixture = await _pumpRouterFixture(tester);
-      BuildContext? innerDialogContext;
+    testWidgets(
+      'closing a Bible preview returns to its originating nested dialog',
+      (tester) async {
+        final fixture = await _pumpRouterFixture(tester);
+        BuildContext? innerDialogContext;
 
-      unawaited(
-        showDialog<void>(
-          context: fixture.contexts['home']!,
-          builder: (outerContext) {
-            return AlertDialog(
-              content: TextButton(
-                onPressed: () {
-                  unawaited(
-                    showDialog<void>(
-                      context: outerContext,
-                      builder: (context) {
-                        innerDialogContext = context;
-                        return const AlertDialog(content: Text('inner-dialog'));
-                      },
-                    ),
-                  );
-                },
-                child: const Text('open-inner'),
-              ),
-            );
-          },
-        ),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('open-inner'));
-      await tester.pumpAndSettle();
-      expect(find.text('inner-dialog'), findsOneWidget);
+        unawaited(
+          showDialog<void>(
+            context: fixture.contexts['home']!,
+            builder: (outerContext) {
+              return AlertDialog(
+                content: TextButton(
+                  onPressed: () {
+                    unawaited(
+                      showDialog<void>(
+                        context: outerContext,
+                        builder: (context) {
+                          innerDialogContext = context;
+                          return const AlertDialog(
+                            content: Text('inner-dialog'),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: const Text('open-inner'),
+                ),
+              );
+            },
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('open-inner'));
+        await tester.pumpAndSettle();
+        expect(find.text('inner-dialog'), findsOneWidget);
 
-      final handled = await handleAppLink(
-        innerDialogContext!,
-        'bible:Rev22:3',
-        popBeforeScreenPush: true,
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
+        final handled = await handleAppLink(
+          innerDialogContext!,
+          'bible:Rev22:3',
+          popBeforeScreenPush: true,
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
 
-      expect(handled, isTrue);
-      expect(find.text('inner-dialog'), findsNothing);
-      expect(find.byType(AlertDialog), findsNothing);
-      expect(find.text('bible:66:22:3'), findsOneWidget);
-    });
+        expect(handled, isTrue);
+        expect(find.text('preview:66:22:3-3'), findsOneWidget);
+        Navigator.of(innerDialogContext!).pop();
+        await tester.pumpAndSettle();
+        expect(find.text('inner-dialog'), findsOneWidget);
+      },
+    );
 
     testWidgets('bible link rejects malformed payload', (tester) async {
       final fixture = await _pumpRouterFixture(tester);

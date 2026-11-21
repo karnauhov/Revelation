@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
+import 'package:revelation/features/bible/domain/models/bible_reading_session.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_state.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_state.dart';
@@ -54,15 +55,17 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
       <String, BibleReaderCubit>{};
   final Map<String, StreamSubscription<BibleReaderState>> _subscriptions =
       <String, StreamSubscription<BibleReaderState>>{};
-  List<String> _lastSavedModuleFiles = const <String>[];
+  BibleReadingSession? _lastSession;
+  final _viewport = <String, ({int book, int chapter, int verse, int top})>{};
+  bool _initializing = true;
+  bool get _temporary => _isReferenceLink || _initialModuleFile != null;
   int _nextParallelPaneIndex = 2;
-  Future<void>? _referenceSync;
+  final _mirroredReferences = <String, BibleVerseReference>{};
   Future<void>? _initialLoad;
   Future<void>? _translationLoad;
   Future<void> _saveQueue = Future<void>.value();
   bool _useDefaultLayout = false;
   bool _defaultTranslationResolved = false;
-  bool _pendingSave = false;
   bool _closing = false;
   int _layoutRevision = 0;
 
@@ -74,62 +77,69 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
   Future<void> loadInitial() => _initialLoad ??= _loadInitial();
 
   Future<void> _loadInitial() async {
-    final storedModuleFiles = await _persistenceRepository
-        .loadLastModuleFiles();
-    if (isClosed || _closing) {
-      return;
-    }
-    if (_initialModuleFile == null &&
-        (_isReferenceLink || storedModuleFiles.isEmpty)) {
-      _preferredModuleFile = await _resolveDefaultModule?.call();
-    }
+    final session = await _persistenceRepository.loadReadingSession();
     if (isClosed || _closing) return;
-    final paneModuleFiles = _initialPaneModuleFiles(storedModuleFiles);
-    final paneIds = <String>[];
-    for (var index = 0; index < paneModuleFiles.length; index++) {
-      paneIds.add(index == 0 ? primaryPaneId : _newParallelPaneId());
-    }
-
-    for (var index = 0; index < paneIds.length; index++) {
-      final readerCubit = _createReaderCubit(
-        initialBookId: _initialBookId,
-        initialChapter: _initialChapter,
-        initialVerse: _initialVerse,
-        initialModuleFile: paneModuleFiles[index],
-      );
-      _addReaderPane(paneIds[index], readerCubit);
-    }
-    emit(state.copyWith(paneIds: List<String>.unmodifiable(paneIds)));
-
-    await Future.wait([
-      for (final paneId in paneIds) _readerCubits[paneId]!.loadInitial(),
-    ]);
-    if (isClosed || _closing) {
-      return;
-    }
-    await _ensureDefaultTranslation();
-  }
-
-  List<String?> _initialPaneModuleFiles(List<String> storedModuleFiles) {
-    final normalizedStored = storedModuleFiles
-        .map((moduleFile) => moduleFile.trim())
-        .where((moduleFile) => moduleFile.isNotEmpty)
-        .toList(growable: false);
-    _lastSavedModuleFiles = List<String>.unmodifiable(normalizedStored);
-    _useDefaultLayout =
-        _isReferenceLink ||
-        _initialModuleFile != null ||
-        normalizedStored.isEmpty;
+    final storedFiles = session == null
+        ? await _persistenceRepository.loadLastModuleFiles()
+        : [for (final p in session.panes) p.module];
+    if (isClosed || _closing) return;
+    _lastSession = session;
+    final files = storedFiles
+        .where((f) => f.trim().isNotEmpty)
+        .take(AppConstants.maxParallelBibleReaders)
+        .toList();
+    _useDefaultLayout = files.isEmpty;
     if (_useDefaultLayout) {
-      return <String?>[
+      if (_initialModuleFile == null)
+        _preferredModuleFile = await _resolveDefaultModule?.call();
+      if (isClosed || _closing) return;
+      files.add(
         _initialModuleFile ??
             (_isReferenceLink ? _preferredModuleFile : null) ??
             AppConstants.defaultBibleModuleDB,
-      ];
+      );
+    } else if (_initialModuleFile != null &&
+        !files.contains(_initialModuleFile)) {
+      // Honour a module-specific link for this visit without adding a pane.
+      files[0] = _initialModuleFile;
     }
-    return List<String?>.unmodifiable(
-      normalizedStored.take(AppConstants.maxParallelBibleReaders),
+    final paneIds = <String>[];
+    for (var i = 0; i < files.length; i++) {
+      final id = i == 0 ? primaryPaneId : _newParallelPaneId();
+      final place = _temporary ? null : session?.panes[i];
+      final reader = _createReaderCubit(
+        initialBookId: place?.book ?? _initialBookId,
+        initialChapter: place?.chapter ?? _initialChapter,
+        initialVerse: place?.verse ?? _initialVerse,
+        initialModuleFile: files[i],
+        savedPlace: place,
+        initialShowStrongNumbers: session?.panes[i].showStrongNumbers,
+      );
+      if (place != null && place.topVerse != null) {
+        _viewport[id] = (
+          book: place.book,
+          chapter: place.chapter,
+          verse: place.verse,
+          top: place.topVerse!,
+        );
+      }
+      paneIds.add(id);
+      _addReaderPane(id, reader);
+    }
+    emit(
+      state.copyWith(
+        paneIds: List.unmodifiable(paneIds),
+        linkedNavigation: session?.linkedNavigation ?? true,
+      ),
     );
+    await Future.wait([
+      for (final id in paneIds) _readerCubits[id]!.loadInitial(),
+    ]);
+    if (isClosed || _closing) return;
+    await _ensureDefaultTranslation();
+    if (isClosed || _closing) return;
+    _initializing = false;
+    await _saveSession();
   }
 
   void openParallelReader() {
@@ -150,7 +160,6 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     );
     final paneId = _newParallelPaneId();
     _layoutRevision++;
-    _pendingSave = true;
     _addReaderPane(paneId, readerCubit);
     emit(
       state.copyWith(
@@ -174,12 +183,13 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     final subscription = _subscriptions.remove(paneId);
     final readerCubit = _readerCubits.remove(paneId);
     _layoutRevision++;
-    _pendingSave = true;
     emit(state.copyWith(paneIds: List<String>.unmodifiable(nextPaneIds)));
 
+    _viewport.remove(paneId);
+    _mirroredReferences.remove(paneId);
     unawaited(subscription?.cancel());
     unawaited(readerCubit?.close());
-    await _saveOpenModuleFiles();
+    await _saveSession();
   }
 
   String _newParallelPaneId() {
@@ -188,10 +198,12 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
 
   void toggleLinkedNavigation() {
     final nextLinkedNavigation = !state.linkedNavigation;
+    _mirroredReferences.clear();
     emit(state.copyWith(linkedNavigation: nextLinkedNavigation));
     if (nextLinkedNavigation) {
       unawaited(_syncReadersToPrimaryReference());
     }
+    unawaited(_saveSession());
   }
 
   BibleReaderCubit readerCubitFor(String paneId) {
@@ -207,6 +219,8 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     required int initialChapter,
     required int initialVerse,
     String? initialModuleFile,
+    BiblePanePlace? savedPlace,
+    bool? initialShowStrongNumbers,
   }) {
     return BibleReaderCubit(
       repository: _repositoryFactory(),
@@ -215,6 +229,8 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
       initialChapter: initialChapter,
       initialVerse: initialVerse,
       initialVerseCount: _initialVerseCount,
+      savedPlace: savedPlace,
+      initialShowStrongNumbers: initialShowStrongNumbers,
       initialModuleFile: initialModuleFile,
       loadingBibleMessage: loadingBibleMessage,
       loadingChapterMessage: loadingChapterMessage,
@@ -226,19 +242,30 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
   void _addReaderPane(String paneId, BibleReaderCubit readerCubit) {
     _readerCubits[paneId] = readerCubit;
     String? previousModuleFile;
+    BibleVerseReference? previousReference;
     _subscriptions[paneId] = readerCubit.stream.listen((readerState) {
       final firstReady =
           previousModuleFile == null &&
           readerState.status == BibleReaderStatus.ready;
+      final moved = readerState.selectedReference != previousReference;
       if (readerState.status == BibleReaderStatus.ready) {
+        final reference = readerState.selectedReference;
+        if (previousReference != null && previousReference != reference) {
+          _viewport.remove(paneId);
+        }
+        previousReference = reference;
         final moduleFile = readerState.selectedModule?.fileName;
         if (previousModuleFile != null && previousModuleFile != moduleFile) {
           _layoutRevision++;
-          _pendingSave = true;
         }
         previousModuleFile = moduleFile;
       }
-      _handleReaderStateChanged(paneId, readerState, firstReady: firstReady);
+      _handleReaderStateChanged(
+        paneId,
+        readerState,
+        firstReady: firstReady,
+        moved: moved,
+      );
     });
   }
 
@@ -298,23 +325,24 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     if (state.linkedNavigation) {
       await _syncReadersToPrimaryReference();
     }
-    await _saveOpenModuleFiles();
+    await _saveSession();
   }
 
   Future<void> _loadParallelReader(BibleReaderCubit readerCubit) async {
     await readerCubit.loadInitial();
     if (isClosed || _closing || !state.linkedNavigation) {
-      unawaited(_saveOpenModuleFiles());
+      unawaited(_saveSession());
       return;
     }
     await _syncReadersToPrimaryReference();
-    unawaited(_saveOpenModuleFiles());
+    unawaited(_saveSession());
   }
 
   void _handleReaderStateChanged(
     String paneId,
     BibleReaderState readerState, {
     required bool firstReady,
+    required bool moved,
   }) {
     if (isClosed || _closing) {
       return;
@@ -323,33 +351,23 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
         readerState.status == BibleReaderStatus.ready) {
       unawaited(_ensureDefaultTranslation());
     }
-    if (_pendingSave) {
-      unawaited(_saveOpenModuleFiles());
-    }
-
-    // A new pane's initial reference may already be stale. Its loader will
-    // synchronize it to the current primary, never navigate the primary back.
-    if (firstReady && paneId != primaryPaneId) {
-      return;
-    }
-
-    if (!state.hasMultiplePanes ||
-        !state.linkedNavigation ||
-        _referenceSync != null ||
-        readerState.isBusy) {
-      return;
-    }
-
+    // A newly opened pane catches up to the primary when its loader completes.
     final reference = readerState.selectedReference;
-    if (reference == null) {
-      return;
+    if (moved &&
+        (!firstReady || paneId == primaryPaneId) &&
+        state.hasMultiplePanes &&
+        state.linkedNavigation &&
+        !readerState.isBusy &&
+        reference != null &&
+        _readerCubits[paneId]?.state.selectedReference == reference &&
+        _mirroredReferences.remove(paneId) != reference) {
+      unawaited(_syncReferenceFrom(paneId, reference));
     }
-    unawaited(_syncReferenceFrom(paneId, reference));
+    unawaited(_saveSession());
   }
 
   Future<void> _syncReadersToPrimaryReference() async {
-    await _referenceSync;
-    if (isClosed || _closing) {
+    if (isClosed || _closing || !state.linkedNavigation) {
       return;
     }
     final reference = _readerCubits[primaryPaneId]?.state.selectedReference;
@@ -366,75 +384,107 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     if (isClosed || _closing) {
       return;
     }
-    final running = _referenceSync;
-    if (running != null) {
-      await running;
-      return;
+    final changes = <Future<void>>[];
+    for (final entry in _readerCubits.entries) {
+      if (entry.key == sourcePaneId) continue;
+      final reader = entry.value;
+      if (reader.state.selectedModule == null ||
+          _mirroredReferences[entry.key] == reference)
+        continue;
+      if (!reader.state.isBusy && reader.state.selectedReference == reference)
+        continue;
+      _mirroredReferences[entry.key] = reference;
+      changes.add(
+        reader.selectReference(
+          bookId: reference.bookId,
+          chapter: reference.chapter,
+          verse: reference.verse,
+        ),
+      );
     }
-
-    final targets = <BibleReaderCubit>[
-      for (final entry in _readerCubits.entries)
-        if (entry.key != sourcePaneId) entry.value,
-    ];
-    if (targets.isEmpty) {
-      return;
-    }
-
-    _referenceSync =
-        Future.wait([
-          for (final readerCubit in targets)
-            if (readerCubit.state.selectedReference != reference)
-              readerCubit.selectReference(
-                bookId: reference.bookId,
-                chapter: reference.chapter,
-                verse: reference.verse,
-              ),
-        ]).then<void>((_) {}).whenComplete(() {
-          _referenceSync = null;
-        });
-    await _referenceSync;
+    await Future.wait(changes);
   }
 
-  Future<void> _saveOpenModuleFiles() async {
-    if (isClosed || _closing || !_pendingSave) {
-      return;
+  int? viewportVerseFor(String paneId) {
+    final ref = _readerCubits[paneId]?.state.selectedReference;
+    final anchor = _viewport[paneId];
+    return ref != null &&
+            anchor != null &&
+            anchor.book == ref.bookId &&
+            anchor.chapter == ref.chapter &&
+            anchor.verse == ref.verse
+        ? anchor.top
+        : null;
+  }
+
+  void rememberScroll(String paneId, int verse) {
+    if (_closing || isClosed) return;
+    final ids = state.linkedNavigation ? state.paneIds : [paneId];
+    for (final id in ids) {
+      final ref = _readerCubits[id]?.state.selectedReference;
+      if (ref != null)
+        _viewport[id] = (
+          book: ref.bookId,
+          chapter: ref.chapter,
+          verse: ref.verse,
+          top: verse,
+        );
     }
-    final moduleFiles = <String>[];
-    for (final paneId in state.paneIds) {
-      final readerState = _readerCubits[paneId]?.state;
-      if (readerState?.status != BibleReaderStatus.ready) {
-        return; // Never save a partially loaded parallel layout.
-      }
-      final module = readerState?.selectedModule;
-      if (module != null) {
-        moduleFiles.add(module.fileName);
-      }
+    unawaited(_saveSession());
+  }
+
+  Future<void> _saveSession() {
+    if (_temporary ||
+        _initializing ||
+        _closing ||
+        isClosed ||
+        state.paneIds.isEmpty)
+      return _saveQueue;
+    final panes = <BiblePanePlace>[];
+    for (final id in state.paneIds) {
+      final reader = _readerCubits[id]!.state;
+      final mirrored = state.linkedNavigation ? _mirroredReferences[id] : null;
+      final ref = mirrored ?? reader.selectedReference;
+      final module = reader.selectedModule;
+      if ((reader.status != BibleReaderStatus.ready && mirrored == null) ||
+          ref == null ||
+          module == null)
+        return _saveQueue;
+      final moving = mirrored != null && mirrored != reader.selectedReference;
+      panes.add((
+        module: module.fileName,
+        book: ref.bookId,
+        chapter: ref.chapter,
+        verse: ref.verse,
+        topVerse: moving ? null : viewportVerseFor(id),
+        selectionStart: moving
+            ? ref.verse
+            : reader.selectionStartVerse ?? ref.verse,
+        selectionEnd: moving
+            ? ref.verse
+            : reader.selectionEndVerse ?? ref.verse,
+        showStrongNumbers: reader.showStrongNumbers,
+      ));
     }
-    if (moduleFiles.isEmpty ||
-        _sameStringList(moduleFiles, _lastSavedModuleFiles)) {
-      _pendingSave = false;
-      return;
-    }
-    _pendingSave = false;
-    _lastSavedModuleFiles = List<String>.unmodifiable(moduleFiles);
-    final snapshot = _lastSavedModuleFiles;
-    _saveQueue = _saveQueue.then((_) async {
-      try {
-        await _persistenceRepository.saveLastModuleFiles(snapshot);
-      } catch (error, stackTrace) {
-        if (_sameStringList(_lastSavedModuleFiles, snapshot)) {
-          _lastSavedModuleFiles = const [];
-          _pendingSave = true;
-        }
-        // Report through AppBlocObserver without poisoning subsequent saves.
-        addError(error, stackTrace);
-      }
+    final next = BibleReadingSession(
+      linkedNavigation: state.linkedNavigation,
+      panes: panes,
+    );
+    if (next == _lastSession) return _saveQueue;
+    _lastSession = next;
+    _saveQueue = _persistenceRepository.saveReadingSession(next).catchError((
+      Object error,
+      StackTrace trace,
+    ) {
+      if (_lastSession == next) _lastSession = null;
+      if (!isClosed) addError(error, trace);
     });
-    await _saveQueue;
+    return _saveQueue;
   }
 
   @override
   Future<void> close() async {
+    _saveSession();
     _closing = true;
     _layoutRevision++;
     for (final subscription in _subscriptions.values) {
@@ -448,19 +498,4 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     await _saveQueue;
     return super.close();
   }
-}
-
-bool _sameStringList(List<String> left, List<String> right) {
-  if (identical(left, right)) {
-    return true;
-  }
-  if (left.length != right.length) {
-    return false;
-  }
-  for (var index = 0; index < left.length; index++) {
-    if (left[index] != right[index]) {
-      return false;
-    }
-  }
-  return true;
 }

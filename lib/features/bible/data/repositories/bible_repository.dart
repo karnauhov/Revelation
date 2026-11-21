@@ -1,3 +1,4 @@
+import 'package:revelation/features/bible/domain/models/bible_reading_session.dart';
 import 'package:revelation/features/bible/data/repositories/bible_module_data_source.dart';
 import 'package:revelation/features/bible/data/repositories/bible_preferences_store.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
@@ -175,6 +176,12 @@ class BibleRepository {
   Future<void> saveLastModuleFile(String moduleFile) {
     return _preferencesStore.saveLastModuleFile(moduleFile);
   }
+
+  Future<BibleReadingSession?> loadReadingSession() =>
+      _preferencesStore.loadReadingSession();
+
+  Future<void> saveReadingSession(BibleReadingSession session) =>
+      _preferencesStore.saveReadingSession(session);
 
   Future<List<String>> loadLastModuleFiles() {
     return _preferencesStore.loadLastModuleFiles();

@@ -4,6 +4,7 @@ import 'package:revelation/features/strongs_dictionary/application/services/stro
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strongs_dictionary_cubit.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strongs_dictionary_state.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_entry_view.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_number_picker_dialog.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_reference_info_icon.dart';
@@ -544,11 +545,7 @@ class _StrongDictionaryPageEntryView extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
         navigationEnabled: state.pickerEntries.isNotEmpty,
         onStrongNumberSelected: (strongNumber) {
-          context.read<StrongsDictionaryCubit>().showStrongNumber(
-            localizations: AppLocalizations.of(context)!,
-            strongNumber: strongNumber,
-            clearSearch: true,
-          );
+          showStrongDictionaryDialog(context, strongNumber);
         },
         onStrongNumberPickerRequested: (linkContext, strongNumber) {
           _openStrongNumberPicker(context, strongNumber);

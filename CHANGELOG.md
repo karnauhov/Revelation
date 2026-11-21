@@ -10,6 +10,8 @@ All notable changes to this application will be documented here.
 
 ### Changed
 
+- Reopening the Bible restores each column to its last passage and scroll position. Bible and Strong's links open a preview first. Reading a linked passage preserves your usual places.
+
 - Open the [AI11 website](https://ai11.link) or email support at [ok.ai11.link@gmail.com](mailto:ok.ai11.link@gmail.com) from the About screen.
 
 ### Fixed

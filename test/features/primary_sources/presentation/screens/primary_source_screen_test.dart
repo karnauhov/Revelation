@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:audioplayers_platform_interface/audioplayers_platform_interface.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -502,6 +503,16 @@ void main() {
       );
       await tester.pump();
 
+      int? previewNumber;
+      setDefaultGreekStrongTapHandler((number, _) => previewNumber = number);
+      addTearDown(() => setDefaultGreekStrongTapHandler(null));
+      _descriptionPanel(tester).onGreekStrongTap(25, panelContext);
+      await tester.pump();
+      expect(previewNumber, 25);
+      expect(
+        _descriptionPanel(tester).currentDescriptionType,
+        DescriptionKind.word,
+      );
       expect(_descriptionPanel(tester).showStrongInfoIcon, isTrue);
       expect(_descriptionPanel(tester).canNavigate, isTrue);
       expect(_descriptionPanel(tester).descriptionActionsEnabled, isTrue);

@@ -1,5 +1,6 @@
 import 'package:revelation/features/bible/bible.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
+import 'package:revelation/features/bible/domain/models/bible_reading_session.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
 
 /// First-party text fixtures; persistence uses the real preferences adapter.
@@ -76,11 +77,17 @@ class FakeParallelBibleRepository extends BibleRepository {
     await super.saveLastModuleFile(moduleFile);
   }
 
+  Future<void> _pending = Future.value();
   @override
-  Future<void> saveLastModuleFiles(List<String> moduleFiles) async {
-    savedModuleLists.add(List.of(moduleFiles));
-    await beforeSave?.call(moduleFiles);
-    await super.saveLastModuleFiles(moduleFiles);
+  Future<void> saveReadingSession(BibleReadingSession session) {
+    final write = _pending.then((_) async {
+      final moduleFiles = [for (final pane in session.panes) pane.module];
+      savedModuleLists.add(List.of(moduleFiles));
+      await beforeSave?.call(moduleFiles);
+      await super.saveReadingSession(session);
+    });
+    _pending = write.catchError((Object _) {});
+    return write;
   }
 
   @override

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/app/router/route_args.dart';
+import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/features/bible/presentation/widgets/bible_passage_dialog.dart';
 import 'package:revelation/app/router/route_sound_observer.dart';
 import 'package:revelation/features/about/about.dart' show AboutScreen;
 import 'package:revelation/features/allusion_search/allusion_search.dart'
@@ -32,7 +34,9 @@ class AppRouter {
     return _instance;
   }
 
-  AppRouter._internal();
+  AppRouter._internal() {
+    setBiblePassageTapHandler(previewBibleReference);
+  }
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

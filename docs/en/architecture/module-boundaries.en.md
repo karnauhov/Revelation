@@ -1,6 +1,6 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.6.8`
+Doc-Version: `2.6.9`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
@@ -20,7 +20,7 @@ The DB adapter reads optional revision metadata from the same file as module inf
 
 ## Parallel reading by default and from reference links
 
-`BibleWorkspaceCubit` opens a new workspace with LXX/TR and the default translation. Reference links open with the resolved translation in the primary pane. An explicit module in the route takes precedence. The language of the interface drives automatic selection, with English as the fallback. KJV serves en/es/ru and OH1988 serves uk with the current catalog. A missing module can lead to a reader error with retry, without changing the saved preference.
+`BibleWorkspaceCubit` restores the ordered panes, their modules, selections and visible verses, and the linked navigation setting from a versioned local preference. A first visit uses the legacy module list or LXX/TR and the default translation. An internal Bible reference first opens a passage dialog. Its reader action and direct reference routes show the passage in all panes for this visit. If the specified module is missing, it temporarily replaces the first pane. Returning through the menu restores the ordinary reading session.
 
 An ordinary `/bible` restores the saved panes, including a legacy single-module preference. `bible:` and `/bible` reference parameters open the requested book/chapter/verse with a translation independently of the saved layout, preserving existing route formats. Automatic opening and navigation do not write preferences. Only explicitly adding/closing a pane or successfully changing a module saves the complete ready layout. The workspace alone owns these writes; ReaderCubit no longer writes the shared single-module preference. Writes are serialized and incomplete layouts are not saved. Initial loads coalesce; closing the workspace or manually changing its layout prevents delayed automatic selection from applying. Linked navigation remains a setting of the current workspace. Translation selection runs once; after a slow load the new pane waits for the current synchronization and follows the latest primary reference.
 

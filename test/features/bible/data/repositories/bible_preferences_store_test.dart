@@ -4,6 +4,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   group('SharedPreferencesBiblePreferencesStore', () {
+    test(
+      'a corrupt or unknown session falls back to the legacy panes',
+      () async {
+        for (final encoded in [
+          '{broken',
+          '{"version":2}',
+          '{"version":1,"linked":true,"panes":[{}]}',
+        ]) {
+          SharedPreferences.setMockInitialValues({
+            SharedPreferencesBiblePreferencesStore.readingSessionKey: encoded,
+            SharedPreferencesBiblePreferencesStore.lastModuleFilesKey: <String>[
+              'bible_kjv.sqlite',
+            ],
+          });
+          const store = SharedPreferencesBiblePreferencesStore();
+          expect(await store.loadReadingSession(), isNull);
+          expect(await store.loadLastModuleFiles(), ['bible_kjv.sqlite']);
+        }
+      },
+    );
+
     test('loads legacy single module as an open module list', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
         SharedPreferencesBiblePreferencesStore.lastModuleFileKey:

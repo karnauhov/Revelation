@@ -156,7 +156,6 @@ class _StrongDictionaryDialogContentState
                 );
               },
               onStrongNumberPickerRequested: _openStrongNumberPicker,
-              popBeforeBibleNavigation: true,
               onNavigateBackward: () {
                 context.read<StrongsDictionaryCubit>().navigate(
                   localizations: localizations,
@@ -177,7 +176,7 @@ class _StrongDictionaryDialogContentState
               icon: const Icon(Icons.open_in_new),
               onPressed: () {
                 final router = GoRouter.of(context);
-                Navigator.of(context).pop();
+                Navigator.of(context).popUntil((route) => route is! PopupRoute);
                 router.push(
                   '/strongs_dictionary?number=G${state.strongNumber}',
                 );

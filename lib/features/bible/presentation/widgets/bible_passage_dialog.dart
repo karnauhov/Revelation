@@ -14,6 +14,31 @@ import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 
+Future<bool> previewBibleReference(
+  BuildContext context,
+  int book,
+  int chapter,
+  int first,
+  int last,
+) async {
+  final map = AppDi.bibleVerseMapOrNull ?? await BibleVerseMap.loadFromAssets();
+  if (!context.mounted ||
+      !map.containsReference(bookId: book, chapter: chapter, verse: last)) {
+    return false;
+  }
+  unawaited(
+    showBiblePassageDialog(
+      context,
+      verseMap: map,
+      references: [
+        for (var verse = first; verse <= last; verse++)
+          map.referenceFor(bookId: book, chapter: chapter, verse: verse),
+      ],
+    ),
+  );
+  return true;
+}
+
 Future<void> showBiblePassageDialog(
   BuildContext context, {
   required List<BibleVerseReference> references,
@@ -192,7 +217,9 @@ Future<void> showBiblePassageDialog(
                 onPressed: translation == null && state.original == null
                     ? null
                     : () {
-                        Navigator.pop(context);
+                        Navigator.of(
+                          context,
+                        ).popUntil((route) => route is! PopupRoute);
                         router.push(
                           Uri(
                             path: '/bible',
@@ -200,8 +227,7 @@ Future<void> showBiblePassageDialog(
                               'book': '${first.bookId}',
                               'chapter': '${first.chapter}',
                               'verse': '${first.verse}',
-                              'module':
-                                  (translation ?? state.original!).fileName,
+                              if (moduleFile != null) 'module': moduleFile,
                               'length': '${state.lines.length}',
                             },
                           ).toString(),
