@@ -7,21 +7,48 @@
       "schemaVersion": 3,
       "dataVersion": 6,
       "date": "2026-07-25T07:16:08Z",
-      "fileSizeBytes": 6733824
+      "fileSizeBytes": 6733824,
+      "bible": {
+        "moduleId": "kjv",
+        "code": "KJV",
+        "title": "King James Version (1769)",
+        "language": "en",
+        "canon": "protestant_66",
+        "versification": "kjv_protestant",
+        "role": "translation"
+      }
     },
     "bible_lxx_tr.sqlite": {
       "versionToken": "manifest:schema:3|data:17|date:2026-07-25T07:16:08Z|size:12840960",
       "schemaVersion": 3,
       "dataVersion": 17,
       "date": "2026-07-25T07:16:08Z",
-      "fileSizeBytes": 12840960
+      "fileSizeBytes": 12840960,
+      "bible": {
+        "moduleId": "lxx_tr",
+        "code": "LXX_TR",
+        "title": "LXX / Textus Receptus Greek Bible Module",
+        "language": "grc",
+        "canon": "protestant_66",
+        "versification": "kjv_protestant",
+        "role": "original"
+      }
     },
     "bible_ohienko_1988.sqlite": {
       "versionToken": "manifest:schema:4|data:2|date:2026-10-31T04:47:49Z|size:7593984",
       "schemaVersion": 4,
       "dataVersion": 2,
       "date": "2026-10-31T04:47:49Z",
-      "fileSizeBytes": 7593984
+      "fileSizeBytes": 7593984,
+      "bible": {
+        "moduleId": "ohienko_1988",
+        "code": "OH1988",
+        "title": "\u0411\u0456\u0431\u043b\u0456\u044f \u041e\u0433\u0456\u0454\u043d\u043a\u0430 (\u044e\u0432\u0456\u043b\u0435\u0439\u043d\u0435 \u0432\u0438\u0434\u0430\u043d\u043d\u044f 1988 \u0440\u043e\u043a\u0443)",
+        "language": "uk",
+        "canon": "protestant_66",
+        "versification": "kjv_protestant",
+        "role": "translation"
+      }
     },
     "revelation.sqlite": {
       "versionToken": "manifest:schema:4|data:11|date:2026-07-18T04:25:15Z|size:3813376",

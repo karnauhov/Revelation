@@ -196,7 +196,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allusion_search_screen => 'Allusion Search';
 
   @override
-  String get allusion_search_header => 'Connections with biblical texts';
+  String get allusion_search_header =>
+      'The whole Ancient Greek Bible (LXX + TR)';
 
   @override
   String get bible_screen => 'Bible';
@@ -1389,5 +1390,153 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String bible_verse_footnotes(String reference) {
     return 'Footnotes: $reference';
+  }
+
+  @override
+  String get bible_default => 'Default Bible';
+
+  @override
+  String get bible_automatic => 'Automatic';
+
+  @override
+  String get bible_catalog_refresh => 'Refresh list';
+
+  @override
+  String get bible_catalog_failed =>
+      'Could not refresh the Bible list. Saved modules are still available.';
+
+  @override
+  String get bible_open_reader => 'Open in reader';
+
+  @override
+  String get strong_open_dictionary => 'Open in dictionary';
+
+  @override
+  String get bible_automatic_hint =>
+      'Uses the app language when available, then English.';
+
+  @override
+  String get bible_passage_subtitle => 'Bible passage';
+
+  @override
+  String get bible_previous_verse => 'Previous verse';
+
+  @override
+  String get bible_next_verse => 'Next verse';
+
+  @override
+  String get allusion_source => 'Source passage';
+
+  @override
+  String get allusion_options => 'More search options';
+
+  @override
+  String get allusion_search_hint =>
+      'Use the search button to find matches for this passage.';
+
+  @override
+  String get allusion_collapse => 'Collapse';
+
+  @override
+  String allusion_expand_verses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Show $count more verses',
+      one: 'Show 1 more verse',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String allusion_verse_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count verses',
+      one: '1 verse',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get allusion_length => 'Verse count';
+
+  @override
+  String get allusion_scope => 'Search in';
+
+  @override
+  String get allusion_scope_all => 'Whole Bible';
+
+  @override
+  String get allusion_scope_ot => 'Old Testament';
+
+  @override
+  String get allusion_scope_nt => 'New Testament';
+
+  @override
+  String get allusion_candidates => 'Possible connections';
+
+  @override
+  String get allusion_verses => 'Verses';
+
+  @override
+  String get allusion_chapters => 'Chapters';
+
+  @override
+  String get allusion_books => 'Books';
+
+  @override
+  String get allusion_show_source => 'Preview passage';
+
+  @override
+  String get allusion_no_results =>
+      'No candidates meet the lexical threshold. Try another passage or a wider range.';
+
+  @override
+  String get allusion_loading => 'Preparing the Greek index…';
+
+  @override
+  String get allusion_failed => 'Could not load the search data.';
+
+  @override
+  String get allusion_no_source_words =>
+      'This passage has no searchable Greek words.';
+
+  @override
+  String allusion_source_word_count(int count, String weight) {
+    return 'Unique search words: $count (weight $weight)';
+  }
+
+  @override
+  String allusion_source_word_details(
+    String count,
+    String base,
+    String weight,
+  ) {
+    return 'Occurrences in passage: $count\nBase weight: $base\nSearch weight: $weight';
+  }
+
+  @override
+  String allusion_match_score(String weight, String score) {
+    return 'weight $weight · similarity $score';
+  }
+
+  @override
+  String get allusion_verse_score_hint =>
+      'Sorted by similarity. It accounts for word weights, rarity and the length of both passages.';
+
+  @override
+  String get allusion_group_score_hint =>
+      'Sorted by the share of the source passage’s weighted vocabulary found in this group.';
+
+  @override
+  String allusion_word_weight(String code, String weight) {
+    return '$code · weight $weight';
+  }
+
+  @override
+  String allusion_common_count(int count) {
+    return 'Shared words: $count';
   }
 }

@@ -4,6 +4,25 @@ import 'package:revelation/infra/db/connectors/web_db_manifest.dart';
 import 'package:revelation/infra/db/connectors/web_db_uri.dart';
 
 void main() {
+  test(
+    'Bible snapshot identity includes metadata when a server reuses its token',
+    () {
+      WebDbManifestEntry entry(int revision) => WebDbManifestEntry(
+        versionToken: 'same',
+        versionInfo: DatabaseVersionInfo(
+          schemaVersion: 3,
+          dataVersion: revision,
+          date: DateTime.utc(2026),
+        ),
+        fileSizeBytes: 4096,
+      );
+      expect(entry(2).snapshotIdentity, isNot(entry(1).snapshotIdentity));
+      expect(
+        entry(2).versionInfo.compareReleaseTo(entry(1).versionInfo),
+        greaterThan(0),
+      );
+    },
+  );
   test('buildWebDbManifestUri respects non-root base href', () {
     final uri = buildWebDbManifestUri(
       baseUri: Uri.parse('https://example.com/revelation/'),

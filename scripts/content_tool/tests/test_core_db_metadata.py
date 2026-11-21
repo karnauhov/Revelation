@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import base64
+import struct
+from contextlib import closing
 import shutil
 import sqlite3
 import subprocess
@@ -44,6 +47,25 @@ class _FakeUrlopenResponse:
 
 
 class CoreDbMetadataTests(unittest.TestCase):
+    def test_publishing_greek_module_embeds_postings_for_its_final_revision(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "bible_lxx_tr.sqlite"
+            tool = _CoreDbHarness()
+            self._create_db(path, schema_version=4, data_version=17, date_iso="2026-07-25T07:16:08Z")
+            with closing(sqlite3.connect(path)) as db, db:
+                db.execute("CREATE TABLE verses(verse_key TEXT PRIMARY KEY, text TEXT)")
+                db.execute("INSERT INTO verses VALUES('001','G32 G32 G2316 G2532')")
+            tool._touch_db_data_version(path, schema_version=4, increment_data_version=True)
+            with closing(sqlite3.connect(path)) as db:
+                metadata = dict(db.execute("SELECT key, value FROM db_metadata"))
+            data = base64.b64decode(metadata['allusion_index_v1'])
+            header_size, = struct.unpack_from("<I", data, 4)
+            header = json.loads(data[8:8 + header_size])
+            self.assertEqual(header["revision"], 18)
+            self.assertEqual(header["date"], metadata["date"])
+            self.assertEqual(header["corpus_sha256"], metadata["allusion_corpus_sha256"])
+            self.assertEqual(header["pairs"], 2)
+
     def test_comment_only_change_is_a_verse_content_change_with_schema_four(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             source = Path(temp_dir) / "bible_notes.sqlite"

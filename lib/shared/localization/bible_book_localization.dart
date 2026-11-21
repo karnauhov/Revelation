@@ -1,4 +1,32 @@
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/models/bible_verse_reference.dart';
+
+String localizedBibleModuleLanguage(AppLocalizations l10n, String language) =>
+    switch (language.trim().toLowerCase()) {
+      'en' => l10n.bible_module_info_language_en,
+      'es' => l10n.bible_module_info_language_es,
+      'uk' => l10n.bible_module_info_language_uk,
+      'ru' => l10n.bible_module_info_language_ru,
+      'grc' => l10n.bible_module_info_greek,
+      'he' || 'hbo' => l10n.bible_module_info_hebrew,
+      _ => language,
+    };
+
+String localizedBiblePassageLabel(
+  AppLocalizations l10n,
+  BibleVerseReference first,
+  BibleVerseReference last,
+) {
+  final start =
+      '${localizedBibleBookName(l10n, first.bookId)} ${first.chapter}:${first.verse}';
+  if (first == last) return start;
+  if (first.bookId != last.bookId) {
+    return '$start-${localizedBibleBookName(l10n, last.bookId)} ${last.chapter}:${last.verse}';
+  }
+  if (first.chapter != last.chapter)
+    return '$start-${last.chapter}:${last.verse}';
+  return '$start-${last.verse}';
+}
 
 String localizedBibleBookCode(AppLocalizations localizations, int bookId) {
   switch (bookId) {

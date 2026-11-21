@@ -23,6 +23,7 @@ Future<void> exerciseParallelBibleReading(
   final translation = language == 'uk'
       ? FakeParallelBibleRepository.ukrainian
       : FakeParallelBibleRepository.english;
+  var preferred = translation;
   final router = GoRouter(
     initialLocation: '/',
     routes: [
@@ -44,7 +45,7 @@ Future<void> exerciseParallelBibleReading(
               TextButton(
                 key: const Key('open-module-reference'),
                 onPressed: () => context.push(
-                  '/bible?book=1&chapter=2&verse=3&module=bible_ohienko_1988.sqlite',
+                  '/bible?book=1&chapter=2&verse=3&length=2&module=bible_ohienko_1988.sqlite',
                 ),
                 child: const Text('Module reference'),
               ),
@@ -63,9 +64,11 @@ Future<void> exerciseParallelBibleReading(
             initialBookId: args.initialBookId,
             initialChapter: args.initialChapter,
             initialVerse: args.initialVerse,
+            initialVerseCount: args.initialVerseCount,
             initialModuleFile: args.initialModuleFile,
             isReferenceLink: args.isReferenceLink,
             bibleRepository: repository,
+            resolveDefaultModule: () async => preferred,
           );
         },
       ),
@@ -130,13 +133,21 @@ Future<void> exerciseParallelBibleReading(
   await tester.pumpAndSettle();
   workspace = _workspace(tester);
   expect(_files(workspace), [
-    FakeParallelBibleRepository.original,
     translation,
+    FakeParallelBibleRepository.original,
   ]);
   for (final pane in workspace.state.paneIds) {
     final reference = workspace.readerCubitFor(pane).state.selectedReference!;
     expect([reference.bookId, reference.chapter, reference.verse], [40, 17, 5]);
   }
+  await tester.tap(find.byType(BackButton));
+  await tester.pumpAndSettle();
+  preferred = translation == FakeParallelBibleRepository.english
+      ? FakeParallelBibleRepository.ukrainian
+      : FakeParallelBibleRepository.english;
+  await tester.tap(find.byKey(const Key('open-reference')));
+  await tester.pumpAndSettle();
+  expect(_files(_workspace(tester)).first, preferred);
   await tester.tap(find.byType(BackButton));
   await tester.pumpAndSettle();
   await tester.tap(find.byKey(const Key('open-module-reference')));
@@ -145,6 +156,14 @@ Future<void> exerciseParallelBibleReading(
     FakeParallelBibleRepository.ukrainian,
     if (language != 'uk') translation,
   ]);
+  final selection = _workspace(tester).readerCubitFor('primary').state;
+  expect(selection.selectionStartVerse, 3);
+  expect(selection.selectionEndVerse, 4);
+  for (final paneId in _workspace(tester).state.paneIds) {
+    final state = _workspace(tester).readerCubitFor(paneId).state;
+    expect(state.selectionStartVerse, 3, reason: paneId);
+    expect(state.selectionEndVerse, 4, reason: paneId);
+  }
   expect(
     await const SharedPreferencesBiblePreferencesStore().loadLastModuleFiles(),
     [FakeParallelBibleRepository.original],

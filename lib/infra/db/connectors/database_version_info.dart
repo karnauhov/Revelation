@@ -9,6 +9,11 @@ class DatabaseVersionInfo {
   final int dataVersion;
   final DateTime date;
 
+  int compareReleaseTo(DatabaseVersionInfo other) {
+    final schema = schemaVersion.compareTo(other.schemaVersion);
+    return schema != 0 ? schema : dataVersion.compareTo(other.dataVersion);
+  }
+
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||

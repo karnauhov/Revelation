@@ -60,6 +60,16 @@ void main() {
       final workspace = context.read<BibleWorkspaceCubit>();
       final state = workspace.readerCubitFor('primary').state;
       expect(state.selectedModule?.fileName, 'bible_ohienko_1988.sqlite');
+      final catalog = await AppDi.bibleLibrary.cachedCatalog();
+      expect(
+        state.modules.map((module) => module.fileName),
+        unorderedEquals(catalog.map((module) => module.fileName)),
+      );
+      for (final info in catalog.where(
+        (module) => module.fileName != state.selectedModule?.fileName,
+      )) {
+        expect(state.modules, contains(info));
+      }
       expect(state.selectedModule?.schemaVersion, 4);
       expect(state.selectedModule?.dataVersion, 2);
       expect(state.selectedReference?.bookId, 66);

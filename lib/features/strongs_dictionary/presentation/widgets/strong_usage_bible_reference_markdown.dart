@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:revelation/app/di/app_di.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -16,7 +17,7 @@ import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 typedef StrongUsageBibleTextCopyHandler = Future<void> Function(String text);
 
 final StrongUsageBibleTextProvider _defaultStrongUsageBibleTextProvider =
-    DefaultStrongUsageBibleTextProvider();
+    DefaultStrongUsageBibleTextProvider(() => AppDi.bibleLibrary);
 
 Map<String, MarkdownElementBuilder> buildStrongUsageBibleReferenceBuilders({
   GreekStrongTapHandler? onGreekStrongTap,

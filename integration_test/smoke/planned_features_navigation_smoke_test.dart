@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:revelation/features/allusion_search/presentation/screens/allusion_search_screen.dart';
 import 'package:revelation/features/historical_background/presentation/screens/historical_background_screen.dart';
 import 'package:revelation/features/practical_faith/presentation/screens/practical_faith_screen.dart';
 import 'package:revelation/features/revelation_structure/presentation/screens/revelation_structure_screen.dart';
@@ -13,12 +12,8 @@ void main() {
     tester,
   ) async {
     final router = GoRouter(
-      initialLocation: '/allusion_search',
+      initialLocation: '/revelation_structure',
       routes: <RouteBase>[
-        GoRoute(
-          path: '/allusion_search',
-          builder: (context, state) => const AllusionSearchScreen(),
-        ),
         GoRoute(
           path: '/revelation_structure',
           builder: (context, state) => const RevelationStructureScreen(),
@@ -61,12 +56,6 @@ void main() {
 }
 
 final _plannedFeatureDestinations = <_PlannedFeatureDestination>[
-  _PlannedFeatureDestination(
-    path: '/allusion_search',
-    screenType: AllusionSearchScreen,
-    titleOf: (l10n) => l10n.allusion_search_screen,
-    subtitleOf: (l10n) => l10n.allusion_search_header,
-  ),
   _PlannedFeatureDestination(
     path: '/revelation_structure',
     screenType: RevelationStructureScreen,

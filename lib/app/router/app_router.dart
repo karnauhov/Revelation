@@ -137,6 +137,7 @@ class AppRouter {
               initialBookId: routeArgs.initialBookId,
               initialChapter: routeArgs.initialChapter,
               initialVerse: routeArgs.initialVerse,
+              initialVerseCount: routeArgs.initialVerseCount,
               initialModuleFile: routeArgs.initialModuleFile,
               isReferenceLink: routeArgs.isReferenceLink,
             ),
@@ -212,7 +213,9 @@ class AppRouter {
           return buildPageWithDefaultTransition<void>(
             context: context,
             state: state,
-            child: SettingsScreen(),
+            child: SettingsScreen(
+              initialSection: state.uri.queryParameters['section'],
+            ),
           );
         },
       ),

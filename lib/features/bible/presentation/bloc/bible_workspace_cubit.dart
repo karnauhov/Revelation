@@ -21,16 +21,20 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     int initialBookId = 66,
     int initialChapter = 1,
     int initialVerse = 1,
+    int initialVerseCount = 1,
     String? initialModuleFile,
     bool isReferenceLink = false,
+    Future<String?> Function()? resolveDefaultModule,
   }) : _repositoryFactory = repositoryFactory,
        _persistenceRepository = repositoryFactory(),
        _languageCode = languageCode,
        _initialBookId = initialBookId,
        _initialChapter = initialChapter,
        _initialVerse = initialVerse,
+       _initialVerseCount = initialVerseCount,
        _initialModuleFile = initialModuleFile,
        _isReferenceLink = isReferenceLink,
+       _resolveDefaultModule = resolveDefaultModule,
        super(const BibleWorkspaceState.initial());
 
   static const primaryPaneId = 'primary';
@@ -41,8 +45,11 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
   final int _initialBookId;
   final int _initialChapter;
   final int _initialVerse;
+  final int _initialVerseCount;
   final String? _initialModuleFile;
   final bool _isReferenceLink;
+  final Future<String?> Function()? _resolveDefaultModule;
+  String? _preferredModuleFile;
   final Map<String, BibleReaderCubit> _readerCubits =
       <String, BibleReaderCubit>{};
   final Map<String, StreamSubscription<BibleReaderState>> _subscriptions =
@@ -72,6 +79,11 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     if (isClosed || _closing) {
       return;
     }
+    if (_initialModuleFile == null &&
+        (_isReferenceLink || storedModuleFiles.isEmpty)) {
+      _preferredModuleFile = await _resolveDefaultModule?.call();
+    }
+    if (isClosed || _closing) return;
     final paneModuleFiles = _initialPaneModuleFiles(storedModuleFiles);
     final paneIds = <String>[];
     for (var index = 0; index < paneModuleFiles.length; index++) {
@@ -109,7 +121,11 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
         _initialModuleFile != null ||
         normalizedStored.isEmpty;
     if (_useDefaultLayout) {
-      return <String?>[_initialModuleFile ?? AppConstants.defaultBibleModuleDB];
+      return <String?>[
+        _initialModuleFile ??
+            (_isReferenceLink ? _preferredModuleFile : null) ??
+            AppConstants.defaultBibleModuleDB,
+      ];
     }
     return List<String?>.unmodifiable(
       normalizedStored.take(AppConstants.maxParallelBibleReaders),
@@ -198,6 +214,7 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
       initialBookId: initialBookId,
       initialChapter: initialChapter,
       initialVerse: initialVerse,
+      initialVerseCount: _initialVerseCount,
       initialModuleFile: initialModuleFile,
       loadingBibleMessage: loadingBibleMessage,
       loadingChapterMessage: loadingChapterMessage,
@@ -243,11 +260,20 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
       return;
     }
     _defaultTranslationResolved = true;
-    final translation = await _persistenceRepository.findTranslationModuleFile(
-      languageCode: _languageCode,
-      modules: primary!.modules,
-      primaryModuleFile: primary.selectedModule!.fileName,
-    );
+    final preferred = _preferredModuleFile;
+    final primaryFile = primary!.selectedModule!.fileName;
+    final translation =
+        _isReferenceLink &&
+            preferred == primaryFile &&
+            primaryFile != AppConstants.defaultBibleModuleDB
+        ? AppConstants.defaultBibleModuleDB
+        : preferred != null && preferred != primaryFile
+        ? preferred
+        : await _persistenceRepository.findTranslationModuleFile(
+            languageCode: _languageCode,
+            modules: primary.modules,
+            primaryModuleFile: primary.selectedModule!.fileName,
+          );
     if (isClosed || _closing || _layoutRevision != 0 || translation == null) {
       return;
     }
@@ -357,11 +383,12 @@ class BibleWorkspaceCubit extends Cubit<BibleWorkspaceState> {
     _referenceSync =
         Future.wait([
           for (final readerCubit in targets)
-            readerCubit.selectReference(
-              bookId: reference.bookId,
-              chapter: reference.chapter,
-              verse: reference.verse,
-            ),
+            if (readerCubit.state.selectedReference != reference)
+              readerCubit.selectReference(
+                bookId: reference.bookId,
+                chapter: reference.chapter,
+                verse: reference.verse,
+              ),
         ]).then<void>((_) {}).whenComplete(() {
           _referenceSync = null;
         });

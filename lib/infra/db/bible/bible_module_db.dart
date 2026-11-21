@@ -7,8 +7,10 @@ import 'package:revelation/infra/db/connectors/database_version_info.dart';
 class BibleModuleDB extends GeneratedDatabase {
   BibleModuleDB(super.e);
 
+  static const supportedSchemaVersion = 4;
+
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => supportedSchemaVersion;
 
   Future<bool>? _commentSupport;
 
@@ -23,7 +25,10 @@ class BibleModuleDB extends GeneratedDatabase {
   @override
   Iterable<TableInfo<Table, Object?>> get allTables => const [];
 
-  Future<BibleModuleInfo> readInfo(String fileName) async {
+  Future<BibleModuleInfo> readInfo(
+    String fileName, {
+    bool includeStrongCapability = true,
+  }) async {
     final row = await customSelect('''
       SELECT code,
              module_id,
@@ -46,11 +51,12 @@ class BibleModuleDB extends GeneratedDatabase {
       title: row.read<String>('title'),
       description: row.read<String>('description'),
       language: row.read<String>('language'),
+      role: bibleRoleForLanguage(row.read<String>('language')),
       canon: row.read<String>('canon'),
       versification: row.read<String>('versification'),
       license: row.read<String>('license'),
       sourceSummary: row.read<String>('source_summary'),
-      hasStrongNumbers: await readHasStrongNumbers(),
+      hasStrongNumbers: includeStrongCapability && await readHasStrongNumbers(),
       schemaVersion: version?.schemaVersion,
       dataVersion: version?.dataVersion,
       date: version?.date,
@@ -184,5 +190,36 @@ class BibleModuleDB extends GeneratedDatabase {
           ),
         )
         .toList(growable: false);
+  }
+
+  Future<String?> readMetadataValue(String key) async {
+    final row = await customSelect(
+      'SELECT value FROM db_metadata WHERE key = ?',
+      variables: [Variable.withString(key)],
+    ).getSingleOrNull();
+    return row?.read<String>('value');
+  }
+
+  /// Bounded keyset pages keep legacy index preparation responsive on Web.
+  Stream<List<BibleVerseText>> readGreekIndexPages() async* {
+    var after = '';
+    const limit = 160;
+    while (true) {
+      final rows = await customSelect(
+        "SELECT verse_key, text FROM verses WHERE verse_key > ? AND trim(text) <> '' ORDER BY verse_key LIMIT $limit",
+        variables: [Variable.withString(after)],
+      ).get();
+      if (rows.isEmpty) return;
+      final page = [
+        for (final row in rows)
+          BibleVerseText(
+            verseKey: row.read<String>('verse_key'),
+            text: row.read<String>('text'),
+          ),
+      ];
+      yield page;
+      if (page.length < limit) return;
+      after = page.last.verseKey;
+    }
   }
 }

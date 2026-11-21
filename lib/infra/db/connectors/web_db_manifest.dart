@@ -7,11 +7,24 @@ class WebDbManifestEntry {
     required this.versionToken,
     required this.versionInfo,
     this.fileSizeBytes,
+    this.bible,
   });
 
   final String versionToken;
   final DatabaseVersionInfo versionInfo;
   final int? fileSizeBytes;
+  final Map<String, String>? bible;
+
+  /// Include the release metadata even when a publisher reuses an opaque token.
+  String get snapshotIdentity {
+    final release = buildWebDbManifestVersionToken(
+      schemaVersion: versionInfo.schemaVersion,
+      dataVersion: versionInfo.dataVersion,
+      date: versionInfo.date.toUtc().toIso8601String(),
+      fileSizeBytes: fileSizeBytes,
+    );
+    return '$versionToken|$release';
+  }
 }
 
 String buildWebDbManifestVersionToken({
@@ -110,6 +123,13 @@ WebDbManifestEntry? _parseManifestEntry(Map<Object?, Object?> entry) {
   }
 
   final fileSizeBytes = _asInt(entry['fileSizeBytes']);
+  final rawBible = entry['bible'];
+  final bible = rawBible is Map
+      ? <String, String>{
+          for (final MapEntry(:key, :value) in rawBible.entries)
+            if (key is String && value is String) key: value,
+        }
+      : null;
   return WebDbManifestEntry(
     versionToken:
         explicitToken ??
@@ -125,6 +145,7 @@ WebDbManifestEntry? _parseManifestEntry(Map<Object?, Object?> entry) {
       date: parsedDate,
     ),
     fileSizeBytes: fileSizeBytes,
+    bible: bible == null ? null : Map.unmodifiable(bible),
   );
 }
 

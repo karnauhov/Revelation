@@ -44,27 +44,19 @@ class StrongUsagePreviewCubit extends Cubit<StrongUsagePreviewState> {
 
   Future<void> _showPreview() async {
     if (isClosed) return;
-    if (state.status == StrongUsagePreviewStatus.initial) {
-      emit(
-        const StrongUsagePreviewState(status: StrongUsagePreviewStatus.loading),
-      );
-      String? text;
-      try {
-        text = (await _textProvider.loadVerseText(verseKey))?.trim();
-      } catch (_) {}
-      if (isClosed) return;
-      emit(
-        StrongUsagePreviewState(
-          status: text == null || text.isEmpty
-              ? StrongUsagePreviewStatus.unavailable
-              : StrongUsagePreviewStatus.ready,
-          text: text == null || text.isEmpty ? null : text,
-        ),
-      );
-    }
-
-    final text = state.text;
-    if (text != null) {
+    final requestId = state.requestId + 1;
+    emit(
+      StrongUsagePreviewState(
+        status: StrongUsagePreviewStatus.loading,
+        requestId: state.requestId,
+      ),
+    );
+    String? text;
+    try {
+      text = (await _textProvider.loadVerseText(verseKey))?.trim();
+    } catch (_) {}
+    if (isClosed) return;
+    if (text != null && text.isNotEmpty) {
       try {
         await _copyText(text);
       } catch (_) {}
@@ -72,9 +64,11 @@ class StrongUsagePreviewCubit extends Cubit<StrongUsagePreviewState> {
     }
     emit(
       StrongUsagePreviewState(
-        status: state.status,
-        text: state.text,
-        requestId: state.requestId + 1,
+        status: text == null || text.isEmpty
+            ? StrongUsagePreviewStatus.unavailable
+            : StrongUsagePreviewStatus.ready,
+        text: text == null || text.isEmpty ? null : text,
+        requestId: requestId,
       ),
     );
   }

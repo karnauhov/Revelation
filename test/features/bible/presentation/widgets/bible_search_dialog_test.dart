@@ -102,7 +102,12 @@ void main() {
         find.byKey(const Key('bible_search_query_field')),
         'logos',
       );
-      await tester.tap(find.byKey(const Key('bible_search_submit_button')));
+      final submit = find.byKey(const Key('bible_search_submit_button'));
+      expect(
+        tester.widget<IconButton>(submit).tooltip,
+        localizations.bible_search_button,
+      );
+      await tester.tap(submit);
       await tester.pumpAndSettle();
 
       expect(repository.searchQueries, ['logos']);

@@ -1,7 +1,6 @@
 @Tags(['widget'])
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:revelation/features/allusion_search/presentation/screens/allusion_search_screen.dart';
 import 'package:revelation/features/historical_background/presentation/screens/historical_background_screen.dart';
 import 'package:revelation/features/practical_faith/presentation/screens/practical_faith_screen.dart';
 import 'package:revelation/features/revelation_structure/presentation/screens/revelation_structure_screen.dart';
@@ -10,14 +9,6 @@ import 'package:revelation/shared/ui/widgets/planned_feature_screen.dart';
 
 void main() {
   final screenCases = <_PlannedScreenCase>[
-    _PlannedScreenCase(
-      description: 'Allusion search',
-      screen: const AllusionSearchScreen(),
-      screenType: AllusionSearchScreen,
-      titleOf: (l10n) => l10n.allusion_search_screen,
-      subtitleOf: (l10n) => l10n.allusion_search_header,
-      iconAssetPath: AllusionSearchScreen.iconAssetPath,
-    ),
     _PlannedScreenCase(
       description: 'Revelation structure',
       screen: const RevelationStructureScreen(),

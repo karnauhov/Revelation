@@ -37,13 +37,16 @@ class BibleRepository {
     BiblePreferencesStore preferencesStore =
         const SharedPreferencesBiblePreferencesStore(),
     Future<BibleVerseMap> Function()? loadVerseMap,
+    Future<List<BibleModuleInfo>> Function()? loadModuleCatalog,
   }) : _moduleDataSource = moduleDataSource,
        _preferencesStore = preferencesStore,
+       _loadModuleCatalog = loadModuleCatalog,
        _loadVerseMap = loadVerseMap ?? BibleVerseMap.loadFromAssets;
 
   final BibleModuleDataSource _moduleDataSource;
   final BiblePreferencesStore _preferencesStore;
   final Future<BibleVerseMap> Function() _loadVerseMap;
+  final Future<List<BibleModuleInfo>> Function()? _loadModuleCatalog;
 
   BibleVerseMap? _verseMapCache;
 
@@ -56,24 +59,24 @@ class BibleRepository {
   }) async {
     final verseMap = await _getVerseMap();
     final defaultModuleFile = defaultBibleModuleFileForLanguage(languageCode);
-    final moduleFiles = await _moduleDataSource.listModuleFiles(
-      defaultModuleFile: defaultModuleFile,
-    );
-    if (moduleFiles.isEmpty) {
+    final catalog =
+        await _loadModuleCatalog?.call() ??
+        (await _moduleDataSource.listModuleFiles(
+          defaultModuleFile: defaultModuleFile,
+        )).map(_placeholderModuleInfo).toList();
+    if (catalog.isEmpty) {
       throw const BibleModulesUnavailableException();
     }
 
     final selectedModuleFile = await _resolveSelectedModuleFile(
-      moduleFiles: moduleFiles,
+      moduleFiles: catalog.map((module) => module.fileName).toList(),
       initialModuleFile: initialModuleFile,
       defaultModuleFile: defaultModuleFile,
     );
     final selectedModule = await loadModuleInfo(selectedModuleFile);
     final modules = List<BibleModuleInfo>.unmodifiable(
-      moduleFiles.map(
-        (moduleFile) => moduleFile == selectedModuleFile
-            ? selectedModule
-            : _placeholderModuleInfo(moduleFile),
+      catalog.map(
+        (info) => info.fileName == selectedModuleFile ? selectedModule : info,
       ),
     );
     final reference = verseMap.normalizedReference(

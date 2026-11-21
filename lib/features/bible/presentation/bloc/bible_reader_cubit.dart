@@ -3,6 +3,8 @@ import 'package:revelation/core/async/latest_request_guard.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
 import 'package:revelation/features/bible/domain/models/bible_module_info.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_state.dart';
+import 'package:revelation/shared/models/bible_verse_reference.dart';
+import 'package:revelation/shared/services/bible_verse_map.dart';
 
 class BibleReaderCubit extends Cubit<BibleReaderState> {
   BibleReaderCubit({
@@ -15,12 +17,14 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
     int initialBookId = 66,
     int initialChapter = 1,
     int initialVerse = 1,
+    int initialVerseCount = 1,
     String? initialModuleFile,
   }) : _repository = repository,
        _languageCode = languageCode,
        _initialBookId = initialBookId,
        _initialChapter = initialChapter,
        _initialVerse = initialVerse,
+       _initialVerseCount = initialVerseCount,
        _initialModuleFile = initialModuleFile,
        super(const BibleReaderState.initial());
 
@@ -29,6 +33,7 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
   final int _initialBookId;
   final int _initialChapter;
   final int _initialVerse;
+  final int _initialVerseCount;
   final String? _initialModuleFile;
   final LatestRequestGuard _requestGuard = LatestRequestGuard();
 
@@ -80,9 +85,15 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
           selectedModuleSet: true,
           selectedReference: data.reference,
           selectedReferenceSet: true,
-          selectionStartVerse: data.reference.verse,
+          selectionStartVerse: _rangeForChapter(
+            data.reference,
+            data.verseMap,
+          ).start,
           selectionStartVerseSet: true,
-          selectionEndVerse: data.reference.verse,
+          selectionEndVerse: _rangeForChapter(
+            data.reference,
+            data.verseMap,
+          ).end,
           selectionEndVerseSet: true,
           verses: data.verses,
           loadingMessage: null,
@@ -105,6 +116,48 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
         ),
       );
     }
+  }
+
+  ({int start, int end}) _rangeForChapter(
+    BibleVerseReference reference,
+    BibleVerseMap map,
+  ) {
+    if (_initialVerseCount <= 1)
+      return (start: reference.verse, end: reference.verse);
+    final first = int.parse(
+      map
+          .normalizedReference(
+            bookId: _initialBookId,
+            chapter: _initialChapter,
+            verse: _initialVerse,
+          )
+          .verseKey,
+      radix: 36,
+    );
+    final last = (first + _initialVerseCount.clamp(1, 77) - 1).clamp(
+      first,
+      map.totalVerses,
+    );
+    final chapterFirst = int.parse(
+      map
+          .firstReferenceInChapter(
+            bookId: reference.bookId,
+            chapter: reference.chapter,
+          )
+          .verseKey,
+      radix: 36,
+    );
+    final count = map.verseCount(
+      bookId: reference.bookId,
+      chapter: reference.chapter,
+    );
+    final chapterLast = chapterFirst + count - 1;
+    if (first > chapterLast || last < chapterFirst)
+      return (start: reference.verse, end: reference.verse);
+    return (
+      start: (first - chapterFirst + 1).clamp(1, count),
+      end: (last - chapterFirst + 1).clamp(1, count),
+    );
   }
 
   Future<void> selectModule(BibleModuleInfo module) async {
@@ -150,9 +203,15 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
           selectedModuleSet: true,
           selectedReference: chapterData.reference,
           selectedReferenceSet: true,
-          selectionStartVerse: chapterData.reference.verse,
+          selectionStartVerse: _rangeForChapter(
+            chapterData.reference,
+            state.verseMap!,
+          ).start,
           selectionStartVerseSet: true,
-          selectionEndVerse: chapterData.reference.verse,
+          selectionEndVerse: _rangeForChapter(
+            chapterData.reference,
+            state.verseMap!,
+          ).end,
           selectionEndVerseSet: true,
           verses: chapterData.verses,
           loadingMessage: null,
@@ -332,9 +391,15 @@ class BibleReaderCubit extends Cubit<BibleReaderState> {
           status: BibleReaderStatus.ready,
           selectedReference: chapterData.reference,
           selectedReferenceSet: true,
-          selectionStartVerse: chapterData.reference.verse,
+          selectionStartVerse: _rangeForChapter(
+            chapterData.reference,
+            state.verseMap!,
+          ).start,
           selectionStartVerseSet: true,
-          selectionEndVerse: chapterData.reference.verse,
+          selectionEndVerse: _rangeForChapter(
+            chapterData.reference,
+            state.verseMap!,
+          ).end,
           selectionEndVerseSet: true,
           verses: chapterData.verses,
           loadingMessage: null,

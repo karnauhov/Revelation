@@ -8,6 +8,9 @@ class BibleVerseMap {
 
   final int totalBooks;
   final int totalVerses;
+
+  /// Ordered book IDs and chapter lengths which define the ordinal key space.
+  final String canonSignature;
   final String firstVerseKey;
   final String lastVerseKey;
   final List<String> _bookCodesById;
@@ -18,6 +21,7 @@ class BibleVerseMap {
   const BibleVerseMap._({
     required this.totalBooks,
     required this.totalVerses,
+    required this.canonSignature,
     required this.firstVerseKey,
     required this.lastVerseKey,
     required List<String> bookCodesById,
@@ -71,6 +75,7 @@ class BibleVerseMap {
     final verseKeysByReference = <int, String>{};
 
     var ordinal = 0;
+    final canonLayout = <Object>[];
     for (final bookJson in booksJson) {
       final book = _asMap(bookJson);
       final bookId = _requiredInt(book, 'id');
@@ -91,6 +96,7 @@ class BibleVerseMap {
 
       bookCodesById[bookId] = code;
       chapterVerseCountsByBookId[bookId] = List<int>.unmodifiable(chapters);
+      canonLayout.add([bookId, chapters]);
 
       for (
         var chapterIndex = 0;
@@ -130,6 +136,7 @@ class BibleVerseMap {
     return BibleVerseMap._(
       totalBooks: booksJson.length,
       totalVerses: totalVerses,
+      canonSignature: jsonEncode(canonLayout),
       firstVerseKey: firstVerseKey,
       lastVerseKey: lastVerseKey,
       bookCodesById: List<String>.unmodifiable(bookCodesById),
@@ -152,6 +159,22 @@ class BibleVerseMap {
     }
     return _referencesByOrdinal[ordinal];
   }
+
+  /// Moves in canonical order across chapter and book boundaries.
+  BibleVerseReference? offsetReference(
+    BibleVerseReference reference,
+    int offset,
+  ) {
+    final ordinal = _base36Ordinal(reference.verseKey);
+    if (ordinal == null) return null;
+    final target = ordinal + offset;
+    if (target < 1 || target > totalVerses) return null;
+    return _referencesByOrdinal[target];
+  }
+
+  /// One-based canonical position, as used by the packaged LXX/TR index.
+  BibleVerseReference referenceForOrdinal(int ordinal) =>
+      _referencesByOrdinal[ordinal]!;
 
   String? verseKeyFor({
     required int bookId,

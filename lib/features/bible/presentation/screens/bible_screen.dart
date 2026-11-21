@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/ui/widgets/toolbar_dropdown.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +25,7 @@ import 'package:revelation/shared/ui/widgets/error_message.dart';
 
 const double _kParallelPaneMinWidth = 420;
 const double _kParallelPaneGap = 10;
+const double _kToolbarGap = 4;
 const double _kToolbarChoiceDialogMaxWidth = 420;
 const double _kToolbarChoiceDialogMinWidth = 280;
 const double _kToolbarChoiceDialogHorizontalMargin = 96;
@@ -34,9 +36,11 @@ class BibleScreen extends StatelessWidget {
     this.initialBookId = 66,
     this.initialChapter = 1,
     this.initialVerse = 1,
+    this.initialVerseCount = 1,
     this.initialModuleFile,
     this.isReferenceLink = false,
     this.bibleRepository,
+    this.resolveDefaultModule,
     super.key,
   });
 
@@ -45,9 +49,11 @@ class BibleScreen extends StatelessWidget {
   final int initialBookId;
   final int initialChapter;
   final int initialVerse;
+  final int initialVerseCount;
   final String? initialModuleFile;
   final bool isReferenceLink;
   final BibleRepository? bibleRepository;
+  final Future<String?> Function()? resolveDefaultModule;
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +71,14 @@ class BibleScreen extends StatelessWidget {
           initialBookId: initialBookId,
           initialChapter: initialChapter,
           initialVerse: initialVerse,
+          initialVerseCount: initialVerseCount,
           initialModuleFile: initialModuleFile,
           isReferenceLink: isReferenceLink,
+          resolveDefaultModule:
+              resolveDefaultModule ??
+              (repository == null
+                  ? AppDi.bibleLibrary.preferredModuleFile
+                  : null),
           loadingBibleMessage: localizations.bible_loading,
           loadingChapterMessage: localizations.bible_loading_chapter,
           loadingModuleMessage: localizations.bible_loading_module,
@@ -376,7 +388,7 @@ class _BibleReaderToolbar extends StatelessWidget {
       _BibleToolbarAction(
         id: 'module',
         width: 124,
-        inline: _ToolbarDropdown<BibleModuleInfo>(
+        inline: ToolbarDropdown<BibleModuleInfo>(
           key: const Key('bible_module_dropdown'),
           width: 116,
           label: localizations.bible_module,
@@ -464,7 +476,7 @@ class _BibleReaderToolbar extends StatelessWidget {
       _BibleToolbarAction(
         id: 'book',
         width: 194,
-        inline: _ToolbarDropdown<int>(
+        inline: ToolbarDropdown<int>(
           key: const Key('bible_book_dropdown'),
           width: 186,
           label: localizations.bible_book,
@@ -515,7 +527,7 @@ class _BibleReaderToolbar extends StatelessWidget {
       _BibleToolbarAction(
         id: 'chapter',
         width: 104,
-        inline: _ToolbarDropdown<int>(
+        inline: ToolbarDropdown<int>(
           key: const Key('bible_chapter_dropdown'),
           width: 96,
           label: localizations.bible_chapter,
@@ -568,7 +580,7 @@ class _BibleReaderToolbar extends StatelessWidget {
       _BibleToolbarAction(
         id: 'verse',
         width: 96,
-        inline: _ToolbarDropdown<int>(
+        inline: ToolbarDropdown<int>(
           key: const Key('bible_verse_dropdown'),
           width: 88,
           label: localizations.bible_verse,
@@ -736,8 +748,12 @@ class _BibleReaderToolbar extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
             child: Row(
               children: [
-                for (final action in visibleActions)
+                for (final (index, action) in visibleActions.indexed) ...[
+                  if (index > 0) const SizedBox(width: _kToolbarGap),
                   SizedBox(width: action.width, child: action.inline),
+                ],
+                if (visibleActions.isNotEmpty && hiddenActions.isNotEmpty)
+                  const SizedBox(width: _kToolbarGap),
                 if (hiddenActions.isNotEmpty)
                   SizedBox(
                     width: 44,
@@ -766,7 +782,7 @@ List<_BibleToolbarAction> _visibleToolbarActions(
     0,
     (sum, action) => sum + action.width,
   );
-  if (fullWidth <= maxWidth) {
+  if (fullWidth + (actions.length - 1) * _kToolbarGap <= maxWidth) {
     return actions;
   }
 
@@ -775,9 +791,9 @@ List<_BibleToolbarAction> _visibleToolbarActions(
   var usedWidth = 0.0;
   final visibleActions = <_BibleToolbarAction>[];
   for (final action in actions) {
-    if (usedWidth + action.width <= availableWidth) {
+    if (usedWidth + action.width + _kToolbarGap <= availableWidth) {
       visibleActions.add(action);
-      usedWidth += action.width;
+      usedWidth += action.width + _kToolbarGap;
     }
   }
   return List<_BibleToolbarAction>.unmodifiable(visibleActions);
@@ -987,50 +1003,6 @@ Future<T?> _showToolbarChoiceDialog<T>({
       );
     },
   );
-}
-
-class _ToolbarDropdown<T> extends StatelessWidget {
-  const _ToolbarDropdown({
-    required super.key,
-    required this.width,
-    required this.label,
-    required this.value,
-    required this.items,
-    required this.onChanged,
-    this.enabled = true,
-  });
-
-  final double width;
-  final String label;
-  final T value;
-  final List<DropdownMenuItem<T>> items;
-  final ValueChanged<T?> onChanged;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SizedBox(
-      width: width,
-      child: DropdownButtonFormField<T>(
-        initialValue: value,
-        isExpanded: true,
-        items: items,
-        onChanged: enabled ? onChanged : null,
-        style: theme.textTheme.bodyMedium,
-        decoration: InputDecoration(
-          isDense: true,
-          labelText: label,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 8,
-          ),
-          border: const OutlineInputBorder(),
-        ),
-      ),
-    );
-  }
 }
 
 class _BibleProgressLine extends StatelessWidget {
@@ -1788,15 +1760,7 @@ String _selectedVerseRangeLabel(
 
 void _showBibleModuleInfoDialog(BuildContext context, BibleModuleInfo module) {
   final localizations = AppLocalizations.of(context)!;
-  final language = switch (module.language.trim().toLowerCase()) {
-    'en' => localizations.bible_module_info_language_en,
-    'es' => localizations.bible_module_info_language_es,
-    'uk' => localizations.bible_module_info_language_uk,
-    'ru' => localizations.bible_module_info_language_ru,
-    'grc' => localizations.bible_module_info_greek,
-    'he' => localizations.bible_module_info_hebrew,
-    _ => module.language,
-  };
+  final language = localizedBibleModuleLanguage(localizations, module.language);
   final unknown = localizations.bible_module_info_unknown;
   final entries = <({String label, String value, String id})>[
     (

@@ -200,7 +200,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get allusion_search_screen => 'Búsqueda de alusiones';
 
   @override
-  String get allusion_search_header => 'Conexiones con textos bíblicos';
+  String get allusion_search_header =>
+      'Toda la Biblia en griego antiguo (LXX + TR)';
 
   @override
   String get bible_screen => 'Biblia';
@@ -1398,5 +1399,153 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String bible_verse_footnotes(String reference) {
     return 'Notas: $reference';
+  }
+
+  @override
+  String get bible_default => 'Biblia predeterminada';
+
+  @override
+  String get bible_automatic => 'Automática';
+
+  @override
+  String get bible_catalog_refresh => 'Actualizar lista';
+
+  @override
+  String get bible_catalog_failed =>
+      'No se pudo actualizar la lista de Biblias. Los módulos guardados siguen disponibles.';
+
+  @override
+  String get bible_open_reader => 'Abrir en el lector';
+
+  @override
+  String get strong_open_dictionary => 'Abrir en el diccionario';
+
+  @override
+  String get bible_automatic_hint =>
+      'Usa el idioma de la aplicación si está disponible y, si no, el inglés.';
+
+  @override
+  String get bible_passage_subtitle => 'Pasaje bíblico';
+
+  @override
+  String get bible_previous_verse => 'Versículo anterior';
+
+  @override
+  String get bible_next_verse => 'Versículo siguiente';
+
+  @override
+  String get allusion_source => 'Pasaje de origen';
+
+  @override
+  String get allusion_options => 'Más opciones de búsqueda';
+
+  @override
+  String get allusion_search_hint =>
+      'Pulsa la lupa para buscar coincidencias con este pasaje.';
+
+  @override
+  String get allusion_collapse => 'Contraer';
+
+  @override
+  String allusion_expand_verses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Mostrar $count versículos más',
+      one: 'Mostrar 1 versículo más',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String allusion_verse_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count versículos',
+      one: '1 versículo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get allusion_length => 'N.º de versículos';
+
+  @override
+  String get allusion_scope => 'Buscar en';
+
+  @override
+  String get allusion_scope_all => 'Toda la Biblia';
+
+  @override
+  String get allusion_scope_ot => 'Antiguo Testamento';
+
+  @override
+  String get allusion_scope_nt => 'Nuevo Testamento';
+
+  @override
+  String get allusion_candidates => 'Posibles conexiones';
+
+  @override
+  String get allusion_verses => 'Versículos';
+
+  @override
+  String get allusion_chapters => 'Capítulos';
+
+  @override
+  String get allusion_books => 'Libros';
+
+  @override
+  String get allusion_show_source => 'Ver pasaje';
+
+  @override
+  String get allusion_no_results =>
+      'No se encontraron candidatos con suficiente coincidencia léxica. Pruebe otro pasaje o amplíe el intervalo.';
+
+  @override
+  String get allusion_loading => 'Preparando el índice griego…';
+
+  @override
+  String get allusion_failed => 'No se pudieron cargar los datos de búsqueda.';
+
+  @override
+  String get allusion_no_source_words =>
+      'Este pasaje no tiene palabras griegas para buscar.';
+
+  @override
+  String allusion_source_word_count(int count, String weight) {
+    return 'Palabras únicas para la búsqueda: $count (peso $weight)';
+  }
+
+  @override
+  String allusion_source_word_details(
+    String count,
+    String base,
+    String weight,
+  ) {
+    return 'Apariciones en el pasaje: $count\nPeso base: $base\nPeso en la búsqueda: $weight';
+  }
+
+  @override
+  String allusion_match_score(String weight, String score) {
+    return 'peso $weight · similitud $score';
+  }
+
+  @override
+  String get allusion_verse_score_hint =>
+      'El orden refleja la similitud. Se tienen en cuenta el peso y la rareza de las palabras y la longitud de ambos pasajes.';
+
+  @override
+  String get allusion_group_score_hint =>
+      'El orden refleja la proporción del vocabulario ponderado del pasaje de origen que aparece en el grupo.';
+
+  @override
+  String allusion_word_weight(String code, String weight) {
+    return '$code · peso $weight';
+  }
+
+  @override
+  String allusion_common_count(int count) {
+    return 'Palabras en común: $count';
   }
 }

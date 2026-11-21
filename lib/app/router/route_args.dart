@@ -100,6 +100,7 @@ class BibleRouteArgs {
     this.initialVerse = 1,
     this.initialModuleFile,
     this.isReferenceLink = true,
+    this.initialVerseCount = 1,
   });
 
   final int initialBookId;
@@ -107,6 +108,7 @@ class BibleRouteArgs {
   final int initialVerse;
   final String? initialModuleFile;
   final bool isReferenceLink;
+  final int initialVerseCount;
 
   static BibleRouteArgs tryParse(
     Object? extra,
@@ -120,6 +122,8 @@ class BibleRouteArgs {
       initialBookId: _parsePositiveInt(queryParameters['book']) ?? 66,
       initialChapter: _parsePositiveInt(queryParameters['chapter']) ?? 1,
       initialVerse: _parsePositiveInt(queryParameters['verse']) ?? 1,
+      initialVerseCount: (_parsePositiveInt(queryParameters['length']) ?? 1)
+          .clamp(1, 77),
       initialModuleFile: _parseModuleFile(queryParameters['module']),
       isReferenceLink: const [
         'book',

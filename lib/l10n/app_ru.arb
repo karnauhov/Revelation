@@ -57,7 +57,10 @@
   "strongs_dictionary_screen": "Словарь Стронга",
   "strongs_dictionary_header": "Значения греческих слов и их использование",
   "allusion_search_screen": "Поиск аллюзий",
-  "allusion_search_header": "Связи с библейскими текстами",
+  "allusion_search_header": "Вся древнегреческая Библия (LXX + TR)",
+  "@allusion_search_header": {
+    "description": "Allusion search page subtitle naming the Greek Bible corpus."
+  },
   "bible_screen": "Библия",
   "bible_header": "Чтение и изучение Писания",
   "bible_module": "Модуль",
@@ -496,6 +499,207 @@
     "placeholders": {
       "reference": {
         "type": "String"
+      }
+    }
+  },
+  "bible_default": "Библия по умолчанию",
+  "@bible_default": {
+    "description": "Global Bible module preference in the existing application settings."
+  },
+  "bible_automatic": "Автовыбор",
+  "@bible_automatic": {
+    "description": "Automatic Bible choice using the interface language with an English fallback."
+  },
+  "bible_catalog_refresh": "Обновить список",
+  "@bible_catalog_refresh": {
+    "description": "Action to refresh the published Bible module catalog."
+  },
+  "bible_catalog_failed": "Не удалось обновить список Библий. Сохранённые модули доступны.",
+  "@bible_catalog_failed": {
+    "description": "Catalog refresh failure while retaining saved modules."
+  },
+  "bible_open_reader": "Открыть в читалке",
+  "@bible_open_reader": {
+    "description": "Open the previewed Bible passage in the full reader."
+  },
+  "strong_open_dictionary": "Открыть в словаре",
+  "@strong_open_dictionary": {
+    "description": "Open the current Strong entry on the full dictionary page."
+  },
+  "bible_automatic_hint": "Используется язык приложения, а при отсутствии перевода - английский.",
+  "@bible_automatic_hint": {
+    "description": "Explains automatic Bible translation selection in the picker."
+  },
+  "bible_passage_subtitle": "Библейский отрывок",
+  "@bible_passage_subtitle": {
+    "description": "Subtitle of the shared Bible passage dialog."
+  },
+  "bible_previous_verse": "Предыдущий стих",
+  "@bible_previous_verse": {
+    "description": "Show the preceding Bible verse."
+  },
+  "bible_next_verse": "Следующий стих",
+  "@bible_next_verse": {
+    "description": "Show the following Bible verse."
+  },
+  "allusion_source": "Исходный отрывок",
+  "@allusion_source": {
+    "description": "Heading for the selected source passage."
+  },
+  "allusion_options": "Другие параметры поиска",
+  "@allusion_options": {
+    "description": "Open additional allusion search parameters."
+  },
+  "allusion_search_hint": "Нажмите на лупу, чтобы найти совпадения для этого отрывка.",
+  "@allusion_search_hint": {
+    "description": "Prompt to search after selecting the source passage."
+  },
+  "allusion_collapse": "Свернуть",
+  "@allusion_collapse": {
+    "description": "Collapse the expanded source passage."
+  },
+  "allusion_expand_verses": "{count, plural, one{Показать ещё {count} стих} few{Показать ещё {count} стиха} other{Показать ещё {count} стихов}}",
+  "@allusion_expand_verses": {
+    "description": "Reveal the rest of the source passage.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "allusion_verse_count": "{count, plural, one{{count} стих} few{{count} стиха} other{{count} стихов}}",
+  "@allusion_verse_count": {
+    "description": "Number of consecutive verses to search.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "allusion_length": "Число стихов",
+  "@allusion_length": {
+    "description": "Number of consecutive source verses included in the search."
+  },
+  "allusion_scope": "Где искать",
+  "@allusion_scope": {
+    "description": "Label for the Bible search scope picker."
+  },
+  "allusion_scope_all": "Вся Библия",
+  "@allusion_scope_all": {
+    "description": "Search both testaments."
+  },
+  "allusion_scope_ot": "Ветхий Завет",
+  "@allusion_scope_ot": {
+    "description": "Search the Old Testament only."
+  },
+  "allusion_scope_nt": "Новый Завет",
+  "@allusion_scope_nt": {
+    "description": "Search the New Testament only."
+  },
+  "allusion_candidates": "Возможные связи",
+  "@allusion_candidates": {
+    "description": "Heading for proposed lexical connections requiring interpretation."
+  },
+  "allusion_verses": "Стихи",
+  "@allusion_verses": {
+    "description": "Verse-level candidate results."
+  },
+  "allusion_chapters": "Главы",
+  "@allusion_chapters": {
+    "description": "Chapter-level candidate results."
+  },
+  "allusion_books": "Книги",
+  "@allusion_books": {
+    "description": "Book-level candidate results."
+  },
+  "allusion_show_source": "Посмотреть отрывок",
+  "@allusion_show_source": {
+    "description": "Preview the selected source passage."
+  },
+  "allusion_no_results": "Кандидаты с достаточным лексическим совпадением не найдены. Попробуйте другой отрывок или расширьте диапазон.",
+  "@allusion_no_results": {
+    "description": "No candidate passes the minimum meaningful-word threshold."
+  },
+  "allusion_loading": "Подготовка греческого индекса…",
+  "@allusion_loading": {
+    "description": "Initial Greek corpus indexing progress message."
+  },
+  "allusion_failed": "Не удалось загрузить данные поиска.",
+  "@allusion_failed": {
+    "description": "Failure to load data or perform the allusion search."
+  },
+  "allusion_no_source_words": "В этом отрывке нет греческих слов для поиска.",
+  "@allusion_no_source_words": {
+    "description": "Source passage has no searchable Greek Strong tokens."
+  },
+  "allusion_source_word_count": "Уникальных слов для поиска: {count} (вес {weight})",
+  "@allusion_source_word_count": {
+    "description": "Distinct searchable Greek Strong identifiers and their combined ranking weight.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_source_word_details": "Вхождений в отрывке: {count}\nБазовый вес: {base}\nВес в поиске: {weight}",
+  "@allusion_source_word_details": {
+    "description": "Occurrence count, semantic weight and rarity-adjusted weight in the source passage. A question mark indicates missing verse text.",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "base": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_match_score": "вес {weight} · сходство {score}",
+  "@allusion_match_score": {
+    "description": "Weighted overlap and normalized score used for ranking",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_verse_score_hint": "Порядок определяется сходством. Учитываются вес и редкость слов, а также длина обоих отрывков.",
+  "@allusion_verse_score_hint": {
+    "description": "Verse score explanation"
+  },
+  "allusion_group_score_hint": "Порядок определяется долей взвешенной лексики исходного отрывка, найденной в этой группе.",
+  "@allusion_group_score_hint": {
+    "description": "Chapter and book score explanation"
+  },
+  "allusion_word_weight": "{code} · вес {weight}",
+  "@allusion_word_weight": {
+    "description": "Strong identifier and base weight on a source word",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_common_count": "Общих слов: {count}",
+  "@allusion_common_count": {
+    "description": "Number of distinct Strong IDs shared by the source and candidate.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "9"
       }
     }
   }

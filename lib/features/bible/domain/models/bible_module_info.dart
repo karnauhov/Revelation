@@ -11,6 +11,7 @@ class BibleModuleInfo {
     required this.license,
     required this.sourceSummary,
     this.hasStrongNumbers = false,
+    this.role,
     this.schemaVersion,
     this.dataVersion,
     this.date,
@@ -29,6 +30,7 @@ class BibleModuleInfo {
 
   /// Whether the module contains Strong tokens in any verse, not just this chapter.
   final bool hasStrongNumbers;
+  final String? role;
   final int? schemaVersion;
   final int? dataVersion;
   final DateTime? date;
@@ -50,6 +52,7 @@ class BibleModuleInfo {
             other.license == license &&
             other.sourceSummary == sourceSummary &&
             other.hasStrongNumbers == hasStrongNumbers &&
+            other.role == role &&
             other.schemaVersion == schemaVersion &&
             other.dataVersion == dataVersion &&
             other.date == date;
@@ -68,8 +71,12 @@ class BibleModuleInfo {
     license,
     sourceSummary,
     hasStrongNumbers,
+    role,
     schemaVersion,
     dataVersion,
     date,
   );
 }
+
+String bibleRoleForLanguage(String language) =>
+    const {'grc', 'hbo', 'arc'}.contains(language) ? 'original' : 'translation';

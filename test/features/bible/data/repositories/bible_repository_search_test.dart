@@ -376,7 +376,10 @@ class _FakeBibleModuleDB extends BibleModuleDB {
   final _FakeBibleModuleData data;
 
   @override
-  Future<BibleModuleInfo> readInfo(String fileName) async {
+  Future<BibleModuleInfo> readInfo(
+    String fileName, {
+    bool includeStrongCapability = true,
+  }) async {
     return BibleModuleInfo(
       fileName: fileName,
       code: data.info.code,

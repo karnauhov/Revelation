@@ -1,7 +1,7 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.6.4`
-Last-Updated: `2026-11-07`
+Doc-Version: `2.6.6`
+Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
 ## Strong number availability in a module
@@ -14,9 +14,17 @@ Source-Commit: `working-tree`
 
 ## Parallel reading by default and from reference links
 
-`BibleWorkspaceCubit` opens a new workspace with LXX/TR and an available translation in the app language, matching published module metadata. KJV (en) and OH1988 (uk) are currently available; missing es/ru translations or unreadable optional metadata leave the original module open. No unavailable modules are invented. An explicit link `module` takes priority; an unavailable module falls back to the normal original/first available module rather than the stored selection.
+`BibleWorkspaceCubit` opens a new workspace with LXX/TR and the default translation. Reference links open with the resolved translation in the primary pane. An explicit module in the route takes precedence. The language of the interface drives automatic selection, with English as the fallback. KJV serves en/es/ru and OH1988 serves uk with the current catalog. A missing module can lead to a reader error with retry, without changing the saved preference.
 
 An ordinary `/bible` restores the saved panes, including a legacy single-module preference. `bible:` and `/bible` reference parameters open the requested book/chapter/verse with a translation independently of the saved layout, preserving existing route formats. Automatic opening and navigation do not write preferences. Only explicitly adding/closing a pane or successfully changing a module saves the complete ready layout. The workspace alone owns these writes; ReaderCubit no longer writes the shared single-module preference. Writes are serialized and incomplete layouts are not saved. Initial loads coalesce; closing the workspace or manually changing its layout prevents delayed automatic selection from applying. Linked navigation remains a setting of the current workspace. Translation selection runs once; after a slow load the new pane waits for the current synchronization and follows the latest primary reference.
+
+## Allusion search and Bible settings
+
+The selected passage shows LXX/TR before the translation. Word colour reflects the Greek base weight. Result cards display weighted overlap and normalized similarity. The source card lists the distinct searchable Greek words across the entire selected passage and their total ranking weight, even when only the first verse is visible.
+
+The verse selector uses the canonical verse map available at startup. After the first frame the repository prepares the search index for the installed LXX/TR revision. A search submitted immediately waits for that same operation. New LXX/TR modules carry their prepared index. For an older module, the repository can read the bundled index for the shipped revision or generate and cache the postings in batches.
+
+Result cards show the globally selected translation. Chapter and book results link to individual verses. A passage dialog reads the translation and LXX/TR by canonical verse key and opens the displayed range in the reader. Strong links open the shared dictionary dialog, which links to the full entry. Both dialogs use the shared copy and PDF actions.
 
 ## Retrying the first Bible load
 

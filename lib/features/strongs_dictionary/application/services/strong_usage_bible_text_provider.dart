@@ -1,6 +1,5 @@
-import 'package:revelation/features/bible/data/repositories/bible_module_data_source.dart';
+import 'package:revelation/features/bible/data/repositories/bible_library_repository.dart';
 import 'package:revelation/features/bible/domain/services/bible_text_search.dart';
-import 'package:revelation/shared/config/app_constants.dart';
 
 abstract interface class StrongUsageBibleTextProvider {
   Future<String?> loadVerseText(String verseKey);
@@ -8,46 +7,16 @@ abstract interface class StrongUsageBibleTextProvider {
 
 class DefaultStrongUsageBibleTextProvider
     implements StrongUsageBibleTextProvider {
-  DefaultStrongUsageBibleTextProvider({
-    BibleModuleDataSource moduleDataSource = const LocalBibleModuleDataSource(),
-    this.moduleFile = AppConstants.defaultBibleModuleDB,
-  }) : _moduleDataSource = moduleDataSource;
+  const DefaultStrongUsageBibleTextProvider(this._library);
 
-  final BibleModuleDataSource _moduleDataSource;
-  final String moduleFile;
-  final Map<String, String?> _cache = <String, String?>{};
-  final Map<String, Future<String?>> _inFlight = <String, Future<String?>>{};
+  final BibleLibraryRepository Function() _library;
 
   @override
-  Future<String?> loadVerseText(String verseKey) {
+  Future<String?> loadVerseText(String verseKey) async {
     final normalizedVerseKey = verseKey.trim().toUpperCase();
-    if (normalizedVerseKey.isEmpty) {
-      return Future<String?>.value(null);
-    }
-    if (_cache.containsKey(normalizedVerseKey)) {
-      return Future<String?>.value(_cache[normalizedVerseKey]);
-    }
-
-    return _inFlight[normalizedVerseKey] ??= _loadVerseText(normalizedVerseKey)
-        .whenComplete(() {
-          _inFlight.remove(normalizedVerseKey);
-        });
-  }
-
-  Future<String?> _loadVerseText(String verseKey) async {
-    final database = _moduleDataSource.openModule(moduleFile);
-    try {
-      final verses = await database.readVersesByKeys(<String>[verseKey]);
-      if (verses.isEmpty) {
-        _cache[verseKey] = null;
-        return null;
-      }
-      final text = plainBibleText(verses.first.text);
-      final normalizedText = text.isEmpty ? null : text;
-      _cache[verseKey] = normalizedText;
-      return normalizedText;
-    } finally {
-      await database.close();
-    }
+    if (normalizedVerseKey.isEmpty) return null;
+    final preview = await _library().loadPreview([normalizedVerseKey]);
+    final verse = preview.verses.firstOrNull;
+    return verse == null ? null : plainBibleText(verse.text);
   }
 }

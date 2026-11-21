@@ -197,7 +197,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get allusion_search_screen => 'Пошук алюзій';
 
   @override
-  String get allusion_search_header => 'Зв\'язки з біблійними текстами';
+  String get allusion_search_header => 'Уся давньогрецька Біблія (LXX + TR)';
 
   @override
   String get bible_screen => 'Біблія';
@@ -1390,5 +1390,155 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String bible_verse_footnotes(String reference) {
     return 'Виноски: $reference';
+  }
+
+  @override
+  String get bible_default => 'Біблія за замовчуванням';
+
+  @override
+  String get bible_automatic => 'Автовибір';
+
+  @override
+  String get bible_catalog_refresh => 'Оновити список';
+
+  @override
+  String get bible_catalog_failed =>
+      'Не вдалося оновити список Біблій. Збережені модулі доступні.';
+
+  @override
+  String get bible_open_reader => 'Відкрити в читачі';
+
+  @override
+  String get strong_open_dictionary => 'Відкрити у словнику';
+
+  @override
+  String get bible_automatic_hint =>
+      'Використовується мова застосунку, а за відсутності перекладу - англійська.';
+
+  @override
+  String get bible_passage_subtitle => 'Біблійний уривок';
+
+  @override
+  String get bible_previous_verse => 'Попередній вірш';
+
+  @override
+  String get bible_next_verse => 'Наступний вірш';
+
+  @override
+  String get allusion_source => 'Вихідний уривок';
+
+  @override
+  String get allusion_options => 'Інші параметри';
+
+  @override
+  String get allusion_search_hint =>
+      'Натисніть лупу, щоб знайти збіги для вибраного уривка.';
+
+  @override
+  String get allusion_collapse => 'Згорнути';
+
+  @override
+  String allusion_expand_verses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Показати ще $count віршів',
+      few: 'Показати ще $count вірші',
+      one: 'Показати ще $count вірш',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String allusion_verse_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count віршів',
+      few: '$count вірші',
+      one: '$count вірш',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get allusion_length => 'Кількість віршів';
+
+  @override
+  String get allusion_scope => 'Де шукати';
+
+  @override
+  String get allusion_scope_all => 'Уся Біблія';
+
+  @override
+  String get allusion_scope_ot => 'Старий Завіт';
+
+  @override
+  String get allusion_scope_nt => 'Новий Завіт';
+
+  @override
+  String get allusion_candidates => 'Можливі зв\'язки';
+
+  @override
+  String get allusion_verses => 'Вірші';
+
+  @override
+  String get allusion_chapters => 'Розділи';
+
+  @override
+  String get allusion_books => 'Книги';
+
+  @override
+  String get allusion_show_source => 'Переглянути уривок';
+
+  @override
+  String get allusion_no_results =>
+      'Кандидатів із достатнім лексичним збігом не знайдено. Спробуйте інший уривок або розширте діапазон.';
+
+  @override
+  String get allusion_loading => 'Підготовка грецького індексу…';
+
+  @override
+  String get allusion_failed => 'Не вдалося завантажити дані пошуку.';
+
+  @override
+  String get allusion_no_source_words =>
+      'У цьому уривку немає грецьких слів для пошуку.';
+
+  @override
+  String allusion_source_word_count(int count, String weight) {
+    return 'Унікальних слів для пошуку: $count (вага $weight)';
+  }
+
+  @override
+  String allusion_source_word_details(
+    String count,
+    String base,
+    String weight,
+  ) {
+    return 'Входжень в уривку: $count\nБазова вага: $base\nВага в пошуку: $weight';
+  }
+
+  @override
+  String allusion_match_score(String weight, String score) {
+    return 'вага $weight · подібність $score';
+  }
+
+  @override
+  String get allusion_verse_score_hint =>
+      'Порядок визначає подібність. Враховано вагу й рідкість слів, а також довжину обох уривків.';
+
+  @override
+  String get allusion_group_score_hint =>
+      'Порядок визначає частка зваженої лексики вихідного уривка, знайдена в цій групі.';
+
+  @override
+  String allusion_word_weight(String code, String weight) {
+    return '$code · вага $weight';
+  }
+
+  @override
+  String allusion_common_count(int count) {
+    return 'Спільних слів: $count';
   }
 }

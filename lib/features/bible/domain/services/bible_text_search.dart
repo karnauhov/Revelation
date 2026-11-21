@@ -5,6 +5,24 @@ final RegExp bibleStrongTokenPattern = RegExp(
   caseSensitive: false,
 );
 
+typedef BibleMarkedWord = ({String text, List<String> codes});
+
+/// A module places one or more Strong identifiers immediately after a word.
+Iterable<BibleMarkedWord> bibleMarkedWords(String text) sync* {
+  final tokens = text.trim().split(RegExp(r'\s+'));
+  for (var i = 0; i < tokens.length; i++) {
+    final word = tokens[i];
+    if (word.isEmpty || bibleStrongTokenPattern.hasMatch(word)) continue;
+    final codes = <String>{};
+    while (i + 1 < tokens.length &&
+        bibleStrongTokenPattern.hasMatch(tokens[i + 1])) {
+      final code = tokens[++i];
+      codes.add('${code[0].toUpperCase()}${int.parse(code.substring(1))}');
+    }
+    yield (text: word, codes: codes.toList(growable: false));
+  }
+}
+
 String plainBibleText(String text) {
   final tokens = text.trim().split(RegExp(r'\s+'));
   if (tokens.length == 1 && tokens.first.isEmpty) {

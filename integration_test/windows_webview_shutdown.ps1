@@ -1,4 +1,4 @@
-# Run against a local Windows Release build of webview_release_probe.dart.
+# Run against a local Windows build of webview_release_probe.dart.
 # The host must observe process exit because the crash happens after Dart stops.
 [CmdletBinding()]
 param(
@@ -14,6 +14,7 @@ if (Get-Process ([IO.Path]::GetFileNameWithoutExtension($executablePath)) -Error
 
 $scenarios = @(
     @{ Name = 'cold'; Arguments = '--without-webview'; Title = 'Revelation WebView probe - no WebView' },
+    @{ Name = 'audio'; Arguments = @('--without-webview', '--play-audio'); Title = 'Revelation Windows probe - native audio requested' },
     @{ Name = 'loading'; Title = 'Revelation WebView probe - starting' },
     @{ Name = 'loaded'; Title = 'Revelation WebView probe - JavaScript verified' }
 )

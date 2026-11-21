@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
+from .build_allusion_index import embed_index
 from .canon import CANON_NAME, CanonicalVerse, canonical_verses, parse_canonical_ref
 from .fetch_sources import load_manifest, verify_source_manifest
 from .lxx import (
@@ -381,6 +382,7 @@ def build_lxx_tr_module_from_tokens(
                 license_summary=license_summary,
             )
             _apply_verse_texts(connection, combined_texts)
+            embed_index(connection)
             connection.commit()
         except Exception:
             connection.rollback()

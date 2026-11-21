@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_content_service.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strongs_dictionary_cubit.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strongs_dictionary_state.dart';
@@ -8,6 +9,7 @@ import 'package:revelation/features/strongs_dictionary/presentation/widgets/stro
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_reference_info_icon.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
+import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
 
 Future<BibleVerseMap>? _strongDictionaryDialogVerseMapFuture;
 
@@ -123,54 +125,25 @@ class _StrongDictionaryDialogContentState
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context)!;
     final mediaSize = MediaQuery.sizeOf(context);
-    final dialogWidth = (mediaSize.width - 20).clamp(320.0, 800.0).toDouble();
     final dialogHeight = (mediaSize.height - 36).clamp(220.0, 600.0).toDouble();
 
     return BlocBuilder<StrongsDictionaryCubit, StrongsDictionaryState>(
       builder: (context, state) {
-        return AlertDialog(
-          insetPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 10,
-          ),
-          backgroundColor: colorScheme.surface,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: colorScheme.primary),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          titlePadding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          actionsPadding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
-          title: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: dialogWidth - 80),
-                  child: Text(
-                    localizations.strongs_dictionary_screen,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Transform.translate(
-                  offset: const Offset(4, -5),
-                  child: StrongReferenceInfoIcon(
-                    tooltipKey: _referenceTooltipKey,
-                  ),
-                ),
-              ],
-            ),
-          ),
+        final word = state.pickerEntries
+            .where((entry) => entry.number == state.strongNumber)
+            .firstOrNull
+            ?.word;
+        return StudyTextDialog(
+          title: localizations.strongs_dictionary_screen,
+          subtitle: word == null || word.isEmpty
+              ? 'G${state.strongNumber}'
+              : 'G${state.strongNumber} · $word',
+          titleInfo: StrongReferenceInfoIcon(tooltipKey: _referenceTooltipKey),
+          maxWidth: 800,
           content: SizedBox(
-            width: dialogWidth,
+            width: 800,
             height: dialogHeight,
             child: StrongDictionaryEntryView(
               strongNumber: state.strongNumber,
@@ -199,6 +172,18 @@ class _StrongDictionaryDialogContentState
             ),
           ),
           actions: [
+            TextButton.icon(
+              key: const Key('strong_dialog_open_page'),
+              icon: const Icon(Icons.open_in_new),
+              onPressed: () {
+                final router = GoRouter.of(context);
+                Navigator.of(context).pop();
+                router.push(
+                  '/strongs_dictionary?number=G${state.strongNumber}',
+                );
+              },
+              label: Text(localizations.strong_open_dictionary),
+            ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(localizations.close),

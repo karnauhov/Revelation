@@ -16,6 +16,8 @@ import tkinter as tk
 from tkinter import filedialog, font as tkfont, messagebox, ttk
 from typing import Any
 
+from scripts.bible_module.build_allusion_index import embed_index
+
 from ..helpers import LANGUAGE_NAME_RU_BY_CODE
 from ..models import ArticleRow, PrimarySourceSummary, ResourceRow, StrongRow
 from ..web_db_manifest import build_web_db_manifest_payload_from_paths, write_web_db_manifest
@@ -212,6 +214,8 @@ class CoreDbMixin:
                             (DB_METADATA_DATE_KEY, now_iso),
                         ],
                     )
+                    if increment_data_version and db_path.name == "bible_lxx_tr.sqlite":
+                        embed_index(active_connection)
 
                 if own_connection:
                     with con:

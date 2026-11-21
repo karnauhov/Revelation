@@ -45,6 +45,65 @@ void main() {
     expect(repository.savedSettings.single.selectedLanguage, 'ru');
   });
 
+  test(
+    'a delayed settings read cannot revert a newly selected Bible',
+    () async {
+      final olderSettings = _buildSettings(language: 'en');
+      final read = Completer<AppSettings>();
+      final repository = _FakeSettingsRepository(
+        initialSettings: olderSettings,
+        loadCompleter: read,
+      );
+      final cubit = SettingsCubit(repository);
+      addTearDown(cubit.close);
+
+      final loading = cubit.loadSettings();
+      await cubit.changeDefaultBibleModule('bible_kjv.sqlite');
+      read.complete(olderSettings);
+      await loading;
+
+      expect(cubit.state.settings.defaultBibleModule, 'bible_kjv.sqlite');
+      expect(repository.savedSettings.single, cubit.state.settings);
+      expect(cubit.state.isLoading, isFalse);
+    },
+  );
+
+  test(
+    'rapid changes persist the latest Bible and language in order',
+    () async {
+      final saving = Completer<void>();
+      final repository = _FakeSettingsRepository(
+        initialSettings: _buildSettings(language: 'en'),
+        saveCompleter: saving,
+      );
+      final cubit = SettingsCubit(repository);
+      addTearDown(cubit.close);
+      await cubit.loadSettings();
+
+      final first = cubit.changeDefaultBibleModule('bible_kjv.sqlite');
+      final second = cubit.changeDefaultBibleModule(
+        'bible_ohienko_1988.sqlite',
+      );
+      final third = cubit.changeLanguage('ru');
+      await Future<void>.delayed(Duration.zero);
+      expect(repository.saveCalls, 1);
+      expect(
+        cubit.state.settings.defaultBibleModule,
+        'bible_ohienko_1988.sqlite',
+      );
+      expect(cubit.state.settings.selectedLanguage, 'ru');
+      saving.complete();
+      await Future.wait([first, second, third]);
+
+      expect(repository.savedSettings.map((s) => s.defaultBibleModule), [
+        'bible_kjv.sqlite',
+        'bible_ohienko_1988.sqlite',
+        'bible_ohienko_1988.sqlite',
+      ]);
+      expect(repository.initialSettings, cubit.state.settings);
+    },
+  );
+
   test('loadSettings emits data-source failure on repository throw', () async {
     final repository = _FakeSettingsRepository(
       initialSettings: _buildSettings(language: 'en'),
@@ -159,6 +218,7 @@ class _FakeSettingsRepository extends SettingsRepository {
   final Completer<AppSettings>? loadCompleter;
   final Completer<void>? saveCompleter;
   final List<AppSettings> savedSettings = <AppSettings>[];
+  int saveCalls = 0;
 
   @override
   Future<AppSettings> getSettings() async {
@@ -173,6 +233,7 @@ class _FakeSettingsRepository extends SettingsRepository {
 
   @override
   Future<void> saveSettings(AppSettings settings) async {
+    saveCalls++;
     if (saveCompleter != null) {
       await saveCompleter!.future;
       initialSettings = settings;

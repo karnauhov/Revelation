@@ -1,7 +1,7 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.6.2`
-Last-Updated: `2026-10-31`
+Doc-Version: `2.6.4`
+Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
 ## Strong number availability in a module
@@ -14,9 +14,17 @@ Source-Commit: `working-tree`
 
 ## Parallel reading by default and from reference links
 
-`BibleWorkspaceCubit` opens a new workspace with LXX/TR and an available translation in the app language, matching published module metadata. KJV (en) and OH1988 (uk) are currently available; missing es/ru translations or unreadable optional metadata leave the original module open. No unavailable modules are invented. An explicit link `module` takes priority; an unavailable module falls back to the normal original/first available module rather than the stored selection.
+`BibleWorkspaceCubit` opens a new workspace with LXX/TR and the default translation. Reference links open with the resolved translation in the primary pane. An explicit module in the route takes precedence. The language of the interface drives automatic selection, with English as the fallback. KJV serves en/es/ru and OH1988 serves uk with the current catalog. A missing module can lead to a reader error with retry, without changing the saved preference.
 
 An ordinary `/bible` restores the saved panes, including a legacy single-module preference. `bible:` and `/bible` reference parameters open the requested book/chapter/verse with a translation independently of the saved layout, preserving existing route formats. Automatic opening and navigation do not write preferences. Only explicitly adding/closing a pane or successfully changing a module saves the complete ready layout. The workspace alone owns these writes; ReaderCubit no longer writes the shared single-module preference. Writes are serialized and incomplete layouts are not saved. Initial loads coalesce; closing the workspace or manually changing its layout prevents delayed automatic selection from applying. Linked navigation remains a setting of the current workspace. Translation selection runs once; after a slow load the new pane waits for the current synchronization and follows the latest primary reference.
+
+## Allusion search and Bible catalog state
+
+The search state keeps annotated source and translation rows. A separate request guard protects the original passage across overlapping selections. The same immutable index supplies word weights, per-verse matches and ranking. The source word list expands independently of the passage text and result cards. Selecting a different passage collapses its word list.
+
+SettingsCubit persists the default Bible module. BibleCatalogCubit first emits cached modules and then the refreshed catalog. AppDi supplies one AllusionSearchCubit per app session. It keeps the query, results, selected level and page across navigation and reloads previews when the translation changes. The canonical verse map is independent of index preparation. Background preparation and searches on the same visit share one index request. A new visit checks the installed revision again, and a failed preparation can be retried. A request guard protects against out-of-order results when the user changes the query, page or settings.
+
+BiblePassagePreviewCubit owns the current verse range and both module previews. Previous and next shift the range using the verse map. Each side can show available text independently. Late completions after navigation or closing the dialog are discarded.
 
 ## Retrying the first Bible load
 

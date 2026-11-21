@@ -41,6 +41,17 @@ def read_web_db_manifest_entry(db_path: Path) -> dict[str, Any]:
         connection.execute("PRAGMA query_only=ON")
         metadata_values = _read_db_metadata_values(connection)
         schema_version = _read_schema_version(connection, metadata_values)
+        bible = None
+        if db_path.name.startswith("bible_") and _table_exists(connection, "info"):
+            row = connection.execute(
+                "SELECT module_id, code, title, language, canon, versification FROM info LIMIT 1"
+            ).fetchone()
+            if row:
+                fields = ("moduleId", "code", "title", "language", "canon", "versification")
+                bible = dict(zip(fields, row))
+                bible["role"] = (
+                    "original" if bible["language"] in {"grc", "hbo", "arc"} else "translation"
+                )
     finally:
         connection.close()
 
@@ -67,6 +78,7 @@ def read_web_db_manifest_entry(db_path: Path) -> dict[str, Any]:
         "dataVersion": data_version,
         "date": date_iso,
         "fileSizeBytes": file_size_bytes,
+        **({"bible": bible} if bible else {}),
     }
 
 

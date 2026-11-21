@@ -57,7 +57,10 @@
   "strongs_dictionary_screen": "Словник Стронґа",
   "strongs_dictionary_header": "Значення грецьких слів та їх використання",
   "allusion_search_screen": "Пошук алюзій",
-  "allusion_search_header": "Зв'язки з біблійними текстами",
+  "allusion_search_header": "Уся давньогрецька Біблія (LXX + TR)",
+  "@allusion_search_header": {
+    "description": "Allusion search page subtitle naming the Greek Bible corpus."
+  },
   "bible_screen": "Біблія",
   "bible_header": "Читання і вивчення Писання",
   "bible_module": "Модуль",
@@ -496,6 +499,207 @@
     "placeholders": {
       "reference": {
         "type": "String"
+      }
+    }
+  },
+  "bible_default": "Біблія за замовчуванням",
+  "@bible_default": {
+    "description": "Global Bible module preference in the existing application settings."
+  },
+  "bible_automatic": "Автовибір",
+  "@bible_automatic": {
+    "description": "Automatic Bible choice using the interface language with an English fallback."
+  },
+  "bible_catalog_refresh": "Оновити список",
+  "@bible_catalog_refresh": {
+    "description": "Action to refresh the published Bible module catalog."
+  },
+  "bible_catalog_failed": "Не вдалося оновити список Біблій. Збережені модулі доступні.",
+  "@bible_catalog_failed": {
+    "description": "Catalog refresh failure while retaining saved modules."
+  },
+  "bible_open_reader": "Відкрити в читачі",
+  "@bible_open_reader": {
+    "description": "Open the previewed Bible passage in the full reader."
+  },
+  "strong_open_dictionary": "Відкрити у словнику",
+  "@strong_open_dictionary": {
+    "description": "Open the current Strong entry on the full dictionary page."
+  },
+  "bible_automatic_hint": "Використовується мова застосунку, а за відсутності перекладу - англійська.",
+  "@bible_automatic_hint": {
+    "description": "Explains automatic Bible translation selection in the picker."
+  },
+  "bible_passage_subtitle": "Біблійний уривок",
+  "@bible_passage_subtitle": {
+    "description": "Subtitle of the shared Bible passage dialog."
+  },
+  "bible_previous_verse": "Попередній вірш",
+  "@bible_previous_verse": {
+    "description": "Show the preceding Bible verse."
+  },
+  "bible_next_verse": "Наступний вірш",
+  "@bible_next_verse": {
+    "description": "Show the following Bible verse."
+  },
+  "allusion_source": "Вихідний уривок",
+  "@allusion_source": {
+    "description": "Heading for the selected source passage."
+  },
+  "allusion_options": "Інші параметри",
+  "@allusion_options": {
+    "description": "Open additional allusion search parameters."
+  },
+  "allusion_search_hint": "Натисніть лупу, щоб знайти збіги для вибраного уривка.",
+  "@allusion_search_hint": {
+    "description": "Prompt to search after selecting the source passage."
+  },
+  "allusion_collapse": "Згорнути",
+  "@allusion_collapse": {
+    "description": "Collapse the expanded source passage."
+  },
+  "allusion_expand_verses": "{count, plural, one{Показати ще {count} вірш} few{Показати ще {count} вірші} other{Показати ще {count} віршів}}",
+  "@allusion_expand_verses": {
+    "description": "Reveal the rest of the source passage.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "allusion_verse_count": "{count, plural, one{{count} вірш} few{{count} вірші} other{{count} віршів}}",
+  "@allusion_verse_count": {
+    "description": "Number of consecutive verses to search.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "allusion_length": "Кількість віршів",
+  "@allusion_length": {
+    "description": "Number of consecutive source verses included in the search."
+  },
+  "allusion_scope": "Де шукати",
+  "@allusion_scope": {
+    "description": "Label for the Bible search scope picker."
+  },
+  "allusion_scope_all": "Уся Біблія",
+  "@allusion_scope_all": {
+    "description": "Search both testaments."
+  },
+  "allusion_scope_ot": "Старий Завіт",
+  "@allusion_scope_ot": {
+    "description": "Search the Old Testament only."
+  },
+  "allusion_scope_nt": "Новий Завіт",
+  "@allusion_scope_nt": {
+    "description": "Search the New Testament only."
+  },
+  "allusion_candidates": "Можливі зв'язки",
+  "@allusion_candidates": {
+    "description": "Heading for proposed lexical connections requiring interpretation."
+  },
+  "allusion_verses": "Вірші",
+  "@allusion_verses": {
+    "description": "Verse-level candidate results."
+  },
+  "allusion_chapters": "Розділи",
+  "@allusion_chapters": {
+    "description": "Chapter-level candidate results."
+  },
+  "allusion_books": "Книги",
+  "@allusion_books": {
+    "description": "Book-level candidate results."
+  },
+  "allusion_show_source": "Переглянути уривок",
+  "@allusion_show_source": {
+    "description": "Preview the selected source passage."
+  },
+  "allusion_no_results": "Кандидатів із достатнім лексичним збігом не знайдено. Спробуйте інший уривок або розширте діапазон.",
+  "@allusion_no_results": {
+    "description": "No candidate passes the minimum meaningful-word threshold."
+  },
+  "allusion_loading": "Підготовка грецького індексу…",
+  "@allusion_loading": {
+    "description": "Initial Greek corpus indexing progress message."
+  },
+  "allusion_failed": "Не вдалося завантажити дані пошуку.",
+  "@allusion_failed": {
+    "description": "Failure to load data or perform the allusion search."
+  },
+  "allusion_no_source_words": "У цьому уривку немає грецьких слів для пошуку.",
+  "@allusion_no_source_words": {
+    "description": "Source passage has no searchable Greek Strong tokens."
+  },
+  "allusion_source_word_count": "Унікальних слів для пошуку: {count} (вага {weight})",
+  "@allusion_source_word_count": {
+    "description": "Distinct searchable Greek Strong identifiers and their combined ranking weight.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_source_word_details": "Входжень в уривку: {count}\nБазова вага: {base}\nВага в пошуку: {weight}",
+  "@allusion_source_word_details": {
+    "description": "Occurrence count, semantic weight and rarity-adjusted weight in the source passage. A question mark indicates missing verse text.",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "base": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_match_score": "вага {weight} · подібність {score}",
+  "@allusion_match_score": {
+    "description": "Weighted overlap and normalized score used for ranking",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_verse_score_hint": "Порядок визначає подібність. Враховано вагу й рідкість слів, а також довжину обох уривків.",
+  "@allusion_verse_score_hint": {
+    "description": "Verse score explanation"
+  },
+  "allusion_group_score_hint": "Порядок визначає частка зваженої лексики вихідного уривка, знайдена в цій групі.",
+  "@allusion_group_score_hint": {
+    "description": "Chapter and book score explanation"
+  },
+  "allusion_word_weight": "{code} · вага {weight}",
+  "@allusion_word_weight": {
+    "description": "Strong identifier and base weight on a source word",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_common_count": "Спільних слів: {count}",
+  "@allusion_common_count": {
+    "description": "Number of distinct Strong IDs shared by the source and candidate.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "9"
       }
     }
   }

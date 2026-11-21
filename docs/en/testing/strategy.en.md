@@ -1,8 +1,12 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.4.8`
-Last-Updated: `2026-11-14`
+Doc-Version: `2.4.9`
+Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
+
+## Allusion search and linked passages
+
+On Windows and Web, run `allusion_prepared_index_smoke_test.dart` and `allusion_search_navigation_smoke_test.dart` from `integration_test/smoke/`. The first measures time to an enabled reference selector and the translated result after an immediate search. The navigation test uses shipped modules to follow Rev. 2:27 to Ps. 2:9, read the Greek, open Strong G4464 and return. The synthetic scenario exercises narrow controls, multiple pages and the shared settings route. Use `bible_reference_sources_smoke_test.dart` to check links from topics, dictionary content and the primary-source attribution widget after changing the default translation. The cold-start test exercises the normal startup route with an isolated preference store. Run `bible_catalog_offline_smoke_test.dart` with the same devices to discover a new translation, interrupt its update, preserve the previous SQLite version and reopen the installed module while offline. It uses a local test manifest and an isolated database directory or browser profile. The widget test resizes the window across the 1040 logical pixel breakpoint with results open. It checks that the current result page survives the resize and that scrolling or paging from the bottom of the wide results pane keeps the source passage in place.
 
 ## Windows WebView shutdown
 

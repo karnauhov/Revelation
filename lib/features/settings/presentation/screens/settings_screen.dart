@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:revelation/app/di/app_di.dart';
+import 'package:revelation/features/bible/presentation/bloc/bible_catalog_cubit.dart';
+import 'package:revelation/features/bible/data/repositories/bible_library_repository.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:revelation/features/settings/presentation/bloc/settings_state.dart';
@@ -11,7 +14,8 @@ import 'package:revelation/shared/config/app_constants.dart';
 import 'package:revelation/shared/localization/localization_utils.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({this.initialSection, super.key});
+  final String? initialSection;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -19,6 +23,28 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final aud = AudioController();
+  final _bibleSettingKey = GlobalKey();
+  late final BibleCatalogCubit _catalog = AppDi.createBibleCatalogCubit();
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_catalog.load());
+    if (widget.initialSection == 'bible') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final target = _bibleSettingKey.currentContext;
+        if (mounted && target != null) {
+          unawaited(Scrollable.ensureVisible(target, alignment: 0.5));
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    unawaited(_catalog.close());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, settingsState) {
+        final l10n = AppLocalizations.of(context)!;
         final settings = settingsState.settings;
         return Scaffold(
           appBar: AppBar(
@@ -50,169 +77,183 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             foregroundColor: colorScheme.primary,
           ),
-          body: ListView(
-            children: [
-              // Language Selector
-              Card(
-                margin: const EdgeInsets.all(8.0),
-                color: colorScheme.surfaceContainerHighest,
-                child: ListTile(
-                  leading: Icon(Icons.translate, color: colorScheme.primary),
-                  title: Text(
-                    AppLocalizations.of(context)!.language,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  subtitle: Text(
-                    AppConstants.languages[settings.selectedLanguage] ?? '',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.secondary,
-                    ),
-                  ),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    color: colorScheme.primary,
-                  ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                _SettingsRow(
+                  icon: Icons.translate,
+                  title: l10n.language,
+                  value:
+                      AppConstants.languages[settings.selectedLanguage] ?? '',
                   onTap: () async {
-                    aud.playSound("click");
+                    aud.playSound('click');
                     final selected = await _showLanguageDialog(
                       context,
                       settings.selectedLanguage,
                     );
-                    if (!context.mounted) {
-                      return;
-                    }
-                    if (selected != null) {
+                    if (context.mounted && selected != null) {
                       unawaited(
                         context.read<SettingsCubit>().changeLanguage(selected),
                       );
                     }
                   },
                 ),
-              ),
-              // Theme Selector
-              Card(
-                margin: const EdgeInsets.all(8.0),
-                color: colorScheme.surfaceContainerHighest,
-                child: ListTile(
-                  leading: Icon(Icons.color_lens, color: colorScheme.primary),
-                  title: Text(
-                    AppLocalizations.of(context)!.color_theme,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  subtitle: Text(
-                    locColorThemes(context, settings.selectedTheme),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.secondary,
-                    ),
-                  ),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    color: colorScheme.primary,
-                  ),
+                _SettingsRow(
+                  icon: Icons.color_lens,
+                  title: l10n.color_theme,
+                  value: locColorThemes(context, settings.selectedTheme),
                   onTap: () async {
-                    aud.playSound("click");
+                    aud.playSound('click');
                     final selected = await _showThemeDialog(
                       context,
                       settings.selectedTheme,
                     );
-                    if (!context.mounted) {
-                      return;
-                    }
-                    if (selected != null) {
+                    if (context.mounted && selected != null) {
                       unawaited(
                         context.read<SettingsCubit>().changeTheme(selected),
                       );
                     }
                   },
                 ),
-              ),
-              // Font Size Selector
-              Card(
-                margin: const EdgeInsets.all(8.0),
-                color: colorScheme.surfaceContainerHighest,
-                child: ListTile(
-                  leading: Icon(Icons.format_size, color: colorScheme.primary),
-                  title: Text(
-                    AppLocalizations.of(context)!.font_size,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  subtitle: Text(
-                    locFontSizes(context, settings.selectedFontSize),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.secondary,
-                    ),
-                  ),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    color: colorScheme.primary,
-                  ),
+                _SettingsRow(
+                  icon: Icons.format_size,
+                  title: l10n.font_size,
+                  value: locFontSizes(context, settings.selectedFontSize),
                   onTap: () async {
-                    aud.playSound("click");
+                    aud.playSound('click');
                     final selected = await _showFontSizeDialog(
                       context,
                       settings.selectedFontSize,
                     );
-                    if (!context.mounted) {
-                      return;
-                    }
-                    if (selected != null) {
+                    if (context.mounted && selected != null) {
                       unawaited(
                         context.read<SettingsCubit>().changeFontSize(selected),
                       );
                     }
                   },
                 ),
-              ),
-              // Sound Toggle
-              Card(
-                margin: const EdgeInsets.all(8.0),
-                color: colorScheme.surfaceContainerHighest,
-                child: ListTile(
-                  leading: Icon(
-                    settings.soundEnabled ? Icons.volume_up : Icons.volume_off,
-                    color: colorScheme.primary,
-                  ),
-                  title: Text(
-                    AppLocalizations.of(context)!.sound,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  subtitle: Text(
-                    settings.soundEnabled
-                        ? AppLocalizations.of(context)!.on
-                        : AppLocalizations.of(context)!.off,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.secondary,
-                    ),
-                  ),
+                _SettingsRow(
+                  icon: settings.soundEnabled
+                      ? Icons.volume_up
+                      : Icons.volume_off,
+                  title: l10n.sound,
+                  value: settings.soundEnabled ? l10n.on : l10n.off,
                   trailing: Switch(
                     value: settings.soundEnabled,
                     onChanged: (value) {
-                      if (!value) {
-                        aud.playSound("click");
-                      }
+                      if (!value) aud.playSound('click');
                       unawaited(
                         context.read<SettingsCubit>().setSoundEnabled(value),
                       );
-                      if (value) {
-                        aud.playSound("click");
-                      }
+                      if (value) aud.playSound('click');
                     },
                   ),
                 ),
-              ),
-            ],
+                BlocBuilder<BibleCatalogCubit, BibleCatalogState>(
+                  bloc: _catalog,
+                  builder: (context, catalog) {
+                    final chosen = BibleLibraryRepository.selectModule(
+                      catalog.modules,
+                      settings,
+                    );
+                    final preference = settings.defaultBibleModule;
+                    final value = preference == 'auto'
+                        ? [
+                            l10n.bible_automatic,
+                            if (chosen != null) chosen.displayTitle,
+                          ].join(' · ')
+                        : catalog.modules
+                                  .where(
+                                    (module) => module.fileName == preference,
+                                  )
+                                  .firstOrNull
+                                  ?.displayTitle ??
+                              preference;
+                    return _SettingsRow(
+                      key: _bibleSettingKey,
+                      tileKey: const Key('default_bible_setting'),
+                      icon: Icons.menu_book,
+                      title: l10n.bible_default,
+                      value: value,
+                      onTap: () => _showBibleModuleDialog(context),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
     );
+  }
+
+  Future<void> _showBibleModuleDialog(BuildContext context) async {
+    final settingsCubit = context.read<SettingsCubit>();
+    final chosen = settingsCubit.state.settings.defaultBibleModule;
+    unawaited(_catalog.load());
+    final selected = await showDialog<String>(
+      context: context,
+      routeSettings: const RouteSettings(name: 'default_bible_dialog'),
+      builder: (dialogContext) => BlocBuilder<BibleCatalogCubit, BibleCatalogState>(
+        bloc: _catalog,
+        builder: (context, catalog) {
+          final l10n = AppLocalizations.of(context)!;
+          final choices = <String, String>{
+            'auto': l10n.bible_automatic,
+            for (final info in catalog.modules)
+              if (info.role != 'original')
+                info.fileName:
+                    '${info.displayTitle} · ${AppConstants.languages[info.language] ?? info.language}',
+          };
+          return AlertDialog(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            title: Text(l10n.bible_default),
+            content: SizedBox(
+              width: 420,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (catalog.loading) const LinearProgressIndicator(),
+                  if (catalog.failed) Text(l10n.bible_catalog_failed),
+                  Flexible(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        for (final entry in choices.entries)
+                          ListTile(
+                            title: Text(entry.value),
+                            subtitle: entry.key == 'auto'
+                                ? Text(l10n.bible_automatic_hint)
+                                : null,
+                            selected: chosen == entry.key,
+                            trailing: chosen == entry.key
+                                ? const Icon(Icons.check)
+                                : null,
+                            onTap: () =>
+                                Navigator.pop(dialogContext, entry.key),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: catalog.loading ? null : () => _catalog.load(),
+                child: Text(l10n.bible_catalog_refresh),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text(l10n.close),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+    if (!context.mounted || selected == null) return;
+    await settingsCubit.changeDefaultBibleModule(selected);
   }
 
   Future<String?> _showLanguageDialog(
@@ -373,6 +414,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SettingsRow extends StatelessWidget {
+  const _SettingsRow({
+    required this.icon,
+    required this.title,
+    required this.value,
+    this.onTap,
+    this.trailing,
+    this.tileKey,
+    super.key,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+  final VoidCallback? onTap;
+  final Widget? trailing;
+  final Key? tileKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return Card(
+      margin: const EdgeInsets.all(8),
+      color: colors.surfaceContainerHighest,
+      child: ListTile(
+        key: tileKey,
+        leading: Icon(icon, color: colors.primary),
+        title: Text(
+          title,
+          style: theme.textTheme.bodyMedium?.copyWith(color: colors.primary),
+        ),
+        subtitle: Text(
+          value,
+          style: theme.textTheme.bodySmall?.copyWith(color: colors.secondary),
+        ),
+        trailing:
+            trailing ?? Icon(Icons.arrow_forward_ios, color: colors.primary),
+        onTap: onTap,
       ),
     );
   }

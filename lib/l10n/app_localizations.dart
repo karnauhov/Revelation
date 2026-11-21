@@ -444,10 +444,10 @@ abstract class AppLocalizations {
   /// **'Allusion Search'**
   String get allusion_search_screen;
 
-  /// No description provided for @allusion_search_header.
+  /// Allusion search page subtitle naming the Greek Bible corpus.
   ///
   /// In en, this message translates to:
-  /// **'Connections with biblical texts'**
+  /// **'The whole Ancient Greek Bible (LXX + TR)'**
   String get allusion_search_header;
 
   /// No description provided for @bible_screen.
@@ -2759,6 +2759,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Footnotes: {reference}'**
   String bible_verse_footnotes(String reference);
+
+  /// Global Bible module preference in the existing application settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Bible'**
+  String get bible_default;
+
+  /// Automatic Bible choice using the interface language with an English fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get bible_automatic;
+
+  /// Action to refresh the published Bible module catalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh list'**
+  String get bible_catalog_refresh;
+
+  /// Catalog refresh failure while retaining saved modules.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not refresh the Bible list. Saved modules are still available.'**
+  String get bible_catalog_failed;
+
+  /// Open the previewed Bible passage in the full reader.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in reader'**
+  String get bible_open_reader;
+
+  /// Open the current Strong entry on the full dictionary page.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in dictionary'**
+  String get strong_open_dictionary;
+
+  /// Explains automatic Bible translation selection in the picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses the app language when available, then English.'**
+  String get bible_automatic_hint;
+
+  /// Subtitle of the shared Bible passage dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Bible passage'**
+  String get bible_passage_subtitle;
+
+  /// Show the preceding Bible verse.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous verse'**
+  String get bible_previous_verse;
+
+  /// Show the following Bible verse.
+  ///
+  /// In en, this message translates to:
+  /// **'Next verse'**
+  String get bible_next_verse;
+
+  /// Heading for the selected source passage.
+  ///
+  /// In en, this message translates to:
+  /// **'Source passage'**
+  String get allusion_source;
+
+  /// Open additional allusion search parameters.
+  ///
+  /// In en, this message translates to:
+  /// **'More search options'**
+  String get allusion_options;
+
+  /// Prompt to search after selecting the source passage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the search button to find matches for this passage.'**
+  String get allusion_search_hint;
+
+  /// Collapse the expanded source passage.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse'**
+  String get allusion_collapse;
+
+  /// Reveal the rest of the source passage.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Show 1 more verse} other{Show {count} more verses}}'**
+  String allusion_expand_verses(int count);
+
+  /// Number of consecutive verses to search.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 verse} other{{count} verses}}'**
+  String allusion_verse_count(int count);
+
+  /// Number of consecutive source verses included in the search.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse count'**
+  String get allusion_length;
+
+  /// Label for the Bible search scope picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Search in'**
+  String get allusion_scope;
+
+  /// Search both testaments.
+  ///
+  /// In en, this message translates to:
+  /// **'Whole Bible'**
+  String get allusion_scope_all;
+
+  /// Search the Old Testament only.
+  ///
+  /// In en, this message translates to:
+  /// **'Old Testament'**
+  String get allusion_scope_ot;
+
+  /// Search the New Testament only.
+  ///
+  /// In en, this message translates to:
+  /// **'New Testament'**
+  String get allusion_scope_nt;
+
+  /// Heading for proposed lexical connections requiring interpretation.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible connections'**
+  String get allusion_candidates;
+
+  /// Verse-level candidate results.
+  ///
+  /// In en, this message translates to:
+  /// **'Verses'**
+  String get allusion_verses;
+
+  /// Chapter-level candidate results.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapters'**
+  String get allusion_chapters;
+
+  /// Book-level candidate results.
+  ///
+  /// In en, this message translates to:
+  /// **'Books'**
+  String get allusion_books;
+
+  /// Preview the selected source passage.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview passage'**
+  String get allusion_show_source;
+
+  /// No candidate passes the minimum meaningful-word threshold.
+  ///
+  /// In en, this message translates to:
+  /// **'No candidates meet the lexical threshold. Try another passage or a wider range.'**
+  String get allusion_no_results;
+
+  /// Initial Greek corpus indexing progress message.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing the Greek index…'**
+  String get allusion_loading;
+
+  /// Failure to load data or perform the allusion search.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the search data.'**
+  String get allusion_failed;
+
+  /// Source passage has no searchable Greek Strong tokens.
+  ///
+  /// In en, this message translates to:
+  /// **'This passage has no searchable Greek words.'**
+  String get allusion_no_source_words;
+
+  /// Distinct searchable Greek Strong identifiers and their combined ranking weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Unique search words: {count} (weight {weight})'**
+  String allusion_source_word_count(int count, String weight);
+
+  /// Occurrence count, semantic weight and rarity-adjusted weight in the source passage. A question mark indicates missing verse text.
+  ///
+  /// In en, this message translates to:
+  /// **'Occurrences in passage: {count}\nBase weight: {base}\nSearch weight: {weight}'**
+  String allusion_source_word_details(String count, String base, String weight);
+
+  /// Weighted overlap and normalized score used for ranking
+  ///
+  /// In en, this message translates to:
+  /// **'weight {weight} · similarity {score}'**
+  String allusion_match_score(String weight, String score);
+
+  /// Verse score explanation
+  ///
+  /// In en, this message translates to:
+  /// **'Sorted by similarity. It accounts for word weights, rarity and the length of both passages.'**
+  String get allusion_verse_score_hint;
+
+  /// Chapter and book score explanation
+  ///
+  /// In en, this message translates to:
+  /// **'Sorted by the share of the source passage’s weighted vocabulary found in this group.'**
+  String get allusion_group_score_hint;
+
+  /// Strong identifier and base weight on a source word
+  ///
+  /// In en, this message translates to:
+  /// **'{code} · weight {weight}'**
+  String allusion_word_weight(String code, String weight);
+
+  /// Number of distinct Strong IDs shared by the source and candidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared words: {count}'**
+  String allusion_common_count(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -4,6 +4,13 @@ import 'package:nested/nested.dart';
 import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
+import 'package:revelation/features/bible/data/repositories/bible_library_repository.dart';
+import 'package:revelation/features/bible/presentation/bloc/bible_catalog_cubit.dart';
+import 'package:revelation/features/bible/presentation/bloc/bible_passage_preview_cubit.dart';
+import 'package:revelation/features/allusion_search/data/repositories/allusion_search_repository.dart';
+import 'package:revelation/features/allusion_search/presentation/bloc/allusion_search_cubit.dart';
+import 'package:revelation/features/strongs_dictionary/data/repositories/strongs_dictionary_repository.dart';
+import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
@@ -21,6 +28,45 @@ class AppDi {
   AppDi._();
 
   static final GetIt _getIt = GetIt.instance;
+  static SettingsCubit? _settingsCubit;
+  static BibleLibraryRepository get bibleLibrary {
+    if (!_getIt.isRegistered<BibleLibraryRepository>()) {
+      _getIt.registerLazySingleton<BibleLibraryRepository>(
+        () => BibleLibraryRepository(
+          loadSettings: () async =>
+              settingsCubitOrNull?.state.settings ??
+              await SettingsRepository().getSettings(),
+        ),
+      );
+    }
+    return _getIt<BibleLibraryRepository>();
+  }
+
+  static BibleCatalogCubit createBibleCatalogCubit() =>
+      BibleCatalogCubit(bibleLibrary);
+  static BiblePassagePreviewCubit createBiblePassagePreviewCubit() =>
+      BiblePassagePreviewCubit(bibleLibrary);
+  static AllusionSearchCubit get allusionSearchCubit {
+    if (!_getIt.isRegistered<AllusionSearchCubit>()) {
+      _getIt.registerLazySingleton<AllusionSearchCubit>(
+        () => AllusionSearchCubit(
+          AllusionSearchRepository(
+            loadVerseMap: () async =>
+                bibleVerseMapOrNull ?? await BibleVerseMap.loadFromAssets(),
+          ),
+          bibleLibrary,
+          initialVerseMap: bibleVerseMapOrNull,
+        ),
+        dispose: (cubit) => cubit.close(),
+      );
+    }
+    return _getIt<AllusionSearchCubit>();
+  }
+
+  static SettingsCubit? get settingsCubitOrNull =>
+      _settingsCubit?.isClosed == false ? _settingsCubit : null;
+  static final _dictionary = StrongsDictionaryRepository();
+  static String? greekWord(int number) => _dictionary.findGreekWord(number);
 
   static void registerCore({
     required Talker talker,
@@ -49,6 +95,7 @@ class AppDi {
   static List<SingleChildWidget> appBlocProviders({
     required SettingsCubit settingsCubit,
   }) {
+    _settingsCubit = settingsCubit;
     return <SingleChildWidget>[
       BlocProvider<SettingsCubit>.value(value: settingsCubit),
       BlocProvider<TopicsCatalogCubit>(
@@ -75,7 +122,8 @@ class AppDi {
 
   static PagesRepository createPagesRepository() => PagesRepository();
 
-  static BibleRepository createBibleRepository() => BibleRepository();
+  static BibleRepository createBibleRepository() =>
+      BibleRepository(loadModuleCatalog: bibleLibrary.availableCatalog);
 
   static void registerBibleVerseMap(BibleVerseMap verseMap) {
     if (_getIt.isRegistered<BibleVerseMap>()) {

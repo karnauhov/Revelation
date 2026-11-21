@@ -1,4 +1,4 @@
-// Local release probe for native WebView compatibility; never publish this target.
+// Local process probe for Windows WebView and audio shutdown.
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,12 +10,14 @@ import 'smoke/webview_test_data.dart';
 const _waitingTitle = 'Revelation WebView probe - starting';
 const _readyTitle = 'Revelation WebView probe - JavaScript verified';
 const _coldTitle = 'Revelation WebView probe - no WebView';
+const _audioTitle = 'Revelation Windows probe - native audio requested';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   final windows = !kIsWeb && defaultTargetPlatform == TargetPlatform.windows;
   final cold = windows && args.contains('--without-webview');
+  final playAudio = cold && args.contains('--play-audio');
   if (windows) {
     await setDesktopWindowTitle(cold ? _coldTitle : _waitingTitle);
   }
@@ -51,4 +53,13 @@ Future<void> main(List<String> args) async {
       ),
     ),
   );
+  if (playAudio) {
+    await WidgetsBinding.instance.endOfFrame;
+    const audio = MethodChannel('revelation/audio');
+    await audio.invokeMethod<void>('prepareAssets', {
+      'assets': {'click': 'assets/sounds/click.mp3'},
+    });
+    await audio.invokeMethod<void>('play', {'soundName': 'click'});
+    await setDesktopWindowTitle(_audioTitle);
+  }
 }

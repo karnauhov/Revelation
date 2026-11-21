@@ -14,6 +14,13 @@ This file contains short practical notes for local development, release work, an
 - After changing the English privacy policy or license in the web database, regenerate `web/privacy-policy.html` and `web/license.html` with `dart run scripts/generate_legal_pages.dart`. Add `--check` to verify the pages against the database.
 - Content tool release-publish config is stored locally in `env/content_tool_release_publish.env` (the `env/` folder is gitignored).
 
+## Publishing a compatible Bible module
+
+1. Prepare a `bible_<id>.sqlite` file with matching module metadata in `info`, a supported schema, the Protestant 66-book canon, and KJV numbering. Set the revision in `db_metadata` and check the verse keys against the canonical map.
+2. Use the content tool to save the database to the project and regenerate `web/db/manifest.json`. Check that its `bible` entry identifies the module, language, role, canon and versification.
+3. For an approved publication, distribute the database and generated manifest together through the existing website and native storage data publication flows. Verify both catalogs using the existing app build, then open the new module from Settings and check a verse. Future downloads use the advertised revision.
+4. For LXX/TR, also follow the [Greek allusion index instructions](#greek-allusion-index).
+
 ## Sentry Debug Artifacts
 
 - The local coordinator uploads Sentry debug symbols/source maps on each applicable builder. The replaced GitHub autobuild workflow has been removed after the verified `v1.0.8+173` trial.
@@ -77,6 +84,14 @@ The script keeps these files synchronized:
 - Every DB schema change must also review the content tool DB comparison/publish logic in `scripts/content_tool/mixins/core_db.py`. Update that logic and `scripts/content_tool/tests/test_core_db_metadata.py` whenever the schema change affects how DB differences should be detected or summarized (for example new tables to ignore, virtual/shadow tables, metadata-only tables, or changed publish semantics).
 - After DB content updates, upload the new DB files to the Supabase storage bucket and copy the same files into `web/db/`; when you use the content tool publish button, `web/db/manifest.json` is refreshed automatically in the same step.
 - Before using the content tool button `Опубликовать`, local working DB files, `web/db/`, and local `web/db/manifest.json` must already be synchronized via `Сохранить в проект`.
+
+### Greek allusion index
+
+The editable weight policy lives in `scripts/bible_module/data/greek_strong_weights.json`. It records a default weight and the exceptions for G1-G5624. The app reads weights directly from its prepared index. To generate the per-number audit from the current lexicon and corpus, run `python -m scripts.bible_module.build_allusion_weights --audit .dart_tool/greek-weights-audit.json`. Pass `--legacy <source>` to compare the original manual weights. Use `--propose-policy <file>` to review a new classification before editing the canonical policy.
+
+After changing the policy, canon or bundled LXX/TR module, regenerate `assets/data/allusion_index.bin` with `python -m scripts.bible_module.build_allusion_index`. Run `python -m unittest scripts.bible_module.tests.test_build_allusion_weights` to check reproducibility.
+
+The LXX/TR builder and the content tool's versioned save embed the matching index into the module's existing `db_metadata` table. Native and Web clients can receive new data with their existing database update flow. Each update needs a new data version. Clients check the active database revision, available corpus digest, canonical layout and semantic policy. Older modules rebuild the index in bounded pages and cache the result.
 
 ## Primary Sources Content
 

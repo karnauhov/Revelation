@@ -7,9 +7,21 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'drawer_item.dart';
 
+class AppNavigationDrawer extends StatelessWidget {
+  const AppNavigationDrawer({super.key, this.onItemClicked});
+  final VoidCallback? onItemClicked;
+
+  @override
+  Widget build(BuildContext context) => Drawer(
+    width: 334,
+    backgroundColor: Theme.of(context).colorScheme.surface,
+    child: DrawerContent(onItemClicked: onItemClicked),
+  );
+}
+
 class DrawerContent extends StatefulWidget {
-  final VoidCallback onItemClicked;
-  const DrawerContent({super.key, required this.onItemClicked});
+  final VoidCallback? onItemClicked;
+  const DrawerContent({super.key, this.onItemClicked});
 
   @visibleForTesting
   static bool Function() isWebForTest = isWeb;
@@ -67,7 +79,7 @@ class _DrawerContentState extends State<DrawerContent> {
   }
 
   void _openRoute(BuildContext context, String route) {
-    widget.onItemClicked();
+    widget.onItemClicked?.call();
     Navigator.pop(context);
     context.push(route);
   }
@@ -173,7 +185,7 @@ class _DrawerContentState extends State<DrawerContent> {
                 assetPath: 'assets/images/UI/close.svg',
                 text: AppLocalizations.of(context)!.close_app,
                 onClick: () {
-                  widget.onItemClicked();
+                  widget.onItemClicked?.call();
                   if (DrawerContent.isDesktopForTest()) {
                     unawaited(() async {
                       final closed =

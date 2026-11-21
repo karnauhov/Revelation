@@ -343,7 +343,6 @@ class _BibleSearchHistoryMenu extends StatelessWidget {
 const double _kBibleSearchToolbarGap = 8;
 const double _kBibleSearchMinFieldWidth = 96;
 const double _kBibleSearchFieldMaxWidth = 220;
-const double _kBibleSearchButtonWidth = 116;
 const double _kBibleSearchActionWidth = 230;
 const double _kBibleSearchIconButtonWidth = 44;
 
@@ -474,18 +473,15 @@ class _BibleSearchToolbar extends StatelessWidget {
     return [
       _BibleSearchInlineAction(
         action: _BibleSearchToolbarAction.search,
-        width: _kBibleSearchButtonWidth,
-        builder: (context) => SizedBox(
-          width: _kBibleSearchButtonWidth,
-          child: FilledButton.icon(
+        width: _kBibleSearchIconButtonWidth,
+        builder: (context) => SizedBox.square(
+          dimension: _kBibleSearchIconButtonWidth,
+          child: IconButton(
             key: const Key('bible_search_submit_button'),
+            tooltip: localizations.bible_search_button,
+            color: colorScheme.primary,
             onPressed: state.isLoading ? null : onSearch,
-            icon: const Icon(Icons.search, size: 18),
-            label: Text(
-              localizations.bible_search_button,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            icon: const Icon(Icons.search),
           ),
         ),
       ),

@@ -8,6 +8,8 @@ import 'package:get_it/get_it.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:revelation/infra/db/connectors/database_version_file_loader.dart';
+import 'package:revelation/infra/db/connectors/bible_module_connector_native.dart';
+import 'package:revelation/infra/db/bible/bible_module_db.dart';
 import 'package:revelation/infra/db/connectors/local_database_sync_native.dart';
 import 'package:revelation/infra/db/connectors/local_database_sync_result.dart';
 import 'package:revelation/infra/db/connectors/web_db_manifest.dart';
@@ -208,6 +210,39 @@ void main() {
     expect(modules.first, 'bible_lxx_tr.sqlite');
     expect(modules, contains('bible_rst.sqlite'));
   });
+
+  test(
+    'reads metadata from an installed Bible without downloading or writing',
+    () async {
+      const name = 'bible_kjv.sqlite';
+      final folder = Directory(p.join(await getAppFolder(), 'db'));
+      await folder.create(recursive: true);
+      final file = await File(
+        p.join('web', 'db', name),
+      ).copy(p.join(folder.path, name));
+      final before = await file.lastModified();
+      expect(await listInstalledBibleModuleFiles(), [name]);
+      expect(await listInstalledBibleModuleFiles(exclude: {name}), isEmpty);
+
+      final database = BibleModuleDB(openInstalledBibleModuleExecutor(name)!);
+      try {
+        final info = await database.readInfo(
+          name,
+          includeStrongCapability: false,
+        );
+        expect(info.moduleId, 'kjv');
+        expect(info.language, 'en');
+        expect(info.role, 'translation');
+        await expectLater(
+          database.customStatement('CREATE TABLE unexpected (id INT)'),
+          throwsA(isA<SqliteException>()),
+        );
+      } finally {
+        await database.close();
+      }
+      expect(await file.lastModified(), before);
+    },
+  );
 
   for (final changeSchema in [false, true]) {
     test('updates a same-size Bible module after a '

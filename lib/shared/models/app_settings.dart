@@ -3,12 +3,14 @@ class AppSettings {
   final String selectedTheme;
   final String selectedFontSize;
   final bool soundEnabled;
+  final String defaultBibleModule;
 
   AppSettings({
     required this.selectedLanguage,
     required this.selectedTheme,
     required this.selectedFontSize,
     required this.soundEnabled,
+    this.defaultBibleModule = 'auto',
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +19,7 @@ class AppSettings {
       'selectedTheme': selectedTheme,
       'selectedFontSize': selectedFontSize,
       'soundEnabled': soundEnabled,
+      'defaultBibleModule': defaultBibleModule,
     };
   }
 
@@ -26,6 +29,9 @@ class AppSettings {
       selectedTheme: map['selectedTheme'] ?? 'manuscript',
       selectedFontSize: map['selectedFontSize'] ?? 'medium',
       soundEnabled: map['soundEnabled'] ?? true,
+      defaultBibleModule: map['defaultBibleModule'] is String
+          ? map['defaultBibleModule'] as String
+          : 'auto',
     );
   }
 
@@ -37,7 +43,8 @@ class AppSettings {
             selectedLanguage == other.selectedLanguage &&
             selectedTheme == other.selectedTheme &&
             selectedFontSize == other.selectedFontSize &&
-            soundEnabled == other.soundEnabled;
+            soundEnabled == other.soundEnabled &&
+            defaultBibleModule == other.defaultBibleModule;
   }
 
   @override
@@ -46,5 +53,6 @@ class AppSettings {
     selectedTheme,
     selectedFontSize,
     soundEnabled,
+    defaultBibleModule,
   );
 }

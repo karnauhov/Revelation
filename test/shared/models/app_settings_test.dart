@@ -16,6 +16,7 @@ void main() {
     expect(settings.selectedTheme, 'manuscript');
     expect(settings.selectedFontSize, 'medium');
     expect(settings.soundEnabled, isTrue);
+    expect(settings.defaultBibleModule, 'auto');
   });
 
   test('fromMap falls back to defaults when values are null', () {
@@ -48,11 +49,24 @@ void main() {
       'selectedTheme',
       'selectedFontSize',
       'soundEnabled',
+      'defaultBibleModule',
     ]);
     expect(map['selectedLanguage'], 'ru');
     expect(map['selectedTheme'], 'sky');
     expect(map['selectedFontSize'], 'small');
     expect(map['soundEnabled'], isFalse);
+    expect(map['defaultBibleModule'], 'auto');
+  });
+
+  test('an explicit Bible module survives serialization', () {
+    const module = 'bible_ohienko_1988.sqlite';
+    final selected = AppSettings.fromMap({
+      ...baseSettings.toMap(),
+      'defaultBibleModule': module,
+    });
+    expect(selected.defaultBibleModule, module);
+    expect(AppSettings.fromMap(selected.toMap()), selected);
+    expect(selected, isNot(baseSettings));
   });
 
   test('value equality compares all fields', () {

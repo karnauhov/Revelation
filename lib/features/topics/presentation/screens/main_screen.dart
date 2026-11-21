@@ -15,7 +15,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  static const double _drawerWidth = 334;
   final ScrollController _scrollController = ScrollController();
   final aud = AudioController();
   bool _isDragging = false;
@@ -98,16 +97,12 @@ class _MainScreenState extends State<MainScreen> {
         ),
         foregroundColor: colorScheme.primary,
       ),
-      drawer: Drawer(
-        width: _drawerWidth,
-        backgroundColor: colorScheme.surface,
-        child: DrawerContent(
-          onItemClicked: () {
-            setState(() {
-              _closedByItem = true;
-            });
-          },
-        ),
+      drawer: AppNavigationDrawer(
+        onItemClicked: () {
+          setState(() {
+            _closedByItem = true;
+          });
+        },
       ),
       onDrawerChanged: (isOpened) {
         if (isOpened) {

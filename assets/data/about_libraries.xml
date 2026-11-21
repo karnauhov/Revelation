@@ -295,6 +295,13 @@
         <licenseLink>https://pub.dev/packages/audioplayers/license</licenseLink>
     </library>
     <library>
+        <name>@Package 'audioplayers_windows'</name>
+        <idIcon></idIcon>
+        <license>MIT</license>
+        <officialSite>https://pub.dev/packages/audioplayers_windows</officialSite>
+        <licenseLink>https://pub.dev/packages/audioplayers_windows/license</licenseLink>
+    </library>
+    <library>
         <name>@Package 'drift'</name>
         <idIcon></idIcon>
         <license>MIT</license>

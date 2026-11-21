@@ -14,6 +14,7 @@ import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/infra/db/connectors/database_version_loader.dart';
 import 'package:revelation/infra/db/connectors/primary_source_file_info.dart';
 import 'package:revelation/infra/db/connectors/web_database_open_lock.dart';
+import 'package:revelation/infra/db/connectors/web_bible_snapshot.dart';
 import 'package:revelation/infra/db/connectors/web_db_manifest.dart';
 import 'package:revelation/infra/db/connectors/web_db_uri.dart';
 import 'package:revelation/infra/db/connectors/web_db_version_probe_policy.dart';
@@ -76,6 +77,18 @@ Future<WebDbManifestEntry?> _getManifestDbEntry(String dbFile) async {
 }
 
 DatabaseConnection connectOnWeb(String dbFile) {
+  if (dbFile.startsWith('bible_')) {
+    return DatabaseConnection(
+      LazyDatabase(
+        () => withWebDatabaseOpenLock(
+          () async => openWebBibleSnapshot(
+            dbFile,
+            manifest: await _getManifestDbEntry(dbFile),
+          ),
+        ),
+      ),
+    );
+  }
   return DatabaseConnection.delayed(
     withWebDatabaseOpenLock(() async {
       final talker = GetIt.I<Talker>();
@@ -121,6 +134,25 @@ Future<Map<String, WebDbManifestEntry>>? _webDbManifestEntriesFuture;
 String _versionKey(String databaseName) => 'web_db_version::$databaseName';
 
 String _createdAtKey(String databaseName) => 'web_db_created_at::$databaseName';
+
+Future<List<String>> installedBibleFilesOnWeb() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
+  final prefix = _createdAtKey('');
+  final names = prefs.getKeys().where((key) => key.startsWith(prefix));
+  return [
+    for (final name in names.map((key) => key.substring(prefix.length)))
+      if (RegExp(r'^bible_[a-zA-Z0-9_]+$').hasMatch(name)) '$name.sqlite',
+  ]..sort();
+}
+
+QueryExecutor openInstalledBibleFileOnWeb(String file) {
+  return LazyDatabase(
+    () => withWebDatabaseOpenLock(
+      () => openWebBibleSnapshot(file, installedOnly: true),
+    ),
+  );
+}
 
 Uri _buildDbUri(
   String dbFile, {
@@ -196,9 +228,6 @@ Future<WasmDatabaseResult> _openWasmDatabase({
 
   var downloadedDatabase = false;
   final result = await WasmDatabase.open(
-    // Bible files are externally versioned data, including legacy schema 3.
-    // Reading them must never migrate or restamp the downloaded file.
-    enableMigrations: !dbFile.startsWith('bible_'),
     databaseName: databaseName,
     sqlite3Uri: Uri.parse('sqlite3.wasm'),
     driftWorkerUri: Uri.parse('drift_worker.js'),
@@ -359,6 +388,12 @@ Future<String?> _fetchManifestDbVersionToken(String dbFile) async {
 
 Future<Map<String, WebDbManifestEntry>> _loadWebDbManifestEntries() {
   return _webDbManifestEntriesFuture ??= _fetchWebDbManifestEntries();
+}
+
+Future<Map<String, WebDbManifestEntry>> refreshWebDbManifestEntries() async {
+  final entries = await _fetchWebDbManifestEntries();
+  if (entries.isNotEmpty) _webDbManifestEntriesFuture = Future.value(entries);
+  return entries;
 }
 
 Future<Map<String, WebDbManifestEntry>> _fetchWebDbManifestEntries() async {

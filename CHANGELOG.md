@@ -4,6 +4,10 @@ All notable changes to this application will be documented here.
 
 ## [1.0.9] - Unreleased
 
+### Added
+
+- Search the Ancient Greek Bible (LXX + TR) for possible allusions. Preview the words and weights used for your passage, compare ranked matches, and open Strong's entries from the Greek text or your preferred translation.
+
 ### Fixed
 
 - Fixed a crash when closing Revelation on Windows.

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:path/path.dart' as p;
 import 'package:revelation/core/logging/common_logger.dart';
@@ -115,11 +116,7 @@ Future<LocalDatabaseFileSyncResult> _verifyAndUpdateLocalDatabaseFile(
     final localVersionIsNewerThanManifest =
         localVersion != null &&
         manifestEntry != null &&
-        _compareDatabaseReleaseVersion(
-              localVersion,
-              manifestEntry.versionInfo,
-            ) >
-            0;
+        localVersion.compareReleaseTo(manifestEntry.versionInfo) > 0;
 
     if (!force &&
         localExists &&
@@ -179,11 +176,7 @@ Future<LocalDatabaseFileSyncResult> _verifyAndUpdateLocalDatabaseFile(
         }
         return localVersion == null ||
             (downloadedVersion != null &&
-                _compareDatabaseReleaseVersion(
-                      downloadedVersion,
-                      localVersion,
-                    ) >=
-                    0);
+                downloadedVersion.compareReleaseTo(localVersion) >= 0);
       },
       // Keep the merged manifest snapshot used to validate this download.
       refreshDbManifest: false,
@@ -281,6 +274,11 @@ Future<List<String>> discoverKnownBibleModuleFiles({
   () => _discoverKnownBibleModuleFiles(defaultModuleFile: defaultModuleFile),
 );
 
+Future<Map<String, WebDbManifestEntry>> readLocalBibleModuleManifest() =>
+    _localDatabaseSyncQueue.run(
+      () => _loadLocalManifestEntries(refreshFromServer: true),
+    );
+
 Future<List<String>> _discoverKnownBibleModuleFiles({
   required String defaultModuleFile,
 }) async {
@@ -289,27 +287,7 @@ Future<List<String>> _discoverKnownBibleModuleFiles({
     refreshFromServer: true,
   );
   files.addAll(manifestEntries.keys.where(_isBibleModuleDatabaseFileName));
-
-  try {
-    final appFolder = await getAppFolder();
-    final dbFolder = Directory(p.join(appFolder, _databaseFolder));
-    if (dbFolder.existsSync()) {
-      await for (final entity in dbFolder.list(
-        recursive: false,
-        followLinks: false,
-      )) {
-        if (entity is File) {
-          final fileName = p.basename(entity.path);
-          if (_isBibleModuleDatabaseFileName(fileName) &&
-              isLocalDatabaseFileHealthy(entity)) {
-            files.add(fileName);
-          }
-        }
-      }
-    }
-  } catch (error) {
-    log.warning('Local Bible module discovery failed: $error');
-  }
+  files.addAll(await listInstalledBibleModuleFiles(exclude: files));
 
   if (_isBibleModuleDatabaseFileName(defaultModuleFile)) {
     files.add(defaultModuleFile);
@@ -320,6 +298,35 @@ Future<List<String>> _discoverKnownBibleModuleFiles({
     sortedFiles.insert(0, defaultModuleFile);
   }
   return List<String>.unmodifiable(sortedFiles);
+}
+
+Future<List<String>> listInstalledBibleModuleFiles({
+  Set<String> exclude = const {},
+}) async {
+  final files = <String>[];
+  try {
+    final appFolder = await getAppFolder();
+    final dbFolder = Directory(p.join(appFolder, _databaseFolder));
+    if (dbFolder.existsSync()) {
+      await for (final entity in dbFolder.list(
+        recursive: false,
+        followLinks: false,
+      )) {
+        if (entity is File) {
+          final fileName = p.basename(entity.path);
+          if (!exclude.contains(fileName) &&
+              _isBibleModuleDatabaseFileName(fileName) &&
+              isLocalDatabaseFileHealthy(entity)) {
+            files.add(fileName);
+          }
+        }
+      }
+    }
+  } catch (error) {
+    log.warning('Local Bible module discovery failed: $error');
+  }
+
+  return files;
 }
 
 bool _isBibleModuleDatabaseFileName(String fileName) {
@@ -470,11 +477,7 @@ Map<String, WebDbManifestEntry> _mergeManifestEntries({
       merged[name] = localEntry;
     } else {
       final remoteIsAtLeastAsNew =
-          _compareDatabaseReleaseVersion(
-            remoteEntry.versionInfo,
-            localEntry.versionInfo,
-          ) >=
-          0;
+          remoteEntry.versionInfo.compareReleaseTo(localEntry.versionInfo) >= 0;
       merged[name] = remoteIsAtLeastAsNew ? remoteEntry : localEntry;
     }
   }
@@ -497,6 +500,7 @@ Future<void> _writeManifestEntries(
       'date': entry.value.versionInfo.date.toUtc().toIso8601String(),
       if (entry.value.fileSizeBytes != null)
         'fileSizeBytes': entry.value.fileSizeBytes,
+      if (entry.value.bible != null) 'bible': entry.value.bible,
     };
   }
 
@@ -526,30 +530,7 @@ bool _versionSatisfiesManifest(
   if (localVersion == null) {
     return false;
   }
-  return _compareDatabaseReleaseVersion(
-        localVersion,
-        manifestEntry.versionInfo,
-      ) >=
-      0;
-}
-
-int _compareDatabaseReleaseVersion(
-  DatabaseVersionInfo left,
-  DatabaseVersionInfo right,
-) {
-  final schemaVersionComparison = left.schemaVersion.compareTo(
-    right.schemaVersion,
-  );
-  if (schemaVersionComparison != 0) {
-    return schemaVersionComparison;
-  }
-
-  final dataVersionComparison = left.dataVersion.compareTo(right.dataVersion);
-  if (dataVersionComparison != 0) {
-    return dataVersionComparison;
-  }
-
-  return 0;
+  return localVersion.compareReleaseTo(manifestEntry.versionInfo) >= 0;
 }
 
 bool _manifestEntriesEqual(
@@ -564,7 +545,8 @@ bool _manifestEntriesEqual(
     if (rightEntry == null ||
         rightEntry.versionToken != entry.value.versionToken ||
         rightEntry.versionInfo != entry.value.versionInfo ||
-        rightEntry.fileSizeBytes != entry.value.fileSizeBytes) {
+        rightEntry.fileSizeBytes != entry.value.fileSizeBytes ||
+        !mapEquals(rightEntry.bible, entry.value.bible)) {
       return false;
     }
   }

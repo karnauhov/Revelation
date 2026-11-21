@@ -1,7 +1,7 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.6.3`
-Last-Updated: `2026-10-31`
+Doc-Version: `2.6.6`
+Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
 ## Strong number availability in a module
@@ -14,9 +14,17 @@ The DB adapter reads optional revision metadata from the same file as module inf
 
 ## Parallel reading by default and from reference links
 
-`BibleWorkspaceCubit` opens a new workspace with LXX/TR and an available translation in the app language, matching published module metadata. KJV (en) and OH1988 (uk) are currently available; missing es/ru translations or unreadable optional metadata leave the original module open. No unavailable modules are invented. An explicit link `module` takes priority; an unavailable module falls back to the normal original/first available module rather than the stored selection.
+`BibleWorkspaceCubit` opens a new workspace with LXX/TR and the default translation. Reference links open with the resolved translation in the primary pane. An explicit module in the route takes precedence. The language of the interface drives automatic selection, with English as the fallback. KJV serves en/es/ru and OH1988 serves uk with the current catalog. A missing module can lead to a reader error with retry, without changing the saved preference.
 
 An ordinary `/bible` restores the saved panes, including a legacy single-module preference. `bible:` and `/bible` reference parameters open the requested book/chapter/verse with a translation independently of the saved layout, preserving existing route formats. Automatic opening and navigation do not write preferences. Only explicitly adding/closing a pane or successfully changing a module saves the complete ready layout. The workspace alone owns these writes; ReaderCubit no longer writes the shared single-module preference. Writes are serialized and incomplete layouts are not saved. Initial loads coalesce; closing the workspace or manually changing its layout prevents delayed automatic selection from applying. Linked navigation remains a setting of the current workspace. Translation selection runs once; after a slow load the new pane waits for the current synchronization and follows the latest primary reference.
+
+## Catalog and default Bible module
+
+The Bible word renderer reads the G/H identifiers supplied by each module. Only Greek identifiers shared with the original can be highlighted. Unmatched annotations remain dictionary links in passage dialogs. AllusionIndex supplies the same distinct Strong identifiers and corpus-adjusted weights to the source summary and to ranking. The original module supplies occurrence counts.
+
+BibleLibraryRepository reads the website database manifest on Web and the storage manifest on native platforms. The content tool writes the module ID, language, role, canon, versification and revision. Compatible catalog entries become available in the same app build. The repository merges installed modules with the current manifest and persists the catalog for offline use. The settings screen shows the effective translation and refreshes discovery when its selection dialog opens.
+
+The reader, passage dialog and search cards resolve the global preference through this repository. Explicit links retain their requested module. A passage preview passes the module actually displayed to the reader. The shared dictionary and passage dialogs use the same toolbar and text-export services.
 
 ## Retrying the first Bible load
 

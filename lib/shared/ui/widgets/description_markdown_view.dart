@@ -71,7 +71,6 @@ class DescriptionMarkdownView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final hasToolbar = showExportPdfButton || toolbarActions.isNotEmpty;
     final toolbarInsetTop = toolbarButtonExtent + _toolbarButtonTopOffset;
     final effectivePadding = hasToolbar
@@ -94,6 +93,89 @@ class DescriptionMarkdownView extends StatelessWidget {
       );
     }
 
+    final markdownBody = RevelationMarkdownBody(
+      data: data,
+      padding: effectivePadding,
+      onTapLink: handleTapLink,
+      markdownImageLoader: markdownImageLoader,
+      h2FontWeight: h2FontWeight,
+      inlineSyntaxes: inlineSyntaxes,
+      elementBuilders: elementBuilders,
+    );
+
+    final content = scrollable
+        ? SingleChildScrollView(child: markdownBody)
+        : markdownBody;
+
+    if (!hasToolbar) {
+      return content;
+    }
+
+    final toolbarChildren = <Widget>[
+      if (showExportPdfButton)
+        DescriptionMarkdownExportActions(
+          markdown: exportPdfMarkdown ?? data,
+          copyText: copyMarkdown ?? data,
+          documentTitle: exportPdfDocumentTitle,
+          markdownImageLoader: markdownImageLoader,
+          pdfEnabled: exportPdfEnabled,
+          copyEnabled: copyEnabled,
+          buttonExtent: toolbarButtonExtent,
+          onExportPdfRequested: onExportPdfRequested,
+          onCopyRequested: onCopyRequested,
+        ),
+      ...toolbarActions,
+    ];
+
+    return Stack(
+      children: [
+        content,
+        Positioned(
+          top: 4,
+          left: 4,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < toolbarChildren.length; i++) ...[
+                if (i > 0) const SizedBox(width: 8),
+                toolbarChildren[i],
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// The shared export and copy commands for dictionary entries and Bible passages.
+class DescriptionMarkdownExportActions extends StatelessWidget {
+  const DescriptionMarkdownExportActions({
+    required this.markdown,
+    required this.copyText,
+    this.documentTitle,
+    this.markdownImageLoader,
+    this.pdfEnabled = true,
+    this.copyEnabled = true,
+    this.buttonExtent = 36,
+    this.onExportPdfRequested,
+    this.onCopyRequested,
+    super.key,
+  });
+
+  final String markdown;
+  final String copyText;
+  final String? documentTitle;
+  final MarkdownImageLoader? markdownImageLoader;
+  final bool pdfEnabled;
+  final bool copyEnabled;
+  final double buttonExtent;
+  final DescriptionMarkdownExportPdfHandler? onExportPdfRequested;
+  final DescriptionMarkdownCopyHandler? onCopyRequested;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     Future<void> handleExportPdf() async {
       try {
         final exportPdfHandler =
@@ -108,8 +190,8 @@ class DescriptionMarkdownView extends StatelessWidget {
                 );
 
         final location = await exportPdfHandler(
-          markdown: exportPdfMarkdown ?? data,
-          documentTitle: exportPdfDocumentTitle ?? l10n.app_name,
+          markdown: markdown,
+          documentTitle: documentTitle ?? l10n.app_name,
         );
 
         if (!context.mounted) {
@@ -152,7 +234,7 @@ class DescriptionMarkdownView extends StatelessWidget {
             onCopyRequested ??
             (String markdown) =>
                 Clipboard.setData(ClipboardData(text: markdown));
-        await copyHandler(copyMarkdown ?? data);
+        await copyHandler(copyText);
 
         if (!context.mounted) {
           return;
@@ -188,61 +270,25 @@ class DescriptionMarkdownView extends StatelessWidget {
       }
     }
 
-    final markdownBody = RevelationMarkdownBody(
-      data: data,
-      padding: effectivePadding,
-      onTapLink: handleTapLink,
-      markdownImageLoader: markdownImageLoader,
-      h2FontWeight: h2FontWeight,
-      inlineSyntaxes: inlineSyntaxes,
-      elementBuilders: elementBuilders,
-    );
-
-    final content = scrollable
-        ? SingleChildScrollView(child: markdownBody)
-        : markdownBody;
-
-    if (!hasToolbar) {
-      return content;
-    }
-
-    final toolbarChildren = <Widget>[
-      if (showExportPdfButton)
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         DescriptionMarkdownToolbarButton(
           buttonKey: const Key('description_markdown_export_pdf_button'),
           tooltip: l10n.export_pdf_content,
           icon: Icons.file_download_outlined,
-          buttonExtent: toolbarButtonExtent,
-          enabled: exportPdfEnabled,
+          buttonExtent: buttonExtent,
+          enabled: pdfEnabled,
           onPressed: () => unawaited(handleExportPdf()),
         ),
-      if (showExportPdfButton)
+        const SizedBox(width: 8),
         DescriptionMarkdownToolbarButton(
           buttonKey: const Key('description_markdown_copy_button'),
           tooltip: l10n.copy_content,
           icon: Icons.content_copy_outlined,
-          buttonExtent: toolbarButtonExtent,
+          buttonExtent: buttonExtent,
           enabled: copyEnabled,
           onPressed: () => unawaited(handleCopy()),
-        ),
-      ...toolbarActions,
-    ];
-
-    return Stack(
-      children: [
-        content,
-        Positioned(
-          top: 4,
-          left: 4,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < toolbarChildren.length; i++) ...[
-                if (i > 0) const SizedBox(width: 8),
-                toolbarChildren[i],
-              ],
-            ],
-          ),
         ),
       ],
     );
@@ -285,7 +331,7 @@ class DescriptionMarkdownToolbarButton extends StatelessWidget {
           child: InkWell(
             key: buttonKey,
             customBorder: const CircleBorder(),
-            onTap: onPressed,
+            onTap: enabled ? onPressed : null,
             child: SizedBox(
               width: buttonExtent,
               height: buttonExtent,

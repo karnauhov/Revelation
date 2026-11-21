@@ -6,7 +6,7 @@ import 'package:revelation/features/strongs_dictionary/presentation/bloc/strong_
 
 void main() {
   test(
-    'rapid requests share loading and copying; later requests reuse text',
+    'rapid requests share loading and copying; later requests recheck the selected module',
     () async {
       final loaded = Completer<String?>();
       final copied = Completer<void>();
@@ -36,7 +36,7 @@ void main() {
       expect(cubit.state.requestId, 1);
 
       await cubit.requestPreview();
-      expect(provider.calls, 1);
+      expect(provider.calls, 2);
       expect(copyCalls, 2);
       expect(cubit.state.requestId, 2);
     },

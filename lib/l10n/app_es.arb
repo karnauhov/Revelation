@@ -57,7 +57,10 @@
   "strongs_dictionary_screen": "Diccionario de Strong",
   "strongs_dictionary_header": "Significados y uso de palabras griegas",
   "allusion_search_screen": "Búsqueda de alusiones",
-  "allusion_search_header": "Conexiones con textos bíblicos",
+  "allusion_search_header": "Toda la Biblia en griego antiguo (LXX + TR)",
+  "@allusion_search_header": {
+    "description": "Allusion search page subtitle naming the Greek Bible corpus."
+  },
   "bible_screen": "Biblia",
   "bible_header": "Lectura y estudio de la Escritura",
   "bible_module": "Módulo",
@@ -495,6 +498,207 @@
     "placeholders": {
       "reference": {
         "type": "String"
+      }
+    }
+  },
+  "bible_default": "Biblia predeterminada",
+  "@bible_default": {
+    "description": "Global Bible module preference in the existing application settings."
+  },
+  "bible_automatic": "Automática",
+  "@bible_automatic": {
+    "description": "Automatic Bible choice using the interface language with an English fallback."
+  },
+  "bible_catalog_refresh": "Actualizar lista",
+  "@bible_catalog_refresh": {
+    "description": "Action to refresh the published Bible module catalog."
+  },
+  "bible_catalog_failed": "No se pudo actualizar la lista de Biblias. Los módulos guardados siguen disponibles.",
+  "@bible_catalog_failed": {
+    "description": "Catalog refresh failure while retaining saved modules."
+  },
+  "bible_open_reader": "Abrir en el lector",
+  "@bible_open_reader": {
+    "description": "Open the previewed Bible passage in the full reader."
+  },
+  "strong_open_dictionary": "Abrir en el diccionario",
+  "@strong_open_dictionary": {
+    "description": "Open the current Strong entry on the full dictionary page."
+  },
+  "bible_automatic_hint": "Usa el idioma de la aplicación si está disponible y, si no, el inglés.",
+  "@bible_automatic_hint": {
+    "description": "Explains automatic Bible translation selection in the picker."
+  },
+  "bible_passage_subtitle": "Pasaje bíblico",
+  "@bible_passage_subtitle": {
+    "description": "Subtitle of the shared Bible passage dialog."
+  },
+  "bible_previous_verse": "Versículo anterior",
+  "@bible_previous_verse": {
+    "description": "Show the preceding Bible verse."
+  },
+  "bible_next_verse": "Versículo siguiente",
+  "@bible_next_verse": {
+    "description": "Show the following Bible verse."
+  },
+  "allusion_source": "Pasaje de origen",
+  "@allusion_source": {
+    "description": "Heading for the selected source passage."
+  },
+  "allusion_options": "Más opciones de búsqueda",
+  "@allusion_options": {
+    "description": "Open additional allusion search parameters."
+  },
+  "allusion_search_hint": "Pulsa la lupa para buscar coincidencias con este pasaje.",
+  "@allusion_search_hint": {
+    "description": "Prompt to search after selecting the source passage."
+  },
+  "allusion_collapse": "Contraer",
+  "@allusion_collapse": {
+    "description": "Collapse the expanded source passage."
+  },
+  "allusion_expand_verses": "{count, plural, one{Mostrar 1 versículo más} other{Mostrar {count} versículos más}}",
+  "@allusion_expand_verses": {
+    "description": "Reveal the rest of the source passage.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "allusion_verse_count": "{count, plural, one{1 versículo} other{{count} versículos}}",
+  "@allusion_verse_count": {
+    "description": "Number of consecutive verses to search.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "allusion_length": "N.º de versículos",
+  "@allusion_length": {
+    "description": "Number of consecutive source verses included in the search."
+  },
+  "allusion_scope": "Buscar en",
+  "@allusion_scope": {
+    "description": "Label for the Bible search scope picker."
+  },
+  "allusion_scope_all": "Toda la Biblia",
+  "@allusion_scope_all": {
+    "description": "Search both testaments."
+  },
+  "allusion_scope_ot": "Antiguo Testamento",
+  "@allusion_scope_ot": {
+    "description": "Search the Old Testament only."
+  },
+  "allusion_scope_nt": "Nuevo Testamento",
+  "@allusion_scope_nt": {
+    "description": "Search the New Testament only."
+  },
+  "allusion_candidates": "Posibles conexiones",
+  "@allusion_candidates": {
+    "description": "Heading for proposed lexical connections requiring interpretation."
+  },
+  "allusion_verses": "Versículos",
+  "@allusion_verses": {
+    "description": "Verse-level candidate results."
+  },
+  "allusion_chapters": "Capítulos",
+  "@allusion_chapters": {
+    "description": "Chapter-level candidate results."
+  },
+  "allusion_books": "Libros",
+  "@allusion_books": {
+    "description": "Book-level candidate results."
+  },
+  "allusion_show_source": "Ver pasaje",
+  "@allusion_show_source": {
+    "description": "Preview the selected source passage."
+  },
+  "allusion_no_results": "No se encontraron candidatos con suficiente coincidencia léxica. Pruebe otro pasaje o amplíe el intervalo.",
+  "@allusion_no_results": {
+    "description": "No candidate passes the minimum meaningful-word threshold."
+  },
+  "allusion_loading": "Preparando el índice griego…",
+  "@allusion_loading": {
+    "description": "Initial Greek corpus indexing progress message."
+  },
+  "allusion_failed": "No se pudieron cargar los datos de búsqueda.",
+  "@allusion_failed": {
+    "description": "Failure to load data or perform the allusion search."
+  },
+  "allusion_no_source_words": "Este pasaje no tiene palabras griegas para buscar.",
+  "@allusion_no_source_words": {
+    "description": "Source passage has no searchable Greek Strong tokens."
+  },
+  "allusion_source_word_count": "Palabras únicas para la búsqueda: {count} (peso {weight})",
+  "@allusion_source_word_count": {
+    "description": "Distinct searchable Greek Strong identifiers and their combined ranking weight.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_source_word_details": "Apariciones en el pasaje: {count}\nPeso base: {base}\nPeso en la búsqueda: {weight}",
+  "@allusion_source_word_details": {
+    "description": "Occurrence count, semantic weight and rarity-adjusted weight in the source passage. A question mark indicates missing verse text.",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "base": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_match_score": "peso {weight} · similitud {score}",
+  "@allusion_match_score": {
+    "description": "Weighted overlap and normalized score used for ranking",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_verse_score_hint": "El orden refleja la similitud. Se tienen en cuenta el peso y la rareza de las palabras y la longitud de ambos pasajes.",
+  "@allusion_verse_score_hint": {
+    "description": "Verse score explanation"
+  },
+  "allusion_group_score_hint": "El orden refleja la proporción del vocabulario ponderado del pasaje de origen que aparece en el grupo.",
+  "@allusion_group_score_hint": {
+    "description": "Chapter and book score explanation"
+  },
+  "allusion_word_weight": "{code} · peso {weight}",
+  "@allusion_word_weight": {
+    "description": "Strong identifier and base weight on a source word",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "allusion_common_count": "Palabras en común: {count}",
+  "@allusion_common_count": {
+    "description": "Number of distinct Strong IDs shared by the source and candidate.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "9"
       }
     }
   }
