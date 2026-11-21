@@ -8,21 +8,25 @@ class StrongsDictionaryState {
     required this.markdown,
     required this.pickerEntries,
     required this.searchQuery,
+    this.restoring = false,
   });
 
   factory StrongsDictionaryState.initial({
     required int strongNumber,
     required List<StrongPickerEntry> pickerEntries,
+    bool restoring = false,
   }) {
     return StrongsDictionaryState(
       strongNumber: strongNumber,
       markdown: null,
       pickerEntries: List<StrongPickerEntry>.unmodifiable(pickerEntries),
       searchQuery: '',
+      restoring: restoring,
     );
   }
 
   final int strongNumber;
+  final bool restoring;
   final String? markdown;
   final List<StrongPickerEntry> pickerEntries;
   final String searchQuery;
@@ -55,12 +59,14 @@ class StrongsDictionaryState {
     bool markdownSet = false,
     List<StrongPickerEntry>? pickerEntries,
     String? searchQuery,
+    bool? restoring,
   }) {
     return StrongsDictionaryState(
       strongNumber: strongNumber ?? this.strongNumber,
       markdown: markdownSet ? markdown : this.markdown,
       pickerEntries: pickerEntries ?? this.pickerEntries,
       searchQuery: searchQuery ?? this.searchQuery,
+      restoring: restoring ?? this.restoring,
     );
   }
 
@@ -70,6 +76,7 @@ class StrongsDictionaryState {
         other is StrongsDictionaryState &&
             runtimeType == other.runtimeType &&
             strongNumber == other.strongNumber &&
+            restoring == other.restoring &&
             markdown == other.markdown &&
             listEquals(pickerEntries, other.pickerEntries) &&
             searchQuery == other.searchQuery;
@@ -78,6 +85,7 @@ class StrongsDictionaryState {
   @override
   int get hashCode => Object.hash(
     strongNumber,
+    restoring,
     markdown,
     Object.hashAll(pickerEntries),
     searchQuery,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -6,6 +7,9 @@ import 'package:integration_test/integration_test.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/app/router/app_router.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/image_preview.dart';
+import 'package:revelation/features/primary_sources/presentation/widgets/image_preview_painters.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_dialog.dart';
+import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_entry_view.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/primary_source_attributes_footer.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/source_item.dart';
 import 'package:revelation/features/settings/settings.dart';
@@ -115,6 +119,75 @@ void main() {
         }
         await tester.pump(const Duration(milliseconds: 400));
       }
+
+      final initialLabelsVisible = tester
+          .widget<ImagePreview>(find.byType(ImagePreview))
+          .showStrongNumbers;
+      if (!initialLabelsVisible) await tool(l10n.toggle_show_strong_numbers);
+      final overlay = find.byWidgetPredicate(
+        (w) => w is CustomPaint && w.painter is RelativeTextsPainter,
+      );
+      await waitFor(overlay);
+      RelativeTextsPainter labels() =>
+          tester.widget<CustomPaint>(overlay).painter! as RelativeTextsPainter;
+      final box = tester.renderObject<RenderBox>(overlay);
+      final viewport = tester.getRect(viewer).deflate(8);
+      final visibleLabels = labels().texts
+          .map((label) {
+            final size = box.size;
+            final font = label.fontSizeFrac * size.height;
+            final center = box.localToGlobal(
+              Offset(
+                size.width * label.positionX + font * 0.7,
+                size.height * label.positionY - font * 0.6,
+              ),
+            );
+            return (number: int.parse(label.text), center: center);
+          })
+          .where((l) => viewport.contains(l.center));
+      // Revelation 1:1 starts with ἀποκάλυψις (G602) on U001 leaf 325v.
+      final first = visibleLabels.firstWhere((label) => label.number == 602);
+      await tester.tapAt(first.center);
+      final entry = find.byType(StrongDictionaryEntryView);
+      await waitFor(entry);
+      int panelNumber() =>
+          tester.widget<StrongDictionaryEntryView>(entry).strongNumber;
+      expect(panelNumber(), first.number);
+      expect(labels().selectedNumber, first.number);
+      expect(find.byType(StrongDictionaryDialog), findsNothing);
+      await tester.tap(find.byKey(const Key('description_nav_forward')));
+      await tester.pumpAndSettle();
+      expect(panelNumber(), isNot(first.number));
+      expect(labels().selectedNumber, panelNumber());
+      await tester.tap(find.byKey(const Key('description_nav_back')));
+      await tester.pumpAndSettle();
+      expect(panelNumber(), first.number);
+      expect(labels().selectedNumber, first.number);
+      final related = find
+          .descendant(
+            of: entry,
+            matching: find.byWidgetPredicate(
+              (w) => w is RichText && w.text.toPlainText().contains('G601'),
+            ),
+          )
+          .first;
+      final paragraph = tester.renderObject<RenderParagraph>(related);
+      final start = paragraph.text.toPlainText().indexOf('G601');
+      final link = paragraph
+          .getBoxesForSelection(
+            TextSelection(baseOffset: start, extentOffset: start + 4),
+          )
+          .first
+          .toRect();
+      paragraph.showOnScreen(rect: link);
+      await tester.pumpAndSettle();
+      await tester.tapAt(paragraph.localToGlobal(link.center));
+      await tester.pumpAndSettle();
+      expect(panelNumber(), 601);
+      expect(labels().selectedNumber, 601);
+      expect(find.byType(StrongDictionaryDialog), findsNothing);
+      expect(await AppDi.strongDictionaryReadingStore.load(), isNull);
+      if (!initialLabelsVisible) await tool(l10n.toggle_show_strong_numbers);
 
       verifyFrame();
       final pageSelector = find.byType(DropdownButton<model.Page>);

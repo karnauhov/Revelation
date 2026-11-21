@@ -156,7 +156,16 @@ void main() {
     );
     expect(find.byTooltip(l10n.previous_dictionary_entry), findsOneWidget);
     expect(find.byTooltip(l10n.next_dictionary_entry), findsOneWidget);
-    final titleText = find.text(l10n.strongs_dictionary_screen);
+    final titleText = find.text('G1 · Alpha');
+    final subtitle = find.text(l10n.strongs_dictionary_screen);
+    expect(
+      tester.getBottomLeft(titleText).dy,
+      lessThanOrEqualTo(tester.getTopLeft(subtitle).dy),
+    );
+    expect(
+      tester.widget<Text>(titleText).style!.fontSize,
+      greaterThan(tester.widget<Text>(subtitle).style!.fontSize!),
+    );
     final infoIcon = find.byKey(const Key('strong_reference_info_icon'));
     expect(infoIcon, findsOneWidget);
     expect(
@@ -175,6 +184,7 @@ void main() {
       find.byType(DescriptionMarkdownView),
     );
     expect(updatedMarkdown.exportPdfDocumentTitle, 'G2');
+    expect(find.text('G2 · Beta'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('strong_dictionary_nav_back')));
     await tester.pumpAndSettle();

@@ -1,38 +1,103 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_content_service.dart';
+import 'package:revelation/features/strongs_dictionary/data/repositories/strong_dictionary_reading_store.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strongs_dictionary_state.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 
 class StrongsDictionaryCubit extends Cubit<StrongsDictionaryState> {
   StrongsDictionaryCubit({
-    required int initialStrongNumber,
+    int? initialStrongNumber,
     required AppLocalizations localizations,
     StrongsDictionaryContentService? contentService,
+    StrongDictionaryReadingStore? readingStore,
   }) : this._(
          contentService ?? StrongsDictionaryContentService(),
+         readingStore: readingStore,
          initialStrongNumber: initialStrongNumber,
          localizations: localizations,
        );
 
   StrongsDictionaryCubit._(
     StrongsDictionaryContentService contentService, {
-    required int initialStrongNumber,
+    required StrongDictionaryReadingStore? readingStore,
+    int? initialStrongNumber,
     required AppLocalizations localizations,
   }) : _contentService = contentService,
+       _readingStore = readingStore,
        super(
          StrongsDictionaryState.initial(
-           strongNumber: initialStrongNumber,
+           strongNumber: initialStrongNumber ?? 1,
            pickerEntries: contentService.getPickerEntries(),
+           restoring: initialStrongNumber == null && readingStore != null,
          ),
        ) {
-    showStrongNumber(
-      localizations: localizations,
-      strongNumber: initialStrongNumber,
-    );
+    if (initialStrongNumber == null && readingStore != null) {
+      unawaited(_restore(localizations, readingStore));
+    } else {
+      showStrongNumber(
+        localizations: localizations,
+        strongNumber: initialStrongNumber ?? state.strongNumber,
+      );
+    }
   }
 
   final StrongsDictionaryContentService _contentService;
+  final StrongDictionaryReadingStore? _readingStore;
+  double _articleOffset = 0;
+  double get articleOffset => _articleOffset;
+
+  Future<void> _restore(
+    AppLocalizations localizations,
+    StrongDictionaryReadingStore store,
+  ) async {
+    StrongDictionaryPlace? place;
+    try {
+      place = await store.load();
+    } catch (error, trace) {
+      if (!isClosed) addError(error, trace);
+    }
+    if (isClosed || !state.restoring) return;
+    final saved = place;
+    if (saved != null &&
+        state.pickerEntries.any((entry) => entry.number == saved.number)) {
+      _articleOffset = saved.offset;
+      _display(localizations, saved.number, clearSearch: false);
+    } else {
+      _display(
+        localizations,
+        state.pickerEntries.firstOrNull?.number ?? state.strongNumber,
+        clearSearch: false,
+      );
+    }
+  }
+
+  void rememberArticleOffset(int number, double offset) {
+    if (isClosed ||
+        !state.hasContent ||
+        number != state.strongNumber ||
+        !offset.isFinite ||
+        offset < 0 ||
+        offset == _articleOffset) {
+      return;
+    }
+    _articleOffset = offset;
+    _savePlace();
+  }
+
+  void _savePlace() {
+    final store = _readingStore;
+    if (store == null) return;
+    unawaited(
+      store
+          .save((number: state.strongNumber, offset: _articleOffset))
+          .catchError((Object error, StackTrace trace) {
+            if (!isClosed) addError(error, trace);
+          }),
+    );
+  }
 
   List<StrongPickerEntry> getPickerEntries() {
     final entries = _contentService.getPickerEntries();
@@ -53,6 +118,22 @@ class StrongsDictionaryCubit extends Cubit<StrongsDictionaryState> {
     required int strongNumber,
     bool clearSearch = false,
   }) {
+    final changed = state.strongNumber != strongNumber || state.restoring;
+    if (changed) _articleOffset = 0;
+    final hasContent = _display(
+      localizations,
+      strongNumber,
+      clearSearch: clearSearch,
+    );
+    if (hasContent) _savePlace();
+    return hasContent;
+  }
+
+  bool _display(
+    AppLocalizations localizations,
+    int strongNumber, {
+    required bool clearSearch,
+  }) {
     final content = _contentService.buildStrongContent(
       localizations,
       strongNumber,
@@ -60,6 +141,7 @@ class StrongsDictionaryCubit extends Cubit<StrongsDictionaryState> {
     emit(
       state.copyWith(
         strongNumber: strongNumber,
+        restoring: false,
         markdown: content?.markdown,
         markdownSet: true,
         searchQuery: clearSearch ? '' : null,

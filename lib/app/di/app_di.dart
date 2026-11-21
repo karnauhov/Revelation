@@ -10,6 +10,7 @@ import 'package:revelation/features/bible/presentation/bloc/bible_passage_previe
 import 'package:revelation/features/allusion_search/data/repositories/allusion_search_repository.dart';
 import 'package:revelation/features/allusion_search/presentation/bloc/allusion_search_cubit.dart';
 import 'package:revelation/features/strongs_dictionary/data/repositories/strongs_dictionary_repository.dart';
+import 'package:revelation/features/strongs_dictionary/data/repositories/strong_dictionary_reading_store.dart';
 import 'package:revelation/features/settings/data/repositories/settings_repository.dart';
 import 'package:revelation/features/primary_sources/application/orchestrators/page_settings_orchestrator.dart';
 import 'package:revelation/features/primary_sources/data/repositories/pages_repository.dart';
@@ -66,6 +67,7 @@ class AppDi {
   static SettingsCubit? get settingsCubitOrNull =>
       _settingsCubit?.isClosed == false ? _settingsCubit : null;
   static final _dictionary = StrongsDictionaryRepository();
+  static final strongDictionaryReadingStore = StrongDictionaryReadingStore();
   static String? greekWord(int number) => _dictionary.findGreekWord(number);
 
   static void registerCore({

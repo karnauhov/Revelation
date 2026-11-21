@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -440,9 +437,8 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
               AppLocalizations.of(previewContext)!,
             );
           },
-          onStrongNumberTap: (strongNumber) {
-            unawaited(handleAppLink(previewContext, 'strong:G$strongNumber'));
-          },
+          onStrongNumberTap: (number) =>
+              _showStrongInPanel(number, previewContext),
           onRestorePositionAndScale: () {
             if (identical(viewModel.activeImageRequest, imageRequest)) {
               viewModel.restorePositionAndScale();
@@ -512,9 +508,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           descriptionContent: descriptionSlice.content,
           currentDescriptionType: descriptionSlice.currentType,
           currentDescriptionNumber: descriptionSlice.currentNumber,
-          onGreekStrongTap: (strongNumber, linkContext) {
-            unawaited(handleAppLink(linkContext, 'strong:G$strongNumber'));
-          },
+          onGreekStrongTap: _showStrongInPanel,
           onGreekStrongPickerTap: (strongNumber, linkContext) {
             _openStrongNumberPickerDialog(linkContext, viewModel, strongNumber);
           },
@@ -553,6 +547,13 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
           },
         );
       },
+    );
+  }
+
+  void _showStrongInPanel(int number, BuildContext linkContext) {
+    _viewModel?.showInfoForStrongNumber(
+      number,
+      AppLocalizations.of(linkContext)!,
     );
   }
 
@@ -732,6 +733,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       imagePreview: _buildImagePreview(viewModel),
       footer: PrimarySourceAttributesFooter(
         credits: widget.primarySource.credits,
+        onGreekStrongTap: _showStrongInPanel,
         selectAreaMode: viewModel.selectAreaMode,
         pipetteMode: viewModel.pipetteMode,
         isMobileWeb: viewModel.isMobileWeb,

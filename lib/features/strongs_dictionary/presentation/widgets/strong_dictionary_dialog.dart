@@ -136,10 +136,10 @@ class _StrongDictionaryDialogContentState
             .firstOrNull
             ?.word;
         return StudyTextDialog(
-          title: localizations.strongs_dictionary_screen,
-          subtitle: word == null || word.isEmpty
+          title: word == null || word.isEmpty
               ? 'G${state.strongNumber}'
               : 'G${state.strongNumber} · $word',
+          subtitle: localizations.strongs_dictionary_screen,
           titleInfo: StrongReferenceInfoIcon(tooltipKey: _referenceTooltipKey),
           maxWidth: 800,
           content: SizedBox(

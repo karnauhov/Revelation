@@ -508,7 +508,7 @@ void main() {
       addTearDown(() => setDefaultGreekStrongTapHandler(null));
       _descriptionPanel(tester).onGreekStrongTap(25, panelContext);
       await tester.pump();
-      expect(previewNumber, 25);
+      expect(previewNumber, isNull);
       expect(
         _descriptionPanel(tester).currentDescriptionType,
         DescriptionKind.word,

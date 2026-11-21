@@ -26,9 +26,7 @@ void main() {
               state.uri.queryParameters,
             );
             return StrongsDictionaryScreen(
-              initialStrongNumber:
-                  args?.resolvedInitialStrongNumber ??
-                  StrongDictionaryRouteArgs.defaultInitialStrongNumber,
+              initialStrongNumber: args?.initialStrongNumber,
             );
           },
         ),

@@ -15,7 +15,10 @@ import 'package:revelation/features/strongs_dictionary/presentation/widgets/stro
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_entry_view.dart';
 import 'package:revelation/infra/db/runtime/database_runtime.dart';
 import 'package:revelation/infra/db/runtime/db_manager.dart';
+import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/main.dart' as app;
+import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -33,6 +36,11 @@ void main() {
     await GetIt.I.reset();
     final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
     AppDi.registerCore(talker: talker);
+    // The test injects startup settings and therefore installs the usual link handler.
+    setDefaultGreekStrongTapHandler(
+      (number, context) => showStrongDictionaryDialog(context, number),
+    );
+    addTearDown(() => setDefaultGreekStrongTapHandler(null));
     SharedPreferences.setMockInitialValues({});
     final settings = SettingsCubit(SettingsRepository());
     await settings.loadSettings();
@@ -158,46 +166,52 @@ void main() {
       await verify('topic.explicitPreference', kjv, 48, 4, 24);
 
       final router = AppRouter().router;
-      unawaited(router.push('/strongs_dictionary?number=G3056'));
       final article = find.byType(StrongDictionaryEntryView);
-      await tapReference('G3004', within: article);
-      final dictionaryDialog = find.byType(StrongDictionaryDialog);
+      final dialog = find.byType(StrongDictionaryDialog);
+      final store = AppDi.strongDictionaryReadingStore;
+      await tapReference('G602');
       await waitFor(
-        () => dictionaryDialog.evaluate().isNotEmpty,
-        'Article link previews G3004',
+        () => dialog.evaluate().isNotEmpty && article.evaluate().length == 1,
+        'Topic opens the Strong preview',
       );
-      final linkedArticle = find.descendant(
-        of: dictionaryDialog,
-        matching: article,
+      expect(
+        tester.widget<StrongDictionaryEntryView>(article).strongNumber,
+        602,
       );
-      await waitFor(
-        () =>
-            linkedArticle.evaluate().isNotEmpty &&
-            tester
-                    .widget<StrongDictionaryEntryView>(linkedArticle)
-                    .strongNumber ==
-                3004,
-        'G3004 in the dialog',
+      final header = tester.widget<StudyTextDialog>(
+        find.byType(StudyTextDialog),
       );
-      await tester.tap(find.byKey(const Key('strong_dialog_open_page')));
-      await waitFor(
-        () =>
-            dictionaryDialog.evaluate().isEmpty &&
-            article.evaluate().length == 1 &&
-            tester.widget<StrongDictionaryEntryView>(article).strongNumber ==
-                3004,
-        'Bottom action opens the full G3004 article',
+      expect(header.title, startsWith('G602 · '));
+      expect(
+        header.subtitle,
+        AppLocalizations.of(tester.element(dialog))!.strongs_dictionary_screen,
       );
+      expect(header.titleInfo, isNotNull);
       router.pop();
       await waitFor(
+        () => dialog.evaluate().isEmpty,
+        'Close the preview on the topic',
+      );
+      expect(await store.load(), isNull);
+      await tapReference('G602');
+      final openPage = find.byKey(const Key('strong_dialog_open_page'));
+      await waitFor(
+        () => openPage.hitTestable().evaluate().isNotEmpty,
+        'Open dictionary action',
+      );
+      await tester.tap(openPage);
+      await waitFor(
         () =>
+            dialog.evaluate().isEmpty &&
             article.evaluate().length == 1 &&
             tester.widget<StrongDictionaryEntryView>(article).strongNumber ==
-                3056,
-        'Back restores the source article',
+                602,
+        'Topic preview opens full G602',
       );
-      results['dictionary.crossReference'] =
-          'G3056 -> G3004 dialog -> G3004 page -> G3056';
+      expect(await store.load(), (number: 602, offset: 0.0));
+      router.pop();
+      await waitFor(() => article.evaluate().isEmpty, 'Return to the topic');
+      unawaited(router.push('/strongs_dictionary?number=G3056'));
       await tapReference('Ів. 1:1');
       await verify('dictionary.page', kjv, 43, 1, 1);
       await settings.changeDefaultBibleModule(oh1988);
@@ -229,6 +243,71 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
       await tapReference('Rev 1:3');
       await verify('source.attribution', oh1988, 66, 1, 3);
+      navigator.popUntil((route) => route is! PopupRoute);
+      await tester.pump(const Duration(milliseconds: 400));
+      final dictionaryRoute = ModalRoute.of(tester.element(article));
+      await tapReference('G3004', within: article);
+      await waitFor(
+        () =>
+            article.evaluate().length == 1 &&
+            tester.widget<StrongDictionaryEntryView>(article).strongNumber ==
+                3004,
+        'Dictionary cross-reference selects G3004 in place',
+      );
+      expect(dialog, findsNothing);
+      expect(ModalRoute.of(tester.element(article)), same(dictionaryRoute));
+      final selectedRow = find
+          .byKey(const Key('strong_dictionary_entry_3004'))
+          .hitTestable();
+      await waitFor(
+        () => selectedRow.evaluate().isNotEmpty,
+        'Index scrolled to G3004',
+      );
+      expect(await store.load(), (number: 3004, offset: 0.0));
+      final scrollable = find
+          .descendant(of: article, matching: find.byType(Scrollable))
+          .first;
+      double scrollOffset() =>
+          tester.state<ScrollableState>(scrollable).position.pixels;
+      await tester.drag(scrollable, const Offset(0, -320));
+      await tester.pumpAndSettle();
+      final offset = scrollOffset();
+      expect(offset, greaterThan(0));
+      expect(await store.load(), (number: 3004, offset: offset));
+      router.pop();
+      await waitFor(
+        () => article.evaluate().isEmpty,
+        'Back returns to the topic',
+      );
+      results['dictionary.crossReference'] =
+          'G3056 -> G3004 in the same dictionary page';
+      router.go('/');
+      final l10n = AppLocalizations.of(navigator.context)!;
+      final menu = find.byTooltip(l10n.menu);
+      await waitFor(
+        () => menu.hitTestable().evaluate().isNotEmpty,
+        'Main menu',
+      );
+      await tester.tap(menu);
+      final dictionaryItem = find
+          .text(l10n.strongs_dictionary_screen)
+          .hitTestable();
+      await waitFor(
+        () => dictionaryItem.evaluate().isNotEmpty,
+        'Dictionary menu item',
+      );
+      await tester.tap(dictionaryItem);
+      await waitFor(
+        () => selectedRow.evaluate().isNotEmpty,
+        'Menu restores G3004 in the index',
+      );
+      expect(
+        tester.widget<StrongDictionaryEntryView>(article).strongNumber,
+        3004,
+      );
+      expect(scrollOffset(), closeTo(offset, 0.5));
+      results['dictionary.lastVisit'] =
+          'G3004 at offset $offset after reopening from the main menu';
       binding.reportData = results;
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());

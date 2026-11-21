@@ -1,6 +1,6 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.6.7`
+Doc-Version: `2.6.8`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
@@ -19,6 +19,8 @@ BrightnessDraftCubit and ReplacementDraftCubit use Dart records with value equal
 ## Parallel reading by default and from reference links
 
 `BibleWorkspaceCubit` restores the ordered panes, their modules, selections and visible verses, and the linked navigation setting from a versioned local preference. A first visit uses the legacy module list or LXX/TR and the default translation. An internal Bible reference first opens a passage dialog. Its reader action and direct reference routes show the passage in all panes for this visit. If the specified module is missing, it temporarily replaces the first pane. Returning through the menu restores the ordinary reading session.
+
+When the dictionary opens from the menu, `StrongsDictionaryCubit` restores the locally saved Strong number and article scroll position. Opening a full page with an explicit number saves that entry immediately at the top. Scrolling the article updates its saved position. Cross-references on the dictionary page select and save the new entry in place. The manuscript detail panel updates its own selection and highlights matching numbers on the leaf. Browsing that panel or a preview elsewhere preserves the last full-page visit. If the saved entry is unavailable, the dictionary opens the first available entry.
 
 An ordinary `/bible` restores the saved panes, including a legacy single-module preference. `bible:` and `/bible` reference parameters open the requested book/chapter/verse with a translation independently of the saved layout, preserving existing route formats. Automatic opening and navigation do not write preferences. Only explicitly adding/closing a pane or successfully changing a module saves the complete ready layout. The workspace alone owns these writes; ReaderCubit no longer writes the shared single-module preference. Writes are serialized and incomplete layouts are not saved. Initial loads coalesce; closing the workspace or manually changing its layout prevents delayed automatic selection from applying. Linked navigation remains a setting of the current workspace. Translation selection runs once; after a slow load the new pane waits for the current synchronization and follows the latest primary reference.
 

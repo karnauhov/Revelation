@@ -24,6 +24,7 @@ class DescriptionMarkdownView extends StatelessWidget {
 
   final String data;
   final bool scrollable;
+  final ScrollController? scrollController;
   final EdgeInsets padding;
   final GreekStrongTapHandler? onGreekStrongTap;
   final GreekStrongPickerTapHandler? onGreekStrongPickerTap;
@@ -47,6 +48,7 @@ class DescriptionMarkdownView extends StatelessWidget {
   const DescriptionMarkdownView({
     required this.data,
     this.scrollable = true,
+    this.scrollController,
     this.padding = EdgeInsets.zero,
     this.onGreekStrongTap,
     this.onGreekStrongPickerTap,
@@ -104,7 +106,10 @@ class DescriptionMarkdownView extends StatelessWidget {
     );
 
     final content = scrollable
-        ? SingleChildScrollView(child: markdownBody)
+        ? SingleChildScrollView(
+            controller: scrollController,
+            child: markdownBody,
+          )
         : markdownBody;
 
     if (!hasToolbar) {

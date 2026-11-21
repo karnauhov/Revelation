@@ -10,7 +10,7 @@ All notable changes to this application will be documented here.
 
 ### Changed
 
-- Reopening the Bible restores each column to its last passage and scroll position. Bible and Strong's links open a preview first. Reading a linked passage preserves your usual places.
+- Reopening the Bible restores each column to its last passage and scroll position. The Strong's dictionary reopens the last full entry at its saved scroll position, including entries opened from a preview. Greek Strong's links open in the manuscript detail panel or in the current dictionary page. Elsewhere, Strong's previews show the entry number and word in the title. Bible links also open a preview. Reading a linked passage preserves your usual places.
 
 - Open the [AI11 website](https://ai11.link) or email support at [ok.ai11.link@gmail.com](mailto:ok.ai11.link@gmail.com) from the About screen.
 

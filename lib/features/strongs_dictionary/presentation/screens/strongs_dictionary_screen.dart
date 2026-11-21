@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_content_service.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strongs_dictionary_cubit.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strongs_dictionary_state.dart';
-import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_dialog.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_entry_view.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_number_picker_dialog.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_reference_info_icon.dart';
@@ -21,14 +21,14 @@ Future<BibleVerseMap> _loadStrongDictionaryVerseMap() {
 
 class StrongsDictionaryScreen extends StatelessWidget {
   const StrongsDictionaryScreen({
-    this.initialStrongNumber = 1,
+    this.initialStrongNumber,
     this.contentService,
     super.key,
   });
 
   static const iconAssetPath = 'assets/images/UI/dictionary.svg';
 
-  final int initialStrongNumber;
+  final int? initialStrongNumber;
   final StrongsDictionaryContentService? contentService;
 
   @override
@@ -78,7 +78,7 @@ class _StrongsDictionaryScreenProvider extends StatelessWidget {
     required this.contentService,
   });
 
-  final int initialStrongNumber;
+  final int? initialStrongNumber;
   final AppLocalizations localizations;
   final StrongsDictionaryContentService contentService;
 
@@ -87,6 +87,7 @@ class _StrongsDictionaryScreenProvider extends StatelessWidget {
     return BlocProvider<StrongsDictionaryCubit>(
       create: (_) => StrongsDictionaryCubit(
         initialStrongNumber: initialStrongNumber,
+        readingStore: AppDi.strongDictionaryReadingStore,
         localizations: localizations,
         contentService: contentService,
       ),
@@ -147,10 +148,15 @@ class _StrongsDictionaryScreenContentState
       body: SafeArea(
         child: BlocBuilder<StrongsDictionaryCubit, StrongsDictionaryState>(
           builder: (context, state) {
+            if (state.restoring)
+              return const Center(child: CircularProgressIndicator());
             return LayoutBuilder(
               builder: (context, constraints) {
                 final selector = _StrongDictionarySelector(state: state);
-                final entryView = _StrongDictionaryPageEntryView(state: state);
+                final entryView = _StrongDictionaryPageEntryView(
+                  key: ValueKey(state.strongNumber),
+                  state: state,
+                );
                 final isLandscape =
                     MediaQuery.of(context).orientation == Orientation.landscape;
                 final useSideBySideLayout =
@@ -528,24 +534,63 @@ class _SelectorMessage extends StatelessWidget {
   }
 }
 
-class _StrongDictionaryPageEntryView extends StatelessWidget {
-  const _StrongDictionaryPageEntryView({required this.state});
+class _StrongDictionaryPageEntryView extends StatefulWidget {
+  const _StrongDictionaryPageEntryView({super.key, required this.state});
 
   final StrongsDictionaryState state;
 
   @override
+  State<_StrongDictionaryPageEntryView> createState() =>
+      _StrongDictionaryPageEntryViewState();
+}
+
+class _StrongDictionaryPageEntryViewState
+    extends State<_StrongDictionaryPageEntryView> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    final cubit = context.read<StrongsDictionaryCubit>();
+    _scrollController =
+        ScrollController(
+          initialScrollOffset: cubit.articleOffset,
+          keepScrollOffset: false,
+        )..addListener(() {
+          if (ModalRoute.isCurrentOf(context) != false) {
+            cubit.rememberArticleOffset(
+              widget.state.strongNumber,
+              _scrollController.offset,
+            );
+          }
+        });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = widget.state;
     final colorScheme = Theme.of(context).colorScheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(color: colorScheme.surface),
       child: StrongDictionaryEntryView(
+        scrollController: _scrollController,
         strongNumber: state.strongNumber,
         markdown: state.displayMarkdown,
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
         navigationEnabled: state.pickerEntries.isNotEmpty,
         onStrongNumberSelected: (strongNumber) {
-          showStrongDictionaryDialog(context, strongNumber);
+          context.read<StrongsDictionaryCubit>().showStrongNumber(
+            localizations: AppLocalizations.of(context)!,
+            strongNumber: strongNumber,
+            clearSearch: true,
+          );
         },
         onStrongNumberPickerRequested: (linkContext, strongNumber) {
           _openStrongNumberPicker(context, strongNumber);

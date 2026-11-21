@@ -1,6 +1,7 @@
 @Tags(['widget'])
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_markdown_tokens.dart';
 import 'package:revelation/features/strongs_dictionary/strongs_dictionary.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -11,6 +12,61 @@ import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 import '../../../../test_harness/test_harness.dart';
 
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+  for (final size in [const Size(420, 740), const Size(1100, 650)]) {
+    testWidgets('menu restores the linked entry and scroll at $size', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(size);
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final service = _FakeStrongsDictionaryContentService(
+        definition: List.filled(60, 'Dictionary definition line.').join('\n\n'),
+      );
+      Future<void> openPage({int? number}) async {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pumpWidget(
+          buildLocalizedTestApp(
+            withScaffold: false,
+            child: StrongsDictionaryScreen(
+              initialStrongNumber: number,
+              contentService: service,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      final article = find.byType(DescriptionMarkdownView);
+      final scrollable = find
+          .descendant(of: article, matching: find.byType(Scrollable))
+          .first;
+      double offset() =>
+          tester.state<ScrollableState>(scrollable).position.pixels;
+
+      await openPage(number: 1);
+      await tester.drag(scrollable, const Offset(0, -175));
+      await tester.pumpAndSettle();
+      expect(offset(), greaterThan(0));
+      await openPage(number: 2);
+      expect(offset(), 0);
+      await openPage();
+      expect(
+        tester.widget<DescriptionMarkdownView>(article).exportPdfDocumentTitle,
+        'G2',
+      );
+      await tester.drag(scrollable, const Offset(0, -280));
+      await tester.pumpAndSettle();
+      final lastOffset = offset();
+      expect(lastOffset, greaterThan(0));
+      await openPage();
+      expect(
+        tester.widget<DescriptionMarkdownView>(article).exportPdfDocumentTitle,
+        'G2',
+      );
+      expect(offset(), closeTo(lastOffset, 0.01));
+    });
+  }
+
   testWidgets('renders real dictionary page with selected initial entry', (
     tester,
   ) async {
@@ -281,6 +337,7 @@ void main() {
 class _FakeStrongsDictionaryContentService
     extends StrongsDictionaryContentService {
   _FakeStrongsDictionaryContentService({
+    this.definition = '',
     this.entries = const [
       StrongPickerEntry(number: 1, word: 'Alpha'),
       StrongPickerEntry(number: 2, word: 'Beta'),
@@ -288,6 +345,7 @@ class _FakeStrongsDictionaryContentService
     ],
   });
 
+  final String definition;
   final List<StrongPickerEntry> entries;
 
   @override
@@ -305,7 +363,7 @@ class _FakeStrongsDictionaryContentService
         return DescriptionContent(
           markdown:
               '## ${entry.word}\n\rWord analysis:'
-              '$strongOriginInfoMarkdownMarker${entry.code}',
+              '$strongOriginInfoMarkdownMarker${entry.code}\n\n$definition',
           kind: DescriptionKind.strongNumber,
         );
       }

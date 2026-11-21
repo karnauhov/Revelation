@@ -9,6 +9,7 @@ import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
 class PrimarySourceAttributesFooter extends StatefulWidget {
   const PrimarySourceAttributesFooter({
     required this.credits,
+    this.onGreekStrongTap,
     this.selectAreaMode = false,
     this.pipetteMode = false,
     this.isMobileWeb = false,
@@ -16,6 +17,7 @@ class PrimarySourceAttributesFooter extends StatefulWidget {
   });
 
   final List<SourceCredit> credits;
+  final GreekStrongTapHandler? onGreekStrongTap;
   final bool selectAreaMode;
   final bool pipetteMode;
   final bool isMobileWeb;
@@ -98,8 +100,11 @@ class _FooterState extends State<PrimarySourceAttributesFooter> {
                                 credit.url,
                                 TapGestureRecognizer.new,
                               )
-                              ..onTap = () =>
-                                  handleAppLink(context, credit.url)),
+                              ..onTap = () => handleAppLink(
+                                context,
+                                credit.url,
+                                onGreekStrongTap: widget.onGreekStrongTap,
+                              )),
                     ),
                   ],
                 ],

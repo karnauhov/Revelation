@@ -108,9 +108,8 @@ class AppRouter {
             context: context,
             state: state,
             child: StrongsDictionaryScreen(
-              initialStrongNumber:
-                  routeArgs?.resolvedInitialStrongNumber ??
-                  StrongDictionaryRouteArgs.defaultInitialStrongNumber,
+              key: ValueKey(routeArgs?.initialStrongNumber),
+              initialStrongNumber: routeArgs?.initialStrongNumber,
             ),
           );
         },

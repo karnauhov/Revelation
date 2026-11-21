@@ -18,6 +18,7 @@ class StrongDictionaryEntryView extends StatelessWidget {
     required this.onNavigateForward,
     this.padding = const EdgeInsets.fromLTRB(6, 0, 6, 6),
     this.navigationEnabled = true,
+    this.scrollController,
     this.exportPdfEnabled = true,
     this.copyEnabled = true,
     this.backButtonKey = const Key('strong_dictionary_nav_back'),
@@ -37,6 +38,7 @@ class StrongDictionaryEntryView extends StatelessWidget {
   final VoidCallback onNavigateForward;
   final EdgeInsets padding;
   final bool navigationEnabled;
+  final ScrollController? scrollController;
   final bool exportPdfEnabled;
   final bool copyEnabled;
   final Key backButtonKey;
@@ -54,6 +56,7 @@ class StrongDictionaryEntryView extends StatelessWidget {
 
     return DescriptionMarkdownView(
       data: markdown,
+      scrollController: scrollController,
       exportPdfMarkdown: actionMarkdown,
       copyMarkdown: actionMarkdown,
       inlineSyntaxes: buildStrongArticleInfoInlineSyntaxes(),
