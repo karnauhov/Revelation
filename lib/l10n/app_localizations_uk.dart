@@ -1523,7 +1523,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Кандидатів із достатнім лексичним збігом не знайдено. Спробуйте інший уривок або розширте діапазон.';
 
   @override
-  String get allusion_loading => 'Підготовка грецького індексу…';
+  String get allusion_loading => 'Підготовка грецького індексу...';
 
   @override
   String get allusion_failed => 'Не вдалося завантажити дані пошуку.';

@@ -1523,7 +1523,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Кандидаты с достаточным лексическим совпадением не найдены. Попробуйте другой отрывок или расширьте диапазон.';
 
   @override
-  String get allusion_loading => 'Подготовка греческого индекса…';
+  String get allusion_loading => 'Подготовка греческого индекса...';
 
   @override
   String get allusion_failed => 'Не удалось загрузить данные поиска.';

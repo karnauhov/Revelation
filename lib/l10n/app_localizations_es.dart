@@ -1530,7 +1530,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se encontraron candidatos con suficiente coincidencia léxica. Pruebe otro pasaje o amplíe el intervalo.';
 
   @override
-  String get allusion_loading => 'Preparando el índice griego…';
+  String get allusion_loading => 'Preparando el índice griego...';
 
   @override
   String get allusion_failed => 'No se pudieron cargar los datos de búsqueda.';

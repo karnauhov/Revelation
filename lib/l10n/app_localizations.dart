@@ -2979,7 +2979,7 @@ abstract class AppLocalizations {
   /// Initial Greek corpus indexing progress message.
   ///
   /// In en, this message translates to:
-  /// **'Preparing the Greek index…'**
+  /// **'Preparing the Greek index...'**
   String get allusion_loading;
 
   /// Failure to load data or perform the allusion search.

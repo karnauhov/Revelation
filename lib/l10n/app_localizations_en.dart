@@ -1521,7 +1521,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'No candidates meet the lexical threshold. Try another passage or a wider range.';
 
   @override
-  String get allusion_loading => 'Preparing the Greek index…';
+  String get allusion_loading => 'Preparing the Greek index...';
 
   @override
   String get allusion_failed => 'Could not load the search data.';

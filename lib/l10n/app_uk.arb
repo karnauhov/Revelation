@@ -631,7 +631,7 @@
   "@allusion_no_results": {
     "description": "No candidate passes the minimum meaningful-word threshold."
   },
-  "allusion_loading": "Підготовка грецького індексу…",
+  "allusion_loading": "Підготовка грецького індексу...",
   "@allusion_loading": {
     "description": "Initial Greek corpus indexing progress message."
   },
