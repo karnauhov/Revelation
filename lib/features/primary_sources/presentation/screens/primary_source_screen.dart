@@ -63,6 +63,7 @@ class PrimarySourceScreen extends StatefulWidget {
 class PrimarySourceScreenState extends State<PrimarySourceScreen>
     with WidgetsBindingObserver {
   PrimarySourceDetailCoordinator? _viewModel;
+
   final GlobalKey<TooltipState> _referenceTooltipKey =
       GlobalKey<TooltipState>();
   final PrimarySourceReferenceService _referenceResolver =
@@ -112,6 +113,7 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
 
     final currentIsWeb = isWeb();
     return MultiBlocProvider(
+      key: ObjectKey(widget.primarySource),
       providers: [
         BlocProvider<PrimarySourceSessionCubit>(
           create: (_) =>
@@ -275,71 +277,57 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
                                   : null,
                               foregroundColor: colorScheme.primary,
                             ),
-                      body: Column(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                10.0,
-                                0,
-                                10.0,
-                                0,
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: colorScheme.onSurface,
-                                    width: 1.0,
-                                  ),
-                                ),
-                                child: Builder(
-                                  builder: (contentContext) {
-                                    final contentSlice = contentContext.select((
-                                      PrimarySourceImageCubit cubit,
-                                    ) {
-                                      final state = cubit.state;
-                                      return (
-                                        isLoading: state.isLoading,
-                                        hasImage: state.imageData != null,
-                                      );
-                                    });
-                                    if (contentSlice.isLoading) {
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          color: colorScheme.primary,
-                                        ),
-                                      );
-                                    }
-                                    if (contentSlice.hasImage) {
-                                      return _buildSplitView(
-                                        contentContext,
-                                        viewModel,
-                                      );
-                                    }
-                                    return Center(
-                                      child: Text(
-                                        AppLocalizations.of(
-                                          contentContext,
-                                        )!.image_not_loaded,
-                                        style: textTheme.bodyMedium?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                      body: SafeArea(
+                        top: false,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: colorScheme.onSurface,
+                                width: 1.0,
                               ),
                             ),
+                            child: Builder(
+                              builder: (contentContext) {
+                                final contentSlice = contentContext.select((
+                                  PrimarySourceImageCubit cubit,
+                                ) {
+                                  final state = cubit.state;
+                                  return (
+                                    isLoading: state.isLoading,
+                                    hasImage: state.imageData != null,
+                                  );
+                                });
+                                if (contentSlice.isLoading) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: colorScheme.primary,
+                                    ),
+                                  );
+                                }
+                                if (contentSlice.hasImage &&
+                                    widget.primarySource.permissionsReceived &&
+                                    widget.primarySource.credits.isNotEmpty) {
+                                  return _buildSplitView(
+                                    contentContext,
+                                    viewModel,
+                                  );
+                                }
+                                return Center(
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      contentContext,
+                                    )!.image_not_loaded,
+                                    style: textTheme.bodyMedium?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                          PrimarySourceAttributesFooter(
-                            attributes: widget.primarySource.attributes,
-                            permissionsReceived:
-                                widget.primarySource.permissionsReceived,
-                            selectAreaMode: viewModel.selectAreaMode,
-                            pipetteMode: viewModel.pipetteMode,
-                            isMobileWeb: viewModel.isMobileWeb,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -730,6 +718,12 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
     final colorScheme = Theme.of(context).colorScheme;
     return PrimarySourceSplitView(
       imagePreview: _buildImagePreview(viewModel),
+      footer: PrimarySourceAttributesFooter(
+        credits: widget.primarySource.credits,
+        selectAreaMode: viewModel.selectAreaMode,
+        pipetteMode: viewModel.pipetteMode,
+        isMobileWeb: viewModel.isMobileWeb,
+      ),
       descriptionPanel: _buildDescriptionView(context, viewModel),
       dividerColor: colorScheme.onSurface,
     );
@@ -830,29 +824,16 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       context: screenContext,
       routeSettings: RouteSettings(name: 'brightness_contrast_dialog'),
       barrierColor: Colors.transparent,
-      builder: (context) {
-        return Stack(
-          children: [
-            Positioned(
-              right: -60,
-              top: 75,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 350, maxWidth: 500),
-                child: BrightnessContrastDialog(
-                  onApply: (brightness, contrast) {
-                    viewModel.applyBrightnessContrast(brightness, contrast);
-                  },
-                  onCancel: () {
-                    viewModel.resetBrightnessContrast();
-                  },
-                  brightness: viewModel.brightness,
-                  contrast: viewModel.contrast,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+      builder: (_) => BrightnessContrastDialog(
+        onApply: (brightness, contrast) {
+          viewModel.applyBrightnessContrast(brightness, contrast);
+        },
+        onCancel: () {
+          viewModel.resetBrightnessContrast();
+        },
+        brightness: viewModel.brightness,
+        contrast: viewModel.contrast,
+      ),
     );
   }
 
@@ -865,41 +846,28 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
       routeSettings: RouteSettings(name: 'replace_color_dialog'),
       useRootNavigator: false,
       barrierColor: Colors.transparent,
-      builder: (context) {
-        return Stack(
-          children: [
-            Positioned(
-              right: -35,
-              top: 75,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 350, maxWidth: 450),
-                child: ReplaceColorDialog(
-                  parentContext: screenContext,
-                  onApply: (selectedArea, colorToReplace, newColor, tolerance) {
-                    viewModel.applyColorReplacement(
-                      selectedArea,
-                      colorToReplace,
-                      newColor,
-                      tolerance,
-                    );
-                  },
-                  onCancel: viewModel.resetColorReplacement,
-                  onStartSelectAreaMode: viewModel.startSelectAreaMode,
-                  onStartPipetteMode: viewModel.startPipetteMode,
-                  readSelectedArea: () => viewModel.selectedArea,
-                  readColorToReplace: () => viewModel.colorToReplace,
-                  readNewColor: () => viewModel.newColor,
-                  readTolerance: () => viewModel.tolerance,
-                  selectedArea: viewModel.selectedArea,
-                  colorToReplace: viewModel.colorToReplace,
-                  newColor: viewModel.newColor,
-                  tolerance: viewModel.tolerance,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+      builder: (_) => ReplaceColorDialog(
+        parentContext: screenContext,
+        onApply: (selectedArea, colorToReplace, newColor, tolerance) {
+          viewModel.applyColorReplacement(
+            selectedArea,
+            colorToReplace,
+            newColor,
+            tolerance,
+          );
+        },
+        onCancel: viewModel.resetColorReplacement,
+        onStartSelectAreaMode: viewModel.startSelectAreaMode,
+        onStartPipetteMode: viewModel.startPipetteMode,
+        readSelectedArea: () => viewModel.selectedArea,
+        readColorToReplace: () => viewModel.colorToReplace,
+        readNewColor: () => viewModel.newColor,
+        readTolerance: () => viewModel.tolerance,
+        selectedArea: viewModel.selectedArea,
+        colorToReplace: viewModel.colorToReplace,
+        newColor: viewModel.newColor,
+        tolerance: viewModel.tolerance,
+      ),
     );
   }
 

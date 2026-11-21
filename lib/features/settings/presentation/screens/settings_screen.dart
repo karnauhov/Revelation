@@ -205,49 +205,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 info.fileName:
                     '${info.displayTitle} · ${AppConstants.languages[info.language] ?? info.language}',
           };
-          return AlertDialog(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            title: Text(l10n.bible_default),
-            content: SizedBox(
-              width: 420,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (catalog.loading) const LinearProgressIndicator(),
-                  if (catalog.failed) Text(l10n.bible_catalog_failed),
-                  Flexible(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        for (final entry in choices.entries)
-                          ListTile(
-                            title: Text(entry.value),
-                            subtitle: entry.key == 'auto'
-                                ? Text(l10n.bible_automatic_hint)
-                                : null,
-                            selected: chosen == entry.key,
-                            trailing: chosen == entry.key
-                                ? const Icon(Icons.check)
-                                : null,
-                            onTap: () =>
-                                Navigator.pop(dialogContext, entry.key),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+          return _SettingsChoiceDialog(
+            title: l10n.bible_default,
+            options: choices,
+            current: chosen,
+            subtitle: (key) =>
+                key == 'auto' ? Text(l10n.bible_automatic_hint) : null,
+            status: catalog.loading
+                ? const LinearProgressIndicator()
+                : catalog.failed
+                ? Text(l10n.bible_catalog_failed)
+                : null,
+            extraAction: TextButton(
+              onPressed: catalog.loading ? null : _catalog.load,
+              child: Text(l10n.bible_catalog_refresh),
             ),
-            actions: [
-              TextButton(
-                onPressed: catalog.loading ? null : () => _catalog.load(),
-                child: Text(l10n.bible_catalog_refresh),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: Text(l10n.close),
-              ),
-            ],
           );
         },
       ),
@@ -256,165 +228,130 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await settingsCubit.changeDefaultBibleModule(selected);
   }
 
-  Future<String?> _showLanguageDialog(
-    BuildContext context,
-    String currentLanguage,
-  ) async {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+  Future<String?> _showLanguageDialog(BuildContext context, String current) =>
+      _showChoice(
+        context,
+        'select_language_dialog',
+        _SettingsChoiceDialog(
+          title: AppLocalizations.of(context)!.language,
+          current: current,
+          options: AppConstants.languages,
+          onSelect: () => aud.playSound('click'),
+        ),
+      );
 
-    return showDialog<String>(
-      context: context,
-      routeSettings: RouteSettings(name: "select_language_dialog"),
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: colorScheme.surface,
-          content: SizedBox(
-            width: double.maxFinite,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: AppConstants.languages.keys.length,
-              itemBuilder: (context, index) {
-                final code = AppConstants.languages.keys.elementAt(index);
-                final name = AppConstants.languages[code]!;
-                final isSelected = code == currentLanguage;
-                return GestureDetector(
-                  onTap: () async {
-                    aud.playSound("click");
-                    Navigator.pop(context, code);
-                  },
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: isSelected ? colorScheme.primaryContainer : null,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        name,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: isSelected
-                              ? colorScheme.onPrimaryContainer
-                              : colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+  Future<String?> _showThemeDialog(BuildContext context, String current) =>
+      _showChoice(
+        context,
+        'select_theme_dialog',
+        _SettingsChoiceDialog(
+          title: AppLocalizations.of(context)!.color_theme,
+          current: current,
+          options: {
+            for (final key in AppConstants.themes.keys)
+              key: locColorThemes(context, key),
+          },
+          leading: (key) => Icon(
+            Icons.circle,
+            color: MaterialTheme.getColorTheme(key).primary,
           ),
-        );
-      },
-    );
-  }
+          onSelect: () => aud.playSound('click'),
+        ),
+      );
 
-  Future<String?> _showThemeDialog(BuildContext context, String current) async {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+  Future<String?> _showFontSizeDialog(BuildContext context, String current) =>
+      _showChoice(
+        context,
+        'select_font_size_dialog',
+        _SettingsChoiceDialog(
+          title: AppLocalizations.of(context)!.font_size,
+          current: current,
+          options: {
+            for (final key in AppConstants.fontSizes.keys)
+              key: locFontSizes(context, key),
+          },
+          style: (key) => MaterialTheme.getTextTheme(context, key).bodyMedium,
+          onSelect: () => aud.playSound('click'),
+        ),
+      );
 
-    return showDialog<String>(
-      context: context,
-      routeSettings: RouteSettings(name: "select_theme_dialog"),
-      builder: (_) => AlertDialog(
-        backgroundColor: colorScheme.surface,
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: AppConstants.themes.keys.length,
-            itemBuilder: (ctx, i) {
-              final key = AppConstants.themes.keys.elementAt(i);
-              final name = locColorThemes(context, key);
-              final isSelected = key == current;
-              final itemColorScheme = MaterialTheme.getColorTheme(key);
-              return GestureDetector(
-                onTap: () async {
-                  aud.playSound("click");
-                  Navigator.pop(context, key);
-                },
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? itemColorScheme.primaryContainer
+  Future<String?> _showChoice(
+    BuildContext context,
+    String route,
+    Widget dialog,
+  ) => showDialog<String>(
+    context: context,
+    routeSettings: RouteSettings(name: route),
+    builder: (_) => dialog,
+  );
+}
+
+class _SettingsChoiceDialog extends StatelessWidget {
+  const _SettingsChoiceDialog({
+    required this.title,
+    required this.options,
+    required this.current,
+    this.subtitle,
+    this.leading,
+    this.style,
+    this.status,
+    this.extraAction,
+    this.onSelect,
+  });
+  final String title;
+  final Map<String, String> options;
+  final String current;
+  final Widget? Function(String)? subtitle;
+  final Widget Function(String)? leading;
+  final TextStyle? Function(String)? style;
+  final Widget? status;
+  final Widget? extraAction;
+  final VoidCallback? onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      constraints: const BoxConstraints(maxWidth: 420),
+      insetPadding: const EdgeInsets.all(12),
+      title: Text(title),
+      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+      content: SizedBox(
+        width: 420,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (status != null) status!,
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final entry in options.entries)
+                    ListTile(
+                      selected: entry.key == current,
+                      title: Text(entry.value, style: style?.call(entry.key)),
+                      leading: leading?.call(entry.key),
+                      subtitle: subtitle?.call(entry.key),
+                      trailing: entry.key == current
+                          ? const Icon(Icons.check)
                           : null,
-                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        onSelect?.call();
+                        Navigator.pop(context, entry.key);
+                      },
                     ),
-                    child: Text(
-                      name,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: isSelected
-                            ? itemColorScheme.onPrimaryContainer
-                            : itemColorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
-    );
-  }
-
-  Future<String?> _showFontSizeDialog(
-    BuildContext context,
-    String current,
-  ) async {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return showDialog<String>(
-      context: context,
-      routeSettings: RouteSettings(name: "select_font_size_dialog"),
-      builder: (_) => AlertDialog(
-        backgroundColor: colorScheme.surface,
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: AppConstants.fontSizes.keys.length,
-            itemBuilder: (ctx, i) {
-              final key = AppConstants.fontSizes.keys.elementAt(i);
-              final name = locFontSizes(context, key);
-              final isSelected = key == current;
-              final textTheme = MaterialTheme.getTextTheme(context, key);
-              return GestureDetector(
-                onTap: () async {
-                  aud.playSound("click");
-                  Navigator.pop(context, key);
-                },
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: isSelected ? colorScheme.primaryContainer : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      name,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: isSelected
-                            ? colorScheme.onPrimaryContainer
-                            : colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+      actions: [
+        if (extraAction != null) extraAction!,
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(AppLocalizations.of(context)!.close),
         ),
-      ),
+      ],
     );
   }
 }

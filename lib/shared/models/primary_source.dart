@@ -3,7 +3,15 @@ import 'dart:typed_data';
 import 'package:revelation/shared/models/page.dart';
 import 'package:revelation/shared/models/primary_source_link_info.dart';
 
+typedef SourceCredit = ({String text, String url});
+
 class PrimarySource {
+  List<SourceCredit> get credits => [
+    for (final item in attributes ?? const <Map<String, String>>[])
+      if ((item['text'] ?? '').trim().isNotEmpty)
+        (text: item['text']!.trim(), url: item['url']?.trim() ?? ''),
+  ];
+
   final String id;
   final String title;
   final String date;

@@ -242,6 +242,13 @@
   "wikipedia": "Wikipedia",
   "intf": "INTF",
   "image_source": "Image source",
+  "source_date": "Date",
+  "source_contents": "Contents",
+  "source_material": "Material",
+  "source_script": "Script",
+  "source_classification": "Classification",
+  "source_discovery": "Discovery",
+  "source_location": "Location",
   "primary_source_links": "Links",
   "@primary_source_links": {
     "description": "Label for the internal and external links in a primary source card."

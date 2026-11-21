@@ -190,6 +190,8 @@ void main() {
     await tester.tap(find.widgetWithText(ListTile, l10n.language));
     await pumpAndSettleSafe(tester);
 
+    expect(find.byIcon(Icons.check), findsOneWidget);
+    expect(find.widgetWithText(TextButton, l10n.close), findsOneWidget);
     await tester.tap(find.text(targetName));
     await pumpAndSettleSafe(tester);
 

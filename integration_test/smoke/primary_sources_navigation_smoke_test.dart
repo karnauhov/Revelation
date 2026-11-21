@@ -73,6 +73,10 @@ void main() {
     final context = tester.element(find.byType(PrimarySourcesScreen));
     final l10n = AppLocalizations.of(context)!;
     expect(find.text('${l10n.full_primary_sources} (1)'), findsOneWidget);
+    expect(
+      find.textContaining('${l10n.source_date}: 125', findRichText: true),
+      findsWidgets,
+    );
     expect(find.byType(ElevatedButton), findsAtLeastNWidgets(1));
 
     final preview = find.byType(ElevatedButton).first;
@@ -96,6 +100,17 @@ void main() {
     expect(open, findsNothing);
     await tester.tap(expand);
     await pumpAndSettleSmoke(tester);
+    final linkLabel = tester.widget<RichText>(
+      find.byWidgetPredicate(
+        (w) =>
+            w is RichText &&
+            w.text.toPlainText().startsWith('${l10n.primary_source_links}:'),
+      ),
+    );
+    final prefix = linkLabel.text.getSpanForPosition(
+      const TextPosition(offset: 0, affinity: TextAffinity.downstream),
+    );
+    expect(prefix?.style?.fontWeight, FontWeight.bold);
     await tester.ensureVisible(open);
     await expectOpensFullSource(open);
   });
@@ -120,7 +135,7 @@ PrimarySource _buildSource(String id) {
   return PrimarySource(
     id: id,
     title: id,
-    date: '',
+    date: '125',
     content: '',
     quantity: 1,
     material: '',

@@ -559,6 +559,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get image_source => 'Источник изображений';
 
   @override
+  String get source_date => 'Датировка';
+
+  @override
+  String get source_contents => 'Содержание';
+
+  @override
+  String get source_material => 'Материал';
+
+  @override
+  String get source_script => 'Письмо';
+
+  @override
+  String get source_classification => 'Классификация';
+
+  @override
+  String get source_discovery => 'Обнаружение';
+
+  @override
+  String get source_location => 'Место хранения';
+
+  @override
   String get primary_source_links => 'Ссылки';
 
   @override

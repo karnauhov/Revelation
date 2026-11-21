@@ -63,11 +63,14 @@ void showCustomDialog(
       final colorScheme = theme.colorScheme;
 
       return AlertDialog(
+        scrollable: true,
         title: Center(
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         content: Column(
@@ -87,7 +90,7 @@ void showCustomDialog(
                 ),
                 const SizedBox(width: 10.0),
                 Expanded(
-                  child: Text(message, style: const TextStyle(fontSize: 18.0)),
+                  child: Text(message, style: theme.textTheme.bodyMedium),
                 ),
               ],
             ),
@@ -108,10 +111,12 @@ void showCustomDialog(
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Text(
-                        AppLocalizations.of(context)!.more_information,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                      Flexible(
+                        child: Text(
+                          AppLocalizations.of(context)!.more_information,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),

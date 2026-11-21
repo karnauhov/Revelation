@@ -1,17 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:revelation/app/di/app_di.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_bible_reference_markdown_tokens.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_bible_text_provider.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strong_usage_reference_detail_registry.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strong_usage_preview_cubit.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 
 typedef StrongUsageBibleTextCopyHandler = Future<void> Function(String text);
@@ -232,9 +233,6 @@ class _StrongUsageMoreReferenceLink extends StatelessWidget {
         final colorScheme = theme.colorScheme;
         final localizations = AppLocalizations.of(dialogContext)!;
         final mediaSize = MediaQuery.sizeOf(dialogContext);
-        final dialogWidth = (mediaSize.width - 40)
-            .clamp(300.0, 720.0)
-            .toDouble();
         final dialogHeight = (mediaSize.height - 120)
             .clamp(180.0, 520.0)
             .toDouble();
@@ -243,20 +241,10 @@ class _StrongUsageMoreReferenceLink extends StatelessWidget {
         );
         final documentTitle = '${detail.surface} (${detail.count})';
 
-        return AlertDialog(
-          insetPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 20,
-          ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          title: Text(
-            '${detail.surface} (${detail.count})',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        return StudyTextDialog(
+          title: documentTitle,
           content: SizedBox(
-            width: dialogWidth,
+            width: double.maxFinite,
             height: dialogHeight,
             child: DescriptionMarkdownView(
               data: detail.referencesMarkdown,

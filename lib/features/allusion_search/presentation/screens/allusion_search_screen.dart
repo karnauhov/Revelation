@@ -246,57 +246,46 @@ class _AllusionWorkspace extends StatelessWidget {
           return SingleChildScrollView(
             key: const PageStorageKey('allusion_search_scroll'),
             padding: padding,
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 900),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ...source,
-                    if (source.isNotEmpty) const SizedBox(height: 22),
-                    results,
-                  ],
-                ),
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ...source,
+                if (source.isNotEmpty) const SizedBox(height: 22),
+                results,
+              ],
             ),
           );
         }
 
-        final width = constraints.maxWidth.clamp(0.0, 1680 * minScale);
-        final sourceWidth = (width * 0.39).clamp(
+        final sourceWidth = (constraints.maxWidth * 0.39).clamp(
           456 * minScale,
           600 * minScale,
         );
-        return Center(
-          child: SizedBox(
-            width: width,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  width: sourceWidth,
-                  child: SingleChildScrollView(
-                    key: const PageStorageKey('allusion_source_scroll'),
-                    primary: false,
-                    padding: padding,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: source,
-                    ),
-                  ),
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: sourceWidth,
+              child: SingleChildScrollView(
+                key: const PageStorageKey('allusion_source_scroll'),
+                primary: false,
+                padding: padding,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: source,
                 ),
-                const VerticalDivider(width: 1),
-                Expanded(
-                  child: SingleChildScrollView(
-                    key: const PageStorageKey('allusion_results_scroll'),
-                    primary: false,
-                    padding: padding,
-                    child: results,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            const VerticalDivider(width: 1),
+            Expanded(
+              child: SingleChildScrollView(
+                key: const PageStorageKey('allusion_results_scroll'),
+                primary: false,
+                padding: padding,
+                child: results,
+              ),
+            ),
+          ],
         );
       },
     );

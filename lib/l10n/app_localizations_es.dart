@@ -567,6 +567,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get image_source => 'Fuente de imágenes';
 
   @override
+  String get source_date => 'Fecha';
+
+  @override
+  String get source_contents => 'Contenido';
+
+  @override
+  String get source_material => 'Material';
+
+  @override
+  String get source_script => 'Escritura';
+
+  @override
+  String get source_classification => 'Clasificación';
+
+  @override
+  String get source_discovery => 'Hallazgo';
+
+  @override
+  String get source_location => 'Ubicación';
+
+  @override
   String get primary_source_links => 'Enlaces';
 
   @override

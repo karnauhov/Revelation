@@ -46,6 +46,14 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining(source.material), findsNothing);
+    expect(find.text('Collection credit', findRichText: true), findsNothing);
+    expect(
+      find.textContaining(
+        '${l10n.source_date}: ${source.date}',
+        findRichText: true,
+      ),
+      findsOneWidget,
+    );
     final open = find.text('[${l10n.open_primary_source}]');
     expect(open, findsNothing);
 
@@ -83,10 +91,69 @@ void main() {
       ),
     );
     final linksText = links.textSpan! as TextSpan;
-    expect(linksText.text, '${l10n.primary_source_links}: ');
     final spans = linksText.children!;
-    expect(spans.first, isA<WidgetSpan>());
-    expect(spans[1].toPlainText(), ', [${l10n.wikipedia}]');
+    expect(spans.first.toPlainText(), '${l10n.primary_source_links}:');
+    expect(spans.first.style?.fontWeight, FontWeight.bold);
+    expect(spans.whereType<WidgetSpan>(), hasLength(1));
+    expect(spans.last.toPlainText(), ', [${l10n.wikipedia}]');
+    expect(spans.last.style?.fontWeight, isNot(FontWeight.bold));
+  });
+
+  testWidgets('only the localized field labels use bold in both card states', (
+    tester,
+  ) async {
+    final source = _buildSource();
+    for (final locale in AppLocalizations.supportedLocales) {
+      for (final expanded in [false, true]) {
+        await tester.pumpWidget(
+          buildLocalizedTestApp(
+            locale: locale,
+            child: SourceItemWidget(
+              source: source,
+              showMore: expanded,
+              onToggleShowMore: () {},
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final l10n = AppLocalizations.of(
+          tester.element(find.byType(SourceItemWidget)),
+        )!;
+        final labels = [
+          l10n.source_date,
+          l10n.source_contents,
+          if (expanded) ...[
+            l10n.source_material,
+            l10n.source_script,
+            l10n.source_classification,
+            l10n.source_discovery,
+            l10n.source_location,
+            l10n.primary_source_links,
+          ],
+        ];
+        for (final label in labels) {
+          final row = tester.widget<RichText>(
+            find.byWidgetPredicate(
+              (w) =>
+                  w is RichText && w.text.toPlainText().startsWith('$label: '),
+            ),
+          );
+          final prefix = row.text.getSpanForPosition(
+            const TextPosition(offset: 0, affinity: TextAffinity.downstream),
+          );
+          expect(prefix?.toPlainText(), '$label:');
+          expect(prefix?.style?.fontWeight, FontWeight.bold);
+          expect(row.text.style?.fontWeight, isNot(FontWeight.bold));
+          final value = row.text.getSpanForPosition(
+            TextPosition(
+              offset: label.length + 1,
+              affinity: TextAffinity.downstream,
+            ),
+          );
+          expect(value?.style?.fontWeight, isNot(FontWeight.bold));
+        }
+      }
+    }
   });
 
   testWidgets(
@@ -135,7 +202,9 @@ PrimarySource _buildSource({
     isMonochrome: false,
     pages: const [],
     links: links,
-    attributes: const [],
+    attributes: const [
+      {'text': 'Collection credit', 'url': ''},
+    ],
     permissionsReceived: false,
   );
 }

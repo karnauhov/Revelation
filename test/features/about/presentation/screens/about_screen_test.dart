@@ -114,6 +114,13 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('EN'), findsOneWidget);
+    final badge = tester.widget<Text>(
+      find.byKey(const ValueKey('about-version-localized-db-code')),
+    );
+    expect(
+      badge.style?.fontSize,
+      Theme.of(context).textTheme.labelSmall?.fontSize,
+    );
     expect(find.textContaining(l10n.version), findsNothing);
     expect(find.textContaining(l10n.common_data_update), findsNothing);
     expect(

@@ -1,110 +1,112 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/models/primary_source.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
 
-class PrimarySourceAttributesFooter extends StatelessWidget {
-  final List<Map<String, String>>? attributes;
-  final bool permissionsReceived;
+/// The bottom edge of a manuscript image, outside its pan and zoom transform.
+class PrimarySourceAttributesFooter extends StatefulWidget {
+  const PrimarySourceAttributesFooter({
+    required this.credits,
+    this.selectAreaMode = false,
+    this.pipetteMode = false,
+    this.isMobileWeb = false,
+    super.key,
+  });
+
+  final List<SourceCredit> credits;
   final bool selectAreaMode;
   final bool pipetteMode;
   final bool isMobileWeb;
 
-  const PrimarySourceAttributesFooter({
-    required this.attributes,
-    required this.permissionsReceived,
-    required this.selectAreaMode,
-    required this.pipetteMode,
-    required this.isMobileWeb,
-    super.key,
-  });
+  @override
+  State<PrimarySourceAttributesFooter> createState() => _FooterState();
+}
+
+class _FooterState extends State<PrimarySourceAttributesFooter> {
+  final _links = <String, TapGestureRecognizer>{};
+  final _quality = TapGestureRecognizer();
+
+  @override
+  void didUpdateWidget(PrimarySourceAttributesFooter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final active = widget.credits.map((credit) => credit.url).toSet();
+    for (final url
+        in _links.keys.where((url) => !active.contains(url)).toList()) {
+      _links.remove(url)!.dispose();
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final recognizer in _links.values) {
+      recognizer.dispose();
+    }
+    _quality.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final items = attributes;
-    if (items == null || items.isEmpty || !permissionsReceived) {
-      return const SizedBox.shrink();
-    }
-
+    if (widget.credits.isEmpty) return const SizedBox.shrink();
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
-    final localizations = AppLocalizations.of(context)!;
-    final commonStyle = textTheme.bodySmall?.copyWith(
-      fontSize: 10,
-      color: colorScheme.onSurfaceVariant,
+    final colors = theme.colorScheme;
+    final style = theme.textTheme.bodySmall?.copyWith(
+      color: colors.onSurfaceVariant,
     );
-
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 2.0),
-        child: selectAreaMode
-            ? Text(localizations.select_area_description, style: commonStyle)
-            : pipetteMode
-            ? Text(localizations.pick_color_description, style: commonStyle)
-            : Text.rich(
-                TextSpan(
-                  style: commonStyle,
-                  children: [
-                    if (isMobileWeb)
-                      TextSpan(
-                        text: '⚠️ ${localizations.low_quality}; ',
-                        style: commonStyle?.copyWith(
-                          color: colorScheme.primary,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            showCustomDialog(
-                              MessageType.warningCommon,
-                              param: localizations.low_quality_message,
-                            );
-                          },
-                      ),
-                    ..._buildLinkSpans(context, items),
+    final linkStyle = style?.copyWith(
+      color: colors.primary,
+      decoration: TextDecoration.underline,
+    );
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      color: colors.surfaceContainerLow,
+      child: widget.selectAreaMode || widget.pipetteMode
+          ? Text(
+              widget.selectAreaMode
+                  ? l10n.select_area_description
+                  : l10n.pick_color_description,
+              style: style,
+              textAlign: TextAlign.end,
+            )
+          : Text.rich(
+              TextSpan(
+                children: [
+                  if (widget.isMobileWeb)
+                    TextSpan(
+                      text: '${l10n.low_quality} · ',
+                      style: linkStyle,
+                      recognizer: _quality
+                        ..onTap = () {
+                          showCustomDialog(
+                            MessageType.warningCommon,
+                            param: l10n.low_quality_message,
+                          );
+                        },
+                    ),
+                  for (final (index, credit) in widget.credits.indexed) ...[
+                    if (index > 0) const TextSpan(text: ' · '),
+                    TextSpan(
+                      text: credit.text,
+                      style: credit.url.isEmpty ? style : linkStyle,
+                      recognizer: credit.url.isEmpty
+                          ? null
+                          : (_links.putIfAbsent(
+                                credit.url,
+                                TapGestureRecognizer.new,
+                              )
+                              ..onTap = () =>
+                                  handleAppLink(context, credit.url)),
+                    ),
                   ],
-                ),
-                maxLines: 5,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
+                ],
               ),
-      ),
+              style: style,
+              textAlign: TextAlign.end,
+            ),
     );
-  }
-
-  List<InlineSpan> _buildLinkSpans(
-    BuildContext context,
-    List<Map<String, String>> links,
-  ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final defaultStyle = theme.textTheme.bodySmall?.copyWith(
-      fontSize: 10,
-      color: colorScheme.onSurfaceVariant,
-    );
-    final spans = <InlineSpan>[];
-    for (int i = 0; i < links.length; i++) {
-      final link = links[i];
-      final url = link['url'];
-      if (url != null && url.isNotEmpty) {
-        spans.add(
-          TextSpan(
-            text: link['text'],
-            style: defaultStyle?.copyWith(color: colorScheme.primary),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                handleAppLink(context, url);
-              },
-          ),
-        );
-      } else {
-        spans.add(TextSpan(text: link['text'], style: defaultStyle));
-      }
-      if (i < links.length - 1) {
-        spans.add(TextSpan(text: '; ', style: defaultStyle));
-      }
-    }
-    return spans;
   }
 }

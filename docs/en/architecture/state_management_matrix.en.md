@@ -1,8 +1,12 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.6.4`
+Doc-Version: `2.6.5`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
+
+## Manuscript image tools
+
+BrightnessDraftCubit and ReplacementDraftCubit use Dart records with value equality. Closing a dialog disposes its cubit. After using the eyedropper, the next dialog reads the current viewport values.
 
 ## Strong number availability in a module
 

@@ -154,10 +154,7 @@ void main() {
           context: navigator.overlay!.context,
           builder: (_) => const AlertDialog(
             content: PrimarySourceAttributesFooter(
-              attributes: [
-                {'text': 'Rev 1:3', 'url': 'bible:Rev1:3'},
-              ],
-              permissionsReceived: true,
+              credits: [(text: 'Rev 1:3', url: 'bible:Rev1:3')],
               selectAreaMode: false,
               pipetteMode: false,
               isMobileWeb: false,

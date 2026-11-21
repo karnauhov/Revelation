@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
 
 class BibleVerseCommentButton extends StatelessWidget {
   const BibleVerseCommentButton({super.key, required this.verse});
@@ -19,12 +20,10 @@ class BibleVerseCommentButton extends StatelessWidget {
       icon: const Icon(Icons.notes_outlined),
       onPressed: () => showDialog<void>(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (context) => StudyTextDialog(
           key: const Key('bible_verse_comment_dialog'),
-          title: Text(
-            localizations.bible_verse_footnotes(
-              '${verse.reference.chapter}:${verse.reference.verse}',
-            ),
+          title: localizations.bible_verse_footnotes(
+            '${verse.reference.chapter}:${verse.reference.verse}',
           ),
           content: SingleChildScrollView(child: SelectableText(verse.comment)),
           actions: [

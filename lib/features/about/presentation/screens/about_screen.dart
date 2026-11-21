@@ -1097,15 +1097,13 @@ class _AboutVersionIcon extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final badgeStyle = theme.textTheme.labelSmall?.copyWith(
-      fontSize: 9,
       height: 1,
       fontWeight: FontWeight.w700,
       color: colorScheme.onSurfaceVariant,
     );
 
-    return SizedBox(
-      width: 24,
-      height: badgeText == null ? 20 : 28,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 24, minHeight: 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

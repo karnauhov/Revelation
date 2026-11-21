@@ -252,9 +252,24 @@ void main() {
       final firstResult = find.byKey(
         ValueKey('allusion_result_${first.verseKey}'),
       );
-      await binding.setSurfaceSize(const Size(1440, 800));
+      const wideWidth = 1920.0;
+      await binding.setSurfaceSize(const Size(wideWidth, 800));
       addTearDown(() => binding.setSurfaceSize(null));
       await tester.pumpAndSettle();
+      expect(
+        tester
+            .getRect(find.byKey(const PageStorageKey('allusion_source_scroll')))
+            .left,
+        0,
+      );
+      expect(
+        tester
+            .getRect(
+              find.byKey(const PageStorageKey('allusion_results_scroll')),
+            )
+            .right,
+        wideWidth,
+      );
       expect(
         tester.getRect(sourceReference).right,
         lessThan(tester.getRect(firstResult).left),
@@ -348,7 +363,7 @@ void main() {
         'secondResult': 'Rev 22:6',
         'pages': cubit.state.pageCount,
         'bothPagers': true,
-        'layoutWidths': [1440, 390],
+        'layoutWidths': [wideWidth, 390],
         if (pdfBytes != null) 'pdfBytes': pdfBytes,
       };
     } finally {

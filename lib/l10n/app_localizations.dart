@@ -1140,6 +1140,48 @@ abstract class AppLocalizations {
   /// **'Image source'**
   String get image_source;
 
+  /// No description provided for @source_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get source_date;
+
+  /// No description provided for @source_contents.
+  ///
+  /// In en, this message translates to:
+  /// **'Contents'**
+  String get source_contents;
+
+  /// No description provided for @source_material.
+  ///
+  /// In en, this message translates to:
+  /// **'Material'**
+  String get source_material;
+
+  /// No description provided for @source_script.
+  ///
+  /// In en, this message translates to:
+  /// **'Script'**
+  String get source_script;
+
+  /// No description provided for @source_classification.
+  ///
+  /// In en, this message translates to:
+  /// **'Classification'**
+  String get source_classification;
+
+  /// No description provided for @source_discovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovery'**
+  String get source_discovery;
+
+  /// No description provided for @source_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get source_location;
+
   /// Label for the internal and external links in a primary source card.
   ///
   /// In en, this message translates to:

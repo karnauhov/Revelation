@@ -1,8 +1,12 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.6.6`
+Doc-Version: `2.6.7`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
+
+## Manuscript image tools
+
+The primary source presentation/bloc layer owns tool drafts. Dialogs initialize from the current page and apply changes through the existing coordinator commands.
 
 ## Strong number availability in a module
 

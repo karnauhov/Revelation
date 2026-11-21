@@ -62,6 +62,13 @@ void main() {
       expect(prevTop.hitTestable(), findsOneWidget);
       expect(cubit.state.page, 1);
       await resize(1039);
+      final stackedContent = tester
+          .widget<SingleChildScrollView>(
+            find.byKey(const PageStorageKey('allusion_search_scroll')),
+          )
+          .child!;
+      expect(tester.getRect(find.byWidget(stackedContent)).left, 12);
+      expect(tester.getRect(find.byWidget(stackedContent)).right, 1039 - 12);
       expect(
         tester.getRect(prevTop).top,
         greaterThan(tester.getRect(scope).bottom),
@@ -72,6 +79,18 @@ void main() {
       );
       await resize(390);
       expect(find.byKey(const Key('allusion_overflow')), findsOneWidget);
+      await resize(1440);
+      final sourcePane = find.byKey(
+        const PageStorageKey('allusion_source_scroll'),
+      );
+      final resultsPane = find.byKey(
+        const PageStorageKey('allusion_results_scroll'),
+      );
+      expect(tester.getSize(sourcePane).width, closeTo(1440 * .39, .01));
+      await resize(2560);
+      expect(tester.getRect(sourcePane).left, 0);
+      expect(tester.getSize(sourcePane).width, 600);
+      expect(tester.getRect(resultsPane).right, 2560);
       await resize(1440);
       expect(
         tester.getRect(start).right,

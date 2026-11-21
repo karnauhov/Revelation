@@ -9,6 +9,7 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/widgets/planned_feature_screen.dart';
+import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
 import 'smoke_test_harness.dart';
 
 void main() {
@@ -75,6 +76,13 @@ void main() {
     await tester.tap(find.byKey(const Key('bible_verse_comment_5')));
     await pumpAndSettleSmoke(tester);
     expect(find.byKey(const Key('bible_verse_comment_dialog')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(StudyTextDialog),
+        matching: find.byType(SelectableText),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('1 Окрема тестова сноска.'), findsOneWidget);
     await tester.tap(find.text(localizations.close));
     await pumpAndSettleSmoke(tester);

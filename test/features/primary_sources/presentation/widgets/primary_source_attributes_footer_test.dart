@@ -7,40 +7,39 @@ import 'package:revelation/l10n/app_localizations.dart';
 import '../../../../test_harness/test_harness.dart';
 
 void main() {
-  testWidgets(
-    'renders nothing when attributes are missing or permissions denied',
-    (tester) async {
-      await tester.pumpWidget(
-        buildLocalizedTestApp(
-          child: const PrimarySourceAttributesFooter(
-            attributes: null,
-            permissionsReceived: true,
-            selectAreaMode: false,
-            pipetteMode: false,
-            isMobileWeb: false,
-          ),
-        ),
-      );
-      await tester.pump();
-      expect(find.byType(SizedBox), findsOneWidget);
+  testWidgets('empty credits take no frame space', (tester) async {
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: const PrimarySourceAttributesFooter(credits: []),
+      ),
+    );
+    expect(find.byType(Text), findsNothing);
+  });
 
-      await tester.pumpWidget(
-        buildLocalizedTestApp(
-          child: const PrimarySourceAttributesFooter(
-            attributes: <Map<String, String>>[
-              {'text': 'A', 'url': 'https://example.com'},
-            ],
-            permissionsReceived: false,
-            selectAreaMode: false,
-            pipetteMode: false,
-            isMobileWeb: false,
+  testWidgets('long credits wrap in full at double text scale', (tester) async {
+    const text =
+        'The Center for the Study of New Testament Manuscripts digitized Codex Alexandrinus at the British Library';
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: Center(
+          child: SizedBox(
+            width: 240,
+            child: MediaQuery(
+              data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+              child: const PrimarySourceAttributesFooter(
+                credits: [(text: text, url: '')],
+              ),
+            ),
           ),
         ),
-      );
-      await tester.pump();
-      expect(find.text('A'), findsNothing);
-    },
-  );
+      ),
+    );
+    final label = find.text(text, findRichText: true);
+    expect(label, findsOneWidget);
+    expect(tester.getSize(label).height, greaterThan(80));
+    expect(tester.widget<RichText>(label).maxLines, isNull);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('shows explicit mode hints for area selection and pipette', (
     tester,
@@ -48,10 +47,7 @@ void main() {
     await tester.pumpWidget(
       buildLocalizedTestApp(
         child: const PrimarySourceAttributesFooter(
-          attributes: <Map<String, String>>[
-            {'text': 'A', 'url': 'https://example.com'},
-          ],
-          permissionsReceived: true,
+          credits: [(text: 'A', url: 'https://example.com')],
           selectAreaMode: true,
           pipetteMode: false,
           isMobileWeb: false,
@@ -61,15 +57,13 @@ void main() {
     await tester.pump();
     final context = tester.element(find.byType(PrimarySourceAttributesFooter));
     final l10n = AppLocalizations.of(context)!;
+    expect(find.text('A', findRichText: true), findsNothing);
     expect(find.text(l10n.select_area_description), findsOneWidget);
 
     await tester.pumpWidget(
       buildLocalizedTestApp(
         child: const PrimarySourceAttributesFooter(
-          attributes: <Map<String, String>>[
-            {'text': 'A', 'url': 'https://example.com'},
-          ],
-          permissionsReceived: true,
+          credits: [(text: 'A', url: 'https://example.com')],
           selectAreaMode: false,
           pipetteMode: true,
           isMobileWeb: false,
@@ -77,6 +71,7 @@ void main() {
       ),
     );
     await tester.pump();
+    expect(find.text('A', findRichText: true), findsNothing);
     expect(find.text(l10n.pick_color_description), findsOneWidget);
   });
 
@@ -86,11 +81,10 @@ void main() {
     await tester.pumpWidget(
       buildLocalizedTestApp(
         child: const PrimarySourceAttributesFooter(
-          attributes: <Map<String, String>>[
-            {'text': 'Attr A', 'url': 'https://example.com/a'},
-            {'text': 'Attr B', 'url': ''},
+          credits: [
+            (text: 'Attr A', url: 'https://example.com/a'),
+            (text: 'Attr B', url: ''),
           ],
-          permissionsReceived: true,
           selectAreaMode: false,
           pipetteMode: false,
           isMobileWeb: true,

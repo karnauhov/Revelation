@@ -133,6 +133,36 @@ void main() {
 
     expect(find.byType(AlertDialog), findsNothing);
   });
+
+  testWidgets('long messages remain readable and dismissible at double scale', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(320, 568));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await _pumpDialogHost(tester, observer: observer, bundle: bundle);
+
+    final message = List.filled(12, 'Check the source description.').join(' ');
+    showCustomDialog(MessageType.infoCommon, param: message);
+    await tester.pumpAndSettle();
+    final context = tester.element(find.byType(AlertDialog));
+    final text = tester.widget<Text>(find.text(message));
+    expect(
+      text.style?.fontSize,
+      Theme.of(context).textTheme.bodyMedium?.fontSize,
+    );
+    expect(tester.takeException(), isNull);
+
+    final scroll = tester.state<ScrollableState>(find.byType(Scrollable).first);
+    expect(scroll.position.maxScrollExtent, greaterThan(0));
+    scroll.position.jumpTo(scroll.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppLocalizations.of(context)!.close));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }
 
 Future<void> _pumpDialogHost(

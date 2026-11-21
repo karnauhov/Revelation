@@ -560,6 +560,27 @@ class AppLocalizationsUk extends AppLocalizations {
   String get image_source => 'Джерело зображень';
 
   @override
+  String get source_date => 'Датування';
+
+  @override
+  String get source_contents => 'Зміст';
+
+  @override
+  String get source_material => 'Матеріал';
+
+  @override
+  String get source_script => 'Письмо';
+
+  @override
+  String get source_classification => 'Класифікація';
+
+  @override
+  String get source_discovery => 'Виявлення';
+
+  @override
+  String get source_location => 'Місце зберігання';
+
+  @override
   String get primary_source_links => 'Посилання';
 
   @override

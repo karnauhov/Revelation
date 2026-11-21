@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class StudyTextDialog extends StatelessWidget {
   const StudyTextDialog({
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.content,
     required this.actions,
     this.titleInfo,
@@ -13,7 +13,7 @@ class StudyTextDialog extends StatelessWidget {
   });
 
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final Widget content;
   final List<Widget> actions;
   final Widget? titleInfo;
@@ -56,11 +56,12 @@ class StudyTextDialog extends StatelessWidget {
                 ),
             ],
           ),
-          Text(
-            subtitle,
-            style: theme.textTheme.labelSmall,
-            textAlign: TextAlign.center,
-          ),
+          if (subtitle != null)
+            Text(
+              subtitle!,
+              style: theme.textTheme.labelSmall,
+              textAlign: TextAlign.center,
+            ),
         ],
       ),
       content: content,

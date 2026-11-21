@@ -49,6 +49,7 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 
 ### Русский
 
+- [Дизайн Revelation: аудит, компоненты, цвет и типографика](./docs/ru/design/audit.md)
 - [Обзор архитектуры](./docs/ru/architecture/overview.ru.md)
 - [Границы модулей](./docs/ru/architecture/module-boundaries.ru.md)
 - [Матрица управления состоянием](./docs/ru/architecture/state_management_matrix.ru.md)
@@ -71,6 +72,7 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [REV209 verified tracker review state](./.agents/task-state/REV209.md)
 - [REV315 Linux handoff recovery checkpoint](./.agents/task-state/REV315.md)
 - [REV318 Windows shutdown investigation checkpoint](./.agents/task-state/REV318.md)
+- [REV327 UI audit and design catalogue checkpoint](./.agents/task-state/REV327.md)
 - [Privacy Policy](./PRIVACY_POLICY.md)
 - [License Notice](./NOTICE)
 

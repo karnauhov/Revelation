@@ -6,8 +6,8 @@ import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/primary_source.dart';
-import 'package:revelation/shared/utils/links_utils.dart';
 import 'package:revelation/shared/ui/styled_text/styled_text_utils.dart';
+import 'package:revelation/shared/utils/links_utils.dart';
 
 class SourceItemWidget extends StatelessWidget {
   final PrimarySource source;
@@ -29,6 +29,21 @@ class SourceItemWidget extends StatelessWidget {
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
     final bodyTextStyle = textTheme.bodyMedium;
+
+    TextSpan fieldLabel(String label) => TextSpan(
+      text: '$label:',
+      style: const TextStyle(fontWeight: FontWeight.bold),
+    );
+
+    WrappableText metadataRow(String label, String value) => WrappableText(
+      text: TextSpan(
+        style: bodyTextStyle,
+        children: [
+          fieldLabel(label),
+          TextSpan(text: ' $value'),
+        ],
+      ),
+    );
 
     void openSource() {
       context.push(
@@ -74,38 +89,39 @@ class SourceItemWidget extends StatelessWidget {
               Floatable(
                 float: FCFloat.start,
                 padding: const EdgeInsets.only(right: 8, bottom: 8),
-                child: ElevatedButton(
-                  onPressed: openSource,
-                  style: ElevatedButton.styleFrom(
-                    enabledMouseCursor: SystemMouseCursors.click,
-                    backgroundColor: colorScheme.surface,
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                child: SizedBox(
+                  width: 144,
+                  child: ElevatedButton(
+                    onPressed: openSource,
+                    style: ElevatedButton.styleFrom(
+                      enabledMouseCursor: SystemMouseCursors.click,
+                      backgroundColor: colorScheme.surface,
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: EdgeInsets.zero,
                     ),
-                    padding: EdgeInsets.zero,
-                  ),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: colorScheme.primary, width: 1),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: _buildPreviewImage(context),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: colorScheme.primary,
+                          width: 1,
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: _buildPreviewImage(context),
+                      ),
                     ),
                   ),
                 ),
               ),
-              WrappableText(
-                text: TextSpan(text: "✒ ${source.date}", style: bodyTextStyle),
-              ),
-              WrappableText(
-                text: TextSpan(
-                  text:
-                      "📖 ${source.content} [${l10n.verses}: ${source.quantity}]",
-                  style: bodyTextStyle,
-                ),
+              metadataRow(l10n.source_date, source.date),
+              metadataRow(
+                l10n.source_contents,
+                '${source.content} [${l10n.verses}: ${source.quantity}]',
               ),
               WrappableText(
                 text: TextSpan(
@@ -120,49 +136,23 @@ class SourceItemWidget extends StatelessWidget {
                     },
                 ),
               ),
-              if (showMore)
-                WrappableText(
-                  text: TextSpan(
-                    text: "📜 ${source.material}",
-                    style: bodyTextStyle,
-                  ),
-                ),
-              if (showMore)
-                WrappableText(
-                  text: TextSpan(
-                    text: "🔎 ${source.textStyle}",
-                    style: bodyTextStyle,
-                  ),
-                ),
-              if (showMore)
-                WrappableText(
-                  text: TextSpan(
-                    text: "🗂 ${source.classification}",
-                    style: bodyTextStyle,
-                  ),
-                ),
-              if (showMore)
-                WrappableText(
-                  text: TextSpan(
-                    text: "🔓 ${source.found}",
-                    style: bodyTextStyle,
-                  ),
-                ),
-              if (showMore)
-                WrappableText(
-                  text: TextSpan(
-                    text: "📌 ${source.currentLocation}",
-                    style: bodyTextStyle,
-                  ),
-                ),
-              if (showMore)
+              if (showMore) ...[
+                metadataRow(l10n.source_material, source.material),
+                metadataRow(l10n.source_script, source.textStyle),
+                metadataRow(l10n.source_classification, source.classification),
+                metadataRow(l10n.source_discovery, source.found),
+                metadataRow(l10n.source_location, source.currentLocation),
                 Text.rich(
                   TextSpan(
-                    text: '${l10n.primary_source_links}: ',
                     style: bodyTextStyle,
-                    children: _buildSourceLinkSpans(context, openSource),
+                    children: [
+                      fieldLabel(l10n.primary_source_links),
+                      const TextSpan(text: ' '),
+                      ..._buildSourceLinkSpans(context, openSource),
+                    ],
                   ),
                 ),
+              ],
             ],
           ),
         ),

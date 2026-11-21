@@ -232,7 +232,9 @@ void main() {
             verseNumber: 3,
           ),
         ],
-        attributes: const <Map<String, String>>[],
+        attributes: const [
+          {'text': 'Collection credit', 'url': ''},
+        ],
         permissionsReceived: true,
       );
       await _seedLocalImagesInTest(tester, firstSource, documentsPathForTest!);
@@ -268,11 +270,36 @@ void main() {
     },
   );
 
+  testWidgets('a cached leaf with missing credits is kept out of the viewer', (
+    tester,
+  ) async {
+    await _prepareSurface(tester);
+    final source = _buildRichSource(
+      id: 'missing-credit',
+      title: 'Archive',
+      attributes: null,
+    );
+    await _seedLocalImagesInTest(tester, source, documentsPathForTest!);
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: PrimarySourceScreen(primarySource: source),
+        withScaffold: false,
+      ),
+    );
+    await _forceLoadFirstPageImage(tester, source);
+    expect(_imageCubit(tester).state.imageData, isNotNull);
+    expect(find.byType(ImagePreview), findsNothing);
+    final l10n = AppLocalizations.of(_screenContext(tester))!;
+    expect(find.text(l10n.image_not_loaded), findsOneWidget);
+  });
+
   testWidgets(
     'loaded screen executes toolbar callbacks and dialog mode transitions',
     (tester) async {
-      await _prepareSurface(tester);
-      addTearDown(_suppressOverflowErrors());
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(320, 568);
+      addTearDown(tester.view.reset);
+      await _prepareSurface(tester, size: const Size(320, 568));
       final source = _buildRichSource(id: 'source-dialogs', title: 'Dialogs');
       await _seedLocalImagesInTest(tester, source, documentsPathForTest!);
 
@@ -284,6 +311,20 @@ void main() {
       );
       await _forceLoadFirstPageImage(tester, source);
       await _pumpUntilFound(tester, find.byType(ImagePreview));
+
+      Rect panelBounds() {
+        final surface = find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byWidgetPredicate(
+            (w) => w is Material && w.type == MaterialType.card,
+          ),
+        );
+        final rect = tester.getRect(surface);
+        expect(rect.left, greaterThanOrEqualTo(8));
+        expect(rect.right, lessThanOrEqualTo(312));
+        expect(rect.bottom, lessThanOrEqualTo(560));
+        return rect;
+      }
 
       final l10n = AppLocalizations.of(_screenContext(tester))!;
       final pageSettingsCubit = _pageSettingsCubit(tester);
@@ -301,6 +342,8 @@ void main() {
       _toolbar(tester).onOpenBrightnessContrastDialog();
       await _pumpUntilFound(tester, find.byType(BrightnessContrastDialog));
 
+      await tester.pump(const Duration(milliseconds: 400));
+      panelBounds();
       await tester.tap(find.text(l10n.reset));
       await _pumpUntilGone(tester, find.byType(BrightnessContrastDialog));
       expect(pageSettingsCubit.state.brightness, 0);
@@ -309,6 +352,8 @@ void main() {
       _toolbar(tester).onOpenReplaceColorDialog();
       await _pumpUntilFound(tester, find.byType(ReplaceColorDialog));
 
+      await tester.pump(const Duration(milliseconds: 400));
+      final initialPanel = panelBounds();
       await tester.tap(find.byTooltip(l10n.area_selection));
       await tester.pump();
       await _pumpUntil(
@@ -318,6 +363,7 @@ void main() {
       );
 
       expect(find.text(l10n.select_area_header), findsOneWidget);
+      expect(find.text('Collection credit', findRichText: true), findsNothing);
       expect(_popScope(tester).canPop, isFalse);
 
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
@@ -325,6 +371,7 @@ void main() {
       await _pumpUntilFound(tester, find.byType(ReplaceColorDialog));
 
       expect(viewportCubit.state.selectAreaMode, isFalse);
+      await tester.pump(const Duration(milliseconds: 400));
 
       await tester.tap(find.byTooltip(l10n.eyedropper).first);
       await tester.pump();
@@ -335,17 +382,24 @@ void main() {
       );
 
       expect(find.text(l10n.pick_color_header), findsOneWidget);
+      expect(find.text('Collection credit', findRichText: true), findsNothing);
       expect(_popScope(tester).canPop, isFalse);
 
       await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
       await tester.pump();
       await _pumpUntilFound(tester, find.byType(ReplaceColorDialog));
 
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(panelBounds().topLeft, initialPanel.topLeft);
       expect(viewportCubit.state.pipetteMode, isFalse);
 
       await tester.tap(find.text(l10n.reset).last);
       await _pumpUntilGone(tester, find.byType(ReplaceColorDialog));
 
+      expect(
+        find.text('Collection credit', findRichText: true),
+        findsOneWidget,
+      );
       expect(viewportCubit.state.selectedArea, isNull);
       expect(viewportCubit.state.tolerance, 0);
     },
@@ -832,7 +886,7 @@ Future<void> _seedLocalImages(
   for (final page in source.pages) {
     final file = File('${appFolder.path}/${page.image}');
     await file.create(recursive: true);
-    await file.writeAsBytes(_png1x1);
+    await file.writeAsBytes(_pageImage);
   }
 }
 
@@ -861,6 +915,9 @@ PrimarySource _buildRichSource({
   required String id,
   required String title,
   List<String> pageNames = const ['P1', 'P2'],
+  List<Map<String, String>>? attributes = const [
+    {'text': 'Collection credit', 'url': ''},
+  ],
 }) {
   final firstPageName = pageNames[0];
   final secondPageName = pageNames[1];
@@ -897,7 +954,7 @@ PrimarySource _buildRichSource({
         verseNumber: 2,
       ),
     ],
-    attributes: const <Map<String, String>>[],
+    attributes: attributes,
     permissionsReceived: true,
   );
 }
@@ -943,7 +1000,7 @@ model.Page _buildAlienPage() {
   );
 }
 
-final Uint8List _png1x1 = _loadSolidPng(16, 16, const Color(0xFFFFFFFF));
+final Uint8List _pageImage = _loadSolidPng(300, 480, const Color(0xFFFFFFFF));
 
 class _FakeAudioplayersPlatform extends AudioplayersPlatformInterface {
   final Map<String, StreamController<AudioEvent>> _controllers =

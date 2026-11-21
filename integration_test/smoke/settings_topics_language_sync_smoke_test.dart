@@ -110,6 +110,23 @@ void main() {
           expect(focused, isNotNull);
           expect(focused!.context!.findRenderObject()!.attached, isTrue);
           expect(tester.takeException(), isNull);
+          final l10n = AppLocalizations.of(
+            tester.element(find.byType(SettingsScreen)),
+          )!;
+          await tester.tap(find.widgetWithText(ListTile, l10n.language));
+          await pumpAndSettleSmoke(tester);
+          final dialog = find.byType(AlertDialog);
+          expect(
+            find.descendant(of: dialog, matching: find.text(l10n.language)),
+            findsOneWidget,
+          );
+          expect(
+            find.descendant(of: dialog, matching: find.byIcon(Icons.check)),
+            findsOneWidget,
+          );
+          await tester.tap(find.widgetWithText(TextButton, l10n.close));
+          await pumpAndSettleSmoke(tester);
+          expect(settings.state.settings.selectedLanguage, language);
           results.add(language);
         } finally {
           owner.removeListener(focusDuringSemantics);

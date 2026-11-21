@@ -10,6 +10,14 @@ void main() {
     tester,
   ) async {
     final copied = <String>[];
+    final detail = StrongUsageReferenceDetailRegistry.instance.register(
+      const StrongUsageReferenceDetail(
+        surface: 'logos',
+        count: 1,
+        referencesMarkdown: '[Gen 1:1](bible:Gen1:1 "strong_usage_ref:001")',
+      ),
+    );
+
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('en'),
@@ -18,7 +26,8 @@ void main() {
         home: Scaffold(
           body: StrongDictionaryEntryView(
             strongNumber: 1,
-            markdown: '[Gen 1:1](bible:Gen1:1 "strong_usage_ref:001")',
+            markdown:
+                '[...](strong_usage_more:$detail "strong_usage_more:$detail")',
             bibleTextProvider: _TextProvider(),
             copyBibleText: (text) async {
               copied.add(text);
@@ -32,6 +41,9 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    await tester.tap(find.text('...'));
+    await tester.pumpAndSettle();
+    expect(find.text('logos (1)'), findsOneWidget);
     await tester.longPress(find.text('Gen 1:1'));
     await tester.pumpAndSettle();
     expect(copied, ['first verse preview']);

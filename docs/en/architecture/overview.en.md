@@ -1,8 +1,12 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.6.6`
+Doc-Version: `2.6.7`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
+
+## Manuscript image tools
+
+The image tools keep brightness, contrast and color replacement drafts in dialog-scoped cubits until the changes are applied to the current page.
 
 ## Strong number availability in a module
 
