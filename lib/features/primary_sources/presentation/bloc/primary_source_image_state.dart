@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 class PrimarySourceImageState {
   PrimarySourceImageState({
     required this.imageData,
+    this.hasReducedResolution = false,
     required this.isLoading,
     required this.refreshError,
     required Map<String, bool?> localPageLoaded,
@@ -20,6 +21,7 @@ class PrimarySourceImageState {
   }
 
   final Uint8List? imageData;
+  final bool hasReducedResolution;
   final bool isLoading;
   final bool refreshError;
   final Map<String, bool?> localPageLoaded;
@@ -28,6 +30,7 @@ class PrimarySourceImageState {
   PrimarySourceImageState copyWith({
     Uint8List? imageData,
     bool imageDataSet = false,
+    bool? hasReducedResolution,
     bool? isLoading,
     bool? refreshError,
     Map<String, bool?>? localPageLoaded,
@@ -35,6 +38,8 @@ class PrimarySourceImageState {
   }) {
     return PrimarySourceImageState(
       imageData: imageDataSet ? imageData : this.imageData,
+      hasReducedResolution:
+          hasReducedResolution ?? (!imageDataSet && this.hasReducedResolution),
       isLoading: isLoading ?? this.isLoading,
       refreshError: refreshError ?? this.refreshError,
       localPageLoaded: localPageLoaded ?? this.localPageLoaded,
@@ -48,6 +53,7 @@ class PrimarySourceImageState {
         other is PrimarySourceImageState &&
             runtimeType == other.runtimeType &&
             identical(imageData, other.imageData) &&
+            hasReducedResolution == other.hasReducedResolution &&
             isLoading == other.isLoading &&
             refreshError == other.refreshError &&
             mapEquals(localPageLoaded, other.localPageLoaded) &&
@@ -57,6 +63,7 @@ class PrimarySourceImageState {
   @override
   int get hashCode => Object.hash(
     imageData,
+    hasReducedResolution,
     isLoading,
     refreshError,
     Object.hashAllUnordered(localPageLoaded.entries),

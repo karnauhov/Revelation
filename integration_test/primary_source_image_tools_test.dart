@@ -6,6 +6,8 @@ import 'package:get_it/get_it.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/app/router/app_router.dart';
+import 'package:revelation/app/router/route_args.dart';
+import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/image_preview.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/image_preview_painters.dart';
 import 'package:revelation/features/strongs_dictionary/presentation/widgets/strong_dictionary_dialog.dart';
@@ -93,6 +95,16 @@ void main() {
       await waitFor(viewer);
       final l10n = AppLocalizations.of(tester.element(viewer))!;
       final frame = find.byType(PrimarySourceAttributesFooter);
+      final qualityNotice = find.textContaining(
+        l10n.low_quality,
+        findRichText: true,
+      );
+      // U001 leaf 325v is smaller in the mobile edition.
+      if (isWeb() && isMobileBrowser()) {
+        await waitFor(qualityNotice);
+      } else {
+        expect(qualityNotice, findsNothing);
+      }
       void verifyFrame() {
         expect(
           find.descendant(
@@ -337,6 +349,18 @@ void main() {
         timeout: const Duration(seconds: 40),
       );
       expectView(beforeExit);
+      // Both editions of P018 leaf 1v have the same dimensions.
+      final papyrus = AppDi.createPrimarySourcesDbRepository().findSourceById(
+        'P018',
+      )!;
+      AppRouter().router.pushReplacement(
+        '/primary_source',
+        extra: PrimarySourceRouteArgs(primarySource: papyrus),
+      );
+      await waitFor(
+        find.textContaining(papyrus.credits.first.text, findRichText: true),
+      );
+      expect(qualityNotice, findsNothing);
       expect(tester.takeException(), isNull);
     },
   );

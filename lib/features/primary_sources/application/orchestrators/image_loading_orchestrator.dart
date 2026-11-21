@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:revelation/infra/remote/image/image_download_client.dart';
+import 'package:revelation/infra/remote/image/manuscript_image_resolution.dart';
 import 'package:revelation/shared/models/page.dart' as model;
 import 'package:revelation/infra/storage/file_sync_utils.dart';
 
@@ -30,6 +31,9 @@ class PrimarySourceImageLoadingOrchestrator {
            imageDownloadClient ?? ServerManagerImageDownloadClient();
 
   final ImageDownloadClient _imageDownloadClient;
+
+  Future<bool> isMobileImageReduced(String page, Uint8List bytes) =>
+      mobileManuscriptIsReduced(page, bytes);
 
   Future<Map<String, bool?>> detectLocalPageAvailability({
     required List<model.Page> pages,

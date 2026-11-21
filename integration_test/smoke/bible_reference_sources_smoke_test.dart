@@ -235,7 +235,6 @@ void main() {
               credits: [(text: 'Rev 1:3', url: 'bible:Rev1:3')],
               selectAreaMode: false,
               pipetteMode: false,
-              isMobileWeb: false,
             ),
           ),
         ),

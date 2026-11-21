@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/core/async/latest_request_guard.dart';
@@ -85,6 +86,10 @@ class PrimarySourceImageCubit extends Cubit<PrimarySourceImageState> {
               localPageLoaded: updatedLocalPageLoaded,
             ),
           );
+          final bytes = loadResult.imageData;
+          if (_isWeb && _isMobileWeb && bytes != null) {
+            unawaited(_checkResolution(page, bytes, requestToken));
+          }
           break;
         case ImageContentAction.clear:
           emit(
@@ -123,6 +128,24 @@ class PrimarySourceImageCubit extends Cubit<PrimarySourceImageState> {
       return;
     }
     emit(state.copyWith(localPageLoaded: availability));
+  }
+
+  Future<void> _checkResolution(
+    String page,
+    Uint8List bytes,
+    RequestToken token,
+  ) async {
+    try {
+      final reduced = await _imageLoadingOrchestrator.isMobileImageReduced(
+        page,
+        bytes,
+      );
+      if (reduced && _canApplyImageRequest(token)) {
+        emit(state.copyWith(hasReducedResolution: true));
+      }
+    } catch (error) {
+      log.debug('Manuscript dimensions unavailable: $error');
+    }
   }
 
   Future<void> _initialize() async {

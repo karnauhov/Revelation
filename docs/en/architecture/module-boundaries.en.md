@@ -1,10 +1,10 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.6.10`
+Doc-Version: `2.6.11`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
-ImagePreview owns the decoded leaf, paints it beneath its annotations and reports when the geometry is ready. The orchestration cubit restores the saved transform once and flushes pending viewport changes to the outgoing leaf before navigation.
+ImagePreview owns the decoded leaf, paints it beneath its annotations and reports when the geometry is ready. The orchestration cubit restores the saved transform once and flushes pending viewport changes to the outgoing leaf before navigation. The image loader reads the original dimensions from a bounded HTTP range. The image cubit applies the comparison only to the current request, independently of image display.
 
 ## Manuscript image tools
 

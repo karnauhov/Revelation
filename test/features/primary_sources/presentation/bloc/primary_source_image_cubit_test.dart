@@ -64,6 +64,79 @@ void main() {
     expect(cubit.state.localPageLoaded['p1.png'], isTrue);
   });
 
+  test('only the current mobile leaf can receive a quality notice', () async {
+    final checks = <String, Completer<bool>>{};
+    final loader = _FakeImageLoadingOrchestrator(
+      detectLocalPageAvailabilityImpl:
+          ({required pages, required isWeb}) async => {},
+      loadPageImageImpl:
+          ({
+            required page,
+            required sourceHashCode,
+            required isWeb,
+            required isMobileWeb,
+            required isReload,
+            previousPageLoaded,
+          }) async => PageImageLoadResult(
+            contentAction: ImageContentAction.replace,
+            imageData: Uint8List(1),
+            imageName: page,
+            pageLoaded: true,
+            refreshError: false,
+          ),
+    )..checkResolution = (page, _) => (checks[page] = Completer<bool>()).future;
+    final source = _buildSource(pages: [], permissionsReceived: true);
+    final cubit = PrimarySourceImageCubit(
+      source: source,
+      isWeb: true,
+      isMobileWeb: true,
+      imageLoadingOrchestrator: loader,
+      autoInitialize: false,
+    );
+    Future<void> load(String page) =>
+        cubit.loadImage(page: page, sourceHashCode: 1);
+    await load('old');
+    expect(cubit.state.isLoading, isFalse);
+    await load('equal');
+    checks['equal']!.complete(false);
+    checks['old']!.complete(true);
+    await Future<void>.delayed(Duration.zero);
+    expect(cubit.state.hasReducedResolution, isFalse);
+    await load('smaller');
+    checks['smaller']!.complete(true);
+    await Future<void>.delayed(Duration.zero);
+    expect(cubit.state.hasReducedResolution, isTrue);
+    await load('unavailable');
+    expect(cubit.state.hasReducedResolution, isFalse);
+    checks['unavailable']!.completeError(StateError('missing original'));
+    await Future<void>.delayed(Duration.zero);
+    expect(cubit.state.imageData, isNotNull);
+    await load('cleared');
+    cubit.clearSelection();
+    checks['cleared']!.complete(true);
+    await Future<void>.delayed(Duration.zero);
+    expect(cubit.state.hasReducedResolution, isFalse);
+    await load('closed');
+    await cubit.close();
+    checks['closed']!.complete(true);
+    await Future<void>.delayed(Duration.zero);
+    expect(cubit.state.hasReducedResolution, isFalse);
+    expect(checks.length, 6);
+
+    for (final web in [true, false]) {
+      final ordinary = PrimarySourceImageCubit(
+        source: source,
+        isWeb: web,
+        isMobileWeb: false,
+        imageLoadingOrchestrator: loader,
+        autoInitialize: false,
+      );
+      await ordinary.loadImage(page: 'full', sourceHashCode: 1);
+      expect(checks.containsKey('full'), isFalse);
+      await ordinary.close();
+    }
+  });
+
   test('loadImage replaces image data and updates loading flags', () async {
     final bytes = Uint8List.fromList([1, 2, 3, 4]);
     final source = _buildSource(
@@ -393,6 +466,11 @@ void main() {
 
 class _FakeImageLoadingOrchestrator
     extends PrimarySourceImageLoadingOrchestrator {
+  Future<bool> Function(String, Uint8List)? checkResolution;
+
+  @override
+  Future<bool> isMobileImageReduced(String page, Uint8List bytes) async =>
+      await checkResolution?.call(page, bytes) ?? false;
   _FakeImageLoadingOrchestrator({
     required this.detectLocalPageAvailabilityImpl,
     required this.loadPageImageImpl,

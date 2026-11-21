@@ -1,6 +1,6 @@
 # Матрица управления состоянием (RU)
 
-Doc-Version: `2.6.8`
+Doc-Version: `2.6.9`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
@@ -73,7 +73,7 @@ BibleReaderCubit остаётся единственным источником 
 | `primary_sources/list` | `PrimarySourcesCubit` | Коллекции full/significant/fragments и loading/failure state |
 | `primary_sources/list-ui` | `PrimarySourcesExpansionCubit` | Раскрытые карточки на экране списка |
 | `primary_source/detail/session` | `PrimarySourceSessionCubit` | Текущий первоисточник, выбранная страница, image key, состояние toolbar/menu |
-| `primary_source/detail/image` | `PrimarySourceImageCubit` | Байты изображения, доступность локальных страниц, loading state, ограничения texture size |
+| `primary_source/detail/image` | `PrimarySourceImageCubit` | Байты изображения, сравнение мобильного разрешения, доступность локальных страниц, состояние загрузки, ограничения размера текстуры |
 | `primary_source/detail/page-settings` | `PrimarySourcePageSettingsCubit` | Фильтры изображения и overlay-переключатели |
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | Выбор стиха/слова, контент описания, элементы Strong picker |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | Pan, zoom, область выделения, состояние замены цвета |

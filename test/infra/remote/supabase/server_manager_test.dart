@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:revelation/infra/remote/supabase/server_manager.dart';
+import 'package:revelation/infra/remote/image/manuscript_image_resolution.dart';
+import 'package:image/image.dart' as img;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -158,6 +160,39 @@ void main() {
       expect(mobileWithoutExtension, Uint8List.fromList(const [30]));
     });
 
+    test('compares pixel dimensions using a bounded original header', () async {
+      final original = img.Image(width: 30, height: 20);
+      final mobile = img.encodeJpg(img.Image(width: 15, height: 10));
+      const page = 'repo/leaf.jpg';
+      void seed(List<int> bytes) => storageServer.seedFile(
+        repository: 'public',
+        path: page,
+        bytes: bytes,
+        lastModified: DateTime.utc(2026),
+      );
+      seed(img.encodeJpg(original));
+      expect(await mobileManuscriptIsReduced(page, mobile), isTrue);
+      expect(storageServer.lastRange, 'bytes=0-65535');
+      expect(
+        await mobileManuscriptIsReduced(page, img.encodePng(original)),
+        isFalse,
+      );
+      expect(
+        await mobileManuscriptIsReduced(
+          page,
+          img.encodeJpg(img.Image(width: 31, height: 21)),
+        ),
+        isFalse,
+      );
+      seed([0xff, 0xd8, 0xff, 0xe1, 0xff, 0xff]);
+      expect(await mobileManuscriptIsReduced(page, mobile), isFalse);
+      expect(
+        await mobileManuscriptIsReduced('repo/missing.jpg', mobile),
+        isFalse,
+      );
+      expect(await mobileManuscriptIsReduced(page, Uint8List(0)), isFalse);
+    });
+
     test('getLastUpdateFileFromServer returns parsed timestamp', () async {
       final modifiedAt = DateTime.utc(2026, 3, 21, 12, 34, 56);
       storageServer.seedFile(
@@ -223,6 +258,7 @@ Future<void> _disposeSupabaseIfInitialized() async {
 }
 
 class _FakeStorageServer {
+  String? lastRange;
   _FakeStorageServer._(this._server)
     : baseUrl = 'http://${_server.address.address}:${_server.port}' {
     _server.listen(_handleRequest);
@@ -328,7 +364,10 @@ class _FakeStorageServer {
       return;
     }
 
-    request.response.statusCode = HttpStatus.ok;
+    lastRange = request.headers.value(HttpHeaders.rangeHeader);
+    request.response.statusCode = lastRange == null
+        ? HttpStatus.ok
+        : HttpStatus.partialContent;
     request.response.add(bytes);
     await request.response.close();
   }

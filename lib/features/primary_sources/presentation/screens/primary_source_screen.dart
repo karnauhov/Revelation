@@ -736,7 +736,9 @@ class PrimarySourceScreenState extends State<PrimarySourceScreen>
         onGreekStrongTap: _showStrongInPanel,
         selectAreaMode: viewModel.selectAreaMode,
         pipetteMode: viewModel.pipetteMode,
-        isMobileWeb: viewModel.isMobileWeb,
+        hasReducedResolution: context.select(
+          (PrimarySourceImageCubit cubit) => cubit.state.hasReducedResolution,
+        ),
       ),
       descriptionPanel: _buildDescriptionView(context, viewModel),
       dividerColor: colorScheme.onSurface,

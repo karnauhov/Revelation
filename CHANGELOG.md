@@ -17,6 +17,7 @@ All notable changes to this application will be documented here.
 ### Fixed
 
 - Returning to a manuscript leaf restores its saved zoom and position as soon as the image is ready.
+- Mobile browsers show the reduced-quality notice only on manuscript leaves served at a lower resolution.
 
 - Fixed a crash when closing Revelation on Windows.
 - Open a primary source from its image, its title, or the first link in its expanded card. Clickable images show a hand pointer.

@@ -76,7 +76,6 @@ void main() {
           credits: [(text: 'A', url: 'https://example.com')],
           selectAreaMode: true,
           pipetteMode: false,
-          isMobileWeb: false,
         ),
       ),
     );
@@ -92,7 +91,6 @@ void main() {
           credits: [(text: 'A', url: 'https://example.com')],
           selectAreaMode: false,
           pipetteMode: true,
-          isMobileWeb: false,
         ),
       ),
     );
@@ -113,7 +111,7 @@ void main() {
           ],
           selectAreaMode: false,
           pipetteMode: false,
-          isMobileWeb: true,
+          hasReducedResolution: true,
         ),
       ),
     );
@@ -128,5 +126,17 @@ void main() {
       find.textContaining(l10n.low_quality, findRichText: true),
       findsOneWidget,
     );
+    await tester.pumpWidget(
+      buildLocalizedTestApp(
+        child: const PrimarySourceAttributesFooter(
+          credits: [(text: 'Attr A', url: '')],
+        ),
+      ),
+    );
+    expect(
+      find.textContaining(l10n.low_quality, findRichText: true),
+      findsNothing,
+    );
+    expect(find.text('Attr A', findRichText: true), findsOneWidget);
   });
 }

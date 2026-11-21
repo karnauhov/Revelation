@@ -12,7 +12,7 @@ class PrimarySourceAttributesFooter extends StatefulWidget {
     this.onGreekStrongTap,
     this.selectAreaMode = false,
     this.pipetteMode = false,
-    this.isMobileWeb = false,
+    this.hasReducedResolution = false,
     super.key,
   });
 
@@ -20,7 +20,7 @@ class PrimarySourceAttributesFooter extends StatefulWidget {
   final GreekStrongTapHandler? onGreekStrongTap;
   final bool selectAreaMode;
   final bool pipetteMode;
-  final bool isMobileWeb;
+  final bool hasReducedResolution;
 
   @override
   State<PrimarySourceAttributesFooter> createState() => _FooterState();
@@ -77,7 +77,7 @@ class _FooterState extends State<PrimarySourceAttributesFooter> {
           : Text.rich(
               TextSpan(
                 children: [
-                  if (widget.isMobileWeb)
+                  if (widget.hasReducedResolution)
                     TextSpan(
                       text: '${l10n.low_quality} · ',
                       style: linkStyle,

@@ -2,7 +2,7 @@
 #define MyAppCompany "AI11"
 #define MyAppFileName "revelation.exe"
 #define MyAppVersion "1.0.9"
-#define MyAppBuild "178"
+#define MyAppBuild "179"
 #define CurrentYear GetDateTimeString('yyyy', '', '')
 #define MyAppCopyright "Copyright © 2024-" + CurrentYear + " " + MyAppCompany + ". All rights reserved."
 

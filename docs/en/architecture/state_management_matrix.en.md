@@ -1,6 +1,6 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.6.8`
+Doc-Version: `2.6.9`
 Last-Updated: `2026-11-21`
 Source-Commit: `working-tree`
 
@@ -73,7 +73,7 @@ Show which cubit owns each runtime state slice.
 | `primary_sources/list` | `PrimarySourcesCubit` | Full/significant/fragment source collections and loading/failure state |
 | `primary_sources/list-ui` | `PrimarySourcesExpansionCubit` | Expanded cards on the list screen |
 | `primary_source/detail/session` | `PrimarySourceSessionCubit` | Current source, selected page, image key, toolbar/menu session state |
-| `primary_source/detail/image` | `PrimarySourceImageCubit` | Image bytes, local-page availability, loading state, texture limits |
+| `primary_source/detail/image` | `PrimarySourceImageCubit` | Image bytes, mobile resolution comparison, local-page availability, loading state, texture limits |
 | `primary_source/detail/page-settings` | `PrimarySourcePageSettingsCubit` | Image filters and overlay toggles |
 | `primary_source/detail/description` | `PrimarySourceDescriptionCubit` | Verse/word selection, description content, Strong picker entries |
 | `primary_source/detail/viewport` | `PrimarySourceViewportCubit` | Pan, zoom, selection area, color replacement state |
