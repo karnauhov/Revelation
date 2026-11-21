@@ -560,6 +560,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get image_source => 'Image source';
 
   @override
+  String get primary_source_links => 'Links';
+
+  @override
+  String get open_primary_source => 'Open primary source';
+
+  @override
   String get topic => 'Topic';
 
   @override

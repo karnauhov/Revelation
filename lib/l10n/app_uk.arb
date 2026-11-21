@@ -198,6 +198,8 @@
   "wikipedia": "Вікіпедія",
   "intf": "INTF",
   "image_source": "Джерело зображень",
+  "primary_source_links": "Посилання",
+  "open_primary_source": "Відкрити першоджерело",
   "topic": "Тема",
   "show_more": "показати більше інформації",
   "hide": "приховати",

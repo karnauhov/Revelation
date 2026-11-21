@@ -559,6 +559,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get image_source => 'Источник изображений';
 
   @override
+  String get primary_source_links => 'Ссылки';
+
+  @override
+  String get open_primary_source => 'Открыть первоисточник';
+
+  @override
   String get topic => 'Тема';
 
   @override

@@ -8,14 +8,15 @@ import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/source_item.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/primary_source.dart';
+import 'package:styled_text/widgets/styled_text.dart';
+
+import '../../../../test_harness/widget_test_harness.dart';
 
 void main() {
-  testWidgets('SourceItemWidget navigates to primary source route', (
-    tester,
-  ) async {
+  testWidgets('All three links open the same primary source', (tester) async {
     final source = PrimarySource(
       id: 'source-1',
-      title: 'Title',
+      title: 'Title <sup>1</sup>',
       date: 'Date',
       content: 'Content',
       quantity: 1,
@@ -41,7 +42,7 @@ void main() {
           builder: (context, state) => Scaffold(
             body: SourceItemWidget(
               source: source,
-              showMore: false,
+              showMore: true,
               onToggleShowMore: () {},
             ),
           ),
@@ -55,16 +56,43 @@ void main() {
         ),
       ],
     );
+    addTearDown(router.dispose);
 
     await tester.pumpWidget(_buildRouterApp(router));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(ElevatedButton));
-    await tester.pumpAndSettle();
+    final title = find.byType(StyledText);
+    final titleWidget = tester.widget<StyledText>(title);
+    final context = tester.element(title);
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    expect(titleWidget.text, source.title);
+    expect(
+      titleWidget.style,
+      theme.textTheme.titleMedium!.copyWith(
+        fontWeight: FontWeight.bold,
+        color: theme.colorScheme.primary,
+        decoration: TextDecoration.underline,
+        decorationColor: theme.colorScheme.primary,
+      ),
+    );
 
-    expect(find.text('primary-source-route'), findsOneWidget);
-    expect(captured?.primarySource.id, 'source-1');
-  });
+    for (final link in [
+      find.byType(ElevatedButton),
+      title,
+      find.text('[${l10n.open_primary_source}]'),
+    ]) {
+      await expectHandCursor(tester, link);
+      await tester.tap(link);
+      await tester.pumpAndSettle();
+
+      expect(find.text('primary-source-route'), findsOneWidget);
+      expect(captured?.primarySource, same(source));
+      captured = null;
+      router.pop();
+      await tester.pumpAndSettle();
+    }
+  }, variant: const TargetPlatformVariant({TargetPlatform.windows}));
 }
 
 Uint8List _loadPreviewBytes() {

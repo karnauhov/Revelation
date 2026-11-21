@@ -567,6 +567,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get image_source => 'Fuente de imágenes';
 
   @override
+  String get primary_source_links => 'Enlaces';
+
+  @override
+  String get open_primary_source => 'Abrir la fuente primaria';
+
+  @override
   String get topic => 'Tema';
 
   @override

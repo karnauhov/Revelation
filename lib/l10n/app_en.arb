@@ -242,6 +242,14 @@
   "wikipedia": "Wikipedia",
   "intf": "INTF",
   "image_source": "Image source",
+  "primary_source_links": "Links",
+  "@primary_source_links": {
+    "description": "Label for the internal and external links in a primary source card."
+  },
+  "open_primary_source": "Open primary source",
+  "@open_primary_source": {
+    "description": "Link in an expanded card that opens the primary source in the app."
+  },
   "topic": "Topic",
   "show_more": "show more information",
   "hide": "hide",

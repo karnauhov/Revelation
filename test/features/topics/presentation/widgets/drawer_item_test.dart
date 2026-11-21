@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/topics/presentation/widgets/drawer_item.dart';
 
+import '../../../../test_harness/widget_test_harness.dart';
+
 void main() {
   testWidgets('DrawerItem renders label and invokes callback on tap', (
     tester,
@@ -28,11 +30,13 @@ void main() {
     expect(find.text('Settings'), findsOneWidget);
     expect(find.byType(SvgPicture), findsOneWidget);
 
-    await tester.tap(find.text('Settings'));
+    final icon = find.byType(SvgPicture);
+    await expectHandCursor(tester, icon);
+    await tester.tap(icon);
     await tester.pumpAndSettle();
 
     expect(tapped, 1);
-  });
+  }, variant: const TargetPlatformVariant({TargetPlatform.windows}));
 
   testWidgets('DrawerItem constrains long labels inside narrow drawers', (
     tester,

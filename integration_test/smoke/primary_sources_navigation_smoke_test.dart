@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:revelation/app/router/route_args.dart';
 import 'package:revelation/core/errors/app_result.dart';
 import 'package:revelation/features/primary_sources/data/repositories/primary_sources_db_repository.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/primary_sources_cubit.dart';
@@ -16,9 +18,12 @@ import 'package:revelation/infra/db/localized/db_localized.dart'
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/models/primary_source.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+
 import 'smoke_test_harness.dart';
 
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
   setUp(() async {
     await GetIt.I.reset();
     GetIt.I.registerSingleton<Talker>(Talker());
@@ -28,7 +33,7 @@ void main() {
     await GetIt.I.reset();
   });
 
-  testWidgets('Primary sources smoke: list renders and opens detail route', (
+  testWidgets('Primary sources smoke: all three ways to open a source', (
     tester,
   ) async {
     final cubit = PrimarySourcesCubit(_SuccessPrimarySourcesRepository());
@@ -42,8 +47,12 @@ void main() {
         ),
         GoRoute(
           path: '/primary_source',
-          builder: (context, state) =>
-              const Scaffold(body: Center(child: Text('detail-stub'))),
+          builder: (context, state) {
+            final args = state.extra! as PrimarySourceRouteArgs;
+            return Scaffold(
+              body: Center(child: Text('detail-${args.primarySource.id}')),
+            );
+          },
         ),
       ],
     );
@@ -66,10 +75,29 @@ void main() {
     expect(find.text('${l10n.full_primary_sources} (1)'), findsOneWidget);
     expect(find.byType(ElevatedButton), findsAtLeastNWidgets(1));
 
-    await tester.tap(find.byType(ElevatedButton).first);
-    await pumpAndSettleSmoke(tester);
+    final preview = find.byType(ElevatedButton).first;
+    expect(
+      tester.widget<ElevatedButton>(preview).style?.mouseCursor?.resolve({}),
+      SystemMouseCursors.click,
+    );
+    Future<void> expectOpensFullSource(Finder target) async {
+      await tester.tap(target);
+      await pumpAndSettleSmoke(tester);
+      expect(find.text('detail-full'), findsOneWidget);
+      router.pop();
+      await pumpAndSettleSmoke(tester);
+    }
 
-    expect(find.text('detail-stub'), findsOneWidget);
+    await expectOpensFullSource(preview);
+    await expectOpensFullSource(find.text('full', findRichText: true));
+
+    final expand = find.text('(${l10n.show_more})', findRichText: true).first;
+    final open = find.text('[${l10n.open_primary_source}]');
+    expect(open, findsNothing);
+    await tester.tap(expand);
+    await pumpAndSettleSmoke(tester);
+    await tester.ensureVisible(open);
+    await expectOpensFullSource(open);
   });
 }
 

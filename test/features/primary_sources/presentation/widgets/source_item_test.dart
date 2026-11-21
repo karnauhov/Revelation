@@ -46,6 +46,8 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining(source.material), findsNothing);
+    final open = find.text('[${l10n.open_primary_source}]');
+    expect(open, findsNothing);
 
     await tester.tap(find.text('(${l10n.show_more})', findRichText: true));
     await tester.pump();
@@ -67,10 +69,24 @@ void main() {
     expect(find.textContaining(source.classification), findsOneWidget);
     expect(find.textContaining(source.found), findsOneWidget);
     expect(find.textContaining(source.currentLocation), findsOneWidget);
+    expect(open, findsOneWidget);
     expect(
       find.textContaining('[${l10n.wikipedia}]', findRichText: true),
       findsOneWidget,
     );
+    final links = tester.widget<Text>(
+      find.ancestor(
+        of: open,
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Text && widget.textSpan != null,
+        ),
+      ),
+    );
+    final linksText = links.textSpan! as TextSpan;
+    expect(linksText.text, '${l10n.primary_source_links}: ');
+    final spans = linksText.children!;
+    expect(spans.first, isA<WidgetSpan>());
+    expect(spans[1].toPlainText(), ', [${l10n.wikipedia}]');
   });
 
   testWidgets(

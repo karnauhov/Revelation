@@ -1140,6 +1140,18 @@ abstract class AppLocalizations {
   /// **'Image source'**
   String get image_source;
 
+  /// Label for the internal and external links in a primary source card.
+  ///
+  /// In en, this message translates to:
+  /// **'Links'**
+  String get primary_source_links;
+
+  /// Link in an expanded card that opens the primary source in the app.
+  ///
+  /// In en, this message translates to:
+  /// **'Open primary source'**
+  String get open_primary_source;
+
   /// No description provided for @topic.
   ///
   /// In en, this message translates to:

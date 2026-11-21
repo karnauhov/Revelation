@@ -24,6 +24,7 @@ class DrawerItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: InkWell(
         onTap: onClick,
+        mouseCursor: SystemMouseCursors.click,
         borderRadius: BorderRadius.circular(8.0),
         splashColor: colorScheme.primary.withValues(alpha: 0.12),
         child: Container(

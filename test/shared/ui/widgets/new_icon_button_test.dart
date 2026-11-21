@@ -34,11 +34,13 @@ void main() {
 
     expect(find.byTooltip('Action'), findsOneWidget);
 
-    await tester.tap(find.byType(InkWell));
+    final icon = find.byType(SvgPicture);
+    await expectHandCursor(tester, icon);
+    await tester.tap(icon);
     await tester.pump();
 
     expect(tapped, isTrue);
-  });
+  }, variant: const TargetPlatformVariant({TargetPlatform.windows}));
 
   testWidgets('NewIconButton renders raster icon and preserves size', (
     tester,

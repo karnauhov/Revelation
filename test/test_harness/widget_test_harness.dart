@@ -1,6 +1,21 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/l10n/app_localizations.dart';
+
+Future<void> expectHandCursor(WidgetTester tester, Finder finder) async {
+  final pointer = TestPointer(1, PointerDeviceKind.mouse);
+  await tester.sendEventToBinding(
+    pointer.addPointer(location: const Offset(1, 1)),
+  );
+  await tester.sendEventToBinding(pointer.hover(tester.getCenter(finder)));
+  expect(
+    tester.binding.mouseTracker.debugDeviceActiveCursor(pointer.device),
+    SystemMouseCursors.click,
+  );
+  await tester.sendEventToBinding(pointer.removePointer());
+  await tester.pump();
+}
 
 Widget buildLocalizedTestApp({
   required Widget child,

@@ -42,6 +42,7 @@ class NewIconButton extends StatelessWidget {
       shape: const CircleBorder(),
       child: InkWell(
         onTap: onPressed,
+        mouseCursor: SystemMouseCursors.click,
         borderRadius: BorderRadius.circular(size * 1.2),
         customBorder: const CircleBorder(),
         hoverColor: colorScheme.primary.withValues(alpha: 0.08),

@@ -540,6 +540,7 @@ class _PrimarySourceWordPreview extends StatelessWidget {
             key: ValueKey(
               'primary-source-word-image-${item.target.fallbackLabel}',
             ),
+            mouseCursor: SystemMouseCursors.click,
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               unawaited(_openWord(context, wordLink));

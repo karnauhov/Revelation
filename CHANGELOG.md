@@ -11,6 +11,7 @@ All notable changes to this application will be documented here.
 ### Fixed
 
 - Fixed a crash when closing Revelation on Windows.
+- Open a primary source from its image, its title, or the first link in its expanded card. Clickable images show a hand pointer.
 
 ## [1.0.8](https://github.com/karnauhov/Revelation/releases/tag/v1.0.8%2B178) - 14.11.26
 

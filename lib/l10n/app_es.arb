@@ -198,6 +198,8 @@
   "wikipedia": "Wikipedia",
   "intf": "INTF",
   "image_source": "Fuente de imágenes",
+  "primary_source_links": "Enlaces",
+  "open_primary_source": "Abrir la fuente primaria",
   "topic": "Tema",
   "show_more": "mostrar más información",
   "hide": "ocultar",

@@ -294,6 +294,7 @@ void main() {
       pageName: '325v',
       wordIndex: 2,
     );
+    final imageBytes = _png();
     final cubit = PrimarySourceWordImagesCubit(
       targets: const [target],
       isWeb: false,
@@ -303,7 +304,7 @@ void main() {
         PrimarySourceWordImageResult(
           target: target,
           sourceTitle: 'Source One',
-          imageBytes: _png(),
+          imageBytes: imageBytes,
           displayWordText: 'APOKALYPSIS',
           unavailableReason: PrimarySourceWordImageUnavailableReason.none,
         ),
@@ -317,6 +318,9 @@ void main() {
     String? capturedPageName;
     int? capturedWordIndex;
     final context = await pumpLocalizedContext(tester);
+    await tester.runAsync(
+      () => precacheImage(MemoryImage(imageBytes), context),
+    );
 
     unawaited(
       showPrimarySourceWordsDialog(
@@ -332,17 +336,18 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final imageInkWell = tester.widget<InkWell>(
-      find.byKey(const ValueKey('primary-source-word-image-U001:325v:2')),
+    final image = find.byKey(
+      const ValueKey('primary-source-word-image-U001:325v:2'),
     );
-    imageInkWell.onTap?.call();
+    await expectHandCursor(tester, image);
+    await tester.tap(image);
     await tester.pumpAndSettle();
 
     expect(find.byType(PrimarySourceWordsDialog), findsNothing);
     expect(capturedSourceId, 'U001');
     expect(capturedPageName, '325v');
     expect(capturedWordIndex, 2);
-  });
+  }, variant: const TargetPlatformVariant({TargetPlatform.windows}));
 }
 
 class _FakeWordImageService extends PrimarySourceWordImageService {
