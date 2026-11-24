@@ -1,6 +1,6 @@
 {
   "task": "REV235",
-  "status": "campaign_live_waiting_for_d7",
+  "status": "campaign_live_d7_partial_waiting_for_reporting",
   "planning_version": "1.0.9",
   "promoted_release": "1.0.8+178",
   "primary_locale": "uk",
@@ -129,16 +129,67 @@
     },
     {
       "checkpoint": "D7",
-      "status": "scheduled",
+      "status": "partial",
       "window": ["2026-11-15", "2026-11-21"],
-      "windows_page_views": null,
+      "recorded_date": "2026-11-24",
+      "windows_page_views": 3,
       "windows_installs": null,
+      "windows_installs_reported": 0,
+      "windows_installs_semantics": "Overview reported total only; detailed chart has no data and November 21 is missing. Full seven-day install total is unknown.",
+      "windows_store_page_views": 3,
+      "windows_sessions_opt_in": null,
+      "search_clicks": 2,
+      "search_impressions": 22,
       "campaign_page_views": null,
       "campaign_installs": null,
       "first_reading": null,
       "returning_user_days": null,
       "reading_cohort_d7": null,
-      "feedback": null
+      "feedback": null,
+      "windows": {
+        "acquisitions": {
+          "requested": ["2026-11-15", "2026-11-21"],
+          "observed": ["2026-11-15", "2026-11-20"],
+          "observed_days": 6,
+          "missing_dates": ["2026-11-21"],
+          "timezone": null,
+          "views_by_day": [1, 0, 1, 1, 0, 0],
+          "installs_by_day": null,
+          "installs_detail_status": "No data available",
+          "source_rows": [{"source": "Microsoft Store in Windows", "page_views": 3}],
+          "external_url_page_views": null,
+          "campaign_status": "No rows in either installs or page views; absent CID is not treated as zero."
+        },
+        "usage": {
+          "requested": ["2026-11-15", "2026-11-21"],
+          "observed": null,
+          "observed_days": 0,
+          "latest_available_date": "2026-10-31",
+          "timezone": null,
+          "status": "No data available for requested window; zero overview tile is not accepted as a measured zero."
+        }
+      },
+      "search": {
+        "requested": ["2026-11-15", "2026-11-21"],
+        "observed": ["2026-11-15", "2026-11-21"],
+        "observed_days": 7,
+        "timezone": "America/Los_Angeles",
+        "clicks_by_day": [0, 0, 1, 0, 0, 1, 0],
+        "impressions_by_day": [1, 3, 2, 2, 3, 8, 3],
+        "scope": "Domain-wide text Web search",
+        "page_rows": [{"url": "https://www.revelation.website/", "clicks": 2, "impressions": 22}],
+        "disclosed_query_rows": [{"query": "revelation website", "clicks": 2, "impressions": 6}],
+        "campaign_landing_page_row": null
+      },
+      "collection": {
+        "method": "Authorized Partner Center and Search Console browser reports; AI11 through MCP",
+        "original_scheduled_run": "Ended by restoring the chat title without collecting metrics; recovered in the same chat on November 24.",
+        "qa_campaign_clicks_during_collection": 0,
+        "qa_installs_during_collection": 0,
+        "aggregate_qa_exclusion": "No public campaign visits or installs were performed for this collection. Aggregate reports cannot identify all owner or other QA traffic; no independent-user count is claimed.",
+        "feedback_scope": "No reader feedback gathered or solicited in this checkpoint."
+      },
+      "conclusion": "Insufficient evidence to attribute traffic or installs to the Ukrainian page. Partial Store data, absent CID and unavailable Usage prevent a campaign-effect claim. D14 decision remains pending."
     },
     {
       "checkpoint": "D14",
@@ -165,7 +216,8 @@
   "messages_sent": 0,
   "scheduling": {
     "timezone": "Europe/Madrid",
-    "D7": {"run_at": "2026-11-24T12:00:00+01:00", "automation_id": "rev235-d7"},
+    "D7": {"run_at": "2026-11-24T12:00:00+01:00", "automation_id": "rev235-d7", "status": "consumed_incomplete_then_recovered"},
+    "D7_repeat": {"date": "2026-11-27", "automation_id": "rev235-d7-2", "scope": "Recheck missing Microsoft Store data for November 15-21; retain the original checkpoint."},
     "D14": {"run_at": "2026-12-01T12:00:00+01:00", "automation_id": "rev235-d14"}
   },
   "completed_dependencies": [
