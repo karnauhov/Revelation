@@ -51,15 +51,15 @@
         "state": "plan",
         "stage": 1,
         "x": 530,
-        "detail": "1.0.9: искать ветхозаветные аллюзии и восстанавливать место чтения (REV113, REV212).",
+        "detail": "1.0.9: искать ветхозаветные аллюзии (REV113).",
         "hint": {
-          "en": "Search Old Testament allusions and resume reading.",
-          "es": "Buscar alusiones del Antiguo Testamento y retomar la lectura.",
-          "uk": "Шукати старозавітні алюзії та повертатися до місця читання.",
-          "ru": "1.0.9: искать ветхозаветные аллюзии и восстанавливать место чтения."
+          "en": "Search for Old Testament allusions.",
+          "es": "Buscar alusiones del Antiguo Testamento.",
+          "uk": "Шукати старозавітні алюзії.",
+          "ru": "1.0.9: искать ветхозаветные аллюзии."
         },
         "id": "A4",
-        "detail_en": "1.0.9: Search for Old Testament allusions and resume reading from the saved position (REV113, REV212)."
+        "detail_en": "1.0.9: Search for Old Testament allusions (REV113)."
       },
       {
         "state": "plan",

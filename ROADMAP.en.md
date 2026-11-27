@@ -21,7 +21,7 @@ The codes below identify the eight tracks: A for App, S for Study, M for Manuscr
 - <a name="a1"></a> **A1** · 1.0.1: Added a manuscript page viewer with controls and zoom on web and Windows.
 - <a name="a2"></a> **A2** · 1.0.5: Added interactive verse areas and links from verses to words on facsimiles.
 - <a name="a3"></a> **A3** · 1.0.7: Added Bible search, parallel reading and a standalone Strong's Dictionary.
-- <a name="a4"></a> **A4** · 1.0.9: Search for Old Testament allusions and resume reading from the saved position (REV113, REV212).
+- <a name="a4"></a> **A4** · 1.0.9: Search for Old Testament allusions (REV113).
 - <a name="a5"></a> **A5** · 1.0.12: Download a data pack and read offline (REV197, REV149-REV151).
 - <a name="a6"></a> **A6** · 1.0.14: Show parts of speech and sentence roles in manuscript overlays (REV156, REV157).
 - <a name="a7"></a> **A7** · 1.0.18: Show illustrations for individual paragraphs and support keyboard or remote navigation (REV163, REV161).
@@ -126,7 +126,7 @@ The windows below are estimates and include a **10% reserve**. The initial estim
 
 | Version · Estimated window | App and Bible modules | Studies and manuscripts | Outreach and platforms |
 | --- | --- | --- | --- |
-| **1.0.9** · Winter 2026/27 | Allusion search, reading and position recovery, fixes to audio and image viewing | Sample study of 1:1-3 and annotation pilot W00 | Review Ukrainian outreach, demonstrate search and reading, prepare Windows signing |
+| **1.0.9** · Winter 2026/27 | Allusion search, return to the last reading position through the Bible menu (REV211), fixes to audio and image viewing | Sample study of 1:1-3 and annotation pilot W00 | Review Ukrainian outreach, demonstrate search and reading, prepare Windows signing |
 | **1.0.10** · Spring to summer 2027 | Russian Bible, pronunciation and word display in the introduction | Complete 1:1-3, W01, one further source if ready | Reader feedback, preparation for Apple and Galaxy Store |
 | **1.0.11** · Autumn 2027 | Spanish Bible, evaluate how to show emphasis in Bible text | Complete prologue 1:1-8 and W02 | Demonstrate Spanish reading, evaluate Huawei AppGallery |
 | **1.0.12** · Winter 2027/28 | Downloadable offline study pack, offline testing and selection of the next text module | Next complete passage, pilot the full prologue, W03, one further source | Pilot up to two channels, approach OneVoice27 after a successful prologue pilot, evaluate F-Droid and Flathub |
