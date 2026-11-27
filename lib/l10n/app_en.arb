@@ -1,4 +1,31 @@
 {
+  "bible_bookmark_default_name": "Bookmark {number}",
+  "@bible_bookmark_default_name": {
+    "description": "Default bookmark title, numbered in the order the user creates numbered bookmarks.",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "bible_bookmarks": "Bookmarks",
+  "bible_bookmarks_local_storage": "Revelation stores your bookmarks only on this device.",
+  "bible_bookmarks_empty": "No bookmarks yet.",
+  "bible_bookmarks_load_failed": "Couldn't load bookmarks.",
+  "bible_bookmarks_save_failed": "Couldn't save the change. Try again.",
+  "bible_bookmark_add": "Add bookmark",
+  "bible_bookmark_edit": "Edit bookmark",
+  "bible_bookmark_delete": "Delete",
+  "bible_bookmark_delete_confirm": "Delete bookmark?",
+  "bible_bookmark_name": "Name",
+  "bible_bookmark_name_required": "Enter a bookmark name.",
+  "bible_bookmark_color": "Color",
+  "bible_bookmark_save": "Save",
+  "bible_bookmark_blue": "Blue",
+  "bible_bookmark_green": "Green",
+  "bible_bookmark_amber": "Amber",
+  "bible_bookmark_red": "Red",
+  "bible_bookmark_violet": "Violet",
   "@@locale": "en",
   "app_name": "Revelation",
   "startup_title": "Launching the app...",

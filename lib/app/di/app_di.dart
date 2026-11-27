@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nested/nested.dart';
 import 'package:revelation/core/analytics/app_analytics_reporter.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
+import 'package:revelation/features/bible/data/repositories/bible_bookmark_store.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
 import 'package:revelation/features/bible/data/repositories/bible_library_repository.dart';
+import 'package:revelation/features/bible/presentation/bloc/bible_bookmarks_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_catalog_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_passage_preview_cubit.dart';
 import 'package:revelation/features/allusion_search/data/repositories/allusion_search_repository.dart';
@@ -45,6 +47,11 @@ class AppDi {
 
   static BibleCatalogCubit createBibleCatalogCubit() =>
       BibleCatalogCubit(bibleLibrary);
+
+  static final _bibleBookmarkStore = BibleBookmarkStore();
+  static BibleBookmarksCubit createBibleBookmarksCubit() =>
+      BibleBookmarksCubit(_bibleBookmarkStore);
+
   static BiblePassagePreviewCubit createBiblePassagePreviewCubit() =>
       BiblePassagePreviewCubit(bibleLibrary);
   static AllusionSearchCubit get allusionSearchCubit {

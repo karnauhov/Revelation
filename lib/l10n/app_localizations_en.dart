@@ -9,6 +9,67 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String bible_bookmark_default_name(String number) {
+    return 'Bookmark $number';
+  }
+
+  @override
+  String get bible_bookmarks => 'Bookmarks';
+
+  @override
+  String get bible_bookmarks_local_storage =>
+      'Revelation stores your bookmarks only on this device.';
+
+  @override
+  String get bible_bookmarks_empty => 'No bookmarks yet.';
+
+  @override
+  String get bible_bookmarks_load_failed => 'Couldn\'t load bookmarks.';
+
+  @override
+  String get bible_bookmarks_save_failed =>
+      'Couldn\'t save the change. Try again.';
+
+  @override
+  String get bible_bookmark_add => 'Add bookmark';
+
+  @override
+  String get bible_bookmark_edit => 'Edit bookmark';
+
+  @override
+  String get bible_bookmark_delete => 'Delete';
+
+  @override
+  String get bible_bookmark_delete_confirm => 'Delete bookmark?';
+
+  @override
+  String get bible_bookmark_name => 'Name';
+
+  @override
+  String get bible_bookmark_name_required => 'Enter a bookmark name.';
+
+  @override
+  String get bible_bookmark_color => 'Color';
+
+  @override
+  String get bible_bookmark_save => 'Save';
+
+  @override
+  String get bible_bookmark_blue => 'Blue';
+
+  @override
+  String get bible_bookmark_green => 'Green';
+
+  @override
+  String get bible_bookmark_amber => 'Amber';
+
+  @override
+  String get bible_bookmark_red => 'Red';
+
+  @override
+  String get bible_bookmark_violet => 'Violet';
+
+  @override
   String get app_name => 'Revelation';
 
   @override

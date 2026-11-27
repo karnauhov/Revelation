@@ -1,10 +1,14 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.6.11`
-Last-Updated: `2026-11-21`
+Doc-Version: `2.6.12`
+Last-Updated: `2026-11-27`
 Source-Commit: `working-tree`
 
 ImagePreview owns the decoded leaf, paints it beneath its annotations and reports when the geometry is ready. The orchestration cubit restores the saved transform once and flushes pending viewport changes to the outgoing leaf before navigation. The image loader reads the original dimensions from a bounded HTTP range. The image cubit applies the comparison only to the current request, independently of image display.
+
+## Bible bookmark boundaries
+
+The Bible feature owns the bookmark model and its versioned local preference. The store serializes read-modify-write operations and the workspace opens one bookmark Cubit for its panes and dialogs. The reader provides the canonical verse map and opens selected references through its existing navigation. The shared study dialog provides optional movement by its header and constrains the surface to the available viewport.
 
 ## Manuscript image tools
 

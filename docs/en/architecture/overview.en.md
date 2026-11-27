@@ -1,10 +1,14 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.6.11`
-Last-Updated: `2026-11-21`
+Doc-Version: `2.6.12`
+Last-Updated: `2026-11-27`
 Source-Commit: `working-tree`
 
 When a manuscript leaf opens, the viewer waits for its decoded image and panel dimensions. The first usable frame shows the saved scale and offsets for that leaf. On mobile web, the viewer shows the quality notice after comparing the pixel dimensions of the displayed file and the desktop original.
+
+## Bible bookmarks
+
+The Bible reader stores named, colored bookmarks in local preferences. Each bookmark has a canonical verse address, so its marker appears in every open translation displaying that verse. The reader can open the saved verse in the current translation, and moving a bookmark changes its address while preserving its name, color and identity.
 
 ## Manuscript image tools
 

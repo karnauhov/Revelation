@@ -1,8 +1,12 @@
 # Testing Strategy (EN)
 
-Doc-Version: `2.4.9`
-Last-Updated: `2026-11-21`
+Doc-Version: `2.4.10`
+Last-Updated: `2026-11-27`
 Source-Commit: `working-tree`
+
+## Bible bookmarks
+
+Run the bookmark store and reader widget suites with the local Flutter tests. Run `integration_test/bible_bookmarks_test.dart` locally to check creation, numbering, gestures, moving a bookmark between translations, editing its address, reopening the reader and confirmed deletion. The Web run uses an isolated browser profile and its actual preferences plugin. Native runs use an isolated test preference backend to preserve existing user data. The narrow widget test checks the fixed list header and actions in dark mode with enlarged text.
 
 ## Allusion search and linked passages
 

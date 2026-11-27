@@ -1,8 +1,12 @@
 # Матрица управления состоянием (RU)
 
-Doc-Version: `2.6.9`
-Last-Updated: `2026-11-21`
+Doc-Version: `2.6.10`
+Last-Updated: `2026-11-27`
 Source-Commit: `working-tree`
+
+## Закладки Библии и положение диалогов
+
+`BibleBookmarksCubit` хранит загруженный список закладок, состояние локальной записи и восстанавливаемую ошибку текущей рабочей области. Он применяет изменения после сохранения и отбрасывает обновления состояния после закрытия. Метки панелей и диалоги читают один список. Редактор держит несохранённые поля в форме. Положением перемещаемого окна исследования управляет отдельный кубит на время жизни окна.
 
 ## Инструменты рукописи
 
@@ -67,6 +71,7 @@ BibleReaderCubit остаётся единственным источником 
 | `about` | `AboutCubit` | Версии приложения и сборки, метаданные БД, состояние changelog-блока и раскрываемых секций about-экрана |
 | `bible/workspace` | `BibleWorkspaceCubit` | Открытые панели чтения Библии, режим связанной навигации/прокрутки и локальная сессия чтения по каждой панели |
 | `bible/reader` | `BibleReaderCubit` | Модуль Библии в отдельной панели, выбранная ссылка, стихи главы, диапазон выбранных стихов, переключатель номеров Стронга и loading/failure state |
+| `bible/bookmarks` | `BibleBookmarksCubit` | Локальные закладки и состояние записи, общие для панелей и диалогов текущей читалки |
 | `shared/markdown/document` | `RevelationMarkdownImagesCubit` | Предзагрузка remote-изображений для одного markdown-документа, local-first image-state, progress counters и stale-request protection, общие для всех feature-ов |
 | `topics/catalog` | `TopicsCatalogCubit` | Список тем, reload при смене языка, иконки тем |
 | `topics/content` | `TopicContentCubit` | Markdown-контент одной темы, fallback-вычисление метаданных и loading/failure state |

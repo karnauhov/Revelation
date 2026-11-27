@@ -102,6 +102,120 @@ abstract class AppLocalizations {
     Locale('uk'),
   ];
 
+  /// Default bookmark title, numbered in the order the user creates numbered bookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark {number}'**
+  String bible_bookmark_default_name(String number);
+
+  /// No description provided for @bible_bookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bible_bookmarks;
+
+  /// No description provided for @bible_bookmarks_local_storage.
+  ///
+  /// In en, this message translates to:
+  /// **'Revelation stores your bookmarks only on this device.'**
+  String get bible_bookmarks_local_storage;
+
+  /// No description provided for @bible_bookmarks_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet.'**
+  String get bible_bookmarks_empty;
+
+  /// No description provided for @bible_bookmarks_load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load bookmarks.'**
+  String get bible_bookmarks_load_failed;
+
+  /// No description provided for @bible_bookmarks_save_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the change. Try again.'**
+  String get bible_bookmarks_save_failed;
+
+  /// No description provided for @bible_bookmark_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add bookmark'**
+  String get bible_bookmark_add;
+
+  /// No description provided for @bible_bookmark_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit bookmark'**
+  String get bible_bookmark_edit;
+
+  /// No description provided for @bible_bookmark_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get bible_bookmark_delete;
+
+  /// No description provided for @bible_bookmark_delete_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete bookmark?'**
+  String get bible_bookmark_delete_confirm;
+
+  /// No description provided for @bible_bookmark_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get bible_bookmark_name;
+
+  /// No description provided for @bible_bookmark_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a bookmark name.'**
+  String get bible_bookmark_name_required;
+
+  /// No description provided for @bible_bookmark_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get bible_bookmark_color;
+
+  /// No description provided for @bible_bookmark_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get bible_bookmark_save;
+
+  /// No description provided for @bible_bookmark_blue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get bible_bookmark_blue;
+
+  /// No description provided for @bible_bookmark_green.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get bible_bookmark_green;
+
+  /// No description provided for @bible_bookmark_amber.
+  ///
+  /// In en, this message translates to:
+  /// **'Amber'**
+  String get bible_bookmark_amber;
+
+  /// No description provided for @bible_bookmark_red.
+  ///
+  /// In en, this message translates to:
+  /// **'Red'**
+  String get bible_bookmark_red;
+
+  /// No description provided for @bible_bookmark_violet.
+  ///
+  /// In en, this message translates to:
+  /// **'Violet'**
+  String get bible_bookmark_violet;
+
   /// No description provided for @app_name.
   ///
   /// In en, this message translates to:

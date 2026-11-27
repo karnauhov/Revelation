@@ -5,7 +5,7 @@ import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../test_harness/bible_strong_availability_scenario.dart';
-import '../../../../test_harness/fakes/fake_parallel_bible_repository.dart';
+import '../../../../../integration_test/support/fake_parallel_bible_repository.dart';
 
 void main() {
   for (final width in [375.0, 1700.0]) {

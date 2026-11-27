@@ -10,7 +10,7 @@ import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'fakes/fake_parallel_bible_repository.dart';
+import '../../integration_test/support/fake_parallel_bible_repository.dart';
 
 Future<void> exerciseParallelBibleReading(
   WidgetTester tester,

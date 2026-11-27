@@ -9,6 +9,7 @@ class ToolbarDropdown<T> extends StatelessWidget {
     required this.items,
     required this.onChanged,
     this.enabled = true,
+    this.decoration,
   });
 
   final double width;
@@ -17,6 +18,7 @@ class ToolbarDropdown<T> extends StatelessWidget {
   final List<DropdownMenuItem<T>> items;
   final ValueChanged<T?> onChanged;
   final bool enabled;
+  final InputDecoration? decoration;
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +32,17 @@ class ToolbarDropdown<T> extends StatelessWidget {
         items: items,
         onChanged: enabled ? onChanged : null,
         style: theme.textTheme.bodyMedium,
-        decoration: InputDecoration(
-          isDense: true,
-          labelText: label,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 8,
-          ),
-          border: const OutlineInputBorder(),
-        ),
+        decoration:
+            decoration?.copyWith(labelText: label) ??
+            InputDecoration(
+              isDense: true,
+              labelText: label,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 8,
+              ),
+              border: const OutlineInputBorder(),
+            ),
       ),
     );
   }

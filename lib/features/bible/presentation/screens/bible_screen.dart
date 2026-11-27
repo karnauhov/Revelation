@@ -8,18 +8,23 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
+import 'package:revelation/features/bible/domain/models/bible_bookmark.dart';
 import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart';
 import 'package:revelation/features/bible/domain/models/bible_module_info.dart';
 import 'package:revelation/features/bible/domain/models/bible_search_result.dart';
 import 'package:revelation/features/bible/domain/services/bible_text_search.dart';
+import 'package:revelation/features/bible/presentation/bloc/bible_bookmarks_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_reader_state.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_cubit.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_workspace_state.dart';
+import 'package:revelation/features/bible/presentation/widgets/bible_bookmark_marker.dart';
+import 'package:revelation/features/bible/presentation/widgets/bible_bookmarks_dialog.dart';
 import 'package:revelation/features/bible/presentation/widgets/bible_search_dialog.dart';
 import 'package:revelation/features/bible/presentation/widgets/bible_verse_comment_button.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/localization/bible_book_localization.dart';
+import 'package:revelation/shared/models/bible_verse_reference.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/widgets/error_message.dart';
 
@@ -87,7 +92,14 @@ class BibleScreen extends StatelessWidget {
         unawaited(cubit.loadInitial());
         return cubit;
       },
-      child: const _BibleScreenContent(),
+      child: BlocProvider<BibleBookmarksCubit>(
+        create: (_) {
+          final cubit = AppDi.createBibleBookmarksCubit();
+          unawaited(cubit.load());
+          return cubit;
+        },
+        child: const _BibleScreenContent(),
+      ),
     );
   }
 }
@@ -449,6 +461,23 @@ class _BibleReaderToolbar extends StatelessWidget {
         onMenuSelected: (context) {
           _showBibleModuleInfoDialog(context, selectedModule);
         },
+      ),
+      _BibleToolbarAction(
+        id: 'bookmarks',
+        width: 44,
+        inline: IconButton(
+          key: const Key('bible_bookmarks_button'),
+          icon: const Icon(Icons.bookmarks_outlined),
+          tooltip: localizations.bible_bookmarks,
+          color: colorScheme.primary,
+          onPressed: state.isBusy
+              ? null
+              : () => unawaited(_showBibleBookmarks(context, readerCubit)),
+        ),
+        menuIcon: Icons.bookmarks_outlined,
+        menuLabel: localizations.bible_bookmarks,
+        enabled: !state.isBusy,
+        onMenuSelected: (context) => _showBibleBookmarks(context, readerCubit),
       ),
       _BibleToolbarAction(
         id: 'search',
@@ -1071,6 +1100,7 @@ class _BibleReaderBody extends StatelessWidget {
           selectedVerseRangeStart: state.selectedVerseRangeStart,
           selectedVerseRangeEnd: state.selectedVerseRangeEnd,
           showStrongNumbers: state.showStrongNumbers,
+          allowBookmarkDrop: !state.isBusy,
           onVerseTap: context.read<BibleReaderCubit>().selectLoadedVerse,
           onVerseLongPress: context
               .read<BibleReaderCubit>()
@@ -1296,6 +1326,7 @@ class _BibleChapterView extends StatefulWidget {
     required this.selectedVerseRangeStart,
     required this.selectedVerseRangeEnd,
     required this.showStrongNumbers,
+    required this.allowBookmarkDrop,
     required this.onVerseTap,
     required this.onVerseLongPress,
     required this.scrollCoordinator,
@@ -1307,6 +1338,7 @@ class _BibleChapterView extends StatefulWidget {
   final int? selectedVerseRangeStart;
   final int? selectedVerseRangeEnd;
   final bool showStrongNumbers;
+  final bool allowBookmarkDrop;
   final ValueChanged<int> onVerseTap;
   final ValueChanged<int> onVerseLongPress;
   final _BibleLinkedScrollCoordinator scrollCoordinator;
@@ -1320,6 +1352,7 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
   bool _positioning = false;
   final GlobalKey _viewportKey = GlobalKey();
   final Map<String, GlobalKey> _verseKeys = <String, GlobalKey>{};
+  EdgeDraggingAutoScroller? _bookmarkAutoScroller;
 
   @override
   void initState() {
@@ -1331,6 +1364,9 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
   @override
   void didUpdateWidget(covariant _BibleChapterView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!widget.allowBookmarkDrop || oldWidget.verses != widget.verses) {
+      _stopBookmarkAutoScroll();
+    }
     if (oldWidget.paneId != widget.paneId ||
         oldWidget.scrollCoordinator != widget.scrollCoordinator) {
       oldWidget.scrollCoordinator.unregister(
@@ -1347,6 +1383,7 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
 
   @override
   void dispose() {
+    _stopBookmarkAutoScroll();
     widget.scrollCoordinator.unregister(widget.paneId, _scrollController);
     _scrollController.dispose();
     super.dispose();
@@ -1355,6 +1392,13 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
   @override
   Widget build(BuildContext context) {
     _registerScrollPane();
+    final bookmarks = context.select(
+      (BibleBookmarksCubit cubit) => cubit.state.bookmarks,
+    );
+    final bookmarksByLocation = <BibleBookmarkLocation, List<BibleBookmark>>{};
+    for (final bookmark in bookmarks) {
+      (bookmarksByLocation[bookmark.location] ??= []).add(bookmark);
+    }
     final visibleVerseKeys = {
       for (final verse in widget.verses) verse.reference.verseKey,
     };
@@ -1391,25 +1435,43 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
               for (final verse in widget.verses)
                 Builder(
                   builder: (context) {
+                    final location = _bookmarkLocation(verse.reference);
                     final selected =
                         verse.reference.verseKey == widget.selectedVerseKey;
                     final verseKey = _verseKeys.putIfAbsent(
                       verse.reference.verseKey,
                       () => GlobalKey(),
                     );
-                    return _BibleVerseRow(
+                    return DragTarget<BibleBookmark>(
                       key: verseKey,
-                      verse: verse,
-                      selected: selected,
-                      inSelectionRange: _isVerseInSelectionRange(
-                        verse.reference.verse,
-                        widget.selectedVerseRangeStart,
-                        widget.selectedVerseRangeEnd,
+                      onWillAcceptWithDetails: (_) =>
+                          widget.allowBookmarkDrop &&
+                          context.read<BibleBookmarksCubit>().state.canChange,
+                      onAcceptWithDetails: (details) =>
+                          unawaited(_dropBookmark(details)),
+                      onMove: (details) {
+                        if (widget.allowBookmarkDrop) {
+                          _scrollNearBookmark(context, details.offset);
+                        }
+                      },
+                      onLeave: (_) => _stopBookmarkAutoScroll(),
+                      builder: (context, candidates, _) => _BibleVerseRow(
+                        verse: verse,
+                        bookmarks: bookmarksByLocation[location] ?? const [],
+                        bookmarkDropTarget: candidates.any(
+                          (bookmark) => bookmark?.location != location,
+                        ),
+                        selected: selected,
+                        inSelectionRange: _isVerseInSelectionRange(
+                          verse.reference.verse,
+                          widget.selectedVerseRangeStart,
+                          widget.selectedVerseRangeEnd,
+                        ),
+                        showStrongNumbers: widget.showStrongNumbers,
+                        onTap: () => widget.onVerseTap(verse.reference.verse),
+                        onLongPress: () =>
+                            widget.onVerseLongPress(verse.reference.verse),
                       ),
-                      showStrongNumbers: widget.showStrongNumbers,
-                      onTap: () => widget.onVerseTap(verse.reference.verse),
-                      onLongPress: () =>
-                          widget.onVerseLongPress(verse.reference.verse),
                     );
                   },
                 ),
@@ -1418,6 +1480,59 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
         ),
       ),
     );
+  }
+
+  void _scrollNearBookmark(BuildContext context, Offset position) {
+    final viewport = _viewportRenderBox();
+    final scrollable = Scrollable.maybeOf(context);
+    if (viewport == null ||
+        scrollable == null ||
+        !_scrollController.hasClients) {
+      return;
+    }
+    _bookmarkAutoScroller ??= EdgeDraggingAutoScroller(
+      scrollable,
+      velocityScalar: 12,
+    );
+    _bookmarkAutoScroller!.startAutoScrollIfNecessary(
+      Rect.fromCenter(
+        center: position,
+        width: 1,
+        height: viewport.size.height >= 50 ? 50 : viewport.size.height,
+      ),
+    );
+  }
+
+  void _stopBookmarkAutoScroll() => _bookmarkAutoScroller?.stopAutoScroll();
+
+  Future<void> _dropBookmark(DragTargetDetails<BibleBookmark> details) async {
+    _stopBookmarkAutoScroll();
+    if (!mounted || !widget.allowBookmarkDrop) return;
+    final cubit = context.read<BibleBookmarksCubit>();
+    if (!cubit.state.canChange) return;
+
+    for (final verse in widget.verses) {
+      final box = _verseRenderBox(verse.reference.verseKey);
+      if (box == null ||
+          !(Offset.zero & box.size).contains(
+            box.globalToLocal(details.offset),
+          )) {
+        continue;
+      }
+      final target = _bookmarkLocation(verse.reference);
+      if (details.data.location == target) return;
+      await cubit.move(details.data, target);
+      if (mounted && cubit.state.status == BibleBookmarksStatus.saveFailed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.bible_bookmarks_save_failed,
+            ),
+          ),
+        );
+      }
+      return;
+    }
   }
 
   void _registerScrollPane() {
@@ -1552,10 +1667,11 @@ class _BibleChapterViewState extends State<_BibleChapterView> {
   }
 }
 
-class _BibleVerseRow extends StatelessWidget {
+class _BibleVerseRow extends StatefulWidget {
   const _BibleVerseRow({
-    required super.key,
     required this.verse,
+    required this.bookmarks,
+    required this.bookmarkDropTarget,
     required this.selected,
     required this.inSelectionRange,
     required this.showStrongNumbers,
@@ -1564,6 +1680,8 @@ class _BibleVerseRow extends StatelessWidget {
   });
 
   final BibleChapterVerse verse;
+  final List<BibleBookmark> bookmarks;
+  final bool bookmarkDropTarget;
   final bool selected;
   final bool inSelectionRange;
   final bool showStrongNumbers;
@@ -1571,7 +1689,29 @@ class _BibleVerseRow extends StatelessWidget {
   final VoidCallback onLongPress;
 
   @override
+  State<_BibleVerseRow> createState() => _BibleVerseRowState();
+}
+
+class _BibleVerseRowState extends State<_BibleVerseRow> {
+  late final DoubleTapGestureRecognizer _doubleTap;
+
+  @override
+  void initState() {
+    super.initState();
+    _doubleTap = DoubleTapGestureRecognizer(debugOwner: this)
+      ..onDoubleTap = () =>
+          _openBookmarkEditor(context, widget.bookmarks.firstOrNull);
+  }
+
+  @override
+  void dispose() {
+    _doubleTap.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final verse = widget.verse;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textStyle = theme.textTheme.bodyLarge?.copyWith(
@@ -1579,9 +1719,11 @@ class _BibleVerseRow extends StatelessWidget {
       color: colorScheme.onSurface,
     );
 
-    final backgroundColor = selected
+    final backgroundColor = widget.bookmarkDropTarget
+        ? colorScheme.secondaryContainer
+        : widget.selected
         ? colorScheme.primaryContainer.withValues(alpha: 0.42)
-        : inSelectionRange
+        : widget.inSelectionRange
         ? colorScheme.primaryContainer.withValues(alpha: 0.24)
         : Colors.transparent;
 
@@ -1592,11 +1734,12 @@ class _BibleVerseRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
         child: InkWell(
           borderRadius: BorderRadius.circular(6),
-          onTap: onTap,
-          onLongPress: onLongPress,
+          mouseCursor: SystemMouseCursors.basic,
+          onTap: widget.onTap,
+          onLongPress: widget.onLongPress,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              border: selected
+              border: widget.selected
                   ? Border.all(
                       color: colorScheme.primary.withValues(alpha: 0.5),
                     )
@@ -1615,16 +1758,34 @@ class _BibleVerseRow extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${verse.reference.verse}. ',
+                            recognizer: _doubleTap,
+                            mouseCursor: SystemMouseCursors.basic,
                             style: textStyle?.copyWith(
                               color: colorScheme.primary,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
+                          for (final bookmark in widget.bookmarks)
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.middle,
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.only(
+                                  end: 2,
+                                ),
+                                child: BibleBookmarkMarker(
+                                  key: ValueKey(bookmark.id),
+                                  bookmark: bookmark,
+                                  onEdit: () =>
+                                      _openBookmarkEditor(context, bookmark),
+                                ),
+                              ),
+                            ),
                           ..._buildBibleTextSpans(
                             context,
                             verse.text,
-                            showStrongNumbers: showStrongNumbers,
+                            showStrongNumbers: widget.showStrongNumbers,
                             baseStyle: textStyle,
+                            verseDoubleTap: _doubleTap,
                           ),
                         ],
                       ),
@@ -1641,6 +1802,21 @@ class _BibleVerseRow extends StatelessWidget {
       ),
     );
   }
+
+  void _openBookmarkEditor(BuildContext context, [BibleBookmark? bookmark]) {
+    final state = context.read<BibleReaderCubit>().state;
+    final map = state.verseMap;
+    if (map == null || state.isBusy) return;
+    unawaited(
+      showBibleBookmarkEditor(
+        context,
+        verseMap: map,
+        location:
+            bookmark?.location ?? _bookmarkLocation(widget.verse.reference),
+        bookmark: bookmark,
+      ),
+    );
+  }
 }
 
 List<InlineSpan> _buildBibleTextSpans(
@@ -1648,6 +1824,7 @@ List<InlineSpan> _buildBibleTextSpans(
   String text, {
   required bool showStrongNumbers,
   required TextStyle? baseStyle,
+  required DoubleTapGestureRecognizer verseDoubleTap,
 }) {
   final tokens = text.trim().split(RegExp(r'\s+'));
   if (tokens.length == 1 && tokens.first.isEmpty) {
@@ -1697,7 +1874,13 @@ List<InlineSpan> _buildBibleTextSpans(
       continue;
     }
 
-    spans.add(TextSpan(text: hasVisibleWord ? ' $token' : token));
+    spans.add(
+      TextSpan(
+        text: hasVisibleWord ? ' $token' : token,
+        recognizer: verseDoubleTap,
+        mouseCursor: SystemMouseCursors.basic,
+      ),
+    );
     hasVisibleWord = true;
   }
   return spans;
@@ -1739,6 +1922,42 @@ Future<void> _copySelectedVerses(
   }
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(content: Text(localizations.bible_selected_verses_copied)),
+  );
+}
+
+BibleBookmarkLocation _bookmarkLocation(BibleVerseReference reference) => (
+  bookId: reference.bookId,
+  chapter: reference.chapter,
+  verse: reference.verse,
+);
+
+Future<void> _showBibleBookmarks(
+  BuildContext context,
+  BibleReaderCubit reader,
+) async {
+  final state = reader.state;
+  final reference = state.selectedReference;
+  final verseMap = state.verseMap;
+  if (reference == null || verseMap == null || state.isBusy) {
+    return;
+  }
+  final target = await showBibleBookmarksDialog(
+    context,
+    verseMap: verseMap,
+    defaultLocation: (
+      bookId: reference.bookId,
+      chapter: reference.chapter,
+      verse: 1,
+    ),
+    selectedVerse: state.hasSelectedVerses
+        ? _bookmarkLocation(reference)
+        : null,
+  );
+  if (target == null || !context.mounted || reader.isClosed) return;
+  await reader.selectReference(
+    bookId: target.bookId,
+    chapter: target.chapter,
+    verse: target.verse,
   );
 }
 

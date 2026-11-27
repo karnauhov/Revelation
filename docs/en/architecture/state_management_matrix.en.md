@@ -1,8 +1,12 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.6.9`
-Last-Updated: `2026-11-21`
+Doc-Version: `2.6.10`
+Last-Updated: `2026-11-27`
 Source-Commit: `working-tree`
+
+## Bible bookmarks and dialog position
+
+`BibleBookmarksCubit` owns the loaded bookmark list, local write status and recoverable errors for the current Bible workspace. It applies changes after persistence and discards state updates after close. Pane markers and bookmark dialogs derive their content from the same list. The editor keeps unsaved values in its form. A separate Cubit owns the position of each movable study dialog for the lifetime of that dialog.
 
 ## Manuscript image tools
 
@@ -67,6 +71,7 @@ Show which cubit owns each runtime state slice.
 | `about` | `AboutCubit` | App/build versions, database metadata, changelog section state, expandable about sections |
 | `bible/workspace` | `BibleWorkspaceCubit` | Open Bible reader panes, linked navigation/scrolling mode, and local session for each pane |
 | `bible/reader` | `BibleReaderCubit` | Per-pane Bible module, selected reference, chapter verses, verse selection range, Strong display toggle, and loading/failure state |
+| `bible/bookmarks` | `BibleBookmarksCubit` | Local bookmarks and persistence status shared by all panes and bookmark dialogs in the workspace |
 | `shared/markdown/document` | `RevelationMarkdownImagesCubit` | Per-markdown-document remote image preload, local-first image state, progress counters, and stale-request protection shared across features |
 | `topics/catalog` | `TopicsCatalogCubit` | Topic list, language-bound reloads, topic icons |
 | `topics/content` | `TopicContentCubit` | Single topic markdown content, metadata fallback resolution, and loading/failure state |

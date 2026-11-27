@@ -7,6 +7,7 @@ All notable changes to this application will be documented here.
 ### Added
 
 - Search the Ancient Greek Bible (LXX + TR) for possible allusions. Preview the words and weights used for your passage, compare ranked matches, and open Strong's entries from the Greek text or your preferred translation.
+- Save named, colored bookmarks in the Bible and move them between verses and translations. Bookmarks are stored on your device.
 
 ### Changed
 

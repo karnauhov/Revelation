@@ -3,7 +3,7 @@ import 'package:revelation/features/bible/domain/models/bible_chapter_verse.dart
 import 'package:revelation/features/bible/domain/models/bible_reading_session.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
 
-/// First-party text fixtures; persistence uses the real preferences adapter.
+/// First-party text fixtures shared by widget and integration scenarios.
 class FakeParallelBibleRepository extends BibleRepository {
   FakeParallelBibleRepository(this.map, {this.modules = fixtureModules});
 

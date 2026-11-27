@@ -9,6 +9,67 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
+  String bible_bookmark_default_name(String number) {
+    return 'Закладка $number';
+  }
+
+  @override
+  String get bible_bookmarks => 'Закладки';
+
+  @override
+  String get bible_bookmarks_local_storage =>
+      'Revelation зберігає закладки лише на цьому пристрої.';
+
+  @override
+  String get bible_bookmarks_empty => 'Закладок поки немає.';
+
+  @override
+  String get bible_bookmarks_load_failed => 'Не вдалося завантажити закладки.';
+
+  @override
+  String get bible_bookmarks_save_failed =>
+      'Не вдалося зберегти зміну. Спробуйте ще раз.';
+
+  @override
+  String get bible_bookmark_add => 'Додати закладку';
+
+  @override
+  String get bible_bookmark_edit => 'Змінити закладку';
+
+  @override
+  String get bible_bookmark_delete => 'Видалити';
+
+  @override
+  String get bible_bookmark_delete_confirm => 'Видалити закладку?';
+
+  @override
+  String get bible_bookmark_name => 'Назва';
+
+  @override
+  String get bible_bookmark_name_required => 'Введіть назву закладки.';
+
+  @override
+  String get bible_bookmark_color => 'Колір';
+
+  @override
+  String get bible_bookmark_save => 'Зберегти';
+
+  @override
+  String get bible_bookmark_blue => 'Синій';
+
+  @override
+  String get bible_bookmark_green => 'Зелений';
+
+  @override
+  String get bible_bookmark_amber => 'Бурштиновий';
+
+  @override
+  String get bible_bookmark_red => 'Червоний';
+
+  @override
+  String get bible_bookmark_violet => 'Фіолетовий';
+
+  @override
   String get app_name => 'Об\'явлення';
 
   @override
