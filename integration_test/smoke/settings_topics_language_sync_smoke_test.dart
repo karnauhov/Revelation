@@ -18,10 +18,12 @@ import 'package:revelation/features/settings/presentation/screens/settings_scree
 import 'package:revelation/features/topics/data/models/topic_info.dart';
 import 'package:revelation/features/topics/data/repositories/topics_repository.dart';
 import 'package:revelation/features/topics/presentation/bloc/topics_catalog_cubit.dart';
+import 'package:revelation/features/topics/presentation/screens/topic_screen.dart';
 import 'package:revelation/features/topics/presentation/widgets/topic_list.dart';
 import 'package:revelation/infra/db/common/db_common.dart';
 import 'package:revelation/infra/db/data_sources/topics_data_source.dart';
 import 'package:revelation/infra/db/localized/db_localized.dart';
+import 'package:revelation/infra/db/runtime/gateways/articles_database_gateway.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/main.dart' as app;
 import 'package:revelation/shared/models/app_settings.dart';
@@ -234,6 +236,95 @@ void main() {
     expect(topicsRepository.requestedLanguages, contains('en'));
     expect(topicsRepository.requestedLanguages, contains('ru'));
   });
+
+  testWidgets(
+    'Introduction opens collapsed from the catalog and its deep link',
+    (tester) async {
+      await GetIt.I.reset();
+      final talker = Talker(settings: TalkerSettings(useConsoleLogs: false));
+      AppDi.registerCore(talker: talker);
+      final settings = SettingsCubit(
+        _FakeSettingsRepository(
+          initialSettings: AppSettings(
+            selectedLanguage: 'uk',
+            selectedTheme: 'manuscript',
+            selectedFontSize: 'medium',
+            soundEnabled: false,
+          ),
+        ),
+      );
+      await settings.loadSettings();
+      final db = DbManagerArticlesDatabaseGateway();
+      final card = find.widgetWithText(ListTile, 'Вступ');
+      final button = find.byKey(const Key('topic_study_deeper_button'));
+      final manuscripts = find.descendant(
+        of: find.byType(TopicScreen),
+        matching: find.text('Першоджерела', findRichText: true),
+      );
+      try {
+        await tester.runAsync(() => db.initialize('uk'));
+        await app.startApp(
+          talker,
+          initializeSettingsCubit: (_) async => settings,
+        );
+        await tester.pump();
+        final router = AppRouter().router;
+        router.go('/');
+        await pumpUntilSmoke(
+          tester,
+          isReady: () => card.evaluate().isNotEmpty,
+          reason: 'Ukrainian Introduction in the topics catalog',
+        );
+        await tester.ensureVisible(card);
+        await tester.tap(card);
+        await pumpUntilSmoke(
+          tester,
+          isReady: () => button.evaluate().isNotEmpty,
+          reason: 'Collapsed opening on the existing Introduction card',
+        );
+        expect(manuscripts, findsNothing);
+        await tester.ensureVisible(button);
+        await pumpUntilSmoke(
+          tester,
+          isReady: () => button.hitTestable().evaluate().isNotEmpty,
+          reason: 'Study button can receive a tap after the page transition',
+        );
+        await tester.tap(button);
+        await pumpUntilSmoke(
+          tester,
+          isReady: () => manuscripts.evaluate().isNotEmpty,
+          reason: 'Original Ukrainian manuscript section is expanded',
+        );
+        expect(find.byType(TopicScreen), findsOneWidget);
+
+        final backTooltip = MaterialLocalizations.of(
+          tester.element(button),
+        ).backButtonTooltip;
+        await tester.tap(find.byTooltip(backTooltip));
+        await pumpUntilSmoke(
+          tester,
+          isReady: () =>
+              card.hitTestable().evaluate().isNotEmpty &&
+              find.byType(TopicScreen, skipOffstage: false).evaluate().isEmpty,
+          reason: 'Back removes the study route and restores the catalog',
+        );
+        unawaited(router.push<void>('/topic?file=topic_1'));
+        await pumpUntilSmoke(
+          tester,
+          isReady: () => button.evaluate().isNotEmpty,
+          reason: 'Existing Introduction deep link opens the short reading',
+        );
+        expect(manuscripts, findsNothing);
+        final l10n = AppLocalizations.of(tester.element(button))!;
+        expect(find.text(l10n.topic_explore_passage), findsOneWidget);
+      } finally {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+        await db.closeRuntime();
+        await GetIt.I.reset();
+      }
+    },
+  );
 }
 
 class _TopicsHostScreen extends StatelessWidget {

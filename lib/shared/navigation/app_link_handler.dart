@@ -420,7 +420,7 @@ Future<bool> _handleWordsLink(
 
 Future<bool> _handleBibleLink(BuildContext context, String href) async {
   final address = href.split(':');
-  if (address.length < 2 || address.length > 3) {
+  if (address.length < 2 || address.length > 4) {
     log.warning("Wrong Bible link: '$href'");
     return false;
   }
@@ -449,9 +449,15 @@ Future<bool> _handleBibleLink(BuildContext context, String href) async {
     return false;
   }
 
-  final range = address.length == 3 && address[2].trim().isNotEmpty
-      ? address[2].trim().split(RegExp(r'[-–]'))
-      : ['1'];
+  // Older clients read only the first verse field. Keeping the end in a
+  // separate field lets them open the passage at its first verse.
+  final range = switch (address.length) {
+    4 => [address[2].trim(), address[3].trim()],
+    3 when address[2].trim().isNotEmpty => address[2].trim().split(
+      RegExp(r'[-–]'),
+    ),
+    _ => ['1'],
+  };
   final first = int.tryParse(range.first);
   final last = int.tryParse(range.last);
   if (range.length > 2 ||

@@ -53,6 +53,7 @@ class TopicContentCubit extends Cubit<TopicContentState> {
       emit(
         state.copyWith(
           language: language,
+          isStudyExpanded: false,
           isLoading: false,
           failure: const AppFailure.validation('Language must not be empty.'),
         ),
@@ -68,6 +69,7 @@ class TopicContentCubit extends Cubit<TopicContentState> {
         description: _initialDescription,
         markdown: '',
         isLoading: true,
+        isStudyExpanded: false,
         clearFailure: true,
       ),
     );
@@ -146,6 +148,15 @@ class TopicContentCubit extends Cubit<TopicContentState> {
         clearFailure: true,
       ),
     );
+  }
+
+  void toggleStudy() {
+    if (isClosed ||
+        state.isLoading ||
+        state.failure != null ||
+        state.deeperMarkdown == null)
+      return;
+    emit(state.copyWith(isStudyExpanded: !state.isStudyExpanded));
   }
 
   Future<AppResult<TopicResource?>> loadCommonResource(String key) async {

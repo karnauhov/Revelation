@@ -1,10 +1,14 @@
 # Module Boundaries (EN)
 
-Doc-Version: `2.6.12`
-Last-Updated: `2026-11-27`
+Doc-Version: `2.6.13`
+Last-Updated: `2026-11-28`
 Source-Commit: `working-tree`
 
 ImagePreview owns the decoded leaf, paints it beneath its annotations and reports when the geometry is ready. The orchestration cubit restores the saved transform once and flushes pending viewport changes to the outgoing leaf before navigation. The image loader reads the original dimensions from a bounded HTTP range. The image cubit applies the comparison only to the current request, independently of image display.
+
+## Study article boundaries
+
+The topics repository returns the original Markdown. TopicContentCubit owns the expanded state, and the topic screen renders both readings and scrolls to notes. The shared link handler continues to open the Bible, dictionary, and manuscripts.
 
 ## Bible bookmark boundaries
 

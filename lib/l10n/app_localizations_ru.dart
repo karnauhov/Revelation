@@ -647,6 +647,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get open_primary_source => 'Открыть первоисточник';
 
   @override
+  String get topic_explore_passage => 'Заглянуть в текст глубже';
+
+  @override
+  String get topic_collapse_study => 'Свернуть разбор';
+
+  @override
   String get topic => 'Тема';
 
   @override

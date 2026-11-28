@@ -1,7 +1,7 @@
 # Матрица управления состоянием (RU)
 
-Doc-Version: `2.6.10`
-Last-Updated: `2026-11-27`
+Doc-Version: `2.6.11`
+Last-Updated: `2026-11-28`
 Source-Commit: `working-tree`
 
 ## Закладки Библии и положение диалогов
@@ -74,7 +74,7 @@ BibleReaderCubit остаётся единственным источником 
 | `bible/bookmarks` | `BibleBookmarksCubit` | Локальные закладки и состояние записи, общие для панелей и диалогов текущей читалки |
 | `shared/markdown/document` | `RevelationMarkdownImagesCubit` | Предзагрузка remote-изображений для одного markdown-документа, local-first image-state, progress counters и stale-request protection, общие для всех feature-ов |
 | `topics/catalog` | `TopicsCatalogCubit` | Список тем, reload при смене языка, иконки тем |
-| `topics/content` | `TopicContentCubit` | Markdown-контент одной темы, fallback-вычисление метаданных и loading/failure state |
+| `topics/content` | `TopicContentCubit` | Markdown и метаданные темы, загрузка и ошибки, раскрытие подробного разбора с возвратом к краткому при смене языка |
 | `primary_sources/list` | `PrimarySourcesCubit` | Коллекции full/significant/fragments и loading/failure state |
 | `primary_sources/list-ui` | `PrimarySourcesExpansionCubit` | Раскрытые карточки на экране списка |
 | `primary_source/detail/session` | `PrimarySourceSessionCubit` | Текущий первоисточник, выбранная страница, image key, состояние toolbar/menu |

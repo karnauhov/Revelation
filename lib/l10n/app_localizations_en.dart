@@ -648,6 +648,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get open_primary_source => 'Open primary source';
 
   @override
+  String get topic_explore_passage => 'Explore the passage more deeply';
+
+  @override
+  String get topic_collapse_study => 'Collapse study';
+
+  @override
   String get topic => 'Topic';
 
   @override

@@ -159,15 +159,15 @@
         "state": "plan",
         "stage": 1,
         "x": 530,
-        "detail": "1.0.9: подготовить образец Откровения 1:1-3 и проверить формат с поиском аллюзий (REV213).",
+        "detail": "1.0.9: дополнить существующее «Вступление» образцом Откровения 1:1-3 и проверить формат с поиском аллюзий (REV213).",
         "hint": {
-          "en": "Test the study format on Revelation 1:1-3 with allusion search.",
-          "es": "Probar el formato con Apocalipsis 1:1-3 y la búsqueda de alusiones.",
-          "uk": "Перевірити формат на Об’явленні 1:1-3 разом із пошуком алюзій.",
-          "ru": "1.0.9: подготовить образец Откровения 1:1-3 и проверить формат с поиском аллюзий."
+          "en": "Extend the existing Introduction with a sample study of Revelation 1:1-3 and test allusion search.",
+          "es": "Ampliar la Introducción existente con un estudio de muestra de Apocalipsis 1:1-3 y probar la búsqueda de alusiones.",
+          "uk": "Доповнити наявний «Вступ» зразком розбору Об’явлення 1:1-3 і перевірити пошук алюзій.",
+          "ru": "Дополнить существующее «Вступление» образцом Откровения 1:1-3 и проверить поиск аллюзий."
         },
         "id": "S3",
-        "detail_en": "1.0.9: Prepare a sample study of Revelation 1:1-3 and test the format with allusion search (REV213)."
+        "detail_en": "1.0.9: Extend the existing Introduction with a sample study of Revelation 1:1-3 and test the format with allusion search (REV213)."
       },
       {
         "state": "plan",

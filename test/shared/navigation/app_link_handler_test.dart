@@ -547,6 +547,18 @@ void main() {
       expect(find.text('preview:66:22:3-4'), findsOneWidget);
     });
 
+    testWidgets('Bible link previews a backward-compatible verse range', (
+      tester,
+    ) async {
+      final fixture = await _pumpRouterFixture(tester);
+      expect(
+        await handleAppLink(fixture.contexts['home']!, 'bible:Rev1:1:3'),
+        isTrue,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('preview:66:1:1-3'), findsOneWidget);
+    });
+
     testWidgets('bible link resolves localized book abbreviations', (
       tester,
     ) async {

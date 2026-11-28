@@ -856,6 +856,14 @@
   "@open_primary_source": {
     "description": "Link in an expanded card that opens the primary source in the app."
   },
+  "topic_explore_passage": "Explorar el pasaje a fondo",
+  "@topic_explore_passage": {
+    "description": "Invita a abrir el estudio detallado del pasaje."
+  },
+  "topic_collapse_study": "Contraer el estudio",
+  "@topic_collapse_study": {
+    "description": "Cierra el estudio detallado del pasaje."
+  },
   "topic": "Tema",
   "@topic": {
     "description": "Fallback title of a study article with no available title."

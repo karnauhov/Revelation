@@ -1,10 +1,14 @@
 # Architecture Overview (EN)
 
-Doc-Version: `2.6.12`
-Last-Updated: `2026-11-27`
+Doc-Version: `2.6.13`
+Last-Updated: `2026-11-28`
 Source-Commit: `working-tree`
 
 When a manuscript leaf opens, the viewer waits for its decoded image and panel dimensions. The first usable frame shows the saved scale and offsets for that leaf. On mobile web, the viewer shows the quality notice after comparing the pixel dimensions of the displayed file and the desktop original.
+
+## Study article reading
+
+An article is loaded as one Markdown document. The topic screen uses embedded markers to expand the detailed reading and navigate to notes. Expansion is scoped to the screen and resets when the language changes.
 
 ## Bible bookmarks
 

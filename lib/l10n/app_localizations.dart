@@ -1308,6 +1308,18 @@ abstract class AppLocalizations {
   /// **'Open primary source'**
   String get open_primary_source;
 
+  /// Invites a reader to reveal the deeper study after the opening passage.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore the passage more deeply'**
+  String get topic_explore_passage;
+
+  /// Hides the expanded study within an article.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse study'**
+  String get topic_collapse_study;
+
   /// Fallback title of a study article with no available title.
   ///
   /// In en, this message translates to:

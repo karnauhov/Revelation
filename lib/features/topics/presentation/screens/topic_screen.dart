@@ -14,6 +14,7 @@ import 'package:revelation/features/settings/presentation/bloc/settings_cubit.da
 import 'package:revelation/features/topics/data/models/topic_resource.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_cubit.dart';
 import 'package:revelation/features/topics/presentation/bloc/topic_content_state.dart';
+import 'package:revelation/features/topics/presentation/widgets/topic_study_body.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
 import 'package:revelation/shared/ui/dialogs/dialogs_utils.dart';
@@ -122,16 +123,45 @@ class _TopicScreenState extends State<TopicScreen> {
             content = SizedBox.expand(
               child: SingleChildScrollView(
                 controller: _scrollController,
-                child: RevelationMarkdownBody(
-                  key: ValueKey(
-                    'topic-markdown-${state.route}-${state.language}-${state.markdown.hashCode}',
-                  ),
-                  data: state.markdown,
-                  padding: const EdgeInsets.all(8.0),
-                  showImagePreloadProgress: true,
-                  onTapLink: (text, href, title) async {
-                    await _handleTopicLink(context, href);
-                  },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _readingBody(context, state.openingMarkdown),
+                    if (state.deeperMarkdown != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Center(
+                          child: Semantics(
+                            expanded: state.isStudyExpanded,
+                            child: FilledButton.icon(
+                              key: const Key('topic_study_deeper_button'),
+                              onPressed: _topicContentCubit.toggleStudy,
+                              icon: Icon(
+                                state.isStudyExpanded
+                                    ? Icons.expand_less
+                                    : Icons.menu_book_outlined,
+                              ),
+                              label: Text(
+                                state.isStudyExpanded
+                                    ? l10n.topic_collapse_study
+                                    : l10n.topic_explore_passage,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (state.isStudyExpanded && state.deeperMarkdown != null)
+                      TopicStudyBody(
+                        key: ValueKey(state.deeperMarkdown),
+                        markdown: state.deeperMarkdown!,
+                        onTapLink: (text, href, title) =>
+                            _handleTopicLink(context, href),
+                      ),
+                  ],
                 ),
               ),
             );
@@ -201,15 +231,17 @@ class _TopicScreenState extends State<TopicScreen> {
                   IconButton(
                     key: const Key('topic_screen_export_pdf_button'),
                     tooltip: l10n.export_pdf_content,
-                    onPressed: () =>
-                        unawaited(_handleExportPdf(title, state.markdown)),
+                    onPressed: () => unawaited(
+                      _handleExportPdf(title, state.fullReadingMarkdown),
+                    ),
                     icon: const Icon(Icons.file_download_outlined),
                   ),
                 if (canExportPdf)
                   IconButton(
                     key: const Key('topic_screen_copy_button'),
                     tooltip: l10n.copy_content,
-                    onPressed: () => unawaited(_handleCopy(state.markdown)),
+                    onPressed: () =>
+                        unawaited(_handleCopy(state.fullReadingMarkdown)),
                     icon: const Icon(Icons.content_copy_outlined),
                   ),
               ],
@@ -218,6 +250,16 @@ class _TopicScreenState extends State<TopicScreen> {
           );
         },
       ),
+    );
+  }
+
+  Widget _readingBody(BuildContext context, String markdown) {
+    return RevelationMarkdownBody(
+      key: ValueKey(markdown),
+      data: markdown,
+      padding: const EdgeInsets.all(8),
+      showImagePreloadProgress: true,
+      onTapLink: (text, href, title) => _handleTopicLink(context, href),
     );
   }
 

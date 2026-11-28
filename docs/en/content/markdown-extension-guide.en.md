@@ -1,7 +1,9 @@
 # Markdown Extension Guide (EN)
 
-Doc-Version: `1.3.0`  
-Last-Updated: `2026-04-11`  
+Doc-Version: `1.4.0`
+
+Last-Updated: `2026-11-28`
+
 Source-Commit: `working-tree`
 
 ## Purpose
@@ -22,6 +24,40 @@ Document the Revelation markdown extension approach built on top of `flutter_mar
 - Strikethrough
 - Autolinks
 - Emoji shortcodes when `EmojiSyntax` is enabled
+
+## Opening the detailed study
+
+Start a passage study with its introductory reading. Place the following marker exactly once on its own line between the introduction and the detailed material.
+
+```md
+<!-- study:deeper -->
+```
+
+At that point readers see a native button in their interface language. Omit the button text, HTML controls and visible level labels such as “short reading” and “detailed reading” from the Markdown. When expanding an existing study, include its complete original text for that language in the detailed material, with its links to words and manuscript leaves. [Editorial assembly procedure](../../../.agents/skills/revelation-study/references/editorial-workflow.md#продолжение-существующего-раздела)
+
+## Footnotes for external sources
+
+Put a Unicode superscript number (`¹`, `²`, `³`, …, `¹⁰`) immediately after the claim it supports. Enter the digits directly without a link to a `#...` anchor. They point to the note with the same number at the end of the study. The final paragraph and reference list can look like this.
+
+```md
+The words “the time is near” prompt the listener to consider a personal response.¹
+
+<!-- study:references -->
+
+Use a destination such as `bible:Rev1:1:3` for a Bible passage range in independently distributed content. Older clients open the reader at the first verse, and the new client shows verses 1-3 in a dialog.
+
+---
+
+1. Heinrich Bullinger. Second sermon on Revelation, English edition of 1561, pp. 17-18. [Sermon text, segment 298](https://earlyenglishprintedsermons.org/segment/B11837/298)
+```
+
+Put the references marker on its own line. Separate the marker, horizontal rule and list with blank lines. Use an ordinary Markdown list numbered consecutively. Each complete entry occupies one source line and includes attribution, an exact locator and an HTTPS link. Put scholars' names and religious affiliations in the notes. English-language sources can serve all locales. Link sources in another language only from the matching locale. Verify the content and language of the actual destination.
+
+Keep native links to Scripture, Strong's entries and manuscript words in the narrative. For example, `[Rev. 22:3-4](bible:Rev22:3-4)` opens a verse range. `strong:G602` and `strong:H7225` open the corresponding dictionary entries. Use verified `word:` and `words:` links for individual manuscript words or comparisons. Include only confirmed information and usable destinations in reader copy.
+
+Links should be recognizable by their color and underline. To italicize a link, put the asterisks around the whole link, as in `*[apokalypsis](strong:G602)*`. Check the appearance and tap behavior in the app.
+
+In the new client, tapping a note number opens its entry. In the two previous published application versions, both reading levels may appear consecutively, with readable numbers and the matching list below. Open the actual candidate content package in each of those releases and include screenshots of the reading and notes in the task's single report. [Compatibility checks](../../../.agents/skills/revelation-study/references/editorial-workflow.md#проверка-пакета-в-предыдущих-выпусках)
 
 ## Custom Image Blocks
 

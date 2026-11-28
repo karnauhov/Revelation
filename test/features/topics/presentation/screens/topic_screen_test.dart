@@ -273,6 +273,7 @@ void main() {
       );
       expect(find.byKey(const Key('topic_screen_copy_button')), findsOneWidget);
       expect(find.byType(MarkdownBody), findsOneWidget);
+      expect(find.byKey(const Key('topic_study_deeper_button')), findsNothing);
 
       await tester.tap(find.byKey(const Key('topic_screen_export_pdf_button')));
       await tester.pump();
@@ -281,6 +282,97 @@ void main() {
       expect(capturedDocumentTitle, 'Printable title');
     },
   );
+
+  testWidgets('A narrow study page expands and collapses from the keyboard', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(320, 480));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    const overview = 'Listen to the opening words.';
+    const evidence = 'Compare the three witnesses.';
+    final repo = _FakeTopicsRepository(
+      markdownByRouteLanguage: const {
+        'topic_1|en': AppSuccess(
+          '$overview\n\n<!-- study:deeper -->\n\n$evidence',
+        ),
+      },
+    );
+    final harness = await _buildHarness(
+      child: TopicScreen(
+        file: 'topic_1',
+        topicContentCubitBuilder: _topicCubitBuilder(repo),
+      ),
+    );
+    addTearDown(harness.dispose);
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
+
+    final button = find.byKey(const Key('topic_study_deeper_button'));
+    final l10n = AppLocalizations.of(tester.element(button))!;
+    final label = find.text(l10n.topic_explore_passage);
+    final detail = find.text(evidence, findRichText: true);
+    expect(find.text(overview, findRichText: true), findsOneWidget);
+    expect(detail, findsNothing);
+    expect(button.hitTestable(), findsOneWidget);
+    for (var i = 0; i < 6 && !Focus.of(tester.element(label)).hasFocus; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+    }
+    expect(Focus.of(tester.element(label)).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.topic_collapse_study), findsOneWidget);
+    expect(find.text(overview, findRichText: true), findsOneWidget);
+    expect(detail, findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(label, findsOneWidget);
+    expect(detail, findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('A collapsed study copies and exports the complete reading', (
+    tester,
+  ) async {
+    const overview = 'Read the introduction.';
+    const evidence = 'Read the manuscript comparison.';
+    final repo = _FakeTopicsRepository(
+      markdownByRouteLanguage: const {
+        'topic_1|en': AppSuccess(
+          '$overview\n\n<!-- study:deeper -->\n\n$evidence',
+        ),
+      },
+    );
+    String? copied;
+    String? exported;
+    final harness = await _buildHarness(
+      child: TopicScreen(
+        file: 'topic_1',
+        topicContentCubitBuilder: _topicCubitBuilder(repo),
+        onCopyRequested: (markdown) async {
+          copied = markdown;
+        },
+        onExportPdfRequested:
+            ({required String markdown, required String documentTitle}) async {
+              exported = markdown;
+              return 'reading.pdf';
+            },
+      ),
+    );
+    addTearDown(harness.dispose);
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
+    expect(find.text(evidence, findRichText: true), findsNothing);
+
+    await tester.tap(find.byKey(const Key('topic_screen_copy_button')));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('topic_screen_export_pdf_button')));
+    await tester.pump();
+
+    expect(copied, '$overview\n\n$evidence');
+    expect(exported, copied);
+    expect(find.text(evidence, findRichText: true), findsNothing);
+  });
 
   testWidgets('TopicScreen copies markdown from app bar action', (
     tester,

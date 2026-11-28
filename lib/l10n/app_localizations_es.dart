@@ -657,6 +657,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get open_primary_source => 'Abrir la fuente primaria';
 
   @override
+  String get topic_explore_passage => 'Explorar el pasaje a fondo';
+
+  @override
+  String get topic_collapse_study => 'Contraer el estudio';
+
+  @override
   String get topic => 'Tema';
 
   @override

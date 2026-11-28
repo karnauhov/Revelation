@@ -1,7 +1,7 @@
 # State Management Matrix (EN)
 
-Doc-Version: `2.6.10`
-Last-Updated: `2026-11-27`
+Doc-Version: `2.6.11`
+Last-Updated: `2026-11-28`
 Source-Commit: `working-tree`
 
 ## Bible bookmarks and dialog position
@@ -74,7 +74,7 @@ Show which cubit owns each runtime state slice.
 | `bible/bookmarks` | `BibleBookmarksCubit` | Local bookmarks and persistence status shared by all panes and bookmark dialogs in the workspace |
 | `shared/markdown/document` | `RevelationMarkdownImagesCubit` | Per-markdown-document remote image preload, local-first image state, progress counters, and stale-request protection shared across features |
 | `topics/catalog` | `TopicsCatalogCubit` | Topic list, language-bound reloads, topic icons |
-| `topics/content` | `TopicContentCubit` | Single topic markdown content, metadata fallback resolution, and loading/failure state |
+| `topics/content` | `TopicContentCubit` | Topic Markdown and metadata, loading and failure, and detailed reading expansion reset on language change |
 | `primary_sources/list` | `PrimarySourcesCubit` | Full/significant/fragment source collections and loading/failure state |
 | `primary_sources/list-ui` | `PrimarySourcesExpansionCubit` | Expanded cards on the list screen |
 | `primary_source/detail/session` | `PrimarySourceSessionCubit` | Current source, selected page, image key, toolbar/menu session state |

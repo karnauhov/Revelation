@@ -648,6 +648,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get open_primary_source => 'Відкрити першоджерело';
 
   @override
+  String get topic_explore_passage => 'Зазирнути в текст глибше';
+
+  @override
+  String get topic_collapse_study => 'Згорнути розбір';
+
+  @override
   String get topic => 'Тема';
 
   @override

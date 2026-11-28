@@ -31,7 +31,7 @@ The codes below identify the eight tracks: A for App, S for Study, M for Manuscr
 
 - <a name="s1"></a> **S1** · 1.0.0: Released a preface explaining primary sources, study principles and stages.
 - <a name="s2"></a> **S2** · By 1.0.8: An introduction to Revelation 1:1-3 is available. The full seven-stage study is planned.
-- <a name="s3"></a> **S3** · 1.0.9: Prepare a sample study of Revelation 1:1-3 and test the format with allusion search (REV213).
+- <a name="s3"></a> **S3** · 1.0.9: Extend the existing Introduction with a sample study of Revelation 1:1-3 and test the format with allusion search (REV213).
 - <a name="s4"></a> **S4** · 1.0.10: Publish the first complete study of 1:1-3 after all seven stages and review (REV242).
 - <a name="s5"></a> **S5** · 1.0.11: Complete the full prologue, 1:1-8, with supporting material (REV246).
 - <a name="s6"></a> **S6** · 2027-2029: Publish reviewed studies of the messages to the seven churches individually or in small groups (REV3).
@@ -126,7 +126,7 @@ The windows below are estimates and include a **10% reserve**. The initial estim
 
 | Version · Estimated window | App and Bible modules | Studies and manuscripts | Outreach and platforms |
 | --- | --- | --- | --- |
-| **1.0.9** · Winter 2026/27 | Allusion search, return to the last reading position through the Bible menu (REV211), fixes to audio and image viewing | Sample study of 1:1-3 and annotation pilot W00 | Review Ukrainian outreach, demonstrate search and reading, prepare Windows signing |
+| **1.0.9** · Winter 2026/27 | Allusion search, return to the last reading position through the Bible menu (REV211), fixes to audio and image viewing | Sample study of 1:1-3 in the Introduction and annotation pilot W00 | Review Ukrainian outreach, demonstrate search and reading, prepare Windows signing |
 | **1.0.10** · Spring to summer 2027 | Russian Bible, pronunciation and word display in the introduction | Complete 1:1-3, W01, one further source if ready | Reader feedback, preparation for Apple and Galaxy Store |
 | **1.0.11** · Autumn 2027 | Spanish Bible, evaluate how to show emphasis in Bible text | Complete prologue 1:1-8 and W02 | Demonstrate Spanish reading, evaluate Huawei AppGallery |
 | **1.0.12** · Winter 2027/28 | Downloadable offline study pack, offline testing and selection of the next text module | Next complete passage, pilot the full prologue, W03, one further source | Pilot up to two channels, approach OneVoice27 after a successful prologue pilot, evaluate F-Droid and Flathub |
@@ -149,7 +149,7 @@ Each app release goes through acceptance testing. Store availability, facsimile 
 
 ## Complete passage studies
 
-The preface and an introduction to 1:1-3 are already available. The 1.0.9 sample demonstrates the format and allusion search. The first full package will cover 1:1-3 in the 1.0.10 window, followed by the full prologue in 1:1-8. The rest of the book will follow in short, complete passages. Every package includes these seven stages.
+The Preface and the Introduction are already available. In 1.0.9 the sample study of Revelation 1:1-3 expands the existing second card, Introduction (`topic_1`). Readers open the same route, read the introduction and use a button to explore the detailed study, including the original text, its interactive manuscript links and an example of allusion search. The team preserves each language's original and the order of the cards. The first full package will cover 1:1-3 in the 1.0.10 window, followed by the full prologue in 1:1-8. The rest of the book will follow in short, complete passages. Every package includes these seven stages.
 
 1. A combined text from the available witnesses, with variant readings and links to manuscript pages.
 2. Word studies, verified Strong's links, grammar and syntax.
@@ -159,7 +159,7 @@ The preface and an introduction to 1:1-3 are already available. The 1.0.9 sample
 6. Historical context and an assessment of possible prophetic fulfilment grounded in the evidence.
 7. Questions and practical application for the reader.
 
-Each package provides a short reading and a detailed study, with sources, Bible references, facsimiles, glossary entries, diagrams and images as needed. We check access and permissions for supporting materials. Before publication we review the four languages, links and evidence, and identify established findings, interpretations and open questions. Agents can draft material, compare evidence and check links. Readers and specialists help where their feedback or review matters.
+For each verse the team compares sources according to their role and evidential weight, including evidence that challenges the initial reading. A shared evidence record supports two standalone accounts, a short reading and a more detailed study for general readers. Each offers a visual or interactive way to study the text, such as locating a word on a manuscript leaf or comparing two biblical scenes. The editorial dossier preserves the Adventist research priorities and full attribution. Both readings address Christians across traditions and people new to the Bible. Readers can follow the evidence in Scripture, manuscripts, historical records and relevant Christian authors under the editorial citation rules. Across the series we seek comparable representation of Christian traditions and place early Christian writers in their historical setting. An independent reviewer checks the specific passage of each non-Adventist work in context for consistency with Adventist teaching before it is linked in a reading. [Series register](docs/ru/content/revelation-study-reception.md) Separate reviewers check factual and doctrinal claims, the four languages and media rights before publication. [Editorial workflow](.agents/skills/revelation-study/SKILL.md) · [Source catalogue](docs/ru/content/revelation-study-sources.md)
 
 | Part of Revelation | Work and publication window |
 | --- | --- |

@@ -856,6 +856,14 @@
   "@open_primary_source": {
     "description": "Link in an expanded card that opens the primary source in the app."
   },
+  "topic_explore_passage": "Зазирнути в текст глибше",
+  "@topic_explore_passage": {
+    "description": "Кнопка відкриття докладного розбору уривка."
+  },
+  "topic_collapse_study": "Згорнути розбір",
+  "@topic_collapse_study": {
+    "description": "Кнопка згортання докладного розбору уривка."
+  },
   "topic": "Тема",
   "@topic": {
     "description": "Fallback title of a study article with no available title."

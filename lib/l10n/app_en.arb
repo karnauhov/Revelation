@@ -854,6 +854,10 @@
   "@open_primary_source": {
     "description": "Link in an expanded card that opens the primary source in the app."
   },
+  "topic_explore_passage": "Explore the passage more deeply",
+  "@topic_explore_passage": {"description": "Invites a reader to reveal the deeper study after the opening passage."},
+  "topic_collapse_study": "Collapse study",
+  "@topic_collapse_study": {"description": "Hides the expanded study within an article."},
   "topic": "Topic",
   "@topic": {
     "description": "Fallback title of a study article with no available title."

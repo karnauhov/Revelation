@@ -56,6 +56,9 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [Стратегия тестирования](./docs/ru/testing/strategy.ru.md)
 - [Локальный выпуск и единый каталог пакетов](./docs/ru/release/local-release.ru.md)
 - [Руководство по расширению Markdown](./docs/ru/content/markdown-extension-guide.ru.md)
+- [Корпус источников и порядок их применения к каждому стиху](./docs/ru/content/revelation-study-sources.md)
+- [Какие христианские авторы представлены в читательских материалах](./docs/ru/content/revelation-study-reception.md)
+- [Источники образца Откр. 1:1-3](./docs/ru/content/study/rev-01-01-03/evidence.md). «Вступление» (`topic_1`) остаётся второй карточкой. Вводный рассказ ведёт через кнопку к подробному разбору с исходным текстом и интерактивными ссылками на рукописи. Редакционные материалы на четырёх языках · [RU](./docs/ru/content/study/rev-01-01-03/ru.md) · [EN](./docs/ru/content/study/rev-01-01-03/en.md) · [ES](./docs/ru/content/study/rev-01-01-03/es.md) · [UK](./docs/ru/content/study/rev-01-01-03/uk.md)
 - [Технический план разметки русского текста по Стронгу](./docs/ru/content/rst-strongs-module-roadmap.ru.md)
 - [Технический план разметки украинского текста по Стронгу](./docs/ru/content/ukrainian-bible-strongs-module-roadmap.ru.md)
 - [REV209: базовые показатели использования и гипотезы роста](./docs/ru/analytics/rev209-usage-baseline.ru.md)
@@ -78,6 +81,8 @@ Use Flutter 3.47.2 (Dart 3.13.2), matching CI. Android builds use Java 17, AGP 9
 - [License Notice](./NOTICE)
 
 ### Project Task Skills
+
+- [`$revelation-study`](./.agents/skills/revelation-study/SKILL.md) - coordinate a team to research, write, illustrate, translate and independently verify both readings of a Revelation passage.
 
 - [`$revelation-add-task`](./.agents/skills/revelation-add-task/SKILL.md) - add a feature, bug, or note through AI11 MCP with project/version verification, duplicate checks and one checklist.
 - [`$revelation-task`](./.agents/skills/revelation-task/SKILL.md) - use AI11 MCP for an exact code, otherwise resume this chat's unfinished task or select READY work by the current plan, dependencies and gates, preserving project priorities.
