@@ -57,6 +57,8 @@ John tells us how far his words reach. [He bore witness to what he saw](bible:Re
 
 A few lines later, John names [the island of Patmos](bible:Rev1:9) and once again puts [“the word of God” alongside “the testimony of Jesus”](bible:Rev1:2). At first we learn what John bore witness to. Now the same expressions are part of the story of his own life. Read both passages aloud. What changes when you know something about the life behind the voice?
 
+What did John see that he was asked to write down? In [the opening vision](bible:Rev1:17:19), John falls at the feet of the one who speaks to him. The speaker tells John that he died and is alive for ever. Then he tells John to write what he has seen. When John calls Jesus the faithful witness, he can also tell his listeners what the living Christ said to him.
+
 ### Verse 3. What would you hear in the room?
 
 Listen for the shift from one to many. In Greek, “[the one who reads](words:U001:325v:46;U002:150r:41;U004:197r:14)” is singular. “[Those who hear](words:U001:325v:49;U002:150r:44;U004:197r:17)” and “[those who keep](words:U001:325v:55;U002:150r:50;U004:197r:24)” are plural. It is easy to picture people gathered together. One person speaks the words aloud, and the others hear them and carry them away. The next verse names the first recipients, [the seven churches in Asia](bible:Rev1:4).
@@ -81,7 +83,11 @@ Compare what the listeners hear in each row: [“the word,” “the words,” o
 
 Long before John, Moses gave instructions to [read the law aloud](bible:Deut31:11) and [gather the people so they could hear it and learn to put it into practice](bible:Deut31:12). Revelation gives us a similar picture of faithfulness to the covenant. In Daniel [the book is sealed until the time of the end](bible:Dan12:4). At the close of Revelation John is told to [leave the words of the prophecy unsealed](bible:Rev22:10). Compare the two instructions. Which helps explain why the people gathered to hear John can already hear the blessing?
 
+Listen for a similar blessing in [Luke 11:27-28](bible:Luke11:27:28). A woman in the crowd calls the mother of Jesus blessed. Jesus answers that those who hear God's word and keep it are blessed. Now return to the people listening in [Revelation 1:3](bible:Rev1:3). What can they do once the reading is over?
+
 ### Why say “the time is near”?
+
+John uses two different expressions. In [verse 1](bible:Rev1:1), “soon” goes with what must happen. In [verse 3](bible:Rev1:3), it is the time itself that John calls “near.” Read the little word “for” before that last phrase. How does it explain why keeping what they have heard matters to the listeners now?
 
 Turn to the closing lines of the book. We meet [the angel and the servants again and hear once more of what must soon take place](bible:Rev22:6). In the next verse [Christ’s promise to come soon](bible:Rev22:7) stands alongside a blessing on the person who keeps the words of the prophecy. By now the visions have passed before the reader’s eyes. How will the reader respond? What does John invite people to do when they hear that the time is near? The opening verses give no date. In the Gospel Jesus tells his disciples that [they do not know the day or the hour](bible:Mat24:36).
 

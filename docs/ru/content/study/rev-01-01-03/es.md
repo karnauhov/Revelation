@@ -57,6 +57,8 @@ Juan precisa hasta dónde llega su testimonio. [Cuenta lo que vio](bible:Rev1:2)
 
 Unas líneas después, Juan menciona [la isla de Patmos](bible:Rev1:9) y vuelve a poner juntas dos expresiones, [«la palabra de Dios» y «el testimonio de Jesús»](bible:Rev1:2). Al principio descubrimos de qué dio testimonio. Ahora esas mismas expresiones aparecen en el relato de su propia vida. Lee los dos pasajes en voz alta. ¿Qué cambia cuando conoces algo de la vida de quien te habla?
 
+¿Qué vio Juan y qué se le pidió que escribiera? En [la primera visión](bible:Rev1:17:19), Juan cae a los pies de quien le habla. El que le habla le dice que estuvo muerto y ahora vive para siempre. Luego le encarga que escriba lo que ha visto. Cuando Juan llama a Jesús el testigo fiel, también puede contar a quienes lo escuchan lo que el propio Cristo, ya resucitado, le dijo.
+
 ### Versículo 3. ¿Qué se oye en la sala donde se lee?
 
 Fíjate en el paso del singular al plural. En griego, «[el que lee](words:U001:325v:46;U002:150r:41;U004:197r:14)» es uno. «[Los que oyen](words:U001:325v:49;U002:150r:44;U004:197r:17)» y «[los que guardan](words:U001:325v:55;U002:150r:50;U004:197r:24)» son varios. Es fácil imaginar a una comunidad reunida. Una persona pronuncia las palabras en voz alta y las demás las escuchan y se las llevan consigo. En el versículo siguiente conocemos a los primeros destinatarios, [las siete iglesias de Asia](bible:Rev1:4).
@@ -81,7 +83,11 @@ Compara lo que oye la gente en cada fila: [«la palabra», «las palabras» o «
 
 Mucho antes que Juan, Moisés mandó [leer la ley en voz alta](bible:Deut31:11) y [reunir al pueblo para que la oyera y aprendiera a cumplirla](bible:Deut31:12). Aquí encontramos una imagen parecida de la fidelidad al pacto. En Daniel, [el libro permanece sellado hasta el tiempo del fin](bible:Dan12:4). Al final del Apocalipsis, Juan recibe la orden de [dejar sin sellar las palabras de la profecía](bible:Rev22:10). Compara las dos instrucciones. ¿Cuál ayuda a entender por qué los que se han reunido para escuchar a Juan ya pueden oír la bendición?
 
+Escucha otra bienaventuranza parecida en [Lucas 11:27-28](bible:Luke11:27:28). Una mujer de entre la multitud llama dichosa a la madre de Jesús. Jesús responde que son dichosos quienes oyen la palabra de Dios y la guardan. Vuelve a pensar en quienes escuchan la lectura en [Apocalipsis 1:3](bible:Rev1:3). ¿Qué pueden hacer cuando termina la lectura?
+
 ### ¿Por qué dice que «el tiempo está cerca»?
+
+Juan emplea dos expresiones distintas. En [el versículo 1](bible:Rev1:1), «pronto» se refiere a lo que ha de suceder. En [el versículo 3](bible:Rev1:3), es el tiempo mismo el que «está cerca». Fíjate en la palabra «porque», que introduce esa última frase. ¿Cómo ayuda a entender por qué importa que quienes escuchan pongan en práctica desde ahora lo que han oído?
 
 Ve a las últimas líneas del libro. Vuelven a aparecer [el ángel, los siervos y el anuncio de lo que pronto ha de suceder](bible:Rev22:6). En el versículo siguiente, junto a [la promesa de Cristo de venir pronto](bible:Rev22:7), se escucha la bendición para quien guarda las palabras de la profecía. A estas alturas ya han pasado ante los ojos del lector todas las visiones. ¿Cómo responderá? ¿Qué les propone Juan a quienes oyen que el tiempo está cerca? Los versículos iniciales no dan una fecha. En el Evangelio, Jesús les dice a sus discípulos que [desconocen el día y la hora](bible:Mat24:36).
 
