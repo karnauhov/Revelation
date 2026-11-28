@@ -28,6 +28,7 @@ void main() {
 
     expect(find.byType(StrongNumberPickerDialog), findsOneWidget);
     expect(find.text('-'), findsOneWidget);
+    expect(find.byType(FilledButton), findsNothing);
 
     await tester.tap(find.text(l10n.close));
     await tester.pumpAndSettle();
@@ -62,7 +63,7 @@ void main() {
     expect(find.text('3303'), findsOneWidget);
     expect(find.text('word-3303'), findsOneWidget);
 
-    await tester.tap(find.text(l10n.ok));
+    await tester.tap(find.widgetWithText(FilledButton, l10n.dialog_select));
     await tester.pumpAndSettle();
 
     expect(await resultFuture, 3303);
@@ -100,7 +101,7 @@ void main() {
     expect(find.text('5624'), findsOneWidget);
     expect(find.text('classic-5624'), findsOneWidget);
 
-    await tester.tap(find.text(l10n.ok));
+    await tester.tap(find.widgetWithText(FilledButton, l10n.dialog_select));
     await tester.pumpAndSettle();
 
     expect(await resultFuture, 5624);

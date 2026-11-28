@@ -4,6 +4,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:intl/intl.dart';
 import 'package:revelation/features/bible/bible.dart';
 import 'package:revelation/features/bible/data/repositories/bible_module_data_source.dart';
+import 'package:revelation/features/bible/data/repositories/bible_preferences_store.dart';
 import 'package:revelation/infra/db/bible/bible_module_db.dart';
 import 'package:revelation/infra/db/connectors/database_version_info.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -19,12 +20,14 @@ void main() {
   binding.reportData = {};
   for (final language in ['en', 'es', 'uk', 'ru']) {
     testWidgets('installed module information in $language', (tester) async {
-      SharedPreferences.setMockInitialValues({});
       for (final file in [
         'bible_lxx_tr.sqlite',
         'bible_kjv.sqlite',
         'bible_ohienko_1988.sqlite',
       ]) {
+        SharedPreferences.setMockInitialValues({
+          SharedPreferencesBiblePreferencesStore.lastModuleFilesKey: [file],
+        });
         late DatabaseVersionInfo version;
         late String title;
         late String source;
@@ -54,11 +57,20 @@ void main() {
             supportedLocales: AppLocalizations.supportedLocales,
             home: BibleScreen(
               initialBookId: 1,
-              bibleRepository: _InstalledRepository(file),
+              initialModuleFile: file,
+              bibleRepository: BibleRepository(
+                moduleDataSource: _InstalledModules(),
+              ),
             ),
           ),
         );
-        await _pumpUntil(tester, find.byKey(const Key('bible_verse_1')));
+        await _pumpUntil(
+          tester,
+          find.descendant(
+            of: find.byKey(const Key('bible_reader_pane_primary')),
+            matching: find.byKey(const Key('bible_verse_1')),
+          ),
+        );
         final l10n = AppLocalizations.of(
           tester.element(find.byType(BibleScreen)),
         )!;
@@ -158,15 +170,6 @@ Future<void> _pumpUntil(WidgetTester tester, Finder finder) async {
     );
   }
   expect(finder, findsOneWidget);
-}
-
-class _InstalledRepository extends BibleRepository {
-  _InstalledRepository(this.file)
-    : super(moduleDataSource: _InstalledModules());
-  final String file;
-
-  @override
-  Future<List<String>> loadLastModuleFiles() async => [file];
 }
 
 class _InstalledModules implements BibleModuleDataSource {

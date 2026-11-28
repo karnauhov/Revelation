@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/features/allusion_search/domain/models/allusion_results.dart';
 import 'package:revelation/features/allusion_search/domain/services/allusion_index.dart';
@@ -252,13 +253,7 @@ class _QueryOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    return AlertDialog(
-      backgroundColor: theme.colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: theme.colorScheme.primary),
-        borderRadius: BorderRadius.circular(8),
-      ),
+    return RevelationDialog(
       title: Text(l10n.allusion_options, textAlign: TextAlign.center),
       content: SizedBox(
         width: 320,
@@ -277,10 +272,10 @@ class _QueryOptions extends StatelessWidget {
           ),
         ),
       ),
-      actions: [
-        TextButton(
+      secondaryActions: [
+        RevelationDialogAction(
+          label: l10n.close,
           onPressed: () => Navigator.pop(context),
-          child: Text(l10n.close),
         ),
       ],
     );

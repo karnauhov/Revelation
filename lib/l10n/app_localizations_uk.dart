@@ -738,6 +738,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get ok => 'OK';
 
   @override
+  String get dialog_select => 'Вибрати';
+
+  @override
+  String get dialog_done => 'Готово';
+
+  @override
   String get cancel => 'Скасувати';
 
   @override

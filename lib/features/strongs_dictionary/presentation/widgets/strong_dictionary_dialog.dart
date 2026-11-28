@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:revelation/features/strongs_dictionary/application/services/strongs_dictionary_content_service.dart';
@@ -74,8 +75,9 @@ class StrongDictionaryDialog extends StatelessWidget {
             contentService: StrongsDictionaryContentService(),
           );
         }
-        return const AlertDialog(
-          content: SizedBox(
+        return RevelationDialog(
+          title: Text(localizations.strongs_dictionary_screen),
+          content: const SizedBox(
             width: 96,
             height: 96,
             child: Center(child: CircularProgressIndicator()),
@@ -170,24 +172,22 @@ class _StrongDictionaryDialogContentState
               },
             ),
           ),
-          actions: [
-            TextButton.icon(
-              key: const Key('strong_dialog_open_page'),
-              icon: const Icon(Icons.open_in_new),
-              onPressed: () {
-                final router = GoRouter.of(context);
-                Navigator.of(context).popUntil((route) => route is! PopupRoute);
-                router.push(
-                  '/strongs_dictionary?number=G${state.strongNumber}',
-                );
-              },
-              label: Text(localizations.strong_open_dictionary),
-            ),
-            TextButton(
+          secondaryActions: [
+            RevelationDialogAction(
+              label: localizations.close,
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(localizations.close),
             ),
           ],
+          primaryAction: RevelationDialogAction(
+            key: const Key('strong_dialog_open_page'),
+            icon: Icons.open_in_new,
+            label: localizations.strong_open_dictionary,
+            onPressed: () {
+              final router = GoRouter.of(context);
+              Navigator.of(context).popUntil((route) => route is! PopupRoute);
+              router.push('/strongs_dictionary?number=G${state.strongNumber}');
+            },
+          ),
         );
       },
     );

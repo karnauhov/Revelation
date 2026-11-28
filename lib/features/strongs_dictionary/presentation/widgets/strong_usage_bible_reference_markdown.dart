@@ -12,6 +12,7 @@ import 'package:revelation/features/strongs_dictionary/application/services/stro
 import 'package:revelation/features/strongs_dictionary/presentation/bloc/strong_usage_preview_cubit.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/navigation/app_link_handler.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 
@@ -221,8 +222,6 @@ class _StrongUsageMoreReferenceLink extends StatelessWidget {
         name: 'strong_usage_reference_detail_dialog',
       ),
       builder: (dialogContext) {
-        final theme = Theme.of(dialogContext);
-        final colorScheme = theme.colorScheme;
         final localizations = AppLocalizations.of(dialogContext)!;
         final mediaSize = MediaQuery.sizeOf(dialogContext);
         final dialogHeight = (mediaSize.height - 120)
@@ -258,13 +257,10 @@ class _StrongUsageMoreReferenceLink extends StatelessWidget {
               onWordsTap: onWordsTap,
             ),
           ),
-          actions: [
-            TextButton(
+          secondaryActions: [
+            RevelationDialogAction(
+              label: localizations.close,
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(
-                localizations.close,
-                style: TextStyle(color: colorScheme.primary),
-              ),
             ),
           ],
         );

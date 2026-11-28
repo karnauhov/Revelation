@@ -162,9 +162,12 @@ void main() {
       tester.getBottomLeft(titleText).dy,
       lessThanOrEqualTo(tester.getTopLeft(subtitle).dy),
     );
+    TextStyle effectiveStyle(Finder text) => DefaultTextStyle.of(
+      tester.element(text),
+    ).style.merge(tester.widget<Text>(text).style);
     expect(
-      tester.widget<Text>(titleText).style!.fontSize,
-      greaterThan(tester.widget<Text>(subtitle).style!.fontSize!),
+      effectiveStyle(titleText).fontSize,
+      greaterThan(effectiveStyle(subtitle).fontSize!),
     );
     final infoIcon = find.byKey(const Key('strong_reference_info_icon'));
     expect(infoIcon, findsOneWidget);

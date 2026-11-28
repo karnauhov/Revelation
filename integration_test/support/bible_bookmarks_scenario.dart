@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revelation/features/bible/bible.dart';
@@ -65,7 +66,7 @@ Future<void> exerciseBibleBookmarks(WidgetTester tester) async {
     pointer.addPointer(location: const Offset(1, 1)),
   );
   await tester.sendEventToBinding(
-    pointer.hover(tester.getTopLeft(sourceVerse) + const Offset(6, 10)),
+    pointer.hover(_verseNumberCenter(tester, sourceVerse)),
   );
   expect(
     tester.binding.mouseTracker.debugDeviceActiveCursor(pointer.device),
@@ -202,15 +203,18 @@ Future<void> exerciseBibleBookmarks(WidgetTester tester) async {
   expect((await store.load()).single.id, created.id);
   await tester.tap(find.byTooltip(strings.bible_bookmark_delete));
   await tester.pumpAndSettle();
-  await tester.tap(
-    find.descendant(
-      of: dialog.last,
-      matching: find.widgetWithText(
-        FilledButton,
-        strings.bible_bookmark_delete,
-      ),
-    ),
+  final delete = find.descendant(
+    of: dialog.last,
+    matching: find.widgetWithText(FilledButton, strings.bible_bookmark_delete),
   );
+  final deleteButton = tester.widget<FilledButton>(delete);
+  final deleteColors = Theme.of(tester.element(delete)).colorScheme;
+  expect(deleteButton.style?.backgroundColor?.resolve({}), deleteColors.error);
+  expect(
+    deleteButton.style?.foregroundColor?.resolve({}),
+    deleteColors.onError,
+  );
+  await tester.tap(delete);
   await tester.pumpAndSettle();
   expect(find.text(strings.bible_bookmarks_empty), findsOneWidget);
   expect(await store.load(), isEmpty);
@@ -218,11 +222,25 @@ Future<void> exerciseBibleBookmarks(WidgetTester tester) async {
 }
 
 Future<void> _doubleTap(WidgetTester tester, Finder finder) async {
-  final verseNumber = tester.getTopLeft(finder) + const Offset(6, 10);
+  final verseNumber = _verseNumberCenter(tester, finder);
   await tester.tapAt(verseNumber);
-  await tester.pump(const Duration(milliseconds: 70));
+  const interval = Duration(milliseconds: 70);
+  if (tester.binding is LiveTestWidgetsFlutterBinding) {
+    // The second pointer event must arrive even when a browser frame is slow.
+    await tester.runAsync(() => Future<void>.delayed(interval));
+  } else {
+    await tester.pump(interval);
+  }
   await tester.tapAt(verseNumber);
   await tester.pumpAndSettle();
+}
+
+Offset _verseNumberCenter(WidgetTester tester, Finder finder) {
+  final paragraph = tester.renderObject<RenderParagraph>(finder);
+  final glyph = paragraph
+      .getBoxesForSelection(const TextSelection(baseOffset: 0, extentOffset: 1))
+      .first;
+  return paragraph.localToGlobal(glyph.toRect().center);
 }
 
 Future<void> _choose(WidgetTester tester, Finder field, String value) async {

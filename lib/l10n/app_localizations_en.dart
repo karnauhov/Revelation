@@ -738,6 +738,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ok => 'OK';
 
   @override
+  String get dialog_select => 'Select';
+
+  @override
+  String get dialog_done => 'Done';
+
+  @override
   String get cancel => 'Сancel';
 
   @override

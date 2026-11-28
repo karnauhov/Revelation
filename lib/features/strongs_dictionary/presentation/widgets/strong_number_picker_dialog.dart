@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/features/strongs_dictionary/domain/models/strong_picker_entry.dart';
@@ -92,7 +93,6 @@ class _StrongNumberPickerDialogContentState
 
   Widget _buildDialog(BuildContext context, StrongNumberPickerState state) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final mediaSize = MediaQuery.sizeOf(context);
     final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
     final availableHeight = mediaSize.height - keyboardInset;
@@ -136,44 +136,30 @@ class _StrongNumberPickerDialogContentState
     final showWord = contentHeight >= (isPortrait ? 190.0 : 160.0);
 
     if (!state.hasEntries) {
-      return AlertDialog(
-        insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      return RevelationDialog(
         constraints: BoxConstraints(
           minWidth: minDialogWidth,
           maxWidth: dialogWidth,
         ),
-        scrollable: true,
-        backgroundColor: colorScheme.surface,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: colorScheme.primary),
-          borderRadius: BorderRadius.circular(8),
-        ),
         title: Text(localizations.strong_number),
+        scrollContent: true,
         content: const Text('-'),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
+        secondaryActions: [
+          RevelationDialogAction(
+            label: localizations.close,
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(localizations.close),
           ),
         ],
       );
     }
 
-    return AlertDialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    return RevelationDialog(
       constraints: BoxConstraints(
         minWidth: minDialogWidth,
         maxWidth: dialogWidth,
       ),
-      scrollable: true,
-      contentPadding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
-      actionsPadding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-      backgroundColor: colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: colorScheme.primary),
-        borderRadius: BorderRadius.circular(8),
-      ),
+      title: Text(localizations.strong_number),
+      scrollContent: true,
       content: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: dialogWidth),
         child: SizedBox(
@@ -234,20 +220,18 @@ class _StrongNumberPickerDialogContentState
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
+      secondaryActions: [
+        RevelationDialogAction(
+          label: localizations.cancel,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(localizations.cancel),
-        ),
-        TextButton(
-          style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
-          onPressed: selectedEntry == null
-              ? null
-              : () => Navigator.of(context).pop(selectedEntry.number),
-          child: Text(localizations.ok),
         ),
       ],
+      primaryAction: RevelationDialogAction(
+        label: localizations.dialog_select,
+        onPressed: selectedEntry == null
+            ? null
+            : () => Navigator.of(context).pop(selectedEntry.number),
+      ),
     );
   }
 

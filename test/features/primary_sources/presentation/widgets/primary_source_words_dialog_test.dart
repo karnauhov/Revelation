@@ -102,8 +102,11 @@ void main() {
         findsOneWidget,
       );
 
-      final titleText = tester.widget<Text>(find.text('APOKALYPSIS, LOGOS'));
-      expect(titleText.style?.fontWeight, FontWeight.normal);
+      final titleText = find.text('APOKALYPSIS, LOGOS');
+      final titleStyle = DefaultTextStyle.of(
+        tester.element(titleText),
+      ).style.merge(tester.widget<Text>(titleText).style);
+      expect(titleStyle.fontWeight, FontWeight.bold);
       final rotatedBoxes = tester.widgetList<RotatedBox>(
         find.byType(RotatedBox),
       );

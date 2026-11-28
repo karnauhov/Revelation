@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:revelation/shared/ui/widgets/toolbar_dropdown.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
@@ -981,9 +982,8 @@ Future<T?> _showToolbarChoiceDialog<T>({
           : values.length * _kToolbarChoiceRowHeight;
       final contentHeight =
           (valuesHeight > maxHeight ? maxHeight : valuesHeight).toDouble();
-      return AlertDialog(
-        title: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
-        contentPadding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
+      return RevelationDialog(
+        title: Text(title),
         content: SizedBox(
           width: contentWidth,
           height: contentHeight,
@@ -2059,7 +2059,7 @@ void _showBibleModuleInfoDialog(BuildContext context, BibleModuleInfo module) {
     context: context,
     builder: (context) {
       final theme = Theme.of(context);
-      return AlertDialog(
+      return RevelationDialog(
         key: const Key('bible_module_info_dialog'),
         constraints: const BoxConstraints.tightFor(width: 560),
         insetPadding: const EdgeInsets.all(24),
@@ -2130,10 +2130,10 @@ void _showBibleModuleInfoDialog(BuildContext context, BibleModuleInfo module) {
             ),
           ),
         ),
-        actions: [
-          TextButton(
+        secondaryActions: [
+          RevelationDialogAction(
+            label: localizations.close,
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(localizations.close),
           ),
         ],
       );

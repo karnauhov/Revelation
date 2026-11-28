@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/app/di/app_di.dart';
 import 'package:revelation/features/bible/presentation/bloc/bible_catalog_cubit.dart';
@@ -216,9 +217,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 : catalog.failed
                 ? Text(l10n.bible_catalog_failed)
                 : null,
-            extraAction: TextButton(
+            extraAction: RevelationDialogAction(
+              label: l10n.bible_catalog_refresh,
               onPressed: catalog.loading ? null : _catalog.load,
-              child: Text(l10n.bible_catalog_refresh),
             ),
           );
         },
@@ -305,16 +306,14 @@ class _SettingsChoiceDialog extends StatelessWidget {
   final Widget Function(String)? leading;
   final TextStyle? Function(String)? style;
   final Widget? status;
-  final Widget? extraAction;
+  final RevelationDialogAction? extraAction;
   final VoidCallback? onSelect;
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return RevelationDialog(
       constraints: const BoxConstraints(maxWidth: 420),
-      insetPadding: const EdgeInsets.all(12),
       title: Text(title),
-      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
       content: SizedBox(
         width: 420,
         child: Column(
@@ -345,11 +344,11 @@ class _SettingsChoiceDialog extends StatelessWidget {
           ],
         ),
       ),
-      actions: [
+      secondaryActions: [
         if (extraAction != null) extraAction!,
-        TextButton(
+        RevelationDialogAction(
+          label: AppLocalizations.of(context)!.close,
           onPressed: () => Navigator.pop(context),
-          child: Text(AppLocalizations.of(context)!.close),
         ),
       ],
     );

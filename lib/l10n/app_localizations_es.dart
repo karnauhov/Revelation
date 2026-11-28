@@ -747,6 +747,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ok => 'OK';
 
   @override
+  String get dialog_select => 'Seleccionar';
+
+  @override
+  String get dialog_done => 'Listo';
+
+  @override
   String get cancel => 'Cancelar';
 
   @override

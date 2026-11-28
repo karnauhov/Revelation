@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/image_tool_draft_cubits.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/manuscript_tool_dialog.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 
 class BrightnessContrastDialog extends StatelessWidget {
@@ -32,6 +33,7 @@ class BrightnessContrastDialog extends StatelessWidget {
         final aud = AudioController();
         final colorScheme = Theme.of(context).colorScheme;
         return ManuscriptToolDialog(
+          title: Text(AppLocalizations.of(context)!.brightness_contrast),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,29 +85,21 @@ class BrightnessContrastDialog extends StatelessWidget {
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
+          secondaryActions: [
+            RevelationDialogAction(
+              label: AppLocalizations.of(context)!.reset,
               onPressed: () {
                 aud.playSound("click");
                 onCancel();
                 Navigator.of(context).pop();
               },
-              child: Text(
-                AppLocalizations.of(context)!.reset,
-                style: TextStyle(color: colorScheme.primary),
-              ),
             ),
-            TextButton(
-              style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
+            RevelationDialogAction(
+              label: AppLocalizations.of(context)!.dialog_done,
               onPressed: () {
                 aud.playSound("click");
                 Navigator.of(context).pop();
               },
-              child: Text(
-                AppLocalizations.of(context)!.ok,
-                style: TextStyle(color: colorScheme.primary),
-              ),
             ),
           ],
         );

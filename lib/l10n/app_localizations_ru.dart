@@ -737,6 +737,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ok => 'OK';
 
   @override
+  String get dialog_select => 'Выбрать';
+
+  @override
+  String get dialog_done => 'Готово';
+
+  @override
   String get cancel => 'Отменить';
 
   @override

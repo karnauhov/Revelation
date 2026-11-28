@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:revelation/features/bible/domain/services/bible_text_search.dart';
 import 'package:revelation/l10n/app_localizations.dart';
@@ -97,15 +98,20 @@ class BibleMarkedVerse extends StatelessWidget {
     if (word.codes.length > 1) {
       final selected = await showDialog<String>(
         context: context,
-        builder: (dialog) => SimpleDialog(
+        builder: (dialog) => RevelationDialog(
           title: Text(word.text),
-          children: [
-            for (final candidate in word.codes)
-              SimpleDialogOption(
-                onPressed: () => Navigator.pop(dialog, candidate),
-                child: Text(candidate),
-              ),
-          ],
+          scrollContent: true,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final candidate in word.codes)
+                SimpleDialogOption(
+                  onPressed: () => Navigator.pop(dialog, candidate),
+                  child: Text(candidate),
+                ),
+            ],
+          ),
         ),
       );
       if (selected == null || !context.mounted) return;

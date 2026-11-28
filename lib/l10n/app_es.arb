@@ -968,6 +968,14 @@
   "@ok": {
     "description": "Shared action to confirm and dismiss a dialog."
   },
+  "dialog_select": "Seleccionar",
+  "@dialog_select": {
+    "description": "Primary action to accept a selection in a dialog."
+  },
+  "dialog_done": "Listo",
+  "@dialog_done": {
+    "description": "Action to close a tool dialog after changes have already been applied."
+  },
   "cancel": "Cancelar",
   "@cancel": {
     "description": "Shared action to dismiss without applying the pending choice."

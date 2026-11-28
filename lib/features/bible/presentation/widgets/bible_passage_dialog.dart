@@ -11,6 +11,7 @@ import 'package:revelation/shared/localization/bible_book_localization.dart';
 import 'package:revelation/shared/models/bible_verse_reference.dart';
 import 'package:revelation/features/bible/presentation/widgets/bible_marked_verse.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
 import 'package:revelation/shared/ui/widgets/description_markdown_view.dart';
 
@@ -204,42 +205,42 @@ Future<void> showBiblePassageDialog(
                 ],
               ),
             ),
-            actions: [
+            secondaryActions: [
               if (!state.loading &&
                   (translation == null || state.original == null))
-                TextButton(
+                RevelationDialogAction(
+                  label: l10n.startup_retry,
                   onPressed: cubit.retry,
-                  child: Text(l10n.startup_retry),
                 ),
-              TextButton.icon(
-                key: const Key('bible_passage_open_reader'),
-                icon: const Icon(Icons.open_in_new),
-                onPressed: translation == null && state.original == null
-                    ? null
-                    : () {
-                        Navigator.of(
-                          context,
-                        ).popUntil((route) => route is! PopupRoute);
-                        router.push(
-                          Uri(
-                            path: '/bible',
-                            queryParameters: {
-                              'book': '${first.bookId}',
-                              'chapter': '${first.chapter}',
-                              'verse': '${first.verse}',
-                              if (moduleFile != null) 'module': moduleFile,
-                              'length': '${state.lines.length}',
-                            },
-                          ).toString(),
-                        );
-                      },
-                label: Text(l10n.bible_open_reader),
-              ),
-              TextButton(
+              RevelationDialogAction(
+                label: l10n.close,
                 onPressed: () => Navigator.pop(context),
-                child: Text(l10n.close),
               ),
             ],
+            primaryAction: RevelationDialogAction(
+              key: const Key('bible_passage_open_reader'),
+              icon: Icons.open_in_new,
+              label: l10n.bible_open_reader,
+              onPressed: translation == null && state.original == null
+                  ? null
+                  : () {
+                      Navigator.of(
+                        context,
+                      ).popUntil((route) => route is! PopupRoute);
+                      router.push(
+                        Uri(
+                          path: '/bible',
+                          queryParameters: {
+                            'book': '${first.bookId}',
+                            'chapter': '${first.chapter}',
+                            'verse': '${first.verse}',
+                            if (moduleFile != null) 'module': moduleFile,
+                            'length': '${state.lines.length}',
+                          },
+                        ).toString(),
+                      );
+                    },
+            ),
           );
         },
       ),

@@ -5,6 +5,7 @@ import 'package:revelation/core/audio/audio_controller.dart';
 import 'package:revelation/core/platform/platform_utils.dart';
 import 'package:revelation/features/primary_sources/presentation/bloc/image_tool_draft_cubits.dart';
 import 'package:revelation/features/primary_sources/presentation/widgets/manuscript_tool_dialog.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:revelation/l10n/app_localizations.dart';
 
 class ReplaceColorDialog extends StatelessWidget {
@@ -59,6 +60,7 @@ class ReplaceColorDialog extends StatelessWidget {
             : '${AppLocalizations.of(context)!.size} (${(currentSelectedArea.right - currentSelectedArea.left).abs().toStringAsFixed(0)} x ${(currentSelectedArea.bottom - currentSelectedArea.top).abs().toStringAsFixed(0)})';
 
         return ManuscriptToolDialog(
+          title: Text(AppLocalizations.of(context)!.color_replacement),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,30 +219,22 @@ class ReplaceColorDialog extends StatelessWidget {
                 ),
             ],
           ),
-          actions: [
-            TextButton(
-              style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
+          secondaryActions: [
+            RevelationDialogAction(
+              label: AppLocalizations.of(context)!.reset,
               onPressed: () {
                 aud.playSound('click');
                 onCancel();
                 Navigator.of(context).pop();
               },
-              child: Text(
-                AppLocalizations.of(context)!.reset,
-                style: TextStyle(color: colorScheme.primary),
-              ),
             ),
-            TextButton(
-              style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
+            RevelationDialogAction(
+              label: AppLocalizations.of(context)!.dialog_done,
               onPressed: () {
                 aud.playSound('click');
                 onApply(selectedArea, colorToReplace, newColor, tolerance);
                 Navigator.of(context).pop();
               },
-              child: Text(
-                AppLocalizations.of(context)!.ok,
-                style: TextStyle(color: colorScheme.primary),
-              ),
             ),
           ],
         );
@@ -270,22 +264,22 @@ class ReplaceColorDialog extends StatelessWidget {
             onColorChanged: (value) => picked = value,
             pickerAreaHeightPercent: 0.8,
           ),
-          actions: [
-            TextButton(
+          secondaryActions: [
+            RevelationDialogAction(
+              label: l10n.cancel,
               onPressed: () {
                 audio.playSound('click');
                 Navigator.pop(ctx);
               },
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () {
-                audio.playSound('click');
-                Navigator.pop(ctx, picked);
-              },
-              child: Text(l10n.ok),
             ),
           ],
+          primaryAction: RevelationDialogAction(
+            label: l10n.dialog_select,
+            onPressed: () {
+              audio.playSound('click');
+              Navigator.pop(ctx, picked);
+            },
+          ),
         );
       },
     );

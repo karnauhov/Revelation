@@ -153,14 +153,14 @@ void main() {
 
       await tester.tap(find.byTooltip(l10n.palette).first);
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.ok).last);
+      await tester.tap(find.widgetWithText(FilledButton, l10n.dialog_select));
       await tester.pumpAndSettle();
       expect(applied, isNotEmpty);
 
       final applyCountAfterFirstPalette = applied.length;
       await tester.tap(find.byTooltip(l10n.palette).last);
       await tester.pumpAndSettle();
-      await tester.tap(find.text(l10n.ok).last);
+      await tester.tap(find.widgetWithText(FilledButton, l10n.dialog_select));
       await tester.pumpAndSettle();
       expect(applied.length, greaterThan(applyCountAfterFirstPalette));
     },
@@ -239,7 +239,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text(l10n.ok).last);
+    await tester.tap(find.widgetWithText(TextButton, l10n.dialog_done));
     await tester.pumpAndSettle();
 
     expect(applied, isNotNull);

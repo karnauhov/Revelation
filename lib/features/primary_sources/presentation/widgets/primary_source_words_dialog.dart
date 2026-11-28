@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_load_result.dart';
 import 'package:revelation/core/content/markdown_images/markdown_image_loader.dart';
@@ -100,24 +101,15 @@ class _PrimarySourceWordsDialogContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
     final mediaSize = MediaQuery.sizeOf(context);
 
     final dialogWidth = (mediaSize.width - 20).clamp(320.0, 820.0).toDouble();
     final dialogHeight = (mediaSize.height - 36).clamp(240.0, 620.0).toDouble();
 
-    return AlertDialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      backgroundColor: colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: colorScheme.primary),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      titlePadding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-      contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-      actionsPadding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
+    return RevelationDialog(
+      constraints: const BoxConstraints(maxWidth: 820),
       title:
           BlocBuilder<
             PrimarySourceWordImagesCubit,
@@ -148,9 +140,6 @@ class _PrimarySourceWordsDialogContent extends StatelessWidget {
                             textAlign: TextAlign.center,
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.normal,
-                            ),
                           ),
                         ),
                       ),
@@ -202,10 +191,10 @@ class _PrimarySourceWordsDialogContent extends StatelessWidget {
               },
             ),
       ),
-      actions: [
-        TextButton(
+      secondaryActions: [
+        RevelationDialogAction(
+          label: l10n.close,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.close),
         ),
       ],
     );

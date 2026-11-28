@@ -6,6 +6,7 @@ import 'package:revelation/features/bible/presentation/widgets/bible_bookmark_ma
 import 'package:revelation/l10n/app_localizations.dart';
 import 'package:revelation/shared/localization/bible_book_localization.dart';
 import 'package:revelation/shared/services/bible_verse_map.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:revelation/shared/ui/dialogs/study_text_dialog.dart';
 import 'package:revelation/shared/ui/widgets/toolbar_dropdown.dart';
 
@@ -57,7 +58,6 @@ class _BibleBookmarksDialog extends StatelessWidget {
 
     return StudyTextDialog(
       title: strings.bible_bookmarks,
-      moveByHeader: true,
       content: SizedBox(
         width: 420,
         child: Column(
@@ -149,28 +149,25 @@ class _BibleBookmarksDialog extends StatelessWidget {
           ],
         ),
       ),
-      actions: [
-        TextButton(
+      secondaryActions: [
+        RevelationDialogAction(
+          label: strings.close,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(strings.close),
-        ),
-        FilledButton.icon(
-          onPressed: state.canChange
-              ? () => showBibleBookmarkEditor(
-                  context,
-                  verseMap: verseMap,
-                  location: selection ?? defaultLocation,
-                )
-              : null,
-          icon: const Icon(Icons.bookmark_add_outlined),
-          label: Text(
-            selection == null
-                ? strings.bible_bookmark_add
-                : '${strings.bible_bookmark_add} (${_shortReferenceLabel(strings, selection)})',
-            textAlign: TextAlign.center,
-          ),
         ),
       ],
+      primaryAction: RevelationDialogAction(
+        label: selection == null
+            ? strings.bible_bookmark_add
+            : '${strings.bible_bookmark_add} (${_shortReferenceLabel(strings, selection)})',
+        icon: Icons.bookmark_add_outlined,
+        onPressed: state.canChange
+            ? () => showBibleBookmarkEditor(
+                context,
+                verseMap: verseMap,
+                location: selection ?? defaultLocation,
+              )
+            : null,
+      ),
     );
   }
 }
@@ -230,7 +227,6 @@ class _BibleBookmarkEditor extends StatelessWidget {
     return PopScope(
       canPop: !saving,
       child: StudyTextDialog(
-        moveByHeader: true,
         title: current == null
             ? strings.bible_bookmark_add
             : strings.bible_bookmark_edit,
@@ -302,9 +298,10 @@ class _BibleBookmarkEditor extends StatelessWidget {
             ),
           ),
         ),
-        actions: [
+        secondaryActions: [
           if (current != null)
-            TextButton(
+            RevelationDialogAction(
+              label: strings.bible_bookmark_delete,
               onPressed: saving
                   ? null
                   : () async {
@@ -318,31 +315,30 @@ class _BibleBookmarkEditor extends StatelessWidget {
                         Navigator.of(context).pop();
                       }
                     },
-              child: Text(strings.bible_bookmark_delete),
             ),
-          TextButton(
+          RevelationDialogAction(
+            label: strings.cancel,
             onPressed: saving ? null : () => Navigator.of(context).pop(),
-            child: Text(strings.cancel),
-          ),
-          FilledButton(
-            onPressed: saving
-                ? null
-                : () async {
-                    if (!_form.currentState!.validate()) return;
-                    await cubit.save(
-                      id: current?.id,
-                      location: _location.currentState!.value!,
-                      name: _name.currentState!.value!,
-                      color: _color.currentState!.value!,
-                    );
-                    if (context.mounted &&
-                        cubit.state.status == BibleBookmarksStatus.ready) {
-                      Navigator.of(context).pop();
-                    }
-                  },
-            child: Text(strings.bible_bookmark_save),
           ),
         ],
+        primaryAction: RevelationDialogAction(
+          label: strings.bible_bookmark_save,
+          onPressed: saving
+              ? null
+              : () async {
+                  if (!_form.currentState!.validate()) return;
+                  await cubit.save(
+                    id: current?.id,
+                    location: _location.currentState!.value!,
+                    name: _name.currentState!.value!,
+                    color: _color.currentState!.value!,
+                  );
+                  if (context.mounted &&
+                      cubit.state.status == BibleBookmarksStatus.ready) {
+                    Navigator.of(context).pop();
+                  }
+                },
+        ),
       ),
     );
   }
@@ -515,7 +511,6 @@ Future<bool> _confirmRemoval(
     context: context,
     builder: (context) => StudyTextDialog(
       title: strings.bible_bookmark_delete_confirm,
-      moveByHeader: true,
       content: SizedBox(
         width: 360,
         child: SingleChildScrollView(
@@ -533,16 +528,16 @@ Future<bool> _confirmRemoval(
           ),
         ),
       ),
-      actions: [
-        TextButton(
+      secondaryActions: [
+        RevelationDialogAction(
+          label: strings.cancel,
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(strings.cancel),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(strings.bible_bookmark_delete),
         ),
       ],
+      primaryAction: RevelationDialogAction.destructive(
+        label: strings.bible_bookmark_delete,
+        onPressed: () => Navigator.of(context).pop(true),
+      ),
     ),
   );
   return confirmed == true;

@@ -1476,6 +1476,18 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get ok;
 
+  /// Primary action to accept a selection in a dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get dialog_select;
+
+  /// Action to close a tool dialog after changes have already been applied.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get dialog_done;
+
   /// Shared action to dismiss without applying the pending choice.
   ///
   /// In en, this message translates to:

@@ -116,7 +116,7 @@ void main() {
       await waitFor(
         () =>
             open.evaluate().isNotEmpty &&
-            tester.widget<TextButton>(open).onPressed != null,
+            tester.widget<FilledButton>(open).onPressed != null,
         'Reader action ready',
       );
       expect(find.byKey(const Key('bible_reader_pane_primary')), findsNothing);

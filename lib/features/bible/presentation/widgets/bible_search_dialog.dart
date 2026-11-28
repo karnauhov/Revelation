@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:revelation/shared/ui/dialogs/revelation_dialog.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:revelation/features/bible/data/repositories/bible_repository.dart';
@@ -88,7 +89,6 @@ class _BibleSearchDialogContentState extends State<_BibleSearchDialogContent> {
 
   Widget _buildDialog(BuildContext context, BibleSearchState state) {
     final localizations = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
     final mediaSize = MediaQuery.sizeOf(context);
     final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
     final dialogMaxWidth = math.max(
@@ -102,25 +102,20 @@ class _BibleSearchDialogContentState extends State<_BibleSearchDialogContent> {
     );
     final contentHeight = math.min(620.0, availableContentHeight);
 
-    return AlertDialog(
+    return RevelationDialog(
       key: const Key('bible_search_dialog'),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      insetPadding: const EdgeInsets.all(12),
+      contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 6),
       constraints: BoxConstraints(
         minWidth: dialogMinWidth,
         maxWidth: dialogMaxWidth,
       ),
-      backgroundColor: colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: colorScheme.primary),
-        borderRadius: BorderRadius.circular(8),
-      ),
       title: Text(
         '${localizations.bible_search_dialog_title} '
         '(${widget.module.displayTitle})',
-        maxLines: 1,
+        maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 6),
       content: SizedBox(
         width: dialogMaxWidth,
         height: contentHeight,
@@ -154,10 +149,10 @@ class _BibleSearchDialogContentState extends State<_BibleSearchDialogContent> {
           ],
         ),
       ),
-      actions: [
-        TextButton(
+      secondaryActions: [
+        RevelationDialogAction(
+          label: localizations.close,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(localizations.close),
         ),
       ],
     );

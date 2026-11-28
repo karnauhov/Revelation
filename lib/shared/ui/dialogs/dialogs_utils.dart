@@ -8,6 +8,8 @@ import 'package:revelation/shared/ui/widgets/platform_expansion_tile.dart';
 import 'package:revelation/app/router/app_router.dart';
 import 'package:revelation/core/logging/common_logger.dart';
 
+import 'revelation_dialog.dart';
+
 enum MessageType { errorCommon, errorBrokenLink, warningCommon, infoCommon }
 
 void showCustomDialog(
@@ -62,17 +64,9 @@ void showCustomDialog(
       final theme = Theme.of(context);
       final colorScheme = theme.colorScheme;
 
-      return AlertDialog(
-        scrollable: true,
-        title: Center(
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+      return RevelationDialog(
+        scrollContent: true,
+        title: Text(title),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -125,13 +119,13 @@ void showCustomDialog(
               ),
           ],
         ),
-        actions: [
-          TextButton(
+        secondaryActions: [
+          RevelationDialogAction(
+            label: AppLocalizations.of(context)!.close,
             onPressed: () {
               AudioController().playSound("click");
               Navigator.of(dialogContext).pop();
             },
-            child: Text(AppLocalizations.of(context)!.close),
           ),
         ],
       );
