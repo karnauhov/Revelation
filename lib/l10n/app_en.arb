@@ -9,31 +9,106 @@
     }
   },
   "bible_bookmarks": "Bookmarks",
+  "@bible_bookmarks": {
+    "description": "Title of the Bible bookmarks list."
+  },
   "bible_bookmarks_local_storage": "Revelation stores your bookmarks only on this device.",
+  "@bible_bookmarks_local_storage": {
+    "description": "Explains where Bible bookmarks are stored in the bookmarks dialog."
+  },
   "bible_bookmarks_empty": "No bookmarks yet.",
+  "@bible_bookmarks_empty": {
+    "description": "Empty state of the Bible bookmarks list."
+  },
   "bible_bookmarks_load_failed": "Couldn't load bookmarks.",
+  "@bible_bookmarks_load_failed": {
+    "description": "Error shown when the Bible bookmarks list could not be loaded."
+  },
   "bible_bookmarks_save_failed": "Couldn't save the change. Try again.",
+  "@bible_bookmarks_save_failed": {
+    "description": "Error shown when a Bible bookmark change could not be saved."
+  },
   "bible_bookmark_add": "Add bookmark",
+  "@bible_bookmark_add": {
+    "description": "Action and dialog title for bookmarking a Bible verse."
+  },
   "bible_bookmark_edit": "Edit bookmark",
+  "@bible_bookmark_edit": {
+    "description": "Action and dialog title for editing an existing Bible bookmark."
+  },
   "bible_bookmark_delete": "Delete",
+  "@bible_bookmark_delete": {
+    "description": "Delete action for a Bible bookmark, also used for confirmation."
+  },
   "bible_bookmark_delete_confirm": "Delete bookmark?",
+  "@bible_bookmark_delete_confirm": {
+    "description": "Confirmation prompt before deleting a Bible bookmark."
+  },
   "bible_bookmark_name": "Name",
+  "@bible_bookmark_name": {
+    "description": "Label of the bookmark name field."
+  },
   "bible_bookmark_name_required": "Enter a bookmark name.",
+  "@bible_bookmark_name_required": {
+    "description": "Validation message for an empty bookmark name."
+  },
   "bible_bookmark_color": "Color",
+  "@bible_bookmark_color": {
+    "description": "Label of the bookmark color selector."
+  },
   "bible_bookmark_save": "Save",
+  "@bible_bookmark_save": {
+    "description": "Action to save the bookmark editor."
+  },
   "bible_bookmark_blue": "Blue",
+  "@bible_bookmark_blue": {
+    "description": "Accessible label for the blue bookmark color."
+  },
   "bible_bookmark_green": "Green",
+  "@bible_bookmark_green": {
+    "description": "Accessible label for the green bookmark color."
+  },
   "bible_bookmark_amber": "Amber",
+  "@bible_bookmark_amber": {
+    "description": "Accessible label for the amber bookmark color."
+  },
   "bible_bookmark_red": "Red",
+  "@bible_bookmark_red": {
+    "description": "Accessible label for the red bookmark color."
+  },
   "bible_bookmark_violet": "Violet",
+  "@bible_bookmark_violet": {
+    "description": "Accessible label for the violet bookmark color."
+  },
   "@@locale": "en",
   "app_name": "Revelation",
+  "@app_name": {
+    "description": "Public name of the Revelation app."
+  },
   "startup_title": "Launching the app...",
+  "@startup_title": {
+    "description": "Heading of the startup screen while the application initializes."
+  },
   "startup_step_preparing": "Preparing the app",
+  "@startup_step_preparing": {
+    "description": "Startup status while preparing the application."
+  },
   "startup_step_loading_settings": "Loading your settings",
+  "@startup_step_loading_settings": {
+    "description": "Startup status while loading saved settings."
+  },
   "startup_step_initializing_server": "Connecting to online services",
+  "@startup_step_initializing_server": {
+    "description": "Startup status while configuring the connection to online services."
+  },
   "startup_step_initializing_databases": "Opening app data",
+  "@startup_step_initializing_databases": {
+    "description": "Startup status while opening the local application databases."
+  },
   "startup_step_configuring_links": "Preparing Strong’s dictionary",
+  "@startup_step_configuring_links": {
+    "description": "Startup status while configuring Strong's dictionary links."
+  },
   "startup_progress": "Step {current} of {total}",
   "@startup_progress": {
     "description": "Shows the current startup step number out of the total",
@@ -47,7 +122,13 @@
     }
   },
   "startup_error": "Couldn't start the app :(",
+  "@startup_error": {
+    "description": "Heading of the startup failure state."
+  },
   "startup_retry": "Try again",
+  "@startup_retry": {
+    "description": "Action to retry initialization after a startup failure."
+  },
   "startup_version_build": "Version {version} ({build})",
   "@startup_version_build": {
     "description": "App version and build number shown on the startup screen",
@@ -61,8 +142,17 @@
     }
   },
   "version": "App version:",
+  "@version": {
+    "description": "Label before the application version number."
+  },
   "app_version_from": "App version from",
+  "@app_version_from": {
+    "description": "Label before the application build date on the About page."
+  },
   "common_data_update": "Data version",
+  "@common_data_update": {
+    "description": "Label for the version of the language-independent database."
+  },
   "localized_data_update": "Data version in {language}",
   "@localized_data_update": {
     "description": "Label for localized DB data version by language",
@@ -73,31 +163,109 @@
     }
   },
   "data_version_from": "from",
+  "@data_version_from": {
+    "description": "Connector between a database version label and its date on the About page."
+  },
   "language_name_en": "English",
+  "@language_name_en": {
+    "description": "Language name for English in language and data-version labels."
+  },
   "language_name_es": "Spanish",
+  "@language_name_es": {
+    "description": "Language name for Spanish in language and data-version labels."
+  },
   "language_name_uk": "Ukrainian",
+  "@language_name_uk": {
+    "description": "Language name for Ukrainian in language and data-version labels."
+  },
   "language_name_ru": "Russian",
+  "@language_name_ru": {
+    "description": "Language name for Russian in language and data-version labels."
+  },
   "app_description": "Revelation Study app.",
+  "@app_description": {
+    "description": "Short description of the app on the About page."
+  },
   "website": "Revelation.website",
+  "@website": {
+    "description": "Link label for the official Revelation website."
+  },
   "github_project": "GitHub project",
+  "@github_project": {
+    "description": "Link label for the Revelation source repository on GitHub."
+  },
   "privacy_policy": "Privacy Policy",
+  "@privacy_policy": {
+    "description": "Link label for the app's privacy policy."
+  },
   "license": "License",
+  "@license": {
+    "description": "Link label for the app's license."
+  },
   "support_us": "Support us",
+  "@support_us": {
+    "description": "Link label for supporting the Revelation project."
+  },
   "installation_packages": "Installation packages",
+  "@installation_packages": {
+    "description": "Link label for downloadable installers."
+  },
   "acknowledgements_title": "Acknowledgments",
+  "@acknowledgements_title": {
+    "description": "Heading of the About acknowledgments section."
+  },
   "acknowledgements_description_1": "First and foremost, I would like to thank God for life; my wife, Ira, for her love and care; and my mother for her help and support.\nAlso, my sincere gratitude goes to the institutions that provided access to information and invaluable manuscripts:",
+  "@acknowledgements_description_1": {
+    "description": "Opening acknowledgments and introduction to the contributing institutions."
+  },
   "acknowledgements_description_2": "Many thanks to the creators of the following software and resources:",
+  "@acknowledgements_description_2": {
+    "description": "Introduction to the credited software and resources."
+  },
   "recommended_title": "Recommended",
+  "@recommended_title": {
+    "description": "Heading of the recommended resources section."
+  },
   "recommended_description": "Recommended resources for studying Revelation and the Bible as a whole:",
+  "@recommended_description": {
+    "description": "Introduction to recommended Bible and Revelation study resources."
+  },
   "bug_report": "Report a bug",
+  "@bug_report": {
+    "description": "Action to start preparing a bug report."
+  },
   "tools": "Tools",
+  "@tools": {
+    "description": "Heading of the application maintenance tools section."
+  },
   "refresh_databases": "Update databases",
+  "@refresh_databases": {
+    "description": "Maintenance action to check for and download database updates."
+  },
   "databases_refreshed": "Databases updated",
+  "@databases_refreshed": {
+    "description": "Success feedback after updating the local databases."
+  },
   "databases_up_to_date": "Database files are up to date. No update is required.",
+  "@databases_up_to_date": {
+    "description": "Feedback when the local database files already match the available versions."
+  },
   "database_size_mismatch": "Some database file sizes don't match the manifest. Please update the databases again.",
+  "@database_size_mismatch": {
+    "description": "Warning that the database files differ in size from the manifest."
+  },
   "database_refresh_failed": "Couldn't update databases",
+  "@database_refresh_failed": {
+    "description": "Error shown after a failed database update."
+  },
   "show_local_folder": "Show local folder",
+  "@show_local_folder": {
+    "description": "Action to open the local application data directory."
+  },
   "local_folder_open_failed": "Couldn't open local folder",
+  "@local_folder_open_failed": {
+    "description": "Error when opening the local application data directory fails."
+  },
   "local_folder_open_failed_with_path": "Couldn't open local folder:\n{path}",
   "@local_folder_open_failed_with_path": {
     "description": "Opening the local application folder failed; shows its resolved filesystem path",
@@ -106,75 +274,273 @@
     }
   },
   "clear_cache": "Clear cache",
+  "@clear_cache": {
+    "description": "Maintenance action to remove cached files."
+  },
   "cache_cleared": "Cache cleared",
+  "@cache_cleared": {
+    "description": "Success feedback after removing cached files."
+  },
   "cache_clear_failed": "Couldn't clear cache",
+  "@cache_clear_failed": {
+    "description": "Error shown if the app cannot clear cached files."
+  },
   "log_copied_message": "Logs have been copied to the clipboard. Please send them to me at:",
+  "@log_copied_message": {
+    "description": "Bug report instructions shown after copying technical logs to the clipboard."
+  },
   "bug_report_wish": "Please briefly describe the error and paste into the email the technical information that the application has just automatically copied to the clipboard (this is important!). If possible, attach a screenshot to your message. Thank you, you’re helping make the app better.",
+  "@bug_report_wish": {
+    "description": "Draft email asking the reporter for steps, copied diagnostics, and a screenshot if available."
+  },
   "all_rights_reserved": "All rights reserved",
+  "@all_rights_reserved": {
+    "description": "Copyright footer wording."
+  },
   "ad_loading": "Ad Loading...",
+  "@ad_loading": {
+    "description": "Status label while an advertisement loads."
+  },
   "menu": "Menu",
+  "@menu": {
+    "description": "Label for the app navigation menu."
+  },
   "close_app": "Close app",
+  "@close_app": {
+    "description": "Action to exit the application."
+  },
   "todo": "TODO",
+  "@todo": {
+    "description": "Short placeholder label for unfinished content."
+  },
   "primary_sources_screen": "Primary Sources",
+  "@primary_sources_screen": {
+    "description": "Navigation label and page title for the manuscript catalogue."
+  },
   "primary_sources_header": "Click on the image to open",
+  "@primary_sources_header": {
+    "description": "Subtitle explaining how to open a manuscript from the catalogue."
+  },
   "strongs_dictionary_screen": "Strong's Dictionary",
+  "@strongs_dictionary_screen": {
+    "description": "Navigation label and page title for Strong's dictionary."
+  },
   "strongs_dictionary_header": "Greek word meanings and usage",
+  "@strongs_dictionary_header": {
+    "description": "Subtitle describing the scope of Strong's dictionary."
+  },
   "allusion_search_screen": "Allusion Search",
+  "@allusion_search_screen": {
+    "description": "Navigation label and page title for the biblical allusion search."
+  },
   "allusion_search_header": "The whole Ancient Greek Bible (LXX + TR)",
   "@allusion_search_header": {
     "description": "Allusion search page subtitle naming the Greek Bible corpus."
   },
   "bible_screen": "Bible",
+  "@bible_screen": {
+    "description": "Navigation label and page title for the Bible reader."
+  },
   "bible_header": "Reading and studying Scripture",
+  "@bible_header": {
+    "description": "Subtitle of the Bible reading and study page."
+  },
   "bible_module": "Module",
+  "@bible_module": {
+    "description": "Label for the Bible module selector."
+  },
   "bible_book": "Book",
+  "@bible_book": {
+    "description": "Label for the Bible book selector."
+  },
   "bible_chapter": "Chapter",
+  "@bible_chapter": {
+    "description": "Label for the Bible chapter selector."
+  },
   "bible_verse": "Verse",
+  "@bible_verse": {
+    "description": "Label for the Bible verse selector."
+  },
   "bible_loading": "Opening Bible...",
+  "@bible_loading": {
+    "description": "Status shown while opening the Bible reader."
+  },
   "bible_loading_chapter": "Loading chapter...",
+  "@bible_loading_chapter": {
+    "description": "Status shown while loading the selected Bible chapter."
+  },
   "bible_loading_module": "Downloading and opening module...",
+  "@bible_loading_module": {
+    "description": "Status while downloading or opening the selected Bible module."
+  },
   "bible_no_modules": "Bible modules were not found. Update databases or add bible_*.sqlite to the local data folder.",
+  "@bible_no_modules": {
+    "description": "Bible reader empty state with instructions for obtaining module files."
+  },
   "bible_previous_chapter": "Previous chapter",
+  "@bible_previous_chapter": {
+    "description": "Action to navigate to the preceding Bible chapter."
+  },
   "bible_next_chapter": "Next chapter",
+  "@bible_next_chapter": {
+    "description": "Action to navigate to the following Bible chapter."
+  },
   "bible_strong_toggle_label": "Strong",
+  "@bible_strong_toggle_label": {
+    "description": "Label for showing or hiding Strong's annotations in the Bible reader."
+  },
   "bible_module_info": "About this module",
+  "@bible_module_info": {
+    "description": "Action or heading for the selected Bible module's details."
+  },
   "bible_module_info_title": "Title",
+  "@bible_module_info_title": {
+    "description": "Label for the title in the Bible module details."
+  },
   "bible_module_info_description": "Description",
+  "@bible_module_info_description": {
+    "description": "Label for the description in the Bible module details."
+  },
   "bible_module_info_language": "Language",
+  "@bible_module_info_language": {
+    "description": "Label for the text language in the Bible module details."
+  },
   "bible_module_info_language_en": "English",
+  "@bible_module_info_language_en": {
+    "description": "English language value in the Bible module details."
+  },
   "bible_module_info_language_es": "Spanish",
+  "@bible_module_info_language_es": {
+    "description": "Spanish language value in the Bible module details."
+  },
   "bible_module_info_language_uk": "Ukrainian",
+  "@bible_module_info_language_uk": {
+    "description": "Ukrainian language value in the Bible module details."
+  },
   "bible_module_info_language_ru": "Russian",
+  "@bible_module_info_language_ru": {
+    "description": "Russian language value in the Bible module details."
+  },
   "bible_module_info_canon": "Books",
+  "@bible_module_info_canon": {
+    "description": "Label for the Bible module's canon or book coverage."
+  },
   "bible_module_info_versification": "Verse numbering",
+  "@bible_module_info_versification": {
+    "description": "Label for the Bible module's verse numbering scheme."
+  },
   "bible_module_info_license": "License",
+  "@bible_module_info_license": {
+    "description": "Label for the license in the Bible module details."
+  },
   "bible_module_info_source_summary": "Source",
+  "@bible_module_info_source_summary": {
+    "description": "Label for the short source attribution in the Bible module details."
+  },
   "bible_module_info_data_version": "Data version",
+  "@bible_module_info_data_version": {
+    "description": "Label for the content version in the Bible module details."
+  },
   "bible_module_info_schema_version": "Database format",
+  "@bible_module_info_schema_version": {
+    "description": "Label for the database format version in the Bible module details."
+  },
   "bible_module_info_date": "Updated",
+  "@bible_module_info_date": {
+    "description": "Label for the update date in the Bible module details."
+  },
   "bible_module_info_details": "Source and details",
+  "@bible_module_info_details": {
+    "description": "Heading for source attribution and technical module details."
+  },
   "bible_module_info_unknown": "Not specified",
+  "@bible_module_info_unknown": {
+    "description": "Fallback value for missing Bible module metadata."
+  },
   "bible_module_info_greek": "Ancient Greek",
+  "@bible_module_info_greek": {
+    "description": "Ancient Greek language value in the Bible module details."
+  },
   "bible_module_info_hebrew": "Hebrew",
+  "@bible_module_info_hebrew": {
+    "description": "Hebrew language value in the Bible module details."
+  },
   "bible_module_info_66_books": "66 books",
+  "@bible_module_info_66_books": {
+    "description": "Canon coverage value for a Bible module containing all 66 books."
+  },
   "bible_copy_selected_verses": "Copy selected verses",
+  "@bible_copy_selected_verses": {
+    "description": "Action to copy the selected Bible verses to the clipboard."
+  },
   "bible_selected_verses_copied": "Selected verses copied to the clipboard.",
+  "@bible_selected_verses_copied": {
+    "description": "Confirmation that the selected Bible verses were copied."
+  },
   "bible_open_parallel_reader": "Open parallel Bible reader",
+  "@bible_open_parallel_reader": {
+    "description": "Action to open the second Bible reading pane."
+  },
   "bible_close_parallel_reader": "Close parallel reader",
+  "@bible_close_parallel_reader": {
+    "description": "Action to close the second Bible reading pane."
+  },
   "bible_linked_navigation": "Linked navigation",
+  "@bible_linked_navigation": {
+    "description": "Control label for moving both parallel reading panes together."
+  },
   "bible_unlinked_navigation": "Independent navigation",
+  "@bible_unlinked_navigation": {
+    "description": "Control label for navigating the parallel reading panes independently."
+  },
   "bible_search_in_module": "Search this module",
+  "@bible_search_in_module": {
+    "description": "Action to search within the currently selected Bible module."
+  },
   "bible_search_dialog_title": "Bible search",
+  "@bible_search_dialog_title": {
+    "description": "Title of the search dialog for a Bible module."
+  },
   "bible_search_query_label": "Search text",
+  "@bible_search_query_label": {
+    "description": "Label of the query field in the Bible search dialog."
+  },
   "bible_search_query_hint": "Phrase",
+  "@bible_search_query_hint": {
+    "description": "Hint shown inside the Bible search query field."
+  },
   "bible_search_button": "Search",
+  "@bible_search_button": {
+    "description": "Action to submit the Bible search query."
+  },
   "bible_search_result_action": "Tap action",
+  "@bible_search_result_action": {
+    "description": "Label for choosing what a tap on a Bible search result does."
+  },
   "bible_search_action_copy": "Copy verse",
+  "@bible_search_action_copy": {
+    "description": "Option to copy the verse when a Bible search result is activated."
+  },
   "bible_search_action_open": "Open verse",
+  "@bible_search_action_open": {
+    "description": "Option to open the verse when a Bible search result is activated."
+  },
   "bible_search_copy_results": "Copy results",
+  "@bible_search_copy_results": {
+    "description": "Action to copy Bible search results in bulk."
+  },
   "bible_search_loading": "Searching...",
+  "@bible_search_loading": {
+    "description": "Status displayed while a Bible text search is running."
+  },
   "bible_search_failed": "Couldn't search.",
+  "@bible_search_failed": {
+    "description": "Error shown after a failed Bible text search."
+  },
   "bible_search_no_results": "No matches found.",
+  "@bible_search_no_results": {
+    "description": "Empty state when the Bible text search finds no matches."
+  },
   "bible_search_match_count": "Matches: {matches}; verses: {verses}",
   "@bible_search_match_count": {
     "description": "Search result count label with total occurrences and verses",
@@ -200,19 +566,61 @@
     }
   },
   "bible_search_previous_page": "Previous page",
+  "@bible_search_previous_page": {
+    "description": "Action to return to the preceding page of Bible search results."
+  },
   "bible_search_next_page": "Next page",
+  "@bible_search_next_page": {
+    "description": "Action to continue to the next page of Bible search results."
+  },
   "bible_search_verse_copied": "Verse copied to the clipboard.",
+  "@bible_search_verse_copied": {
+    "description": "Confirmation that one Bible search result verse was copied."
+  },
   "bible_search_references_copied": "References copied to the clipboard.",
+  "@bible_search_references_copied": {
+    "description": "Confirmation that the Bible search result references were copied."
+  },
   "bible_search_verses_copied": "Verses copied to the clipboard.",
+  "@bible_search_verses_copied": {
+    "description": "Confirmation that Bible search result verse texts were copied."
+  },
   "bible_reference_preview_loading_hint": "Long-press a verse link to load and copy the verse text.",
+  "@bible_reference_preview_loading_hint": {
+    "description": "Hint for loading and copying a passage from a press-and-hold on a Bible reference."
+  },
   "bible_reference_preview_loading": "Loading verse text...",
+  "@bible_reference_preview_loading": {
+    "description": "Status while the Bible reference preview retrieves verse text."
+  },
   "bible_reference_preview_unavailable": "Verse text is unavailable.",
+  "@bible_reference_preview_unavailable": {
+    "description": "Fallback when verse text cannot be loaded for a Bible reference preview."
+  },
   "revelation_structure_screen": "Revelation Structure",
+  "@revelation_structure_screen": {
+    "description": "Navigation label and page title for the Revelation structure section."
+  },
   "revelation_structure_header": "Book outline and narrative structure",
+  "@revelation_structure_header": {
+    "description": "Subtitle describing the outline and narrative focus of the Revelation structure section."
+  },
   "historical_background_screen": "Historical Background",
+  "@historical_background_screen": {
+    "description": "Navigation label and page title for the historical background section."
+  },
   "historical_background_header": "Key events in church and world history",
+  "@historical_background_header": {
+    "description": "Subtitle describing the historical background section's scope."
+  },
   "practical_faith_screen": "Practical Faith",
+  "@practical_faith_screen": {
+    "description": "Navigation label and page title for the practical faith section."
+  },
   "practical_faith_header": "Reflection and application",
+  "@practical_faith_header": {
+    "description": "Subtitle describing the practical faith section's focus."
+  },
   "planned_feature_message": "The {featureTitle} page is planned for a future version.",
   "@planned_feature_message": {
     "description": "Message shown on placeholder pages for planned sections",
@@ -223,59 +631,221 @@
     }
   },
   "settings_screen": "Settings",
+  "@settings_screen": {
+    "description": "Navigation label and page title for the application settings."
+  },
   "settings_header": "Saving automatically",
+  "@settings_header": {
+    "description": "Settings subtitle explaining that changes are saved automatically."
+  },
   "about_screen": "About",
+  "@about_screen": {
+    "description": "Navigation label and page title for application information."
+  },
   "about_header": "General Information About the Application",
+  "@about_header": {
+    "description": "Subtitle of the application information page."
+  },
   "download": "Download",
+  "@download": {
+    "description": "Navigation label and page title for application downloads."
+  },
   "download_header": "Install the application for your platform",
+  "@download_header": {
+    "description": "Subtitle prompting users to choose their platform for installation."
+  },
   "download_android": "Android",
+  "@download_android": {
+    "description": "Platform label in the app download list for Android."
+  },
   "download_windows": "Windows",
+  "@download_windows": {
+    "description": "Platform label in the app download list for Windows."
+  },
   "download_linux": "Linux",
+  "@download_linux": {
+    "description": "Platform label in the app download list for Linux."
+  },
   "download_google_play": "Google Play",
+  "@download_google_play": {
+    "description": "Store link label for the Google Play listing."
+  },
   "download_microsoft_store": "Microsoft Store",
+  "@download_microsoft_store": {
+    "description": "Store link label for the Microsoft Store listing."
+  },
   "download_snapcraft": "Snapcraft",
+  "@download_snapcraft": {
+    "description": "Store link label for the Snapcraft listing."
+  },
   "file_saved_at": "Saved: {path}",
+  "@file_saved_at": {
+    "description": "Feedback after saving an exported file. The path parameter is its location."
+  },
   "error_loading_libraries": "Error loading libraries",
+  "@error_loading_libraries": {
+    "description": "Error when the About page cannot load credited software."
+  },
   "error_loading_institutions": "Error loading institutions",
+  "@error_loading_institutions": {
+    "description": "Error when the About page cannot load contributing institutions."
+  },
   "error_loading_recommendations": "Error loading recommendations",
+  "@error_loading_recommendations": {
+    "description": "Error when the About page cannot load recommended resources."
+  },
   "error_loading_topics": "Error loading topics",
+  "@error_loading_topics": {
+    "description": "Error when the topic list cannot be loaded."
+  },
   "error_loading_primary_sources": "Error loading primary sources",
+  "@error_loading_primary_sources": {
+    "description": "Error when the manuscript catalogue cannot be loaded."
+  },
   "changelog": "Changelog",
+  "@changelog": {
+    "description": "Heading or action for opening the release changelog."
+  },
   "close": "Close",
+  "@close": {
+    "description": "Shared action to dismiss a dialog or panel."
+  },
   "error": "Error",
+  "@error": {
+    "description": "Shared title for messages reporting an error."
+  },
   "attention": "Attention",
+  "@attention": {
+    "description": "Shared title for a warning dialog."
+  },
   "info": "Information",
+  "@info": {
+    "description": "Shared label for an information action or panel."
+  },
   "more_information": "More information",
+  "@more_information": {
+    "description": "Action to expand or open further information."
+  },
   "unable_to_follow_the_link": "Unable to follow the link",
+  "@unable_to_follow_the_link": {
+    "description": "Error shown when the app cannot open a link."
+  },
   "language": "Language",
+  "@language": {
+    "description": "Application setting for the interface language."
+  },
   "color_theme": "Color theme",
+  "@color_theme": {
+    "description": "Application setting for the interface color scheme."
+  },
   "manuscript_color_theme": "Manuscript",
+  "@manuscript_color_theme": {
+    "description": "Theme selection label for the Manuscript palette."
+  },
   "forest_color_theme": "Forest",
+  "@forest_color_theme": {
+    "description": "Theme selection label for the Forest palette."
+  },
   "sky_color_theme": "Sky",
+  "@sky_color_theme": {
+    "description": "Theme selection label for the Sky palette."
+  },
   "grape_color_theme": "Grape",
+  "@grape_color_theme": {
+    "description": "Theme selection label for the Grape palette."
+  },
   "font_size": "Font size",
+  "@font_size": {
+    "description": "Application setting for the interface text size."
+  },
   "small_font_size": "Small",
+  "@small_font_size": {
+    "description": "Label for the small text size setting."
+  },
   "medium_font_size": "Medium",
+  "@medium_font_size": {
+    "description": "Label for the medium text size setting."
+  },
   "large_font_size": "Large",
+  "@large_font_size": {
+    "description": "Label for the large text size setting."
+  },
   "sound": "Sound",
+  "@sound": {
+    "description": "Application setting for sound."
+  },
   "on": "On",
+  "@on": {
+    "description": "Shared label for the enabled state of a toggle."
+  },
   "off": "Off",
+  "@off": {
+    "description": "Shared label for the disabled state of a toggle."
+  },
   "vectors": "Vectors",
+  "@vectors": {
+    "description": "Resource category used in the About page's software and asset credits."
+  },
   "icons": "Icons",
+  "@icons": {
+    "description": "Resource category for icons in the About page's asset credits."
+  },
   "and": "and",
+  "@and": {
+    "description": "Conjunction between credited resources or creators in the About page."
+  },
   "by": "by",
+  "@by": {
+    "description": "Connector before the credited creator in the About page."
+  },
   "package": "Package",
+  "@package": {
+    "description": "Resource category for a software package in the About page's credits."
+  },
   "font": "Font",
+  "@font": {
+    "description": "Resource category for a typeface in the About page's credits."
+  },
   "wikipedia": "Wikipedia",
+  "@wikipedia": {
+    "description": "Link label for a manuscript's external Wikipedia article."
+  },
   "intf": "INTF",
+  "@intf": {
+    "description": "Link label for a manuscript record at the Institute for New Testament Textual Research."
+  },
   "image_source": "Image source",
+  "@image_source": {
+    "description": "Link label for the provider of a manuscript image."
+  },
   "source_date": "Date",
+  "@source_date": {
+    "description": "Field label for the dating of a manuscript."
+  },
   "source_contents": "Contents",
+  "@source_contents": {
+    "description": "Field label for the biblical contents of a manuscript."
+  },
   "source_material": "Material",
+  "@source_material": {
+    "description": "Field label for the manuscript's physical writing material."
+  },
   "source_script": "Script",
+  "@source_script": {
+    "description": "Field label for the manuscript's writing system or hand."
+  },
   "source_classification": "Classification",
+  "@source_classification": {
+    "description": "Field label for the manuscript's classification."
+  },
   "source_discovery": "Discovery",
+  "@source_discovery": {
+    "description": "Field label for a manuscript's discovery information."
+  },
   "source_location": "Location",
+  "@source_location": {
+    "description": "Field label for a manuscript's known location."
+  },
   "primary_source_links": "Links",
   "@primary_source_links": {
     "description": "Label for the internal and external links in a primary source card."
@@ -285,120 +855,465 @@
     "description": "Link in an expanded card that opens the primary source in the app."
   },
   "topic": "Topic",
+  "@topic": {
+    "description": "Fallback title of a study article with no available title."
+  },
   "show_more": "show more information",
+  "@show_more": {
+    "description": "Action to expand the details of a manuscript card."
+  },
   "hide": "hide",
+  "@hide": {
+    "description": "Action to collapse the expanded details of a manuscript card."
+  },
   "full_primary_sources": "Contain the entire Revelation in full",
+  "@full_primary_sources": {
+    "description": "Catalogue group heading for manuscripts preserving all of Revelation."
+  },
   "significant_primary_sources": "Contain a significant part of the Revelation",
+  "@significant_primary_sources": {
+    "description": "Catalogue group heading for manuscripts preserving a substantial part of Revelation."
+  },
   "fragments_primary_sources": "Contain small fragments of the Revelation",
+  "@fragments_primary_sources": {
+    "description": "Catalogue group heading for manuscripts with short fragments of Revelation."
+  },
   "verses": "Quantity of verses",
+  "@verses": {
+    "description": "Label for the number of Revelation verses preserved by a manuscript."
+  },
   "choose_page": "Choose page",
+  "@choose_page": {
+    "description": "Prompt to choose a page of the selected manuscript."
+  },
   "images_are_missing": "Images are missing",
+  "@images_are_missing": {
+    "description": "Empty state when no manuscript page images are available."
+  },
   "image_not_loaded": "Image not loaded",
+  "@image_not_loaded": {
+    "description": "Fallback shown when the current manuscript image fails to load."
+  },
   "primary_source_word_source_unavailable": "Primary source unavailable",
+  "@primary_source_word_source_unavailable": {
+    "description": "Word comparison error when the requested manuscript cannot be opened."
+  },
   "primary_source_word_page_unavailable": "Page unavailable",
+  "@primary_source_word_page_unavailable": {
+    "description": "Word comparison error when the requested manuscript page cannot be found."
+  },
   "primary_source_word_word_unavailable": "Word unavailable",
+  "@primary_source_word_word_unavailable": {
+    "description": "Word comparison error when the requested word cannot be located."
+  },
   "primary_source_word_image_unavailable": "Image unavailable",
+  "@primary_source_word_image_unavailable": {
+    "description": "Word comparison error when the word's image cannot be loaded."
+  },
   "primary_source_words_image_hint": "Tap the image to see the word in the primary source.",
+  "@primary_source_words_image_hint": {
+    "description": "Instruction for opening a word in its manuscript from the comparison image."
+  },
   "click_for_info": "Click on the image element you’re interested in to get information about it.",
+  "@click_for_info": {
+    "description": "Initial instruction to select an annotated element on the manuscript image."
+  },
   "low_quality": "Quality reduced",
+  "@low_quality": {
+    "description": "Short warning when a lower-resolution manuscript image is displayed."
+  },
   "low_quality_message": "A lower-quality image is used in the mobile browser. To view in maximum quality, install the app or open the page on a computer.",
+  "@low_quality_message": {
+    "description": "Explains how to access the full-quality manuscript image on another platform."
+  },
   "reload_image": "Reloading the image",
+  "@reload_image": {
+    "description": "Manuscript viewer toolbar action to reload the current image."
+  },
   "zoom_in": "Zoom in",
+  "@zoom_in": {
+    "description": "Manuscript viewer action to increase image magnification."
+  },
   "zoom_out": "Zoom out",
+  "@zoom_out": {
+    "description": "Manuscript viewer action to decrease image magnification."
+  },
   "restore_original_scale": "Original scale",
+  "@restore_original_scale": {
+    "description": "Manuscript viewer action to restore the original image scale."
+  },
   "toggle_negative": "Negative",
+  "@toggle_negative": {
+    "description": "Manuscript viewer control for inverting image colors."
+  },
   "toggle_monochrome": "Monochrome",
+  "@toggle_monochrome": {
+    "description": "Manuscript viewer control for switching the image to monochrome."
+  },
   "brightness_contrast": "Brightness, Contrast",
+  "@brightness_contrast": {
+    "description": "Title and toolbar label for the manuscript image adjustment controls."
+  },
   "brightness": "Brightness",
+  "@brightness": {
+    "description": "Label of the brightness control for a manuscript image."
+  },
   "contrast": "Contrast",
+  "@contrast": {
+    "description": "Label of the contrast control for a manuscript image."
+  },
   "ok": "OK",
+  "@ok": {
+    "description": "Shared action to confirm and dismiss a dialog."
+  },
   "cancel": "Сancel",
+  "@cancel": {
+    "description": "Shared action to dismiss without applying the pending choice."
+  },
   "reset": "Reset",
+  "@reset": {
+    "description": "Shared action to restore defaults for the current controls."
+  },
   "area": "Area",
+  "@area": {
+    "description": "Label for the image region selected for color replacement."
+  },
   "size": "Size",
+  "@size": {
+    "description": "Label for the dimensions of the region selected for color replacement."
+  },
   "not_selected": "Not selected",
+  "@not_selected": {
+    "description": "Placeholder when the requested region or color has not been selected."
+  },
   "area_selection": "Area selection",
+  "@area_selection": {
+    "description": "Action to select an image region for color replacement."
+  },
   "color_replacement": "Color replacement",
+  "@color_replacement": {
+    "description": "Title and toolbar label for the image color replacement tool."
+  },
   "color_to_replace": "Color to replace",
+  "@color_to_replace": {
+    "description": "Label of the source color selected for replacement."
+  },
   "eyedropper": "Color selection",
+  "@eyedropper": {
+    "description": "Action to sample a color directly from the manuscript image."
+  },
   "new_color": "New color",
+  "@new_color": {
+    "description": "Label of the replacement color to be applied to the image."
+  },
   "palette": "Palette",
+  "@palette": {
+    "description": "Control for choosing a replacement color from the palette."
+  },
   "select_color": "Select color",
+  "@select_color": {
+    "description": "Prompt to choose a color in the color picker."
+  },
   "select_area_header": "Select an area on the image",
+  "@select_area_header": {
+    "description": "Heading of the manual image area selection mode."
+  },
   "select_area_description": "Select a rectangular area on the image: touch the starting point, drag, and release. You can zoom in if needed.",
+  "@select_area_description": {
+    "description": "Instructions for dragging a rectangle on the manuscript image."
+  },
   "pick_color_header": "Select a point on the image",
+  "@pick_color_header": {
+    "description": "Heading of the mode that samples one point on the manuscript image."
+  },
   "pick_color_description": "Click on the area of the image where you want to pick a color. You can zoom in and move the image if needed.",
+  "@pick_color_description": {
+    "description": "Instructions for selecting a pixel on the manuscript image."
+  },
   "tolerance": "Tolerance",
+  "@tolerance": {
+    "description": "Label for how closely pixels must match the selected source color."
+  },
   "replace_color_message": "On the first call, generating the pixel matrix will take some time.",
+  "@replace_color_message": {
+    "description": "Notice about preparing pixel data when color replacement is first used."
+  },
   "page_settings_reset": "Page settings reset",
+  "@page_settings_reset": {
+    "description": "Manuscript viewer action to restore the current page's display settings."
+  },
   "toggle_show_word_separators": "Word separators",
+  "@toggle_show_word_separators": {
+    "description": "Manuscript viewer control for word-boundary overlays."
+  },
   "toggle_show_strong_numbers": "Strong's numbers",
+  "@toggle_show_strong_numbers": {
+    "description": "Manuscript viewer control for Strong's number overlays."
+  },
   "toggle_show_verse_numbers": "Verse numbers",
+  "@toggle_show_verse_numbers": {
+    "description": "Manuscript viewer control for verse number overlays."
+  },
   "strong_number": "Strong’s number",
+  "@strong_number": {
+    "description": "Label for a Strong's identifier in the dictionary picker or entry."
+  },
   "strong_picker_unavailable_numbers": "2717 and 3203-3302 are unavailable",
+  "@strong_picker_unavailable_numbers": {
+    "description": "Dictionary picker help listing unavailable Strong's number ranges."
+  },
   "strong_dictionary_search": "Full-text search",
+  "@strong_dictionary_search": {
+    "description": "Action to open full-text search in Strong's dictionary."
+  },
   "strong_dictionary_search_hint": "#/word/translation",
+  "@strong_dictionary_search_hint": {
+    "description": "Query field hint showing accepted Strong's number or text searches."
+  },
   "strong_dictionary_no_entries": "Strong’s dictionary entries are unavailable",
+  "@strong_dictionary_no_entries": {
+    "description": "Empty state when no dictionary entries are available."
+  },
   "strong_dictionary_no_results": "No matching entries",
+  "@strong_dictionary_no_results": {
+    "description": "Empty state when the dictionary search has no matching entries."
+  },
   "greek_keyboard_tooltip": "Greek keyboard",
+  "@greek_keyboard_tooltip": {
+    "description": "Tooltip for opening the Greek keyboard in dictionary search."
+  },
   "strong_pronunciation": "Pronunciation",
+  "@strong_pronunciation": {
+    "description": "Label for the pronunciation field of a Strong's dictionary entry."
+  },
   "strong_synonyms": "Synonyms",
+  "@strong_synonyms": {
+    "description": "Heading for synonyms of a Strong's dictionary entry."
+  },
   "strong_origin": "Word analysis",
+  "@strong_origin": {
+    "description": "Heading for the origin and word analysis of a Strong's dictionary entry."
+  },
   "strong_usage": "Usage",
+  "@strong_usage": {
+    "description": "Heading for the usage information of a Strong's dictionary entry."
+  },
   "strong_reference_commentary": "Translation source: https://github.com/openscriptures/strongs",
+  "@strong_reference_commentary": {
+    "description": "Source attribution displayed by the dictionary reference information icon."
+  },
   "strong_origin_tooltip": "Word analysis may include the following elements: derivatives, comparative words, phrases, and related words.",
+  "@strong_origin_tooltip": {
+    "description": "Explains what can appear in the dictionary's word analysis section."
+  },
   "strong_part_of_speech": "Part of speech",
+  "@strong_part_of_speech": {
+    "description": "Label for grammatical classification in a Strong's dictionary entry."
+  },
   "strong_indeclNumAdj": "indeclinable numeral (adjective)",
+  "@strong_indeclNumAdj": {
+    "description": "Strong's grammar label for an indeclinable numeral used as an adjective."
+  },
   "strong_indeclLetN": "indeclinable letter (noun)",
+  "@strong_indeclLetN": {
+    "description": "Strong's grammar label for an indeclinable letter used as a noun."
+  },
   "strong_indeclinable": "indeclinable",
+  "@strong_indeclinable": {
+    "description": "Strong's grammar label for a word with no inflection."
+  },
   "strong_adj": "adjective",
+  "@strong_adj": {
+    "description": "Strong's grammar label for an adjective."
+  },
   "strong_advCor": "adverb, correlative",
+  "@strong_advCor": {
+    "description": "Strong's grammar label for a correlative adverb."
+  },
   "strong_advInt": "adverb, interrogative",
+  "@strong_advInt": {
+    "description": "Strong's grammar label for an interrogative adverb."
+  },
   "strong_advNeg": "adverb, negative",
+  "@strong_advNeg": {
+    "description": "Strong's grammar label for a negative adverb."
+  },
   "strong_advSup": "adverb, superlative",
+  "@strong_advSup": {
+    "description": "Strong's grammar label for a superlative adverb."
+  },
   "strong_adv": "adverb",
+  "@strong_adv": {
+    "description": "Strong's grammar label for an adverb."
+  },
   "strong_comp": "comparative",
+  "@strong_comp": {
+    "description": "Strong's grammar label for a comparative form."
+  },
   "strong_aramaicTransWord": "aramaic transliterated word",
+  "@strong_aramaicTransWord": {
+    "description": "Strong's grammar label for a word transliterated from Aramaic."
+  },
   "strong_hebrewForm": "hebrew form",
+  "@strong_hebrewForm": {
+    "description": "Strong's grammar label for a Hebrew form."
+  },
   "strong_hebrewNoun": "hebrew noun",
+  "@strong_hebrewNoun": {
+    "description": "Strong's grammar label for a Hebrew noun."
+  },
   "strong_hebrew": "hebrew",
+  "@strong_hebrew": {
+    "description": "Strong's grammar label identifying a Hebrew term."
+  },
   "strong_location": "location",
+  "@strong_location": {
+    "description": "Strong's grammar label for a place name."
+  },
   "strong_properNoun": "proper noun",
+  "@strong_properNoun": {
+    "description": "Strong's grammar label for a proper noun."
+  },
   "strong_noun": "noun",
+  "@strong_noun": {
+    "description": "Strong's grammar label for a noun."
+  },
   "strong_masc": "masculine",
+  "@strong_masc": {
+    "description": "Strong's grammar label for masculine gender."
+  },
   "strong_fem": "feminine",
+  "@strong_fem": {
+    "description": "Strong's grammar label for feminine gender."
+  },
   "strong_neut": "neuter",
+  "@strong_neut": {
+    "description": "Strong's grammar label for neuter gender."
+  },
   "strong_plur": "plural",
+  "@strong_plur": {
+    "description": "Strong's grammar label for plural number."
+  },
   "strong_otherType": "other Type",
+  "@strong_otherType": {
+    "description": "Strong's grammar label for the other-type category."
+  },
   "strong_verbImp": "verb (imperative)",
+  "@strong_verbImp": {
+    "description": "Strong's grammar label for an imperative verb."
+  },
   "strong_verb": "verb",
+  "@strong_verb": {
+    "description": "Strong's grammar label for a verb."
+  },
   "strong_pronDat": "pronoun, dative case",
+  "@strong_pronDat": {
+    "description": "Strong's grammar label for a dative pronoun."
+  },
   "strong_pronPoss": "possessive pronoun",
+  "@strong_pronPoss": {
+    "description": "Strong's grammar label for a possessive pronoun."
+  },
   "strong_pronPers": "personal pronoun",
+  "@strong_pronPers": {
+    "description": "Strong's grammar label for a personal pronoun."
+  },
   "strong_pronRecip": "reciprocal pronoun",
+  "@strong_pronRecip": {
+    "description": "Strong's grammar label for a reciprocal pronoun."
+  },
   "strong_pronRefl": "reflexive pronoun",
+  "@strong_pronRefl": {
+    "description": "Strong's grammar label for a reflexive pronoun."
+  },
   "strong_pronRel": "relative pronoun",
+  "@strong_pronRel": {
+    "description": "Strong's grammar label for a relative pronoun."
+  },
   "strong_pronCorrel": "correlative pronoun",
+  "@strong_pronCorrel": {
+    "description": "Strong's grammar label for a correlative pronoun."
+  },
   "strong_pronIndef": "indefinite pronoun",
+  "@strong_pronIndef": {
+    "description": "Strong's grammar label for an indefinite pronoun."
+  },
   "strong_pronInterr": "interrogative pronoun",
+  "@strong_pronInterr": {
+    "description": "Strong's grammar label for an interrogative pronoun."
+  },
   "strong_pronDem": "demonstrative pronoun",
+  "@strong_pronDem": {
+    "description": "Strong's grammar label for a demonstrative pronoun."
+  },
   "strong_pron": "pronoun",
+  "@strong_pron": {
+    "description": "Strong's grammar label for a pronoun."
+  },
   "strong_particleCond": "conditional particle",
+  "@strong_particleCond": {
+    "description": "Strong's grammar label for a conditional particle."
+  },
   "strong_particleDisj": "disjunctive particle",
+  "@strong_particleDisj": {
+    "description": "Strong's grammar label for a disjunctive particle."
+  },
   "strong_particleInterr": "interrogative particle",
+  "@strong_particleInterr": {
+    "description": "Strong's grammar label for an interrogative particle."
+  },
   "strong_particleNeg": "negative particle",
+  "@strong_particleNeg": {
+    "description": "Strong's grammar label for a negative particle."
+  },
   "strong_particle": "particle",
+  "@strong_particle": {
+    "description": "Strong's grammar label for a particle."
+  },
   "strong_interj": "interjection",
+  "@strong_interj": {
+    "description": "Strong's grammar label for an interjection."
+  },
   "strong_participle": "participle",
+  "@strong_participle": {
+    "description": "Strong's grammar label for a participle."
+  },
   "strong_prefix": "prefix",
+  "@strong_prefix": {
+    "description": "Strong's grammar label for a prefix."
+  },
   "strong_prep": "preposition",
+  "@strong_prep": {
+    "description": "Strong's grammar label for a preposition."
+  },
   "strong_artDef": "definite article",
+  "@strong_artDef": {
+    "description": "Strong's grammar label for the definite article."
+  },
   "strong_phraseIdi": "phrase (idiomatic expression)",
+  "@strong_phraseIdi": {
+    "description": "Strong's grammar label for an idiomatic expression."
+  },
   "strong_phrase": "phrase",
+  "@strong_phrase": {
+    "description": "Strong's grammar label for a phrase."
+  },
   "strong_conjNeg": "negative conjunction",
+  "@strong_conjNeg": {
+    "description": "Strong's grammar label for a negative conjunction."
+  },
   "strong_conj": "conjunction",
+  "@strong_conj": {
+    "description": "Strong's grammar label for a conjunction."
+  },
   "strong_or": "or",
+  "@strong_or": {
+    "description": "Conjunction between alternative grammatical classifications in Strong's dictionary."
+  },
   "markdown_unknown_block_title": "Unsupported content block",
+  "@markdown_unknown_block_title": {
+    "description": "Heading of the placeholder for an unsupported Markdown block."
+  },
   "markdown_unknown_block_description": "This version of the app cannot display the `{blockName}` block.",
   "@markdown_unknown_block_description": {
     "description": "Explains that the current app build does not support a custom markdown block",
@@ -409,24 +1324,81 @@
     }
   },
   "markdown_unknown_block_update_hint": "Open the downloads page to install a newer app version for your platform.",
+  "@markdown_unknown_block_update_hint": {
+    "description": "Explains how to get a newer app version when a Markdown block is unsupported."
+  },
   "markdown_unknown_block_update_action": "Update app",
+  "@markdown_unknown_block_update_action": {
+    "description": "Action to open the downloads page from an unsupported Markdown block."
+  },
   "markdown_youtube_player_title": "Embedded YouTube video",
+  "@markdown_youtube_player_title": {
+    "description": "Accessible title of the embedded YouTube player in Markdown content."
+  },
   "markdown_youtube_unavailable_title": "YouTube video unavailable",
+  "@markdown_youtube_unavailable_title": {
+    "description": "Heading when the embedded YouTube player is unavailable."
+  },
   "markdown_youtube_unavailable_description": "This YouTube block could not be rendered in the embedded player.",
+  "@markdown_youtube_unavailable_description": {
+    "description": "Explains that a YouTube block could not be displayed inside the app."
+  },
   "markdown_image_loading": "Loading image...",
+  "@markdown_image_loading": {
+    "description": "Status shown while an image in Markdown content loads."
+  },
   "copy_content": "Copy content",
+  "@copy_content": {
+    "description": "Toolbar action to copy the current article or description."
+  },
   "export_pdf_content": "Export to PDF",
+  "@export_pdf_content": {
+    "description": "Toolbar action to export the current article or description to PDF."
+  },
   "markdown_copied": "Content copied to the clipboard.",
+  "@markdown_copied": {
+    "description": "Clipboard success feedback after copying Markdown content."
+  },
   "markdown_copy_failed": "Couldn't copy the content.",
+  "@markdown_copy_failed": {
+    "description": "Error when copying Markdown content fails."
+  },
   "markdown_pdf_export_failed": "Couldn't export the PDF.",
+  "@markdown_pdf_export_failed": {
+    "description": "Error when exporting Markdown content to PDF fails."
+  },
   "previous_description_item": "Previous item",
+  "@previous_description_item": {
+    "description": "Action to open the preceding item in the description panel."
+  },
   "next_description_item": "Next item",
+  "@next_description_item": {
+    "description": "Action to open the following item in the description panel."
+  },
   "previous_word": "Previous word",
+  "@previous_word": {
+    "description": "Action to select the preceding word in the current passage or manuscript."
+  },
   "next_word": "Next word",
+  "@next_word": {
+    "description": "Action to select the following word in the current passage or manuscript."
+  },
   "previous_verse": "Previous verse",
+  "@previous_verse": {
+    "description": "Action to select the preceding verse in the manuscript description."
+  },
   "next_verse": "Next verse",
+  "@next_verse": {
+    "description": "Action to select the following verse in the manuscript description."
+  },
   "previous_dictionary_entry": "Previous dictionary entry",
+  "@previous_dictionary_entry": {
+    "description": "Action to show the preceding entry in Strong's dictionary."
+  },
   "next_dictionary_entry": "Next dictionary entry",
+  "@next_dictionary_entry": {
+    "description": "Action to show the following entry in Strong's dictionary."
+  },
   "markdown_images_loading_progress": "Loading images: {loaded} of {total}",
   "@markdown_images_loading_progress": {
     "description": "Progress label for markdown image preloading in topic articles",
@@ -440,139 +1412,536 @@
     }
   },
   "book_code_1": "Gen",
+  "@book_code_1": {
+    "description": "Short form of Genesis in Bible references."
+  },
   "book_name_1": "Genesis",
+  "@book_name_1": {
+    "description": "Full book name for Genesis in Bible navigation and references."
+  },
   "book_code_2": "Exod",
+  "@book_code_2": {
+    "description": "Short form of Exodus in Bible references."
+  },
   "book_name_2": "Exodus",
+  "@book_name_2": {
+    "description": "Full book name for Exodus in Bible navigation and references."
+  },
   "book_code_3": "Lev",
+  "@book_code_3": {
+    "description": "Short form of Leviticus in Bible references."
+  },
   "book_name_3": "Leviticus",
+  "@book_name_3": {
+    "description": "Full book name for Leviticus in Bible navigation and references."
+  },
   "book_code_4": "Num",
+  "@book_code_4": {
+    "description": "Short form of Numbers in Bible references."
+  },
   "book_name_4": "Numbers",
+  "@book_name_4": {
+    "description": "Full book name for Numbers in Bible navigation and references."
+  },
   "book_code_5": "Deut",
+  "@book_code_5": {
+    "description": "Short form of Deuteronomy in Bible references."
+  },
   "book_name_5": "Deuteronomy",
+  "@book_name_5": {
+    "description": "Full book name for Deuteronomy in Bible navigation and references."
+  },
   "book_code_6": "Josh",
+  "@book_code_6": {
+    "description": "Short form of Joshua in Bible references."
+  },
   "book_name_6": "Joshua",
+  "@book_name_6": {
+    "description": "Full book name for Joshua in Bible navigation and references."
+  },
   "book_code_7": "Judg",
+  "@book_code_7": {
+    "description": "Short form of Judges in Bible references."
+  },
   "book_name_7": "Judges",
+  "@book_name_7": {
+    "description": "Full book name for Judges in Bible navigation and references."
+  },
   "book_code_8": "Ruth",
+  "@book_code_8": {
+    "description": "Short form of Ruth in Bible references."
+  },
   "book_name_8": "Ruth",
+  "@book_name_8": {
+    "description": "Full book name for Ruth in Bible navigation and references."
+  },
   "book_code_9": "1Sam",
+  "@book_code_9": {
+    "description": "Short form of 1 Samuel in Bible references."
+  },
   "book_name_9": "1 Samuel",
+  "@book_name_9": {
+    "description": "Full book name for 1 Samuel in Bible navigation and references."
+  },
   "book_code_10": "2Sam",
+  "@book_code_10": {
+    "description": "Short form of 2 Samuel in Bible references."
+  },
   "book_name_10": "2 Samuel",
+  "@book_name_10": {
+    "description": "Full book name for 2 Samuel in Bible navigation and references."
+  },
   "book_code_11": "1Kgs",
+  "@book_code_11": {
+    "description": "Short form of 1 Kings in Bible references."
+  },
   "book_name_11": "1 Kings",
+  "@book_name_11": {
+    "description": "Full book name for 1 Kings in Bible navigation and references."
+  },
   "book_code_12": "2Kgs",
+  "@book_code_12": {
+    "description": "Short form of 2 Kings in Bible references."
+  },
   "book_name_12": "2 Kings",
+  "@book_name_12": {
+    "description": "Full book name for 2 Kings in Bible navigation and references."
+  },
   "book_code_13": "1Chr",
+  "@book_code_13": {
+    "description": "Short form of 1 Chronicles in Bible references."
+  },
   "book_name_13": "1 Chronicles",
+  "@book_name_13": {
+    "description": "Full book name for 1 Chronicles in Bible navigation and references."
+  },
   "book_code_14": "2Chr",
+  "@book_code_14": {
+    "description": "Short form of 2 Chronicles in Bible references."
+  },
   "book_name_14": "2 Chronicles",
+  "@book_name_14": {
+    "description": "Full book name for 2 Chronicles in Bible navigation and references."
+  },
   "book_code_15": "Ezra",
+  "@book_code_15": {
+    "description": "Short form of Ezra in Bible references."
+  },
   "book_name_15": "Ezra",
+  "@book_name_15": {
+    "description": "Full book name for Ezra in Bible navigation and references."
+  },
   "book_code_16": "Neh",
+  "@book_code_16": {
+    "description": "Short form of Nehemiah in Bible references."
+  },
   "book_name_16": "Nehemiah",
+  "@book_name_16": {
+    "description": "Full book name for Nehemiah in Bible navigation and references."
+  },
   "book_code_17": "Esth",
+  "@book_code_17": {
+    "description": "Short form of Esther in Bible references."
+  },
   "book_name_17": "Esther",
+  "@book_name_17": {
+    "description": "Full book name for Esther in Bible navigation and references."
+  },
   "book_code_18": "Job",
+  "@book_code_18": {
+    "description": "Short form of Job in Bible references."
+  },
   "book_name_18": "Job",
+  "@book_name_18": {
+    "description": "Full book name for Job in Bible navigation and references."
+  },
   "book_code_19": "Ps",
+  "@book_code_19": {
+    "description": "Short form of Psalms in Bible references."
+  },
   "book_name_19": "Psalms",
+  "@book_name_19": {
+    "description": "Full book name for Psalms in Bible navigation and references."
+  },
   "book_code_20": "Prov",
+  "@book_code_20": {
+    "description": "Short form of Proverbs in Bible references."
+  },
   "book_name_20": "Proverbs",
+  "@book_name_20": {
+    "description": "Full book name for Proverbs in Bible navigation and references."
+  },
   "book_code_21": "Eccl",
+  "@book_code_21": {
+    "description": "Short form of Ecclesiastes in Bible references."
+  },
   "book_name_21": "Ecclesiastes",
+  "@book_name_21": {
+    "description": "Full book name for Ecclesiastes in Bible navigation and references."
+  },
   "book_code_22": "Song",
+  "@book_code_22": {
+    "description": "Short form of Song of Songs in Bible references."
+  },
   "book_name_22": "Song of Songs",
+  "@book_name_22": {
+    "description": "Full book name for Song of Songs in Bible navigation and references."
+  },
   "book_code_23": "Isa",
+  "@book_code_23": {
+    "description": "Short form of Isaiah in Bible references."
+  },
   "book_name_23": "Isaiah",
+  "@book_name_23": {
+    "description": "Full book name for Isaiah in Bible navigation and references."
+  },
   "book_code_24": "Jer",
+  "@book_code_24": {
+    "description": "Short form of Jeremiah in Bible references."
+  },
   "book_name_24": "Jeremiah",
+  "@book_name_24": {
+    "description": "Full book name for Jeremiah in Bible navigation and references."
+  },
   "book_code_25": "Lam",
+  "@book_code_25": {
+    "description": "Short form of Lamentations in Bible references."
+  },
   "book_name_25": "Lamentations",
+  "@book_name_25": {
+    "description": "Full book name for Lamentations in Bible navigation and references."
+  },
   "book_code_26": "Ezek",
+  "@book_code_26": {
+    "description": "Short form of Ezekiel in Bible references."
+  },
   "book_name_26": "Ezekiel",
+  "@book_name_26": {
+    "description": "Full book name for Ezekiel in Bible navigation and references."
+  },
   "book_code_27": "Dan",
+  "@book_code_27": {
+    "description": "Short form of Daniel in Bible references."
+  },
   "book_name_27": "Daniel",
+  "@book_name_27": {
+    "description": "Full book name for Daniel in Bible navigation and references."
+  },
   "book_code_28": "Hos",
+  "@book_code_28": {
+    "description": "Short form of Hosea in Bible references."
+  },
   "book_name_28": "Hosea",
+  "@book_name_28": {
+    "description": "Full book name for Hosea in Bible navigation and references."
+  },
   "book_code_29": "Joel",
+  "@book_code_29": {
+    "description": "Short form of Joel in Bible references."
+  },
   "book_name_29": "Joel",
+  "@book_name_29": {
+    "description": "Full book name for Joel in Bible navigation and references."
+  },
   "book_code_30": "Amos",
+  "@book_code_30": {
+    "description": "Short form of Amos in Bible references."
+  },
   "book_name_30": "Amos",
+  "@book_name_30": {
+    "description": "Full book name for Amos in Bible navigation and references."
+  },
   "book_code_31": "Obad",
+  "@book_code_31": {
+    "description": "Short form of Obadiah in Bible references."
+  },
   "book_name_31": "Obadiah",
+  "@book_name_31": {
+    "description": "Full book name for Obadiah in Bible navigation and references."
+  },
   "book_code_32": "Jonah",
+  "@book_code_32": {
+    "description": "Short form of Jonah in Bible references."
+  },
   "book_name_32": "Jonah",
+  "@book_name_32": {
+    "description": "Full book name for Jonah in Bible navigation and references."
+  },
   "book_code_33": "Mic",
+  "@book_code_33": {
+    "description": "Short form of Micah in Bible references."
+  },
   "book_name_33": "Micah",
+  "@book_name_33": {
+    "description": "Full book name for Micah in Bible navigation and references."
+  },
   "book_code_34": "Nah",
+  "@book_code_34": {
+    "description": "Short form of Nahum in Bible references."
+  },
   "book_name_34": "Nahum",
+  "@book_name_34": {
+    "description": "Full book name for Nahum in Bible navigation and references."
+  },
   "book_code_35": "Hab",
+  "@book_code_35": {
+    "description": "Short form of Habakkuk in Bible references."
+  },
   "book_name_35": "Habakkuk",
+  "@book_name_35": {
+    "description": "Full book name for Habakkuk in Bible navigation and references."
+  },
   "book_code_36": "Zeph",
+  "@book_code_36": {
+    "description": "Short form of Zephaniah in Bible references."
+  },
   "book_name_36": "Zephaniah",
+  "@book_name_36": {
+    "description": "Full book name for Zephaniah in Bible navigation and references."
+  },
   "book_code_37": "Hag",
+  "@book_code_37": {
+    "description": "Short form of Haggai in Bible references."
+  },
   "book_name_37": "Haggai",
+  "@book_name_37": {
+    "description": "Full book name for Haggai in Bible navigation and references."
+  },
   "book_code_38": "Zech",
+  "@book_code_38": {
+    "description": "Short form of Zechariah in Bible references."
+  },
   "book_name_38": "Zechariah",
+  "@book_name_38": {
+    "description": "Full book name for Zechariah in Bible navigation and references."
+  },
   "book_code_39": "Mal",
+  "@book_code_39": {
+    "description": "Short form of Malachi in Bible references."
+  },
   "book_name_39": "Malachi",
+  "@book_name_39": {
+    "description": "Full book name for Malachi in Bible navigation and references."
+  },
   "book_code_40": "Mat",
+  "@book_code_40": {
+    "description": "Short form of Matthew in Bible references."
+  },
   "book_name_40": "Matthew",
+  "@book_name_40": {
+    "description": "Full book name for Matthew in Bible navigation and references."
+  },
   "book_code_41": "Mark",
+  "@book_code_41": {
+    "description": "Short form of Mark in Bible references."
+  },
   "book_name_41": "Mark",
+  "@book_name_41": {
+    "description": "Full book name for Mark in Bible navigation and references."
+  },
   "book_code_42": "Luke",
+  "@book_code_42": {
+    "description": "Short form of Luke in Bible references."
+  },
   "book_name_42": "Luke",
+  "@book_name_42": {
+    "description": "Full book name for Luke in Bible navigation and references."
+  },
   "book_code_43": "John",
+  "@book_code_43": {
+    "description": "Short form of John in Bible references."
+  },
   "book_name_43": "John",
+  "@book_name_43": {
+    "description": "Full book name for John in Bible navigation and references."
+  },
   "book_code_44": "Acts",
+  "@book_code_44": {
+    "description": "Short form of Acts in Bible references."
+  },
   "book_name_44": "Acts",
+  "@book_name_44": {
+    "description": "Full book name for Acts in Bible navigation and references."
+  },
   "book_code_45": "Rom",
+  "@book_code_45": {
+    "description": "Short form of Romans in Bible references."
+  },
   "book_name_45": "Romans",
+  "@book_name_45": {
+    "description": "Full book name for Romans in Bible navigation and references."
+  },
   "book_code_46": "1Cor",
+  "@book_code_46": {
+    "description": "Short form of 1 Corinthians in Bible references."
+  },
   "book_name_46": "1 Corinthians",
+  "@book_name_46": {
+    "description": "Full book name for 1 Corinthians in Bible navigation and references."
+  },
   "book_code_47": "2Cor",
+  "@book_code_47": {
+    "description": "Short form of 2 Corinthians in Bible references."
+  },
   "book_name_47": "2 Corinthians",
+  "@book_name_47": {
+    "description": "Full book name for 2 Corinthians in Bible navigation and references."
+  },
   "book_code_48": "Gal",
+  "@book_code_48": {
+    "description": "Short form of Galatians in Bible references."
+  },
   "book_name_48": "Galatians",
+  "@book_name_48": {
+    "description": "Full book name for Galatians in Bible navigation and references."
+  },
   "book_code_49": "Eph",
+  "@book_code_49": {
+    "description": "Short form of Ephesians in Bible references."
+  },
   "book_name_49": "Ephesians",
+  "@book_name_49": {
+    "description": "Full book name for Ephesians in Bible navigation and references."
+  },
   "book_code_50": "Phil",
+  "@book_code_50": {
+    "description": "Short form of Philippians in Bible references."
+  },
   "book_name_50": "Philippians",
+  "@book_name_50": {
+    "description": "Full book name for Philippians in Bible navigation and references."
+  },
   "book_code_51": "Col",
+  "@book_code_51": {
+    "description": "Short form of Colossians in Bible references."
+  },
   "book_name_51": "Colossians",
+  "@book_name_51": {
+    "description": "Full book name for Colossians in Bible navigation and references."
+  },
   "book_code_52": "1Thess",
+  "@book_code_52": {
+    "description": "Short form of 1 Thessalonians in Bible references."
+  },
   "book_name_52": "1 Thessalonians",
+  "@book_name_52": {
+    "description": "Full book name for 1 Thessalonians in Bible navigation and references."
+  },
   "book_code_53": "2Thess",
+  "@book_code_53": {
+    "description": "Short form of 2 Thessalonians in Bible references."
+  },
   "book_name_53": "2 Thessalonians",
+  "@book_name_53": {
+    "description": "Full book name for 2 Thessalonians in Bible navigation and references."
+  },
   "book_code_54": "1Tim",
+  "@book_code_54": {
+    "description": "Short form of 1 Timothy in Bible references."
+  },
   "book_name_54": "1 Timothy",
+  "@book_name_54": {
+    "description": "Full book name for 1 Timothy in Bible navigation and references."
+  },
   "book_code_55": "2Tim",
+  "@book_code_55": {
+    "description": "Short form of 2 Timothy in Bible references."
+  },
   "book_name_55": "2 Timothy",
+  "@book_name_55": {
+    "description": "Full book name for 2 Timothy in Bible navigation and references."
+  },
   "book_code_56": "Titus",
+  "@book_code_56": {
+    "description": "Short form of Titus in Bible references."
+  },
   "book_name_56": "Titus",
+  "@book_name_56": {
+    "description": "Full book name for Titus in Bible navigation and references."
+  },
   "book_code_57": "Phlm",
+  "@book_code_57": {
+    "description": "Short form of Philemon in Bible references."
+  },
   "book_name_57": "Philemon",
+  "@book_name_57": {
+    "description": "Full book name for Philemon in Bible navigation and references."
+  },
   "book_code_58": "Heb",
+  "@book_code_58": {
+    "description": "Short form of Hebrews in Bible references."
+  },
   "book_name_58": "Hebrews",
+  "@book_name_58": {
+    "description": "Full book name for Hebrews in Bible navigation and references."
+  },
   "book_code_59": "Jas",
+  "@book_code_59": {
+    "description": "Short form of James in Bible references."
+  },
   "book_name_59": "James",
+  "@book_name_59": {
+    "description": "Full book name for James in Bible navigation and references."
+  },
   "book_code_60": "1Pet",
+  "@book_code_60": {
+    "description": "Short form of 1 Peter in Bible references."
+  },
   "book_name_60": "1 Peter",
+  "@book_name_60": {
+    "description": "Full book name for 1 Peter in Bible navigation and references."
+  },
   "book_code_61": "2Pet",
+  "@book_code_61": {
+    "description": "Short form of 2 Peter in Bible references."
+  },
   "book_name_61": "2 Peter",
+  "@book_name_61": {
+    "description": "Full book name for 2 Peter in Bible navigation and references."
+  },
   "book_code_62": "1John",
+  "@book_code_62": {
+    "description": "Short form of 1 John in Bible references."
+  },
   "book_name_62": "1 John",
+  "@book_name_62": {
+    "description": "Full book name for 1 John in Bible navigation and references."
+  },
   "book_code_63": "2John",
+  "@book_code_63": {
+    "description": "Short form of 2 John in Bible references."
+  },
   "book_name_63": "2 John",
+  "@book_name_63": {
+    "description": "Full book name for 2 John in Bible navigation and references."
+  },
   "book_code_64": "3John",
+  "@book_code_64": {
+    "description": "Short form of 3 John in Bible references."
+  },
   "book_name_64": "3 John",
+  "@book_name_64": {
+    "description": "Full book name for 3 John in Bible navigation and references."
+  },
   "book_code_65": "Jude",
+  "@book_code_65": {
+    "description": "Short form of Jude in Bible references."
+  },
   "book_name_65": "Jude",
+  "@book_name_65": {
+    "description": "Full book name for Jude in Bible navigation and references."
+  },
   "book_code_66": "Rev",
+  "@book_code_66": {
+    "description": "Short form of Revelation in Bible references."
+  },
   "book_name_66": "Revelation",
+  "@book_name_66": {
+    "description": "Full book name for Revelation in Bible navigation and references."
+  },
   "bible_show_footnotes": "Show footnotes for verse {verse}",
   "@bible_show_footnotes": {
+    "description": "Tooltip on the footnote button for a verse. The verse parameter is its number.",
     "placeholders": {
       "verse": {
         "type": "int"
@@ -581,6 +1950,7 @@
   },
   "bible_verse_footnotes": "Footnotes: {reference}",
   "@bible_verse_footnotes": {
+    "description": "Title of the footnotes dialog. The reference parameter identifies the Bible verse.",
     "placeholders": {
       "reference": {
         "type": "String"

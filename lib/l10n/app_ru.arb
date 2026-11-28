@@ -1,136 +1,548 @@
 {
   "bible_bookmark_default_name": "Закладка {number}",
+  "@bible_bookmark_default_name": {
+    "description": "Default bookmark title, numbered in the order the user creates numbered bookmarks.",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
   "bible_bookmarks": "Закладки",
+  "@bible_bookmarks": {
+    "description": "Title of the Bible bookmarks list."
+  },
   "bible_bookmarks_local_storage": "Revelation хранит закладки только на этом устройстве.",
+  "@bible_bookmarks_local_storage": {
+    "description": "Explains where Bible bookmarks are stored in the bookmarks dialog."
+  },
   "bible_bookmarks_empty": "Закладок пока нет.",
+  "@bible_bookmarks_empty": {
+    "description": "Empty state of the Bible bookmarks list."
+  },
   "bible_bookmarks_load_failed": "Не удалось загрузить закладки.",
+  "@bible_bookmarks_load_failed": {
+    "description": "Error shown when the Bible bookmarks list could not be loaded."
+  },
   "bible_bookmarks_save_failed": "Не удалось сохранить изменение. Попробуйте ещё раз.",
+  "@bible_bookmarks_save_failed": {
+    "description": "Error shown when a Bible bookmark change could not be saved."
+  },
   "bible_bookmark_add": "Добавить закладку",
+  "@bible_bookmark_add": {
+    "description": "Action and dialog title for bookmarking a Bible verse."
+  },
   "bible_bookmark_edit": "Изменить закладку",
+  "@bible_bookmark_edit": {
+    "description": "Action and dialog title for editing an existing Bible bookmark."
+  },
   "bible_bookmark_delete": "Удалить",
+  "@bible_bookmark_delete": {
+    "description": "Delete action for a Bible bookmark, also used for confirmation."
+  },
   "bible_bookmark_delete_confirm": "Удалить закладку?",
+  "@bible_bookmark_delete_confirm": {
+    "description": "Confirmation prompt before deleting a Bible bookmark."
+  },
   "bible_bookmark_name": "Название",
+  "@bible_bookmark_name": {
+    "description": "Label of the bookmark name field."
+  },
   "bible_bookmark_name_required": "Введите название закладки.",
+  "@bible_bookmark_name_required": {
+    "description": "Validation message for an empty bookmark name."
+  },
   "bible_bookmark_color": "Цвет",
+  "@bible_bookmark_color": {
+    "description": "Label of the bookmark color selector."
+  },
   "bible_bookmark_save": "Сохранить",
+  "@bible_bookmark_save": {
+    "description": "Action to save the bookmark editor."
+  },
   "bible_bookmark_blue": "Синий",
+  "@bible_bookmark_blue": {
+    "description": "Accessible label for the blue bookmark color."
+  },
   "bible_bookmark_green": "Зелёный",
+  "@bible_bookmark_green": {
+    "description": "Accessible label for the green bookmark color."
+  },
   "bible_bookmark_amber": "Янтарный",
+  "@bible_bookmark_amber": {
+    "description": "Accessible label for the amber bookmark color."
+  },
   "bible_bookmark_red": "Красный",
+  "@bible_bookmark_red": {
+    "description": "Accessible label for the red bookmark color."
+  },
   "bible_bookmark_violet": "Фиолетовый",
+  "@bible_bookmark_violet": {
+    "description": "Accessible label for the violet bookmark color."
+  },
   "@@locale": "ru",
   "app_name": "Откровение",
+  "@app_name": {
+    "description": "Public name of the Revelation app."
+  },
   "startup_title": "Запуск приложения...",
+  "@startup_title": {
+    "description": "Heading of the startup screen while the application initializes."
+  },
   "startup_step_preparing": "Подготавливаем приложение",
+  "@startup_step_preparing": {
+    "description": "Startup status while preparing the application."
+  },
   "startup_step_loading_settings": "Загружаем ваши настройки",
+  "@startup_step_loading_settings": {
+    "description": "Startup status while loading saved settings."
+  },
   "startup_step_initializing_server": "Подключаем онлайн-сервисы",
+  "@startup_step_initializing_server": {
+    "description": "Startup status while configuring the connection to online services."
+  },
   "startup_step_initializing_databases": "Открываем данные приложения",
+  "@startup_step_initializing_databases": {
+    "description": "Startup status while opening the local application databases."
+  },
   "startup_step_configuring_links": "Подготавливаем словарь Стронга",
+  "@startup_step_configuring_links": {
+    "description": "Startup status while configuring Strong's dictionary links."
+  },
   "startup_progress": "Шаг {current} из {total}",
+  "@startup_progress": {
+    "description": "Shows the current startup step number out of the total",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "startup_error": "Не удалось запустить :(",
+  "@startup_error": {
+    "description": "Heading of the startup failure state."
+  },
   "startup_retry": "Повторить",
+  "@startup_retry": {
+    "description": "Action to retry initialization after a startup failure."
+  },
   "startup_version_build": "Версия {version} ({build})",
+  "@startup_version_build": {
+    "description": "App version and build number shown on the startup screen",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
   "version": "Версия приложения:",
+  "@version": {
+    "description": "Label before the application version number."
+  },
   "app_version_from": "Версия приложения от",
+  "@app_version_from": {
+    "description": "Label before the application build date on the About page."
+  },
   "common_data_update": "Версия данных",
+  "@common_data_update": {
+    "description": "Label for the version of the language-independent database."
+  },
   "localized_data_update": "Версия данных на {language} языке",
+  "@localized_data_update": {
+    "description": "Label for localized DB data version by language",
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
   "data_version_from": "от",
+  "@data_version_from": {
+    "description": "Connector between a database version label and its date on the About page."
+  },
   "language_name_en": "английском",
+  "@language_name_en": {
+    "description": "Language name for English in language and data-version labels."
+  },
   "language_name_es": "испанском",
+  "@language_name_es": {
+    "description": "Language name for Spanish in language and data-version labels."
+  },
   "language_name_uk": "украинском",
+  "@language_name_uk": {
+    "description": "Language name for Ukrainian in language and data-version labels."
+  },
   "language_name_ru": "русском",
+  "@language_name_ru": {
+    "description": "Language name for Russian in language and data-version labels."
+  },
   "app_description": "Приложение для изучения Откровения.",
+  "@app_description": {
+    "description": "Short description of the app on the About page."
+  },
   "website": "Revelation.website",
+  "@website": {
+    "description": "Link label for the official Revelation website."
+  },
   "github_project": "GitHub проект",
+  "@github_project": {
+    "description": "Link label for the Revelation source repository on GitHub."
+  },
   "privacy_policy": "Политика конфиденциальности",
+  "@privacy_policy": {
+    "description": "Link label for the app's privacy policy."
+  },
   "license": "Лицензия",
+  "@license": {
+    "description": "Link label for the app's license."
+  },
   "support_us": "Поддержите нас",
+  "@support_us": {
+    "description": "Link label for supporting the Revelation project."
+  },
   "installation_packages": "Установочные пакеты",
+  "@installation_packages": {
+    "description": "Link label for downloadable installers."
+  },
   "acknowledgements_title": "Благодарности",
+  "@acknowledgements_title": {
+    "description": "Heading of the About acknowledgments section."
+  },
   "acknowledgements_description_1": "В первую очередь хочу поблагодарить Бога за жизнь; свою жену Иру - за любовь и заботу; и маму - за помощь и поддержку.\nТакже моя искренняя признательность учреждениям за предоставленный доступ к информации и бесценным рукописям:",
+  "@acknowledgements_description_1": {
+    "description": "Opening acknowledgments and introduction to the contributing institutions."
+  },
   "acknowledgements_description_2": "Огромное спасибо создателям следующего ПО и ресурсов:",
+  "@acknowledgements_description_2": {
+    "description": "Introduction to the credited software and resources."
+  },
   "recommended_title": "Рекомендуемое",
+  "@recommended_title": {
+    "description": "Heading of the recommended resources section."
+  },
   "recommended_description": "Рекомендуемые ресурсы для изучения Откровения и Библии в целом:",
+  "@recommended_description": {
+    "description": "Introduction to recommended Bible and Revelation study resources."
+  },
   "bug_report": "Сообщить об ошибке",
+  "@bug_report": {
+    "description": "Action to start preparing a bug report."
+  },
   "tools": "Инструменты",
+  "@tools": {
+    "description": "Heading of the application maintenance tools section."
+  },
   "refresh_databases": "Обновить базы данных",
+  "@refresh_databases": {
+    "description": "Maintenance action to check for and download database updates."
+  },
   "databases_refreshed": "Базы данных обновлены",
+  "@databases_refreshed": {
+    "description": "Success feedback after updating the local databases."
+  },
   "databases_up_to_date": "Файлы БД актуальны. Обновление не требуется.",
+  "@databases_up_to_date": {
+    "description": "Feedback when the local database files already match the available versions."
+  },
   "database_size_mismatch": "Размеры некоторых файлов БД не соответствуют манифесту. Попробуйте обновить базы данных ещё раз.",
+  "@database_size_mismatch": {
+    "description": "Warning that the database files differ in size from the manifest."
+  },
   "database_refresh_failed": "Не удалось обновить базы данных",
+  "@database_refresh_failed": {
+    "description": "Error shown after a failed database update."
+  },
   "show_local_folder": "Показать локальную папку",
+  "@show_local_folder": {
+    "description": "Action to open the local application data directory."
+  },
   "local_folder_open_failed": "Не удалось открыть локальную папку",
+  "@local_folder_open_failed": {
+    "description": "Error when opening the local application data directory fails."
+  },
   "local_folder_open_failed_with_path": "Не удалось открыть локальную папку:\n{path}",
+  "@local_folder_open_failed_with_path": {
+    "description": "Opening the local application folder failed; shows its resolved filesystem path",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
   "clear_cache": "Очистить кэш",
+  "@clear_cache": {
+    "description": "Maintenance action to remove cached files."
+  },
   "cache_cleared": "Кэш очищен",
+  "@cache_cleared": {
+    "description": "Success feedback after removing cached files."
+  },
   "cache_clear_failed": "Не удалось очистить кэш",
+  "@cache_clear_failed": {
+    "description": "Error shown if the app cannot clear cached files."
+  },
   "log_copied_message": "Логи скопированы в буфер обмена. Пожалуйста, отправьте их мне:",
+  "@log_copied_message": {
+    "description": "Bug report instructions shown after copying technical logs to the clipboard."
+  },
   "bug_report_wish": "Пожалуйста, кратко опишите ошибку и вставьте в письмо техническую информацию, которую приложение только что автоматически скопировало в буфер обмена (это важно!). По возможности приложите скриншот экрана к сообщению. Спасибо, вы помогаете сделать приложение лучше.",
+  "@bug_report_wish": {
+    "description": "Draft email asking the reporter for steps, copied diagnostics, and a screenshot if available."
+  },
   "all_rights_reserved": "Все права защищены",
+  "@all_rights_reserved": {
+    "description": "Copyright footer wording."
+  },
   "ad_loading": "Загрузка рекламы...",
+  "@ad_loading": {
+    "description": "Status label while an advertisement loads."
+  },
   "menu": "Меню",
+  "@menu": {
+    "description": "Label for the app navigation menu."
+  },
   "close_app": "Закрыть приложение",
+  "@close_app": {
+    "description": "Action to exit the application."
+  },
   "todo": "СДЕЛАТЬ",
+  "@todo": {
+    "description": "Short placeholder label for unfinished content."
+  },
   "primary_sources_screen": "Первоисточники",
+  "@primary_sources_screen": {
+    "description": "Navigation label and page title for the manuscript catalogue."
+  },
   "primary_sources_header": "Нажмите на изображение, чтобы открыть",
+  "@primary_sources_header": {
+    "description": "Subtitle explaining how to open a manuscript from the catalogue."
+  },
   "strongs_dictionary_screen": "Словарь Стронга",
+  "@strongs_dictionary_screen": {
+    "description": "Navigation label and page title for Strong's dictionary."
+  },
   "strongs_dictionary_header": "Значения греческих слов и их использование",
+  "@strongs_dictionary_header": {
+    "description": "Subtitle describing the scope of Strong's dictionary."
+  },
   "allusion_search_screen": "Поиск аллюзий",
+  "@allusion_search_screen": {
+    "description": "Navigation label and page title for the biblical allusion search."
+  },
   "allusion_search_header": "Вся древнегреческая Библия (LXX + TR)",
   "@allusion_search_header": {
     "description": "Allusion search page subtitle naming the Greek Bible corpus."
   },
   "bible_screen": "Библия",
+  "@bible_screen": {
+    "description": "Navigation label and page title for the Bible reader."
+  },
   "bible_header": "Чтение и изучение Писания",
+  "@bible_header": {
+    "description": "Subtitle of the Bible reading and study page."
+  },
   "bible_module": "Модуль",
+  "@bible_module": {
+    "description": "Label for the Bible module selector."
+  },
   "bible_book": "Книга",
+  "@bible_book": {
+    "description": "Label for the Bible book selector."
+  },
   "bible_chapter": "Глава",
+  "@bible_chapter": {
+    "description": "Label for the Bible chapter selector."
+  },
   "bible_verse": "Стих",
+  "@bible_verse": {
+    "description": "Label for the Bible verse selector."
+  },
   "bible_loading": "Открываем Библию...",
+  "@bible_loading": {
+    "description": "Status shown while opening the Bible reader."
+  },
   "bible_loading_chapter": "Загружаем главу...",
+  "@bible_loading_chapter": {
+    "description": "Status shown while loading the selected Bible chapter."
+  },
   "bible_loading_module": "Скачиваем и открываем модуль...",
+  "@bible_loading_module": {
+    "description": "Status while downloading or opening the selected Bible module."
+  },
   "bible_no_modules": "Модули Библии не найдены. Обновите базы данных или добавьте bible_*.sqlite в локальную папку данных.",
+  "@bible_no_modules": {
+    "description": "Bible reader empty state with instructions for obtaining module files."
+  },
   "bible_previous_chapter": "Предыдущая глава",
+  "@bible_previous_chapter": {
+    "description": "Action to navigate to the preceding Bible chapter."
+  },
   "bible_next_chapter": "Следующая глава",
+  "@bible_next_chapter": {
+    "description": "Action to navigate to the following Bible chapter."
+  },
   "bible_strong_toggle_label": "Стронг",
+  "@bible_strong_toggle_label": {
+    "description": "Label for showing or hiding Strong's annotations in the Bible reader."
+  },
   "bible_module_info": "О модуле",
+  "@bible_module_info": {
+    "description": "Action or heading for the selected Bible module's details."
+  },
   "bible_module_info_title": "Название",
+  "@bible_module_info_title": {
+    "description": "Label for the title in the Bible module details."
+  },
   "bible_module_info_description": "Описание",
+  "@bible_module_info_description": {
+    "description": "Label for the description in the Bible module details."
+  },
   "bible_module_info_language": "Язык",
+  "@bible_module_info_language": {
+    "description": "Label for the text language in the Bible module details."
+  },
   "bible_module_info_language_en": "Английский",
+  "@bible_module_info_language_en": {
+    "description": "English language value in the Bible module details."
+  },
   "bible_module_info_language_es": "Испанский",
+  "@bible_module_info_language_es": {
+    "description": "Spanish language value in the Bible module details."
+  },
   "bible_module_info_language_uk": "Украинский",
+  "@bible_module_info_language_uk": {
+    "description": "Ukrainian language value in the Bible module details."
+  },
   "bible_module_info_language_ru": "Русский",
+  "@bible_module_info_language_ru": {
+    "description": "Russian language value in the Bible module details."
+  },
   "bible_module_info_canon": "Книги",
+  "@bible_module_info_canon": {
+    "description": "Label for the Bible module's canon or book coverage."
+  },
   "bible_module_info_versification": "Нумерация стихов",
+  "@bible_module_info_versification": {
+    "description": "Label for the Bible module's verse numbering scheme."
+  },
   "bible_module_info_license": "Лицензия",
+  "@bible_module_info_license": {
+    "description": "Label for the license in the Bible module details."
+  },
   "bible_module_info_source_summary": "Источник",
+  "@bible_module_info_source_summary": {
+    "description": "Label for the short source attribution in the Bible module details."
+  },
   "bible_module_info_data_version": "Версия данных",
+  "@bible_module_info_data_version": {
+    "description": "Label for the content version in the Bible module details."
+  },
   "bible_module_info_schema_version": "Формат базы",
+  "@bible_module_info_schema_version": {
+    "description": "Label for the database format version in the Bible module details."
+  },
   "bible_module_info_date": "Обновлён",
+  "@bible_module_info_date": {
+    "description": "Label for the update date in the Bible module details."
+  },
   "bible_module_info_details": "Источник и подробности",
+  "@bible_module_info_details": {
+    "description": "Heading for source attribution and technical module details."
+  },
   "bible_module_info_unknown": "Не указано",
+  "@bible_module_info_unknown": {
+    "description": "Fallback value for missing Bible module metadata."
+  },
   "bible_module_info_greek": "Древнегреческий",
+  "@bible_module_info_greek": {
+    "description": "Ancient Greek language value in the Bible module details."
+  },
   "bible_module_info_hebrew": "Иврит",
+  "@bible_module_info_hebrew": {
+    "description": "Hebrew language value in the Bible module details."
+  },
   "bible_module_info_66_books": "66 книг",
+  "@bible_module_info_66_books": {
+    "description": "Canon coverage value for a Bible module containing all 66 books."
+  },
   "bible_copy_selected_verses": "Копировать выбранные стихи",
+  "@bible_copy_selected_verses": {
+    "description": "Action to copy the selected Bible verses to the clipboard."
+  },
   "bible_selected_verses_copied": "Выбранные стихи скопированы в буфер обмена.",
+  "@bible_selected_verses_copied": {
+    "description": "Confirmation that the selected Bible verses were copied."
+  },
   "bible_open_parallel_reader": "Открыть параллельное чтение",
+  "@bible_open_parallel_reader": {
+    "description": "Action to open the second Bible reading pane."
+  },
   "bible_close_parallel_reader": "Закрыть параллельное чтение",
+  "@bible_close_parallel_reader": {
+    "description": "Action to close the second Bible reading pane."
+  },
   "bible_linked_navigation": "Связанная навигация",
+  "@bible_linked_navigation": {
+    "description": "Control label for moving both parallel reading panes together."
+  },
   "bible_unlinked_navigation": "Независимая навигация",
+  "@bible_unlinked_navigation": {
+    "description": "Control label for navigating the parallel reading panes independently."
+  },
   "bible_search_in_module": "Искать в этом модуле",
+  "@bible_search_in_module": {
+    "description": "Action to search within the currently selected Bible module."
+  },
   "bible_search_dialog_title": "Поиск по Библии",
+  "@bible_search_dialog_title": {
+    "description": "Title of the search dialog for a Bible module."
+  },
   "bible_search_query_label": "Текст поиска",
+  "@bible_search_query_label": {
+    "description": "Label of the query field in the Bible search dialog."
+  },
   "bible_search_query_hint": "Фраза",
+  "@bible_search_query_hint": {
+    "description": "Hint shown inside the Bible search query field."
+  },
   "bible_search_button": "Искать",
+  "@bible_search_button": {
+    "description": "Action to submit the Bible search query."
+  },
   "bible_search_result_action": "Действие при нажатии",
+  "@bible_search_result_action": {
+    "description": "Label for choosing what a tap on a Bible search result does."
+  },
   "bible_search_action_copy": "Копировать стих",
+  "@bible_search_action_copy": {
+    "description": "Option to copy the verse when a Bible search result is activated."
+  },
   "bible_search_action_open": "Открыть стих",
+  "@bible_search_action_open": {
+    "description": "Option to open the verse when a Bible search result is activated."
+  },
   "bible_search_copy_results": "Копировать результаты",
+  "@bible_search_copy_results": {
+    "description": "Action to copy Bible search results in bulk."
+  },
   "bible_search_loading": "Ищем...",
+  "@bible_search_loading": {
+    "description": "Status displayed while a Bible text search is running."
+  },
   "bible_search_failed": "Не удалось выполнить поиск.",
+  "@bible_search_failed": {
+    "description": "Error shown after a failed Bible text search."
+  },
   "bible_search_no_results": "Совпадения не найдены.",
+  "@bible_search_no_results": {
+    "description": "Empty state when the Bible text search finds no matches."
+  },
   "bible_search_match_count": "Совпадений: {matches}; стихов: {verses}",
   "@bible_search_match_count": {
     "description": "Search result count label with total occurrences and verses",
@@ -156,192 +568,755 @@
     }
   },
   "bible_search_previous_page": "Предыдущая страница",
+  "@bible_search_previous_page": {
+    "description": "Action to return to the preceding page of Bible search results."
+  },
   "bible_search_next_page": "Следующая страница",
+  "@bible_search_next_page": {
+    "description": "Action to continue to the next page of Bible search results."
+  },
   "bible_search_verse_copied": "Стих скопирован в буфер обмена.",
+  "@bible_search_verse_copied": {
+    "description": "Confirmation that one Bible search result verse was copied."
+  },
   "bible_search_references_copied": "Ссылки скопированы в буфер обмена.",
+  "@bible_search_references_copied": {
+    "description": "Confirmation that the Bible search result references were copied."
+  },
   "bible_search_verses_copied": "Стихи скопированы в буфер обмена.",
+  "@bible_search_verses_copied": {
+    "description": "Confirmation that Bible search result verse texts were copied."
+  },
   "bible_reference_preview_loading_hint": "Удерживайте ссылку на стих, чтобы загрузить и скопировать текст стиха.",
+  "@bible_reference_preview_loading_hint": {
+    "description": "Hint for loading and copying a passage from a press-and-hold on a Bible reference."
+  },
   "bible_reference_preview_loading": "Загружаем текст стиха...",
+  "@bible_reference_preview_loading": {
+    "description": "Status while the Bible reference preview retrieves verse text."
+  },
   "bible_reference_preview_unavailable": "Текст стиха недоступен.",
+  "@bible_reference_preview_unavailable": {
+    "description": "Fallback when verse text cannot be loaded for a Bible reference preview."
+  },
   "revelation_structure_screen": "Структура Откровения",
+  "@revelation_structure_screen": {
+    "description": "Navigation label and page title for the Revelation structure section."
+  },
   "revelation_structure_header": "План книги и структура повествования",
+  "@revelation_structure_header": {
+    "description": "Subtitle describing the outline and narrative focus of the Revelation structure section."
+  },
   "historical_background_screen": "Историческая справка",
+  "@historical_background_screen": {
+    "description": "Navigation label and page title for the historical background section."
+  },
   "historical_background_header": "Ключевые события из истории церкви и мира",
+  "@historical_background_header": {
+    "description": "Subtitle describing the historical background section's scope."
+  },
   "practical_faith_screen": "Практическая вера",
+  "@practical_faith_screen": {
+    "description": "Navigation label and page title for the practical faith section."
+  },
   "practical_faith_header": "Размышление и применение",
+  "@practical_faith_header": {
+    "description": "Subtitle describing the practical faith section's focus."
+  },
   "planned_feature_message": "Страница «{featureTitle}» планируется к реализации в одной из будущих версий.",
+  "@planned_feature_message": {
+    "description": "Message shown on placeholder pages for planned sections",
+    "placeholders": {
+      "featureTitle": {
+        "type": "String"
+      }
+    }
+  },
   "settings_screen": "Настройки",
+  "@settings_screen": {
+    "description": "Navigation label and page title for the application settings."
+  },
   "settings_header": "Сохраняются автоматически",
+  "@settings_header": {
+    "description": "Settings subtitle explaining that changes are saved automatically."
+  },
   "about_screen": "О программе",
+  "@about_screen": {
+    "description": "Navigation label and page title for application information."
+  },
   "about_header": "Общая информация о приложении",
+  "@about_header": {
+    "description": "Subtitle of the application information page."
+  },
   "download": "Скачать",
+  "@download": {
+    "description": "Navigation label and page title for application downloads."
+  },
   "download_header": "Установите приложение для вашей платформы",
+  "@download_header": {
+    "description": "Subtitle prompting users to choose their platform for installation."
+  },
   "download_android": "Android",
+  "@download_android": {
+    "description": "Platform label in the app download list for Android."
+  },
   "download_windows": "Windows",
+  "@download_windows": {
+    "description": "Platform label in the app download list for Windows."
+  },
   "download_linux": "Linux",
+  "@download_linux": {
+    "description": "Platform label in the app download list for Linux."
+  },
   "download_google_play": "Google Play",
+  "@download_google_play": {
+    "description": "Store link label for the Google Play listing."
+  },
   "download_microsoft_store": "Microsoft Store",
+  "@download_microsoft_store": {
+    "description": "Store link label for the Microsoft Store listing."
+  },
   "download_snapcraft": "Snapcraft",
+  "@download_snapcraft": {
+    "description": "Store link label for the Snapcraft listing."
+  },
   "file_saved_at": "Сохранено: {path}",
+  "@file_saved_at": {
+    "description": "Feedback after saving an exported file. The path parameter is its location."
+  },
   "error_loading_libraries": "Ошибка загрузки библиотек",
+  "@error_loading_libraries": {
+    "description": "Error when the About page cannot load credited software."
+  },
   "error_loading_institutions": "Ошибка загрузки учреждений",
+  "@error_loading_institutions": {
+    "description": "Error when the About page cannot load contributing institutions."
+  },
   "error_loading_recommendations": "Ошибка загрузки рекомендаций",
+  "@error_loading_recommendations": {
+    "description": "Error when the About page cannot load recommended resources."
+  },
   "error_loading_topics": "Ошибка загрузки тем",
+  "@error_loading_topics": {
+    "description": "Error when the topic list cannot be loaded."
+  },
   "error_loading_primary_sources": "Ошибка загрузки первоисточников",
+  "@error_loading_primary_sources": {
+    "description": "Error when the manuscript catalogue cannot be loaded."
+  },
   "changelog": "Журнал изменений (en)",
+  "@changelog": {
+    "description": "Heading or action for opening the release changelog."
+  },
   "close": "Закрыть",
+  "@close": {
+    "description": "Shared action to dismiss a dialog or panel."
+  },
   "error": "Ошибка",
+  "@error": {
+    "description": "Shared title for messages reporting an error."
+  },
   "attention": "Внимание",
+  "@attention": {
+    "description": "Shared title for a warning dialog."
+  },
   "info": "Информация",
+  "@info": {
+    "description": "Shared label for an information action or panel."
+  },
   "more_information": "Больше информации",
+  "@more_information": {
+    "description": "Action to expand or open further information."
+  },
   "unable_to_follow_the_link": "Невозможно перейти по ссылке",
+  "@unable_to_follow_the_link": {
+    "description": "Error shown when the app cannot open a link."
+  },
   "language": "Язык",
+  "@language": {
+    "description": "Application setting for the interface language."
+  },
   "color_theme": "Цветовая тема",
+  "@color_theme": {
+    "description": "Application setting for the interface color scheme."
+  },
   "manuscript_color_theme": "Рукопись",
+  "@manuscript_color_theme": {
+    "description": "Theme selection label for the Manuscript palette."
+  },
   "forest_color_theme": "Лес",
+  "@forest_color_theme": {
+    "description": "Theme selection label for the Forest palette."
+  },
   "sky_color_theme": "Небо",
+  "@sky_color_theme": {
+    "description": "Theme selection label for the Sky palette."
+  },
   "grape_color_theme": "Виноград",
+  "@grape_color_theme": {
+    "description": "Theme selection label for the Grape palette."
+  },
   "font_size": "Размер шрифта",
+  "@font_size": {
+    "description": "Application setting for the interface text size."
+  },
   "small_font_size": "Маленький",
+  "@small_font_size": {
+    "description": "Label for the small text size setting."
+  },
   "medium_font_size": "Средний",
+  "@medium_font_size": {
+    "description": "Label for the medium text size setting."
+  },
   "large_font_size": "Большой",
+  "@large_font_size": {
+    "description": "Label for the large text size setting."
+  },
   "sound": "Звук",
+  "@sound": {
+    "description": "Application setting for sound."
+  },
   "on": "Включен",
+  "@on": {
+    "description": "Shared label for the enabled state of a toggle."
+  },
   "off": "Выключен",
+  "@off": {
+    "description": "Shared label for the disabled state of a toggle."
+  },
   "vectors": "Векторы",
+  "@vectors": {
+    "description": "Resource category used in the About page's software and asset credits."
+  },
   "icons": "Иконки",
+  "@icons": {
+    "description": "Resource category for icons in the About page's asset credits."
+  },
   "and": "и",
+  "@and": {
+    "description": "Conjunction between credited resources or creators in the About page."
+  },
   "by": "от",
+  "@by": {
+    "description": "Connector before the credited creator in the About page."
+  },
   "package": "Пакет",
+  "@package": {
+    "description": "Resource category for a software package in the About page's credits."
+  },
   "font": "Шрифт",
+  "@font": {
+    "description": "Resource category for a typeface in the About page's credits."
+  },
   "wikipedia": "Википедия",
+  "@wikipedia": {
+    "description": "Link label for a manuscript's external Wikipedia article."
+  },
   "intf": "INTF",
+  "@intf": {
+    "description": "Link label for a manuscript record at the Institute for New Testament Textual Research."
+  },
   "image_source": "Источник изображений",
+  "@image_source": {
+    "description": "Link label for the provider of a manuscript image."
+  },
   "source_date": "Датировка",
+  "@source_date": {
+    "description": "Field label for the dating of a manuscript."
+  },
   "source_contents": "Содержание",
+  "@source_contents": {
+    "description": "Field label for the biblical contents of a manuscript."
+  },
   "source_material": "Материал",
+  "@source_material": {
+    "description": "Field label for the manuscript's physical writing material."
+  },
   "source_script": "Письмо",
+  "@source_script": {
+    "description": "Field label for the manuscript's writing system or hand."
+  },
   "source_classification": "Классификация",
+  "@source_classification": {
+    "description": "Field label for the manuscript's classification."
+  },
   "source_discovery": "Обнаружение",
+  "@source_discovery": {
+    "description": "Field label for a manuscript's discovery information."
+  },
   "source_location": "Место хранения",
+  "@source_location": {
+    "description": "Field label for a manuscript's known location."
+  },
   "primary_source_links": "Ссылки",
+  "@primary_source_links": {
+    "description": "Label for the internal and external links in a primary source card."
+  },
   "open_primary_source": "Открыть первоисточник",
+  "@open_primary_source": {
+    "description": "Link in an expanded card that opens the primary source in the app."
+  },
   "topic": "Тема",
+  "@topic": {
+    "description": "Fallback title of a study article with no available title."
+  },
   "show_more": "показать больше информации",
+  "@show_more": {
+    "description": "Action to expand the details of a manuscript card."
+  },
   "hide": "скрыть",
+  "@hide": {
+    "description": "Action to collapse the expanded details of a manuscript card."
+  },
   "full_primary_sources": "Содержат все Откровение целиком",
+  "@full_primary_sources": {
+    "description": "Catalogue group heading for manuscripts preserving all of Revelation."
+  },
   "significant_primary_sources": "Содержат значительную часть Откровения",
+  "@significant_primary_sources": {
+    "description": "Catalogue group heading for manuscripts preserving a substantial part of Revelation."
+  },
   "fragments_primary_sources": "Содержат небольшие фрагменты Откровения",
+  "@fragments_primary_sources": {
+    "description": "Catalogue group heading for manuscripts with short fragments of Revelation."
+  },
   "verses": "Количество стихов",
+  "@verses": {
+    "description": "Label for the number of Revelation verses preserved by a manuscript."
+  },
   "choose_page": "Выберите страницу",
+  "@choose_page": {
+    "description": "Prompt to choose a page of the selected manuscript."
+  },
   "images_are_missing": "Изображения отсутствуют",
+  "@images_are_missing": {
+    "description": "Empty state when no manuscript page images are available."
+  },
   "image_not_loaded": "Изображение не загружено",
+  "@image_not_loaded": {
+    "description": "Fallback shown when the current manuscript image fails to load."
+  },
   "primary_source_word_source_unavailable": "Первоисточник недоступен",
+  "@primary_source_word_source_unavailable": {
+    "description": "Word comparison error when the requested manuscript cannot be opened."
+  },
   "primary_source_word_page_unavailable": "Страница недоступна",
+  "@primary_source_word_page_unavailable": {
+    "description": "Word comparison error when the requested manuscript page cannot be found."
+  },
   "primary_source_word_word_unavailable": "Слово недоступно",
+  "@primary_source_word_word_unavailable": {
+    "description": "Word comparison error when the requested word cannot be located."
+  },
   "primary_source_word_image_unavailable": "Изображение недоступно",
+  "@primary_source_word_image_unavailable": {
+    "description": "Word comparison error when the word's image cannot be loaded."
+  },
   "primary_source_words_image_hint": "Нажмите на изображение чтоб увидеть слово в первоисточнике",
+  "@primary_source_words_image_hint": {
+    "description": "Instruction for opening a word in its manuscript from the comparison image."
+  },
   "click_for_info": "Кликните на интересующий вас элемент изображения, чтобы получить о нем информацию.",
+  "@click_for_info": {
+    "description": "Initial instruction to select an annotated element on the manuscript image."
+  },
   "low_quality": "Качество снижено",
+  "@low_quality": {
+    "description": "Short warning when a lower-resolution manuscript image is displayed."
+  },
   "low_quality_message": "В мобильном браузере используется изображение сниженного качества. Для просмотра в максимальном качестве установите приложение или откройте страницу на компьютере.",
+  "@low_quality_message": {
+    "description": "Explains how to access the full-quality manuscript image on another platform."
+  },
   "reload_image": "Перезагрузка",
+  "@reload_image": {
+    "description": "Manuscript viewer toolbar action to reload the current image."
+  },
   "zoom_in": "Увеличение",
+  "@zoom_in": {
+    "description": "Manuscript viewer action to increase image magnification."
+  },
   "zoom_out": "Уменьшение",
+  "@zoom_out": {
+    "description": "Manuscript viewer action to decrease image magnification."
+  },
   "restore_original_scale": "Начальный масштаб",
+  "@restore_original_scale": {
+    "description": "Manuscript viewer action to restore the original image scale."
+  },
   "toggle_negative": "Негатив",
+  "@toggle_negative": {
+    "description": "Manuscript viewer control for inverting image colors."
+  },
   "toggle_monochrome": "Монохромность",
+  "@toggle_monochrome": {
+    "description": "Manuscript viewer control for switching the image to monochrome."
+  },
   "brightness_contrast": "Яркость, контрастность",
+  "@brightness_contrast": {
+    "description": "Title and toolbar label for the manuscript image adjustment controls."
+  },
   "brightness": "Яркость",
+  "@brightness": {
+    "description": "Label of the brightness control for a manuscript image."
+  },
   "contrast": "Контрастность",
+  "@contrast": {
+    "description": "Label of the contrast control for a manuscript image."
+  },
   "ok": "OK",
+  "@ok": {
+    "description": "Shared action to confirm and dismiss a dialog."
+  },
   "cancel": "Отменить",
+  "@cancel": {
+    "description": "Shared action to dismiss without applying the pending choice."
+  },
   "reset": "Сбросить",
+  "@reset": {
+    "description": "Shared action to restore defaults for the current controls."
+  },
   "area": "Область",
+  "@area": {
+    "description": "Label for the image region selected for color replacement."
+  },
   "size": "Размер",
+  "@size": {
+    "description": "Label for the dimensions of the region selected for color replacement."
+  },
   "not_selected": "Не выделена",
+  "@not_selected": {
+    "description": "Placeholder when the requested region or color has not been selected."
+  },
   "area_selection": "Выделение области",
+  "@area_selection": {
+    "description": "Action to select an image region for color replacement."
+  },
   "color_replacement": "Замена цвета",
+  "@color_replacement": {
+    "description": "Title and toolbar label for the image color replacement tool."
+  },
   "color_to_replace": "Цвет для замены",
+  "@color_to_replace": {
+    "description": "Label of the source color selected for replacement."
+  },
   "eyedropper": "Выбор цвета",
+  "@eyedropper": {
+    "description": "Action to sample a color directly from the manuscript image."
+  },
   "new_color": "Новый цвет",
+  "@new_color": {
+    "description": "Label of the replacement color to be applied to the image."
+  },
   "palette": "Палитра",
+  "@palette": {
+    "description": "Control for choosing a replacement color from the palette."
+  },
   "select_color": "Выберите цвет",
+  "@select_color": {
+    "description": "Prompt to choose a color in the color picker."
+  },
   "select_area_header": "Выберите область на изображении",
+  "@select_area_header": {
+    "description": "Heading of the manual image area selection mode."
+  },
   "select_area_description": "Выделите прямоугольную область на изображении: коснитесь начальной точки, проведите и отпустите. При необходимости вы можете увеличить изображение.",
+  "@select_area_description": {
+    "description": "Instructions for dragging a rectangle on the manuscript image."
+  },
   "pick_color_header": "Выберите точку на изображении",
+  "@pick_color_header": {
+    "description": "Heading of the mode that samples one point on the manuscript image."
+  },
   "pick_color_description": "Нажмите на область изображения, откуда вы хотите выбрать цвет. При необходимости вы можете увеличить или передвинуть изображение.",
+  "@pick_color_description": {
+    "description": "Instructions for selecting a pixel on the manuscript image."
+  },
   "tolerance": "Допуск",
+  "@tolerance": {
+    "description": "Label for how closely pixels must match the selected source color."
+  },
   "replace_color_message": "При первом вызове формирование матрицы пикселей займёт некоторое время.",
+  "@replace_color_message": {
+    "description": "Notice about preparing pixel data when color replacement is first used."
+  },
   "page_settings_reset": "Сброс настроек",
+  "@page_settings_reset": {
+    "description": "Manuscript viewer action to restore the current page's display settings."
+  },
   "toggle_show_word_separators": "Разделители слов",
+  "@toggle_show_word_separators": {
+    "description": "Manuscript viewer control for word-boundary overlays."
+  },
   "toggle_show_strong_numbers": "Номера Стронга",
+  "@toggle_show_strong_numbers": {
+    "description": "Manuscript viewer control for Strong's number overlays."
+  },
   "toggle_show_verse_numbers": "Номера стихов",
+  "@toggle_show_verse_numbers": {
+    "description": "Manuscript viewer control for verse number overlays."
+  },
   "strong_number": "Номер Стронга",
+  "@strong_number": {
+    "description": "Label for a Strong's identifier in the dictionary picker or entry."
+  },
   "strong_picker_unavailable_numbers": "2717 и 3203-3302 недоступны",
+  "@strong_picker_unavailable_numbers": {
+    "description": "Dictionary picker help listing unavailable Strong's number ranges."
+  },
   "strong_dictionary_search": "Полнотекстовый поиск",
+  "@strong_dictionary_search": {
+    "description": "Action to open full-text search in Strong's dictionary."
+  },
   "strong_dictionary_search_hint": "#/слово/перевод",
+  "@strong_dictionary_search_hint": {
+    "description": "Query field hint showing accepted Strong's number or text searches."
+  },
   "strong_dictionary_no_entries": "Статьи словаря Стронга недоступны",
+  "@strong_dictionary_no_entries": {
+    "description": "Empty state when no dictionary entries are available."
+  },
   "strong_dictionary_no_results": "Нет подходящих статей",
+  "@strong_dictionary_no_results": {
+    "description": "Empty state when the dictionary search has no matching entries."
+  },
   "greek_keyboard_tooltip": "Греческая клавиатура",
+  "@greek_keyboard_tooltip": {
+    "description": "Tooltip for opening the Greek keyboard in dictionary search."
+  },
   "strong_pronunciation": "Произношение",
+  "@strong_pronunciation": {
+    "description": "Label for the pronunciation field of a Strong's dictionary entry."
+  },
   "strong_synonyms": "Синонимы",
+  "@strong_synonyms": {
+    "description": "Heading for synonyms of a Strong's dictionary entry."
+  },
   "strong_origin": "Анализ слова",
+  "@strong_origin": {
+    "description": "Heading for the origin and word analysis of a Strong's dictionary entry."
+  },
   "strong_usage": "Использование",
+  "@strong_usage": {
+    "description": "Heading for the usage information of a Strong's dictionary entry."
+  },
   "strong_reference_commentary": "Источник перевода: https://www.bible.in.ua/underl",
+  "@strong_reference_commentary": {
+    "description": "Source attribution displayed by the dictionary reference information icon."
+  },
   "strong_origin_tooltip": "Анализ слова может включать следующие ссылки: производные формы, слова для сравнения, словосочетания и связанные слова.",
+  "@strong_origin_tooltip": {
+    "description": "Explains what can appear in the dictionary's word analysis section."
+  },
   "strong_part_of_speech": "Часть речи",
+  "@strong_part_of_speech": {
+    "description": "Label for grammatical classification in a Strong's dictionary entry."
+  },
   "strong_indeclNumAdj": "неизменяемое числительное (в функции прилагательного)",
+  "@strong_indeclNumAdj": {
+    "description": "Strong's grammar label for an indeclinable numeral used as an adjective."
+  },
   "strong_indeclLetN": "неизменяемая буква (существительное)",
+  "@strong_indeclLetN": {
+    "description": "Strong's grammar label for an indeclinable letter used as a noun."
+  },
   "strong_indeclinable": "неизменяемое",
+  "@strong_indeclinable": {
+    "description": "Strong's grammar label for a word with no inflection."
+  },
   "strong_adj": "прилагательное",
+  "@strong_adj": {
+    "description": "Strong's grammar label for an adjective."
+  },
   "strong_advCor": "соотносительное наречие",
+  "@strong_advCor": {
+    "description": "Strong's grammar label for a correlative adverb."
+  },
   "strong_advInt": "вопросительное наречие",
+  "@strong_advInt": {
+    "description": "Strong's grammar label for an interrogative adverb."
+  },
   "strong_advNeg": "отрицательное наречие",
+  "@strong_advNeg": {
+    "description": "Strong's grammar label for a negative adverb."
+  },
   "strong_advSup": "наречие, превосходная степень",
+  "@strong_advSup": {
+    "description": "Strong's grammar label for a superlative adverb."
+  },
   "strong_adv": "наречие",
+  "@strong_adv": {
+    "description": "Strong's grammar label for an adverb."
+  },
   "strong_comp": "сравнительная степень",
+  "@strong_comp": {
+    "description": "Strong's grammar label for a comparative form."
+  },
   "strong_aramaicTransWord": "транслитерированное арамейское слово",
+  "@strong_aramaicTransWord": {
+    "description": "Strong's grammar label for a word transliterated from Aramaic."
+  },
   "strong_hebrewForm": "форма на иврите",
+  "@strong_hebrewForm": {
+    "description": "Strong's grammar label for a Hebrew form."
+  },
   "strong_hebrewNoun": "существительное на иврите",
+  "@strong_hebrewNoun": {
+    "description": "Strong's grammar label for a Hebrew noun."
+  },
   "strong_hebrew": "иврит",
+  "@strong_hebrew": {
+    "description": "Strong's grammar label identifying a Hebrew term."
+  },
   "strong_location": "географическое название",
+  "@strong_location": {
+    "description": "Strong's grammar label for a place name."
+  },
   "strong_properNoun": "имя собственное",
+  "@strong_properNoun": {
+    "description": "Strong's grammar label for a proper noun."
+  },
   "strong_noun": "существительное",
+  "@strong_noun": {
+    "description": "Strong's grammar label for a noun."
+  },
   "strong_masc": "мужской род",
+  "@strong_masc": {
+    "description": "Strong's grammar label for masculine gender."
+  },
   "strong_fem": "женский род",
+  "@strong_fem": {
+    "description": "Strong's grammar label for feminine gender."
+  },
   "strong_neut": "средний род",
+  "@strong_neut": {
+    "description": "Strong's grammar label for neuter gender."
+  },
   "strong_plur": "множественное число",
+  "@strong_plur": {
+    "description": "Strong's grammar label for plural number."
+  },
   "strong_otherType": "другой тип",
+  "@strong_otherType": {
+    "description": "Strong's grammar label for the other-type category."
+  },
   "strong_verbImp": "глагол (повелительное наклонение)",
+  "@strong_verbImp": {
+    "description": "Strong's grammar label for an imperative verb."
+  },
   "strong_verb": "глагол",
+  "@strong_verb": {
+    "description": "Strong's grammar label for a verb."
+  },
   "strong_pronDat": "Местоимение, дательный падеж",
+  "@strong_pronDat": {
+    "description": "Strong's grammar label for a dative pronoun."
+  },
   "strong_pronPoss": "притяжательное местоимение",
+  "@strong_pronPoss": {
+    "description": "Strong's grammar label for a possessive pronoun."
+  },
   "strong_pronPers": "личное местоимение",
+  "@strong_pronPers": {
+    "description": "Strong's grammar label for a personal pronoun."
+  },
   "strong_pronRecip": "взаимное местоимение",
+  "@strong_pronRecip": {
+    "description": "Strong's grammar label for a reciprocal pronoun."
+  },
   "strong_pronRefl": "возвратное местоимение",
+  "@strong_pronRefl": {
+    "description": "Strong's grammar label for a reflexive pronoun."
+  },
   "strong_pronRel": "относительное местоимение",
+  "@strong_pronRel": {
+    "description": "Strong's grammar label for a relative pronoun."
+  },
   "strong_pronCorrel": "соотносительное местоимение",
+  "@strong_pronCorrel": {
+    "description": "Strong's grammar label for a correlative pronoun."
+  },
   "strong_pronIndef": "неопределённое местоимение",
+  "@strong_pronIndef": {
+    "description": "Strong's grammar label for an indefinite pronoun."
+  },
   "strong_pronInterr": "вопросительное местоимение",
+  "@strong_pronInterr": {
+    "description": "Strong's grammar label for an interrogative pronoun."
+  },
   "strong_pronDem": "указательное местоимение",
+  "@strong_pronDem": {
+    "description": "Strong's grammar label for a demonstrative pronoun."
+  },
   "strong_pron": "местоимение",
+  "@strong_pron": {
+    "description": "Strong's grammar label for a pronoun."
+  },
   "strong_particleCond": "условная частица",
+  "@strong_particleCond": {
+    "description": "Strong's grammar label for a conditional particle."
+  },
   "strong_particleDisj": "разделительная частица",
+  "@strong_particleDisj": {
+    "description": "Strong's grammar label for a disjunctive particle."
+  },
   "strong_particleInterr": "вопросительная частица",
+  "@strong_particleInterr": {
+    "description": "Strong's grammar label for an interrogative particle."
+  },
   "strong_particleNeg": "отрицательная частица",
+  "@strong_particleNeg": {
+    "description": "Strong's grammar label for a negative particle."
+  },
   "strong_particle": "частица",
+  "@strong_particle": {
+    "description": "Strong's grammar label for a particle."
+  },
   "strong_interj": "междометие",
+  "@strong_interj": {
+    "description": "Strong's grammar label for an interjection."
+  },
   "strong_participle": "причастие",
+  "@strong_participle": {
+    "description": "Strong's grammar label for a participle."
+  },
   "strong_prefix": "префикс",
+  "@strong_prefix": {
+    "description": "Strong's grammar label for a prefix."
+  },
   "strong_prep": "предлог",
+  "@strong_prep": {
+    "description": "Strong's grammar label for a preposition."
+  },
   "strong_artDef": "определённый артикль",
+  "@strong_artDef": {
+    "description": "Strong's grammar label for the definite article."
+  },
   "strong_phraseIdi": "фраза (идиоматическое выражение)",
+  "@strong_phraseIdi": {
+    "description": "Strong's grammar label for an idiomatic expression."
+  },
   "strong_phrase": "фраза",
+  "@strong_phrase": {
+    "description": "Strong's grammar label for a phrase."
+  },
   "strong_conjNeg": "отрицательный союз",
+  "@strong_conjNeg": {
+    "description": "Strong's grammar label for a negative conjunction."
+  },
   "strong_conj": "союз",
-  "strong_or": "или"
+  "@strong_conj": {
+    "description": "Strong's grammar label for a conjunction."
+  },
+  "strong_or": "или",
+  "@strong_or": {
+    "description": "Conjunction between alternative grammatical classifications in Strong's dictionary."
+  }
 ,
   "markdown_unknown_block_title": "Неподдерживаемый блок содержимого",
+  "@markdown_unknown_block_title": {
+    "description": "Heading of the placeholder for an unsupported Markdown block."
+  },
   "markdown_unknown_block_description": "Эта версия приложения не умеет отображать блок `{blockName}`.",
   "@markdown_unknown_block_description": {
     "description": "Объясняет, что текущая сборка приложения не поддерживает пользовательский markdown-блок",
@@ -352,24 +1327,81 @@
     }
   },
   "markdown_unknown_block_update_hint": "Откройте страницу загрузок, чтобы установить более новую версию приложения для вашей платформы.",
+  "@markdown_unknown_block_update_hint": {
+    "description": "Explains how to get a newer app version when a Markdown block is unsupported."
+  },
   "markdown_unknown_block_update_action": "Обновить приложение",
+  "@markdown_unknown_block_update_action": {
+    "description": "Action to open the downloads page from an unsupported Markdown block."
+  },
   "markdown_youtube_player_title": "Встроенное YouTube-видео",
+  "@markdown_youtube_player_title": {
+    "description": "Accessible title of the embedded YouTube player in Markdown content."
+  },
   "markdown_youtube_unavailable_title": "YouTube-видео недоступно",
+  "@markdown_youtube_unavailable_title": {
+    "description": "Heading when the embedded YouTube player is unavailable."
+  },
   "markdown_youtube_unavailable_description": "Этот YouTube-блок не удалось отобразить во встроенном плеере.",
+  "@markdown_youtube_unavailable_description": {
+    "description": "Explains that a YouTube block could not be displayed inside the app."
+  },
   "markdown_image_loading": "Загрузка изображения...",
+  "@markdown_image_loading": {
+    "description": "Status shown while an image in Markdown content loads."
+  },
   "copy_content": "Скопировать содержимое",
+  "@copy_content": {
+    "description": "Toolbar action to copy the current article or description."
+  },
   "export_pdf_content": "Экспортировать в PDF",
+  "@export_pdf_content": {
+    "description": "Toolbar action to export the current article or description to PDF."
+  },
   "markdown_copied": "Содержимое скопировано в буфер обмена.",
+  "@markdown_copied": {
+    "description": "Clipboard success feedback after copying Markdown content."
+  },
   "markdown_copy_failed": "Не удалось скопировать содержимое.",
+  "@markdown_copy_failed": {
+    "description": "Error when copying Markdown content fails."
+  },
   "markdown_pdf_export_failed": "Не удалось экспортировать PDF.",
+  "@markdown_pdf_export_failed": {
+    "description": "Error when exporting Markdown content to PDF fails."
+  },
   "previous_description_item": "Предыдущий элемент",
+  "@previous_description_item": {
+    "description": "Action to open the preceding item in the description panel."
+  },
   "next_description_item": "Следующий элемент",
+  "@next_description_item": {
+    "description": "Action to open the following item in the description panel."
+  },
   "previous_word": "Предыдущее слово",
+  "@previous_word": {
+    "description": "Action to select the preceding word in the current passage or manuscript."
+  },
   "next_word": "Следующее слово",
+  "@next_word": {
+    "description": "Action to select the following word in the current passage or manuscript."
+  },
   "previous_verse": "Предыдущий стих",
+  "@previous_verse": {
+    "description": "Action to select the preceding verse in the manuscript description."
+  },
   "next_verse": "Следующий стих",
+  "@next_verse": {
+    "description": "Action to select the following verse in the manuscript description."
+  },
   "previous_dictionary_entry": "Предыдущая словарная статья",
+  "@previous_dictionary_entry": {
+    "description": "Action to show the preceding entry in Strong's dictionary."
+  },
   "next_dictionary_entry": "Следующая словарная статья",
+  "@next_dictionary_entry": {
+    "description": "Action to show the following entry in Strong's dictionary."
+  },
   "markdown_images_loading_progress": "Загрузка изображений: {loaded} из {total}",
   "@markdown_images_loading_progress": {
     "description": "Текст прогресса предзагрузки изображений Markdown в статьях",
@@ -383,139 +1415,536 @@
     }
   },
   "book_code_1": "Быт",
+  "@book_code_1": {
+    "description": "Short form of Genesis in Bible references."
+  },
   "book_name_1": "Бытие",
+  "@book_name_1": {
+    "description": "Full book name for Genesis in Bible navigation and references."
+  },
   "book_code_2": "Исх",
+  "@book_code_2": {
+    "description": "Short form of Exodus in Bible references."
+  },
   "book_name_2": "Исход",
+  "@book_name_2": {
+    "description": "Full book name for Exodus in Bible navigation and references."
+  },
   "book_code_3": "Лев",
+  "@book_code_3": {
+    "description": "Short form of Leviticus in Bible references."
+  },
   "book_name_3": "Левит",
+  "@book_name_3": {
+    "description": "Full book name for Leviticus in Bible navigation and references."
+  },
   "book_code_4": "Чис",
+  "@book_code_4": {
+    "description": "Short form of Numbers in Bible references."
+  },
   "book_name_4": "Числа",
+  "@book_name_4": {
+    "description": "Full book name for Numbers in Bible navigation and references."
+  },
   "book_code_5": "Втор",
+  "@book_code_5": {
+    "description": "Short form of Deuteronomy in Bible references."
+  },
   "book_name_5": "Второзаконие",
+  "@book_name_5": {
+    "description": "Full book name for Deuteronomy in Bible navigation and references."
+  },
   "book_code_6": "Нав",
+  "@book_code_6": {
+    "description": "Short form of Joshua in Bible references."
+  },
   "book_name_6": "Иисус Навин",
+  "@book_name_6": {
+    "description": "Full book name for Joshua in Bible navigation and references."
+  },
   "book_code_7": "Суд",
+  "@book_code_7": {
+    "description": "Short form of Judges in Bible references."
+  },
   "book_name_7": "Судьи",
+  "@book_name_7": {
+    "description": "Full book name for Judges in Bible navigation and references."
+  },
   "book_code_8": "Руф",
+  "@book_code_8": {
+    "description": "Short form of Ruth in Bible references."
+  },
   "book_name_8": "Руфь",
+  "@book_name_8": {
+    "description": "Full book name for Ruth in Bible navigation and references."
+  },
   "book_code_9": "1Цар",
+  "@book_code_9": {
+    "description": "Short form of 1 Samuel in Bible references."
+  },
   "book_name_9": "1 Царств",
+  "@book_name_9": {
+    "description": "Full book name for 1 Samuel in Bible navigation and references."
+  },
   "book_code_10": "2Цар",
+  "@book_code_10": {
+    "description": "Short form of 2 Samuel in Bible references."
+  },
   "book_name_10": "2 Царств",
+  "@book_name_10": {
+    "description": "Full book name for 2 Samuel in Bible navigation and references."
+  },
   "book_code_11": "3Цар",
+  "@book_code_11": {
+    "description": "Short form of 1 Kings in Bible references."
+  },
   "book_name_11": "3 Царств",
+  "@book_name_11": {
+    "description": "Full book name for 1 Kings in Bible navigation and references."
+  },
   "book_code_12": "4Цар",
+  "@book_code_12": {
+    "description": "Short form of 2 Kings in Bible references."
+  },
   "book_name_12": "4 Царств",
+  "@book_name_12": {
+    "description": "Full book name for 2 Kings in Bible navigation and references."
+  },
   "book_code_13": "1Пар",
+  "@book_code_13": {
+    "description": "Short form of 1 Chronicles in Bible references."
+  },
   "book_name_13": "1 Паралипоменон",
+  "@book_name_13": {
+    "description": "Full book name for 1 Chronicles in Bible navigation and references."
+  },
   "book_code_14": "2Пар",
+  "@book_code_14": {
+    "description": "Short form of 2 Chronicles in Bible references."
+  },
   "book_name_14": "2 Паралипоменон",
+  "@book_name_14": {
+    "description": "Full book name for 2 Chronicles in Bible navigation and references."
+  },
   "book_code_15": "Езд",
+  "@book_code_15": {
+    "description": "Short form of Ezra in Bible references."
+  },
   "book_name_15": "Ездра",
+  "@book_name_15": {
+    "description": "Full book name for Ezra in Bible navigation and references."
+  },
   "book_code_16": "Неем",
+  "@book_code_16": {
+    "description": "Short form of Nehemiah in Bible references."
+  },
   "book_name_16": "Неемия",
+  "@book_name_16": {
+    "description": "Full book name for Nehemiah in Bible navigation and references."
+  },
   "book_code_17": "Есф",
+  "@book_code_17": {
+    "description": "Short form of Esther in Bible references."
+  },
   "book_name_17": "Есфирь",
+  "@book_name_17": {
+    "description": "Full book name for Esther in Bible navigation and references."
+  },
   "book_code_18": "Иов",
+  "@book_code_18": {
+    "description": "Short form of Job in Bible references."
+  },
   "book_name_18": "Иов",
+  "@book_name_18": {
+    "description": "Full book name for Job in Bible navigation and references."
+  },
   "book_code_19": "Пс",
+  "@book_code_19": {
+    "description": "Short form of Psalms in Bible references."
+  },
   "book_name_19": "Псалтирь",
+  "@book_name_19": {
+    "description": "Full book name for Psalms in Bible navigation and references."
+  },
   "book_code_20": "Прит",
+  "@book_code_20": {
+    "description": "Short form of Proverbs in Bible references."
+  },
   "book_name_20": "Притчи",
+  "@book_name_20": {
+    "description": "Full book name for Proverbs in Bible navigation and references."
+  },
   "book_code_21": "Еккл",
+  "@book_code_21": {
+    "description": "Short form of Ecclesiastes in Bible references."
+  },
   "book_name_21": "Екклесиаст",
+  "@book_name_21": {
+    "description": "Full book name for Ecclesiastes in Bible navigation and references."
+  },
   "book_code_22": "Песн",
+  "@book_code_22": {
+    "description": "Short form of Song of Songs in Bible references."
+  },
   "book_name_22": "Песнь Песней",
+  "@book_name_22": {
+    "description": "Full book name for Song of Songs in Bible navigation and references."
+  },
   "book_code_23": "Ис",
+  "@book_code_23": {
+    "description": "Short form of Isaiah in Bible references."
+  },
   "book_name_23": "Исаия",
+  "@book_name_23": {
+    "description": "Full book name for Isaiah in Bible navigation and references."
+  },
   "book_code_24": "Иер",
+  "@book_code_24": {
+    "description": "Short form of Jeremiah in Bible references."
+  },
   "book_name_24": "Иеремия",
+  "@book_name_24": {
+    "description": "Full book name for Jeremiah in Bible navigation and references."
+  },
   "book_code_25": "Плач",
+  "@book_code_25": {
+    "description": "Short form of Lamentations in Bible references."
+  },
   "book_name_25": "Плач Иеремии",
+  "@book_name_25": {
+    "description": "Full book name for Lamentations in Bible navigation and references."
+  },
   "book_code_26": "Иез",
+  "@book_code_26": {
+    "description": "Short form of Ezekiel in Bible references."
+  },
   "book_name_26": "Иезекииль",
+  "@book_name_26": {
+    "description": "Full book name for Ezekiel in Bible navigation and references."
+  },
   "book_code_27": "Дан",
+  "@book_code_27": {
+    "description": "Short form of Daniel in Bible references."
+  },
   "book_name_27": "Даниил",
+  "@book_name_27": {
+    "description": "Full book name for Daniel in Bible navigation and references."
+  },
   "book_code_28": "Ос",
+  "@book_code_28": {
+    "description": "Short form of Hosea in Bible references."
+  },
   "book_name_28": "Осия",
+  "@book_name_28": {
+    "description": "Full book name for Hosea in Bible navigation and references."
+  },
   "book_code_29": "Иоил",
+  "@book_code_29": {
+    "description": "Short form of Joel in Bible references."
+  },
   "book_name_29": "Иоиль",
+  "@book_name_29": {
+    "description": "Full book name for Joel in Bible navigation and references."
+  },
   "book_code_30": "Ам",
+  "@book_code_30": {
+    "description": "Short form of Amos in Bible references."
+  },
   "book_name_30": "Амос",
+  "@book_name_30": {
+    "description": "Full book name for Amos in Bible navigation and references."
+  },
   "book_code_31": "Авд",
+  "@book_code_31": {
+    "description": "Short form of Obadiah in Bible references."
+  },
   "book_name_31": "Авдий",
+  "@book_name_31": {
+    "description": "Full book name for Obadiah in Bible navigation and references."
+  },
   "book_code_32": "Иона",
+  "@book_code_32": {
+    "description": "Short form of Jonah in Bible references."
+  },
   "book_name_32": "Иона",
+  "@book_name_32": {
+    "description": "Full book name for Jonah in Bible navigation and references."
+  },
   "book_code_33": "Мих",
+  "@book_code_33": {
+    "description": "Short form of Micah in Bible references."
+  },
   "book_name_33": "Михей",
+  "@book_name_33": {
+    "description": "Full book name for Micah in Bible navigation and references."
+  },
   "book_code_34": "Наум",
+  "@book_code_34": {
+    "description": "Short form of Nahum in Bible references."
+  },
   "book_name_34": "Наум",
+  "@book_name_34": {
+    "description": "Full book name for Nahum in Bible navigation and references."
+  },
   "book_code_35": "Авв",
+  "@book_code_35": {
+    "description": "Short form of Habakkuk in Bible references."
+  },
   "book_name_35": "Аввакум",
+  "@book_name_35": {
+    "description": "Full book name for Habakkuk in Bible navigation and references."
+  },
   "book_code_36": "Соф",
+  "@book_code_36": {
+    "description": "Short form of Zephaniah in Bible references."
+  },
   "book_name_36": "Софония",
+  "@book_name_36": {
+    "description": "Full book name for Zephaniah in Bible navigation and references."
+  },
   "book_code_37": "Агг",
+  "@book_code_37": {
+    "description": "Short form of Haggai in Bible references."
+  },
   "book_name_37": "Аггей",
+  "@book_name_37": {
+    "description": "Full book name for Haggai in Bible navigation and references."
+  },
   "book_code_38": "Зах",
+  "@book_code_38": {
+    "description": "Short form of Zechariah in Bible references."
+  },
   "book_name_38": "Захария",
+  "@book_name_38": {
+    "description": "Full book name for Zechariah in Bible navigation and references."
+  },
   "book_code_39": "Мал",
+  "@book_code_39": {
+    "description": "Short form of Malachi in Bible references."
+  },
   "book_name_39": "Малахия",
+  "@book_name_39": {
+    "description": "Full book name for Malachi in Bible navigation and references."
+  },
   "book_code_40": "Мф",
+  "@book_code_40": {
+    "description": "Short form of Matthew in Bible references."
+  },
   "book_name_40": "Матфей",
+  "@book_name_40": {
+    "description": "Full book name for Matthew in Bible navigation and references."
+  },
   "book_code_41": "Мк",
+  "@book_code_41": {
+    "description": "Short form of Mark in Bible references."
+  },
   "book_name_41": "Марк",
+  "@book_name_41": {
+    "description": "Full book name for Mark in Bible navigation and references."
+  },
   "book_code_42": "Лк",
+  "@book_code_42": {
+    "description": "Short form of Luke in Bible references."
+  },
   "book_name_42": "Лука",
+  "@book_name_42": {
+    "description": "Full book name for Luke in Bible navigation and references."
+  },
   "book_code_43": "Ин",
+  "@book_code_43": {
+    "description": "Short form of John in Bible references."
+  },
   "book_name_43": "Иоанн",
+  "@book_name_43": {
+    "description": "Full book name for John in Bible navigation and references."
+  },
   "book_code_44": "Деян",
+  "@book_code_44": {
+    "description": "Short form of Acts in Bible references."
+  },
   "book_name_44": "Деяния",
+  "@book_name_44": {
+    "description": "Full book name for Acts in Bible navigation and references."
+  },
   "book_code_45": "Рим",
+  "@book_code_45": {
+    "description": "Short form of Romans in Bible references."
+  },
   "book_name_45": "Римлянам",
+  "@book_name_45": {
+    "description": "Full book name for Romans in Bible navigation and references."
+  },
   "book_code_46": "1Кор",
+  "@book_code_46": {
+    "description": "Short form of 1 Corinthians in Bible references."
+  },
   "book_name_46": "1 Коринфянам",
+  "@book_name_46": {
+    "description": "Full book name for 1 Corinthians in Bible navigation and references."
+  },
   "book_code_47": "2Кор",
+  "@book_code_47": {
+    "description": "Short form of 2 Corinthians in Bible references."
+  },
   "book_name_47": "2 Коринфянам",
+  "@book_name_47": {
+    "description": "Full book name for 2 Corinthians in Bible navigation and references."
+  },
   "book_code_48": "Гал",
+  "@book_code_48": {
+    "description": "Short form of Galatians in Bible references."
+  },
   "book_name_48": "Галатам",
+  "@book_name_48": {
+    "description": "Full book name for Galatians in Bible navigation and references."
+  },
   "book_code_49": "Еф",
+  "@book_code_49": {
+    "description": "Short form of Ephesians in Bible references."
+  },
   "book_name_49": "Ефесянам",
+  "@book_name_49": {
+    "description": "Full book name for Ephesians in Bible navigation and references."
+  },
   "book_code_50": "Флп",
+  "@book_code_50": {
+    "description": "Short form of Philippians in Bible references."
+  },
   "book_name_50": "Филиппийцам",
+  "@book_name_50": {
+    "description": "Full book name for Philippians in Bible navigation and references."
+  },
   "book_code_51": "Кол",
+  "@book_code_51": {
+    "description": "Short form of Colossians in Bible references."
+  },
   "book_name_51": "Колоссянам",
+  "@book_name_51": {
+    "description": "Full book name for Colossians in Bible navigation and references."
+  },
   "book_code_52": "1Фес",
+  "@book_code_52": {
+    "description": "Short form of 1 Thessalonians in Bible references."
+  },
   "book_name_52": "1 Фессалоникийцам",
+  "@book_name_52": {
+    "description": "Full book name for 1 Thessalonians in Bible navigation and references."
+  },
   "book_code_53": "2Фес",
+  "@book_code_53": {
+    "description": "Short form of 2 Thessalonians in Bible references."
+  },
   "book_name_53": "2 Фессалоникийцам",
+  "@book_name_53": {
+    "description": "Full book name for 2 Thessalonians in Bible navigation and references."
+  },
   "book_code_54": "1Тим",
+  "@book_code_54": {
+    "description": "Short form of 1 Timothy in Bible references."
+  },
   "book_name_54": "1 Тимофею",
+  "@book_name_54": {
+    "description": "Full book name for 1 Timothy in Bible navigation and references."
+  },
   "book_code_55": "2Тим",
+  "@book_code_55": {
+    "description": "Short form of 2 Timothy in Bible references."
+  },
   "book_name_55": "2 Тимофею",
+  "@book_name_55": {
+    "description": "Full book name for 2 Timothy in Bible navigation and references."
+  },
   "book_code_56": "Тит",
+  "@book_code_56": {
+    "description": "Short form of Titus in Bible references."
+  },
   "book_name_56": "Титу",
+  "@book_name_56": {
+    "description": "Full book name for Titus in Bible navigation and references."
+  },
   "book_code_57": "Флм",
+  "@book_code_57": {
+    "description": "Short form of Philemon in Bible references."
+  },
   "book_name_57": "Филимону",
+  "@book_name_57": {
+    "description": "Full book name for Philemon in Bible navigation and references."
+  },
   "book_code_58": "Евр",
+  "@book_code_58": {
+    "description": "Short form of Hebrews in Bible references."
+  },
   "book_name_58": "Евреям",
+  "@book_name_58": {
+    "description": "Full book name for Hebrews in Bible navigation and references."
+  },
   "book_code_59": "Иак",
+  "@book_code_59": {
+    "description": "Short form of James in Bible references."
+  },
   "book_name_59": "Иакова",
+  "@book_name_59": {
+    "description": "Full book name for James in Bible navigation and references."
+  },
   "book_code_60": "1Пет",
+  "@book_code_60": {
+    "description": "Short form of 1 Peter in Bible references."
+  },
   "book_name_60": "1 Петра",
+  "@book_name_60": {
+    "description": "Full book name for 1 Peter in Bible navigation and references."
+  },
   "book_code_61": "2Пет",
+  "@book_code_61": {
+    "description": "Short form of 2 Peter in Bible references."
+  },
   "book_name_61": "2 Петра",
+  "@book_name_61": {
+    "description": "Full book name for 2 Peter in Bible navigation and references."
+  },
   "book_code_62": "1Ин",
+  "@book_code_62": {
+    "description": "Short form of 1 John in Bible references."
+  },
   "book_name_62": "1 Иоанна",
+  "@book_name_62": {
+    "description": "Full book name for 1 John in Bible navigation and references."
+  },
   "book_code_63": "2Ин",
+  "@book_code_63": {
+    "description": "Short form of 2 John in Bible references."
+  },
   "book_name_63": "2 Иоанна",
+  "@book_name_63": {
+    "description": "Full book name for 2 John in Bible navigation and references."
+  },
   "book_code_64": "3Ин",
+  "@book_code_64": {
+    "description": "Short form of 3 John in Bible references."
+  },
   "book_name_64": "3 Иоанна",
+  "@book_name_64": {
+    "description": "Full book name for 3 John in Bible navigation and references."
+  },
   "book_code_65": "Иуд",
+  "@book_code_65": {
+    "description": "Short form of Jude in Bible references."
+  },
   "book_name_65": "Иуды",
+  "@book_name_65": {
+    "description": "Full book name for Jude in Bible navigation and references."
+  },
   "book_code_66": "Откр",
+  "@book_code_66": {
+    "description": "Short form of Revelation in Bible references."
+  },
   "book_name_66": "Откровение",
+  "@book_name_66": {
+    "description": "Full book name for Revelation in Bible navigation and references."
+  },
   "bible_show_footnotes": "Показать сноски к стиху {verse}",
   "@bible_show_footnotes": {
+    "description": "Tooltip on the footnote button for a verse. The verse parameter is its number.",
     "placeholders": {
       "verse": {
         "type": "int"
@@ -524,6 +1953,7 @@
   },
   "bible_verse_footnotes": "Сноски: {reference}",
   "@bible_verse_footnotes": {
+    "description": "Title of the footnotes dialog. The reference parameter identifies the Bible verse.",
     "placeholders": {
       "reference": {
         "type": "String"

@@ -1,4 +1,7 @@
 @Tags(['widget'])
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +14,39 @@ import 'package:revelation/l10n/app_localizations_uk.dart';
 import '../test_harness/widget_test_harness.dart';
 
 void main() {
+  group('ARB message metadata', () {
+    for (final locale in AppLocalizations.supportedLocales) {
+      final code = locale.languageCode;
+      test('$code annotates each message immediately after its value', () {
+        final bundle = File('lib/l10n/app_$code.arb');
+        final resources =
+            jsonDecode(bundle.readAsStringSync()) as Map<String, dynamic>;
+        final keys = resources.keys.toList();
+
+        for (var index = 0; index < keys.length; index++) {
+          final key = keys[index];
+          if (key.startsWith('@')) {
+            continue;
+          }
+
+          final annotationKey = '@$key';
+          expect(
+            keys.skip(index + 1).firstOrNull,
+            annotationKey,
+            reason: '${bundle.path}: $key must be followed by $annotationKey',
+          );
+          final annotation = resources[annotationKey];
+          expect(annotation, isA<Map<String, dynamic>>());
+          expect(
+            (annotation as Map<String, dynamic>)['description'],
+            isA<String>().having((text) => text.trim(), 'text', isNotEmpty),
+            reason: '${bundle.path}: $annotationKey must describe the message',
+          );
+        }
+      });
+    }
+  });
+
   group('AppLocalizations Locale Contracts', () {
     final localeFactories = <String, AppLocalizations Function()>{
       'en': () => AppLocalizationsEn(),
