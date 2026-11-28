@@ -52,8 +52,8 @@
     <text x="610" y="189" text-anchor="middle" fill="#e9f0ff" stroke="none" font-family="Arial, sans-serif" font-size="16" font-weight="700">S4</text>
     <circle cx="690" cy="165" r="5.5" fill="#121c35" stroke="#FBCB7E" stroke-width="2"/>
     <text x="690" y="189" text-anchor="middle" fill="#e9f0ff" stroke="none" font-family="Arial, sans-serif" font-size="16" font-weight="700">S5</text>
-    <circle cx="848" cy="165" r="5.5" fill="#121c35" stroke="#FBCB7E" stroke-width="2"/>
-    <text x="848" y="189" text-anchor="middle" fill="#e9f0ff" stroke="none" font-family="Arial, sans-serif" font-size="16" font-weight="700">S6</text>
+    <circle cx="748" cy="165" r="5.5" fill="#121c35" stroke="#FBCB7E" stroke-width="2"/>
+    <text x="748" y="189" text-anchor="middle" fill="#e9f0ff" stroke="none" font-family="Arial, sans-serif" font-size="16" font-weight="700">S6</text>
     <circle cx="998" cy="165" r="5.5" fill="#121c35" stroke="#FBCB7E" stroke-width="2"/>
     <text x="998" y="189" text-anchor="middle" fill="#e9f0ff" stroke="none" font-family="Arial, sans-serif" font-size="16" font-weight="700">S7</text>
     <path d="M1114 159l6 6-6 6-6-6z" fill="#121c35" stroke-width="2"/>

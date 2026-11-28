@@ -31,10 +31,10 @@ The codes below identify the eight tracks: A for App, S for Study, M for Manuscr
 
 - <a name="s1"></a> **S1** · 1.0.0: Released a preface explaining primary sources, study principles and stages.
 - <a name="s2"></a> **S2** · By 1.0.8: An introduction to Revelation 1:1-3 is available. The full seven-stage study is planned.
-- <a name="s3"></a> **S3** · 1.0.9: Extend the existing Introduction with a sample study of Revelation 1:1-3 and test the format with allusion search (REV213).
-- <a name="s4"></a> **S4** · 1.0.10: Publish the first complete study of 1:1-3 after all seven stages and review (REV242).
-- <a name="s5"></a> **S5** · 1.0.11: Complete the full prologue, 1:1-8, with supporting material (REV246).
-- <a name="s6"></a> **S6** · 2027-2029: Publish reviewed studies of the messages to the seven churches individually or in small groups (REV3).
+- <a name="s3"></a> **S3** · 1.0.9: The four-language study of Revelation 1:1-3 in the Introduction passed review, including its use of allusion search (REV213).
+- <a name="s4"></a> **S4** · 1.0.9: Complete and publish the research package for 1:1-3, including the review of connections to Christ from REV215 (REV242).
+- <a name="s5"></a> **S5** · 1.0.10: Add the study of 1:4-8 and publish the full prologue, 1:1-8 (REV246).
+- <a name="s6"></a> **S6** · From 1.0.11: Publish complete studies from the seven churches section, 1:9-3:22, starting with REV250 (REV3).
 - <a name="s7"></a> **S7** · 2029-2032: After the messages, publish studies of the seals and trumpets in short packages (REV3).
 - <a name="s8"></a> **S8** · From 2032: After the trumpets, move on to the final crisis and the bowls, then the kingdom, New Jerusalem and epilogue (REV3).
 
@@ -64,7 +64,7 @@ The codes below identify the eight tracks: A for App, S for Study, M for Manuscr
 - <a name="l1"></a> **L1** · 1.0.0: Released the interface in English, Ukrainian and Russian.
 - <a name="l2"></a> **L2** · 1.0.3: Added a Spanish interface.
 - <a name="l3"></a> **L3** · 1.0.4: Added Greek Strong's Dictionary entries in four languages.
-- <a name="l4"></a> **L4** · 1.0.10-1.0.11: Review English, Spanish, Ukrainian and Russian alongside the first completed studies.
+- <a name="l4"></a> **L4** · 1.0.10-1.0.11: Continue reviewing English, Spanish, Ukrainian and Russian as the prologue and subsequent passages are released.
 - <a name="l5"></a> **L5** · 1.1.x: Choose the next language based on demand, interface readiness and the availability of a Bible translation with permission (REV208).
 - <a name="l6"></a> **L6** · Expand to more regions after the pilot. Check content and the capacity to maintain each language.
 
@@ -126,21 +126,21 @@ The windows below are estimates and include a **10% reserve**. The initial estim
 
 | Version · Estimated window | App and Bible modules | Studies and manuscripts | Outreach and platforms |
 | --- | --- | --- | --- |
-| **1.0.9** · Winter 2026/27 | Allusion search, return to the last reading position through the Bible menu (REV211), fixes to audio and image viewing | Sample study of 1:1-3 in the Introduction and annotation pilot W00 | Review Ukrainian outreach, demonstrate search and reading, prepare Windows signing |
-| **1.0.10** · Spring to summer 2027 | Russian Bible, pronunciation and word display in the introduction | Complete 1:1-3, W01, one further source if ready | Reader feedback, preparation for Apple and Galaxy Store |
-| **1.0.11** · Autumn 2027 | Spanish Bible, evaluate how to show emphasis in Bible text | Complete prologue 1:1-8 and W02 | Demonstrate Spanish reading, evaluate Huawei AppGallery |
-| **1.0.12** · Winter 2027/28 | Downloadable offline study pack, offline testing and selection of the next text module | Next complete passage, pilot the full prologue, W03, one further source | Pilot up to two channels, approach OneVoice27 after a successful prologue pilot, evaluate F-Droid and Flathub |
-| **1.0.13** · First half of 2028 | Hebrew Strong's Dictionary | Next study and W04 | Demonstrate the dictionary |
-| **1.0.14** · Second half of 2028 | Manuscript overlays for parts of speech and sentence roles | Next study, U051 pages 1-31 and one further source | Demonstrate grammar overlays |
-| **1.0.15** · First half of 2029 | Connections between passages and reviewed allusions | Next study, U051 pages 32-62 | Demonstrate links to other Bible books |
-| **1.0.16** · Second half of 2029 | Book structure, historical background, practical application and a first map of places in Revelation | Next study, U051 pages 63-93 and evaluation of two candidates | Demonstrate one study workflow |
-| **1.0.17** · First half of 2030 | Read-aloud and optional background music | Next study, begin U046 if rights are secured | Demonstrate accessible reading |
-| **1.0.18** · Second half of 2030 | Illustrations, related materials, keyboard and remote navigation | Next study, continue U046 | Demonstrate visual study |
-| **1.0.19** · First half of 2031 | Original Greek and Hebrew Strong's entries | Next study | Demonstrate the dictionary |
-| **1.0.20** · Second half of 2031 | Compare TR against printed editions and add notes | Next study | Demonstrate use of the reviewed text |
-| **1.0.21** · First half of 2032 | Compare KJV with print, add notes and show the printed edition if rights allow | Next study | Show the sources of the translation |
-| **1.0.22** · Second half of 2032 | Compare LXX with print, add notes and show the printed edition if rights allow | Next study | Demonstrate Greek text study |
-| **1.0.23** · 2033 | U025 facsimiles if images and rights are available | Next study and comparison with the U025 transcription | Show the verified facsimile |
+| **1.0.9** · Winter 2026/27 | Allusion search, return to the last reading position through the Bible menu (REV211), fixes to audio and image viewing | Research package on 1:1-3 in the Introduction ([REV242](https://ai11.link/cabinet/tasks?project=1&task=REV242)) · annotation pilot W00 | Review Ukrainian outreach, demonstrate search and reading, prepare Windows signing |
+| **1.0.10** · Spring to summer 2027 | Russian Bible, pronunciation and word display in the introduction | Complete prologue, 1:1-8 ([REV246](https://ai11.link/cabinet/tasks?project=1&task=REV246)) · W01 · one further source if ready | Reader feedback, preparation for Apple and Galaxy Store |
+| **1.0.11** · Autumn 2027 | Spanish Bible, evaluate how to show emphasis in Bible text | First package from 1:9-3:22 ([REV250](https://ai11.link/cabinet/tasks?project=1&task=REV250)) · W02 | Demonstrate Spanish reading, evaluate Huawei AppGallery |
+| **1.0.12** · Winter 2027/28 | Downloadable offline study pack, offline testing and selection of the next text module | Next study ([REV254](https://ai11.link/cabinet/tasks?project=1&task=REV254)) · prologue pilot when its requirements are met · W03 · one further source | Pilot up to two channels, approach OneVoice27 after a successful prologue pilot, evaluate F-Droid and Flathub |
+| **1.0.13** · First half of 2028 | Hebrew Strong's Dictionary | Next study ([REV258](https://ai11.link/cabinet/tasks?project=1&task=REV258)) · W04 | Demonstrate the dictionary |
+| **1.0.14** · Second half of 2028 | Manuscript overlays for parts of speech and sentence roles | Next study ([REV262](https://ai11.link/cabinet/tasks?project=1&task=REV262)) · U051 pages 1-31 · one further source | Demonstrate grammar overlays |
+| **1.0.15** · First half of 2029 | Connections between passages and reviewed allusions | Next study ([REV266](https://ai11.link/cabinet/tasks?project=1&task=REV266)) · U051 pages 32-62 | Demonstrate links to other Bible books |
+| **1.0.16** · Second half of 2029 | Book structure, historical background, practical application and a first map of places in Revelation | Next study ([REV270](https://ai11.link/cabinet/tasks?project=1&task=REV270)) · U051 pages 63-93 · evaluate two candidates | Demonstrate one study workflow |
+| **1.0.17** · First half of 2030 | Read-aloud and optional background music | Next study ([REV274](https://ai11.link/cabinet/tasks?project=1&task=REV274)) · begin U046 if rights are secured | Demonstrate accessible reading |
+| **1.0.18** · Second half of 2030 | Illustrations, related materials, keyboard and remote navigation | Next study ([REV278](https://ai11.link/cabinet/tasks?project=1&task=REV278)) · continue U046 | Demonstrate visual study |
+| **1.0.19** · First half of 2031 | Original Greek and Hebrew Strong's entries | Next study ([REV282](https://ai11.link/cabinet/tasks?project=1&task=REV282)) | Demonstrate the dictionary |
+| **1.0.20** · Second half of 2031 | Compare TR against printed editions and add notes | Next study ([REV286](https://ai11.link/cabinet/tasks?project=1&task=REV286)) | Demonstrate use of the reviewed text |
+| **1.0.21** · First half of 2032 | Compare KJV with print, add notes and show the printed edition if rights allow | Next study ([REV290](https://ai11.link/cabinet/tasks?project=1&task=REV290)) | Show the sources of the translation |
+| **1.0.22** · Second half of 2032 | Compare LXX with print, add notes and show the printed edition if rights allow | Next study ([REV294](https://ai11.link/cabinet/tasks?project=1&task=REV294)) | Demonstrate Greek text study |
+| **1.0.23** · 2033 | U025 facsimiles if images and rights are available | Compare the U025 transcription | Show the verified facsimile |
 | **1.1.x** · From 2033 as ready | Compare editions, recognize and process manuscript images, and evaluate maps of the New and Old Testaments, a timeline, a journal and community features | Remaining passages and manuscripts, with separate Strong's annotation projects | More languages and regions, sustainable support |
 
 Each app release goes through acceptance testing. Store availability, facsimile rights and new research each have their own requirements. Completed data can ship between app releases. A passage study can be complete before every planned app feature becomes available.
@@ -149,7 +149,9 @@ Each app release goes through acceptance testing. Store availability, facsimile 
 
 ## Complete passage studies
 
-The Preface and the Introduction are already available. In 1.0.9 the sample study of Revelation 1:1-3 expands the existing second card, Introduction (`topic_1`). Readers open the same route, read the introduction and use a button to explore the detailed study, including the original text, its interactive manuscript links and an example of allusion search. The team preserves each language's original and the order of the cards. The first full package will cover 1:1-3 in the 1.0.10 window, followed by the full prologue in 1:1-8. The rest of the book will follow in short, complete passages. Every package includes these seven stages.
+The study of Revelation 1:1-3 in the existing Introduction card (`topic_1`) has passed review for 1.0.9. Readers start on the same route and can choose to explore the detailed study, including the original manuscript collation, interactive links and an example of allusion search. In the same window, REV242 completes the research package and incorporates the remaining review of connections to Christ from REV215. In 1.0.10, REV246 adds 1:4-8 and completes the prologue. Starting in 1.0.11, REV250 begins the next set of releases with the seven churches section, 1:9-3:22. [Publication plan REV3](https://ai11.link/cabinet/tasks?project=1&task=REV3)
+
+Each package starts with the next passage in the book. Its boundaries and place in the sequence follow the coverage of earlier releases. Ready study data can ship between app releases after separate publication approval. The editorial dossier for each package covers all seven stages.
 
 1. A combined text from the available witnesses, with variant readings and links to manuscript pages.
 2. Word studies, verified Strong's links, grammar and syntax.
@@ -163,13 +165,15 @@ For each verse the team compares sources according to their role and evidential 
 
 | Part of Revelation | Work and publication window |
 | --- | --- |
-| Prologue · 1:1-8 | 2027. Publish the first full package on 1:1-3, complete the prologue and then test it with a group. |
-| Seven churches · 1:9-3:22 | 2027-2029. Publish the introduction and the messages in individual packages. |
+| Prologue · 1:1-8 | 1.0.9: the package on 1:1-3. 1.0.10: add 1:4-8 and publish the complete prologue. |
+| Seven churches · 1:9-3:22 | From 1.0.11: publish the introduction and the messages in individual packages as they are ready. |
 | Seals · 4:1-8:1 and trumpets · 8:2-11:18 | 2029-2032. Publish the seals and then the trumpets in several packages. |
 | Final crisis · 11:19-15:4 and bowls · 15:5-18:24 | From 2032, after the previous studies. |
 | Kingdom · 19:1-20:15, New Jerusalem · 21:1-22:5 and epilogue · 22:6-21 | Longer-term 1.1.x work, in order after the bowls. |
 
 The longer-term estimate assumes several short, reviewed packages per year. We will revise that estimate after the prologue and the first messages to the churches. Longer chapters will be split where the text calls for it. The overall completion date remains open (REV2, REV3, REV207, REV213, REV242, REV246).
+
+The small-group pilot in 1.0.12 follows publication of the reviewed prologue and completion of 1.0.11. An approach to OneVoice27 follows a successful pilot and verification of the resulting fixes. [REV214](https://ai11.link/cabinet/tasks?project=1&task=REV214) · [REV304](https://ai11.link/cabinet/tasks?project=1&task=REV304)
 
 <a name="acquisition"></a>
 

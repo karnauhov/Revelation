@@ -159,57 +159,57 @@
         "state": "plan",
         "stage": 1,
         "x": 530,
-        "detail": "1.0.9: дополнить существующее «Вступление» образцом Откровения 1:1-3 и проверить формат с поиском аллюзий (REV213).",
+        "detail": "1.0.9: принято продолжение «Вступления» по Откровению 1:1-3 на четырёх языках с поиском аллюзий (REV213).",
         "hint": {
-          "en": "Extend the existing Introduction with a sample study of Revelation 1:1-3 and test allusion search.",
-          "es": "Ampliar la Introducción existente con un estudio de muestra de Apocalipsis 1:1-3 y probar la búsqueda de alusiones.",
-          "uk": "Доповнити наявний «Вступ» зразком розбору Об’явлення 1:1-3 і перевірити пошук алюзій.",
-          "ru": "Дополнить существующее «Вступление» образцом Откровения 1:1-3 и проверить поиск аллюзий."
+          "en": "1.0.9: The four-language Introduction to Revelation 1:1-3 has passed review.",
+          "es": "1.0.9: Aprobada la Introducción a Apocalipsis 1:1-3 en cuatro idiomas.",
+          "uk": "1.0.9: затверджено розбір Об’явлення 1:1-3 у «Вступі» чотирма мовами.",
+          "ru": "1.0.9: принято «Вступление» по Откровению 1:1-3 на четырёх языках."
         },
         "id": "S3",
-        "detail_en": "1.0.9: Extend the existing Introduction with a sample study of Revelation 1:1-3 and test the format with allusion search (REV213)."
+        "detail_en": "1.0.9: The four-language study of Revelation 1:1-3 in the Introduction passed review, including its use of allusion search (REV213)."
       },
       {
         "state": "plan",
         "stage": 1,
         "x": 610,
-        "detail": "1.0.10: выпустить первый полный пакет 1:1-3 после всех семи фаз и проверки (REV242).",
+        "detail": "1.0.9: завершить и выпустить исследовательский пакет 1:1-3, включая сверку связи со Христом из REV215 (REV242).",
         "hint": {
-          "en": "Publish the first complete seven-stage study of Revelation 1:1-3.",
-          "es": "Publicar el primer estudio completo de Apocalipsis 1:1-3 en siete etapas.",
-          "uk": "Опублікувати перший повний розбір Об’явлення 1:1-3 за сімома етапами.",
-          "ru": "1.0.10: выпустить первый полный пакет 1:1-3 после всех семи фаз и проверки."
+          "en": "1.0.9: Complete and publish the research package for Revelation 1:1-3.",
+          "es": "1.0.9: Completar y publicar el material de estudio de Apocalipsis 1:1-3.",
+          "uk": "1.0.9: завершити й опублікувати дослідницький пакет Об’явлення 1:1-3.",
+          "ru": "1.0.9: завершить и выпустить исследовательский пакет 1:1-3."
         },
         "id": "S4",
-        "detail_en": "1.0.10: Publish the first complete study of 1:1-3 after all seven stages and review (REV242)."
+        "detail_en": "1.0.9: Complete and publish the research package for 1:1-3, including the review of connections to Christ from REV215 (REV242)."
       },
       {
         "state": "plan",
         "stage": 1,
         "x": 690,
-        "detail": "1.0.11: завершить полный пролог 1:1-8 с сопутствующими материалами (REV246).",
+        "detail": "1.0.10: добавить разбор 1:4-8 и выпустить полный пролог 1:1-8 (REV246).",
         "hint": {
-          "en": "Finish Revelation 1:1-8 with sources and supporting materials.",
-          "es": "Completar Apocalipsis 1:1-8 con fuentes y materiales de apoyo.",
-          "uk": "Завершити Об’явлення 1:1-8 із джерелами й супровідними матеріалами.",
-          "ru": "1.0.11: завершить полный пролог 1:1-8 с сопутствующими материалами."
+          "en": "1.0.10: Add Revelation 1:4-8 and publish the full prologue.",
+          "es": "1.0.10: Añadir Apocalipsis 1:4-8 y publicar el prólogo completo.",
+          "uk": "1.0.10: додати розбір Об’явлення 1:4-8 і випустити весь пролог.",
+          "ru": "1.0.10: добавить разбор 1:4-8 и выпустить полный пролог 1:1-8."
         },
         "id": "S5",
-        "detail_en": "1.0.11: Complete the full prologue, 1:1-8, with supporting material (REV246)."
+        "detail_en": "1.0.10: Add the study of 1:4-8 and publish the full prologue, 1:1-8 (REV246)."
       },
       {
         "state": "plan",
-        "stage": 2,
-        "x": 848,
-        "detail": "2027-2029: публиковать проверенные послания семи церквям по одному или небольшими группами (REV3).",
+        "stage": 1,
+        "x": 748,
+        "detail": "С 1.0.11: публиковать законченные отрывки блока семи церквей 1:9-3:22, начиная с REV250 (REV3).",
         "hint": {
-          "en": "Publish studies of the seven churches in small groups.",
-          "es": "Publicar en pequeños grupos los estudios de las siete iglesias.",
-          "uk": "Випускати розбори послань семи церквам невеликими групами.",
-          "ru": "2027-2029: публиковать проверенные послания семи церквям по одному или небольшими группами."
+          "en": "From 1.0.11: Publish the first passages in the seven churches section.",
+          "es": "Desde 1.0.11: Publicar los primeros pasajes del bloque de las siete iglesias.",
+          "uk": "З 1.0.11: випускати перші розбори блоку про сім церков.",
+          "ru": "С 1.0.11: выпускать первые разборы блока о семи церквях."
         },
         "id": "S6",
-        "detail_en": "2027-2029: Publish reviewed studies of the messages to the seven churches individually or in small groups (REV3)."
+        "detail_en": "From 1.0.11: Publish complete studies from the seven churches section, 1:9-3:22, starting with REV250 (REV3)."
       },
       {
         "state": "plan",
@@ -525,15 +525,15 @@
         "state": "plan",
         "stage": 1,
         "x": 618,
-        "detail": "1.0.10-1.0.11: проверять en/es/uk/ru вместе с первыми полными разборами.",
+        "detail": "1.0.10-1.0.11: продолжить проверку en/es/uk/ru при выпуске пролога и следующих отрывков.",
         "hint": {
-          "en": "Review the first full studies in English, Spanish, Ukrainian and Russian.",
-          "es": "Revisar los primeros estudios completos en los cuatro idiomas.",
-          "uk": "Вичитати перші повні розбори чотирма мовами.",
-          "ru": "1.0.10-1.0.11: проверять en/es/uk/ru вместе с первыми полными разборами."
+          "en": "Continue reviewing new study packages in all four languages.",
+          "es": "Seguir revisando los nuevos estudios en los cuatro idiomas.",
+          "uk": "Продовжити вичитку нових розборів чотирма мовами.",
+          "ru": "1.0.10-1.0.11: продолжить вычитку четырёх локалей в новых пакетах."
         },
         "id": "L4",
-        "detail_en": "1.0.10-1.0.11: Review English, Spanish, Ukrainian and Russian alongside the first completed studies."
+        "detail_en": "1.0.10-1.0.11: Continue reviewing English, Spanish, Ukrainian and Russian as the prologue and subsequent passages are released."
       },
       {
         "state": "conditional",
